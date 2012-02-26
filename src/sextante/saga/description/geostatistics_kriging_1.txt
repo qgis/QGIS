@@ -1,0 +1,67 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	geostatistics_kriging
+module name :	Ordinary Kriging (VF, Global)
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 1 -POINTS <str> [-ZFIELD <str>] [-TARGET <str>] [-TQUALITY <str>] [-LOG] [-BLOCK] [-DBLOCK <str>] [-VAR_MAXDIST <str>] [-VAR_NCLASSES <num>] [-VAR_NSKIP <num>] [-VAR_MODEL <str>] [-USER_BVARIANCE] [-USER_XMIN <str>] [-USER_XMAX <str>] [-USER_YMIN <str>] [-USER_YMAX <str>] [-USER_SIZE <str>] [-USER_GRID <str>] [-USER_VARIANCE <str>] [-GRID_GRID <str>] [-GRID_VARIANCE <str>]
+  -POINTS:<str>       	Points
+	Shapes (input)
+  -ZFIELD:<str>       	Attribute
+	Table field
+  -TARGET:<str>       	Target Grid
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+  -TQUALITY:<str>     	Type of Quality Measure
+	Choice
+	Available Choices:
+	[0] standard deviation
+	[1] variance
+  -LOG                	Logarithmic Transformation
+	Boolean
+  -BLOCK              	Block Kriging
+	Boolean
+  -DBLOCK:<str>       	Block Size
+	Floating point
+	Minimum: 0.000000
+  -VAR_MAXDIST:<str>  	Maximum Distance
+	Floating point
+  -VAR_NCLASSES:<num> 	Lag Distance Classes
+	Integer
+	Minimum: 1.000000
+  -VAR_NSKIP:<num>    	Skip
+	Integer
+	Minimum: 1.000000
+  -VAR_MODEL:<str>    	Model
+	Text
+  -USER_BVARIANCE     	Create Quality Grid
+	Boolean
+  -USER_XMIN:<str>    	Left
+	Floating point
+  -USER_XMAX:<str>    	Right
+	Floating point
+  -USER_YMIN:<str>    	Bottom
+	Floating point
+  -USER_YMAX:<str>    	Top
+	Floating point
+  -USER_SIZE:<str>    	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -USER_GRID:<str>    	Grid
+	Data Object (optional output)
+  -USER_VARIANCE:<str>	Quality Measure
+	Data Object (optional output)
+  -GRID_GRID:<str>    	Grid
+	Grid (output)
+  -GRID_VARIANCE:<str>	Quality Measure
+	Grid (optional output)

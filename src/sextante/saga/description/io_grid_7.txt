@@ -1,0 +1,24 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_grid
+module name :	Import USGS SRTM Grid
+author      :	O.Conrad (c) 2004
+_____________________________________________
+go...
+Usage: 7 [-GRIDS <str>] [-FILE <str>] [-RESOLUTION <str>]
+  -GRIDS:<str>     	Grids
+	Grid list (optional output)
+  -FILE:<str>      	Files
+	File path
+  -RESOLUTION:<str>	Resolution
+	Choice
+	Available Choices:
+	[0] 1 arc-second
+	[1] 3 arc-second

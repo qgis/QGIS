@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_grid
+module name :	Local Minima and Maxima
+author      :	(c) 2009 by O.Conrad
+_____________________________________________
+go...
+Usage: 9 -GRID <str> -MINIMA <str> -MAXIMA <str>
+  -GRID:<str>  	Grid
+	Grid (input)
+  -MINIMA:<str>	Minima
+	Shapes (output)
+  -MAXIMA:<str>	Maxima
+	Shapes (output)

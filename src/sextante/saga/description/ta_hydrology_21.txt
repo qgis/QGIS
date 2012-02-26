@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	Stream Power Index
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 21 -SLOPE <str> -AREA <str> -SPI <str> [-CONV <str>]
+  -SLOPE:<str>	Slope
+	Grid (input)
+  -AREA:<str> 	Catchment Area
+	Grid (input)
+  -SPI:<str>  	Stream Power Index
+	Grid (output)
+  -CONV:<str> 	Area Conversion
+	Choice
+	Available Choices:
+	[0] no conversion (areas already given as specific catchment area)
+	[1] 1 / cell size (pseudo specific catchment area)

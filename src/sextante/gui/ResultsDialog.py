@@ -1,0 +1,58 @@
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui, QtWebKit
+from sextante.core.SextanteResults import SextanteResults
+
+class ResultsDialog(QtGui.QDialog):
+    def __init__(self):
+        QtGui.QDialog.__init__(self)
+        self.setModal(True)
+        self.setupUi()
+
+    def setupUi(self):
+        self.setObjectName("ResultsDialog")
+        self.resize(800, 600)
+        self.tree = QtGui.QTreeWidget()
+        self.tree.setHeaderHidden(True)
+        self.tree.setMinimumWidth(300)
+        QObject.connect(self.tree, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*, int)"), self.changeResult)
+        self.groupIcon = QtGui.QIcon()
+        self.groupIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_DirClosedIcon),
+                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.groupIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_DirOpenIcon),
+                QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.keyIcon = QtGui.QIcon()
+        self.keyIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_FileIcon))
+        self.fillTree()
+        self.webView = QtWebKit.QWebView()
+        self.webView.setObjectName("webView")
+        self.setWindowTitle("Results")
+        self.horizontalLayout= QtGui.QHBoxLayout()
+        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setMargin(0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.horizontalLayout.addWidget(self.tree)
+        self.horizontalLayout.addWidget(self.webView)
+        self.setLayout(self.horizontalLayout)
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def fillTree(self):
+        elements = SextanteResults.getResults()
+        for element in elements:
+            item = TreeResultItem(element)
+            item.setIcon(0, self.keyIcon)
+            self.tree.addTopLevelItem(item)
+
+
+    def changeResult(self):
+        item = self.tree.currentItem()
+        if isinstance(item, TreeResultItem):
+            url = QtCore.QUrl(item.value)
+            self.webView.load(url)
+
+
+class TreeResultItem(QtGui.QTreeWidgetItem):
+    def __init__(self, result):
+        QTreeWidgetItem.__init__(self)
+        self.result = result
+        self.setText(0, result.name)

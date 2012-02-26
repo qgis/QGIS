@@ -1,0 +1,45 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_tools
+module name :	Change Date Format
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 5 -TABLE <str> [-FIELD <str>] [-OUTPUT <str>] [-FMT_IN <str>] [-FMT_OUT <str>]
+  -TABLE:<str>  	Table
+	Table (input)
+  -FIELD:<str>  	Date Field
+	Table field
+  -OUTPUT:<str> 	Output
+	Table (optional output)
+  -FMT_IN:<str> 	Input Format
+	Choice
+	Available Choices:
+	[0] dd.mm.yy
+	[1] yy.mm.dd
+	[2] dd:mm:yy
+	[3] yy:mm:dd
+	[4] ddmmyyyy, fix size
+	[5] yyyymmdd, fix size
+	[6] ddmmyy, fix size
+	[7] yymmdd, fix size
+	[8] Julian Day
+  -FMT_OUT:<str>	Output Format
+	Choice
+	Available Choices:
+	[0] dd.mm.yy
+	[1] yy.mm.dd
+	[2] dd:mm:yy
+	[3] yy:mm:dd
+	[4] ddmmyyyy, fix size
+	[5] yyyymmdd, fix size
+	[6] ddmmyy, fix size
+	[7] yymmdd, fix size
+	[8] Julian Day

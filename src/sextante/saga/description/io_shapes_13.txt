@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_shapes
+module name :	Import GPX
+author      :	O. Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 13 [-SHAPES <str>] [-FILE <str>] [-TIME]
+  -SHAPES:<str>	GPX Import
+	Shapes list (optional output)
+  -FILE:<str>  	File
+	File path
+  -TIME        	Time Stamp without date
+	Boolean

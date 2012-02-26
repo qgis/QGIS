@@ -3,6 +3,11 @@ from sextante.parameters.Parameter import Parameter
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
+from PyQt4 import QtGui
+import os.path
+from sextante.core.SextanteUtils import SextanteUtils
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 
 class GeoAlgorithm:
@@ -18,16 +23,26 @@ class GeoAlgorithm:
 
     #methods to overwrite when creating a custom geoalgorithm
     #=========================================================
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
+
     def processAlgorithm(self):
         pass
 
     def defineCharacteristics(self):
         pass
+
     #=========================================================
 
     def execute(self, progress):
         self.setOutputCRSFromInputLayers()
+        self.resolveTemporaryOutputs()
         self.processAlgorithm(progress)
+
+    def resolveTemporaryOutputs(self):
+        for out in self.outputs:
+            if out.value == None:
+                SextanteUtils.setTempOutput(out, self)
 
     def setOutputCRSFromInputLayers(self):
         for param in self.parameters:
@@ -38,17 +53,17 @@ class GeoAlgorithm:
             else:
                 continue
             for layer in layers:
-                if layer.dataProvider().dataSourceUri() == param.value:
+                if layer.source() == param.value:
                     self.crs = layer.crs()
                     return
 
 
-    def putOutput(self, output):
+    def addOutput(self, output):
         #TODO: check that name does not exist
         if isinstance(output, Output):
             self.outputs.append(output)
 
-    def putParameter(self, param):
+    def addParameter(self, param):
         #TODO: check that name does not exist
         if isinstance(param, Parameter):
             self.parameters.append(param)
@@ -68,7 +83,6 @@ class GeoAlgorithm:
 
     def __str__(self):
         s = "ALGORITHM: " + self.name + "\n"
-        #s+=self._descriptionFile + "\n"
         for param in self.parameters:
             s+=(str(param) + "\n")
         for out in self.outputs:
@@ -78,20 +92,42 @@ class GeoAlgorithm:
 
 
     def commandLineName(self):
-        return self.providerName + self.name.lower().replace(" ", "")
+        return self.provider.getName().lower() + ":" + self.name.lower().replace(" ", "")
 
 
-    def getOuputsChannelsAsMap(self):
-        retmap = {}
+    def getOutputFromName(self, name):
         for out in self.outputs:
-            retmap[out.name] = out.channel
-        return retmap
+            if out.name == name:
+                return out
+
+    def getParameterFromName(self, name):
+        for param in self.parameters:
+            if param.name == name:
+                return param
+
+    def getParameterValue(self, name):
+        for param in self.parameters:
+            if param.name == name:
+                if isinstance(param, ParameterNumber):
+                    return float(param.value)
+                elif isinstance(param, ParameterBoolean):
+                    return param.value == True
+                else:
+                    return param.value
+        return None
+
+    def getOutputValue(self, name):
+        for out in self.outputs:
+            if out.name == name:
+                return out.value
+        return None
+
 
     def getAsCommand(self):
         s="Sextante.runalg(\"" + self.commandLineName() + "\","
         for param in self.parameters:
             s+=param.getValueAsCommandLineParameter() + ","
         for out in self.outputs:
-            s+=out.getChannelAsCommandLineParameter() + ","
+            s+=out.getValueAsCommandLineParameter() + ","
         s= s[:-1] + ")"
         return s

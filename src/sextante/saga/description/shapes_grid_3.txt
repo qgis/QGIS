@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_grid
+module name :	Grid Values to Points
+author      :	O.Conrad (c) 2001
+_____________________________________________
+go...
+Usage: 3 -GRIDS <str> [-POLYGONS <str>] -SHAPES <str> [-NODATA] [-TYPE <str>]
+  -GRIDS:<str>   	Grids
+	Grid list (input)
+  -POLYGONS:<str>	Polygons
+	Shapes (optional input)
+  -SHAPES:<str>  	Shapes
+	Shapes (output)
+  -NODATA        	Exclude NoData Cells
+	Boolean
+  -TYPE:<str>    	Type
+	Choice
+	Available Choices:
+	[0] nodes
+	[1] cells

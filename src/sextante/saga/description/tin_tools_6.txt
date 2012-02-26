@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	tin_tools
+module name :	Flow Accumulation (Parallel)
+author      :	(c) 2004 by O.Conrad
+_____________________________________________
+go...
+Usage: 6 -DEM <str> [-ZFIELD <str>] -FLOW <str> [-METHOD <str>]
+  -DEM:<str>   	TIN
+	TIN (input)
+  -ZFIELD:<str>	Z Values
+	Table field
+  -FLOW:<str>  	Flow Accumulation
+	TIN (output)
+  -METHOD:<str>	Method
+	Choice
+	Available Choices:
+	[0] Single Flow Direction
+	[1] Multiple Flow Direction

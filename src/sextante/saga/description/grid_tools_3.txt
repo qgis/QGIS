@@ -1,0 +1,49 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Merging
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 3 -GRIDS <str> [-GRID_TARGET <str>] [-MERGED <str>] [-TYPE <str>] [-INTERPOL <str>] [-OVERLAP <str>] [-MERGE_INFO_MESH_SIZE <str>]
+  -GRIDS:<str>               	Grids to Merge
+	Grid list (input)
+  -GRID_TARGET:<str>         	Target Grid
+	Grid (optional output)
+  -MERGED:<str>              	Merged Grid
+	Data Object (optional output)
+  -TYPE:<str>                	Preferred data storage type
+	Choice
+	Available Choices:
+	[0] 1 bit
+	[1] 1 byte unsigned integer
+	[2] 1 byte signed integer
+	[3] 2 byte unsigned integer
+	[4] 2 byte signed integer
+	[5] 4 byte unsigned integer
+	[6] 4 byte signed integer
+	[7] 4 byte floating point
+	[8] 8 byte floating point
+  -INTERPOL:<str>            	Interpolation
+	Choice
+	Available Choices:
+	[0] Nearest Neighbor
+	[1] Bilinear Interpolation
+	[2] Inverse Distance Interpolation
+	[3] Bicubic Spline Interpolation
+	[4] B-Spline Interpolation
+  -OVERLAP:<str>             	Overlapping Cells
+	Choice
+	Available Choices:
+	[0] mean value
+	[1] first value in order of grid list
+  -MERGE_INFO_MESH_SIZE:<str>	Cell Size
+	Floating point
+	Minimum: 0.000000

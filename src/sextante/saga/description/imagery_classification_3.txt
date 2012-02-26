@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	imagery_classification
+module name :	Decision Tree
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 3 -CLASSES <str> [-ROOT_GRID <str>] [-ROOT_THRESHOLD <str>] [-ROOT_A|NAME <str>] [-ROOT_A|NODE] [-ROOT_B|NAME <str>] [-ROOT_B|NODE]
+  -CLASSES:<str>       	Decision Tree
+	Grid (output)
+  -ROOT_GRID:<str>     	Grid
+	Grid (input)
+  -ROOT_THRESHOLD:<str>	Threshold
+	Floating point
+  -ROOT_A|NAME:<str>   	Name
+	Text
+  -ROOT_A|NODE         	Children
+	Boolean
+  -ROOT_B|NAME:<str>   	Name
+	Text
+  -ROOT_B|NODE         	Children
+	Boolean

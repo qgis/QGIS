@@ -1,0 +1,52 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Fragmentation (Alternative)
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 16 -CLASSES <str> -DENSITY <str> -CONNECTIVITY <str> -FRAGMENTATION <str> [-FRAGSTATS <str>] [-CLASS <num>] [-NEIGHBORHOOD_MIN <str>] [-NEIGHBORHOOD_MAX <str>] [-AGGREGATION <str>] [-BORDER] [-WEIGHT <str>] [-DENSITY_MIN <str>] [-DENSITY_INT <str>] [-LEVEL_GROW <str>] [-DENSITY_MEAN]
+  -CLASSES:<str>         	Classification
+	Grid (input)
+  -DENSITY:<str>         	Density [Percent]
+	Grid (output)
+  -CONNECTIVITY:<str>    	Connectivity [Percent]
+	Grid (output)
+  -FRAGMENTATION:<str>   	Fragmentation
+	Grid (output)
+  -FRAGSTATS:<str>       	Summary
+	Table (optional output)
+  -CLASS:<num>           	Class Identifier
+	Integer
+  -NEIGHBORHOOD_MIN:<str>	Neighborhood
+	Value range
+  -NEIGHBORHOOD_MAX:<str>	Neighborhood
+	Value range
+  -AGGREGATION:<str>     	Level Aggregation
+	Choice
+	Available Choices:
+	[0] average
+	[1] multiplicative
+  -BORDER                	Add Border
+	Boolean
+  -WEIGHT:<str>          	Connectivity Weighting
+	Floating point
+	Minimum: 0.000000
+  -DENSITY_MIN:<str>     	Minimum Density [Percent]
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -DENSITY_INT:<str>     	Minimum Density for Interior Forest [Percent]
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -LEVEL_GROW:<str>      	Search Distance Increment
+	Floating point
+	Minimum: 0.000000
+  -DENSITY_MEAN          	Density from Neighbourhood
+	Boolean

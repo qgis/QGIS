@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	tin_viewer
+module name :	TIN Viewer
+author      :	O. Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 0 -TIN <str> [-HEIGHT <str>] [-COLOR <str>] [-RGB <str>]
+  -TIN:<str>   	TIN
+	TIN (input)
+  -HEIGHT:<str>	Elevation
+	Table field
+  -COLOR:<str> 	Color
+	Table field
+  -RGB:<str>   	Map
+	Grid (optional input)

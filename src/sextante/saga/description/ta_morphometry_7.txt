@@ -1,0 +1,22 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_morphometry
+module name :	Morphometric Protection Index
+author      :	(c) 2005 by Victor Olaya
+_____________________________________________
+go...
+Usage: 7 -DEM <str> -PROTECTION <str> [-RADIUS <str>]
+  -DEM:<str>       	Elevation
+	Grid (input)
+  -PROTECTION:<str>	Protection Index
+	Grid (output)
+  -RADIUS:<str>    	Radius
+	Floating point
+	Minimum: 0.000000

@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_calculus
+module name :	Grids Product
+author      :	O. Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 9 -GRIDS <str> -RESULT <str>
+  -GRIDS:<str> 	Grids
+	Grid list (input)
+  -RESULT:<str>	Product
+	Grid (output)

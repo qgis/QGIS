@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	Cell Balance
+author      :	(c) 2004 by V.Olaya, (c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 10 -DEM <str> [-WEIGHTS <str>] [-WEIGHT <str>] -BALANCE <str> [-METHOD <str>]
+  -DEM:<str>    	Elevation
+	Grid (input)
+  -WEIGHTS:<str>	Parameter
+	Grid (optional input)
+  -WEIGHT:<str> 	Default Weight
+	Floating point
+  -BALANCE:<str>	Cell Balance
+	Grid (output)
+  -METHOD:<str> 	Method
+	Choice
+	Available Choices:
+	[0] Deterministic 8
+	[1] Multiple Flow Direction

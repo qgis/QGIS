@@ -6,26 +6,28 @@ from os import path
 
 class QGisLayers:
 
+    ALL_TYPES = -1
     iface = None;
 
     @staticmethod
     def getRasterLayers():
         layers = QGisLayers.iface.legendInterface().layers()
-        layerNames = list()
+        raster = list()
 
         for layer in layers:
             if layer.type() == layer.RasterLayer :
-                layerNames.append(layer)
-        return layerNames
+                raster.append(layer)
+        return raster
 
     @staticmethod
-    def getVectorLayers():
+    def getVectorLayers(shapetype=-1):
         layers = QGisLayers.iface.legendInterface().layers()
-        layerNames = list()
+        vector = list()
         for layer in layers:
             if layer.type() == layer.VectorLayer :
-                layerNames.append(layer)
-        return layerNames
+                if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
+                    vector.append(layer)
+        return vector
 
     @staticmethod
     def getTables():
@@ -50,6 +52,8 @@ class QGisLayers:
 
     @staticmethod
     def load(layer, name = None, crs = None):
+        if layer == None:
+            return
         prjSetting = None
         settings = QSettings()
         try:
@@ -68,6 +72,8 @@ class QGisLayers:
                 if crs != None:
                     qgslayer.setCrs(crs,False)
                 QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+        except Exception:
+            QtGui.QMessageBox(None, "Error", "Could not load layer: " + str(layer))
         finally:
             if prjSetting:
                 settings.setValue("/Projections/defaultBehaviour", prjSetting)
@@ -80,20 +86,22 @@ class QGisLayers:
 
 
     @staticmethod
-    def loadFromAlg(alg):
-        QGisLayers.loadMap(alg.getOuputsChannelsAsMap(), alg.crs)
-
-
-    @staticmethod
     def getObjectFromUri(uri):
         layers = QGisLayers.getRasterLayers()
         for layer in layers:
-            if layer.dataProvider().dataSourceUri() == uri:
+            if layer.source() == uri:
                 return layer
         layers = QGisLayers.getVectorLayers()
         for layer in layers:
-            if layer.dataProvider().dataSourceUri() == uri:
+            if layer.source() == uri:
                 return layer
+        #if is not opened, we open it
+        layer = QgsVectorLayer(uri, uri , 'ogr')
+        if layer.isValid():
+            return layer
+        layer = QgsRasterLayer(uri, uri)
+        if layer.isValid():
+            return layer
 
 
 

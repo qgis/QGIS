@@ -1,0 +1,33 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	recreations_fractals
+module name :	Gaussian Landscapes
+author      :	(c) 2005 by O.Conrad
+_____________________________________________
+go...
+Usage: 5 [-GRID <str>] [-NX <num>] [-NY <num>] [-H <str>] [-METHOD <str>] [-M <str>]
+  -GRID:<str>  	Grid
+	Data Object (optional output)
+  -NX:<num>    	Width (Cells)
+	Integer
+	Minimum: 1.000000
+  -NY:<num>    	Height (Cells)
+	Integer
+	Minimum: 1.000000
+  -H:<str>     	Roughness/Smoothness
+	Floating point
+	Value Range: 0.000000 - 1.000000
+  -METHOD:<str>	Method
+	Choice
+	Available Choices:
+	[0] Simple
+	[1] Flattening
+  -M:<str>     	Flattening
+	Floating point

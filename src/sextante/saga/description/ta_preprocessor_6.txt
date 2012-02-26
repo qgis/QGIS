@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_preprocessor
+module name :	Burn Stream Network into DEM
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 6 -DEM <str> [-BURN <str>] -STREAM <str> [-METHOD <str>] [-EPSILON <str>]
+  -DEM:<str>    	DEM
+	Grid (input)
+  -BURN:<str>   	Processed DEM
+	Grid (optional output)
+  -STREAM:<str> 	Streams
+	Grid (input)
+  -METHOD:<str> 	Method
+	Choice
+	Available Choices:
+	[0] simply decrease cell's value by epsilon
+	[1] lower cell's value to neighbours minimum value minus epsilon
+  -EPSILON:<str>	Epsilon
+	Floating point
+	Minimum: 0.000000

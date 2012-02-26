@@ -1,0 +1,24 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_calculus
+module name :	Running Average
+author      :	O. Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 5 -INPUT <str> [-FIELD <str>] [-OUTPUT <str>] [-COUNT <num>]
+  -INPUT:<str> 	Input
+	Table (input)
+  -FIELD:<str> 	Attribute
+	Table field
+  -OUTPUT:<str>	Output
+	Table (optional output)
+  -COUNT:<num> 	Number of Records
+	Integer
+	Minimum: 2.000000

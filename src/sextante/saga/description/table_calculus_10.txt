@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_calculus
+module name :	Daily to Hourly PET
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 10 -DAYS <str> [-JD <str>] [-ET <str>] [-P <str>] -HOURS <str> [-LAT <str>]
+  -DAYS:<str> 	Daily Data
+	Table (input)
+  -JD:<str>   	Julian Day
+	Table field
+  -ET:<str>   	Evapotranspiration
+	Table field
+  -P:<str>    	Precipitation
+	Table field
+  -HOURS:<str>	Hourly Data
+	Table (output)
+  -LAT:<str>  	Latitude
+	Floating point
+	Value Range: -90.000000 - 90.000000

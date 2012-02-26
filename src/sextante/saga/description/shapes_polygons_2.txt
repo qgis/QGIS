@@ -1,0 +1,27 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_polygons
+module name :	Polygon Properties
+author      :	V.Olaya (c) 2004, O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 2 -POLYGONS <str> [-OUTPUT <str>] [-BPARTS] [-BPOINTS] [-BLENGTH] [-BAREA]
+  -POLYGONS:<str>	Polygons
+	Shapes (input)
+  -OUTPUT:<str>  	Polygons with Property Attributes
+	Shapes (optional output)
+  -BPARTS        	Number of Parts
+	Boolean
+  -BPOINTS       	Number of Vertices
+	Boolean
+  -BLENGTH       	Perimeter
+	Boolean
+  -BAREA         	Area
+	Boolean

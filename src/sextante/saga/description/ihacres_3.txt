@@ -1,0 +1,44 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ihacres
+module name :	IHACRES Elevation Bands
+author      :	copyrights (c) 2008 Stefan Liersch
+_____________________________________________
+go...
+Usage: 3 [-TABLEout <str>] [-NELEVBANDS <str>] [-AREA_tot <str>] [-IHACVERS <str>] [-STORAGE <str>] [-SNOW_MODULE]
+  -TABLEout:<str>  	Table
+	Data Object (optional output)
+  -NELEVBANDS:<str>	Number of elevation bands
+	Choice
+	Available Choices:
+	[0] 2
+	[1] 3
+	[2] 4
+	[3] 5
+	[4] 6
+	[5] 7
+	[6] 8
+	[7] 9
+	[8] 10
+  -AREA_tot:<str>  	Total Catchment Area [km2]
+	Floating point
+  -IHACVERS:<str>  	IHACRES Version
+	Choice
+	Available Choices:
+	[0] Jakeman & Hornberger (1993)
+	[1] Croke et al. (2005) !!! not yet implemented !!!
+  -STORAGE:<str>   	Storage
+	Choice
+	Available Choices:
+	[0] Single Storage
+	[1] Two Parallel Storages
+	[2] Two Storages in Series !!! not yet implemented !!!
+  -SNOW_MODULE     	Using the snow-melt module?
+	Boolean

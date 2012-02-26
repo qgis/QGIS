@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_shapes
+module name :	Export Scalable Vector Graphics (SVG) File
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 17 -SHAPES <str> [-FILE <str>]
+  -SHAPES:<str>	Shapes
+	Shapes list (input)
+  -FILE:<str>  	File
+	File path

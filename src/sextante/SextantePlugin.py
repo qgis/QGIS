@@ -11,7 +11,8 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.HistoryDialog import HistoryDialog
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.ConfigDialog import ConfigDialog
-from sextante.gui.ModelerDialog import ModelerDialog
+from sextante.modeler.ModelerDialog import ModelerDialog
+from sextante.gui.ResultsDialog import ResultsDialog
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -23,6 +24,7 @@ class SextantePlugin:
         self.iface = iface
         QGisLayers.setInterface(iface)
         Sextante.initialize()
+        Sextante    .setInterface(iface)
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
@@ -31,29 +33,35 @@ class SextantePlugin:
         self.menu = QMenu()
         self.menu.setTitle("SEXTANTE")
 
-        icon = QIcon(os.path.dirname(__file__) + "/toolbox.png")
+        icon = QIcon(os.path.dirname(__file__) + "/images/toolbox.png")
         self.toolboxAction = QAction(icon, \
             "&SEXTANTE Toolbox", self.iface.mainWindow())
         QObject.connect(self.toolboxAction, SIGNAL("triggered()"), self.openToolbox)
         self.menu.addAction(self.toolboxAction)
 
-        icon = QIcon(os.path.dirname(__file__) + "/model.png")
+        icon = QIcon(os.path.dirname(__file__) + "/images/model.png")
         self.modelerAction = QAction(icon, \
             "&SEXTANTE Modeler", self.iface.mainWindow())
         QObject.connect(self.modelerAction, SIGNAL("triggered()"), self.openModeler)
         self.menu.addAction(self.modelerAction)
 
-        icon = QIcon(os.path.dirname(__file__) + "/history.gif")
+        icon = QIcon(os.path.dirname(__file__) + "/images/history.gif")
         self.historyAction = QAction(icon, \
             "&SEXTANTE History and log", self.iface.mainWindow())
         QObject.connect(self.historyAction, SIGNAL("triggered()"), self.openHistory)
         self.menu.addAction(self.historyAction)
 
-        icon = QIcon(os.path.dirname(__file__) + "/config.png")
+        icon = QIcon(os.path.dirname(__file__) + "/images/config.png")
         self.configAction = QAction(icon, \
             "&SEXTANTE options and configuration", self.iface.mainWindow())
         QObject.connect(self.configAction, SIGNAL("triggered()"), self.openConfig)
         self.menu.addAction(self.configAction)
+
+        icon = QIcon(os.path.dirname(__file__) + "/images/results.png")
+        self.resultsAction = QAction(icon, \
+            "&SEXTANTE results viewer", self.iface.mainWindow())
+        QObject.connect(self.resultsAction, SIGNAL("triggered()"), self.openResults)
+        self.menu.addAction(self.resultsAction)
 
 
         menuBar = self.iface.mainWindow().menuBar()
@@ -79,7 +87,12 @@ class SextantePlugin:
     def openModeler(self):
         dlg = ModelerDialog()
         dlg.exec_()
+        if dlg.update:
+            self.toolbox.updateTree()
 
+    def openResults(self):
+        dlg = ResultsDialog()
+        dlg.exec_()
 
     def openHistory(self):
         dlg = HistoryDialog()

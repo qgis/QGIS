@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_shapes_dxf
+module name :	Import DXF Files
+author      :	(c) 2007 by O.Conrad
+_____________________________________________
+go...
+Usage: 0 [-SHAPES <str>] [-TABLES <str>] [-FILE <str>] [-FILTER <str>] [-DCIRCLE <str>]
+  -SHAPES:<str> 	Shapes
+	Shapes list (optional output)
+  -TABLES:<str> 	Tables
+	Shapes list (optional output)
+  -FILE:<str>   	File
+	File path
+  -FILTER:<str> 	Import Filter
+	Choice
+	Available Choices:
+	[0] all entities
+	[1] only entities with layer definition
+	[2] only entities without layer definition
+  -DCIRCLE:<str>	Circle Point Distance [Degree]
+	Floating point
+	Value Range: 0.010000 - 45.000000

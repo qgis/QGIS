@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_odbc
+module name :	Points Export
+author      :	O.Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 10 [-ODBC_DSN <str>] [-ODBC_USR <str>] [-ODBC_PWD <str>] -POINTS <str>
+  -ODBC_DSN:<str>	DSN
+	Text
+  -ODBC_USR:<str>	User
+	Text
+  -ODBC_PWD:<str>	Password
+	Text
+  -POINTS:<str>  	Points
+	Shapes (input)

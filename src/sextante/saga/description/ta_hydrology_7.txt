@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	Slope Length
+author      :	V.Olaya (c) 2004
+_____________________________________________
+go...
+Usage: 7 -DEM <str> -LENGTH <str>
+  -DEM:<str>   	Elevation
+	Grid (input)
+  -LENGTH:<str>	Slope Length
+	Grid (output)

@@ -92,7 +92,6 @@ class SextanteToolbox(QtGui.QDockWidget):
             alg = copy.deepcopy(alg)
             dlg = ParametersDialog(alg)
             dlg.exec_()
-            #if dlg.alg != None:
 
         if isinstance(item, TreeActionItem):
             action = item.action
@@ -132,8 +131,7 @@ class SextanteToolbox(QtGui.QDockWidget):
 
             if len(groups)>0:
                 providerItem = QtGui.QTreeWidgetItem()
-                providerItem.setText(0,providerName)
-
+                providerItem.setText(0,providerName + " [" + str(len(provider)) + " geoalgorithms]")
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
@@ -151,7 +149,7 @@ class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         self.setText(0, alg.name)
-        self.setIcon(0, alg.icon)
+        self.setIcon(0, alg.getIcon())
 
 
 class TreeActionItem(QtGui.QTreeWidgetItem):
@@ -160,5 +158,5 @@ class TreeActionItem(QtGui.QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.action = action
         self.setText(0, action.name)
-        self.setIcon(0, action.icon)
+        self.setIcon(0, action.getIcon())
 

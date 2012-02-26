@@ -1,0 +1,56 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Tiling
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 27 -GRID <str> -TILES <str> [-OVERLAP <num>] [-OVERLAP_SYM <str>] [-METHOD <str>] [-NX <num>] [-NY <num>] [-XRANGE_MIN <str>] [-XRANGE_MAX <str>] [-YRANGE_MIN <str>] [-YRANGE_MAX <str>] [-DCELL <str>] [-DX <str>] [-DY <str>]
+  -GRID:<str>       	Grid
+	Grid (input)
+  -TILES:<str>      	Tiles
+	Grid list (output)
+  -OVERLAP:<num>    	Overlapping Cells
+	Integer
+	Minimum: 0.000000
+  -OVERLAP_SYM:<str>	Add Cells
+	Choice
+	Available Choices:
+	[0] symmetric
+	[1] bottom / left
+	[2] top / right
+  -METHOD:<str>     	Tile Size Definition
+	Choice
+	Available Choices:
+	[0] number of grid cells per tile
+	[1] coordinates (offset, range, cell size, tile size)
+  -NX:<num>         	Number of Column Cells
+	Integer
+	Minimum: 1.000000
+  -NY:<num>         	Number of Row Cells
+	Integer
+	Minimum: 1.000000
+  -XRANGE_MIN:<str> 	Offset and Range (X)
+	Value range
+  -XRANGE_MAX:<str> 	Offset and Range (X)
+	Value range
+  -YRANGE_MIN:<str> 	Offset and Range (Y)
+	Value range
+  -YRANGE_MAX:<str> 	Offset and Range (Y)
+	Value range
+  -DCELL:<str>      	Cell Size
+	Floating point
+	Minimum: 0.000000
+  -DX:<str>         	Tile Size (X)
+	Floating point
+	Minimum: 0.000000
+  -DY:<str>         	Tile Size (Y)
+	Floating point
+	Minimum: 0.000000

@@ -10,15 +10,13 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.gui.MultipleInputPanel import MultipleInputPanel
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.gui.FixedTablePanel import FixedTablePanel
-from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterRange import ParameterRange
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
-from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteResults import SextanteResults
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -61,6 +59,7 @@ class Ui_ParametersDialog(object):
         self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.setTableContent()
         dialog.setWindowTitle(self.alg.name)
+        self.progressLabel = QtGui.QLabel()
         self.progress = QtGui.QProgressBar()
         self.progress.setMinimum(0)
         self.progress.setMaximum(100)
@@ -69,6 +68,7 @@ class Ui_ParametersDialog(object):
         self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName("hLayout")
         self.verticalLayout.addWidget(self.tableWidget)
+        self.verticalLayout.addWidget(self.progressLabel)
         self.verticalLayout.addWidget(self.progress)
         self.verticalLayout.addWidget(self.buttonBox)
         dialog.setLayout(self.verticalLayout)
@@ -87,7 +87,7 @@ class Ui_ParametersDialog(object):
                 item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterVector):
             item = QtGui.QComboBox()
-            layers = QGisLayers.getVectorLayers()
+            layers = QGisLayers.getVectorLayers(param.shapetype)
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
@@ -144,6 +144,8 @@ class Ui_ParametersDialog(object):
         sender = self.dialog.sender()
         if not isinstance(sender, QComboBox):
             return
+        if not sender.name in self.dependentItems:
+            return
         layer = sender.itemData(sender.currentIndex()).toPyObject()
         children = self.dependentItems[sender.name]
         for child in children:
@@ -180,7 +182,7 @@ class Ui_ParametersDialog(object):
             item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
-            item = OutputSelectionPanel()
+            item = OutputSelectionPanel(output,self.alg)
             self.valueItems[output.name] = item
             self.tableWidget.setCellWidget(i,1, item)
             self.tableWidget.setRowHeight(i,22)
@@ -195,7 +197,7 @@ class Ui_ParametersDialog(object):
                 return False
 
         for output in outputs:
-            output.channel = self.valueItems[output.name].getChannel()
+            output.value = self.valueItems[output.name].getValue()
 
         return True
 
@@ -234,16 +236,18 @@ class Ui_ParametersDialog(object):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())
                 AlgorithmExecutor.runalg(self.alg, self)
-                QGisLayers.loadFromAlg(self.alg)
+                SextanteResults.handleAlgorithmResults(self.alg)
                 QApplication.restoreOverrideCursor()
                 self.dialog.alg = self.alg
+                self.dialog.close()
             else:
                 QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
+                return
         except GeoAlgorithmExecutionException, e :
             QApplication.restoreOverrideCursor()
             QMessageBox.critical(self, "Error",e.msg)
-        finally:
             self.dialog.close()
+
 
 
     def reject(self):
@@ -256,6 +260,7 @@ class Ui_ParametersDialog(object):
     def setFinished(self):
         pass
 
-
+    def setText(self, text):
+        self.progressLabel.setText(text)
 
 

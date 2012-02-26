@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_calculus
+module name :	Principle Components Analysis
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 7 -TABLE <str> [-PCA <str>] [-METHOD <str>] [-NFIRST <num>]
+  -TABLE:<str> 	Table
+	Table (input)
+  -PCA:<str>   	Principle Components
+	Table (optional output)
+  -METHOD:<str>	Method
+	Choice
+	Available Choices:
+	[0] correlation matrix
+	[1] variance-covariance matrix
+	[2] sums-of-squares-and-cross-products matrix
+  -NFIRST:<num>	Number of Components
+	Integer
+	Minimum: 0.000000

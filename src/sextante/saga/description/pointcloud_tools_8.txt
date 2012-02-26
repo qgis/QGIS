@@ -1,0 +1,43 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pointcloud_tools
+module name :	Transform Point Cloud
+author      :	Volker Wichmann (c) 2010, LASERDATA GmbH
+_____________________________________________
+go...
+Usage: 8 -IN <str> -OUT <str> [-DX <str>] [-DY <str>] [-DZ <str>] [-ANGLEX <str>] [-ANGLEY <str>] [-ANGLEZ <str>] [-SCALEX <str>] [-SCALEY <str>] [-SCALEZ <str>] [-ANCHORX <str>] [-ANCHORY <str>] [-ANCHORZ <str>]
+  -IN:<str>     	Input
+	Point Cloud (input)
+  -OUT:<str>    	Output
+	Point Cloud (output)
+  -DX:<str>     	dX
+	Floating point
+  -DY:<str>     	dY
+	Floating point
+  -DZ:<str>     	dZ
+	Floating point
+  -ANGLEX:<str> 	Angle X
+	Floating point
+  -ANGLEY:<str> 	Angle Y
+	Floating point
+  -ANGLEZ:<str> 	Angle Z
+	Floating point
+  -SCALEX:<str> 	Scale Factor X
+	Floating point
+  -SCALEY:<str> 	Scale Factor Y
+	Floating point
+  -SCALEZ:<str> 	Scale Factor Z
+	Floating point
+  -ANCHORX:<str>	X
+	Floating point
+  -ANCHORY:<str>	Y
+	Floating point
+  -ANCHORZ:<str>	Z
+	Floating point

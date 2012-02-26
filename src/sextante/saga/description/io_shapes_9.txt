@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_shapes
+module name :	Export WASP terrain map file
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 9 -SHAPES <str> [-ELEVATION <str>] [-FILE <str>]
+  -SHAPES:<str>   	Contour Lines
+	Shapes (input)
+  -ELEVATION:<str>	Map File
+	Table field
+  -FILE:<str>     	File Name
+	File path

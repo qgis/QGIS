@@ -1,0 +1,24 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Layer of extreme value
+author      :	
+_____________________________________________
+go...
+Usage: 9 -GRIDS <str> -RESULT <str> [-CRITERIA <str>]
+  -GRIDS:<str>   	Grids
+	Grid list (input)
+  -RESULT:<str>  	Result
+	Grid (output)
+  -CRITERIA:<str>	Method
+	Choice
+	Available Choices:
+	[0] Maximum
+	[1] Minimum

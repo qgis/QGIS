@@ -1,0 +1,36 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Create Graticule
+author      :	V.Olaya (c) 2004
+_____________________________________________
+go...
+Usage: 12 -GRATICULE <str> [-EXTENT <str>] [-X_EXTENT_MIN <str>] [-X_EXTENT_MAX <str>] [-Y_EXTENT_MIN <str>] [-Y_EXTENT_MAX <str>] [-DISTX <str>] [-DISTY <str>] [-TYPE <str>]
+  -GRATICULE:<str>   	Graticule
+	Shapes (output)
+  -EXTENT:<str>      	Extent
+	Shapes (optional input)
+  -X_EXTENT_MIN:<str>	Width
+	Value range
+  -X_EXTENT_MAX:<str>	Width
+	Value range
+  -Y_EXTENT_MIN:<str>	Height
+	Value range
+  -Y_EXTENT_MAX:<str>	Height
+	Value range
+  -DISTX:<str>       	Division Width
+	Floating point
+  -DISTY:<str>       	Division Height
+	Floating point
+  -TYPE:<str>        	Type
+	Choice
+	Available Choices:
+	[0] Lines
+	[1] Rectangles

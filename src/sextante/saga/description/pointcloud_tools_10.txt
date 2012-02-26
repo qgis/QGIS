@@ -1,0 +1,35 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pointcloud_tools
+module name :	Point Cloud Attribute Calculator
+author      :	Volker Wichmann (c) 2010, LASERDATA GmbH
+_____________________________________________
+go...
+Usage: 10 -PC_IN <str> -PC_OUT <str> [-FORMULA <str>] [-NAME <str>] [-TYPE <str>]
+  -PC_IN:<str>  	Point Cloud
+	Point Cloud (input)
+  -PC_OUT:<str> 	Result
+	Point Cloud (output)
+  -FORMULA:<str>	Formula
+	Text
+  -NAME:<str>   	Output Field Name
+	Text
+  -TYPE:<str>   	Field data type
+	Choice
+	Available Choices:
+	[0] 1 bit
+	[1] 1 byte unsigned integer
+	[2] 1 byte signed integer
+	[3] 2 byte unsigned integer
+	[4] 2 byte signed integer
+	[5] 4 byte unsigned integer
+	[6] 4 byte signed integer
+	[7] 4 byte floating point
+	[8] 8 byte floating point

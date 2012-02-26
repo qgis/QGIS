@@ -1,0 +1,40 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Shapes Buffer
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 18 -SHAPES <str> -BUFFER <str> [-BUF_TYPE <str>] [-BUF_DIST <str>] [-BUF_FIELD <str>] [-BUF_SCALE <str>] [-BUF_ZONES <num>] [-DCIRCLE <str>] [-DISSOLVE]
+  -SHAPES:<str>   	Shapes
+	Shapes (input)
+  -BUFFER:<str>   	Buffer
+	Shapes (output)
+  -BUF_TYPE:<str> 	Buffer Distance
+	Choice
+	Available Choices:
+	[0] fixed value
+	[1] attribute field
+  -BUF_DIST:<str> 	Buffer Distance (Fixed)
+	Floating point
+	Minimum: 0.000000
+  -BUF_FIELD:<str>	Buffer Distance (Attribute)
+	Table field
+  -BUF_SCALE:<str>	Scaling Factor for Attribute Value
+	Floating point
+	Minimum: 0.000000
+  -BUF_ZONES:<num>	Number of Buffer Zones
+	Integer
+	Minimum: 1.000000
+  -DCIRCLE:<str>  	Circle Point Distance [Degree]
+	Floating point
+	Value Range: 0.010000 - 45.000000
+  -DISSOLVE       	Dissolve Buffers
+	Boolean

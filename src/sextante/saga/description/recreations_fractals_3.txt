@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	recreations_fractals
+module name :	Fractal Dimension of Grid Surface
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 3 -INPUT <str> -RESULT <str>
+  -INPUT:<str> 	Input
+	Grid (input)
+  -RESULT:<str>	Result
+	Table (output)

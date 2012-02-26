@@ -9,7 +9,6 @@ from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputTable import OutputTable
-from sextante.outputs.OutputDataObject import OutputDataObject
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.outputs.OutputRaster import OutputRaster
@@ -27,6 +26,7 @@ from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
+from PyQt4 import QtGui
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -35,7 +35,10 @@ class SagaAlgorithm(GeoAlgorithm):
         self._descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self.providerName = "saga:"
+
+    def getIcon(self):
+        return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
+
 
     def defineCharacteristicsFromFile(self):
 
@@ -60,20 +63,17 @@ class SagaAlgorithm(GeoAlgorithm):
                 if SagaBlackList.isBlackListed(self.name, self.undecoratedGroup):
                     raise UnwrappableSagaAlgorithmException()
                 line = lines.readline().lower()
-                if "data object" in line or "file" in line:
-                    if "output" in line:
-                        output = OutputDataObject()
-                        output.name = paramName
-                        output.description = paramDescription
-                        self.putOutput(output)
-                    else:
-                        raise UnwrappableSagaAlgorithmException()
+                if "data object" in line:
+                    pass
+                elif "file" in line:
+                    param = ParameterString(paramName, paramDescription)
+                    self.addParameter(param)
                 elif "table" in line:
                     #print(line)
                     if "input" in line:
                         param = ParameterTable(paramName, paramDescription, ("optional" in line))
                         lastParentParameterName = paramName;
-                        self.putParameter(param)
+                        self.addParameter(param)
                     elif "static" in line:
                         print (self.name)
                         line = lines.readline().strip("\n").strip()
@@ -83,56 +83,56 @@ class SagaAlgorithm(GeoAlgorithm):
                             line = lines.readline().strip("\n").strip()
                             colNames.append(line.split("]")[1])
                         param = ParameterFixedTable(paramName, paramDescription, colNames, 3, False)
-                        self.putParameter(param)
+                        self.addParameter(param)
                     elif "field" in line:
                         if lastParentParameterName == None:
                             raise UnwrappableSagaAlgorithmException();
                         param = ParameterTableField(paramName, paramDescription, lastParentParameterName)
-                        self.putParameter(param)
+                        self.addParameter(param)
                     else:
                         output = OutputTable()
                         output.name = paramName
                         output.description = paramDescription
-                        self.putOutput(output)
+                        self.addOutput(output)
                 elif "grid" in line:
                     if "input" in line:
                         if "list" in line:
                             param = ParameterMultipleInput(paramName, paramDescription, ParameterMultipleInput.TYPE_RASTER,("optional" in line))
-                            self.putParameter(param)
+                            self.addParameter(param)
                         else:
                             param = ParameterRaster(paramName, paramDescription,("optional" in line))
-                            self.putParameter(param)
+                            self.addParameter(param)
                     else:
                         output = OutputRaster()
                         output.name = paramName
                         output.description = paramDescription
-                        self.putOutput(output)
+                        self.addOutput(output)
                 elif "shapes" in line:
                     if "input" in line:
                         if "list" in line:
                             param = ParameterMultipleInput(paramName, paramDescription, ParameterMultipleInput.TYPE_VECTOR_ANY,("optional" in line))
-                            self.putParameter(param)
+                            self.addParameter(param)
                         else:
                             param = ParameterVector(paramName, paramDescription,ParameterVector.VECTOR_TYPE_ANY,("optional" in line))
                             lastParentParameterName = paramName;
-                            self.putParameter(param)
+                            self.addParameter(param)
                     else:
                         output = OutputVector()
                         output.name = paramName
                         output.description = paramDescription
-                        self.putOutput(output)
+                        self.addOutput(output)
                 elif "floating" in line or "integer" in line or "degree" in line:
                     param = ParameterNumber(paramName, paramDescription,)
-                    self.putParameter(param)
+                    self.addParameter(param)
                 elif "boolean" in line:
                     param = ParameterBoolean(paramName,paramDescription)
-                    self.putParameter(param)
+                    self.addParameter(param)
                 elif "text" in line:
                     param = ParameterString(paramName, paramDescription)
-                    self.putParameter(param)
+                    self.addParameter(param)
                 elif "range" in line:
                     param = ParameterRange(paramName, paramDescription)
-                    self.putParameter(param)
+                    self.addParameter(param)
                 elif "choice" in line:
                     line = lines.readline()
                     line = lines.readline().strip("\n").strip()
@@ -141,7 +141,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         options.append(line);
                         line = lines.readline().strip("\n").strip()
                     param = ParameterSelection(paramName, paramDescription, options)
-                    self.putParameter(param)
+                    self.addParameter(param)
                     if line == "":
                         break
                     else:
@@ -156,17 +156,12 @@ class SagaAlgorithm(GeoAlgorithm):
         self.exportedLayers = {}
         self.numExportedLayers = 0;
 
-        #resolve temporary output files
-        for out in self.outputs:
-            if out.channel == None:
-                SextanteUtils.setTempOutput(out)
-
       #1: Export rasters to sgrd. only ASC and TIF are supported.
       #   Vector layers must be in shapefile format and tables in dbf format. We check that.
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value == None:
-                    continue;
+                    continue
                 if isinstance(param.value, QgsRasterLayer):
                     value = str(param.value.dataProvider().dataSourceUri())
                 else:
@@ -175,7 +170,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     commands.append(self.exportRasterLayer(value));
             if isinstance(param, ParameterVector):
                 if param.value == None:
-                    continue;
+                    continue
                 if isinstance(param.value, QgsVectorLayer):
                     value = str(param.value.dataProvider().dataSourceUri())
                 else:
@@ -184,7 +179,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterTable):
                 if param.value == None:
-                    continue;
+                    continue
                 if isinstance(param.value, QgsVectorLayer):
                     value = str(param.value.dataProvider().dataSourceUri())
                 else:
@@ -212,6 +207,8 @@ class SagaAlgorithm(GeoAlgorithm):
         #2: set parameters and outputs
         command = self.undecoratedGroup  + " \"" + self.name + "\""
         for param in self.parameters:
+            if param.value == None:
+                continue
             if isinstance(param, ParameterRaster):
                 value = param.value
                 if value in self.exportedLayers.keys():
@@ -225,31 +222,31 @@ class SagaAlgorithm(GeoAlgorithm):
                         s = s.replace(layer, self.exportedlayer[layer])
                 command+=(" -" + param.name + " " + s);
             elif isinstance(param, ParameterBoolean):
-                if (bool(param.value)):
+                if param.value == str(True):
                     command+=(" -" + param.name);
             else:
-                command+=(" -" + param.name + " " + param.value);
+                command+=(" -" + param.name + " " + str(param.value));
 
 
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.channel
+                filename = out.value
                 if not filename.endswith(".asc") and not filename.endswith(".tif"):
                     filename += ".tif"
-                    out.channel = filename
+                    out.value = filename
                 filename = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 command+=(" -" + out.name + " " + filename);
             if isinstance(out, OutputVector):
-                filename = out.channel
+                filename = out.value
                 if not filename.endswith(".shp"):
                     filename += ".shp"
-                    out.channel = filename
+                    out.value = filename
                 command+=(" -" + out.name + " " + filename);
             if isinstance(out, OutputTable):
-                filename = out.channel
+                filename = out.value
                 if not filename.endswith(".dbf"):
                     filename += ".dbf"
-                    out.channel = filename
+                    out.value = filename
                 command+=(" -" + out.name + " " + filename);
 
         commands.append(command)
@@ -257,15 +254,14 @@ class SagaAlgorithm(GeoAlgorithm):
       #3:Export resulting raster layers
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.channel
+                filename = out.value
                 filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 if filename.endswith("asc"):
                     commands.append("io_grid 0 -GRID " + filename2 + " -FORMAT 1 -FILE " + filename);
                 else:
                     commands.append("io_gdal 1 -GRIDS " + filename2 + " -FORMAT 1 -FILE " + filename);
 
-      #4 Run SAGA
-
+        #4 Run SAGA
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
         loglines.append("SAGA execution commands")

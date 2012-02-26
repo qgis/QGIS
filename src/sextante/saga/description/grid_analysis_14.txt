@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Soil Texture Classification
+author      :	Gianluca Massei (c) 2007 (g_massa@libero.it)
+_____________________________________________
+go...
+Usage: 14 [-SAND <str>] [-SILT <str>] [-CLAY <str>] -TEXTURE <str> [-SUM <str>]
+  -SAND:<str>   	Sand
+	Grid (optional input)
+  -SILT:<str>   	Silt
+	Grid (optional input)
+  -CLAY:<str>   	Clay
+	Grid (optional input)
+  -TEXTURE:<str>	Soil Texture
+	Grid (output)
+  -SUM:<str>    	Sum
+	Grid (optional output)

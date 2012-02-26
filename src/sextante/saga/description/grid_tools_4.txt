@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Create Constant Grid
+author      :	
+_____________________________________________
+go...
+Usage: 4 -GRID <str> [-VALUE <str>]
+  -GRID:<str> 	Base Grid
+	Grid (input)
+  -VALUE:<str>	Value
+	Floating point

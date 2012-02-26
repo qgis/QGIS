@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_shapes
+module name :	Export Shapes to Generate
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 4 -SHAPES <str> [-FIELD <str>] [-FILENAME <str>]
+  -SHAPES:<str>  	Shapes
+	Shapes (input)
+  -FIELD:<str>   	Attribute
+	Table field
+  -FILENAME:<str>	File
+	File path

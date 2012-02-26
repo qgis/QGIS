@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	docs_html
+module name :	SVG Interactive Map
+author      :	V.Olaya
+_____________________________________________
+go...
+Usage: 1 [-FILENAME <str>] -LIST <str> [-SHAPES <str>]
+  -FILENAME:<str>	SVG File
+	File path
+  -LIST:<str>    	Shapes Layers
+	Shapes list (input)
+  -SHAPES:<str>  	Index Layer
+	Shapes (optional input)

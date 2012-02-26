@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Aggregation Index
+author      :	
+_____________________________________________
+go...
+Usage: 12 -INPUT <str> [-MAXNUMCLASS <num>] -RESULT <str>
+  -INPUT:<str>      	Input Grid
+	Grid (input)
+  -MAXNUMCLASS:<num>	Max. Number of Classes
+	Integer
+  -RESULT:<str>     	Result
+	Table (output)

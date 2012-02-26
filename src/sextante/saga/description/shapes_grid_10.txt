@@ -1,0 +1,32 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_grid
+module name :	Grid System Extent
+author      :	O. Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 10 [-PARAMETERS_GRID_SYSTEM_NX <num>] [-PARAMETERS_GRID_SYSTEM_NY <num>] [-PARAMETERS_GRID_SYSTEM_X <str>] [-PARAMETERS_GRID_SYSTEM_Y <str>] [-PARAMETERS_GRID_SYSTEM_D <str>] -SHAPES <str> [-CELLS <str>]
+  -PARAMETERS_GRID_SYSTEM_NX:<num>	Grid system
+	Grid system
+  -PARAMETERS_GRID_SYSTEM_NY:<num>	Grid system
+	Grid system
+  -PARAMETERS_GRID_SYSTEM_X:<str> 	Grid system
+	Grid system
+  -PARAMETERS_GRID_SYSTEM_Y:<str> 	Grid system
+	Grid system
+  -PARAMETERS_GRID_SYSTEM_D:<str> 	Grid system
+	Grid system
+  -SHAPES:<str>                   	Extent
+	Shapes (output)
+  -CELLS:<str>                    	Border
+	Choice
+	Available Choices:
+	[0] grid cells
+	[1] grid nodes

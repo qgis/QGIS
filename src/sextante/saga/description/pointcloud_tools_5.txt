@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pointcloud_tools
+module name :	Point Cloud to Shapes
+author      :	O.Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 5 -POINTS <str> -SHAPES <str>
+  -POINTS:<str>	Points
+	Point Cloud (input)
+  -SHAPES:<str>	Shapes
+	Shapes (output)

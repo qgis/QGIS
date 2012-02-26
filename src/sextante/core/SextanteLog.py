@@ -11,7 +11,7 @@ class SextanteLog():
     @staticmethod
     def startLogging():
         logfile = open(SextanteLog.logFilename(), "w")
-        logfile.write("Started logging at " + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S"))
+        logfile.write("Started logging at " + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "\n")
         logfile.close()
 
     @staticmethod
@@ -28,7 +28,7 @@ class SextanteLog():
                 text+=msg[i] + "|"
             text = text[:-1]
         else:
-            text = str(msg)
+            text = str(msg).replace("\n", "|")
         line = msgtype + "|" + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "|" + text + "\n"
         logfile = open(SextanteLog.logFilename(), "a")
         logfile.write(line)

@@ -1,0 +1,34 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Select by Location...
+author      :	V.Olaya (c) 2004, O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 5 -SHAPES <str> -LOCATIONS <str> [-CONDITION <str>] [-METHOD <str>]
+  -SHAPES:<str>   	Shapes to Select From
+	Shapes (input)
+  -LOCATIONS:<str>	Locations
+	Shapes (input)
+  -CONDITION:<str>	Condition
+	Choice
+	Available Choices:
+	[0] intersect
+	[1] are completely within
+	[2] completely contain
+	[3] have their centroid in
+	[4] contain the centeroid of
+  -METHOD:<str>   	Method
+	Choice
+	Available Choices:
+	[0] new selection
+	[1] add to current selection
+	[2] select from current selection
+	[3] remove from current selection

@@ -1,0 +1,34 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pj_proj4
+module name :	Set Coordinate Reference System
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 0 [-CRS_METHOD <str>] [-CRS_PROJ4 <str>] [-CRS_FILE <str>] [-CRS_EPSG <num>] [-GRIDS <str>] [-SHAPES <str>] [-TINS <str>]
+  -CRS_METHOD:<str>	Get CRS Definition from...
+	Choice
+	Available Choices:
+	[0] Proj4 Parameters
+	[1] EPSG Code
+	[2] Well Known Text File
+  -CRS_PROJ4:<str> 	Proj4 Parameters
+	Long text
+  -CRS_FILE:<str>  	Well Known Text File
+	File path
+  -CRS_EPSG:<num>  	EPSG Code
+	Integer
+	Value Range: 2000.000000 - 32766.000000
+  -GRIDS:<str>     	Grids
+	Grid list (optional input)
+  -SHAPES:<str>    	Shapes
+	Shapes list (optional input)
+  -TINS:<str>      	TINs
+	TIN list (optional input)

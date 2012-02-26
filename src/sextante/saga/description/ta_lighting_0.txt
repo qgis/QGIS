@@ -1,0 +1,32 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_lighting
+module name :	Analytical Hillshading
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 0 -ELEVATION <str> -SHADE <str> [-METHOD <str>] [-AZIMUTH <str>] [-DECLINATION <str>] [-EXAGGERATION <str>]
+  -ELEVATION:<str>   	Elevation
+	Grid (input)
+  -SHADE:<str>       	Analytical Hillshading
+	Grid (output)
+  -METHOD:<str>      	Shading Method
+	Choice
+	Available Choices:
+	[0] Standard
+	[1] Standard (max. 90Degree)
+	[2] Combined Shading
+	[3] Ray Tracing
+  -AZIMUTH:<str>     	Azimuth [Degree]
+	Floating point
+  -DECLINATION:<str> 	Declination [Degree]
+	Floating point
+  -EXAGGERATION:<str>	Exaggeration
+	Floating point

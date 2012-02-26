@@ -1,0 +1,58 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pj_georeference
+module name :	Georeferencing - Grids
+author      :	(c) 2004 Ringeler, (c) 2006 O.Conrad
+_____________________________________________
+go...
+Usage: 1 [-SHAPES <str>] -REF_SOURCE <str> [-REF_TARGET <str>] [-XFIELD <str>] [-YFIELD <str>] -SOURCE <str> [-INTERPOLATION <str>] [-TARGET_TYPE <str>] [-GET_USER_XMIN <str>] [-GET_USER_XMAX <str>] [-GET_USER_YMIN <str>] [-GET_USER_YMAX <str>] [-GET_USER_SIZE <str>] [-GET_USER_GRID <str>] [-GET_GRID_GRID <str>] [-GET_SHAPES_SHAPES <str>]
+  -SHAPES:<str>           	Shapes
+	Data Object (optional output)
+  -REF_SOURCE:<str>       	Reference Points (Origin)
+	Shapes (input)
+  -REF_TARGET:<str>       	Reference Points (Projection)
+	Shapes (optional input)
+  -XFIELD:<str>           	x Position
+	Table field
+  -YFIELD:<str>           	y Position
+	Table field
+  -SOURCE:<str>           	Source
+	Grid (input)
+  -INTERPOLATION:<str>    	Grid Interpolation
+	Choice
+	Available Choices:
+	[0] Nearest Neigbhor
+	[1] Bilinear Interpolation
+	[2] Inverse Distance Interpolation
+	[3] Bicubic Spline Interpolation
+	[4] B-Spline Interpolation
+  -TARGET_TYPE:<str>      	Target
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+	[2] shapes
+  -GET_USER_XMIN:<str>    	Left
+	Floating point
+  -GET_USER_XMAX:<str>    	Right
+	Floating point
+  -GET_USER_YMIN:<str>    	Bottom
+	Floating point
+  -GET_USER_YMAX:<str>    	Top
+	Floating point
+  -GET_USER_SIZE:<str>    	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -GET_USER_GRID:<str>    	Grid
+	Data Object (optional output)
+  -GET_GRID_GRID:<str>    	Grid
+	Grid (output)
+  -GET_SHAPES_SHAPES:<str>	Shapes
+	Shapes (output)

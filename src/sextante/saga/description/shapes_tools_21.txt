@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Polar to Cartesian Coordinates
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 21 -POLAR <str> [-F_EXAGG <str>] [-D_EXAGG <str>] -CARTES <str> [-RADIUS <str>] [-DEGREE]
+  -POLAR:<str>  	Polar Coordinates
+	Shapes (input)
+  -F_EXAGG:<str>	Exaggeration
+	Table field
+  -D_EXAGG:<str>	Exaggeration Factor
+	Floating point
+  -CARTES:<str> 	Cartesion Coordinates
+	Shapes (output)
+  -RADIUS:<str> 	Radius
+	Floating point
+	Minimum: 0.000000
+  -DEGREE       	Degree
+	Boolean

@@ -1,0 +1,32 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Change Grid Values
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 12 -GRID_IN <str> [-GRID_OUT <str>] [-METHOD <str>] [-LOOKUP <str>]
+  -GRID_IN:<str> 	Grid
+	Grid (input)
+  -GRID_OUT:<str>	Changed Grid
+	Grid (optional output)
+  -METHOD:<str>  	Replace Condition
+	Choice
+	Available Choices:
+	[0] Grid value equals low value
+	[1] Low value < grid value < high value
+	[2] Low value <= grid value < high value
+  -LOOKUP:<str>  	Lookup Table
+	Static table
+	3 Fields:
+	- 1. [8 byte floating point number] Low Value
+	- 2. [8 byte floating point number] High Value
+	- 3. [8 byte floating point number] Replace with
+	

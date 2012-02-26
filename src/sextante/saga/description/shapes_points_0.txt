@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_points
+module name :	Convert Table to Points
+author      :	Victor Olaya (c) 2004
+_____________________________________________
+go...
+Usage: 0 -POINTS <str> -TABLE <str> [-X <str>] [-Y <str>]
+  -POINTS:<str>	Points
+	Shapes (output)
+  -TABLE:<str> 	Table
+	Table (input)
+  -X:<str>     	X
+	Table field
+  -Y:<str>     	Y
+	Table field

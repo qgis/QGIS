@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Covered Distance
+author      :	V. Olaya (c) 2005
+_____________________________________________
+go...
+Usage: 7 -INPUT <str> -RESULT <str>
+  -INPUT:<str> 	Grids
+	Grid list (input)
+  -RESULT:<str>	Covered Distance
+	Grid (output)

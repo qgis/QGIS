@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	contrib_a_perego
+module name :	Average With Mask 2
+author      :	Alessandro Perego
+_____________________________________________
+go...
+Usage: 4 -INPUT <str> -MASK <str> -RESULT <str> [-V <str>] [-RX <num>] [-RY <num>]
+  -INPUT:<str> 	Input
+	Grid (input)
+  -MASK:<str>  	Mask Grid
+	Grid (input)
+  -RESULT:<str>	AWM2 Grid
+	Grid (output)
+  -V:<str>     	Mask value
+	Floating point
+  -RX:<num>    	Radius X
+	Integer
+	Minimum: 1.000000
+  -RY:<num>    	Radius Y
+	Integer
+	Minimum: 1.000000

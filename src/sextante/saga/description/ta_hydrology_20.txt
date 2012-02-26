@@ -1,0 +1,33 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	Topographic Wetness Index (TWI)
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 20 -SLOPE <str> -AREA <str> [-TRANS <str>] -TWI <str> [-CONV <str>] [-METHOD <str>]
+  -SLOPE:<str> 	Slope
+	Grid (input)
+  -AREA:<str>  	Catchment Area
+	Grid (input)
+  -TRANS:<str> 	Transmissivity
+	Grid (optional input)
+  -TWI:<str>   	Topographic Wetness Index
+	Grid (output)
+  -CONV:<str>  	Area Conversion
+	Choice
+	Available Choices:
+	[0] no conversion (areas already given as specific catchment area)
+	[1] 1 / cell size (pseudo specific catchment area)
+  -METHOD:<str>	Method (TWI)
+	Choice
+	Available Choices:
+	[0] Standard
+	[1] TOPMODEL

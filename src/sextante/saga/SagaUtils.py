@@ -64,8 +64,6 @@ class SagaUtils:
             if "%" in line:
                 s = "".join([x for x in line if x.isdigit()])
                 progress.setPercentage(int(s))
-            else:
-                loglines.append(line)
 
 
 

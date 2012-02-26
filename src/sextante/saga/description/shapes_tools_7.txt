@@ -1,0 +1,17 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Delete Selection from Shapes Layer
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 7 -INPUT <str>
+  -INPUT:<str>	Input
+	Shapes (input)

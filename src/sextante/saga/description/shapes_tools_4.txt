@@ -1,0 +1,36 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Select by Attributes... (String Expression)
+author      :	V.Olaya (c) 2004, O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 4 -SHAPES <str> [-FIELD <str>] [-EXPRESSION <str>] [-CASE] [-COMPARE <str>] [-METHOD <str>]
+  -SHAPES:<str>    	Shapes
+	Shapes (input)
+  -FIELD:<str>     	Attribute
+	Table field
+  -EXPRESSION:<str>	Expression
+	Text
+  -CASE            	Case Sensitive
+	Boolean
+  -COMPARE:<str>   	Select if...
+	Choice
+	Available Choices:
+	[0] attribute is identical with search expression
+	[1] attribute contains search expression
+	[2] attribute is contained in search expression
+  -METHOD:<str>    	Method
+	Choice
+	Available Choices:
+	[0] new selection
+	[1] add to current selection
+	[2] select from current selection
+	[3] remove from current selection

@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_grid
+module name :	Import WRF Geogrid Binary Format
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 13 -GRIDS <str> [-FILE <str>]
+  -GRIDS:<str>	Grids
+	Grid list (output)
+  -FILE:<str> 	File
+	File path

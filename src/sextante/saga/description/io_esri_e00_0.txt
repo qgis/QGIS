@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_esri_e00
+module name :	Import ESRI E00 File
+author      :	(c) 2004 by O.Conrad
+_____________________________________________
+go...
+Usage: 0 [-TABLES <str>] [-SHAPES <str>] [-GRIDS <str>] [-TABLE <str>] [-FILE <str>] [-BBND] [-BTIC] [-BTABLES]
+  -TABLES:<str>	Tables
+	Table list (optional output)
+  -SHAPES:<str>	Shapes
+	Shapes list (optional output)
+  -GRIDS:<str> 	Grids
+	Grid list (optional output)
+  -TABLE:<str> 	Table
+	Data Object (optional output)
+  -FILE:<str>  	File
+	File path
+  -BBND        	Import Extents
+	Boolean
+  -BTIC        	Import Tick Points
+	Boolean
+  -BTABLES     	Import Tables
+	Boolean

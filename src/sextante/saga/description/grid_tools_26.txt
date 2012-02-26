@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Proximity Grid
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 26 -FEATURES <str> -DISTANCE <str> [-DIRECTION <str>] [-ALLOCATION <str>]
+  -FEATURES:<str>  	Features
+	Grid (input)
+  -DISTANCE:<str>  	Distance
+	Grid (output)
+  -DIRECTION:<str> 	Direction
+	Grid (optional output)
+  -ALLOCATION:<str>	Allocation
+	Grid (optional output)

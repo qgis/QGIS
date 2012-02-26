@@ -1,0 +1,32 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_table
+module name :	Export Text Table
+author      :	O. Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 0 -TABLE <str> [-HEADLINE] [-STRQUOTA] [-SEPARATOR <str>] [-SEP_OTHER <str>] [-FILENAME <str>]
+  -TABLE:<str>    	Table
+	Table (input)
+  -HEADLINE       	Save Headline
+	Boolean
+  -STRQUOTA       	Strings in Quota
+	Boolean
+  -SEPARATOR:<str>	Separator
+	Choice
+	Available Choices:
+	[0] tabulator
+	[1] ;
+	[2] ,
+	[3] other
+  -SEP_OTHER:<str>	Separator (other)
+	Text
+  -FILENAME:<str> 	File
+	File path

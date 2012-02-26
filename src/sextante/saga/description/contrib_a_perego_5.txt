@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	contrib_a_perego
+module name :	Destriping 1
+author      :	Alessandro Perego
+_____________________________________________
+go...
+Usage: 5 -INPUT <str> -RESULT3 <str> -RESULT1 <str> -RESULT2 <str> [-ANG <str>] [-R <str>] [-D <str>]
+  -INPUT:<str>  	Input
+	Grid (input)
+  -RESULT3:<str>	Destriped Grid
+	Grid (output)
+  -RESULT1:<str>	Low-pass 1
+	Grid (output)
+  -RESULT2:<str>	Low-pass 2
+	Grid (output)
+  -ANG:<str>    	Angle (in degrees)
+	Floating point
+  -R:<str>      	Radius
+	Floating point
+  -D:<str>      	Stripes distance
+	Floating point

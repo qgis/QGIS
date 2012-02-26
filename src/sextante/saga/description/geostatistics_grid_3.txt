@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	geostatistics_grid
+module name :	Radius of Variance (Grid)
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 3 -INPUT <str> -RESULT <str> [-VARIANCE <str>] [-RADIUS <num>] [-OUTPUT <str>]
+  -INPUT:<str>   	Grid
+	Grid (input)
+  -RESULT:<str>  	Variance Radius
+	Grid (output)
+  -VARIANCE:<str>	Standard Deviation
+	Floating point
+  -RADIUS:<num>  	Maximum Search Radius (cells)
+	Integer
+  -OUTPUT:<str>  	Type of Output
+	Choice
+	Available Choices:
+	[0] Cells
+	[1] Map Units

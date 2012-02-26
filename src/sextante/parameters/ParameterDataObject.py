@@ -1,4 +1,5 @@
 from sextante.parameters.Parameter import Parameter
+from sextante.core.SextanteUtils import SextanteUtils
 
 class ParameterDataObject(Parameter):
 
@@ -6,4 +7,7 @@ class ParameterDataObject(Parameter):
         if self.value == None:
             return str(None)
         else:
-            return "\"" + str(self.value) + "\""
+            if not SextanteUtils.isWindows():
+                return "\"" + str(self.value) + "\""
+            else:
+                return "\"" + str(self.value).replace("\\", "\\\\") + "\""

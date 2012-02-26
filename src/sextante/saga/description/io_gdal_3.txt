@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_gdal
+module name :	OGR: Import Vector Data
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 3 -SHAPES <str> [-FILES <str>]
+  -SHAPES:<str>	Shapes
+	Shapes list (output)
+  -FILES:<str> 	Files
+	File path

@@ -35,6 +35,8 @@ class SextanteConfig():
 
     @staticmethod
     def loadSettings():
+        if not os.path.isfile(SextanteConfig.configFile()):
+            return
         lines = open(SextanteConfig.configFile())
         line = lines.readline().strip("\n")
         while line != "":
@@ -42,7 +44,7 @@ class SextanteConfig():
             if tokens[0] in SextanteConfig.settings.keys():
                 setting = SextanteConfig.settings[tokens[0]]
                 if isinstance(setting.value, bool):
-                    setting.value = bool(tokens[1])
+                    setting.value = (tokens[1].strip() == str(True))
                 else:
                     setting.value = tokens[1]
                 SextanteConfig.addSetting(setting)

@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Patching
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 5 -ORIGINAL <str> -ADDITIONAL <str> -COMPLETED <str> [-INTERPOLATION <str>]
+  -ORIGINAL:<str>     	Grid
+	Grid (input)
+  -ADDITIONAL:<str>   	Patch Grid
+	Grid (input)
+  -COMPLETED:<str>    	Completed Grid
+	Grid (output)
+  -INTERPOLATION:<str>	Interpolation Method
+	Choice
+	Available Choices:
+	[0] Nearest Neighbor
+	[1] Bilinear Interpolation
+	[2] Inverse Distance Interpolation
+	[3] Bicubic Spline Interpolation
+	[4] B-Spline Interpolation

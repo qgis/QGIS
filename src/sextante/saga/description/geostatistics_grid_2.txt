@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	geostatistics_grid
+module name :	Representativeness (Grid)
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 2 -INPUT <str> -RESULT <str> [-RADIUS <num>] [-EXPONENT <str>]
+  -INPUT:<str>   	Grid
+	Grid (input)
+  -RESULT:<str>  	Representativeness
+	Grid (output)
+  -RADIUS:<num>  	Radius (Cells)
+	Integer
+  -EXPONENT:<str>	Exponent
+	Floating point

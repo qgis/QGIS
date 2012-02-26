@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Grid Masking
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 24 -GRID <str> -MASK <str> [-MASKED <str>]
+  -GRID:<str>  	Grid
+	Grid (input)
+  -MASK:<str>  	Mask
+	Grid (input)
+  -MASKED:<str>	Masked Grid
+	Grid (optional output)

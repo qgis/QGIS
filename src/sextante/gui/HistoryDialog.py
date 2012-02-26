@@ -1,7 +1,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
-from sextante.core.SextanteUtils import SextanteUtils
+from sextante.core.SextanteLog import SextanteLog
 
 class HistoryDialog(QtGui.QDialog):
     def __init__(self):
@@ -33,13 +33,13 @@ class HistoryDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def fillTree(self):
-        elements = SextanteUtils.getLogEntries()
+        elements = SextanteLog.getLogEntries()
         for category in elements.keys():
             groupItem = QtGui.QTreeWidgetItem()
             groupItem.setText(0,category)
             groupItem.setIcon(0, self.groupIcon)
             for entry in elements[category]:
-                item = TreeLogEntryItem(entry, category==SextanteUtils.LOG_ALGORITHM)
+                item = TreeLogEntryItem(entry, category==SextanteLog.LOG_ALGORITHM)
                 item.setIcon(0, self.keyIcon)
                 groupItem.addChild(item)
             self.tree.addTopLevelItem(groupItem)

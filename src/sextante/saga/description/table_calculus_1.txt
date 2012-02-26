@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_calculus
+module name :	Table Calculator
+author      :	V.Olaya (c) 2004, O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 1 [-FORMULA <str>] [-NAME <str>] -TABLE <str> [-RESULT <str>] [-FIELD <str>]
+  -FORMULA:<str>	Formula
+	Text
+  -NAME:<str>   	Field Name
+	Text
+  -TABLE:<str>  	Table
+	Table (input)
+  -RESULT:<str> 	Result
+	Table (optional output)
+  -FIELD:<str>  	Field
+	Table field

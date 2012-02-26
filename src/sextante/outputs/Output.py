@@ -1,21 +1,32 @@
+from sextante.core.SextanteUtils import SextanteUtils
+
 class Output(object):
 
+    def __init__(self, name="", description=""):
+        self.name = name
+        self.description = description
+        self.value = None
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +">"
 
-    def getChannelAsCommandLineParameter(self):
-        if self.channel == None:
+    def getValueAsCommandLineParameter(self):
+        if self.value == None:
             return str(None)
         else:
-            return "\"" + str(self.channel) + "\""
+            if not SextanteUtils.isWindows():
+                return "\"" + str(self.value) + "\""
+            else:
+                return "\"" + str(self.value).replace("\\", "\\\\") + "\""
 
-    def setChannel(self, value):
+    def serialize(self):
+        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description
+
+    def setValue(self, value):
         try:
             if value != None:
                 value = value.strip()
-            self.channel = value
+            self.value = value
             return True
         except:
             return False
-

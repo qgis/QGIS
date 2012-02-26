@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Close One Cell Gaps
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 6 -INPUT <str> -RESULT <str>
+  -INPUT:<str> 	Grid
+	Grid (input)
+  -RESULT:<str>	Changed Grid
+	Grid (output)

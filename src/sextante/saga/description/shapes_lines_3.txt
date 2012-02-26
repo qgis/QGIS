@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_lines
+module name :	Line-Polygon Intersection
+author      :	O. Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 3 -LINES <str> -POLYGONS <str> -INTERSECT <str> [-METHOD <str>]
+  -LINES:<str>    	Lines
+	Shapes (input)
+  -POLYGONS:<str> 	Polygons
+	Shapes (input)
+  -INTERSECT:<str>	Intersection
+	Shapes (output)
+  -METHOD:<str>   	Output
+	Choice
+	Available Choices:
+	[0] one multi-line per polygon
+	[1] keep original line attributes

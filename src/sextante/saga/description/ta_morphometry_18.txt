@@ -1,0 +1,40 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_morphometry
+module name :	Topographic Position Index (TPI)
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 18 -DEM <str> -TPI <str> [-STANDARD] [-RADIUS_MIN <str>] [-RADIUS_MAX <str>] [-DISTANCE_WEIGHTING_WEIGHTING <str>] [-DISTANCE_WEIGHTING_IDW_POWER <str>] [-DISTANCE_WEIGHTING_IDW_OFFSET] [-DISTANCE_WEIGHTING_BANDWIDTH <str>]
+  -DEM:<str>                         	Elevation
+	Grid (input)
+  -TPI:<str>                         	Topographic Position Index
+	Grid (output)
+  -STANDARD                          	Standardize
+	Boolean
+  -RADIUS_MIN:<str>                  	Radius
+	Value range
+  -RADIUS_MAX:<str>                  	Radius
+	Value range
+  -DISTANCE_WEIGHTING_WEIGHTING:<str>	Distance Weighting
+	Choice
+	Available Choices:
+	[0] no distance weighting
+	[1] inverse distance to a power
+	[2] exponential
+	[3] gaussian weighting
+  -DISTANCE_WEIGHTING_IDW_POWER:<str>	Inverse Distance Weighting Power
+	Floating point
+	Minimum: 0.000000
+  -DISTANCE_WEIGHTING_IDW_OFFSET     	Inverse Distance Offset
+	Boolean
+  -DISTANCE_WEIGHTING_BANDWIDTH:<str>	Gaussian and Exponential Weighting Bandwidth
+	Floating point
+	Minimum: 0.000000

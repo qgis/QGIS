@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Get Shapes Extents
+author      :	O. Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 19 -SHAPES <str> -EXTENTS <str> [-PARTS]
+  -SHAPES:<str> 	Shapes
+	Shapes (input)
+  -EXTENTS:<str>	Extents
+	Shapes (output)
+  -PARTS        	Parts
+	Boolean

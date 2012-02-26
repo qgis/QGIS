@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Split Table/Shapes by Attribute
+author      :	O. Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 17 -TABLE <str> [-FIELD <str>] [-CUTS <str>]
+  -TABLE:<str>	Table / Shapes
+	Table (input)
+  -FIELD:<str>	Attribute
+	Table field
+  -CUTS:<str> 	Cuts
+	Table list (optional output)

@@ -12,11 +12,12 @@ import os.path
 
 class BatchOutputSelectionPanel(QtGui.QWidget):
 
-    def __init__(self, alg, row, col, batchDialog, parent = None):
-        super(BatchOutputSelectionPanel, self).__init__(parent)
+    def __init__(self, output, alg, row, col, batchDialog):
+        super(BatchOutputSelectionPanel, self).__init__(None)
         self.alg = alg
         self.row = row
         self.col = col
+        self.output = output
         self.batchDialog = batchDialog
         self.table = batchDialog.table
         self.setObjectName("OSPanel")
@@ -37,7 +38,8 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), "All files (*.*)")
+        filefilter = self.output.getFileFilter(self.alg)
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filefilter)
         if filename:
             filename = str(filename)
             dlg = AutofillDialog(self.alg)
@@ -45,12 +47,12 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
             if dlg.mode != None:
                 try:
                     if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
-                        self.text.setChannel(filename)
+                        self.text.setValue(filename)
                     elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
                         n = self.table.rowCount() - self.row
                         for i in range(n):
                             name = filename[:filename.rfind(".")] + str(i+1) + filename[filename.rfind("."):]
-                            self.table.cellWidget(i + self.row, self.col).setChannel(name)
+                            self.table.cellWidget(i + self.row, self.col).setValue(name)
                     elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
                         n = self.table.rowCount() - self.row
                         for i in range(n):
@@ -69,12 +71,12 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                             else:
                                 s = str(widget.text())
                             name = filename[:filename.rfind(".")] + s + filename[filename.rfind("."):]
-                            self.table.cellWidget(i + self.row, self.col).setChannel(name)
+                            self.table.cellWidget(i + self.row, self.col).setValue(name)
                 except:
                     pass
-    def setChannel(self, text):
+    def setValue(self, text):
         return self.text.setText(text)
 
-    def getChannel(self):
+    def getValue(self):
         return str(self.text.text())
 

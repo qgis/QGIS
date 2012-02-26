@@ -1,0 +1,27 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	tin_tools
+module name :	TIN to Shapes
+author      :	(c) 2004 by O.Conrad
+_____________________________________________
+go...
+Usage: 3 -TIN <str> -POINTS <str> -CENTER <str> -EDGES <str> -TRIANGLES <str> -POLYGONS <str>
+  -TIN:<str>      	TIN
+	TIN (input)
+  -POINTS:<str>   	Points
+	Shapes (output)
+  -CENTER:<str>   	Center of Triangles
+	Shapes (output)
+  -EDGES:<str>    	Edges
+	Shapes (output)
+  -TRIANGLES:<str>	Triangles
+	Shapes (output)
+  -POLYGONS:<str> 	Polygons
+	Shapes (output)

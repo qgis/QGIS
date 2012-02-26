@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Combine Grids
+author      :	
+_____________________________________________
+go...
+Usage: 20 -GRID1 <str> -GRID2 <str> -RESULT <str> [-LOOKUP <str>]
+  -GRID1:<str> 	Grid 1
+	Grid (input)
+  -GRID2:<str> 	Grid 2
+	Grid (input)
+  -RESULT:<str>	Result
+	Grid (output)
+  -LOOKUP:<str>	LookUp Table
+	Static table
+	3 Fields:
+	- 1. [8 byte floating point number] Value in Grid 1
+	- 2. [8 byte floating point number] Value in Grid 2
+	- 3. [8 byte floating point number] Resulting Value
+	

@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_points
+module name :	Add Polygon Attributes to Points
+author      :	O.Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 10 -INPUT <str> [-OUTPUT <str>] -POLYGONS <str> [-FIELD <str>]
+  -INPUT:<str>   	Points
+	Shapes (input)
+  -OUTPUT:<str>  	Result
+	Shapes (optional output)
+  -POLYGONS:<str>	Polygons
+	Shapes (input)
+  -FIELD:<str>   	Attribute
+	Table field

@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_morphometry
+module name :	Real Area Calculation
+author      :	
+_____________________________________________
+go...
+Usage: 6 -DEM <str> -AREA <str>
+  -DEM:<str> 	Elevation
+	Grid (input)
+  -AREA:<str>	Real Area Grid
+	Grid (output)

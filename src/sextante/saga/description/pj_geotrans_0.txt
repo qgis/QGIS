@@ -1,0 +1,43 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pj_geotrans
+module name :	GeoTRANS (Shapes)
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 0 [-DATA_ELLIPSOID <str>] [-DATA_DATUM_7 <str>] [-DATA_DATUM_3 <str>] [-DATA_GEOID <str>] -SOURCE <str> -TARGET <str> [-PROJECTION_SOURCE_DATUM <str>] [-PROJECTION_TARGET_DATUM <str>] [-PROJECTION_SOURCE_PROJECTION <str>] [-PROJECTION_TARGET_PROJECTION <str>]
+  -DATA_ELLIPSOID:<str>              	Ellipsoids
+	File path
+  -DATA_DATUM_7:<str>                	Datums (7 Parameters)
+	File path
+  -DATA_DATUM_3:<str>                	Datums (3 Parameters)
+	File path
+  -DATA_GEOID:<str>                  	Geoid
+	File path
+  -SOURCE:<str>                      	Source
+	Shapes (input)
+  -TARGET:<str>                      	Target
+	Shapes (output)
+  -PROJECTION_SOURCE_DATUM:<str>     	Source Datum
+	Choice
+	Available Choices:
+	[0] 
+  -PROJECTION_TARGET_DATUM:<str>     	Target Datum
+	Choice
+	Available Choices:
+	[0] 
+  -PROJECTION_SOURCE_PROJECTION:<str>	Source Projection
+	Choice
+	Available Choices:
+	[0] 
+  -PROJECTION_TARGET_PROJECTION:<str>	Target Projection
+	Choice
+	Available Choices:
+	[0] 

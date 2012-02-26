@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_morphometry
+module name :	Downslope Distance Gradient
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 9 -DEM <str> -GRADIENT <str> [-DIFFERENCE <str>] [-DISTANCE <str>] [-OUTPUT <str>]
+  -DEM:<str>       	Elevation
+	Grid (input)
+  -GRADIENT:<str>  	Gradient
+	Grid (output)
+  -DIFFERENCE:<str>	Gradient Difference
+	Grid (optional output)
+  -DISTANCE:<str>  	Vertical Distance
+	Floating point
+	Minimum: 0.000000
+  -OUTPUT:<str>    	Output
+	Choice
+	Available Choices:
+	[0] distance
+	[1] gradient (tangens)
+	[2] gradient (degree)

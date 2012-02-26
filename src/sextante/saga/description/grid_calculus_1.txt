@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_calculus
+module name :	Grid Calculator
+author      :	Copyrights (c) 2003 by Andre Ringeler
+_____________________________________________
+go...
+Usage: 1 -GRIDS <str> [-XGRIDS <str>] -RESULT <str> [-FORMULA <str>] [-NAME <str>] [-FNAME] [-USE_NODATA]
+  -GRIDS:<str>  	Grids
+	Grid list (input)
+  -XGRIDS:<str> 	Grids from different Systems
+	Grid list (optional input)
+  -RESULT:<str> 	Result
+	Grid (output)
+  -FORMULA:<str>	Formula
+	Text
+  -NAME:<str>   	Name
+	Text
+  -FNAME        	Take Formula
+	Boolean
+  -USE_NODATA   	Use NoData
+	Boolean

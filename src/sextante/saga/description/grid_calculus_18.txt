@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_calculus
+module name :	Grid Division
+author      :	O. Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 18 -A <str> -B <str> -C <str>
+  -A:<str>	Dividend
+	Grid (input)
+  -B:<str>	Divisor
+	Grid (input)
+  -C:<str>	Quotient
+	Grid (output)

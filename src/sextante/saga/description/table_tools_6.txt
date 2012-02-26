@@ -1,0 +1,39 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_tools
+module name :	Change Time Format
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 6 -TABLE <str> [-FIELD <str>] [-OUTPUT <str>] [-FMT_IN <str>] [-FMT_OUT <str>]
+  -TABLE:<str>  	Table
+	Table (input)
+  -FIELD:<str>  	Time Field
+	Table field
+  -OUTPUT:<str> 	Output
+	Table (optional output)
+  -FMT_IN:<str> 	Input Format
+	Choice
+	Available Choices:
+	[0] hh.mm.ss
+	[1] hh:mm:ss
+	[2] hhmmss, fix size
+	[3] hours
+	[4] minutes
+	[5] seconds
+  -FMT_OUT:<str>	Output Format
+	Choice
+	Available Choices:
+	[0] hh.mm.ss
+	[1] hh:mm:ss
+	[2] hhmmss, fix size
+	[3] hours
+	[4] minutes
+	[5] seconds

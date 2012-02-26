@@ -1,0 +1,22 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_points
+module name :	Fit N Points to shape
+author      :	
+_____________________________________________
+go...
+Usage: 4 -POINTS <str> -SHAPES <str> [-NUMPOINTS <num>]
+  -POINTS:<str>   	Points
+	Shapes (output)
+  -SHAPES:<str>   	Shapes
+	Shapes (input)
+  -NUMPOINTS:<num>	Number of points
+	Integer
+	Minimum: 1.000000

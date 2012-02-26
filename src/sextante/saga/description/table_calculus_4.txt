@@ -1,0 +1,36 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_calculus
+module name :	Trend (Analysis) Shapes
+author      :	O.Conrad (c) 2006
+_____________________________________________
+go...
+Usage: 4 -TABLE <str> [-FIELD_X <str>] [-FIELD_Y <str>] [-FORMULA <str>] [-FORMULAS <str>] [-TREND <str>]
+  -TABLE:<str>   	Shapes
+	Shapes (input)
+  -FIELD_X:<str> 	X Values
+	Table field
+  -FIELD_Y:<str> 	Y Values
+	Table field
+  -FORMULA:<str> 	Formula
+	Text
+  -FORMULAS:<str>	Pre-defined Formulas
+	Choice
+	Available Choices:
+	[0] Linear: a + b * x
+	[1] Quadric: a + b * x + c * x^2
+	[2] Cubic: a + b * x + c * x^2 + d * x^3
+	[3] Logarithmic: a + b * ln(x)
+	[4] Power: a + b * x^c
+	[5] a + b / x
+	[6] a + b * (1 - exp(-x / c))
+	[7] a + b * (1 - exp(-(x / c)^2))
+  -TREND:<str>   	Table (with Trend)
+	Table (optional output)

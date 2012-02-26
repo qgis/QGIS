@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_preprocessor
+module name :	Sink Drainage Route Detection
+author      :	O. Conrad (c) 2001
+_____________________________________________
+go...
+Usage: 1 -ELEVATION <str> -SINKROUTE <str> [-THRESHOLD] [-THRSHEIGHT <str>]
+  -ELEVATION:<str> 	Elevation
+	Grid (input)
+  -SINKROUTE:<str> 	Sink Route
+	Grid (output)
+  -THRESHOLD       	Threshold
+	Boolean
+  -THRSHEIGHT:<str>	Threshold Height
+	Floating point

@@ -7,8 +7,10 @@ class OutputSelectionPanel(QtGui.QWidget):
 
     SAVE_TO_TEMP_FILE = "[Save to temporary file]"
 
-    def __init__(self, parent = None):
-        super(OutputSelectionPanel, self).__init__(parent)
+    def __init__(self, output, alg):
+        self.output = output
+        self.alg = alg
+        super(OutputSelectionPanel, self).__init__(None)
         self.setObjectName("OSPanel")
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -27,11 +29,12 @@ class OutputSelectionPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), "All files (*.*)")
+        filefilter = self.output.getFileFilter(self.alg)
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filter)
         if filename:
             self.text.setText(str(filename))
 
-    def getChannel(self):
+    def getValue(self):
         filename = str(self.text.text())
         if filename.strip() == "" or filename == OutputSelectionPanel.SAVE_TO_TEMP_FILE:
             return None

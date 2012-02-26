@@ -1,0 +1,24 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Ordered Weighted Averaging (OWA)
+author      :	
+_____________________________________________
+go...
+Usage: 11 -GRIDS <str> [-WEIGHTS <str>] -OUTPUT <str>
+  -GRIDS:<str>  	Input Grids
+	Grid list (input)
+  -WEIGHTS:<str>	Weights
+	Static table
+	1 Fields:
+	- 1. [8 byte floating point number] Weight
+	
+  -OUTPUT:<str> 	Output Grid
+	Grid (output)

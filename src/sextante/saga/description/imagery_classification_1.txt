@@ -1,0 +1,36 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	imagery_classification
+module name :	Cluster Analysis for Grids
+author      :	O.Conrad (c) 2001
+_____________________________________________
+go...
+Usage: 1 -GRIDS <str> -CLUSTER <str> -STATISTICS <str> [-METHOD <str>] [-NCLUSTER <num>] [-NORMALISE] [-OLDVERSION] [-UPDATEVIEW]
+  -GRIDS:<str>     	Grids
+	Grid list (input)
+  -CLUSTER:<str>   	Clusters
+	Grid (output)
+  -STATISTICS:<str>	Statistics
+	Table (output)
+  -METHOD:<str>    	Method
+	Choice
+	Available Choices:
+	[0] Iterative Minimum Distance (Forgy 1965)
+	[1] Hill-Climbing (Rubin 1967)
+	[2] Combined Minimum Distance / Hillclimbing
+  -NCLUSTER:<num>  	Clusters
+	Integer
+	Minimum: 2.000000
+  -NORMALISE       	Normalise
+	Boolean
+  -OLDVERSION      	Old Version
+	Boolean
+  -UPDATEVIEW      	Update View
+	Boolean

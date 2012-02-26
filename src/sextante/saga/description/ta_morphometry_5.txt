@@ -1,0 +1,38 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_morphometry
+module name :	Hypsometry
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 5 -ELEVATION <str> -TABLE <str> [-COUNT <num>] [-SORTING <str>] [-METHOD <str>] [-BZRANGE] [-ZRANGE_MIN <str>] [-ZRANGE_MAX <str>]
+  -ELEVATION:<str> 	Elevation
+	Grid (input)
+  -TABLE:<str>     	Hypsometry
+	Table (output)
+  -COUNT:<num>     	Number of Classes
+	Integer
+	Minimum: 1.000000
+  -SORTING:<str>   	Sort
+	Choice
+	Available Choices:
+	[0] up
+	[1] down
+  -METHOD:<str>    	Classification Constant
+	Choice
+	Available Choices:
+	[0] height
+	[1] area
+  -BZRANGE         	Use Z-Range
+	Boolean
+  -ZRANGE_MIN:<str>	Z-Range
+	Value range
+  -ZRANGE_MAX:<str>	Z-Range
+	Value range

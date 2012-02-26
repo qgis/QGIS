@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_calculus
+module name :	Grid Difference
+author      :	O. Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 3 -A <str> -B <str> -C <str>
+  -A:<str>	A
+	Grid (input)
+  -B:<str>	B
+	Grid (input)
+  -C:<str>	Difference (A - B)
+	Grid (output)

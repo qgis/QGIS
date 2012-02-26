@@ -1,0 +1,24 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_points
+module name :	Points Thinning
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 14 -POINTS <str> [-FIELD <str>] -THINNED <str> [-RESOLUTION <str>]
+  -POINTS:<str>    	Points
+	Shapes (input)
+  -FIELD:<str>     	Attribute
+	Table field
+  -THINNED:<str>   	Thinned Points
+	Shapes (output)
+  -RESOLUTION:<str>	Resolution
+	Floating point
+	Minimum: 0.000000

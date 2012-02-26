@@ -1,0 +1,27 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	table_calculus
+module name :	Fill Gaps in Records
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 8 -TABLE <str> [-ORDER <str>] -NOGAPS <str> [-METHOD <str>]
+  -TABLE:<str> 	Table
+	Table (input)
+  -ORDER:<str> 	Order
+	Table field
+  -NOGAPS:<str>	Table without Gaps
+	Table (output)
+  -METHOD:<str>	Interpolation
+	Choice
+	Available Choices:
+	[0] Nearest Neighbour
+	[1] Linear
+	[2] Spline

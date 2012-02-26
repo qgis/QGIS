@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	geostatistics_grid
+module name :	Fast Representativeness
+author      :	A.Ringeler (c) 2009
+_____________________________________________
+go...
+Usage: 0 -INPUT <str> -RESULT <str> -RESULT_LOD <str> -SEEDS <str> [-LOD <str>]
+  -INPUT:<str>     	Input
+	Grid (input)
+  -RESULT:<str>    	Output
+	Grid (output)
+  -RESULT_LOD:<str>	Output Lod
+	Grid (output)
+  -SEEDS:<str>     	Output Seeds
+	Grid (output)
+  -LOD:<str>       	Level of Generalisation
+	Floating point

@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_grid
+module name :	Import MOLA Grid (MEGDR)
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 8 [-GRID <str>] [-FILE <str>] [-TYPE <str>] [-ORIENT <str>]
+  -GRID:<str>  	Grid
+	Data Object (optional output)
+  -FILE:<str>  	File
+	File path
+  -TYPE:<str>  	Grid Type
+	Choice
+	Available Choices:
+	[0] 2 byte integer
+	[1] 4 byte floating point
+  -ORIENT:<str>	Orientation
+	Choice
+	Available Choices:
+	[0] normal
+	[1] down under

@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	geostatistics_grid
+module name :	Statistics for Grids
+author      :	(c) 2005 by O.Conrad
+_____________________________________________
+go...
+Usage: 4 -GRIDS <str> [-MEAN <str>] [-MIN <str>] [-MAX <str>] [-VAR <str>] [-STDDEV <str>] [-STDDEVLO <str>] [-STDDEVHI <str>]
+  -GRIDS:<str>   	Grids
+	Grid list (input)
+  -MEAN:<str>    	Arithmetic Mean
+	Grid (optional output)
+  -MIN:<str>     	Minimum
+	Grid (optional output)
+  -MAX:<str>     	Maximum
+	Grid (optional output)
+  -VAR:<str>     	Variance
+	Grid (optional output)
+  -STDDEV:<str>  	Standard Deviation
+	Grid (optional output)
+  -STDDEVLO:<str>	Mean less Standard Deviation
+	Grid (optional output)
+  -STDDEVHI:<str>	Mean plus Standard Deviation
+	Grid (optional output)

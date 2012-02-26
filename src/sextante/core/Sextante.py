@@ -7,18 +7,30 @@ import copy
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.core.SextanteUtils import SextanteUtils
-from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
+from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
+from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
+from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
+from sextante.core.SextanteResults import SextanteResults
 
 class Sextante:
 
-    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider()]#,MMQGISAlgorithmProvider()]
+    iface = None
+    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),
+                 MMQGISAlgorithmProvider(), FToolsAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []
+    modeler = ModelerAlgorithmProvider()
 
+    @staticmethod
+    def setInterface(iface):
+        Sextante.iface = iface
+
+    @staticmethod
+    def getInterface():
+        return Sextante.iface
 
     @staticmethod
     def initialize():
@@ -44,9 +56,31 @@ class Sextante:
             providerAlgs = provider.algs
             algs = {}
             for alg in providerAlgs:
-                alg.icon = provider.icon
                 algs[alg.commandLineName()] = alg
             Sextante.algs[provider.getName()] = algs
+
+        #this is a special provider, since it depends on others
+        #TODO Fix circular imports, so this provider can be incorporated
+        #as a normal one
+        provider = Sextante.modeler
+        provider.setAlgsList(Sextante.algs)
+        provider.loadAlgorithms()
+        providerAlgs = provider.algs
+        algs = {}
+        for alg in providerAlgs:
+            algs[alg.commandLineName()] = alg
+        Sextante.algs[provider.getName()] = algs
+        #And we do it again, in case there are models containing models
+        #TODO: Improve this
+        provider.setAlgsList(Sextante.algs)
+        provider.loadAlgorithms()
+        providerAlgs = provider.algs
+        algs = {}
+        for alg in providerAlgs:
+            algs[alg.commandLineName()] = alg
+        Sextante.algs[provider.getName()] = algs
+
+
 
     @staticmethod
     def loadActions():
@@ -54,9 +88,14 @@ class Sextante:
             providerActions = provider.actions
             actions = list()
             for action in providerActions:
-                action.icon = provider.icon
                 actions.append(action)
             Sextante.actions[provider.getName()] = actions
+
+        provider = Sextante.modeler
+        actions = list()
+        for action in provider.actions:
+            actions.append(action)
+        Sextante.actions[provider.getName()] = actions
 
     @staticmethod
     def loadContextMenuActions():
@@ -64,6 +103,11 @@ class Sextante:
             providerActions = provider.contextMenuActions
             for action in providerActions:
                 Sextante.contextMenuActions.append(action)
+
+        provider = Sextante.modeler
+        providerActions = provider.contextMenuActions
+        for action in providerActions:
+            Sextante.contextMenuActions.append(action)
 
     @staticmethod
     def getAlgorithm(name):
@@ -114,8 +158,8 @@ class Sextante:
             i = i +1
 
         for output in alg.outputs:
-            if not output.setChannel(args[i]):
-                print ("Error: Wrong output channel: " + args[i])
+            if not output.setValue(args[i]):
+                print ("Error: Wrong output value: " + args[i])
                 return
             i = i +1
 
@@ -125,7 +169,7 @@ class Sextante:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             AlgorithmExecutor.runalg(alg, SilentProgress())
             QApplication.restoreOverrideCursor()
-            return alg.getOuputsChannelsAsMap()
+            return alg.getOuputsValuesAsMap()
         except GeoAlgorithmExecutionException, e:
             print "*****Error executing algorithm*****"
             print e.msg
@@ -161,8 +205,8 @@ class Sextante:
             i = i +1
 
         for output in alg.outputs:
-            if not output.setChannel(args[i]):
-                QMessageBox.critical(None, "Error", "Error: Wrong output channel: " + args[i])
+            if not output.setValue(args[i]):
+                QMessageBox.critical(None, "Error", "Error: Wrong output value: " + args[i])
                 return
             i = i +1
 
@@ -170,7 +214,7 @@ class Sextante:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             AlgorithmExecutor.runalg(alg, SilentProgress())
             QApplication.restoreOverrideCursor()
-            QGisLayers.loadFromAlg(alg)
+            SextanteResults.handleAlgorithmResults(alg)
         except GeoAlgorithmExecutionException, e:
             QMessageBox.critical(None, "Error",  e.msg)
 

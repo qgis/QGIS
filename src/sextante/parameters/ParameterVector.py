@@ -1,29 +1,41 @@
 from sextante.parameters.ParameterDataObject import ParameterDataObject
 from sextante.core.QGisLayers import QGisLayers
 from qgis.core import *
+from PyQt4 import QtGui
 
 class ParameterVector(ParameterDataObject):
 
     VECTOR_TYPE_POINT = 0
     VECTOR_TYPE_LINE = 1
     VECTOR_TYPE_POLYGON = 2
-    VECTOR_TYPE_ANY = 3
+    VECTOR_TYPE_ANY = -1
 
-    def __init__(self, name, description, shapetype, optional=False):
+    def __init__(self, name="", description="", shapetype=-1, optional=False):
         self.name = name
         self.description = description
         self.optional = optional
         self.shapetype = shapetype
+        self.value = None
 
     def setValue(self, obj):
         if isinstance(obj, QgsVectorLayer):
-            self.value = str(obj.dataProvider().dataSourceUri())
+            self.value = str(obj.source())
             return True
         else:
             self.value = str(obj)
-            layers = QGisLayers.getVectorLayers()
+            layers = QGisLayers.getVectorLayers(shapetype)
             for layer in layers:
                 if layer.name() == self.value:
-                    self.value = str(layer.dataProvider().dataSourceUri())
+                    self.value = str(layer.source())
                     return True
 
+    def serialize(self):
+        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
+                        "|" + str(self.shapetype) + "|" + str(self.optional)
+
+    def deserialize(self, s):
+        tokens = s.split("|")
+        return ParameterVector(tokens[0], tokens[1], int(tokens[2]), "True" == tokens[3])
+
+    def getAsScriptCode(self):
+        return "##" + self.name + "=vector"

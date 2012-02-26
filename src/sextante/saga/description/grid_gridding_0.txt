@@ -1,0 +1,66 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_gridding
+module name :	Shapes to Grid
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 0 -INPUT <str> [-FIELD <str>] [-MULTIPLE <str>] [-LINE_TYPE <str>] [-GRID_TYPE <str>] [-TARGET <str>] [-USER_XMIN <str>] [-USER_XMAX <str>] [-USER_YMIN <str>] [-USER_YMAX <str>] [-USER_SIZE <str>] [-USER_GRID <str>] [-USER_COUNT <str>] [-USER_BCOUNT] [-GRID_GRID <str>] [-GRID_COUNT <str>]
+  -INPUT:<str>     	Shapes
+	Shapes (input)
+  -FIELD:<str>     	Attribute
+	Table field
+  -MULTIPLE:<str>  	Method for Multiple Values
+	Choice
+	Available Choices:
+	[0] first
+	[1] last
+	[2] minimum
+	[3] maximum
+	[4] mean
+  -LINE_TYPE:<str> 	Method for Lines
+	Choice
+	Available Choices:
+	[0] thin
+	[1] thick
+  -GRID_TYPE:<str> 	Preferred Target Grid Type
+	Choice
+	Available Choices:
+	[0] Integer (1 byte)
+	[1] Integer (2 byte)
+	[2] Integer (4 byte)
+	[3] Floating Point (4 byte)
+	[4] Floating Point (8 byte)
+  -TARGET:<str>    	Target Grid
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+  -USER_XMIN:<str> 	Left
+	Floating point
+  -USER_XMAX:<str> 	Right
+	Floating point
+  -USER_YMIN:<str> 	Bottom
+	Floating point
+  -USER_YMAX:<str> 	Top
+	Floating point
+  -USER_SIZE:<str> 	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -USER_GRID:<str> 	Grid
+	Data Object (optional output)
+  -USER_COUNT:<str>	Number of Values
+	Data Object (optional output)
+  -USER_BCOUNT     	Number of Values
+	Boolean
+  -GRID_GRID:<str> 	Grid
+	Grid (output)
+  -GRID_COUNT:<str>	Number of Values
+	Grid (optional output)

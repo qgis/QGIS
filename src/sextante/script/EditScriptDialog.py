@@ -36,7 +36,7 @@ class EditScriptDialog(QtGui.QDialog):
 
     def saveAlgorithm(self):
         if self.alg!=None:
-            filename = os.path.join(ScriptUtils.scriptsFolder(), self.alg.descriptionFile)
+            filename = self.alg.descriptionFile
         else:
             filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
         if filename:

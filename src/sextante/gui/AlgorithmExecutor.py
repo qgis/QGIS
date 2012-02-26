@@ -1,6 +1,4 @@
-from PyQt4 import QtCore
 from PyQt4.QtGui import *
-import time
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 class AlgorithmExecutor:
@@ -10,7 +8,7 @@ class AlgorithmExecutor:
         try:
             alg.execute(progress)
         except GeoAlgorithmExecutionException, e :
-            QMessageBox.critical(self, "Error",e.msg)
+            QMessageBox.critical(None, "Error", e.msg)
         finally:
             progress.setFinished()
 
@@ -28,30 +26,9 @@ class AlgorithmExecutor:
         finally:
             progress.setFinished()
 
-
-        #=======================================================================
-        # th = RunAlgorithmThread(alg, progress)
-        # th.start()
-        # th.wait()
-        #=======================================================================
-
-class RunAlgorithmThread(QtCore.QThread):
-
-    def __init__(self, alg, progress):
-        self.alg = alg
-        self.progress = progress
-        QtCore.QThread.__init__(self)
-
-    def run(self):
-        for i in range(2):
-            time.sleep(3)
-            self.progress.addText(str(i))
-            self.progress.setPercentage(i*50)
-        #self.alg.execute(self.progress)
-
 class SilentProgress():
 
-    def addText(self, text):
+    def setText(self, text):
         pass
 
     def setPercentage(self, i):

@@ -1,0 +1,17 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_shapes
+module name :	Import Atlas Boundary File
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 8 [-FILE <str>]
+  -FILE:<str>	File
+	File path

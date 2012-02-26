@@ -1,0 +1,68 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	pj_proj4
+module name :	Proj.4 (Command Line Arguments, List of Grids)
+author      :	O. Conrad (c) 2004-8
+_____________________________________________
+go...
+Usage: 11 [-SOURCE_PROJ <str>] [-TARGET_PROJ <str>] -SOURCE <str> [-TARGET <str>] [-SHAPES <str>] [-CREATE_XY] [-OUT_X <str>] [-OUT_Y <str>] [-INTERPOLATION <str>] [-TARGET_TYPE <str>] [-GET_USER_XMIN <str>] [-GET_USER_XMAX <str>] [-GET_USER_YMIN <str>] [-GET_USER_YMAX <str>] [-GET_USER_SIZE <str>] [-GET_SYSTEM_SYSTEM_NX <num>] [-GET_SYSTEM_SYSTEM_NY <num>] [-GET_SYSTEM_SYSTEM_X <str>] [-GET_SYSTEM_SYSTEM_Y <str>] [-GET_SYSTEM_SYSTEM_D <str>] [-GET_SHAPES_SHAPES <str>]
+  -SOURCE_PROJ:<str>         	Source Projection Parameters
+	Text
+  -TARGET_PROJ:<str>         	Target Projection Parameters
+	Text
+  -SOURCE:<str>              	Source
+	Grid list (input)
+  -TARGET:<str>              	Target
+	Grid list (optional output)
+  -SHAPES:<str>              	Shapes
+	Data Object (optional output)
+  -CREATE_XY                 	Create X/Y Grids
+	Boolean
+  -OUT_X:<str>               	X Coordinates
+	Data Object (optional output)
+  -OUT_Y:<str>               	Y Coordinates
+	Data Object (optional output)
+  -INTERPOLATION:<str>       	Interpolation
+	Choice
+	Available Choices:
+	[0] Nearest Neigbhor
+	[1] Bilinear Interpolation
+	[2] Inverse Distance Interpolation
+	[3] Bicubic Spline Interpolation
+	[4] B-Spline Interpolation
+  -TARGET_TYPE:<str>         	Target
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+	[2] shapes
+  -GET_USER_XMIN:<str>       	Left
+	Floating point
+  -GET_USER_XMAX:<str>       	Right
+	Floating point
+  -GET_USER_YMIN:<str>       	Bottom
+	Floating point
+  -GET_USER_YMAX:<str>       	Top
+	Floating point
+  -GET_USER_SIZE:<str>       	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -GET_SYSTEM_SYSTEM_NX:<num>	System
+	Grid system
+  -GET_SYSTEM_SYSTEM_NY:<num>	System
+	Grid system
+  -GET_SYSTEM_SYSTEM_X:<str> 	System
+	Grid system
+  -GET_SYSTEM_SYSTEM_Y:<str> 	System
+	Grid system
+  -GET_SYSTEM_SYSTEM_D:<str> 	System
+	Grid system
+  -GET_SHAPES_SHAPES:<str>   	Shapes
+	Shapes (output)

@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_profiles
+module name :	Profile from points
+author      :	
+_____________________________________________
+go...
+Usage: 5 -GRID <str> -TABLE <str> [-X <str>] [-Y <str>] -RESULT <str>
+  -GRID:<str>  	Grid
+	Grid (input)
+  -TABLE:<str> 	Input
+	Table (input)
+  -X:<str>     	X
+	Table field
+  -Y:<str>     	Y
+	Table field
+  -RESULT:<str>	Result
+	Table (output)

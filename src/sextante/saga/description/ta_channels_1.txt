@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_channels
+module name :	Watershed Basins
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 1 -ELEVATION <str> -CHANNELS <str> [-SINKROUTE <str>] -BASINS <str> [-MINSIZE <num>]
+  -ELEVATION:<str>	Elevation
+	Grid (input)
+  -CHANNELS:<str> 	Channel Network
+	Grid (input)
+  -SINKROUTE:<str>	Sink Route
+	Grid (optional input)
+  -BASINS:<str>   	Watershed Basins
+	Grid (output)
+  -MINSIZE:<num>  	Min. Size
+	Integer

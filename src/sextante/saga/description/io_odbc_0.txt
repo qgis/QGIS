@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_odbc
+module name :	ODBC Connect
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 0 [-SERVERS <str>] [-USERNAME <str>] [-PASSWORD <str>]
+  -SERVERS:<str> 	Server
+	Choice
+	Available Choices:
+	[0] [not set]
+  -USERNAME:<str>	User
+	Text
+  -PASSWORD:<str>	Password
+	Text

@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_calculus
+module name :	Fuzzy Intersection (AND)
+author      :	Antonio Boggia and Gianluca Massei (c) 2004
+_____________________________________________
+go...
+Usage: 12 -GRIDS <str> -AND <str> [-TYPE <str>]
+  -GRIDS:<str>	Grids
+	Grid list (input)
+  -AND:<str>  	Intersection
+	Grid (output)
+  -TYPE:<str> 	Operator Type
+	Choice
+	Available Choices:
+	[0] min(a, b) (non-interactive)
+	[1] a * b
+	[2] max(0, a + b - 1)

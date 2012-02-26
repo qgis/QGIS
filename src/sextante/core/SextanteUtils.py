@@ -1,8 +1,5 @@
 import os
 import time
-from sextante.outputs.OutputTable import OutputTable
-from sextante.outputs.OutputVector import OutputVector
-from sextante.outputs.OutputRaster import OutputRaster
 
 class SextanteUtils:
 
@@ -27,20 +24,14 @@ class SextanteUtils:
         return tempfolder
 
     @staticmethod
-    def setTempOutput(out):
+    def setTempOutput(out, alg):
         seconds = str(time.time())
-        if isinstance(out, OutputRaster):
-            ext = ".tif"
-        elif isinstance(out, OutputVector):
-            ext = ".shp"
-        elif isinstance(out, OutputTable):
-            ext = ".dbf"
-        else:
-            ext =""
-
-        filename = SextanteUtils.tempFolder() + os.sep + seconds + str(SextanteUtils.NUM_EXPORTED) + ext
-        out.channel = filename
+        ext = out.getDefaultFileExtension(alg)
+        filename = SextanteUtils.tempFolder() + os.sep + seconds + str(SextanteUtils.NUM_EXPORTED) + "." + ext
+        out.value = filename
         SextanteUtils.NUM_EXPORTED += 1
+
+
 
 
 def mkdir(newdir):
@@ -52,4 +43,5 @@ def mkdir(newdir):
             mkdir(head)
         if tail:
             os.mkdir(newdir)
+
 

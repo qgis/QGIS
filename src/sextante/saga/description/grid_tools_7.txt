@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_tools
+module name :	Close Gaps
+author      :	(c) 2002 by O.Conrad
+_____________________________________________
+go...
+Usage: 7 -INPUT <str> [-MASK <str>] [-RESULT <str>] [-THRESHOLD <str>]
+  -INPUT:<str>    	Grid
+	Grid (input)
+  -MASK:<str>     	Mask
+	Grid (optional input)
+  -RESULT:<str>   	Changed Grid
+	Grid (optional output)
+  -THRESHOLD:<str>	Tension Threshold
+	Floating point

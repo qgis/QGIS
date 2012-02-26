@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_channels
+module name :	Strahler Order
+author      :	Copyrights (c) 2004 by Victor Olaya
+_____________________________________________
+go...
+Usage: 6 -DEM <str> -STRAHLER <str>
+  -DEM:<str>     	Elevation
+	Grid (input)
+  -STRAHLER:<str>	Strahler Order
+	Grid (output)

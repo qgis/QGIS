@@ -1,0 +1,43 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_compound
+module name :	Basic Terrain Analysis
+author      :	O.Conrad (c) 2005
+_____________________________________________
+go...
+Usage: 0 -ELEVATION <str> -SHADE <str> -SLOPE <str> -ASPECT <str> -HCURV <str> -VCURV <str> -CONVERGENCE <str> -CAREA <str> -WETNESS <str> -LSFACTOR <str> -CHANNELS <str> -BASINS <str> -CHNL_ALTI <str> -CHNL_BASE <str>
+  -ELEVATION:<str>  	Elevation
+	Grid (input)
+  -SHADE:<str>      	Analytical Hillshading
+	Grid (output)
+  -SLOPE:<str>      	Slope
+	Grid (output)
+  -ASPECT:<str>     	Aspect
+	Grid (output)
+  -HCURV:<str>      	Plan Curvature
+	Grid (output)
+  -VCURV:<str>      	Profile Curvature
+	Grid (output)
+  -CONVERGENCE:<str>	Convergence Index
+	Grid (output)
+  -CAREA:<str>      	Catchment Area
+	Grid (output)
+  -WETNESS:<str>    	Wetness Index
+	Grid (output)
+  -LSFACTOR:<str>   	LS-Factor
+	Grid (output)
+  -CHANNELS:<str>   	Channel Network
+	Shapes (output)
+  -BASINS:<str>     	Drainage Basins
+	Shapes (output)
+  -CHNL_ALTI:<str>  	Altitude above Channel Network
+	Grid (output)
+  -CHNL_BASE:<str>  	Channel Network Base Level
+	Grid (output)

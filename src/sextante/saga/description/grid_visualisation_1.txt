@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_visualisation
+module name :	Color Blending
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 1 -GRID <str> -GRIDS <str> [-NSTEPS <num>] [-RANGE <str>]
+  -GRID:<str>  	Grid
+	Grid (output)
+  -GRIDS:<str> 	Grids
+	Grid list (input)
+  -NSTEPS:<num>	Interpolation Steps
+	Integer
+	Minimum: 0.000000
+  -RANGE:<str> 	Color Stretch
+	Choice
+	Available Choices:
+	[0] fit to each grid
+	[1] fit to overall range
+	[2] fit to overall 1.5 standard deviation
+	[3] fit to overall 2.0 standard deviation

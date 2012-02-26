@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_polygons
+module name :	Polygon Parts to Separate Polygons
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 10 -POLYGONS <str> -PARTS <str> [-LAKES]
+  -POLYGONS:<str>	Polygons
+	Shapes (input)
+  -PARTS:<str>   	Polygon Parts
+	Shapes (output)
+  -LAKES         	Ignore Lakes
+	Boolean

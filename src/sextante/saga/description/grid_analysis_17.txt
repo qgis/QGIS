@@ -1,0 +1,32 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	grid_analysis
+module name :	Fragmentation Classes from Density and Connectivity
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 17 -DENSITY <str> -CONNECTIVITY <str> -FRAGMENTATION <str> [-BORDER] [-WEIGHT <str>] [-DENSITY_MIN <str>] [-DENSITY_INT <str>]
+  -DENSITY:<str>      	Density [Percent]
+	Grid (input)
+  -CONNECTIVITY:<str> 	Connectivity [Percent]
+	Grid (input)
+  -FRAGMENTATION:<str>	Fragmentation
+	Grid (output)
+  -BORDER             	Add Border
+	Boolean
+  -WEIGHT:<str>       	Connectivity Weighting
+	Floating point
+	Minimum: 0.000000
+  -DENSITY_MIN:<str>  	Minimum Density [Percent]
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -DENSITY_INT:<str>  	Minimum Density for Interior Forest [Percent]
+	Floating point
+	Value Range: 0.000000 - 100.000000

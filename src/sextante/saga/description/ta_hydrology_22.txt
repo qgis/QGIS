@@ -1,0 +1,41 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	LS Factor
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 22 -SLOPE <str> -AREA <str> -LS <str> [-CONV <str>] [-METHOD <str>] [-EROSIVITY <str>] [-STABILITY <str>]
+  -SLOPE:<str>    	Slope
+	Grid (input)
+  -AREA:<str>     	Catchment Area
+	Grid (input)
+  -LS:<str>       	LS Factor
+	Grid (output)
+  -CONV:<str>     	Area to Length Conversion
+	Choice
+	Available Choices:
+	[0] no conversion (areas already given as specific catchment area)
+	[1] 1 / cell size (specific catchment area)
+	[2] square root (catchment length)
+  -METHOD:<str>   	Method (LS)
+	Choice
+	Available Choices:
+	[0] Moore et al. 1991
+	[1] Desmet & Govers 1996
+	[2] Boehner & Selige 2006
+  -EROSIVITY:<str>	Rill/Interrill Erosivity
+	Floating point
+	Minimum: 0.000000
+  -STABILITY:<str>	Stability
+	Choice
+	Available Choices:
+	[0] stable
+	[1] instable (thawing)

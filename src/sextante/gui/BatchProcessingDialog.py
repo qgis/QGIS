@@ -91,9 +91,9 @@ class BatchProcessingDialog(QtGui.QDialog):
                 col+=1
             for out in alg.outputs:
                 widget = self.table.cellWidget(row, col)
-                text = widget.getChannel()
+                text = widget.getValue()
                 if text.strip() != "":
-                    out.channel = text
+                    out.value = text
                     col+=1
                 else:
                     QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
@@ -168,5 +168,5 @@ class BatchProcessingDialog(QtGui.QDialog):
             self.table.setCellWidget(self.table.rowCount()-1,i, self.getWidgetFromParameter(param, self.table.rowCount()-1, i))
             i+=1
         for out in self.alg.outputs:
-            self.table.setCellWidget(self.table.rowCount()-1,i, BatchOutputSelectionPanel(self.alg, self.table.rowCount()-1, i, self))
+            self.table.setCellWidget(self.table.rowCount()-1,i, BatchOutputSelectionPanel(out, self.alg, self.table.rowCount()-1, i, self))
             i+=1

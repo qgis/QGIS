@@ -1,0 +1,46 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	imagery_segmentation
+module name :	Watershed Segmentation
+author      :	O.Conrad (c) 2002
+_____________________________________________
+go...
+Usage: 0 -GRID <str> -SEGMENTS <str> -SEEDS <str> [-BORDERS <str>] [-OUTPUT <str>] [-DOWN <str>] [-JOIN <str>] [-THRESHOLD <str>] [-EDGE] [-BBORDERS]
+  -GRID:<str>     	Grid
+	Grid (input)
+  -SEGMENTS:<str> 	Segments
+	Grid (output)
+  -SEEDS:<str>    	Seed Points
+	Shapes (output)
+  -BORDERS:<str>  	Borders
+	Data Object (optional output)
+  -OUTPUT:<str>   	Output
+	Choice
+	Available Choices:
+	[0] Seed Value
+	[1] Segment ID
+  -DOWN:<str>     	Method
+	Choice
+	Available Choices:
+	[0] Minima
+	[1] Maxima
+  -JOIN:<str>     	Join Segments based on Threshold Value
+	Choice
+	Available Choices:
+	[0] do not join
+	[1] seed to saddle difference
+	[2] seeds difference
+  -THRESHOLD:<str>	Threshold
+	Floating point
+	Minimum: 0.000000
+  -EDGE           	Allow Edge Pixels to be Seeds
+	Boolean
+  -BBORDERS       	Borders
+	Boolean

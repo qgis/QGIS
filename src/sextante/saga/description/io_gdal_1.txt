@@ -1,0 +1,62 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_gdal
+module name :	GDAL: Export Raster
+author      :	O.Conrad (c) 2007
+_____________________________________________
+go...
+Usage: 1 -GRIDS <str> [-FILE <str>] [-FORMAT <str>] [-TYPE <str>]
+  -GRIDS:<str> 	Grid(s)
+	Grid list (input)
+  -FILE:<str>  	File
+	File path
+  -FORMAT:<str>	Format
+	Choice
+	Available Choices:
+	[0] Virtual Raster
+	[1] GeoTIFF
+	[2] National Imagery Transmission Format
+	[3] Erdas Imagine Images (.img)
+	[4] ELAS
+	[5] In Memory Raster
+	[6] MS Windows Device Independent Bitmap
+	[7] PCIDSK Database File
+	[8] ILWIS Raster Map
+	[9] SGI Image File Format 1.0
+	[10] Leveller heightfield
+	[11] Terragen heightfield
+	[12] ERMapper .ers Labelled
+	[13] Raster Matrix Format
+	[14] Idrisi Raster A.1
+	[15] Intergraph Raster
+	[16] Golden Software Binary Grid (.grd)
+	[17] Portable Pixmap Format (netpbm)
+	[18] ENVI .hdr Labelled
+	[19] ESRI .hdr Labelled
+	[20] PCI .aux Labelled
+	[21] Vexcel MFF Raster
+	[22] Vexcel MFF2 (HKV) Raster
+	[23] VTP .bt (Binary Terrain) 1.3 Format
+	[24] Image Data and Analysis
+	[25] NOAA Vertical Datum .GTX
+	[26] NTv2 Datum Grid Shift
+	[27] ARC Digitized Raster Graphics
+	[28] SAGA GIS Binary Grid (.sdat)
+  -TYPE:<str>  	Data Type
+	Choice
+	Available Choices:
+	[0] match input data
+	[1] 8 bit unsigned integer
+	[2] 16 bit unsigned integer
+	[3] 16 bit signed integer
+	[4] 32 bit unsigned integer
+	[5] 32 bit signed integer
+	[6] 32 bit floating point
+	[7] 64 bit floating point

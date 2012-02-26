@@ -1,0 +1,36 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	Upslope Area
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 4 [-TARGET <str>] [-TARGET_PT_X <str>] [-TARGET_PT_Y <str>] -ELEVATION <str> [-SINKROUTE <str>] -AREA <str> [-METHOD <str>] [-CONVERGE <str>]
+  -TARGET:<str>     	Target Area
+	Grid (optional input)
+  -TARGET_PT_X:<str>	Target X coordinate
+	Floating point
+  -TARGET_PT_Y:<str>	Target Y coordinate
+	Floating point
+  -ELEVATION:<str>  	Elevation
+	Grid (input)
+  -SINKROUTE:<str>  	Sink Routes
+	Grid (optional input)
+  -AREA:<str>       	Upslope Area
+	Grid (output)
+  -METHOD:<str>     	Method
+	Choice
+	Available Choices:
+	[0] Deterministic 8
+	[1] Deterministic Infinity
+	[2] Multiple Flow Direction
+  -CONVERGE:<str>   	Convergence
+	Floating point
+	Minimum: 0.001000

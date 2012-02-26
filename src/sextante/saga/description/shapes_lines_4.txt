@@ -1,0 +1,22 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_lines
+module name :	Line Simplification
+author      :	O. Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 4 -LINES <str> [-OUTPUT <str>] [-TOLERANCE <str>]
+  -LINES:<str>    	Lines
+	Shapes (input)
+  -OUTPUT:<str>   	Simplified Lines
+	Shapes (optional output)
+  -TOLERANCE:<str>	Tolerance
+	Floating point
+	Minimum: 0.000000

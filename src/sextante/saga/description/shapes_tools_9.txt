@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	shapes_tools
+module name :	Split Shapes Layer Completely
+author      :	Victor Olaya (c) 2005
+_____________________________________________
+go...
+Usage: 9 -SHAPES <str> [-FIELD <str>] -LIST <str> [-NAMING <str>]
+  -SHAPES:<str>	Input
+	Shapes (input)
+  -FIELD:<str> 	Attribute
+	Table field
+  -LIST:<str>  	Output
+	Shapes list (output)
+  -NAMING:<str>	Name by...
+	Choice
+	Available Choices:
+	[0] number of order
+	[1] attribute

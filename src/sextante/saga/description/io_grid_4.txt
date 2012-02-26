@@ -1,0 +1,62 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	io_grid
+module name :	Import Binary Raw Data
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 4 [-GRID <str>] [-FILE_DATA <str>] [-NX <num>] [-NY <num>] [-DXY <str>] [-XMIN <str>] [-YMIN <str>] [-UNIT <str>] [-ZFACTOR <str>] [-NODATA <str>] [-DATA_OFFSET <num>] [-LINE_OFFSET <num>] [-LINE_ENDSET <num>] [-DATA_TYPE <str>] [-BYTEORDER_BIG <str>] [-TOPDOWN <str>]
+  -GRID:<str>         	Grid
+	Data Object (optional output)
+  -FILE_DATA:<str>    	Raw Data File
+	File path
+  -NX:<num>           	Cell Count (X)
+	Integer
+  -NY:<num>           	Cell Count (Y)
+	Integer
+  -DXY:<str>          	Cell Size
+	Floating point
+  -XMIN:<str>         	Left Border (X)
+	Floating point
+  -YMIN:<str>         	Lower Border (Y)
+	Floating point
+  -UNIT:<str>         	Unit Name
+	Text
+  -ZFACTOR:<str>      	Z Multiplier
+	Floating point
+  -NODATA:<str>       	No Data Value
+	Floating point
+  -DATA_OFFSET:<num>  	Data Offset (Bytes)
+	Integer
+  -LINE_OFFSET:<num>  	Line Offset (Bytes)
+	Integer
+  -LINE_ENDSET:<num>  	Line Endset (Bytes)
+	Integer
+  -DATA_TYPE:<str>    	Data Type
+	Choice
+	Available Choices:
+	[0] 1 Byte Integer (unsigned)
+	[1] 1 Byte Integer (signed)
+	[2] 2 Byte Integer (unsigned)
+	[3] 2 Byte Integer (signed)
+	[4] 4 Byte Integer (unsigned)
+	[5] 4 Byte Integer (signed)
+	[6] 4 Byte Floating Point
+	[7] 8 Byte Floating Point
+  -BYTEORDER_BIG:<str>	Byte Order
+	Choice
+	Available Choices:
+	[0] Little Endian (Intel)
+	[1] Big Endian (Motorola)
+  -TOPDOWN:<str>      	Line Order
+	Choice
+	Available Choices:
+	[0] Bottom to Top
+	[1] Top to Bottom

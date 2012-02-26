@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	c:\saga\modules
+library name:	ta_hydrology
+module name :	Flow Width and Specific Catchment Area
+author      :	O. Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 19 -DEM <str> -WIDTH <str> [-TCA <str>] [-SCA <str>] [-METHOD <str>]
+  -DEM:<str>   	Elevation
+	Grid (input)
+  -WIDTH:<str> 	Flow Width
+	Grid (output)
+  -TCA:<str>   	Total Catchment Area (TCA)
+	Grid (optional input)
+  -SCA:<str>   	Specific Catchment Area (SCA)
+	Grid (optional output)
+  -METHOD:<str>	Method
+	Choice
+	Available Choices:
+	[0] Deterministic 8
+	[1] Multiple Flow Direction (Quinn et al. 1991)
+	[2] Aspect
