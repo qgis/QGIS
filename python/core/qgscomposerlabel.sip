@@ -25,12 +25,38 @@ class QgsComposerLabel: QgsComposerItem
      /**Returns the text as it appears on screen (with replaced data field)
       @note this function was added in version 1.2*/
     QString displayText() const;
+
+    /** Accessor for the vertical alignment of the label
+     * @param none
+     * @returns Qt::AlignmentFlag
+     */
+    Qt::AlignmentFlag vAlign() const;
+    /** Accessor for the horizontal alignment of the label
+     * @param none
+     * @returns Qt::AlignmentFlag
+     */
+    Qt::AlignmentFlag hAlign() const;
+    /** Mutator for the horizontal alignment of the label
+     * @param Qt::AlignmentFlag
+     * @returns void
+     */
+    void setHAlign( Qt::AlignmentFlag a );
+    /** Mutator for the vertical alignment of the label
+     * @param QQt::AlignmentFlag
+     * @returns void
+     */
+    void setVAlign( Qt::AlignmentFlag a );
+
+    //!brief Accessor for the margin of the label
+    double margin();
+    //!brief Mutator for the margin of the label
+    void setMargin( double m );
+
+
     /**Get font color
       @note: this function was added in version 1.4*/
     QFont font() const;
     void setFont( const QFont& f );
-    double margin();
-    void setMargin( double m );
 
     /**Sets text color
     @note: this function was added in version 1.4*/
