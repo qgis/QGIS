@@ -5,8 +5,9 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * include heatmap plugin
   * drop extra include path for QtWebkit on oneiric and natty
   * add translations for desktop link
+  * add browser desktop entry
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 16 Feb 2012 23:21:09 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 23 Feb 2012 09:36:48 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

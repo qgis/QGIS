@@ -107,7 +107,7 @@ class QgsComposition: QGraphicsScene
       @param doc xml document
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
       @param pos item position. Optional, take position from xml if 0*/
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands = false, QPointF* pos = 0 );
+    //void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore, bool addUndoCommands = false, QPointF* pos = 0 );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );

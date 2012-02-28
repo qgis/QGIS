@@ -710,11 +710,18 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
+
+  if ( !current )
+  {
+    QgsDebugMsg( "no current item" );
+    return;
+  }
+
   lstCoordinateSystems->scrollToItem( current );
 
   // If the item has children, it's not an end node in the tree, and
   // hence is just a grouping thingy, not an actual CRS.
-  if ( current && current->childCount() == 0 )
+  if ( current->childCount() == 0 )
   {
     // Found a real CRS
     emit sridSelected( QString::number( selectedCrsId() ) );
@@ -736,8 +743,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
   else
   {
     // Not an CRS - remove the highlight so the user doesn't get too confused
-    if ( current )
-      current->setSelected( false );
+    current->setSelected( false );
     teProjection->setText( "" );
     lstRecent->clearSelection();
   }
@@ -746,6 +752,13 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
+
+  if ( !current )
+  {
+    QgsDebugMsg( "no current item" );
+    return;
+  }
+
   lstRecent->scrollToItem( current );
 
   QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( current->text( QGIS_CRS_ID_COLUMN ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );

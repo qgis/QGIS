@@ -959,6 +959,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     int mTileHeight;
     QVector<double> mResolutions;
 
+    //! FEATURE_COUNT for GetFeatureInfo
+    int mFeatureCount;
+
     //! whether to use hrefs from GetCapabilities (default) or
     // the given base urls for GetMap and GetFeatureInfo
     bool mIgnoreGetMapUrl;

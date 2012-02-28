@@ -966,6 +966,9 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
 #endif
   mMapRenderer->setLayerSet( layerIdList );
+
+  //set selection color prior to each render to avoid problems with caching (selection color is a global property of QgsRenderer)
+  QgsRenderer::setSelectionColor( mConfigParser->selectionColor() );
   return theImage;
 }
 

@@ -1449,7 +1449,7 @@ void QgsProjectParser::setSelectionColor()
     }
   }
 
-  QgsRenderer::setSelectionColor( QColor( red, green, blue, alpha ) );
+  mSelectionColor = QColor( red, green, blue, alpha );
 }
 
 const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
