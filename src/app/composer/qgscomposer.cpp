@@ -1134,6 +1134,14 @@ void QgsComposer::showEvent( QShowEvent* event )
       mapIt.key()->update();
     }
     mMapsToRestore.clear();
+
+    //create composer picture widget previews
+    QList< QgsComposerPictureWidget* >::iterator picIt = mPicturePreviews.begin();
+    for ( ; picIt != mPicturePreviews.end(); ++picIt )
+    {
+      ( *picIt )->addStandardDirectoriesToPreview();
+    }
+    mPicturePreviews.clear();
   }
 
 #ifdef Q_WS_MAC
@@ -1382,6 +1390,14 @@ void QgsComposer::addComposerPicture( QgsComposerPicture* picture )
   }
 
   QgsComposerPictureWidget* pWidget = new QgsComposerPictureWidget( picture );
+  if ( isVisible() )
+  {
+    pWidget->addStandardDirectoriesToPreview();
+  }
+  else
+  {
+    mPicturePreviews.append( pWidget );
+  }
   mItemWidgetMap.insert( picture, pWidget );
 }
 

@@ -27,6 +27,7 @@ class QgsComposerArrow;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;
+class QgsComposerPictureWidget;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -322,6 +323,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
     QMap< QgsComposerMap*, int > mMapsToRestore;
+    QList< QgsComposerPictureWidget* > mPicturePreviews;
 
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;
