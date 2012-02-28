@@ -204,8 +204,34 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 
 
 
-    bool frame() const;
+    /** Whether this item has a frame or not.
+     * @param none
+     * @return boolean - true if there is a frame around this item, otherwise false.
+     * @note deprecated since 1.8 dont use!
+     * @see hasFrame
+     */
+    bool frame();
+    /** Whether this item has a frame or not.
+     * @param none
+     * @return boolean - true if there is a frame around this item, otherwise false.
+     * @note introduced since 1.8
+     * @see hasFrame
+     */
+    bool hasFrame();
+    /** Set whether this item has a frame drawn around it or not.
+     * @param none
+     * @return void
+     * @note deprecated since 1.8 dont use!
+     * @see hasFrame
+     */
     void setFrame( bool drawFrame );
+    /** Set whether this item has a frame drawn around it or not.
+     * @param none
+     * @return void
+     * @note deprecated since 1.8
+     * @see hasFrame
+     */
+    void setFrameEnabled( bool drawFrame );
 
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item );
