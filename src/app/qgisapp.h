@@ -242,6 +242,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeletePart() { return mActionDeletePart; }
     QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
+    QAction *actionOffsetCurve() { return mActionOffsetCurve; }
 
     QAction *actionPan() { return mActionPan; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
@@ -673,6 +674,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addFeature();
     //! activates the move feature tool
     void moveFeature();
+    //! activates the offset curve tool
+    void offsetCurve();
     //! activates the reshape features tool
     void reshapeFeatures();
     //! activates the split features tool
@@ -991,6 +994,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mMeasureAngle;
         QgsMapTool* mAddFeature;
         QgsMapTool* mMoveFeature;
+        QgsMapTool* mOffsetCurve;
         QgsMapTool* mReshapeFeatures;
         QgsMapTool* mSplitFeatures;
         QgsMapTool* mSelect;

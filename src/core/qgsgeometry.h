@@ -241,9 +241,10 @@ class CORE_EXPORT QgsGeometry
      * @param minDistPoint Receives the nearest point on the segment
      * @param beforeVertex Receives index of the vertex before the closest segment. The vertex
      * after the closest segment is always beforeVertex + 1
+     * @param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& beforeVertex );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& beforeVertex, double* leftOf = 0 );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -565,6 +566,9 @@ class CORE_EXPORT QgsGeometry
 
     static bool geosRelOp( char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
                            QgsGeometry *a, QgsGeometry *b );
+
+    /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
+    double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
 
 
     static int refcount;
