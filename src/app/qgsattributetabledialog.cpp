@@ -129,6 +129,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
 
   connect( searchButton, SIGNAL( clicked() ), this, SLOT( search() ) );
+  connect( mCloseButton, SIGNAL( clicked() ), this, SLOT( close() ) );
   connect( mAddFeature, SIGNAL( clicked() ), this, SLOT( addFeature() ) );
 
   connect( mView->verticalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( updateRowSelection( int ) ) );
