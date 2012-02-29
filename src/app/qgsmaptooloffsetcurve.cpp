@@ -484,5 +484,6 @@ QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int 
 
 QgsGeometry* QgsMapToolOffsetCurve::convertToMultiLine( QgsGeometry* geom )
 {
+  Q_UNUSED( geom );
   return 0;
 }
