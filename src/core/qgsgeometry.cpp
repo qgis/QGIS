@@ -6156,8 +6156,6 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   try
   {
     GEOSGeometry* unionGeom = GEOSUnion( mGeos, geometry->mGeos );
-    QGis::WkbType thisGeomType = wkbType();
-    QGis::WkbType otherGeomType = geometry->wkbType();
     if ( type() == QGis::Line )
     {
       GEOSGeometry* mergedGeom = GEOSLineMerge( unionGeom );

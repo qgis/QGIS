@@ -473,7 +473,7 @@ void QgsWMSSourceSelect::addClicked()
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
-    if( !connArgs.isEmpty() )
+    if ( !connArgs.isEmpty() )
       connArgs += ",";
     connArgs += QString( "featureCount=%1" ).arg( mFeatureCount->text().toInt() );
   }

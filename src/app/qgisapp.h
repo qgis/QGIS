@@ -1165,8 +1165,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QString mOldScale;
 
 #ifdef ANDROID
-    bool gestureEvent(QGestureEvent *event);
-    void tapAndHoldTriggered(QTapAndHoldGesture *gesture);
+    bool gestureEvent( QGestureEvent *event );
+    void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 #endif
 };
 

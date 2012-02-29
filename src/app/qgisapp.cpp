@@ -628,7 +628,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
 #ifdef ANDROID
   //add reacting to long click in android
-  grabGesture(Qt::TapAndHoldGesture);
+  grabGesture( Qt::TapAndHoldGesture );
 #endif
 
   // update windows
@@ -741,9 +741,9 @@ bool QgisApp::event( QEvent * event )
     done = true;
   }
 #ifdef ANDROID
-  else if (event->type() == QEvent::Gesture )
+  else if ( event->type() == QEvent::Gesture )
   {
-    done = gestureEvent(static_cast<QGestureEvent*>(event));
+    done = gestureEvent( static_cast<QGestureEvent*>( event ) );
   }
 #endif
   else
@@ -7293,18 +7293,19 @@ QMenu* QgisApp::createPopupMenu()
 }
 
 #ifdef ANDROID
-bool QgisApp::gestureEvent(QGestureEvent *event)
+bool QgisApp::gestureEvent( QGestureEvent *event )
 {
-  if (QGesture *tapAndHold = event->gesture(Qt::TapAndHoldGesture))
+  if ( QGesture *tapAndHold = event->gesture( Qt::TapAndHoldGesture ) )
   {
-    tapAndHoldTriggered(static_cast<QTapAndHoldGesture *>(tapAndHold));
+    tapAndHoldTriggered( static_cast<QTapAndHoldGesture *>( tapAndHold ) );
   }
   return true;
 }
 
-void QgisApp::tapAndHoldTriggered(QTapAndHoldGesture *gesture)
+void QgisApp::tapAndHoldTriggered( QTapAndHoldGesture *gesture )
 {
-  if (gesture->state() == Qt::GestureFinished) {
+  if ( gesture->state() == Qt::GestureFinished )
+  {
     QPoint pos = gesture->position().toPoint();
     QWidget * receiver = QApplication::widgetAt( pos );
     qDebug() << "tapAndHoldTriggered: LONG CLICK gesture happened at " << pos;

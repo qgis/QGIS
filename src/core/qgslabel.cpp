@@ -593,6 +593,8 @@ unsigned char* QgsLabel::labelPoint( labelpoint& point, unsigned char *geom, siz
   QGis::WkbType wkbType;
 #ifndef QT_NO_DEBUG
   unsigned char *geomend = geom + geomlen;
+#else
+  Q_UNUSED( geomlen );
 #endif
   Q_ASSERT( geom + 1 + sizeof( wkbType ) <= geomend );
 

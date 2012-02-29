@@ -2959,7 +2959,7 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         setQueryItem( requestUrl, "X", QString::number( point.x() ) );
         setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
 
-        if( mFeatureCount > 0 )
+        if ( mFeatureCount > 0 )
         {
           setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mFeatureCount ) );
         }
