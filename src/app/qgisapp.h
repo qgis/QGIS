@@ -83,7 +83,7 @@ class QgsScaleComboBox;
 #include <QPointer>
 #include <QSslError>
 
-#ifdef ANDROID
+#ifdef HAVE_TOUCH
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
 #endif
@@ -243,6 +243,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
+
+#ifdef HAVE_TOUCH
+    QAction *actionTouch() { return mActionTouch; }
+#endif
 
     QAction *actionPan() { return mActionPan; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
@@ -767,6 +771,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomIn();
     //! Set map tool to pan
     void pan();
+#ifdef HAVE_TOUCH
+    //! Set map tool to touch
+    void touch();
+#endif
     //! Identify feature(s) on the currently selected layer
     void identify();
     //! Measure distance
@@ -992,6 +1000,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mZoomIn;
         QgsMapTool* mZoomOut;
         QgsMapTool* mPan;
+#ifdef HAVE_TOUCH
+        QgsMapTool* mTouch;
+#endif
         QgsMapTool* mIdentify;
         QgsMapTool* mFeatureAction;
         QgsMapTool* mMeasureDist;
@@ -1169,9 +1180,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QString mOldScale;
 
-#ifdef ANDROID
-    bool gestureEvent( QGestureEvent *event );
-    void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
+#ifdef HAVE_TOUCH
+    bool gestureEvent(QGestureEvent *event);
+    void tapAndHoldTriggered(QTapAndHoldGesture *gesture);
 #endif
 };
 

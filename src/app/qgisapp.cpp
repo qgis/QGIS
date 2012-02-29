@@ -258,6 +258,10 @@ extern "C"
 #include <windows.h>
 #endif
 
+#ifdef HAVE_TOUCH
+#include "qgsmaptooltouch.h"
+#endif
+
 class QTreeWidgetItem;
 
 
@@ -626,7 +630,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
 
-#ifdef ANDROID
+#ifdef HAVE_TOUCH
   //add reacting to long click in android
   grabGesture( Qt::TapAndHoldGesture );
 #endif
@@ -646,6 +650,9 @@ QgisApp::~QgisApp()
   delete mMapTools.mZoomIn;
   delete mMapTools.mZoomOut;
   delete mMapTools.mPan;
+#ifdef HAVE_TOUCH
+  delete mMapTools.mTouch;
+#endif
   delete mMapTools.mIdentify;
   delete mMapTools.mFeatureAction;
   delete mMapTools.mMeasureDist;
@@ -741,8 +748,8 @@ bool QgisApp::event( QEvent * event )
     openFile( foe->file() );
     done = true;
   }
-#ifdef ANDROID
-  else if ( event->type() == QEvent::Gesture )
+#ifdef HAVE_TOUCH
+  else if (event->type() == QEvent::Gesture )
   {
     done = gestureEvent( static_cast<QGestureEvent*>( event ) );
   }
@@ -820,6 +827,9 @@ void QgisApp::createActions()
 
   // View Menu Items
 
+#ifdef HAVE_TOUCH
+  connect( mActionTouch, SIGNAL( triggered() ), this, SLOT( touch() ) );
+#endif
   connect( mActionPan, SIGNAL( triggered() ), this, SLOT( pan() ) );
   connect( mActionPanToSelected, SIGNAL( triggered() ), this, SLOT( panToSelected() ) );
   connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
@@ -1009,6 +1019,9 @@ void QgisApp::createActionGroups()
   //
   // Map Tool Group
   mMapToolGroup = new QActionGroup( this );
+#ifdef HAVE_TOUCH
+  mMapToolGroup->addAction( mActionTouch );
+#endif
   mMapToolGroup->addAction( mActionPan );
   mMapToolGroup->addAction( mActionZoomIn );
   mMapToolGroup->addAction( mActionZoomOut );
@@ -1529,6 +1542,9 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
   mActionZoomToSelected->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
+#ifdef HAVE_TOUCH
+  mActionTouch->setIcon( getThemeIcon( "/mActionTouch.png" ) );
+#endif
   mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
   mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.png" ) );
   mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.png" ) );
@@ -1660,6 +1676,10 @@ void QgisApp::createCanvasTools()
   mMapTools.mZoomOut->setAction( mActionZoomOut );
   mMapTools.mPan = new QgsMapToolPan( mMapCanvas );
   mMapTools.mPan->setAction( mActionPan );
+#ifdef HAVE_TOUCH
+  mMapTools.mTouch = new QgsMapToolTouch( mMapCanvas );
+  mMapTools.mTouch->setAction( mActionTouch );
+#endif
   mMapTools.mIdentify = new QgsMapToolIdentify( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
   mMapTools.mFeatureAction = new QgsMapToolFeatureAction( mMapCanvas );
@@ -1725,6 +1745,9 @@ void QgisApp::createCanvasTools()
   mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
   //ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
+//#ifdef HAVE_TOUCH
+//  mNonEditMapTool = mMapTools.mTouch;
+//#endif
 }
 
 void QgisApp::createOverview()
@@ -2275,10 +2298,11 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 // present a dialog to choose GDAL raster sublayers
 void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 {
-  if ( !layer || layer->subLayers().size() < 1 )
+  if ( !layer )
     return;
 
   QStringList sublayers = layer->subLayers();
+
   QgsDebugMsg( "sublayers:\n  " + sublayers.join( "  \n" ) + "\n" );
 
   // if promptLayers=Load all, load all sublayers without prompting
@@ -2303,7 +2327,16 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   if ( chooseSublayersDialog.exec() )
   {
-    loadGDALSublayers( layer->source(), chooseSublayersDialog.getSelection() );
+    foreach( QString path, chooseSublayersDialog.getSelection() )
+    {
+      QString name = path;
+      name.replace( layer->source(), QFileInfo( layer->source() ).completeBaseName() );
+      QgsRasterLayer *rlayer = new QgsRasterLayer( path, name );
+      if ( rlayer && rlayer->isValid() )
+      {
+        addRasterLayer( rlayer );
+      }
+    }
   }
 }
 
@@ -2316,9 +2349,11 @@ bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 
   QSettings settings;
   int promptLayers = settings.value( "/qgis/promptForRasterSublayers", 1 ).toInt();
+  // 0 = always -> always ask (if there are existing sublayers)
+  // 1 = if needed -> ask if layer has no bands, but has sublayers
+  // 2 = never
 
-  // return true if promptLayers=Always or if promptLayers!=Never and there are no bands
-  return promptLayers == 0 || ( promptLayers != 2 && layer->bandCount() == 0 );
+  return promptLayers == 0 || ( promptLayers == 1 && layer->bandCount() == 0 );
 }
 
 // This method will load with GDAL the layers in parameter.
@@ -2732,6 +2767,10 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
+#ifdef HAVE_TOUCH
+  mMapCanvas->setMapTool( mMapTools.mTouch );
+  mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
+#endif
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
 
 
@@ -2821,11 +2860,7 @@ void QgisApp::fileOpen()
     deletePrintComposers();
     removeAnnotationItems();
     // clear out any stuff from previous project
-
-    //avoid multiple canvas redraws during loading of project files
-    bool bkRenderFlag = mMapCanvas->renderFlag();
-    mMapCanvas->setRenderFlag( false );
-
+    mMapCanvas->freeze( true );
     removeAllLayers();
 
     QgsProject::instance()->setFileName( fullPath );
@@ -2835,7 +2870,8 @@ void QgisApp::fileOpen()
       QMessageBox::critical( this,
                              tr( "QGIS Project Read Error" ),
                              QgsProject::instance()->error() );
-      mMapCanvas->setRenderFlag( bkRenderFlag );
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
       return;
     }
 
@@ -2847,7 +2883,8 @@ void QgisApp::fileOpen()
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath, settings );
 
-    mMapCanvas->setRenderFlag( bkRenderFlag );
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
   }
 
 } // QgisApp::fileOpen
@@ -2859,8 +2896,7 @@ void QgisApp::fileOpen()
   */
 bool QgisApp::addProject( QString projectFile )
 {
-  bool bkRenderFlag = mMapCanvas->renderFlag();
-  mMapCanvas->setRenderFlag( false );
+  mMapCanvas->freeze( true );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -2878,7 +2914,8 @@ bool QgisApp::addProject( QString projectFile )
 
     QApplication::restoreOverrideCursor();
 
-    mMapCanvas->setRenderFlag( bkRenderFlag );
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
     return false;
   }
 
@@ -2914,7 +2951,8 @@ bool QgisApp::addProject( QString projectFile )
 
   QApplication::restoreOverrideCursor();
 
-  mMapCanvas->setRenderFlag( bkRenderFlag );
+  mMapCanvas->freeze( false );
+  mMapCanvas->refresh();
   return true;
 } // QgisApp::addProject(QString projectFile)
 
@@ -3361,6 +3399,13 @@ void QgisApp::pan()
 {
   mMapCanvas->setMapTool( mMapTools.mPan );
 }
+
+#ifdef HAVE_TOUCH
+void QgisApp::touch()
+{
+  mMapCanvas->setMapTool( mMapTools.mTouch );
+}
+#endif
 
 void QgisApp::zoomFull()
 {
@@ -7361,8 +7406,8 @@ QMenu* QgisApp::createPopupMenu()
   return menu;
 }
 
-#ifdef ANDROID
-bool QgisApp::gestureEvent( QGestureEvent *event )
+#ifdef HAVE_TOUCH
+bool QgisApp::gestureEvent(QGestureEvent *event)
 {
   if ( QGesture *tapAndHold = event->gesture( Qt::TapAndHoldGesture ) )
   {

@@ -80,6 +80,13 @@ qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 )
 
+IF (WITH_TOUCH)
+  SET(QGIS_GUI_SRCS
+      ${QGIS_GUI_SRCS}
+      qgsmaptooltouch.cpp
+  )
+ENDIF (WITH_TOUCH)
+
 SET(QGIS_GUI_MOC_HDRS
 
 symbology-ng/qgsdashspacedialog.h
@@ -184,6 +191,13 @@ attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetableidcolumnpair.h
 attributetable/qgsattributetabledelegate.h
 )
+
+IF (WITH_TOUCH)
+  SET(QGIS_GUI_HDRS
+      ${QGIS_GUI_HDRS}
+      qgsmaptooltouch.h
+  )
+ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_UI_HDRS
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
