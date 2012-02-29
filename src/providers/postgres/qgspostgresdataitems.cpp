@@ -269,7 +269,7 @@ QList<QAction*> QgsPGRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
