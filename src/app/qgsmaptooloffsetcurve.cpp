@@ -302,7 +302,6 @@ void QgsMapToolOffsetCurve::createDistanceItem()
   mDistanceItem = 0;
   QgisApp::instance()->statusBar()->addWidget( mDistanceSpinBox );
 #endif
-  //mDistanceSpinBox->grabKeyboard();
   mDistanceSpinBox->setFocus( Qt::TabFocusReason );
 
   QObject::connect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( placeOffsetCurveToValue() ) );
