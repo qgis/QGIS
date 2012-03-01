@@ -3227,8 +3227,11 @@ QStringList QgsGrassModuleField::options()
 {
   QStringList list;
 
-  QString opt( mKey + "=" + mFieldComboBox->currentText() );
-  list.push_back( opt );
+  if ( !mFieldComboBox->currentText().isEmpty() )
+  {
+    QString opt( mKey + "=" + mFieldComboBox->currentText() );
+    list.push_back( opt );
+  }
 
   return list;
 }
@@ -3336,8 +3339,11 @@ QStringList QgsGrassModuleSelection::options()
 {
   QStringList list;
 
-  QString opt( mKey + "=" + mLineEdit->text() );
-  list.push_back( opt );
+  if ( !mLineEdit->text().isEmpty() )
+  {
+    QString opt( mKey + "=" + mLineEdit->text() );
+    list.push_back( opt );
+  }
 
   return list;
 }

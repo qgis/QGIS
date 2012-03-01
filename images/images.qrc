@@ -108,6 +108,7 @@
         <file>themes/default/mActionNewFolder.png</file>
         <file>themes/default/mActionNewVectorLayer.png</file>
         <file>themes/default/mActionNodeTool.png</file>
+	<file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOptions.png</file>
         <file>themes/default/mActionPan.png</file>

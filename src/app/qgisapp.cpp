@@ -210,6 +210,7 @@
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolmovevertex.h"
+#include "qgsmaptooloffsetcurve.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectrectangle.h"
@@ -627,7 +628,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
 #ifdef ANDROID
   //add reacting to long click in android
-  grabGesture(Qt::TapAndHoldGesture);
+  grabGesture( Qt::TapAndHoldGesture );
 #endif
 
   // update windows
@@ -740,9 +741,9 @@ bool QgisApp::event( QEvent * event )
     done = true;
   }
 #ifdef ANDROID
-  else if (event->type() == QEvent::Gesture )
+  else if ( event->type() == QEvent::Gesture )
   {
-    done = gestureEvent(static_cast<QGestureEvent*>(event));
+    done = gestureEvent( static_cast<QGestureEvent*>( event ) );
   }
 #endif
   else
@@ -814,6 +815,7 @@ void QgisApp::createActions()
   connect( mActionNodeTool, SIGNAL( triggered() ), this, SLOT( nodeTool() ) );
   connect( mActionRotatePointSymbols, SIGNAL( triggered() ), this, SLOT( rotatePointSymbols() ) );
   connect( mActionSnappingOptions, SIGNAL( triggered() ), this, SLOT( snappingOptions() ) );
+  connect( mActionOffsetCurve, SIGNAL( triggered() ), this, SLOT( offsetCurve() ) );
 
   // View Menu Items
 
@@ -1016,6 +1018,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasureAngle );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionMoveFeature );
+  mMapToolGroup->addAction( mActionOffsetCurve );
   mMapToolGroup->addAction( mActionReshapeFeatures );
   mMapToolGroup->addAction( mActionSplitFeatures );
   mMapToolGroup->addAction( mActionDeleteSelected );
@@ -1664,6 +1667,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mAddFeature->setAction( mActionAddFeature );
   mMapTools.mMoveFeature = new QgsMapToolMoveFeature( mMapCanvas );
   mMapTools.mMoveFeature->setAction( mActionMoveFeature );
+  mMapTools.mOffsetCurve = new QgsMapToolOffsetCurve( mMapCanvas );
+  mMapTools.mOffsetCurve->setAction( mActionOffsetCurve );
   mMapTools.mReshapeFeatures = new QgsMapToolReshape( mMapCanvas );
   mMapTools.mReshapeFeatures->setAction( mActionReshapeFeatures );
   mMapTools.mSplitFeatures = new QgsMapToolSplitFeatures( mMapCanvas );
@@ -3586,6 +3591,11 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
 void QgisApp::moveFeature()
 {
   mMapCanvas->setMapTool( mMapTools.mMoveFeature );
+}
+
+void QgisApp::offsetCurve()
+{
+  mMapCanvas->setMapTool( mMapTools.mOffsetCurve );
 }
 
 void QgisApp::simplifyFeature()
@@ -6127,6 +6137,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionFeatureAction->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionOffsetCurve->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
@@ -6141,6 +6152,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionDeleteRing->setEnabled( false );
     mActionDeletePart->setEnabled( false );
     mActionReshapeFeatures->setEnabled( false );
+    mActionOffsetCurve->setEnabled( false );
     mActionSplitFeatures->setEnabled( false );
     mActionMergeFeatures->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
@@ -6259,6 +6271,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddPart->setEnabled( false );
         mActionDeletePart->setEnabled( false );
         mActionMoveFeature->setEnabled( false );
+        mActionOffsetCurve->setEnabled( false );
         mActionNodeTool->setEnabled( false );
       }
 
@@ -6291,6 +6304,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionReshapeFeatures->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
           mActionSimplifyFeature->setEnabled( true );
+          mActionOffsetCurve->setEnabled( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
         }
         else
         {
@@ -6370,6 +6384,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionAddPart->setEnabled( false );
     mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
+    mActionOffsetCurve->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
@@ -7278,18 +7293,19 @@ QMenu* QgisApp::createPopupMenu()
 }
 
 #ifdef ANDROID
-bool QgisApp::gestureEvent(QGestureEvent *event)
+bool QgisApp::gestureEvent( QGestureEvent *event )
 {
-  if (QGesture *tapAndHold = event->gesture(Qt::TapAndHoldGesture))
+  if ( QGesture *tapAndHold = event->gesture( Qt::TapAndHoldGesture ) )
   {
-    tapAndHoldTriggered(static_cast<QTapAndHoldGesture *>(tapAndHold));
+    tapAndHoldTriggered( static_cast<QTapAndHoldGesture *>( tapAndHold ) );
   }
   return true;
 }
 
-void QgisApp::tapAndHoldTriggered(QTapAndHoldGesture *gesture)
+void QgisApp::tapAndHoldTriggered( QTapAndHoldGesture *gesture )
 {
-  if (gesture->state() == Qt::GestureFinished) {
+  if ( gesture->state() == Qt::GestureFinished )
+  {
     QPoint pos = gesture->position().toPoint();
     QWidget * receiver = QApplication::widgetAt( pos );
     qDebug() << "tapAndHoldTriggered: LONG CLICK gesture happened at " << pos;

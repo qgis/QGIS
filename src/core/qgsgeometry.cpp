@@ -2405,7 +2405,8 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
 double QgsGeometry::closestSegmentWithContext(
   const QgsPoint& point,
   QgsPoint& minDistPoint,
-  int& beforeVertex )
+  int& beforeVertex,
+  double* leftOf )
 {
   QgsDebugMsg( "Entering." );
   QgsPoint distPoint;
@@ -2471,6 +2472,10 @@ double QgsGeometry::closestSegmentWithContext(
             closestSegmentIndex = index;
             sqrDist = testdist;
             minDistPoint = distPoint;
+            if ( leftOf )
+            {
+              *leftOf = QgsGeometry::leftOf( point.x(), point.y(), *prevx, *prevy, *thisx, *thisy );
+            }
           }
         }
         ptr += sizeof( double );
@@ -2515,6 +2520,10 @@ double QgsGeometry::closestSegmentWithContext(
               closestSegmentIndex = pointindex;
               sqrDist = testdist;
               minDistPoint = distPoint;
+              if ( leftOf )
+              {
+                *leftOf = QgsGeometry::leftOf( point.x(), point.y(), *prevx, *prevy, *thisx, *thisy );
+              }
             }
           }
           prevx = thisx;
@@ -2557,6 +2566,10 @@ double QgsGeometry::closestSegmentWithContext(
               closestSegmentIndex = index;
               sqrDist = testdist;
               minDistPoint = distPoint;
+              if ( leftOf )
+              {
+                *leftOf = QgsGeometry::leftOf( point.x(), point.y(), *prevx, *prevy, *thisx, *thisy );
+              }
             }
           }
           prevx = thisx;
@@ -2605,6 +2618,10 @@ double QgsGeometry::closestSegmentWithContext(
                 closestSegmentIndex = pointindex;
                 sqrDist = testdist;
                 minDistPoint = distPoint;
+                if ( leftOf )
+                {
+                  *leftOf = QgsGeometry::leftOf( point.x(), point.y(), *prevx, *prevy, *thisx, *thisy );
+                }
               }
             }
             prevx = thisx;
@@ -6139,10 +6156,7 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   try
   {
     GEOSGeometry* unionGeom = GEOSUnion( mGeos, geometry->mGeos );
-    QGis::WkbType thisGeomType = wkbType();
-    QGis::WkbType otherGeomType = geometry->wkbType();
-    if (( thisGeomType == QGis::WKBLineString || thisGeomType == QGis::WKBLineString25D )
-        && ( otherGeomType == QGis::WKBLineString || otherGeomType == QGis::WKBLineString25D ) )
+    if ( type() == QGis::Line )
     {
       GEOSGeometry* mergedGeom = GEOSLineMerge( unionGeom );
       if ( mergedGeom )
@@ -6452,4 +6466,13 @@ bool QgsGeometry::isGeosEmpty()
     QgsDebugMsg( QString( "GEOS exception caught: %1" ).arg( e.what() ) );
     return false;
   }
+}
+
+double QgsGeometry::leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 )
+{
+  double f1 = x - x1;
+  double f2 = y2 - y1;
+  double f3 = y - y1;
+  double f4 = x2 - x1;
+  return f1*f2 - f3*f4;
 }

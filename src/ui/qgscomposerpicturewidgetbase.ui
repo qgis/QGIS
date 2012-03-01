@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>327</width>
-        <height>585</height>
+        <width>317</width>
+        <height>577</height>
        </rect>
       </property>
       <attribute name="label">
@@ -78,6 +78,9 @@
             </property>
             <property name="isWrapping" stdset="0">
              <bool>true</bool>
+            </property>
+            <property name="resizeMode">
+             <enum>QListView::Adjust</enum>
             </property>
             <property name="gridSize">
              <size>

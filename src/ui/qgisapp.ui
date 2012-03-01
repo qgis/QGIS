@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>28</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -41,6 +41,7 @@
     <addaction name="mActionDeleteRing"/>
     <addaction name="mActionDeletePart"/>
     <addaction name="mActionReshapeFeatures"/>
+    <addaction name="mActionOffsetCurve"/>
     <addaction name="mActionSplitFeatures"/>
     <addaction name="mActionMergeFeatures"/>
     <addaction name="mActionMergeFeatureAttributes"/>
@@ -292,6 +293,7 @@
    <addaction name="mActionDeleteRing"/>
    <addaction name="mActionDeletePart"/>
    <addaction name="mActionReshapeFeatures"/>
+   <addaction name="mActionOffsetCurve"/>
    <addaction name="mActionSplitFeatures"/>
    <addaction name="mActionMergeFeatures"/>
    <addaction name="mActionMergeFeatureAttributes"/>
@@ -1602,6 +1604,18 @@
    </property>
    <property name="toolTip">
     <string>Pan Map to Selection</string>
+   </property>
+  </action>
+  <action name="mActionOffsetCurve">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOffsetCurve.png</normaloff>:/images/themes/default/mActionOffsetCurve.png</iconset>
+   </property>
+   <property name="text">
+    <string>Offset curve</string>
    </property>
   </action>
  </widget>
