@@ -508,37 +508,40 @@ class geometryThread( QThread ):
     return True
 
   def export_geometry_info( self ):
+    ellips = None
+    crs = None
+    coordTransform = None
+
+    # calculate with:
+    # 0 - layer CRS
+    # 1 - project CRS
+    # 2 - ellipsoidal
+    if self.myCalcType == 2:
+      settings = QSettings()
+      ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
+      crs = self.vlayer.crs().srsid()
+    elif self.myCalcType == 1:
+      mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
+      layCRS = self.vlayer.crs()
+      coordTransform = QgsCoordinateTransform( layCRS, mapCRS )
+
+    inFeat = QgsFeature()
+    outFeat = QgsFeature()
+    inGeom = QgsGeometry()
+    nElement = 0
+
+    vprovider = self.vlayer.dataProvider()
+
+    self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
+    self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, vprovider.featureCount() ) )
+
     if self.writeShape:
-      vprovider = self.vlayer.dataProvider()
       allAttrs = vprovider.attributeIndexes()
       vprovider.select( allAttrs )
       ( fields, index1, index2 ) = self.checkGeometryFields( self.vlayer )
       writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                     vprovider.geometryType(), vprovider.crs() )
-      inFeat = QgsFeature()
-      outFeat = QgsFeature()
-      inGeom = QgsGeometry()
-      nFeat = vprovider.featureCount()
-      nElement = 0
 
-      # calculate with:
-      # 0 - layer CRS
-      # 1 - project CRS
-      # 2 - ellipsoidal
-      ellips = None
-      crs = None
-      coordTransform = None
-      if self.myCalcType == 2:
-        settings = QSettings()
-        ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
-        crs = self.parent.iface.mapCanvas().mapRenderer().destinationCrs().srsid()
-      elif self.myCalcType == 1:
-        mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
-        layCRS = self.vlayer.crs()
-        coordTransform = QgsCoordinateTransform( layCRS, mapCRS )
-
-      self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
-      self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
       while vprovider.nextFeature(inFeat):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
         nElement += 1
@@ -546,6 +549,7 @@ class geometryThread( QThread ):
 
         if self.myCalcType == 1:
           inGeom.transform( coordTransform )
+
         ( attr1, attr2 ) = self.simpleMeasure( inGeom, self.myCalcType, ellips, crs )
 
         outFeat.setGeometry( inGeom )
@@ -558,33 +562,8 @@ class geometryThread( QThread ):
       return True
     else: # update existing file
       newFields = []
-      vprovider = self.vlayer.dataProvider()
       geomType = self.vlayer.geometryType()
       ( index1, index2 ) = self.findOrCreateFields()
-
-      inFeat = QgsFeature()
-      inGeom = QgsGeometry()
-      nFeat = vprovider.featureCount()
-      nElement = 0
-
-      # calculate with:
-      # 0 - layer CRS
-      # 1 - project CRS
-      # 2 - ellipsoidal
-      ellips = None
-      crs = None
-      coordTransform = None
-      if self.myCalcType == 2:
-        settings = QSettings()
-        ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
-        crs = self.parent.iface.mapCanvas().mapRenderer().destinationCrs().srsid()
-      elif self.myCalcType == 1:
-        mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
-        layCRS = self.vlayer.crs()
-        coordTransform = QgsCoordinateTransform( layCRS, mapCRS )
-
-      self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
-      self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
 
       while vprovider.nextFeature(inFeat):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
