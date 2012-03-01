@@ -352,7 +352,16 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     int joinStyle = s.value( "/qgis/digitizing/offset_join_style", 0 ).toInt();
     int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
     double mitreLimit = s.value( "/qgis/digitizine/offset_miter_limit", 5.0 ).toDouble();
-    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, quadSegments, joinStyle, mitreLimit, leftSide ? 1 : 0 );
+
+    GEOSGeometry* offsetGeom = 0;
+    //need at least geos 3.3 for OffsetCurve tool
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
+#else
+    return;
+#endif //GEOS_VERSION
+
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();
@@ -364,9 +373,6 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
       QMessageBox::critical( 0, tr( "Geometry error" ), tr( "Creating offset geometry failed" ) );
       return;
     }
-
-    //GEOS >= 3.3
-    //GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, (leftSide > 0) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
 
     if ( offsetGeom )
     {
