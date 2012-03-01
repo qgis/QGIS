@@ -81,7 +81,8 @@ class CORE_EXPORT QgsFeatureRendererV2
     enum Capabilities
     {
       SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
-      RotationField = 1 <<  1    // rotate symbols by attribute value
+      RotationField = 1 <<  1,    // rotate symbols by attribute value
+      MoreSymbolsPerFeature = 1 << 2  // may use more than one symbol to render a feature: symbolsForFeature() will return them
     };
 
     //! returns bitwise OR-ed capabilities of the renderer
@@ -117,7 +118,17 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! @note added in 1.9
     virtual void setRotationField( QString fieldName ) { Q_UNUSED( fieldName ); }
 
+    //! return whether the renderer will render a feature or not.
+    //! Must be called between startRender() and stopRender() calls.
+    //! Default implementation uses symbolForFeature().
+    //! @note added in 1.9
+    virtual bool willRenderFeature( QgsFeature& feat ) { return symbolForFeature( feat ) != NULL; }
 
+    //! return list of symbols used for rendering the feature.
+    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
+    //! to use symbolForFeature()
+    //! @note added in 1.9
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
   protected:
     QgsFeatureRendererV2( QString type );
