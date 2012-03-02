@@ -416,20 +416,20 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 
   // zoom to layer extent
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
-                     tr( "&Zoom to layer extent" ), legend(), SLOT( legendLayerZoom() ) );
+                     tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
-    theMenu.addAction( tr( "&Zoom to best scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
+    theMenu.addAction( tr( "&Zoom to Best Scale (100%)" ), legend(), SLOT( legendLayerZoomNative() ) );
 
     QgsRasterLayer *rasterLayer =  qobject_cast<QgsRasterLayer *>( lyr );
     if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
     {
-      theMenu.addAction( tr( "&Stretch using current extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
+      theMenu.addAction( tr( "&Stretch Using Current Extent" ), legend(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
     }
   }
 
   // show in overview
-  QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in overview" ), this, SLOT( showInOverview() ) );
+  QAction* showInOverviewAction = theMenu.addAction( tr( "&Show in Overview" ), this, SLOT( showInOverview() ) );
   showInOverviewAction->setCheckable( true );
   showInOverviewAction->blockSignals( true );
   showInOverviewAction->setChecked( mLyr.isInOverview() );
@@ -439,10 +439,10 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   // set layer crs
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
   // assign layer crs to project
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &project CRS from layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
   theMenu.addSeparator();
 
@@ -451,7 +451,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    theMenu.addAction( QgisApp::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open attribute table" ),
+    theMenu.addAction( QgisApp::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
                        QgisApp::instance(), SLOT( attributeTable() ) );
 
     // allow editing
@@ -466,10 +466,10 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     }
 
     // save as vector file
-    theMenu.addAction( tr( "Save as..." ), QgisApp::instance(), SLOT( saveAsVectorFile() ) );
+    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsVectorFile() ) );
 
     // save selection as vector file
-    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save selection as..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
+    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save Selection As..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
     if ( vlayer->selectedFeatureCount() == 0 )
     {
       saveSelectionAsAction->setEnabled( false );
@@ -479,7 +479,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     //show number of features in legend if requested
-    QAction* showNFeaturesAction = new QAction( tr( "Show feature count" ), &theMenu );
+    QAction* showNFeaturesAction = new QAction( tr( "Show Feature Count" ), &theMenu );
     showNFeaturesAction->setCheckable( true );
     showNFeaturesAction->setChecked( mShowFeatureCount );
     QObject::connect( showNFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( setShowFeatureCount( bool ) ) );

@@ -609,19 +609,19 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
       if ( li->parent() && !parentGroupEmbedded( li ) )
       {
-        theMenu.addAction( tr( "&Make to toplevel item" ), this, SLOT( makeToTopLevelItem() ) );
+        theMenu.addAction( tr( "&Make to Toplevel Item" ), this, SLOT( makeToTopLevelItem() ) );
       }
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
-                         tr( "Zoom to group" ), this, SLOT( legendLayerZoom() ) );
+                         tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ),
                          tr( "&Remove" ), this, SLOT( legendGroupRemove() ) );
 
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ),
-                         tr( "&Set group CRS" ), this, SLOT( legendGroupSetCRS() ) );
+                         tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
     if (( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP ) && !groupEmbedded( li ) && !parentGroupEmbedded( li ) )
@@ -633,16 +633,16 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     //
     if ( selectedLayers().length() > 1 )
     {
-      theMenu.addAction( tr( "&Group selected" ), this, SLOT( groupSelectedLayers() ) );
+      theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
     }
     // ends here
   }
 
-  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add new group" ), this, SLOT( addGroupToCurrentItem() ) );
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand all" ), this, SLOT( expandAll() ) );
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse all" ), this, SLOT( collapseAll() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
 
-  QAction *updateDrawingOrderAction = theMenu.addAction( QgisApp::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update drawing order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
+  QAction *updateDrawingOrderAction = theMenu.addAction( QgisApp::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
   updateDrawingOrderAction->setCheckable( true );
   updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
 
