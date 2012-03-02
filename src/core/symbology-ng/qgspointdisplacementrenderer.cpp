@@ -105,14 +105,14 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
           {
             labelAttributeList << QString();
           }
-          symbolList << dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->symbolForFeature( attIt.value() ) );
+          symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, attIt.value() ) );
         }
       }
     }
   }
   else //only one feature
   {
-    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->symbolForFeature( feature ) );
+    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, feature ) );
     if ( mDrawLabels )
     {
       labelAttributeList << getLabel( feature );
@@ -573,4 +573,20 @@ void QgsPointDisplacementRenderer::drawLabels( const QPointF& centerPoint, QgsSy
     p->drawText( QPointF( 0, 0 ), *text_it );
     p->restore();
   }
+}
+
+QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f )
+{
+  if ( !r )
+  {
+    return 0;
+  }
+
+  QgsSymbolV2List symbolList = r->symbolsForFeature( f );
+  if ( symbolList.size() < 1 )
+  {
+    return 0;
+  }
+
+  return symbolList.at( 0 );
 }
