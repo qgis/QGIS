@@ -43,4 +43,13 @@ class QgsComposerShape: QgsComposerItem
     QColor fillColor() const;
     QgsComposerShape::Shape shapeType() const;
     void setShapeType( QgsComposerShape::Shape s );
+    bool transparentFill() const;
+    void setTransparentFill( bool transparent );
+
+    /**Sets this items bound in scene coordinates such that 1 item size units
+     corresponds to 1 scene size unit. Also, the shape is scaled*/
+    void setSceneRect( const QRectF& rectangle );
+  public slots:
+    /**Sets item rotation and resizes item bounds such that the shape always has the same size*/
+    virtual void setRotation( double r );
 }; 
