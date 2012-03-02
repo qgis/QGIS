@@ -1257,7 +1257,16 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     if ( layer->isUsingRendererV2() )
     {
       QgsFeatureRendererV2* r2 = layer->rendererV2();
-      if ( !r2 || !r2->symbolForFeature( feature ) )
+      if ( !r2 )
+      {
+        continue;
+      }
+
+      QgsRenderContext c;
+      r2->startRender( c, layer );
+      bool renderV2 = r2->willRenderFeature( feature );
+      r2->stopRender( c );
+      if ( !renderV2 )
       {
         continue;
       }
