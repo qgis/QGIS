@@ -127,6 +127,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         bool renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
 
+        //! only tell whether a feature will be rendered without actually rendering it
+        //! @note added in 1.9
+        bool willRenderFeature( QgsFeature& feat );
+
+        //! tell which symbols will be used to render the feature
+        //! @note added in 1.9
+        QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+
         void stopRender( QgsRenderContext& context );
 
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
@@ -203,6 +211,21 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     //! for debugging
     virtual QString dump();
+
+    //! return whether the renderer will render a feature or not.
+    //! Must be called between startRender() and stopRender() calls.
+    //! @note added in 1.9
+    virtual bool willRenderFeature( QgsFeature& feat );
+
+    //! return list of symbols used for rendering the feature.
+    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
+    //! to use symbolForFeature()
+    //! @note added in 1.9
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+
+    //! returns bitwise OR-ed capabilities of the renderer
+    //! \note added in 2.0
+    virtual int capabilities() { return MoreSymbolsPerFeature; }
 
     /////
 

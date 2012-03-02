@@ -288,6 +288,38 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
   return rendered;
 }
 
+bool QgsRuleBasedRendererV2::Rule::willRenderFeature( QgsFeature& feat )
+{
+  if ( !isFilterOK( feat ) )
+    return false;
+  if ( mSymbol )
+    return true;
+
+  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  {
+    Rule* rule = *it;
+    if ( rule->willRenderFeature( feat ) )
+      return true;
+  }
+  return false;
+}
+
+QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& feat )
+{
+  QgsSymbolV2List lst;
+  if ( !isFilterOK( feat ) )
+    return lst;
+  if ( mSymbol )
+    lst.append( mSymbol );
+
+  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  {
+    Rule* rule = *it;
+    lst += rule->symbolsForFeature( feat );
+  }
+  return lst;
+}
+
 
 void QgsRuleBasedRendererV2::Rule::stopRender( QgsRenderContext& context )
 {
@@ -580,4 +612,14 @@ QString QgsRuleBasedRendererV2::dump()
   QString msg( "Rule-based renderer:\n" );
   msg += mRootRule->dump();
   return msg;
+}
+
+bool QgsRuleBasedRendererV2::willRenderFeature( QgsFeature& feat )
+{
+  return mRootRule->willRenderFeature( feat );
+}
+
+QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
+{
+  return mRootRule->symbolsForFeature( feat );
 }

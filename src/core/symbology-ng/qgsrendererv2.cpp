@@ -417,3 +417,11 @@ void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPol
     }
   }
 }
+
+QgsSymbolV2List QgsFeatureRendererV2::symbolsForFeature( QgsFeature& feat )
+{
+  QgsSymbolV2List lst;
+  QgsSymbolV2* s = symbolForFeature( feat );
+  if ( s ) lst.append( s );
+  return lst;
+}
