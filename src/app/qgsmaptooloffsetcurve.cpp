@@ -357,7 +357,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     //need at least geos 3.3 for OffsetCurve tool
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
   ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
+    offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
 #else
     return;
 #endif //GEOS_VERSION
