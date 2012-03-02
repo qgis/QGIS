@@ -810,6 +810,18 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
   QMap< QString, QSet<QString> > hiddenAttributes = mConfigParser->hiddenAttributes();
 
+  //Render context is needed to determine feature visibility for vector layers
+  QgsRenderContext renderContext;
+  if ( mMapRenderer )
+  {
+    renderContext.setExtent( mMapRenderer->extent() );
+    renderContext.setRasterScaleFactor( 1.0 );
+    renderContext.setMapToPixel( *( mMapRenderer->coordinateTransform() ) );
+    renderContext.setRendererScale( mMapRenderer->scale() );
+    renderContext.setScaleFactor( mMapRenderer->outputDpi() / 25.4 );
+    renderContext.setPainter( 0 );
+  }
+
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
   QStringList::const_iterator layerIt;
@@ -861,7 +873,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
           layerHiddenAttributes = hiddenIt.value();
         }
 
-        if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, layerAliasInfo, layerHiddenAttributes, version, featuresRect ) != 0 )
+        if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, renderContext,
+                                         layerAliasInfo, layerHiddenAttributes, version, featuresRect ) != 0 )
         {
           continue;
         }
@@ -1207,6 +1220,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     QDomDocument& infoDocument,
     QDomElement& layerElement,
     QgsMapRenderer* mapRender,
+    QgsRenderContext& renderContext,
     QMap<int, QString>& aliasMap,
     QSet<QString>& hiddenAttributes,
     QString version,
@@ -1226,7 +1240,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   //info point could be 0 in case there is only an attribute filter
   if ( infoPoint )
   {
-    double searchRadius = ( layerRect.xMaximum() - layerRect.xMinimum() ) / 200;
+    double searchRadius = ( layerRect.xMaximum() - layerRect.xMinimum() ) / 100;
     searchRect.set( infoPoint->x() - searchRadius, infoPoint->y() - searchRadius,
                     infoPoint->x() + searchRadius, infoPoint->y() + searchRadius );
   }
@@ -1262,10 +1276,9 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         continue;
       }
 
-      QgsRenderContext c;
-      r2->startRender( c, layer );
+      r2->startRender( renderContext, layer );
       bool renderV2 = r2->willRenderFeature( feature );
-      r2->stopRender( c );
+      r2->stopRender( renderContext );
       if ( !renderV2 )
       {
         continue;
