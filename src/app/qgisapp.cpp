@@ -2763,7 +2763,11 @@ void QgisApp::fileOpen()
     deletePrintComposers();
     removeAnnotationItems();
     // clear out any stuff from previous project
-    mMapCanvas->freeze( true );
+
+    //avoid multiple canvas redraws during loading of project files
+    bool bkRenderFlag = mMapCanvas->renderFlag();
+    mMapCanvas->setRenderFlag( false );
+
     removeAllLayers();
 
     QgsProject::instance()->setFileName( fullPath );
@@ -2773,8 +2777,7 @@ void QgisApp::fileOpen()
       QMessageBox::critical( this,
                              tr( "QGIS Project Read Error" ),
                              QgsProject::instance()->error() );
-      mMapCanvas->freeze( false );
-      mMapCanvas->refresh();
+      mMapCanvas->setRenderFlag( bkRenderFlag );
       return;
     }
 
@@ -2786,8 +2789,7 @@ void QgisApp::fileOpen()
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath, settings );
 
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    mMapCanvas->setRenderFlag( bkRenderFlag );
   }
 
 } // QgisApp::fileOpen
@@ -2799,7 +2801,8 @@ void QgisApp::fileOpen()
   */
 bool QgisApp::addProject( QString projectFile )
 {
-  mMapCanvas->freeze( true );
+  bool bkRenderFlag = mMapCanvas->renderFlag();
+  mMapCanvas->setRenderFlag( false );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -2817,8 +2820,7 @@ bool QgisApp::addProject( QString projectFile )
 
     QApplication::restoreOverrideCursor();
 
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
+    mMapCanvas->setRenderFlag( bkRenderFlag );
     return false;
   }
 
@@ -2854,8 +2856,7 @@ bool QgisApp::addProject( QString projectFile )
 
   QApplication::restoreOverrideCursor();
 
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
+  mMapCanvas->setRenderFlag( bkRenderFlag );
   return true;
 } // QgisApp::addProject(QString projectFile)
 
