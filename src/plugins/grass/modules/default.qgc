@@ -275,6 +275,7 @@
 				<grass name="r.category"/>
 			</section>
 			<section label="Statistics">
+                                <grass name="r.stats"/>
 				<grass name="r.sum"/>
 				<grass name="r.report"/>
 				<grass name="r.average"/>
