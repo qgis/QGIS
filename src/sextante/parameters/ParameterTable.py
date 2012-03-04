@@ -37,7 +37,7 @@ class ParameterTable(ParameterDataObject):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterTable(tokens[0], tokens[1], "True" == tokens[2])
+        return ParameterTable(tokens[0], tokens[1], str(True) == tokens[2])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=table"

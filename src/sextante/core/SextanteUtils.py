@@ -32,8 +32,6 @@ class SextanteUtils:
         SextanteUtils.NUM_EXPORTED += 1
 
 
-
-
 def mkdir(newdir):
     if os.path.isdir(newdir):
         pass

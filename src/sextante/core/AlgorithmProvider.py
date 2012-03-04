@@ -1,4 +1,6 @@
 from sextante.core.SextanteConfig import Setting, SextanteConfig
+import os
+from PyQt4 import QtGui
 class AlgorithmProvider():
 
     def __init__(self):
@@ -18,9 +20,15 @@ class AlgorithmProvider():
         else:
             self._loadAlgorithms()
 
-    #method to be overriden. Algorithm loading should take place here
+    #methods to be overriden.
+    #==============================
+
+    #Algorithm loading should take place here
     def _loadAlgorithms(self):
         pass
+
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ["tif"]

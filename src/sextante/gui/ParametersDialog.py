@@ -17,6 +17,14 @@ from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteResults import SextanteResults
+from sextante.core.SextanteUtils import SextanteUtils
+from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputVector import OutputVector
+from sextante.outputs.OutputTable import OutputTable
+from sextante.gui.ResultsDialog import ResultsDialog
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+from sextante.gui.RangePanel import RangePanel
+from sextante.parameters.ParameterRange import ParameterRange
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -107,6 +115,10 @@ class Ui_ParametersDialog(object):
             item = QtGui.QComboBox()
             item.addItem("Yes")
             item.addItem("No")
+            if param.default:
+                item.setCurrentIndex(0)
+            else:
+                item.setCurrentIndex(1)
         elif isinstance(param, ParameterTableField):
             item = QtGui.QComboBox()
             if param.parent in self.dependentItems:
@@ -125,6 +137,8 @@ class Ui_ParametersDialog(object):
             item.addItems(param.options)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
+        elif isinstance(param, ParameterRange):
+            item = RangePanel(param)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = QGisLayers.getVectorLayers()
@@ -215,6 +229,8 @@ class Ui_ParametersDialog(object):
             return param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
             return param.setValue(widget.table)
+        elif isinstance(param, ParameterRange):
+            return param.setValue(widget.getValue())
         if isinstance(param, ParameterTableField):
             return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
@@ -236,8 +252,8 @@ class Ui_ParametersDialog(object):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())
                 AlgorithmExecutor.runalg(self.alg, self)
-                SextanteResults.handleAlgorithmResults(self.alg)
                 QApplication.restoreOverrideCursor()
+                SextantePostprocessing.handleAlgorithmResults(self.alg)
                 self.dialog.alg = self.alg
                 self.dialog.close()
             else:
@@ -246,8 +262,14 @@ class Ui_ParametersDialog(object):
         except GeoAlgorithmExecutionException, e :
             QApplication.restoreOverrideCursor()
             QMessageBox.critical(self, "Error",e.msg)
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
             self.dialog.close()
-
+        #=======================================================================
+        # except Exception, ex:
+        #   QApplication.restoreOverrideCursor()
+        #   QMessageBox.critical(self, "Error", "Could not execute algorithm")
+        #   self.dialog.close()
+        #=======================================================================
 
 
     def reject(self):

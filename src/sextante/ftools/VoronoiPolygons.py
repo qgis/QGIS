@@ -9,7 +9,7 @@ from sextante.outputs.OutputVector import OutputVector
 import voronoi
 from sets import Set
 
-class VoronoiAlgorithm(GeoAlgorithm):
+class VoronoiPolygons(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
@@ -17,8 +17,8 @@ class VoronoiAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(VoronoiAlgorithm.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(VoronoiAlgorithm.INPUT))
+        output = self.getOutputValue(VoronoiPolygons.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(VoronoiPolygons.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
@@ -160,6 +160,6 @@ class VoronoiAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Voronoi polygons"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(VoronoiAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
-        self.addOutput(OutputVector(VoronoiAlgorithm.OUTPUT, "Voronoi polygons"))
+        self.addParameter(ParameterVector(VoronoiPolygons.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addOutput(OutputVector(VoronoiPolygons.OUTPUT, "Voronoi polygons"))
 

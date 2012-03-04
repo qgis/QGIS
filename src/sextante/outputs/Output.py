@@ -30,3 +30,6 @@ class Output(object):
             return True
         except:
             return False
+
+    def outputTypeName(self):
+        return self.__module__.split(".")[-1]

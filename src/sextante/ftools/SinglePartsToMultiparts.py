@@ -3,6 +3,7 @@ import os.path
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.core.QGisLayers import QGisLayers
@@ -10,7 +11,7 @@ from sextante.ftools import ftools_utils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
 
-class SinglePartsToMultipartsAlgorithm(GeoAlgorithm):
+class SinglePartsToMultiparts(GeoAlgorithm):
 
     INPUT = "INPUT"
     FIELD = "FIELD"
@@ -22,8 +23,8 @@ class SinglePartsToMultipartsAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SinglePartsToMultipartsAlgorithm.INPUT))
-        output = self.getOutputValue(SinglePartsToMultipartsAlgorithm.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SinglePartsToMultiparts.INPUT))
+        output = self.getOutputValue(SinglePartsToMultiparts.OUTPUT)
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
@@ -35,7 +36,7 @@ class SinglePartsToMultipartsAlgorithm(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
-        index = int(self.getParameterValue(SinglePartsToMultipartsAlgorithm.FIELD))
+        index = int(self.getParameterValue(SinglePartsToMultiparts.FIELD))
         unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
         nFeat = vprovider.featureCount() * len( unique )
         nElement = 0
@@ -87,8 +88,8 @@ class SinglePartsToMultipartsAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Singleparts to multi parts"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(SinglePartsToMultipartsAlgorithm.INPUT, "Input layer"))
-        self.addParameter(ParameterTableField(SinglePartsToMultipartsAlgorithm.FIELD,
-                                              "Unique ID field", SinglePartsToMultipartsAlgorithm.INPUT))
-        self.addOutput(OutputVector(SinglePartsToMultipartsAlgorithm.OUTPUT, "Output layer"))
+        self.addParameter(ParameterVector(SinglePartsToMultiparts.INPUT, "Input layer"))
+        self.addParameter(ParameterTableField(SinglePartsToMultiparts.FIELD,
+                                              "Unique ID field", SinglePartsToMultiparts.INPUT))
+        self.addOutput(OutputVector(SinglePartsToMultiparts.OUTPUT, "Output layer"))
     #=========================================================

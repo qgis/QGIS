@@ -2,7 +2,7 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterFixedTable(Parameter):
 
-    def __init__(self, name="", description="", cols=1, numRows=3, fixedNumOfRows = False):
+    def __init__(self, name="", description="", cols=["value"], numRows=3, fixedNumOfRows = False):
         self.cols = cols
         self.numRows = numRows
         self.fixedNumOfRows = False
@@ -25,5 +25,11 @@ class ParameterFixedTable(Parameter):
         tablestring = tablestring[:-1]
         return tablestring
 
+    def deserialize(self, s):
+        tokens = s.split("|")
+        return ParameterFixedTable(tokens[0], tokens[1], tokens[3].split(";"), int(tokens[2]), tokens[4] == str(True))
 
+    def serialize(self):
+        return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
+                        "|" + str(self.numRows) + "|" + ";".join(self.cols) + "|" +  str(self.fixedNumOfRows)
 

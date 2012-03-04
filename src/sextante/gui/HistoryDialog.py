@@ -41,7 +41,7 @@ class HistoryDialog(QtGui.QDialog):
             for entry in elements[category]:
                 item = TreeLogEntryItem(entry, category==SextanteLog.LOG_ALGORITHM)
                 item.setIcon(0, self.keyIcon)
-                groupItem.addChild(item)
+                groupItem.insertChild(0,item)
             self.tree.addTopLevelItem(groupItem)
 
 

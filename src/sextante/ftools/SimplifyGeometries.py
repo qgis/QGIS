@@ -11,7 +11,7 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.SextanteLog import SextanteLog
 
-class SimplifyGeometriesAlgorithm(GeoAlgorithm):
+class SimplifyGeometries(GeoAlgorithm):
 
     TOLERANCE = "TOLERANCE"
     USE_SELECTION = "USE_SELECTION"
@@ -26,20 +26,20 @@ class SimplifyGeometriesAlgorithm(GeoAlgorithm):
         self.progress = progress
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(SimplifyGeometriesAlgorithm.OUTPUT)
-        tolerance = int(self.getParameterValue(SimplifyGeometriesAlgorithm.TOLERANCE))
-        useSelection = self.getParameterValue(SimplifyGeometriesAlgorithm.USE_SELECTION)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SimplifyGeometriesAlgorithm.INPUT))
+        output = self.getOutputValue(SimplifyGeometries.OUTPUT)
+        tolerance = int(self.getParameterValue(SimplifyGeometries.TOLERANCE))
+        useSelection = self.getParameterValue(SimplifyGeometries.USE_SELECTION)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SimplifyGeometries.INPUT))
         self.generalize(vlayer, useSelection, tolerance, output, systemEncoding)
 
 
     def defineCharacteristics(self):
         self.name = "Simplify geometries"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(SimplifyGeometriesAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterNumber(SimplifyGeometriesAlgorithm.TOLERANCE, "Tolerance", 0, 10000000, 1))
-        self.addParameter(ParameterBoolean(SimplifyGeometriesAlgorithm.USE_SELECTION, "Use only selected features"))
-        self.addOutput(OutputVector(SimplifyGeometriesAlgorithm.OUTPUT, "Simplified layer"))
+        self.addParameter(ParameterVector(SimplifyGeometries.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterNumber(SimplifyGeometries.TOLERANCE, "Tolerance", 0, 10000000, 1))
+        self.addParameter(ParameterBoolean(SimplifyGeometries.USE_SELECTION, "Use only selected features"))
+        self.addOutput(OutputVector(SimplifyGeometries.OUTPUT, "Simplified layer"))
 
 
     def geomVertexCount(self, geometry):

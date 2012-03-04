@@ -3,11 +3,12 @@ import os.path
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 
-class LinesToPolygonsAlgorithm(GeoAlgorithm):
+class LinesToPolygons(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
@@ -18,8 +19,8 @@ class LinesToPolygonsAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(LinesToPolygonsAlgorithm.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(LinesToPolygonsAlgorithm.INPUT))
+        output = self.getOutputValue(LinesToPolygons.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(LinesToPolygons.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
@@ -64,6 +65,6 @@ class LinesToPolygonsAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Lines to polygons"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(LinesToPolygonsAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_LINE))
-        self.addOutput(OutputVector(LinesToPolygonsAlgorithm.OUTPUT, "Output layer"))
+        self.addParameter(ParameterVector(LinesToPolygons.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_LINE))
+        self.addOutput(OutputVector(LinesToPolygons.OUTPUT, "Output layer"))
     #=========================================================

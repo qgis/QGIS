@@ -132,10 +132,11 @@ class SextanteToolbox(QtGui.QDockWidget):
             if len(groups)>0:
                 providerItem = QtGui.QTreeWidgetItem()
                 providerItem.setText(0,providerName + " [" + str(len(provider)) + " geoalgorithms]")
+                providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(True)
+                providerItem.setExpanded(False)
                 for groupItem in groups.values():
                     if text != "":
                         groupItem.setExpanded(True)

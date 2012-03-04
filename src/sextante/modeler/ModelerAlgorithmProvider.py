@@ -9,13 +9,13 @@ from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.EditModelAction import EditModelAction
 from sextante.modeler.CreateNewModelAction import CreateNewModelAction
 from sextante.core.AlgorithmProvider import AlgorithmProvider
+from PyQt4 import QtGui
 
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         SextanteConfig.addSetting(Setting("Modeler", ModelerUtils.MODELS_FOLDER, "Models folder", ModelerUtils.modelsFolder()))
-        #SextanteConfig.addSetting(Setting("Modeler", ModelerUtils.ACTIVATE_MODELS, "Activate models", True))
         self.actions = [CreateNewModelAction()]
         self.contextMenuActions = [EditModelAction()]
 
@@ -27,6 +27,9 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def getName(self):
         return "Modeler"
+
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
 
     def _loadAlgorithms(self):
         folder = ModelerUtils.modelsFolder()

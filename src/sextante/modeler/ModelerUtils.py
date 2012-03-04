@@ -1,5 +1,5 @@
 import os
-from sextante.core.SextanteUtils import SextanteUtils, mkdir
+from sextante.core.SextanteUtils import mkdir
 from sextante.core.SextanteConfig import SextanteConfig
 
 class ModelerUtils:
@@ -11,7 +11,8 @@ class ModelerUtils:
     def modelsFolder():
         folder = SextanteConfig.getSetting(ModelerUtils.MODELS_FOLDER)
         if folder == None:
-            folder = SextanteUtils.userFolder() + os.sep + "models"
+            folder = os.path.join(os.path.dirname(__file__), "models")
+            #folder = SextanteUtils.userFolder() + os.sep + "models"
         mkdir(folder)
 
         return folder

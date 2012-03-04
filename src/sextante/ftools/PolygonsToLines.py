@@ -9,7 +9,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
 
-class PolygonsToLinesAlgorithm(GeoAlgorithm):
+class PolygonsToLines(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
@@ -20,8 +20,8 @@ class PolygonsToLinesAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(PolygonsToLinesAlgorithm.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(PolygonsToLinesAlgorithm.INPUT))
+        output = self.getOutputValue(PolygonsToLines.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(PolygonsToLines.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
@@ -69,6 +69,6 @@ class PolygonsToLinesAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Polygons to lines"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(PolygonsToLinesAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addOutput(OutputVector(PolygonsToLinesAlgorithm.OUTPUT, "Output layer"))
+        self.addParameter(ParameterVector(PolygonsToLines.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addOutput(OutputVector(PolygonsToLines.OUTPUT, "Output layer"))
     #=========================================================

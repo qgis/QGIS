@@ -12,7 +12,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
         self.element = element
         if isinstance(element, Parameter):
-            icon = QtGui.QIcon(os.path.dirname(__file__) + "/input.png")
+            icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/input.png")
             self.pixmap = icon.pixmap(20, 20, state=QtGui.QIcon.On)
             self.text = element.description
         else:

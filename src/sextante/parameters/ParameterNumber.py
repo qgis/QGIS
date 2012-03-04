@@ -23,7 +23,12 @@ class ParameterNumber(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterNumber(tokens[0], tokens[1], float(tokens[2]), float(tokens[3]), float(tokens[4]))
+        for i in range (2,5):
+            if tokens[i] == str(None):
+                tokens[i] = None
+            else:
+                tokens[i] = float(tokens[i])
+        return ParameterNumber(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=number " + self.default

@@ -8,7 +8,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 
-class ExportGeometryInfoAlgorithm(GeoAlgorithm):
+class ExportGeometryInfo(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
@@ -19,8 +19,8 @@ class ExportGeometryInfoAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(ExportGeometryInfoAlgorithm.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(ExportGeometryInfoAlgorithm.INPUT))
+        output = self.getOutputValue(ExportGeometryInfo.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(ExportGeometryInfo.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
@@ -127,6 +127,6 @@ class ExportGeometryInfoAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Export/Add geometry columns"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(ExportGeometryInfoAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addOutput(OutputVector(ExportGeometryInfoAlgorithm.OUTPUT, "Output layer"))
+        self.addParameter(ParameterVector(ExportGeometryInfo.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addOutput(OutputVector(ExportGeometryInfo.OUTPUT, "Output layer"))
     #=========================================================

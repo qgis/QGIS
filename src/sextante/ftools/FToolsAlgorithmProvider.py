@@ -1,25 +1,45 @@
 from sextante.core.AlgorithmProvider import AlgorithmProvider
-from sextante.ftools.SinglePartsToMultipartsAlgorithm import SinglePartsToMultipartsAlgorithm
-from sextante.ftools.PolygonsToLinesAlgorithm import PolygonsToLinesAlgorithm
-from sextante.ftools.LinesToPolygonsAlgorithm import LinesToPolygonsAlgorithm
-from sextante.ftools.ExportGeometryInfoAlgorithm import ExportGeometryInfoAlgorithm
-from sextante.ftools.ExtractNodesAlgorithm import ExtractNodesAlgorithm
-from sextante.ftools.CentroidsAlgorithm import CentroidsAlgorithm
-from sextante.ftools.SimplifyGeometriesAlgorithm import SimplifyGeometriesAlgorithm
-from sextante.ftools.DelaunayAlgorithm import DelaunayAlgorithm
-from sextante.ftools.SumLinesAlgorithm import SumLinesAlgorithm
-from sextante.ftools.VoronoiAlgorithm import VoronoiAlgorithm
+
+import os
+from PyQt4 import QtGui
+from sextante.ftools.Centroids import Centroids
+from sextante.ftools.Delaunay import Delaunay
+from sextante.ftools.SimplifyGeometries import SimplifyGeometries
+from sextante.ftools.VoronoiPolygons import VoronoiPolygons
+from sextante.ftools.ExportGeometryInfo import ExportGeometryInfo
+from sextante.ftools.ExtractNodes import ExtractNodes
+from sextante.ftools.LinesToPolygons import LinesToPolygons
+from sextante.ftools.PolygonsToLines import PolygonsToLines
+from sextante.ftools.SinglePartsToMultiparts import SinglePartsToMultiparts
+from sextante.ftools.BasicStatistics import BasicStatistics
+from sextante.ftools.PointsInPolygon import PointsInPolygon
+from sextante.ftools.SumLines import SumLines
+from sextante.ftools.MeanCoords import MeanCoords
+from sextante.ftools.NearestNeighbourAnalysis import NearestNeighbourAnalysis
+from sextante.ftools.LinesIntersection import LinesIntersection
+from sextante.ftools.ConvexHull import ConvexHull
+from sextante.ftools.FixedDistanceBuffer import FixedDistanceBuffer
+from sextante.ftools.VariableDistanceBuffer import VariableDistanceBuffer
+from sextante.ftools.Dissolve import Dissolve
+from sextante.ftools.Difference import Difference
+from sextante.ftools.Intersection import Intersection
 
 class FToolsAlgorithmProvider(AlgorithmProvider):
 
     def getName(self):
         return "ftools"
 
+    def getIcon(self):
+        return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/ftools_logo.png")
+
     def _loadAlgorithms(self):
-        self.algs = [SinglePartsToMultipartsAlgorithm(), PolygonsToLinesAlgorithm(),
-                     LinesToPolygonsAlgorithm(), ExportGeometryInfoAlgorithm(), ExtractNodesAlgorithm(),
-                     CentroidsAlgorithm(), SimplifyGeometriesAlgorithm(), DelaunayAlgorithm(), VoronoiAlgorithm(),
-                     SumLinesAlgorithm()]
+        self.algs = [SinglePartsToMultiparts(), PolygonsToLines(),
+                     LinesToPolygons(), ExportGeometryInfo(), ExtractNodes(),
+                     Centroids(), SimplifyGeometries(), Delaunay(), VoronoiPolygons(),
+                     SumLines(), BasicStatistics(), PointsInPolygon(),
+                     NearestNeighbourAnalysis(), MeanCoords(), LinesIntersection(),
+                     ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
+                     Dissolve(), Difference(), Intersection()]
         for alg in self.algs:
             alg.provider = self
 

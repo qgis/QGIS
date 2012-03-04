@@ -11,7 +11,7 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.ftools import ftools_utils
 from sextante.parameters.ParameterString import ParameterString
 
-class SumLinesAlgorithm(GeoAlgorithm):
+class SumLines(GeoAlgorithm):
 
     LINES = "LINES"
     POLYGONS = "POLYGONS"
@@ -24,10 +24,10 @@ class SumLinesAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(SumLinesAlgorithm.OUTPUT)
-        inField = self.getParameterValue(SumLinesAlgorithm.FIELD)
-        lineLayer = QGisLayers.getObjectFromUri(self.getParameterValue(SumLinesAlgorithm.LINES))
-        polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(SumLinesAlgorithm.POLYGONS))
+        output = self.getOutputValue(SumLines.OUTPUT)
+        inField = self.getParameterValue(SumLines.FIELD)
+        lineLayer = QGisLayers.getObjectFromUri(self.getParameterValue(SumLines.LINES))
+        polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(SumLines.POLYGONS))
         polyProvider = polyLayer.dataProvider()
         lineProvider = lineLayer.dataProvider()
         if polyProvider.crs() <> lineProvider.crs():
@@ -90,8 +90,8 @@ class SumLinesAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Sum line lengths"
         self.group = "Analysis tools"
-        self.addParameter(ParameterVector(SumLinesAlgorithm.LINES, "Lines", ParameterVector.VECTOR_TYPE_LINE))
-        self.addParameter(ParameterVector(SumLinesAlgorithm.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterString(SumLinesAlgorithm.FIELD, "Output field name", "LENGTH"))
-        self.addOutput(OutputVector(SumLinesAlgorithm.OUTPUT, "Result"))
+        self.addParameter(ParameterVector(SumLines.LINES, "Lines", ParameterVector.VECTOR_TYPE_LINE))
+        self.addParameter(ParameterVector(SumLines.POLYGONS, "Polygons", ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterString(SumLines.FIELD, "Output field name", "LENGTH"))
+        self.addOutput(OutputVector(SumLines.OUTPUT, "Result"))
 

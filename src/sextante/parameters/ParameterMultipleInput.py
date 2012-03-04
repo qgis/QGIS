@@ -78,6 +78,10 @@ class ParameterMultipleInput(ParameterDataObject):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
                         "|" + str(self.datatype) + "|" + str(self.optional)
 
+    def deserialize(self, s):
+        tokens = s.split("|")
+        return ParameterMultipleInput(tokens[0], tokens[1], float(tokens[2]), tokens[3] == str(True))
+
     def getAsScriptCode(self):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
             return "##" + self.name + "=multiple raster"

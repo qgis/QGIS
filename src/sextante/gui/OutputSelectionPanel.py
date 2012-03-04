@@ -30,7 +30,7 @@ class OutputSelectionPanel(QtGui.QWidget):
 
     def showSelectionDialog(self):
         filefilter = self.output.getFileFilter(self.alg)
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filter)
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filefilter)
         if filename:
             self.text.setText(str(filename))
 

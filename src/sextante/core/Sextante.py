@@ -12,13 +12,15 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
 from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
-from sextante.core.SextanteResults import SextanteResults
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+from sextante.modeler.ProviderIcons import ProviderIcons
+from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 
 class Sextante:
 
     iface = None
     providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),
-                 MMQGISAlgorithmProvider(), FToolsAlgorithmProvider()]
+                 MMQGISAlgorithmProvider(), FToolsAlgorithmProvider(), RAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []
@@ -27,6 +29,13 @@ class Sextante:
     @staticmethod
     def setInterface(iface):
         Sextante.iface = iface
+
+    @staticmethod
+    def getProviderFromName(name):
+        for provider in Sextante.providers:
+            if provider.getName() == name:
+                return provider
+        return Sextante.modeler
 
     @staticmethod
     def getInterface():
@@ -40,7 +49,7 @@ class Sextante:
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()
-        SextanteConfig.loadSettings()
+        #SextanteConfig.loadSettings()
 
 
     @staticmethod
@@ -79,6 +88,11 @@ class Sextante:
         for alg in providerAlgs:
             algs[alg.commandLineName()] = alg
         Sextante.algs[provider.getName()] = algs
+        icons = {}
+        for provider in Sextante.providers:
+            icons[provider.getName()] = provider.getIcon()
+        icons[Sextante.modeler.getName()] = Sextante.modeler.getIcon()
+        ProviderIcons.providerIcons = icons
 
 
 
@@ -214,7 +228,7 @@ class Sextante:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             AlgorithmExecutor.runalg(alg, SilentProgress())
             QApplication.restoreOverrideCursor()
-            SextanteResults.handleAlgorithmResults(alg)
+            SextantePostprocessing.handleAlgorithmResults(alg)
         except GeoAlgorithmExecutionException, e:
             QMessageBox.critical(None, "Error",  e.msg)
 

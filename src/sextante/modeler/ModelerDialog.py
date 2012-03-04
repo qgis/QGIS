@@ -8,6 +8,7 @@ from sextante.modeler.ModelerUtils import ModelerUtils
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerScene import ModelerScene
 import copy
+from sextante.modeler.ProviderIcons import ProviderIcons
 
 class ModelerDialog(QtGui.QDialog):
     def __init__(self, alg=None):
@@ -236,7 +237,7 @@ class ModelerDialog(QtGui.QDialog):
             if len(groups)>0:
                 providerItem = QtGui.QTreeWidgetItem()
                 providerItem.setText(0,providerName)
-
+                providerItem.setIcon(0, ProviderIcons.providerIcons[providerName])
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

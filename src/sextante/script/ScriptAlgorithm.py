@@ -42,6 +42,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             line = lines.readline()
         lines.close()
 
+    def createDescriptiveName(self, s):
+        return s.replace("_", " ")
 
     def processParameterLine(self,line):
 
@@ -49,29 +51,31 @@ class ScriptAlgorithm(GeoAlgorithm):
         out = None
         line = line.replace("#", "");
         tokens = line.split("=");
+        desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == "group":
             self.group = tokens[0]
+            return
         if tokens[1].lower().strip() == "raster":
-            param = ParameterRaster(tokens[0], tokens[0], False)
+            param = ParameterRaster(tokens[0], desc, False)
         elif tokens[1].lower().strip() == "vector":
-            param = ParameterVector(tokens[0], tokens[0],ParameterVector.VECTOR_TYPE_ANY)
+            param = ParameterVector(tokens[0],  desc,ParameterVector.VECTOR_TYPE_ANY)
         elif tokens[1].lower().strip() == "table":
-            param = ParameterTable(tokens[0], tokens[0], False)
+            param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip() == "multiple raster":
-            param = ParameterMultipleInput(tokens[0], tokens[0], ParameterMultipleInput.TYPE_RASTER)
+            param = ParameterMultipleInput(tokens[0], desc, ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
         elif tokens[1].lower().strip() == "multiple vector":
-            param = ParameterMultipleInput(tokens[0], tokens[0], ParameterMultipleInput.TYPE_VECTOR_ANY)
+            param = ParameterMultipleInput(tokens[0], desc, ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
         elif tokens[1].lower().strip().startswith("selection"):
             options = tokens[1].strip()[len("selection"):].split(";")
-            param = ParameterSelection(tokens[0],  tokens[0], options);
+            param = ParameterSelection(tokens[0],  desc, options);
         elif tokens[1].lower().strip() == "boolean":
             default = tokens[1].strip()[len("boolean")+1:]
-            param = ParameterBoolean(tokens[0],  tokens[0], default)
+            param = ParameterBoolean(tokens[0],  desc, default)
         elif tokens[    1].lower().strip().startswith("number"):
             default = tokens[1].strip()[len("number")+1:]
-            param = ParameterNumber(tokens[0],  tokens[0], default=default)
+            param = ParameterNumber(tokens[0],  desc, default=default)
         elif tokens[1].lower().strip().startswith("field"):
             field = tokens[1].strip()[len("field")+1:]
             found = False
@@ -83,7 +87,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 param = ParameterTableField(tokens[0],  tokens[0], field)
         elif tokens[1].lower().strip().startswith("string"):
             default = tokens[1].strip()[len("string")+1:]
-            param = ParameterString(tokens[0],  tokens[0], default)
+            param = ParameterString(tokens[0],  desc, default)
         elif tokens[1].lower().strip().startswith("output raster"):
             out = OutputRaster()
             if tokens[1].strip().endswith("*"):

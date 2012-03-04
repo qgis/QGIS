@@ -35,24 +35,29 @@ class ResultsDialog(QtGui.QDialog):
         self.horizontalLayout.addWidget(self.webView)
         self.setLayout(self.horizontalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
+        if self.lastUrl:
+            self.webView.load(self.lastUrl)
 
     def fillTree(self):
         elements = SextanteResults.getResults()
+        if len(elements) == 0:
+            self.lastUrl = None
+            return
         for element in elements:
             item = TreeResultItem(element)
             item.setIcon(0, self.keyIcon)
             self.tree.addTopLevelItem(item)
-
+        self.lastUrl = QtCore.QUrl(elements[-1].filename)
 
     def changeResult(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeResultItem):
-            url = QtCore.QUrl(item.value)
+            url = QtCore.QUrl(item.filename)
             self.webView.load(url)
 
 
 class TreeResultItem(QtGui.QTreeWidgetItem):
     def __init__(self, result):
         QTreeWidgetItem.__init__(self)
-        self.result = result
+        self.filename = result.filename
         self.setText(0, result.name)

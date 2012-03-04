@@ -17,6 +17,7 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
 from sextante.modeler.ModelerAlgorithm import AlgorithmAndParameter
+from sextante.parameters.ParameterRange import ParameterRange
 
 class ModelerParametersDialog(QtGui.QDialog):
 
@@ -187,6 +188,8 @@ class ModelerParametersDialog(QtGui.QDialog):
             item.addItems(param.options)
         elif isinstance(param, ParameterFixedTable):
             item = FixedTablePanel(param)
+        elif isinstance(param, ParameterRange):
+            item = RangePanel(param)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = self.getVectorLayers()
@@ -351,6 +354,12 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
             self.values[name] = str(widget.currentIndex())
             return True
+        elif isinstance(param, ParameterRange):
+            name =  self.model.getSafeNameForHarcodedParameter(param)
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            self.params[param.name] = value
+            self.values[name] = str(widget.getValue())
+            return True
         elif isinstance(param, ParameterFixedTable):
             name =  self.model.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
@@ -378,7 +387,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
             self.values[name] = ";".join(values)
 
-            return True
+            return False
 
 
     def okPressed(self):

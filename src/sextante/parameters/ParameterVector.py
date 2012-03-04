@@ -35,7 +35,7 @@ class ParameterVector(ParameterDataObject):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterVector(tokens[0], tokens[1], int(tokens[2]), "True" == tokens[3])
+        return ParameterVector(tokens[0], tokens[1], int(tokens[2]), str(True) == tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=vector"

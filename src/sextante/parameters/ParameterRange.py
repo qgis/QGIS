@@ -22,3 +22,7 @@ class ParameterRange(Parameter):
 
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
+
+    def deserialize(self, s):
+        tokens = s.split("|")
+        return ParameterRange(tokens[0], tokens[1])

@@ -26,7 +26,8 @@ from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
-from PyQt4 import QtGui
+from sextante.parameters.ParameterFactory import ParameterFactory
+from sextante.outputs.OutputFactory import OutputFactory
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -39,8 +40,24 @@ class SagaAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 
-
     def defineCharacteristicsFromFile(self):
+        lines = open(self._descriptionFile)
+        line = lines.readline().strip("\n").strip()
+        self.name = line
+        line = lines.readline().strip("\n").strip()
+        self.undecoratedGroup = line
+        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
+        while line != "":
+            line = line.strip("\n").strip()
+            if line.startswith("Parameter"):
+                self.addParameter(ParameterFactory.getFromString(line))
+            else:
+                self.addOutput(OutputFactory.getFromString(line))
+            line = lines.readline().strip("\n").strip()
+        lines.close()
+
+
+    def defineCharacteristicsFromFileSagaFormat(self):
 
         lines = open(self._descriptionFile)
         line = lines.readline()
@@ -50,7 +67,6 @@ class SagaAlgorithm(GeoAlgorithm):
             if line.startswith("library name"):
                 self.undecoratedGroup = line.split("\t")[1]
                 self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
-
             if line.startswith("module name"):
                 self.name = line.split("\t")[1]
             if line.startswith("-"):
@@ -64,7 +80,10 @@ class SagaAlgorithm(GeoAlgorithm):
                     raise UnwrappableSagaAlgorithmException()
                 line = lines.readline().lower()
                 if "data object" in line:
-                    pass
+                    output = OutputRaster()
+                    output.name = paramName
+                    output.description = paramDescription
+                    self.addOutput(output)
                 elif "file" in line:
                     param = ParameterString(paramName, paramDescription)
                     self.addParameter(param)
@@ -189,18 +208,18 @@ class SagaAlgorithm(GeoAlgorithm):
                 if not value.endswith("dbf"):
                     raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterMultipleInput):
-                layers = param.value
+                layers = param.value.split(";")
                 if layers == None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for layer in layers:
                         if isinstance(layer, QgsRasterLayer):
-                            layer = str(layer.dataProvider().dataSourceUri())
+                            layer = str(layer.source())
                         commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
                         if isinstance(layer, QgsVectorLayer):
-                            layer = str(layer.dataProvider().dataSourceUri())
+                            layer = str(layer.source())
                         if not layer.endswith("shp"):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
@@ -219,7 +238,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 s = param.value
                 for layer in self.exportedLayers.keys():
                     if layer in self.exportedLayers.keys():
-                        s = s.replace(layer, self.exportedlayer[layer])
+                        s = s.replace(layer, self.exportedLayers[layer])
                 command+=(" -" + param.name + " " + s);
             elif isinstance(param, ParameterBoolean):
                 if param.value == str(True):
@@ -274,7 +293,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def exportRasterLayer(self,layer):
 
         if not layer.lower().endswith("tif") and not layer.lower().endswith("asc"):
-            raise GeoAlgorithmExecutionException("Unsupported input file format")
+            raise GeoAlgorithmExecutionException("Unsupported input file format: " + layer)
         ext = os.path.splitext(layer)[1][1:].strip()
         destFilename = self.getTempFilename()
         self.exportedLayers[layer]= destFilename

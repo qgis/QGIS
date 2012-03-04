@@ -7,28 +7,39 @@ from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.outputs.OutputVector import OutputVector
 from sextante.ftools import ftools_utils
 import math
+from sextante.outputs.OutputHTML import OutputHTML
+from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.parameters.ParameterBoolean import ParameterBoolean
 
-class BasicStatisticsAlgorithm(GeoAlgorithm):
+class BasicStatistics(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
+    FIELD = "FIELD"
+    USE_SELECTION = "USE_SELECTION"
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/icons/centroids.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + "/icons/basic_Statistics.png")
+
+
+    def createHTML(self, outputFile, lstStats):
+        f = open(outputFile, "w")
+        for s in lstStats:
+            f.write("<p>" + str(s) + "</p>")
+        f.close()
+
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(CentroidsAlgorithm.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(CentroidsAlgorithm.INPUT))
+        outputFile = self.getOutputValue(BasicStatistics.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(BasicStatistics.INPUT))
+        attfield = self.getParameterValue(BasicStatistics.FIELD)
+        useSelection = self.getParameterValue(BasicStatistics.USE_SELECTION)
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
-        fields = vprovider.fields()
-        index = vprovider.fieldNameIndex( myField )
+        index = vprovider.fieldNameIndex(attfield)
         feat = QgsFeature()
         sumVal = 0.0
         meanVal = 0.0
@@ -37,15 +48,12 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
         first = True
         nElement = 0
         # determine selected field type
-        if ftools_utils.getFieldType( vlayer, myField ) in ('String', 'varchar', 'char', 'text'):
+        if ftools_utils.getFieldType( vlayer, attfield ) in ('String', 'varchar', 'char', 'text'):
           fillVal = 0
           emptyVal = 0
-          if self.mySelection: # only selected features
+          if useSelection: # only selected features
             selection = vlayer.selectedFeatures()
             nFeat = vlayer.selectedFeatureCount()
-            if nFeat > 0:
-              self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-              self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
             for f in selection:
               atMap = f.attributeMap()
               lenVal = float( len( atMap[ index ].toString() ) )
@@ -63,12 +71,10 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
               values.append( lenVal )
               sumVal = sumVal + lenVal
               nElement += 1
-              self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+              progress.setPercentage(int(nElement/nFeat * 100))
           else: # there is no selection, process the whole layer
             nFeat = vprovider.featureCount()
           if nFeat > 0:
-            self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-            self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
             vprovider.select( allAttrs )
             while vprovider.nextFeature( feat ):
               atMap = feat.attributeMap()
@@ -87,7 +93,7 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
               values.append( lenVal )
               sumVal = sumVal + lenVal
               nElement += 1
-              self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+              progress.setPercentage(int(nElement/nFeat * 100))
             nVal= float( len( values ) )
             if nVal > 0:
                 meanVal = sumVal / nVal
@@ -98,9 +104,9 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
                 lstStats.append( "Filled:"  + unicode( fillVal ) )
                 lstStats.append( "Empty:"  + unicode( emptyVal ) )
                 lstStats.append( "N:"  + unicode( nVal ) )
-                return ( lstStats, [] )
+                self.createHTML(outputFile, lstStats)
             else:
-                return ( ["Error:No features selected!"], [] )
+                raise GeoAlgorithmExecutionException("Error:No features selected!")
         else: # numeric field
           stdVal = 0.00
           cvVal = 0.00
@@ -108,13 +114,10 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
           medianVal = 0.00
           maxVal = 0.00
           minVal = 0.00
-          if self.mySelection: # only selected features
+          if useSelection: # only selected features
             selection = vlayer.selectedFeatures()
             nFeat = vlayer.selectedFeatureCount()
             uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, True )
-            if nFeat > 0:
-              self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-              self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
             for f in selection:
               atMap = f.attributeMap()
               value = float( atMap[ index ].toDouble()[ 0 ] )
@@ -128,13 +131,11 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
               values.append( value )
               sumVal = sumVal + value
               nElement += 1
-              self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
+              progress.setPercentage(int(nElement/nFeat * 100))
           else: # there is no selection, process the whole layer
             nFeat = vprovider.featureCount()
             uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, False )
           if nFeat > 0:
-            self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-            self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
             vprovider.select( allAttrs )
             while vprovider.nextFeature( feat ):
               atMap = feat.attributeMap()
@@ -149,7 +150,6 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
               values.append( value )
               sumVal = sumVal + value
               nElement += 1
-              self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           nVal= float( len( values ) )
           if nVal > 0.00:
               rangeVal = maxVal - minVal
@@ -177,12 +177,14 @@ class BasicStatisticsAlgorithm(GeoAlgorithm):
               lstStats.append( "Number of unique values:"  + unicode( uniqueVal ) )
               lstStats.append( "Range:"  + unicode( rangeVal ) )
               lstStats.append( "Median:"  + unicode( medianVal ) )
-              return ( lstStats, [] )
+              self.createHTML(outputFile, lstStats)
           else:
-            return ( ["Error:No features selected!"], [] )
+            raise GeoAlgorithmExecutionException("Error:No features selected!")
 
     def defineCharacteristics(self):
         self.name = "Basic statistics"
         self.group = "Analysis tools"
-        self.addParameter(ParameterVector(BasicStatisticsAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addOutput(OutputVector(BasicStatisticsAlgorithm.OUTPUT, "Statistics"))
+        self.addParameter(ParameterVector(BasicStatistics.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
+        self.addParameter(ParameterTableField(BasicStatistics.FIELD, "Field", BasicStatistics.INPUT))
+        self.addParameter(ParameterBoolean(BasicStatistics.USE_SELECTION, "Use selection", False))
+        self.addOutput(OutputHTML(BasicStatistics.OUTPUT, "Statistics"))

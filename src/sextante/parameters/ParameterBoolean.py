@@ -13,7 +13,7 @@ class ParameterBoolean(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterBoolean (tokens[0], tokens[1], bool(tokens[2]))
+        return ParameterBoolean (tokens[0], tokens[1], tokens[2] == str(True))
 
     def getAsScriptCode(self):
         return "##" + self.name + "=boolean " + self.default

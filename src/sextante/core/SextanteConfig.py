@@ -66,7 +66,6 @@ class SextanteConfig():
             return None
 
 
-
 class Setting():
 
     def __init__(self, group, name, description, default):

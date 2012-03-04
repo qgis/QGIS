@@ -142,6 +142,10 @@ class BatchProcessingDialog(QtGui.QDialog):
             item = QtGui.QComboBox()
             item.addItem("Yes")
             item.addItem("No")
+            if param.default:
+                item.setCurrentIndex(0)
+            else:
+                item.setCurrentIndex(1)
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()
             item.addItems(param.options)

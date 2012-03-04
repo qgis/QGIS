@@ -25,7 +25,7 @@ class SagaUtils:
         if folder == None:
             folder =""
 
-        return folder #SextanteUtils.softwareFolder() + os.sep + "saga"
+        return folder
 
     @staticmethod
     def sagaDescriptionPath():

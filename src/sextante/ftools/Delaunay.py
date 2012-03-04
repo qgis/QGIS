@@ -11,7 +11,7 @@ from sextante.outputs.OutputVector import OutputVector
 import voronoi
 from sets import Set
 
-class DelaunayAlgorithm(GeoAlgorithm):
+class Delaunay(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
@@ -22,8 +22,8 @@ class DelaunayAlgorithm(GeoAlgorithm):
     def processAlgorithm(self, progress):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(DelaunayAlgorithm.OUTPUT)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(DelaunayAlgorithm.INPUT))
+        output = self.getOutputValue(Delaunay.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(Delaunay.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
@@ -78,6 +78,6 @@ class DelaunayAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Delaunay triangulation"
         self.group = "Geometry tools"
-        self.addParameter(ParameterVector(DelaunayAlgorithm.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
-        self.addOutput(OutputVector(DelaunayAlgorithm.OUTPUT, "Delaunay triangulation"))
+        self.addParameter(ParameterVector(Delaunay.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POINT))
+        self.addOutput(OutputVector(Delaunay.OUTPUT, "Delaunay triangulation"))
 

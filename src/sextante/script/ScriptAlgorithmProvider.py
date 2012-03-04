@@ -10,6 +10,7 @@ from sextante.script.WrongScriptException import WrongScriptException
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.AlgorithmProvider import AlgorithmProvider
+from PyQt4 import QtGui
 
 class ScriptAlgorithmProvider(AlgorithmProvider):
 
@@ -20,6 +21,9 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         #self.actions = []
         self.actions.append(CreateNewScriptAction())
         self.contextMenuActions = [EditScriptAction(), DeleteScriptAction()]
+
+    def getIcon(self):
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
 
     def scriptsFolder(self):
         return ScriptUtils.scriptsFolder()

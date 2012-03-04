@@ -10,7 +10,10 @@ class SextanteLog():
 
     @staticmethod
     def startLogging():
-        logfile = open(SextanteLog.logFilename(), "w")
+        if os.path.isfile(SextanteLog.logFilename()):
+            logfile = open(SextanteLog.logFilename(), "a")
+        else:
+            logfile = open(SextanteLog.logFilename(), "w")
         logfile.write("Started logging at " + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "\n")
         logfile.close()
 

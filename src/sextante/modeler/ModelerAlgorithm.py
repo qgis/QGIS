@@ -7,7 +7,6 @@ from PyQt4 import QtCore, QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 import os.path
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
-from sextante.core.SextanteUtils import SextanteUtils
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -180,11 +179,11 @@ class ModelerAlgorithm(GeoAlgorithm):
                 tokens = value.split(";")
                 layerslist = []
                 for token in tokens:
-                    i, param = token.split("|")
-                    aap = AlgorithmAndParameter(i, param)
+                    i, paramname = token.split("|")
+                    aap = AlgorithmAndParameter(i, paramname)
                     value = self.getValueFromAlgorithmAndParameter(aap)
                     layerslist.append(str(value))
-                value = ",".join(layerslist)
+                value = ";".join(layerslist)
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
             else:
@@ -202,7 +201,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
-        if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
+        if float(aap.alg) == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
                 for key in self.paramValues.keys():
                     if aap.param == key:
                         return self.paramValues[key]
@@ -236,7 +235,11 @@ class ModelerAlgorithm(GeoAlgorithm):
         s = []
         for param in self.parameters:
             s.append(str(param.getAsScriptCode()))
+        for alg in self.algs:
+            #TODO*****
+            pass
         return "\n".join(s)
+
 
 class AlgorithmAndParameter():
 

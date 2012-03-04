@@ -111,7 +111,7 @@ class GeoAlgorithm:
                 if isinstance(param, ParameterNumber):
                     return float(param.value)
                 elif isinstance(param, ParameterBoolean):
-                    return param.value == True
+                    return param.value == str(True)
                 else:
                     return param.value
         return None

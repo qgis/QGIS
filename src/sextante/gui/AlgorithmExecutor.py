@@ -26,6 +26,7 @@ class AlgorithmExecutor:
         finally:
             progress.setFinished()
 
+
 class SilentProgress():
 
     def setText(self, text):
