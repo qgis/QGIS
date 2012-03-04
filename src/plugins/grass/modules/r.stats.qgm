@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Generates area statistics for rasters" module="r.stats">
+	<option key="input" />
+        <flag key="1" advanced="yes"/>
+        <flag key="A" advanced="yes"/>
+        <flag key="a" advanced="yes"/>
+        <flag key="c" advanced="yes"/>
+        <flag key="p" advanced="yes"/>
+        <flag key="l" advanced="yes"/>
+        <flag key="n" advanced="yes"/>
+        <flag key="N" advanced="yes"/>
+        <flag key="g" advanced="yes"/>
+        <flag key="x" advanced="yes"/>
+        <flag key="C" advanced="yes"/>
+        <flag key="r" advanced="yes"/>
+        <flag key="i" advanced="yes"/>
+        <option key="fs" advanced="yes"/>
+        <option key="nv" advanced="yes"/>
+        <option key="nsteps" advanced="yes"/>
+	<file key="output" type="new" advanced="yes"/>
+</qgisgrassmodule>
