@@ -97,7 +97,8 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
   QgsDebugMsg( "Sending getmap response..." );
   if ( img )
   {
-    if ( mFormat != "PNG" && mFormat != "JPG" )
+    bool png8Bit = ( mFormat.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
+    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
       sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
@@ -108,7 +109,17 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     QByteArray ba;
     QBuffer buffer( &ba );
     buffer.open( QIODevice::WriteOnly );
-    img->save( &buffer, mFormat.toLocal8Bit().data(), -1 );
+
+    if ( png8Bit )
+    {
+      QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, Qt::ColorOnly | Qt::ThresholdDither |
+                           Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+      palettedImg.save( &buffer, "PNG", -1 );
+    }
+    else
+    {
+      img->save( &buffer, mFormat.toLocal8Bit().data(), -1 );
+    }
 
     sendHttpResponse( &ba, formatToMimeType( mFormat ) );
   }

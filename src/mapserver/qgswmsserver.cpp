@@ -217,7 +217,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
 
   //wms:GetMap
   elem = doc.createElement( "GetMap"/*wms:GetMap*/ );
-  appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" );
+  appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" << "image/png; mode=8bit" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
