@@ -16,10 +16,33 @@
  ***************************************************************************/
 
 #include "qgssinglebandgrayrendererwidget.h"
+#include "qgsrasterlayer.h"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer ): QgsRasterRendererWidget( layer )
 {
   setupUi( this );
+
+  if ( mRasterLayer )
+  {
+    QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+    if ( !provider )
+    {
+      return;
+    }
+
+    //fill available bands into combo box
+    int nBands = provider->bandCount();
+    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+    {
+      mGrayBandComboBox->addItem( provider->colorInterpretationName( i ), i );
+    }
+
+    //contrast enhancement algorithms
+    mContrastEnhancementComboBox->addItem( tr( "No enhancement" ), 0 );
+    mContrastEnhancementComboBox->addItem( tr( "Stretch to MinMax" ), 1 );
+    mContrastEnhancementComboBox->addItem( tr( "Stretch and clip to MinMax" ), 2 );
+    mContrastEnhancementComboBox->addItem( tr( "Clip to MinMax" ), 3 );
+  }
 }
 
 QgsSingleBandGrayRendererWidget::~QgsSingleBandGrayRendererWidget()
