@@ -10,7 +10,7 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze hardy intrepid jaunty karmic lucid maverick natty oneiric"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze hardy intrepid jaunty karmic lucid maverick natty oneiric precise"))
 DISTRIBUTION := sid
 endif
 
@@ -32,17 +32,17 @@ CMAKE_OPTS := \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-D WITH_APIDOC=TRUE
 
-#ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric precise sid"))
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
-#else
-#	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
-#endif
+else
+	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
+endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric precise sid"))
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALINDEX=FALSE
 endif
 
