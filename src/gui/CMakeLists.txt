@@ -3,6 +3,7 @@ SET(QGIS_GUI_SRCS
 
 raster/qgsmultibandcolorrendererwidget.cpp
 raster/qgspalettedrendererwidget.cpp
+raster/qgssinglebandgrayrendererwidget.cpp
 raster/qgssinglebandpseudocolorrendererwidget.cpp
 
 symbology-ng/qgsbrushstylecombobox.cpp
@@ -86,6 +87,7 @@ SET(QGIS_GUI_MOC_HDRS
 
 raster/qgspalettedrendererwidget.h
 raster/qgsmultibandcolorrendererwidget.h
+raster/qgssinglebandgrayrendererwidget.h
 raster/qgssinglebandpseudocolorrendererwidget.h
 
 symbology-ng/qgsdashspacedialog.h

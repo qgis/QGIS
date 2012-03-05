@@ -18,6 +18,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
@@ -50,24 +51,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsMultiBandColorRenderer::create, 0 ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandpseudocolor", QObject::tr( "Singleband pseudocolor" ),
                                           QgsSingleBandPseudoColorRenderer::create, 0 ) );
-
-#if 0
-  //add entry for palleted renderer
-  QgsRasterRendererRegistryEntry palettedEntry;
-  palettedEntry.name = "paletted";
-  palettedEntry.visibleName = QObject::tr( "Paletted" );
-  palettedEntry.rendererCreateFunction = QgsPalettedRasterRenderer::create;
-  //widget function will be assigned later in raster properties dialog with QgsRasterRendererRegistry::insertWidgetFunction
-  palettedEntry.widgetCreateFunction = 0;
-  insert( palettedEntry );
-
-  QgsRasterRendererRegistryEntry multiBandColorEntry;
-  multiBandColorEntry.name = "multibandcolor";
-  multiBandColorEntry.visibleName = QObject::tr( "Multiband color" );
-  palettedEntry.rendererCreateFunction = QgsMultiBandColorRenderer::create;
-  multiBandColorEntry.widgetCreateFunction = 0;
-  insert( multiBandColorEntry );
-#endif //0
+  insert( QgsRasterRendererRegistryEntry( "singlebandgray", QObject::tr( "Singleband gray" ),
+                                          QgsSingleBandGrayRenderer::create, 0 ) );
 }
 
 QgsRasterRendererRegistry::~QgsRasterRendererRegistry()
@@ -85,7 +70,6 @@ void QgsRasterRendererRegistry::insertWidgetFunction( const QString& rendererNam
   {
     return;
   }
-
   mEntries[rendererName].widgetCreateFunction = func;
 }
 
