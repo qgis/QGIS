@@ -61,6 +61,14 @@ QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  raster/qgsaspectfilter.h
+  raster/qgsderivativefilter.h
+  raster/qgshillshadefilter.h
+  raster/qgsninecellfilter.h
+  raster/qgsrastercalculator.h
+  raster/qgsrelief.h
+  raster/qgsruggednessfilter.h
+  raster/qgsslopefilter.h
   vector/qgsgeometryanalyzer.h
   vector/qgszonalstatistics.h
   interpolation/qgsinterpolator.h
