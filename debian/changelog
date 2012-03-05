@@ -6,8 +6,10 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * drop extra include path for QtWebkit on oneiric and natty
   * add translations for desktop link
   * add browser desktop entry
+  * add support for Ubuntu precise
+  * build package with libspatialite where available
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 23 Feb 2012 09:36:48 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 05 Mar 2012 20:21:48 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
