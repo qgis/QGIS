@@ -349,44 +349,38 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
     {
       PQexecNR( "COMMIT" );
-
-      if ( i == 0 )
-        return false;
-
       continue;
     }
-    else
+
+    nGTables++;
+
+    for ( int idx = 0; idx < result.PQntuples(); idx++ )
     {
-      nGTables++;
+      QString tableName = result.PQgetvalue( idx, 0 );
+      QString schemaName = result.PQgetvalue( idx, 1 );
+      QString column = result.PQgetvalue( idx, 2 );
+      QString type = result.PQgetvalue( idx, 3 );
+      QString srid = result.PQgetvalue( idx, 4 );
+      QString relkind = result.PQgetvalue( idx, 5 );
 
-      for ( int idx = 0; idx < result.PQntuples(); idx++ )
-      {
-        QString tableName = result.PQgetvalue( idx, 0 );
-        QString schemaName = result.PQgetvalue( idx, 1 );
-        QString column = result.PQgetvalue( idx, 2 );
-        QString type = result.PQgetvalue( idx, 3 );
-        QString srid = result.PQgetvalue( idx, 4 );
-        QString relkind = result.PQgetvalue( idx, 5 );
+      QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7" )
+	  .arg( gtableName )
+	  .arg( schemaName ).arg( tableName ).arg( column )
+	  .arg( type )
+	  .arg( srid )
+	  .arg( relkind ) );
 
-        QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7" )
-                     .arg( gtableName )
-                     .arg( schemaName ).arg( tableName ).arg( column )
-                     .arg( type )
-                     .arg( srid )
-                     .arg( relkind ) );
+      layerProperty.type = type;
+      layerProperty.schemaName = schemaName;
+      layerProperty.tableName = tableName;
+      layerProperty.geometryColName = column;
+      layerProperty.pkCols = relkind == "v" ? pkCandidates( schemaName, tableName ) : QStringList();
+      layerProperty.srid = srid;
+      layerProperty.sql = "";
+      layerProperty.isGeography = i == 1;
 
-        layerProperty.type = type;
-        layerProperty.schemaName = schemaName;
-        layerProperty.tableName = tableName;
-        layerProperty.geometryColName = column;
-        layerProperty.pkCols = relkind == "v" ? pkCandidates( schemaName, tableName ) : QStringList();
-        layerProperty.srid = srid;
-        layerProperty.sql = "";
-        layerProperty.isGeography = i == 1;
-
-        mLayersSupported << layerProperty;
-        nColumns++;
-      }
+      mLayersSupported << layerProperty;
+      nColumns++;
     }
   }
 

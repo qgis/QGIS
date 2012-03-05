@@ -2682,10 +2682,14 @@ bool QgsPostgresProvider::getGeometryDetails()
       detectedType = result.PQgetvalue( 0, 0 );
       detectedSrid = result.PQgetvalue( 0, 1 );
     }
-
-    if ( !detectedType.isEmpty() )
+    else
     {
-      // check geometry columns
+      mConnectionRO->PQexecNR( "COMMIT" );
+    }
+
+    if ( detectedType.isEmpty() )
+    {
+      // check geography columns
       sql = QString( "SELECT upper(type),srid FROM geography_columns WHERE f_table_name=%1 AND f_geography_column=%2 AND f_table_schema=%3" )
             .arg( quotedValue( tableName ) )
             .arg( quotedValue( geomCol ) )
@@ -2695,18 +2699,15 @@ bool QgsPostgresProvider::getGeometryDetails()
       result = mConnectionRO->PQexec( sql, false );
       QgsDebugMsg( QString( "Geography column query returned %1" ).arg( result.PQntuples() ) );
 
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      if ( result.PQntuples() == 1 )
       {
-        if ( result.PQntuples() == 1 )
-        {
-          detectedType = result.PQgetvalue( 0, 0 );
-          detectedSrid = result.PQgetvalue( 0, 1 );
-          mIsGeography = true;
-        }
+        detectedType = result.PQgetvalue( 0, 0 );
+        detectedSrid = result.PQgetvalue( 0, 1 );
+        mIsGeography = true;
       }
       else
       {
-        mConnectionRO->PQexecNR( "ROLLBACK" );
+        mConnectionRO->PQexecNR( "COMMIT" );
       }
     }
   }
