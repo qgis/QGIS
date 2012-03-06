@@ -285,7 +285,7 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
   else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
     txtSQL->insertPlainText( value.toString() );
   else
-    txtSQL->insertPlainText( "'" + value.toString() + "'" );
+    txtSQL->insertPlainText( "'" + value.toString().replace( "'", "''" ) + "'" );
 }
 
 void QgsQueryBuilder::on_btnLessEqual_clicked()
