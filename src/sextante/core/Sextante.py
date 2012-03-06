@@ -15,6 +15,7 @@ from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.modeler.ProviderIcons import ProviderIcons
 from sextante.r.RAlgorithmProvider import RAlgorithmProvider
+from sextante.parameters.ParameterSelection import ParameterSelection
 
 class Sextante:
 
@@ -142,6 +143,23 @@ class Sextante:
                 if text == None or text.lower() in alg.name.lower():
                     s+=(alg.name.ljust(50, "-") + "--->" + alg.commandLineName() + "\n")
         print s
+
+
+    @staticmethod
+    def algoptions(name):
+        alg = Sextante.getAlgorithm(name)
+        if alg != None:
+            s =""
+            for param in alg.parameters:
+                if isinstance(param, ParameterSelection):
+                    s+=param.name + "(" + param.description + ")\n"
+                    i=0
+                    for option in param.options:
+                        s+= "\t" + str(i) + " - " + str(option) + "\n"
+                        i+=1
+            print(s)
+        else:
+            print "Algorithm not found"
 
     @staticmethod
     def alghelp(name):

@@ -28,6 +28,7 @@ from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionEx
 from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
+from sextante.core.SextanteConfig import SextanteConfig
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -36,6 +37,8 @@ class SagaAlgorithm(GeoAlgorithm):
         self._descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        self.resample = False #True if the user should define a grid system in
+                              #case several non-matching raster layers are used as input
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
@@ -51,6 +54,8 @@ class SagaAlgorithm(GeoAlgorithm):
             line = line.strip("\n").strip()
             if line.startswith("Parameter"):
                 self.addParameter(ParameterFactory.getFromString(line))
+            elif line.startswith("Resample"):
+                self.resample = True
             else:
                 self.addOutput(OutputFactory.getFromString(line))
             line = lines.readline().strip("\n").strip()
@@ -186,7 +191,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 else:
                     value = param.value
                 if not value.endswith("sgrd"):
-                    commands.append(self.exportRasterLayer(value));
+                    commands.append(self.exportRasterLayer(value))
+                if self.resample:
+                    commands.append(self.resampleRasterLayer(value));
             if isinstance(param, ParameterVector):
                 if param.value == None:
                     continue
@@ -208,18 +215,19 @@ class SagaAlgorithm(GeoAlgorithm):
                 if not value.endswith("dbf"):
                     raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterMultipleInput):
+                if param.value == None:
+                    continue
                 layers = param.value.split(";")
                 if layers == None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for layer in layers:
-                        if isinstance(layer, QgsRasterLayer):
-                            layer = str(layer.source())
-                        commands.append(self.exportRasterLayer(layer))
+                        if not value.endswith("sgrd"):
+                            commands.append(self.exportRasterLayer(layer))
+                        if self.resample:
+                            commands.append(self.resampleRasterLayer(layer));
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
-                        if isinstance(layer, QgsVectorLayer):
-                            layer = str(layer.source())
                         if not layer.endswith("shp"):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
@@ -290,8 +298,27 @@ class SagaAlgorithm(GeoAlgorithm):
         SagaUtils.executeSaga(progress);
 
 
-    def exportRasterLayer(self,layer):
+    def resampleRasterLayer(self,layer):
+        if layer in self.exportedLayers.keys:
+            inputFilename = self.exportedLayers[layer]
+        else:
+            inputFilename = layer
+        destFilename = self.getTempFilename()
+        self.exportedLayers[layer]= destFilename
+        auto = SextanteConfig.getSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
+        if auto:
+            pass
+        else:
+            xmin = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
+            xmax = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
+            ymin = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
+            ymax = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
+            cellsize = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
+            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +
+                xmin + " -USER_XMAX " + xmax + " -USER_YMIN " + ymin + " -USER_YMAX "  + ymax +
+                " -USER_SIZE " + str(cellsize) + " -USER_GRID " + destFilename
 
+    def exportRasterLayer(self,layer):
         if not layer.lower().endswith("tif") and not layer.lower().endswith("asc"):
             raise GeoAlgorithmExecutionException("Unsupported input file format: " + layer)
         ext = os.path.splitext(layer)[1][1:].strip()

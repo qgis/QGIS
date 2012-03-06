@@ -43,10 +43,10 @@ class Intersection(GeoAlgorithm):
         crsA = vproviderA.crs()
         crsB = vproviderB.crs()
         if not crsA.isValid() or not crsB.isValid():
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Differnece. Invalid CRS. Results might be unexpected")
+            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Intersection. Invalid CRS. Results might be unexpected")
         else:
             if not crsA != crsB:
-                SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Difference. Non-matching CRSs. Results might be unexpected")
+                SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Intersection. Non-matching CRSs. Results might be unexpected")
         fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
         longNames = ftools_utils.checkFieldNameLength( fields )
         if not longNames.isEmpty():

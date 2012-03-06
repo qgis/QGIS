@@ -26,11 +26,6 @@ class RUtils:
         return folder
 
     @staticmethod
-    def ExecuteRAlgorithm(alg):
-        pass
-
-
-    @staticmethod
     def createRScriptFromRCommands(commands):
         scriptfile = open(RUtils.getRScriptFilename())
         for command in commands:
@@ -49,7 +44,7 @@ class RUtils:
 
 
     @staticmethod
-    def executeR(alg):
+    def executeRAlgorithm(alg):
         RUtils.consoleResults = []
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.addConsoleOutput = False;

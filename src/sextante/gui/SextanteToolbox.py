@@ -4,9 +4,6 @@ from PyQt4 import QtCore, QtGui
 from sextante.core.Sextante import Sextante
 from sextante.gui.ParametersDialog import ParametersDialog
 import copy
-from sextante.core.QGisLayers import QGisLayers
-from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
-from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 
 try:
@@ -136,7 +133,7 @@ class SextanteToolbox(QtGui.QDockWidget):
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(False)
+                providerItem.setExpanded(text!="")
                 for groupItem in groups.values():
                     if text != "":
                         groupItem.setExpanded(True)

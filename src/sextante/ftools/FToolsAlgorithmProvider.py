@@ -23,6 +23,8 @@ from sextante.ftools.VariableDistanceBuffer import VariableDistanceBuffer
 from sextante.ftools.Dissolve import Dissolve
 from sextante.ftools.Difference import Difference
 from sextante.ftools.Intersection import Intersection
+from sextante.ftools.Union import Union
+from sextante.ftools.Clip import Clip
 
 class FToolsAlgorithmProvider(AlgorithmProvider):
 
@@ -39,7 +41,7 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                      SumLines(), BasicStatistics(), PointsInPolygon(),
                      NearestNeighbourAnalysis(), MeanCoords(), LinesIntersection(),
                      ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
-                     Dissolve(), Difference(), Intersection()]
+                     Dissolve(), Difference(), Intersection(), Union(), Clip()]
         for alg in self.algs:
             alg.provider = self
 

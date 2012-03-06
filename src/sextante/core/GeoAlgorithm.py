@@ -84,15 +84,15 @@ class GeoAlgorithm:
     def __str__(self):
         s = "ALGORITHM: " + self.name + "\n"
         for param in self.parameters:
-            s+=(str(param) + "\n")
+            s+=("\t" + str(param) + "\n")
         for out in self.outputs:
-            s+=(str(out) + "\n")
+            s+=("\t" + str(out) + "\n")
         s+=("\n")
         return s
 
 
     def commandLineName(self):
-        return self.provider.getName().lower() + ":" + self.name.lower().replace(" ", "")
+        return self.provider.getName().lower() + ":" + self.name.lower().replace(" ", "").replace(",","")
 
 
     def getOutputFromName(self, name):

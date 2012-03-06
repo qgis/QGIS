@@ -21,3 +21,6 @@ class ParameterTableField(Parameter):
     def deserialize(self, s):
         tokens = s.split("|")
         return ParameterTableField(tokens[0], tokens[1], tokens[2])
+
+    def __str__(self):
+        return self.name + " <" + self.__module__.split(".")[-1] +" from " + self.value + ">"
