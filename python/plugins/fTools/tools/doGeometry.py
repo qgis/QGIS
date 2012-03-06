@@ -81,7 +81,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
                                self.tr( "Please specify valid UID field" ) )
     else:
       self.outShape.clear()
-      self.geometry( self.inShape.currentText(), self.lineEdit.value(), self.cmbField.currentText() )
+      self.geometry( self.inShape.currentText(), self.lineEdit.value(),
+                    self.cmbField.currentText() )
 
   def outFile( self ):
     self.outShape.clear()
@@ -96,6 +97,9 @@ class GeometryDialog( QDialog, Ui_Dialog ):
 
     self.lblCalcType.setVisible( False )
     self.cmbCalcType.setVisible( False )
+
+    self.chkUseSelection.setVisible( False )
+    self.chkByFeatures.setVisible( False )
 
     self.chkWriteShapefile.setVisible( False )
     if self.myFunction == 1: # Singleparts to multipart
@@ -167,6 +171,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
         self.label_3.setText( self.tr( "Input layer" ) )
         self.label.setVisible( False )
         self.lineEdit.setVisible( False )
+        self.chkByFeatures.setVisible( True )
+        self.chkUseSelection.setVisible( True )
       self.lblOutputShapefile.setText( self.tr( "Output polygon shapefile" ) )
     self.resize( 381, 100 )
     self.populateLayers()
@@ -229,7 +235,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     self.buttonOk.setEnabled( False )
     self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction,
                                       vlayer, myParam, myField, self.shapefileName, self.encoding,
-                                      self.cmbCalcType.currentIndex(), self.chkWriteShapefile.isChecked() )
+                                      self.cmbCalcType.currentIndex(), self.chkWriteShapefile.isChecked(),
+                                      self.chkByFeatures.isChecked(), self.chkUseSelection.isChecked() )
     QObject.connect( self.testThread, SIGNAL( "runFinished( PyQt_PyObject )" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus( PyQt_PyObject )" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange( PyQt_PyObject )" ), self.runRangeFromThread )
@@ -288,7 +295,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
 
 class geometryThread( QThread ):
   def __init__( self, parentThread, parentObject, function, vlayer, myParam,
-                myField, myName, myEncoding, myCalcType, myNewShape ):
+                myField, myName, myEncoding, myCalcType, myNewShape, myByFeatures,
+                myUseSelection ):
     QThread.__init__( self, parentThread )
     self.parent = parentObject
     self.running = False
@@ -300,6 +308,8 @@ class geometryThread( QThread ):
     self.myEncoding = myEncoding
     self.myCalcType = myCalcType
     self.writeShape = myNewShape
+    self.byFeatures = myByFeatures
+    self.useSelection = myUseSelection
 
   def run( self ):
     self.running = True
@@ -319,7 +329,10 @@ class geometryThread( QThread ):
     elif self.myFunction == 8: # Delaunay triangulation
       success = self.delaunay_triangulation()
     elif self.myFunction == 9: # Polygon from layer extent
-      success = self.layer_extent()
+      if self.byFeatures:
+        success = self.feature_extent()
+      else:
+        success = self.layer_extent()
     elif self.myFunction == 10: # Voronoi Polygons
       success = self.voronoi_polygons()
     elif self.myFunction == 11: # Lines to polygons
@@ -858,6 +871,105 @@ class geometryThread( QThread ):
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  0 )
     del writer
 
+    return True
+
+  def feature_extent( self, ):
+    vprovider = self.vlayer.dataProvider()
+    vprovider.select( [] )
+
+    self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
+
+    fields = { 0 : QgsField( "MINX", QVariant.Double ),
+               1 : QgsField( "MINY", QVariant.Double ),
+               2 : QgsField( "MAXX", QVariant.Double ),
+               3 : QgsField( "MAXY", QVariant.Double ),
+               4 : QgsField( "CNTX", QVariant.Double ),
+               5 : QgsField( "CNTY", QVariant.Double ),
+               6 : QgsField( "AREA", QVariant.Double ),
+               7 : QgsField( "PERIM", QVariant.Double ),
+               8 : QgsField( "HEIGHT", QVariant.Double ),
+               9 : QgsField( "WIDTH", QVariant.Double ) }
+
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+                                  QGis.WKBPolygon, self.vlayer.crs() )
+    inFeat = QgsFeature()
+    outFeat = QgsFeature()
+    nElement = 0
+
+    if self.useSelection:
+      self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), (0, self.vlayer.selectedFeatureCount() ) )
+      for inFeat in self.vlayer.selectedFeatures():
+        self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
+        nElement += 1
+
+        rect = inFeat.geometry().boundingBox()
+        minx = rect.xMinimum()
+        miny = rect.yMinimum()
+        maxx = rect.xMaximum()
+        maxy = rect.yMaximum()
+        height = rect.height()
+        width = rect.width()
+        cntx = minx + ( width / 2.0 )
+        cnty = miny + ( height / 2.0 )
+        area = width * height
+        perim = ( 2 * width ) + ( 2 * height )
+        rect = [ QgsPoint( minx, miny ),
+                 QgsPoint( minx, maxy ),
+                 QgsPoint( maxx, maxy ),
+                 QgsPoint( maxx, miny ),
+                 QgsPoint( minx, miny ) ]
+        geometry = QgsGeometry().fromPolygon( [ rect ] )
+
+        outFeat.setGeometry( geometry )
+        outFeat.setAttributeMap( { 0 : QVariant( minx ),
+                                   1 : QVariant( miny ),
+                                   2 : QVariant( maxx ),
+                                   3 : QVariant( maxy ),
+                                   4 : QVariant( cntx ),
+                                   5 : QVariant( cnty ),
+                                   6 : QVariant( area ),
+                                   7 : QVariant( perim ),
+                                   8 : QVariant( height ),
+                                   9 : QVariant( width ) } )
+        writer.addFeature( outFeat )
+    else:
+      self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, vprovider.featureCount() ) )
+      while vprovider.nextFeature( inFeat ):
+        self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
+        nElement += 1
+
+        rect = inFeat.geometry().boundingBox()
+        minx = rect.xMinimum()
+        miny = rect.yMinimum()
+        maxx = rect.xMaximum()
+        maxy = rect.yMaximum()
+        height = rect.height()
+        width = rect.width()
+        cntx = minx + ( width / 2.0 )
+        cnty = miny + ( height / 2.0 )
+        area = width * height
+        perim = ( 2 * width ) + ( 2 * height )
+        rect = [ QgsPoint( minx, miny ),
+                 QgsPoint( minx, maxy ),
+                 QgsPoint( maxx, maxy ),
+                 QgsPoint( maxx, miny ),
+                 QgsPoint( minx, miny ) ]
+        geometry = QgsGeometry().fromPolygon( [ rect ] )
+
+        outFeat.setGeometry( geometry )
+        outFeat.setAttributeMap( { 0 : QVariant( minx ),
+                                   1 : QVariant( miny ),
+                                   2 : QVariant( maxx ),
+                                   3 : QVariant( maxy ),
+                                   4 : QVariant( cntx ),
+                                   5 : QVariant( cnty ),
+                                   6 : QVariant( area ),
+                                   7 : QVariant( perim ),
+                                   8 : QVariant( height ),
+                                   9 : QVariant( width ) } )
+        writer.addFeature( outFeat )
+
+    del writer
     return True
 
   def simpleMeasure( self, inGeom, calcType, ellips, crs ):
