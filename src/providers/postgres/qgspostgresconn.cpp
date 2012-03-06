@@ -364,11 +364,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind = result.PQgetvalue( idx, 5 );
 
       QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7" )
-	  .arg( gtableName )
-	  .arg( schemaName ).arg( tableName ).arg( column )
-	  .arg( type )
-	  .arg( srid )
-	  .arg( relkind ) );
+                   .arg( gtableName )
+                   .arg( schemaName ).arg( tableName ).arg( column )
+                   .arg( type )
+                   .arg( srid )
+                   .arg( relkind ) );
 
       layerProperty.type = type;
       layerProperty.schemaName = schemaName;
@@ -498,7 +498,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1" )
                                  .arg( result.PQresultErrorMessage() ),
                                  tr( "PostGIS" ) );
-      return -1;
+      return false;
     }
 
     for ( int i = 0; i < result.PQntuples(); i++ )
