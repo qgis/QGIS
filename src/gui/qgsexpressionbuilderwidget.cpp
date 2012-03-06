@@ -249,7 +249,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   {
     if ( !mFeature.isValid() )
     {
-      mLayer->select( mLayer->pendingAllAttributesList() );
+      mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() );
       mLayer->nextFeature( mFeature );
     }
 
