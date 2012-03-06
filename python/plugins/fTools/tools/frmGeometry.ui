@@ -47,7 +47,7 @@
      <widget class="QComboBox" name="cmbField"/>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="6" column="0">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -60,7 +60,7 @@
      </property>
     </spacer>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <layout class="QVBoxLayout">
      <item>
       <widget class="QCheckBox" name="chkWriteShapefile">
@@ -96,7 +96,7 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0">
+   <item row="8" column="0">
     <spacer>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -109,7 +109,7 @@
      </property>
     </spacer>
    </item>
-   <item row="7" column="0">
+   <item row="9" column="0">
     <widget class="QProgressBar" name="progressBar">
      <property name="value">
       <number>0</number>
@@ -122,7 +122,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
+   <item row="9" column="1">
     <widget class="QDialogButtonBox" name="buttonBox_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -188,6 +188,20 @@
       <widget class="QComboBox" name="cmbCalcType"/>
      </item>
     </layout>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="chkByFeatures">
+     <property name="text">
+      <string>Calculate extent for each feature separately</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QCheckBox" name="chkUseSelection">
+     <property name="text">
+      <string>Use only selected features</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
