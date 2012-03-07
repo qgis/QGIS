@@ -27,9 +27,9 @@ class RUtils:
 
     @staticmethod
     def createRScriptFromRCommands(commands):
-        scriptfile = open(RUtils.getRScriptFilename())
+        scriptfile = open(RUtils.getRScriptFilename(), "w")
         for command in commands:
-            scriptfile.write(command + "\n");
+            scriptfile.write(command + "\n")
         scriptfile.close()
 
 
@@ -47,7 +47,6 @@ class RUtils:
     def executeRAlgorithm(alg):
         RUtils.consoleResults = []
         RUtils.verboseCommands = alg.getVerboseCommands();
-        RUtils.addConsoleOutput = False;
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
             command = ["\"" + RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe\"", "CMD", "BATCH", "--vanilla",

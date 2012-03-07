@@ -314,8 +314,8 @@ class SagaAlgorithm(GeoAlgorithm):
             ymin = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
             ymax = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
             cellsize = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
-            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +
-                xmin + " -USER_XMAX " + xmax + " -USER_YMIN " + ymin + " -USER_YMAX "  + ymax +
+            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+                xmin + " -USER_XMAX " + xmax + " -USER_YMIN " + ymin + " -USER_YMAX "  + ymax +\
                 " -USER_SIZE " + str(cellsize) + " -USER_GRID " + destFilename
 
     def exportRasterLayer(self,layer):

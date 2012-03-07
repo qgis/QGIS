@@ -17,8 +17,6 @@ from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.r.RUtils import RUtils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from sextante.core.SextanteUtils import SextanteUtils
-import time
 
 class RAlgorithm(GeoAlgorithm):
 
@@ -132,8 +130,17 @@ class RAlgorithm(GeoAlgorithm):
             raise WrongScriptException("Could not load R script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
 
     def processAlgorithm(self, progress):
-        RUtils.ExecuteRAlgorithm(self)
-
+        RUtils.executeRAlgorithm(self)
+        if self.showPlots:
+            htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
+            f = open(htmlfilename, "w")
+            f.write("<img src=\"" + self.plotsFilename + "/>")
+            f.close()
+        if self.showConsoleOutput:
+            htmlfilename = self.getOutputValue(RAlgorithm.R_CONSOLE_OUTPUT)
+            f = open(htmlfilename)
+            f.write(RUtils.getConsoleOutput())
+            f.close()
 
     def getFullSetOfRCommands(self):
 
@@ -148,7 +155,7 @@ class RAlgorithm(GeoAlgorithm):
 
         commands = []
 
-        for out in self.output:
+        for out in self.outputs:
             if isinstance(out, OutputRaster):
                 value = out.value
                 if not value.endswith("tif"):
@@ -162,10 +169,10 @@ class RAlgorithm(GeoAlgorithm):
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
                 filename = filename[-4]
-                commands.add("writeOGR(" + out.name + ",\"" + value + "\",\""
+                commands.append("writeOGR(" + out.name + ",\"" + value + "\",\""
                             + filename + "\", driver=\"ESRI Shapefile\")");
 
-        if self.showPlotOutput:
+        if self.showPlots:
             commands.append("dev.off()");
 
         return commands
@@ -180,18 +187,18 @@ class RAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value
-                if not value.lower.endswith("asc") and not value.lower.endswith("tif"):
+                if not value.lower().endswith("asc") and not value.lower().endswith("tif"):
                   raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 value = value.replace("\\", "/")
                 commands.append(param.name + " = " + "readGDAL(\"" + value + "\"")
             if isinstance(param, ParameterVector):
                 value = param.value
-                if not value.lower.endswith("shp"):
+                if not value.lower().endswith("shp"):
                   raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
                 filename = filename[-4]
-                commands.append(param.getParameterName() + " = " + "readOGR(\"" + value + "\",layer=\"" + filename + "\")")
+                commands.append(param.name + " = " + "readOGR(\"" + value + "\",layer=\"" + filename + "\")")
             if isinstance(param, (ParameterTableField, ParameterString)):
                 commands.append(param.name + "=\"" + param.value + "\"")
             if isinstance(param, ParameterNumber):
@@ -207,14 +214,14 @@ class RAlgorithm(GeoAlgorithm):
                 iLayer = 0;
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for layer in layers:
-                        if not layer.lower.endswith("asc") and not layer.lower.endswith("tif"):
+                        if not layer.lower().endswith("asc") and not layer.lower().endswith("tif"):
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
                         commands.append("tempvar" + str(iLayer)+ " = " + "readGDAL(\"" + layer + "\"")
                         iLayer+=1
                 else:
                     for layer in layers:
-                        if not layer.lower.endswith("shp"):
+                        if not layer.lower().endswith("shp"):
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
                         filename = os.path.basename(layer)
@@ -231,18 +238,18 @@ class RAlgorithm(GeoAlgorithm):
                     s += "tempvar" + str(iLayer)
                     iLayer += 1
                 s+=")\n"
+                commands.append(s)
 
         if self.showPlots:
-            seconds = str(time.time())
-            self.plotsFilename = SextanteUtils.tempFolder() + os.sep + seconds + ".png"
+            htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
+            self.plotsFilename = htmlfilename +".png"
             self.plotsFilename = self.plotsFilename.replace("\\", "/");
-            commands.add("png(\"" + self.plotsFilename + "\")");
+            commands.append("png(\"" + self.plotsFilename + "\")");
 
         return commands
 
 
     def getRCommands(self):
-
         return self.commands
 
 
