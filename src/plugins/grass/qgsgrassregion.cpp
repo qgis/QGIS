@@ -132,14 +132,23 @@ void QgsGrassRegionEdit::setTransform()
 void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
 {
   QgsDebugMsg( "Entered" );
+
   /** Coordinate transform */
   if ( canvas->mapRenderer()->hasCrsTransformEnabled() )
   {
     //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );
     //QgsDebugMsg ( "destCrs = " +  coordinateTransform->destCRS().toWkt() );
-    for ( int i = 0; i < points.size(); i++ )
+    try
     {
-      points[i] = coordinateTransform->transform( points[i], direction );
+      for ( int i = 0; i < points.size(); i++ )
+      {
+        points[i] = coordinateTransform->transform( points[i], direction );
+      }
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsg( QString( "transformation failed: %1" ).arg( cse.what() ) );
     }
   }
 }
