@@ -74,7 +74,7 @@ QgsExpression::Node* gExpParserRootNode;
 //
 
 // operator tokens
-%token <b_op> OR AND EQ NE LE GE LT GT REGEXP LIKE ILIKE IS ISNOT PLUS MINUS MUL DIV MOD CONCAT POW
+%token <b_op> OR AND EQ NE LE GE LT GT REGEXP LIKE IS PLUS MINUS MUL DIV MOD CONCAT POW
 %token <u_op> NOT
 %token IN
 
@@ -114,7 +114,7 @@ QgsExpression::Node* gExpParserRootNode;
 %left OR
 %left AND
 %right NOT
-%left EQ NE LE GE LT GT REGEXP LIKE ILIKE IS ISNOT IN
+%left EQ NE LE GE LT GT REGEXP LIKE IS IN
 %left PLUS MINUS
 %left MUL DIV MOD
 %right POW
@@ -134,28 +134,26 @@ root: expression { gExpParserRootNode = $1; }
     ;
 
 expression:
-      expression AND expression    { $$ = BINOP($2, $1, $3); }
-    | expression OR expression     { $$ = BINOP($2, $1, $3); }
-    | expression EQ expression     { $$ = BINOP($2, $1, $3); }
-    | expression NE expression     { $$ = BINOP($2, $1, $3); }
-    | expression LE expression     { $$ = BINOP($2, $1, $3); }
-    | expression GE expression     { $$ = BINOP($2, $1, $3); }
-    | expression LT expression     { $$ = BINOP($2, $1, $3); }
-    | expression GT expression     { $$ = BINOP($2, $1, $3); }
-    | expression REGEXP expression { $$ = BINOP($2, $1, $3); }
-    | expression LIKE expression   { $$ = BINOP($2, $1, $3); }
-    | expression ILIKE expression  { $$ = BINOP($2, $1, $3); }
-    | expression IS expression     { $$ = BINOP($2, $1, $3); }
-    | expression ISNOT expression  { $$ = BINOP($2, $1, $3); }
-    | expression PLUS expression   { $$ = BINOP($2, $1, $3); }
-    | expression MINUS expression  { $$ = BINOP($2, $1, $3); }
-    | expression MUL expression    { $$ = BINOP($2, $1, $3); }
-    | expression DIV expression    { $$ = BINOP($2, $1, $3); }
-    | expression MOD expression    { $$ = BINOP($2, $1, $3); }
-    | expression POW expression    { $$ = BINOP($2, $1, $3); }
-    | expression CONCAT expression { $$ = BINOP($2, $1, $3); }
-    | NOT expression               { $$ = new QgsExpression::NodeUnaryOperator($1, $2); }
-    | '(' expression ')'           { $$ = $2; }
+      expression AND expression       { $$ = BINOP($2, $1, $3); }
+    | expression OR expression        { $$ = BINOP($2, $1, $3); }
+    | expression EQ expression        { $$ = BINOP($2, $1, $3); }
+    | expression NE expression        { $$ = BINOP($2, $1, $3); }
+    | expression LE expression        { $$ = BINOP($2, $1, $3); }
+    | expression GE expression        { $$ = BINOP($2, $1, $3); }
+    | expression LT expression        { $$ = BINOP($2, $1, $3); }
+    | expression GT expression        { $$ = BINOP($2, $1, $3); }
+    | expression REGEXP expression    { $$ = BINOP($2, $1, $3); }
+    | expression LIKE expression      { $$ = BINOP($2, $1, $3); }
+    | expression IS expression        { $$ = BINOP($2, $1, $3); }
+    | expression PLUS expression      { $$ = BINOP($2, $1, $3); }
+    | expression MINUS expression     { $$ = BINOP($2, $1, $3); }
+    | expression MUL expression       { $$ = BINOP($2, $1, $3); }
+    | expression DIV expression       { $$ = BINOP($2, $1, $3); }
+    | expression MOD expression       { $$ = BINOP($2, $1, $3); }
+    | expression POW expression       { $$ = BINOP($2, $1, $3); }
+    | expression CONCAT expression    { $$ = BINOP($2, $1, $3); }
+    | NOT expression                  { $$ = new QgsExpression::NodeUnaryOperator($1, $2); }
+    | '(' expression ')'              { $$ = $2; }
 
     | FUNCTION '(' exp_list ')'
         {
