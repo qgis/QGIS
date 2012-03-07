@@ -104,7 +104,7 @@ inline bool isNull( const QVariant& v ) { return v.isNull(); }
 const char* QgsExpression::BinaryOperatorText[] =
 {
   "OR", "AND",
-  "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "ILIKE", "IS", "IS NOT",
+  "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
   "+", "-", "*", "/", "%", "^",
   "||"
 };
@@ -722,7 +722,9 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
 
     case boRegexp:
     case boLike:
+    case boNotLike:
     case boILike:
+    case boNotILike:
       if ( isNull( vL ) || isNull( vR ) )
         return TVL_Unknown;
       else
@@ -731,17 +733,23 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         QString regexp = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
         // TODO: cache QRegExp in case that regexp is a literal string (i.e. it will stay constant)
         bool matches;
-        if ( mOp == boLike || mOp == boILike ) // change from LIKE syntax to regexp
+        if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
           // XXX escape % and _  ???
           regexp.replace( "%", ".*" );
           regexp.replace( "_", "." );
-          matches = QRegExp( regexp, mOp == boLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
+          matches = QRegExp( regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
         {
           matches = QRegExp( regexp ).indexIn( str ) != -1;
         }
+
+	if( mOp == boNotLike || mOp == boNotILike )
+	{
+	  matches = !matches;
+	}
+
         return matches ? TVL_True : TVL_False;
       }
 

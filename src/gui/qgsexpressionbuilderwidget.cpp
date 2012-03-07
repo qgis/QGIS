@@ -180,7 +180,12 @@ void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit
   mLayer->uniqueValues( fieldIndex, values, countLimit );
   foreach( QVariant value, values )
   {
-    mValueListWidget->addItem( value.toString() );
+    if ( value.isNull() )
+      mValueListWidget->addItem( "NULL" );
+    else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
+      mValueListWidget->addItem( value.toString() );
+    else
+      mValueListWidget->addItem( "'" + value.toString().replace( "'", "''" ) + "'" );
   }
 
   mValueListWidget->setUpdatesEnabled( true );
@@ -202,7 +207,7 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
   }
   else
   {
-    // If the group doesn't exsit yet we make it first.
+    // If the group doesn't exist yet we make it first.
     QgsExpressionItem* newgroupNode = new QgsExpressionItem( group, "", QgsExpressionItem::Header );
     newgroupNode->appendRow( item );
     mModel->appendRow( newgroupNode );

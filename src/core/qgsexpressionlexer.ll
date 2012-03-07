@@ -124,12 +124,14 @@ string      "'"{str_char}*"'"
 "<"   {  B_OP(boLT); return LT; }
 ">"   {  B_OP(boGT); return GT; }
 
-"~"      { B_OP(boRegexp); return REGEXP; }
-"LIKE"   { B_OP(boLike); return LIKE; }
-"ILIKE"  { B_OP(boILike); return ILIKE; }
-"IS"     { B_OP(boIs); return IS; }
-"IS NOT" { B_OP(boIsNot); return ISNOT; }
-"||"     { B_OP(boConcat); return CONCAT; }
+"~"         { B_OP(boRegexp); return REGEXP; }
+"LIKE"      { B_OP(boLike); return LIKE; }
+"NOT LIKE"  { B_OP(boNotLike); return LIKE; }
+"ILIKE"     { B_OP(boILike); return LIKE; }
+"NOT ILIKE" { B_OP(boNotILike); return LIKE; }
+"IS"        { B_OP(boIs); return IS; }
+"IS NOT"    { B_OP(boIsNot); return IS; }
+"||"        { B_OP(boConcat); return CONCAT; }
 
 "+"  { B_OP(boPlus); return PLUS; }
 "-"  { B_OP(boMinus); return MINUS; }

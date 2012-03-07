@@ -149,7 +149,9 @@ class CORE_EXPORT QgsExpression
       boGT,  // >
       boRegexp,
       boLike,
+      boNotLike,
       boILike,
+      boNotILike,
       boIs,
       boIsNot,
 
