@@ -1319,6 +1319,12 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
 
 bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
 {
+  QgsRectangle bkMapExtent;
+  if ( mMapCanvas )
+  {
+    bkMapExtent = mMapCanvas->extent();
+  }
+
   const QDomNodeList &l = node.childNodes();
   for ( int i = 0; i < l.count(); i++ )
   {
@@ -1444,6 +1450,11 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
     }
   }
 
+  //restore canvas extent (could be changed by addLayer calls)
+  if ( !bkMapExtent.isEmpty() )
+  {
+    mMapCanvas->setExtent( bkMapExtent );
+  }
   return true;
 }
 
