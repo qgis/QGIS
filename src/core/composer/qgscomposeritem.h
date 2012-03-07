@@ -159,33 +159,30 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
-     * @param none
      * @return boolean - true if there is a frame around this item, otherwise false.
      * @note deprecated since 1.8 dont use!
      * @see hasFrame
      */
-    bool frame() const {return hasFrame();}
+    Q_DECL_DEPRECATED bool frame() const {return hasFrame();}
     /** Whether this item has a frame or not.
-     * @param none
-     * @return boolean - true if there is a frame around this item, otherwise false.
+     * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
      * @see hasFrame
      */
     bool hasFrame() const {return mFrame;}
     /** Set whether this item has a frame drawn around it or not.
-     * @param none
-     * @return void
+     * @returns void
      * @note deprecated since 1.8 dont use!
      * @see hasFrame
      */
-    void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
+    Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
     /** Set whether this item has a frame drawn around it or not.
-     * @param none
-     * @return void
+     * @param drawFrame draw frame
+     * @returns nothing
      * @note deprecated since 1.8
      * @see hasFrame
      */
-    void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
+    Q_DECL_DEPRECATED void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
 
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
