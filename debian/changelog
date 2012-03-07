@@ -8,8 +8,9 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * add browser desktop entry
   * add support for Debian wheezy and Ubuntu precise
   * build package with internal libspatialite where libspatialite not available
+  * drop support for Ubuntu hardy, intrepid, jaunty and karmic
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 06 Mar 2012 20:33:08 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 07 Mar 2012 06:52:29 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
