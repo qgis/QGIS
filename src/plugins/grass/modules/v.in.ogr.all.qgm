@@ -2,7 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import OGR vectors in a given data source combining them in a GRASS vector" module="v.in.ogr">
-	<flag key="o" answer="on" hidden="yes" />
 	<file key="dsn" type="directory" label="Path to the OGR data source" />
 	<option key="output" />
         <option key="type" advanced="yes"/>
@@ -10,4 +9,5 @@
         <flag key="e" answer="off" hidden="no" advanced="yes"/>
         <option key="snap" advanced="yes" /> 
         <option key="min_area" advanced="yes" />
+	<flag key="o" answer="on" advanced="yes" />
 </qgisgrassmodule>

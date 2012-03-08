@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import OGR/PostGIS vector and create a fitted location" module="v.in.ogr">
-	<flag key="o" answer="off" hidden="yes" />
-	<file key="dsn" type="old" label="OGR file" />
+<qgisgrassmodule label="Import OGR vector and create a fitted location" module="v.in.ogr">
+	<file key="dsn" />
 	<option key="output" />
 	<option key="location" />
         <option key="type" advanced="yes"/>
@@ -12,4 +11,5 @@
         <option key="snap" advanced="yes" /> 
         <option key="min_area" advanced="yes" />
         <option key="where" advanced="yes"/>
+	<flag key="o" answer="on" advanced="yes" />
 </qgisgrassmodule>

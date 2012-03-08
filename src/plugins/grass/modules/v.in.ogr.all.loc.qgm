@@ -2,7 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import all OGR/PostGIS vectors in a given data source and create a fitted location" module="v.in.ogr">
-	<flag key="o" answer="off" hidden="yes" />
 	<option key="dsn" label="Path to the OGR data source" />
 	<option key="output" />
 	<option key="location" />
@@ -11,4 +10,5 @@
         <flag key="e" answer="off" hidden="no" advanced="yes"/>
         <option key="snap" advanced="yes" /> 
         <option key="min_area" advanced="yes" />
+	<flag key="o" answer="on" advanced="yes" />
 </qgisgrassmodule>
