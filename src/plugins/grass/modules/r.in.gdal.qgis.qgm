@@ -2,8 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import loaded raster" module="r.in.gdal">
-	<flag key="o" answer="on" hidden="yes" />
-	<flag key="e" answer="off" hidden="yes" />
-	<gdal key="input" label="GDAL raster layer" />
+	<gdal key="input"  label="Loaded layer"/>
 	<option key="output" />
+	<option key="title" advanced="yes"/>
+	<option key="band" advanced="yes"/>
+	<flag key="o" advanced="yes"/>
+	<flag key="e" advanced="yes"/>
 </qgisgrassmodule>
