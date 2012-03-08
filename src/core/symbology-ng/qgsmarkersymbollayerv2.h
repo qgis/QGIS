@@ -28,6 +28,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -42,6 +43,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     QString name() const { return mName; }
     void setName( QString name ) { mName = name; }
@@ -87,6 +90,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     //! Return a list of all available svg files
     static QStringList listSvgFiles();
@@ -110,6 +114,8 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     QString path() const { return mPath; }
     void setPath( QString path );
@@ -161,6 +167,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -175,6 +182,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     // new methods
 

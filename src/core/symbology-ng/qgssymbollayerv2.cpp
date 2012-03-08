@@ -93,3 +93,16 @@ void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points,
     p->drawPath( path );
   }
 }
+
+void QgsMarkerSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  QDomElement symbolizerElem = doc.createElement( "se:PointSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  // <Geometry>
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+  writeSldMarker( doc, symbolizerElem, props );
+}

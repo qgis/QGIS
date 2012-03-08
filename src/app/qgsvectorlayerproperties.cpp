@@ -950,14 +950,25 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file (.qml)" ), myLastUsedDir, tr( "QGIS Layer Style File (*.qml)" ) );
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
+                                                     tr( "QGIS Layer Style File (*.qml)" ) + ";;" + tr( "SLD File (*.sld)" ) );
   if ( myFileName.isNull() )
   {
     return;
   }
 
+  QString myMessage;
   bool defaultLoadedFlag = false;
-  QString myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
+
+  if ( myFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
+  {
+    // load from SLD
+     myMessage = layer->loadSldStyle( myFileName, defaultLoadedFlag );
+  }
+  else
+  {
+    myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
+  }
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
@@ -966,7 +977,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   else
   {
     //let the user know what went wrong
-    QMessageBox::information( this, tr( "Saved Style" ), myMessage );
+    QMessageBox::information( this, tr( "Load Style" ), myMessage );
   }
 
   QFileInfo myFI( myFileName );
@@ -979,7 +990,8 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file (.qml)" ), myLastUsedDir, tr( "QGIS Layer Style File (*.qml)" ) );
+  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), myLastUsedDir,
+                                                           tr( "QGIS Layer Style File (*.qml)" ) + ";;" + tr( "SLD File (*.sld)" ) );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
     return;
@@ -987,14 +999,25 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 
   apply(); // make sure the qml to save is uptodate
 
+  QString myMessage;
+  bool defaultLoadedFlag = false;
+
   //ensure the user never omitted the extension from the file name
-  if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
+  if ( myOutputFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
   {
-    myOutputFileName += ".qml";
+    // convert to SLD
+     myMessage = layer->saveSldStyle( myOutputFileName, defaultLoadedFlag );
+  }
+  else
+  {
+    if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
+    {
+      myOutputFileName += ".qml";
+    }
+
+    myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
   }
 
-  bool defaultLoadedFlag = false;
-  QString myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {

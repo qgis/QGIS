@@ -22,8 +22,10 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
+
 #include <QDomElement>
 #include <QPainter>
+
 #include <cmath>
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& labelAttributeName )
@@ -65,6 +67,12 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
   }
   return r;
 }
+
+void QgsPointDisplacementRenderer::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  mRenderer->toSld( doc, element );
+}
+
 
 bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {

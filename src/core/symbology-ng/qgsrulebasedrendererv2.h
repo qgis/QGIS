@@ -18,6 +18,7 @@
 
 #include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgis.h"
 
 #include "qgsrendererv2.h"
 
@@ -116,6 +117,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! clone this rule, return new instance
         Rule* clone() const;
 
+        void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props );
+        static Rule* createFromSld( QDomElement& element, QGis::GeometryType geomType );
+
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
         //! prepare the rule for rendering and its children (build active children array)
@@ -196,6 +200,10 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     virtual QList<QString> usedAttributes();
 
     virtual QgsFeatureRendererV2* clone();
+
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
 
     virtual QgsSymbolV2List symbols();
 

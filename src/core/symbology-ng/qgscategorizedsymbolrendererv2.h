@@ -1,6 +1,7 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERV2_H
 #define QGSCATEGORIZEDSYMBOLRENDERERV2_H
 
+#include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
 
 #include <QHash>
@@ -32,6 +33,8 @@ class CORE_EXPORT QgsRendererCategoryV2
     // debugging
     QString dump();
 
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+
   protected:
     QVariant mValue;
     QgsSymbolV2* mSymbol;
@@ -59,6 +62,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QString dump();
 
     virtual QgsFeatureRendererV2* clone();
+
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0

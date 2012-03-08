@@ -5,10 +5,13 @@
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
+#include "qgslogger.h"
 
 #include <QPainter>
 #include <QFile>
 #include <QSvgRenderer>
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
     : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth )
@@ -116,6 +119,63 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
   sl->setOffset( mOffset );
   return sl;
 }
+
+void QgsSimpleFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  if ( mBrushStyle == Qt::NoBrush && mBorderStyle == Qt::NoPen )
+    return;
+
+  QDomElement symbolizerElem = doc.createElement( "se:PolygonSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  // <Geometry>
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+  if ( mBrushStyle != Qt::NoBrush )
+  {
+    // <Fill>
+    QDomElement fillElem = doc.createElement( "se:Fill" );
+    symbolizerElem.appendChild( fillElem );
+    QgsSymbolLayerV2Utils::fillToSld( doc, fillElem, mBrushStyle, mColor );
+  }
+
+  if ( mBorderStyle != Qt::NoPen )
+  {
+    // <Stroke>
+    QDomElement strokeElem = doc.createElement( "se:Stroke" );
+    symbolizerElem.appendChild( strokeElem );
+    QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, mBorderStyle, mBorderColor, mBorderWidth );
+  }
+
+  // <se:Displacement>
+  QgsSymbolLayerV2Utils::createDisplacementElement( doc, symbolizerElem, mOffset );
+}
+
+QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QColor color, borderColor;
+  Qt::BrushStyle fillStyle;
+  Qt::PenStyle borderStyle;
+  double borderWidth;
+
+  QDomElement fillElem = element.firstChildElement( "Fill" );
+  QgsSymbolLayerV2Utils::fillFromSld( fillElem, fillStyle, color );
+
+  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  QgsSymbolLayerV2Utils::lineFromSld( strokeElem, borderStyle, borderColor, borderWidth );
+
+  QPointF offset;
+  QgsSymbolLayerV2Utils::displacementFromSldElement( element, offset );
+
+  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, fillStyle, borderColor, borderStyle, borderWidth );
+  sl->setOffset( offset );
+  return sl;
+}
+
 
 //QgsImageFillSymbolLayer
 
@@ -380,6 +440,123 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
   return clonedLayer;
 }
 
+void QgsSVGFillSymbolLayer::toSld(QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  QDomElement symbolizerElem = doc.createElement( "se:PolygonSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+  QDomElement fillElem = doc.createElement( "se:Fill" );
+  symbolizerElem.appendChild( fillElem );
+
+  QDomElement graphicFillElem = doc.createElement( "se:GraphicFill" );
+  fillElem.appendChild( graphicFillElem );
+
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  graphicFillElem.appendChild( graphicElem );
+
+  if ( !mSvgFilePath.isEmpty() )
+  {
+    QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mSvgFilePath, "image/svg+xml", mSvgFillColor, mPatternWidth );
+  }
+  else
+  {
+    // TODO: create svg from data
+    // <se:InlineContent>
+    symbolizerElem.appendChild( doc.createComment( "SVG from data not implemented yet" ) );
+  }
+
+  if ( mSvgOutlineColor.isValid() || mSvgOutlineWidth >= 0 )
+  {
+    QgsSymbolLayerV2Utils::lineToSld( doc, graphicElem, Qt::SolidLine, mSvgOutlineColor, mSvgOutlineWidth );
+  }
+
+  // <Rotation>
+  QString angleFunc;
+  bool ok;
+  double angle = props.value( "angle", "0" ).toDouble( &ok );
+  if ( !ok )
+  {
+    angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
+  }
+  else if ( angle + mAngle != 0 )
+  {
+    angleFunc = QString::number( angle + mAngle );
+  }
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
+
+  if ( mOutline )
+  {
+    // the outline sub symbol should be stored within the Stroke element,
+    // but it will be stored in a separated LineSymbolizer because it could
+    // have more than one layer
+    mOutline->toSld( doc, element, props );
+  }
+}
+
+QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QString path, mimeType;
+  QColor fillColor, borderColor;
+  Qt::PenStyle penStyle;
+  double size, borderWidth;
+
+  QDomElement fillElem = element.firstChildElement( "Fill" );
+  if( fillElem.isNull() )
+    return NULL;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
+  if( graphicFillElem.isNull() )
+    return NULL;
+
+  QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
+  if( graphicElem.isNull() )
+    return NULL;
+
+  if ( !QgsSymbolLayerV2Utils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
+    return NULL;
+
+  if ( mimeType != "image/svg+xml" )
+    return NULL;
+
+  QgsSymbolLayerV2Utils::lineFromSld( graphicElem, penStyle, borderColor, borderWidth );
+
+  double angle = 0.0;
+  QString angleFunc;
+  if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  {
+    bool ok;
+    double d = angleFunc.toDouble( &ok );
+    if ( ok )
+      angle = d;
+  }
+
+  QgsSVGFillSymbolLayer* sl = new QgsSVGFillSymbolLayer( path, size, angle );
+  sl->setSvgFillColor( fillColor );
+  sl->setSvgOutlineColor( borderColor );
+  sl->setSvgOutlineWidth( borderWidth );
+
+  // try to get the outline
+  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  if ( !strokeElem.isNull() )
+  {
+    QgsSymbolLayerV2 *l = QgsSymbolLayerV2Utils::createLineLayerFromSld( strokeElem );
+    if ( l )
+    {
+      QgsSymbolLayerV2List layers;
+      layers.append( l );
+      sl->setSubSymbol( new QgsLineSymbolV2( layers ) );
+    }
+  }
+
+  return sl;
+}
+
 void QgsSVGFillSymbolLayer::storeViewBox()
 {
   if ( !mSvgData.isEmpty() )
@@ -630,6 +807,52 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
   return clonedLayer;
 }
 
+void QgsLinePatternFillSymbolLayer::toSld(QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  QDomElement symbolizerElem = doc.createElement( "se:PolygonSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  // <Geometry>
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+  QDomElement fillElem = doc.createElement( "se:Fill" );
+  symbolizerElem.appendChild( fillElem );
+
+  QDomElement graphicFillElem = doc.createElement( "se:GraphicFill" );
+  fillElem.appendChild( graphicFillElem );
+
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  graphicFillElem.appendChild( graphicElem );
+
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "horline", QColor(), mColor, mLineWidth, mDistance );
+
+  // <Rotation>
+  QString angleFunc;
+  bool ok;
+  double angle = props.value( "angle", "0" ).toDouble( &ok );
+  if ( !ok )
+  {
+    angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mLineAngle );
+  }
+  else if ( angle + mLineAngle != 0 )
+  {
+    angleFunc = QString::number( angle + mLineAngle );
+  }
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
+
+  // <se:Displacement>
+  QPointF lineOffset( qSin( mLineAngle ) * mOffset, qCos( mLineAngle ) * mOffset );
+  QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, lineOffset );
+}
+
+QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &element )
+{
+  Q_UNUSED( element );
+  return NULL;
+}
+
 ////////////////////////
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
@@ -765,6 +988,49 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
   return clonedLayer;
 }
 
+void QgsPointPatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  for ( int i = 0; i < mMarkerSymbol->symbolLayerCount(); i++ )
+  {
+    QDomElement symbolizerElem = doc.createElement( "se:PolygonSymbolizer" );
+    if ( !props.value( "uom", "" ).isEmpty() )
+      symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+    element.appendChild( symbolizerElem );
+
+    // <Geometry>
+    QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+    QDomElement fillElem = doc.createElement( "se:Fill" );
+    symbolizerElem.appendChild( fillElem );
+
+    QDomElement graphicFillElem = doc.createElement( "se:GraphicFill" );
+    fillElem.appendChild( graphicFillElem );
+
+    // store distanceX, distanceY, displacementX, displacementY in a <VendorOption>
+    QString dist =  QgsSymbolLayerV2Utils::encodePoint( QPointF( mDistanceX, mDistanceY ) );
+    QDomElement distanceElem = QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "distance", dist );
+    symbolizerElem.appendChild( distanceElem );
+
+    QgsSymbolLayerV2 *layer = mMarkerSymbol->symbolLayer( i );
+    QgsMarkerSymbolLayerV2 *markerLayer = static_cast<QgsMarkerSymbolLayerV2 *>( layer );
+    if ( !markerLayer )
+    {
+      QString errorMsg = QString( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() );
+      graphicFillElem.appendChild( doc.createComment( errorMsg ) );
+    }
+    else
+    {
+      markerLayer->writeSldMarker( doc, graphicFillElem, props );
+    }
+  }
+}
+
+QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::createFromSld( QDomElement &element )
+{
+  Q_UNUSED( element );
+  return NULL;
+}
+
 bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 {
   if ( !symbol )
@@ -856,6 +1122,31 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::clone() const
 {
   QgsCentroidFillSymbolLayerV2* x = new QgsCentroidFillSymbolLayerV2();
   x->setSubSymbol( mMarker->clone() );
+  return x;
+}
+
+void QgsCentroidFillSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  // SLD 1.0 specs says: "if a line, polygon, or raster geometry is
+  // used with PointSymbolizer, then the semantic is to use the centroid
+  // of the geometry, or any similar representative point.
+  mMarker->toSld( doc, element, props );
+}
+
+QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QgsSymbolLayerV2 *l = QgsSymbolLayerV2Utils::createMarkerLayerFromSld( element );
+  if ( !l )
+    return NULL;
+
+  QgsSymbolLayerV2List layers;
+  layers.append( l );
+  QgsMarkerSymbolV2 *marker = new QgsMarkerSymbolV2( layers );
+
+  QgsCentroidFillSymbolLayerV2* x = new QgsCentroidFillSymbolLayerV2();
+  x->setSubSymbol( marker );
   return x;
 }
 

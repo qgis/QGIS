@@ -36,6 +36,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     QgsFeatureRendererV2* clone();
 
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+
     /**Reimplemented from QgsFeatureRendererV2*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 

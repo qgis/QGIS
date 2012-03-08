@@ -47,6 +47,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     ~QgsVectorFieldSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     QString layerType() const { return "VectorField"; }
 
@@ -59,6 +60,8 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const;
     QgsStringMap properties() const;
+
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 

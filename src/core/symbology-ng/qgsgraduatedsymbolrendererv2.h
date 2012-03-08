@@ -1,6 +1,7 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
+#include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
 
 class CORE_EXPORT QgsRendererRangeV2
@@ -24,6 +25,8 @@ class CORE_EXPORT QgsRendererRangeV2
 
     // debugging
     QString dump();
+
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
   protected:
     double mLowerValue, mUpperValue;
@@ -54,6 +57,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QString dump();
 
     virtual QgsFeatureRendererV2* clone();
+
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0

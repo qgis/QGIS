@@ -1,6 +1,7 @@
 #ifndef QGSSINGLESYMBOLRENDERERV2_H
 #define QGSSINGLESYMBOLRENDERERV2_H
 
+#include "qgis.h"
 #include "qgsrendererv2.h"
 
 class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
@@ -35,6 +36,9 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QString dump();
 
     virtual QgsFeatureRendererV2* clone();
+
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
