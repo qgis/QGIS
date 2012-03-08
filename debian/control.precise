@@ -30,6 +30,8 @@ Build-Depends:
  python-qt4-dev (>=4.1.0),
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
+ libosgearth-dev,
+ libopenscenegraph-dev,
  git,
  doxygen,
  graphviz,
@@ -42,7 +44,7 @@ Homepage: http://qgis.org/
 Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
-Recommends: qgis-plugin-grass, python-qgis
+Recommends: qgis-plugin-globe, qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
@@ -196,4 +198,22 @@ Description: Quantum GIS API documentation
  and display databases of geographic information.
  .
  This package contains the Quantum GIS API documentation.
+
+Package: qgis-plugin-globe
+Architecture: any
+Depends: qgis (= ${binary:Version}), qgis-plugin-globe-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: OSG globe plugin for Quantum GIS
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This plugin enables 3D viewing using OSG globe in the Quantum GIS.
+
+Package: qgis-plugin-globe-common
+Architecture: all
+Description: OSG GLOBE plugin for Quantum GIS - architecture-independent data
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains architecture-independent supporting data files for use
+ with the Quantum GIS GLOBE plugin.
 

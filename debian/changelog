@@ -10,7 +10,7 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * build package with internal libspatialite where libspatialite not available
   * drop support for Ubuntu hardy, intrepid, jaunty and karmic
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 07 Mar 2012 06:52:29 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 08 Mar 2012 16:08:09 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
