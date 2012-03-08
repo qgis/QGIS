@@ -9,14 +9,15 @@
 #include <QVariant>
 #include <QPair>
 #include <QPixmap>
-
-class QDomDocument;
-class QDomElement;
+#include <QDomDocument>
+#include <QDomElement>
 
 class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
 class QgsVectorLayer;
+
+typedef QMap<QString, QString> QgsStringMap;
 
 typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
@@ -101,6 +102,28 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
 
+    //! create the SLD UserStyle element following the SLD v1.1 specs
+    //! @note added in 1.9
+    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
+
+    /** create a new renderer according to the information contained in
+     * the UserStyle element of a SLD style document
+     * @param node the node in the SLD document whose the UserStyle element
+     * is a child
+     * @param geomType the geometry type of the features, used to convert
+     * Symbolizer elements
+     * @param errorMessage it will contain the error message if something
+     * went wrong
+     * @return the renderer
+     * @note added in 1.9
+     */
+    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage );
+
+    //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
+    //! @note added in 1.9
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const
+    { element.appendChild( doc.createComment( QString( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) ); }
+
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
@@ -162,4 +185,4 @@ class CORE_EXPORT QgsFeatureRendererV2
 };
 
 
-#endif
+#endif // QGSRENDERERV2_H

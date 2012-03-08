@@ -188,6 +188,88 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
   return ruleElem;
 }
 
+void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props )
+{
+  // do not convert this rule if there are no symbols
+  if ( symbols().isEmpty() )
+    return;
+
+  if ( !mFilterExp.isEmpty() )
+  {
+    if ( !props.value( "filter", "" ).isEmpty() )
+      props[ "filter" ] += " AND ";
+    props[ "filter" ] += mFilterExp;
+  }
+
+  if ( mScaleMinDenom != 0 )
+  {
+    bool ok;
+    int parentScaleMinDenom = props.value( "scaleMinDenom", "0" ).toInt( &ok );
+    if ( !ok || parentScaleMinDenom <= 0 )
+      props[ "scaleMinDenom" ] = QString::number( mScaleMinDenom );
+    else
+      props[ "scaleMinDenom" ] = QString::number( qMax( parentScaleMinDenom, mScaleMinDenom ) );
+  }
+
+  if ( mScaleMaxDenom != 0 )
+  {
+    bool ok;
+    int parentScaleMaxDenom = props.value( "scaleMaxDenom", "0" ).toInt( &ok );
+    if ( !ok || parentScaleMaxDenom <= 0 )
+      props[ "scaleMaxDenom" ] = QString::number( mScaleMaxDenom );
+    else
+      props[ "scaleMaxDenom" ] = QString::number( qMin( parentScaleMaxDenom, mScaleMaxDenom ) );
+  }
+
+  if ( mSymbol )
+  {
+    QDomElement ruleElem = doc.createElement( "se:Rule" );
+    element.appendChild( ruleElem );
+
+    QDomElement nameElem = doc.createElement( "se:Name" );
+    nameElem.appendChild( doc.createTextNode( mLabel ) );
+    ruleElem.appendChild( nameElem );
+
+    if ( !mDescription.isEmpty() )
+    {
+      QDomElement descrElem = doc.createElement( "se:Description" );
+      QDomElement abstractElem = doc.createElement( "se:Abstract" );
+      abstractElem.appendChild( doc.createTextNode( mDescription ) );
+      descrElem.appendChild( abstractElem );
+      ruleElem.appendChild( descrElem );
+    }
+
+    if ( !props.value( "filter", "" ).isEmpty() )
+    {
+      QDomElement filterElem = doc.createElement( "ogc:Filter" );
+      QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, props.value( "filter", "" ) );
+      ruleElem.appendChild( filterElem );
+    }
+
+    if ( !props.value( "scaleMinDenom", "" ).isEmpty() )
+    {
+      QDomElement scaleMinDenomElem = doc.createElement( "se:MinScaleDenominator" );
+      scaleMinDenomElem.appendChild( doc.createTextNode( props.value( "scaleMinDenom", "" ) ) );
+      ruleElem.appendChild( scaleMinDenomElem );
+    }
+
+    if ( !props.value( "scaleMaxDenom", "" ).isEmpty() )
+    {
+      QDomElement scaleMaxDenomElem = doc.createElement( "se:MaxScaleDenominator" );
+      scaleMaxDenomElem.appendChild( doc.createTextNode( props.value( "scaleMaxDenom", "" ) ) );
+      ruleElem.appendChild( scaleMaxDenomElem );
+    }
+
+    mSymbol->toSld( doc, ruleElem, props );
+  }
+
+  // loop into childern rule list
+  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    ( *it )->toSld( doc, element, props );
+  }
+}
+
 bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
 {
   mActiveChildren.clear();
@@ -377,6 +459,119 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   return rule;
 }
 
+QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomElement& ruleElem, QGis::GeometryType geomType )
+{
+  if ( ruleElem.localName() != "Rule" )
+  {
+    QgsDebugMsg( QString( "invalid element: Rule element expected, %1 found!" ).arg( ruleElem.tagName() ) );
+    return NULL;
+  }
+
+  QString label, description, filterExp;
+  int scaleMinDenom = 0, scaleMaxDenom = 0;
+  QgsSymbolLayerV2List layers;
+
+  // retrieve the Rule element child nodes
+  QDomElement childElem = ruleElem.firstChildElement();
+  while( !childElem.isNull() )
+  {
+    if ( childElem.localName() == "Name" )
+    {
+      label = childElem.firstChild().nodeValue();
+    }
+    else if ( childElem.localName() == "Description" )
+    {
+      // <se:Description> can contains a title and an abstract
+      // prefer Abstract if available
+      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
+      QDomElement titleElem = childElem.firstChildElement( "Title" );
+      if ( !abstractElem.isNull() )
+      {
+        description = abstractElem.firstChild().nodeValue();
+      }
+      else if ( !titleElem.isNull() && description.isEmpty() )
+      {
+        description = titleElem.firstChild().nodeValue();
+      }
+    }
+    else if ( childElem.localName() == "Abstract" )
+    {
+      // <sld:Abstract>
+      description = childElem.firstChild().nodeValue();
+    }
+    else if ( childElem.localName() == "Title" )
+    {
+      // <sld:Title>
+      if ( description.isEmpty() )
+        description = childElem.firstChild().nodeValue();
+    }
+    else if ( childElem.localName() == "Filter" )
+    {
+      QgsExpression *filter = QgsExpression::createFromOgcFilter( childElem );
+      if ( filter )
+      {
+        if ( filter->hasParserError() )
+        {
+          QgsDebugMsg( "parser error: " + filter->parserErrorString() );
+        }
+        else
+        {
+          filterExp = filter->dump();
+        }
+        delete filter;
+      }
+    }
+    else if ( childElem.localName() == "MinScaleDenominator" )
+    {
+      bool ok;
+      int v = childElem.firstChild().nodeValue().toInt( &ok );
+      if ( ok )
+        scaleMinDenom = v;
+    }
+    else if ( childElem.localName() == "MaxScaleDenominator" )
+    {
+      bool ok;
+      int v = childElem.firstChild().nodeValue().toInt( &ok );
+      if ( ok )
+        scaleMaxDenom = v;
+    }
+    else if ( childElem.localName().endsWith( "Symbolizer" ) )
+    {
+      // create symbol layers for this symbolizer
+      QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
+    }
+
+    childElem = childElem.nextSiblingElement();
+  }
+
+  // now create the symbol
+  QgsSymbolV2 *symbol = 0;
+  if ( layers.size() > 0 )
+  {
+    switch( geomType )
+    {
+      case QGis::Line:
+        symbol = new QgsLineSymbolV2( layers );
+        break;
+
+      case QGis::Polygon:
+        symbol = new QgsFillSymbolV2( layers );
+        break;
+
+      case QGis::Point:
+        symbol = new QgsMarkerSymbolV2( layers );
+        break;
+
+      default:
+        QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+        return NULL;
+    }
+  }
+
+  // and then create and return the new rule
+  return new Rule( symbol, scaleMinDenom, scaleMaxDenom, filterExp, label, description );
+}
+
 
 /////////////////////
 
@@ -497,6 +692,11 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone()
   return r;
 }
 
+void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  mRootRule->toSld( doc, element, QgsStringMap() );
+}
+
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items
 QgsSymbolV2List QgsRuleBasedRendererV2::symbols()
 {
@@ -520,7 +720,6 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
 
   return rendererElem;
 }
-
 
 QgsLegendSymbologyList QgsRuleBasedRendererV2::legendSymbologyItems( QSize iconSize )
 {
@@ -564,6 +763,36 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
   return r;
 }
 
+QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& element, QGis::GeometryType geomType )
+{
+  // retrieve child rules
+  Rule* root = 0;
+
+  QDomElement ruleElem = element.firstChildElement( "Rule" );
+  while ( !ruleElem.isNull() )
+  {
+    Rule *child = Rule::createFromSld( ruleElem, geomType );
+    if ( child )
+    {
+      // create the root rule if not done before
+      if ( !root )
+        root = new Rule( 0 );
+
+      root->appendChild( child );
+    }
+
+    ruleElem = ruleElem.nextSiblingElement( "Rule" );
+  }
+
+  if ( !root )
+  {
+    // no valid rules was found
+    return NULL;
+  }
+
+  // create and return the new renderer
+  return new QgsRuleBasedRendererV2( root );
+}
 
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"

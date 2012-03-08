@@ -289,6 +289,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
 
+    virtual QString saveSldStyle( const QString theURI, bool & theResultFlag );
+    virtual QString loadSldStyle( const QString theURI, bool &theResultFlag );
+
+    virtual bool readSld( const QDomNode& node, QString& errorMessage )
+    { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
+
+
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages

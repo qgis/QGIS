@@ -12,6 +12,8 @@
 #include <QSvgRenderer>
 #include <QFileInfo>
 #include <QDir>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include <cmath>
 
@@ -34,6 +36,8 @@ static QPointF _rotatedOffset( const QPointF& offset, double angle )
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle )
 {
+  if ( name == "rectangle" )
+    name = "square";
   mName = name;
   mColor = color;
   mBorderColor = borderColor;
@@ -222,7 +226,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
 {
   mPolygon.clear();
 
-  if ( mName == "rectangle" )
+  if ( mName == "square" )
   {
     mPolygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
     return true;
@@ -324,7 +328,7 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath()
     mPath.lineTo( 0, 1 ); // vertical
     return true;
   }
-  else if ( mName == "cross2" )
+  else if ( mName == "x" || mName == "cross2" )
   {
     mPath.moveTo( -1, -1 );
     mPath.lineTo( 1, 1 );
@@ -423,6 +427,66 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
   QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle );
   m->setOffset( mOffset );
+  return m;
+}
+
+void QgsSimpleMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  element.appendChild( graphicElem );
+
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mName, mColor, mBorderColor, -1, mSize );
+
+  // <Rotation>
+  QString angleFunc;
+  bool ok;
+  double angle = props.value( "angle", "0" ).toDouble( &ok );
+  if ( !ok )
+  {
+    angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
+  }
+  else if ( angle + mAngle != 0 )
+  {
+    angleFunc = QString::number( angle + mAngle );
+  }
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
+
+  // <Displacement>
+  QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, mOffset );
+}
+
+QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QDomElement graphicElem = element.firstChildElement( "Graphic" );
+  if( graphicElem.isNull() )
+    return NULL;
+
+  QString name = "square";
+  QColor color, borderColor;
+  double borderWidth, size;
+
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, color, borderColor, borderWidth, size ) )
+    return NULL;
+
+  double angle = 0.0;
+  QString angleFunc;
+  if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  {
+    bool ok;
+    double d = angleFunc.toDouble( &ok );
+    if ( ok )
+      angle = d;
+  }
+
+  QPointF offset;
+  QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
+
+  QgsMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size );
+  m->setAngle( angle );
+  m->setOffset( offset );
   return m;
 }
 
@@ -627,6 +691,73 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   return m;
 }
 
+void QgsSvgMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  element.appendChild( graphicElem );
+
+  QgsSymbolLayerV2Utils::externalGraphicToSld( doc, graphicElem, mPath, "image/svg+xml", mFillColor, mSize );
+
+  // <Rotation>
+  QString angleFunc;
+  bool ok;
+  double angle = props.value( "angle", "0" ).toDouble( &ok );
+  if ( !ok )
+  {
+    angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
+  }
+  else if ( angle + mAngle != 0 )
+  {
+    angleFunc = QString::number( angle + mAngle );
+  }
+
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
+
+  // <Displacement>
+  QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, mOffset );
+}
+
+QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QDomElement graphicElem = element.firstChildElement( "Graphic" );
+  if( graphicElem.isNull() )
+    return NULL;
+
+  QString path, mimeType;
+  QColor fillColor;
+  double size;
+
+  if ( !QgsSymbolLayerV2Utils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
+    return NULL;
+
+  if ( mimeType != "image/svg+xml" )
+    return NULL;
+
+  double angle = 0.0;
+  QString angleFunc;
+  if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  {
+    bool ok;
+    double d = angleFunc.toDouble( &ok );
+    if ( ok )
+      angle = d;
+  }
+
+  QPointF offset;
+  QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
+
+  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( path, size );
+  m->setFillColor( fillColor );
+  //m->setOutlineColor( outlineColor );
+  //m->setOutlineWidth( outlineWidth );
+  m->setAngle( angle );
+  m->setOffset( offset );
+  return m;
+}
+
 
 QStringList QgsSvgMarkerSymbolLayerV2::listSvgFiles()
 {
@@ -827,5 +958,73 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
 {
   QgsFontMarkerSymbolLayerV2* m = new QgsFontMarkerSymbolLayerV2( mFontFamily, mChr, mSize, mColor, mAngle );
   m->setOffset( mOffset );
+  return m;
+}
+
+void QgsFontMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  element.appendChild( graphicElem );
+
+  QString fontPath = QString( "ttf://%1" ).arg( mFontFamily );
+  int markIndex = mChr.unicode();
+  QgsSymbolLayerV2Utils::externalMarkerToSld( doc, graphicElem, fontPath, "ttf", &markIndex, mColor, mSize );
+
+  // <Rotation>
+  QString angleFunc;
+  bool ok;
+  double angle = props.value( "angle", "0" ).toDouble( &ok );
+  if ( !ok )
+  {
+    angleFunc = QString( "%1 + %2" ).arg( props.value( "angle", "0" ) ).arg( mAngle );
+  }
+  else if ( angle + mAngle != 0 )
+  {
+    angleFunc = QString::number( angle + mAngle );
+  }
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
+
+  // <Displacement>
+  QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, mOffset );
+}
+
+QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QDomElement graphicElem = element.firstChildElement( "Graphic" );
+  if( graphicElem.isNull() )
+    return NULL;
+
+  QString name, format;
+  QColor color;
+  double size;
+  int chr;
+
+  if ( !QgsSymbolLayerV2Utils::externalMarkerFromSld( graphicElem, name, format, chr, color, size ) )
+    return NULL;
+
+  if ( !name.startsWith( "ttf://" ) || format != "ttf" )
+    return NULL;
+
+  QString fontFamily = name.mid( 6 );
+
+  double angle = 0.0;
+  QString angleFunc;
+  if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  {
+    bool ok;
+    double d = angleFunc.toDouble( &ok );
+    if ( ok )
+      angle = d;
+  }
+
+  QPointF offset;
+  QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
+
+  QgsMarkerSymbolLayerV2 *m = new QgsFontMarkerSymbolLayerV2( fontFamily, chr, size, color );
+  m->setAngle( angle );
+  m->setOffset( offset );
   return m;
 }

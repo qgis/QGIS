@@ -372,6 +372,110 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
   return doc.createElement( RENDERER_TAG_NAME );
 }
 
+QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage )
+{
+  QDomElement element = node.toElement();
+  if ( element.isNull() )
+    return NULL;
+
+  // get the UserStyle element
+  QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
+  if ( userStyleElem.isNull() )
+  {
+    // UserStyle element not found, nothing will be rendered
+    errorMessage = "Info: UserStyle element not found.";
+    return NULL;
+  }
+
+  // get the FeatureTypeStyle element
+  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( "FeatureTypeStyle" );
+  if ( featTypeStyleElem.isNull() )
+  {
+    errorMessage = "Info: FeatureTypeStyle element not found.";
+    return NULL;
+  }
+
+  // use the RuleRenderer when more rules are present or the rule
+  // has filters or min/max scale denominators set,
+  // otherwise use the SingleSymbol renderer
+  bool needRuleRenderer = false;
+  int ruleCount = 0;
+
+  QDomElement ruleElem = featTypeStyleElem.firstChildElement( "Rule" );
+  while( !ruleElem.isNull() )
+  {
+    ruleCount++;
+
+    // more rules present, use the RuleRenderer
+    if ( ruleCount > 1 )
+    {
+      QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
+      needRuleRenderer = true;
+      break;
+    }
+
+    QDomElement ruleChildElem = ruleElem.firstChildElement();
+    while( !ruleChildElem.isNull() )
+    {
+      // rule has filter or min/max scale denominator, use the RuleRenderer
+      if ( ruleChildElem.localName() == "Filter" ||
+           ruleChildElem.localName() == "MinScaleDenominator" ||
+           ruleChildElem.localName() == "MaxScaleDenominator" )
+      {
+        QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+        needRuleRenderer = true;
+        break;
+      }
+
+      ruleChildElem = ruleChildElem.nextSiblingElement();
+    }
+
+    if ( needRuleRenderer )
+    {
+      break;
+    }
+
+    ruleElem = ruleElem.nextSiblingElement( "Rule" );
+  }
+
+  QString rendererType;
+  if ( needRuleRenderer )
+  {
+    rendererType = "RuleRenderer";
+  }
+  else
+  {
+    rendererType = "singleSymbol";
+  }
+  QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
+
+  // create the renderer and return it
+  QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
+  if ( m == NULL )
+  {
+    errorMessage = QString( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
+    return NULL;
+  }
+
+  QgsFeatureRendererV2* r = m->createRendererFromSld( featTypeStyleElem, geomType );
+  return r;
+}
+
+QDomElement QgsFeatureRendererV2::writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const
+{
+  QDomElement userStyleElem = doc.createElement( "UserStyle" );
+
+  QDomElement nameElem = doc.createElement( "se:Name" );
+  nameElem.appendChild( doc.createTextNode( layer.name() ) );
+  userStyleElem.appendChild( nameElem );
+
+  QDomElement featureTypeStyleElem = doc.createElement( "se:FeatureTypeStyle" );
+  toSld( doc, featureTypeStyleElem );
+  userStyleElem.appendChild( featureTypeStyleElem );
+
+  return userStyleElem;
+}
+
 QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSize )
 {
   Q_UNUSED( iconSize );

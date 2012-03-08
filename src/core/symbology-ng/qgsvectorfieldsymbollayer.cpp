@@ -177,6 +177,18 @@ QgsStringMap QgsVectorFieldSymbolLayer::properties() const
   return properties;
 }
 
+void QgsVectorFieldSymbolLayer::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const
+{
+  element.appendChild( doc.createComment( "VectorField not implemented yet..." ) );
+  mLineSymbol->toSld( doc, element, props );
+}
+
+QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::createFromSld( QDomElement &element )
+{
+  Q_UNUSED( element );
+  return NULL;
+}
+
 void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
 {
   if ( mLineSymbol )

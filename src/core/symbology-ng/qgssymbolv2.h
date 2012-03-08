@@ -12,6 +12,9 @@ class QPainter;
 class QSize;
 class QPointF;
 class QPolygonF;
+
+class QDomDocument;
+class QDomElement;
 //class
 
 class QgsFeature;
@@ -88,6 +91,8 @@ class CORE_EXPORT QgsSymbolV2
     QString dump();
 
     virtual QgsSymbolV2* clone() const = 0;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }

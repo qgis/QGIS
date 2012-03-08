@@ -3393,6 +3393,53 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   return true;
 }
 
+bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
+{
+  // get the Name element
+  QDomElement nameElem = node.firstChildElement( "Name" );
+  if ( nameElem.isNull() )
+  {
+    errorMessage = "Warning: Name element not found within NamedLayer while it's required.";
+  }
+
+  if ( hasGeometryType() )
+  {
+    setUsingRendererV2( true );
+
+    QgsFeatureRendererV2* r = QgsFeatureRendererV2::loadSld( node, geometryType(), errorMessage );
+    if ( !r )
+      return false;
+
+    setRendererV2( r );
+  }
+  return true;
+}
+
+
+bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
+{
+  Q_UNUSED( errorMessage );
+
+  // store the Name element
+  QDomElement nameNode = doc.createElement( "se:Name" );
+  nameNode.appendChild( doc.createTextNode( name() ) );
+  node.appendChild( nameNode );
+
+  if ( hasGeometryType() )
+  {
+    if ( mUsingRendererV2 )
+    {
+      node.appendChild( mRendererV2->writeSld( doc, *this ) );
+    }
+    else
+    {
+      node.appendChild( doc.createComment( "Old Renderer not supported yet" ) );
+      return false;
+    }
+  }
+  return true;
+}
+
 
 bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
