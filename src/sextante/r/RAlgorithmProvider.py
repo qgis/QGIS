@@ -8,6 +8,8 @@ from sextante.core.AlgorithmProvider import AlgorithmProvider
 from PyQt4 import QtGui
 from sextante.r.RUtils import RUtils
 from sextante.r.RAlgorithm import RAlgorithm
+from sextante.r.CreateNewRScriptAction import CreateNewRScriptAction
+from sextante.r.EditRScriptAction import EditRScriptAction
 
 class RAlgorithmProvider(AlgorithmProvider):
 
@@ -15,9 +17,9 @@ class RAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         SextanteConfig.addSetting(Setting("R", RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
         SextanteConfig.addSetting(Setting("R", RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
-        #self.actions = []
-        #self.actions.append(CreateNewScriptAction())
-        self.contextMenuActions = []#EditScriptAction(), DeleteScriptAction()]
+        self.actions = []
+        self.actions.append(CreateNewRScriptAction())
+        self.contextMenuActions = [EditRScriptAction()]
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")

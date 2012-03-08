@@ -89,7 +89,6 @@ class SextanteToolbox(QtGui.QDockWidget):
             alg = copy.deepcopy(alg)
             dlg = ParametersDialog(alg)
             dlg.exec_()
-
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)

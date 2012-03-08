@@ -46,7 +46,6 @@ class ScriptAlgorithm(GeoAlgorithm):
         return s.replace("_", " ")
 
     def processParameterLine(self,line):
-
         param = None
         out = None
         line = line.replace("#", "");

@@ -29,6 +29,7 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
+import math
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -174,14 +175,48 @@ class SagaAlgorithm(GeoAlgorithm):
                 line = lines.readline()
         lines.close()
 
-    def processAlgorithm(self, progress):
 
+    def calculateResamplingExtent(self):
+        auto = SextanteConfig.getSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
+        if auto:
+            first = True;
+            for param in self.parameters:
+                if isinstance(param, ParameterRaster):
+                    if isinstance(param.value, QgsRasterLayer):
+                        value = param.value
+                    else:
+                        value = QGisLayers.getObjectFromUri(param.value)
+                    if first:
+                        self.xmin = value.extent().xMinimum()
+                        self.xmax = value.extent().xMaximum()
+                        self.ymin = value.extent().yMinimum()
+                        self.ymax = value.extent().yMaximum()
+                        self.cellsize = (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim()
+                        first = False
+                    else:
+                        self.xmin = min(self.xmin, value.extent().xMinimum())
+                        self.xmax = max(self.xmax, value.extent().xMaximum())
+                        self.ymin = min(self.ymin, value.extent().yMinimum())
+                        self.ymax = max(self.ymax, value.extent().yMaximum())
+                        self.cellsize = max(self.cellsize, (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim())
+        else:
+            self.xmin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
+            self.xmax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
+            self.ymin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
+            self.ymax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
+            self.cellsize = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
+
+
+
+    def processAlgorithm(self, progress):
         commands = list()
         self.exportedLayers = {}
         self.numExportedLayers = 0;
 
-      #1: Export rasters to sgrd. only ASC and TIF are supported.
-      #   Vector layers must be in shapefile format and tables in dbf format. We check that.
+        #1: Export rasters to sgrd. only ASC and TIF are supported.
+        #   Vector layers must be in shapefile format and tables in dbf format. We check that.
+        if self.resample:
+            self.calculateResamplingExtent()
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value == None:
@@ -305,18 +340,10 @@ class SagaAlgorithm(GeoAlgorithm):
             inputFilename = layer
         destFilename = self.getTempFilename()
         self.exportedLayers[layer]= destFilename
-        auto = SextanteConfig.getSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
-        if auto:
-            pass
-        else:
-            xmin = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
-            xmax = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
-            ymin = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
-            ymax = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
-            cellsize = auto = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
-            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
-                xmin + " -USER_XMAX " + xmax + " -USER_YMIN " + ymin + " -USER_YMAX "  + ymax +\
-                " -USER_SIZE " + str(cellsize) + " -USER_GRID " + destFilename
+        s = "grid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+                self.xmin + " -USER_XMAX " + self.xmax + " -USER_YMIN " + self.ymin + " -USER_YMAX "  + self.ymax +\
+                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID " + destFilename
+        return s
 
     def exportRasterLayer(self,layer):
         if not layer.lower().endswith("tif") and not layer.lower().endswith("asc"):

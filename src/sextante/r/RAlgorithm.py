@@ -32,7 +32,8 @@ class RAlgorithm(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
 
     def defineCharacteristicsFromFile(self):
-        self.commands=""
+        self.script = ""
+        self.commands=[]
         self.showPlots = False
         self.showConsoleOutput = False
         self.verboseCommands = []
@@ -45,13 +46,14 @@ class RAlgorithm(GeoAlgorithm):
             if line.startswith("##"):
                 self.processParameterLine(line)
             elif line.startswith(">"):
-                self.commands += line[1:]
+                self.commands.append(line[1:])
                 self.verboseCommands.append(line[1:])
                 if not self.showConsoleOutput:
                     self.addOutput(OutputHTML(RAlgorithm.R_CONSOLE_OUTPUT, "R Console Output"))
                 self.showConsoleOutput = True
             else:
-                self.commands += line
+                self.commands.append(line)
+            self.script += line + "\n"
             line = lines.readline().strip("\n")
         lines.close()
 
@@ -146,8 +148,8 @@ class RAlgorithm(GeoAlgorithm):
 
         commands = []
         commands += self.getImportCommands()
-        commands += self.getExportCommands()
         commands += self.getRCommands()
+        commands += self.getExportCommands()
 
         return commands
 
@@ -168,7 +170,7 @@ class RAlgorithm(GeoAlgorithm):
                     value = value + ".shp"
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
-                filename = filename[-4]
+                filename = filename[:-4]
                 commands.append("writeOGR(" + out.name + ",\"" + value + "\",\""
                             + filename + "\", driver=\"ESRI Shapefile\")");
 
@@ -176,8 +178,6 @@ class RAlgorithm(GeoAlgorithm):
             commands.append("dev.off()");
 
         return commands
-
-
 
 
     def getImportCommands(self):
@@ -197,7 +197,7 @@ class RAlgorithm(GeoAlgorithm):
                   raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
-                filename = filename[-4]
+                filename = filename[:-4]
                 commands.append(param.name + " = " + "readOGR(\"" + value + "\",layer=\"" + filename + "\")")
             if isinstance(param, (ParameterTableField, ParameterString)):
                 commands.append(param.name + "=\"" + param.value + "\"")
@@ -225,7 +225,7 @@ class RAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
                         filename = os.path.basename(layer)
-                        filename = filename[-4]
+                        filename = filename[:-4]
                         commands.append("tempvar" + str(iLayer) + " = " + "readOGR(\"" + layer + "\",layer=\"" + filename + "\")")
                         iLayer+=1
                 s = ""

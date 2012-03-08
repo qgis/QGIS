@@ -49,22 +49,23 @@ class RUtils:
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
-            command = ["\"" + RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe\"", "CMD", "BATCH", "--vanilla",
-                             "\"" + RUtils.getRScriptFilename() + "\""]
+            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
         else:#TODO***********
             pass
 
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True)
+
         RUtils.createConsoleOutput()
 
 
     @staticmethod
     def  createConsoleOutput():
+        add = False
         lines = open(RUtils.getConsoleOutputFilename())
         line = lines.readline().strip("\n").strip(" ")
         while line != "":
             if line.startswith(">"):
-                line = line[1:]
+                line = line[1:].strip(" ")
                 if line in RUtils.verboseCommands:
                     add = True
                 else:
