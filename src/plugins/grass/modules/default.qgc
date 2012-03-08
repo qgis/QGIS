@@ -330,6 +330,8 @@
 			</section>
 			<section label="Convert 2D vector to 3D by sampling raster">
 				<grass name="v.drape"/>
+				<grass name="v.extrude.fixed"/>
+				<grass name="v.extrude.attr"/>
 			</section>
 			<section label="Reproject vector from another Location">
 				<grass name="v.transform"/>
