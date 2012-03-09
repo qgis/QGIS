@@ -194,7 +194,8 @@ bool QgsDataItem::hasChildren()
 
 void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
 {
-  QgsDebugMsg( "mName = " + child->mName );
+  QgsDebugMsg( QString( "add child #%1 - %2" ).arg( mChildren.size() ).arg( child->mName ) );
+
   int i;
   for ( i = 0; i < mChildren.size(); i++ )
   {

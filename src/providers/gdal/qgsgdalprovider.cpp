@@ -1267,7 +1267,10 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
     }
   }
 
-  QgsDebugMsg( "sublayers:\n  " + subLayers.join( "\n  " ) );
+  if ( subLayers.size() > 0 )
+  {
+    QgsDebugMsg( "sublayers:\n  " + subLayers.join( "\n  " ) );
+  }
 
   return subLayers;
 }
@@ -1800,6 +1803,13 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
         QString glob = "hdr.adf";
         theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
         theWildcards << "hdr.adf";
+      }
+      else if ( myGdalDriverDescription == "HDF4" )
+      {
+        // HDF4 extension missing in driver metadata
+        QString glob = "*.hdf";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theExtensions << "hdf";
       }
       else
       {
