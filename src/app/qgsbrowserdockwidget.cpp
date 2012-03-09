@@ -68,16 +68,35 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
 
   mBrowserView = new QgsBrowserTreeView( this );
 
-  mRefreshButton = new QToolButton( this );
-  mRefreshButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionDraw.png" ) );
-  mRefreshButton->setText( tr( "Refresh" ) );
-  mRefreshButton->setAutoRaise( true );
-  connect( mRefreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
+  QToolButton* refreshButton = new QToolButton( this );
+  refreshButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionDraw.png" ) );
+  // remove this to save space
+  refreshButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  refreshButton->setText( tr( "Refresh" ) );
+  refreshButton->setToolTip( tr( "Refresh" ) );
+  refreshButton->setAutoRaise( true );
+  connect( refreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
+
+  QToolButton* addLayersButton = new QToolButton( this );
+  addLayersButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionAddLayer.png" ) );
+  // remove this to save space
+  addLayersButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  addLayersButton->setText( tr( "Add Selection" ) );
+  addLayersButton->setToolTip( tr( "Add Selected Layers" ) );
+  addLayersButton->setAutoRaise( true );
+  connect( addLayersButton, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
 
   QVBoxLayout* layout = new QVBoxLayout();
+  QHBoxLayout* hlayout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
-  layout->addWidget( mRefreshButton );
+  hlayout->setContentsMargins( 0, 0, 0, 0 );
+  hlayout->setSpacing( 5 );
+  hlayout->setAlignment( Qt::AlignLeft );
+
+  hlayout->addWidget( refreshButton );
+  hlayout->addWidget( addLayersButton );
+  layout->addLayout( hlayout );
   layout->addWidget( mBrowserView );
 
   QWidget* innerWidget = new QWidget( this );
@@ -110,55 +129,13 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 
 void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
 {
-  QgsDataItem *item = mModel->dataItem( index );
-  if ( !item )
-    return;
+  QgsDataItem *dataItem = mModel->dataItem( index );
 
-  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( mModel->dataItem( index ) );
-  if ( layerItem == NULL )
-    return;
-
-  QString uri = layerItem->uri();
-  if ( uri.isEmpty() )
-    return;
-
-  QgsMapLayer::LayerType type = layerItem->mapLayerType();
-  QString providerKey = layerItem->providerKey();
-
-  QgsDebugMsg( providerKey + " : " + uri );
-  if ( type == QgsMapLayer::VectorLayer )
+  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
   {
-    QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
-  }
-  if ( type == QgsMapLayer::RasterLayer )
-  {
-    // This should go to WMS provider
-    QStringList URIParts = uri.split( "|" );
-    QString rasterLayerPath = URIParts.at( 0 );
-    QStringList layers;
-    QStringList styles;
-    QString format;
-    QString crs;
-    for ( int i = 1 ; i < URIParts.size(); i++ )
-    {
-      QString part = URIParts.at( i );
-      int pos = part.indexOf( "=" );
-      QString field = part.left( pos );
-      QString value = part.mid( pos + 1 );
-
-      if ( field == "layers" )
-        layers = value.split( "," );
-      if ( field == "styles" )
-        styles = value.split( "," );
-      if ( field == "format" )
-        format = value;
-      if ( field == "crs" )
-        crs = value;
-    }
-    QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
-    QgsDebugMsg( "layers = " + layers.join( " " ) );
-
-    QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    if ( layerItem != NULL )
+      addLayer( layerItem );
   }
 }
 
@@ -187,6 +164,12 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       // only favourites can be removed
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
+  }
+
+  else if ( item->type() == QgsDataItem::Layer )
+  {
+    menu->addAction( tr( "Add Layer" ), this, SLOT( itemClicked( idx ) ) );
+    menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
   }
 
   QList<QAction*> actions = item->actions();
@@ -278,4 +261,77 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
       refreshModel( idx );
     }
   }
+}
+
+void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
+{
+  if ( layerItem == NULL )
+    return;
+
+  QString uri = layerItem->uri();
+  if ( uri.isEmpty() )
+    return;
+
+  QgsMapLayer::LayerType type = layerItem->mapLayerType();
+  QString providerKey = layerItem->providerKey();
+
+  QgsDebugMsg( providerKey + " : " + uri );
+  if ( type == QgsMapLayer::VectorLayer )
+  {
+    QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
+  }
+  if ( type == QgsMapLayer::RasterLayer )
+  {
+    // This should go to WMS provider
+    QStringList URIParts = uri.split( "|" );
+    QString rasterLayerPath = URIParts.at( 0 );
+    QStringList layers;
+    QStringList styles;
+    QString format;
+    QString crs;
+    for ( int i = 1 ; i < URIParts.size(); i++ )
+    {
+      QString part = URIParts.at( i );
+      int pos = part.indexOf( "=" );
+      QString field = part.left( pos );
+      QString value = part.mid( pos + 1 );
+
+      if ( field == "layers" )
+        layers = value.split( "," );
+      if ( field == "styles" )
+        styles = value.split( "," );
+      if ( field == "format" )
+        format = value;
+      if ( field == "crs" )
+        crs = value;
+    }
+    QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
+    QgsDebugMsg( "layers = " + layers.join( " " ) );
+
+    QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
+  }
+}
+
+void QgsBrowserDockWidget::addSelectedLayers()
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  // get a sorted list of selected indexes
+  QModelIndexList list = mBrowserView->selectionModel()->selectedIndexes();
+  qSort( list );
+
+  // add items in reverse order so they are in correct order in the layers dock
+  for ( int i = list.size() - 1; i >= 0; i-- )
+  {
+    QModelIndex index = list[i];
+    QgsDataItem *dataItem = mModel->dataItem( index );
+    if ( dataItem && dataItem->type() == QgsDataItem::Layer )
+    {
+      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+      if ( layerItem )
+        addLayer( layerItem );
+    }
+  }
+
+  QApplication::restoreOverrideCursor();
 }
