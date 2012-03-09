@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
+from qgis.utils import *
 
 from ui_widgetBuildVRT import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -38,6 +39,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect( self.inputDirCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
+      self.connect( self.useSelectedLayersCheck, SIGNAL( "stateChanged( int )" ), self.switchLayerMode )
 
   def switchToolMode(self):
       self.recurseCheck.setVisible( self.inputDirCheck.isChecked() )
@@ -54,6 +56,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
         QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
         QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+
+  def switchLayerMode(self):
+      enableInputFiles = not self.useSelectedLayersCheck.isChecked()
+      self.inputDirCheck.setEnabled( enableInputFiles )
+      self.inSelector.setEnabled( enableInputFiles )
+      self.recurseCheck.setEnabled( enableInputFiles )
 
   def fillInputFilesEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -88,10 +96,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.allowProjDiffCheck.isChecked():
         arguments << "-allow_projection_difference"
       arguments << self.getOutputFileName()
-      if self.inputDirCheck.isChecked():
-        arguments << Utils.getRasterFiles( self.getInputFileName(), self.recurseCheck.isChecked() )
+      if self.useSelectedLayersCheck.isChecked():
+        arguments << self.getInputFileNamesFromSelectedLayers()
       else:
-        arguments << self.getInputFileName()
+        if self.inputDirCheck.isChecked():
+          arguments << Utils.getRasterFiles( self.getInputFileName(), self.recurseCheck.isChecked() )
+        else:
+          arguments << self.getInputFileName()
       return arguments
 
   def getOutputFileName(self):
@@ -101,6 +112,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.inputDirCheck.isChecked():
         return self.inSelector.filename()
       return self.inSelector.filename().split(",")
+
+  def getInputFileNamesFromSelectedLayers(self):
+      layers = iface.mapCanvas().layers()
+      files = list()
+      for layer in layers:
+        if layer.type() == QgsMapLayer.RasterLayer and layer.providerType() == "gdal":
+          files.append( str(layer.source()) )
+      return files
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())

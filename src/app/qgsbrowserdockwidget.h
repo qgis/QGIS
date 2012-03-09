@@ -6,7 +6,7 @@
 class QgsBrowserModel;
 class QModelIndex;
 class QTreeView;
-class QToolButton;
+class QgsLayerItem;
 
 class QgsBrowserDockWidget : public QDockWidget
 {
@@ -25,14 +25,17 @@ class QgsBrowserDockWidget : public QDockWidget
 
     void refresh();
 
+    void addSelectedLayers();
+
   protected:
 
     void refreshModel( const QModelIndex& index );
 
     void showEvent( QShowEvent * event );
 
+    void addLayer( QgsLayerItem *layerItem );
+
     QTreeView* mBrowserView;
-    QToolButton* mRefreshButton;
     QgsBrowserModel* mModel;
 };
 
