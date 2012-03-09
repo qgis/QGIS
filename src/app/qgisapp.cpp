@@ -673,6 +673,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMoveLabel;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
+  delete mMapTools.mOffsetCurve;
 
   delete mPythonUtils;
 
