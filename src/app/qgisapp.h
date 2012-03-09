@@ -422,6 +422,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
+    void loadGDALSublayers( QString uri, QStringList list );
 
     /**Deletes the selected attributes for the currently selected vector layer*/
     void deleteSelected( QgsMapLayer *layer = 0, QWidget* parent = 0 );

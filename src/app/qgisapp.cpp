@@ -2262,14 +2262,22 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
   return true;
 } // QgisApp::addVectorLayer()
 
+// present a dialog to choose GDAL raster sublayers
 void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 {
-  if ( !layer )
+  if ( !layer || layer->subLayers().size() < 1 )
     return;
 
   QStringList sublayers = layer->subLayers();
-
   QgsDebugMsg( "sublayers:\n  " + sublayers.join( "  \n" ) + "\n" );
+
+  // if promptLayers=Load all, load all sublayers without prompting
+  QSettings settings;
+  if ( settings.value( "/qgis/promptForRasterSublayers", 1 ).toInt() == 3 )
+  {
+    loadGDALSublayers( layer->source(), sublayers );
+    return;
+  }
 
   // We initialize a selection dialog and display it.
   QgsOGRSublayersDialog chooseSublayersDialog( this );
@@ -2285,19 +2293,11 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   if ( chooseSublayersDialog.exec() )
   {
-    foreach( QString path, chooseSublayersDialog.getSelection() )
-    {
-      QString name = path;
-      name.replace( layer->source(), QFileInfo( layer->source() ).completeBaseName() );
-      QgsRasterLayer *rlayer = new QgsRasterLayer( path, name );
-      if ( rlayer && rlayer->isValid() )
-      {
-        addRasterLayer( rlayer );
-      }
-    }
+    loadGDALSublayers( layer->source(), chooseSublayersDialog.getSelection() );
   }
 }
 
+// should the GDAL sublayers dialog should be presented to the user?
 bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 {
   // return false if layer is empty or raster has no sublayers
@@ -2306,13 +2306,35 @@ bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 
   QSettings settings;
   int promptLayers = settings.value( "/qgis/promptForRasterSublayers", 1 ).toInt();
-  // 0 = always -> always ask (if there are existing sublayers)
-  // 1 = if needed -> ask if layer has no bands, but has sublayers
-  // 2 = never
 
-  return promptLayers == 0 || ( promptLayers == 1 && layer->bandCount() == 0 );
+  // return true if promptLayers=Always or if promptLayers!=Never and there are no bands
+  return promptLayers == 0 || ( promptLayers != 2 && layer->bandCount() == 0 );
 }
 
+// This method will load with GDAL the layers in parameter.
+// It is normally triggered by the sublayer selection dialog.
+void QgisApp::loadGDALSublayers( QString uri, QStringList list )
+{
+  QString path, name;
+  QgsRasterLayer *subLayer = NULL;
+
+  //add layers in reverse order so they appear in the right order in the layer dock
+  for ( int i = list.size() - 1; i >= 0 ; i-- )
+  {
+    path = list[i];
+    // shorten name by replacing complete path with filename
+    name = path;
+    name.replace( uri, QFileInfo( uri ).completeBaseName() );
+    subLayer = new QgsRasterLayer( path, name );
+    if ( subLayer )
+    {
+      if ( subLayer->isValid() )
+        addRasterLayer( subLayer );
+      else
+        delete subLayer;
+    }
+  }
+}
 
 // This method is the method that does the real job. If the layer given in
 // parameter is NULL, then the method tries to act on the activeLayer.
