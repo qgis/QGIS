@@ -30,9 +30,11 @@ class Dialog( QDialog, Ui_Dialog ):
     QObject.connect( self.leOutShape, SIGNAL( "editingFinished()" ), self.updateOutFile )
 
   def inputDir( self ):
+    settings = QSettings()
+    lastDir = settings.value( "/fTools/lastShapeDir", "." ).toString()
     inDir = QFileDialog.getExistingDirectory( self,
               self.tr( "Select directory with shapefiles to merge" ),
-              "." )
+              lastDir )
 
     if inDir.isEmpty():
       return
@@ -47,6 +49,8 @@ class Dialog( QDialog, Ui_Dialog ):
         self.tr( "There are no shapefiles in this directory. Please select another one." ) )
       self.inputFiles = None
       return
+
+    settings.setValue( "/fTools/lastShapeDir", inDir )
 
     self.progressFiles.setRange( 0, self.inputFiles.count() )
     self.leInputDir.setText( inDir )
