@@ -398,7 +398,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
    * saying it isn't available in "your" language. Some systems
    * may be installed without the LANG environment being set.
    */
-  if ( lang.length() == 0 || lang == "C" )
+  if ( lang.length() == 0 || lang == "C" || lang.startsWith( "en_" ) )
   {
     lang = "en_US";
   }
@@ -412,26 +412,27 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
   // get the help content and title from the localized file
   QString helpContents;
   QFile file( fullHelpPath );
-  // check to see if the localized version exists
 
   QString missingError = tr( "<h3>Oops! QGIS can't find help for this function.</h3>"
-                             "The help file for %1 was not found for your language<br>"
-                             "If you would like to create it, contact the QGIS development team"
-                           ).arg( name );
-  if ( !file.exists() )
+                             "The help file for %1 was not found.<br>"
+														 ).arg( Qt::escape( name ) );
+
+  if ( !lang.startsWith( "en_" ) )
   {
-    // change the file name to the en_US version (default)
-    fullHelpPath = helpFilesPath + functionName->text() + "-en_US";
-    file.setFileName( fullHelpPath );
-
-    // Check for some sort of english locale and if not found, include
-    // translate this for us message
-    if ( !lang.contains( "en_" ) )
+    // try en_US version if localized version is unavailable
+    if ( !file.exists() )
     {
-      helpContents = missingError;
-    }
+      helpContents = tr( "(Showing English version as there was no help available in your language (%1). If you would like to create it, contact the QGIS translation team).<br>" ).arg( lang );
 
+      missingError += tr( "It was neither available in your language (%1) nor English." ).arg( lang );
+
+      // try en_US next
+      fullHelpPath = helpFilesPath + functionName->text() + "-en_US";
+      file.setFileName( fullHelpPath );
+    }
   }
+
+  missingError += tr( "<br>If you would like to create it, contact the QGIS development team." );
 
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
