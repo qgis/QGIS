@@ -160,7 +160,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /** Whether this item has a frame or not.
      * @return boolean - true if there is a frame around this item, otherwise false.
-     * @note deprecated since 1.8 dont use!
+     * @note deprecated since 1.8 don't use!
      * @see hasFrame
      */
     Q_DECL_DEPRECATED bool frame() const {return hasFrame();}
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool hasFrame() const {return mFrame;}
     /** Set whether this item has a frame drawn around it or not.
      * @returns void
-     * @note deprecated since 1.8 dont use!
+     * @note deprecated since 1.8 don't use!
      * @see hasFrame
      */
     Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     //painter down by the same factor for drawing
 
     /**Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
-     to work arount the Qt font bug)*/
+     to work around the Qt font bug)*/
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/
