@@ -4,9 +4,9 @@
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
+#include <QDomElement>
 
 class QgsFeatureRendererV2;
-class QDomElement;
 class QgsVectorLayer;
 class QgsStyleV2;
 class QgsRendererV2Widget;
