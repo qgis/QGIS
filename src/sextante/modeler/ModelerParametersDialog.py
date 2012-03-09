@@ -18,6 +18,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
 from sextante.modeler.ModelerAlgorithm import AlgorithmAndParameter
 from sextante.parameters.ParameterRange import ParameterRange
+from sextante.gui.RangePanel import RangePanel
 
 class ModelerParametersDialog(QtGui.QDialog):
 
@@ -251,7 +252,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
             item = QLineEdit()
-            item.setText(ModelerParametersDialog.ENTER_NAME)
+            item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
             self.valueItems[output.name] = item
             self.tableWidget.setCellWidget(i,1, item)
             self.tableWidget.setRowHeight(i,22)

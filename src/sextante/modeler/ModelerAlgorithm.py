@@ -10,6 +10,17 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 
 class ModelerAlgorithm(GeoAlgorithm):
 
+    def __deepcopy__(self,memo):
+        newone = ModelerAlgorithm()
+        #newone.__dict__.update(self.__dict__)
+        newone.algs = copy.deepcopy(self.algs, memo)
+        newone.algParameters = copy.deepcopy(self.algParameters,memo)
+        newone.algOutputs = copy.deepcopy(self.algOutputs,memo)
+        newone.paramValues = copy.deepcopy(self.paramValues,memo)
+        newone.parameters = copy.deepcopy(self.parameters, memo)
+        newone.outputs = copy.deepcopy(self.outputs, memo)
+        return newone
+
     def __init__(self):
         GeoAlgorithm.__init__(self)
         self.descriptionFile = None

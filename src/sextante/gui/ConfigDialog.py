@@ -12,7 +12,7 @@ class ConfigDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.setObjectName("ConfigDialog")
-        self.resize(400, 500)
+        self.resize(700, 500)
         self.setWindowTitle("SEXTANTE options")
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
@@ -63,12 +63,20 @@ class ConfigDialog(QtGui.QDialog):
             self.tree.addTopLevelItem(groupItem)
             if text != "":
                 groupItem.setExpanded(True)
-
+        self.tree.sortItems(0, Qt.AscendingOrder)
 
     def okPressed(self):
         for setting in self.items.keys():
             if isinstance(setting.value,bool):
                 setting.value = (self.items[setting].checkState(1) == QtCore.Qt.Checked)
+            elif isinstance(setting.value, (float,int, long)):
+                value = str(self.items[setting].text(1))
+                try:
+                    value = float(value)
+                    setting.value = value
+                except ValueError:
+                    QtGui.QMessageBox.critical(self, "Wrong value","Wrong parameter value:\n" + value)
+                    return
             else:
                 setting.value = str(self.items[setting].text(1))
             SextanteConfig.addSetting(setting)

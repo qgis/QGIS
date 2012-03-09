@@ -67,9 +67,9 @@ class ModelerDialog(QtGui.QDialog):
         #right hand side part
         #==================================
         self.textName = QtGui.QLineEdit()
-        self.textName.setText("[Enter model name here]")
+        self.textName.setPlaceholderText("[Enter model name here]")
         self.textGroup = QtGui.QLineEdit()
-        self.textGroup.setText("[Enter group name here]")
+        self.textGroup.setPlaceholderText("[Enter group name here]")
         self.horizontalLayoutNames = QtGui.QHBoxLayout()
         self.horizontalLayoutNames.setSpacing(2)
         self.horizontalLayoutNames.setMargin(0)
@@ -134,7 +134,7 @@ class ModelerDialog(QtGui.QDialog):
 
 
     def saveModel(self):
-        if str(self.textGroup.text()) == "[Enter group name here]" or str(self.textName.text()) == "[Enter model name here]":
+        if str(self.textGroup.text()).strip() == "" or str(self.textName.text()).strip() == "":
             QMessageBox.warning(self, "Warning", "Please enter group and model names before saving")
             return
         self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
@@ -174,7 +174,7 @@ class ModelerDialog(QtGui.QDialog):
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 1000, 1000))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
-        self.pythonText.setText(self.alg.getAsPythonCode())
+        self.pythonText.setText("This feature is not yet available... we are still working on it ;-)")#self.alg.getAsPythonCode())
 
 
     def addInput(self):
