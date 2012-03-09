@@ -990,7 +990,6 @@ void QgsWMSSourceSelect::addDefaultServers()
   QMap<QString, QString> exampleServers;
   exampleServers["DM Solutions GMap"] = "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
   exampleServers["Lizardtech server"] =  "http://wms.lizardtech.com/lizardtech/iserv/ows";
-  exampleServers["GEOIMAGE-AUSTRIA"] =  "http://wms.geoimage.at/dop-1mfree?";
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 
