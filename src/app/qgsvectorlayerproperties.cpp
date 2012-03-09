@@ -951,7 +951,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
-                                                     tr( "QGIS Layer Style File (*.qml)" ) + ";;" + tr( "SLD File (*.sld)" ) );
+                                                     tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
   {
     return;
@@ -991,7 +991,7 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
   QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), myLastUsedDir,
-                                                           tr( "QGIS Layer Style File (*.qml)" ) + ";;" + tr( "SLD File (*.sld)" ) );
+                                                           tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
     return;
