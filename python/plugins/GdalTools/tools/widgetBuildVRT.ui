@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>238</height>
+    <height>266</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,9 +26,9 @@
       <enum>QLayout::SetNoConstraint</enum>
      </property>
      <item row="0" column="0" colspan="2">
-      <widget class="QCheckBox" name="useSelectedLayersCheck">
+      <widget class="QCheckBox" name="inputSelLayersCheck">
        <property name="text">
-        <string>Use selected layers for input</string>
+        <string>Use visible raster layers for input</string>
        </property>
       </widget>
      </item>

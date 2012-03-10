@@ -30,20 +30,19 @@ class GdalToolsBasePluginWidget:
   def onLayersChanged(self):
       pass
 
-  def exec_(self):
+  def initialize(self):
       if not self.initialized:
         self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
         self.onLayersChanged()
         self.someValueChanged()
       self.initialized = True
+
+  def exec_(self):
+      self.initialize()
       return self.base.exec_()
 
   def show_(self):
-      if not self.initialized:
-        self.connect(Utils.LayerRegistry.instance(), SIGNAL("layersChanged"), self.onLayersChanged)
-        self.onLayersChanged()
-        self.someValueChanged()
-      self.initialized = True
+      self.initialize()
       return self.base.show()
 
   def setCommandViewerEnabled(self, enable):
