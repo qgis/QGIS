@@ -1,0 +1,18 @@
+Create Grid System
+grid_tools
+ParameterSelection|M_EXTENT|Set extent by|[0] xMin, yMin, NX, NY;[1] xMin, yMin, xMax, yMax;[2] Shape(s);[3] Grid(s)
+ParameterNumber|XMIN|xMin|None|None|0
+ParameterNumber|YMIN|yMin|None|None|0
+ParameterNumber|XMAX|xMax|None|None|0
+ParameterNumber|YMAX|yMax|None|None|0
+ParameterNumber|NX|NX|None|None|0
+ParameterNumber|NY|NY|None|None|0
+ParameterNumber|CELLSIZE|Cellsize|None|None|0
+ParameterSelection|ADJUST|Adjust|[0] Extent to CellSize;[1] CellSize to W-E Extent;[2] CellSize to S-N Extent
+ParameterBoolean|USEOFF          |Use Offset|True
+ParameterNumber|XOFFSET|X offset|None|None|0
+ParameterNumber|YOFFSET|Y offset|None|None|0
+ParameterNumber|INIT|Initialization Value|None|None|0
+ParameterMultipleInput|SHAPESLIST|Shape(s)|-1|True
+ParameterMultipleInput|GRIDLIST|Grid(s)|3|True
+OutputRaster|GRID|Dummy Grid

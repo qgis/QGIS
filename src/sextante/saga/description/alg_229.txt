@@ -1,0 +1,6 @@
+Select by Location...
+shapes_tools
+ParameterVector|SHAPES|Shapes to Select From|-1|False
+ParameterVector|LOCATIONS|Locations|-1|False
+ParameterSelection|CONDITION|Condition|[0] intersect;[1] are completely within;[2] completely contain;[3] have their centroid in;[4] contain the centeroid of
+ParameterSelection|METHOD|Method|[0] new selection;[1] add to current selection;[2] select from current selection;[3] remove from current selection

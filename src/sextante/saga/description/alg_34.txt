@@ -1,0 +1,16 @@
+Multiple Regression Analysis (Points/Grids)
+geostatistics_regression
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterVector|SHAPES|Shapes|-1|False
+ParameterTableField|ATTRIBUTE|Attribute|SHAPES
+ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
+ParameterBoolean|COORD_X         |Include X Coordinate|True
+ParameterBoolean|COORD_Y         |Include Y Coordinate|True
+ParameterSelection|METHOD|Method|[0] include all;[1] forward;[2] backward;[3] stepwise
+ParameterNumber|P_IN|P in|None|None|5
+ParameterNumber|P_OUT|P out|None|None|5
+OutputTable|INFO_COEFF|Details: Coefficients
+OutputTable|INFO_MODEL|Details: Model
+OutputTable|INFO_STEPS|Details: Steps
+OutputVector|RESIDUALS|Residuals
+OutputRaster|REGRESSION|Regression

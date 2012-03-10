@@ -1,0 +1,15 @@
+Random Terrain Generation
+grid_calculus
+ParameterNumber|RADIUS|Radius (cells)|None|None|0
+ParameterNumber|ITERATIONS|Iterations|None|None|0
+ParameterSelection|TARGET_TYPE|Target Dimensions|[0] User defined;[1] Grid Project;[2] Grid
+ParameterNumber|USER_CELL_SIZE|Grid Size|None|None|0
+ParameterNumber|USER_COLS|Cols|None|None|0
+ParameterNumber|USER_ROWS|Rows|None|None|0
+ParameterRaster|GRID_GRID|Grid|False
+OutputRaster|TARGET_GRID|Grid
+OutputRaster|GET_SYSTEM_SYSTEM_NX|System
+OutputRaster|GET_SYSTEM_SYSTEM_NY|System
+OutputRaster|GET_SYSTEM_SYSTEM_X|System
+OutputRaster|GET_SYSTEM_SYSTEM_Y|System
+OutputRaster|GET_SYSTEM_SYSTEM_D|System

@@ -1,0 +1,6 @@
+Separate points by direction
+shapes_points
+ParameterVector|POINTS|Points|-1|False
+ParameterNumber|DIRECTIONS|Number of Directions|None|None|0
+ParameterNumber|TOLERANCE|Tolerance (Degree)|None|None|0
+OutputVector|OUTPUT|Ouput

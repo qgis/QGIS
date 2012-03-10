@@ -1,0 +1,9 @@
+Decision Tree
+imagery_classification
+ParameterRaster|ROOT_GRID|Grid|False
+ParameterNumber|ROOT_THRESHOLD|Threshold|None|None|0
+ParameterString|ROOT_A|NAME|Name|
+ParameterBoolean|ROOT_A|NODE         |Children|True
+ParameterString|ROOT_B|NAME|Name|
+ParameterBoolean|ROOT_B|NODE         |Children|True
+OutputRaster|CLASSES|Decision Tree

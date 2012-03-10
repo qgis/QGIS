@@ -1,0 +1,16 @@
+Create 3D Image
+grid_visualisation
+ParameterRaster|DEM|Elevation|False
+ParameterRaster|IMAGE|Overlay Image|False
+ParameterMultipleInput|SHAPES|Shapes to project|-1|True
+ParameterNumber|ZEXAGG|Exaggeration|None|None|0
+ParameterNumber|ZEXAGG_MIN|Minimum Exaggeration [%]|None|None|0
+ParameterNumber|Z_ROTATE|Image Rotation [Degree]|None|None|0
+ParameterNumber|X_ROTATE|Local Rotation [Degree]|None|None|0
+ParameterSelection|X_ROTATE_LEVEL|Local Rotation Base Level|[0] Zero;[1] Mean Elevation
+ParameterNumber|PANBREAK|Panorama Break [%]|None|None|0
+ParameterSelection|PROJECTION|Projection|[0] Panorama;[1] Circular
+ParameterNumber|NX|3D Image Width|None|None|0
+ParameterNumber|NY|3D Image Height|None|None|0
+OutputRaster|RGB|3D Image
+OutputRaster|RGB_Z|Projected Height

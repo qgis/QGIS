@@ -1,0 +1,13 @@
+Random Field
+grid_calculus
+ParameterNumber|NX|Width (Cells)|None|None|0
+ParameterNumber|NY|Height (Cells)|None|None|0
+ParameterNumber|CELLSIZE|Cellsize|None|None|0
+ParameterNumber|XMIN|West|None|None|0
+ParameterNumber|YMIN|South|None|None|0
+ParameterSelection|METHOD|Method|[0] Uniform;[1] Gaussian
+ParameterRange|RANGE_MIN|Range
+ParameterRange|RANGE_MAX|Range
+ParameterNumber|MEAN|Arithmetic Mean|None|None|0
+ParameterNumber|STDDEV|Standard Deviation|None|None|0
+OutputRaster|OUTPUT|Random Field

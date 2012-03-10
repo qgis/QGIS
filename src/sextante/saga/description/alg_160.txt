@@ -1,0 +1,6 @@
+Proj.4 (Command Line Arguments, Shapes)
+pj_proj4
+ParameterString|SOURCE_PROJ|Source Projection Parameters|
+ParameterString|TARGET_PROJ|Target Projection Parameters|
+ParameterVector|SOURCE|Source|-1|False
+OutputVector|TARGET|Target

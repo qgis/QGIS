@@ -1,0 +1,5 @@
+Polygon Parts to Separate Polygons
+shapes_polygons
+ParameterVector|POLYGONS|Polygons|-1|False
+ParameterBoolean|LAKES         |Ignore Lakes|True
+OutputVector|PARTS|Polygon Parts

@@ -1,0 +1,18 @@
+IHACRES Version 1.0
+ihacres
+ParameterTable|TABLE|Table|False
+ParameterTableField|DATE_Field|Date Column|TABLE
+ParameterTableField|DISCHARGE_Field|Streamflow Column|TABLE
+ParameterTableField|PCP_Field|Precipitation Column|TABLE
+ParameterTableField|TMP_Field|Temperature Column|TABLE
+ParameterBoolean|USE_TMP              |Using temperature data?|True
+ParameterNumber|AREA|Area of the Watershed in [km2]|None|None|0
+ParameterNumber|CFAC|Parameter (c)|None|None|0
+ParameterNumber|TwFAC|(Tw) wetness decline time constant|None|None|0
+ParameterSelection|STORAGE|Storage|[0] Single Storage;[1] Two Parallel Storages;[2] Two Storages in Series !!! not yet implemented !!!
+ParameterSelection|IHACVERS|IHACRES Version|[0] Jakeman & Hornberger (1993);[1] Croke et al. (2005)
+ParameterBoolean|SNOW_MODULE          |Using the snow-melt module?|True
+ParameterBoolean|WRITEALL_TS          |Write all calculated Time Series in a table?|True
+OutputRaster|TABLEout|Table
+OutputRaster|TABLEparms|Table
+OutputRaster|TABLEsettings|Table

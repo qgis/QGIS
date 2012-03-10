@@ -1,0 +1,5 @@
+Fit N Points to shape
+shapes_points
+ParameterVector|SHAPES|Shapes|-1|False
+ParameterNumber|NUMPOINTS|Number of points|None|None|0
+OutputVector|POINTS|Points

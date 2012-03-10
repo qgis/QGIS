@@ -1,0 +1,5 @@
+Filter Clumps
+grid_filter
+ParameterRaster|GRID|Input Grid|False
+ParameterNumber|THRESHOLD|Min. Size|None|None|0
+OutputRaster|OUTPUT|Filtered Grid

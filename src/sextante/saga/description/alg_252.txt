@@ -1,0 +1,6 @@
+Running Average
+table_calculus
+ParameterTable|INPUT|Input|False
+ParameterTableField|FIELD|Attribute|INPUT
+ParameterNumber|COUNT|Number of Records|None|None|0
+OutputTable|OUTPUT|Output

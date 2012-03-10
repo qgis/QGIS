@@ -1,0 +1,5 @@
+Sort Grid
+grid_tools
+ParameterRaster|GRID|Input Grid|False
+ParameterBoolean|DOWN        |Down sort|True
+OutputRaster|OUTPUT|Sorted Grid

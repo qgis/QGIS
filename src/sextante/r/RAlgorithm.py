@@ -94,9 +94,12 @@ class RAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip() == "boolean":
             default = tokens[1].strip()[len("boolean")+1:]
             param = ParameterBoolean(tokens[0],  desc, default)
-        elif tokens[    1].lower().strip().startswith("number"):
-            default = tokens[1].strip()[len("number")+1:]
-            param = ParameterNumber(tokens[0],  desc, default=default)
+        elif tokens[1].lower().strip().startswith("number"):
+            try:
+                default = float(tokens[1].strip()[len("number")+1:])
+                param = ParameterNumber(tokens[0],  desc, default=default)
+            except:
+                raise WrongScriptException("Could not load R script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
         elif tokens[1].lower().strip().startswith("field"):
             field = tokens[1].strip()[len("field")+1:]
             found = False
@@ -136,7 +139,7 @@ class RAlgorithm(GeoAlgorithm):
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
             f = open(htmlfilename, "w")
-            f.write("<img src=\"" + self.plotsFilename + "/>")
+            f.write("<img src=\"" + self.plotsFilename + "\"/>")
             f.close()
         if self.showConsoleOutput:
             htmlfilename = self.getOutputValue(RAlgorithm.R_CONSOLE_OUTPUT)
@@ -202,7 +205,7 @@ class RAlgorithm(GeoAlgorithm):
             if isinstance(param, (ParameterTableField, ParameterString)):
                 commands.append(param.name + "=\"" + param.value + "\"")
             if isinstance(param, ParameterNumber):
-                commands.append(param.name + "=" + param.value)
+                commands.append(param.name + "=" + str(param.value))
             if isinstance(param, ParameterBoolean):
                 b = (param.value == str(True))
                 if b:

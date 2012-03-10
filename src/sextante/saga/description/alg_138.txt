@@ -1,0 +1,12 @@
+IHACRES Elevation Bands Calibration
+ihacres
+ParameterSelection|NELEVBANDS|Number of elevation bands|[0] 2;[1] 3;[2] 4;[3] 5;[4] 6;[5] 7;[6] 8;[7] 9;[8] 10
+ParameterNumber|NSIM|Number of Simulations|None|None|0
+ParameterNumber|AREA_tot|Total Catchment Area [km2]|None|None|0
+ParameterSelection|IHACVERS|IHACRES Version|[0] Jakeman & Hornberger (1993);[1] Croke et al. (2005) !!! not yet implemented !!!
+ParameterSelection|STORAGE|Storage|[0] Single Storage;[1] Two Parallel Storages;[2] Two Storages in Series !!! not yet implemented !!!
+ParameterBoolean|SNOW_MODULE     |Using the snow-melt module?|True
+ParameterSelection|OBJ_FUNC|Objective Function|[0] NSE;[1] NSE high flow;[2] NSE low flow
+ParameterNumber|NSEMIN|Minimum Nash-Sutcliffe Efficiency|None|None|0
+OutputRaster|TABLEout|Table
+OutputRaster|TABLEparms|Table

@@ -1,0 +1,7 @@
+Remove Duplicate Points
+shapes_points
+ParameterVector|POINTS|Points|-1|False
+ParameterTableField|FIELD|Attribute|POINTS
+ParameterSelection|METHOD|Point to Keep|[0] first point;[1] last point;[2] point with minimum attribute value;[3] point with maximum attribute value
+ParameterSelection|NUMERIC|Numeric Attribute Values|[0] take value from the point to be kept;[1] minimum value of all duplicates;[2] maximum value of all duplicates;[3] mean value of all duplicates
+OutputVector|RESULT|Result

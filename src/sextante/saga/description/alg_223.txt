@@ -1,0 +1,5 @@
+Get Shapes Extents
+shapes_tools
+ParameterVector|SHAPES|Shapes|-1|False
+ParameterBoolean|PARTS        |Parts|True
+OutputVector|EXTENTS|Extents

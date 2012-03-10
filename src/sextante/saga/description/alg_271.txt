@@ -1,0 +1,16 @@
+Basic Terrain Analysis
+ta_compound
+ParameterRaster|ELEVATION|Elevation|False
+OutputRaster|SHADE|Analytical Hillshading
+OutputRaster|SLOPE|Slope
+OutputRaster|ASPECT|Aspect
+OutputRaster|HCURV|Plan Curvature
+OutputRaster|VCURV|Profile Curvature
+OutputRaster|CONVERGENCE|Convergence Index
+OutputRaster|CAREA|Catchment Area
+OutputRaster|WETNESS|Wetness Index
+OutputRaster|LSFACTOR|LS-Factor
+OutputVector|CHANNELS|Channel Network
+OutputVector|BASINS|Drainage Basins
+OutputRaster|CHNL_ALTI|Altitude above Channel Network
+OutputRaster|CHNL_BASE|Channel Network Base Level

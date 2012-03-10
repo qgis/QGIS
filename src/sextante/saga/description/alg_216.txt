@@ -1,0 +1,7 @@
+Create Chart Layer (bars/sectors)
+shapes_tools
+ParameterVector|INPUT|Shapes|-1|False
+ParameterTableField|SIZE|Size field|INPUT
+ParameterNumber|MAXSIZE|Maximum size|None|None|0
+ParameterNumber|MINSIZE|Minimum size|None|None|0
+ParameterSelection|TYPE|Type|[0] Sectors;[1] Bars

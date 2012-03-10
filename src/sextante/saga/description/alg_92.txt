@@ -1,0 +1,14 @@
+Modifed Quadratic Shepard
+grid_gridding
+ParameterVector|SHAPES|Points|-1|False
+ParameterTableField|FIELD|Attribute|SHAPES
+ParameterSelection|TARGET|Target Grid|[0] user defined;[1] grid
+ParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|None|None|0
+ParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|None|None|0
+ParameterNumber|USER_XMIN|Left|None|None|0
+ParameterNumber|USER_XMAX|Right|None|None|0
+ParameterNumber|USER_YMIN|Bottom|None|None|0
+ParameterNumber|USER_YMAX|Top|None|None|0
+ParameterNumber|USER_SIZE|Cellsize|None|None|0
+OutputRaster|USER_GRID|Grid
+OutputRaster|GRID_GRID|Grid

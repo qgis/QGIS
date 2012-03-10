@@ -1,0 +1,5 @@
+Split Table/Shapes by Attribute
+shapes_tools
+ParameterTable|TABLE|Table / Shapes|False
+ParameterTableField|FIELD|Attribute|TABLE
+OutputTable|CUTS|Cuts

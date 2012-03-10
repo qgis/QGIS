@@ -1,6 +1,6 @@
-//[Example scripts]=group
-//points=vector
-//showplots
+##[Example scripts]=group
+##points=vector
+##showplots
 library("maptools")
 library("spatstat")
 ppp=as(as(points, "SpatialPoints"),"ppp")

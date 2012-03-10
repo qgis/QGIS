@@ -1,0 +1,11 @@
+Watershed Basins (Extended)
+ta_channels
+ParameterRaster|DEM|DEM|False
+ParameterRaster|CHANNELS|Drainage Network|False
+ParameterBoolean|DISTANCE         |Flow Distances|True
+OutputRaster|BASINS|Basins
+OutputRaster|SUBBASINS|Subbasins
+OutputVector|V_BASINS|Basins
+OutputVector|V_SUBBASINS|Subbasins
+OutputVector|HEADS|River Heads
+OutputVector|MOUTHS|River Mouths

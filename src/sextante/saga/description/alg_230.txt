@@ -1,0 +1,4 @@
+Copy Selection to New Shapes Layer
+shapes_tools
+ParameterVector|INPUT|Input|-1|False
+OutputVector|OUTPUT|Output

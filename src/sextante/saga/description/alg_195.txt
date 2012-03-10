@@ -1,0 +1,8 @@
+Create Point Grid
+shapes_points
+ParameterRange|X_EXTENT_MIN|X-Extent
+ParameterRange|X_EXTENT_MAX|X-Extent
+ParameterRange|Y_EXTENT_MIN|Y-Extent
+ParameterRange|Y_EXTENT_MAX|Y-Extent
+ParameterNumber|DIST|Distance|None|None|0
+OutputVector|POINTS|Point Grid

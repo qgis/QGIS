@@ -1,0 +1,12 @@
+GeoTRANS (Shapes)
+pj_geotrans
+ParameterString|DATA_ELLIPSOID|Ellipsoids|
+ParameterString|DATA_DATUM_7|Datums (7 Parameters)|
+ParameterString|DATA_DATUM_3|Datums (3 Parameters)|
+ParameterString|DATA_GEOID|Geoid|
+ParameterVector|SOURCE|Source|-1|False
+ParameterSelection|PROJECTION_SOURCE_DATUM|Source Datum|[0]
+ParameterSelection|PROJECTION_TARGET_DATUM|Target Datum|[0]
+ParameterSelection|PROJECTION_SOURCE_PROJECTION|Source Projection|[0]
+ParameterSelection|PROJECTION_TARGET_PROJECTION|Target Projection|[0]
+OutputVector|TARGET|Target

@@ -1,0 +1,9 @@
+Fragmentation Classes from Density and Connectivity
+grid_analysis
+ParameterRaster|DENSITY|Density [Percent]|False
+ParameterRaster|CONNECTIVITY|Connectivity [Percent]|False
+ParameterBoolean|BORDER             |Add Border|True
+ParameterNumber|WEIGHT|Connectivity Weighting|None|None|0
+ParameterNumber|DENSITY_MIN|Minimum Density [Percent]|None|None|0
+ParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|None|None|0
+OutputRaster|FRAGMENTATION|Fragmentation

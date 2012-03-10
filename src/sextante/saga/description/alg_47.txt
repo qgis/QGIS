@@ -1,0 +1,7 @@
+Cross-Classification and Tabulation
+grid_analysis
+ParameterRaster|INPUT|Input Grid 1|False
+ParameterRaster|INPUT2|Input Grid 2|False
+ParameterNumber|MAXNUMCLASS|Max. Number of Classes|None|None|5
+OutputRaster|RESULTGRID|Cross-Classification Grid
+OutputTable|RESULTTABLE|Cross-Tabulation Table

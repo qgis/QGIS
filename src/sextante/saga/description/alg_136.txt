@@ -1,0 +1,7 @@
+IHACRES Basin
+ihacres
+ParameterSelection|NSUBBASINS|Number of sub-basins|[0] 2;[1] 3;[2] 4;[3] 5;[4] 6;[5] 7;[6] 8;[7] 9;[8] 10
+ParameterSelection|IHACVERS|IHACRES Version|[0] Jakeman & Hornberger (1993);[1] Croke et al. (2005) !!! not yet implemented !!!
+ParameterSelection|STORAGE|Storage|[0] Single Storage;[1] Two Parallel Storages;[2] Two Storages in Series !!! not yet implemented !!!
+ParameterBoolean|SNOW_MODULE     |Using the snow-melt module?|True
+OutputRaster|TABLEout|Table

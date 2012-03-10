@@ -1,0 +1,6 @@
+Conway's Life
+sim_cellular_automata
+ParameterNumber|NX|Width (Cells)|None|None|0
+ParameterNumber|NY|Height (Cells)|None|None|0
+ParameterNumber|FADECOLOR|Fade Color Count|None|None|0
+OutputRaster|GRID|Grid

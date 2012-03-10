@@ -1,0 +1,19 @@
+02: Carbon Cycle Simulation for Terrestrial Biomass
+sim_ecosystems_hugget
+ParameterNumber|TIME_SPAN|Time Span|None|None|0
+ParameterNumber|TIME_STEP|Time Interval [a]|None|None|0
+ParameterNumber|PRIMPROD|Net Primary Production [Gt Carbon / a]|None|None|0
+ParameterNumber|CHUMIFY|Humification Factor|None|None|0
+ParameterNumber|CCARBON|Carbonization Factor|None|None|0
+ParameterNumber|P_LEAV|Leaves|None|None|0
+ParameterNumber|P_BRAN|Branches|None|None|0
+ParameterNumber|P_STEM|Stems|None|None|0
+ParameterNumber|P_ROOT|Roots|None|None|0
+ParameterNumber|K_LEAV_LITT|Leaves to Litter|None|None|0
+ParameterNumber|K_BRAN_LITT|Branches to Litter|None|None|0
+ParameterNumber|K_STEM_LITT|Stems to Litter|None|None|0
+ParameterNumber|K_ROOT_HUMU|Roots to Humus|None|None|0
+ParameterNumber|K_LITT_HUMU|Litter to Humus|None|None|0
+ParameterNumber|K_HUMU_COAL|Humus to Charcoal|None|None|0
+ParameterNumber|K_COAL_ENVI|Charcoal to Environment|None|None|0
+OutputTable|TABLE|Results

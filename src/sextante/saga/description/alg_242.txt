@@ -1,0 +1,11 @@
+Soil Moisture Content
+sim_hydrology
+ParameterRaster|STA_FC|Field Capacity [mm]|True
+ParameterNumber|STA_FC_DEF|Default|None|None|0
+ParameterRaster|STA_PWP|Permanent Wilting Point [mm]|True
+ParameterNumber|STA_PWP_DEF|Default|None|None|0
+ParameterRaster|LANDUSE|Land Use|True
+ParameterNumber|LANDUSE_DEF|Default|None|None|0
+ParameterFixedTable|DYN_CLIMATE|Climate Data|3| Precipitation [mm; Temperature (2pm) [DegreeC; Air Humidity (2pm) [%%|False
+ParameterFixedTable|STA_KC|Crop Coefficients|3| Land Use ID; Name; January; February; March; April; May; June; July; August; September; October; November; December|False
+OutputRaster|DYN_W|Soil Moisture

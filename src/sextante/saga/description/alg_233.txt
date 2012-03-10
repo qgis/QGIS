@@ -1,0 +1,6 @@
+Split Shapes Layer Completely
+shapes_tools
+ParameterVector|SHAPES|Input|-1|False
+ParameterTableField|FIELD|Attribute|SHAPES
+ParameterSelection|NAMING|Name by...|[0] number of order;[1] attribute
+OutputVector|LIST|Output

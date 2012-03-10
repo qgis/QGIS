@@ -1,0 +1,4 @@
+Color Palette Rotation
+grid_visualisation
+ParameterRaster|GRID|Grid|False
+ParameterBoolean|DIR       |Down|True

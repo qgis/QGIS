@@ -1,0 +1,6 @@
+Grid Normalisation
+grid_calculus
+ParameterRaster|INPUT|Grid|False
+ParameterRange|RANGE_MIN|Target Range
+ParameterRange|RANGE_MAX|Target Range
+OutputRaster|OUTPUT|Normalised Grid

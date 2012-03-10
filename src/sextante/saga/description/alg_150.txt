@@ -1,0 +1,18 @@
+Georeferencing - Grids
+pj_georeference
+ParameterVector|REF_SOURCE|Reference Points (Origin)|-1|False
+ParameterVector|REF_TARGET|Reference Points (Projection)|-1|True
+ParameterTableField|XFIELD|x Position|REF_TARGET
+ParameterTableField|YFIELD|y Position|REF_TARGET
+ParameterRaster|SOURCE|Source|False
+ParameterSelection|INTERPOLATION|Grid Interpolation|[0] Nearest Neigbhor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
+ParameterSelection|TARGET_TYPE|Target|[0] user defined;[1] grid;[2] shapes
+ParameterNumber|GET_USER_XMIN|Left|None|None|0
+ParameterNumber|GET_USER_XMAX|Right|None|None|0
+ParameterNumber|GET_USER_YMIN|Bottom|None|None|0
+ParameterNumber|GET_USER_YMAX|Top|None|None|0
+ParameterNumber|GET_USER_SIZE|Cellsize|None|None|0
+OutputRaster|SHAPES|Shapes
+OutputRaster|GET_USER_GRID|Grid
+OutputRaster|GET_GRID_GRID|Grid
+OutputVector|GET_SHAPES_SHAPES|Shapes

@@ -1,0 +1,6 @@
+Grids from classified grid and table
+grid_tools
+ParameterTable|TABLE|Table|False
+ParameterTableField|ID_FIELD|Attribute|TABLE
+ParameterRaster|CLASSES|Classes|False
+OutputRaster|GRIDS|Grids

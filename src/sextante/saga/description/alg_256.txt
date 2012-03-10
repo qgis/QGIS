@@ -1,0 +1,8 @@
+PET (after Hargreave)
+table_calculus
+ParameterTable|TABLE|Data|False
+ParameterTableField|JD|Julian Day|TABLE
+ParameterTableField|T|Average Temperature|TABLE
+ParameterTableField|T_MIN|Minimum Temperature|TABLE
+ParameterTableField|T_MAX|Maximum Temperature|TABLE
+ParameterNumber|LAT|Latitude|None|None|0

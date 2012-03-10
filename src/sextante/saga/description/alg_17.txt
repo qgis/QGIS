@@ -1,0 +1,6 @@
+Principle Components Analysis
+geostatistics_grid
+ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterSelection|METHOD|Method|[0] correlation matrix;[1] variance-covariance matrix;[2] sums-of-squares-and-cross-products matrix
+ParameterNumber|NFIRST|Number of Components|None|None|2
+OutputRaster|PCA|Principle Components
