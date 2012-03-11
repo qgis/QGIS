@@ -12,7 +12,14 @@ class ParameterNumber(Parameter):
 
     def setValue(self, n):
         try:
-            self.value = float(n)
+            value = float(n)
+            if self.min:
+                if value < self.min:
+                    return False
+            if self.max:
+                if value > self.max:
+                    return False
+            self.value = value
             return True
         except:
             return False
