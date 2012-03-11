@@ -2,6 +2,6 @@ Majority Filter
 grid_filter
 ParameterRaster|INPUT|Grid|False
 ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
-ParameterNumber|RADIUS|Radius|None|None|0
-ParameterNumber|THRESHOLD|Threshold [Percent]|None|None|0
+ParameterNumber|RADIUS|Radius|1|None|1
+ParameterNumber|THRESHOLD|Threshold [Percent]|0|None|0
 OutputRaster|RESULT|Filtered Grid

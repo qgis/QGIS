@@ -1,7 +1,6 @@
 Grid Calculator
 grid_calculus
 ParameterMultipleInput|GRIDS|Grids|3|False
-ParameterMultipleInput|XGRIDS|Grids from different Systems|3|True
 ParameterString|FORMULA|Formula|
 ParameterString|NAME|Name|
 ParameterBoolean|FNAME        |Take Formula|True

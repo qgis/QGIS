@@ -1,5 +1,0 @@
-BSL from File
-grid_calculus_bsl
-ParameterString|BSL|BSL Script|
-ParameterBoolean|PROGRESS    |Show Progress|True
-OutputRaster|OUTPUT|Output
