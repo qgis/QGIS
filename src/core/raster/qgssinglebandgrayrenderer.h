@@ -33,8 +33,11 @@ class QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
+    int grayBand() const { return mGrayBand; }
+    void setGrayBand( int band ) { mGrayBand = band; }
     const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
-    void setContrastEnhancement( QgsContrastEnhancement* ce ) { mContrastEnhancement = ce; }
+    /**Takes ownership*/
+    void setContrastEnhancement( QgsContrastEnhancement* ce );
 
   private:
     int mGrayBand;

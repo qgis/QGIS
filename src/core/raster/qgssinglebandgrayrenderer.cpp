@@ -27,11 +27,18 @@ QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* pro
 
 QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
 {
+  delete mContrastEnhancement;
 }
 
 QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem )
 {
   return 0;
+}
+
+void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* ce )
+{
+  delete mContrastEnhancement;
+  mContrastEnhancement = ce;
 }
 
 void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandgrayrendererwidget.h"
+#include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer ): QgsRasterRendererWidget( layer )
@@ -42,6 +43,20 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mContrastEnhancementComboBox->addItem( tr( "Stretch to MinMax" ), 1 );
     mContrastEnhancementComboBox->addItem( tr( "Stretch and clip to MinMax" ), 2 );
     mContrastEnhancementComboBox->addItem( tr( "Clip to MinMax" ), 3 );
+
+    QgsSingleBandGrayRenderer* r = dynamic_cast<QgsSingleBandGrayRenderer*>( layer->renderer() );
+    if ( r )
+    {
+      //band
+      mGrayBandComboBox->setCurrentIndex( mGrayBandComboBox->findData( r->grayBand() ) );
+      const QgsContrastEnhancement* ce = r->contrastEnhancement();
+      //minmax
+      mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
+      mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
+      //contrast enhancement algorithm
+      mContrastEnhancementComboBox->setCurrentIndex(
+        mContrastEnhancementComboBox->findData(( int )( ce->contrastEnhancementAlgorithm() ) ) );
+    }
   }
 }
 
@@ -51,5 +66,26 @@ QgsSingleBandGrayRendererWidget::~QgsSingleBandGrayRendererWidget()
 
 QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
 {
-  return 0; //soon...
+  if ( !mRasterLayer )
+  {
+    return 0;
+  }
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  if ( !provider )
+  {
+    return 0;
+  }
+  int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
+
+  QgsContrastEnhancement* e = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+        provider->dataType( band ) ) );
+  e->setMinimumValue( mMinLineEdit->text().toInt() );
+  e->setMaximumValue( mMaxLineEdit->text().toInt() );
+  e->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->itemData(
+                                       mContrastEnhancementComboBox->currentIndex() ).toInt() ) );
+
+
+  QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( provider, band );
+  renderer->setContrastEnhancement( e );
+  return renderer;
 }
