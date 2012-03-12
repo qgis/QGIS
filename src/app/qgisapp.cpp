@@ -1679,6 +1679,7 @@ void QgisApp::createCanvasTools()
 #else
   mAdvancedDigitizeToolBar->removeAction( mActionOffsetCurve );
   mEditMenu->removeAction( mActionOffsetCurve );
+  mMapTools.mOffsetCurve = 0;
 #endif //GEOS_VERSION
   mMapTools.mReshapeFeatures = new QgsMapToolReshape( mMapCanvas );
   mMapTools.mReshapeFeatures->setAction( mActionReshapeFeatures );
