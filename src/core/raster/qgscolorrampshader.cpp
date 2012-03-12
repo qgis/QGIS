@@ -65,7 +65,8 @@ bool QgsColorRampShader::discreteColor( double theValue, int* theReturnRedValue,
     myColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex );
     myTinyDiff = qAbs( theValue - myColorRampItem.value );
     //If the previous entry is less, then search closer to the top of the list (assumes mColorRampItemList is sorted)
-    if ( mCurrentColorRampItemIndex != 0 && theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
+    if ( mCurrentColorRampItemIndex != 0 && 
+         theValue <= mColorRampItemList.at( mCurrentColorRampItemIndex - 1 ).value )
     {
       mCurrentColorRampItemIndex--;
     }
@@ -119,7 +120,9 @@ bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, in
       return true;
     }
     //pixel value sits between ramp entries so bail
-    else if ( mCurrentColorRampItemIndex != myColorRampItemCount - 1 && theValue > myColorRampItem.value && theValue < mColorRampItemList.at( mCurrentColorRampItemIndex + 1 ).value )
+    else if ( mCurrentColorRampItemIndex != myColorRampItemCount - 1 &&
+        theValue > myColorRampItem.value && theValue < mColorRampItemList.at(
+          mCurrentColorRampItemIndex + 1 ).value )
     {
       return false;
     }
@@ -138,7 +141,8 @@ bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, in
   return false; // value not found
 }
 
-bool QgsColorRampShader::interpolatedColor( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsColorRampShader::interpolatedColor( double theValue, int*
+    theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
   int myColorRampItemCount = mColorRampItemList.count();
   if ( myColorRampItemCount <= 0 )
@@ -275,7 +279,9 @@ bool QgsColorRampShader::shade( double theValue, int* theReturnRedValue, int* th
   return discreteColor( theValue, theReturnRedValue, theReturnGreenValue, theReturnBlueValue );
 }
 
-bool QgsColorRampShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsColorRampShader::shade( double theRedValue, double theGreenValue,
+    double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int*
+    theReturnBlueValue )
 {
   Q_UNUSED( theRedValue );
   Q_UNUSED( theGreenValue );
