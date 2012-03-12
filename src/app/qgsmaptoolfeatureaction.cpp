@@ -72,6 +72,12 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
     return;
   }
 
+  if ( !mCanvas->layers().contains( layer ) )
+  {
+    // do not run actions on hidden layers
+    return;
+  }
+
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( vlayer->actions()->size() == 0 )
   {
@@ -110,7 +116,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   if ( identifyValue <= 0.0 )
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
 
-  QgsFeature feat;
+  QgsFeatureList featList;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
@@ -130,10 +136,8 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
 
     layer->select( layer->pendingAllAttributesList(), r, true, true );
     QgsFeature f;
-    if ( layer->nextFeature( f ) )
-      feat = QgsFeature( f );
-    else
-      return false;
+    while ( layer->nextFeature( f ) )
+      featList << QgsFeature( f );
   }
   catch ( QgsCsException & cse )
   {
@@ -142,15 +146,22 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  int action = layer->actions()->defaultAction();
+  if ( featList.size() == 0 )
+    return false;
 
-  // define custom substitutions: layer id and clicked coords
-  QMap<QString, QVariant> substitutionMap;
-  substitutionMap.insert( "$layerid", layer->id() );
-  point = toLayerCoordinates( layer, point );
-  substitutionMap.insert( "$clickx", point.x() );
-  substitutionMap.insert( "$clicky", point.y() );
+  foreach ( QgsFeature feat, featList )
+  {
+    int actionIdx = layer->actions()->defaultAction();
 
-  layer->actions()->doAction( action, feat, &substitutionMap );
+    // define custom substitutions: layer id and clicked coords
+    QMap<QString, QVariant> substitutionMap;
+    substitutionMap.insert( "$layerid", layer->id() );
+    point = toLayerCoordinates( layer, point );
+    substitutionMap.insert( "$clickx", point.x() );
+    substitutionMap.insert( "$clicky", point.y() );
+
+    layer->actions()->doAction( actionIdx, feat, &substitutionMap );
+  }
+
   return true;
 }
