@@ -1,4 +1,0 @@
-Create Constant Grid
-grid_tools
-ParameterRaster|GRID|Base Grid|False
-ParameterNumber|VALUE|Value|None|None|0

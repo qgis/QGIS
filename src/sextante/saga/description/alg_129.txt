@@ -1,7 +1,0 @@
-Fit Color Palette to Grid Values
-grid_visualisation
-ParameterRaster|GRID|Grid|False
-ParameterNumber|COUNT|Number of Colors|None|None|0
-ParameterSelection|SCALE|Scale|[0] Grid range;[1] User defined range
-ParameterRange|RANGE_MIN|User defined range
-ParameterRange|RANGE_MAX|User defined range

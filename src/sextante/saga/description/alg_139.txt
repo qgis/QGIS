@@ -1,7 +1,7 @@
 Supervised Classification
 imagery_classification
 ParameterMultipleInput|GRIDS|Grids|3|False
-ParameterVector|ROI|Training Areas|-1|False
+ParameterVector|ROI|Training Areas|2|False
 ParameterTableField|ROI_ID|Class Identifier|ROI
 ParameterSelection|METHOD|Method|[0] parallelepiped;[1] minimum distance;[2] mahalanobis distance;[3] maximum likelihood;[4] spectral angle mapping;[5] binary encoding
 ParameterBoolean|NORMALISE            |Normalise|True

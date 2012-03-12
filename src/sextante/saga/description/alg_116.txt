@@ -3,8 +3,8 @@ grid_tools
 ParameterRaster|GRID|Grid|False
 ParameterRaster|MASK|Mask|True
 ParameterNumber|MAXGAPCELLS|Only Process Gaps with Less Cells|None|None|0
-ParameterNumber|MAXPOINTS|Maximum Points|None|None|0
-ParameterNumber|LOCALPOINTS|Number of Points for Local Interpolation|None|None|0
+ParameterNumber|MAXPOINTS|Maximum Points|None|None|1000
+ParameterNumber|LOCALPOINTS|Number of Points for Local Interpolation|None|None|10
 ParameterBoolean|EXTENDED         |Extended Neighourhood|True
 ParameterSelection|NEIGHBOURS|Neighbourhood|[0] Neumann;[1] Moore
 ParameterNumber|RADIUS|Radius (Cells)|None|None|0
