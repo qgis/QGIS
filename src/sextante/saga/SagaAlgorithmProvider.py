@@ -5,6 +5,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.core.AlgorithmProvider import AlgorithmProvider
+from sextante.core.SextanteLog import SextanteLog
 
 class SagaAlgorithmProvider(AlgorithmProvider):
 
@@ -22,14 +23,14 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            #try:
+            try:
                 if descriptionFile.startswith("alg_"):
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
                         alg.provider = self
                         self.algs.append(alg)
-            #except Exception,e:
-                #pass
+            except Exception,e:
+                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
 
         #self.createDescriptionFiles()
 

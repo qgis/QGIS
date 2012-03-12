@@ -211,6 +211,10 @@ class Sextante:
         QGisLayers.load(layer)
 
     @staticmethod
+    def loadFromAlg(layersdict):
+        QGisLayers.loadFromDict(layersdict)
+
+    @staticmethod
     def getObject(string):
         QGisLayers.getObjectFromUri(string)
 

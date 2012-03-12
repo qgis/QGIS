@@ -80,9 +80,9 @@ class QGisLayers:
 
 
     @staticmethod
-    def loadMap(layersmap, crs):
-        for name in layersmap.keys():
-            QGisLayers.load(layersmap[name], name, crs)
+    def loadFromDict(layersdict, crs):
+        for name in layersdict.keys():
+            QGisLayers.load(layersdict[name], name, crs)
 
 
     @staticmethod

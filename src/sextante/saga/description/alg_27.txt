@@ -22,5 +22,6 @@ ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
 ParameterNumber|USER_X_EXTENT_MIN|X-Extent Min|None|None|0
 ParameterNumber|USER_X_EXTENT_MAX|X-Extent Max|None|None|0
 ParameterNumber|USER_Y_EXTENT_MIN|Y-Extent Min|None|None|0
-ParameterNumber|USER_Y_EXTENT_MAX|Y-Extent Max|None|None|0OutputRaster|GRID|Grid
+ParameterNumber|USER_Y_EXTENT_MAX|Y-Extent Max|None|None|0
+OutputRaster|GRID|Grid
 OutputRaster|VARIANCE|Variance
