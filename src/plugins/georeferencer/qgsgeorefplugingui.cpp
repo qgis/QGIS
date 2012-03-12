@@ -1494,7 +1494,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   titleLabel->setText( rasterFi.fileName() );
   composition->addItem( titleLabel );
   titleLabel->setSceneRect( QRectF( leftMargin, 5, contentWidth, 8 ) );
-  titleLabel->setFrame( false );
+  titleLabel->setFrameEnabled( false );
 
   //composer map
   QgsRectangle canvasExtent = mCanvas->extent();
@@ -1549,7 +1549,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     parameterLabel->adjustSizeToText();
     composition->addItem( parameterLabel );
     parameterLabel->setSceneRect( QRectF( leftMargin, composerMap->rect().bottom() + composerMap->transform().dy() + 5, contentWidth, 8 ) );
-    parameterLabel->setFrame( false );
+    parameterLabel->setFrameEnabled( false );
 
     //calculate mean error
     double meanError = 0;
@@ -1581,7 +1581,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   residualLabel->setText( tr( "Residuals" ) );
   composition->addItem( residualLabel );
   residualLabel->setSceneRect( QRectF( leftMargin, previousItem->rect().bottom() + previousItem->transform().dy() + 5, contentWidth, 6 ) );
-  residualLabel->setFrame( false );
+  residualLabel->setFrameEnabled( false );
 
   //residual plot
   QgsResidualPlotItem* resPlotItem = new QgsResidualPlotItem( composition );
