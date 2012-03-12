@@ -415,7 +415,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
 
   QString missingError = tr( "<h3>Oops! QGIS can't find help for this function.</h3>"
                              "The help file for %1 was not found.<br>"
-														 ).arg( Qt::escape( name ) );
+                           ).arg( Qt::escape( name ) );
 
   if ( !lang.startsWith( "en_" ) )
   {
