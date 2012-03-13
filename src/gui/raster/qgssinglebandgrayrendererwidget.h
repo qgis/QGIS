@@ -31,6 +31,9 @@ class QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private U
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer ) { return new QgsSingleBandGrayRendererWidget( layer ); }
 
     QgsRasterRenderer* renderer();
+
+  private slots:
+    void on_mLoadPushButton_clicked();
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H

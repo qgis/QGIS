@@ -646,20 +646,21 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
     {
       int grayBand = bandNumber( mGrayBandName );
       renderer = new QgsSingleBandGrayRenderer( mDataProvider, grayBand );
+      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+            mDataProvider->dataType( grayBand ) ) );
+      ce->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm() );
       if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum && mStandardDeviations > 0 )
       {
-        mGrayMinimumMaximumEstimated = false;
         QgsRasterBandStats myGrayBandStats = bandStatistics( grayBand );
-        setMaximumValue( grayBand, myGrayBandStats.mean + ( mStandardDeviations * myGrayBandStats.stdDev ) );
-        setMinimumValue( grayBand, myGrayBandStats.mean - ( mStandardDeviations * myGrayBandStats.stdDev ) );
+        ce->setMinimumValue( myGrayBandStats.mean - ( mStandardDeviations * myGrayBandStats.stdDev ) );
+        ce->setMaximumValue( myGrayBandStats.mean + ( mStandardDeviations * myGrayBandStats.stdDev ) );
       }
       else if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum )
       {
-        mGrayMinimumMaximumEstimated = true;
-        setMaximumValue( grayBand, mDataProvider->maximumValue( grayBand ) );
-        setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );
+        ce->setMinimumValue( mDataProvider->minimumValue( grayBand ) );
+        ce->setMaximumValue( mDataProvider->maximumValue( grayBand ) );
       }
-      (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( contrastEnhancement( grayBand ) );
+      (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( ce );
       break;
     }
     case SingleBandPseudoColor:

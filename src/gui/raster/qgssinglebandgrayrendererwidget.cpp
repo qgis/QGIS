@@ -79,8 +79,8 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
 
   QgsContrastEnhancement* e = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
         provider->dataType( band ) ) );
-  e->setMinimumValue( mMinLineEdit->text().toInt() );
-  e->setMaximumValue( mMaxLineEdit->text().toInt() );
+  e->setMinimumValue( mMinLineEdit->text().toDouble() );
+  e->setMaximumValue( mMaxLineEdit->text().toDouble() );
   e->setContrastEnhancementAlgorithm(( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementComboBox->itemData(
                                        mContrastEnhancementComboBox->currentIndex() ).toInt() ) );
 
@@ -88,4 +88,46 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( provider, band );
   renderer->setContrastEnhancement( e );
   return renderer;
+}
+
+void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
+{
+  if ( !mRasterLayer )
+  {
+    return;
+  }
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  if ( !provider )
+  {
+    return;
+  }
+
+  int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
+  double minVal = 0;
+  double maxVal = 0;
+  if ( mEstimateRadioButton->isChecked() )
+  {
+    minVal = provider->minimumValue( band );
+    maxVal = provider->maximumValue( band );
+  }
+  else if ( mActualRadioButton->isChecked() )
+  {
+    QgsRasterBandStats rasterBandStats = mRasterLayer->bandStatistics( band );
+    minVal = rasterBandStats.minimumValue;
+    maxVal = rasterBandStats.maximumValue;
+  }
+  else if ( mCurrentExtentRadioButton->isChecked() )
+  {
+    double minMax[2];
+    mRasterLayer->computeMinimumMaximumFromLastExtent( band, minMax );
+    minVal = minMax[0];
+    maxVal = minMax[1];
+  }
+  else
+  {
+    return;
+  }
+
+  mMinLineEdit->setText( QString::number( minVal ) );
+  mMaxLineEdit->setText( QString::number( maxVal ) );
 }
