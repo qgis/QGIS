@@ -9,7 +9,6 @@ ParameterTableField|TRACK|Track|OBSERVATIONS
 ParameterTableField|DATE|Date|OBSERVATIONS
 ParameterTableField|TIME|Time|OBSERVATIONS
 ParameterTableField|PARAMETER|Parameter|OBSERVATIONS
-ParameterNumber|EPS_TIME|Maximum Time Span (Seconds)|None|None|0
-ParameterNumber|EPS_SPACE|Maximum Distance|None|None|0
-ParameterBoolean|VERBOSE           |Verbose|True
+ParameterNumber|EPS_TIME|Maximum Time Span (Seconds)|None|None|60
+ParameterNumber|EPS_SPACE|Maximum Distance|None|None|0.002
 OutputTable|AGGREGATED|Aggregated

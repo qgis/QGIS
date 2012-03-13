@@ -1,8 +1,0 @@
-Set Coordinate Reference System
-pj_proj4
-ParameterSelection|CRS_METHOD|Get CRS Definition from...|[0] Proj4 Parameters;[1] EPSG Code;[2] Well Known Text File
-ParameterString|CRS_PROJ4|Proj4 Parameters|
-ParameterString|CRS_FILE|Well Known Text File|
-ParameterNumber|CRS_EPSG|EPSG Code|None|None|0
-ParameterMultipleInput|GRIDS|Grids|3|True
-ParameterMultipleInput|SHAPES|Shapes|-1|True

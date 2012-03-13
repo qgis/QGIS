@@ -1,9 +1,0 @@
-Grid System Extent
-shapes_grid
-ParameterSelection|CELLS|Border|[0] grid cells;[1] grid nodes
-OutputRaster|PARAMETERS_GRID_SYSTEM_NX|Grid system
-OutputRaster|PARAMETERS_GRID_SYSTEM_NY|Grid system
-OutputRaster|PARAMETERS_GRID_SYSTEM_X|Grid system
-OutputRaster|PARAMETERS_GRID_SYSTEM_Y|Grid system
-OutputRaster|PARAMETERS_GRID_SYSTEM_D|Grid system
-OutputVector|SHAPES|Extent

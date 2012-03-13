@@ -1,8 +1,0 @@
-Georeferencing - Shapes
-pj_georeference
-ParameterVector|INPUT|Input|-1|False
-ParameterVector|REF_SOURCE|Reference Points (Origin)|-1|False
-ParameterVector|REF_TARGET|Reference Points (Projection)|-1|True
-ParameterTableField|XFIELD|x Position|REF_TARGET
-ParameterTableField|YFIELD|y Position|REF_TARGET
-OutputVector|OUTPUT|Output
