@@ -286,7 +286,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     QDomElement userStyleElement = findUserStyleElement( namedLayerElemList[i], styleName );
     if ( !userStyleElement.isNull() )
     {
-      fallbackLayerList = mFallbackParser->mapLayerFromStyle( layerName, "", allowCaching );
+      fallbackLayerList = mFallbackParser->mapLayerFromStyle( layerName, "", false );
       if ( fallbackLayerList.size() > 0 )
       {
         QgsVectorLayer* v = dynamic_cast<QgsVectorLayer*>( fallbackLayerList.at( 0 ) );
@@ -294,6 +294,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
         {
           QgsRenderer* r = rendererFromUserStyle( userStyleElement, v );
           v->setRenderer( r );
+          v->setUsingRendererV2( false );
           labelSettingsFromUserStyle( userStyleElement, v );
 #ifdef DIAGRAMSERVER
           overlaysFromUserStyle( userStyleElement, v );
