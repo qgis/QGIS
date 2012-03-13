@@ -44,7 +44,10 @@ class RAlgorithm(GeoAlgorithm):
         line = lines.readline().strip("\n")
         while line != "":
             if line.startswith("##"):
-                self.processParameterLine(line)
+                try:
+                    self.processParameterLine(line)
+                except Exception:
+                    raise WrongScriptException("Could not load R script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
             elif line.startswith(">"):
                 self.commands.append(line[1:])
                 self.verboseCommands.append(line[1:])
@@ -67,7 +70,7 @@ class RAlgorithm(GeoAlgorithm):
         param = None
         out = None
         line = line.replace("#", "");
-        if line.strip(" ") == "showplots":
+        if line.lower().strip().startswith("showplots"):
             self.showPlots = True
             self.addOutput(OutputHTML(RAlgorithm.RPLOTS, "R Plots"));
             return

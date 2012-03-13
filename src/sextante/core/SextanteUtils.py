@@ -7,7 +7,7 @@ class SextanteUtils:
 
     @staticmethod
     def userFolder():
-        userfolder = os.getenv('HOME') + os.sep + "sextante"
+        userfolder = os.path.expanduser("~") + os.sep + "sextante"
         mkdir(userfolder)
 
         return userfolder
@@ -18,7 +18,7 @@ class SextanteUtils:
 
     @staticmethod
     def tempFolder():
-        tempfolder = os.getenv('HOME') + os.sep + "sextante" + os.sep + "tempdata"
+        tempfolder = os.path.expanduser("~") + os.sep + "sextante" + os.sep + "tempdata"
         mkdir(tempfolder)
 
         return tempfolder
