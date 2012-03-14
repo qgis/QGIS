@@ -22,6 +22,8 @@
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer ): QgsRasterRendererWidget( layer )
 {
   setupUi( this );
+  mMinLineEdit->setValidator( new QDoubleValidator( mMinLineEdit ) );
+  mMaxLineEdit->setValidator( new QDoubleValidator( mMaxLineEdit ) );
 
   if ( mRasterLayer )
   {

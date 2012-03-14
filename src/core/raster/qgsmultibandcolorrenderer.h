@@ -44,13 +44,16 @@ class QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setBlueBand( int band ) { mBlueBand = band; }
 
     const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
-    void setRedContrastEnhancement( QgsContrastEnhancement* ce ) { mRedContrastEnhancement = ce; }
+    /**Takes ownership*/
+    void setRedContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* greenContrastEnhancement() const { return mGreenContrastEnhancement; }
-    void setGreenContrastEnhancement( QgsContrastEnhancement* ce ) { mGreenContrastEnhancement = ce; }
+    /**Takes ownership*/
+    void setGreenContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* blueContrastEnhancement() const { return mBlueContrastEnhancement; }
-    void setBlueContrastEnhancement( QgsContrastEnhancement* ce ) { mBlueContrastEnhancement = ce; }
+    /**Takes ownership*/
+    void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 
   private:
     int mRedBand;

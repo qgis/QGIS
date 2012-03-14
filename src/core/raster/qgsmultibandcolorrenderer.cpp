@@ -33,6 +33,24 @@ QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* pro
 
 QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
 {
+  delete mRedContrastEnhancement;
+  delete mGreenContrastEnhancement;
+  delete mBlueContrastEnhancement;
+}
+
+void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement* ce )
+{
+  delete mRedContrastEnhancement; mRedContrastEnhancement = ce;
+}
+
+void QgsMultiBandColorRenderer::setGreenContrastEnhancement( QgsContrastEnhancement* ce )
+{
+  delete mGreenContrastEnhancement; mGreenContrastEnhancement = ce;
+}
+
+void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhancement* ce )
+{
+  delete mBlueContrastEnhancement; mBlueContrastEnhancement = ce;
 }
 
 QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem )

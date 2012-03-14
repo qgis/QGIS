@@ -21,7 +21,9 @@
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
 
+class QgsRasterDataProvider;
 class QgsRasterLayer;
+class QgsMultiBandColorRenderer;
 
 class QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
 {
@@ -33,6 +35,11 @@ class QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private U
     ~QgsMultiBandColorRendererWidget();
 
     QgsRasterRenderer* renderer();
+
+  private:
+    void createValidators();
+    void setCustomMinMaxValues( QgsMultiBandColorRenderer* r, const QgsRasterDataProvider* provider, int redBand, int GreenBand,
+                                int blueBand );
 };
 
 #endif // QGSMULTIBANDCOLORRENDERERWIDGET_H

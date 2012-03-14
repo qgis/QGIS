@@ -696,7 +696,15 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
         red = bandNumber( mRedBandName );
         if ( contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
         {
-          redEnhancement = contrastEnhancement( red );
+          QgsContrastEnhancement* bkRedEnhancement = contrastEnhancement( red );
+          if ( bkRedEnhancement )
+          {
+            redEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+                  mDataProvider->dataType( red ) ) );
+            redEnhancement->setMinimumValue( bkRedEnhancement->minimumValue() );
+            redEnhancement->setMaximumValue( bkRedEnhancement->maximumValue() );
+            redEnhancement->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm() );
+          }
         }
       }
       int green = -1;
@@ -706,7 +714,15 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
         green = bandNumber( mGreenBandName );
         if ( contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
         {
-          greenEnhancement = contrastEnhancement( green );
+          QgsContrastEnhancement* bkGreenEnhancement = contrastEnhancement( green );
+          if ( bkGreenEnhancement )
+          {
+            greenEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+                  mDataProvider->dataType( green ) ) );
+            greenEnhancement->setMinimumValue( bkGreenEnhancement->minimumValue() );
+            greenEnhancement->setMaximumValue( bkGreenEnhancement->maximumValue() );
+            greenEnhancement->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm() );
+          }
         }
       }
       int blue = -1;
@@ -716,7 +732,15 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
         blue = bandNumber( mBlueBandName );
         if ( contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
         {
-          blueEnhancement = contrastEnhancement( blue );
+          QgsContrastEnhancement* bkBlueEnhancement = contrastEnhancement( blue );
+          if ( bkBlueEnhancement )
+          {
+            blueEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+                  mDataProvider->dataType( blue ) ) );
+            blueEnhancement->setMinimumValue( bkBlueEnhancement->minimumValue() );
+            blueEnhancement->setMaximumValue( bkBlueEnhancement->maximumValue() );
+            blueEnhancement->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm() );
+          }
         }
       }
       renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue,
