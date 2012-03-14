@@ -1,6 +1,6 @@
 Polygon Dissolve
 shapes_polygons
-ParameterVector|POLYGONS|Polygons|-1|False
+ParameterVector|POLYGONS|Polygons|2|False
 ParameterTableField|FIELD_1|1. Attribute|POLYGONS
 ParameterTableField|FIELD_2|2. Attribute|POLYGONS
 ParameterTableField|FIELD_3|3. Attribute|POLYGONS

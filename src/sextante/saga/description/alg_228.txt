@@ -1,8 +1,0 @@
-Select by Attributes... (String Expression)
-shapes_tools
-ParameterVector|SHAPES|Shapes|-1|False
-ParameterTableField|FIELD|Attribute|SHAPES
-ParameterString|EXPRESSION|Expression|
-ParameterBoolean|CASE            |Case Sensitive|True
-ParameterSelection|COMPARE|Select if...|[0] attribute is identical with search expression;[1] attribute contains search expression;[2] attribute is contained in search expression
-ParameterSelection|METHOD|Method|[0] new selection;[1] add to current selection;[2] select from current selection;[3] remove from current selection

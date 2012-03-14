@@ -11,8 +11,8 @@ ParameterRaster|MHERB|Herbaceous Fuel Moisture|False
 ParameterRaster|MWOOD|Wood Fuel Moisture|False
 ParameterRaster|VALUE|Value|True
 ParameterRaster|BASEPROB|Base Probability|True
-ParameterNumber|MONTECARLO|Number of Events|None|None|0
-ParameterNumber|INTERVAL|Fire Length|None|None|0
+ParameterNumber|MONTECARLO|Number of Events|None|None|1000
+ParameterNumber|INTERVAL|Fire Length|None|None|100
 OutputRaster|DANGER|Danger
 OutputRaster|COMPPROB|Compound Probability
 OutputRaster|PRIORITY|Priority Index

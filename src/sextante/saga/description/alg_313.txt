@@ -1,5 +1,5 @@
 Fill Sinks (Planchon/Darboux, 2001)
 ta_preprocessor
 ParameterRaster|DEM|DEM|False
-ParameterNumber|MINSLOPE|Minimum Slope [Degree]|None|None|0
+ParameterNumber|MINSLOPE|Minimum Slope [Degree]|0|None|0.01
 OutputRaster|RESULT|Filled DEM

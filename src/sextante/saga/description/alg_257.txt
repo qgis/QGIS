@@ -1,9 +1,0 @@
-Create New Table
-table_tools
-ParameterString|NAME|Name|
-ParameterNumber|NFIELDS|Number of Attributes|None|None|0
-ParameterString|FIELDS_NAME000|Name|
-ParameterSelection|FIELDS_TYPE000|Type|[0] character string;[1] 1 byte integer;[2] 2 byte integer;[3] 4 byte integer;[4] 4 byte floating point;[5] 8 byte floating point;[6] color (rgb)
-ParameterString|FIELDS_NAME001|Name|
-ParameterSelection|FIELDS_TYPE001|Type|[0] character string;[1] 1 byte integer;[2] 2 byte integer;[3] 4 byte integer;[4] 4 byte floating point;[5] 8 byte floating point;[6] color (rgb)
-OutputRaster|TABLE|Table

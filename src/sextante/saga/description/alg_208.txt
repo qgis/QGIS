@@ -1,7 +1,7 @@
 Point Statistics for Polygons
 shapes_polygons
-ParameterVector|POINTS|Points|-1|False
-ParameterVector|POLYGONS|Polygons|-1|False
+ParameterVector|POINTS|Points|0|False
+ParameterVector|POLYGONS|Polygons|2|False
 ParameterBoolean|SUM             |Sum|True
 ParameterBoolean|AVG             |Mean|True
 ParameterBoolean|VAR             |Variance|True

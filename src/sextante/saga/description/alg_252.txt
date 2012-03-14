@@ -2,5 +2,5 @@ Running Average
 table_calculus
 ParameterTable|INPUT|Input|False
 ParameterTableField|FIELD|Attribute|INPUT
-ParameterNumber|COUNT|Number of Records|None|None|0
+ParameterNumber|COUNT|Number of Records|0|None|10
 OutputTable|OUTPUT|Output

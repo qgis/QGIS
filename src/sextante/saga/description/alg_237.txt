@@ -1,8 +1,0 @@
-01: A Simple Litter System
-sim_ecosystems_hugget
-ParameterNumber|TIME_SPAN|Time Span|None|None|0
-ParameterNumber|TIME_STEP|Time Interval [a]|None|None|0
-ParameterNumber|C_INIT|Initial Litter Storage [g/m2]|None|None|0
-ParameterNumber|C_INPUT|Litterfall Rate [g/m2/a]|None|None|0
-ParameterNumber|C_OUTPUT|Rate Constant for Litter Loss [1/a]|None|None|0
-OutputTable|TABLE|Results

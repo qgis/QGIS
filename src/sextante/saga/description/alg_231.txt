@@ -1,3 +1,0 @@
-Delete Selection from Shapes Layer
-shapes_tools
-ParameterVector|INPUT|Input|-1|False

@@ -1,9 +1,0 @@
-03: Spatially Distributed Simulation of Soil Nitrogen Dynamics
-sim_ecosystems_hugget
-ParameterRaster|DEM|Elevation|False
-ParameterNumber|TIME_SPAN|Time Span [a]|None|None|0
-ParameterNumber|TIME_STEP|Time Interval [a]|None|None|0
-ParameterBoolean|UPDATE         |Update View|True
-ParameterNumber|NINIT|Initial Nitrogen Content [kg/ha]|None|None|0
-ParameterNumber|NRAIN|Nitrogen in Rainfall [kg/ha/a]|None|None|0
-OutputRaster|NSTORE|Soil Nitrogen
