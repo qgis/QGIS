@@ -141,7 +141,7 @@ class Dialog(QDialog, Ui_Dialog):
                 for i in pointList:
                     pointProvider.featureAtId( int( i ), inFeatB , True, allAttrs )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
-                    if inGeom.contains(tmpGeom.asPoint()):
+                    if inGeom.intersects(tmpGeom.asPoint()):
                         count = count + 1
             outFeat.setAttributeMap(atMap)
             outFeat.addAttribute(index, QVariant(count))
