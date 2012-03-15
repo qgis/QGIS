@@ -1120,9 +1120,9 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   }
   mMapRenderer->setMapUnits( mapUnits );
 
-  // Change x- and y- of BBOX for WMS 1.3.0 and geographic coordinate systems
+  // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
   QString version = mParameterMap.value( "VERSION", "1.3.0" );
-  if ( version == "1.3.0" && outputCRS.geographicFlag() )
+  if ( version == "1.3.0" && outputCRS.axisInverted() )
   {
     //switch coordinates of extent
     double tmp;

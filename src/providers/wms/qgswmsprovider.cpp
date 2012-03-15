@@ -415,13 +415,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     cacheReply = 0;
   }
 
-  //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
+  //according to the WMS spec for 1.3, some CRS have inverted axis
   bool changeXY = false;
   if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
   {
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( imageCrs ) && theSrs.geographicFlag() )
+    if ( theSrs.createFromOgcWmsCrs( imageCrs ) && theSrs.axisInverted() )
     {
       changeXY = true;
     }
@@ -2908,7 +2908,7 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
   {
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( imageCrs ) && theSrs.geographicFlag() )
+    if ( theSrs.createFromOgcWmsCrs( imageCrs ) && theSrs.axisInverted() )
     {
       changeXY = true;
     }
