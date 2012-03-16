@@ -57,6 +57,10 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
       mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findData( r->redBand() ) );
       mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findData( r->greenBand() ) );
       mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findData( r->blueBand() ) );
+
+      setMinMaxValue( r->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
+      setMinMaxValue( r->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
+      setMinMaxValue( r->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
     }
     else
     {
@@ -175,4 +179,80 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   r->setRedContrastEnhancement( redEnhancement );
   r->setGreenContrastEnhancement( greenEnhancement );
   r->setBlueContrastEnhancement( blueEnhancement );
+}
+
+void QgsMultiBandColorRendererWidget::on_mLoadPushButton_clicked()
+{
+  int redBand = mRedBandComboBox->itemData( mRedBandComboBox->currentIndex() ).toInt();
+  int greenBand = mGreenBandComboBox->itemData( mGreenBandComboBox->currentIndex() ).toInt();
+  int blueBand = mBlueBandComboBox->itemData( mBlueBandComboBox->currentIndex() ).toInt();
+
+  loadMinMaxValueForBand( redBand, mRedMinLineEdit, mRedMaxLineEdit );
+  loadMinMaxValueForBand( greenBand, mGreenMinLineEdit, mGreenMaxLineEdit );
+  loadMinMaxValueForBand( blueBand, mBlueMinLineEdit, mBlueMaxLineEdit );
+}
+
+void QgsMultiBandColorRendererWidget::setMinMaxValue( const QgsContrastEnhancement* ce, QLineEdit* minEdit, QLineEdit* maxEdit )
+{
+  if ( !minEdit || !maxEdit )
+  {
+    return;
+  }
+
+  if ( !ce )
+  {
+    minEdit->clear();
+    maxEdit->clear();
+    return;
+  }
+
+  minEdit->setText( QString::number( ce->minimumValue() ) );
+  maxEdit->setText( QString::number( ce->maximumValue() ) );
+  mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData(
+        ( int )( ce->contrastEnhancementAlgorithm() ) ) );
+}
+
+void QgsMultiBandColorRendererWidget::loadMinMaxValueForBand( int band, QLineEdit* minEdit, QLineEdit* maxEdit )
+{
+  if ( !minEdit || !maxEdit || !mRasterLayer )
+  {
+    return;
+  }
+
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  if ( !provider )
+  {
+    return;
+  }
+
+  if ( band < 0 )
+  {
+    minEdit->clear();
+    maxEdit->clear();
+    return;
+  }
+
+  double minVal = 0;
+  double maxVal = 0;
+  if ( mEstimateRadioButton->isChecked() )
+  {
+    minVal = provider->minimumValue( band );
+    maxVal = provider->maximumValue( band );
+  }
+  else if ( mActualRadioButton->isChecked() )
+  {
+    QgsRasterBandStats rasterBandStats = mRasterLayer->bandStatistics( band );
+    minVal = rasterBandStats.minimumValue;
+    maxVal = rasterBandStats.maximumValue;
+  }
+  else if ( mCurrentExtentRadioButton->isChecked() )
+  {
+    double minMax[2];
+    mRasterLayer->computeMinimumMaximumFromLastExtent( band, minMax );
+    minVal = minMax[0];
+    maxVal = minMax[1];
+  }
+
+  minEdit->setText( QString::number( minVal ) );
+  maxEdit->setText( QString::number( maxVal ) );
 }

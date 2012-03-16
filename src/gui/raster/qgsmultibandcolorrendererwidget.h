@@ -21,9 +21,11 @@
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
 
+class QgsContrastEnhancement;
+class QgsMultiBandColorRenderer;
 class QgsRasterDataProvider;
 class QgsRasterLayer;
-class QgsMultiBandColorRenderer;
+class QLineEdit;
 
 class QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
 {
@@ -36,10 +38,16 @@ class QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private U
 
     QgsRasterRenderer* renderer();
 
+  private slots:
+    void on_mLoadPushButton_clicked();
+
   private:
     void createValidators();
     void setCustomMinMaxValues( QgsMultiBandColorRenderer* r, const QgsRasterDataProvider* provider, int redBand, int GreenBand,
                                 int blueBand );
+    /**Reads min/max values from contrast enhancement and fills values into the min/max line edits*/
+    void setMinMaxValue( const QgsContrastEnhancement* ce, QLineEdit* minEdit, QLineEdit* maxEdit );
+    void loadMinMaxValueForBand( int band, QLineEdit* minEdit, QLineEdit* maxEdit );
 };
 
 #endif // QGSMULTIBANDCOLORRENDERERWIDGET_H
