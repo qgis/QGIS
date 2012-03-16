@@ -73,28 +73,27 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
   if ( !mSymbol || props.value( "attribute", "" ).isEmpty() )
     return;
 
+  QString attrName = props[ "attribute" ];
+
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );
 
-  QString valueStr = QString( "value: %1" ).arg( mValue.toString() );
-
   QDomElement nameElem = doc.createElement( "se:Name" );
-  nameElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : valueStr ) );
+  nameElem.appendChild( doc.createTextNode( mLabel ) );
   ruleElem.appendChild( nameElem );
 
-  QString descrName = props.value( "version", "1.1" ) < "1.1" ? "Abstract" : "se:Description";
-  QString descrValue = QString( "Categorized symbol rendererV2 - %1" ).arg( valueStr );
-
-  QDomElement descrElem = doc.createElement( descrName );
-  descrElem.appendChild( doc.createTextNode( descrValue ) );
+  QDomElement descrElem = doc.createElement( "se:Description" );
+  QString descrStr = QString( "%1 is '%2'" ).arg( attrName ).arg( mValue.toString() );
+  descrElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
   QDomElement filterElem = doc.createElement( "ogc:Filter" );
-
   QString filterFunc = QString( "%1 = '%2'" )
-      .arg( props[ "attribute" ] ).arg( mValue.toString().replace( "'", "''" ) );
+      .arg( attrName.replace( "\"", "\"\"" ) )
+      .arg( mValue.toString().replace( "'", "''" ) );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
+  ruleElem.appendChild( filterElem );
 
   mSymbol->toSld( doc, ruleElem, props );
 }
