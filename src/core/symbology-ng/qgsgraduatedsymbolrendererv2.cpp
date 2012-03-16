@@ -103,27 +103,24 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
   if ( !mSymbol || props.value( "attribute", "" ).isEmpty() )
     return;
 
+  QString attrName = props[ "attribute" ];
+
   QDomElement ruleElem = doc.createElement( "se:Rule" );
   element.appendChild( ruleElem );
 
-  QString valueStr = QString( "range: %1 - %2" ).arg( mLowerValue ).arg( mUpperValue );
-
   QDomElement nameElem = doc.createElement( "se:Name" );
-  nameElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : valueStr ) );
+  nameElem.appendChild( doc.createTextNode( mLabel ) );
   ruleElem.appendChild( nameElem );
 
-  QString descrName = props.value( "version", "1.1" ) < "1.1" ? "Abstract" : "se:Description";
-  QString descrValue = QString( "Graduated symbol rendererV2 - %1" ).arg( valueStr );
-
-  QDomElement descrElem = doc.createElement( descrName );
-  descrElem.appendChild( doc.createTextNode( descrValue ) );
+  QDomElement descrElem = doc.createElement( "se:Description" );
+  QString descrStr = QString( "range: %1 - %2" ).arg( mLowerValue ).arg( mUpperValue );
+  descrElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
   QDomElement filterElem = doc.createElement( "ogc:Filter" );
-
   QString filterFunc = QString( "%1 > %2 AND %1 <= %3" )
-      .arg( props[ "attribute" ] )
+      .arg( attrName.replace( "\"", "\"\"" ) )
       .arg( mLowerValue ).arg( mUpperValue );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
 
