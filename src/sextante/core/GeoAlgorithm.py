@@ -78,6 +78,12 @@ class GeoAlgorithm:
             if out.name == outputName:
                 out.value = value
 
+    def getOutputValuesAsDictionary(self):
+        d = {}
+        for out in self.outputs:
+            d[out.name] = out.value
+        return d
+
     def canBeExecuted(self, layersCount):
         return True
 
@@ -108,12 +114,14 @@ class GeoAlgorithm:
     def getParameterValue(self, name):
         for param in self.parameters:
             if param.name == name:
-                if isinstance(param, ParameterNumber):
-                    return float(param.value)
-                elif isinstance(param, ParameterBoolean):
-                    return param.value == str(True)
-                else:
-                    return param.value
+                #===============================================================
+                # if isinstance(param, ParameterNumber):
+                #    return float(param.value)
+                # elif isinstance(param, ParameterBoolean):
+                #    return param.value == str(True)
+                # else:
+                #===============================================================
+                return param.value
         return None
 
     def getOutputValue(self, name):

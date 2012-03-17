@@ -23,11 +23,12 @@ class ParameterVector(ParameterDataObject):
             return True
         else:
             self.value = str(obj)
-            layers = QGisLayers.getVectorLayers(shapetype)
+            layers = QGisLayers.getVectorLayers(self.shapetype)
             for layer in layers:
                 if layer.name() == self.value:
                     self.value = str(layer.source())
                     return True
+            return True
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

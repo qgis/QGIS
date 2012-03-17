@@ -11,6 +11,9 @@ class SextantePostprocessing:
         showResults = False;
         for out in alg.outputs:
             if isinstance(out, (OutputRaster, OutputVector)):
+                if isinstance(out, OutputVector):
+                    if out.hidden:
+                        continue
                 QGisLayers.load(out.value, out.description, alg.crs)
             elif isinstance(out, OutputTable):
                 pass #TODO*****

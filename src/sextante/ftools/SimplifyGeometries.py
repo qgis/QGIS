@@ -27,7 +27,7 @@ class SimplifyGeometries(GeoAlgorithm):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         output = self.getOutputValue(SimplifyGeometries.OUTPUT)
-        tolerance = int(self.getParameterValue(SimplifyGeometries.TOLERANCE))
+        tolerance =self.getParameterValue(SimplifyGeometries.TOLERANCE)
         useSelection = self.getParameterValue(SimplifyGeometries.USE_SELECTION)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SimplifyGeometries.INPUT))
         self.generalize(vlayer, useSelection, tolerance, output, systemEncoding)

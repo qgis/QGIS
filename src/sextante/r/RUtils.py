@@ -2,6 +2,7 @@ from sextante.core.SextanteConfig import SextanteConfig
 import os
 from sextante.core.SextanteUtils import mkdir, SextanteUtils
 import subprocess
+from sextante.core.SextanteLog import SextanteLog
 
 class RUtils:
 
@@ -56,7 +57,10 @@ class RUtils:
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True)
         proc.wait()
         RUtils.createConsoleOutput()
-
+        loglines = []
+        loglines.append("R execution console output")
+        loglines += RUtils.consoleResults
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
     @staticmethod
     def  createConsoleOutput():

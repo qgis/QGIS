@@ -19,6 +19,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone.paramValues = copy.deepcopy(self.paramValues,memo)
         newone.parameters = copy.deepcopy(self.parameters, memo)
         newone.outputs = copy.deepcopy(self.outputs, memo)
+        newone.provider = self.provider
         return newone
 
     def __init__(self):
@@ -138,7 +139,6 @@ class ModelerAlgorithm(GeoAlgorithm):
         BOX_HEIGHT = 80
         return QtCore.QPointF(MARGIN + BOX_WIDTH / 2 + len(self.algPos) * (BOX_WIDTH + MARGIN), BOX_HEIGHT + 2 * MARGIN + BOX_HEIGHT / 2 +  len(self.algs) * (BOX_HEIGHT + MARGIN))
 
-
     def getPositionForParameterItem(self):
         MARGIN = 20
         BOX_WIDTH = 200
@@ -165,7 +165,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             s+="ALGORITHM:" + alg.commandLineName()+"\n"
             pt = self.algPos[i]
             s +=  str(pt.x()) + "," + str(pt.y()) + "\n"
-            #alg = ModelerUtils.getAlgorithm(self.algs[i])
             for param in alg.parameters:
                 value = self.algParameters[i][param.name]
                 if value:
@@ -184,8 +183,10 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def prepareAlgorithm(self, alg, iAlg):
         for param in alg.parameters:
+            aap = self.algParameters[iAlg][param.name]
+            if aap == None:
+                continue
             if isinstance(param, ParameterMultipleInput):
-                aap = self.algParameters[iAlg][param.name]
                 value = self.getValueFromAlgorithmAndParameter(aap)
                 tokens = value.split(";")
                 layerslist = []
@@ -198,17 +199,16 @@ class ModelerAlgorithm(GeoAlgorithm):
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
             else:
-                aap = self.algParameters[iAlg][param.name]
                 value = self.getValueFromAlgorithmAndParameter(aap)
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
         for out in alg.outputs:
-            val = self.algOutputs[iAlg][out.name]
-            if val:
-                name = str(iAlg) + out.name
-                out.value = self.getOutputFromName(name).value
-            else:
-                out.value = None
+           val = self.algOutputs[iAlg][out.name]
+           if val:
+               name = str(iAlg) + out.name
+               out.value = self.getOutputFromName(name).value
+           else:
+              out.value = None
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
@@ -247,6 +247,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             s.append(str(param.getAsScriptCode()))
         for alg in self.algs:
+            runline = "Sextante.runalg(\"" + alg.commandLineName() + "\n"
             #TODO*****
             pass
         return "\n".join(s)

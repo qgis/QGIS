@@ -29,7 +29,6 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
-import math
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -209,6 +208,10 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
+
+        path = SagaUtils.sagaPath()
+        if path == "":
+            raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
         commands = list()
         self.exportedLayers = {}
         self.numExportedLayers = 0;
@@ -257,7 +260,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     for layer in layers:
-                        if not value.endswith("sgrd"):
+                        if not layer.endswith("sgrd"):
                             commands.append(self.exportRasterLayer(layer))
                         if self.resample:
                             commands.append(self.resampleRasterLayer(layer));
@@ -284,7 +287,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         s = s.replace(layer, self.exportedLayers[layer])
                 command+=(" -" + param.name + " " + s);
             elif isinstance(param, ParameterBoolean):
-                if param.value == str(True):
+                if param.value:
                     command+=(" -" + param.name);
             else:
                 command+=(" -" + param.name + " " + str(param.value));
@@ -321,7 +324,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if filename.endswith("asc"):
                     commands.append("io_grid 0 -GRID " + filename2 + " -FORMAT 1 -FILE " + filename);
                 else:
-                    commands.append("io_gdal 1 -GRIDS " + filename2 + " -FORMAT 1 -FILE " + filename);
+                    commands.append("io_gdal 1 -GRIDS " + filename2 + " -FORMAT 1 -TYPE 0 -FILE " + filename);
 
         #4 Run SAGA
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
@@ -346,15 +349,19 @@ class SagaAlgorithm(GeoAlgorithm):
         return s
 
     def exportRasterLayer(self,layer):
-        if not layer.lower().endswith("tif") and not layer.lower().endswith("asc"):
-            raise GeoAlgorithmExecutionException("Unsupported input file format: " + layer)
-        ext = os.path.splitext(layer)[1][1:].strip()
+        #=======================================================================
+        # if not layer.lower().endswith("tif") and not layer.lower().endswith("asc"):
+        #    raise GeoAlgorithmExecutionException("Unsupported input file format: " + layer)
+        #=======================================================================
+        #ext = os.path.splitext(layer)[1][1:].strip()
         destFilename = self.getTempFilename()
         self.exportedLayers[layer]= destFilename
-        if ext.lower() == "tif":
-            return "io_grid_image 1 -OUT_GRID " + destFilename + " -FILE " + layer + " -METHOD 0"
-        else:
-            return "io_grid 1 -GRID " + destFilename + " -FILE " + layer
+        #=======================================================================
+        # if ext.lower() == "tif":
+        #    return "io_grid_image 1 -OUT_GRID " + destFilename + " -FILE " + layer + " -METHOD 0"
+        # else:
+        #=======================================================================
+        return "io_gdal 0 -GRIDS " + destFilename + " -FILES " + layer
 
 
     def getTempFilename(self):

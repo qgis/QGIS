@@ -201,7 +201,7 @@ class Sextante:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             AlgorithmExecutor.runalg(alg, SilentProgress())
             QApplication.restoreOverrideCursor()
-            return alg.getOuputsValuesAsMap()
+            return alg.getOutputValuesAsDictionary()
         except GeoAlgorithmExecutionException, e:
             print "*****Error executing algorithm*****"
             print e.msg
@@ -217,7 +217,6 @@ class Sextante:
     @staticmethod
     def getObject(string):
         QGisLayers.getObjectFromUri(string)
-
 
     @staticmethod
     def runandload(name, *args):

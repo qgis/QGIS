@@ -2,11 +2,15 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterBoolean(Parameter):
 
-    def __init__(self, name="", description="", default="True"):
+    def __init__(self, name="", description="", default=True):
         self.name = name
         self.description = description
         self.default = default
         self.value = None
+
+    def setValue(self, value):
+        self.value = value
+        return True
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description + "|" + str(self.default)

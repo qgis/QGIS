@@ -29,7 +29,7 @@ class ParameterTable(ParameterDataObject):
                         return True
                     else:
                         return False
-                return False
+            return True
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

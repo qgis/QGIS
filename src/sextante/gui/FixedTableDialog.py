@@ -16,13 +16,15 @@ class FixedTableDialog(QtGui.QDialog):
         self.setObjectName("Dialog")
         self.resize(600, 350)
         self.setWindowTitle("Fixed Table")
-        self.buttonBox = QtGui.QDialogButtonBox(self)
-        self.buttonBox.setGeometry(QtCore.QRect(490, 10, 81, 61))
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setMargin(0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
-        self.table = QtGui.QTableWidget(self)
-        self.table.setGeometry(QtCore.QRect(10, 10, 470, 300))
+        self.table = QtGui.QTableWidget()
         self.table.setObjectName("table")
         self.table.setColumnCount(len(self.param.cols))
         for i in range(len(self.param.cols)):
@@ -33,14 +35,24 @@ class FixedTableDialog(QtGui.QDialog):
         for i in range(len(self.rettable)):
             self.table.setRowHeight(i,22)
         self.table.verticalHeader().setVisible(False)
-        self.addRowButton = QtGui.QPushButton(self)
-        self.addRowButton.setGeometry(QtCore.QRect(490, 290, 81, 23))
+        self.addRowButton = QtGui.QPushButton()
         self.addRowButton.setObjectName("addRowButton")
         self.addRowButton.setText("Add row")
+        self.addRowButton.setEnabled(not self.param.fixedNumOfRows)
+        self.removeRowButton = QtGui.QPushButton()
+        self.removeRowButton.setObjectName("removeRowButton")
+        self.removeRowButton.setText("Remove row")
+        self.removeRowButton.setEnabled(not self.param.fixedNumOfRows)
+        self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
+        self.buttonBox.addButton(self.removeRowButton, QtGui.QDialogButtonBox.ActionRole)
         self.setTableContent()
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
+        self.horizontalLayout.addWidget(self.table)
+        self.horizontalLayout.addWidget(self.buttonBox)
+        self.setLayout(self.horizontalLayout)
+        QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
+        QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QObject.connect(self.addRowButton, QtCore.SIGNAL("clicked()"), self.addRow)
+        QObject.connect(self.removeRowButton, QtCore.SIGNAL("clicked()"), self.removeRow)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def setTableContent(self):
@@ -59,6 +71,10 @@ class FixedTableDialog(QtGui.QDialog):
     def cancelPressed(self):
         self.rettable = None
         self.close()
+
+    def removeRow(self):
+        if self.table.rowCount() > 2:
+            self.table.setRowCount(self.table.rowCount()-1)
 
     def addRow(self):
         self.table.setRowCount(self.table.rowCount()+1)

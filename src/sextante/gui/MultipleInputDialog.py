@@ -2,78 +2,75 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    _fromUtf8 = lambda s: s
-
-
 class MultipleInputDialog(QtGui.QDialog):
     def __init__(self, options, selectedoptions):
         self.options = options
         self.selectedoptions = selectedoptions
         QtGui.QDialog.__init__(self)
         self.setModal(True)
-        self.ui = Ui_MultipleInputDialog()
-        self.ui.setupUi(self)
+        self.setupUi()
         self.selectedoptions = None
 
-class Ui_MultipleInputDialog(object):
-    def setupUi(self, dialog):
-        self.dialog = dialog
-        dialog.setObjectName(_fromUtf8("Dialog"))
-        dialog.resize(381, 320)
-        dialog.setWindowTitle("Multiple selection")
-        self.buttonBox = QtGui.QDialogButtonBox(dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(290, 10, 81, 61))
+    def setupUi(self):
+        self.setObjectName("Dialog")
+        self.resize(381, 320)
+        self.setWindowTitle("Multiple selection")
+        self.horizontalLayout = QtGui.QHBoxLayout(self)
+        self.horizontalLayout.setSpacing(2)
+        self.horizontalLayout.setMargin(0)
+        self.horizontalLayout.setObjectName("hLayout")
+        self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.table = QtGui.QTableWidget(dialog)
-        self.table.setGeometry(QtCore.QRect(10, 10, 270, 300))
-        self.table.setObjectName(_fromUtf8("table"))
+        self.buttonBox.setObjectName("buttonBox")
+        self.table = QtGui.QTableWidget()
+        self.table.setObjectName("table")
         self.table.setColumnCount(1)
         self.table.setColumnWidth(0,270)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(False)
-        self.selectAllButton = QtGui.QPushButton(dialog)
-        self.selectAllButton.setGeometry(QtCore.QRect(290, 290, 81, 23))
-        self.selectAllButton.setObjectName(_fromUtf8("selectAllButton"))
+        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        self.selectAllButton = QtGui.QPushButton()
+        self.selectAllButton.setObjectName("selectAllButton")
         self.selectAllButton.setText("(de)Select all")
         self.setTableContent()
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
-        QtCore.QObject.connect(self.selectAllButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.selectAll)
-        QtCore.QMetaObject.connectSlotsByName(dialog)
+        self.buttonBox.addButton(self.selectAllButton, QtGui.QDialogButtonBox.ActionRole)
+        self.horizontalLayout.addWidget(self.table)
+        self.horizontalLayout.addWidget(self.buttonBox)
+        self.setLayout(self.horizontalLayout)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
+        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
+        QtCore.QObject.connect(self.selectAllButton, QtCore.SIGNAL("clicked()"), self.selectAll)
+        QtCore.QMetaObject.connectSlotsByName(self)
 
     def setTableContent(self):
-        self.table.setRowCount(len(self.dialog.options))
-        for i in range(len(self.dialog.options)):
+        self.table.setRowCount(len(self.options))
+        for i in range(len(self.options)):
             item = QtGui.QCheckBox()
-            item.setText(self.dialog.options[i])
-            if i in self.dialog.selectedoptions:
+            item.setText(self.options[i])
+            if i in self.selectedoptions:
                 item.setChecked(True)
             self.table.setCellWidget(i,0, item)
 
-    def accept(self):
-        self.dialog.selectedoptions = []
-        for i in range(len(self.dialog.options)):
+    def okPressed(self):
+        self.selectedoptions = []
+        for i in range(len(self.options)):
             widget = self.table.cellWidget(i, 0)
             if widget.isChecked():
-                self.dialog.selectedoptions.append(i)
-        self.dialog.close()
+                self.selectedoptions.append(i)
+        self.close()
 
-    def reject(self):
-        self.dialog.selectedoptions = None
-        self.dialog.close()
+    def cancelPressed(self):
+        self.selectedoptions = None
+        self.close()
 
     def selectAll(self):
         checked = False
-        for i in range(len(self.dialog.options)):
+        for i in range(len(self.options)):
             widget = self.table.cellWidget(i, 0)
             if not widget.isChecked():
                 checked = True
                 break
-        for i in range(len(self.dialog.options)):
+        for i in range(len(self.options)):
             widget = self.table.cellWidget(i, 0)
             widget.setChecked(checked)

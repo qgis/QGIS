@@ -2,6 +2,8 @@ import os
 from sextante.core.SextanteUtils import SextanteUtils
 import subprocess
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.SextanteLog import SextanteLog
+
 class SagaUtils:
 
     SAGA_AUTO_RESAMPLING = "SAGA_AUTO_RESAMPLING"
@@ -65,12 +67,16 @@ class SagaUtils:
         else:
             #TODO linux
             pass
-
+        loglines = []
+        loglines.append("SAGA execution console output")
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             if "%" in line:
                 s = "".join([x for x in line if x.isdigit()])
                 progress.setPercentage(int(s))
+            else:
+                loglines.append(line)
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 
 

@@ -178,7 +178,14 @@ class Ui_ParametersDialog(object):
         params = self.alg.parameters
         outputs = self.alg.outputs
         numParams = len(self.alg.parameters)
-        numOutputs = len(self.alg.outputs)
+        #numOutputs = len(self.alg.outputs)
+        numOutputs = 0
+        for output in outputs:
+            if isinstance(output, OutputVector):
+                if not output.hidden:
+                    numOutputs += 1
+            else:
+                numOutputs += 1
         self.tableWidget.setRowCount(numParams + numOutputs)
 
         i=0
@@ -193,6 +200,9 @@ class Ui_ParametersDialog(object):
             i+=1
 
         for output in outputs:
+            if isinstance(output, OutputVector):
+                if output.hidden:
+                    continue
             item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
@@ -211,12 +221,14 @@ class Ui_ParametersDialog(object):
                 return False
 
         for output in outputs:
+            if isinstance(output, OutputVector):
+                if output.hidden:
+                    continue
             output.value = self.valueItems[output.name].getValue()
 
         return True
 
     def setParamValue(self, param, widget):
-
         if isinstance(param, ParameterRaster):
             return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterVector):
@@ -243,7 +255,8 @@ class Ui_ParametersDialog(object):
                 value.append(options[index])
             return param.setValue(value)
         else:
-            return param.setValue(widget.text())
+
+            return param.setValue(str(widget.text()))
 
 
     def accept(self):

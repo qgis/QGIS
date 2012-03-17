@@ -13,6 +13,8 @@ from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.ConfigDialog import ConfigDialog
 from sextante.modeler.ModelerDialog import ModelerDialog
 from sextante.gui.ResultsDialog import ResultsDialog
+from sextante.about.AboutDialog import AboutDialog
+import subprocess
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -63,6 +65,20 @@ class SextantePlugin:
         QObject.connect(self.resultsAction, SIGNAL("triggered()"), self.openResults)
         self.menu.addAction(self.resultsAction)
 
+        icon = QIcon(os.path.dirname(__file__) + "/images/help.png")
+        self.helpAction = QAction(icon, \
+            "&SEXTANTE help", self.iface.mainWindow())
+        QObject.connect(self.helpAction, SIGNAL("triggered()"), self.openHelp)
+        self.menu.addAction(self.helpAction)
+
+        icon = QIcon(os.path.dirname(__file__) + "/images/info.png")
+        self.aboutAction = QAction(icon, \
+            "&About SEXTANTE", self.iface.mainWindow())
+        QObject.connect(self.aboutAction, SIGNAL("triggered()"), self.openAbout)
+        self.menu.addAction(self.aboutAction)
+
+
+
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)
@@ -101,5 +117,16 @@ class SextantePlugin:
     def openConfig(self):
         dlg = ConfigDialog(self.toolbox)
         dlg.exec_()
+
+    def openAbout(self):
+        dlg = AboutDialog()
+        dlg.exec_()
+
+    def openHelp(self):
+        filename = os.path.dirname(__file__) + "/manual.pdf"
+        if os.name == "nt":
+            os.startfile(filename)
+        else:
+            subprocess.call(('xdg-open', filename))
 
 

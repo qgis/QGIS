@@ -115,10 +115,10 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.horizontalLayout3.addWidget(QtGui.QLabel("Data type"))
             self.datatypeCombo = QtGui.QComboBox()
+            self.datatypeCombo.addItem("Vector (any)")
             self.datatypeCombo.addItem("Vector (point)")
             self.datatypeCombo.addItem("Vector (line)")
             self.datatypeCombo.addItem("Vector (polygon)")
-            self.datatypeCombo.addItem("Vector (any)")
             self.datatypeCombo.addItem("Raster")
             self.datatypeCombo.addItem("Table")
             self.horizontalLayout3.addWidget(self.datatypeCombo)
@@ -172,7 +172,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE:
             self.param = ParameterTable(name, description, self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR:
-            self.param = ParameterVector(name, description, self.shapetypeCombo.currentIndex(), self.yesNoCombo.currentIndex() == 1)
+            self.param = ParameterVector(name, description, self.shapetypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE:
             self.param = ParameterMultipleInput(name, description, self.datatypeCombo.currentIndex(), self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER:

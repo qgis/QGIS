@@ -17,11 +17,17 @@ from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.r.RUtils import RUtils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.SextanteLog import SextanteLog
 
 class RAlgorithm(GeoAlgorithm):
 
     R_CONSOLE_OUTPUT = "R_CONSOLE_OUTPUT"
     RPLOTS = "RPLOTS"
+
+    def __deepcopy__(self,memo):
+        newone = RAlgorithm(self.descriptionFile)
+        newone.provider = self.provider
+        return newone
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
@@ -138,6 +144,13 @@ class RAlgorithm(GeoAlgorithm):
             raise WrongScriptException("Could not load R script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
 
     def processAlgorithm(self, progress):
+        path = RUtils.RFolder()
+        if path == "":
+            raise GeoAlgorithmExecutionException("R folder is not configured.\nPlease configure it before running R script.")
+        loglines = []
+        loglines.append("R execution commands")
+        loglines += self.getFullSetOfRCommands()
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         RUtils.executeRAlgorithm(self)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
@@ -151,7 +164,6 @@ class RAlgorithm(GeoAlgorithm):
             f.close()
 
     def getFullSetOfRCommands(self):
-
         commands = []
         commands += self.getImportCommands()
         commands += self.getRCommands()
@@ -160,9 +172,7 @@ class RAlgorithm(GeoAlgorithm):
         return commands
 
     def getExportCommands(self):
-
         commands = []
-
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 value = out.value
@@ -187,7 +197,6 @@ class RAlgorithm(GeoAlgorithm):
 
 
     def getImportCommands(self):
-
         commands = []
         commands.append("library(\"rgdal\")");
         for param in self.parameters:
@@ -210,8 +219,7 @@ class RAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterNumber):
                 commands.append(param.name + "=" + str(param.value))
             if isinstance(param, ParameterBoolean):
-                b = (param.value == str(True))
-                if b:
+                if param.value:
                     commands.append(param.name + "=TRUE")
                 else:
                     commands.append(param.name + "=FALSE")

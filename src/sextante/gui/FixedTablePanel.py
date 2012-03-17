@@ -17,8 +17,6 @@ class FixedTablePanel(QtGui.QWidget):
             for j in range(len(param.cols)):
                 self.table[i].append("0")
         self.setObjectName(_fromUtf8("MSPanel"))
-        #self.contents = QtGui.QWidget(self)
-        #self.contents.setObjectName(_fromUtf8("contents"))
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
@@ -38,5 +36,5 @@ class FixedTablePanel(QtGui.QWidget):
     def showFixedTableDialog(self):
         dlg = FixedTableDialog(self.param, self.table)
         dlg.exec_()
-        if dlg.table != None:
-            self.table = dlg.table
+        if dlg.rettable != None:
+            self.table = dlg.rettable

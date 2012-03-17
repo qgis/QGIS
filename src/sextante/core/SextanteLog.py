@@ -28,7 +28,7 @@ class SextanteLog():
         if isinstance(msg, list):
             text=""
             for i in range(0, len(msg)):
-                text+=msg[i] + "|"
+                text+=msg[i].strip("\n") + "|"
             text = text[:-1]
         else:
             text = str(msg).replace("\n", "|")

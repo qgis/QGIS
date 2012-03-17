@@ -1,4 +1,5 @@
 from sextante.parameters.Parameter import Parameter
+from PyQt4.QtGui import *
 
 class ParameterNumber(Parameter):
 
@@ -11,8 +12,11 @@ class ParameterNumber(Parameter):
         self.value = None
 
     def setValue(self, n):
-        try:
-            value = float(n)
+        ##try:
+            if (float(n) - int(float(n)) == 0):
+                value = int(n)
+            else:
+                value = float(n)
             if self.min:
                 if value < self.min:
                     return False
@@ -21,8 +25,10 @@ class ParameterNumber(Parameter):
                     return False
             self.value = value
             return True
-        except:
-            return False
+        #=======================================================================
+        # except:
+        #    return False
+        #=======================================================================
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

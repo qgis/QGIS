@@ -11,4 +11,7 @@ class OutputFactory():
         for clazz in classes:
             if s.startswith(clazz().outputTypeName()):
                 tokens = s[len(clazz().outputTypeName())+1:].split("|")
-                return clazz(tokens[0], tokens[1])
+                if len(tokens) == 2:
+                    return clazz(tokens[0], tokens[1])
+                else:
+                    return clazz(tokens[0], tokens[1], tokens[2]==str(True))

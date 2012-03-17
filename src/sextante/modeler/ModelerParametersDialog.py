@@ -233,7 +233,13 @@ class ModelerParametersDialog(QtGui.QDialog):
         params = self.alg.parameters
         outputs = self.alg.outputs
         numParams = len(self.alg.parameters)
-        numOutputs = len(self.alg.outputs)
+        numOutputs = 0
+        for output in outputs:
+            if isinstance(output, OutputVector):
+                if not output.hidden:
+                    numOutputs += 1
+            else:
+                numOutputs += 1
         self.tableWidget.setRowCount(numParams + numOutputs)
 
         i=0
@@ -248,6 +254,9 @@ class ModelerParametersDialog(QtGui.QDialog):
             i+=1
 
         for output in outputs:
+            if isinstance(output, OutputVector):
+                if output.hidden:
+                    continue
             item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
@@ -269,6 +278,9 @@ class ModelerParametersDialog(QtGui.QDialog):
             if not self.setParamValue(param, self.valueItems[param.name]):
                 return False
         for output in outputs:
+            if isinstance(output, OutputVector):
+                if output.hidden:
+                    continue
             name= str(self.valueItems[output.name].text())
             if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
                 self.outputs[output.name]=name
@@ -327,9 +339,10 @@ class ModelerParametersDialog(QtGui.QDialog):
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
             s = str(widget.currentText())
-            if s.isdigit():
-                self.values[name] = str(widget.currentText())
-            else:
+            try:
+                float(s)
+                self.values[name] = s
+            except:
                 return False
         else:
             value = widget.itemData(widget.currentIndex()).toPyObject()
@@ -387,12 +400,10 @@ class ModelerParametersDialog(QtGui.QDialog):
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
             self.values[name] = ";".join(values)
-
-            return False
+            return True
 
 
     def okPressed(self):
-
         if self.setParamValues():
             self.close()
         else:

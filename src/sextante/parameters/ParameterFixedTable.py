@@ -1,11 +1,12 @@
 from sextante.parameters.Parameter import Parameter
+from PyQt4 import QtGui
 
 class ParameterFixedTable(Parameter):
 
     def __init__(self, name="", description="", cols=["value"], numRows=3, fixedNumOfRows = False):
         self.cols = cols
         self.numRows = numRows
-        self.fixedNumOfRows = False
+        self.fixedNumOfRows = fixedNumOfRows
         self.name = name
         self.description = description
         self.value = None
