@@ -61,7 +61,11 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>( layer_it.value() );
     if ( rl )
     {
-      mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+      QgsRasterDataProvider* rp = rl->dataProvider();
+      if ( rp && rp->name() == "gdal" )
+      {
+        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+      }
     }
     else
     {
