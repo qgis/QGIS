@@ -29,6 +29,7 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.QGisLayers import QGisLayers
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -63,7 +64,6 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def defineCharacteristicsFromFileSagaFormat(self):
-
         lines = open(self._descriptionFile)
         line = lines.readline()
         while line != "":
@@ -208,26 +208,28 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
-
         path = SagaUtils.sagaPath()
         if path == "":
             raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
+        useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
         commands = list()
         self.exportedLayers = {}
         self.numExportedLayers = 0;
 
-        #1: Export rasters to sgrd. only ASC and TIF are supported.
-        #   Vector layers must be in shapefile format and tables in dbf format. We check that.
+        #1: Export rasters to sgrd and vectors to shp
+        #   Tables must be in dbf format. We check that.
         if self.resample:
             self.calculateResamplingExtent()
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value == None:
                     continue
-                if isinstance(param.value, QgsRasterLayer):
-                    value = str(param.value.dataProvider().dataSourceUri())
-                else:
-                    value = param.value
+                #===============================================================
+                # if isinstance(param.value, QgsRasterLayer):
+                #    value = str(param.value.dataProvider().dataSourceUri())
+                # else:
+                #===============================================================
+                value = param.value
                 if not value.endswith("sgrd"):
                     commands.append(self.exportRasterLayer(value))
                 if self.resample:
@@ -235,19 +237,24 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 if param.value == None:
                     continue
-                if isinstance(param.value, QgsVectorLayer):
-                    value = str(param.value.dataProvider().dataSourceUri())
-                else:
-                    value = param.value
-                if not value.endswith("shp"):
-                    raise GeoAlgorithmExecutionException("Unsupported file format")
+                #===============================================================
+                # if isinstance(param.value, QgsVectorLayer):
+                #    value = str(param.value.dataProvider().dataSourceUri())
+                # else:
+                #===============================================================
+                value = param.value
+                if (not value.endswith("shp")) or useSelection:
+                    self.exportVectorLayer(value)
+                    #raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
-                if isinstance(param.value, QgsVectorLayer):
-                    value = str(param.value.dataProvider().dataSourceUri())
-                else:
-                    value = param.value
+                #===============================================================
+                # if isinstance(param.value, QgsVectorLayer):
+                #    value = str(param.value.dataProvider().dataSourceUri())
+                # else:
+                #===============================================================
+                value = param.value
                 if value.endswith("shp"):
                     value = value[:-3] + "dbf"
                 if not value.endswith("dbf"):
@@ -274,7 +281,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value == None:
                 continue
-            if isinstance(param, ParameterRaster):
+            if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command+=(" -" + param.name + " " + self.exportedLayers[value])
@@ -348,13 +355,50 @@ class SagaAlgorithm(GeoAlgorithm):
                 " -USER_SIZE " + str(self.cellsize) + " -USER_GRID " + destFilename
         return s
 
-    def exportRasterLayer(self,layer):
+
+    def getObjectFromUri(self, uri):
+        layers = QGisLayers.getVectorLayers()
+        for layer in layers:
+            if layer.source() == uri:
+                return layer
+        return None
+
+    def exportVectorLayer(self, filename):
+        layer = self.getObjectFromUri(filename)
+        if layer:
+            settings = QSettings()
+            systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+            output = self.getTempFilename("shp")
+            provider = layer.dataProvider()
+            allAttrs = provider.attributeIndexes()
+            provider.select( allAttrs )
+            useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
+            if useSelection and layer.selectedFeatureCount() != 0:
+                writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+                selection = layer.selectedFeatures()
+                for feat in selection:
+                    writer.addFeature(feat)
+                del writer
+                self.exportedLayers[filename]=output
+            else:
+                if (not filename.endswith("shp")):
+                    writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+                    feat = QgsFeature()
+                    while provider.nextFeature(feat):
+                        writer.addFeature(feat)
+                    del writer
+                    self.exportedLayers[filename]=output
+        else:
+            if (not filename.endswith("shp")):
+                raise GeoAlgorithmExecutionException("Unsupported file format")
+
+    def exportRasterLayer(self, layer):
         #=======================================================================
         # if not layer.lower().endswith("tif") and not layer.lower().endswith("asc"):
         #    raise GeoAlgorithmExecutionException("Unsupported input file format: " + layer)
         #=======================================================================
         #ext = os.path.splitext(layer)[1][1:].strip()
-        destFilename = self.getTempFilename()
+        destFilename = self.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         #=======================================================================
         # if ext.lower() == "tif":
@@ -364,10 +408,10 @@ class SagaAlgorithm(GeoAlgorithm):
         return "io_gdal 0 -GRIDS " + destFilename + " -FILES " + layer
 
 
-    def getTempFilename(self):
+    def getTempFilename(self, ext):
         self.numExportedLayers+=1
         path = SextanteUtils.tempFolder()
-        filename = path + os.sep + str(time.time()) + str(SextanteUtils.NUM_EXPORTED) + ".sgrd"
+        filename = path + os.sep + str(time.time()) + str(SextanteUtils.NUM_EXPORTED) + "." + ext
         SextanteUtils.NUM_EXPORTED +=1
 
         return filename

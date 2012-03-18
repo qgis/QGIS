@@ -19,6 +19,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_XMAX, "Resampling region max x", 1000))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_YMAX, "Resampling region max y", 1000))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE, "Resampling region cellsize", 1))
+        SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_USE_SELECTED, "Use only selected features in vector layers", False))
 
     def _loadAlgorithms(self):
         folder = SagaUtils.sagaDescriptionPath()

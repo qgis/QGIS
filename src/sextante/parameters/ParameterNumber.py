@@ -14,7 +14,7 @@ class ParameterNumber(Parameter):
     def setValue(self, n):
         ##try:
             if (float(n) - int(float(n)) == 0):
-                value = int(n)
+                value = int(float(n))
             else:
                 value = float(n)
             if self.min:

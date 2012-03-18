@@ -15,8 +15,8 @@ class ParameterFactory():
     @staticmethod
     def getFromString(s):
         classes = [ParameterBoolean, ParameterMultipleInput,ParameterNumber,
-                   ParameterRaster, ParameterString, ParameterTable, ParameterVector,
-                   ParameterTableField, ParameterSelection, ParameterRange, ParameterFixedTable]
+                   ParameterRaster, ParameterString, ParameterVector, ParameterTableField,
+                   ParameterTable, ParameterSelection, ParameterRange, ParameterFixedTable]
         for clazz in classes:
             if s.startswith(clazz().parameterName()):
                 return clazz().deserialize(s[len(clazz().parameterName())+1:])
