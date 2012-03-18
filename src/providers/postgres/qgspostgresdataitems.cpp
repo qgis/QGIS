@@ -6,6 +6,8 @@
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 
+#include <QMessageBox>
+
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
@@ -157,6 +159,70 @@ void QgsPGConnectionItem::deleteConnection()
   mParent->refresh();
 }
 
+bool QgsPGConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
+{
+  if ( !QgsMimeDataUtils::isUriList( data ) )
+    return false;
+
+  // TODO: probably should show a GUI with settings etc
+  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+
+  qApp->setOverrideCursor( Qt::WaitCursor );
+
+  QStringList importResults;
+  bool hasError = false;
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  foreach( const QgsMimeDataUtils::Uri& u, lst )
+  {
+    if ( u.layerType != "vector" )
+    {
+      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
+      hasError = true; // only vectors can be imported
+      continue;
+    }
+
+    // open the source layer
+    QgsVectorLayer* srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+
+    if ( srcLayer->isValid() )
+    {
+      uri.setDataSource( QString(), u.name, "qgs_geometry" );
+      QgsDebugMsg( "URI " + uri.uri() );
+      QgsVectorLayerImport::ImportError err;
+      QString importError;
+      err = QgsVectorLayerImport::importLayer( srcLayer, uri.uri(), "postgres", &srcLayer->crs(), false, &importError );
+      if ( err == QgsVectorLayerImport::NoError )
+        importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      else
+      {
+        importResults.append( QString( "%1: %2" ).arg( u.name ).arg( importError ) );
+        hasError = true;
+      }
+    }
+    else
+    {
+      importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      hasError = true;
+    }
+
+    delete srcLayer;
+  }
+
+  qApp->restoreOverrideCursor();
+
+  if ( hasError )
+  {
+    QMessageBox::warning( 0, tr( "Import to PostGIS database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+  }
+  else
+  {
+    QMessageBox::information( 0, tr( "Import to PostGIS database" ), tr( "Import was successful." ) );
+  }
+
+  refresh();
+
+  return true;
+}
 
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
