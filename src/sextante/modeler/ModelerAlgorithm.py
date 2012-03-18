@@ -7,12 +7,15 @@ from PyQt4 import QtCore, QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 import os.path
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
+from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputHTML import OutputHTML
+from sextante.outputs.OutputTable import OutputTable
+from sextante.outputs.OutputVector import OutputVector
 
 class ModelerAlgorithm(GeoAlgorithm):
 
     def __deepcopy__(self,memo):
         newone = ModelerAlgorithm()
-        #newone.__dict__.update(self.__dict__)
         newone.algs = copy.deepcopy(self.algs, memo)
         newone.algParameters = copy.deepcopy(self.algParameters,memo)
         newone.algOutputs = copy.deepcopy(self.algOutputs,memo)
@@ -192,7 +195,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 layerslist = []
                 for token in tokens:
                     i, paramname = token.split("|")
-                    aap = AlgorithmAndParameter(i, paramname)
+                    aap = AlgorithmAndParameter(int(i), paramname)
                     value = self.getValueFromAlgorithmAndParameter(aap)
                     layerslist.append(str(value))
                 value = ";".join(layerslist)
@@ -203,12 +206,12 @@ class ModelerAlgorithm(GeoAlgorithm):
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
         for out in alg.outputs:
-           val = self.algOutputs[iAlg][out.name]
-           if val:
-               name = str(iAlg) + out.name
-               out.value = self.getOutputFromName(name).value
-           else:
-              out.value = None
+            val = self.algOutputs[iAlg][out.name]
+            if val:
+                name = str(iAlg) + out.name
+                out.value = self.getOutputFromName(name).value
+            else:
+                out.value = None
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
@@ -220,7 +223,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if aap.param == param.name:
                         return param.value
         else:
-            return self.producedOutputs[aap.alg][aap.param]
+            return self.producedOutputs[int(aap.alg)][aap.param]
 
     def processAlgorithm(self, progress):
         self.producedOutputs = []
@@ -242,16 +245,82 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         progress.setFinished()
 
+
+    def getOutputType(self, i, outname):
+        for out in self.algs[i].outputs:
+            if out.name == outname:
+                if isinstance(out, OutputRaster):
+                    return "output raster"
+                elif isinstance(out, OutputVector):
+                    return "output vector"
+                elif isinstance(out, OutputTable):
+                    return "output table"
+                elif isinstance(out, OutputHTML):
+                    return "output html"
+
+
     def getAsPythonCode(self):
         s = []
         for param in self.parameters:
-            s.append(str(param.getAsScriptCode()))
+            s.append(str(param.getAsScriptCode().lower()))
+        i = 0
+        for outs in self.algOutputs:
+            for out in outs.keys():
+                if outs[out]:
+                    s.append("##" + out.lower() + "_alg" + str(i) +"=" + self.getOutputType(i, out))
+            i += 1
+        i = 0
+        iMultiple = 0
         for alg in self.algs:
-            runline = "Sextante.runalg(\"" + alg.commandLineName() + "\n"
-            #TODO*****
-            pass
+            multiple= []
+            runline = "outputs_" + str(i) + "=Sextante.runalg(\"" + alg.commandLineName() + "\""
+            for param in alg.parameters:
+                aap = self.algParameters[i][param.name]
+                if aap == None:
+                    runline += ", None"
+
+                if isinstance(param, ParameterMultipleInput):
+                    value = self.paramValues[aap.param]
+                    tokens = value.split(";")
+                    layerslist = []
+                    for token in tokens:
+                        iAlg, paramname = token.split("|")
+                        if float(iAlg) == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
+                            if self.ismodelparam(paramname):
+                                value = paramname.lower()
+                            else:
+                                value = self.paramValues[paramname]
+                        else:
+                            value = "outputs_" + str(iAlg) + "['" + paramname +"']"
+                        layerslist.append(str(value))
+
+                    multiple.append("multiple_" + str(iMultiple) +"=[" + ",".join(layerslist) + "]")
+                    runline +=", \";\".join(multiple_" + str(iMultiple) + ") "
+                else:
+                    if float(aap.alg) == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
+                        if self.ismodelparam(aap.param):
+                            runline += ", " + aap.param.lower()
+                        else:
+                            runline += ", " + self.paramValues[aap.param]
+                    else:
+                        runline += ", outputs_" + str(aap.alg) + "['" + aap.param +"']"
+            for out in alg.outputs:
+                value = self.algOutputs[i][out.name]
+                if value:
+                    name = out.name.lower() + "_alg" + str(i)
+                else:
+                    name = str(None)
+                runline += ", " + name
+            i += 1
+            s += multiple
+            s.append(str(runline + ")"))
         return "\n".join(s)
 
+    def ismodelparam(self, paramname):
+        for modelparam in self.parameters:
+            if modelparam.name == paramname:
+                return True
+        return False
 
 class AlgorithmAndParameter():
 

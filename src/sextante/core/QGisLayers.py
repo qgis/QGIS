@@ -24,7 +24,7 @@ class QGisLayers:
         layers = QGisLayers.iface.legendInterface().layers()
         vector = list()
         for layer in layers:
-            if layer.type() == layer.VectorLayer :
+            if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
                     vector.append(layer)
         return vector

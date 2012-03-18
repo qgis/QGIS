@@ -2,7 +2,6 @@ from sextante.core.SextanteConfig import Setting, SextanteConfig
 import os
 from PyQt4 import QtGui
 class AlgorithmProvider():
-
     def __init__(self):
         name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
         SextanteConfig.addSetting(Setting(self.getName(), name, "Activate", True))
@@ -20,7 +19,7 @@ class AlgorithmProvider():
         else:
             self._loadAlgorithms()
 
-    #methods to be overriden.
+    #methods to be overridden.
     #==============================
 
     #Algorithm loading should take place here

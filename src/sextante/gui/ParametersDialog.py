@@ -255,7 +255,6 @@ class Ui_ParametersDialog(object):
                 value.append(options[index])
             return param.setValue(value)
         else:
-
             return param.setValue(str(widget.text()))
 
 

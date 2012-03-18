@@ -35,8 +35,8 @@ class ModelerScene(QtGui.QGraphicsScene):
 
     def getItemsFromAAP(self, aap, isMultiple):
         items = []
-        start = aap.alg
-        if start == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
+        start = int(aap.alg)
+        if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
             if isMultiple:
                 multi = self.model.paramValues[aap.param]
                 tokens = multi.split(";")

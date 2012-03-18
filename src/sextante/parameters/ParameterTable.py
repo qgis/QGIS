@@ -11,6 +11,12 @@ class ParameterTable(ParameterDataObject):
         self.value = None
 
     def setValue(self, obj):
+        if obj == None:
+            if self.optional:
+                self.value = None
+                return True
+            else:
+                return False
         if isinstance(obj, QgsVectorLayer):
             self.value = str(obj.source())
             if self.value.endswith("shp"):

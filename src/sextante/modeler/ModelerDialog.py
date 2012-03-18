@@ -174,7 +174,8 @@ class ModelerDialog(QtGui.QDialog):
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 1000, 1000))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
-        self.pythonText.setText("This feature is not yet available... we are still working on it ;-)")#self.alg.getAsPythonCode())
+        #self.pythonText.setText("This feature is not yet available... we are still working on it ;-)")#self.alg.getAsPythonCode())
+        self.pythonText.setText(self.alg.getAsPythonCode())
 
 
     def addInput(self):

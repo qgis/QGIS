@@ -14,6 +14,7 @@ import os
 from sextante.parameters.ParameterSelection import ParameterSelection
 from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.outputs.OutputHTML import OutputHTML
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -89,16 +90,13 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterString(tokens[0],  desc, default)
         elif tokens[1].lower().strip().startswith("output raster"):
             out = OutputRaster()
-            if tokens[1].strip().endswith("*"):
-                self.silentOutputs.append(tokens[0])
         elif tokens[1].lower().strip().startswith("output vector"):
             out = OutputVector()
-            if tokens[1].strip().endswith("*"):
-                self.silentOutputs.append(tokens[0])
         elif tokens[1].lower().strip().startswith("output table"):
             out = OutputTable()
-            if tokens[1].strip().endswith("*"):
-                self.silentOutputs.append(tokens[0])
+        elif tokens[1].lower().strip().startswith("output html"):
+            out = OutputHTML()
+
 
         if param != None:
             self.addParameter(param)
@@ -120,9 +118,5 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         script+=self.script
         exec(script)
-
-        for out in self.outputs:
-            if out.name in self.silentOutputs:
-                out.value = None
 
 

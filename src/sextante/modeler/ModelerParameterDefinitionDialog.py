@@ -100,10 +100,10 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.horizontalLayout3.addWidget(QtGui.QLabel("Shape type"))
             self.shapetypeCombo = QtGui.QComboBox()
+            self.shapetypeCombo.addItem("Any")
             self.shapetypeCombo.addItem("Point")
             self.shapetypeCombo.addItem("Line")
             self.shapetypeCombo.addItem("Polygon")
-            self.shapetypeCombo.addItem("Any")
             self.horizontalLayout3.addWidget(self.shapetypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
             self.verticalLayout.addLayout(self.horizontalLayout2)
@@ -174,7 +174,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR:
             self.param = ParameterVector(name, description, self.shapetypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE:
-            self.param = ParameterMultipleInput(name, description, self.datatypeCombo.currentIndex(), self.yesNoCombo.currentIndex() == 1)
+            self.param = ParameterMultipleInput(name, description, self.datatypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER:
             try:
                 vmin = str(self.minTextBox.text()).strip()

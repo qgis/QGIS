@@ -11,6 +11,12 @@ class ParameterRaster(ParameterDataObject):
         self.value = None
 
     def setValue(self, obj):
+        if obj == None:
+            if self.optional:
+                self.value = None
+                return True
+            else:
+                return False
         if isinstance(obj, QgsRasterLayer):
             self.value = str(obj.dataProvider().dataSourceUri())
             return True

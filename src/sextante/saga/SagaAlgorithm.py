@@ -30,6 +30,7 @@ from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
+from PyQt4 import QtGui
 
 class SagaAlgorithm(GeoAlgorithm):
 
