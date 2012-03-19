@@ -390,7 +390,7 @@ void QgsGPSInformationWidget::connectGps()
 
   if ( mRadUserPath->isChecked() )
   {
-    port = mCboDevices->currentText();
+    port = mCboDevices->itemData( mCboDevices->currentIndex() ).toString();
 
     if ( port.isEmpty() )
     {
