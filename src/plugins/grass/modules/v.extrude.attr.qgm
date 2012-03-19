@@ -4,6 +4,7 @@
 <qgisgrassmodule label="Extrudes flat vector object to 3D with height based on attribute" module="v.extrude">
 	<option key="input" layeroption="layer"/>
 	<option key="elevation" label="Elevation raster for height extraction (optional)"/>
+        <flag key="t" answer="on" advanced="yes" />
 	<option key="zshift" advanced="yes" />
         <field key="hcolumn" layer="input" type="integer,double" />
         <option key="output"/>
