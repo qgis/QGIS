@@ -119,7 +119,13 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
     QSettings settings;
     //Changed to default to true as of QGIS 1.7
-    if ( settings.value( "/qgis/use_symbology_ng", true ).toBool() && hasGeometryType() )
+    //TODO: remove hack when http://hub.qgis.org/issues/5170 is fixed
+#ifdef ANDROID
+    bool use_symbology_ng_default = false;
+#else
+    bool use_symbology_ng_default = true;
+#endif
+        if ( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() && hasGeometryType() )
     {
       // using symbology-ng!
       setUsingRendererV2( true );
