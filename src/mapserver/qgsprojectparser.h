@@ -38,6 +38,8 @@ class QgsProjectParser: public QgsConfigParser
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
+
     int numberOfLayers() const;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
@@ -57,6 +59,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file*/
     virtual QStringList identifyDisabledLayers() const;
+
+    /**Returns an ID-list of layers queryable for WFS service (comes from <properties> -> <WFSLayers> in the project file*/
+    virtual QStringList wfsLayers() const;
 
     /**Returns a set of supported epsg codes for the capabilities document. The list comes from the property <WMSEpsgList> in the project file.
        An empty set means that all possible CRS should be advertised (which could result in very long capabilities documents)

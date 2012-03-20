@@ -361,6 +361,11 @@ class CORE_EXPORT QgsGeometry
      */
     QString exportToWkt();
 
+    /** Exports the geometry to mGeoJSON
+        @return true in case of success and false else
+     */
+    QString exportToGeoJSON();
+
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
