@@ -138,6 +138,64 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
 }
 
+void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  QStringList wfsLayersId = wfsLayers();
+
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return;
+  }
+
+  QMap<QString, QgsMapLayer *> layerMap;
+
+  foreach( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      //QgsMapLayer *layer = createLayerFromElement( *layerIt );
+      QgsMapLayer *layer = createLayerFromElement( elem );
+      if ( layer && wfsLayersId.contains( layer->id() ) )
+      {
+        QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+        layerMap.insert( layer->id(), layer );
+
+        QDomElement layerElem = doc.createElement( "FeatureType" );
+        QDomElement nameElem = doc.createElement( "Name" );
+        //We use the layer name even though it might not be unique.
+        //Because the id sometimes contains user/pw information and the name is more descriptive
+        QDomText nameText = doc.createTextNode( layer->name() );
+        nameElem.appendChild( nameText );
+        layerElem.appendChild( nameElem );
+
+        QDomElement titleElem = doc.createElement( "Title" );
+        QDomText titleText = doc.createTextNode( layer->name() );
+        titleElem.appendChild( titleText );
+        layerElem.appendChild( titleElem );
+
+        //appendExGeographicBoundingBox( layerElem, doc, layer->extent(), layer->crs() );
+
+        QDomElement srsElem = doc.createElement( "SRS" );
+        QDomText srsText = doc.createTextNode( layer->crs().authid() );
+        srsElem.appendChild( srsText );
+        layerElem.appendChild( srsElem );
+
+        QgsRectangle layerExtent = layer->extent();
+        QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
+        bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
+        bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
+        bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
+        bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
+        layerElem.appendChild( bBoxElement );
+
+        parentElement.appendChild( layerElem );
+      }
+    }
+  }
+  return;
+}
+
 void QgsProjectParser::addLayers( QDomDocument &doc,
                                   QDomElement &parentElem,
                                   const QDomElement &legendElem,
@@ -582,6 +640,37 @@ QStringList QgsProjectParser::identifyDisabledLayers() const
     disabledList << valueList.at( i ).toElement().text();
   }
   return disabledList;
+}
+
+QStringList QgsProjectParser::wfsLayers() const
+{
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfsLayersElem = propertiesElem.firstChildElement( "WFSLayers" );
+  if ( wfsLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfsLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    wfsList << valueList.at( i ).toElement().text();
+  }
+  return wfsList;
 }
 
 QStringList QgsProjectParser::supportedOutputCrsList() const

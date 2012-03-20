@@ -4185,6 +4185,296 @@ QString QgsGeometry::exportToWkt()
   }
 }
 
+QString QgsGeometry::exportToGeoJSON()
+{
+  QgsDebugMsg( "entered." );
+
+  // TODO: implement with GEOS
+  if ( mDirtyWkb )
+  {
+    exportGeosToWkb();
+  }
+
+  if ( !mGeometry )
+  {
+    QgsDebugMsg( "WKB geometry not available!" );
+    return QString::null;
+  }
+
+  QGis::WkbType wkbType;
+  bool hasZValue = false;
+  double *x, *y;
+
+  QString mWkt; // TODO: rename
+
+  // Will this really work when mGeometry[0] == 0 ???? I (gavin) think not.
+  //wkbType = (mGeometry[0] == 1) ? mGeometry[1] : mGeometry[4];
+  memcpy( &wkbType, &( mGeometry[1] ), sizeof( int ) );
+
+  switch ( wkbType )
+  {
+    case QGis::WKBPoint25D:
+    case QGis::WKBPoint:
+    {
+      mWkt += "{ \"type\": \"Point\", \"coordinates\": [";
+      x = ( double * )( mGeometry + 5 );
+      mWkt += QString::number( *x, 'f', 6 );
+      mWkt += ", ";
+      y = ( double * )( mGeometry + 5 + sizeof( double ) );
+      mWkt += QString::number( *y, 'f', 6 );
+      mWkt += "] }";
+      return mWkt;
+    }
+
+    case QGis::WKBLineString25D:
+      hasZValue = true;
+    case QGis::WKBLineString:
+    {
+      QgsDebugMsg( "LINESTRING found" );
+      unsigned char *ptr;
+      int *nPoints;
+      int idx;
+
+      mWkt += "{ \"type\": \"LineString\", \"coordinates\": [ ";
+      // get number of points in the line
+      ptr = mGeometry + 5;
+      nPoints = ( int * ) ptr;
+      ptr = mGeometry + 1 + 2 * sizeof( int );
+      for ( idx = 0; idx < *nPoints; ++idx )
+      {
+        if ( idx != 0 )
+        {
+          mWkt += ", ";
+        }
+        mWkt += "[";
+        x = ( double * ) ptr;
+        mWkt += QString::number( *x, 'f', 6 );
+        mWkt += ", ";
+        ptr += sizeof( double );
+        y = ( double * ) ptr;
+        mWkt += QString::number( *y, 'f', 6 );
+        ptr += sizeof( double );
+        if ( hasZValue )
+        {
+          ptr += sizeof( double );
+        }
+        mWkt += "]";
+      }
+      mWkt += " ] }";
+      return mWkt;
+    }
+
+    case QGis::WKBPolygon25D:
+      hasZValue = true;
+    case QGis::WKBPolygon:
+    {
+      QgsDebugMsg( "POLYGON found" );
+      unsigned char *ptr;
+      int idx, jdx;
+      int *numRings, *nPoints;
+
+      mWkt += "{ \"type\": \"Polygon\", \"coordinates\": [ ";
+      // get number of rings in the polygon
+      numRings = ( int * )( mGeometry + 1 + sizeof( int ) );
+      if ( !( *numRings ) )  // sanity check for zero rings in polygon
+      {
+        return QString();
+      }
+      int *ringStart; // index of first point for each ring
+      int *ringNumPoints; // number of points in each ring
+      ringStart = new int[*numRings];
+      ringNumPoints = new int[*numRings];
+      ptr = mGeometry + 1 + 2 * sizeof( int ); // set pointer to the first ring
+      for ( idx = 0; idx < *numRings; idx++ )
+      {
+        if ( idx != 0 )
+        {
+          mWkt += ", ";
+        }
+        mWkt += "[ ";
+        // get number of points in the ring
+        nPoints = ( int * ) ptr;
+        ringNumPoints[idx] = *nPoints;
+        ptr += 4;
+
+        for ( jdx = 0; jdx < *nPoints; jdx++ )
+        {
+          if ( jdx != 0 )
+          {
+            mWkt += ", ";
+          }
+          mWkt += "[";
+          x = ( double * ) ptr;
+          mWkt += QString::number( *x, 'f', 6 );
+          mWkt += ", ";
+          ptr += sizeof( double );
+          y = ( double * ) ptr;
+          mWkt += QString::number( *y, 'f', 6 );
+          ptr += sizeof( double );
+          if ( hasZValue )
+          {
+            ptr += sizeof( double );
+          }
+          mWkt += "]";
+        }
+        mWkt += " ]";
+      }
+      mWkt += " ] }";
+      delete [] ringStart;
+      delete [] ringNumPoints;
+      return mWkt;
+    }
+
+    case QGis::WKBMultiPoint25D:
+      hasZValue = true;
+    case QGis::WKBMultiPoint:
+    {
+      unsigned char *ptr;
+      int idx;
+      int *nPoints;
+
+      mWkt += "{ \"type\": \"MultiPoint\", \"coordinates\": [ ";
+      nPoints = ( int* )( mGeometry + 5 );
+      ptr = mGeometry + 5 + sizeof( int );
+      for ( idx = 0; idx < *nPoints; ++idx )
+      {
+        ptr += ( 1 + sizeof( int ) );
+        if ( idx != 0 )
+        {
+          mWkt += ", ";
+        }
+        mWkt += "[";
+        x = ( double * )( ptr );
+        mWkt += QString::number( *x, 'f', 6 );
+        mWkt += ", ";
+        ptr += sizeof( double );
+        y = ( double * )( ptr );
+        mWkt += QString::number( *y, 'f', 6 );
+        ptr += sizeof( double );
+        if ( hasZValue )
+        {
+          ptr += sizeof( double );
+        }
+        mWkt += "]";
+      }
+      mWkt += " ] }";
+      return mWkt;
+    }
+
+    case QGis::WKBMultiLineString25D:
+      hasZValue = true;
+    case QGis::WKBMultiLineString:
+    {
+      QgsDebugMsg( "MULTILINESTRING found" );
+      unsigned char *ptr;
+      int idx, jdx, numLineStrings;
+      int *nPoints;
+
+      mWkt += "{ \"type\": \"MultiLineString\", \"coordinates\": [ ";
+      numLineStrings = ( int )( mGeometry[5] );
+      ptr = mGeometry + 9;
+      for ( jdx = 0; jdx < numLineStrings; jdx++ )
+      {
+        if ( jdx != 0 )
+        {
+          mWkt += ", ";
+        }
+        mWkt += "[ ";
+        ptr += 5; // skip type since we know its 2
+        nPoints = ( int * ) ptr;
+        ptr += sizeof( int );
+        for ( idx = 0; idx < *nPoints; idx++ )
+        {
+          if ( idx != 0 )
+          {
+            mWkt += ", ";
+          }
+          mWkt += "[";
+          x = ( double * ) ptr;
+          mWkt += QString::number( *x, 'f', 6 );
+          ptr += sizeof( double );
+          mWkt += ", ";
+          y = ( double * ) ptr;
+          mWkt += QString::number( *y, 'f', 6 );
+          ptr += sizeof( double );
+          if ( hasZValue )
+          {
+            ptr += sizeof( double );
+          }
+          mWkt += "]";
+        }
+        mWkt += " ]";
+      }
+      mWkt += " ] }";
+      return mWkt;
+    }
+
+    case QGis::WKBMultiPolygon25D:
+      hasZValue = true;
+    case QGis::WKBMultiPolygon:
+    {
+      QgsDebugMsg( "MULTIPOLYGON found" );
+      unsigned char *ptr;
+      int idx, jdx, kdx;
+      int *numPolygons, *numRings, *nPoints;
+
+      mWkt += "{ \"type\": \"MultiPolygon\", \"coordinates\": [ ";
+      ptr = mGeometry + 5;
+      numPolygons = ( int * ) ptr;
+      ptr = mGeometry + 9;
+      for ( kdx = 0; kdx < *numPolygons; kdx++ )
+      {
+        if ( kdx != 0 )
+        {
+          mWkt += ", ";
+        }
+        mWkt += "[ ";
+        ptr += 5;
+        numRings = ( int * ) ptr;
+        ptr += 4;
+        for ( idx = 0; idx < *numRings; idx++ )
+        {
+          if ( idx != 0 )
+          {
+            mWkt += ", ";
+          }
+          mWkt += "[ ";
+          nPoints = ( int * ) ptr;
+          ptr += 4;
+          for ( jdx = 0; jdx < *nPoints; jdx++ )
+          {
+            if ( jdx != 0 )
+            {
+              mWkt += ", ";
+            }
+            mWkt += "[";
+            x = ( double * ) ptr;
+            mWkt += QString::number( *x, 'f', 6 );
+            ptr += sizeof( double );
+            mWkt += ", ";
+            y = ( double * ) ptr;
+            mWkt += QString::number( *y, 'f', 6 );
+            ptr += sizeof( double );
+            if ( hasZValue )
+            {
+              ptr += sizeof( double );
+            }
+            mWkt += "]";
+          }
+          mWkt += " ]";
+        }
+        mWkt += " ]";
+      }
+      mWkt += " ] }";
+      return mWkt;
+    }
+
+    default:
+      QgsDebugMsg( "error: mGeometry type not recognized" );
+      return QString::null;
+  }
+}
+
 bool QgsGeometry::exportWkbToGeos()
 {
   QgsDebugMsgLevel( "entered.", 3 );

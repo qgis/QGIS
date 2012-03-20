@@ -363,9 +363,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab4">
       <attribute name="title">
-       <string>WMS Server</string>
+       <string>OWS Server</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0" rowspan="2">
@@ -384,7 +384,7 @@
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
            <item row="0" column="0" colspan="2">
-            <widget class="QGroupBox" name="grpWMSServiceCapabilities">
+            <widget class="QGroupBox" name="grpOWSServiceCapabilities">
              <property name="title">
               <string>Service Capabilitities</string>
              </property>
@@ -483,6 +483,12 @@
              </layout>
             </widget>
            </item>
+           <item row="1" column="0" colspan="2">
+            <widget class="QGroupBox" name="grpWMSCapabilities">
+             <property name="title">
+              <string>WMS Capabilitities</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_7">
            <item row="1" column="0">
             <widget class="QGroupBox" name="grpWMSExt">
              <property name="title">
@@ -630,6 +636,32 @@
              <property name="text">
               <string>Add WKT geometry to feature info response</string>
              </property>
+            </widget>
+           </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="2">
+            <widget class="QGroupBox" name="grpWFSCapabilities">
+             <property name="title">
+              <string>WFS Capabilitities</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="0">
+               <widget class="QTableWidget" name="twWFSLayers">
+                <column>
+                 <property name="text">
+                  <string>Layer</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text">
+                  <string>Published</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
