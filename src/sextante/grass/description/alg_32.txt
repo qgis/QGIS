@@ -1,0 +1,9 @@
+r.los
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|coordinate|coordinate|
+ParameterRaster|patt_map|patt_map|True
+ParameterString|obs_elev|obs_elev|1.75
+ParameterString|max_dist|max_dist|10000
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

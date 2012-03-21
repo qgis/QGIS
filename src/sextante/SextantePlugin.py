@@ -1,8 +1,6 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
-
-
 import os, sys
 import inspect
 from sextante.core.Sextante import Sextante
@@ -26,7 +24,7 @@ class SextantePlugin:
         self.iface = iface
         QGisLayers.setInterface(iface)
         Sextante.initialize()
-        Sextante    .setInterface(iface)
+        Sextante.setInterface(iface)
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
@@ -76,9 +74,6 @@ class SextantePlugin:
             "&About SEXTANTE", self.iface.mainWindow())
         QObject.connect(self.aboutAction, SIGNAL("triggered()"), self.openAbout)
         self.menu.addAction(self.aboutAction)
-
-
-
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)

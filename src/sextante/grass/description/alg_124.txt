@@ -1,0 +1,26 @@
+r.in.wms
+Raster (r.*)
+ParameterString|mapserver|mapserver|
+ParameterString|layers|layers|
+ParameterString|styles|styles|
+ParameterString|srs|srs|EPSG:4326
+ParameterSelection|format|format|geotiff;tiff;jpeg;gif;png
+ParameterString|wmsquery|wmsquery|version=1.1.1
+ParameterNumber|maxcols|maxcols|None|None|1024.0
+ParameterNumber|maxrows|maxrows|None|None|1024.0
+ParameterString|tileoptions|tileoptions|
+ParameterString|region|region|
+ParameterString|folder|folder|
+ParameterString|wgetoptions|wgetoptions|-c -t 5 -nv
+ParameterString|curloptions|curloptions|-C - --retry 5 -s -S
+ParameterSelection|method|method|nearest;bilinear;cubic;cubicspline
+ParameterString|cap_file|cap_file|
+ParameterNumber|v|v|None|None|1.0
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-o|-o|True
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-k|-k|True
+ParameterBoolean|-p|-p|True
+ParameterBoolean|-g|-g|True
+OutputRaster|output|output

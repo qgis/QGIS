@@ -1,0 +1,9 @@
+r.shaded.relief
+Raster (r.*)
+ParameterRaster|map|map|True
+ParameterNumber|altitude|altitude|None|None|30.0
+ParameterNumber|azimuth|azimuth|None|None|270.0
+ParameterNumber|zmult|zmult|None|None|1.0
+ParameterNumber|scale|scale|None|None|1.0
+ParameterSelection|units|units|none;meters;feet
+OutputRaster|shadedmap|shadedmap

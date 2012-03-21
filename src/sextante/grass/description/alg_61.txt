@@ -1,0 +1,23 @@
+r.gwflow
+Raster (r.*)
+ParameterString|phead|phead|
+ParameterString|status|status|
+ParameterString|hc_x|hc_x|
+ParameterString|hc_y|hc_y|
+ParameterString|q|q|
+ParameterString|s|s|
+ParameterString|r|r|
+ParameterString|top|top|
+ParameterString|bottom|bottom|
+ParameterSelection|type|type|confined;unconfined
+ParameterString|river_bed|river_bed|
+ParameterString|river_head|river_head|
+ParameterString|river_leak|river_leak|
+ParameterString|drain_bed|drain_bed|
+ParameterString|drain_leak|drain_leak|
+ParameterNumber|dt|dt|None|None|86400.0
+ParameterNumber|maxit|maxit|None|None|100000.0
+ParameterNumber|error|error|None|None|1.0E-10
+ParameterSelection|solver|solver|gauss;lu;cholesky;jacobi;sor;cg;bicgstab;pcg
+ParameterString|relax|relax|1
+ParameterBoolean|-s|-s|True

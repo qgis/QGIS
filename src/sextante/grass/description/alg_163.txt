@@ -1,0 +1,6 @@
+v.split
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|length|length|
+ParameterString|vertices|vertices|
+OutputVector|output|output

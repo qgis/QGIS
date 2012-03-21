@@ -1,0 +1,6 @@
+r.clump
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|title|title|
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

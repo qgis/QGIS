@@ -1,0 +1,12 @@
+v.to.rast
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterSelection|use|use|attr;cat;val;z;dir
+ParameterString|type|type|point,line,area
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterString|value|value|1
+ParameterString|rows|rows|4096
+ParameterString|rgbcolumn|rgbcolumn|
+ParameterString|labelcolumn|labelcolumn|
+OutputRaster|output|output

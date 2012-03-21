@@ -1,0 +1,15 @@
+r.ros
+Raster (r.*)
+ParameterRaster|model|model|True
+ParameterRaster|moisture_1h|moisture_1h|True
+ParameterRaster|moisture_10h|moisture_10h|True
+ParameterRaster|moisture_100h|moisture_100h|True
+ParameterRaster|moisture_live|moisture_live|True
+ParameterRaster|velocity|velocity|True
+ParameterRaster|direction|direction|True
+ParameterRaster|slope|slope|True
+ParameterRaster|aspect|aspect|True
+ParameterRaster|elevation|elevation|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-s|-s|True
+OutputRaster|output|output

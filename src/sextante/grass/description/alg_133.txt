@@ -1,0 +1,6 @@
+r.volume
+Raster (r.*)
+ParameterRaster|data|data|True
+ParameterRaster|clump|clump|True
+ParameterBoolean|-f|-f|True
+OutputVector|centroids|centroids

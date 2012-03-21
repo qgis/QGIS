@@ -1,0 +1,8 @@
+r.rescale.eq
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|from|from|
+ParameterString|to|to|
+ParameterString|title|title|
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

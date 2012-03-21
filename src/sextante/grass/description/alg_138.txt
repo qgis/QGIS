@@ -1,0 +1,6 @@
+r.surf.contour
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-s|-s|True
+OutputRaster|output|output

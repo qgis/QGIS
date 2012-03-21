@@ -1,0 +1,4 @@
+r.surf.area
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterNumber|vscale|vscale|None|None|0.0

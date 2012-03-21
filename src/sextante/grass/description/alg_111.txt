@@ -1,0 +1,6 @@
+r.in.aster
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterSelection|proctype|proctype|L1A;L1B;DEM
+ParameterString|band|band|1
+ParameterRaster|output|output|True

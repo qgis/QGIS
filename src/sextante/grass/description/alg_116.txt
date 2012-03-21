@@ -1,0 +1,9 @@
+v.surf.idw
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|npoints|npoints|12
+ParameterString|power|power|2.0
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterBoolean|-n|-n|True
+OutputRaster|output|output

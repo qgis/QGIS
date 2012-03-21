@@ -1,0 +1,23 @@
+r.sim.water
+Raster (r.*)
+ParameterRaster|elevin|elevin|True
+ParameterRaster|dxin|dxin|True
+ParameterRaster|dyin|dyin|True
+ParameterRaster|rain|rain|True
+ParameterString|rain_val|rain_val|50
+ParameterRaster|infil|infil|True
+ParameterString|infil_val|infil_val|0.0
+ParameterRaster|manin|manin|True
+ParameterString|manin_val|manin_val|0.1
+ParameterRaster|traps|traps|True
+ParameterString|nwalk|nwalk|
+ParameterString|niter|niter|10
+ParameterString|outiter|outiter|2
+ParameterString|diffc|diffc|0.8
+ParameterString|hmax|hmax|0.3
+ParameterString|halpha|halpha|4.0
+ParameterString|hbeta|hbeta|0.5
+ParameterBoolean|-t|-t|True
+OutputRaster|depth|depth
+OutputRaster|disch|disch
+OutputRaster|err|err

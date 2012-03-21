@@ -1,0 +1,10 @@
+r.carve
+Raster (r.*)
+ParameterRaster|rast|rast|True
+ParameterVector|vect|vect|-1|True
+ParameterString|width|width|
+ParameterString|depth|depth|
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output
+OutputVector|points|points

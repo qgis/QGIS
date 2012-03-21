@@ -1,0 +1,13 @@
+v.out.ogr
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|type|type|line,boundary
+ParameterString|dsn|dsn|/file
+ParameterString|olayer|olayer|/file
+ParameterString|layer|layer|1
+ParameterSelection|format|format|ESRI_Shapefile;MapInfo_File;TIGER;S57;DGN;Memory;BNA;CSV;GML;GPX;KML;GeoJSON;GMT;Geoconcept
+ParameterString|dsco|dsco|/file
+ParameterString|lco|lco|/file
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-p|-p|True

@@ -1,0 +1,11 @@
+r.out.gdal
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterSelection|format|format|VRT;GTiff;NITF;HFA;ELAS;AAIGrid;DTED;PNG;JPEG;MEM;GIF;XPM;BMP;PCIDSK;PCRaster;ILWIS;SGI;SRTMHGT;Leveller;Terragen;ERS;FIT;RMF;RST;INGR;GSAG;GSBG;PNM;ENVI;EHdr;PAux;MFF;MFF2;BT;IDA;USGSDEM;ADRG;BLX
+ParameterSelection|type|type|Byte;Int16;UInt16;Int32;UInt32;Float32;Float64;CInt16;CInt32;CFloat32;CFloat64
+ParameterString|output|output|/file
+ParameterString|createopt|createopt|
+ParameterString|metaopt|metaopt|
+ParameterString|nodata|nodata|
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-c|-c|True

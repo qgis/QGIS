@@ -1,0 +1,19 @@
+v.transform
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|pointsfile|pointsfile|/file
+ParameterString|xshift|xshift|0.0
+ParameterString|yshift|yshift|0.0
+ParameterString|zshift|zshift|0.0
+ParameterString|xscale|xscale|1.0
+ParameterString|yscale|yscale|1.0
+ParameterString|zscale|zscale|1.0
+ParameterString|zrot|zrot|0.0
+ParameterString|table|table|
+ParameterString|columns|columns|
+ParameterString|layer|layer|1
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-s|-s|True
+OutputVector|output|output

@@ -1,0 +1,17 @@
+r.report
+Raster (r.*)
+ParameterMultipleInput|map|map|1|True
+ParameterString|units|units|
+ParameterString|null|null|*
+ParameterString|pl|pl|
+ParameterString|pw|pw|
+ParameterString|output|output|
+ParameterString|nsteps|nsteps|255
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-N|-N|True
+ParameterBoolean|-C|-C|True
+ParameterBoolean|-i|-i|True

@@ -1,0 +1,11 @@
+r.colors
+Raster (r.*)
+ParameterRaster|map|map|True
+ParameterSelection|color|color|aspect;aspectcolr;bcyr;bgyr;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;gdd;grey;grey1.0;grey255;gyr;haxby;ndvi;population;precipitation;rainbow;ramp;rstcurv;ryb;ryg;sepia;slope;srtm;terrain;wave;random;grey.eq;grey.log;rules
+ParameterString|rules|rules|/file
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-q|-q|True

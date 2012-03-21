@@ -17,7 +17,10 @@ class ParameterString(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterString(tokens[0], tokens[1], tokens[2])
+        if len(tokens) == 3:
+            return ParameterString(tokens[0], tokens[1], tokens[2])
+        else:
+            return ParameterString(tokens[0], tokens[1], tokens[2], tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=string " + self.default

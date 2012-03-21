@@ -1,0 +1,5 @@
+r.colors.stddev
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-z|-z|True

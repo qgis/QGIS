@@ -15,7 +15,6 @@ class SagaUtils:
     SAGA_RESAMPLING_REGION_CELLSIZE = "SAGA_RESAMPLING_REGION_CELLSIZE"
 
     SAGA_FOLDER = "SAGA_FOLDER"
-    ACTIVATE_SAGA = "ACTIVATE_SAGA"
 
     @staticmethod
     def sagaBatchJobFilename():

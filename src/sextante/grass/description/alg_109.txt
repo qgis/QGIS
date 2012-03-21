@@ -1,0 +1,5 @@
+r.univar.sh
+Raster (r.*)
+ParameterRaster|map|map|True
+ParameterNumber|percentile|percentile|None|None|90.0
+ParameterBoolean|-e|-e|True

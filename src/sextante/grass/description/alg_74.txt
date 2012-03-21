@@ -1,0 +1,10 @@
+r.to.vect
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterSelection|feature|feature|point;line;area
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-q|-q|True
+OutputVector|output|output

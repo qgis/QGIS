@@ -1,0 +1,5 @@
+r.covar
+Raster (r.*)
+ParameterMultipleInput|map|map|1|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-q|-q|True

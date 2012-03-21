@@ -1,0 +1,7 @@
+r.regression.line
+Raster (r.*)
+ParameterRaster|map1|map1|True
+ParameterRaster|map2|map2|True
+ParameterString|output|output|/file
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-s|-s|True

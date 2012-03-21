@@ -1,0 +1,6 @@
+r.bilinear
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|north|north|
+ParameterString|east|east|
+OutputRaster|output|output

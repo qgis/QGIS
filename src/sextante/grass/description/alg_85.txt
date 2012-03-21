@@ -1,0 +1,8 @@
+r.recode
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|rules|rules|/file
+ParameterString|title|title|
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-d|-d|True
+OutputRaster|output|output

@@ -1,7 +1,6 @@
 from sextante.parameters.ParameterDataObject import ParameterDataObject
 from sextante.core.QGisLayers import QGisLayers
 from qgis.core import *
-from PyQt4 import QtGui
 
 class ParameterVector(ParameterDataObject):
 

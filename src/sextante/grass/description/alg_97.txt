@@ -1,0 +1,8 @@
+v.report
+Vector (v.*)
+ParameterVector|map|map|-1|True
+ParameterNumber|layer|layer|None|None|1.0
+ParameterSelection|option|option|area;length;coor
+ParameterSelection|units|units|mi;miles;f;feet;me;meters;k;kilometers;a;acres;h;hectares;p;percent
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-s|-s|True

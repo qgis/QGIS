@@ -1,0 +1,5 @@
+r.in.srtm
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterBoolean|-1|-1|True
+OutputRaster|output|output

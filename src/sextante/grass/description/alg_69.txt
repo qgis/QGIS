@@ -1,0 +1,8 @@
+v.out.pov
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|type|type|point,line,area,face
+ParameterString|output|output|
+ParameterString|size|size|10
+ParameterString|zmod|zmod|
+ParameterString|objmod|objmod|

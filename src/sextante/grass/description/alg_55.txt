@@ -1,0 +1,5 @@
+r.mode
+Raster (r.*)
+ParameterRaster|base|base|True
+ParameterRaster|cover|cover|True
+OutputRaster|output|output

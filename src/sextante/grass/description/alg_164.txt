@@ -1,0 +1,8 @@
+v.kcv
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|k|k|
+ParameterString|column|column|part
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-q|-q|True
+OutputVector|output|output

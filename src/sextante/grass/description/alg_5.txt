@@ -1,0 +1,12 @@
+r.info
+Raster (r.*)
+ParameterRaster|map|map|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-u|-u|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-p|-p|True

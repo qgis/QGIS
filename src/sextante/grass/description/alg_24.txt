@@ -1,0 +1,5 @@
+v.type
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|type|type|line,boundary,point,centroid
+OutputVector|output|output

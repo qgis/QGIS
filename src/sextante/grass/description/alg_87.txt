@@ -1,0 +1,7 @@
+r.distance
+Raster (r.*)
+ParameterRaster|maps|maps|True
+ParameterString|fs|fs|:
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-o|-o|True
+ParameterBoolean|-q|-q|True

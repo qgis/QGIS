@@ -1,0 +1,9 @@
+r.plane
+Raster (r.*)
+ParameterNumber|dip|dip|None|None|0.0
+ParameterNumber|azimuth|azimuth|None|None|0.0
+ParameterNumber|easting|easting|None|None|0.0
+ParameterNumber|northing|northing|None|None|0.0
+ParameterNumber|elevation|elevation|None|None|0.0
+ParameterSelection|type|type|int;float;double
+OutputRaster|name|name

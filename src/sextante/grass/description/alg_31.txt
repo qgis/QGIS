@@ -1,0 +1,10 @@
+v.sample
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|column|column|
+ParameterRaster|raster|raster|True
+ParameterString|z|z|1.0
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-q|-q|True
+OutputVector|output|output

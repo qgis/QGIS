@@ -1,0 +1,10 @@
+r.prominence
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|radius|radius|
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

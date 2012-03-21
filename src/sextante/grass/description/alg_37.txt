@@ -1,0 +1,4 @@
+v.out.dxf
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|output|output|/file

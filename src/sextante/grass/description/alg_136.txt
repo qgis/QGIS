@@ -1,0 +1,12 @@
+v.lidar.edgedetection
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|see|see|4
+ParameterString|sen|sen|4
+ParameterString|lambda_g|lambda_g|0.01
+ParameterString|tgh|tgh|6
+ParameterString|tgl|tgl|3
+ParameterString|theta_g|theta_g|0.26
+ParameterString|lambda_r|lambda_r|2
+ParameterBoolean|-e|-e|True
+OutputVector|output|output

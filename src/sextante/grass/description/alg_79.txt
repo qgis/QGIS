@@ -1,0 +1,17 @@
+r.topmodel
+Raster (r.*)
+ParameterRaster|basin|basin|True
+ParameterRaster|elevation|elevation|True
+ParameterNumber|nidxclass|nidxclass|None|None|30.0
+ParameterString|idxstats|idxstats|
+ParameterString|parameters|parameters|
+ParameterString|input|input|
+ParameterString|output|output|
+ParameterString|Qobs|Qobs|
+ParameterNumber|timestep|timestep|None|None|0.0
+ParameterNumber|idxclass|idxclass|None|None|0.0
+ParameterBoolean|-i|-i|True
+OutputRaster|depressionless|depressionless
+OutputRaster|direction|direction
+OutputRaster|belevation|belevation
+OutputRaster|topidx|topidx

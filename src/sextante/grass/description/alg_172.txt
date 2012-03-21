@@ -1,0 +1,8 @@
+v.normal
+Vector (v.*)
+ParameterVector|map|map|-1|True
+ParameterString|tests|tests|
+ParameterString|column|column|
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-l|-l|True

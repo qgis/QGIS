@@ -1,0 +1,6 @@
+v.delaunay
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-l|-l|True
+OutputVector|output|output

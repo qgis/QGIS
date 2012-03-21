@@ -1,0 +1,8 @@
+v.reclass
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|type|type|point,line,boundary,centroid
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterString|rules|rules|/file
+OutputVector|output|output

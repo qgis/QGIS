@@ -1,0 +1,6 @@
+r.fillnulls
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterNumber|tension|tension|None|None|40.0
+ParameterNumber|smooth|smooth|None|None|0.1
+OutputRaster|output|output

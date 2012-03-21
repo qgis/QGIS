@@ -1,6 +1,5 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 import copy
@@ -16,12 +15,14 @@ from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.modeler.ProviderIcons import ProviderIcons
 from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 
 class Sextante:
 
     iface = None
     providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),
-                 MMQGISAlgorithmProvider(), FToolsAlgorithmProvider(), RAlgorithmProvider()]
+                 MMQGISAlgorithmProvider(), FToolsAlgorithmProvider(),
+                 RAlgorithmProvider(), GrassAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []

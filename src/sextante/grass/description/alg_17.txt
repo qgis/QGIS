@@ -1,0 +1,11 @@
+r.describe
+Raster (r.*)
+ParameterRaster|map|map|True
+ParameterString|nv|nv|*
+ParameterString|nsteps|nsteps|255
+ParameterBoolean|-1|-1|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-q|-q|True

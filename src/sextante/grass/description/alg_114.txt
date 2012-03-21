@@ -1,0 +1,6 @@
+r.water.outlet
+Raster (r.*)
+ParameterRaster|drainage|drainage|True
+ParameterString|easting|easting|
+ParameterString|northing|northing|
+OutputRaster|basin|basin

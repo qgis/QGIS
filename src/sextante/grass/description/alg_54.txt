@@ -1,0 +1,12 @@
+v.in.dxf
+Vector (v.*)
+ParameterString|input|input|/file
+ParameterString|layers|layers|
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-1|-1|True
+OutputVector|output|output

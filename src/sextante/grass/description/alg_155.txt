@@ -1,0 +1,4 @@
+r.topidx
+Raster (r.*)
+ParameterRaster|input|input|True
+OutputRaster|output|output

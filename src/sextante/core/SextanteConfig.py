@@ -4,6 +4,10 @@ import os.path
 class SextanteConfig():
 
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
+    RASTER_STYLE = "RASTER_STYLE"
+    VECTOR_POINT_STYLE = "VECTOR_POINT_STYLE"
+    VECTOR_LINE_STYLE = "VECTOR_LINE_STYLE"
+    VECTOR_POLYGON_STYLE = "VECTOR_POLYGON_STYLE"
 
     settings = {}
 
@@ -11,7 +15,10 @@ class SextanteConfig():
     def initialize():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
                                            "Output folder", os.path.join(SextanteUtils.userFolder(),"outputs" )))
-
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.RASTER_STYLE,"Style for raster layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
 
     @staticmethod
     def addSetting(setting):

@@ -1,0 +1,8 @@
+r.circle
+Raster (r.*)
+ParameterString|coordinate|coordinate|
+ParameterString|min|min|
+ParameterString|max|max|
+ParameterString|mult|mult|
+ParameterBoolean|-b|-b|True
+OutputRaster|output|output

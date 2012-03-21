@@ -1,0 +1,11 @@
+r.out.ascii
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|output|output|/file
+ParameterNumber|dp|dp|None|None|0.0
+ParameterNumber|width|width|None|None|0.0
+ParameterString|null|null|*
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-i|-i|True

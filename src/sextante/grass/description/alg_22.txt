@@ -1,0 +1,10 @@
+v.out.vtk
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|output|output|/file
+ParameterString|type|type|point,kernel,centroid,line,boundary,area,face
+ParameterString|dp|dp|
+ParameterString|scale|scale|1.0
+ParameterString|layer|layer|1
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-n|-n|True

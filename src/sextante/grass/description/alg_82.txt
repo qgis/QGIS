@@ -1,0 +1,7 @@
+v.lidar.growing
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterVector|first|first|-1|True
+ParameterString|tj|tj|0.2
+ParameterString|td|td|0.6
+OutputVector|output|output

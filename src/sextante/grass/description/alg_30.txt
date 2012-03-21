@@ -1,0 +1,20 @@
+r.resamp.rst
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|ew_res|ew_res|
+ParameterString|ns_res|ns_res|
+ParameterRaster|smooth|smooth|True
+ParameterRaster|maskmap|maskmap|True
+ParameterString|overlap|overlap|3
+ParameterString|zmult|zmult|1.0
+ParameterString|tension|tension|40.
+ParameterString|theta|theta|
+ParameterString|scalex|scalex|
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-d|-d|True
+OutputRaster|elev|elev
+OutputRaster|slope|slope
+OutputRaster|aspect|aspect
+OutputRaster|pcurv|pcurv
+OutputRaster|tcurv|tcurv
+OutputRaster|mcurv|mcurv

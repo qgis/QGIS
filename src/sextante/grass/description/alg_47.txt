@@ -1,0 +1,12 @@
+v.overlay
+Vector (v.*)
+ParameterVector|ainput|ainput|-1|True
+ParameterString|atype|atype|area
+ParameterString|alayer|alayer|1
+ParameterVector|binput|binput|-1|True
+ParameterString|btype|btype|area
+ParameterString|blayer|blayer|1
+ParameterSelection|operator|operator|and;or;not;xor
+ParameterString|olayer|olayer|1,0,0
+ParameterBoolean|-t|-t|True
+OutputVector|output|output

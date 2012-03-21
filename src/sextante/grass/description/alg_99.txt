@@ -1,0 +1,20 @@
+r.spread
+Raster (r.*)
+ParameterRaster|max|max|True
+ParameterRaster|dir|dir|True
+ParameterRaster|base|base|True
+ParameterRaster|start|start|True
+ParameterRaster|spot_dist|spot_dist|True
+ParameterRaster|w_speed|w_speed|True
+ParameterRaster|f_mois|f_mois|True
+ParameterSelection|least_size|least_size|3;5;7;9;11;13;15
+ParameterString|comp_dens|comp_dens|
+ParameterString|init_time|init_time|
+ParameterString|lag|lag|
+ParameterRaster|backdrop|backdrop|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-s|-s|True
+OutputRaster|output|output
+OutputRaster|x_output|x_output
+OutputRaster|y_output|y_output

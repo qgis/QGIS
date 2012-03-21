@@ -1,0 +1,10 @@
+r.random
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterRaster|cover|cover|True
+ParameterString|n|n|
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-d|-d|True
+OutputRaster|raster_output|raster_output
+OutputVector|vector_output|vector_output

@@ -1,0 +1,10 @@
+v.univar
+Vector (v.*)
+ParameterVector|map|map|-1|True
+ParameterString|type|type|point,line,boundary,centroid,area
+ParameterString|column|column|
+ParameterString|where|where|
+ParameterString|layer|layer|1
+ParameterString|percentile|percentile|90
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-e|-e|True

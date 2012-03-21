@@ -1,0 +1,8 @@
+r.out.ppm3
+Raster (r.*)
+ParameterRaster|red|red|True
+ParameterRaster|green|green|True
+ParameterRaster|blue|blue|True
+ParameterString|output|output|
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-c|-c|True

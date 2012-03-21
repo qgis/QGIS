@@ -1,0 +1,6 @@
+r.out.ppm
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|output|output|/file
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-G|-G|True

@@ -1,0 +1,12 @@
+r.composite
+Raster (r.*)
+ParameterRaster|red|red|True
+ParameterRaster|green|green|True
+ParameterRaster|blue|blue|True
+ParameterString|levels|levels|32
+ParameterString|lev_red|lev_red|
+ParameterString|lev_green|lev_green|
+ParameterString|lev_blue|lev_blue|
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

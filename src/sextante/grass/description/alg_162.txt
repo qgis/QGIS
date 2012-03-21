@@ -1,0 +1,7 @@
+r.null
+Raster (r.*)
+ParameterRaster|map|map|True
+ParameterString|setnull|setnull|
+ParameterString|null|null|
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-i|-i|True

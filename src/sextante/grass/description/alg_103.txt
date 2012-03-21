@@ -1,0 +1,6 @@
+r.coin
+Raster (r.*)
+ParameterRaster|map1|map1|True
+ParameterRaster|map2|map2|True
+ParameterSelection|units|units|c;p;x;y;a;h;k;m
+ParameterBoolean|-w|-w|True

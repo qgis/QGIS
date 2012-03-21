@@ -1,0 +1,6 @@
+v.neighbors
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterSelection|method|method|count
+ParameterString|size|size|
+OutputRaster|output|output

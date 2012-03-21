@@ -1,0 +1,12 @@
+v.db.select
+Vector (v.*)
+ParameterVector|map|map|-1|True
+ParameterString|layer|layer|1
+ParameterString|columns|columns|
+ParameterString|where|where|
+ParameterString|fs|fs|
+ParameterString|vs|vs|
+ParameterString|nv|nv|
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-v|-v|True

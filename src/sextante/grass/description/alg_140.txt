@@ -1,0 +1,5 @@
+r.resample
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

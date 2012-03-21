@@ -1,0 +1,6 @@
+r.grow.distance
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterSelection|metric|metric|euclidean;squared;maximum;manhattan
+OutputRaster|distance|distance
+OutputRaster|value|value

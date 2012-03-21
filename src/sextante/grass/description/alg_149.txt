@@ -1,0 +1,12 @@
+v.select
+Vector (v.*)
+ParameterVector|ainput|ainput|-1|True
+ParameterString|atype|atype|point,line,boundary,centroid,area
+ParameterString|alayer|alayer|1
+ParameterVector|binput|binput|-1|True
+ParameterString|btype|btype|point,line,boundary,centroid,area
+ParameterString|blayer|blayer|1
+ParameterSelection|operator|operator|overlap
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-r|-r|True
+OutputVector|output|output

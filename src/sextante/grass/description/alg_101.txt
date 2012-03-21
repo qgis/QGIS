@@ -1,0 +1,9 @@
+v.class
+Vector (v.*)
+ParameterVector|map|map|-1|True
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterString|where|where|
+ParameterSelection|algorithm|algorithm|int;std;qua;equ;dis
+ParameterString|nbclasses|nbclasses|
+ParameterBoolean|-g|-g|True

@@ -1,0 +1,3 @@
+r.sum
+Raster (r.*)
+ParameterRaster|rast|rast|True

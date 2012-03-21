@@ -1,0 +1,9 @@
+r.lake
+Raster (r.*)
+ParameterRaster|dem|dem|True
+ParameterString|wl|wl|
+ParameterString|xy|xy|
+ParameterRaster|seed|seed|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-o|-o|True
+OutputRaster|lake|lake

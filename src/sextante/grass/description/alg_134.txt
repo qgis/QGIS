@@ -1,0 +1,6 @@
+v.in.mapgen
+Vector (v.*)
+ParameterString|input|input|/file
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-z|-z|True
+OutputVector|output|output

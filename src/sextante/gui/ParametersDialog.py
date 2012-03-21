@@ -25,6 +25,7 @@ from sextante.gui.ResultsDialog import ResultsDialog
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.gui.RangePanel import RangePanel
 from sextante.parameters.ParameterRange import ParameterRange
+from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -55,6 +56,10 @@ class Ui_ParametersDialog(object):
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
+        self.showHelpButton = QtGui.QPushButton()
+        self.showHelpButton.setObjectName("showHelpButton")
+        self.showHelpButton.setText("Show help")
+        self.buttonBox.addButton(self.showHelpButton, QtGui.QDialogButtonBox.ActionRole)
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
@@ -82,6 +87,7 @@ class Ui_ParametersDialog(object):
         dialog.setLayout(self.verticalLayout)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
+        QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
 
@@ -174,11 +180,17 @@ class Ui_ParametersDialog(object):
         return layer.dataProvider().fields()
 
 
+    def showHelp(self):
+        if self.alg.helpfile:
+            dlg = HTMLViewerDialog()
+            dlg.exec_()
+        else:
+            QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
+
     def setTableContent(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
         numParams = len(self.alg.parameters)
-        #numOutputs = len(self.alg.outputs)
         numOutputs = 0
         for output in outputs:
             if isinstance(output, OutputVector):

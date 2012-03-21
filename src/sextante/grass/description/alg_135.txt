@@ -1,0 +1,7 @@
+r.quantile
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|quantiles|quantiles|4
+ParameterString|percentiles|percentiles|
+ParameterString|bins|bins|1000000
+ParameterBoolean|-r|-r|True

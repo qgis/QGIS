@@ -1,0 +1,7 @@
+r.bitpattern
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|pattern|pattern|
+ParameterString|patval|patval|
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

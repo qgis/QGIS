@@ -1,0 +1,7 @@
+r.spreadpath
+Raster (r.*)
+ParameterRaster|x_input|x_input|True
+ParameterRaster|y_input|y_input|True
+ParameterString|coordinate|coordinate|
+ParameterBoolean|-v|-v|True
+OutputRaster|output|output

@@ -1,0 +1,5 @@
+r.resamp.interp
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterSelection|method|method|nearest;bilinear;bicubic
+OutputRaster|output|output

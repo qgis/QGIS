@@ -1,0 +1,8 @@
+r.quant
+Raster (r.*)
+ParameterRaster|basemap|basemap|True
+ParameterMultipleInput|input|input|1|True
+ParameterString|fprange|fprange|
+ParameterString|range|range|1,255
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-r|-r|True

@@ -1,0 +1,6 @@
+r.univar
+Raster (r.*)
+ParameterMultipleInput|map|map|1|True
+ParameterString|percentile|percentile|90
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-e|-e|True

@@ -6,8 +6,6 @@ from sextante.parameters.ParameterVector import ParameterVector
 from PyQt4 import QtGui
 import os.path
 from sextante.core.SextanteUtils import SextanteUtils
-from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterBoolean import ParameterBoolean
 
 
 class GeoAlgorithm:
@@ -20,6 +18,7 @@ class GeoAlgorithm:
         self.defineCharacteristics()
         self.providerName = ""
         self.crs = None
+        self.helpfile = None
 
     #methods to overwrite when creating a custom geoalgorithm
     #=========================================================

@@ -1,0 +1,6 @@
+r.reclass.area
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterNumber|lesser|lesser|None|None|0.0
+ParameterNumber|greater|greater|None|None|0.0
+OutputRaster|output|output

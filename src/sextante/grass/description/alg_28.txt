@@ -1,0 +1,10 @@
+v.random
+Vector (v.*)
+ParameterString|n|n|
+ParameterString|zmin|zmin|0.0
+ParameterString|zmax|zmax|0.0
+ParameterString|column|column|
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-b|-b|True
+OutputVector|output|output

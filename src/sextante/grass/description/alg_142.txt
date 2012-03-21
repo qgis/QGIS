@@ -1,0 +1,20 @@
+r.watershed
+Raster (r.*)
+ParameterRaster|elevation|elevation|True
+ParameterRaster|depression|depression|True
+ParameterRaster|flow|flow|True
+ParameterRaster|disturbed.land|disturbed.land|True
+ParameterRaster|blocking|blocking|True
+ParameterString|threshold|threshold|
+ParameterString|max.slope.length|max.slope.length|
+ParameterString|memory|memory|300
+ParameterBoolean|-4|-4|True
+ParameterBoolean|-m|-m|True
+OutputRaster|accumulation|accumulation
+OutputRaster|drainage|drainage
+OutputRaster|basin|basin
+OutputRaster|stream|stream
+OutputRaster|half.basin|half.basin
+OutputRaster|visual|visual
+OutputRaster|length.slope|length.slope
+OutputRaster|slope.steepness|slope.steepness

@@ -1,0 +1,6 @@
+r.reclass
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|rules|rules|/file
+ParameterString|title|title|
+OutputRaster|output|output

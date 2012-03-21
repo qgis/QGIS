@@ -1,0 +1,6 @@
+r.average
+Raster (r.*)
+ParameterRaster|base|base|True
+ParameterRaster|cover|cover|True
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

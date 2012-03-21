@@ -1,0 +1,6 @@
+v.hull
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-f|-f|True
+OutputVector|output|output

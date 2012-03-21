@@ -1,0 +1,6 @@
+v.voronoi
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-t|-t|True
+OutputVector|output|output

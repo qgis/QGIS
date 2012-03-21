@@ -1,0 +1,8 @@
+v.qcount
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterNumber|n|n|None|None|0.0
+ParameterNumber|r|r|None|None|0.0
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-q|-q|True
+OutputVector|output|output

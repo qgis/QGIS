@@ -1,0 +1,10 @@
+r.profile
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|output|output|/file
+ParameterString|profile|profile|
+ParameterString|res|res|
+ParameterString|null|null|*
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-c|-c|True

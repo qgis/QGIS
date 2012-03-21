@@ -1,0 +1,7 @@
+r.out.arc
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|output|output|/file
+ParameterNumber|dp|dp|None|None|8.0
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-1|-1|True

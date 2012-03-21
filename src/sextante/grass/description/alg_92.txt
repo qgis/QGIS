@@ -1,0 +1,6 @@
+r.out.vrml
+Raster (r.*)
+ParameterRaster|elev|elev|True
+ParameterRaster|color|color|True
+ParameterNumber|exag|exag|None|None|1.0
+ParameterString|output|output|/file

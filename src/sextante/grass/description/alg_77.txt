@@ -1,0 +1,5 @@
+r.in.mat
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterBoolean|-v|-v|True
+OutputRaster|output|output

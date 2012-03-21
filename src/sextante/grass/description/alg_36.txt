@@ -1,0 +1,11 @@
+r.contour
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|levels|levels|
+ParameterString|minlevel|minlevel|
+ParameterString|maxlevel|maxlevel|
+ParameterString|step|step|
+ParameterString|cut|cut|0
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-n|-n|True
+OutputVector|output|output

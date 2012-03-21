@@ -1,0 +1,7 @@
+r.statistics
+Raster (r.*)
+ParameterRaster|base|base|True
+ParameterRaster|cover|cover|True
+ParameterSelection|method|method|diversity;distribution;average;mode;median;avedev;stddev;variance;skewness;kurtosis;min;max;sum
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

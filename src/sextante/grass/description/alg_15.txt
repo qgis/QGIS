@@ -1,0 +1,8 @@
+r.fill.dir
+Raster (r.*)
+ParameterRaster|input|input|True
+ParameterString|type|type|grass
+ParameterBoolean|-f|-f|True
+OutputRaster|elevation|elevation
+OutputRaster|direction|direction
+OutputRaster|areas|areas

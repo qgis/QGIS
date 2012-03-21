@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
 from os import path
+from sextante.core.SextanteConfig import SextanteConfig
 
 class QGisLayers:
 
@@ -15,7 +16,7 @@ class QGisLayers:
         raster = list()
 
         for layer in layers:
-            if layer.type() == layer.RasterLayer :
+            if layer.type() == layer.RasterLayer and not layer.usesProvider():
                 raster.append(layer)
         return raster
 
@@ -24,7 +25,7 @@ class QGisLayers:
         layers = QGisLayers.iface.legendInterface().layers()
         vector = list()
         for layer in layers:
-            if layer.type() == layer.VectorLayer:
+            if layer.type() == layer.VectorLayer and not layer.usesProvider():
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
                     vector.append(layer)
         return vector
@@ -62,18 +63,32 @@ class QGisLayers:
                 settings.setValue("/Projections/defaultBehaviour", QVariant(""))
             if name == None:
                 name = path.split(layer)[1]
-            if layer.endswith("shp"):
-                qgslayer = QgsVectorLayer(layer, name, 'ogr')
+            qgslayer = QgsVectorLayer(layer, name , 'ogr')
+            if qgslayer.isValid():
                 if crs != None:
-                    qgslayer.setCrs(crs, False)
+                    qgslayer.setCrs(crs,False)
+                if qgslayer.geometryType == 0:
+                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POINT_STYLE)
+                elif qgslayer.geometryType == 1:
+                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_LINE_STYLE)
+                else:
+                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
+                qgslayer.loadNamedStyle(style)
                 QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
             else:
                 qgslayer = QgsRasterLayer(layer, name)
-                if crs != None:
-                    qgslayer.setCrs(crs,False)
-                QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
-        except Exception:
-            QtGui.QMessageBox(None, "Error", "Could not load layer: " + str(layer))
+                if qgslayer.isValid():
+                    if crs != None:
+                        qgslayer.setCrs(crs,False)
+
+                    style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
+                    qgslayer.loadNamedStyle(style)
+                    QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+                    QGisLayers.iface.legendInterface().refreshLayerSymbology(qgslayer)
+                else:
+                    QtGui.QMessageBox.critical(None, "Error", "Could not load layer: " + str(layer))
+        except Exception, e:
+            QtGui.QMessageBox.critical(None, "Error", "Could not load layer: " + str(layer))
         finally:
             if prjSetting:
                 settings.setValue("/Projections/defaultBehaviour", prjSetting)

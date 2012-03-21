@@ -1,0 +1,8 @@
+v.what.vect
+Vector (v.*)
+ParameterVector|vector|vector|-1|True
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterVector|qvector|qvector|-1|True
+ParameterString|qcolumn|qcolumn|
+ParameterString|dmax|dmax|0.0

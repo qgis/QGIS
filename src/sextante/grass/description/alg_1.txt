@@ -1,0 +1,6 @@
+r.patch
+Raster (r.*)
+ParameterMultipleInput|input|input|1|True
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-z|-z|True
+OutputRaster|output|output

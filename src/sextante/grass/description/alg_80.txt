@@ -1,0 +1,11 @@
+r.in.ascii
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterString|title|title|
+ParameterString|mult|mult|1.0 or read from header
+ParameterString|nv|nv|* or read from header
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-s|-s|True
+OutputRaster|output|output

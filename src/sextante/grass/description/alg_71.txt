@@ -1,0 +1,12 @@
+v.out.ascii
+Vector (v.*)
+ParameterVector|input|input|-1|True
+ParameterString|output|output|/file
+ParameterSelection|format|format|point;standard
+ParameterString|fs|fs|
+ParameterString|dp|dp|8
+ParameterString|layer|layer|1
+ParameterString|columns|columns|
+ParameterString|where|where|
+ParameterBoolean|-o|-o|True
+ParameterBoolean|-r|-r|True

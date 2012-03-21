@@ -9,6 +9,7 @@ from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerScene import ModelerScene
 import copy
 from sextante.modeler.ProviderIcons import ProviderIcons
+from sextante.script.ScriptUtils import ScriptUtils
 
 class ModelerDialog(QtGui.QDialog):
     def __init__(self, alg=None):
@@ -35,7 +36,7 @@ class ModelerDialog(QtGui.QDialog):
         self.tabWidget.setMinimumWidth(300)
         self.tabWidget.setObjectName("tabWidget")
 
-        #right hand side part
+        #left hand side part
         #==================================
         self.inputsTree = QtGui.QTreeWidget()
         self.inputsTree.setHeaderHidden(True)
@@ -84,9 +85,22 @@ class ModelerDialog(QtGui.QDialog):
         self.canvasTabWidget.setMinimumWidth(300)
         self.canvasTabWidget.setObjectName("canvasTabWidget")
         self.view = QtGui.QGraphicsView(self.scene)
-        self.pythonText = QtGui.QTextEdit()
+
         self.canvasTabWidget.addTab(self.view, "Design" )
-        self.canvasTabWidget.addTab(self.pythonText, "Python code" )
+        self.pythonText = QtGui.QTextEdit()
+        self.createScriptButton = QtGui.QPushButton()
+        self.createScriptButton.setObjectName("createScriptButton")
+        self.createScriptButton.setText("Create script from model code")
+        self.createScriptButton.clicked.connect(self.createScript)
+        self.verticalLayoutPython = QtGui.QVBoxLayout()
+        self.verticalLayoutPython.setSpacing(2)
+        self.verticalLayoutPython.setMargin(0)
+        self.verticalLayoutPython.setObjectName("verticalLayoutPython")
+        self.verticalLayoutPython.addWidget(self.pythonText)
+        self.verticalLayoutPython.addWidget(self.createScriptButton)
+        self.pythonWidget = QtGui.QWidget()
+        self.pythonWidget.setLayout(self.verticalLayoutPython)
+        self.canvasTabWidget.addTab(self.pythonWidget, "Python code" )
 
         self.canvasLayout = QtGui.QVBoxLayout()
         self.canvasLayout.setSpacing(2)
@@ -132,6 +146,17 @@ class ModelerDialog(QtGui.QDialog):
 
         self.view.ensureVisible(0, 0, 10, 10)
 
+    def createScript(self):
+        if str(self.textGroup.text()).strip() == "":
+            QMessageBox.warning(self, "Warning", "Please enter group name before saving")
+            return
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
+        if filename:
+            fout = open(filename, "w")
+            fout.write(str(self.textGroup.text()) + "=group")
+            fout.write(self.alg.getAsPythonCode())
+            fout.close()
+            self.update = True
 
     def saveModel(self):
         if str(self.textGroup.text()).strip() == "" or str(self.textName.text()).strip() == "":
