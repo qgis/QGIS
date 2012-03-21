@@ -60,7 +60,8 @@ class QgsGeometryAnalyzer
       @param p progress dialog or 0 if no progress dialog should be shown
     */
     bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds /Out/,
-                     const QString& outputLayer, const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
+                     const QString& outputLayer, const QString& outputFormat, int locationField1, int locationField2 = -1, bool forceSingleGeometry = false,
+                     QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
     /**Returns multilinestring*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );

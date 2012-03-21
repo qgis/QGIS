@@ -910,7 +910,7 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
 }
 
 bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
-                                      const QString& outputFormat, int locationField1, int locationField2, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
+                                      const QString& outputFormat, int locationField1, int locationField2, bool forceSingleGeometry, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
 {
   if ( !lineLayer || !eventLayer || !lineLayer->isValid() || !eventLayer->isValid() )
   {
@@ -932,10 +932,19 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   QgsFeatureList memoryProviderFeatures;
   if ( !memoryProvider )
   {
+    QGis::WkbType memoryProviderType = QGis::WKBMultiLineString;
+    if ( locationField2 == -1 )
+    {
+      memoryProviderType = forceSingleGeometry ? QGis::WKBPoint : QGis::WKBMultiPoint;
+    }
+    else
+    {
+      memoryProviderType = forceSingleGeometry ? QGis::WKBLineString : QGis::WKBMultiLineString;
+    }
     fileWriter = new QgsVectorFileWriter( outputLayer,
                                           eventLayer->dataProvider()->encoding(),
                                           eventLayer->pendingFields(),
-                                          locationField2 == -1 ? QGis::WKBMultiPoint : QGis::WKBMultiLineString,
+                                          memoryProviderType,
                                           &( lineLayer->crs() ),
                                           outputFormat );
   }
@@ -1003,15 +1012,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       if ( lrsGeom )
       {
         ++nOutputFeatures;
-        fet.setGeometry( lrsGeom );
-        if ( memoryProvider )
-        {
-          memoryProviderFeatures << fet;
-        }
-        else if ( fileWriter )
-        {
-          fileWriter->addFeature( fet );
-        }
+        addEventLayerFeature( fet, lrsGeom, fileWriter, memoryProviderFeatures, forceSingleGeometry );
       }
     }
     if ( nOutputFeatures < 1 )
@@ -1031,6 +1032,43 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
   delete fileWriter;
   return true;
+}
+
+void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, bool forceSingleType )
+{
+  if ( !geom )
+  {
+    return;
+  }
+
+  QList<QgsGeometry*> geomList;
+  if ( forceSingleType )
+  {
+    geomList = geom->asGeometryCollection();
+  }
+  else
+  {
+    geomList.push_back( geom );
+  }
+
+  QList<QgsGeometry*>::iterator geomIt = geomList.begin();
+  for ( ; geomIt != geomList.end(); ++geomIt )
+  {
+    feature.setGeometry( *geomIt );
+    if ( fileWriter )
+    {
+      fileWriter->addFeature( feature );
+    }
+    else
+    {
+      memoryFeatures << feature;
+    }
+  }
+
+  if ( forceSingleType )
+  {
+    delete geom;
+  }
 }
 
 QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom )
