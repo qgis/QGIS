@@ -4,6 +4,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
 from sextante.core.SextanteResults import SextanteResults
 from sextante.gui.ResultsDialog import ResultsDialog
+from sextante.gui.RenderingStyles import RenderingStyles
 class SextantePostprocessing:
 
     @staticmethod
@@ -14,7 +15,7 @@ class SextantePostprocessing:
                 if isinstance(out, OutputVector):
                     if out.hidden:
                         continue
-                QGisLayers.load(out.value, out.description, alg.crs)
+                QGisLayers.load(out.value, out.description, alg.crs, RenderingStyles[alg.commandLineName()][out.name])
             elif isinstance(out, OutputTable):
                 pass #TODO*****
             else:

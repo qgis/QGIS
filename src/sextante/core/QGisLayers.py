@@ -16,7 +16,7 @@ class QGisLayers:
         raster = list()
 
         for layer in layers:
-            if layer.type() == layer.RasterLayer and not layer.usesProvider():
+            if layer.type() == layer.RasterLayer:
                 raster.append(layer)
         return raster
 
@@ -25,7 +25,7 @@ class QGisLayers:
         layers = QGisLayers.iface.legendInterface().layers()
         vector = list()
         for layer in layers:
-            if layer.type() == layer.VectorLayer and not layer.usesProvider():
+            if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
                     vector.append(layer)
         return vector
@@ -52,7 +52,7 @@ class QGisLayers:
             QGisLayers.load(layer)
 
     @staticmethod
-    def load(layer, name = None, crs = None):
+    def load(layer, name = None, crs = None, style  = None):
         if layer == None:
             return
         prjSetting = None
@@ -67,12 +67,13 @@ class QGisLayers:
             if qgslayer.isValid():
                 if crs != None:
                     qgslayer.setCrs(crs,False)
-                if qgslayer.geometryType == 0:
-                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POINT_STYLE)
-                elif qgslayer.geometryType == 1:
-                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_LINE_STYLE)
-                else:
-                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
+                if style == None:
+                    if qgslayer.geometryType == 0:
+                        style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POINT_STYLE)
+                    elif qgslayer.geometryType == 1:
+                        style = SextanteConfig.getSetting(SextanteConfig.VECTOR_LINE_STYLE)
+                    else:
+                        style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
                 qgslayer.loadNamedStyle(style)
                 QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
             else:
@@ -80,8 +81,8 @@ class QGisLayers:
                 if qgslayer.isValid():
                     if crs != None:
                         qgslayer.setCrs(crs,False)
-
-                    style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
+                    if style == None:
+                        style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
                     qgslayer.loadNamedStyle(style)
                     QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
                     QGisLayers.iface.legendInterface().refreshLayerSymbology(qgslayer)

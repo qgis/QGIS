@@ -25,16 +25,21 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
-        self._descriptionFile = descriptionfile
+        self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
         self.needsregion = False
+
+    def __deepcopy__(self,memo):
+        newone = GrassAlgorithm(self.descriptionFile)
+        newone.provider = self.provider
+        return newone
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
     def defineCharacteristicsFromFile(self):
-        lines = open(self._descriptionFile)
+        lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
         self.name = line
         line = lines.readline().strip("\n").strip()
@@ -50,7 +55,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
             except Exception,e:
-                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + self._descriptionFile + "\n" + line)
+                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + self.descriptionFile + "\n" + line)
                 raise e
         lines.close()
 

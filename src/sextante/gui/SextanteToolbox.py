@@ -5,6 +5,7 @@ from sextante.core.Sextante import Sextante
 from sextante.gui.ParametersDialog import ParametersDialog
 import copy
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
+from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -62,6 +63,9 @@ class SextanteToolbox(QtGui.QDockWidget):
             executeBatchAction = QtGui.QAction("Execute as batch process", self.algorithmTree)
             executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
             popupmenu.addAction(executeBatchAction)
+            editRenderingStylesAction = QtGui.QAction("Edit rendering styles for outputs", self.algorithmTree)
+            editRenderingStylesAction.triggered.connect(self.editRenderingStyles)
+            popupmenu.addAction(editRenderingStylesAction)
             actions = Sextante.contextMenuActions
             for action in actions:
                 action.setData(alg,self)
@@ -71,6 +75,13 @@ class SextanteToolbox(QtGui.QDockWidget):
                     popupmenu.addAction(contextMenuAction)
 
             popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
+
+    def editRenderingStyles(self):
+        item = self.algorithmTree.currentItem()
+        if isinstance(item, TreeAlgorithmItem):
+            alg = Sextante.getAlgorithm(item.alg.commandLineName())
+            dlg = EditRenderingStylesDialog(alg)
+            dlg.exec_()
 
 
     def executeAlgorithmAsBatchProcess(self):

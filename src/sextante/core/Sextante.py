@@ -16,6 +16,7 @@ from sextante.modeler.ProviderIcons import ProviderIcons
 from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
+from sextante.gui.RenderingStyles import RenderingStyles
 
 class Sextante:
 
@@ -48,6 +49,7 @@ class Sextante:
         SextanteLog.startLogging()
         SextanteConfig.initialize()
         SextanteConfig.loadSettings()
+        RenderingStyles.loadStyles()
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()

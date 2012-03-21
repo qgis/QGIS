@@ -23,6 +23,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
 
+    def __deepcopy__(self,memo):
+        newone = ScriptAlgorithm(self.descriptionFile)
+        newone.provider = self.provider
+        return newone
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
