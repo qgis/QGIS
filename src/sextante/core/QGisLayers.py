@@ -4,6 +4,7 @@ from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
 from os import path
 from sextante.core.SextanteConfig import SextanteConfig
+import os.path
 
 class QGisLayers:
 
@@ -17,7 +18,8 @@ class QGisLayers:
 
         for layer in layers:
             if layer.type() == layer.RasterLayer:
-                raster.append(layer)
+                if os.path.exists(layer.source()):
+                    raster.append(layer)
         return raster
 
     @staticmethod
@@ -27,7 +29,8 @@ class QGisLayers:
         for layer in layers:
             if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
-                    vector.append(layer)
+                    if os.path.exists(layer.source()):
+                        vector.append(layer)
         return vector
 
     @staticmethod
