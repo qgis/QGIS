@@ -15,7 +15,7 @@ class SextantePostprocessing:
                 if isinstance(out, OutputVector):
                     if out.hidden:
                         continue
-                QGisLayers.load(out.value, out.description, alg.crs, RenderingStyles[alg.commandLineName()][out.name])
+                QGisLayers.load(out.value, out.description, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
             elif isinstance(out, OutputTable):
                 pass #TODO*****
             else:
