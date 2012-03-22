@@ -405,6 +405,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       catch ( QgsMapServiceException& e )
       {
+        Q_UNUSED( e );
         filterOk = false;
       }
     }
@@ -519,6 +520,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       catch ( QgsMapServiceException& e )
       {
+        Q_UNUSED( e );
+
         while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
         {
           sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
