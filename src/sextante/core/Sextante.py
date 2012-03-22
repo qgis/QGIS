@@ -23,7 +23,7 @@ class Sextante:
     iface = None
     providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),
                  MMQGISAlgorithmProvider(), FToolsAlgorithmProvider(),
-                 RAlgorithmProvider(), GrassAlgorithmProvider()]
+                 RAlgorithmProvider()]##, GrassAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []
