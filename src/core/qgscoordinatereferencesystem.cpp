@@ -300,8 +300,8 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
     OGRAxisOrientation orientation;
     const char *axis0 = OSRGetAxis( mCRS, mGeoFlag ? "GEOGCS" : "PROJCS", 0, &orientation );
     mAxisInverted = mGeoFlag
-                  ? (orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
-                  : (orientation == OAO_North || orientation == OAO_South );
+                    ? ( orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
+                    : ( orientation == OAO_North || orientation == OAO_South );
     QgsDebugMsg( QString( "srid:%1 axis0:%2 orientation:%3 inverted:%4" ).arg( mSRID ).arg( axis0 ).arg( OSRAxisEnumToName( orientation ) ).arg( mAxisInverted ) );
   }
 

@@ -120,8 +120,8 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
   // create the ogc:Filter for the range
   QDomElement filterElem = doc.createElement( "ogc:Filter" );
   QString filterFunc = QString( "%1 > %2 AND %1 <= %3" )
-      .arg( attrName.replace( "\"", "\"\"" ) )
-      .arg( mLowerValue ).arg( mUpperValue );
+                       .arg( attrName.replace( "\"", "\"\"" ) )
+                       .arg( mLowerValue ).arg( mUpperValue );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
 
   mSymbol->toSld( doc, ruleElem, props );

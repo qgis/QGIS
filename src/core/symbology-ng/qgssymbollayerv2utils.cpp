@@ -248,21 +248,21 @@ Qt::BrushStyle QgsSymbolLayerV2Utils::decodeBrushStyle( QString str )
 
 QString QgsSymbolLayerV2Utils::encodeSldBrushStyle( Qt::BrushStyle style )
 {
-  switch( style )
+  switch ( style )
   {
     case Qt::CrossPattern: return "cross";
     case Qt::DiagCrossPattern: return "x";
 
-    /* The following names are taken from the presentation "GeoServer
-     * Cartographic Rendering" by Andrea Aime at the FOSS4G 2010.
-     * (see http://2010.foss4g.org/presentations/3588.pdf)
-     */
+      /* The following names are taken from the presentation "GeoServer
+       * Cartographic Rendering" by Andrea Aime at the FOSS4G 2010.
+       * (see http://2010.foss4g.org/presentations/3588.pdf)
+       */
     case Qt::HorPattern: return "horline";
     case Qt::VerPattern: return "line";
     case Qt::BDiagPattern: return "slash";
     case Qt::FDiagPattern: return "backslash";
 
-    /* define the other names following the same pattern used above */
+      /* define the other names following the same pattern used above */
     case Qt::Dense1Pattern:
     case Qt::Dense2Pattern:
     case Qt::Dense3Pattern:
@@ -372,7 +372,7 @@ QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeSldUom( QString str, double
   // pixel is the SLD default uom. The "standardized rendering pixel
   // size" is defined to be 0.28mm x 0.28mm (millimeters).
   if ( scaleFactor )
-    *scaleFactor = 1/0.00028; // from pixels to millimeters
+    *scaleFactor = 1 / 0.00028; // from pixels to millimeters
   return QgsSymbolV2::MM;
 }
 
@@ -725,8 +725,8 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
 
 
 bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element,
-                                                            QGis::GeometryType geomType,
-                                                            QgsSymbolLayerV2List &layers )
+    QGis::GeometryType geomType,
+    QgsSymbolLayerV2List &layers )
 {
   QgsDebugMsg( "Entered." );
 
@@ -747,7 +747,7 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
     }
     else
     {
-      switch( geomType )
+      switch ( geomType )
       {
         case QGis::Polygon:
           // polygon layer and point symbolizer: draw poligon centroid
@@ -789,7 +789,7 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
     }
     else
     {
-      switch( geomType )
+      switch ( geomType )
       {
         case QGis::Polygon:
         case QGis::Line:
@@ -826,7 +826,7 @@ bool QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( QDomElement& element
     {
       QgsSymbolLayerV2 *l = 0;
 
-      switch( geomType )
+      switch ( geomType )
       {
         case QGis::Polygon:
           // polygon layer and polygon symbolizer: draw fill
@@ -940,7 +940,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::createMarkerLayerFromSld( QDomElement &
 bool QgsSymbolLayerV2Utils::hasExternalGraphic( QDomElement &element )
 {
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return false;
 
   QDomElement externalGraphicElem = graphicElem.firstChildElement( "ExternalGraphic" );
@@ -981,7 +981,7 @@ bool QgsSymbolLayerV2Utils::hasExternalGraphic( QDomElement &element )
 bool QgsSymbolLayerV2Utils::hasWellKnownMark( QDomElement &element )
 {
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return false;
 
   QDomElement markElem = graphicElem.firstChildElement( "Mark" );
@@ -999,7 +999,7 @@ bool QgsSymbolLayerV2Utils::hasWellKnownMark( QDomElement &element )
 bool QgsSymbolLayerV2Utils::needFontMarker( QDomElement &element )
 {
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return false;
 
   QDomElement markElem = graphicElem.firstChildElement( "Mark" );
@@ -1044,7 +1044,7 @@ bool QgsSymbolLayerV2Utils::needSvgMarker( QDomElement &element )
 bool QgsSymbolLayerV2Utils::needEllipseMarker( QDomElement &element )
 {
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return false;
 
   QgsStringMap vendorOptions = QgsSymbolLayerV2Utils::getVendorOptionList( graphicElem );
@@ -1062,7 +1062,7 @@ bool QgsSymbolLayerV2Utils::needEllipseMarker( QDomElement &element )
 bool QgsSymbolLayerV2Utils::needMarkerLine( QDomElement &element )
 {
   QDomElement strokeElem = element.firstChildElement( "Stroke" );
-  if( strokeElem.isNull() )
+  if ( strokeElem.isNull() )
     return false;
 
   QDomElement graphicStrokeElem = strokeElem.firstChildElement( "GraphicStroke" );
@@ -1078,7 +1078,7 @@ bool QgsSymbolLayerV2Utils::needPointPatternFill( QDomElement &element ) { Q_UNU
 bool QgsSymbolLayerV2Utils::needSvgFill( QDomElement &element )
 {
   QDomElement fillElem = element.firstChildElement( "Fill" );
-  if( fillElem.isNull() )
+  if ( fillElem.isNull() )
     return false;
 
   QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
@@ -1158,7 +1158,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
     {
       // GraphicFill element must contain a Graphic element
       QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
-      if( !graphicElem.isNull() )
+      if ( !graphicElem.isNull() )
       {
         // Graphic element can contains some ExternalGraphic and Mark element
         // search for the first supported one and use it
@@ -1210,7 +1210,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
               {
                 // mark with ttf format may have a name like ttf://fontFamily
                 if ( name.startsWith( "ttf://" ) )
-                    name = name.mid( 6 );
+                  name = name.mid( 6 );
 
                 // mark with ttf format has a markIndex element
                 QDomElement markIndexElem = graphicChildElem.firstChildElement( "MarkIndex" );
@@ -1491,9 +1491,9 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
       dashPattern.push_back( 2.0 );
       break;
 
-      case Qt::CustomDashLine:
-        Q_ASSERT( customDashPattern );
-        break;
+    case Qt::CustomDashLine:
+      Q_ASSERT( customDashPattern );
+      break;
 
     default:
       element.appendChild( doc.createComment( QString( "Qt::BrushStyle '%1'' not supported yet" ).arg( penStyle ) ) );
@@ -1523,9 +1523,9 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
 
 
 bool QgsSymbolLayerV2Utils::lineFromSld( QDomElement &element,
-                                         Qt::PenStyle &penStyle, QColor &color, double &width,
-                                         Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
-                                         QVector<qreal> *customDashPattern, double *dashOffset )
+    Qt::PenStyle &penStyle, QColor &color, double &width,
+    Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
+    QVector<qreal> *customDashPattern, double *dashOffset )
 {
   QgsDebugMsg( "Entered." );
 
@@ -1645,8 +1645,8 @@ bool QgsSymbolLayerV2Utils::lineFromSld( QDomElement &element,
 }
 
 void QgsSymbolLayerV2Utils::externalGraphicToSld( QDomDocument &doc, QDomElement &element,
-                                                  QString path, QString mime,
-                                                  QColor color, double size )
+    QString path, QString mime,
+    QColor color, double size )
 {
   QDomElement externalGraphicElem = doc.createElement( "se:ExternalGraphic" );
   element.appendChild( externalGraphicElem );
@@ -1665,8 +1665,8 @@ void QgsSymbolLayerV2Utils::externalGraphicToSld( QDomDocument &doc, QDomElement
 }
 
 bool QgsSymbolLayerV2Utils::externalGraphicFromSld( QDomElement &element,
-                                                    QString &path, QString &mime,
-                                                    QColor &color, double &size )
+    QString &path, QString &mime,
+    QColor &color, double &size )
 {
   QgsDebugMsg( "Entered." );
   Q_UNUSED( color );
@@ -1690,8 +1690,8 @@ bool QgsSymbolLayerV2Utils::externalGraphicFromSld( QDomElement &element,
 }
 
 void QgsSymbolLayerV2Utils::externalMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                                 QString path, QString format, int *markIndex,
-                                                 QColor color, double size )
+    QString path, QString format, int *markIndex,
+    QColor color, double size )
 {
   QDomElement markElem = doc.createElement( "se:Mark" );
   element.appendChild( markElem );
@@ -1720,8 +1720,8 @@ void QgsSymbolLayerV2Utils::externalMarkerToSld( QDomDocument &doc, QDomElement 
 }
 
 bool QgsSymbolLayerV2Utils::externalMarkerFromSld( QDomElement &element,
-                                                   QString &path, QString &format, int &markIndex,
-                                                   QColor &color, double &size )
+    QString &path, QString &format, int &markIndex,
+    QColor &color, double &size )
 {
   QgsDebugMsg( "Entered." );
 
@@ -1764,14 +1764,14 @@ bool QgsSymbolLayerV2Utils::externalMarkerFromSld( QDomElement &element,
 }
 
 void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
-                                                  QString name, QColor color, QColor borderColor,
-                                                  double borderWidth, double size )
+    QString name, QColor color, QColor borderColor,
+    double borderWidth, double size )
 {
   QDomElement markElem = doc.createElement( "se:Mark" );
   element.appendChild( markElem );
 
   QDomElement wellKnownNameElem = doc.createElement( "se:WellKnownName" );
-  wellKnownNameElem.appendChild( doc.createTextNode(  name ) );
+  wellKnownNameElem.appendChild( doc.createTextNode( name ) );
   markElem.appendChild( wellKnownNameElem );
 
   // <Fill>
@@ -1800,8 +1800,8 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
 }
 
 bool QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( QDomElement &element,
-                                                    QString &name, QColor &color, QColor &borderColor,
-                                                    double &borderWidth, double &size )
+    QString &name, QColor &color, QColor &borderColor,
+    double &borderWidth, double &size )
 {
   QgsDebugMsg( "Entered." );
 
@@ -1936,8 +1936,8 @@ bool QgsSymbolLayerV2Utils::displacementFromSldElement( QDomElement &element, QP
 }
 
 void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &element,
-                                            QString label, QFont font,
-                                            QColor color, double size )
+    QString label, QFont font,
+    QColor color, double size )
 {
   QDomElement labelElem = doc.createElement( "se:Label" );
   labelElem.appendChild( doc.createTextNode( label ) );
@@ -2011,7 +2011,7 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
   QgsExpression expr( function );
   if ( expr.hasParserError() )
   {
-    element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function  ) );
+    element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
     return false;
   }
   expr.toOgcFilter( doc, element );
@@ -2041,7 +2041,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 }
 
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
-                                                         QString path, QString format )
+    QString path, QString format )
 {
   QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
@@ -2085,7 +2085,7 @@ QgsStringMap QgsSymbolLayerV2Utils::getSvgParameterList( QDomElement &element )
   QgsStringMap params;
 
   QDomElement paramElem = element.firstChildElement();
-  while( !paramElem.isNull() )
+  while ( !paramElem.isNull() )
   {
     if ( paramElem.localName() == "SvgParameter" || paramElem.localName() == "CssParameter" )
     {
@@ -2115,7 +2115,7 @@ QgsStringMap QgsSymbolLayerV2Utils::getVendorOptionList( QDomElement &element )
   QgsStringMap params;
 
   QDomElement paramElem = element.firstChildElement( "VendorOption" );
-  while( !paramElem.isNull() )
+  while ( !paramElem.isNull() )
   {
     QString name = paramElem.attribute( "name" );
     QString value = paramElem.firstChild().nodeValue();
@@ -2267,7 +2267,9 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString
 void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
   foreach( QString name, symbols.keys() )
+  {
     delete symbols.value( name );
+  }
   symbols.clear();
 }
 

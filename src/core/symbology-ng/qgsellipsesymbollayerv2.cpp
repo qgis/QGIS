@@ -191,7 +191,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
   return QgsEllipseSymbolLayerV2::create( properties() );
 }
 
-void QgsEllipseSymbolLayerV2::toSld(QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
   QDomElement symbolizerElem = doc.createElement( "se:PointSymbolizer" );
   if ( !props.value( "uom", "" ).isEmpty() )
@@ -256,7 +256,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
   QgsDebugMsg( "Entered." );
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return NULL;
 
   QString name = "circle";

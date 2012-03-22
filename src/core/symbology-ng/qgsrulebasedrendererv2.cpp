@@ -473,7 +473,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
-  while( !childElem.isNull() )
+  while ( !childElem.isNull() )
   {
     if ( childElem.localName() == "Name" )
     {
@@ -548,7 +548,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   QgsSymbolV2 *symbol = 0;
   if ( layers.size() > 0 )
   {
-    switch( geomType )
+    switch ( geomType )
     {
       case QGis::Line:
         symbol = new QgsLineSymbolV2( layers );

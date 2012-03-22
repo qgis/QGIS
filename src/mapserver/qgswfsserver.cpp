@@ -629,7 +629,7 @@ void QgsWFSServer::endGetFeature( QgsRequestHandler& request, const QString& for
   }
 }
 
-QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem& crs, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
+QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateReferenceSystem &, QMap< int, QgsField > fields, QSet<QString> hiddenAttributes ) /*const*/
 {
   QString fStr = "{\"type\": \"Feature\",\n";
 

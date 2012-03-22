@@ -402,7 +402,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
   int ruleCount = 0;
 
   QDomElement ruleElem = featTypeStyleElem.firstChildElement( "Rule" );
-  while( !ruleElem.isNull() )
+  while ( !ruleElem.isNull() )
   {
     ruleCount++;
 
@@ -415,7 +415,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis:
     }
 
     QDomElement ruleChildElem = ruleElem.firstChildElement();
-    while( !ruleChildElem.isNull() )
+    while ( !ruleChildElem.isNull() )
     {
       // rule has filter or min/max scale denominator, use the RuleRenderer
       if ( ruleChildElem.localName() == "Filter" ||
