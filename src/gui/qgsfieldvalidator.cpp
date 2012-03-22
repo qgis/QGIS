@@ -56,6 +56,11 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field )
         QString re = QString( "-?\\d{0,%1}(\\.\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
+      else if ( mField.length() > 0 && mField.precision() == 0 )
+      {
+        QString re = QString( "-?\\d{0,%1}" ).arg( mField.length() );
+        mValidator = new QRegExpValidator( QRegExp( re ), parent );
+      }
       else if ( mField.precision() > 0 )
       {
         QString re = QString( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
