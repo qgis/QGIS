@@ -440,7 +440,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
   return clonedLayer;
 }
 
-void QgsSVGFillSymbolLayer::toSld(QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsSVGFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
   QDomElement symbolizerElem = doc.createElement( "se:PolygonSymbolizer" );
   if ( !props.value( "uom", "" ).isEmpty() )
@@ -507,15 +507,15 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
   double size, borderWidth;
 
   QDomElement fillElem = element.firstChildElement( "Fill" );
-  if( fillElem.isNull() )
+  if ( fillElem.isNull() )
     return NULL;
 
   QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
-  if( graphicFillElem.isNull() )
+  if ( graphicFillElem.isNull() )
     return NULL;
 
   QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return NULL;
 
   if ( !QgsSymbolLayerV2Utils::externalGraphicFromSld( graphicElem, path, mimeType, fillColor, size ) )
@@ -807,7 +807,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
   return clonedLayer;
 }
 
-void QgsLinePatternFillSymbolLayer::toSld(QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
 {
   QDomElement symbolizerElem = doc.createElement( "se:PolygonSymbolizer" );
   if ( !props.value( "uom", "" ).isEmpty() )

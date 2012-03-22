@@ -197,9 +197,9 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &elemen
   QVector<qreal> customDashVector;
 
   if ( !QgsSymbolLayerV2Utils::lineFromSld( strokeElem, penStyle,
-                                            color, width,
-                                            &penJoinStyle, &penCapStyle,
-                                            &customDashVector ) )
+       color, width,
+       &penJoinStyle, &penCapStyle,
+       &customDashVector ) )
     return NULL;
 
   double offset = 0.0;
@@ -661,7 +661,7 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
     QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
 
     QString gap;
-    switch( mPlacement )
+    switch ( mPlacement )
     {
       case FirstVertex:
         symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "firstPoint" ) );
@@ -681,7 +681,7 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
         break;
     }
 
-    if( !mRotateMarker )
+    if ( !mRotateMarker )
     {
       // markers in LineSymbolizer must be drawn following the line orientation,
       // use a VendorOption when no marker rotation

@@ -90,8 +90,8 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
   // create the ogc:Filter for the range
   QDomElement filterElem = doc.createElement( "ogc:Filter" );
   QString filterFunc = QString( "%1 = '%2'" )
-      .arg( attrName.replace( "\"", "\"\"" ) )
-      .arg( mValue.toString().replace( "'", "''" ) );
+                       .arg( attrName.replace( "\"", "\"\"" ) )
+                       .arg( mValue.toString().replace( "'", "''" ) );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
   ruleElem.appendChild( filterElem );
 
