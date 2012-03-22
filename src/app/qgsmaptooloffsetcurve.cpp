@@ -211,7 +211,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   int beforeVertex;
   double leftOf;
   double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-  if ( !offset > 0 )
+  if ( offset == 0.0 )
   {
     return;
   }
@@ -332,6 +332,9 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 
 void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide )
 {
+  // need at least geos 3.3 for OffsetCurve tool
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
   if ( !mRubberBand || !mOriginalGeometry )
   {
     return;
@@ -343,7 +346,6 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     return;
   }
 
-
   QgsGeometry geomCopy( *mOriginalGeometry );
   GEOSGeometry* geosGeom = geomCopy.asGeos();
   if ( geosGeom )
@@ -353,15 +355,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
     double mitreLimit = s.value( "/qgis/digitizine/offset_miter_limit", 5.0 ).toDouble();
 
-    GEOSGeometry* offsetGeom = 0;
-    //need at least geos 3.3 for OffsetCurve tool
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
-  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-    offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
-#else
-    return;
-#endif //GEOS_VERSION
-
+    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();
@@ -380,6 +374,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
       mRubberBand->setToGeometry( &mModifiedGeometry, sourceLayer );
     }
   }
+#endif //GEOS_VERSION>=3.3
 }
 
 QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( QgsGeometry* featureGeom, int vertex )
