@@ -53,11 +53,11 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
   {
     mPassword = settings.value( key + "/password" ).toString();
   }
-  
+
   mUseGeometryColumns = settings.value( key + "/geometryColumns", false ).toBool();
-  
+
   mConnInfo =  "dbname='" + mDatabase + "' host=" + mHost + " user='" + mUsername + "' password='" + mPassword + "'";
-  if (!mService.isEmpty())
+  if ( !mService.isEmpty() )
     mConnInfo += " service='" + mService + "'";
 }
 
@@ -79,7 +79,7 @@ void QgsMssqlConnectionItem::refresh()
     int index = findItem( mChildren, item );
     if ( index >= 0 )
     {
-      ((QgsMssqlSchemaItem*)mChildren[index])->addLayers(item);
+      (( QgsMssqlSchemaItem* )mChildren[index] )->addLayers( item );
       delete item;
       continue;
     }
@@ -92,40 +92,40 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*> children;
-  
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService, 
-                      mHost, mDatabase, mUsername, mPassword );
+
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( mService,
+                    mHost, mDatabase, mUsername, mPassword );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
-     children.append( new QgsErrorItem( this, db.lastError( ).text( ), mPath + "/error" ) );
-     return children;
+    children.append( new QgsErrorItem( this, db.lastError( ).text( ), mPath + "/error" ) );
+    return children;
   }
 
   QString connectionName;
-  if (mService.isEmpty())
+  if ( mService.isEmpty() )
   {
-      if (mHost.isEmpty())
-      {
-        children.append( new QgsErrorItem( this, "QgsMssqlProvider host name not specified", mPath + "/error" ) );
-        return children;
-      }
+    if ( mHost.isEmpty() )
+    {
+      children.append( new QgsErrorItem( this, "QgsMssqlProvider host name not specified", mPath + "/error" ) );
+      return children;
+    }
 
-      if (mDatabase.isEmpty())
-      {
-        children.append( new QgsErrorItem( this, "QgsMssqlProvider database name not specified", mPath + "/error" ) );
-        return children;
-      }
-      connectionName = mHost + "." + mDatabase;
+    if ( mDatabase.isEmpty() )
+    {
+      children.append( new QgsErrorItem( this, "QgsMssqlProvider database name not specified", mPath + "/error" ) );
+      return children;
+    }
+    connectionName = mHost + "." + mDatabase;
   }
   else
-      connectionName = mService;
+    connectionName = mService;
 
   QgsMssqlGeomColumnTypeThread *columnTypeThread = 0;
 
   // build sql statement
-  QString query("select ");
-  if (mUseGeometryColumns)
+  QString query( "select " );
+  if ( mUseGeometryColumns )
   {
     query += "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type from geometry_columns";
   }
@@ -135,43 +135,43 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
   }
 
   // issue the sql query
-  QSqlQuery q = QSqlQuery(db);
-  q.setForwardOnly(true);
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
   q.exec( query );
 
-  if (q.isActive()) 
+  if ( q.isActive() )
   {
     QVector<QgsDataItem*> newLayers;
-    while ( q.next() ) 
+    while ( q.next() )
     {
       QgsMssqlLayerProperty layer;
-      layer.schemaName = q.value(0).toString();
-      layer.tableName = q.value(1).toString();
-      layer.geometryColName = q.value(2).toString();
-      layer.srid = q.value(3).toString();
-      layer.type = q.value(4).toString();
+      layer.schemaName = q.value( 0 ).toString();
+      layer.tableName = q.value( 1 ).toString();
+      layer.geometryColName = q.value( 2 ).toString();
+      layer.srid = q.value( 3 ).toString();
+      layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
 
       // skip layers which are added already
       bool skip = false;
       foreach( QgsDataItem *child, mChildren )
       {
-        if ( child->name() == layer.schemaName)
+        if ( child->name() == layer.schemaName )
         {
           foreach( QgsDataItem *child2, child->children() )
           {
-            if ( child2->name() == layer.tableName)
+            if ( child2->name() == layer.tableName )
             {
-                newLayers.append(child2);
-                skip = true; // already added
-                break;
+              newLayers.append( child2 );
+              skip = true; // already added
+              break;
             }
           }
         }
       }
 
-      if (skip)
-          continue;
+      if ( skip )
+        continue;
 
       QString type = layer.type;
       QString srid = layer.srid;
@@ -181,12 +181,12 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       {
         if ( child->name() == layer.schemaName )
         {
-          schemaItem = (QgsMssqlSchemaItem*)child;
+          schemaItem = ( QgsMssqlSchemaItem* )child;
           break;
         }
       }
 
-      if (!schemaItem)
+      if ( !schemaItem )
       {
         schemaItem = new QgsMssqlSchemaItem( this, layer.schemaName, mPath + "/" + layer.schemaName );
         children.append( schemaItem );
@@ -198,13 +198,13 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
         {
           if ( !columnTypeThread )
           {
-              columnTypeThread = new QgsMssqlGeomColumnTypeThread( 
-                  connectionName, true /* use estimated metadata */ );
+            columnTypeThread = new QgsMssqlGeomColumnTypeThread(
+              connectionName, true /* use estimated metadata */ );
 
-              connect( columnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
-                       this, SLOT( setLayerType( QgsMssqlLayerProperty ) ) );
-              connect( this, SIGNAL( addGeometryColumn( QgsMssqlLayerProperty ) ),
-                       columnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
+            connect( columnTypeThread, SIGNAL( setLayerType( QgsMssqlLayerProperty ) ),
+                     this, SLOT( setLayerType( QgsMssqlLayerProperty ) ) );
+            connect( this, SIGNAL( addGeometryColumn( QgsMssqlLayerProperty ) ),
+                     columnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
           }
 
           emit addGeometryColumn( layer );
@@ -213,8 +213,8 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       }
 
       QgsMssqlLayerItem* added = schemaItem->addLayer( layer, false );
-      if (added)
-        newLayers.append(added);
+      if ( added )
+        newLayers.append( added );
     }
 
     // Remove no more present items
@@ -223,7 +223,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       foreach( QgsDataItem *child2, child->children() )
       {
         if ( findItem( newLayers, child2 ) < 0 )
-           child->deleteChildItem( child2 ); 
+          child->deleteChildItem( child2 );
       }
     }
 
@@ -241,17 +241,17 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 
   foreach( QgsDataItem *child, mChildren )
   {
-    if ( child->name() == layerProperty.schemaName)
+    if ( child->name() == layerProperty.schemaName )
     {
-      schemaItem = (QgsMssqlSchemaItem*)child;
+      schemaItem = ( QgsMssqlSchemaItem* )child;
       break;
     }
   }
 
   foreach( QgsDataItem *layerItem, schemaItem->children() )
   {
-    if ( layerItem->name() == layerProperty.tableName)
-        return; // already added
+    if ( layerItem->name() == layerProperty.tableName )
+      return; // already added
   }
 
   if ( !schemaItem )
@@ -381,7 +381,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction 
     QMessageBox::information( 0, tr( "Import to MSSQL database" ), tr( "Import was successful." ) );
   }
 
-  if (mPopulated)
+  if ( mPopulated )
     refresh();
   else
     populate();
@@ -405,7 +405,7 @@ QgsMssqlLayerItem::~QgsMssqlLayerItem()
 
 QgsMssqlLayerItem* QgsMssqlLayerItem::createClone()
 {
-  return new QgsMssqlLayerItem(mParent, mName, mPath, mLayerType, mLayerProperty);
+  return new QgsMssqlLayerItem( mParent, mName, mPath, mLayerType, mLayerProperty );
 }
 
 QString QgsMssqlLayerItem::createUri()
@@ -444,8 +444,8 @@ QgsMssqlSchemaItem::~QgsMssqlSchemaItem()
 {
 }
 
-void QgsMssqlSchemaItem::addLayers(QgsDataItem* newLayers)
-{  
+void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
+{
   // Add new items
   foreach( QgsDataItem *child, newLayers->children() )
   {
@@ -454,7 +454,7 @@ void QgsMssqlSchemaItem::addLayers(QgsDataItem* newLayers)
     {
       continue;
     }
-    QgsMssqlLayerItem* layer = ((QgsMssqlLayerItem*)child)->createClone();
+    QgsMssqlLayerItem* layer = (( QgsMssqlLayerItem* )child )->createClone();
     addChildItem( layer, true );
   }
 }
@@ -490,10 +490,10 @@ QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProp
 
   QgsMssqlLayerItem *layerItem = new QgsMssqlLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, layerType, layerProperty );
   layerItem->setToolTip( tip );
-  if (refresh)
-      addChildItem( layerItem, true );
+  if ( refresh )
+    addChildItem( layerItem, true );
   else
-      addChild( layerItem );
+    addChild( layerItem );
 
   return layerItem;
 }

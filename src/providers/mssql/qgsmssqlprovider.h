@@ -44,7 +44,7 @@ class QTextStream;
 class QgsMssqlGeometryParser
 {
 
-protected:    
+  protected:
     unsigned char* pszData;
     unsigned char* pszWkb;
     int nWkbLen;
@@ -65,23 +65,23 @@ protected:
     int nNumShapes;
     int nSRSId;
 
-protected:
-    void CopyBytes(void* src, int len);
-    void CopyPoint(int iPoint);
-    void ReadPoint(int iShape);
-    void ReadMultiPoint(int iShape);
-    void ReadLineString(int iShape);
-    void ReadMultiLineString(int iShape);
-    void ReadPolygon(int iShape);
-    void ReadMultiPolygon(int iShape);
-    void ReadGeometryCollection(int iShape);
+  protected:
+    void CopyBytes( void* src, int len );
+    void CopyPoint( int iPoint );
+    void ReadPoint( int iShape );
+    void ReadMultiPoint( int iShape );
+    void ReadLineString( int iShape );
+    void ReadMultiLineString( int iShape );
+    void ReadPolygon( int iShape );
+    void ReadMultiPolygon( int iShape );
+    void ReadGeometryCollection( int iShape );
 
-public:
+  public:
     QgsMssqlGeometryParser();
-    unsigned char* ParseSqlGeometry(unsigned char* pszInput, int nLen);
+    unsigned char* ParseSqlGeometry( unsigned char* pszInput, int nLen );
     int GetSRSId() { return nSRSId; };
     int GetWkbLen() { return nWkbLen; };
-    void DumpMemoryToLog(char* pszMsg, unsigned char* pszInput, int nLen);
+    void DumpMemoryToLog( char* pszMsg, unsigned char* pszInput, int nLen );
 };
 
 
@@ -100,8 +100,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual ~QgsMssqlProvider();
 
-    static QSqlDatabase GetDatabase(QString driver, QString host, QString database, QString username, QString password);
-    static bool OpenDatabase(QSqlDatabase db);
+    static QSqlDatabase GetDatabase( QString driver, QString host, QString database, QString username, QString password );
+    static bool OpenDatabase( QSqlDatabase db );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
@@ -261,7 +261,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual bool createSpatialIndex();
 
-     /**Create an attribute index on the datasource*/
+    /**Create an attribute index on the datasource*/
     virtual bool createAttributeIndex( int field );
 
     /** convert a QgsField to work with MSSQL */
@@ -283,7 +283,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
   protected:
     /** loads fields from input file to member attributeFields */
-    QVariant::Type DecodeODBCType(int sqltype);
+    QVariant::Type DecodeODBCType( int sqltype );
     void loadFields();
     void loadMetadata();
 
@@ -295,7 +295,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QgsMssqlGeometryParser parser;
 
     int mFieldCount;  // Note: this includes field count for wkt field
-     
+
     //! Layer extent
     QgsRectangle mExtent;
 
@@ -327,7 +327,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     // The current sql query
     QSqlQuery mQuery;
-    
+
     // The current sql statement
     QString mStatement;
 

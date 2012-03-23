@@ -77,7 +77,7 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString mConnInfo;
     QString mService;
     QString mHost;
-    QString mDatabase; 
+    QString mDatabase;
     QString mUsername;
     QString mPassword;
     bool mUseGeometryColumns;
@@ -94,7 +94,7 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
 
     QgsMssqlLayerItem* addLayer( QgsMssqlLayerProperty layerProperty, bool refresh );
     void refresh() {}; // do not refresh directly
-    void addLayers(QgsDataItem* newLayers);
+    void addLayers( QgsDataItem* newLayers );
 };
 
 class QgsMssqlLayerItem : public QgsLayerItem

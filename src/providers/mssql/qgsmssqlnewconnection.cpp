@@ -44,7 +44,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
     cb_geometryColumns->setChecked( settings.value( key + "/geometryColumns", true ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", true ).toBool() );
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
-    
+
     if ( settings.value( key + "/saveUsername" ).toString() == "true" )
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
@@ -118,7 +118,7 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "/geometryColumns", cb_geometryColumns->isChecked() );
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
-  
+
   QDialog::accept();
 }
 
@@ -135,9 +135,9 @@ QgsMssqlNewConnection::~QgsMssqlNewConnection()
 
 void QgsMssqlNewConnection::testConnection()
 {
-  if (txtService->text().isEmpty())
+  if ( txtService->text().isEmpty() )
   {
-    if (txtHost->text().isEmpty())
+    if ( txtHost->text().isEmpty() )
     {
       QMessageBox::information( this,
                                 tr( "Test connection" ),
@@ -145,7 +145,7 @@ void QgsMssqlNewConnection::testConnection()
       return;
     }
 
-    if (txtDatabase->text().isEmpty())
+    if ( txtDatabase->text().isEmpty() )
     {
       QMessageBox::information( this,
                                 tr( "Test connection" ),
@@ -154,10 +154,10 @@ void QgsMssqlNewConnection::testConnection()
     }
   }
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(), 
-      txtHost->text().trimmed(), txtDatabase->text().trimmed(), 
-      txtUsername->text().trimmed(), txtPassword->text().trimmed() );
-  
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( txtService->text().trimmed(),
+                    txtHost->text().trimmed(), txtDatabase->text().trimmed(),
+                    txtUsername->text().trimmed(), txtPassword->text().trimmed() );
+
   if ( db.isOpen() )
     db.close();
 
