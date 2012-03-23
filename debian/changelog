@@ -9,8 +9,9 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * add support for Debian wheezy and Ubuntu precise
   * build package with internal libspatialite where libspatialite not available
   * drop support for Ubuntu hardy, intrepid, jaunty and karmic
+  * add mssqlprovider plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 08 Mar 2012 16:08:09 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Mar 2012 20:47:06 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
