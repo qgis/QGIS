@@ -762,7 +762,18 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
   }
 
   renderer->setOpacity( mTransparencyLevel / 255.0 );
-  renderer->setRasterTransparency( &mRasterTransparency );
+
+  QgsRasterTransparency* tr = new QgsRasterTransparency(); //renderer takes ownership
+  if ( mDataProvider->bandCount() == 1 )
+  {
+    tr->setTransparentSingleValuePixelList( mRasterTransparency.transparentSingleValuePixelList() );
+  }
+  else if ( mDataProvider->bandCount() == 3 )
+  {
+    tr->setTransparentThreeValuePixelList( mRasterTransparency.transparentThreeValuePixelList() );
+  }
+  renderer->setRasterTransparency( tr );
+
   if ( mTransparencyBandName != TRSTRING_NOT_SET )
   {
     int tBand = bandNumber( mTransparencyBandName );

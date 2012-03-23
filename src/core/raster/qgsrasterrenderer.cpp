@@ -41,6 +41,7 @@ QgsRasterRenderer::~QgsRasterRenderer()
 
   delete mZoomedInResampler;
   delete mZoomedOutResampler;
+  delete mRasterTransparency;
 }
 
 void QgsRasterRenderer::setZoomedInResampler( QgsRasterResampler* r )
@@ -221,6 +222,12 @@ bool QgsRasterRenderer::usesTransparency( QgsCoordinateReferenceSystem& srcSRS, 
     return true;
   }
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mProvider->noDataValue() ) ) || !doubleNear( mOpacity, 1.0 ) );
+}
+
+void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
+{
+  delete mRasterTransparency;
+  mRasterTransparency = t;
 }
 
 void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,

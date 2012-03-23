@@ -54,7 +54,7 @@ class QgsRasterRenderer
     void setOpacity( double opacity ) { mOpacity = opacity; }
     double opacity() const { return mOpacity; }
 
-    void setRasterTransparency( QgsRasterTransparency* t ) { mRasterTransparency = t; }
+    void setRasterTransparency( QgsRasterTransparency* t );
     const QgsRasterTransparency* rasterTransparency() const { return mRasterTransparency; }
 
     void setAlphaBand( int band ) { mAlphaBand = band; }
