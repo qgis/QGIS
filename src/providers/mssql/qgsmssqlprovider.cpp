@@ -208,7 +208,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
 #ifdef WIN32
     connectionString = "driver={SQL Server}";
 #else
-    connectionString = "driver={FreeDTS}";
+    connectionString = "driver={FreeTDS}";
 #endif
     if ( !host.isEmpty() )
       connectionString += ";server=" + host;
