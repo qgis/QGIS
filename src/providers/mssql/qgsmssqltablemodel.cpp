@@ -405,7 +405,7 @@ QGis::GeometryType QgsMssqlTableModel::geomTypeFromMssql( QString dbType )
   }
   else
   {
-      return QGis::UnknownGeometry;
+    return QGis::UnknownGeometry;
   }
 }
 

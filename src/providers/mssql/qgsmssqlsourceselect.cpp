@@ -444,7 +444,7 @@ void QgsMssqlSourceSelect::addTables()
 void QgsMssqlSourceSelect::on_btnConnect_clicked()
 {
   cbxAllowGeometrylessTables->setEnabled( true );
-    
+
   if ( mColumnTypeThread )
   {
     mColumnTypeThread->stop();
@@ -477,11 +477,11 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
   mConnInfo =  "dbname='" + database + "' host=" + host + " user='" + username + "' password='" + password + "'";
-  if (!service.isEmpty())
+  if ( !service.isEmpty() )
     mConnInfo += " service='" + service + "'";
 
-  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service, 
-                      host, database, username, password );
+  QSqlDatabase db = QgsMssqlProvider::GetDatabase( service,
+                    host, database, username, password );
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
@@ -492,33 +492,33 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   }
 
   QString connectionName;
-  if (service.isEmpty())
+  if ( service.isEmpty() )
   {
-      if (host.isEmpty())
-      {
-        QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), "QgsMssqlProvider host name not specified" );
-        return;
-      }
+    if ( host.isEmpty() )
+    {
+      QMessageBox::warning( this,
+                            tr( "MSSQL Provider" ), "QgsMssqlProvider host name not specified" );
+      return;
+    }
 
-      if (database.isEmpty())
-      {
-        QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), "QgsMssqlProvider database name not specified" );
-        return;
-      }
-      connectionName = host + "." + database;
+    if ( database.isEmpty() )
+    {
+      QMessageBox::warning( this,
+                            tr( "MSSQL Provider" ), "QgsMssqlProvider database name not specified" );
+      return;
+    }
+    connectionName = host + "." + database;
   }
   else
-      connectionName = service;
+    connectionName = service;
 
 
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // build sql statement
-  QString query("select ");
-  if (useGeometryColumns)
+  QString query( "select " );
+  if ( useGeometryColumns )
   {
     query += "f_table_schema, f_table_name, f_geometry_column, srid, geometry_type from geometry_columns";
   }
@@ -527,30 +527,30 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
     query += "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY' from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where sys.types.name = 'geometry' or sys.types.name = 'geography' and sys.objects.type = 'U'";
   }
 
-  if (allowGeometrylessTables)
+  if ( allowGeometrylessTables )
   {
     query += " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE' from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and sys.objects.type = 'U'";
   }
 
   // issue the sql query
-  QSqlQuery q = QSqlQuery(db);
-  q.setForwardOnly(true);
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
   q.exec( query );
 
-  if (q.isActive()) 
+  if ( q.isActive() )
   {
-    while ( q.next() ) 
+    while ( q.next() )
     {
       QgsMssqlLayerProperty layer;
-      layer.schemaName = q.value(0).toString();
-      layer.tableName = q.value(1).toString();
-      layer.geometryColName = q.value(2).toString();
-      layer.srid = q.value(3).toString();
-      layer.type = q.value(4).toString();
+      layer.schemaName = q.value( 0 ).toString();
+      layer.tableName = q.value( 1 ).toString();
+      layer.geometryColName = q.value( 2 ).toString();
+      layer.srid = q.value( 3 ).toString();
+      layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
 
       QString type = layer.type;
-      QString srid = layer.srid;  
+      QString srid = layer.srid;
 
       if ( !layer.geometryColName.isNull() )
       {
@@ -580,8 +580,8 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
       //expand all the toplevel items
       for ( int i = 0; i < numTopLevelItems; ++i )
       {
-        mTablesTreeView->expand( mProxyModel.mapFromSource( 
-            mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
+        mTablesTreeView->expand( mProxyModel.mapFromSource(
+                                   mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
       }
     }
   }
@@ -673,7 +673,7 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( QString connectionName, QgsM
              mColumnTypeThread, SLOT( addGeometryColumn( QgsMssqlLayerProperty ) ) );
     connect( mColumnTypeThread, SIGNAL( finished() ),
              this, SLOT( columnThreadFinished() ) );
-    
+
   }
 
   emit addGeometryColumn( layerProperty );
@@ -764,12 +764,12 @@ void QgsMssqlGeomColumnTypeThread::run()
                       .arg( layerProperty.geometryColName )
                       .arg( table );
 
-     
+
       // issue the sql query
-      QSqlDatabase db = QSqlDatabase::database(mConnectionName);
-      QSqlQuery q = QSqlQuery(db);
-      q.setForwardOnly(true);
-      if (!q.exec( query ))
+      QSqlDatabase db = QSqlDatabase::database( mConnectionName );
+      QSqlQuery q = QSqlQuery( db );
+      q.setForwardOnly( true );
+      if ( !q.exec( query ) )
       {
         QString msg = q.lastError().text();
         QgsDebugMsg( msg );
@@ -778,19 +778,19 @@ void QgsMssqlGeomColumnTypeThread::run()
       QString type;
       QString srid;
 
-      if (q.isActive()) 
+      if ( q.isActive() )
       {
         QStringList types;
         QStringList srids;
 
-        while ( q.next() ) 
+        while ( q.next() )
         {
-          QString type = q.value(0).toString().toUpper();
-          QString srid = q.value(1).toString();
+          QString type = q.value( 0 ).toString().toUpper();
+          QString srid = q.value( 1 ).toString();
 
           if ( type.isEmpty() )
             continue;
-          
+
           types << type;
           srids << srid;
         }

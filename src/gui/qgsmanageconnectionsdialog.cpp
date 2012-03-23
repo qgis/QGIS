@@ -265,7 +265,7 @@ bool QgsManageConnectionsDialog::populateConnections()
           return false;
         }
         break;
-        
+
       case MSSQL:
         if ( root.tagName() != "qgsMssqlConnections" )
         {
