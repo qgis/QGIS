@@ -910,7 +910,8 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
 }
 
 bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
-                                      const QString& outputFormat, int locationField1, int locationField2, bool forceSingleGeometry, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
+                                      const QString& outputFormat, int locationField1, int locationField2, int offsetField, double offsetScale,
+                                      bool forceSingleGeometry, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
 {
   if ( !lineLayer || !eventLayer || !lineLayer->isValid() || !eventLayer->isValid() )
   {
@@ -1012,7 +1013,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       if ( lrsGeom )
       {
         ++nOutputFeatures;
-        addEventLayerFeature( fet, lrsGeom, fileWriter, memoryProviderFeatures, forceSingleGeometry );
+        addEventLayerFeature( fet, lrsGeom, lineFeature.geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
       }
     }
     if ( nOutputFeatures < 1 )
@@ -1034,7 +1035,8 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   return true;
 }
 
-void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, bool forceSingleType )
+void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, const QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
+    int offsetField, double offsetScale, bool forceSingleType )
 {
   if ( !geom )
   {
@@ -1054,6 +1056,14 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
   QList<QgsGeometry*>::iterator geomIt = geomList.begin();
   for ( ; geomIt != geomList.end(); ++geomIt )
   {
+    //consider offset
+    if ( offsetField >= 0 )
+    {
+      double offsetVal = feature.attributeMap()[offsetField].toDouble();
+      offsetVal *= offsetScale;
+      createOffsetGeometry( *geomIt, lineGeom, offsetVal );
+    }
+
     feature.setGeometry( *geomIt );
     if ( fileWriter )
     {
@@ -1069,6 +1079,11 @@ void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry
   {
     delete geom;
   }
+}
+
+void QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, const QgsGeometry* lineGeom, double offset )
+{
+  //todo...
 }
 
 QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom )
