@@ -78,17 +78,6 @@ class Heatmap: public QObject, public QgisPlugin
     void unload();
     //! show the help document
     void help();
-    //! the worker slot to create heatmap
-    /*
-     * Signal: createRaster
-     * Params:
-     *         QgsVectorLayer* -> Input point layer
-     *         int             -> Buffer distance
-     *         float           -> Decay ratio
-     *         QString         -> Output filename
-     *         QString         -> Output Format Short Name
-     */
-    void createRaster( QgsVectorLayer*, int, float, QString, QString );
 
   private:
 
@@ -99,6 +88,14 @@ class Heatmap: public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
+
+    /** Enumerator to hold the buffer distance unit type */
+    enum mBufferUnit
+    {
+      Nothing,
+      Meters,
+      MapUnits
+    };
 
 };
 

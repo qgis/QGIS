@@ -94,14 +94,9 @@ void Heatmap::help()
 // not be enough
 void Heatmap::run()
 {
-  HeatmapGui *myPluginGui = new HeatmapGui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
-  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
+  HeatmapGui dialog( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
 
-  // Connect the createRaster signal to createRaster Slot
-  connect( myPluginGui, SIGNAL( createRaster( QgsVectorLayer*, int, float, QString, QString ) ),
-           this, SLOT( createRaster( QgsVectorLayer*, int, float, QString, QString ) ) );
-
-  myPluginGui->show();
+  dialog.exec();
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -113,6 +108,7 @@ void Heatmap::unload()
   delete mQActionPointer;
 }
 
+/*
 // The worker
 void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float theDecay, QString theOutputFilename, QString theOutputFormat )
 {
@@ -275,7 +271,7 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
   // Open the file in QGIS window
   mQGisIface->addRasterLayer( theOutputFilename, QFileInfo( theOutputFilename ).baseName() );
 }
-
+*/
 //////////////////////////////////////////////////////////////////////////
 //
 //

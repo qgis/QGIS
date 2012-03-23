@@ -16,8 +16,10 @@
 #include <ui_heatmapguibase.h>
 
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
 /**
-@author Tim Sutton
+@author Arunmozhi
 */
 class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 {
@@ -26,29 +28,91 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     HeatmapGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~HeatmapGui();
 
+    /** Returns whether to apply weighted heat */
+    bool weighted();
+
+    /** Returns whether the radius is static or based on a field */
+    bool variableRadius();
+
+    /** Returns the fixed radius value */
+    float radius();
+
+    /** Return the radius Unit (meters/map units) */
+    int radiusUnit();
+
+    /** Return the decay ratio */
+    float decayRatio();
+
+    /** Return the attribute field for variable radius */
+    QVariant radiusField();
+
+    /** Returns the attrinute field for weighted heat */
+    QVariant weightField();
+
+    /** Returns the output filename/path */
+    QString outputFilename();
+
+    /** Returns the GDAL Format for output raster */
+    QString ouputFormat();
+
+    /** Returns the input Vector layer */
+    QgsVectorLayer* inputVectorLayer();
+
+    /** Returns the no of rows for the raster */
+    int rows();
+
+    /** Returns the no of columns in the raster */
+    int columns();
+
+    /** Returns the cell size X value */
+    float cellSizeX();
+
+    /** Returns the cell size Y valuue */
+    float cellSizeY();
+
   private:
     QMap<QString, QString> mExtensionMap;
+    // Buffer unit type
+    enum mBufferType
+    {
+      Meters,
+      MapUnits
+    };
+    // bbox of layer for lineedit changes
+    QgsRectangle mBBox;
+
+    /** Function to check wether all constrains are satisfied and enable the OK button */
     void enableOrDisableOkButton();
+
+    /** Populate the attribute fields from selected vector for radius&weight */
+    void populateFields();
+
+    /** Set the mBBox value - mainly used for updation purpose */
+    void updateBBox();
+
+    /** Update the LineEdits cellsize and row&col values  */
+    void updateSize( int rows, int columns, float cellx, float celly );
+
+    /** Populate the row/cols  and cell sizes*/
+    /** Convert Maters value to the corresponding map units based on Layer projection */
+    float mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs );
 
   private slots:
     void on_mButtonBox_accepted();
     void on_mButtonBox_rejected();
     void on_mButtonBox_helpRequested();
-    void on_mBrowseButton_clicked(); // Function to open the file dialog
+    void on_mBrowseButton_clicked();
     void on_mOutputRasterLineEdit_editingFinished();
-
-  signals:
-    /*
-     * Signal: createRaster
-     * Params:
-     *         QgsVectorLayer* -> Input point layer
-     *         int             -> Buffer distance
-     *         float           -> Decay ratio
-     *         QString         -> Output filename
-     *         QString         -> Output Format Short Name
-     */
-    void createRaster( QgsVectorLayer*, int, float, QString, QString );
-
+    void on_advancedGroupBox_toggled( bool enabled );
+    void on_rowLineEdit_editingFinished();
+    void on_columnLineEdit_editingFinished();
+    void on_cellXLineEdit_editingFinished();
+    void on_cellYLineEdit_editingFinished();
+    void on_radiusFieldCombo_currentIndexChanged( int index );
+    void on_radiusFieldUnitCombo_currentIndexChanged( int index );
+    void on_mRadiusUnitCombo_currentIndexChanged( int index );
+    void on_mInputVectorCombo_currentIndexChanged( int index );
+    void on_mBufferLineEdit_editingFinished();
 };
 
 #endif
