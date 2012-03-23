@@ -242,7 +242,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
 
   // retrieve the Rule element child nodes
   QDomElement childElem = ruleElem.firstChildElement();
-  while( !childElem.isNull() )
+  while ( !childElem.isNull() )
   {
     if ( childElem.localName() == "Name" )
     {
@@ -265,7 +265,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   QgsSymbolV2 *symbol = 0;
   if ( layers.size() > 0 )
   {
-    switch( geomType )
+    switch ( geomType )
     {
       case QGis::Line:
         symbol = new QgsLineSymbolV2( layers );

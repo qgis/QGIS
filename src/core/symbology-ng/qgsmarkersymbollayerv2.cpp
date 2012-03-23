@@ -461,7 +461,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
   QgsDebugMsg( "Entered." );
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return NULL;
 
   QString name = "square";
@@ -723,7 +723,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::createFromSld( QDomElement &element
   QgsDebugMsg( "Entered." );
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return NULL;
 
   QString path, mimeType;
@@ -994,7 +994,7 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::createFromSld( QDomElement &elemen
   QgsDebugMsg( "Entered." );
 
   QDomElement graphicElem = element.firstChildElement( "Graphic" );
-  if( graphicElem.isNull() )
+  if ( graphicElem.isNull() )
     return NULL;
 
   QString name, format;

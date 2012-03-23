@@ -3508,12 +3508,14 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   }
   const QgsField& fld = fieldIt.value();
 
-  sql = QString( "SELECT DISTINCT %1 FROM %2 ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
+  sql = QString( "SELECT DISTINCT %1 FROM %2" ).arg( quotedIdentifier( fld.name() ) ).arg( mQuery );
 
   if ( !mSubsetString.isEmpty() )
   {
     sql += " WHERE ( " + mSubsetString + ")";
   }
+
+  sql += QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
 
   if ( limit >= 0 )
   {

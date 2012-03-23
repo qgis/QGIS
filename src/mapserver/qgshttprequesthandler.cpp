@@ -288,6 +288,56 @@ void QgsHttpRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
   sendHttpResponse( ba, formatToMimeType( mFormat ) );
 }
 
+bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) const
+{
+  if ( !ba )
+  {
+    return false;
+  }
+
+  if ( ba->size() < 1 )
+  {
+    return false;
+  }
+
+  QString format;
+  if ( infoFormat == "GeoJSON" )
+    format = "text/plain";
+  else
+    format = "text/xml";
+
+  printf( "Content-Type: " );
+  printf( format.toLocal8Bit() );
+  printf( "\n" );
+  printf( "\n" );
+  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  return true;
+}
+
+void QgsHttpRequestHandler::sendGetFeatureResponse( QByteArray* ba ) const
+{
+  if ( !ba )
+  {
+    return;
+  }
+
+  if ( ba->size() < 1 )
+  {
+    return;
+  }
+  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+}
+
+void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba ) const
+{
+  if ( !ba )
+  {
+    return;
+  }
+
+  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+}
+
 void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters )
 {
   parameters.clear();

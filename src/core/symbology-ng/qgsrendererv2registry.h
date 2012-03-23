@@ -69,8 +69,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            QgsRendererV2CreateFunc pfCreate,
                            QIcon icon = QIcon(),
                            QgsRendererV2WidgetFunc pfWidget = NULL )
-        : QgsRendererV2AbstractMetadata( name, visibleName, icon ),
-          mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ), mCreateFromSldFunc( NULL ) {}
+        : QgsRendererV2AbstractMetadata( name, visibleName, icon )
+        , mCreateFunc( pfCreate )
+        , mWidgetFunc( pfWidget )
+        , mCreateFromSldFunc( NULL )
+    {}
 
     QgsRendererV2Metadata( QString name,
                            QString visibleName,
@@ -78,8 +81,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            QgsRendererV2CreateFromSldFunc pfCreateFromSld,
                            QIcon icon = QIcon(),
                            QgsRendererV2WidgetFunc pfWidget = NULL )
-      : QgsRendererV2AbstractMetadata( name, visibleName, icon ),
-        mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ), mCreateFromSldFunc( pfCreateFromSld ) {}
+        : QgsRendererV2AbstractMetadata( name, visibleName, icon )
+        , mCreateFunc( pfCreate )
+        , mWidgetFunc( pfWidget )
+        , mCreateFromSldFunc( pfCreateFromSld )
+    {}
 
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
