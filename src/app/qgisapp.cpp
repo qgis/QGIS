@@ -860,6 +860,7 @@ void QgisApp::createActions()
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
+  connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
@@ -948,6 +949,11 @@ void QgisApp::createActions()
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
   mActionAddPgLayer = NULL;
+#endif
+
+#ifndef HAVE_MSSQL
+  delete mActionAddMssqlLayer;
+  mActionAddMssqlLayer = NULL;
 #endif
 
 }
@@ -1471,6 +1477,9 @@ void QgisApp::setTheme( QString theThemeName )
 #ifdef HAVE_SPATIALITE
   mActionNewSpatialiteLayer->setIcon( getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddSpatiaLiteLayer->setIcon( getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
+#endif
+#ifdef HAVE_MSSQL
+  mActionAddMssqlLayer->setIcon( getThemeIcon( "/mActionAddMssqlLayer.png" ) );
 #endif
   mActionRemoveLayer->setIcon( getThemeIcon( "/mActionRemoveLayer.png" ) );
   mActionSetLayerCRS->setIcon( getThemeIcon( "/mActionSetLayerCRS.png" ) );
@@ -2513,6 +2522,31 @@ void QgisApp::addSpatiaLiteLayer()
   delete dbs;
 
 } // QgisApp::addSpatiaLiteLayer()
+#endif
+
+#ifndef HAVE_MSSQL
+void QgisApp::addMssqlLayer() {}
+#else
+void QgisApp::addMssqlLayer()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  // show the MS SQL dialog
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "mssql" ), this ) );
+  if ( !dbs )
+  {
+    QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MS SQL select dialog from provider." ) );
+    return;
+  }
+  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  dbs->exec();
+  delete dbs;
+
+} // QgisApp::addMssqlLayer()
 #endif
 
 void QgisApp::addWmsLayer()

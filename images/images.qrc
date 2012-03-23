@@ -363,8 +363,10 @@
         <file>themes/gis/mIconSpatialite.png</file>
         <file>themes/gis/mIconRaster.png</file>
         <file>themes/gis/mIconPostgis.png</file>
+        <file>themes/gis/mIconMssql.png</file>
         <file>themes/gis/mIconConnect.png</file>
         <file>themes/gis/mIconDbSchema.png</file>
+        <file>themes/default/mActionAddMssqlLayer.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

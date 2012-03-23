@@ -502,6 +502,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
     //#endif
+    //#ifdef HAVE_MSSQL
+    //! Add a SpatiaLite layer to the map
+    void addMssqlLayer();
+    //#endif
     /** toggles whether the current selected layer is in overview or not */
     void isInOverview();
     //! Slot to show the map coordinate position of the mouse cursor
