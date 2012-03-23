@@ -31,6 +31,8 @@
 
 #cmakedefine HAVE_SPATIALITE
 
+#cmakedefine HAVE_MSSQL
+
 #cmakedefine HAVE_PYTHON
 
 #endif

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -147,6 +147,7 @@
     <addaction name="mActionAddRasterLayer"/>
     <addaction name="mActionAddPgLayer"/>
     <addaction name="mActionAddSpatiaLiteLayer"/>
+    <addaction name="mActionAddMssqlLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
     <addaction name="mActionAddWfsLayer"/>
@@ -250,6 +251,7 @@
    <addaction name="mActionAddRasterLayer"/>
    <addaction name="mActionAddPgLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
+   <addaction name="mActionAddMssqlLayer"/>
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionNewVectorLayer"/>
@@ -1144,6 +1146,18 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+L</string>
+   </property>
+  </action>
+  <action name="mActionAddMssqlLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMssqlLayer.png</normaloff>:/images/themes/default/mActionAddMssqlLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add MSSQL Spatial Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+M</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">
