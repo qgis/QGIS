@@ -116,7 +116,8 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param p progress dialog or 0 if no progress dialog should be shown
     */
     bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
-                     const QString& outputFormat, int locationField1, int locationField2 = -1, bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
+                     const QString& outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
+                     bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
     /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
@@ -141,7 +142,13 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 
     //helper functions for event layer
-    void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, bool forceSingleType = false );
+    void addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, const QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures, int offsetField = -1, double offsetScale = 1.0,
+                               bool forceSingleType = false );
+    /**Create geometry offset relative to line geometry.
+        @param geom the geometry to modify
+        @param the line geometry to wich the feature is referenced
+        @param offset the offset value in layer unit. Negativ value means offset towards left, positive value is offset to the right side*/
+    void createOffsetGeometry( QgsGeometry* geom, const QgsGeometry* lineGeom, double offset );
     unsigned char* locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
     unsigned char* locateAlongWkbString( unsigned char* ptr, QgsMultiPoint& result, double measure );
     static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );
