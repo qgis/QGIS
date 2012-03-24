@@ -647,8 +647,8 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
                          tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
-      theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ),
-                         tr( "&Remove" ), this, SLOT( legendGroupRemove() ) );
+      // use QGisApp::removeLayer() to remove all selected layers+groups
+      theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
       theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ),
                          tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
@@ -658,6 +658,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     {
       theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
     }
+
     //
     // Option to group layers, if the selection is more than one
     //
