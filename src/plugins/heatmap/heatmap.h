@@ -41,6 +41,7 @@
 //QGIS includes
 #include "../qgisplugin.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 //forward declarations
 class QAction;
@@ -78,20 +79,10 @@ class Heatmap: public QObject, public QgisPlugin
     void unload();
     //! show the help document
     void help();
-    //! the worker slot to create heatmap
-    /*
-     * Signal: createRaster
-     * Params:
-     *         QgsVectorLayer* -> Input point layer
-     *         int             -> Buffer distance
-     *         float           -> Decay ratio
-     *         QString         -> Output filename
-     *         QString         -> Output Format Short Name
-     */
-    void createRaster( QgsVectorLayer*, int, float, QString, QString );
 
   private:
-
+    //! Worker to convert meters to map units
+    float mapUnitsOf( float meters, QgsCoordinateReferenceSystem crs );
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
 
     int mPluginType;
