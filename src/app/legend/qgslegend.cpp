@@ -45,6 +45,34 @@
 
 const int AUTOSCROLL_MARGIN = 16;
 
+// This function finds a unique group name [prefix1, prefix2, ...] by adding an
+// incremental integer to prefix. It is necessary because group names are the
+// only way of identifying groups in QgsLegendInterface.
+// Could add a "parent" argument and use that instead, or pass it as prefix
+static QString GetUniqueGroupName( QString prefix, QStringList groups )
+{
+  QString suffix;
+  if ( groups.size() == 0 )
+  {
+    suffix = "1";
+  }
+  else
+  {
+    // get a list of strings that match prefix, and keep the suffix
+    QStringList match = groups.filter( QRegExp( QString( "^" + prefix ) ) );
+    match.replaceInStrings( prefix, QString( "" ) );
+    // find the maximum
+    int max = 0;
+    foreach( QString m, match )
+    {
+      if ( m.toInt() > max )
+        max = m.toInt();
+    }
+    suffix = QString( "%1" ).arg( max + 1 );
+  }
+  return prefix + suffix;
+}
+
 QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
     : QTreeWidget( parent )
     , mMousePressedFlag( false )
@@ -162,18 +190,20 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   blockSignals( true );
 
   bool nameEmpty = name.isEmpty();
-  if ( nameEmpty )
-    name = tr( "group" ); // some default name if none specified
 
   QgsLegendGroup *parentGroup = dynamic_cast<QgsLegendGroup *>( parent );
   QgsLegendGroup *group;
 
   if ( parentGroup )
   {
+    if ( nameEmpty )
+      name = GetUniqueGroupName( tr( "sub-group" ), groups() );
     group = new QgsLegendGroup( parentGroup, name );
   }
   else
   {
+    if ( nameEmpty )
+      name = GetUniqueGroupName( tr( "group" ), groups() );
     group = new QgsLegendGroup( this, name );
     if ( currentItem() )
     {
@@ -2435,11 +2465,13 @@ void QgsLegend::groupSelectedLayers()
 
   if ( parent )
   {
-    group = new QgsLegendGroup( parent, tr( "sub-group" ) );
+    group = new QgsLegendGroup( parent,
+                                GetUniqueGroupName( tr( "sub-group" ), groups() ) );
   }
   else
   {
-    group = new QgsLegendGroup( this, tr( "group" ) );
+    group = new QgsLegendGroup( this,
+                                GetUniqueGroupName( tr( "group" ), groups() ) );
   }
 
   foreach( QTreeWidgetItem * item, selectedItems() )
