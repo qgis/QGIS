@@ -104,8 +104,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   setWidget( innerWidget );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  //connect( mBrowserView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
-  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
+  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
 
 }
 
@@ -124,19 +123,6 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   }
 
   QDockWidget::showEvent( e );
-}
-
-
-void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
-{
-  QgsDataItem *dataItem = mModel->dataItem( index );
-
-  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
-  {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
-    if ( layerItem != NULL )
-      addLayer( layerItem );
-  }
 }
 
 void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
@@ -168,7 +154,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
 
   else if ( item->type() == QgsDataItem::Layer )
   {
-    menu->addAction( tr( "Add Layer" ), this, SLOT( itemClicked( idx ) ) );
+    menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer( ) ) );
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
   }
 
@@ -310,6 +296,27 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 
     QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
   }
+}
+
+void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
+{
+  QgsDataItem *dataItem = mModel->dataItem( index );
+
+  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
+  {
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    if ( layerItem != NULL )
+    {
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      addLayer( layerItem );
+      QApplication::restoreOverrideCursor();
+    }
+  }
+}
+
+void QgsBrowserDockWidget::addCurrentLayer( )
+{
+  addLayerAtIndex( mBrowserView->currentIndex() );
 }
 
 void QgsBrowserDockWidget::addSelectedLayers()

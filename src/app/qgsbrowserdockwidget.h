@@ -17,7 +17,7 @@ class QgsBrowserDockWidget : public QDockWidget
   signals:
 
   public slots:
-    void itemClicked( const QModelIndex& index );
+    void addLayerAtIndex( const QModelIndex& index );
     void showContextMenu( const QPoint & );
 
     void addFavourite();
@@ -25,6 +25,7 @@ class QgsBrowserDockWidget : public QDockWidget
 
     void refresh();
 
+    void addCurrentLayer();
     void addSelectedLayers();
 
   protected:
