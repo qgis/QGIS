@@ -69,31 +69,37 @@ QgsMssqlGeometryParser::QgsMssqlGeometryParser()
 {
 }
 
-void QgsMssqlGeometryParser::DumpMemoryToLog( char* pszMsg, unsigned char* pszInput, int nLen )
+void QgsMssqlGeometryParser::DumpMemoryToLog( const char* pszMsg, unsigned char* pszInput, int nLen )
 {
-  /*char buf[55];
+#if 0
+  char buf[55];
   int len = 0;
   QFile file( "qgsmssql.log" );
   file.open( QIODevice::Append );
-  file.write( pszMsg, strlen(pszMsg) );
+  file.write( pszMsg, strlen( pszMsg ) );
   file.write( "\n" );
-  sprintf(buf + len, "%05d ", 0);
+  sprintf( buf + len, "%05d ", 0 );
   len += 6;
-  for ( int i = 0; i < nLen; i++)
+  for ( int i = 0; i < nLen; i++ )
   {
-      sprintf(buf + len, "%02x ", pszInput[i]);
-      len += 3;
-      if (len == 54)
-      {
-          file.write( buf, len );
-          len = 0;
-          file.write( "\n" );
-          sprintf(buf + len, "%05d ", i + 1);
-          len = 6;
-      }
+    sprintf( buf + len, "%02x ", pszInput[i] );
+    len += 3;
+    if ( len == 54 )
+    {
+      file.write( buf, len );
+      len = 0;
+      file.write( "\n" );
+      sprintf( buf + len, "%05d ", i + 1 );
+      len = 6;
+    }
   }
   file.write( "\n" );
-  file.close();*/
+  file.close();
+#else
+  Q_UNUSED( pszMsg );
+  Q_UNUSED( pszInput );
+  Q_UNUSED( nLen );
+#endif
 }
 
 /************************************************************************/
