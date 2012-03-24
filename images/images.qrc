@@ -108,7 +108,7 @@
         <file>themes/default/mActionNewFolder.png</file>
         <file>themes/default/mActionNewVectorLayer.png</file>
         <file>themes/default/mActionNodeTool.png</file>
-	<file>themes/default/mActionOffsetCurve.png</file>
+        <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOptions.png</file>
         <file>themes/default/mActionPan.png</file>
@@ -156,6 +156,8 @@
         <file>themes/default/mActionZoomOut.png</file>
         <file>themes/default/mActionZoomToLayer.png</file>
         <file>themes/default/mActionZoomToSelected.png</file>
+        <file>themes/default/mIconConnect.png</file>
+        <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconFirst.png</file>
@@ -165,23 +167,28 @@
         <file>themes/default/mIconLineLayer.png</file>
         <file>themes/default/mIconLock.png</file>
         <file>themes/default/mIconNew.png</file>
+        <file>themes/default/mIconMssql.png</file>
         <file>themes/default/mIconNext.png</file>
         <file>themes/default/mIconNoPyramid.png</file>
         <file>themes/default/mIconPointLayer.png</file>
         <file>themes/default/mIconPolygonLayer.png</file>
+        <file>themes/default/mIconPostgis.png</file>
         <file>themes/default/mIconPrevious.png</file>
         <file>themes/default/mIconProjectionDisabled.png</file>
         <file>themes/default/mIconProjectionEnabled.png</file>
         <file>themes/default/mIconProjectionProblem.png</file>
         <file>themes/default/mIconProperties.png</file>
         <file>themes/default/mIconPyramid.png</file>
+        <file>themes/default/mIconSpatialite.png</file>
         <file>themes/default/mIconStopRendering.png</file>
+        <file>themes/default/mIconRaster.png</file>
         <file>themes/default/mIconRenderingEnabled.png</file>
         <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconSymbology.png</file>
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
+        <file>themes/default/mIconWfs.png</file>
         <file>themes/default/mIconWms.png</file>
         <file>themes/default/mIconWmsLayer.png</file>
         <file>themes/default/mIconWarn.png</file>
