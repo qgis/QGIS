@@ -106,7 +106,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QFileInfo info( thePath );
   if ( info.isFile() )
   {
-    // Filter files by extension
+    // get supported extensions
     if ( extensions.isEmpty() )
     {
       QString filterString;
@@ -114,12 +114,18 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       QgsDebugMsg( "extensions: " + extensions.join( " " ) );
       QgsDebugMsg( "wildcards: " + wildcards.join( " " ) );
     }
+
     // skip *.aux.xml files (GDAL auxilary metadata files)
     // unless that extension is in the list (*.xml might be though)
     if ( thePath.right( 8 ) == ".aux.xml" &&
          extensions.indexOf( "aux.xml" ) < 0 )
       return 0;
 
+    // skip .tar.gz files
+    if ( thePath.right( 7 ) == ".tar.gz" )
+      return 0;
+
+    // Filter files by extension
     if ( extensions.indexOf( info.suffix().toLower() ) < 0 )
     {
       bool matches = false;
@@ -136,6 +142,19 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         return 0;
     }
 
+    // try to open using VSIFileHandler
+    // TODO use the file name of the file inside the zip for layer name
+    if ( thePath.right( 4 ) == ".zip" )
+    {
+      if ( thePath.left( 8 ) != "/vsizip/" )
+        thePath = "/vsizip/" + thePath;
+    }
+    else if ( thePath.right( 3 ) == ".gz" )
+    {
+      if ( thePath.left( 9 ) != "/vsigzip/" )
+        thePath = "/vsigzip/" + thePath;
+    }
+
     GDALAllRegister();
     GDALDatasetH hDS = GDALOpen( TO8F( thePath ), GA_ReadOnly );
 
@@ -150,7 +169,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     QgsDebugMsg( "GdalDataset opened " + thePath );
 
     //extract basename with extension
-    QString name = info.completeBaseName() + "." + QFileInfo( thePath ).suffix();
+    QString name = info.completeBaseName() + "." + info.suffix();
     QString uri = thePath;
 
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, uri,

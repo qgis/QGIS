@@ -229,9 +229,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( !info.isFile() )
     return 0;
 
+  QStringList myExtensions = fileExtensions();
+
+  // skip .tar.gz files
+  if ( thePath.right( 7 ) == ".tar.gz" )
+    return 0;
+
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
-  QStringList myExtensions = fileExtensions();
   if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )
   {
     bool matches = false;
@@ -256,6 +261,18 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       return 0;
   }
 
+  // try to open using the /vsizip mechanism
+  if ( thePath.right( 4 ) == ".zip" )
+  {
+    if ( thePath.left( 8 ) != "/vsizip/" )
+      thePath = "/vsizip/" + thePath;
+  }
+  else if ( thePath.right( 3 ) == ".gz" )
+  {
+    if ( thePath.left( 9 ) != "/vsigzip/" )
+      thePath = "/vsigzip/" + thePath;
+  }
+
   OGRRegisterAll();
   OGRSFDriverH hDriver;
   OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
@@ -272,7 +289,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   if ( numLayers == 1 )
   {
-    QString name = info.completeBaseName();
+    //extract basename with extension
+    QString name = info.completeBaseName() + "." + QFileInfo( thePath ).suffix();
     item = dataItemForLayer( parentItem, name, thePath, hDataSource, 0 );
   }
   else if ( numLayers > 1 )

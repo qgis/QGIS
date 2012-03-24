@@ -105,13 +105,29 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   mGdalDataset = NULL;
 
+  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+  // TODO suppress error messages and report in debug, like in OGR provider
+  // TODO use the file name of the file inside the zip, needs unzip.h
+  if ( uri.right( 4 ) == ".zip" )
+  {
+    if ( uri.left( 8 ) != "/vsizip/" )
+      setDataSourceUri( "/vsizip/" + uri );
+    QgsDebugMsg( QString( "Trying /vsizip syntax, uri= %1" ).arg( dataSourceUri() ) );
+  }
+  else if ( uri.right( 3 ) == ".gz" )
+  {
+    if ( uri.left( 9 ) != "/vsigzip/" )
+      setDataSourceUri( "/vsigzip/" + uri );
+    QgsDebugMsg( QString( "Trying /vsigzip syntax, uri= %1" ).arg( dataSourceUri() ) );
+  }
+
   //mGdalBaseDataset = GDALOpen( QFile::encodeName( uri ).constData(), GA_ReadOnly );
-  mGdalBaseDataset = GDALOpen( TO8F( uri ), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
 
   CPLErrorReset();
   if ( mGdalBaseDataset == NULL )
   {
-    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
@@ -1818,11 +1834,22 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       {
         catchallFilter << QString( GDALGetDescription( myGdalDriver ) );
       }
-    }
+    } // each loaded GDAL driver
 
     myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
 
   }                           // each loaded GDAL driver
+
+  // VSIFileHandler (see qgsogrprovider.cpp)
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+  if ( 1 )
+  {
+    QString glob = "*.zip";
+    glob += " *.gz";
+    theFileFiltersString += ";;[GDAL] " + QObject::tr( "GDAL/OGR VSIFileHandler" ) + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+    theExtensions << "zip" << "gz";
+  }
+#endif
 
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
 }                               // buildSupportedRasterFileFilter_()
@@ -1835,9 +1862,26 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 
   CPLErrorReset();
 
+  QString fileName = theFileNameQString;
+
+  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+  // TODO suppress error messages and report in debug, like in OGR provider
+  if ( fileName.right( 4 ) == ".zip" )
+  {
+    if ( fileName.left( 8 ) != "/vsizip/" )
+      fileName = "/vsizip/" + fileName;
+    QgsDebugMsg( QString( "Trying /vsizip syntax, fileName= %1" ).arg( fileName ) );
+  }
+  if ( fileName.right( 3 ) == ".gz" )
+  {
+    if ( fileName.left( 9 ) != "/vsigzip/" )
+      fileName = "/vsigzip/" + fileName;
+    QgsDebugMsg( QString( "Trying /vsigzip syntax, fileName= %1" ).arg( fileName ) );
+  }
+
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( theFileNameQString ).constData(), GA_ReadOnly );
-  myDataset = GDALOpen( TO8F( theFileNameQString ), GA_ReadOnly );
+  myDataset = GDALOpen( TO8F( fileName ), GA_ReadOnly );
   if ( myDataset == NULL )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )

@@ -6822,7 +6822,8 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       QFileInfo myFileInfo( *myIterator );
       // get the directory the .adf file was in
       QString myDirNameQString = myFileInfo.path();
-      QString myBaseNameQString = myFileInfo.completeBaseName();
+      //extract basename with extension
+      QString myBaseNameQString = myFileInfo.completeBaseName() + "." + myFileInfo.suffix();
       //only allow one copy of a ai grid file to be loaded at a
       //time to prevent the user selecting all adfs in 1 dir which
       //actually represent 1 coverage,
