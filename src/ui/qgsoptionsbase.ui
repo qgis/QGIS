@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="iconSize">
       <size>
@@ -67,7 +67,7 @@
             <x>0</x>
             <y>0</y>
             <width>787</width>
-            <height>823</height>
+            <height>859</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -733,8 +733,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>614</width>
-            <height>523</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -907,8 +907,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>539</width>
-            <height>502</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1193,8 +1193,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
-            <height>93</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1258,8 +1258,14 @@
        <string>Digitizing</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_14">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_5">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -1268,8 +1274,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>571</width>
-            <height>620</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1644,8 +1650,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>425</width>
-            <height>417</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1818,8 +1824,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>584</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1915,8 +1921,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>355</width>
-            <height>572</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
