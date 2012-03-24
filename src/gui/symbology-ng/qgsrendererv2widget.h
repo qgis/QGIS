@@ -2,6 +2,7 @@
 #define QGSRENDERERV2WIDGET_H
 
 #include <QWidget>
+#include <QMenu>
 
 class QgsVectorLayer;
 class QgsStyleV2;
@@ -31,9 +32,13 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     //! return pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRendererV2* renderer() = 0;
 
+    //! show a dialog with renderer's symbol level settings
+    void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
+    QMenu* contextMenu;
 
     /**Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
@@ -41,7 +46,7 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     virtual void refreshSymbolView() {}
 
   protected slots:
-    void contextMenuViewCategories( const QPoint& p );
+    void  contextMenuViewCategories( const QPoint& p );
     /**Change color of selected symbols*/
     void changeSymbolColor();
     /**Change opacity of selected symbols*/

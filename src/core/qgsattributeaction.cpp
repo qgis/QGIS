@@ -77,7 +77,10 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValue
 {
   QMap<QString, QVariant> substitutionMap;
   if ( defaultValueIndex >= 0 )
-    substitutionMap.insert( "$currfield", QVariant( defaultValueIndex ) );
+  {
+    if ( feat.attributeMap().contains( defaultValueIndex ) )
+      substitutionMap.insert( "$currfield", feat.attributeMap()[ defaultValueIndex ] );
+  }
 
   doAction( index, feat, &substitutionMap );
 }
@@ -203,7 +206,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     index = pos + rx.matchedLength();
 
     QString to_replace = rx.cap( 1 ).trimmed();
-    QgsDebugMsg( "Found expression:" + to_replace );
+    QgsDebugMsg( "Found expression: " + to_replace );
 
     if ( substitutionMap && substitutionMap->contains( to_replace ) )
     {
@@ -211,18 +214,18 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
       continue;
     }
 
-    QgsExpression* exp = new QgsExpression( to_replace );
-    if ( exp->hasParserError() )
+    QgsExpression exp( to_replace );
+    if ( exp.hasParserError() )
     {
-      QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
+      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
       expr_action += action.mid( start, index - start );
       continue;
     }
 
-    QVariant result = exp->evaluate( &feat, mLayer->pendingFields() );
-    if ( exp->hasEvalError() )
+    QVariant result = exp.evaluate( &feat, mLayer->pendingFields() );
+    if ( exp.hasEvalError() )
     {
-      QgsDebugMsg( "Expression parser eval error:" + exp->evalErrorString() );
+      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
       expr_action += action.mid( start, index - start );
       continue;
     }

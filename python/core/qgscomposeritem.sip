@@ -222,13 +222,13 @@ class QgsComposerItem: QObject, QGraphicsRectItem
      * @param none
      * @return void
      * @note deprecated since 1.8 don't use!
-     * @see hasFrame
+     * @see setFrameEnabled
      */
     void setFrame( bool drawFrame );
     /** Set whether this item has a frame drawn around it or not.
      * @param none
      * @return void
-     * @note deprecated since 1.8
+     * @note introduced in 1.8
      * @see hasFrame
      */
     void setFrameEnabled( bool drawFrame );

@@ -22,8 +22,10 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
+
 #include <QDomElement>
 #include <QPainter>
+
 #include <cmath>
 
 QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& labelAttributeName )
@@ -66,7 +68,13 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
   return r;
 }
 
-void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+void QgsPointDisplacementRenderer::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  mRenderer->toSld( doc, element );
+}
+
+
+bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( drawVertexMarker );
   //point position in screen coords
@@ -75,7 +83,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( geomType != QGis::WKBPoint && geomType != QGis::WKBPoint25D )
   {
     //can only render point type
-    return;
+    return false;
   }
   QPointF pt;
   _getPoint( pt, context, geom->asWkb() );
@@ -105,14 +113,14 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
           {
             labelAttributeList << QString();
           }
-          symbolList << dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->symbolForFeature( attIt.value() ) );
+          symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, attIt.value() ) );
         }
       }
     }
   }
   else //only one feature
   {
-    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->symbolForFeature( feature ) );
+    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, feature ) );
     if ( mDrawLabels )
     {
       labelAttributeList << getLabel( feature );
@@ -125,7 +133,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
 
   if ( symbolList.isEmpty() && labelAttributeList.isEmpty() )
   {
-    return; //display all point symbols for one posi
+    return true; //display all point symbols for one posi
   }
 
 
@@ -176,6 +184,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   drawSymbols( feature, context, symbolList, symbolPositions, selected );
   //and also the labels
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
+  return true;
 }
 
 void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r )
@@ -572,4 +581,20 @@ void QgsPointDisplacementRenderer::drawLabels( const QPointF& centerPoint, QgsSy
     p->drawText( QPointF( 0, 0 ), *text_it );
     p->restore();
   }
+}
+
+QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f )
+{
+  if ( !r )
+  {
+    return 0;
+  }
+
+  QgsSymbolV2List symbolList = r->symbolsForFeature( f );
+  if ( symbolList.size() < 1 )
+  {
+    return 0;
+  }
+
+  return symbolList.at( 0 );
 }

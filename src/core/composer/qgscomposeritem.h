@@ -167,22 +167,21 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
-     * @see hasFrame
      */
     bool hasFrame() const {return mFrame;}
     /** Set whether this item has a frame drawn around it or not.
      * @returns void
      * @note deprecated since 1.8 don't use!
-     * @see hasFrame
+     * @see setFrameEnabled
      */
     Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @returns nothing
-     * @note deprecated since 1.8
+     * @note introduced in 1.8
      * @see hasFrame
      */
-    Q_DECL_DEPRECATED void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
+    void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
 
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }

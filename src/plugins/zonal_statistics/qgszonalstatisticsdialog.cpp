@@ -61,14 +61,22 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>( layer_it.value() );
     if ( rl )
     {
-      mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+      QgsRasterDataProvider* rp = rl->dataProvider();
+      if ( rp && rp->name() == "gdal" )
+      {
+        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+      }
     }
     else
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
       if ( vl && vl->geometryType() == QGis::Polygon )
       {
-        mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->id() ) );
+        QgsVectorDataProvider* provider  = vl->dataProvider();
+        if ( provider->capabilities() & QgsVectorDataProvider::AddAttributes )
+        {
+          mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->id() ) );
+        }
       }
     }
   }

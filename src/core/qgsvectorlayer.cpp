@@ -744,7 +744,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
 
       // render feature
-      mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
+      bool rendered = mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
       if ( mEditable )
       {
@@ -753,7 +753,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       }
 
       // labeling - register feature
-      if ( mRendererV2->symbolForFeature( fet ) != NULL && rendererContext.labelingEngine() )
+      if ( rendered && rendererContext.labelingEngine() )
       {
         if ( labeling )
         {
@@ -775,6 +775,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     ++featureCount;
 #endif //Q_WS_MAC
   }
+
+  stopRendererV2( rendererContext, NULL );
 
 #ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
@@ -977,7 +979,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    if ( mRendererV2->usingSymbolLevels() )
+    if ( ( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+         && mRendererV2->usingSymbolLevels() )
       drawRendererV2Levels( rendererContext, labeling );
     else
       drawRendererV2( rendererContext, labeling );
@@ -3385,6 +3388,53 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     }
   }
 
+  return true;
+}
+
+bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
+{
+  // get the Name element
+  QDomElement nameElem = node.firstChildElement( "Name" );
+  if ( nameElem.isNull() )
+  {
+    errorMessage = "Warning: Name element not found within NamedLayer while it's required.";
+  }
+
+  if ( hasGeometryType() )
+  {
+    setUsingRendererV2( true );
+
+    QgsFeatureRendererV2* r = QgsFeatureRendererV2::loadSld( node, geometryType(), errorMessage );
+    if ( !r )
+      return false;
+
+    setRendererV2( r );
+  }
+  return true;
+}
+
+
+bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
+{
+  Q_UNUSED( errorMessage );
+
+  // store the Name element
+  QDomElement nameNode = doc.createElement( "se:Name" );
+  nameNode.appendChild( doc.createTextNode( name() ) );
+  node.appendChild( nameNode );
+
+  if ( hasGeometryType() )
+  {
+    if ( mUsingRendererV2 )
+    {
+      node.appendChild( mRendererV2->writeSld( doc, *this ) );
+    }
+    else
+    {
+      node.appendChild( doc.createComment( "Old Renderer not supported yet" ) );
+      return false;
+    }
+  }
   return true;
 }
 

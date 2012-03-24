@@ -12,6 +12,7 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     ~QgsEllipseSymbolLayerV2();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
     QString layerType() const;
@@ -19,6 +20,9 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void stopRender( QgsSymbolV2RenderContext& context );
     QgsSymbolLayerV2* clone() const;
     QgsStringMap properties() const;
+
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
+    void writeSldMarker( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
     void setSymbolName( const QString& name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }

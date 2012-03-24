@@ -166,6 +166,7 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
     mProjectionAcronym = srs.mProjectionAcronym;
     mEllipsoidAcronym = srs.mEllipsoidAcronym;
     mGeoFlag = srs.mGeoFlag;
+    mAxisInverted = srs.mAxisInverted;
     mMapUnits = srs.mMapUnits;
     mSRID = srs.mSRID;
     mAuthId = srs.mAuthId;
@@ -264,6 +265,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
     mAuthId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) );
     mGeoFlag = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt() != 0;
+    mAxisInverted = -1;
 
     if ( mSrsId >= USER_CRS_START_ID && mAuthId.isEmpty() )
     {
@@ -289,6 +291,21 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
   return mIsValidFlag;
+}
+
+bool QgsCoordinateReferenceSystem::axisInverted() const
+{
+  if ( mAxisInverted == -1 )
+  {
+    OGRAxisOrientation orientation;
+    const char *axis0 = OSRGetAxis( mCRS, mGeoFlag ? "GEOGCS" : "PROJCS", 0, &orientation );
+    mAxisInverted = mGeoFlag
+                  ? (orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
+                  : (orientation == OAO_North || orientation == OAO_South );
+    QgsDebugMsg( QString( "srid:%1 axis0:%2 orientation:%3 inverted:%4" ).arg( mSRID ).arg( axis0 ).arg( OSRAxisEnumToName( orientation ) ).arg( mAxisInverted ) );
+  }
+
+  return mAxisInverted != 0;
 }
 
 bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )

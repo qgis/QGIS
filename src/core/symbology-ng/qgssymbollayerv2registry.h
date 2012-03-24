@@ -27,6 +27,9 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0;
     /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
     virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) { return NULL; }
+    /** create a symbol layer of this type given the map of properties. */
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement & ) { return NULL; }
+
 
   protected:
     QString mName;
@@ -36,6 +39,7 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
 
 typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
 typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
+typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFromSldFunc )( QDomElement& );
 
 /**
  Convenience metadata class that uses static functions to create symbol layer and its widget.
@@ -47,19 +51,31 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
                               QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
                               QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
-        : QgsSymbolLayerV2AbstractMetadata( name, visibleName, type ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
+        : QgsSymbolLayerV2AbstractMetadata( name, visibleName, type ),
+          mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ), mCreateFromSldFunc( NULL ) {}
+
+    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
+                              QgsSymbolV2::SymbolType type,
+                              QgsSymbolLayerV2CreateFunc pfCreate,
+                              QgsSymbolLayerV2CreateFromSldFunc pfCreateFromSld,
+                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
+        : QgsSymbolLayerV2AbstractMetadata( name, visibleName, type ),
+          mCreateFunc( pfCreate ), mWidgetFunc ( pfWidget ), mCreateFromSldFunc( pfCreateFromSld ) {}
 
     QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
     QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsSymbolLayerV2CreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc( map ) : NULL; }
     virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) { return mWidgetFunc ? mWidgetFunc( vl ) : NULL; }
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : NULL; }
 
   protected:
     QgsSymbolLayerV2CreateFunc mCreateFunc;
     QgsSymbolLayerV2WidgetFunc mWidgetFunc;
+    QgsSymbolLayerV2CreateFromSldFunc mCreateFromSldFunc;
 };
 
 
@@ -82,6 +98,9 @@ class CORE_EXPORT QgsSymbolLayerV2Registry
 
     //! create a new instance of symbol layer given symbol layer name and properties
     QgsSymbolLayerV2* createSymbolLayer( QString name, const QgsStringMap& properties = QgsStringMap() ) const;
+
+    //! create a new instance of symbol layer given symbol layer name and SLD
+    QgsSymbolLayerV2* createSymbolLayerFromSld( QString name, QDomElement &element ) const;
 
     //! return a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbolV2::SymbolType type );

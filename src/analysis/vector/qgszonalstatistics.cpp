@@ -109,9 +109,9 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   //add the new count, sum, mean fields to the provider
   QList<QgsField> newFieldList;
-  QgsField countField( mAttributePrefix + "count", QVariant::Double );
-  QgsField sumField( mAttributePrefix + "sum", QVariant::Double );
-  QgsField meanField( mAttributePrefix + "mean", QVariant::Double );
+  QgsField countField( mAttributePrefix + "count", QVariant::Double, "double precision" );
+  QgsField sumField( mAttributePrefix + "sum", QVariant::Double, "double precision" );
+  QgsField meanField( mAttributePrefix + "mean", QVariant::Double, "double precision" );
   newFieldList.push_back( countField );
   newFieldList.push_back( sumField );
   newFieldList.push_back( meanField );

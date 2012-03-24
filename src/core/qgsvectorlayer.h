@@ -292,6 +292,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
 
+    bool writeSld( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const;
+    bool readSld( const QDomNode& node, QString& errorMessage );
 
     /**
      * Number of features in the layer. This is necessary if features are

@@ -24,6 +24,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -38,6 +39,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     // new stuff
 
@@ -97,6 +100,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -111,6 +115,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     void setColor( const QColor& color );
 
@@ -163,6 +169,7 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -177,6 +184,8 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
   protected:
     QPen mPen;

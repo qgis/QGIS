@@ -98,6 +98,35 @@ QString QgsRendererRangeV2::dump()
   return QString( "%1 - %2::%3::%4\n" ).arg( mLowerValue ).arg( mUpperValue ).arg( mLabel ).arg( mSymbol->dump() );
 }
 
+void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  if ( !mSymbol || props.value( "attribute", "" ).isEmpty() )
+    return;
+
+  QString attrName = props[ "attribute" ];
+
+  QDomElement ruleElem = doc.createElement( "se:Rule" );
+  element.appendChild( ruleElem );
+
+  QDomElement nameElem = doc.createElement( "se:Name" );
+  nameElem.appendChild( doc.createTextNode( mLabel ) );
+  ruleElem.appendChild( nameElem );
+
+  QDomElement descrElem = doc.createElement( "se:Description" );
+  QString descrStr = QString( "range: %1 - %2" ).arg( mLowerValue ).arg( mUpperValue );
+  descrElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
+  ruleElem.appendChild( descrElem );
+
+  // create the ogc:Filter for the range
+  QDomElement filterElem = doc.createElement( "ogc:Filter" );
+  QString filterFunc = QString( "%1 > %2 AND %1 <= %3" )
+      .arg( attrName.replace( "\"", "\"\"" ) )
+      .arg( mLowerValue ).arg( mUpperValue );
+  QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
+
+  mSymbol->toSld( doc, ruleElem, props );
+}
+
 ///////////
 
 QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, QgsRangeList ranges )
@@ -300,6 +329,23 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   return r;
+}
+
+void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  QgsStringMap props;
+  props[ "attribute" ] = mAttrName;
+  if ( !mRotationField.isEmpty() )
+    props[ "angle" ] = QString( mRotationField ).append( "\"" ).prepend( "\"" );
+  if ( !mSizeScaleField.isEmpty() )
+    props[ "scale" ] = QString( mSizeScaleField ).append( "\"" ).prepend( "\"" );
+
+  // create a Rule for each range
+  for ( QgsRangeList::const_iterator it = mRanges.constBegin(); it != mRanges.constEnd(); it++ )
+  {
+    QgsStringMap catProps( props );
+    it->toSld( doc, element, catProps );
+  }
 }
 
 QgsSymbolV2List QgsGraduatedSymbolRendererV2::symbols()

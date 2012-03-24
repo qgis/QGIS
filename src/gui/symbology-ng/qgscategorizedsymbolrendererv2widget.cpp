@@ -74,6 +74,9 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
+
+  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+
   mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
       mRenderer->rotationField(), mRenderer->sizeScaleField() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
@@ -448,4 +451,9 @@ QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
     }
   }
   return selectedSymbols;
+}
+
+void QgsCategorizedSymbolRendererV2Widget::showSymbolLevels()
+{
+  showSymbolLevelsDialog( mRenderer );
 }

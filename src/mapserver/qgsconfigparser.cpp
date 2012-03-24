@@ -444,11 +444,11 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       c->removeItem( currentMap ); delete currentMap; continue;
     }
 
-    //Change x- and y- of extent for WMS 1.3.0 and geographic coordinate systems
+    //Change x- and y- of extent for WMS 1.3.0 if axis inverted
     QString version = parameterMap.value( "VERSION" );
     if ( !version.isEmpty() )
     {
-      if ( mapRenderer && version == "1.3.0" && mapRenderer->destinationCrs().geographicFlag() )
+      if ( mapRenderer && version == "1.3.0" && mapRenderer->destinationCrs().axisInverted() )
       {
         //switch coordinates of extent
         double tmp;

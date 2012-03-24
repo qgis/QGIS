@@ -25,6 +25,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -39,6 +40,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     Qt::BrushStyle brushStyle() const { return mBrushStyle; }
     void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
@@ -97,6 +100,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -108,6 +112,8 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     //getters and setters
     void setSvgFilePath( const QString& svgPath );
@@ -151,6 +157,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     ~QgsLinePatternFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     QString layerType() const;
 
@@ -161,6 +168,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     //getters and setters
     void setLineAngle( double a ) { mLineAngle = a; }
@@ -193,6 +202,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     ~QgsPointPatternFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+
     QString layerType() const;
 
     void startRender( QgsSymbolV2RenderContext& context );
@@ -202,6 +213,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     //getters and setters
     double distanceX() const { return mDistanceX; }
@@ -236,6 +249,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -250,6 +264,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     void setColor( const QColor& color );
 

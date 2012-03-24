@@ -3,8 +3,11 @@
 #include "qgssymbollayerv2utils.h"
 
 #include "qgsrendercontext.h"
+#include "qgslogger.h"
 
 #include <QPainter>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include <cmath>
 
@@ -147,6 +150,77 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
   l->setCustomDashVector( mCustomDashVector );
   return l;
 }
+
+void QgsSimpleLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  if ( mPenStyle == Qt::NoPen )
+    return;
+
+  QDomElement symbolizerElem = doc.createElement( "se:LineSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  // <Geometry>
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+  // <Stroke>
+  QDomElement strokeElem = doc.createElement( "se:Stroke" );
+  symbolizerElem.appendChild( strokeElem );
+
+  Qt::PenStyle penStyle = mUseCustomDashPattern ? Qt::CustomDashLine : mPenStyle;
+  QgsSymbolLayerV2Utils::lineToSld( doc, strokeElem, penStyle, mColor, mWidth,
+                                    &mPenJoinStyle, &mPenCapStyle, &mCustomDashVector );
+
+  // <se:PerpendicularOffset>
+  if ( mOffset != 0 )
+  {
+    QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
+    perpOffsetElem.appendChild( doc.createTextNode( QString::number( mOffset ) ) );
+    symbolizerElem.appendChild( perpOffsetElem );
+  }
+}
+
+QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  if ( strokeElem.isNull() )
+    return NULL;
+
+  Qt::PenStyle penStyle;
+  QColor color;
+  double width;
+  Qt::PenJoinStyle penJoinStyle;
+  Qt::PenCapStyle penCapStyle;
+  QVector<qreal> customDashVector;
+
+  if ( !QgsSymbolLayerV2Utils::lineFromSld( strokeElem, penStyle,
+                                            color, width,
+                                            &penJoinStyle, &penCapStyle,
+                                            &customDashVector ) )
+    return NULL;
+
+  double offset = 0.0;
+  QDomElement perpOffsetElem = element.firstChildElement( "PerpendicularOffset" );
+  if ( !perpOffsetElem.isNull() )
+  {
+    bool ok;
+    double d = perpOffsetElem.firstChild().nodeValue().toDouble( &ok );
+    if ( ok )
+      offset = d;
+  }
+
+  QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
+  l->setOffset( offset );
+  l->setPenJoinStyle( penJoinStyle );
+  l->setPenCapStyle( penCapStyle );
+  l->setUseCustomDashPattern( penStyle == Qt::CustomDashLine );
+  l->setCustomDashVector( customDashVector );
+  return l;
+}
+
 
 
 /////////
@@ -574,6 +648,154 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   return x;
 }
 
+void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  for ( int i = 0; i < mMarker->symbolLayerCount(); i++ )
+  {
+    QDomElement symbolizerElem = doc.createElement( "se:LineSymbolizer" );
+    if ( !props.value( "uom", "" ).isEmpty() )
+      symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+    element.appendChild( symbolizerElem );
+
+    // <Geometry>
+    QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+    QString gap;
+    switch( mPlacement )
+    {
+      case FirstVertex:
+        symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "firstPoint" ) );
+        break;
+      case LastVertex:
+        symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "lastPoint" ) );
+        break;
+      case CentralPoint:
+        symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "centralPoint" ) );
+        break;
+      case Vertex:
+        // no way to get line/polygon's vertices, use a VendorOption
+        symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "points" ) );
+        break;
+      default:
+        gap = QString::number( mInterval );
+        break;
+    }
+
+    if( !mRotateMarker )
+    {
+      // markers in LineSymbolizer must be drawn following the line orientation,
+      // use a VendorOption when no marker rotation
+      symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "rotateMarker", "0" ) );
+    }
+
+    // <Stroke>
+    QDomElement strokeElem = doc.createElement( "se:Stroke" );
+    symbolizerElem.appendChild( strokeElem );
+
+    // <GraphicStroke>
+    QDomElement graphicStrokeElem = doc.createElement( "se:GraphicStroke" );
+    strokeElem.appendChild( graphicStrokeElem );
+
+    QgsSymbolLayerV2 *layer = mMarker->symbolLayer( i );
+    QgsMarkerSymbolLayerV2 *markerLayer = static_cast<QgsMarkerSymbolLayerV2 *>( layer );
+    if ( !markerLayer )
+    {
+      graphicStrokeElem.appendChild( doc.createComment( QString( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( markerLayer->layerType() ) ) );
+    }
+    else
+    {
+      markerLayer->writeSldMarker( doc, graphicStrokeElem, props );
+    }
+
+    if ( !gap.isEmpty() )
+    {
+      QDomElement gapElem = doc.createElement( "se:Gap" );
+      QgsSymbolLayerV2Utils::createFunctionElement( doc, gapElem, gap );
+      graphicStrokeElem.appendChild( gapElem );
+    }
+
+    if ( !doubleNear( mOffset, 0.0 ) )
+    {
+      QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
+      perpOffsetElem.appendChild( doc.createTextNode( QString::number( mOffset ) ) );
+      symbolizerElem.appendChild( perpOffsetElem );
+    }
+  }
+}
+
+QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  if ( strokeElem.isNull() )
+    return NULL;
+
+  QDomElement graphicStrokeElem = strokeElem.firstChildElement( "GraphicStroke" );
+  if ( graphicStrokeElem.isNull() )
+    return NULL;
+
+  // retrieve vendor options
+  bool rotateMarker = true;
+  Placement placement = Interval;
+
+  QgsStringMap vendorOptions = QgsSymbolLayerV2Utils::getVendorOptionList( element );
+  for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  {
+    if ( it.key() == "placement" )
+    {
+      if ( it.value() == "points" ) placement = Vertex;
+      else if ( it.value() == "firstPoint" ) placement = FirstVertex;
+      else if ( it.value() == "lastPoint" ) placement = LastVertex;
+      else if ( it.value() == "centralPoint" ) placement = CentralPoint;
+    }
+    else if ( it.value() == "rotateMarker" )
+    {
+      rotateMarker = it.value() == "0";
+    }
+  }
+
+  QgsMarkerSymbolV2 *marker = 0;
+
+  QgsSymbolLayerV2 *l = QgsSymbolLayerV2Utils::createMarkerLayerFromSld( graphicStrokeElem );
+  if ( l )
+  {
+    QgsSymbolLayerV2List layers;
+    layers.append( l );
+    marker = new QgsMarkerSymbolV2( layers );
+  }
+
+  double interval = 0.0;
+  QDomElement gapElem = element.firstChildElement( "Gap" );
+  if ( !gapElem.isNull() )
+  {
+    bool ok;
+    double d = gapElem.firstChild().nodeValue().toDouble( &ok );
+    if ( ok )
+      interval = d;
+  }
+
+  double offset = 0.0;
+  QDomElement perpOffsetElem = element.firstChildElement( "PerpendicularOffset" );
+  if ( !perpOffsetElem.isNull() )
+  {
+    bool ok;
+    double d = perpOffsetElem.firstChild().nodeValue().toDouble( &ok );
+    if ( ok )
+      offset = d;
+  }
+
+  QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( rotateMarker );
+  x->setPlacement( placement );
+  if ( !doubleNear( interval, 0.0 ) && interval > 0 )
+    x->setInterval( interval );
+  if ( marker )
+    x->setSubSymbol( marker );
+  if ( !doubleNear( offset, 0.0 ) )
+    x->setOffset( offset );
+  return x;
+}
+
 void QgsMarkerLineSymbolLayerV2::setWidth( double width )
 {
   mMarker->setSize( width );
@@ -682,4 +904,35 @@ QgsStringMap QgsLineDecorationSymbolLayerV2::properties() const
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2::clone() const
 {
   return new QgsLineDecorationSymbolLayerV2( mColor, mWidth );
+}
+
+void QgsLineDecorationSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  QDomElement symbolizerElem = doc.createElement( "se:LineSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom" , "" ) );
+
+  // <Stroke>
+  QDomElement strokeElem = doc.createElement( "se:Stroke" );
+  symbolizerElem.appendChild( strokeElem );
+
+  // <GraphicStroke>
+  QDomElement graphicStrokeElem = doc.createElement( "se:GraphicStroke" );
+  strokeElem.appendChild( graphicStrokeElem );
+
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  graphicStrokeElem.appendChild( graphicElem );
+
+  // <Mark>
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, "arrowhead", QColor(), mColor, mWidth, mWidth*8 );
+
+  // <Rotation>
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, props.value( "angle", "" ) );
+
+  // use <VendorOption> to draw the decoration at end of the line
+  symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "lastPoint" ) );
 }
