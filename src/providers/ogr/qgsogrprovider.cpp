@@ -35,6 +35,7 @@ email                : sherman at mrcc.com
 #include <QMap>
 #include <QString>
 #include <QTextCodec>
+#include <QSettings>
 
 #include "qgsapplication.h"
 #include "qgsdataitem.h"
@@ -1778,11 +1779,12 @@ QString createFilters( QString type )
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
     // For .zip this works only if there is one file (or dataset) in the root of the zip.
-    // Only tested with shape (zip) and spatialite (zip and gz).
-    // Ideally we should add a new subclass of QgsCollectionItem (or QgsDirItem), say QgsZipItem
-    //   and read the files inside the zip (requires unzip.h or cpl_minizip_unzip.h)
-    //   and also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
+    // Only tested with tiff, shape (zip) and spatialite (zip and gz).
+    // This does not work for some file types, see VSIFileHandler doc.
+    // Ideally we should also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+    // QSettings settings;
+    // if ( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() != 0 )
     if ( 1 )
     {
       myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz" );

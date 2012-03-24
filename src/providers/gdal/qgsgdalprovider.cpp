@@ -40,6 +40,7 @@
 #include <QFile>
 #include <QHash>
 #include <QTime>
+#include <QSettings>
 
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
@@ -1077,7 +1078,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
     int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
     int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
 
-    QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
@@ -1093,7 +1094,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
       }
 
       //double value = readValue( data, type, 0 );
-      QgsDebugMsg( QString( "value=%1" ).arg( value ) );
+      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
       QString v;
 
       if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
@@ -1842,6 +1843,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
   // VSIFileHandler (see qgsogrprovider.cpp)
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+  // QSettings settings;
+  // if ( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() != 0 )
   if ( 1 )
   {
     QString glob = "*.zip";
@@ -1995,3 +1998,4 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   QStringList wildcards;
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
+

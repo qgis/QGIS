@@ -36,7 +36,6 @@ typedef int dataCapabilities_t();
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 
-
 /** base class for all items in the model */
 class CORE_EXPORT QgsDataItem : public QObject
 {
@@ -236,7 +235,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     virtual QWidget * paramWidget();
 
-    static QVector<QgsDataProvider*> mProviders;
+    /* static QVector<QgsDataProvider*> mProviders; */
     static QVector<QLibrary*> mLibraries;
 };
 
@@ -270,6 +269,27 @@ class QgsDirectoryParamWidget : public QTreeWidget
 
   public slots:
     void showHideColumn();
+};
+
+/** A zip file: contains layers, using GDAL/OGR VSIFILE mechanism */
+class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsZipItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsZipItem();
+
+    QVector<QgsDataItem*> createChildren();
+    QStringList getFiles();
+
+    /* protected: */
+
+    static QVector<dataItem_t *> mDataItemPtr;
+    static QStringList mProviderNames;
+
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
+
+    static const QIcon &iconZip();
 };
 
 #endif // QGSDATAITEM_H
