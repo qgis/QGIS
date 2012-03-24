@@ -25,8 +25,10 @@ class QgsBrowserDockWidget : public QDockWidget
 
     void refresh();
 
+    // layer menu items
     void addCurrentLayer();
     void addSelectedLayers();
+    void showProperties();
 
   protected:
 
