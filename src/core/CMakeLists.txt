@@ -175,6 +175,16 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   qgsspatialindex.cpp
+
+  quazip/unzip.c  
+  quazip/zip.c
+  quazip/JlCompress.cpp
+  quazip/qioapi.cpp
+  quazip/quaadler32.cpp
+  quazip/quacrc32.cpp
+  quazip/quazip.cpp
+  quazip/quazipfile.cpp
+  quazip/quazipnewinfo.cpp
 )
 
 IF(WIN32)
@@ -279,6 +289,8 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
   gps/qextserialport/qextserialport.h
   gps/qextserialport/qextserialenumerator.h
+
+  quazip/quazipfile.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
