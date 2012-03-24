@@ -205,6 +205,7 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
     if ( nameEmpty )
       name = GetUniqueGroupName( tr( "group" ), groups() );
     group = new QgsLegendGroup( this, name );
+
     if ( currentItem() )
     {
       moveItem( group, currentItem() );
@@ -218,6 +219,9 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
     openEditor();
 
   blockSignals( false );
+
+  emit itemAdded( groupIndex );
+
   return groupIndex.row();
 }
 
@@ -304,6 +308,7 @@ void QgsLegend::removeLayer( QString layerId )
   updateMapCanvasLayerSet();
   adjustIconSize();
 
+  emit itemRemoved();
   if ( invLayerRemoved )
     emit invisibleLayerRemoved();
 }
@@ -899,6 +904,8 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   }
   //make the QTreeWidget item up-to-date
   doItemsLayout();
+
+  emit itemAdded( indexFromItem( llayer ) );
 }
 
 void QgsLegend::setLayerVisible( QgsMapLayer * layer, bool visible )
@@ -1130,6 +1137,8 @@ void QgsLegend::removeGroup( QgsLegendGroup *lg )
 
   delete lg;
 
+  emit itemRemoved();
+
   adjustIconSize();
 }
 
@@ -1163,6 +1172,8 @@ void QgsLegend::moveLayer( QgsMapLayer *ml, int groupIndex )
     return;
 
   insertItem( layer, group );
+
+  emit itemMovedGroup( dynamic_cast<QgsLegendItem*>( layer ), groupIndex );
 }
 
 void QgsLegend::legendLayerShowInOverview()
@@ -1797,11 +1808,14 @@ void QgsLegend::insertItem( QTreeWidgetItem* move, QTreeWidgetItem* into )
     }
     intoItem->receive( movedItem );
     movedItem->restoreAppearanceSettings();//apply the settings again
+    emit itemMovedGroup( movedItem, indexFromItem( intoItem ).row() );
   }
 }
 
 void QgsLegend::moveItem( QTreeWidgetItem* move, QTreeWidgetItem* after )
 {
+  QModelIndex oldIndex = indexFromItem( move );
+
   QgsDebugMsgLevel( QString( "Moving layer : %1 (%2)" ).arg( move->text( 0 ) ).arg( move->type() ), 3 );
   if ( after )
   {
@@ -1840,6 +1854,8 @@ void QgsLegend::moveItem( QTreeWidgetItem* move, QTreeWidgetItem* after )
   }
 
   static_cast<QgsLegendItem*>( move )->restoreAppearanceSettings();//apply the settings again
+
+  emit itemMoved( oldIndex, indexFromItem( move ) );
 }
 
 void QgsLegend::removeItem( QTreeWidgetItem* item )
@@ -2475,17 +2491,33 @@ void QgsLegend::groupSelectedLayers()
                                 GetUniqueGroupName( tr( "group" ), groups() ) );
   }
 
+  // save old indexes so we can notify changes
+  QList< QModelIndex > oldIndexes;
+  QList< QTreeWidgetItem* > selected;
+
   foreach( QTreeWidgetItem * item, selectedItems() )
   {
     QgsLegendLayer* layer = dynamic_cast<QgsLegendLayer *>( item );
     if ( layer )
     {
-      insertItem( item, group );
+      oldIndexes.append( indexFromItem( item ) );
+      selected.append( item );
     }
   }
+  foreach( QTreeWidgetItem * item, selected )
+  {
+    insertItem( item, group );
+  }
+
   editItem( group, 0 );
 
   blockSignals( false );
 
+  // notify that group was added and that items were moved
+  emit itemAdded( indexFromItem( group ) );
+  for ( int i = 0; i < selected.size(); i++ )
+  {
+    emit itemMoved( oldIndexes[i], indexFromItem( selected[i] ) );
+  }
 }
 
