@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef QGSCLIPBOARD_H
 #define QGSCLIPBOARD_H
 
@@ -26,9 +25,7 @@
 #include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 
-
 /**
-
   \brief QGIS internal clipboard for features.
 
   An internal clipboard is required so that features can be retained in
@@ -42,16 +39,11 @@
   of features in and out of the system clipboard (QClipboard).
 
   TODO: Make it work
-
 */
 
 class QgsClipboard
 {
-
-
   public:
-
-
     /**
     * Constructor for the clipboard.
     */
@@ -83,7 +75,6 @@ class QgsClipboard
      */
     void insert( QgsFeature& feature );
 
-
     /*
      *  Returns true if the internal clipboard is empty, else false.
      */
@@ -102,7 +93,6 @@ class QgsClipboard
      */
     void setCRS( QgsCoordinateReferenceSystem crs );
 
-
     /*
      *  Get the clipboard CRS
      */
@@ -117,8 +107,6 @@ class QgsClipboard
     QgsFeatureList mFeatureClipboard;
 
     QgsCoordinateReferenceSystem mCRS;
-
-
 };
 
 #endif
