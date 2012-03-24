@@ -41,6 +41,7 @@
 //QGIS includes
 #include "../qgisplugin.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 //forward declarations
 class QAction;
@@ -80,7 +81,8 @@ class Heatmap: public QObject, public QgisPlugin
     void help();
 
   private:
-
+    //! Worker to convert meters to map units
+    float mapUnitsOf( float meters, QgsCoordinateReferenceSystem crs );
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
 
     int mPluginType;
@@ -88,14 +90,6 @@ class Heatmap: public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
-
-    /** Enumerator to hold the buffer distance unit type */
-    enum mBufferUnit
-    {
-      Nothing,
-      Meters,
-      MapUnits
-    };
 
 };
 

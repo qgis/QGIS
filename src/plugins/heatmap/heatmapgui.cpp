@@ -77,6 +77,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   }
   mFormatCombo->setCurrentIndex( myTiffIndex );
 
+  updateBBox();
   //finally set right the ok button
   enableOrDisableOkButton();
 }
@@ -135,7 +136,7 @@ void HeatmapGui::on_advancedGroupBox_toggled( bool enabled )
   if ( enabled )
   {
     // if there are no layers point layers then show error dialog and toggle
-    if( mInputVectorCombo->count() == 0 )
+    if ( mInputVectorCombo->count() == 0 )
     {
       QMessageBox::information( 0, tr( "No valid layers found!" ), tr( "Advanced options cannot be enabled." ) );
       advancedGroupBox->setChecked( false );
@@ -144,59 +145,59 @@ void HeatmapGui::on_advancedGroupBox_toggled( bool enabled )
     // if there are layers then populate fields
     populateFields();
     updateBBox();
-
  }
 }
 
 void HeatmapGui::on_rowLineEdit_editingFinished()
 {
-  int rows = rowLineEdit->text().toInt();
-  float ycellsize = mBBox.height() / rows;
-  float xcellsize = ycellsize;
-  int columns = mBBox.width() / xcellsize;
+  mRows = rowLineEdit->text().toInt();
+  mYcellsize = mBBox.height() / mRows;
+  mXcellsize = mYcellsize;
+  mColumns = mBBox.width() / mXcellsize + 1;
 
-  updateSize( rows, columns, xcellsize, ycellsize );
+  updateSize();
 }
 
 void HeatmapGui::on_columnLineEdit_editingFinished()
 {
-  int columns = columnLineEdit->text().toInt();
-  float xcellsize = mBBox.width() / columns;
-  float ycellsize = xcellsize;
-  int rows = mBBox.height() / ycellsize;
+  mColumns = columnLineEdit->text().toInt();
+  mXcellsize = mBBox.width() / mColumns;
+  mYcellsize = mXcellsize;
+  mRows = mBBox.height() / mYcellsize + 1;
 
-  updateSize( rows, columns, xcellsize, ycellsize );
+  updateSize();
 }
 
 void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
-  float xcellsize = cellXLineEdit->text().toFloat();
-  float ycellsize = xcellsize;
-  int rows = mBBox.height() / ycellsize;
-  int columns = mBBox.width() / xcellsize;
+  mXcellsize = cellXLineEdit->text().toFloat();
+  mYcellsize = mXcellsize;
+  mRows = mBBox.height() / mYcellsize + 1;
+  mColumns = mBBox.width() / mXcellsize + 1;
 
-  updateSize( rows, columns, xcellsize, ycellsize );
+  updateSize();
 }
 
 void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
-  float ycellsize = cellYLineEdit->text().toFloat();
-  float xcellsize = ycellsize;
-  int rows = mBBox.height() / ycellsize;
-  int columns = mBBox.width() / xcellsize;
+  mYcellsize = cellYLineEdit->text().toFloat();
+  mXcellsize = mYcellsize;
+  mRows = mBBox.height() / mYcellsize + 1;
+  mColumns = mBBox.width() / mXcellsize + 1;
 
-  updateSize( rows, columns, xcellsize, ycellsize );
+  updateSize();
 }
 
 void HeatmapGui::on_radiusFieldUnitCombo_currentIndexChanged( int index )
 {
   updateBBox();
-  QgsDebugMsg( tr( "Unit index set to %1").arg( index ) );
+  // DebugMsg to avoid index not used warning
+  QgsDebugMsg( tr( "Unit index set to %1" ).arg( index ) );
 }
 
 void HeatmapGui::on_mRadiusUnitCombo_currentIndexChanged( int index )
 {
-  QgsDebugMsg( tr( "Unit index set to %1").arg( index ) );
+  QgsDebugMsg( tr( "Unit index set to %1" ).arg( index ) );
   updateBBox();
 }
 
@@ -207,13 +208,13 @@ void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
     populateFields();
     updateBBox();
   }
-  QgsDebugMsg( tr("Input vector index changed to %1").arg( index ) );
+  QgsDebugMsg( tr( "Input vector index changed to %1" ).arg( index ) );
 }
 
 void HeatmapGui::on_radiusFieldCombo_currentIndexChanged( int index )
 {
   updateBBox();
-  QgsDebugMsg( tr("Radius Field index changed to %1").arg( index ) );
+  QgsDebugMsg( tr( "Radius Field index changed to %1" ).arg( index ) );
 }
 
 void HeatmapGui::on_mBufferLineEdit_editingFinished()
@@ -257,12 +258,12 @@ void HeatmapGui::populateFields()
 
 }
 
-void HeatmapGui::updateSize( int rows, int columns, float cellx, float celly )
+void HeatmapGui::updateSize()
 {
-  rowLineEdit->setText( QString::number( rows ) );
-  columnLineEdit->setText( QString::number( columns ) );
-  cellXLineEdit->setText( QString::number( cellx ) );
-  cellYLineEdit->setText( QString::number( celly ) );
+  rowLineEdit->setText( QString::number( mRows ) );
+  columnLineEdit->setText( QString::number( mColumns ) );
+  cellXLineEdit->setText( QString::number( mXcellsize ) );
+  cellYLineEdit->setText( QString::number( mYcellsize ) );
 }
 
 void HeatmapGui::updateBBox()
@@ -274,15 +275,15 @@ void HeatmapGui::updateBBox()
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
 
   float radiusInMapUnits;
-  if( useRadius->isChecked() )
+  if ( useRadius->isChecked() )
   {
     float maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toFloat();
 
-    if( radiusFieldUnitCombo->currentIndex() == HeatmapGui::Meters )
+    if ( radiusFieldUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
       radiusInMapUnits = mapUnitsOf( maxInField, layerCrs );
     }
-    else if( radiusFieldUnitCombo->currentIndex() == HeatmapGui::MapUnits )
+    else if ( radiusFieldUnitCombo->currentIndex() == HeatmapGui::MapUnits )
     {
       radiusInMapUnits = maxInField;
     }
@@ -290,11 +291,11 @@ void HeatmapGui::updateBBox()
   else
   {
     float radiusValue = mBufferLineEdit->text().toFloat();
-    if( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+    if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
       radiusInMapUnits = mapUnitsOf( radiusValue, layerCrs );
     }
-    else if( mRadiusUnitCombo->currentIndex() == HeatmapGui::MapUnits )
+    else if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::MapUnits )
     {
       radiusInMapUnits = radiusValue;
     }
@@ -302,20 +303,19 @@ void HeatmapGui::updateBBox()
   // get the distance converted into map units
   mBBox.setXMinimum( mBBox.xMinimum() - radiusInMapUnits );
   mBBox.setYMinimum( mBBox.yMinimum() - radiusInMapUnits );
-  mBBox.setXMaximum(  mBBox.xMaximum() + radiusInMapUnits);
+  mBBox.setXMaximum( mBBox.xMaximum() + radiusInMapUnits );
   mBBox.setYMaximum( mBBox.yMaximum() + radiusInMapUnits );
-  float xcellsize;
-  float ycellsize;
-  int rows = 500;
-  ycellsize = mBBox.height() / rows;
-  xcellsize = ycellsize;
-  int columns = mBBox.width() / xcellsize;
+  mRows = 500;
+  mYcellsize = mBBox.height() / mRows;
+  mXcellsize = mYcellsize;
+  // +1 should be  added wherever a fractional part of cell might occur
+  mColumns = mBBox.width() / mXcellsize + 1;
+  mRows += 1;
 
-  if( advancedGroupBox->isChecked() )
+  if ( advancedGroupBox->isChecked() )
   {
-    updateSize( rows, columns, xcellsize, ycellsize );
+    updateSize();
   }
- 
 }
 
 float HeatmapGui::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
@@ -330,8 +330,8 @@ float HeatmapGui::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCr
     da.setProjectionsEnabled( true );
   }
   double unitDistance = da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
-  QgsDebugMsg( tr( "Converted %1 meters to %2 mapunits" ).arg( meters ).arg( meters/unitDistance ) );
-  return  meters/unitDistance;
+  QgsDebugMsg( tr( "Converted %1 meters to %2 mapunits" ).arg( meters ).arg( meters / unitDistance ) );
+  return  meters / unitDistance;
 }
 /*
  *
@@ -351,10 +351,11 @@ bool HeatmapGui::variableRadius()
 
 float HeatmapGui::radius()
 {
-  QString dummyText;
-  float radius;
-  dummyText = mBufferLineEdit->text();
-  radius = dummyText.toInt();
+  float radius = mBufferLineEdit->text().toInt();
+  if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+  {
+    radius = mapUnitsOf( radius, inputVectorLayer()->crs() );
+  }
   return radius;
 }
 
@@ -369,25 +370,21 @@ int HeatmapGui::radiusUnit()
 
 float HeatmapGui::decayRatio()
 {
-  QString dummyText;
-  float decayRatio;
-  dummyText = mDecayLineEdit->text();
-  decayRatio = dummyText.toFloat();
-  return decayRatio;
+  return mDecayLineEdit->text().toFloat();
 }
 
-QVariant HeatmapGui::radiusField()
+int HeatmapGui::radiusField()
 {
   int radiusindex;
-  radiusindex = radiusFieldUnitCombo->currentIndex();
-  return radiusFieldUnitCombo->itemData( radiusindex );
+  radiusindex = radiusFieldCombo->currentIndex();
+  return radiusFieldCombo->itemData( radiusindex ).toInt();
 }
 
-QVariant HeatmapGui::weightField()
+int HeatmapGui::weightField()
 {
   int weightindex;
   weightindex = weightFieldCombo->currentIndex();
-  return weightFieldCombo->itemData( weightindex );
+  return weightFieldCombo->itemData( weightindex ).toInt();
 }
 
 QString HeatmapGui::outputFilename()
@@ -425,7 +422,7 @@ QString HeatmapGui::outputFilename()
   return outputFileName;
 }
 
-QString HeatmapGui::ouputFormat()
+QString HeatmapGui::outputFormat()
 {
   return mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
 }
@@ -443,22 +440,3 @@ QgsVectorLayer* HeatmapGui::inputVectorLayer()
   return inputLayer;
 }
 
-int HeatmapGui::rows()
-{
-  return rowLineEdit->text().toInt();
-}
-
-int HeatmapGui::columns()
-{
-  return columnLineEdit->text().toInt();
-}
-
-float HeatmapGui::cellSizeX()
-{
-  return cellXLineEdit->text().toFloat();
-}
-
-float HeatmapGui::cellSizeY()
-{
-  return cellYLineEdit->text().toFloat();
-}

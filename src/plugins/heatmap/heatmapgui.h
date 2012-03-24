@@ -28,6 +28,14 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     HeatmapGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~HeatmapGui();
 
+    // Buffer unit type
+    // Should have been private, made public to be used in heatmap.cpp
+    enum mBufferType
+    {
+      Meters,
+      MapUnits
+    };
+
     /** Returns whether to apply weighted heat */
     bool weighted();
 
@@ -44,42 +52,42 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     float decayRatio();
 
     /** Return the attribute field for variable radius */
-    QVariant radiusField();
+    int radiusField();
 
     /** Returns the attrinute field for weighted heat */
-    QVariant weightField();
+    int weightField();
 
     /** Returns the output filename/path */
     QString outputFilename();
 
     /** Returns the GDAL Format for output raster */
-    QString ouputFormat();
+    QString outputFormat();
 
     /** Returns the input Vector layer */
     QgsVectorLayer* inputVectorLayer();
 
     /** Returns the no of rows for the raster */
-    int rows();
+    int rows(){ return mRows; }
 
     /** Returns the no of columns in the raster */
-    int columns();
+    int columns(){ return mColumns; }
 
     /** Returns the cell size X value */
-    float cellSizeX();
+    float cellSizeX(){ return mXcellsize; }
 
     /** Returns the cell size Y valuue */
-    float cellSizeY();
+    float cellSizeY(){ return mYcellsize; }
+
+    /** Return the BBox */
+    QgsRectangle bbox(){ return mBBox; }
 
   private:
     QMap<QString, QString> mExtensionMap;
-    // Buffer unit type
-    enum mBufferType
-    {
-      Meters,
-      MapUnits
-    };
+
     // bbox of layer for lineedit changes
     QgsRectangle mBBox;
+    float mXcellsize, mYcellsize;
+    int mRows, mColumns;
 
     /** Function to check wether all constrains are satisfied and enable the OK button */
     void enableOrDisableOkButton();
@@ -91,9 +99,8 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void updateBBox();
 
     /** Update the LineEdits cellsize and row&col values  */
-    void updateSize( int rows, int columns, float cellx, float celly );
+    void updateSize();
 
-    /** Populate the row/cols  and cell sizes*/
     /** Convert Maters value to the corresponding map units based on Layer projection */
     float mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs );
 
