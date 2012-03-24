@@ -14,6 +14,11 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 
+// browser layer properties dialog
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include <ui_qgsbrowserlayerpropertiesbase.h>
+
 #include <QDragEnterEvent>
 /**
 Utility class for correct drag&drop handling.
@@ -166,6 +171,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
   {
     menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer( ) ) );
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
+    menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
   }
 
   QList<QAction*> actions = item->actions();
@@ -351,4 +357,88 @@ void QgsBrowserDockWidget::addSelectedLayers()
   }
 
   QApplication::restoreOverrideCursor();
+}
+
+void QgsBrowserDockWidget::showProperties( )
+{
+  QgsDebugMsg( "Entered" );
+  QgsDataItem* dataItem = mModel->dataItem( mBrowserView->currentIndex() );
+
+  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
+  {
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    if ( layerItem != NULL )
+    {
+      QgsMapLayer::LayerType type = layerItem->mapLayerType();
+      QString layerMetadata = tr( "Error" );
+      QgsCoordinateReferenceSystem layerCrs;
+      QString notice;
+
+      // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
+      QSettings settings;
+      QString defaultProjectionOption = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
+      if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
+      {
+        settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+      }
+
+      // find root item
+      // we need to create a temporary layer to get metadata
+      // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
+      QgsDebugMsg( QString( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
+      if ( type == QgsMapLayer::RasterLayer )
+      {
+        QgsDebugMsg( "creating raster layer" );
+        // should copy code from addLayer() to split uri ?
+        QgsRasterLayer* layer = new QgsRasterLayer( 0, layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+        if ( layer != NULL )
+        {
+          layerCrs = layer->crs();
+          layerMetadata = layer->metadata();
+          delete layer;
+        }
+      }
+      else if ( type == QgsMapLayer::VectorLayer )
+      {
+        QgsDebugMsg( "creating vector layer" );
+        QgsVectorLayer* layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+        if ( layer != NULL )
+        {
+          layerCrs = layer->crs();
+          layerMetadata = layer->metadata();
+          delete layer;
+        }
+      }
+
+      // restore /Projections/defaultBehaviour
+      if ( defaultProjectionOption == "prompt" )
+      {
+        settings.setValue( "/Projections/defaultBehaviour", defaultProjectionOption );
+      }
+
+      // initialize dialog
+      QDialog *dialog = new QDialog( this );
+      Ui::QgsBrowserLayerPropertiesBase ui;
+      ui.setupUi( dialog );
+
+      dialog->setWindowTitle( tr( "Layer Properties" ) );
+      ui.leName->setText( layerItem->name() );
+      ui.leSource->setText( layerItem->path() );
+      ui.leProvider->setText( layerItem->providerKey() );
+      QString myStyle = QgsApplication::reportStyleSheet();
+      ui.txtbMetadata->document()->setDefaultStyleSheet( myStyle );
+      ui.txtbMetadata->setHtml( layerMetadata );
+
+      // report if layer was set to to project crs without prompt (may give a false positive)
+      if ( defaultProjectionOption == "prompt" )
+      {
+        QgsCoordinateReferenceSystem defaultCrs =
+          QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs();
+        if ( layerCrs == defaultCrs )
+          ui.lblNotice->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ")" );
+      }
+
+      dialog->show();
+    }
+  }
 }
