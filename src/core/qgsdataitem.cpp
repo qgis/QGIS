@@ -172,6 +172,13 @@ QVector<QgsDataItem*> QgsDataItem::createChildren( )
 
 void QgsDataItem::populate()
 {
+  if ( mPopulated )
+    return;
+
+  QgsDebugMsg( "mPath = " + mPath );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   QVector<QgsDataItem*> children = createChildren( );
   foreach( QgsDataItem *child, children )
   {
@@ -179,6 +186,8 @@ void QgsDataItem::populate()
     addChildItem( child );
   }
   mPopulated = true;
+
+  QApplication::restoreOverrideCursor();
 }
 
 int QgsDataItem::rowCount()
@@ -246,6 +255,8 @@ void QgsDataItem::refresh()
 {
   QgsDebugMsg( "mPath = " + mPath );
 
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   QVector<QgsDataItem*> items = createChildren( );
 
   // Remove no more present items
@@ -272,6 +283,8 @@ void QgsDataItem::refresh()
     }
     addChildItem( item, true );
   }
+
+  QApplication::restoreOverrideCursor();
 }
 
 bool QgsDataItem::equal( const QgsDataItem *other )
