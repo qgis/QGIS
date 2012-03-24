@@ -952,9 +952,6 @@
        <string>Colormap</string>
       </attribute>
       <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
        <item row="1" column="0" colspan="2">
         <widget class="QGroupBox" name="grpGenerateColorMap">
          <property name="title">
@@ -1494,9 +1491,6 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
        <item row="0" column="0" colspan="2">
         <widget class="QLabel" name="lblDisplayName">
          <property name="text">
@@ -1517,7 +1511,10 @@
        <item row="1" column="2" colspan="4">
         <widget class="QLineEdit" name="leLayerSource">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1857,9 +1854,6 @@
        <string>Pyramids</string>
       </attribute>
       <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
        <item row="0" column="3" colspan="2">
         <widget class="QLabel" name="textLabel5">
          <property name="text">
