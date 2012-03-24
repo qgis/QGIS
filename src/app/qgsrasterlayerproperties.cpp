@@ -247,10 +247,21 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   if ( renderer )
   {
-    int widgetIndex = mRenderTypeComboBox->findData( renderer->type() );
+    QString rendererType = renderer->type();
+    int widgetIndex = mRenderTypeComboBox->findData( rendererType );
     if ( widgetIndex != -1 )
     {
       mRenderTypeComboBox->setCurrentIndex( widgetIndex );
+    }
+
+    //prevent change between singleband color renderer and the other renderers
+    if ( rendererType == "singlebandcolordata" )
+    {
+      mRenderTypeComboBox->setEnabled( false );
+    }
+    else
+    {
+      mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
     }
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
@@ -407,9 +418,13 @@ void QgsRasterLayerProperties::sync()
    */
 
   //set the transparency slider
-  sliderTransparency->setValue( 255 - mRasterLayer->getTransparency() );
-  //update the transparency percentage label
-  sliderTransparency_valueChanged( 255 - mRasterLayer->getTransparency() );
+  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  if ( renderer )
+  {
+    sliderTransparency->setValue(( 1.0 - renderer->opacity() ) * 255 );
+    //update the transparency percentage label
+    sliderTransparency_valueChanged(( 1.0 - renderer->opacity() ) * 255 );
+  }
 
   int myIndex = cboxTransparencyBand->findText( mRasterLayer->transparentBandName() );
   if ( -1 != myIndex )
