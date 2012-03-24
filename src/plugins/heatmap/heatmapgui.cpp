@@ -40,7 +40,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
 {
   setupUi( this );
 
-  QgsDebugMsg( tr( "Creating Heatmap Dialog" ) );
+  QgsDebugMsg( QString( "Creating Heatmap Dialog" ) );
 
   // Adding point layers to the mInputVectorCombo
   foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
@@ -192,12 +192,12 @@ void HeatmapGui::on_radiusFieldUnitCombo_currentIndexChanged( int index )
 {
   updateBBox();
   // DebugMsg to avoid index not used warning
-  QgsDebugMsg( tr( "Unit index set to %1" ).arg( index ) );
+  QgsDebugMsg( QString( "Unit index set to %1" ).arg( index ) );
 }
 
 void HeatmapGui::on_mRadiusUnitCombo_currentIndexChanged( int index )
 {
-  QgsDebugMsg( tr( "Unit index set to %1" ).arg( index ) );
+  QgsDebugMsg( QString( "Unit index set to %1" ).arg( index ) );
   updateBBox();
 }
 
@@ -208,13 +208,13 @@ void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
     populateFields();
     updateBBox();
   }
-  QgsDebugMsg( tr( "Input vector index changed to %1" ).arg( index ) );
+  QgsDebugMsg( QString( "Input vector index changed to %1" ).arg( index ) );
 }
 
 void HeatmapGui::on_radiusFieldCombo_currentIndexChanged( int index )
 {
   updateBBox();
-  QgsDebugMsg( tr( "Radius Field index changed to %1" ).arg( index ) );
+  QgsDebugMsg( QString( "Radius Field index changed to %1" ).arg( index ) );
 }
 
 void HeatmapGui::on_mBufferLineEdit_editingFinished()
@@ -241,6 +241,9 @@ void HeatmapGui::enableOrDisableOkButton()
 void HeatmapGui::populateFields()
 {
   QgsVectorLayer* inputLayer = inputVectorLayer();
+  if( !inputLayer )
+    return;
+
   // The fields
   QgsVectorDataProvider* provider = inputLayer->dataProvider();
   QgsFieldMap fieldMap = provider->fields();
@@ -270,6 +273,8 @@ void HeatmapGui::updateBBox()
 {
   // Set the row/cols and cell sizes here
   QgsVectorLayer *inputLayer = inputVectorLayer();
+  if( !inputLayer )
+    return;
 
   mBBox = inputLayer->extent();
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
@@ -330,7 +335,7 @@ float HeatmapGui::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCr
     da.setProjectionsEnabled( true );
   }
   double unitDistance = da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
-  QgsDebugMsg( tr( "Converted %1 meters to %2 mapunits" ).arg( meters ).arg( meters / unitDistance ) );
+  QgsDebugMsg( QString( "Converted %1 meters to %2 mapunits" ).arg( meters ).arg( meters / unitDistance ) );
   return  meters / unitDistance;
 }
 /*
@@ -397,7 +402,7 @@ QString HeatmapGui::outputFilename()
   if ( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
   {
     QMessageBox::information( 0, tr( "Invalid output filename" ), tr( "Please enter a valid output file path and name." ) );
-    return NULL;
+    return QString::null;
   }
 
   // The output format
@@ -410,8 +415,8 @@ QString HeatmapGui::outputFilename()
     if ( it != mExtensionMap.end() && it.key() == outputFormat )
     {
       // making sure that there is really a extension value available
-      // Some drivers donot seem to have any extension at all
-      if ( it.value() != NULL || it.value() != "" )
+      // Some drivers don't seem to have any extension at all
+      if ( !it.value().isEmpty() )
       {
         outputFileName.append( "." );
         outputFileName.append( it.value() );
@@ -435,7 +440,7 @@ QgsVectorLayer* HeatmapGui::inputVectorLayer()
   if ( !inputLayer )
   {
     QMessageBox::information( 0, tr( "Layer not found" ), tr( "Layer %1 not found." ).arg( myLayerId ) );
-    return NULL;
+    return 0;
   }
   return inputLayer;
 }

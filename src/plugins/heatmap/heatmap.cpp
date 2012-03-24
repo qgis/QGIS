@@ -169,7 +169,7 @@ void Heatmap::run()
     {
       rField = d.radiusField();
       myAttrList.append( rField );
-      QgsDebugMsg( tr( "Radius Field index received: %1" ).arg( rField ) );
+      QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
     }
     if ( d.weighted() )
     {
