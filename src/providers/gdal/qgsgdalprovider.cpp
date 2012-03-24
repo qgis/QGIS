@@ -167,16 +167,18 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     mGeoTransform[5] = -1;
   }
 
-  //check if this file has pyramids
+  // get sublayers
+  mSubLayers = QgsGdalProvider::subLayers( mGdalDataset );
+
+  // check if this file has bands or subdatasets
   CPLErrorReset();
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
   if ( myGDALBand == NULL )
   {
     QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
-    QStringList layers = subLayers();
 
     // if there are no subdatasets, then close the dataset
-    if ( layers.size() == 0 )
+    if ( mSubLayers.size() == 0 )
     {
       QMessageBox::warning( 0, QObject::tr( "Warning" ),
                             QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
@@ -192,11 +194,12 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     else
     {
       QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
-                   QString( " but dataset has %1 subdatasets" ).arg( layers.size() ) );
+                   QString( " but dataset has %1 subdatasets" ).arg( mSubLayers.size() ) );
       return;
     }
   }
 
+  // check if this file has pyramids
   mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
 
   // Get the layer's projection info and set up the
@@ -1590,7 +1593,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QStringList QgsGdalProvider::subLayers() const
 {
-  return subLayers( mGdalDataset );
+  return mSubLayers;
 }
 
 void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )

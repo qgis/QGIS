@@ -2314,8 +2314,10 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     return;
 
   QStringList sublayers = layer->subLayers();
+  QgsDebugMsg( QString( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
 
-  QgsDebugMsg( "sublayers:\n  " + sublayers.join( "  \n" ) + "\n" );
+  if ( sublayers.size() < 1 )
+    return;
 
   // if promptLayers=Load all, load all sublayers without prompting
   QSettings settings;
@@ -2390,6 +2392,7 @@ void QgisApp::loadGDALSublayers( QString uri, QStringList list )
       else
         delete subLayer;
     }
+
   }
 }
 
@@ -6773,6 +6776,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(
   // draw the map
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
+
   return layer;
 
 // Let render() do its own cursor management
