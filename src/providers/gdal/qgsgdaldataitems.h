@@ -5,13 +5,21 @@
 
 class QgsGdalLayerItem : public QgsLayerItem
 {
+  private:
+
+    QStringList sublayers;
+
   public:
     QgsGdalLayerItem( QgsDataItem* parent,
-                      QString name, QString path, QString uri );
+                      QString name, QString path, QString uri,
+                      QStringList *theSublayers = NULL );
     ~QgsGdalLayerItem();
 
     bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
+
+    QVector<QgsDataItem*> createChildren();
+
 };
 
 
