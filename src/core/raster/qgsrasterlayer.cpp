@@ -2304,6 +2304,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   }
 
 
+
+
   QgsDebugMsg( "Instantiated the data provider plugin"
                + QString( " with layer list of " ) + layers.join( ", " )
                + " and style list of " + styles.join( ", " )
@@ -2345,6 +2347,13 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   // upper case the first letter of the layer name
   QgsDebugMsg( "mLayerName: " + name() );
+
+  mValidNoDataValue = mDataProvider->isNoDataValueValid();
+  if ( mValidNoDataValue )
+  {
+    mRasterTransparency.initializeTransparentPixelList( mNoDataValue, mNoDataValue, mNoDataValue );
+    mRasterTransparency.initializeTransparentPixelList( mNoDataValue );
+  }
 
   // set up the raster drawing style
   setDrawingStyle( MultiBandColor );  //sensible default
@@ -2517,13 +2526,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   // Store timestamp
   // TODO move to provider
   mLastModified = lastModified( mDataSource );
-
-  mValidNoDataValue = mDataProvider->isNoDataValueValid();
-  if ( mValidNoDataValue )
-  {
-    mRasterTransparency.initializeTransparentPixelList( mNoDataValue, mNoDataValue, mNoDataValue );
-    mRasterTransparency.initializeTransparentPixelList( mNoDataValue );
-  }
 
   // Connect provider signals
   connect(

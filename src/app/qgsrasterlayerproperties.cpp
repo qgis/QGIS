@@ -282,13 +282,21 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
 void QgsRasterLayerProperties::populateTransparencyTable()
 {
   QgsDebugMsg( "entering." );
+  if ( !mRasterLayer )
+  {
+    return;
+  }
+  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  if ( !renderer )
+  {
+    return;
+  }
+  const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
 
   //Clear existing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
   QString myNumberFormatter;
-  if ( /*rbtnThreeBand->isChecked() && */
-    QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
-    QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
+  if ( mRasterLayer->bandCount() == 3 )
   {
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
     {
@@ -302,8 +310,9 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     tableTransparency->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Blue" ) ) );
     tableTransparency->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
 
+
     //populate three band transparency list
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = mRasterLayer->rasterTransparency()->transparentThreeValuePixelList();
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = rasterTransparency->transparentThreeValuePixelList();
     for ( int myListRunner = 0; myListRunner < myTransparentThreeValuePixelList.count(); myListRunner++ )
     {
       tableTransparency->insertRow( myListRunner );
@@ -318,7 +327,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
       tableTransparency->setItem( myListRunner, 3, myPercentTransparentItem );
     }
   }
-  else
+  else if ( mRasterLayer->bandCount() == 1 )
   {
     //Clear existing single band or palette values transparency list
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
@@ -342,7 +351,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
 
     //populate gray transparency list
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = mRasterLayer->rasterTransparency()->transparentSingleValuePixelList();
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
     for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
     {
       tableTransparency->insertRow( myListRunner );
