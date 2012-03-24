@@ -86,6 +86,12 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   addLayersButton->setAutoRaise( true );
   connect( addLayersButton, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
 
+  QToolButton* collapseButton = new QToolButton( this );
+  collapseButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionCollapseTree.png" ) );
+  collapseButton->setToolTip( tr( "Collapse All" ) );
+  collapseButton->setAutoRaise( true );
+  connect( collapseButton, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
+
   QVBoxLayout* layout = new QVBoxLayout();
   QHBoxLayout* hlayout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -94,8 +100,12 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   hlayout->setSpacing( 5 );
   hlayout->setAlignment( Qt::AlignLeft );
 
+  hlayout->addSpacing( 5 );
   hlayout->addWidget( refreshButton );
+  hlayout->addSpacing( 5 );
   hlayout->addWidget( addLayersButton );
+  hlayout->addStretch( );
+  hlayout->addWidget( collapseButton );
   layout->addLayout( hlayout );
   layout->addWidget( mBrowserView );
 
