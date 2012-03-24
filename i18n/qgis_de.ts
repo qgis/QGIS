@@ -3459,58 +3459,58 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
 <context>
     <name>Heatmap</name>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="75"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="78"/>
         <source>Heatmap</source>
         <translation>Heatmap</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="77"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="80"/>
         <source>Creates a heatmap raster for the input point vector.</source>
         <translation>Erzeugt ein Heatmap-Raster für einen Eingabepunktlayer.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="82"/>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="111"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="85"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="319"/>
         <source>&amp;Heatmap</source>
         <translation>&amp;Heatmap</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="133"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="122"/>
         <source>GDAL driver error</source>
         <translation>GDAL-Treiberfehler</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="133"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="122"/>
         <source>Cannot open the driver for the specified format</source>
         <translation>Kann den Treiber für das angegebene Format nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="179"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="152"/>
         <source>Raster update error</source>
         <translation>Rasteraktualisierungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="179"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="152"/>
         <source>Could not open the created raster for updating. The heatmap was not generated.</source>
         <translation>Konnte die erzeugte Rasterdatei nicht zur Aktualierung öffnen.  Die Heatmap wurde nicht erzeugt.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="189"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="161"/>
         <source>Point layer error</source>
         <translation>Punktlayerfehler</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="189"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="161"/>
         <source>Could not identify the vector data provider.</source>
         <translation>Konnte den Vektordatenlieferanten nicht erkennen.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="209"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="196"/>
         <source>Heatmap generation aborted</source>
         <translation>Heatmap-Erzeugung abgebrochen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="209"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="196"/>
         <source>QGIS will now load the partially-computed raster.</source>
         <translation>QGIS wird nun das teilweise berechnete Raster laden.</translation>
     </message>
@@ -3518,37 +3518,37 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
 <context>
     <name>HeatmapGui</name>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="97"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="141"/>
+        <source>No valid layers found!</source>
+        <translation>Keine gültigen Layer gefunden!</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="141"/>
+        <source>Advanced options cannot be enabled.</source>
+        <translation>Erweiterte Optionen konnten nicht aktiviert werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="437"/>
         <source>Layer not found</source>
         <translation>Layer nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="97"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="437"/>
         <source>Layer %1 not found.</source>
         <translation>Layer %1 nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="106"/>
-        <source>Invalid buffer value</source>
-        <translation>Ungültiger Pufferwert</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="106"/>
-        <source>Buffer distance cannot be zero. Please enter a valid value.</source>
-        <translation>Der Pufferabstand kann nicht Null sein. Bitte geben Sie einen gültigen Wert an.</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="118"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="399"/>
         <source>Invalid output filename</source>
         <translation>Ungültiger Ausgabedateiname</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="118"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="399"/>
         <source>Please enter a valid output file path and name.</source>
         <translation>Bitte geben Sie einen gültigen Dateiennamen an.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="163"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="114"/>
         <source>Save Heatmap as:</source>
         <translation>Heatmap speichern als:</translation>
     </message>
@@ -3556,52 +3556,94 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
 <context>
     <name>HeatmapGuiBase</name>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="14"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="20"/>
         <source>Heatmap Plugin</source>
         <translation>Heatmap-Erweiterung</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="23"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
         <source>Input Point Vector</source>
         <translation>Eingabepunktlayer</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="33"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
         <source>Output Raster</source>
         <translation>Ausgaberaster</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="100"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="53"/>
-        <source>Heatmap Point Attributes</source>
-        <translation>Heatmap-Punktattribute</translation>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="79"/>
+        <source>Radius</source>
+        <translation>Radius</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="59"/>
-        <source>Buffer Radius</source>
-        <translation>Pufferradius</translation>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="94"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="233"/>
+        <source>meters</source>
+        <translation>Meter</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="73"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="99"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="238"/>
+        <source>map units</source>
+        <translation>Karteneinheiten</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="114"/>
+        <source>0.1</source>
+        <translation>0.1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="127"/>
+        <source>Advanced</source>
+        <translation>Erweitert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="151"/>
+        <source>Row</source>
+        <translation>Zeile</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="161"/>
+        <source>Cell Size X</source>
+        <translation>Zellenbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="171"/>
+        <source>Column</source>
+        <translation>Spalte</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="181"/>
+        <source>Cell Size Y</source>
+        <translation>Zellenhöhe</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="215"/>
+        <source>Use Radius from field</source>
+        <translation>Feld für Radius</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="246"/>
+        <source>Use Weight from field</source>
+        <translation>Feld für Gewichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="107"/>
         <source>Decay Ratio</source>
         <translation>Verfallrate</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="66"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="86"/>
         <source>10</source>
         <translation>10</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="80"/>
-        <source>0.5</source>
-        <translation>0.5</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="43"/>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="62"/>
         <source>Output Format</source>
         <translation>Ausgabeformat</translation>
     </message>
@@ -5870,7 +5912,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="66"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="51"/>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="47"/>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="34"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="22"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="39"/>
@@ -5884,6 +5925,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="38"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="50"/>
         <source>Version 0.2</source>
         <translation>Version 0.2</translation>
     </message>
@@ -6694,7 +6736,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="46"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="49"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="27"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="41"/>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="28"/>
@@ -7675,12 +7717,12 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Kein Ergebnispuffer</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="44"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="47"/>
         <source>Heatmap</source>
         <translation>Heatmap</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmap.cpp" line="45"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="48"/>
         <source>Creates a Heatmap raster for the input point vector</source>
         <translation>Erzeugt ein Heatmap-RAster für einen Eingabepunktlayer</translation>
     </message>
@@ -23338,8 +23380,8 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
     <name>QgsMssqlRootItem</name>
     <message>
         <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="529"/>
-        <source>New...</source>
-        <translation>Neu...</translation>
+        <source>New Connection...</source>
+        <translation>Neue Verbindung...</translation>
     </message>
 </context>
 <context>
@@ -35118,8 +35160,8 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <name>QgsWFSRootItem</name>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="142"/>
-        <source>New...</source>
-        <translation>Neu...</translation>
+        <source>New Connection...</source>
+        <translation>Neue Verbindung...</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="164"/>
@@ -35339,8 +35381,8 @@ cachen</translation>
     <name>QgsWMSRootItem</name>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="219"/>
-        <source>New...</source>
-        <translation>Neu...</translation>
+        <source>New Connection...</source>
+        <translation>Neue Verbindung...</translation>
     </message>
 </context>
 <context>
