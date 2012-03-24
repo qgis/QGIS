@@ -18,6 +18,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 
@@ -53,6 +54,8 @@ QgsRasterRendererRegistry::QgsRasterRendererRegistry()
                                           QgsSingleBandPseudoColorRenderer::create, 0 ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandgray", QObject::tr( "Singleband gray" ),
                                           QgsSingleBandGrayRenderer::create, 0 ) );
+  insert( QgsRasterRendererRegistryEntry( "singlebandcolordata", QObject::tr( "Singleband color data" ),
+                                          QgsSingleBandColorDataRenderer::create, 0 ) );
 }
 
 QgsRasterRendererRegistry::~QgsRasterRendererRegistry()

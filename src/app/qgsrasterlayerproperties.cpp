@@ -97,11 +97,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 1000, this ) );
 
   // build GUI components
-
-  //
-  // Set up the combo boxes that contain band lists using the qstring list generated above
-  //
-
   QIcon myPyramidPixmap( QgisApp::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgisApp::getThemeIcon( "/mIconNoPyramid.png" ) );
 
@@ -554,7 +549,10 @@ void QgsRasterLayerProperties::apply()
 
   //set renderer from widget
   QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( mRendererStackedWidget->currentWidget() );
-  mRasterLayer->setRenderer( rendererWidget->renderer() );
+  if ( rendererWidget )
+  {
+    mRasterLayer->setRenderer( rendererWidget->renderer() );
+  }
 
   //resampling
   QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
@@ -916,6 +914,11 @@ void QgsRasterLayerProperties::on_mRenderTypeComboBox_currentIndexChanged( int i
     {
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
       mRendererStackedWidget->addWidget( mRendererWidget );
+    }
+    else //single band color data renderer e.g. has no widget
+    {
+      delete mRendererWidget;
+      mRendererWidget = 0;
     }
   }
 }
