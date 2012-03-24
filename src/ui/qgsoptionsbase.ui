@@ -67,7 +67,7 @@
             <x>0</x>
             <y>0</y>
             <width>787</width>
-            <height>831</height>
+            <height>823</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -439,6 +439,13 @@
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="cbxCopyWKTGeomFromTable">
+                <property name="text">
+                 <string>Copy geometry in WKT representation from attribute table</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
                  <widget class="QLabel" name="textLabel1_7">
@@ -726,8 +733,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>614</width>
+            <height>523</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -900,8 +907,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>539</width>
+            <height>502</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1186,8 +1193,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>270</width>
+            <height>93</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1267,8 +1274,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>571</width>
+            <height>620</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1643,8 +1650,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>425</width>
+            <height>417</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1817,8 +1824,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>519</width>
+            <height>584</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1914,8 +1921,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>355</width>
+            <height>572</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
