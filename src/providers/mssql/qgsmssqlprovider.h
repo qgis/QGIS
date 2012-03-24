@@ -81,7 +81,7 @@ class QgsMssqlGeometryParser
     unsigned char* ParseSqlGeometry( unsigned char* pszInput, int nLen );
     int GetSRSId() { return nSRSId; };
     int GetWkbLen() { return nWkbLen; };
-    void DumpMemoryToLog( char* pszMsg, unsigned char* pszInput, int nLen );
+    void DumpMemoryToLog( const char* pszMsg, unsigned char* pszInput, int nLen );
 };
 
 

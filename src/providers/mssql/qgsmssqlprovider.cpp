@@ -459,7 +459,7 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
                                bool fetchGeometry,
                                bool useIntersect )
 {
-
+  Q_UNUSED( useIntersect );
   // build sql statement
   mStatement = QString( "select " );
   mFieldCount = 0;

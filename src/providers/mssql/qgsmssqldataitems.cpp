@@ -42,8 +42,6 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
   mService = settings.value( key + "/service" ).toString();
   mHost = settings.value( key + "/host" ).toString();
   mDatabase = settings.value( key + "/database" ).toString();
-  mUsername;
-  mPassword;
   if ( settings.value( key + "/saveUsername" ).toString() == "true" )
   {
     mUsername = settings.value( key + "/username" ).toString();
