@@ -62,7 +62,7 @@ class QgsPgTableModel : public QStandardItemModel
 
     QString layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata );
 
-    static QIcon iconForGeomType( QGis::GeometryType type );
+    static QIcon iconForWkbType( QGis::WkbType type );
 
   private:
     /**Number of tables in the model*/

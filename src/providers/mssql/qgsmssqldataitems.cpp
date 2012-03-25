@@ -264,8 +264,8 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
 
   for ( int i = 0 ; i < typeList.size(); i++ )
   {
-    QGis::GeometryType geomType = QgsMssqlTableModel::geomTypeFromMssql( typeList[i] );
-    if ( geomType == QGis::UnknownGeometry )
+    QGis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( typeList[i] );
+    if ( wkbType == QGis::WKBUnknown )
     {
       QgsDebugMsg( QString( "unsupported geometry type:%1" ).arg( typeList[i] ) );
       continue;
@@ -420,7 +420,7 @@ QString QgsMssqlLayerItem::createUri()
   QgsDataSourceURI uri = QgsDataSourceURI( connItem->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   uri.setSrid( mLayerProperty.srid );
-  uri.setGeometryType( QgsMssqlTableModel::geomTypeFromMssql( mLayerProperty.type ) );
+  uri.setWkbType( QgsMssqlTableModel::wkbTypeFromMssql( mLayerProperty.type ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
   return uri.uri();
 }
@@ -459,19 +459,28 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem* newLayers )
 
 QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProperty, bool refresh )
 {
-  QGis::GeometryType geomType = QgsMssqlTableModel::geomTypeFromMssql( layerProperty.type );
-  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsMssqlTableModel::displayStringForGeomType( geomType ) ).arg( layerProperty.srid );
+  QGis::WkbType wkbType = QgsMssqlTableModel::wkbTypeFromMssql( layerProperty.type );
+  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsMssqlTableModel::displayStringForWkbType( wkbType ) ).arg( layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
-  switch ( geomType )
+  switch ( wkbType )
   {
-    case QGis::Point:
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::Line:
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::Polygon:
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

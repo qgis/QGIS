@@ -51,14 +51,17 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach( QGis::GeometryType type,
-             QList<QGis::GeometryType>()
-             << QGis::Point
-             << QGis::Line
-             << QGis::Polygon
-             << QGis::NoGeometry )
+    foreach( QGis::WkbType type,
+             QList<QGis::WkbType>()
+             << QGis::WKBPoint
+             << QGis::WKBLineString
+             << QGis::WKBPolygon
+             << QGis::WKBMultiPoint
+             << QGis::WKBMultiLineString
+             << QGis::WKBMultiPolygon
+             << QGis::WKBNoGeometry )
     {
-      cb->addItem( QgsPgTableModel::iconForGeomType( type ), QgsPostgresConn::displayStringForGeomType( type ), type );
+      cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -95,10 +98,10 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::dbtmType )
     {
-      QGis::GeometryType type = ( QGis::GeometryType ) cb->itemData( cb->currentIndex() ).toInt();
+      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
 
-      model->setData( index, QgsPgTableModel::iconForGeomType( type ), Qt::DecorationRole );
-      model->setData( index, type != QGis::UnknownGeometry ? QgsPostgresConn::displayStringForGeomType( type ) : tr( "Select..." ) );
+      model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, type != QGis::WKBUnknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::dbtmPkCol )

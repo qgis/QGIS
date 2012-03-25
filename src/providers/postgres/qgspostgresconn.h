@@ -163,19 +163,16 @@ class QgsPostgresConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QString displayStringForGeomType( QGis::GeometryType geomType );
     static QString displayStringForWkbType( QGis::WkbType wkbType );
-
-    static QGis::WkbType wkbTypeFromPostgis( QString type );
-    static QGis::GeometryType geomTypeFromPostgis( QString dbType );
+    static QGis::WkbType wkbTypeFromPostgis( QString dbType );
 
     static QString postgisWkbTypeName( QGis::WkbType wkbType );
     static int postgisWkbTypeDim( QGis::WkbType wkbType );
     static void postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim );
 
-    static QString postgisTypeFilter( QString geomCol, QGis::GeometryType geomtype, bool isGeography );
+    static QString postgisTypeFilter( QString geomCol, QGis::WkbType wkbType, bool isGeography );
 
-    static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomtype );
+    static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
 
     static QStringList connectionList();
     static QString selectedConnection();
