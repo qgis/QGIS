@@ -123,6 +123,10 @@ class CORE_EXPORT QgsRectangle
         return false if any of the rectangle boundaries are NaN or Inf. */
     bool isFinite() const;
 
+    //! swap x/y
+    //! @note added in 1.9
+    void invert();
+
   protected:
 
     // These are protected instead of private so that things like

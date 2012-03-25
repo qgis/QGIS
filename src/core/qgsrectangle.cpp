@@ -323,3 +323,10 @@ bool QgsRectangle::isFinite() const
   }
   return true;
 }
+
+void QgsRectangle::invert()
+{
+  double tmp;
+  tmp = xmin; xmin = ymin; ymin = tmp;
+  tmp = xmax; xmax = ymax; ymax = tmp;
+}

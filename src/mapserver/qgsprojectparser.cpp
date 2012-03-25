@@ -359,7 +359,7 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
     if ( childElem.tagName() != "Layer" )
       continue;
 
-    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem );
+    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem, doc );
     if ( !bbox.isEmpty() )
     {
       if ( firstBBox )
@@ -1556,7 +1556,7 @@ const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
   return QgsCRSCache::instance()->crsByEpsgId( GEO_EPSG_CRS_ID );
 }
 
-QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const
+QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem, const QDomDocument &doc ) const
 {
   QgsRectangle BBox;
   if ( layerElem.isNull() )
@@ -1594,11 +1594,21 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
     return BBox;
   }
 
+
+  QString version = doc.documentElement().attribute( "version" );
+
   //create layer crs
-  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( "CRS" ) );
+  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( version == "1.1.1" ? "SRS" : "CRS" ) );
   if ( !layerCrs.isValid() )
   {
     return BBox;
+  }
+
+  BBox.set( minx, miny, maxx, maxy );
+
+  if ( version == "1.3.0" && layerCrs.axisInverted() )
+  {
+    BBox.invert();
   }
 
   //get project crs
@@ -1606,6 +1616,6 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   QgsCoordinateTransform t( layerCrs, projectCrs );
 
   //transform
-  BBox = t.transformBoundingBox( QgsRectangle( minx, miny, maxx, maxy ) );
+  BBox = t.transformBoundingBox( BBox );
   return BBox;
 }

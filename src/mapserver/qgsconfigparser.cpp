@@ -144,10 +144,16 @@ void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
     bBoxElement.setAttribute( version == "1.1.1" ? "SRS" : "CRS", layerCRS.authid() );
   }
 
-  bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
-  bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
-  bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
-  bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
+  QgsRectangle r( layerExtent );
+  if ( version == "1.3.0" && layerCRS.axisInverted() )
+  {
+    r.invert();
+  }
+
+  bBoxElement.setAttribute( "minx", QString::number( r.xMinimum() ) );
+  bBoxElement.setAttribute( "miny", QString::number( r.yMinimum() ) );
+  bBoxElement.setAttribute( "maxx", QString::number( r.xMaximum() ) );
+  bBoxElement.setAttribute( "maxy", QString::number( r.yMaximum() ) );
 
   QDomElement lastCRSElem = layerElem.lastChildElement( version == "1.1.1" ? "SRS" : "CRS" );
   if ( !lastCRSElem.isNull() )
@@ -444,21 +450,15 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       c->removeItem( currentMap ); delete currentMap; continue;
     }
 
+    QgsRectangle r( xmin, ymin, xmax, ymax );
+
     //Change x- and y- of extent for WMS 1.3.0 if axis inverted
     QString version = parameterMap.value( "VERSION" );
-    if ( !version.isEmpty() )
+    if ( version == "1.3.0" && mapRenderer && mapRenderer->destinationCrs().axisInverted() )
     {
-      if ( mapRenderer && version == "1.3.0" && mapRenderer->destinationCrs().axisInverted() )
-      {
-        //switch coordinates of extent
-        double tmp;
-        tmp = xmin;
-        xmin = ymin; ymin = tmp;
-        tmp = xmax;
-        xmax = ymax; ymax = tmp;
-      }
+      r.invert();
     }
-    currentMap->setNewExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
+    currentMap->setNewExtent( r );
 
     //scale
     QString scaleString = parameterMap.value( mapId + ":SCALE" );
