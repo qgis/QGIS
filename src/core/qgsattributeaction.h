@@ -144,11 +144,8 @@ class  CORE_EXPORT QgsAttributeAction
 
     /*! Expands the given action, replacing all %'s with the value as
      *  given.
-     *  @deprecated
      */
-    Q_DECL_DEPRECATED QString expandAction( QString action,
-                                            const QgsAttributeMap &attributes,
-                                            uint defaultValueIndex );
+    QString expandAction( QString action, const QgsAttributeMap &attributes, uint defaultValueIndex );
 
     /*! Expands the given action using the expression builder
      *  This function currently replaces each expression between [% and %]
