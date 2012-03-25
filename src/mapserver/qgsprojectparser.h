@@ -163,7 +163,7 @@ class QgsProjectParser: public QgsConfigParser
     const QgsCoordinateReferenceSystem& projectCRS() const;
 
     /**Returns bbox of layer in project CRS (or empty rectangle in case of error)*/
-    QgsRectangle layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const;
+    QgsRectangle layerBoundingBoxInProjectCRS( const QDomElement& layerElem, const QDomDocument& doc ) const;
 
     /**Reads selection color from project and sets it to QgsConfigParser::mSelectionColor*/
     void setSelectionColor();
