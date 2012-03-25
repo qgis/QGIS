@@ -334,6 +334,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
 
+    QString geomParam( int offset ) const;
     QString pkParamWhereClause( int offset ) const;
     QString whereClause( QgsFeatureId featureId ) const;
 
@@ -417,14 +418,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
-    QString mGeometryColumn;         //! name of the geometry column
-    QgsRectangle mLayerExtent;       //! Rectangle that contains the extent (bounding box) of the layer
-    mutable long mFeaturesCounted;   //! Number of features in the layer
+    QString mGeometryColumn;          //! name of the geometry column
+    QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
+    mutable long mFeaturesCounted;    //! Number of features in the layer
 
-    QGis::GeometryType mDetectedGeomType;  //! geometry type detected in the database
-    QGis::GeometryType mRequestedGeomType; //! geometry type requested in the uri
-    QString mDetectedSrid;                 //! Spatial reference detected in the database
-    QString mRequestedSrid;                //! Spatial reference requested in the uri
+    QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
+    QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
+    QString mDetectedSrid;            //! Spatial reference detected in the database
+    QString mRequestedSrid;           //! Spatial reference requested in the uri
 
     /**
      * Feature queue that GetNextFeature will retrieve from

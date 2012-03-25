@@ -52,14 +52,17 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   if ( index.column() == QgsMssqlTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach( QGis::GeometryType type,
-             QList<QGis::GeometryType>()
-             << QGis::Point
-             << QGis::Line
-             << QGis::Polygon
-             << QGis::NoGeometry )
+    foreach( QGis::WkbType type,
+             QList<QGis::WkbType>()
+             << QGis::WKBPoint
+             << QGis::WKBLineString
+             << QGis::WKBPolygon
+             << QGis::WKBMultiPoint
+             << QGis::WKBMultiLineString
+             << QGis::WKBMultiPolygon
+             << QGis::WKBNoGeometry )
     {
-      cb->addItem( QgsMssqlTableModel::iconForGeomType( type ), QgsMssqlTableModel::displayStringForGeomType( type ), type );
+      cb->addItem( QgsMssqlTableModel::iconForWkbType( type ), QgsMssqlTableModel::displayStringForWkbType( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -96,10 +99,10 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
   {
     if ( index.column() == QgsMssqlTableModel::dbtmType )
     {
-      QGis::GeometryType type = ( QGis::GeometryType ) cb->itemData( cb->currentIndex() ).toInt();
+      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
 
-      model->setData( index, QgsMssqlTableModel::iconForGeomType( type ), Qt::DecorationRole );
-      model->setData( index, type != QGis::UnknownGeometry ? QgsMssqlTableModel::displayStringForGeomType( type ) : tr( "Select..." ) );
+      model->setData( index, QgsMssqlTableModel::iconForWkbType( type ), Qt::DecorationRole );
+      model->setData( index, type != QGis::WKBUnknown ? QgsMssqlTableModel::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsMssqlTableModel::dbtmPkCol )
