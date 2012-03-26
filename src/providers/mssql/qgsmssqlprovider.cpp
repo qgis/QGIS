@@ -48,12 +48,6 @@
 #include "qgsmssqlsourceselect.h"
 #include "qgsmssqldataitems.h"
 
-// grab sql constants
-#ifdef WIN32
-#  include <windows.h>
-#endif
-#include <sqlext.h>
-
 static const QString TEXT_PROVIDER_KEY = "mssql";
 static const QString TEXT_PROVIDER_DESCRIPTION = "MS SQL spatial data provider";
 
@@ -232,60 +226,62 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
   return db;
 }
 
-QVariant::Type QgsMssqlProvider::DecodeODBCType( int sqltype )
+QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
 {
   QVariant::Type type = QVariant::Invalid;
-  switch ( sqltype )
+  if ( sqlTypeName.startsWith( "decimal", Qt::CaseInsensitive ) ||
+       sqlTypeName.startsWith( "numeric", Qt::CaseInsensitive ) ||
+       sqlTypeName.startsWith( "real", Qt::CaseInsensitive ) ||
+       sqlTypeName.startsWith( "float", Qt::CaseInsensitive ) )
   {
-    case SQL_DECIMAL:
-    case SQL_NUMERIC:
-    case SQL_REAL:
-    case SQL_FLOAT:
-    case SQL_DOUBLE:
-      type = QVariant::Double;
-      break;
-    case SQL_SMALLINT:
-    case SQL_INTEGER:
-    case SQL_BIT:
-    case SQL_TINYINT:
-      type = QVariant::Int;
-      break;
-    case SQL_BIGINT:
-      type = QVariant::LongLong;
-      break;
-    case SQL_BINARY:
-    case SQL_VARBINARY:
-    case SQL_LONGVARBINARY:
-      type = QVariant::ByteArray;
-      break;
-    case SQL_DATE:
-    case SQL_TYPE_DATE:
-      type = QVariant::Date;
-      break;
-    case SQL_TIME:
-    case SQL_TYPE_TIME:
-      type = QVariant::Time;
-      break;
-    case SQL_TIMESTAMP:
-    case SQL_TYPE_TIMESTAMP:
-      type = QVariant::DateTime;
-      break;
-#ifndef Q_ODBC_VERSION_2
-    case SQL_WCHAR:
-    case SQL_WVARCHAR:
-    case SQL_WLONGVARCHAR:
-      type = QVariant::String;
-      break;
-#endif
-    case SQL_CHAR:
-    case SQL_VARCHAR:
-    case SQL_LONGVARCHAR:
-      type = QVariant::String;
-      break;
-    default:
-      type = QVariant::ByteArray;
-      break;
+    type = QVariant::Double;
   }
+  else if ( sqlTypeName.startsWith( "char", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "nchar", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "varchar", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "nvarchar", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "text", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "ntext", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::String;
+  }
+  else if ( sqlTypeName.startsWith( "smallint", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "int", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "bit", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "tinyint", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::Int;
+  }
+  else if ( sqlTypeName.startsWith( "bigint", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::LongLong;
+  }
+  else if ( sqlTypeName.startsWith( "binary", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "varbinary", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "image", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::ByteArray;
+  }
+  else if ( sqlTypeName.startsWith( "date", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::Date;
+  }
+  else if ( sqlTypeName.startsWith( "datetime", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "smalldatetime", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "datetime2", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::DateTime;
+  }
+  else if ( sqlTypeName.startsWith( "time", Qt::CaseInsensitive ) ||
+            sqlTypeName.startsWith( "timestamp", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::Time;
+  }
+  else
+  {
+    QgsDebugMsg( QString( "Unknown field type: %1" ).arg( sqlTypeName ) );
+  }
+
   return type;
 }
 
@@ -321,7 +317,7 @@ void QgsMssqlProvider::loadFields()
     while ( mQuery.next() )
     {
       QString sqlTypeName = mQuery.value( 5 ).toString();
-      QVariant::Type sqlType = DecodeODBCType( mQuery.value( 4 ).toInt() );
+      QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
       if ( sqlTypeName == "geometry" || sqlTypeName == "geography" )
       {
         mGeometryColName = mQuery.value( 3 ).toString();
