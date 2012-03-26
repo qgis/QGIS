@@ -283,7 +283,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
   protected:
     /** loads fields from input file to member attributeFields */
-    QVariant::Type DecodeODBCType( int sqltype );
+    QVariant::Type DecodeSqlType( QString sqlTypeName );
     void loadFields();
     void loadMetadata();
 
