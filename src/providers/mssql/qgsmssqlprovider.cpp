@@ -337,6 +337,19 @@ void QgsMssqlProvider::loadFields()
       }
     }
   }
+  // get primary key
+  if ( mFidColName.isEmpty() )
+  {
+    mQuery.clear();
+    mQuery.exec( QString( "exec sp_pkeys N'%1', NULL, NULL" ).arg( mTableName ) );
+    if ( mQuery.isActive() )
+    {
+      if ( mQuery.next() )
+      {
+        mFidColName = mQuery.value( 3 ).toString();
+      }
+    }
+  }
 }
 
 
