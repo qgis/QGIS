@@ -280,7 +280,6 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren();
-    QStringList getFiles();
 
     /* protected: */
 
@@ -290,6 +289,18 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
 
     static const QIcon &iconZip();
+};
+
+/** Contains various Favourites directories */
+class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsFavouritesItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsFavouritesItem();
+
+    QVector<QgsDataItem*> createChildren();
+    static const QIcon &iconFavourites();
 };
 
 #endif // QGSDATAITEM_H
