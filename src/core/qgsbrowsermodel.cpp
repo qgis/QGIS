@@ -37,11 +37,29 @@ void QgsBrowserModel::addRootItems()
   // add favourite directories
   QSettings settings;
   QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
-  foreach( QString favDir, favDirs )
+  // if there are 5 or more items, create a "Favourites" Root item
+  // perhaps this should be the default?
+  if ( favDirs.count() >= 5 )
   {
-    QgsDirectoryItem *item = new QgsDirectoryItem( NULL, favDir, favDir );
-    connectItem( item );
-    mRootItems << item;
+    QgsFavouritesItem *item = new QgsFavouritesItem( NULL, tr( "Favourites" ), "" );
+    if ( item )
+    {
+      connectItem( item );
+      mRootItems << item;
+    }
+  }
+  else
+  {
+    foreach( QString favDir, favDirs )
+    {
+      item = new QgsDirectoryItem( NULL, favDir, favDir );
+      if ( item )
+      {
+        item->setIcon( QgsFavouritesItem::iconFavourites() );
+        mRootItems << item;
+        connectItem( item );
+      }
+    }
   }
 
   foreach( QFileInfo drive, QDir::drives() )
@@ -54,7 +72,9 @@ void QgsBrowserModel::addRootItems()
   }
 
   // Add non file top level items
-  foreach( QString key, QgsProviderRegistry::instance()->providerList() )
+  QStringList providersList = QgsProviderRegistry::instance()->providerList();
+  providersList.sort();
+  foreach( QString key, providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )

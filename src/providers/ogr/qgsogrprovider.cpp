@@ -35,6 +35,7 @@ email                : sherman at mrcc.com
 #include <QMap>
 #include <QString>
 #include <QTextCodec>
+#include <QSettings>
 
 #include "qgsapplication.h"
 #include "qgsdataitem.h"
@@ -259,15 +260,41 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     }
   }
 
+  bool openReadOnly = false;
+
+  // Try to open using VSIFileHandler
+  //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
+  if ( mFilePath.right( 4 ) == ".zip" )
+  {
+    // GDAL>=1.8.0 has write support for zip, but read and write operations
+    // cannot be interleaved, so for now just use read-only.
+    openReadOnly = true;
+    if ( mFilePath.left( 8 ) != "/vsizip/" )
+      mFilePath = "/vsizip/" + mFilePath;
+    QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
+  }
+  else if ( mFilePath.right( 3 ) == ".gz" )
+  {
+    if ( mFilePath.left( 9 ) != "/vsigzip/" )
+      mFilePath = "/vsigzip/" + mFilePath;
+    QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
+  }
+
   QgsDebugMsg( "mFilePath: " + mFilePath );
   QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
   QgsDebugMsg( "mLayerName: " + mLayerName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
 
-  ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
+  // first try to open in update mode (unless specified otherwise)
+  if ( ! openReadOnly )
+    ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
+
   if ( !ogrDataSource )
   {
+
+    QgsDebugMsg( "OGR failed to opened in update mode, trying in read-only mode" );
+
     // try to open read-only
     ogrDataSource = OGROpen( TO8F( mFilePath ), false, &ogrDriver );
 
@@ -279,8 +306,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   if ( ogrDataSource )
   {
 
-    QgsDebugMsg( "Data source is valid" );
-    QgsDebugMsg( "OGR Driver was " + QString( OGR_Dr_GetName( ogrDriver ) ) );
+    QgsDebugMsg( "OGR opened using Driver " + QString( OGR_Dr_GetName( ogrDriver ) ) );
 
     ogrDriverName = OGR_Dr_GetName( ogrDriver );
 
@@ -299,6 +325,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     if ( ogrLayer )
     {
       valid = setSubsetString( mSubsetString );
+      QgsDebugMsg( "Data source is valid" );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Data source is invalid, no layer found (%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), tr( "OGR" ) );
     }
   }
   else
@@ -1742,7 +1773,24 @@ QString createFilters( QString type )
         QgsDebugMsg( QString( "Unknown driver %1 for file filters." ).arg( driverName ) );
       }
 
-    }                           // each loaded GDAL driver
+    }                          // each loaded OGR driver
+
+    // VSIFileHandler (.zip and .gz files)
+    //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
+    // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
+    // For .zip this works only if there is one file (or dataset) in the root of the zip.
+    // Only tested with tiff, shape (zip) and spatialite (zip and gz).
+    // This does not work for some file types, see VSIFileHandler doc.
+    // Ideally we should also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+    // QSettings settings;
+    // if ( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() != 0 )
+    if ( 1 )
+    {
+      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz" );
+      myExtensions << "zip" << "gz";
+    }
+#endif
 
     // can't forget the default case
 
