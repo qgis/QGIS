@@ -122,6 +122,17 @@ const QIcon &QgsDataCollectionItem::iconDir()
   return icon;
 }
 
+const QIcon &QgsFavouritesItem::iconFavourites()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QIcon( getThemePixmap( "/mIconFavourites.png" ) );
+  // this icon added by ET, modfied mIconNew and set colour to that of folder icon
+
+  return icon;
+}
+
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
     : QObject( parent ), mType( type ), mParent( parent ), mPopulated( false ), mName( name ), mPath( path )
 {
@@ -626,4 +637,35 @@ QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
 
 QgsErrorItem::~QgsErrorItem()
 {
+}
+
+QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, QString name, QString path )
+    : QgsDataCollectionItem( parent, name, path )
+{
+  mType = Collection; //favourites?
+  mIcon = iconFavourites();
+}
+
+QgsFavouritesItem::~QgsFavouritesItem()
+{
+}
+
+QVector<QgsDataItem*> QgsFavouritesItem::createChildren( )
+{
+  QVector<QgsDataItem*> children;
+  QgsDataItem* item;
+
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
+
+  foreach( QString favDir, favDirs )
+  {
+    item = new QgsDirectoryItem( this, favDir, favDir );
+    if ( item )
+    {
+      children.append( item );
+    }
+  }
+
+  return children;
 }
