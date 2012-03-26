@@ -27,6 +27,8 @@ class QgsRasterProjector;
 class QgsRasterTransparency;
 class QgsRasterViewPort;
 
+class QDomElement;
+
 class QgsRasterRenderer
 {
   public:
@@ -74,6 +76,8 @@ class QgsRasterRenderer
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
     double maxOversampling() const { return mMaxOversampling; }
 
+    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const = 0;
+
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
@@ -96,6 +100,9 @@ class QgsRasterRenderer
     void drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,
                     int nCols, int nRows, double oversamplingX, double oversamplingY ) const;
     void stopRasterRead( int bandNumber );
+
+    /**Write upper class info into <rasterrenderer> element (called by writeXML method of subclasses)*/
+    void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
 
     QgsRasterDataProvider* mProvider;

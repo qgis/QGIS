@@ -87,3 +87,8 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
 
   stopRasterRead( mBand );
 }
+
+void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  //soon...
+}

@@ -39,6 +39,8 @@ class QgsSingleBandGrayRenderer: public QgsRasterRenderer
     /**Takes ownership*/
     void setContrastEnhancement( QgsContrastEnhancement* ce );
 
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
   private:
     int mGrayBand;
     QgsContrastEnhancement* mContrastEnhancement;

@@ -38,6 +38,8 @@ class QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
 
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
   private:
     int mBandNumber;
     /**Color array*/

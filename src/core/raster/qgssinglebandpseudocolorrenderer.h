@@ -38,6 +38,8 @@ class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
 
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
   private:
     QgsRasterShader* mShader;
     int mBand;

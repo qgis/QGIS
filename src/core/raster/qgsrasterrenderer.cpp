@@ -21,6 +21,8 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
+#include <QDomDocument>
+#include <QDomElement>
 #include <QImage>
 #include <QPainter>
 
@@ -308,5 +310,33 @@ void QgsRasterRenderer::projectImage( const QImage& srcImg, QImage& dstImage, Qg
       prj->srcRowCol( i, j, &srcRow, &srcCol );
       dstImage.setPixel( j, i, srcImg.pixel( srcCol, srcRow ) );
     }
+  }
+}
+
+void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const
+{
+  if ( rasterRendererElem.isNull() )
+  {
+    return;
+  }
+
+  rasterRendererElem.setAttribute( "type", mType );
+  rasterRendererElem.setAttribute( "opacity", mOpacity );
+  rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
+  rasterRendererElem.setAttribute( "maxOversampling", mMaxOversampling );
+  rasterRendererElem.setAttribute( "invertColor", mInvertColor );
+  if ( mZoomedInResampler )
+  {
+    rasterRendererElem.setAttribute( "zoomedInResampler", mZoomedInResampler->type() );
+  }
+  if ( mZoomedOutResampler )
+  {
+    rasterRendererElem.setAttribute( "zoomedOutResampler", mZoomedOutResampler->type() );
+  }
+
+  //todo: write raster transparency
+  if ( mRasterTransparency )
+  {
+    mRasterTransparency->writeXML( doc, rasterRendererElem );
   }
 }

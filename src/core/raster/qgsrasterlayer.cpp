@@ -3400,38 +3400,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
 
-  // resampler
-  if ( mRenderer )
-  {
-    //Max oversampling
-    QDomElement maxOversamplingElem = document.createElement( "MaxOversampling" );
-    QDomText maxOversamplingText = document.createTextNode( QString::number( mRenderer->maxOversampling() ) );
-    maxOversamplingElem.appendChild( maxOversamplingText );
-    rasterPropertiesElement.appendChild( maxOversamplingElem );
-
-    QString zoomedInResamplerString = "nearest";
-    const QgsRasterResampler* zoomedInResampler = mRenderer->zoomedInResampler();
-    if ( zoomedInResampler )
-    {
-      zoomedInResamplerString = zoomedInResampler->type();
-    }
-    QDomElement zoomedInResamplerElem = document.createElement( "zoomedInResampler" );
-    QDomText zoomedInResamplerText = document.createTextNode( zoomedInResamplerString );
-    zoomedInResamplerElem.appendChild( zoomedInResamplerText );
-    rasterPropertiesElement.appendChild( zoomedInResamplerElem );
-
-    QString zoomedOutResamplerString = "nearest";
-    const QgsRasterResampler* zoomedOutResampler = mRenderer->zoomedOutResampler();
-    if ( zoomedOutResampler )
-    {
-      zoomedOutResamplerString = zoomedOutResampler->type();
-    }
-    QDomElement zoomedOutResamplerElem = document.createElement( "zoomedOutResampler" );
-    QDomText zoomedOutResamplerText = document.createTextNode( zoomedOutResamplerString );
-    zoomedOutResamplerElem.appendChild( zoomedOutResamplerText );
-    rasterPropertiesElement.appendChild( zoomedOutResamplerElem );
-  }
-
   QStringList sl = subLayers();
   QStringList sls = mDataProvider->subLayerStyles();
 
@@ -3476,36 +3444,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     formatElement.appendChild( formatText );
     rasterPropertiesElement.appendChild( formatElement );
   }
-
-  // <mDrawingStyle>
-  QDomElement drawStyleElement = document.createElement( "mDrawingStyle" );
-  QDomText    drawStyleText    = document.createTextNode( drawingStyleAsString() );
-
-  drawStyleElement.appendChild( drawStyleText );
-
-  rasterPropertiesElement.appendChild( drawStyleElement );
-
-  // <colorShadingAlgorithm>
-  QDomElement colorShadingAlgorithmElement = document.createElement( "mColorShadingAlgorithm" );
-  QDomText    colorShadingAlgorithmText    = document.createTextNode( colorShadingAlgorithmAsString() );
-
-  colorShadingAlgorithmElement.appendChild( colorShadingAlgorithmText );
-
-  rasterPropertiesElement.appendChild( colorShadingAlgorithmElement );
-
-  // <mInvertColor>
-  QDomElement mInvertColorElement = document.createElement( "mInvertColor" );
-
-  if ( invertHistogram() )
-  {
-    mInvertColorElement.setAttribute( "boolean", "true" );
-  }
-  else
-  {
-    mInvertColorElement.setAttribute( "boolean", "false" );
-  }
-
-  rasterPropertiesElement.appendChild( mInvertColorElement );
 
   // <mRedBandName>
   QDomElement mRedBandNameElement = document.createElement( "mRedBandName" );
@@ -3627,37 +3565,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 
   rasterPropertiesElement.appendChild( GrayMinimumMaximumEstimated );
 
-  // <contrastEnhancementAlgorithm>
-  QDomElement contrastEnhancementAlgorithmElement = document.createElement( "mContrastEnhancementAlgorithm" );
-  QDomText    contrastEnhancementAlgorithmText    = document.createTextNode( contrastEnhancementAlgorithmAsString() );
-
-  contrastEnhancementAlgorithmElement.appendChild( contrastEnhancementAlgorithmText );
-
-  rasterPropertiesElement.appendChild( contrastEnhancementAlgorithmElement );
-
-  // <minMaxValues>
-  QList<QgsContrastEnhancement>::const_iterator it;
-  QDomElement contrastEnhancementMinMaxValuesElement = document.createElement( "contrastEnhancementMinMaxValues" );
-  for ( it =  mContrastEnhancementList.constBegin(); it != mContrastEnhancementList.constEnd(); ++it )
-  {
-    QDomElement minMaxEntry = document.createElement( "minMaxEntry" );
-    QDomElement minEntry = document.createElement( "min" );
-    QDomElement maxEntry = document.createElement( "max" );
-
-    QDomText minEntryText = document.createTextNode( QString::number( it->minimumValue() ) );
-    minEntry.appendChild( minEntryText );
-
-    QDomText maxEntryText = document.createTextNode( QString::number( it->maximumValue() ) );
-    maxEntry.appendChild( maxEntryText );
-
-    minMaxEntry.appendChild( minEntry );
-    minMaxEntry.appendChild( maxEntry );
-
-    contrastEnhancementMinMaxValuesElement.appendChild( minMaxEntry );
-  }
-
-  rasterPropertiesElement.appendChild( contrastEnhancementMinMaxValuesElement );
-
   /*
    * Transparency tab
    */
@@ -3677,7 +3584,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 
   rasterPropertiesElement.appendChild( mNoDataValueElement );
 
-
+#if 0
   if ( mRasterTransparency.transparentSingleValuePixelList().count() > 0 )
   {
     QDomElement singleValuePixelListElement = document.createElement( "singleValuePixelList" );
@@ -3743,6 +3650,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     }
 
     rasterPropertiesElement.appendChild( customColorRampElement );
+  }
+#endif //0
+
+  if ( mRenderer )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    mRenderer->writeXML( document, layerElem );
   }
 
   return true;

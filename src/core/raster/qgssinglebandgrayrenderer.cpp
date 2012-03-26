@@ -151,3 +151,8 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     stopRasterRead( mAlphaBand );
   }
 }
+
+void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  //soon...
+}

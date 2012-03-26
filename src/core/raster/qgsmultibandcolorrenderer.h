@@ -55,6 +55,8 @@ class QgsMultiBandColorRenderer: public QgsRasterRenderer
     /**Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
   private:
     int mRedBand;
     int mGreenBand;

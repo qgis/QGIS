@@ -273,3 +273,8 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     stopRasterRead( *bandIt );
   }
 }
+
+void QgsMultiBandColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  //soon...
+}

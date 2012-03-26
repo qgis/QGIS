@@ -15,10 +15,12 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QList>
 
 #include "qgsrastertransparency.h"
 #include "qgis.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsRasterTransparency::QgsRasterTransparency()
 {
@@ -179,4 +181,39 @@ bool QgsRasterTransparency::isEmpty( double nodataValue ) const
            ( mTransparentThreeValuePixelList.isEmpty() ||
              ( mTransparentThreeValuePixelList.size() < 4 && doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
                doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) && doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
+}
+
+void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  QDomElement rasterTransparencyElem = doc.createElement( "rasterTransparency" );
+  if ( mTransparentSingleValuePixelList.count() > 0 )
+  {
+    QDomElement singleValuePixelListElement = doc.createElement( "singleValuePixelList" );
+    QList<QgsRasterTransparency::TransparentSingleValuePixel>::const_iterator it = mTransparentSingleValuePixelList.constBegin();
+    for ( ; it != mTransparentSingleValuePixelList.constEnd(); ++it )
+    {
+      QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
+      pixelListElement.setAttribute( "pixelValue", QString::number( it->pixelValue, 'f' ) );
+      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
+      singleValuePixelListElement.appendChild( pixelListElement );
+    }
+    rasterTransparencyElem.appendChild( singleValuePixelListElement );
+
+  }
+  if ( mTransparentThreeValuePixelList.count() > 0 )
+  {
+    QDomElement threeValuePixelListElement = doc.createElement( "threeValuePixelList" );
+    QList<QgsRasterTransparency::TransparentThreeValuePixel>::const_iterator it = mTransparentThreeValuePixelList.constBegin();
+    for ( ; it != mTransparentThreeValuePixelList.constEnd(); ++it )
+    {
+      QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
+      pixelListElement.setAttribute( "red", QString::number( it->red, 'f' ) );
+      pixelListElement.setAttribute( "green", QString::number( it->green, 'f' ) );
+      pixelListElement.setAttribute( "blue", QString::number( it->blue, 'f' ) );
+      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
+      threeValuePixelListElement.appendChild( pixelListElement );
+    }
+    rasterTransparencyElem.appendChild( threeValuePixelListElement );
+  }
+  parentElem.appendChild( rasterTransparencyElem );
 }

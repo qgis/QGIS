@@ -145,3 +145,8 @@ void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* vie
     stopRasterRead( mAlphaBand );
   }
 }
+
+void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  //soon...
+}

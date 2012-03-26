@@ -32,6 +32,8 @@ class QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
   private:
     int mBand;
 };

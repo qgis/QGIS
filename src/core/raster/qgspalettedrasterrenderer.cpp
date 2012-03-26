@@ -19,6 +19,8 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include <QColor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QImage>
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber,
@@ -154,4 +156,23 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   {
     stopRasterRead( mAlphaBand );
   }
+}
+
+void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  _writeXML( doc, rasterRendererElem );
+
+  rasterRendererElem.setAttribute( "band", mBandNumber );
+  QDomElement colorPaletteElem = doc.createElement( "colorPalette" );
+  for ( int i = 0; i < mNColors; ++i )
+  {
+    QDomElement colorElem = doc.createElement( "paletteEntry" );
+    colorElem.setAttribute( "value", i );
+    colorElem.setAttribute( "color", mColors[i].name() );
+    colorPaletteElem.appendChild( colorElem );
+  }
+  rasterRendererElem.appendChild( colorPaletteElem );
+
+  parentElem.appendChild( rasterRendererElem );
 }
