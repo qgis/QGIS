@@ -272,5 +272,17 @@ class QgsDirectoryParamWidget : public QTreeWidget
     void showHideColumn();
 };
 
+/** Contains various Favourites directories */
+class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsFavouritesItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsFavouritesItem();
+
+    QVector<QgsDataItem*> createChildren();
+    static const QIcon &iconFavourites();
+};
+
 #endif // QGSDATAITEM_H
 
