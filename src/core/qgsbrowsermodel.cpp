@@ -54,7 +54,9 @@ void QgsBrowserModel::addRootItems()
   }
 
   // Add non file top level items
-  foreach( QString key, QgsProviderRegistry::instance()->providerList() )
+  QStringList providersList = QgsProviderRegistry::instance()->providerList();
+  providersList.sort();
+  foreach( QString key, providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
