@@ -206,10 +206,23 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   QgsDebugMsg( QString( "add child #%1 - %2" ).arg( mChildren.size() ).arg( child->mName ) );
 
   int i;
-  for ( i = 0; i < mChildren.size(); i++ )
+  if ( type() == Directory )
   {
-    if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
-      break;
+    for ( i = 0; i < mChildren.size(); i++ )
+    {
+      // sort items by type, so directories are before data items
+      if ( mChildren[i]->mType == child->mType &&
+           mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+        break;
+    }
+  }
+  else
+  {
+    for ( i = 0; i < mChildren.size(); i++ )
+    {
+      if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+        break;
+    }
   }
 
   if ( refresh )
