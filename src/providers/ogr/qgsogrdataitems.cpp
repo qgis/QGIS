@@ -231,6 +231,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QFileInfo info( thePath );
   QString name = info.fileName();
   QSettings settings;
+  int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
 
   // allow normal files or VSIFILE items to pass
@@ -289,6 +290,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       if ( item )
         return item;
     }
+  }
+
+  // if scan items == "Check extension", add item here without trying to open
+  if ( scanItemsSetting == 1 )
+  {
+    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
+    if ( item )
+      return item;
   }
 
   // try to open using VSIFileHandler

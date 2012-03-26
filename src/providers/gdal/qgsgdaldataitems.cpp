@@ -112,6 +112,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QSettings settings;
   //extract basename with extension
   QString name = info.fileName();
+  int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
 
   // allow normal files or VSIFILE items to pass
@@ -175,6 +176,17 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         return item;
     }
   }
+
+  // if scan items == "Check extension", add item here without trying to open
+  if ( scanItemsSetting == 1 )
+  {
+    QStringList sublayers;
+    QgsDebugMsg( QString( "adding item name=%1 thePath=%2 uri=%3" ).arg( name ).arg( thePath ).arg( uri ) );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    if ( item )
+      return item;
+  }
+
 
   // try to open using VSIFileHandler
   if ( thePath.right( 4 ) == ".zip" )

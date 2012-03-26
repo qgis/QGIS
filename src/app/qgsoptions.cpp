@@ -196,6 +196,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbPromptRasterSublayers->addItem( tr( "Load all" ) );
   cmbPromptRasterSublayers->setCurrentIndex( settings.value( "/qgis/promptForRasterSublayers", 0 ).toInt() );
 
+  // Scan for valid items in the browser dock
+  cmbScanItemsInBrowser->clear();
+  cmbScanItemsInBrowser->addItem( tr( "Check file contents" ) ); // 0
+  cmbScanItemsInBrowser->addItem( tr( "Check extension" ) );     // 1
+  cmbScanItemsInBrowser->setCurrentIndex( settings.value( "/qgis/scanItemsInBrowser", 1 ).toInt() );
+
   // Scan for contents of compressed files (.zip) in browser dock
   cmbScanZipInBrowser->clear();
   cmbScanZipInBrowser->addItem( tr( "No" ) );           // 0
@@ -636,6 +642,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/promptForRasterSublayers", cmbPromptRasterSublayers->currentIndex() );
+  settings.setValue( "/qgis/scanItemsInBrowser", cmbScanItemsInBrowser->currentIndex() );
   settings.setValue( "/qgis/scanZipInBrowser", cmbScanZipInBrowser->currentIndex() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
