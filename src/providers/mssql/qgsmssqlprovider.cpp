@@ -423,6 +423,7 @@ void QgsMssqlProvider::loadFields()
       foreach( QString pk, pkCandidates )
       {
         mQuery.clear();
+        mQuery.setForwardOnly( true );
         if (!mQuery.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
             .arg( pk )
             .arg( mSchemaName )
