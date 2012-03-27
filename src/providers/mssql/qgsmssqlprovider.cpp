@@ -572,7 +572,9 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
     }
   }
   else
+  {
     QgsDebugMsg( "QgsMssqlProvider::select no fields have been requested" );
+  }
 }
 
 // update the extent, feature count, wkb type and srid for this layer

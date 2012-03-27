@@ -488,7 +488,7 @@
              <property name="title">
               <string>WMS Capabilitities</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_7">
+             <layout class="QGridLayout" name="gridLayout_10">
            <item row="1" column="0">
             <widget class="QGroupBox" name="grpWMSExt">
              <property name="title">

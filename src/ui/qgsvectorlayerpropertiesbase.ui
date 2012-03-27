@@ -731,7 +731,7 @@
             <height>497</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout">
+          <layout class="QGridLayout" name="gridLayout_17">
            <item row="0" column="0">
             <widget class="QPushButton" name="mButtonAddJoin">
              <property name="text">
