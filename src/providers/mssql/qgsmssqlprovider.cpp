@@ -354,6 +354,7 @@ void QgsMssqlProvider::loadFields()
     if ( mFidColName.isEmpty() )
     {
       mQuery.clear();
+      mQuery.setForwardOnly( true );
       if (!mQuery.exec( QString( "exec sp_pkeys N'%1', NULL, NULL" ).arg( mTableName ) ))
       {
         QString msg = mQuery.lastError().text();
@@ -370,6 +371,7 @@ void QgsMssqlProvider::loadFields()
       foreach( QString pk, pkCandidates )
       {
         mQuery.clear();
+        mQuery.setForwardOnly( true );
         if (!mQuery.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
             .arg( pk )
             .arg( mSchemaName )
