@@ -1,6 +1,5 @@
-v.hull
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-f|-f|True
-OutputVector|output|output
+r.resamp.interp
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterSelection|method|method|nearest;bilinear;bicubic
+OutputRaster|output|output

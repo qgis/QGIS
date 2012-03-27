@@ -1,10 +1,6 @@
-v.mkgrid
-Vector (v.*)
-ParameterString|grid|grid|
-ParameterSelection|position|position|region;coor
-ParameterString|coor|coor|
-ParameterString|box|box|
-ParameterString|angle|angle|0
-ParameterBoolean|-p|-p|True
-ParameterBoolean|-q|-q|True
-OutputVector|map|map
+r.in.poly
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterString|title|title|
+ParameterString|rows|rows|4096
+OutputRaster|output|output

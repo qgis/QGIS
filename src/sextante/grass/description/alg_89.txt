@@ -1,19 +1,6 @@
-r.sunmask
+r.water.outlet
 Raster (r.*)
-ParameterRaster|elev|elev|True
-ParameterNumber|altitude|altitude|None|None|0.0
-ParameterNumber|azimuth|azimuth|None|None|0.0
-ParameterNumber|year|year|None|None|0.0
-ParameterNumber|month|month|None|None|0.0
-ParameterNumber|day|day|None|None|0.0
-ParameterNumber|hour|hour|None|None|0.0
-ParameterNumber|minute|minute|None|None|0.0
-ParameterNumber|second|second|None|None|0.0
-ParameterNumber|timezone|timezone|None|None|0.0
-ParameterString|east|east|
-ParameterString|north|north|
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-v|-v|True
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-g|-g|True
-OutputRaster|output|output
+ParameterRaster|drainage|drainage|False
+ParameterString|easting|easting|
+ParameterString|northing|northing|
+OutputRaster|basin|basin

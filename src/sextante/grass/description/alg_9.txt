@@ -1,6 +1,5 @@
-r.basins.fill
+r.surf.gauss
 Raster (r.*)
-ParameterNumber|number|number|None|None|0.0
-ParameterRaster|c_map|c_map|True
-ParameterRaster|t_map|t_map|True
-OutputRaster|result|result
+ParameterString|mean|mean|0.0
+ParameterString|sigma|sigma|1.0
+OutputRaster|output|output

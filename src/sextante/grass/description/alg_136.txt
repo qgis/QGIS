@@ -1,12 +1,11 @@
-v.lidar.edgedetection
+v.outlier
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|see|see|4
-ParameterString|sen|sen|4
-ParameterString|lambda_g|lambda_g|0.01
-ParameterString|tgh|tgh|6
-ParameterString|tgl|tgl|3
-ParameterString|theta_g|theta_g|0.26
-ParameterString|lambda_r|lambda_r|2
+ParameterVector|input|input|-1|False
+ParameterString|soe|soe|10
+ParameterString|son|son|10
+ParameterString|lambda_i|lambda_i|0.1
+ParameterString|thres_o|thres_o|50
 ParameterBoolean|-e|-e|True
 OutputVector|output|output
+OutputVector|outlier|outlier
+OutputVector|qgis|qgis

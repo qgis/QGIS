@@ -1,6 +1,6 @@
-v.neighbors
+v.delaunay
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterSelection|method|method|count
-ParameterString|size|size|
-OutputRaster|output|output
+ParameterVector|input|input|0|False
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-l|-l|True
+OutputVector|output|output

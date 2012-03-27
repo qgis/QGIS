@@ -1,10 +1,18 @@
-v.out.vtk
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|output|output|/file
-ParameterString|type|type|point,kernel,centroid,line,boundary,area,face
-ParameterString|dp|dp|
-ParameterString|scale|scale|1.0
-ParameterString|layer|layer|1
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-n|-n|True
+r.in.xyz
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterSelection|method|method|n;min;max;range;sum;mean;stddev;variance;coeff_var;median;percentile;skewness;trimmean
+ParameterSelection|type|type|CELL;FCELL;DCELL
+ParameterString|fs|fs|
+ParameterString|x|x|1
+ParameterString|y|y|2
+ParameterString|z|z|3
+ParameterString|zrange|zrange|
+ParameterString|zscale|zscale|1.0
+ParameterString|percent|percent|100
+ParameterString|pth|pth|
+ParameterString|trim|trim|
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-i|-i|True
+OutputRaster|output|output

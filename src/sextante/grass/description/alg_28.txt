@@ -1,10 +1,9 @@
-v.random
-Vector (v.*)
-ParameterString|n|n|
-ParameterString|zmin|zmin|0.0
-ParameterString|zmax|zmax|0.0
-ParameterString|column|column|
+r.mfilter
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|filter|filter|/file
+ParameterNumber|repeat|repeat|1|100|1
+ParameterString|title|title|
+ParameterBoolean|-q|-q|True
 ParameterBoolean|-z|-z|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-b|-b|True
-OutputVector|output|output
+OutputRaster|output|output

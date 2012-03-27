@@ -1,5 +1,14 @@
-r.out.xyz
+r.terraflow
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|output|output|/file
-ParameterString|fs|fs|
+ParameterRaster|elevation|elevation|False
+ParameterString|d8cut|d8cut|infinity
+ParameterString|memory|memory|300
+ParameterString|STREAM_DIR|STREAM_DIR|C:/Users/volaya/AppData/Local/Temp
+ParameterString|stats|stats|stats.out
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-q|-q|True
+OutputRaster|filled|filled
+OutputRaster|direction|direction
+OutputRaster|swatershed|swatershed
+OutputRaster|accumulation|accumulation
+OutputRaster|tci|tci

@@ -1,6 +1,8 @@
-r.cross
+r.recode
 Raster (r.*)
-ParameterMultipleInput|input|input|1|True
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-q|-q|True
+ParameterRaster|input|input|False
+ParameterString|rules|rules|/file
+ParameterString|title|title|
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-d|-d|True
 OutputRaster|output|output

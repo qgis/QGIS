@@ -1,11 +1,9 @@
-v.crossbones
+v.class
 Vector (v.*)
-ParameterString|input|input|/file
-ParameterSelection|mode|mode|darts;lines;planes_h;planes_v;points;pyramids
-ParameterString|delimiter|delimiter|,
-ParameterString|idcolumn|idcolumn|1
-ParameterString|xcolumn|xcolumn|2
-ParameterString|ycolumn|ycolumn|3
-ParameterString|zcolumn|zcolumn|4
-ParameterString|ratios|ratios|1=3.0,2=8.0,5=6.0,8=6.0,11=6.0,14=6.0
-OutputVector|output|output
+ParameterVector|map|map|-1|False
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterString|where|where|
+ParameterSelection|algorithm|algorithm|int;std;qua;equ;dis
+ParameterString|nbclasses|nbclasses|
+ParameterBoolean|-g|-g|True

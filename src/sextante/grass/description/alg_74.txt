@@ -1,10 +1,7 @@
-r.to.vect
+r.distance
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterSelection|feature|feature|point;line;area
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-v|-v|True
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-b|-b|True
+ParameterRaster|maps|maps|False
+ParameterString|fs|fs|:
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-o|-o|True
 ParameterBoolean|-q|-q|True
-OutputVector|output|output

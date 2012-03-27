@@ -1,13 +1,11 @@
-v.out.ogr
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|line,boundary
-ParameterString|dsn|dsn|/file
-ParameterString|olayer|olayer|/file
-ParameterString|layer|layer|1
-ParameterSelection|format|format|ESRI_Shapefile;MapInfo_File;TIGER;S57;DGN;Memory;BNA;CSV;GML;GPX;KML;GeoJSON;GMT;Geoconcept
-ParameterString|dsco|dsco|/file
-ParameterString|lco|lco|/file
+r.neighbors
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterSelection|method|method|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
+ParameterString|size|size|3
+ParameterString|title|title|
+ParameterString|weight|weight|/file
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-q|-q|True
 ParameterBoolean|-c|-c|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-p|-p|True
+OutputRaster|output|output

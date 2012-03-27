@@ -1,6 +1,5 @@
-r.surf.contour
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-s|-s|True
-OutputRaster|output|output
+v.in.region
+Vector (v.*)
+ParameterSelection|type|type|line;area
+ParameterString|cat|cat|1
+OutputVector|output|output

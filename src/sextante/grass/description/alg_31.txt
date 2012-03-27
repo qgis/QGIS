@@ -1,10 +1,8 @@
-v.sample
+v.reclass
 Vector (v.*)
-ParameterVector|input|input|-1|True
+ParameterVector|input|input|-1|False
+ParameterString|type|type|point,line,boundary,centroid
+ParameterString|layer|layer|1
 ParameterString|column|column|
-ParameterRaster|raster|raster|True
-ParameterString|z|z|1.0
-ParameterBoolean|-b|-b|True
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-q|-q|True
+ParameterString|rules|rules|/file
 OutputVector|output|output

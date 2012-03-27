@@ -1,18 +1,14 @@
-r.slope.aspect
-Raster (r.*)
-ParameterRaster|elevation|elevation|True
-ParameterSelection|format|format|degrees;percent
-ParameterSelection|prec|prec|default;double;float;int
-ParameterString|zfactor|zfactor|1.0
-ParameterString|min_slp_allowed|min_slp_allowed|0.0
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-a|-a|True
-OutputRaster|slope|slope
-OutputRaster|aspect|aspect
-OutputRaster|pcurv|pcurv
-OutputRaster|tcurv|tcurv
-OutputRaster|dx|dx
-OutputRaster|dy|dy
-OutputRaster|dxx|dxx
-OutputRaster|dyy|dyy
-OutputRaster|dxy|dxy
+v.extract
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|type|type|point,line,boundary,centroid,area,face
+ParameterString|layer|layer|1
+ParameterString|list|list|
+ParameterString|where|where|
+ParameterString|file|file|/file
+ParameterString|random|random|
+ParameterString|new|new|-1
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-r|-r|True
+OutputVector|output|output

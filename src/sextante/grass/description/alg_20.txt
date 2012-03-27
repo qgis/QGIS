@@ -1,8 +1,5 @@
-r.buffer
+r.out.gridatb
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|distances|distances|
-ParameterSelection|units|units|meters;kilometers;feet;miles;nautmiles
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-q|-q|True
-OutputRaster|output|output
+ParameterRaster|input|input|False
+ParameterString|output|output|
+ParameterBoolean|-o|-o|True

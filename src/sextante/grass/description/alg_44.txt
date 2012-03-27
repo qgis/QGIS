@@ -1,18 +1,5 @@
-r.in.xyz
+r.reclass.area.lesser
 Raster (r.*)
-ParameterString|input|input|/file
-ParameterSelection|method|method|n;min;max;range;sum;mean;stddev;variance;coeff_var;median;percentile;skewness;trimmean
-ParameterSelection|type|type|CELL;FCELL;DCELL
-ParameterString|fs|fs|
-ParameterString|x|x|1
-ParameterString|y|y|2
-ParameterString|z|z|3
-ParameterString|zrange|zrange|
-ParameterString|zscale|zscale|1.0
-ParameterString|percent|percent|100
-ParameterString|pth|pth|
-ParameterString|trim|trim|
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-g|-g|True
-ParameterBoolean|-i|-i|True
+ParameterRaster|input|input|False
+ParameterNumber|lesser|lesser|None|None|0.0
 OutputRaster|output|output

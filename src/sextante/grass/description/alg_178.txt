@@ -1,8 +1,9 @@
-r.out.ppm3
+r.kappa
 Raster (r.*)
-ParameterRaster|red|red|True
-ParameterRaster|green|green|True
-ParameterRaster|blue|blue|True
-ParameterString|output|output|
+ParameterRaster|classification|classification|False
+ParameterRaster|reference|reference|False
+ParameterString|output|output|/file
+ParameterString|title|title|ACCURACY ASSESSMENT
+ParameterBoolean|-w|-w|True
 ParameterBoolean|-q|-q|True
-ParameterBoolean|-c|-c|True
+ParameterBoolean|-h|-h|True

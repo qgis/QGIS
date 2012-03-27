@@ -1,7 +1,10 @@
-r.null
+r.carve
 Raster (r.*)
-ParameterRaster|map|map|True
-ParameterString|setnull|setnull|
-ParameterString|null|null|
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-i|-i|True
+ParameterRaster|rast|rast|False
+ParameterVector|vect|vect|-1|False
+ParameterString|width|width|
+ParameterString|depth|depth|
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output
+OutputVector|points|points

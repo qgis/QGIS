@@ -1,10 +1,5 @@
-v.to.3d
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|point,line,boundary,centroid
-ParameterString|height|height|
-ParameterString|layer|layer|1
-ParameterString|column|column|
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-t|-t|True
-OutputVector|output|output
+r.thin
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|iterations|iterations|200
+OutputRaster|output|output

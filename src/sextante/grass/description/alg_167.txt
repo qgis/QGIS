@@ -1,5 +1,4 @@
-r.surf.idw2
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|npoints|npoints|12
-OutputRaster|output|output
+v.in.gns
+Vector (v.*)
+ParameterString|file|file|/file
+OutputVector|vect|vect

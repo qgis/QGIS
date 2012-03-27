@@ -1,12 +1,7 @@
-r.composite
+r.bitpattern
 Raster (r.*)
-ParameterRaster|red|red|True
-ParameterRaster|green|green|True
-ParameterRaster|blue|blue|True
-ParameterString|levels|levels|32
-ParameterString|lev_red|lev_red|
-ParameterString|lev_green|lev_green|
-ParameterString|lev_blue|lev_blue|
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-c|-c|True
+ParameterRaster|input|input|False
+ParameterString|pattern|pattern|
+ParameterString|patval|patval|
+ParameterBoolean|-q|-q|True
 OutputRaster|output|output

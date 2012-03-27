@@ -1,11 +1,6 @@
-v.parallel
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|distance|distance|
-ParameterString|minordistance|minordistance|
-ParameterString|angle|angle|0
-ParameterSelection|side|side|left;right;both
-ParameterString|tolerance|tolerance|
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-b|-b|True
-OutputVector|output|output
+r.surf.idw
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|npoints|npoints|12
+ParameterBoolean|-e|-e|True
+OutputRaster|output|output

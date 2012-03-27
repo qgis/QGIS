@@ -1,8 +1,6 @@
-r.circle
+r.surf.contour
 Raster (r.*)
-ParameterString|coordinate|coordinate|
-ParameterString|min|min|
-ParameterString|max|max|
-ParameterString|mult|mult|
-ParameterBoolean|-b|-b|True
+ParameterRaster|input|input|False
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-s|-s|True
 OutputRaster|output|output

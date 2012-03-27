@@ -1,11 +1,11 @@
-v.extrude
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|zshift|zshift|0
-ParameterRaster|elevation|elevation|True
-ParameterString|height|height|
-ParameterString|hcolumn|hcolumn|
-ParameterString|type|type|point,line,boundary,area
-ParameterString|layer|layer|1
-ParameterBoolean|-t|-t|True
-OutputVector|output|output
+r.param.scale
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|s_tol|s_tol|1.0
+ParameterString|c_tol|c_tol|0.0001
+ParameterString|size|size|3
+ParameterSelection|param|param|elev;slope;aspect;profc;planc;longc;crosc;minic;maxic;feature
+ParameterString|exp|exp|0.0
+ParameterString|zscale|zscale|1.0
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

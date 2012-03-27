@@ -1,6 +1,8 @@
-r.univar
+r.rescale
 Raster (r.*)
-ParameterMultipleInput|map|map|1|True
-ParameterString|percentile|percentile|90
-ParameterBoolean|-g|-g|True
-ParameterBoolean|-e|-e|True
+ParameterRaster|input|input|False
+ParameterString|from|from|
+ParameterString|to|to|
+ParameterString|title|title|
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

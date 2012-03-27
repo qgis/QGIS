@@ -1,7 +1,18 @@
-v.lidar.growing
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterVector|first|first|-1|True
-ParameterString|tj|tj|0.2
-ParameterString|td|td|0.6
-OutputVector|output|output
+r.slope.aspect
+Raster (r.*)
+ParameterRaster|elevation|elevation|False
+ParameterSelection|format|format|degrees;percent
+ParameterSelection|prec|prec|default;double;float;int
+ParameterString|zfactor|zfactor|1.0
+ParameterString|min_slp_allowed|min_slp_allowed|0.0
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-a|-a|True
+OutputRaster|slope|slope
+OutputRaster|aspect|aspect
+OutputRaster|pcurv|pcurv
+OutputRaster|tcurv|tcurv
+OutputRaster|dx|dx
+OutputRaster|dy|dy
+OutputRaster|dxx|dxx
+OutputRaster|dyy|dyy
+OutputRaster|dxy|dxy

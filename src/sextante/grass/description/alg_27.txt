@@ -1,9 +1,12 @@
-r.kappa
+r.in.gdal
 Raster (r.*)
-ParameterRaster|classification|classification|True
-ParameterRaster|reference|reference|True
-ParameterString|output|output|/file
-ParameterString|title|title|ACCURACY ASSESSMENT
-ParameterBoolean|-w|-w|True
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-h|-h|True
+ParameterString|input|input|/file
+ParameterString|band|band|
+ParameterString|target|target|
+ParameterString|title|title|
+ParameterString|location|location|
+ParameterBoolean|-o|-o|True
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-k|-k|True
+OutputRaster|output|output

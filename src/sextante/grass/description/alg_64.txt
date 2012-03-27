@@ -1,9 +1,17 @@
-r.his
+r.topmodel
 Raster (r.*)
-ParameterRaster|h_map|h_map|True
-ParameterRaster|i_map|i_map|True
-ParameterRaster|s_map|s_map|True
-ParameterBoolean|-n|-n|True
-OutputRaster|r_map|r_map
-OutputRaster|g_map|g_map
-OutputRaster|b_map|b_map
+ParameterRaster|basin|basin|False
+ParameterRaster|elevation|elevation|False
+ParameterNumber|nidxclass|nidxclass|None|None|30.0
+ParameterString|idxstats|idxstats|
+ParameterString|parameters|parameters|
+ParameterString|input|input|
+ParameterString|output|output|
+ParameterString|Qobs|Qobs|
+ParameterNumber|timestep|timestep|None|None|0.0
+ParameterNumber|idxclass|idxclass|None|None|0.0
+ParameterBoolean|-i|-i|True
+OutputRaster|depressionless|depressionless
+OutputRaster|direction|direction
+OutputRaster|belevation|belevation
+OutputRaster|topidx|topidx

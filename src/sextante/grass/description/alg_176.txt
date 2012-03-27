@@ -1,14 +1,6 @@
-v.in.geoplot
+v.segment
 Vector (v.*)
-ParameterString|input|input|/file
-ParameterSelection|format|format|xyz;z
-ParameterSelection|delimiter|delimiter|tab;space;comma
-ParameterSelection|creference|creference|tl;bl
-ParameterString|xreference|xreference|0.0
-ParameterString|yreference|yreference|0.0
-ParameterString|xincrement|xincrement|
-ParameterString|yincrement|yincrement|
-ParameterString|length|length|
-ParameterString|null|null|
-ParameterBoolean|-q|-q|True
+ParameterVector|input|input|-1|False
+ParameterString|llayer|llayer|1
+ParameterString|file|file|/file
 OutputVector|output|output

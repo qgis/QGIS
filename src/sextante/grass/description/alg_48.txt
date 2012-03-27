@@ -1,12 +1,4 @@
-r.in.gdal
-Raster (r.*)
-ParameterString|input|input|/file
-ParameterString|band|band|
-ParameterString|target|target|
-ParameterString|title|title|
-ParameterString|location|location|
-ParameterBoolean|-o|-o|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-k|-k|True
-OutputRaster|output|output
+v.in.wfs
+Vector (v.*)
+ParameterString|wfs|wfs|wfs_string
+OutputVector|output|output

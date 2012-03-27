@@ -1,9 +1,15 @@
-r.grow
+r.horizon
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|radius|radius|1.01
-ParameterSelection|metric|metric|euclidean;maximum;manhattan
-ParameterString|old|old|
-ParameterString|new|new|
-ParameterBoolean|-q|-q|True
-OutputRaster|output|output
+ParameterRaster|elevin|elevin|False
+ParameterNumber|direction|direction|None|None|0.0
+ParameterNumber|horizonstep|horizonstep|None|None|0.0
+ParameterNumber|bufferzone|bufferzone|None|None|0.0
+ParameterNumber|e_buff|e_buff|None|None|0.0
+ParameterNumber|w_buff|w_buff|None|None|0.0
+ParameterNumber|n_buff|n_buff|None|None|0.0
+ParameterNumber|s_buff|s_buff|None|None|0.0
+ParameterNumber|maxdistance|maxdistance|None|None|0.0
+ParameterRaster|horizon|horizon|False
+ParameterString|coord|coord|
+ParameterString|dist|dist|1.0
+ParameterBoolean|-d|-d|True

@@ -1,6 +1,9 @@
-r.average
+r.plane
 Raster (r.*)
-ParameterRaster|base|base|True
-ParameterRaster|cover|cover|True
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output
+ParameterNumber|dip|dip|None|None|0.0
+ParameterNumber|azimuth|azimuth|None|None|0.0
+ParameterNumber|easting|easting|None|None|0.0
+ParameterNumber|northing|northing|None|None|0.0
+ParameterNumber|elevation|elevation|None|None|0.0
+ParameterSelection|type|type|int;float;double
+OutputRaster|name|name

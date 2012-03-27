@@ -1,0 +1,9 @@
+Copyright notice
+-------------------
+
+Algorithms in this folder have been adapted from the original mmqgis QGis plugin
+source code, by Michael Minn, licensed under the terms of GNU GPL 2
+
+For more info, please check http://michaelminn.com
+
+

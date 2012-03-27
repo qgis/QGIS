@@ -11,6 +11,7 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
+from sextante.outputs.OutputNumber import OutputNumber
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -257,6 +258,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                     return "output table"
                 elif isinstance(out, OutputHTML):
                     return "output html"
+                elif isinstance(out, OutputNumber):
+                    return "output number"
 
 
     def getAsPythonCode(self):

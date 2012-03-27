@@ -1,7 +1,10 @@
-r.in.arc
-Raster (r.*)
-ParameterString|input|input|/file
-ParameterSelection|type|type|CELL;FCELL;DCELL
-ParameterString|title|title|
-ParameterString|mult|mult|1.0
-OutputRaster|output|output
+v.random
+Vector (v.*)
+ParameterString|n|n|None|None|0.0
+ParameterNumber|zmin|zmin|None|None|0.0
+ParameterString|zmax|zmax|None|None|0.0
+ParameterTableField|column|column|z
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-b|-b|True
+OutputVector|output|output

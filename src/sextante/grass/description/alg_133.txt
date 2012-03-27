@@ -1,6 +1,20 @@
-r.volume
+r.stats
 Raster (r.*)
-ParameterRaster|data|data|True
-ParameterRaster|clump|clump|True
-ParameterBoolean|-f|-f|True
-OutputVector|centroids|centroids
+ParameterMultipleInput|input|input|1.0|False
+ParameterString|output|output|/file
+ParameterString|fs|fs|space
+ParameterString|nv|nv|*
+ParameterString|nsteps|nsteps|255
+ParameterBoolean|-1|-1|True
+ParameterBoolean|-A|-A|True
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-p|-p|True
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-x|-x|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-N|-N|True
+ParameterBoolean|-C|-C|True
+ParameterBoolean|-i|-i|True

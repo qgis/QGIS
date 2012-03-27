@@ -1,10 +1,10 @@
-r.profile
-Raster (r.*)
-ParameterRaster|input|input|True
+v.out.vtk
+Vector (v.*)
+ParameterVector|input|input|-1|False
 ParameterString|output|output|/file
-ParameterString|profile|profile|
-ParameterString|res|res|
-ParameterString|null|null|*
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-g|-g|True
+ParameterString|type|type|point,kernel,centroid,line,boundary,area,face
+ParameterString|dp|dp|
+ParameterString|scale|scale|1.0
+ParameterString|layer|layer|1
 ParameterBoolean|-c|-c|True
+ParameterBoolean|-n|-n|True

@@ -1,5 +1,5 @@
-v.type
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|line,boundary,point,centroid
-OutputVector|output|output
+r.univar.sh
+Raster (r.*)
+ParameterRaster|map|map|False
+ParameterNumber|percentile|percentile|None|None|90.0
+ParameterBoolean|-e|-e|True

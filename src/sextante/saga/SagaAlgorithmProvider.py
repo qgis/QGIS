@@ -24,23 +24,19 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            try:
+            #try:
                 if descriptionFile.startswith("alg_"):
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
                         alg.provider = self
                         self.algs.append(alg)
-            except Exception,e:
-                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+            #except Exception,e:
+                #SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
 
         #self.createDescriptionFiles()
 
     def getName(self):
         return "SAGA"
-
-
-    def getSupportedOutputRasterLayerExtensions(self):
-        return ["tif", "asc"]
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")

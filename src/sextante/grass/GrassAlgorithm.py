@@ -28,7 +28,10 @@ class GrassAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self.needsregion = False
+        #=======================================================================
+        # #true if the algorithms uses a region
+        # self.needsregion = False
+        #=======================================================================
 
     def __deepcopy__(self,memo):
         newone = GrassAlgorithm(self.descriptionFile)
@@ -38,6 +41,12 @@ class GrassAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
+    def helpFile(self):
+        folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
+        if str(folder).strip() != "":
+            helpfile = str(folder) + os.sep + self.name + ".html"
+            return helpfile
+        return None
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
@@ -49,8 +58,10 @@ class GrassAlgorithm(GeoAlgorithm):
                 line = line.strip("\n").strip()
                 if line.startswith("Parameter"):
                     self.addParameter(ParameterFactory.getFromString(line))
-                elif line.startswith("Region"):
-                    self.needsregion = True
+                #===============================================================
+                # elif line.startswith("Region"):
+                #    self.needsregion = True
+                #===============================================================
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
@@ -64,8 +75,8 @@ class GrassAlgorithm(GeoAlgorithm):
         if auto:
             first = True;
             for param in self.parameters:
-                if isinstance(param, ParameterRaster):
-                    if isinstance(param.value, QgsRasterLayer):
+                if isinstance(param, (ParameterRaster, ParameterVector)):
+                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
                         value = param.value
                     else:
                         value = QGisLayers.getObjectFromUri(param.value)
@@ -83,35 +94,34 @@ class GrassAlgorithm(GeoAlgorithm):
                         self.ymax = max(self.ymax, value.extent().yMaximum())
                         self.cellsize = max(self.cellsize, (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim())
         else:
-            self.xmin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
-            self.xmax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
-            self.ymin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
-            self.ymax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
-            self.cellsize = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
+            self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
+            self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)
+            self.ymin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMIN)
+            self.ymax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMAX)
+            self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
 
 
     def processAlgorithm(self, progress):
         path = GrassUtils.grassPath()
         if path == "":
             raise GeoAlgorithmExecutionException("GRASS folder is not configured.\nPlease configure it before running GRASS algorithms.")
-        useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
 
         commands = []
         self.exportedLayers = {}
         self.numExportedLayers = 0;
 
-        if self.needsregion:
-            self.calculateResamplingExtent()
+        ##if self.needsregion:
+        self.calculateResamplingExtent()
         GrassUtils.createTempMapset();
 
-        if self.needsregion:
-            command = "g.region"
-            command += " n=" + str(self.ymax)
-            command +=" s=" + str(self.ymin)
-            command +=" e=" + str(self.xmax)
-            command +=" w=" + str(self.xmin)
-            command +=" res=" + str(self.cellsize);
-            commands.append(command)
+        ##if self.needsregion:
+        command = "g.region"
+        command += " n=" + str(self.ymax)
+        command +=" s=" + str(self.ymin)
+        command +=" e=" + str(self.xmax)
+        command +=" w=" + str(self.xmin)
+        command +=" res=" + str(self.cellsize);
+        commands.append(command)
 
         #1: Export layer to grass mapset
         for param in self.parameters:
@@ -138,8 +148,7 @@ class GrassAlgorithm(GeoAlgorithm):
                         commands.append(self.exportRasterLayer(layer))
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layer in layers:
-                        if (not value.endswith("shp")) or useSelection:
-                            commands.append(self.exportRasterLayer(layer))
+                        commands.append(self.exportVectorLayer(layer))
 
         #2: set parameters and outputs
         command = self.name

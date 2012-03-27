@@ -1,8 +1,14 @@
-v.kcv
+v.in.geoplot
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|k|k|
-ParameterString|column|column|part
-ParameterBoolean|-d|-d|True
+ParameterString|input|input|/file
+ParameterSelection|format|format|xyz;z
+ParameterSelection|delimiter|delimiter|tab;space;comma
+ParameterSelection|creference|creference|tl;bl
+ParameterString|xreference|xreference|0.0
+ParameterString|yreference|yreference|0.0
+ParameterString|xincrement|xincrement|
+ParameterString|yincrement|yincrement|
+ParameterString|length|length|
+ParameterString|null|null|
 ParameterBoolean|-q|-q|True
 OutputVector|output|output

@@ -1,6 +1,11 @@
-r.out.ppm
+r.in.ascii
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|output|output|/file
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-G|-G|True
+ParameterString|input|input|/file
+ParameterString|title|title|
+ParameterString|mult|mult|1.0 or read from header
+ParameterString|nv|nv|* or read from header
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-s|-s|True
+OutputRaster|output|output

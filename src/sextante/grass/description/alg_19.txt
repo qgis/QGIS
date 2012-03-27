@@ -1,19 +1,11 @@
-v.vol.rst
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterRaster|cellinp|cellinp|True
-ParameterString|wcolumn|wcolumn|flt1
-ParameterNumber|tension|tension|None|None|40.0
-ParameterNumber|smooth|smooth|None|None|0.1
-ParameterString|scolumn|scolumn|
-ParameterString|where|where|
-ParameterRaster|maskmap|maskmap|True
-ParameterString|segmax|segmax|50
-ParameterString|npmin|npmin|200
-ParameterString|dmin|dmin|0.500000
-ParameterString|wmult|wmult|1.0
-ParameterString|zmult|zmult|1.0
-ParameterBoolean|-c|-c|True
-OutputVector|devi|devi
-OutputVector|cvdev|cvdev
-OutputRaster|cellout|cellout
+r.out.ascii
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|output|output|/file
+ParameterNumber|dp|dp|None|None|0.0
+ParameterNumber|width|width|None|None|0.0
+ParameterString|null|null|*
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-i|-i|True

@@ -14,6 +14,7 @@ class GrassUtils:
     GRASS_REGION_YMAX = "GRASS_REGION_YMAX"
     GRASS_REGION_CELLSIZE = "GRASS_REGION_CELLSIZE"
     GRASS_FOLDER = "GRASS_FOLDER"
+    GRASS_HELP_FOLDER = "GRASS_HELP_FOLDER"
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
 
     @staticmethod
@@ -39,6 +40,14 @@ class GrassUtils:
     @staticmethod
     def grassPath():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_FOLDER)
+        if folder == None:
+            folder =""
+
+        return folder
+
+    @staticmethod
+    def grassHelpPath():
+        folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
         if folder == None:
             folder =""
 
@@ -77,6 +86,7 @@ class GrassUtils:
 
         #Write the startup script
         if not SextanteUtils.isWindows():
+            ##TODO************
             pass
         else:
             output=open(script, "w")
@@ -93,7 +103,7 @@ class GrassUtils:
             output.write("if \"%GRASS_ADDON_PATH%\"==\"\" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n")
             output.write("if not \"%GRASS_ADDON_PATH%\"==\"\" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n")
             output.write("\n")
-            output.write("set GRASS_VERSION=" + getGrassVersion() + "\n");
+            output.write("set GRASS_VERSION=" + GrassUtils.getGrassVersion() + "\n");
             output.write("if not \"%LANG%\"==\"\" goto langset\n");
             output.write("FOR /F \"usebackq delims==\" %%i IN (`\"%WINGISBASE%\\etc\\winlocale\"`) DO @set LANG=%%i\n");
             output.write(":langset\n")
@@ -215,19 +225,33 @@ class GrassUtils:
 
     @staticmethod
     def executeGrass(progress):
-        #GrassUtils.createGrassScript()
         if SextanteUtils.isWindows():
             command = ["cmd.exe", "/C ", GrassUtils.grassScriptFilename()]
         else:
-            #TODO linux
             pass
+            #===================================================================
+            # os.chmod(GrassUtils.grassScriptFilename(), stat.S_IEXEC)
+            # command = [GrassUtils.grassScriptFilename()]
+            #===================================================================
         loglines = []
         loglines.append("GRASS execution console output")
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
-            #TODO update progress bar
+            if "GRASS_INFO_PERCENT" in line:
+                try:
+                    progress.setPercentage(line[line.rfind(":") + 2:])
+                except:
+                    pass
             loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+
+
+    def getGrassVersion(self):
+        #I do not know if this should be removed or let the user enter it
+        #or something like that... This is just a temporary thing
+        return "6.4.0"
+
+
 
 
 

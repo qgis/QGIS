@@ -1,12 +1,9 @@
-v.in.dxf
+v.perturb
 Vector (v.*)
-ParameterString|input|input|/file
-ParameterString|layers|layers|
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-t|-t|True
-ParameterBoolean|-b|-b|True
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-l|-l|True
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-1|-1|True
+ParameterVector|input|input|-1|False
+ParameterSelection|distribution|distribution|uniform;normal
+ParameterString|parameters|parameters|
+ParameterString|minimum|minimum|0.0
+ParameterString|seed|seed|0
+ParameterBoolean|-q|-q|True
 OutputVector|output|output

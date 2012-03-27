@@ -1,9 +1,12 @@
-r.lake
+r.info
 Raster (r.*)
-ParameterRaster|dem|dem|True
-ParameterString|wl|wl|
-ParameterString|xy|xy|
-ParameterRaster|seed|seed|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-o|-o|True
-OutputRaster|lake|lake
+ParameterRaster|map|map|False
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-u|-u|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-p|-p|True

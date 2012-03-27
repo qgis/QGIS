@@ -1,26 +1,16 @@
-r.in.wms
-Raster (r.*)
-ParameterString|mapserver|mapserver|
-ParameterString|layers|layers|
-ParameterString|styles|styles|
-ParameterString|srs|srs|EPSG:4326
-ParameterSelection|format|format|geotiff;tiff;jpeg;gif;png
-ParameterString|wmsquery|wmsquery|version=1.1.1
-ParameterNumber|maxcols|maxcols|None|None|1024.0
-ParameterNumber|maxrows|maxrows|None|None|1024.0
-ParameterString|tileoptions|tileoptions|
-ParameterString|region|region|
-ParameterString|folder|folder|
-ParameterString|wgetoptions|wgetoptions|-c -t 5 -nv
-ParameterString|curloptions|curloptions|-C - --retry 5 -s -S
-ParameterSelection|method|method|nearest;bilinear;cubic;cubicspline
-ParameterString|cap_file|cap_file|
-ParameterNumber|v|v|None|None|1.0
-ParameterBoolean|-l|-l|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-o|-o|True
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-k|-k|True
+v.distance
+Vector (v.*)
+ParameterVector|from|from|-1|False
+ParameterVector|to|to|-1|False
+ParameterString|from_type|from_type|point
+ParameterString|to_type|to_type|point,line,area
+ParameterString|from_layer|from_layer|1
+ParameterString|to_layer|to_layer|1
+ParameterString|dmax|dmax|-1
+ParameterString|dmin|dmin|-1
+ParameterString|upload|upload|
+ParameterString|column|column|
+ParameterString|to_column|to_column|
 ParameterBoolean|-p|-p|True
-ParameterBoolean|-g|-g|True
-OutputRaster|output|output
+ParameterBoolean|-a|-a|True
+OutputVector|output|output

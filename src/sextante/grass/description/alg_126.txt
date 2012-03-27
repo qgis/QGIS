@@ -1,7 +1,6 @@
-r.out.pov
-Raster (r.*)
-ParameterRaster|map|map|True
-ParameterString|tga|tga|
-ParameterNumber|hftype|hftype|None|None|0.0
-ParameterNumber|bias|bias|None|None|0.0
-ParameterNumber|scale|scale|None|None|0.0
+v.hull
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-f|-f|True
+OutputVector|output|output

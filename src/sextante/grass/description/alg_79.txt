@@ -1,17 +1,11 @@
-r.topmodel
-Raster (r.*)
-ParameterRaster|basin|basin|True
-ParameterRaster|elevation|elevation|True
-ParameterNumber|nidxclass|nidxclass|None|None|30.0
-ParameterString|idxstats|idxstats|
-ParameterString|parameters|parameters|
-ParameterString|input|input|
-ParameterString|output|output|
-ParameterString|Qobs|Qobs|
-ParameterNumber|timestep|timestep|None|None|0.0
-ParameterNumber|idxclass|idxclass|None|None|0.0
-ParameterBoolean|-i|-i|True
-OutputRaster|depressionless|depressionless
-OutputRaster|direction|direction
-OutputRaster|belevation|belevation
-OutputRaster|topidx|topidx
+v.crossbones
+Vector (v.*)
+ParameterString|input|input|/file
+ParameterSelection|mode|mode|darts;lines;planes_h;planes_v;points;pyramids
+ParameterString|delimiter|delimiter|,
+ParameterString|idcolumn|idcolumn|1
+ParameterString|xcolumn|xcolumn|2
+ParameterString|ycolumn|ycolumn|3
+ParameterString|zcolumn|zcolumn|4
+ParameterString|ratios|ratios|1=3.0,2=8.0,5=6.0,8=6.0,11=6.0,14=6.0
+OutputVector|output|output

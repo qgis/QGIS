@@ -15,6 +15,7 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
+from sextante.outputs.OutputNumber import OutputNumber
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -100,6 +101,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputTable()
         elif tokens[1].lower().strip().startswith("output html"):
             out = OutputHTML()
+        elif tokens[1].lower().strip().startswith("output number"):
+            out = OutputNumber()
+
 
 
         if param != None:

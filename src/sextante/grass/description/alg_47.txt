@@ -1,12 +1,9 @@
-v.overlay
-Vector (v.*)
-ParameterVector|ainput|ainput|-1|True
-ParameterString|atype|atype|area
-ParameterString|alayer|alayer|1
-ParameterVector|binput|binput|-1|True
-ParameterString|btype|btype|area
-ParameterString|blayer|blayer|1
-ParameterSelection|operator|operator|and;or;not;xor
-ParameterString|olayer|olayer|1,0,0
-ParameterBoolean|-t|-t|True
-OutputVector|output|output
+r.his
+Raster (r.*)
+ParameterRaster|h_map|h_map|False
+ParameterRaster|i_map|i_map|False
+ParameterRaster|s_map|s_map|False
+ParameterBoolean|-n|-n|True
+OutputRaster|r_map|r_map
+OutputRaster|g_map|g_map
+OutputRaster|b_map|b_map

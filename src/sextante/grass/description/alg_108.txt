@@ -1,11 +1,17 @@
-r.colors
+r.out.vtk
 Raster (r.*)
-ParameterRaster|map|map|True
-ParameterSelection|color|color|aspect;aspectcolr;bcyr;bgyr;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;gdd;grey;grey1.0;grey255;gyr;haxby;ndvi;population;precipitation;rainbow;ramp;rstcurv;ryb;ryg;sepia;slope;srtm;terrain;wave;random;grey.eq;grey.log;rules
-ParameterString|rules|rules|/file
-ParameterBoolean|-l|-l|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-g|-g|True
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-q|-q|True
+ParameterMultipleInput|input|input|1.0|False
+ParameterString|output|output|/file
+ParameterRaster|elevation|elevation|False
+ParameterString|null|null|-10.0
+ParameterString|elevation2d|elevation2d|0.0
+ParameterMultipleInput|rgbmaps|rgbmaps|1.0|False
+ParameterMultipleInput|vectormaps|vectormaps|1.0|False
+ParameterString|elevscale|elevscale|1.0
+ParameterString|dp|dp|12
+ParameterBoolean|-p|-p|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-o|-o|True
+ParameterBoolean|-c|-c|True

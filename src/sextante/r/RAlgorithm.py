@@ -203,13 +203,13 @@ class RAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterRaster):
                 value = param.value
                 if not value.lower().endswith("asc") and not value.lower().endswith("tif"):
-                  raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
+                    raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 value = value.replace("\\", "/")
                 commands.append(param.name + " = " + "readGDAL(\"" + value + "\"")
             if isinstance(param, ParameterVector):
                 value = param.value
                 if not value.lower().endswith("shp"):
-                  raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
+                    raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
                 filename = filename[:-4]

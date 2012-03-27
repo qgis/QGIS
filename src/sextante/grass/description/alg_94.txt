@@ -1,6 +1,8 @@
-v.dissolve
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|layer|layer|1
-ParameterString|column|column|
-OutputVector|output|output
+r.circle
+Raster (r.*)
+ParameterString|coordinate|coordinate|
+ParameterString|min|min|
+ParameterString|max|max|
+ParameterString|mult|mult|
+ParameterBoolean|-b|-b|True
+OutputRaster|output|output

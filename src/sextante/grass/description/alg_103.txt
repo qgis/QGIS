@@ -1,6 +1,10 @@
-r.coin
+r.out.mpeg
 Raster (r.*)
-ParameterRaster|map1|map1|True
-ParameterRaster|map2|map2|True
-ParameterSelection|units|units|c;p;x;y;a;h;k;m
-ParameterBoolean|-w|-w|True
+ParameterMultipleInput|view1|view1|1.0|False
+ParameterMultipleInput|view2|view2|1.0|False
+ParameterMultipleInput|view3|view3|1.0|False
+ParameterMultipleInput|view4|view4|1.0|False
+ParameterString|output|output|gmovie.mpg
+ParameterNumber|qual|qual|None|None|3.0
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-c|-c|True

@@ -1,6 +1,18 @@
-v.voronoi
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterBoolean|-l|-l|True
-ParameterBoolean|-t|-t|True
-OutputVector|output|output
+r.in.bin
+Raster (r.*)
+ParameterString|input|input|/file
+ParameterString|title|title|
+ParameterString|bytes|bytes|1
+ParameterString|north|north|
+ParameterString|south|south|
+ParameterString|east|east|
+ParameterString|west|west|
+ParameterString|rows|rows|
+ParameterString|cols|cols|
+ParameterString|anull|anull|
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-h|-h|True
+OutputRaster|output|output

@@ -1,6 +1,7 @@
-r.surf.random
+r.rescale.eq
 Raster (r.*)
-ParameterString|min|min|0
-ParameterString|max|max|100
-ParameterBoolean|-i|-i|True
+ParameterRaster|input|input|False
+ParameterRange|from|from
+ParameterRange|to|to
+ParameterBoolean|-q|-q|True
 OutputRaster|output|output

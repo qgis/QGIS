@@ -1,4 +1,7 @@
-v.out.dxf
+v.to.rast
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|output|output|/file
+ParameterVector|input|input|-1|False
+ParameterSelection|use|use|attr;cat;val;z;dir
+ParameterTableField|column|column|input
+ParameterString|value|value|1
+OutputRaster|output|output

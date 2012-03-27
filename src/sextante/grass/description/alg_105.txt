@@ -1,11 +1,10 @@
-r.neighbors
+r.random
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterSelection|method|method|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
-ParameterString|size|size|3
-ParameterString|title|title|
-ParameterString|weight|weight|/file
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output
+ParameterRaster|input|input|False
+ParameterRaster|cover|cover|False
+ParameterString|n|n|
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-d|-d|True
+OutputRaster|raster_output|raster_output
+OutputVector|vector_output|vector_output

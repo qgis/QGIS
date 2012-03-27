@@ -11,7 +11,6 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.SextanteUtils import SextanteUtils
-
 from sextante.outputs.OutputVector import OutputVector
 from sextante.saga.SagaUtils import SagaUtils
 import time
@@ -26,12 +25,15 @@ from sextante.core.QGisLayers import QGisLayers
 class SagaAlgorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
+        self.resample = True #True if it should resample
+                             #in case several non-matching raster layers are used as input
         GeoAlgorithm.__init__(self)
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self.resample = self.setResamplingPolicy() #True if the user should define a grid system in
-                                                #case several non-matching raster layers are used as input
+        if self.resample:
+            #reconsider resampling policy now that we know the input parameters
+            self.resample = self.setResamplingPolicy()
 
     def __deepcopy__(self,memo):
         newone = SagaAlgorithm(self.descriptionFile)
@@ -64,126 +66,12 @@ class SagaAlgorithm(GeoAlgorithm):
             line = line.strip("\n").strip()
             if line.startswith("Parameter"):
                 self.addParameter(ParameterFactory.getFromString(line))
-            elif line.startswith("Resample"):
+            elif line.startswith("DontResample"):
                 self.resample = False
             else:
                 self.addOutput(OutputFactory.getFromString(line))
             line = lines.readline().strip("\n").strip()
         lines.close()
-
-
-    #===========================================================================
-    # def defineCharacteristicsFromFileSagaFormat(self):
-    #    lines = open(self._descriptionFile)
-    #    line = lines.readline()
-    #    while line != "":
-    #        line = line.strip("\n").strip()
-    #        readLine = True;
-    #        if line.startswith("library name"):
-    #            self.undecoratedGroup = line.split("\t")[1]
-    #            self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
-    #        if line.startswith("module name"):
-    #            self.name = line.split("\t")[1]
-    #        if line.startswith("-"):
-    #            try:
-    #                paramName = line[1:line.index(":")]
-    #                paramDescription = line[line.index(">") + 1:].strip()
-    #            except Exception: #boolean params have a different syntax
-    #                paramName = line[1:line.index("\t")]
-    #                paramDescription = line[line.index("\t") + 1:].strip()
-    #            if SagaBlackList.isBlackListed(self.name, self.undecoratedGroup):
-    #                raise UnwrappableSagaAlgorithmException()
-    #            line = lines.readline().lower()
-    #            if "data object" in line:
-    #                output = OutputRaster()
-    #                output.name = paramName
-    #                output.description = paramDescription
-    #                self.addOutput(output)
-    #            elif "file" in line:
-    #                param = ParameterString(paramName, paramDescription)
-    #                self.addParameter(param)
-    #            elif "table" in line:
-    #                #print(line)
-    #                if "input" in line:
-    #                    param = ParameterTable(paramName, paramDescription, ("optional" in line))
-    #                    lastParentParameterName = paramName;
-    #                    self.addParameter(param)
-    #                elif "static" in line:
-    #                    print (self.name)
-    #                    line = lines.readline().strip("\n").strip()
-    #                    numCols = int(line.split(" ")[0])
-    #                    colNames = [];
-    #                    for i in range(numCols):
-    #                        line = lines.readline().strip("\n").strip()
-    #                        colNames.append(line.split("]")[1])
-    #                    param = ParameterFixedTable(paramName, paramDescription, colNames, 3, False)
-    #                    self.addParameter(param)
-    #                elif "field" in line:
-    #                    if lastParentParameterName == None:
-    #                        raise UnwrappableSagaAlgorithmException();
-    #                    param = ParameterTableField(paramName, paramDescription, lastParentParameterName)
-    #                    self.addParameter(param)
-    #                else:
-    #                    output = OutputTable()
-    #                    output.name = paramName
-    #                    output.description = paramDescription
-    #                    self.addOutput(output)
-    #            elif "grid" in line:
-    #                if "input" in line:
-    #                    if "list" in line:
-    #                        param = ParameterMultipleInput(paramName, paramDescription, ParameterMultipleInput.TYPE_RASTER,("optional" in line))
-    #                        self.addParameter(param)
-    #                    else:
-    #                        param = ParameterRaster(paramName, paramDescription,("optional" in line))
-    #                        self.addParameter(param)
-    #                else:
-    #                    output = OutputRaster()
-    #                    output.name = paramName
-    #                    output.description = paramDescription
-    #                    self.addOutput(output)
-    #            elif "shapes" in line:
-    #                if "input" in line:
-    #                    if "list" in line:
-    #                        param = ParameterMultipleInput(paramName, paramDescription, ParameterMultipleInput.TYPE_VECTOR_ANY,("optional" in line))
-    #                        self.addParameter(param)
-    #                    else:
-    #                        param = ParameterVector(paramName, paramDescription,ParameterVector.VECTOR_TYPE_ANY,("optional" in line))
-    #                        lastParentParameterName = paramName;
-    #                        self.addParameter(param)
-    #                else:
-    #                    output = OutputVector()
-    #                    output.name = paramName
-    #                    output.description = paramDescription
-    #                    self.addOutput(output)
-    #            elif "floating" in line or "integer" in line or "degree" in line:
-    #                param = ParameterNumber(paramName, paramDescription,)
-    #                self.addParameter(param)
-    #            elif "boolean" in line:
-    #                param = ParameterBoolean(paramName,paramDescription)
-    #                self.addParameter(param)
-    #            elif "text" in line:
-    #                param = ParameterString(paramName, paramDescription)
-    #                self.addParameter(param)
-    #            elif "range" in line:
-    #                param = ParameterRange(paramName, paramDescription)
-    #                self.addParameter(param)
-    #            elif "choice" in line:
-    #                line = lines.readline()
-    #                line = lines.readline().strip("\n").strip()
-    #                options = list()
-    #                while line != "" and not (line.startswith("-")):
-    #                    options.append(line);
-    #                    line = lines.readline().strip("\n").strip()
-    #                param = ParameterSelection(paramName, paramDescription, options)
-    #                self.addParameter(param)
-    #                if line == "":
-    #                    break
-    #                else:
-    #                    readLine = False
-    #        if readLine:
-    #            line = lines.readline()
-    #    lines.close()
-    #===========================================================================
 
 
     def calculateResamplingExtent(self):
@@ -342,7 +230,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def resampleRasterLayer(self,layer):
-        if layer in self.exportedLayers.keys:
+        if layer in self.exportedLayers.keys():
             inputFilename = self.exportedLayers[layer]
         else:
             inputFilename = layer

@@ -1,21 +1,5 @@
-r.texture
+r.random.cells
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|size|size|3
-ParameterString|distance|distance|1
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-k|-k|True
-ParameterBoolean|-v|-v|True
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-w|-w|True
-ParameterBoolean|-x|-x|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-p|-p|True
-ParameterBoolean|-m|-m|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-o|-o|True
-OutputRaster|prefix|prefix
+ParameterNumber|distance|distance|None|None|0.0
+ParameterNumber|seed|seed|None|None|0.0
+OutputRaster|output|output

@@ -1,8 +1,9 @@
-r.quant
-Raster (r.*)
-ParameterRaster|basemap|basemap|True
-ParameterMultipleInput|input|input|1|True
-ParameterString|fprange|fprange|
-ParameterString|range|range|1,255
-ParameterBoolean|-t|-t|True
-ParameterBoolean|-r|-r|True
+v.univar
+Vector (v.*)
+ParameterVector|map|map|-1|False
+ParameterString|type|type|point,line,boundary,centroid,area
+ParameterTableField|column|column|map
+ParameterString|where|where|																		q
+ParameterString|percentile|percentile|90
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-e|-e|True

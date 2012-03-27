@@ -1,10 +1,11 @@
-r.mapcalculator
-Raster (r.*)
-ParameterRaster|amap|amap|True
-ParameterRaster|bmap|bmap|True
-ParameterRaster|cmap|cmap|True
-ParameterRaster|dmap|dmap|True
-ParameterRaster|emap|emap|True
-ParameterRaster|fmap|fmap|True
-ParameterString|formula|formula|
-OutputRaster|outfile|outfile
+v.parallel
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|distance|distance|
+ParameterString|minordistance|minordistance|
+ParameterString|angle|angle|0
+ParameterSelection|side|side|left;right;both
+ParameterString|tolerance|tolerance|
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-b|-b|True
+OutputVector|output|output

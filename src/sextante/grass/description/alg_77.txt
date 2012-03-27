@@ -1,5 +1,6 @@
-r.in.mat
+r.basins.fill
 Raster (r.*)
-ParameterString|input|input|/file
-ParameterBoolean|-v|-v|True
-OutputRaster|output|output
+ParameterNumber|number|number|None|None|0.0
+ParameterRaster|c_map|c_map|False
+ParameterRaster|t_map|t_map|False
+OutputRaster|result|result

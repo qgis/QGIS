@@ -1,16 +1,11 @@
-v.buffer
+v.extrude
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|point,line,area
+ParameterVector|input|input|-1|False
+ParameterString|zshift|zshift|0
+ParameterRaster|elevation|elevation|False
+ParameterString|height|height|
+ParameterString|hcolumn|hcolumn|
+ParameterString|type|type|point,line,boundary,area
 ParameterString|layer|layer|1
-ParameterString|distance|distance|
-ParameterString|minordistance|minordistance|
-ParameterString|angle|angle|0
-ParameterString|bufcolumn|bufcolumn|
-ParameterString|scale|scale|1.0
-ParameterString|tolerance|tolerance|0.01
-ParameterString|debug|debug|
-ParameterString|buffer|buffer|
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-c|-c|True
+ParameterBoolean|-t|-t|True
 OutputVector|output|output

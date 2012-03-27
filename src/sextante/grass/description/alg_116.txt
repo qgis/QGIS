@@ -1,9 +1,12 @@
-v.surf.idw
+v.lidar.edgedetection
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|npoints|npoints|12
-ParameterString|power|power|2.0
-ParameterString|layer|layer|1
-ParameterString|column|column|
-ParameterBoolean|-n|-n|True
-OutputRaster|output|output
+ParameterVector|input|input|-1|False
+ParameterString|see|see|4
+ParameterString|sen|sen|4
+ParameterString|lambda_g|lambda_g|0.01
+ParameterString|tgh|tgh|6
+ParameterString|tgl|tgl|3
+ParameterString|theta_g|theta_g|0.26
+ParameterString|lambda_r|lambda_r|2
+ParameterBoolean|-e|-e|True
+OutputVector|output|output

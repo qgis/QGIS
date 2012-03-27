@@ -1,4 +1,9 @@
-v.in.wfs
+v.clean
 Vector (v.*)
-ParameterString|wfs|wfs|
+ParameterVector|input|input|-1|False
+ParameterString|type|type|point,line,boundary,centroid,area
+ParameterString|tool|tool|
+ParameterString|thresh|thresh|
+ParameterBoolean|-b|-b|True
 OutputVector|output|output
+OutputVector|error|error

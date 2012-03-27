@@ -1,4 +1,7 @@
-r.topidx
+r.regression.line
 Raster (r.*)
-ParameterRaster|input|input|True
-OutputRaster|output|output
+ParameterRaster|map1|map1|False
+ParameterRaster|map2|map2|False
+ParameterString|output|output|/file
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-s|-s|True

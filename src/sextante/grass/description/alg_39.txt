@@ -1,11 +1,4 @@
-v.lidar.correction
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|sce|sce|25
-ParameterString|scn|scn|25
-ParameterString|lambda_c|lambda_c|1
-ParameterString|tch|tch|2
-ParameterString|tcl|tcl|1
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputVector|terrain|terrain
+r.surf.area
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterNumber|vscale|vscale|None|None|0.0

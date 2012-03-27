@@ -1,9 +1,12 @@
-r.plane
-Raster (r.*)
-ParameterNumber|dip|dip|None|None|0.0
-ParameterNumber|azimuth|azimuth|None|None|0.0
-ParameterNumber|easting|easting|None|None|0.0
-ParameterNumber|northing|northing|None|None|0.0
-ParameterNumber|elevation|elevation|None|None|0.0
-ParameterSelection|type|type|int;float;double
-OutputRaster|name|name
+v.select
+Vector (v.*)
+ParameterVector|ainput|ainput|-1|False
+ParameterString|atype|atype|point,line,boundary,centroid,area
+ParameterString|alayer|alayer|1
+ParameterVector|binput|binput|-1|False
+ParameterString|btype|btype|point,line,boundary,centroid,area
+ParameterString|blayer|blayer|1
+ParameterSelection|operator|operator|overlap
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-r|-r|True
+OutputVector|output|output

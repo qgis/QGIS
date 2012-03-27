@@ -6,3 +6,4 @@ ParameterSelection|INTERPOL|Interpolation|[0] Nearest Neighbor;[1] Bilinear Inte
 ParameterSelection|OVERLAP|Overlapping Cells|[0] mean value;[1] first value in order of grid list
 ParameterNumber|MERGE_INFO_MESH_SIZE|Cell Size|0|None|1
 OutputRaster|MERGED|Merged Grid
+DontResample

@@ -22,6 +22,9 @@ class HTMLViewerDialog(QtGui.QDialog):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.addWidget(self.webView)
         self.setLayout(self.horizontalLayout)
-        url = QtCore.QUrl(self.filename)
-        self.webView.load(url)
+        try:
+            url = QtCore.QUrl(self.filename)
+            self.webView.load(url)
+        except:
+            pass
 

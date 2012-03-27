@@ -181,8 +181,8 @@ class Ui_ParametersDialog(object):
 
 
     def showHelp(self):
-        if self.alg.helpfile:
-            dlg = HTMLViewerDialog()
+        if self.alg.helpFile():
+            dlg = HTMLViewerDialog(self.alg.helpFile())
             dlg.exec_()
         else:
             QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
@@ -193,10 +193,7 @@ class Ui_ParametersDialog(object):
         numParams = len(self.alg.parameters)
         numOutputs = 0
         for output in outputs:
-            if isinstance(output, OutputVector):
-                if not output.hidden:
-                    numOutputs += 1
-            else:
+            if not output.hidden:
                 numOutputs += 1
         self.tableWidget.setRowCount(numParams + numOutputs)
 
@@ -212,9 +209,8 @@ class Ui_ParametersDialog(object):
             i+=1
 
         for output in outputs:
-            if isinstance(output, OutputVector):
-                if output.hidden:
-                    continue
+            if output.hidden:
+                continue
             item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
@@ -233,9 +229,8 @@ class Ui_ParametersDialog(object):
                 return False
 
         for output in outputs:
-            if isinstance(output, OutputVector):
-                if output.hidden:
-                    continue
+            if output.hidden:
+                continue
             output.value = self.valueItems[output.name].getValue()
 
         return True

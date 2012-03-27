@@ -1,16 +1,6 @@
-v.distance
+v.voronoi
 Vector (v.*)
-ParameterVector|from|from|-1|True
-ParameterVector|to|to|-1|True
-ParameterString|from_type|from_type|point
-ParameterString|to_type|to_type|point,line,area
-ParameterString|from_layer|from_layer|1
-ParameterString|to_layer|to_layer|1
-ParameterString|dmax|dmax|-1
-ParameterString|dmin|dmin|-1
-ParameterString|upload|upload|
-ParameterString|column|column|
-ParameterString|to_column|to_column|
-ParameterBoolean|-p|-p|True
-ParameterBoolean|-a|-a|True
+ParameterVector|input|input|-1|False
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-t|-t|True
 OutputVector|output|output

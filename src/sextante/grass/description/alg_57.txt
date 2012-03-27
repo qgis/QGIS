@@ -1,5 +1,6 @@
-r.thin
+r.in.aster
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|iterations|iterations|200
-OutputRaster|output|output
+ParameterString|input|input|/file
+ParameterSelection|proctype|proctype|L1A;L1B;DEM
+ParameterString|band|band|1
+ParameterRaster|output|output|False

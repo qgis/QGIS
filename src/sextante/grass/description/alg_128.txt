@@ -1,6 +1,5 @@
-r.transect
+r.out.xyz
 Raster (r.*)
-ParameterRaster|map|map|True
-ParameterString|line|line|
-ParameterString|null|null|*
-ParameterBoolean|-g|-g|True
+ParameterRaster|input|input|False
+ParameterString|output|output|/file
+ParameterString|fs|fs|

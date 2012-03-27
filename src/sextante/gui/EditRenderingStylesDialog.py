@@ -47,27 +47,24 @@ class EditRenderingStylesDialog(QtGui.QDialog):
         numOutputs = 0
         for output in self.alg.outputs:
             if isinstance(output, (OutputVector, OutputRaster)):
-                if isinstance(output, OutputVector):
-                    if output.hidden:
-                        continue
-                numOutputs += 1
+                if not output.hidden:
+                    numOutputs += 1
         self.tableWidget.setRowCount(numOutputs)
 
         i = 0
         for output in self.alg.outputs:
-            if isinstance(output, OutputVector):
-                if output.hidden:
-                    continue
-            item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i,0, item)
-            item = QtGui.QLineEdit()
-            style = RenderingStyles.getStyle(self.alg.commandLineName(), output.name)
-            if style:
-                item.setText(str(style))
-            self.valueItems[output.name] = item
-            self.tableWidget.setCellWidget(i,1, item)
-            self.tableWidget.setRowHeight(i,22)
+            if isinstance(output, (OutputVector, OutputRaster)):
+                if not output.hidden:
+                    item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
+                    item.setFlags(QtCore.Qt.ItemIsEnabled)
+                    self.tableWidget.setItem(i,0, item)
+                    item = QtGui.QLineEdit()
+                    style = RenderingStyles.getStyle(self.alg.commandLineName(), output.name)
+                    if style:
+                        item.setText(str(style))
+                    self.valueItems[output.name] = item
+                    self.tableWidget.setCellWidget(i,1, item)
+                    self.tableWidget.setRowHeight(i,22)
             i+=1
 
     def okPressed(self):

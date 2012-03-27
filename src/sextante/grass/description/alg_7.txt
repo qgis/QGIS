@@ -1,12 +1,10 @@
-v.db.select
+v.sample
 Vector (v.*)
-ParameterVector|map|map|-1|True
-ParameterString|layer|layer|1
-ParameterString|columns|columns|
-ParameterString|where|where|
-ParameterString|fs|fs|
-ParameterString|vs|vs|
-ParameterString|nv|nv|
-ParameterBoolean|-r|-r|True
+ParameterVector|input|input|-1|False
+ParameterTableField|column|column|input
+ParameterRaster|raster|raster|False
+ParameterNumber|z|z|None|None|1.0
+ParameterBoolean|-b|-b|True
 ParameterBoolean|-c|-c|True
-ParameterBoolean|-v|-v|True
+ParameterBoolean|-q|-q|True
+OutputVector|output|output

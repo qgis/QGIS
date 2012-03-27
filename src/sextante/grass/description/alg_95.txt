@@ -1,16 +1,7 @@
-r.cost
+r.out.arc
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterVector|start_points|start_points|-1|True
-ParameterVector|stop_points|stop_points|-1|True
-ParameterRaster|start_rast|start_rast|True
-ParameterString|coordinate|coordinate|
-ParameterString|stop_coordinate|stop_coordinate|
-ParameterString|max_cost|max_cost|0
-ParameterString|null_cost|null_cost|
-ParameterString|percent_memory|percent_memory|100
-ParameterBoolean|-k|-k|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-v|-v|True
-OutputRaster|output|output
+ParameterRaster|input|input|False
+ParameterString|output|output|/file
+ParameterNumber|dp|dp|None|None|8.0
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-1|-1|True

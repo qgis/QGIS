@@ -1,6 +1,11 @@
-r.in.aster
-Raster (r.*)
-ParameterString|input|input|/file
-ParameterSelection|proctype|proctype|L1A;L1B;DEM
-ParameterString|band|band|1
-ParameterRaster|output|output|True
+v.to.points
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|type|type|point,line,boundary,centroid
+ParameterString|llayer|llayer|1
+ParameterString|dmax|dmax|100
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-t|-t|True
+OutputVector|output|output

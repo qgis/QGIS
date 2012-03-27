@@ -1,8 +1,11 @@
-v.out.svg
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|output|output|/file
-ParameterSelection|type|type|poly;line;point
-ParameterString|precision|precision|6
-ParameterString|attribute|attribute|
-ParameterString|layer|layer|1
+r.describe
+Raster (r.*)
+ParameterRaster|map|map|False
+ParameterString|nv|nv|*
+ParameterString|nsteps|nsteps|255
+ParameterBoolean|-1|-1|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-q|-q|True

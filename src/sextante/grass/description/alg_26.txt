@@ -1,6 +1,7 @@
-r.surf.idw
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|npoints|npoints|12
-ParameterBoolean|-e|-e|True
-OutputRaster|output|output
+v.overlay
+Vector (v.*)
+ParameterVector|ainput|ainput|2|False
+ParameterVector|binput|binput|2|False
+ParameterSelection|operator|operator|and;or;not;xor
+ParameterBoolean|-t|-t|True
+OutputVector|output|output

@@ -1,6 +1,5 @@
-r.reclass.area
+r.in.mat
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterNumber|lesser|lesser|None|None|0.0
-ParameterNumber|greater|greater|None|None|0.0
+ParameterString|input|input|/file
+ParameterBoolean|-v|-v|True
 OutputRaster|output|output

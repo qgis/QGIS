@@ -1,7 +1,6 @@
-r.quantile
+r.coin
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|quantiles|quantiles|4
-ParameterString|percentiles|percentiles|
-ParameterString|bins|bins|1000000
-ParameterBoolean|-r|-r|True
+ParameterRaster|map1|map1|False
+ParameterRaster|map2|map2|False
+ParameterSelection|units|units|c;p;x;y;a;h;k;m
+ParameterBoolean|-w|-w|True

@@ -1,11 +1,14 @@
-v.outlier
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|soe|soe|10
-ParameterString|son|son|10
-ParameterString|lambda_i|lambda_i|0.1
-ParameterString|thres_o|thres_o|50
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputVector|outlier|outlier
-OutputVector|qgis|qgis
+r.terraflow.short
+Raster (r.*)
+ParameterRaster|elevation|elevation|False
+ParameterString|d8cut|d8cut|infinity
+ParameterString|memory|memory|300
+ParameterString|STREAM_DIR|STREAM_DIR|C:/Users/volaya/AppData/Local/Temp
+ParameterString|stats|stats|stats.out
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-q|-q|True
+OutputRaster|filled|filled
+OutputRaster|direction|direction
+OutputRaster|swatershed|swatershed
+OutputRaster|accumulation|accumulation
+OutputRaster|tci|tci

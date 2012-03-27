@@ -1,14 +1,20 @@
-v.surf.bspline
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterVector|sparse|sparse|-1|True
-ParameterString|sie|sie|4
-ParameterString|sin|sin|4
-ParameterSelection|method|method|bilinear;bicubic
-ParameterString|lambda_i|lambda_i|1
-ParameterString|layer|layer|0
-ParameterString|column|column|
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputRaster|raster|raster
+r.spread
+Raster (r.*)
+ParameterRaster|max|max|False
+ParameterRaster|dir|dir|False
+ParameterRaster|base|base|False
+ParameterRaster|start|start|False
+ParameterRaster|spot_dist|spot_dist|False
+ParameterRaster|w_speed|w_speed|False
+ParameterRaster|f_mois|f_mois|False
+ParameterSelection|least_size|least_size|3;5;7;9;11;13;15
+ParameterString|comp_dens|comp_dens|
+ParameterString|init_time|init_time|
+ParameterString|lag|lag|
+ParameterRaster|backdrop|backdrop|False
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-s|-s|True
+OutputRaster|output|output
+OutputRaster|x_output|x_output
+OutputRaster|y_output|y_output

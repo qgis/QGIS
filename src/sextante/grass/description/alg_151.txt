@@ -1,9 +1,10 @@
-v.rast.stats
-Vector (v.*)
-ParameterVector|vector|vector|-1|True
-ParameterString|layer|layer|1
-ParameterRaster|raster|raster|True
-ParameterString|colprefix|colprefix|
-ParameterString|percentile|percentile|90
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-e|-e|True
+r.mapcalculator
+Raster (r.*)
+ParameterRaster|amap|amap|False
+ParameterRaster|bmap|bmap|False
+ParameterRaster|cmap|cmap|False
+ParameterRaster|dmap|dmap|False
+ParameterRaster|emap|emap|False
+ParameterRaster|fmap|fmap|False
+ParameterString|formula|formula|
+OutputRaster|outfile|outfile

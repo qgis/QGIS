@@ -23,7 +23,7 @@ class Sextante:
     iface = None
     providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),
                  MMQGISAlgorithmProvider(), FToolsAlgorithmProvider(),
-                 RAlgorithmProvider()]##, GrassAlgorithmProvider()]
+                 RAlgorithmProvider()]#, GrassAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []
@@ -134,8 +134,10 @@ class Sextante:
                 return provider[name]
         return None
 
+
     ##This methods are here to be used from the python console,
     ##making it easy to use SEXTANTE from there
+    ##==========================================================
 
     @staticmethod
     def alglist(text=None):
@@ -179,7 +181,7 @@ class Sextante:
         if alg == None:
             print("Error: Algorithm not found\n")
             return
-        if len(args) != len(alg.parameters) + len(alg.outputs):
+        if len(args) != len(alg.parameters) + len(alg.getVisibleOutputsCount()):
             print ("Error: Wrong number of parameters")
             Sextante.alghelp(name)
             return
@@ -193,10 +195,11 @@ class Sextante:
             i = i +1
 
         for output in alg.outputs:
-            if not output.setValue(args[i]):
-                print ("Error: Wrong output value: " + args[i])
-                return
-            i = i +1
+            if not output.hidden:
+                if not output.setValue(args[i]):
+                    print ("Error: Wrong output value: " + args[i])
+                    return
+                i = i +1
 
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
@@ -211,15 +214,19 @@ class Sextante:
 
     @staticmethod
     def load(layer):
+        '''loads a layer into QGIS'''
         QGisLayers.load(layer)
 
     @staticmethod
     def loadFromAlg(layersdict):
+        '''load all layer resulting from a given algorithm.
+        Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
         QGisLayers.loadFromDict(layersdict)
 
     @staticmethod
-    def getObject(string):
-        QGisLayers.getObjectFromUri(string)
+    def getObject(uri):
+        '''Returns the QGIS object identified the given URI'''
+        QGisLayers.getObjectFromUri(uri)
 
     @staticmethod
     def runandload(name, *args):
@@ -229,7 +236,7 @@ class Sextante:
             #in theory, this could not happen. Maybe we should show a message box?
             QMessageBox.critical(None,"Error", "Error: Algorithm not found\n")
             return
-        if len(args) != len(alg.parameters) + len(alg.outputs):
+        if len(args) != len(alg.parameters) + len(alg.getVisibleOutputsCount()):
             QMessageBox.critical(None,"Error", "Error: Wrong number of parameters")
             Sextante.alghelp(name)
             return
@@ -243,10 +250,11 @@ class Sextante:
             i = i +1
 
         for output in alg.outputs:
-            if not output.setValue(args[i]):
-                QMessageBox.critical(None, "Error", "Error: Wrong output value: " + args[i])
-                return
-            i = i +1
+            if not output.hidden:
+                if not output.setValue(args[i]):
+                    QMessageBox.critical(None, "Error", "Error: Wrong output value: " + args[i])
+                    return
+                i = i +1
 
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

@@ -1,8 +1,5 @@
-v.what.vect
-Vector (v.*)
-ParameterVector|vector|vector|-1|True
-ParameterString|layer|layer|1
-ParameterString|column|column|
-ParameterVector|qvector|qvector|-1|True
-ParameterString|qcolumn|qcolumn|
-ParameterString|dmax|dmax|0.0
+r.surf.idw2
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|npoints|npoints|12
+OutputRaster|output|output

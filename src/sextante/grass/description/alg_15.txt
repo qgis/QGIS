@@ -1,8 +1,10 @@
-r.fill.dir
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|type|type|grass
-ParameterBoolean|-f|-f|True
-OutputRaster|elevation|elevation
-OutputRaster|direction|direction
-OutputRaster|areas|areas
+v.to.3d
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|type|type|point,line,boundary,centroid
+ParameterString|height|height|
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-t|-t|True
+OutputVector|output|output

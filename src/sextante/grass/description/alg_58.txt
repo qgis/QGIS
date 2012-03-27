@@ -1,4 +1,7 @@
-r.surf.area
+r.statistics
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterNumber|vscale|vscale|None|None|0.0
+ParameterRaster|base|base|False
+ParameterRaster|cover|cover|False
+ParameterSelection|method|method|diversity;distribution;average;mode;median;avedev;stddev;variance;skewness;kurtosis;min;max;sum
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

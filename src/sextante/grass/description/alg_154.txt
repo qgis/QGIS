@@ -1,5 +1,4 @@
-v.in.region
+v.in.geonames
 Vector (v.*)
-ParameterSelection|type|type|line;area
-ParameterString|cat|cat|1
+ParameterString|input|input|/file
 OutputVector|output|output

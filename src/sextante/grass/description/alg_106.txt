@@ -1,4 +1,6 @@
-r.in.gridatb
+r.transect
 Raster (r.*)
-ParameterString|input|input|
-OutputRaster|output|output
+ParameterRaster|map|map|False
+ParameterString|line|line|
+ParameterString|null|null|*
+ParameterBoolean|-g|-g|True

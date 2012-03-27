@@ -1,8 +1,9 @@
-r.recode
+r.grow
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|rules|rules|/file
-ParameterString|title|title|
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-d|-d|True
+ParameterRaster|input|input|False
+ParameterString|radius|radius|1.01
+ParameterSelection|metric|metric|euclidean;maximum;manhattan
+ParameterString|old|old|
+ParameterString|new|new|
+ParameterBoolean|-q|-q|True
 OutputRaster|output|output

@@ -1,5 +1,9 @@
-r.surf.gauss
+r.drain
 Raster (r.*)
-ParameterString|mean|mean|0.0
-ParameterString|sigma|sigma|1.0
+ParameterRaster|input|input|False
+ParameterString|coordinate|coordinate(E,N)|
+ParameterMultipleInput|vector_points|vector_points|0|False
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-n|-n|True
 OutputRaster|output|output

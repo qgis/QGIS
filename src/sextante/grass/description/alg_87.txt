@@ -1,7 +1,12 @@
-r.distance
+r.flow
 Raster (r.*)
-ParameterRaster|maps|maps|True
-ParameterString|fs|fs|:
-ParameterBoolean|-l|-l|True
-ParameterBoolean|-o|-o|True
-ParameterBoolean|-q|-q|True
+ParameterRaster|elevin|elevin|False
+ParameterRaster|aspin|aspin|False
+ParameterRaster|barin|barin|False
+ParameterNumber|skip|skip|None|None|1.0
+ParameterNumber|bound|bound|None|None|5.0
+ParameterBoolean|-u|-u|True
+ParameterBoolean|-3|-3|True
+ParameterBoolean|-m|-m|True
+OutputRaster|lgout|lgout
+OutputRaster|dsout|dsout

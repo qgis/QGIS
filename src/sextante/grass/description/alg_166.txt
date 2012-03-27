@@ -1,14 +1,8 @@
-r.terraflow.short
+r.out.ppm3
 Raster (r.*)
-ParameterRaster|elevation|elevation|True
-ParameterString|d8cut|d8cut|infinity
-ParameterString|memory|memory|300
-ParameterString|STREAM_DIR|STREAM_DIR|C:/Users/volaya/AppData/Local/Temp
-ParameterString|stats|stats|stats.out
-ParameterBoolean|-s|-s|True
+ParameterRaster|red|red|False
+ParameterRaster|green|green|False
+ParameterRaster|blue|blue|False
+ParameterString|output|output|
 ParameterBoolean|-q|-q|True
-OutputRaster|filled|filled
-OutputRaster|direction|direction
-OutputRaster|swatershed|swatershed
-OutputRaster|accumulation|accumulation
-OutputRaster|tci|tci
+ParameterBoolean|-c|-c|True

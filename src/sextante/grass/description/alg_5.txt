@@ -1,12 +1,7 @@
-r.info
+r.in.arc
 Raster (r.*)
-ParameterRaster|map|map|True
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-t|-t|True
-ParameterBoolean|-g|-g|True
-ParameterBoolean|-h|-h|True
-ParameterBoolean|-u|-u|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-m|-m|True
-ParameterBoolean|-p|-p|True
+ParameterString|input|input|/file
+ParameterSelection|type|type|CELL;FCELL;DCELL
+ParameterString|title|title|title
+ParameterString|mult|mult|1.0
+OutputRaster|output|output

@@ -1,5 +1,8 @@
-r.resample
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterBoolean|-q|-q|True
-OutputRaster|output|output
+v.out.svg
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|output|output|/file
+ParameterSelection|type|type|poly;line;point
+ParameterString|precision|precision|6
+ParameterString|attribute|attribute|
+ParameterString|layer|layer|1

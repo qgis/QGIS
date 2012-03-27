@@ -7,6 +7,8 @@ from sextante.core.SextanteConfig import SextanteConfig
 import os.path
 
 class QGisLayers:
+    '''This class contains method to communicate SEXTANTE with the QGIS interface,
+    mostly for retrieving layers and adding new ones to the QGIS canvas'''
 
     ALL_TYPES = -1
     iface = None;

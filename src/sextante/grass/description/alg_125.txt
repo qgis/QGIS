@@ -1,10 +1,9 @@
-r.out.mpeg
-Raster (r.*)
-ParameterMultipleInput|view1|view1|1|True
-ParameterMultipleInput|view2|view2|1|True
-ParameterMultipleInput|view3|view3|1|True
-ParameterMultipleInput|view4|view4|1|True
-ParameterString|output|output|gmovie.mpg
-ParameterNumber|qual|qual|None|None|3.0
-ParameterBoolean|-q|-q|True
+v.info
+Vector (v.*)
+ParameterVector|map|map|-1|False
+ParameterString|layer|layer|1
+ParameterBoolean|-h|-h|True
 ParameterBoolean|-c|-c|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-t|-t|True

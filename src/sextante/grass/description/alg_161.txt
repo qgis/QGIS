@@ -1,6 +1,10 @@
-r.fillnulls
+r.profile
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterNumber|tension|tension|None|None|40.0
-ParameterNumber|smooth|smooth|None|None|0.1
-OutputRaster|output|output
+ParameterRaster|input|input|False
+ParameterString|output|output|/file
+ParameterString|profile|profile|
+ParameterString|res|res|
+ParameterString|null|null|*
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-c|-c|True

@@ -1,6 +1,15 @@
-r.bilinear
+r.ros
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|north|north|
-ParameterString|east|east|
+ParameterRaster|model|model|False
+ParameterRaster|moisture_1h|moisture_1h|False
+ParameterRaster|moisture_10h|moisture_10h|False
+ParameterRaster|moisture_100h|moisture_100h|False
+ParameterRaster|moisture_live|moisture_live|False
+ParameterRaster|velocity|velocity|False
+ParameterRaster|direction|direction|False
+ParameterRaster|slope|slope|False
+ParameterRaster|aspect|aspect|False
+ParameterRaster|elevation|elevation|False
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-s|-s|True
 OutputRaster|output|output

@@ -3,6 +3,7 @@ import os
 from sextante.core.SextanteUtils import mkdir, SextanteUtils
 import subprocess
 from sextante.core.SextanteLog import SextanteLog
+import stat
 
 class RUtils:
 
@@ -51,8 +52,9 @@ class RUtils:
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
             command = [RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
-        else:#TODO***********
-            pass
+        else:
+            os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC)
+            command = ["R", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
 
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True)
         proc.wait()
@@ -63,7 +65,7 @@ class RUtils:
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
     @staticmethod
-    def  createConsoleOutput():
+    def createConsoleOutput():
         add = False
         lines = open(RUtils.getConsoleOutputFilename())
         line = lines.readline().strip("\n").strip(" ")

@@ -1,5 +1,10 @@
-r.random.cells
+r.to.vect
 Raster (r.*)
-ParameterNumber|distance|distance|None|None|0.0
-ParameterNumber|seed|seed|None|None|0.0
-OutputRaster|output|output
+ParameterRaster|input|input|False
+ParameterSelection|feature|feature|point;line;area
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-q|-q|True
+OutputVector|output|output

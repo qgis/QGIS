@@ -1,6 +1,9 @@
-v.in.mapgen
+v.rast.stats
 Vector (v.*)
-ParameterString|input|input|/file
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-z|-z|True
-OutputVector|output|output
+ParameterVector|vector|vector|-1|False
+ParameterString|layer|layer|1
+ParameterRaster|raster|raster|False
+ParameterString|colprefix|colprefix|
+ParameterString|percentile|percentile|90
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-e|-e|True

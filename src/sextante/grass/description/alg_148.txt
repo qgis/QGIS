@@ -1,8 +1,7 @@
-r.rescale
+r.null
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|from|from|
-ParameterString|to|to|
-ParameterString|title|title|
-ParameterBoolean|-q|-q|True
-OutputRaster|output|output
+ParameterRaster|map|map|False
+ParameterString|setnull|setnull|
+ParameterString|null|null|
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-i|-i|True

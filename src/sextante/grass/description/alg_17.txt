@@ -1,11 +1,7 @@
-r.describe
+r.resamp.stats
 Raster (r.*)
-ParameterRaster|map|map|True
-ParameterString|nv|nv|*
-ParameterString|nsteps|nsteps|255
-ParameterBoolean|-1|-1|True
-ParameterBoolean|-r|-r|True
+ParameterRaster|input|input|False
+ParameterSelection|method|method|average;median;mode;minimum;maximum;quart1;quart3;perc90;sum;variance;stddev
 ParameterBoolean|-n|-n|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-q|-q|True
+ParameterBoolean|-w|-w|True
+OutputRaster|output|output

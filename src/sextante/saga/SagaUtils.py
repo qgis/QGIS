@@ -3,6 +3,7 @@ from sextante.core.SextanteUtils import SextanteUtils
 import subprocess
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
+import stat
 
 class SagaUtils:
 
@@ -65,8 +66,8 @@ class SagaUtils:
         if SextanteUtils.isWindows():
             command = ["cmd.exe", "/C ", SagaUtils.sagaBatchJobFilename()]
         else:
-            #TODO linux
-            pass
+            os.chmod(SagaUtils.sagaBatchJobFilename(), stat.S_IEXEC)
+            command = [SagaUtils.sagaBatchJobFilename()]
         loglines = []
         loglines.append("SAGA execution console output")
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout

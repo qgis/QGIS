@@ -1,9 +1,12 @@
-r.drain
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|coordinate|coordinate|
-ParameterMultipleInput|vector_points|vector_points|5|True
+v.db.select
+Vector (v.*)
+ParameterVector|map|map|-1|False
+ParameterString|layer|layer|1
+ParameterString|columns|columns|
+ParameterString|where|where|
+ParameterString|fs|fs|
+ParameterString|vs|vs|
+ParameterString|nv|nv|
+ParameterBoolean|-r|-r|True
 ParameterBoolean|-c|-c|True
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-n|-n|True
-OutputRaster|output|output
+ParameterBoolean|-v|-v|True

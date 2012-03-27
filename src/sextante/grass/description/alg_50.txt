@@ -1,3 +1,10 @@
-r.sum
+r.prominence
 Raster (r.*)
-ParameterRaster|rast|rast|True
+ParameterRaster|input|input|False
+ParameterString|radius|radius|1
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-g|-g|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

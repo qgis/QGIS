@@ -22,7 +22,9 @@ class AlgorithmProvider():
     #methods to be overridden.
     #==============================
 
-    #Algorithm loading should take place here
+    #Algorithm loading should take place here, filling sefl.algs
+    #Since algorithms should have a reference to the provider they come
+    #from, this is also the place to set the 'provider' variable of each algorithm
     def _loadAlgorithms(self):
         pass
 

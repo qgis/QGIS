@@ -1,9 +1,6 @@
-r.mfilter
+r.out.ppm
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|filter|filter|/file
-ParameterString|repeat|repeat|1
-ParameterString|title|title|
+ParameterRaster|input|input|False
+ParameterString|output|output|/file
 ParameterBoolean|-q|-q|True
-ParameterBoolean|-z|-z|True
-OutputRaster|output|output
+ParameterBoolean|-G|-G|True

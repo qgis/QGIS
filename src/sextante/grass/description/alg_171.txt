@@ -1,20 +1,8 @@
-r.sim.sediment
+r.buffer
 Raster (r.*)
-ParameterRaster|elevin|elevin|True
-ParameterRaster|wdepth|wdepth|True
-ParameterRaster|dxin|dxin|True
-ParameterRaster|dyin|dyin|True
-ParameterRaster|detin|detin|True
-ParameterRaster|tranin|tranin|True
-ParameterRaster|tauin|tauin|True
-ParameterRaster|manin|manin|True
-ParameterString|maninval|maninval|0.1
-ParameterString|nwalk|nwalk|
-ParameterString|niter|niter|10
-ParameterString|outiter|outiter|2
-ParameterString|diffc|diffc|0.8
-OutputRaster|tc|tc
-OutputRaster|et|et
-OutputRaster|conc|conc
-OutputRaster|flux|flux
-OutputRaster|erdep|erdep
+ParameterRaster|input|input|False
+ParameterString|distances|distances|
+ParameterSelection|units|units|meters;kilometers;feet;miles;nautmiles
+ParameterBoolean|-z|-z|True
+ParameterBoolean|-q|-q|True
+OutputRaster|output|output

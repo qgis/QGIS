@@ -1,9 +1,6 @@
-r.out.bin
+r.volume
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterString|output|output|
-ParameterNumber|null|null|None|None|0.0
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-h|-h|True
-ParameterBoolean|-b|-b|True
-ParameterBoolean|-s|-s|True
+ParameterRaster|data|data|False
+ParameterRaster|clump|clump|False
+ParameterBoolean|-f|-f|True
+OutputVector|centroids|centroids

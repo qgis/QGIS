@@ -1,6 +1,9 @@
-r.out.vrml
-Raster (r.*)
-ParameterRaster|elev|elev|True
-ParameterRaster|color|color|True
-ParameterNumber|exag|exag|None|None|1.0
-ParameterString|output|output|/file
+v.surf.idw
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|npoints|npoints|12
+ParameterString|power|power|2.0
+ParameterString|layer|layer|1
+ParameterString|column|column|
+ParameterBoolean|-n|-n|True
+OutputRaster|output|output

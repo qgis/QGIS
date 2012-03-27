@@ -1,19 +1,5 @@
-r.walk
+r.out.mat
 Raster (r.*)
-ParameterRaster|elevation|elevation|True
-ParameterRaster|friction|friction|True
-ParameterVector|start_points|start_points|-1|True
-ParameterVector|stop_points|stop_points|-1|True
-ParameterString|coordinate|coordinate|
-ParameterString|stop_coordinate|stop_coordinate|
-ParameterString|max_cost|max_cost|0
-ParameterString|null_cost|null_cost|
-ParameterString|percent_memory|percent_memory|100
-ParameterString|nseg|nseg|4
-ParameterString|walk_coeff|walk_coeff|0.72,6.0,1.9998,-1.9998
-ParameterString|lambda|lambda|1.0
-ParameterString|slope_factor|slope_factor|-0.2125
-ParameterBoolean|-k|-k|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-r|-r|True
-OutputRaster|output|output
+ParameterRaster|input|input|False
+ParameterString|output|output|/file
+ParameterBoolean|-v|-v|True

@@ -1,5 +1,16 @@
-r.colors.stddev
+r.cost
 Raster (r.*)
-ParameterRaster|input|input|True
-ParameterBoolean|-b|-b|True
-ParameterBoolean|-z|-z|True
+ParameterRaster|input|input|False
+ParameterVector|start_points|start_points|-1|False
+ParameterVector|stop_points|stop_points|-1|False
+ParameterRaster|start_rast|start_rast|False
+ParameterString|coordinate|coordinate|
+ParameterString|stop_coordinate|stop_coordinate|
+ParameterString|max_cost|max_cost|0
+ParameterString|null_cost|null_cost|
+ParameterString|percent_memory|percent_memory|100
+ParameterBoolean|-k|-k|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-v|-v|True
+OutputRaster|output|output

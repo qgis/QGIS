@@ -1,8 +1,7 @@
-v.out.pov
+v.lidar.growing
 Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|point,line,area,face
-ParameterString|output|output|
-ParameterString|size|size|10
-ParameterString|zmod|zmod|
-ParameterString|objmod|objmod|
+ParameterVector|input|input|-1|False
+ParameterVector|first|first|-1|False
+ParameterString|tj|tj|0.2
+ParameterString|td|td|0.6
+OutputVector|output|output

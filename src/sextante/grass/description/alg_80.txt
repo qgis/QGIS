@@ -1,11 +1,24 @@
-r.in.ascii
-Raster (r.*)
+v.edit
+Vector (v.*)
+ParameterVector|map|map|-1|False
+ParameterString|layer|layer|1
+ParameterString|type|type|point,line,boundary,centroid
+ParameterSelection|tool|tool|create;add;delete;copy;move;flip;catadd;catdel;merge;break;snap;connect;chtype;vertexadd;vertexdel;vertexmove;zbulk;select
 ParameterString|input|input|/file
-ParameterString|title|title|
-ParameterString|mult|mult|1.0 or read from header
-ParameterString|nv|nv|* or read from header
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-s|-s|True
-OutputRaster|output|output
+ParameterString|move|move|
+ParameterString|thresh|thresh|-1,0,0
+ParameterString|ids|ids|
+ParameterString|cats|cats|
+ParameterString|coords|coords|
+ParameterString|bbox|bbox|
+ParameterString|polygon|polygon|
+ParameterString|where|where|
+ParameterSelection|query|query|length;dangle
+ParameterMultipleInput|bgmap|bgmap|5.0|False
+ParameterSelection|snap|snap|no;node;vertex
+ParameterString|zbulk|zbulk|
+ParameterBoolean|-r|-r|True
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-1|-1|True

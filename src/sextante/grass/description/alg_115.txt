@@ -1,22 +1,7 @@
-v.generalize
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|line,boundary,area
-ParameterSelection|method|method|douglas;douglas_reduction;lang;reduction;reumann;remove_small;boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes;network;displacement
-ParameterString|threshold|threshold|1.0
-ParameterString|look_ahead|look_ahead|7
-ParameterString|reduction|reduction|50
-ParameterString|slide|slide|0.5
-ParameterString|angle_thresh|angle_thresh|3
-ParameterString|degree_thresh|degree_thresh|0
-ParameterString|closeness_thresh|closeness_thresh|0
-ParameterString|betweeness_thresh|betweeness_thresh|0
-ParameterString|alpha|alpha|1.0
-ParameterString|beta|beta|1.0
-ParameterString|iterations|iterations|1
-ParameterString|layer|layer|1
-ParameterString|cats|cats|
-ParameterString|where|where|
-ParameterBoolean|-c|-c|True
+r.quantile
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|quantiles|quantiles|4
+ParameterString|percentiles|percentiles|
+ParameterString|bins|bins|1000000
 ParameterBoolean|-r|-r|True
-OutputVector|output|output

@@ -1,18 +1,8 @@
-v.in.ascii
+v.normal
 Vector (v.*)
-ParameterString|input|input|/file
-ParameterSelection|format|format|point;standard
-ParameterString|fs|fs|
-ParameterString|skip|skip|0
-ParameterString|columns|columns|
-ParameterString|x|x|1
-ParameterString|y|y|2
-ParameterString|z|z|0
-ParameterString|cat|cat|0
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-t|-t|True
-ParameterBoolean|-b|-b|True
+ParameterVector|map|map|-1|False
+ParameterString|tests|tests|
+ParameterString|column|column|
 ParameterBoolean|-r|-r|True
-OutputVector|output|output
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-l|-l|True

@@ -6,6 +6,7 @@ class Output(object):
         self.name = name
         self.description = description
         self.value = None
+        self.hidden = False
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +">"

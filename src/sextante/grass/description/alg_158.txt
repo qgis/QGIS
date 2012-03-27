@@ -1,17 +1,10 @@
-r.report
-Raster (r.*)
-ParameterMultipleInput|map|map|1|True
-ParameterString|units|units|
-ParameterString|null|null|*
-ParameterString|pl|pl|
-ParameterString|pw|pw|
-ParameterString|output|output|
-ParameterString|nsteps|nsteps|255
+v.mkgrid
+Vector (v.*)
+ParameterString|grid|grid|
+ParameterSelection|position|position|region;coor
+ParameterString|coor|coor|
+ParameterString|box|box|
+ParameterString|angle|angle|0
+ParameterBoolean|-p|-p|True
 ParameterBoolean|-q|-q|True
-ParameterBoolean|-h|-h|True
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-N|-N|True
-ParameterBoolean|-C|-C|True
-ParameterBoolean|-i|-i|True
+OutputVector|map|map

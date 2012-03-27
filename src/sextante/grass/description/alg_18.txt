@@ -1,4 +1,21 @@
-v.in.gns
-Vector (v.*)
-ParameterString|file|file|/file
-OutputVector|vect|vect
+r.texture
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|size|size|3
+ParameterString|distance|distance|1
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-k|-k|True
+ParameterBoolean|-v|-v|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-w|-w|True
+ParameterBoolean|-x|-x|True
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-p|-p|True
+ParameterBoolean|-m|-m|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-o|-o|True
+OutputRaster|prefix|prefix

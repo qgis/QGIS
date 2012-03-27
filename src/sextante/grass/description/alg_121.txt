@@ -1,7 +1,5 @@
-r.spreadpath
+r.resample
 Raster (r.*)
-ParameterRaster|x_input|x_input|True
-ParameterRaster|y_input|y_input|True
-ParameterString|coordinate|coordinate|
-ParameterBoolean|-v|-v|True
+ParameterRaster|input|input|False
+ParameterBoolean|-q|-q|True
 OutputRaster|output|output

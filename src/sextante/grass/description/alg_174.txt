@@ -1,10 +1,6 @@
-r.carve
-Raster (r.*)
-ParameterRaster|rast|rast|True
-ParameterVector|vect|vect|-1|True
-ParameterString|width|width|
-ParameterString|depth|depth|
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-q|-q|True
+v.neighbors
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterSelection|method|method|count
+ParameterString|size|size|
 OutputRaster|output|output
-OutputVector|points|points

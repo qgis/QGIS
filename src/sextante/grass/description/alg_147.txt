@@ -1,11 +1,6 @@
-v.drape
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|point,centroid,line,boundary,face,kernel
-ParameterRaster|rast|rast|True
-ParameterSelection|method|method|nearest;bilinear;cubic
-ParameterString|scale|scale|1.0
-ParameterString|where|where|
-ParameterString|layer|layer|1
-ParameterString|null_value|null_value|
-OutputVector|output|output
+r.fillnulls
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterNumber|tension|tension|None|None|40.0
+ParameterNumber|smooth|smooth|None|None|0.1
+OutputRaster|output|output

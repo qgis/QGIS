@@ -19,6 +19,7 @@ from sextante.outputs.OutputTable import OutputTable
 from sextante.modeler.ModelerAlgorithm import AlgorithmAndParameter
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.gui.RangePanel import RangePanel
+from sextante.outputs.OutputNumber import OutputNumber
 
 class ModelerParametersDialog(QtGui.QDialog):
 
@@ -80,7 +81,6 @@ class ModelerParametersDialog(QtGui.QDialog):
 
         i=0
         for alg in self.model.algs:
-            #alg = Sextante.getAlgorithm(algname)
             for out in alg.outputs:
                 if isinstance(out, OutputRaster):
                     layers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
@@ -113,7 +113,6 @@ class ModelerParametersDialog(QtGui.QDialog):
 
         i=0
         for alg in self.model.algs:
-            #alg = Sextante.getAlgorithm(algname)
             for out in alg.outputs:
                 if isinstance(out, OutputTable):
                     tables.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
@@ -127,7 +126,15 @@ class ModelerParametersDialog(QtGui.QDialog):
         for param in params:
             if isinstance(param, ParameterNumber):
                 numbers.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
+        i=0
+        for alg in self.model.algs:
+            for out in alg.outputs:
+                if isinstance(out, OutputNumber):
+                    numbers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            i+=1
         return numbers
+
 
     def getBooleans(self):
         booleans = []
@@ -235,10 +242,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         numParams = len(self.alg.parameters)
         numOutputs = 0
         for output in outputs:
-            if isinstance(output, OutputVector):
-                if not output.hidden:
-                    numOutputs += 1
-            else:
+            if not output.hidden:
                 numOutputs += 1
         self.tableWidget.setRowCount(numParams + numOutputs)
 
@@ -254,18 +258,16 @@ class ModelerParametersDialog(QtGui.QDialog):
             i+=1
 
         for output in outputs:
-            if isinstance(output, OutputVector):
-                if output.hidden:
-                    continue
-            item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i,0, item)
-            item = QLineEdit()
-            item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
-            self.valueItems[output.name] = item
-            self.tableWidget.setCellWidget(i,1, item)
-            self.tableWidget.setRowHeight(i,22)
-            i+=1
+            if not output.hidden:
+                item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.tableWidget.setItem(i,0, item)
+                item = QLineEdit()
+                item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
+                self.valueItems[output.name] = item
+                self.tableWidget.setCellWidget(i,1, item)
+                self.tableWidget.setRowHeight(i,22)
+                i+=1
 
     def setParamValues(self):
         self.params = {}
@@ -278,9 +280,8 @@ class ModelerParametersDialog(QtGui.QDialog):
             if not self.setParamValue(param, self.valueItems[param.name]):
                 return False
         for output in outputs:
-            if isinstance(output, OutputVector):
-                if output.hidden:
-                    continue
+            if output.hidden:
+                continue
             name= str(self.valueItems[output.name].text())
             if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
                 self.outputs[output.name]=name

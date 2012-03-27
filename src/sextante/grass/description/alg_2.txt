@@ -1,6 +1,15 @@
-r.in.poly
+r.composite
 Raster (r.*)
-ParameterString|input|input|/file
-ParameterString|title|title|
-ParameterString|rows|rows|4096
+ParameterRaster|red|red|False
+ParameterRaster|green|green|False
+ParameterRaster|blue|blue|False
+ParameterNumber|levels|levels|1|256|32
+ParameterNumber|lev_red|lev_red|1|256|32
+ParameterNumber|lev_green|lev_green|1|256|32
+ParameterNumber|lev_blue|lev_blue|1|256|32
+ParameterString|lev_red|lev_red|
+ParameterString|lev_green|lev_green|
+ParameterString|lev_blue|lev_blue|
+ParameterBoolean|-d|-d|True
+ParameterBoolean|-c|-c|True
 OutputRaster|output|output

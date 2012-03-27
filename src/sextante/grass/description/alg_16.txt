@@ -1,5 +1,11 @@
-r.resamp.interp
-Raster (r.*)
-ParameterRaster|input|input|True
-ParameterSelection|method|method|nearest;bilinear;bicubic
-OutputRaster|output|output
+v.lidar.correction
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|sce|sce|25
+ParameterString|scn|scn|25
+ParameterString|lambda_c|lambda_c|1
+ParameterString|tch|tch|2
+ParameterString|tcl|tcl|1
+ParameterBoolean|-e|-e|True
+OutputVector|output|output
+OutputVector|terrain|terrain

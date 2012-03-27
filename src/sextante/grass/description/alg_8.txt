@@ -1,9 +1,9 @@
-v.clean
-Vector (v.*)
-ParameterVector|input|input|-1|True
-ParameterString|type|type|point,line,boundary,centroid,area
-ParameterString|tool|tool|
-ParameterString|thresh|thresh|
-ParameterBoolean|-b|-b|True
-OutputVector|output|output
-OutputVector|error|error
+r.los
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|coordinate|coordinate|0,0
+ParameterRaster|patt_map|patt_map|False
+ParameterString|obs_elev|obs_elev|1.75
+ParameterString|max_dist|max_dist|10000
+ParameterBoolean|-c|-c|True
+OutputRaster|output|output

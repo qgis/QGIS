@@ -1,12 +1,7 @@
-r.flow
+r.spreadpath
 Raster (r.*)
-ParameterRaster|elevin|elevin|True
-ParameterRaster|aspin|aspin|True
-ParameterRaster|barin|barin|True
-ParameterNumber|skip|skip|None|None|1.0
-ParameterNumber|bound|bound|None|None|5.0
-ParameterBoolean|-u|-u|True
-ParameterBoolean|-3|-3|True
-ParameterBoolean|-m|-m|True
-OutputRaster|lgout|lgout
-OutputRaster|dsout|dsout
+ParameterRaster|x_input|x_input|False
+ParameterRaster|y_input|y_input|False
+ParameterString|coordinate|coordinate|
+ParameterBoolean|-v|-v|True
+OutputRaster|output|output

@@ -1,15 +1,12 @@
-r.ros
-Raster (r.*)
-ParameterRaster|model|model|True
-ParameterRaster|moisture_1h|moisture_1h|True
-ParameterRaster|moisture_10h|moisture_10h|True
-ParameterRaster|moisture_100h|moisture_100h|True
-ParameterRaster|moisture_live|moisture_live|True
-ParameterRaster|velocity|velocity|True
-ParameterRaster|direction|direction|True
-ParameterRaster|slope|slope|True
-ParameterRaster|aspect|aspect|True
-ParameterRaster|elevation|elevation|True
-ParameterBoolean|-v|-v|True
-ParameterBoolean|-s|-s|True
-OutputRaster|output|output
+v.in.dxf
+Vector (v.*)
+ParameterString|input|input|/file
+ParameterString|layers|layers|
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-b|-b|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-l|-l|True
+ParameterBoolean|-i|-i|True
+ParameterBoolean|-1|-1|True
+OutputVector|output|output
