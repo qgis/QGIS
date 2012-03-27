@@ -160,6 +160,11 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
 void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
+  if ( parentElem.isNull() )
+  {
+    return;
+  }
+
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
   _writeXML( doc, rasterRendererElem );
 

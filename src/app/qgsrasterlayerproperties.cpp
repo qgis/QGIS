@@ -121,9 +121,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     pbnAddValuesFromDisplay->setEnabled( false );
   }
 
+  if ( !mRasterLayer )
+  {
+    return;
+  }
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
 
   // Only do pyramids if dealing directly with GDAL.
-  if ( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids )
+  if ( provider->capabilities() & QgsRasterDataProvider::BuildPyramids )
   {
     QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildPyramidList();
     QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
@@ -229,6 +234,22 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
     }
     mMaximumOversamplingSpinBox->setValue( renderer->maxOversampling() );
+  }
+
+  //transparency band
+  if ( provider )
+  {
+    cboxTransparencyBand->addItem( tr( "None" ), -1 );
+    int nBands = provider->bandCount();
+    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+    {
+      cboxTransparencyBand->addItem( provider->colorInterpretationName( i ), i );
+    }
+
+    if ( renderer )
+    {
+      cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
+    }
   }
 
   //insert renderer widgets into registry
@@ -569,11 +590,12 @@ void QgsRasterLayerProperties::apply()
     mRasterLayer->setRenderer( rendererWidget->renderer() );
   }
 
-  //resampling
+  //transparency settings
   QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
-  QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
+  rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
 
   //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
+  QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
   if ( mRasterLayer->bandCount() == 3 )
   {
     double myTransparentValue;
@@ -736,8 +758,7 @@ void QgsRasterLayerProperties::apply()
   }
   rasterRenderer->setRasterTransparency( rasterTransparency );
 
-  //set transparency
-  //rasterRenderer->setTransparency( static_cast < unsigned int >( 255 - sliderTransparency->value() ) );
+  //set global transparency
   rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
 
   QgsDebugMsg( "processing general tab" );
@@ -772,6 +793,7 @@ void QgsRasterLayerProperties::apply()
     rasterRenderer->setZoomedInResampler( zoomedInResampler );
   }
 
+  //raster resampling
   QgsRasterResampler* zoomedOutResampler = 0;
   QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
   if ( zoomedOutResamplingMethod == tr( "Average" ) )

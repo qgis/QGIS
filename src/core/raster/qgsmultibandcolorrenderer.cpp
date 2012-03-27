@@ -19,6 +19,8 @@
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+#include <QDomDocument>
+#include <QDomElement>
 #include <QImage>
 #include <QSet>
 
@@ -276,5 +278,14 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
 void QgsMultiBandColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
-  //soon...
+  if ( !parentElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  _writeXML( doc, parentElem );
+  rasterRendererElem.setAttribute( "redBand", mRedBand );
+  rasterRendererElem.setAttribute( "greenBand", mGreenBand );
+  rasterRendererElem.setAttribute( "blueBand", mBlueBand );
 }
