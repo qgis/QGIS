@@ -317,7 +317,6 @@ void QgsMssqlProvider::loadFields()
     while ( mQuery.next() )
     {
       QString sqlTypeName = mQuery.value( 5 ).toString();
-      QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
       if ( sqlTypeName == "geometry" || sqlTypeName == "geography" )
       {
         mGeometryColName = mQuery.value( 3 ).toString();
@@ -325,6 +324,7 @@ void QgsMssqlProvider::loadFields()
       }
       else
       {
+        QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
         if ( sqlTypeName == "int identity" || sqlTypeName == "bigint identity" )
           mFidColName = mQuery.value( 3 ).toString();
         mAttributeFields.insert(
