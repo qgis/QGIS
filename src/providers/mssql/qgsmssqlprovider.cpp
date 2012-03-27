@@ -364,30 +364,28 @@ void QgsMssqlProvider::loadFields()
         if ( mQuery.next() )
         {
           mFidColName = mQuery.value( 3 ).toString();
+          return;
         }
-        else
+      }
+      foreach( QString pk, pkCandidates )
+      {
+        mQuery.clear();
+        if (!mQuery.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
+            .arg( pk )
+            .arg( mSchemaName )
+            .arg( mTableName ) ))
         {
-          foreach( QString pk, pkCandidates )
+          QString msg = mQuery.lastError().text();
+          QgsDebugMsg( msg );
+        }
+        if ( mQuery.isActive() )
+        {
+          if ( mQuery.next() )
           {
-            mQuery.clear();
-            if (!mQuery.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
-                .arg( pk )
-                .arg( mSchemaName )
-                .arg( mTableName ) ))
+            if (mQuery.value( 0 ).toInt() == mQuery.value( 1 ).toInt())
             {
-              QString msg = mQuery.lastError().text();
-              QgsDebugMsg( msg );
-            }
-            if ( mQuery.isActive() )
-            {
-              if ( mQuery.next() )
-              {
-                if (mQuery.value( 0 ).toInt() == mQuery.value( 1 ).toInt())
-                {
-                  mFidColName = pk;
-                  break;
-                }
-              }
+              mFidColName = pk;
+              return;
             }
           }
         }
