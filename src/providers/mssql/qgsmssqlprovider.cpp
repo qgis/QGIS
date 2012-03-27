@@ -403,17 +403,47 @@ void QgsMssqlProvider::loadFields()
         }
       }
     }
-  }
-  // get primary key
-  if ( mFidColName.isEmpty() )
-  {
-    mQuery.clear();
-    mQuery.exec( QString( "exec sp_pkeys N'%1', NULL, NULL" ).arg( mTableName ) );
-    if ( mQuery.isActive() )
+    // get primary key
+    if ( mFidColName.isEmpty() )
     {
-      if ( mQuery.next() )
+      mQuery.clear();
+      if (!mQuery.exec( QString( "exec sp_pkeys N'%1', NULL, NULL" ).arg( mTableName ) ))
       {
-        mFidColName = mQuery.value( 3 ).toString();
+        QString msg = mQuery.lastError().text();
+        QgsDebugMsg( msg );
+      }
+      if ( mQuery.isActive() )
+      {
+        if ( mQuery.next() )
+        {
+          mFidColName = mQuery.value( 3 ).toString();
+        }
+        else
+        {
+          foreach( QString pk, pkCandidates )
+          {
+            mQuery.clear();
+            if (!mQuery.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
+                .arg( pk )
+                .arg( mSchemaName )
+                .arg( mTableName ) ))
+            {
+              QString msg = mQuery.lastError().text();
+              QgsDebugMsg( msg );
+            }
+            if ( mQuery.isActive() )
+            {
+              if ( mQuery.next() )
+              {
+                if (mQuery.value( 0 ).toInt() == mQuery.value( 1 ).toInt())
+                {
+                  mFidColName = pk;
+                  break;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
