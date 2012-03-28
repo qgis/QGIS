@@ -411,6 +411,10 @@ QgsFeatureRendererV2* QgsSLDParser::rendererFromUserStyle( const QDomElement& us
 
   QString errorMessage;
   QgsFeatureRendererV2* renderer = QgsFeatureRendererV2::loadSld( userStyleElement.parentNode(), vec->geometryType(), errorMessage );
+  if ( !renderer )
+  {
+    throw QgsMapServiceException( "SLD error", errorMessage );
+  }
   return renderer;
 }
 
