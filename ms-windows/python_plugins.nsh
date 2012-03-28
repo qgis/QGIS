@@ -9,6 +9,7 @@
 
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "plugin_installer" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "fTools" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "GdalTools" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\PythonPlugins" "mapserver_export" "true"
 
 ###############################  reg2nsis end  #################################
