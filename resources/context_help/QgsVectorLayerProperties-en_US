@@ -106,24 +106,24 @@ The <label>Metadata</label> tab contains information about the layer, including 
 QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. <br/>
 Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer.<p>
 
-The new implementation of actions uses the QGis expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.<p>
-An expression must be enclosed between <code>[%</code> and <code>%]</code>, anyway the GUI has some buttons which do that for you.  
-The <label>Insert expression...</label> button launches the <label>Expression builder</label> which allows to write an expression in a easy way, the <label>Insert field</label> button inserts into the action a placeholder like <code>[% "fieldname" %]</code> where fieldname is the name of the field selected in the dropdown list close to the button.<p>
+The new implementation of actions uses the QGIS expression engine to do evaluations. Each expression is evaluated and replaced by its result at runtime.<p>
+An expression must be enclosed between <code>[%</code> and <code>%]</code> - the GUI has some buttons which do that for you automatically. 
+The <label>Insert expression...</label> button launches the <label>Expression builder</label> which allows to write an expression easily, the <label>Insert field</label> button inserts into the action a placeholder like <code>[% "fieldname" %]</code> where fieldname is the name of the field selected in the field dropdown list.<p>
 
 See the User Guide for further information.
 
 <h5>Using Actions</h5>
-Actions can be invoked from the <label>Identify Results</label> dialog or using the <label>Run feature action</label> tool.<p>
+Actions can be invoked from the <label>Identify Results</label> dialog or using the <label>Run feature action</label> tool on the toolbar.<p>
 
-Each of them adds a little set of custom expressions to the default set available in the <label>Expression builder</label>.<br/>
-While running actions from the <label>Identify Results</label> dialog the custom expression <code>$currfield</code> will be replaced with the value of the selected field in the dialog, using the <label>Run feature action</label> tool the following custom expression are instead available:
+Each action adds a little set of custom expressions to the default set available in the <label>Expression builder</label>.<br/>
+While running actions from the <label>Identify Results</label> dialog the custom expression <code>$currfield</code> will be replaced with the value of the selected field in the dialog, using the <label>Run feature action</label> tool the following custom expressions are available (instead of $currfield):
 <ul>
-<li><code>$clickx</code> returns the x coordinate of the clicked point in canvas</li>
-<li><code>$clicky</code> returns the y coordinate of the clicked point in canvas</li>
+<li><code>$clickx</code> returns the x coordinate of the click position on the canvas</li>
+<li><code>$clicky</code> returns the y coordinate of the click position on the canvas</li>
 <li><code>$layerid</code> returns the ID of the selected layer in the legend</li>
 </ul>
 
-Note: the <label>Run feature action</label> tool execute the actions on all the matching features, the <label>Identify Results</label> allows you to select which feature to run action on.<p>
+Note: the <label>Run feature action</label> tool executes the actions on all the matching features, where as <label>Identify Results</label> allows you to select which specific feature to run action on.<p>
 
 
 <h5>Action Examples</h5>
