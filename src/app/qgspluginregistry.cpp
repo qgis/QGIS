@@ -423,6 +423,10 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     {
       mySettings.setValue( "/PythonPlugins/fTools", true );
     }
+    if ( !mySettings.contains( "/PythonPlugins/GdalTools" ) )
+    {
+      mySettings.setValue( "/PythonPlugins/GdalTools", true );
+    }
 
     for ( int i = 0; i < pluginList.size(); i++ )
     {
