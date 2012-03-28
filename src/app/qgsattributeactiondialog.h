@@ -53,6 +53,7 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
     void insertExpression();
     void apply();
     void update();
+    void addDefaultActions();
     void itemSelectionChanged();
 
   private slots:
