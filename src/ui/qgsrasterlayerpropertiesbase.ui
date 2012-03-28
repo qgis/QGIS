@@ -28,7 +28,7 @@
    <item row="1" column="0" colspan="4">
     <widget class="QTabWidget" name="tabBar">
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -60,9 +60,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>462</width>
-            <height>619</height>
+            <y>-74</y>
+            <width>713</width>
+            <height>611</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -243,6 +243,17 @@
                      <string>Custom min / max values</string>
                     </property>
                    </widget>
+                  </item>
+                  <item row="4" column="3" colspan="2">
+                   <layout class="QHBoxLayout" name="_6">
+                    <item>
+                     <widget class="QLabel" name="labelDefaultBandCombination">
+                      <property name="text">
+                       <string>Default R:1 G:2 B:3</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                   <item row="5" column="0">
                    <widget class="QLabel" name="lblRedMin">
@@ -493,78 +504,29 @@
                    </widget>
                   </item>
                   <item row="8" column="4">
-                   <layout class="QHBoxLayout" name="horizontalLayout">
-                    <item>
-                     <widget class="QDoubleSpinBox" name="sboxThreeBandStdDev">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>75</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="maximum">
-                       <double>10.000000000000000</double>
-                      </property>
-                      <property name="singleStep">
-                       <double>0.100000000000000</double>
-                      </property>
-                      <property name="value">
-                       <double>0.000000000000000</double>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="pbtnMakeStandardDeviationDefault">
-                      <property name="toolTip">
-                       <string>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</string>
-                      </property>
-                      <property name="whatsThis">
-                       <string>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</string>
-                      </property>
-                      <property name="text">
-                       <string>...</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item row="4" column="3" colspan="2">
-                   <layout class="QHBoxLayout" name="_6">
-                    <item>
-                     <widget class="QToolButton" name="pbtnMakeBandCombinationDefault">
-                      <property name="toolTip">
-                       <string>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</string>
-                      </property>
-                      <property name="whatsThis">
-                       <string>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</string>
-                      </property>
-                      <property name="text">
-                       <string>...</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="labelDefaultBandCombination">
-                      <property name="text">
-                       <string>Default R:1 G:2 B:3</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                   <widget class="QDoubleSpinBox" name="sboxThreeBandStdDev">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>75</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="maximum">
+                     <double>10.000000000000000</double>
+                    </property>
+                    <property name="singleStep">
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="value">
+                     <double>0.000000000000000</double>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -894,29 +856,6 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="pbtnMakeContrastEnhancementAlgorithmDefault">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</string>
-                </property>
-                <property name="whatsThis">
-                 <string>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
                 </property>
                </widget>
               </item>
@@ -1877,6 +1816,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu';&quot;&gt;&lt;/p&gt;

@@ -125,12 +125,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbtnLoadColorMapFromFile_clicked();
     /** This slot loads the minimum and maximum values from the raster band and updates the gui */
     void on_pbtnLoadMinMax_clicked();
-    /** This slot sets the default band combination variable to current band combination */
-    void on_pbtnMakeBandCombinationDefault_clicked();
-    /** This slot sets the default contrast enhancement variable  to current contrast enhancement algorithm */
-    void on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked();
-    /** This slot sets the standard deviation default */
-    void on_pbtnMakeStandardDeviationDefault_clicked();
     /** This slot will sort the color map in ascending order */
     void on_pbtnSortColorMap_clicked();
     /** Load the default style when appropriate button is pressed. */

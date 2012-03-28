@@ -197,9 +197,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   pbnDefaultValues->setIcon( QgisApp::getThemeIcon( "/mActionCopySelected.png" ) );
   pbnImportTransparentPixelValues->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
   pbnExportTransparentPixelValues->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
-  pbtnMakeBandCombinationDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
-  pbtnMakeStandardDeviationDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
-  pbtnMakeContrastEnhancementAlgorithmDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
 
   pbtnLoadColorMapFromBand->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   pbtnExportColorMapToFile->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
@@ -2757,50 +2754,6 @@ void QgsRasterLayerProperties::on_pbtnLoadMinMax_clicked()
     }
     setMinimumMaximumEstimateWarning();
   }
-}
-
-void QgsRasterLayerProperties::on_pbtnMakeBandCombinationDefault_clicked()
-{
-  mDefaultRedBand = cboRed->currentIndex() + 1;
-  mDefaultGreenBand = cboGreen->currentIndex() + 1;
-  mDefaultBlueBand = cboBlue->currentIndex() + 1;
-  labelDefaultBandCombination->setText( tr( "Default R:%1 G:%2 B:%3" ).arg( mDefaultRedBand ).arg( mDefaultGreenBand ).arg( mDefaultBlueBand ) );
-}
-
-void QgsRasterLayerProperties::on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked()
-{
-  if ( cboxContrastEnhancementAlgorithm->currentText() != tr( "User Defined" ) )
-  {
-    if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "No Stretch" ) )
-    {
-      mDefaultContrastEnhancementAlgorithm = "NoEnhancement";
-      labelDefaultContrastEnhancementAlgorithm->setText( cboxContrastEnhancementAlgorithm->currentText() );
-    }
-    else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch To MinMax" ) )
-    {
-      mDefaultContrastEnhancementAlgorithm = "StretchToMinimumMaximum";
-      labelDefaultContrastEnhancementAlgorithm->setText( cboxContrastEnhancementAlgorithm->currentText() );
-    }
-    else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch And Clip To MinMax" ) )
-    {
-      mDefaultContrastEnhancementAlgorithm =  "StretchAndClipToMinimumMaximum";
-      labelDefaultContrastEnhancementAlgorithm->setText( cboxContrastEnhancementAlgorithm->currentText() );
-    }
-    else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Clip To MinMax" ) )
-    {
-      mDefaultContrastEnhancementAlgorithm = "ClipToMinimumMaximum";
-      labelDefaultContrastEnhancementAlgorithm->setText( cboxContrastEnhancementAlgorithm->currentText() );
-    }
-    else
-    {
-      //do nothing
-    }
-  }
-}
-
-void QgsRasterLayerProperties::on_pbtnMakeStandardDeviationDefault_clicked()
-{
-  mDefaultStandardDeviation = sboxThreeBandStdDev->value();
 }
 
 void QgsRasterLayerProperties::on_pbtnSortColorMap_clicked()
