@@ -24,6 +24,8 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <limits>
 
 class QgsContrastEnhancementFunction;
+class QDomDocument;
+class QDomElement;
 
 /** \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
@@ -118,6 +120,8 @@ class CORE_EXPORT QgsContrastEnhancement
 
     /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
+
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
   private:
     /** \brief Current contrast enhancement algorithm */

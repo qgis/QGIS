@@ -25,6 +25,8 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include "qgslinearminmaxenhancement.h"
 #include "qgslinearminmaxenhancementwithclip.h"
 #include "qgscliptominmaxenhancement.h"
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
 {
@@ -352,4 +354,25 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
   {
     generateLookupTable();
   }
+}
+
+void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  //minimum value
+  QDomElement minElem = doc.createElement( "minValue" );
+  QDomText minText = doc.createTextNode( QString::number( mMinimumValue ) );
+  minElem.appendChild( minText );
+  parentElem.appendChild( minElem );
+
+  //maximum value
+  QDomElement maxElem = doc.createElement( "maxValue" );
+  QDomText maxText = doc.createTextNode( QString::number( mMaximumValue ) );
+  maxElem.appendChild( maxText );
+  parentElem.appendChild( maxElem );
+
+  //algorithm
+  QDomElement algorithmElem = doc.createElement( "algorithm" );
+  QDomText algorithmText = doc.createTextNode( QString::number( mContrastEnhancementAlgorithm ) );
+  algorithmElem.appendChild( algorithmText );
+  parentElem.appendChild( algorithmElem );
 }
