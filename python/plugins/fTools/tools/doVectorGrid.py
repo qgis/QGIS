@@ -33,6 +33,7 @@ from PyQt4.QtGui import *
 import ftools_utils
 from qgis.core import *
 from ui_frmVectorGrid import Ui_Dialog
+import math
 
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface):
@@ -44,6 +45,7 @@ class Dialog(QDialog, Ui_Dialog):
         #QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
         QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
         QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
+        QObject.connect(self.chkAlign, SIGNAL("toggled(bool)"), self.chkAlignToggled)
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         self.setWindowTitle(self.tr("Vector grid"))
         self.xMin.setValidator(QDoubleValidator(self.xMin))
@@ -66,12 +68,50 @@ class Dialog(QDialog, Ui_Dialog):
         mLayerName = self.inShape.currentText()
         if not mLayerName == "":
             mLayer = ftools_utils.getMapLayerByName( unicode( mLayerName ) )
+            # get layer extents
             boundBox = mLayer.extent()
+            # if "align extents and resolution..." button is checked
+            if self.chkAlign.isChecked():
+                if not mLayer.type() == QgsMapLayer.RasterLayer:
+                    QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please select a raster layer"))
+                else:
+                    dx = math.fabs(boundBox.xMaximum()-boundBox.xMinimum()) / mLayer.width()
+                    dy = math.fabs(boundBox.yMaximum()-boundBox.yMinimum()) / mLayer.height()
+                    self.spnX.setValue(dx)
+                    self.spnY.setValue(dy)
             self.updateExtents( boundBox )
 
     def updateCanvas( self ):
         canvas = self.iface.mapCanvas()
         boundBox = canvas.extent()
+        # if "align extents and resolution..." button is checked
+        if self.chkAlign.isChecked():
+            mLayerName = self.inShape.currentText()
+            if not mLayerName == "":
+                mLayer = ftools_utils.getMapLayerByName( unicode( mLayerName ) )
+                if not mLayer.type() == QgsMapLayer.RasterLayer:
+                    QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please select a raster layer"))
+                else:
+                    # get extents and pixel size
+                    xMin = boundBox.xMinimum()
+                    yMin = boundBox.yMinimum()
+                    xMax = boundBox.xMaximum()
+                    yMax = boundBox.yMaximum()
+                    boundBox2 = mLayer.extent()
+                    dx = math.fabs(boundBox2.xMaximum()-boundBox2.xMinimum()) / mLayer.width()
+                    dy = math.fabs(boundBox2.yMaximum()-boundBox2.yMinimum()) / mLayer.height()
+                    # get pixels from the raster that are closest to the desired extent
+                    newXMin = self.getClosestPixel( boundBox2.xMinimum(), boundBox.xMinimum(), dx, True )
+                    newXMax = self.getClosestPixel( boundBox2.xMaximum(), boundBox.xMaximum(), dx, False )
+                    newYMin = self.getClosestPixel( boundBox2.yMinimum(), boundBox.yMinimum(), dy, True )
+                    newYMax = self.getClosestPixel( boundBox2.yMaximum(), boundBox.yMaximum(), dy, False )
+                    # apply new values if found all min/max
+                    if newXMin is not None and newXMax is not None and newYMin is not None and newYMax is not None:
+                        boundBox.set( newXMin, newYMin, newXMax, newYMax )
+                        self.spnX.setValue(dx)
+                        self.spnY.setValue(dy)
+                    else:
+                        QMessageBox.information(self, self.tr("Vector grid"), self.tr("Unable to compute extents aligned on selected raster layer"))
         self.updateExtents( boundBox )
 
     def updateExtents( self, boundBox ):
@@ -185,3 +225,39 @@ class Dialog(QDialog, Ui_Dialog):
         if self.shapefileName is None or self.encoding is None:
             return
         self.outShape.setText( QString( self.shapefileName ) )
+
+    def chkAlignToggled(self):
+        if self.chkAlign.isChecked():
+            self.spnX.setEnabled( False )
+            self.lblX.setEnabled( False )
+            self.spnY.setEnabled( False )
+            self.lblY.setEnabled( False )
+        else:
+            self.spnX.setEnabled( True )
+            self.lblX.setEnabled( True )
+            self.spnY.setEnabled( not self.chkLock.isChecked() )
+            self.lblY.setEnabled( not self.chkLock.isChecked() )
+
+    def getClosestPixel(self, startVal, targetVal, step, isMin ):
+        foundVal = None
+        tmpVal = startVal
+        # find pixels covering the extent - slighlyt inneficient b/c loop on all elements before xMin
+        if targetVal < startVal:
+            backOneStep = not isMin
+            step = - step
+            while foundVal is None:
+                if tmpVal <= targetVal:
+                    if backOneStep:
+                        tmpVal -= step 
+                    foundVal = tmpVal
+                tmpVal += step
+        else:
+            backOneStep = isMin
+            while foundVal is None:
+                if tmpVal >= targetVal:
+                    if backOneStep:
+                        tmpVal -= step 
+                    foundVal = tmpVal
+                tmpVal += step
+        return foundVal           
+
