@@ -286,7 +286,7 @@
          <string>Output grid as polygons</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -294,6 +294,9 @@
        <widget class="QRadioButton" name="rdoLines">
         <property name="text">
          <string>Output grid as lines</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

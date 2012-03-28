@@ -59,6 +59,8 @@ class Dialog(QDialog, Ui_Dialog):
         layermap = QgsMapLayerRegistry.instance().mapLayers()
         for name, layer in layermap.iteritems():
             self.inShape.addItem( unicode( layer.name() ) )
+            if layer == self.iface.activeLayer():
+                self.inShape.setCurrentIndex( self.inShape.count() -1 )
 
     def offset(self, value):
         if self.chkLock.isChecked():
@@ -140,7 +142,9 @@ class Dialog(QDialog, Ui_Dialog):
             if self.rdoPolygons.isChecked(): polygon = True
             else: polygon = False
             self.outShape.clear()
+            QApplication.setOverrideCursor(Qt.WaitCursor)
             self.compute( boundBox, xSpace, ySpace, polygon )
+            QApplication.restoreOverrideCursor()
             addToTOC = QMessageBox.question(self, self.tr("Generate Vector Grid"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(self.shapefileName)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 ftools_utils.addShapeToCanvas( self.shapefileName )
@@ -171,8 +175,13 @@ class Dialog(QDialog, Ui_Dialog):
         outFeat = QgsFeature()
         outGeom = QgsGeometry()
         idVar = 0
-        self.progressBar.setRange( 0, 0 )
+#        self.progressBar.setRange( 0, 0 )
+        self.progressBar.setValue( 0 )
         if not polygon:
+            # counters for progressbar - update every 5%
+            count = 0
+            count_max = (bound.yMaximum() - bound.yMinimum()) / yOffset
+            count_update = count_max * 0.10
             y = bound.yMaximum()
             while y >= bound.yMinimum():
                 pt1 = QgsPoint(bound.xMinimum(), y)
@@ -184,6 +193,15 @@ class Dialog(QDialog, Ui_Dialog):
                 writer.addFeature(outFeat)
                 y = y - yOffset
                 idVar = idVar + 1
+                count += 1
+                if int( math.fmod( count, count_update ) ) == 0:
+                    prog = int( count / count_max * 50 )
+                    self.progressBar.setValue( prog )
+            self.progressBar.setValue( 50 )
+            # counters for progressbar - update every 5%
+            count = 0
+            count_max = (bound.xMaximum() - bound.xMinimum()) / xOffset
+            count_update = count_max * 0.10
             x = bound.xMinimum()
             while x <= bound.xMaximum():
                 pt1 = QgsPoint(x, bound.yMaximum())
@@ -195,7 +213,15 @@ class Dialog(QDialog, Ui_Dialog):
                 writer.addFeature(outFeat)
                 x = x + xOffset
                 idVar = idVar + 1
+                count += 1
+                if int( math.fmod( count, count_update ) ) == 0:
+                    prog = 50 + int( count / count_max * 50 )
+                    self.progressBar.setValue( prog )
         else:
+            # counters for progressbar - update every 5%
+            count = 0
+            count_max = (bound.yMaximum() - bound.yMinimum()) / yOffset
+            count_update = count_max * 0.05
             y = bound.yMaximum()
             while y >= bound.yMinimum():
                 x = bound.xMinimum()
@@ -216,7 +242,12 @@ class Dialog(QDialog, Ui_Dialog):
                     idVar = idVar + 1
                     x = x + xOffset
                 y = y - yOffset
-        self.progressBar.setRange( 0, 100 )
+                count += 1
+                if int( math.fmod( count, count_update ) ) == 0:
+                    prog = int( count / count_max * 100 )
+
+        self.progressBar.setValue( 100 )
+        #self.progressBar.setRange( 0, 100 )
         del writer
 
     def outFile(self):
