@@ -292,7 +292,11 @@ void QgsMssqlProvider::loadMetadata()
 
   mQuery = QSqlQuery( mDatabase );
   mQuery.setForwardOnly( true );
-  mQuery.exec( QString( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName ).arg( mTableName ) );
+  if (!mQuery.exec( QString( "select f_geometry_column, coord_dimension, srid, geometry_type from geometry_columns where f_table_schema = '%1' and f_table_name = '%2'" ).arg( mSchemaName ).arg( mTableName ) ))
+  {
+    QString msg = mQuery.lastError().text();
+    QgsDebugMsg( msg );
+  }
   if ( mQuery.isActive() )
   {
     if ( mQuery.next() )
@@ -310,14 +314,19 @@ void QgsMssqlProvider::loadFields()
   // get field spec
   mQuery = QSqlQuery( mDatabase );
   mQuery.setForwardOnly( true );
-  mQuery.exec( QString( "exec sp_columns N'%1', NULL, NULL, NULL, NULL" ).arg( mTableName ) );
+  if (!mQuery.exec( QString( "exec sp_columns N'%1', NULL, NULL, NULL, NULL" ).arg( mTableName ) ))
+  {
+    QString msg = mQuery.lastError().text();
+    QgsDebugMsg( msg );
+    return;
+  }
   if ( mQuery.isActive() )
   {
     int i = 0;
+    QStringList pkCandidates;
     while ( mQuery.next() )
     {
       QString sqlTypeName = mQuery.value( 5 ).toString();
-      QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
       if ( sqlTypeName == "geometry" || sqlTypeName == "geography" )
       {
         mGeometryColName = mQuery.value( 3 ).toString();
@@ -325,8 +334,13 @@ void QgsMssqlProvider::loadFields()
       }
       else
       {
+        QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
         if ( sqlTypeName == "int identity" || sqlTypeName == "bigint identity" )
           mFidColName = mQuery.value( 3 ).toString();
+        else if (sqlTypeName == "int" || sqlTypeName == "bigint")
+        {
+          pkCandidates << mQuery.value( 3 ).toString();
+        }
         mAttributeFields.insert(
           i, QgsField(
             mQuery.value( 3 ).toString(), sqlType,
@@ -334,6 +348,49 @@ void QgsMssqlProvider::loadFields()
             mQuery.value( 7 ).toInt(),
             mQuery.value( 6 ).toInt() ) );
         ++i;
+      }
+    }
+    // get primary key
+    if ( mFidColName.isEmpty() )
+    {
+      mQuery.clear();
+      mQuery.setForwardOnly( true );
+      if (!mQuery.exec( QString( "exec sp_pkeys N'%1', NULL, NULL" ).arg( mTableName ) ))
+      {
+        QString msg = mQuery.lastError().text();
+        QgsDebugMsg( msg );
+      }
+      if ( mQuery.isActive() )
+      {
+        if ( mQuery.next() )
+        {
+          mFidColName = mQuery.value( 3 ).toString();
+          return;
+        }
+      }
+      foreach( QString pk, pkCandidates )
+      {
+        mQuery.clear();
+        mQuery.setForwardOnly( true );
+        if (!mQuery.exec( QString( "select count(distinct [%1]), count([%1]) from [%2].[%3]" )
+            .arg( pk )
+            .arg( mSchemaName )
+            .arg( mTableName ) ))
+        {
+          QString msg = mQuery.lastError().text();
+          QgsDebugMsg( msg );
+        }
+        if ( mQuery.isActive() )
+        {
+          if ( mQuery.next() )
+          {
+            if (mQuery.value( 0 ).toInt() == mQuery.value( 1 ).toInt())
+            {
+              mFidColName = pk;
+              return;
+            }
+          }
+        }
       }
     }
   }
@@ -394,7 +451,11 @@ bool QgsMssqlProvider::featureAtId( QgsFeatureId featureId,
   // issue the sql query
   mQuery = QSqlQuery( mDatabase );
   mQuery.setForwardOnly( true );
-  mQuery.exec( query );
+  if (!mQuery.exec( query ))
+  {
+    QString msg = mQuery.lastError().text();
+    QgsDebugMsg( msg );
+  }
 
   return nextFeature( feature );
 }
@@ -504,7 +565,6 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
   mQuery.setForwardOnly( true );
   if ( mFieldCount > 0 )
   {
-    mQuery.exec( mStatement );
     if ( !mQuery.exec( mStatement ) )
     {
       QString msg = mQuery.lastError().text();
