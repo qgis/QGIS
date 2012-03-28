@@ -1188,6 +1188,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32
+//TODO find a better default fontsize maybe using DPI detection or so
 #define QGIS_DEFAULT_FONTSIZE 8
 #else
 #define QGIS_ICON_SIZE 24
