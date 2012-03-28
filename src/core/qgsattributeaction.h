@@ -47,6 +47,7 @@ class CORE_EXPORT QgsAction
       Mac,
       Windows,
       Unix,
+      OpenUrl,
     };
 
     QgsAction( ActionType type, QString name, QString action, bool capture ) :
@@ -69,6 +70,7 @@ class CORE_EXPORT QgsAction
     {
       return mType == Generic ||
              mType == GenericPython ||
+             mType == OpenUrl ||
 #if defined(Q_OS_WIN)
              mType == Windows
 #elif defined(Q_OS_MAC)

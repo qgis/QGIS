@@ -159,6 +159,11 @@
             <string>Unix</string>
            </property>
           </item>
+          <item>
+           <property name="text">
+            <string>Open</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
