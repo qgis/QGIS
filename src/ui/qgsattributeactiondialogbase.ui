@@ -26,7 +26,7 @@
       <string>Action list</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0" colspan="4">
+      <item row="0" column="0" colspan="5">
        <widget class="QTableWidget" name="attributeActionTable">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -98,6 +98,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="addDefaultActionsButton">
+        <property name="text">
+         <string>Add default actions</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -150,6 +157,11 @@
           <item>
            <property name="text">
             <string>Unix</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Open</string>
            </property>
           </item>
          </widget>

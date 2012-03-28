@@ -50,6 +50,8 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
   connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
   connect( removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
+  connect( addDefaultActionsButton, SIGNAL( clicked() ), this, SLOT( addDefaultActions() ) );
+
   connect( browseButton, SIGNAL( clicked() ), this, SLOT( browse() ) );
   connect( insertButton, SIGNAL( clicked() ), this, SLOT( insert() ) );
   connect( updateButton, SIGNAL( clicked() ), this, SLOT( update() ) );
@@ -317,6 +319,18 @@ void QgsAttributeActionDialog::apply()
       mActions->addAction( type, name, action, item->checkState() == Qt::Checked );
     }
   }
+}
+
+void QgsAttributeActionDialog::addDefaultActions()
+{
+  int pos = 0;
+  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), "echo \"[% \"MY_FIELD\" %]\"", true );
+  insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), "ogr2ogr -f \"ESRI Shapefile\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"", true );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), "QtGui.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")", false );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", false );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clickx %])\")", false );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", false );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.it/?q=[% \"ATTRIBUTE\" %]", false );
 }
 
 void QgsAttributeActionDialog::itemSelectionChanged()
