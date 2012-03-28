@@ -32,7 +32,6 @@
 #include "qgsmsutils.h"
 #include "qgsrasterlayer.h"
 #include "qgscolorrampshader.h"
-#include "qgssldrule.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslabelattributes.h"
 
