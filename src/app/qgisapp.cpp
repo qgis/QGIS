@@ -317,6 +317,16 @@ static QgsMessageOutput *messageOutputViewer_()
   return new QgsMessageViewer( QgisApp::instance() );
 }
 
+static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
+{
+  QgisApp::instance()->emitCustomSrsValidation( srs );
+}
+
+void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem* srs )
+{
+  emit customSrsValidation( srs );
+}
+
 /**
  * This function contains forced validation of CRS used in QGIS.
  * There are 3 options depending on the settings:
@@ -324,7 +334,7 @@ static QgsMessageOutput *messageOutputViewer_()
  * - use project's CRS
  * - use predefined global CRS
  */
-static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
+void QgisApp::validateSrs( QgsCoordinateReferenceSystem* srs )
 {
   static QString authid = QString::null;
   QSettings mySettings;
@@ -510,6 +520,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsMessageLog::logMessage( tr( "QGIS starting..." ) );
 
   // set QGIS specific srs validation
+  connect( this, SIGNAL( customSrsValidation( QgsCoordinateReferenceSystem * ) ),
+           this, SLOT( validateSrs( QgsCoordinateReferenceSystem * ) ) );
   QgsCoordinateReferenceSystem::setCustomSrsValidation( customSrsValidation_ );
 
   // set graphical message output

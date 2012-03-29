@@ -372,6 +372,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! @note added in 1.6
     void completeInitialization();
 
+    void emitCustomSrsValidation( QgsCoordinateReferenceSystem *crs );
+
   public slots:
     //! Zoom to full extent
     void zoomFull();
@@ -486,6 +488,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
   private slots:
+    //! validate a SRS
+    void validateSrs( QgsCoordinateReferenceSystem *crs );
+
     //! QGis Sponsors
     void sponsors();
     //! About QGis
@@ -886,6 +891,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**This signal is emitted when QGIS' initialization is complete
      @note added in version 1.6*/
     void initializationCompleted();
+
+    void customSrsValidation( QgsCoordinateReferenceSystem *crs );
 
   private:
     /** This method will open a dialog so the user can select the sublayers to load
