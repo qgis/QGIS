@@ -518,6 +518,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     {
       POINT = 1,   // <field>_point
       LINE,        // <field>_line
+      FACE,        // <field>_face
       POLYGON,     // <field>_polygon
       BOUNDARY,    // boundary (currently not used)
       CENTROID     // centroid (currently not used)
