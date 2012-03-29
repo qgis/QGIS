@@ -18,6 +18,8 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
+#include <QDomDocument>
+#include <QDomElement>
 #include <QImage>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand ):
@@ -154,5 +156,20 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
 void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
-  //soon...
+  if ( parentElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  _writeXML( doc, rasterRendererElem );
+
+  rasterRendererElem.setAttribute( "grayBand", mGrayBand );
+  if ( mContrastEnhancement )
+  {
+    QDomElement contrastElem = doc.createElement( "contrastEnhancement" );
+    mContrastEnhancement->writeXML( doc, contrastElem );
+    rasterRendererElem.appendChild( contrastElem );
+  }
+  parentElem.appendChild( rasterRendererElem );
 }
