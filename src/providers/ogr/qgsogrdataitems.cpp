@@ -251,6 +251,10 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
        myExtensions.indexOf( "shp.xml" ) < 0 )
     return 0;
 
+  // skip .tar.gz files
+  if ( thePath.right( 7 ) == ".tar.gz" )
+    return 0;
+
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
   if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )

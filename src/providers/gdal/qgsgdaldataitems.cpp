@@ -135,6 +135,10 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
        extensions.indexOf( "aux.xml" ) < 0 )
     return 0;
 
+  // skip .tar.gz files
+  if ( thePath.right( 7 ) == ".tar.gz" )
+    return 0;
+
   // Filter files by extension
   if ( extensions.indexOf( info.suffix().toLower() ) < 0 )
   {
