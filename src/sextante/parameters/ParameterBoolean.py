@@ -20,4 +20,4 @@ class ParameterBoolean(Parameter):
         return ParameterBoolean (tokens[0], tokens[1], tokens[2] == str(True))
 
     def getAsScriptCode(self):
-        return "##" + self.name + "=boolean " + self.default
+        return "##" + self.name + "=boolean " + str(self.default)

@@ -1,13 +1,30 @@
 from sextante.core.SextanteConfig import Setting, SextanteConfig
 import os
 from PyQt4 import QtGui
+
 class AlgorithmProvider():
+    '''this is the base class for algorithms providers.
+    An algorithm provider is a set of related algorithms, typically from the same
+    external application or related to a common area of analysis.
+    '''
+
     def __init__(self):
-        name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
-        SextanteConfig.addSetting(Setting(self.getName(), name, "Activate", True))
         self.actions = []
         self.contextMenuActions = []
 
+    def initializeSettings(self):
+        '''this is the place where you should add config parameters to sextante using the SextanteConfig class.
+        this method is called when a provider is added to Sextante.
+        By default it just adds a setting to activate or deactivate algorithms from the provider'''
+        name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
+        SextanteConfig.addSetting(Setting(self.getName(), name, "Activate", True))
+
+    def unload(self):
+        '''Do here anything that you want to be done when the provider is removed from the list of available ones.
+        This method is called when you remove the provider from Sextante.
+        Removal of config setting should be done here'''
+        name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
+        SextanteConfig.removeSetting(name)
     def getName(self):
         return "Generic algorithm provider"
 
@@ -22,7 +39,8 @@ class AlgorithmProvider():
     #methods to be overridden.
     #==============================
 
-    #Algorithm loading should take place here, filling sefl.algs
+    #Algorithm loading should take place here, filling self.algs, which is a list of
+    #elements of class GeoAlgorithm. Use that class to create your own algorithms
     #Since algorithms should have a reference to the provider they come
     #from, this is also the place to set the 'provider' variable of each algorithm
     def _loadAlgorithms(self):

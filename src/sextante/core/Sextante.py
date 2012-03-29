@@ -12,29 +12,54 @@ from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
 from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
-from sextante.modeler.ProviderIcons import ProviderIcons
+from sextante.modeler.Providers import Providers
 from sextante.r.RAlgorithmProvider import RAlgorithmProvider
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from sextante.gui.RenderingStyles import RenderingStyles
+from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 
 class Sextante:
 
     iface = None
-    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),
-                 MMQGISAlgorithmProvider(), FToolsAlgorithmProvider(),
-                 RAlgorithmProvider()]#, GrassAlgorithmProvider()]
+    listeners = []
+    providers = []
+    #a dictionary of algorithms. Keys are names of providers
+    #and values are list with all algorithms from that provider
     algs = {}
+    #Same structure as algs
     actions = {}
+    #All the registered context menu actions for the toolbox
     contextMenuActions = []
+
     modeler = ModelerAlgorithmProvider()
 
     @staticmethod
-    def setInterface(iface):
-        Sextante.iface = iface
+    def addProvider(provider):
+        '''use this method to add algorithms from external providers'''
+        '''Adding a new provider automatically initializes it, so there is no need to do it in advance'''
+        #Note: this might slow down the initialization process if there are many new providers added.
+        #Should think of a different solution
+        provider.initializeSettings()
+        Sextante.providers.append(provider)
+        Sextante.updateAlgsList()
+
+    @staticmethod
+    def removeProvider(provider):
+        '''Use this method to remove a provider.
+        This method should be called when unloading a plugin that contributes a provider to SEXTANTE'''
+        try:
+            provider.unload()
+            Sextante.providers.remove(provider)
+            Sextante.updateAlgsList()
+        except:
+            pass #This try catch block is here to avoid problems if the plugin with a provider is unloaded
+                 #after SEXTANTEe itself has been unloaded. It is a quick fix before I found out how to
+                 #properly avoid that
 
     @staticmethod
     def getProviderFromName(name):
+        '''returns the provider with the given name'''
         for provider in Sextante.providers:
             if provider.getName() == name:
                 return provider
@@ -45,25 +70,58 @@ class Sextante:
         return Sextante.iface
 
     @staticmethod
+    def setInterface(iface):
+        Sextante.iface = iface
+
+    @staticmethod
     def initialize():
+        #add the basic providers
+        Sextante.addProvider(MMQGISAlgorithmProvider())
+        Sextante.addProvider(FToolsAlgorithmProvider())
+        Sextante.addProvider(ModelerOnlyAlgorithmProvider())
+        Sextante.addProvider(ScriptAlgorithmProvider())
+        Sextante.addProvider(RAlgorithmProvider())
+        Sextante.addProvider(SagaAlgorithmProvider())
+        Sextante.modeler.initializeSettings();
+        #and initialize
         SextanteLog.startLogging()
         SextanteConfig.initialize()
         SextanteConfig.loadSettings()
         RenderingStyles.loadStyles()
+        Sextante.loadFromProviders()
+
+    @staticmethod
+    def updateAlgsList():
+        '''call this method when there has been any change that requires the list of algorithms
+        to be created again from algorithm providers'''
+        Sextante.loadFromProviders()
+        Sextante.fireAlgsListHasChanged()
+
+    @staticmethod
+    def loadFromProviders():
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()
-        #SextanteConfig.loadSettings()
-
 
     @staticmethod
     def updateProviders():
         for provider in Sextante.providers:
             provider.loadAlgorithms()
 
+    @staticmethod
+    def addAlgListListener(listener):
+        '''listener should implement a algsListHasChanged() method. whenever the list of algorithms changed,
+        that method will be called for all registered listeners'''
+        Sextante.listeners.append(listener)
+
+    @staticmethod
+    def fireAlgsListHasChanged():
+        for listener in Sextante.listeners:
+            listener.algsListHasChanged()
 
     @staticmethod
     def loadAlgorithms():
+        Sextante.algs={}
         Sextante.updateProviders()
         for provider in Sextante.providers:
             providerAlgs = provider.algs
@@ -92,13 +150,11 @@ class Sextante:
         for alg in providerAlgs:
             algs[alg.commandLineName()] = alg
         Sextante.algs[provider.getName()] = algs
-        icons = {}
+        provs = {}
         for provider in Sextante.providers:
-            icons[provider.getName()] = provider.getIcon()
-        icons[Sextante.modeler.getName()] = Sextante.modeler.getIcon()
-        ProviderIcons.providerIcons = icons
-
-
+            provs[provider.getName()] = provider
+        provs[Sextante.modeler.getName()] = Sextante.modeler
+        Providers.providers = provs
 
     @staticmethod
     def loadActions():
@@ -117,6 +173,7 @@ class Sextante:
 
     @staticmethod
     def loadContextMenuActions():
+        Sextante.contextMenuActions = []
         for provider in Sextante.providers:
             providerActions = provider.contextMenuActions
             for action in providerActions:
@@ -181,7 +238,7 @@ class Sextante:
         if alg == None:
             print("Error: Algorithm not found\n")
             return
-        if len(args) != len(alg.parameters) + len(alg.getVisibleOutputsCount()):
+        if len(args) != len(alg.parameters) + alg.getVisibleOutputsCount():
             print ("Error: Wrong number of parameters")
             Sextante.alghelp(name)
             return
@@ -236,7 +293,7 @@ class Sextante:
             #in theory, this could not happen. Maybe we should show a message box?
             QMessageBox.critical(None,"Error", "Error: Algorithm not found\n")
             return
-        if len(args) != len(alg.parameters) + len(alg.getVisibleOutputsCount()):
+        if len(args) != len(alg.parameters) + alg.getVisibleOutputsCount():
             QMessageBox.critical(None,"Error", "Error: Wrong number of parameters")
             Sextante.alghelp(name)
             return
@@ -263,6 +320,10 @@ class Sextante:
             SextantePostprocessing.handleAlgorithmResults(alg)
         except GeoAlgorithmExecutionException, e:
             QMessageBox.critical(None, "Error",  e.msg)
+
+
+
+
 
 
 

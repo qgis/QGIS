@@ -33,12 +33,13 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 class ParametersDialog(QtGui.QDialog):
+    '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
-        self.alg = None
         self.ui = Ui_ParametersDialog()
         self.ui.setupUi(self, alg)
+        self.executed = False
 
 class Ui_ParametersDialog(object):
 
@@ -273,8 +274,9 @@ class Ui_ParametersDialog(object):
                 AlgorithmExecutor.runalg(self.alg, self)
                 QApplication.restoreOverrideCursor()
                 SextantePostprocessing.handleAlgorithmResults(self.alg)
-                self.dialog.alg = self.alg
+                self.dialog.executed = True
                 self.dialog.close()
+
             else:
                 QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
                 return
@@ -282,17 +284,12 @@ class Ui_ParametersDialog(object):
             QApplication.restoreOverrideCursor()
             QMessageBox.critical(self, "Error",e.msg)
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
+            self.dialog.executed = False
             self.dialog.close()
-        #=======================================================================
-        # except Exception, ex:
-        #   QApplication.restoreOverrideCursor()
-        #   QMessageBox.critical(self, "Error", "Could not execute algorithm")
-        #   self.dialog.close()
-        #=======================================================================
 
 
     def reject(self):
-        self.dialog.alg = None
+        self.dialog.executed = False
         self.dialog.close()
 
     def setPercentage(self, i):

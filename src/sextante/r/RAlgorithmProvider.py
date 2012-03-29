@@ -14,12 +14,19 @@ from sextante.r.EditRScriptAction import EditRScriptAction
 class RAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
-        SextanteConfig.addSetting(Setting("R", RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
-        SextanteConfig.addSetting(Setting("R", RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
         self.actions = []
         self.actions.append(CreateNewRScriptAction())
         self.contextMenuActions = [EditRScriptAction()]
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
+        SextanteConfig.addSetting(Setting("R", RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
+        SextanteConfig.addSetting(Setting("R", RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
+
+    def unload(self):
+        AlgorithmProvider.unload(self)
+        SextanteConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
+        SextanteConfig.removeSetting(RUtils.R_FOLDER)
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")

@@ -8,7 +8,7 @@ from sextante.modeler.ModelerUtils import ModelerUtils
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerScene import ModelerScene
 import copy
-from sextante.modeler.ProviderIcons import ProviderIcons
+from sextante.modeler.Providers import Providers
 from sextante.script.ScriptUtils import ScriptUtils
 
 class ModelerDialog(QtGui.QDialog):
@@ -25,6 +25,7 @@ class ModelerDialog(QtGui.QDialog):
             self.view.ensureVisible(self.scene.getLastAlgorithmItem())
         else:
             self.alg = ModelerAlgorithm()
+        self.alg.setModelerView(self)
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
 
     def setupUi(self):
@@ -78,7 +79,7 @@ class ModelerDialog(QtGui.QDialog):
         self.horizontalLayoutNames.addWidget(self.textName)
         self.horizontalLayoutNames.addWidget(self.textGroup)
 
-        self.scene = ModelerScene()
+        self.scene = ModelerScene(self)
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 2000, 2000))
 
         self.canvasTabWidget = QtGui.QTabWidget()
@@ -86,7 +87,7 @@ class ModelerDialog(QtGui.QDialog):
         self.canvasTabWidget.setObjectName("canvasTabWidget")
         self.view = QtGui.QGraphicsView(self.scene)
 
-        self.canvasTabWidget.addTab(self.view, "Design" )
+        self.canvasTabWidget.addTab(self.view, "Design")
         self.pythonText = QtGui.QTextEdit()
         self.createScriptButton = QtGui.QPushButton()
         self.createScriptButton.setObjectName("createScriptButton")
@@ -100,7 +101,7 @@ class ModelerDialog(QtGui.QDialog):
         self.verticalLayoutPython.addWidget(self.createScriptButton)
         self.pythonWidget = QtGui.QWidget()
         self.pythonWidget.setLayout(self.verticalLayoutPython)
-        self.canvasTabWidget.addTab(self.pythonWidget, "Python code" )
+        self.canvasTabWidget.addTab(self.pythonWidget, "Python code")
 
         self.canvasLayout = QtGui.QVBoxLayout()
         self.canvasLayout.setSpacing(2)
@@ -165,7 +166,7 @@ class ModelerDialog(QtGui.QDialog):
         self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
         self.alg.name = str(self.textName.text())
         self.alg.group = str(self.textGroup.text())
-        if self.alg.descriptionFile!=None:
+        if self.alg.descriptionFile != None:
             filename = self.alg.descriptionFile
         else:
             filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)"))
@@ -186,6 +187,7 @@ class ModelerDialog(QtGui.QDialog):
                 alg = ModelerAlgorithm()
                 alg.openModel(filename)
                 self.alg = alg;
+                self.alg.setModelerView(self)
                 self.textGroup.setText(alg.group)
                 self.textName.setText(alg.name)
                 self.repaintModel()
@@ -199,7 +201,6 @@ class ModelerDialog(QtGui.QDialog):
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 1000, 1000))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
-        #self.pythonText.setText("This feature is not yet available... we are still working on it ;-)")#self.alg.getAsPythonCode())
         self.pythonText.setText(self.alg.getAsPythonCode())
 
 
@@ -218,10 +219,10 @@ class ModelerDialog(QtGui.QDialog):
 
     def fillInputsTree(self):
         inputsItem = QtGui.QTreeWidgetItem()
-        inputsItem.setText(0,"Inputs")
+        inputsItem.setText(0, "Inputs")
         for paramType in ModelerParameterDefinitionDialog.paramTypes:
             inputItem = QtGui.QTreeWidgetItem()
-            inputItem.setText(0,paramType)
+            inputItem.setText(0, paramType)
             inputsItem.addChild(inputItem)
         self.inputsTree.addTopLevelItem(inputsItem)
         inputsItem.setExpanded(True)
@@ -232,7 +233,9 @@ class ModelerDialog(QtGui.QDialog):
         if isinstance(item, TreeAlgorithmItem):
             alg = ModelerUtils.getAlgorithm(item.alg.commandLineName())
             alg = copy.deepcopy(alg)
-            dlg = ModelerParametersDialog(alg,self.alg)
+            dlg = alg.getCustomModelerParametersDialog(self.alg)
+            if not dlg:
+                dlg = ModelerParametersDialog(alg, self.alg)
             dlg.exec_()
             if dlg.params != None:
                 self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
@@ -250,20 +253,22 @@ class ModelerDialog(QtGui.QDialog):
             algs = provider.values()
             #add algorithms
             for alg in algs:
-                if text =="" or text.lower() in alg.name.lower():
+                if not alg.showInModeler:
+                    continue
+                if text == "" or text.lower() in alg.name.lower():
                     if alg.group in groups:
                         groupItem = groups[alg.group]
                     else:
                         groupItem = QtGui.QTreeWidgetItem()
-                        groupItem.setText(0,alg.group)
+                        groupItem.setText(0, alg.group)
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
 
-            if len(groups)>0:
+            if len(groups) > 0:
                 providerItem = QtGui.QTreeWidgetItem()
-                providerItem.setText(0,providerName)
-                providerItem.setIcon(0, ProviderIcons.providerIcons[providerName])
+                providerItem.setText(0, providerName)
+                providerItem.setIcon(0, Providers.providers[providerName].getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)

@@ -6,6 +6,8 @@ from sextante.gui.ParametersDialog import ParametersDialog
 import copy
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
+from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteConfig import SextanteConfig
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -19,10 +21,11 @@ class SextanteToolbox(QtGui.QDockWidget):
         self.iface=iface
         self.setupUi()
 
-    def updateTree(self):
-        Sextante.updateProviders()
-        Sextante.loadAlgorithms()
+    def algsListHasChanged(self):
         self.fillTree()
+
+    def updateTree(self):
+        Sextante.updateAlgsList()
 
     def setupUi(self):
         self.setFloating(False)
@@ -98,8 +101,14 @@ class SextanteToolbox(QtGui.QDockWidget):
         if isinstance(item, TreeAlgorithmItem):
             alg = Sextante.getAlgorithm(item.alg.commandLineName())
             alg = copy.deepcopy(alg)
-            dlg = ParametersDialog(alg)
+            dlg = alg.getCustomParametersDialog()
+            if not dlg:
+                dlg = ParametersDialog(alg)
             dlg.exec_()
+            if dlg.executed:
+                showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
+                if showRecent:
+                    self.fillTree()
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)
@@ -114,6 +123,8 @@ class SextanteToolbox(QtGui.QDockWidget):
             algs = provider.values()
             #add algorithms
             for alg in algs:
+                if not alg.showInToolbox:
+                    continue
                 if text =="" or text.lower() in alg.name.lower():
                     if alg.group in groups:
                         groupItem = groups[alg.group]
@@ -149,6 +160,22 @@ class SextanteToolbox(QtGui.QDockWidget):
                         groupItem.setExpanded(True)
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
+
+        showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
+        if showRecent:
+            recent = SextanteLog.getRecentAlgorithms()
+            if len(recent) != 0:
+                recentItem = QtGui.QTreeWidgetItem()
+                recentItem.setText(0,"Recently used algorithms")
+                #providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
+                for algname in recent:
+                    alg = Sextante.getAlgorithm(algname)
+                    algItem = TreeAlgorithmItem(alg)
+                    recentItem.addChild(algItem)
+                self.algorithmTree.insertTopLevelItem(0, recentItem)
+                recentItem.setExpanded(True)
+
+
 
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):

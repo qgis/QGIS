@@ -12,7 +12,7 @@ class ParameterNumber(Parameter):
         self.value = None
 
     def setValue(self, n):
-        ##try:
+        try:
             if (float(n) - int(float(n)) == 0):
                 value = int(float(n))
             else:
@@ -25,10 +25,8 @@ class ParameterNumber(Parameter):
                     return False
             self.value = value
             return True
-        #=======================================================================
-        # except:
-        #    return False
-        #=======================================================================
+        except:
+            return False
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
@@ -44,4 +42,4 @@ class ParameterNumber(Parameter):
         return ParameterNumber(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4])
 
     def getAsScriptCode(self):
-        return "##" + self.name + "=number " + self.default
+        return "##" + self.name + "=number " + str(self.default)

@@ -20,7 +20,7 @@ class QGisLayers:
 
         for layer in layers:
             if layer.type() == layer.RasterLayer:
-                if os.path.exists(layer.source()):
+                if os.path.exists(layer.source()):#only file-based layers
                     raster.append(layer)
         return raster
 
@@ -34,6 +34,15 @@ class QGisLayers:
                     if os.path.exists(layer.source()):
                         vector.append(layer)
         return vector
+
+    @staticmethod
+    def getAllLayers():
+        layers = QGisLayers.iface.legendInterface().layers()
+        layerslist = list()
+        for layer in layers:
+            if os.path.exists(layer.source()):
+                layerslist.append(layer)
+        return layerslist
 
     @staticmethod
     def getTables():
@@ -107,7 +116,7 @@ class QGisLayers:
 
 
     @staticmethod
-    def getObjectFromUri(uri):
+    def getObjectFromUri(uri, forceLoad = True):
         layers = QGisLayers.getRasterLayers()
         for layer in layers:
             if layer.source() == uri:
@@ -116,13 +125,16 @@ class QGisLayers:
         for layer in layers:
             if layer.source() == uri:
                 return layer
-        #if is not opened, we open it
-        layer = QgsVectorLayer(uri, uri , 'ogr')
-        if layer.isValid():
-            return layer
-        layer = QgsRasterLayer(uri, uri)
-        if layer.isValid():
-            return layer
+        if forceLoad:
+            #if is not opened, we open it
+            layer = QgsVectorLayer(uri, uri , 'ogr')
+            if layer.isValid():
+                return layer
+            layer = QgsRasterLayer(uri, uri)
+            if layer.isValid():
+                return layer
+        else:
+            return None
 
 
 

@@ -10,7 +10,6 @@ class ModelerScene(QtGui.QGraphicsScene):
 
     def __init__(self, parent=None):
         super(ModelerScene, self).__init__(parent)
-
         self.paramItems = []
         self.algItems = []
 
@@ -58,11 +57,11 @@ class ModelerScene(QtGui.QGraphicsScene):
 
         return items
 
-    def paintModel(self,model):
+    def paintModel(self, model):
         self.model = model
         i=0
         for param in model.parameters:
-            item = ModelerGraphicItem(param)
+            item = ModelerGraphicItem(param, i, model)
             item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -71,7 +70,7 @@ class ModelerScene(QtGui.QGraphicsScene):
             i+=1
         iAlg=0
         for alg in model.algs:
-            item = ModelerGraphicItem(alg)
+            item = ModelerGraphicItem(alg, iAlg, model)
             item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)

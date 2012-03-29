@@ -12,6 +12,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self.createAlgsList() #preloading algorithms to speed up
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_AUTO_RESAMPLING, "Use min covering grid system for resampling", True))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_XMIN, "Resampling region min x", 0))
@@ -21,19 +25,32 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE, "Resampling region cellsize", 1))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_USE_SELECTED, "Use only selected features in vector layers", False))
 
-    def _loadAlgorithms(self):
+    def unload(self):
+        AlgorithmProvider.unload(self)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_FOLDER)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_USE_SELECTED)
+
+    def createAlgsList(self):
+        self.preloadedAlgs = []
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            #try:
+            try:
                 if descriptionFile.startswith("alg_"):
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
                         alg.provider = self
-                        self.algs.append(alg)
-            #except Exception,e:
-                #SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+                        self.preloadedAlgs.append(alg)
+            except Exception,e:
+                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
 
-        #self.createDescriptionFiles()
+    def _loadAlgorithms(self):
+        self.algs = self.preloadedAlgs
 
     def getName(self):
         return "SAGA"

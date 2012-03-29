@@ -47,6 +47,7 @@ class GrassAlgorithm(GeoAlgorithm):
             helpfile = str(folder) + os.sep + self.name + ".html"
             return helpfile
         return None
+
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()

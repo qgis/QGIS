@@ -6,6 +6,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from PyQt4 import QtGui
 import os.path
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 
 
 class GeoAlgorithm:
@@ -17,9 +18,13 @@ class GeoAlgorithm:
         self.outputs = list()
         self.name = ""
         self.group = ""
-        self.defineCharacteristics()
         #the crs taken from input layers (if possible), and used when loading output layers
         self.crs = None
+        #change any of the following if your algorithm should not appear in the toolbox or modeler
+        self.showInToolbox = True
+        self.showInModeler = True
+
+        self.defineCharacteristics()
 
     #methods to overwrite when creating a custom geoalgorithm
     #=========================================================
@@ -34,8 +39,17 @@ class GeoAlgorithm:
         pass
 
     def defineCharacteristics(self):
-        '''here is where the parameters and outputs should be filled'''
+        '''here is where the parameters and outputs should be defined'''
         pass
+
+    def getCustomParametersDialog(self):
+        '''if the algorithm has a custom parameters dialog, it should be returned here, ready to be executed'''
+        return None
+
+    def getCustomModelerParametersDialog(self, modelAlg):
+        '''if the algorithm has a custom parameters dialog when called from the modeler,
+        it should be returned here, ready to be executed'''
+        return None
 
     #=========================================================
 
@@ -45,23 +59,21 @@ class GeoAlgorithm:
         self.processAlgorithm(progress)
 
     def resolveTemporaryOutputs(self):
-        '''sets temporary outputs (output.value = None) with a temporary file instead)'''
+        '''sets temporary outputs (output.value = None) with a temporary file instead'''
         for out in self.outputs:
-            if out.value == None:
+            if (not out.hidden) and out.value == None:
                 SextanteUtils.setTempOutput(out, self)
 
     def setOutputCRSFromInputLayers(self):
+        layers = QGisLayers.getAllLayers()
         for param in self.parameters:
-            if isinstance(param, ParameterRaster):
-                layers = QGisLayers.getRasterLayers()
-            elif isinstance(param, ParameterVector):
-                layers = QGisLayers.getVectorLayers()
-            else:
-                continue
-            for layer in layers:
-                if layer.source() == param.value:
-                    self.crs = layer.crs()
-                    return
+            if isinstance(param, (ParameterRaster, ParameterVector ,ParameterMultipleInput)):
+                inputlayers = param.value.split(";")
+                for inputlayer in inputlayers:
+                    for layer in layers:
+                        if layer.source() == inputlayer:
+                            self.crs = layer.crs()
+                            return
 
 
     def addOutput(self, output):
@@ -111,8 +123,12 @@ class GeoAlgorithm:
 
 
     def commandLineName(self):
-        return self.provider.getName().lower() + ":" + self.name.lower().replace(" ", "").replace(",","")
+        return self.provider.getName().lower().replace(" ", "") + ":" + self.name.lower().replace(" ", "").replace(",","")
 
+    def removeOutputFromName(self, name):
+        for out in self.outputs:
+            if out.name == name:
+                self.outputs.remove(out)
 
     def getOutputFromName(self, name):
         for out in self.outputs:

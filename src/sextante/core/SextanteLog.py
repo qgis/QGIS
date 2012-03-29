@@ -7,6 +7,7 @@ class SextanteLog():
     LOG_INFO = "INFO"
     LOG_WARNING = "WARNING"
     LOG_ALGORITHM = "ALGORITHM"
+    recentAlgs = []
 
     @staticmethod
     def startLogging():
@@ -36,6 +37,12 @@ class SextanteLog():
         logfile = open(SextanteLog.logFilename(), "a")
         logfile.write(line)
         logfile.close()
+        if msgtype==SextanteLog.LOG_ALGORITHM:
+            algname = text[len("Sextante.runalg(\""):]
+            algname = algname[:algname.index("\"")]
+            if algname not in SextanteLog.recentAlgs:
+                SextanteLog.recentAlgs.append(algname)
+
 
     @staticmethod
     def getLogEntries():
@@ -67,6 +74,14 @@ class SextanteLog():
         entries[SextanteLog.LOG_INFO] = info
         entries[SextanteLog.LOG_WARNING] = warnings
         return entries
+
+
+    @staticmethod
+    def getRecentAlgorithms():
+        return SextanteLog.recentAlgs
+
+
+
 
 class LogEntry():
     def __init__(self, date, text):

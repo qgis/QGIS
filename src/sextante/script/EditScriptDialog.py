@@ -2,7 +2,6 @@ from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.script.ScriptUtils import ScriptUtils
-import os
 
 class EditScriptDialog(QtGui.QDialog):
     def __init__(self, alg):

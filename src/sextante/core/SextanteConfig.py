@@ -8,11 +8,13 @@ class SextanteConfig():
     VECTOR_POINT_STYLE = "VECTOR_POINT_STYLE"
     VECTOR_LINE_STYLE = "VECTOR_LINE_STYLE"
     VECTOR_POLYGON_STYLE = "VECTOR_POLYGON_STYLE"
+    SHOW_RECENT_ALGORITHMS = "SHOW_RECENT_ALGORITHMS"
 
     settings = {}
 
     @staticmethod
     def initialize():
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
                                            "Output folder", os.path.join(SextanteUtils.userFolder(),"outputs" )))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RASTER_STYLE,"Style for raster layers",""))
@@ -23,6 +25,10 @@ class SextanteConfig():
     @staticmethod
     def addSetting(setting):
         SextanteConfig.settings[setting.name] = setting
+
+    @staticmethod
+    def removeSetting(name):
+        del SextanteConfig.settings[name]
 
     @staticmethod
     def getSettings():

@@ -7,6 +7,10 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.mmqgis.MMQGISAlgorithm import MMQGISAlgorithm
 class MMQGISAlgorithmProvider(AlgorithmProvider):
 
+    def __init__(self):
+        AlgorithmProvider.__init__(self)
+        self.createAlgsList()
+
     def scriptsFolder(self):
         return os.path.dirname(__file__) + "/scripts"
 
@@ -14,6 +18,10 @@ class MMQGISAlgorithmProvider(AlgorithmProvider):
         return "mmqgis"
 
     def _loadAlgorithms(self):
+        self.algs = self.preloadedAlgs
+
+    def createAlgsList(self):
+        self.preloadedAlgs = []
         folder = self.scriptsFolder()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("py"):
@@ -22,6 +30,6 @@ class MMQGISAlgorithmProvider(AlgorithmProvider):
                     alg = MMQGISAlgorithm(fullpath)
                     alg.group = "mmqgis"
                     alg.provider = self
-                    self.algs.append(alg)
+                    self.preloadedAlgs.append(alg)
                 except WrongScriptException,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR,e.msg)

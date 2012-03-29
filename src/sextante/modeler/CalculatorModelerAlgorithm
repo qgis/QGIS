@@ -1,0 +1,4 @@
+class ModelerTool():
+
+    def run(self):
+        pass

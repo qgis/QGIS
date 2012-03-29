@@ -6,6 +6,10 @@ class Output(object):
         self.name = name
         self.description = description
         self.value = None
+        # a hidden output will not be shown to the user, who will not be able to select where to store it
+        # Use this to generate outputs that are modified version of inputs (like a selection in a vector layer)
+        # In the case of layers, hidden outputs are not loaded into QGIS after the algorithm is executed.
+        # Other outputs not representing layers or tables should always be hidden.
         self.hidden = False
 
     def __str__(self):

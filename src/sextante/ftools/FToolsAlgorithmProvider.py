@@ -32,14 +32,9 @@ from sextante.ftools.RandomSelectionWithinSubsets import RandomSelectionWithinSu
 
 class FToolsAlgorithmProvider(AlgorithmProvider):
 
-    def getName(self):
-        return "ftools"
-
-    def getIcon(self):
-        return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/ftools_logo.png")
-
-    def _loadAlgorithms(self):
-        self.algs = [SinglePartsToMultiparts(), PolygonsToLines(),
+    def __init__(self):
+        AlgorithmProvider.__init__(self)
+        self.alglist = [SinglePartsToMultiparts(), PolygonsToLines(),
                      LinesToPolygons(), ExportGeometryInfo(), ExtractNodes(),
                      Centroids(), SimplifyGeometries(), Delaunay(), VoronoiPolygons(),
                      SumLines(), BasicStatistics(), PointsInPolygon(),
@@ -47,8 +42,18 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                      ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                      Dissolve(), Difference(), Intersection(), Union(), Clip(), ExtentFromLayer(),
                      RandomSelection(), RandomSelectionWithinSubsets(), SelectByLocation()]
-        for alg in self.algs:
+        for alg in self.alglist:
             alg.provider = self
+
+    def getName(self):
+        return "ftools"
+
+    def getIcon(self):
+        return  QtGui.QIcon(os.path.dirname(__file__) + "/icons/ftools_logo.png")
+
+    def _loadAlgorithms(self):
+        self.algs = self.alglist
+
 
     def getSupportedOutputTableExtensions(self):
         return ["csv"]

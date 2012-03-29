@@ -21,6 +21,7 @@ from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterNumber import ParameterNumber
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -81,22 +82,18 @@ class SagaAlgorithm(GeoAlgorithm):
             for param in self.parameters:
                 if isinstance(param, ParameterRaster):
                     if isinstance(param.value, QgsRasterLayer):
-                        value = param.value
+                        layer = param.value
                     else:
-                        value = QGisLayers.getObjectFromUri(param.value)
-                    if first:
-                        self.xmin = value.extent().xMinimum()
-                        self.xmax = value.extent().xMaximum()
-                        self.ymin = value.extent().yMinimum()
-                        self.ymax = value.extent().yMaximum()
-                        self.cellsize = (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim()
-                        first = False
-                    else:
-                        self.xmin = min(self.xmin, value.extent().xMinimum())
-                        self.xmax = max(self.xmax, value.extent().xMaximum())
-                        self.ymin = min(self.ymin, value.extent().yMinimum())
-                        self.ymax = max(self.ymax, value.extent().yMaximum())
-                        self.cellsize = max(self.cellsize, (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim())
+                        layer = QGisLayers.getObjectFromUri(param.value)
+                    self.addToResamplingExtent(layer, first)
+                    first = False
+                if isinstance(param, ParameterMultipleInput):
+                    if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                        layers = param.value.split(";")
+                        for layername in layers:
+                            layer = QGisLayers.getObjectFromUri(layername, first)
+                            self.addToResamplingExtent(layer, first)
+                            first = False
         else:
             self.xmin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
@@ -104,6 +101,20 @@ class SagaAlgorithm(GeoAlgorithm):
             self.ymax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
             self.cellsize = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
 
+
+    def addToResamplingExtent(self, layer, first):
+        if first:
+            self.xmin = layer.extent().xMinimum()
+            self.xmax = layer.extent().xMaximum()
+            self.ymin = layer.extent().yMinimum()
+            self.ymax = layer.extent().yMaximum()
+            self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
+        else:
+            self.xmin = min(self.xmin, layer.extent().xMinimum())
+            self.xmax = max(self.xmax, layer.extent().xMaximum())
+            self.ymin = min(self.ymin, layer.extent().yMinimum())
+            self.ymax = max(self.ymax, layer.extent().yMaximum())
+            self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 
 
     def processAlgorithm(self, progress):
@@ -171,19 +182,21 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
                 if value in self.exportedLayers.keys():
-                    command+=(" -" + param.name + " " + self.exportedLayers[value])
+                    command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
                 else:
                     command+=(" -" + param.name + " " + value)
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
                     s = s.replace(layer, self.exportedLayers[layer])
-                command+=(" -" + param.name + " " + s);
+                command+=(" -" + param.name + " \"" + s + "\"");
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command+=(" -" + param.name);
-            else:
+            elif isinstance(param, ParameterNumber):
                 command+=(" -" + param.name + " " + str(param.value));
+            else:
+                command+=(" -" + param.name + " \"" + str(param.value) + "\"");
 
 
         for out in self.outputs:
@@ -234,15 +247,15 @@ class SagaAlgorithm(GeoAlgorithm):
             inputFilename = self.exportedLayers[layer]
         else:
             inputFilename = layer
-        destFilename = self.getTempFilename()
+        destFilename = self.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
-            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
-                self.xmin + " -USER_XMAX " + self.xmax + " -USER_YMIN " + self.ymin + " -USER_YMAX "  + self.ymax +\
+            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + " -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+                str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
                 " -USER_SIZE " + str(self.cellsize) + " -USER_GRID " + destFilename
         else:
-            s = "libgrid_tools \"Resampling\" -INPUT " + inputFilename + "-TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
-                self.xmin + " -USER_XMAX " + self.xmax + " -USER_YMIN " + self.ymin + " -USER_YMAX "  + self.ymax +\
+            s = "libgrid_tools \"Resampling\" -INPUT " + inputFilename + " -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+                str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
                 " -USER_SIZE " + str(self.cellsize) + " -USER_GRID " + destFilename
         return s
 

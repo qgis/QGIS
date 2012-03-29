@@ -18,13 +18,13 @@ class EditRenderingStylesDialog(QtGui.QDialog):
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
-        self.tableWidget.setColumnWidth(0,300)
-        self.tableWidget.setColumnWidth(1,300)
+        self.tableWidget.setColumnWidth(0, 300)
+        self.tableWidget.setColumnWidth(1, 300)
         self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Output"))
         self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Style"))
         self.tableWidget.setObjectName("tableWidget")
@@ -57,15 +57,15 @@ class EditRenderingStylesDialog(QtGui.QDialog):
                 if not output.hidden:
                     item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
                     item.setFlags(QtCore.Qt.ItemIsEnabled)
-                    self.tableWidget.setItem(i,0, item)
+                    self.tableWidget.setItem(i, 0, item)
                     item = QtGui.QLineEdit()
                     style = RenderingStyles.getStyle(self.alg.commandLineName(), output.name)
                     if style:
                         item.setText(str(style))
                     self.valueItems[output.name] = item
-                    self.tableWidget.setCellWidget(i,1, item)
-                    self.tableWidget.setRowHeight(i,22)
-            i+=1
+                    self.tableWidget.setCellWidget(i, 1, item)
+                    self.tableWidget.setRowHeight(i, 22)
+            i += 1
 
     def okPressed(self):
         styles = {}

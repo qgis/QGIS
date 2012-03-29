@@ -9,9 +9,12 @@ from sextante.grass.GrassAlgorithm import GrassAlgorithm
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
-
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self.createAlgsList() #preloading algorithms to speed up
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
         SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
         SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_AUTO_REGION, "Use min covering region", True))
         SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_LATLON, "Coordinates are lat/lon", False))
@@ -24,7 +27,21 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
         #SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_USE_SELECTED, "Use only selected features in vector layers", False))
 
-    def _loadAlgorithms(self):
+    def unload(self):
+        AlgorithmProvider.unload(self)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_FOLDER)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_AUTO_REGION)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_LATLON)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_XMIN)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_YMIN)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_XMAX)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_YMAX)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_HELP_FOLDER)
+
+    def createAlgsList(self):
+        self.preloadedAlgs = []
         folder = GrassUtils.grassDescriptionPath()
         for descriptionFile in os.listdir(folder):
             try:
@@ -32,13 +49,14 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                     alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
                         alg.provider = self
-                        self.algs.append(alg)
+                        self.preloadedAlgs.append(alg)
                     else:
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
             except Exception,e:
                 pass
 
-        #self.createDescriptionFiles()
+    def _loadAlgorithms(self):
+        self.algs = self.preloadedAlgs
 
     def getName(self):
         return "GRASS"

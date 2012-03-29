@@ -2,7 +2,5 @@ Grid Calculator
 grid_calculus
 ParameterMultipleInput|GRIDS|Grids|3|False
 ParameterString|FORMULA|Formula|
-ParameterString|NAME|Name|
-ParameterBoolean|FNAME        |Take Formula|True
 ParameterBoolean|USE_NODATA   |Use NoData|True
 OutputRaster|RESULT|Result

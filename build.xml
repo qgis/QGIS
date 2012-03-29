@@ -8,5 +8,8 @@
     <copy todir="C:/Users/volaya/.qgis/python/plugins/sextante">
         <fileset dir="src/sextante" includes="**"/>
     </copy>
+  	<copy todir="C:/Users/volaya/.qgis/python/plugins/sextanteexampleprovider">
+  	        <fileset dir="src/sextanteexampleprovider" includes="**"/>
+  	</copy>
   </target>
 </project>

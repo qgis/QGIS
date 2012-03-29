@@ -12,22 +12,22 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.parameters.Parameter import Parameter
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterTableField import ParameterTableField
 
 class ModelerAlgorithm(GeoAlgorithm):
 
     def __deepcopy__(self,memo):
         newone = ModelerAlgorithm()
-        newone.algs = copy.deepcopy(self.algs, memo)
-        newone.algParameters = copy.deepcopy(self.algParameters,memo)
-        newone.algOutputs = copy.deepcopy(self.algOutputs,memo)
-        newone.paramValues = copy.deepcopy(self.paramValues,memo)
-        newone.parameters = copy.deepcopy(self.parameters, memo)
-        newone.outputs = copy.deepcopy(self.outputs, memo)
+        newone.openModel(self.descriptionFile)
         newone.provider = self.provider
         return newone
 
     def __init__(self):
         GeoAlgorithm.__init__(self)
+        #the dialog where this model is being edited
+        self.modelerdialog = None
         self.descriptionFile = None
 
         #Geoalgorithms in this model
@@ -43,7 +43,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         #outputvalue is the name of the output if final. None if is an intermediate output
         self.algOutputs = []
 
-        #Parameter values entered by the user when defining the model. Keys are value names.
+        #Hardcoded parameter values entered by the user when defining the model. Keys are value names.
         self.paramValues = {}
 
         #position of items in canvas
@@ -112,7 +112,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 #that guarantees that the name is unique
                                 output = copy.deepcopy(out)
                                 output.description = line
-                                output.name = str(iAlg) + out.name
+                                output.name = self.getSafeNameForOutput(iAlg, output)
                                 self.addOutput(output)
                             else:
                                 algOutputs[out.name] = None
@@ -209,10 +209,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         for out in alg.outputs:
             val = self.algOutputs[iAlg][out.name]
             if val:
-                name = str(iAlg) + out.name
+                name = self.getSafeNameForOutput(iAlg, out)
                 out.value = self.getOutputFromName(name).value
             else:
                 out.value = None
+
+    def getSafeNameForOutput(self, ialg, out):
+        return out.name +"_ALG" + str(ialg)
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
@@ -304,7 +307,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         if self.ismodelparam(aap.param):
                             runline += ", " + aap.param.lower()
                         else:
-                            runline += ", " + self.paramValues[aap.param]
+                            runline += ", " + str(self.paramValues[aap.param])
                     else:
                         runline += ", outputs_" + str(aap.alg) + "['" + aap.param +"']"
             for out in alg.outputs:
@@ -324,6 +327,60 @@ class ModelerAlgorithm(GeoAlgorithm):
             if modelparam.name == paramname:
                 return True
         return False
+
+
+    def commandLineName(self):
+        return "modeler:" + os.path.basename(self.descriptionFile)[:-5].lower()
+
+    def setModelerView(self, dialog):
+        self.modelerdialog = dialog
+
+    def updateModelerView(self):
+        if self.modelerdialog:
+            self.modelerdialog.repaintModel()
+
+    def removeAlgorithm(self, index):
+        if self.hasDependencies(self.algs[index], index):
+            return False
+        for out in self.algs[index].outputs:
+            val = self.algOutputs[index][out.name]
+            if val:
+                name = self.getSafeNameForOutput(index, out)
+                self.removeOutputFromName(name)
+        del self.algs[index]
+        del self.algParameters[index]
+        del self.algPos[index]
+        self.updateModelerView()
+        return True
+
+    def removeParameter(self, index):
+        if self.hasDependencies(self.parameters[index], index):
+            return False
+        del self.parameters[index]
+        del self.paramPos[index]
+        self.updateModelerView()
+        return True
+
+    def hasDependencies(self, element, elementIndex):
+        '''returns true if some other element depends on the passed one'''
+        if isinstance(element, Parameter):
+            for alg in self.algParameters:
+                for aap in alg.values():
+                    if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.param == element.name:
+                        return True
+            if isinstance(element, ParameterVector):
+                for param in self.parameters:
+                    if isinstance(param, ParameterTableField):
+                        if param.parent == element.name:
+                            return True
+        else:
+            for alg in self.algParameters:
+                for aap in alg.values():
+                    if aap.alg == elementIndex:
+                        return True
+
+        return False
+
 
 class AlgorithmAndParameter():
 

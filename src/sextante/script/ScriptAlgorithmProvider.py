@@ -16,11 +16,16 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        SextanteConfig.addSetting(Setting("Scripts", ScriptUtils.SCRIPTS_FOLDER, "Scripts folder", ScriptUtils.scriptsFolder()))
-        #SextanteConfig.addSetting(Setting("Scripts", ScriptUtils.ACTIVATE_SCRIPTS, "Activate scripts", True))
-        #self.actions = []
         self.actions.append(CreateNewScriptAction())
         self.contextMenuActions = [EditScriptAction(), DeleteScriptAction()]
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
+        SextanteConfig.addSetting(Setting("Scripts", ScriptUtils.SCRIPTS_FOLDER, "Scripts folder", ScriptUtils.scriptsFolder()))
+
+    def unload(self):
+        AlgorithmProvider.unload(self)
+        SextanteConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")

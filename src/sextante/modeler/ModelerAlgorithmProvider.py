@@ -15,9 +15,12 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        SextanteConfig.addSetting(Setting("Modeler", ModelerUtils.MODELS_FOLDER, "Models folder", ModelerUtils.modelsFolder()))
         self.actions = [CreateNewModelAction()]
         self.contextMenuActions = [EditModelAction()]
+
+    def initializeSettings(self):
+        AlgorithmProvider.initializeSettings(self)
+        SextanteConfig.addSetting(Setting("Modeler", ModelerUtils.MODELS_FOLDER, "Models folder", ModelerUtils.modelsFolder()))
 
     def setAlgsList(self, algs):
         ModelerUtils.allAlgs = algs

@@ -29,6 +29,7 @@ class SextantePlugin:
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
         self.toolbox.setVisible(False)
+        Sextante.addAlgListListener(self.toolbox)
 
         self.menu = QMenu()
         self.menu.setTitle("SEXTANTE")

@@ -7,10 +7,11 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
     BOX_HEIGHT = 70
     BOX_WIDTH = 200
 
-    def __init__(self, element, parent=None, scene=None):
-        super(ModelerGraphicItem, self).__init__(parent, scene)
-
+    def __init__(self, element, elementIndex, model):
+        super(ModelerGraphicItem, self).__init__(None, None)
+        self.model = model
         self.element = element
+        self.elementIndex = elementIndex
         if isinstance(element, Parameter):
             icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/input.png")
             self.pixmap = icon.pixmap(20, 20, state=QtGui.QIcon.On)
@@ -31,6 +32,21 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                              ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + 2)
         return rect
 
+    def contextMenuEvent(self, event):
+        popupmenu = QtGui.QMenu()
+        removeAction = popupmenu.addAction("Remove")
+        removeAction.triggered.connect(self.removeElement)
+        popupmenu.exec_(event.screenPos())
+
+    def removeElement(self):
+        if isinstance(self.element, Parameter):
+            if not self.model.removeParameter(self.elementIndex):
+                QtGui.QMessageBox.warning(None, "Could not remove element",
+                                   "Other elements depend on this one.\nRemove them before trying to remove it.")
+        else:
+            if not self.model.removeAlgorithm(self.elementIndex):
+                QtGui.QMessageBox.warning(None, "Could not remove element",
+                                   "Other elements depend on this one.\nRemove them before trying to remove it.")
 
     def getAdjustedText(self, text):
         return text
