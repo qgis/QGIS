@@ -63,13 +63,19 @@ class Dialog(QDialog, Ui_Dialog):
         self.inRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
         crs = tempLayer.dataProvider().crs()
-        self.inRef.insert(crs.authid() + " - " +  crs.description())
+        if crs.isValid():
+          self.inRef.insert(crs.authid() + " - " +  crs.description())
+        else:
+          self.inRef.insert( self.tr( "Unknown CRS" ) )
 
     def updateProj2(self, layerName):
         self.outRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
         crs = tempLayer.dataProvider().crs()
-        self.outRef.insert(crs.authid() + " - " +  crs.description())
+        if crs.isValid():
+          self.outRef.insert(crs.authid() + " - " +  crs.description())
+        else:
+          self.outRef.insert( self.tr( "Unknown CRS" ) )
 
     def accept(self):
         self.buttonOk.setEnabled( False )
@@ -90,8 +96,9 @@ class Dialog(QDialog, Ui_Dialog):
             else:
                 srsDefine = QgsCoordinateReferenceSystem()
                 if self.rdoProjection.isChecked():
-                    outProj = self.txtProjection.text()
-                    srsDefine.createFromProj4(outProj)
+                    outProj = self.txtProjection.text().split( " - " )[ 0 ]
+                    #srsDefine.createFromProj4(outProj)
+                    srsDefine.createFromString(outProj)
                 else:
                     destLayer = ftools_utils.getVectorLayerByName(self.cmbLayer.currentText())
                     srsDefine = destLayer.crs()
