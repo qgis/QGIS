@@ -143,6 +143,10 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
     {
       mLayerType = LINE;
     }
+    else if ( mGrassType == GV_FACE )
+    {
+      mLayerType = FACE;
+    }
     else if ( mGrassType == GV_AREA )
     {
       mLayerType = POLYGON;
@@ -175,6 +179,7 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
       mQgisType = QGis::WKBLineString;
       break;
     case POLYGON:
+    case FACE:
       mQgisType = QGis::WKBPolygon;
       break;
   }
@@ -347,7 +352,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
   feature.clearAttributeMap();
 
   // TODO int may be 64 bits (memcpy)
-  if ( type & ( GV_POINTS | GV_LINES ) ) /* points or lines */
+  if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) ) /* points or lines */
   {
     Vect_read_line( mMap, mPoints, mCats, id );
     int npoints = mPoints->n_points;
@@ -356,9 +361,13 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
     {
       wkbsize = 1 + 4 + 2 * 8;
     }
-    else   // GV_LINES
+    else if ( type & GV_LINES )
     {
       wkbsize = 1 + 4 + 4 + npoints * 2 * 8;
+    }
+    else // GV_FACE
+    {
+      wkbsize = 1 + 4 + 4 + 4 + npoints * 2 * 8;
     }
     wkb = new unsigned char[wkbsize];
     unsigned char *wkbp = wkb;
@@ -369,9 +378,18 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
     memcpy( wkbp, &mQgisType, 4 );
     wkbp += 4;
 
-    /* number of points */
-    if ( type & GV_LINES )
+    /* Number of rings */
+    if ( type & GV_FACE )
     {
+      int nrings = 1;
+      memcpy( wkbp, &nrings, 4 );
+      wkbp += 4;
+    }
+
+    /* number of points */
+    if ( type & ( GV_LINES | GV_FACE ) )
+    {
+      QgsDebugMsg( QString( "set npoints = %1" ).arg( npoints ) );
       memcpy( wkbp, &npoints, 4 );
       wkbp += 4;
     }
@@ -494,7 +512,7 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
     box.N = rect.yMaximum(); box.S = rect.yMinimum();
     box.E = rect.xMaximum(); box.W = rect.xMinimum();
     box.T = PORT_DOUBLE_MAX; box.B = -PORT_DOUBLE_MAX;
-    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == BOUNDARY )
+    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == FACE || mLayerType == BOUNDARY )
     {
       Vect_select_lines_by_box( mMap, &box, mGrassType, mList );
     }
@@ -519,7 +537,7 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
     Vect_append_point( Polygon, rect.xMinimum(), rect.yMaximum(), 0 );
     Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), 0 );
 
-    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == BOUNDARY )
+    if ( mLayerType == POINT || mLayerType == CENTROID || mLayerType == LINE || mLayerType == FACE || mLayerType == BOUNDARY )
     {
       Vect_select_lines_by_polygon( mMap, Polygon, 0, NULL, mGrassType, mList );
     }
@@ -1385,6 +1403,10 @@ int QgsGrassProvider::grassLayerType( QString name )
   else if ( ts.compare( "line" ) == 0 )
   {
     return GV_LINES;
+  }
+  else if ( ts.compare( "face" ) == 0 )
+  {
+    return GV_FACE;
   }
   else if ( ts.compare( "polygon" ) == 0 )
   {
@@ -2314,7 +2336,7 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   {
     int t, id;
     int ret = Vect_cidx_find_next( mMap, fieldIndex, cat,
-                                   GV_POINTS | GV_LINES, 0, &t, &id );
+                                   GV_POINTS | GV_LINES | GV_FACE, 0, &t, &id );
 
     if ( ret >= 0 )
     {
