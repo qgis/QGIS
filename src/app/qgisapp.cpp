@@ -2287,11 +2287,14 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 // present a dialog to choose GDAL raster sublayers
 void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 {
-  if ( !layer || layer->subLayers().size() < 1 )
+  if ( !layer )
     return;
 
   QStringList sublayers = layer->subLayers();
-  QgsDebugMsg( "sublayers:\n  " + sublayers.join( "  \n" ) + "\n" );
+  QgsDebugMsg( QString( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
+
+  if ( sublayers.size() < 1 )
+    return;
 
   // if promptLayers=Load all, load all sublayers without prompting
   QSettings settings;
@@ -2355,6 +2358,7 @@ void QgisApp::loadGDALSublayers( QString uri, QStringList list )
       else
         delete subLayer;
     }
+
   }
 }
 
@@ -6728,6 +6732,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(
   // draw the map
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
+
   return layer;
 
 // Let render() do its own cursor management
@@ -6773,7 +6778,8 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       QFileInfo myFileInfo( *myIterator );
       // get the directory the .adf file was in
       QString myDirNameQString = myFileInfo.path();
-      QString myBaseNameQString = myFileInfo.completeBaseName();
+      //extract basename with extension
+      QString myBaseNameQString = myFileInfo.completeBaseName() + "." + myFileInfo.suffix();
       //only allow one copy of a ai grid file to be loaded at a
       //time to prevent the user selecting all adfs in 1 dir which
       //actually represent 1 coverage,
