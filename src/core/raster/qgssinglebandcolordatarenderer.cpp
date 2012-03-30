@@ -17,6 +17,8 @@
 
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgsrasterviewport.h"
+#include <QDomDocument>
+#include <QDomElement>
 #include <QImage>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band ):
@@ -90,5 +92,13 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
 
 void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
-  //soon...
+  if ( parentElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  _writeXML( doc, rasterRendererElem );
+  rasterRendererElem.setAttribute( "band", mBand );
+  parentElem.appendChild( rasterRendererElem );
 }
