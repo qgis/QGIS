@@ -66,7 +66,7 @@ class Dialog(QDialog, Ui_Dialog):
         if crs.isValid():
           self.inRef.insert(crs.authid() + " - " +  crs.description())
         else:
-          self.inRef.insert( self.tr( "Unknown CRS" ) )
+          self.inRef.insert( self.tr( "Missing or invalid CRS" ) )
 
     def updateProj2(self, layerName):
         self.outRef.clear()
@@ -75,7 +75,7 @@ class Dialog(QDialog, Ui_Dialog):
         if crs.isValid():
           self.outRef.insert(crs.authid() + " - " +  crs.description())
         else:
-          self.outRef.insert( self.tr( "Unknown CRS" ) )
+          self.outRef.insert( self.tr( "Missing or invalid CRS" ) )
 
     def accept(self):
         self.buttonOk.setEnabled( False )
