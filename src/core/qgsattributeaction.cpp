@@ -106,7 +106,15 @@ void QgsAttributeAction::doAction( int index, QgsFeature &feat,
 
 void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePython )( const QString & ) )
 {
-  if ( action.type() == QgsAction::GenericPython )
+  if ( action.type() == QgsAction::OpenUrl )
+  {
+    QFileInfo finfo( action.action() );
+    if ( finfo.exists() && finfo.isFile() )
+      QDesktopServices::openUrl( QUrl::fromLocalFile( action.action() ) );
+    else
+      QDesktopServices::openUrl( QUrl( action.action(), QUrl::TolerantMode ) );
+  }
+  else if ( action.type() == QgsAction::GenericPython )
   {
     if ( executePython )
     {
