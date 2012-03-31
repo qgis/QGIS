@@ -374,7 +374,10 @@
         <file>themes/gis/mIconMssql.png</file>
         <file>themes/gis/mIconConnect.png</file>
         <file>themes/gis/mIconDbSchema.png</file>
+        <file>themes/gis/mActionTouch.png</file>
         <file>themes/default/mActionAddMssqlLayer.png</file>
+        <file>themes/default/mActionTouch.png</file>
+        <file>themes/classic/mActionTouch.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

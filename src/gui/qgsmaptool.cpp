@@ -141,6 +141,13 @@ void QgsMapTool::keyReleaseEvent( QKeyEvent *e )
   Q_UNUSED( e );
 }
 
+#ifdef HAVE_TOUCH
+bool QgsMapTool::gestureEvent( QGestureEvent *e )
+{
+  Q_UNUSED( e );
+}
+#endif
+
 void QgsMapTool::renderComplete()
 {
 }

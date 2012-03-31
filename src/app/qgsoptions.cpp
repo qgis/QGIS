@@ -301,7 +301,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
   //Changed to default to true as of QGIS 1.7
-  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", true ).toBool() );
+  //TODO: remove hack when http://hub.qgis.org/issues/5170 is fixed
+#ifdef ANDROID
+  bool use_symbology_ng_default = false;
+#else
+  bool use_symbology_ng_default = true;
+#endif
+  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
