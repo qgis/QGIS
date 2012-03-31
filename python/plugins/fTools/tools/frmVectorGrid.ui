@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>438</width>
-    <height>459</height>
+    <width>489</width>
+    <height>475</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
       <item row="0" column="0" colspan="2">
        <widget class="QComboBox" name="inShape"/>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QToolButton" name="btnUpdate">
         <property name="minimumSize">
          <size>
@@ -42,7 +42,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="2" column="1">
        <widget class="QToolButton" name="btnCanvas">
         <property name="minimumSize">
          <size>
@@ -55,7 +55,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <layout class="QHBoxLayout">
         <item>
          <widget class="QLabel" name="label">
@@ -82,7 +82,7 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <layout class="QHBoxLayout">
         <item>
          <widget class="QLabel" name="label_4">
@@ -109,7 +109,7 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <layout class="QHBoxLayout">
         <item>
          <widget class="QLabel" name="label_3">
@@ -136,7 +136,7 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="1">
+      <item row="4" column="1">
        <layout class="QHBoxLayout">
         <item>
          <widget class="QLabel" name="label_5">
@@ -163,6 +163,13 @@
         </item>
        </layout>
       </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkAlign">
+        <property name="text">
+         <string>Align extents and resolution to selected raster layer</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -186,7 +193,7 @@
        </spacer>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="lblX">
         <property name="text">
          <string>X</string>
         </property>
@@ -245,7 +252,7 @@
        </spacer>
       </item>
       <item row="1" column="1">
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="lblY">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -279,7 +286,7 @@
          <string>Output grid as polygons</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -287,6 +294,9 @@
        <widget class="QRadioButton" name="rdoLines">
         <property name="text">
          <string>Output grid as lines</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -385,7 +395,7 @@
   </connection>
   <connection>
    <sender>chkLock</sender>
-   <signal>clicked(bool)</signal>
+   <signal>toggled(bool)</signal>
    <receiver>spnY</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
@@ -402,7 +412,7 @@
   <connection>
    <sender>chkLock</sender>
    <signal>toggled(bool)</signal>
-   <receiver>label_8</receiver>
+   <receiver>lblY</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
