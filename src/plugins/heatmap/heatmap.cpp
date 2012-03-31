@@ -315,8 +315,8 @@ float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
 void Heatmap::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginRasterMenu( tr( "&Heatmap" ), mQActionPointer );
-  mQGisIface->removeRasterToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginMenu( tr( "&Heatmap" ), mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
