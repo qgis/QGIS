@@ -75,6 +75,7 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 
 #if defined(linux) && ! defined(ANDROID)
+#include <unistd.h>
 #include <execinfo.h>
 #endif
 

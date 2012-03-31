@@ -94,10 +94,10 @@ void QgsLeastSquares::helmert( std::vector<QgsPoint> mapCoords,
      that this is correct but I derived it myself late at night. Look at
      helmert.jpg if you suspect bugs. */
 
-  double MData[] = { A,   -B,    n,    0,
-                     B,    A,    0,    n,
-                     G + H,  0,    A,    B,
-                     0,    G + H, -B,    A
+  double MData[] = { A,   -B, ( double ) n,    0.,
+                     B,    A,    0., ( double ) n,
+                     G + H,  0.,    A,    B,
+                     0.,    G + H, -B,    A
                    };
 
   double bData[] = { C,    D,    E + F,  J - I };
@@ -151,8 +151,8 @@ void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
      I *think* that this is correct but I derived it myself late at night.
      Look at affine.jpg if you suspect bugs. */
 
-  double MData[] = { A,    B,    0,    0,    n,    0,
-                     0,    0,    A,    B,    0,    n,
+  double MData[] = { A,    B,    0,    0, ( double ) n,    0,
+                     0,    0,    A,    B,    0, ( double ) n,
                      E,    G,    0,    0,    A,    0,
                      G,    F,    0,    0,    B,    0,
                      0,    0,    E,    G,    0,    A,
