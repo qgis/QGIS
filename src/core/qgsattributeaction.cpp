@@ -128,7 +128,7 @@ void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePyth
     }
     else
     {
-      // TODO: capture output from QgsPythonRunner
+      // TODO: capture output from QgsPythonRunner (like QgsRunProcess does)
       QgsPythonRunner::run( action.action() );
     }
   }
