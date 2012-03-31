@@ -30,6 +30,10 @@
 #include <QGraphicsView>
 #include <QtCore>
 
+#ifdef HAVE_TOUCH
+#include <QGestureEvent>
+#endif
+
 class QWheelEvent;
 class QPixmap;
 class QPaintEvent;
@@ -357,6 +361,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomNextStatusChanged( bool );
 
   protected:
+#ifdef HAVE_TOUCH
+    //! Overridden standard event to be gestures aware
+    bool event( QEvent * e );
+#endif
+
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e );
 

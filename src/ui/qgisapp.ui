@@ -311,6 +311,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionTouch"/>
    <addaction name="mActionPan"/>
    <addaction name="mActionPanToSelected"/>
    <addaction name="mActionZoomIn"/>
@@ -1618,6 +1619,21 @@
    </property>
    <property name="toolTip">
     <string>Pan Map to Selection</string>
+   </property>
+  </action>
+  <action name="mActionTouch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionTouch.png</normaloff>:/images/themes/gis/mActionTouch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Touch zoom and pan</string>
+   </property>
+   <property name="toolTip">
+    <string>Touch zoom and pan</string>
    </property>
   </action>
   <action name="mActionOffsetCurve">
