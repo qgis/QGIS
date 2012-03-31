@@ -172,9 +172,9 @@ bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
   return res;
 }
 
-bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError )
+bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError, bool single )
 {
-  bool res = runStringUnsafe( command );
+  bool res = runStringUnsafe( command, single );
   if ( res )
     return true;
 

@@ -236,12 +236,18 @@
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="actionAction">
+         <widget class="QPlainTextEdit" name="actionAction">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="toolTip">
            <string>Enter the action command here</string>
           </property>
           <property name="whatsThis">
-           <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</string>
+           <string>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters within [% and %] will be evaluated as expression and replaced by its result. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</string>
           </property>
          </widget>
         </item>
@@ -380,14 +386,19 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>attributeActionTable</tabstop>
+  <tabstop>moveUpButton</tabstop>
+  <tabstop>moveDownButton</tabstop>
   <tabstop>removeButton</tabstop>
   <tabstop>actionType</tabstop>
+  <tabstop>captureCB</tabstop>
   <tabstop>actionName</tabstop>
   <tabstop>actionAction</tabstop>
   <tabstop>browseButton</tabstop>
-  <tabstop>captureCB</tabstop>
+  <tabstop>insertExpressionButton</tabstop>
   <tabstop>fieldComboBox</tabstop>
   <tabstop>insertFieldButton</tabstop>
+  <tabstop>insertButton</tabstop>
+  <tabstop>updateButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

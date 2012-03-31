@@ -4838,7 +4838,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {
-        return mPythonUtils->runString( command, messageOnError );
+        return mPythonUtils->runString( command, messageOnError, false );
       }
       return false;
     }
