@@ -19,6 +19,8 @@
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
+#include <QDomDocument>
+#include <QDomElement>
 #include <QImage>
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader ):
@@ -148,5 +150,13 @@ void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* vie
 
 void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
-  //soon...
+  if ( parentElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  _writeXML( doc, rasterRendererElem );
+  rasterRendererElem.setAttribute( "band", mBand );
+  parentElem.appendChild( rasterRendererElem );
 }
