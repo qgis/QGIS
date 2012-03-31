@@ -21,10 +21,8 @@
 
 #include <QMap>
 #include <QObject>
-
+#include <QStringList>
 class QString;
-class QStringList;
-
 class QgsMapLayer;
 
 /** \ingroup core
@@ -59,20 +57,56 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
        As a side-effect QgsProject is made dirty.
 
        Emits signal that layer has been added only if theEmitSignal is true (by default).
-       Not emitting signal is useful when you want to use registry also for layers
-       which won't be used in main map canvas but will be used in a special one
+
+       Not emitting signal is useful when you want to use registry for layers
+       on a different canvas and don't want them added to the main canvas automatically.
+
+       @note This method is deprecated since QGIS 1.8, you should use addMapLayers rather.
     */
     QgsMapLayer *addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal = true );
 
+    /** Add a layer to the map of loaded layers
+       @returns QList<QgsMapLayer *> - a list of the map layers that were added
+       successfully. If a layer is invalid, or already exists in the registry,
+       it will not be part of the returned QList.
+       @note added in QGIS 1.8
+
+       As a side-effect QgsProject is made dirty.
+
+       If theEmitSignal is true (by default), a layersAdded( QList<QgsMapLayer *>)
+       signal will be emitted indicating that a batch of layers were added.
+       Not emitting signal is useful when you want to use registry for layers
+       on a different canvas and don't want them added to the main canvas automatically.
+    */
+    QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
+                                       bool theEmitSignal = true );
+
+
     /** Remove a layer from qgis
+       @note As a side-effect QgsProject is made dirty. Any canvases using that layer will need to remove it
+
+       If theEmitSignal is true (by default), a layerWillBeRemoved( QString theId )
+       signal will be emitted indicating to any listeners that the layer is being removed.
+
+       The layer being removed is deleted as well as the registry
+       table entry.
+       @note This method is deprecated since QGIS 1.8, you should use removeMapLayers rather.
+    */
+    void removeMapLayer( QString theLayerId, bool theEmitSignal = true );
+
+    /** Remove a set of layers from qgis
        @note
        As a side-effect QgsProject is made dirty.
-       Any canvases using that layer will need to remove it
-       theEmitSignal - see addMapLayer()
+       Any canvases using the affected layers will need to remove them
+
+       If theEmitSignal is true (by default), a layersRemoved( QStringList theLayerIds )
+       signal will be emitted indicating to any listeners that the layers are being removed.
+
        The layer being removed is deleted as well as the registry
        table entry.
     */
-    void removeMapLayer( QString theLayerId, bool theEmitSignal = true );
+    void removeMapLayers( QStringList theLayerIds, bool theEmitSignal = true );
+
 
     /** Remove all registered layers
        @note raises removedAll()
@@ -95,13 +129,24 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
   signals:
 
+    /** Emitted when one or more layers are removed from the registry
+       @note intended to replace layerWillBeRemoved in QGIS 1.8
+    */
+    void layersWillBeRemoved( QStringList theLayerIds );
+
     /** emitted when a layer is removed from the registry
        connected to main map canvas and overview map canvas remove()
+       @note Deprecated in 1.8 - see layersWillBeRemoved
     */
     void layerWillBeRemoved( QString theLayerId );
 
+    /** Emitted when one or more layers are added to the registry
+       @note intended to replace layerWasAdded in QGIS 1.8
+    */
+    void layersAdded( QList<QgsMapLayer *> theMapLayers );
     /** emitted when a layer is added to the registry
        connected to main map canvas and overview map canvas addLayer()
+       @note Deprecated in 1.8 - see layersAdded
     */
     void layerWasAdded( QgsMapLayer * theMapLayer );
 
