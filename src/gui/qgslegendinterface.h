@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QPair>
 #include <QStringList>
+#include <QModelIndex>
 
 class QgsMapLayer;
 class QTreeWidgetItem;
@@ -74,8 +75,18 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     virtual bool isLayerVisible( QgsMapLayer * ml ) = 0;
 
   signals:
+
     //! emitted when a group index has changed
     void groupIndexChanged( int oldIndex, int newIndex );
+
+    /* //! emitted when group relations have changed */
+    void groupRelationsChanged( );
+
+    /* //! emitted when an item (group/layer) is added */
+    void itemAdded( QModelIndex index );
+
+    /* //! emitted when an item (group/layer) is removed */
+    void itemRemoved( );
 
   public slots:
 
