@@ -111,6 +111,8 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param unlocatedFeatureIds out: ids of event features where linear referencing was not successful
       @param locationField1 attribute index of location field in event layer
       @param locationField2 attribute index of location end field (or -1 for point layer)
+      @param offsetField attribute index for offset field
+      @param offsetScale factor to scale offset
       @param forceSingleGeometry force layer to single point/line type. Feature attributes are copied in case of multiple matches
       @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
       @param p progress dialog or 0 if no progress dialog should be shown
@@ -146,8 +148,8 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                                bool forceSingleType = false );
     /**Create geometry offset relative to line geometry.
         @param geom the geometry to modify
-        @param the line geometry to wich the feature is referenced
-        @param offset the offset value in layer unit. Negativ value means offset towards left, positive value is offset to the right side*/
+        @param lineGeom the line geometry to which the feature is referenced
+        @param offset the offset value in layer unit. Negative values mean offset towards left, positive values offset to the right side*/
     void createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
     QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;
     unsigned char* locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );

@@ -303,6 +303,7 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
                     ? ( orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
                     : ( orientation == OAO_North || orientation == OAO_South );
     QgsDebugMsg( QString( "srid:%1 axis0:%2 orientation:%3 inverted:%4" ).arg( mSRID ).arg( axis0 ).arg( OSRAxisEnumToName( orientation ) ).arg( mAxisInverted ) );
+    Q_UNUSED( axis0 );
   }
 
   return mAxisInverted != 0;

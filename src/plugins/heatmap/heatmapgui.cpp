@@ -216,6 +216,7 @@ void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
 
 void HeatmapGui::on_radiusFieldCombo_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   updateBBox();
   QgsDebugMsg( QString( "Radius Field index changed to %1" ).arg( index ) );
 }
