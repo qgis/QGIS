@@ -910,7 +910,8 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
 }
 
 bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
-                                      const QString& outputFormat, int locationField1, int locationField2, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
+                                      const QString& outputFormat, int locationField1, int locationField2, int offsetField, double offsetScale,
+                                      bool forceSingleGeometry, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
 {
   if ( !lineLayer || !eventLayer || !lineLayer->isValid() || !eventLayer->isValid() )
   {
@@ -932,10 +933,19 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   QgsFeatureList memoryProviderFeatures;
   if ( !memoryProvider )
   {
+    QGis::WkbType memoryProviderType = QGis::WKBMultiLineString;
+    if ( locationField2 == -1 )
+    {
+      memoryProviderType = forceSingleGeometry ? QGis::WKBPoint : QGis::WKBMultiPoint;
+    }
+    else
+    {
+      memoryProviderType = forceSingleGeometry ? QGis::WKBLineString : QGis::WKBMultiLineString;
+    }
     fileWriter = new QgsVectorFileWriter( outputLayer,
                                           eventLayer->dataProvider()->encoding(),
                                           eventLayer->pendingFields(),
-                                          locationField2 == -1 ? QGis::WKBMultiPoint : QGis::WKBMultiLineString,
+                                          memoryProviderType,
                                           &( lineLayer->crs() ),
                                           outputFormat );
   }
@@ -1003,15 +1013,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
       if ( lrsGeom )
       {
         ++nOutputFeatures;
-        fet.setGeometry( lrsGeom );
-        if ( memoryProvider )
-        {
-          memoryProviderFeatures << fet;
-        }
-        else if ( fileWriter )
-        {
-          fileWriter->addFeature( fet );
-        }
+        addEventLayerFeature( fet, lrsGeom, lineFeature.geometry(), fileWriter, memoryProviderFeatures, offsetField, offsetScale, forceSingleGeometry );
       }
     }
     if ( nOutputFeatures < 1 )
@@ -1031,6 +1033,225 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
   delete fileWriter;
   return true;
+}
+
+void QgsGeometryAnalyzer::addEventLayerFeature( QgsFeature& feature, QgsGeometry* geom, QgsGeometry* lineGeom, QgsVectorFileWriter* fileWriter, QgsFeatureList& memoryFeatures,
+    int offsetField, double offsetScale, bool forceSingleType )
+{
+  if ( !geom )
+  {
+    return;
+  }
+
+  QList<QgsGeometry*> geomList;
+  if ( forceSingleType )
+  {
+    geomList = geom->asGeometryCollection();
+  }
+  else
+  {
+    geomList.push_back( geom );
+  }
+
+  QList<QgsGeometry*>::iterator geomIt = geomList.begin();
+  for ( ; geomIt != geomList.end(); ++geomIt )
+  {
+    //consider offset
+    if ( offsetField >= 0 )
+    {
+      double offsetVal = feature.attributeMap()[offsetField].toDouble();
+      offsetVal *= offsetScale;
+      createOffsetGeometry( *geomIt, lineGeom, offsetVal );
+    }
+
+    feature.setGeometry( *geomIt );
+    if ( fileWriter )
+    {
+      fileWriter->addFeature( feature );
+    }
+    else
+    {
+      memoryFeatures << feature;
+    }
+  }
+
+  if ( forceSingleType )
+  {
+    delete geom;
+  }
+}
+
+void QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset )
+{
+  if( !geom || !lineGeom )
+  {
+    return;
+  }
+
+  QList<QgsGeometry*> inputGeomList;
+
+  if( geom->isMultipart() )
+  {
+    inputGeomList = geom->asGeometryCollection();
+  }
+  else
+  {
+    inputGeomList.push_back( geom );
+  }
+
+  QList<GEOSGeometry*> outputGeomList;
+  QList<QgsGeometry*>::const_iterator inputGeomIt = inputGeomList.constBegin();
+  for(; inputGeomIt != inputGeomList.constEnd(); ++inputGeomIt )
+  {
+    if( geom->type() == QGis::Line )
+    {
+      //geos 3.3 needed for line offsets
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+      ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+      outputGeomList.push_back( GEOSOffsetCurve( (*inputGeomIt)->asGeos(), offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ ) );
+#else
+      outputGeomList.push_back( 0 );
+#endif
+    }
+    else if( geom->type() == QGis::Point )
+    {
+      QgsPoint p = (*inputGeomIt)->asPoint();
+      p = createPointOffset( p.x(), p.y(), offset, lineGeom );
+      GEOSCoordSequence* ptSeq = GEOSCoordSeq_create( 1, 2 );
+      GEOSCoordSeq_setX( ptSeq, 0, p.x() );
+      GEOSCoordSeq_setY( ptSeq, 0, p.y() );
+      GEOSGeometry* geosPt = GEOSGeom_createPoint( ptSeq );
+      outputGeomList.push_back( geosPt );
+    }
+  }
+
+  if( !geom->isMultipart() )
+  {
+    GEOSGeometry* outputGeom = outputGeomList.at( 0 );
+    if( outputGeom )
+    {
+      geom->fromGeos( outputGeom );
+    }
+  }
+  else
+  {
+    GEOSGeometry** geomArray = new GEOSGeometry*[outputGeomList.size()];
+    for( int i = 0; i < outputGeomList.size(); ++i )
+    {
+      geomArray[i] = outputGeomList.at( i );
+    }
+    GEOSGeometry* collection = 0;
+    if( geom->type() == QGis::Point )
+    {
+      collection = GEOSGeom_createCollection( GEOS_MULTIPOINT, geomArray, outputGeomList.size() );
+    }
+    else if( geom->type() == QGis::Line )
+    {
+      collection = GEOSGeom_createCollection( GEOS_MULTILINESTRING, geomArray, outputGeomList.size() );
+    }
+    geom->fromGeos( collection );
+    delete[] geomArray;
+  }
+}
+
+#if 0
+  if( geom->type() == QGis::Line )
+  {
+    QList<GEOSGeometry*> outputGeomList;
+    QList<QgsGeometry*>::const_iterator inputGeomIt = inputGeomList.constBegin();
+    for(; inputGeomIt != inputGeomList.constEnd(); ++inputGeomIt )
+    {
+      //geos 3.3 needed for line offsets
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+      ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+      outputGeomList.push_back( GEOSOffsetCurve( (*inputGeomIt)->asGeos(), offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ ) );
+#else
+      outputGeomList.push_back( 0 );
+#endif
+    }
+
+    if( !geom->isMultipart() )
+    {
+      GEOSGeometry* outputGeom = outputGeomList.at( 0 );
+      if( outputGeom )
+      {
+        geom->fromGeos( outputGeom );
+      }
+    }
+    else
+    {
+      GEOSGeometry** geomArray = new GEOSGeometry*[outputGeomList.size()];
+      for( int i = 0; i < outputGeomList.size(); ++i )
+      {
+        geomArray[i] = outputGeomList.at( i );
+      }
+      GEOSGeometry* collection = GEOSGeom_createCollection( GEOS_MULTILINESTRING, geomArray, outputGeomList.size() );
+      geom->fromGeos( collection );
+      delete[] geomArray;
+    }
+  }
+  else if( geom->type() == QGis::Point )
+  {
+    QList<GEOSGeometry*> outputGeomList;
+    QList<QgsGeometry*>::const_iterator inputGeomIt = inputGeomList.constBegin();
+    for(; inputGeomIt != inputGeomList.constEnd(); ++inputGeomIt )
+    {
+      QgsPoint p = (*inputGeomIt)->asPoint();
+      p = createPointOffset( p.x(), p.y(), offset, lineGeom );
+      GEOSCoordSequence* ptSeq = GEOSCoordSeq_create( 1, 2 );
+      GEOSCoordSeq_setX( ptSeq, 0, p.x() );
+      GEOSCoordSeq_setY( ptSeq, 0, p.y() );
+      GEOSGeometry* geosPt = GEOSGeom_createPoint( ptSeq );
+      outputGeomList.push_back( geosPt );
+      //geom->fromGeos( geosPt );
+    }
+
+    if( !geom->isMultipart() )
+    {
+      GEOSGeometry* outputGeom = outputGeomList.at( 0 );
+      if( outputGeom )
+      {
+        geom->fromGeos( outputGeom );
+      }
+    }
+    else
+    {
+      GEOSGeometry** geomArray = new GEOSGeometry*[outputGeomList.size()];
+      for( int i = 0; i < outputGeomList.size(); ++i )
+      {
+        geomArray[i] = outputGeomList.at( i );
+      }
+      GEOSGeometry* collection = GEOSGeom_createCollection( GEOS_MULTIPOINT, geomArray, outputGeomList.size() );
+      geom->fromGeos( collection );
+      delete[] geomArray;
+    }
+  }
+}
+#endif //0
+
+QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const
+{
+  QgsPoint p( x, y );
+  QgsPoint minDistPoint;
+  int beforeVertexNr;
+  lineGeom->closestSegmentWithContext( p, minDistPoint, beforeVertexNr );
+
+  int afterVertexNr = beforeVertexNr + 1;
+  QgsPoint beforeVertex = lineGeom->vertexAt( beforeVertexNr );
+  QgsPoint afterVertex = lineGeom->vertexAt( afterVertexNr );
+
+  //get normal vector
+  double dx = afterVertex.x() - beforeVertex.x();
+  double dy = afterVertex.y() - beforeVertex.y();
+  double normalX = -dy;
+  double normalY = dx;
+  double normalLength = sqrt( normalX * normalX + normalY * normalY );
+  normalX *= ( dist / normalLength );
+  normalY *= ( dist / normalLength );
+
+  double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control
+
+  return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side
 }
 
 QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom )
