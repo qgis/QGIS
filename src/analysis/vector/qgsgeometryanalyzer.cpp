@@ -1175,7 +1175,7 @@ QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist
   normalY *= ( dist / normalLength );
 
   double debugLength = sqrt( normalX * normalX + normalY * normalY ); //control
-
+  Q_UNUSED( debugLength );
   return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side
 }
 
