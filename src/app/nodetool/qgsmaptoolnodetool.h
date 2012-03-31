@@ -57,6 +57,10 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      */
     QgsPoint closestVertex( QgsPoint point );
 
+    QgsSelectedFeature* selectedFeature();
+
+    QgsFeatureId featureId();
+
   public slots:
     void selectedFeatureDestroyed();
 

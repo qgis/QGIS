@@ -24,6 +24,9 @@
 %Include qgsmaptoolemitpoint.sip
 %Include qgsmaptoolpan.sip
 %Include qgsmaptoolzoom.sip
+%Include qgsmaptooledit.sip
+%Include qgsmaptoolvertexedit.sip
+%Include qgsmaptoolnodetool.sip
 %Include qgsmapoverviewcanvas.sip
 %Include qgsmessageviewer.sip
 %Include qgsprojectbadlayerguihandler.sip
