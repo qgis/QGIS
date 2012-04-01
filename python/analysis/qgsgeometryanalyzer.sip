@@ -46,7 +46,8 @@ class QgsGeometryAnalyzer
                    bool onlySelectedFeatures = false,
                      int uniqueIdField = -1 );
 
-    /**Creates an event layer (multipoint or multiline). Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
+    /**Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
+        Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
       @param lineLayer layer with the line geometry
       @param eventLayer layer with features and location field
       @param lineField join index in line layer
@@ -56,6 +57,9 @@ class QgsGeometryAnalyzer
       @param unlocatedFeatureIds out: ids of event features where linear referencing was not successful
       @param locationField1 attribute index of location field in event layer
       @param locationField2 attribute index of location end field (or -1 for point layer)
+      @param offsetField attribute index for offset field. Negative offset value = offset to left side, positive value = offset to right side
+      @param offsetScale factor to scale offset
+      @param forceSingleGeometry force layer to single point/line type. Feature attributes are copied in case of multiple matches
       @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
       @param p progress dialog or 0 if no progress dialog should be shown
     */

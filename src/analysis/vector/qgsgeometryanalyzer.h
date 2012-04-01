@@ -111,7 +111,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param unlocatedFeatureIds out: ids of event features where linear referencing was not successful
       @param locationField1 attribute index of location field in event layer
       @param locationField2 attribute index of location end field (or -1 for point layer)
-      @param offsetField attribute index for offset field
+      @param offsetField attribute index for offset field. Negative offset value = offset to left side, positive value = offset to right side
       @param offsetScale factor to scale offset
       @param forceSingleGeometry force layer to single point/line type. Feature attributes are copied in case of multiple matches
       @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
