@@ -171,7 +171,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual uint fieldCount() const;
 
     /** update the extent, feature count, wkb type and srid for this layer */
-    void UpdateStatistics();
+    void UpdateStatistics( bool estimate );
 
     /**
      * Return a map of indexes with field names for this layer
@@ -302,6 +302,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     bool mValid;
 
     bool mUseWkb;
+    bool mUseEstimatedMetadata;
     bool mSkipFailures;
 
     int mGeomType;
