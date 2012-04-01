@@ -1,18 +1,3 @@
-qgis (1.9.90) UNRELEASED; urgency=low
-
-  * new development version 1.9.90 after branch of 1.8.0
-  * include function help in package
-  * include heatmap plugin
-  * drop extra include path for QtWebkit on oneiric and natty
-  * add translations for desktop link
-  * add browser desktop entry
-  * add support for Debian wheezy and Ubuntu precise
-  * build package with internal libspatialite where libspatialite not available
-  * drop support for Ubuntu hardy, intrepid, jaunty and karmic
-  * add mssqlprovider plugin
-
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Mar 2012 20:47:06 +0100
-
 qgis (1.8.0) UNRELEASED; urgency=low
 
   * new development version 1.8 after branch
@@ -26,8 +11,18 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * include network analysis library
   * build package with libspatialindex where available
   * drop wfsplugin & displaceplugin
+  * include function help in package
+  * include heatmap plugin
+  * drop extra include path for QtWebkit on oneiric and natty
+  * add translations for desktop link
+  * add browser desktop entry
+  * add support for Debian wheezy and Ubuntu precise
+  * build package with internal libspatialite where libspatialite not available
+  * drop support for Ubuntu hardy, intrepid, jaunty and karmic
+  * add mssqlprovider plugin
+  * copyright & policy update (synced from debiangis)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 28 Oct 2011 08:52:45 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 01 Apr 2012 17:20:03 +0200
 
 qgis (1.7.0) UNRELEASED; urgency=low
 
