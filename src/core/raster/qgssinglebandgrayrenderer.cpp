@@ -32,7 +32,7 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
-QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem )
+QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
   return 0;
 }

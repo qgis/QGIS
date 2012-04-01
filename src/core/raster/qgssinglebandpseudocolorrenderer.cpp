@@ -39,7 +39,7 @@ void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
   mShader = shader;
 }
 
-QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem )
+QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
   return 0;
 }
@@ -158,7 +158,7 @@ void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement&
   QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
   _writeXML( doc, rasterRendererElem );
   rasterRendererElem.setAttribute( "band", mBand );
-  if( mShader )
+  if ( mShader )
   {
     mShader->writeXML( doc, rasterRendererElem ); //todo: include color ramp items directly in this renderer
   }

@@ -34,9 +34,36 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
   delete[] mColors;
 }
 
-QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem )
+QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
-  return 0;
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
+
+  int bandNumber = elem.attribute( "band", "-1" ).toInt();
+  int nColors;
+  QColor* colors;
+
+  QDomElement paletteElem = elem.firstChildElement( "colorPalette" );
+  if ( !paletteElem.isNull() )
+  {
+    QDomNodeList paletteEntries = paletteElem.elementsByTagName( "paletteEntry" );
+    nColors = paletteEntries.size();
+    colors = new QColor[ nColors ];
+
+    int value = 0;
+    QDomElement entryElem;
+    for ( int i = 0; i < nColors; ++i )
+    {
+      entryElem = paletteEntries.at( i ).toElement();
+      value = entryElem.attribute( "value", "0" ).toInt();
+      colors[value] = QColor( entryElem.attribute( "color", "#000000" ) );
+    }
+  }
+  QgsRasterRenderer* r = new QgsPalettedRasterRenderer( provider, bandNumber, colors, nColors );
+  r->readXML( elem );
+  return r;
 }
 
 QColor* QgsPalettedRasterRenderer::colors() const

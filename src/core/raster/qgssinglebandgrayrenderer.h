@@ -29,7 +29,7 @@ class QgsSingleBandGrayRenderer: public QgsRasterRenderer
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
 
-    static QgsRasterRenderer* create( const QDomElement& elem );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

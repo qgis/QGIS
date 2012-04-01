@@ -29,7 +29,7 @@ class QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber, QColor* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
-    static QgsRasterRenderer* create( const QDomElement& elem );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

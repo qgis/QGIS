@@ -31,7 +31,7 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
 }
 
-QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem )
+QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
   return 0;
 }

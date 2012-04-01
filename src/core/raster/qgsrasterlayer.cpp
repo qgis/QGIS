@@ -24,6 +24,7 @@ email                : tim at linfiniti.com
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
+#include "qgsrasterrendererregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
@@ -42,10 +43,6 @@ email                : tim at linfiniti.com
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
-
-//resamplers
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
 
 #include <cstdio>
 #include <cmath>
@@ -3180,6 +3177,21 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     mRasterTransparency.setTransparentThreeValuePixelList( newThreeValuePixelList );
   }
 
+  //raster renderer
+  delete mRenderer;
+  mRenderer = 0;
+  QDomElement rendererElem = layer_node.firstChildElement( "rasterrenderer" );
+  if ( !rendererElem.isNull() )
+  {
+    QString rendererType = rendererElem.attribute( "type" );
+    QgsRasterRendererRegistryEntry rendererEntry;
+    if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
+    {
+      mRenderer = rendererEntry.rendererCreateFunction( rendererElem, dataProvider() );
+    }
+  }
+
+#if 0
   /*
    * Color Ramp tab
    */
@@ -3269,6 +3281,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     }
     mRenderer->setZoomedOutResampler( zoomedOutResampler );
   }
+#endif //0
 
   return true;
 } //readSymbology

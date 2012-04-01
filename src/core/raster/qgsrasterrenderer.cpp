@@ -21,6 +21,11 @@
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
+
+//resamplers
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -334,9 +339,47 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
     rasterRendererElem.setAttribute( "zoomedOutResampler", mZoomedOutResampler->type() );
   }
 
-  //todo: write raster transparency
   if ( mRasterTransparency )
   {
     mRasterTransparency->writeXML( doc, rasterRendererElem );
+  }
+}
+
+void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
+{
+  if ( rendererElem.isNull() )
+  {
+    return;
+  }
+
+  mType = rendererElem.attribute( "type" );
+  mOpacity = rendererElem.attribute( "opacity", "1.0" ).toDouble();
+  mAlphaBand = rendererElem.attribute( "alphaBand", "-1" ).toInt();
+  mMaxOversampling = rendererElem.attribute( "maxOversampling", "2.0" ).toDouble();
+  mInvertColor = rendererElem.attribute( "invertColor", "0" ).toInt();
+
+  QString zoomedInResamplerType = rendererElem.attribute( "zoomedInResampler" );
+  if ( zoomedInResamplerType == "bilinear" )
+  {
+    mZoomedInResampler = new QgsBilinearRasterResampler();
+  }
+  else if ( zoomedInResamplerType == "cubic" )
+  {
+    mZoomedInResampler = new QgsCubicRasterResampler();
+  }
+
+  QString zoomedOutResamplerType = rendererElem.attribute( "zoomedOutResampler" );
+  if ( zoomedOutResamplerType == "bilinear" )
+  {
+    mZoomedOutResampler = new QgsBilinearRasterResampler();
+  }
+
+  //todo: read mRasterTransparency
+  QDomElement rasterTransparencyElem = rendererElem.firstChildElement( "rasterTransparency" );
+  if ( !rasterTransparencyElem.isNull() )
+  {
+    delete mRasterTransparency;
+    mRasterTransparency = new QgsRasterTransparency();
+    mRasterTransparency->readXML( rasterTransparencyElem );
   }
 }

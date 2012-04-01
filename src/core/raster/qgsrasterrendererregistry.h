@@ -27,7 +27,7 @@ class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
-typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement& );
+typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterDataProvider* provider );
 typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer* );
 
 struct QgsRasterRendererRegistryEntry

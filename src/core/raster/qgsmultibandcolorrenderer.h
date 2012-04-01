@@ -32,7 +32,7 @@ class QgsMultiBandColorRenderer: public QgsRasterRenderer
                                QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
 
-    static QgsRasterRenderer* create( const QDomElement& elem );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

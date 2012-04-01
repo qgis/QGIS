@@ -81,6 +81,8 @@ class CORE_EXPORT QgsRasterTransparency
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
+    void readXML( const QDomElement& elem );
+
   private:
     /** \brief The list to hold transparency values for RGB layers */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> mTransparentThreeValuePixelList;

@@ -217,3 +217,44 @@ void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem
   }
   parentElem.appendChild( rasterTransparencyElem );
 }
+
+void QgsRasterTransparency::readXML( const QDomElement& elem )
+{
+  if ( elem.isNull() )
+  {
+    return;
+  }
+
+  mTransparentSingleValuePixelList.clear();
+  mTransparentThreeValuePixelList.clear();
+  QDomElement currentEntryElem;
+
+  QDomElement singlePixelListElem = elem.firstChildElement( "singleValuePixelList" );
+  if ( !singlePixelListElem.isNull() )
+  {
+    QDomNodeList entryList = singlePixelListElem.elementsByTagName( "pixelListEntry" );
+    TransparentSingleValuePixel sp;
+    for ( int i = 0; i < entryList.size(); ++i )
+    {
+      currentEntryElem = entryList.at( i ).toElement();
+      sp.percentTransparent = currentEntryElem.attribute( "percentTransparent" ).toDouble();
+      sp.pixelValue = currentEntryElem.attribute( "pixelValue" ).toDouble();
+      mTransparentSingleValuePixelList.append( sp );
+    }
+  }
+  QDomElement threeValuePixelListElem = elem.firstChildElement( "threeValuePixelList" );
+  if ( !threeValuePixelListElem.isNull() )
+  {
+    QDomNodeList entryList = threeValuePixelListElem.elementsByTagName( "pixelListEntry" );
+    TransparentThreeValuePixel tp;
+    for ( int i = 0; i < entryList.size(); ++i )
+    {
+      currentEntryElem = entryList.at( i ).toElement();
+      tp.red = currentEntryElem.attribute( "red" ).toDouble();
+      tp.green = currentEntryElem.attribute( "green" ).toDouble();
+      tp.blue = currentEntryElem.attribute( "blue" ).toDouble();
+      tp.percentTransparent = currentEntryElem.attribute( "percentTransparent" ).toDouble();
+      mTransparentThreeValuePixelList.append( tp );
+    }
+  }
+}

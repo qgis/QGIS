@@ -78,6 +78,9 @@ class QgsRasterRenderer
 
     virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const = 0;
 
+    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
+    void readXML( const QDomElement& rendererElem );
+
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 

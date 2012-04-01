@@ -55,7 +55,7 @@ void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhanceme
   delete mBlueContrastEnhancement; mBlueContrastEnhancement = ce;
 }
 
-QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem )
+QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
   return 0;
 }
@@ -290,19 +290,19 @@ void QgsMultiBandColorRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   rasterRendererElem.setAttribute( "blueBand", mBlueBand );
 
   //contrast enhancement
-  if( mRedContrastEnhancement )
+  if ( mRedContrastEnhancement )
   {
     QDomElement redContrastElem = doc.createElement( "redContrastEnhancement" );
     mRedContrastEnhancement->writeXML( doc, redContrastElem );
     rasterRendererElem.appendChild( redContrastElem );
   }
-  if( mGreenContrastEnhancement )
+  if ( mGreenContrastEnhancement )
   {
     QDomElement greenContrastElem = doc.createElement( "greenContrastEnhancement" );
     mGreenContrastEnhancement->writeXML( doc, greenContrastElem );
     rasterRendererElem.appendChild( greenContrastElem );
   }
-  if( mBlueContrastEnhancement )
+  if ( mBlueContrastEnhancement )
   {
     QDomElement blueContrastElem = doc.createElement( "blueContrastEnhancement" );
     mBlueContrastEnhancement->writeXML( doc, blueContrastElem );

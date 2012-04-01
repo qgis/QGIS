@@ -30,7 +30,7 @@ class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
 
-    static QgsRasterRenderer* create( const QDomElement& elem );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

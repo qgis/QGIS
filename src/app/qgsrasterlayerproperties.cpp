@@ -319,6 +319,10 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     return;
   }
   const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
+  if ( !rasterTransparency )
+  {
+    return;
+  }
 
   //Clear existing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
