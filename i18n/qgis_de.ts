@@ -3545,22 +3545,22 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
         <translation>Erweiterte Optionen konnten nicht aktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="445"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="446"/>
         <source>Layer not found</source>
         <translation>Layer nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="445"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="446"/>
         <source>Layer %1 not found.</source>
         <translation>Layer %1 nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="407"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="408"/>
         <source>Invalid output filename</source>
         <translation>Ungültiger Ausgabedateiname</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="407"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="408"/>
         <source>Please enter a valid output file path and name.</source>
         <translation>Bitte geben Sie einen gültigen Dateiennamen an.</translation>
     </message>
@@ -6817,26 +6817,26 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Schätze Normalenableitungen...</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1257"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1258"/>
         <source>Could not open CRS database %1
 Error(%2): %3</source>
         <translation>Konnte KBS-Datenbank %1 nicht öffnen
 Fehler(%2): %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1260"/>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1363"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1261"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1364"/>
         <source>CRS</source>
         <translation>KBS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1320"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1321"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>Erzeugtes KBS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1363"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1364"/>
         <source>Saved user CRS [%1]</source>
         <translation>Benutzer-KBS gespeichert [%1]</translation>
     </message>
@@ -9289,27 +9289,27 @@ Benutzer-DB-Pfad:		%8
         <translation>Namen der Aktion hier eingeben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="241"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
         <source>Enter the action command here</source>
         <translation>Kommando für die Aktion hier eingeben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="346"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="352"/>
         <source>Inserts the action into the list above</source>
         <translation>Aktion in die obenstehende Liste einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="356"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="362"/>
         <source>Update the selected action</source>
         <translation>Gewählte Aktion aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="319"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="325"/>
         <source>Insert field</source>
         <translation>Attribut einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="303"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="309"/>
         <source>The valid attribute names for this layer</source>
         <translation>Die gültigen Attributnamen für diesen Layer</translation>
     </message>
@@ -9330,7 +9330,6 @@ Benutzer-DB-Pfad:		%8
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="226"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="244"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
         <translation>Geben Sie hier die Aktion ein. Dies kann jedes Programm, Skript oder Kommando sein, dass in Ihrem System verfügbar ist. Wenn die Aktion ausgeführt wird jeder durch % eingeleiteter Feldname durch den Feldwert ersetzt. Die besondere Zeichenfolge %% wird durch den Wert des gewählten Felds ersetzt. Mit Anführungszeichen können mehrere Wörter zu einem Argument der Aktion zusammengefasst werden. Für mit Backslash (\) eingeleitete Anführungszeichen gilt dies nicht</translation>
     </message>
@@ -9377,42 +9376,47 @@ Benutzer-DB-Pfad:		%8
         <translation>Öffnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="251"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
+        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters within [% and %] will be evaluated as expression and replaced by its result. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="257"/>
         <source>Browse for action</source>
         <translation>Aktionen durchsuchen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="254"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="260"/>
         <source>Click to browse for an action</source>
         <translation>Zum Aktionen durchsuchen anklicken</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="260"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="266"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="277"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="283"/>
         <source>Inserts an expression into the action</source>
         <translation>Ausdruck in die Aktion einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="280"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="286"/>
         <source>Insert expression...</source>
         <translation>Ausdruck einfügen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="316"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="322"/>
         <source>Inserts the selected field into the action</source>
         <translation>Fügt das gewählte Feld in die Aktion ein</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="349"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="355"/>
         <source>Add to action list</source>
         <translation>Zur Aktionsliste hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="359"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="365"/>
         <source>Update selected action</source>
         <translation>Gewählte Aktion ändern</translation>
     </message>
@@ -9444,7 +9448,7 @@ Benutzer-DB-Pfad:		%8
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="51"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="120"/>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="368"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="374"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
@@ -9459,7 +9463,7 @@ Benutzer-DB-Pfad:		%8
         <translation>Erfassen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="257"/>
+        <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="263"/>
         <source>Clicking the button will let you select an application to use as the action</source>
         <translation>Mit diesem Knopf kann man eine Anwendung für diese Aktion wählen</translation>
     </message>
