@@ -81,6 +81,8 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QString mUsername;
     QString mPassword;
     bool mUseGeometryColumns;
+    bool mUseEstimatedMetadata;
+    bool mAllowGeometrylessTables;
 };
 
 class QgsMssqlSchemaItem : public QgsDataCollectionItem

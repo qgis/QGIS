@@ -53,10 +53,14 @@ QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString nam
   }
 
   mUseGeometryColumns = settings.value( key + "/geometryColumns", false ).toBool();
+  mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
+  mAllowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", true ).toBool();
 
   mConnInfo =  "dbname='" + mDatabase + "' host=" + mHost + " user='" + mUsername + "' password='" + mPassword + "'";
   if ( !mService.isEmpty() )
     mConnInfo += " service='" + mService + "'";
+  if ( mUseEstimatedMetadata )
+    mConnInfo += " estimatedmetadata=true";
 }
 
 QgsMssqlConnectionItem::~QgsMssqlConnectionItem()
