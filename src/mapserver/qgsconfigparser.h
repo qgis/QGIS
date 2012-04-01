@@ -121,6 +121,9 @@ class QgsConfigParser
     QColor selectionColor() const { return mSelectionColor; }
     void setSelectionColor( const QColor& c ) { mSelectionColor = c; }
 
+    int maxWidth() const { return mMaxWidth; }
+    int maxHeight() const { return mMaxHeight; }
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;
@@ -159,6 +162,10 @@ class QgsConfigParser
     double mLegendSymbolHeight;
 
     QColor mSelectionColor;
+
+    //maximum width/height for the GetMap request. Disabled by default (-1)
+    int mMaxWidth;
+    int mMaxHeight;
 
     /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
     void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;

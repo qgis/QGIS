@@ -229,6 +229,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
 
+  //WMS maxWidth / maxHeight
+  mMaxWidthLineEdit->setValidator( new QIntValidator( mMaxWidthLineEdit ) );
+  int maxWidth = QgsProject::instance()->readNumEntry( "WMSMaxWidth", "/", -1 );
+  if ( maxWidth != -1 )
+  {
+    mMaxWidthLineEdit->setText( QString::number( maxWidth ) );
+  }
+  mMaxHeightLineEdit->setValidator( new QIntValidator( mMaxHeightLineEdit ) );
+  int maxHeight = QgsProject::instance()->readNumEntry( "WMSMaxHeight", "/", -1 );
+  if ( maxHeight != -1 )
+  {
+    mMaxHeightLineEdit->setText( QString::number( maxHeight ) );
+  }
+
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
 
   twWFSLayers->setColumnCount( 2 );
@@ -459,6 +473,25 @@ void QgsProjectProperties::apply()
   }
 
   QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
+
+  QString maxWidthText = mMaxWidthLineEdit->text();
+  if ( maxWidthText.isEmpty() )
+  {
+    QgsProject::instance()->removeEntry( "WMSMaxWidth", "/" );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSMaxWidth", "/", maxWidthText.toInt() );
+  }
+  QString maxHeightText = mMaxHeightLineEdit->text();
+  if ( maxHeightText.isEmpty() )
+  {
+    QgsProject::instance()->removeEntry( "WMSMaxHeight", "/" );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSMaxHeight", "/", maxHeightText.toInt() );
+  }
 
   QStringList wfsLayerList;
   for ( int i = 0; i < twWFSLayers->rowCount(); i++ )

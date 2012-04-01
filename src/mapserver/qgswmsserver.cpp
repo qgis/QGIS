@@ -669,6 +669,10 @@ QImage* QgsWMSServer::printCompositionToImage( QgsComposition* c ) const
 
 QImage* QgsWMSServer::getMap()
 {
+  if ( !checkMaximumWidthHeight() )
+  {
+    throw QgsMapServiceException( "Size error", "The requested map size is too large" );
+  }
   QStringList layersList, stylesList, layerIdList;
   QImage* theImage = initializeRendering( layersList, stylesList, layerIdList );
 
@@ -1993,4 +1997,32 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
   }
 
   return;
+}
+
+bool QgsWMSServer::checkMaximumWidthHeight() const
+{
+  //test if maxWidth / maxHeight set and WIDTH / HEIGHT parameter is in the range
+  if ( mConfigParser->maxWidth() != -1 )
+  {
+    QMap<QString, QString>::const_iterator widthIt = mParameterMap.find( "WIDTH" );
+    if ( widthIt != mParameterMap.constEnd() )
+    {
+      if ( widthIt->toInt() > mConfigParser->maxWidth() )
+      {
+        return false;
+      }
+    }
+  }
+  if ( mConfigParser->maxHeight() != -1 )
+  {
+    QMap<QString, QString>::const_iterator heightIt = mParameterMap.find( "HEIGHT" );
+    if ( heightIt != mParameterMap.constEnd() )
+    {
+      if ( heightIt->toInt() > mConfigParser->maxHeight() )
+      {
+        return false;
+      }
+    }
+  }
+  return true;
 }

@@ -45,6 +45,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
   setSelectionColor();
+  setMaxWidthHeight();
 
   //accelerate search for layers and groups
   if ( mXMLDoc )
@@ -1439,6 +1440,27 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   }
 
   serviceElem.appendChild( contactInfoElem );
+
+  //MaxWidth / MaxHeight for WMS 1.3
+  QString version = doc.documentElement().attribute( "version" );
+  if ( version != "1.1.1" )
+  {
+    if ( mMaxWidth != -1 )
+    {
+      QDomElement maxWidthElem = doc.createElement( "MaxWidth" );
+      QDomText maxWidthText = doc.createTextNode( QString::number( mMaxWidth ) );
+      maxWidthElem.appendChild( maxWidthText );
+      serviceElem.appendChild( maxWidthElem );
+    }
+    if ( mMaxHeight != -1 )
+    {
+      QDomElement maxHeightElem = doc.createElement( "MaxHeight" );
+      QDomText maxHeightText = doc.createTextNode( QString::number( mMaxHeight ) );
+      maxHeightElem.appendChild( maxHeightText );
+      serviceElem.appendChild( maxHeightElem );
+    }
+  }
+
   parentElement.appendChild( serviceElem );
 }
 
@@ -1539,6 +1561,31 @@ void QgsProjectParser::setSelectionColor()
   }
 
   mSelectionColor = QColor( red, green, blue, alpha );
+}
+
+void QgsProjectParser::setMaxWidthHeight()
+{
+  if ( mXMLDoc )
+  {
+    QDomElement qgisElem = mXMLDoc->documentElement();
+    if ( !qgisElem.isNull() )
+    {
+      QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+      if ( !propertiesElem.isNull() )
+      {
+        QDomElement maxWidthElem = propertiesElem.firstChildElement( "WMSMaxWidth" );
+        if ( !maxWidthElem.isNull() )
+        {
+          mMaxWidth = maxWidthElem.text().toInt();
+        }
+        QDomElement maxHeightElem = propertiesElem.firstChildElement( "WMSMaxHeight" );
+        if ( !maxHeightElem.isNull() )
+        {
+          mMaxHeight = maxHeightElem.text().toInt();
+        }
+      }
+    }
+  }
 }
 
 const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const

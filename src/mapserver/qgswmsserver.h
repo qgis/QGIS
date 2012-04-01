@@ -163,6 +163,10 @@ class QgsWMSServer
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 
+    /**Checks WIDTH/HEIGHT values agains MaxWidth and MaxHeight
+      @return true if width/height values are okay*/
+    bool checkMaximumWidthHeight() const;
+
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

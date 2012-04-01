@@ -167,6 +167,8 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Reads selection color from project and sets it to QgsConfigParser::mSelectionColor*/
     void setSelectionColor();
+    /**Reads maxWidth / maxHeight from project and sets it to QgsConfigParser::mMaxWidth / mMaxHeight*/
+    void setMaxWidthHeight();
 };
 
 #endif // QGSPROJECTPARSER_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>676</width>
-    <height>522</height>
+    <width>571</width>
+    <height>448</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -368,7 +368,7 @@
        <string>OWS Server</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0" rowspan="2">
+       <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea">
          <property name="widgetResizable">
           <bool>true</bool>
@@ -377,13 +377,13 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>616</width>
-            <height>538</height>
+            <y>-271</y>
+            <width>526</width>
+            <height>668</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_7">
-           <item row="0" column="0" colspan="2">
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
             <widget class="QGroupBox" name="grpOWSServiceCapabilities">
              <property name="title">
               <string>Service Capabilitities</string>
@@ -483,148 +483,158 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="0" colspan="2">
+           <item row="1" column="0">
             <widget class="QGroupBox" name="grpWMSCapabilities">
              <property name="title">
               <string>WMS Capabilitities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
-           <item row="1" column="0">
-            <widget class="QGroupBox" name="grpWMSExt">
-             <property name="title">
-              <string>Advertised Extent</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_4">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>Min. X</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSExtMinX</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="mWMSExtMinX">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Min. Y</string>
+               <widget class="QGroupBox" name="grpWMSExt">
+                <property name="title">
+                 <string>Advertised Extent</string>
                 </property>
-                <property name="buddy">
-                 <cstring>mWMSExtMinY</cstring>
+                <property name="checkable">
+                 <bool>true</bool>
                 </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_11">
+                   <property name="text">
+                    <string>Min. X</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>mWMSExtMinX</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QLineEdit" name="mWMSExtMinX">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_12">
+                   <property name="text">
+                    <string>Min. Y</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>mWMSExtMinY</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="mWMSExtMinY">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>Max. X</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>mWMSExtMaxX</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="mWMSExtMaxX">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_10">
+                   <property name="text">
+                    <string>Max. Y</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>mWMSExtMaxY</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="mWMSExtMaxY">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="0" colspan="2">
+                  <widget class="QPushButton" name="pbnWMSExtCanvas">
+                   <property name="text">
+                    <string>Use Current Canvas Extent</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="0" colspan="2">
+                  <spacer name="verticalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLineEdit" name="mWMSExtMinY">
-                <property name="text">
-                 <string/>
+               <widget class="QGroupBox" name="grpWMSList">
+                <property name="title">
+                 <string>Coordinate Systems Restrictions</string>
                 </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QListWidget" name="mWMSList"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="pbnWMSAddSRS">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
+                   <property name="text">
+                    <string>Remove</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                   <property name="text">
+                    <string>Used</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QLabel" name="label_9">
+               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
                 <property name="text">
-                 <string>Max. X</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSExtMaxX</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="mWMSExtMaxX">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Max. Y</string>
-                </property>
-                <property name="buddy">
-                 <cstring>mWMSExtMaxY</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="mWMSExtMaxY">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0" colspan="2">
-               <widget class="QPushButton" name="pbnWMSExtCanvas">
-                <property name="text">
-                 <string>Use Current Canvas Extent</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0" colspan="2">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QGroupBox" name="grpWMSList">
-             <property name="title">
-              <string>Coordinate Systems Restrictions</string>
-             </property>
-             <property name="checkable">
-              <bool>true</bool>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="0" colspan="3">
-               <widget class="QListWidget" name="mWMSList"/>
-              </item>
-              <item row="1" column="0">
-               <widget class="QPushButton" name="pbnWMSAddSRS">
-                <property name="text">
-                 <string>Add</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QPushButton" name="pbnWMSRemoveSRS">
-                <property name="text">
-                 <string>Remove</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                <property name="text">
-                 <string>Used</string>
+                 <string>Add WKT geometry to feature info response</string>
                 </property>
                </widget>
               </item>
@@ -632,16 +642,30 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-             <property name="text">
-              <string>Add WKT geometry to feature info response</string>
-             </property>
-            </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout_2">
+             <item>
+              <widget class="QLabel" name="mMaxWidthLabel">
+               <property name="text">
+                <string>Maximum width</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="mMaxHeightLabel">
+               <property name="text">
+                <string>Maximum height</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
+             </item>
+            </layout>
            </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="3" column="0" colspan="2">
+           <item row="3" column="0">
             <widget class="QGroupBox" name="grpWFSCapabilities">
              <property name="title">
               <string>WFS Capabilitities</string>
