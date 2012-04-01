@@ -10,6 +10,7 @@ from sextante.r.RUtils import RUtils
 from sextante.r.RAlgorithm import RAlgorithm
 from sextante.r.CreateNewRScriptAction import CreateNewRScriptAction
 from sextante.r.EditRScriptAction import EditRScriptAction
+from sextante.core.SextanteUtils import SextanteUtils
 
 class RAlgorithmProvider(AlgorithmProvider):
 
@@ -21,12 +22,14 @@ class RAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         SextanteConfig.addSetting(Setting("R", RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
-        SextanteConfig.addSetting(Setting("R", RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
+        if SextanteUtils.isWindows():
+            SextanteConfig.addSetting(Setting("R", RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         SextanteConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
-        SextanteConfig.removeSetting(RUtils.R_FOLDER)
+        if SextanteUtils.isWindows():
+            SextanteConfig.removeSetting(RUtils.R_FOLDER)
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")

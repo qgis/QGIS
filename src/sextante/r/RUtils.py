@@ -53,7 +53,7 @@ class RUtils:
         if SextanteUtils.isWindows():
             command = [RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
         else:
-            os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC)
+            os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             command = ["R", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
 
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True)

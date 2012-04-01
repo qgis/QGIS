@@ -5,6 +5,7 @@ from sextante.core.SextanteConfig import SextanteConfig
 
 class OutputSelectionPanel(QtGui.QWidget):
 
+    lastOutputFolder = None
     SAVE_TO_TEMP_FILE = "[Save to temporary file]"
 
     def __init__(self, output, alg):
@@ -30,7 +31,9 @@ class OutputSelectionPanel(QtGui.QWidget):
 
     def showSelectionDialog(self):
         filefilter = self.output.getFileFilter(self.alg)
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(), filefilter)
+        if OutputSelectionPanel.lastOutputFolder == None:
+            OutputSelectionPanel.lastOutputFolder = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(OutputSelectionPanel.lastOutputFolder), filefilter)
         if filename:
             self.text.setText(str(filename))
 
@@ -40,5 +43,5 @@ class OutputSelectionPanel(QtGui.QWidget):
             return None
         else:
             if not os.path.isabs(filename):
-                filename = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
+                filename = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER) + os.sep + filename
             return filename

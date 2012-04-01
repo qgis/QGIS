@@ -7,7 +7,6 @@ from sextante.outputs.OutputNumber import OutputNumber
 
 class CalculatorModelerParametersDialog(QtGui.QDialog):
 
-
     def __init__(self, alg, model):
         QtGui.QDialog.__init__(self)
         self.setModal(True)

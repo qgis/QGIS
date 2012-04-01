@@ -46,7 +46,7 @@ class LinesIntersection(GeoAlgorithm):
         field2.setName(unicode(field2.name()) + "_2")
         fieldList = {0:field1, 1:field2}
         sRs = provider1.crs()
-        check = QFile(self.shapefileName)
+        check = QFile(output)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(output):
                 raise GeoAlgorithmExecutionException("Could not delete existing output file")

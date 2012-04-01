@@ -32,7 +32,7 @@ class PointsInPolygon(GeoAlgorithm):
         polyProvider = polyLayer.dataProvider()
         pointProvider = pointLayer.dataProvider()
         if polyProvider.crs() <> pointProvider.crs():
-                  SextanteLog.addToLog(SextanteLog.LOG_WARNING,
+            SextanteLog.addToLog(SextanteLog.LOG_WARNING,
                                  "CRS warning!Warning: Input layers have non-matching CRS.\nThis may cause unexpected results.")
         allAttrs = polyProvider.attributeIndexes()
         polyProvider.select(allAttrs)
@@ -45,10 +45,10 @@ class PointsInPolygon(GeoAlgorithm):
             field = QgsField(unicode(inField), QVariant.Double, "real", 24, 15, "point count field")
             fieldList[index] = field
         sRs = polyProvider.crs()
-        check = QFile(self.shapefileName)
+        check = QFile(output)
         if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                return
+            if not QgsVectorFileWriter.deleteShapeFile(output):
+                raise GeoAlgorithmExecutionException("could not delete file: " + output)
         writer = QgsVectorFileWriter(output, systemEncoding, fieldList, polyProvider.geometryType(), sRs)
         inFeat = QgsFeature()
         inFeatB = QgsFeature()

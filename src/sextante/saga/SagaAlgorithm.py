@@ -118,9 +118,10 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
-        path = SagaUtils.sagaPath()
-        if path == "":
-            raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
+        if SextanteUtils.isWindows():
+            path = SagaUtils.sagaPath()
+            if path == "":
+                raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
         useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
         commands = list()
         self.exportedLayers = {}
@@ -206,19 +207,19 @@ class SagaAlgorithm(GeoAlgorithm):
                     filename += ".tif"
                     out.value = filename
                 filename = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
-                command+=(" -" + out.name + " " + filename);
+                command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputVector):
                 filename = out.value
                 if not filename.endswith(".shp"):
                     filename += ".shp"
                     out.value = filename
-                command+=(" -" + out.name + " " + filename);
+                command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputTable):
                 filename = out.value
                 if not filename.endswith(".dbf"):
                     filename += ".dbf"
                     out.value = filename
-                command+=(" -" + out.name + " " + filename);
+                command+=(" -" + out.name + " \"" + filename + "\"");
 
         commands.append(command)
 
@@ -228,9 +229,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 filename = out.value
                 filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 if SextanteUtils.isWindows():
-                    commands.append("io_gdal 1 -GRIDS " + filename2 + " -FORMAT 1 -TYPE 0 -FILE " + filename);
+                    commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
                 else:
-                    commands.append("libio_gdal 1 -GRIDS " + filename2 + " -FORMAT 1 -TYPE 0 -FILE " + filename);
+                    commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE " + filename + "\"");
 
         #4 Run SAGA
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
@@ -250,13 +251,13 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = self.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
-            s = "grid_tools \"Resampling\" -INPUT " + inputFilename + " -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+            s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
                 str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
-                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID " + destFilename
+                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
         else:
-            s = "libgrid_tools \"Resampling\" -INPUT " + inputFilename + " -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
+            s = "libgrid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
                 str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
-                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID " + destFilename
+                " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
         return s
 
 
@@ -300,9 +301,9 @@ class SagaAlgorithm(GeoAlgorithm):
         destFilename = self.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
-            return "io_gdal 0 -GRIDS " + destFilename + " -FILES " + layer
+            return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
         else:
-            return "libio_gdal 0 -GRIDS " + destFilename + " -FILES " + layer
+            return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""
 
     def getTempFilename(self, ext):
         self.numExportedLayers+=1

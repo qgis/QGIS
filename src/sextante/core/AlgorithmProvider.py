@@ -12,6 +12,25 @@ class AlgorithmProvider():
         self.actions = []
         self.contextMenuActions = []
 
+    def loadAlgorithms(self):
+        self.algs = []
+        name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
+        if not SextanteConfig.getSetting(name):
+            return
+        else:
+            self._loadAlgorithms()
+
+    #methods to be overridden.
+    #==============================
+
+
+    def _loadAlgorithms(self):
+        '''Algorithm loading should take place here, filling self.algs, which is a list of
+        elements of class GeoAlgorithm. Use that class to create your own algorithms
+        Since algorithms should have a reference to the provider they come
+        from, this is also the place to set the 'provider' variable of each algorithm'''
+        pass
+
     def initializeSettings(self):
         '''this is the place where you should add config parameters to sextante using the SextanteConfig class.
         this method is called when a provider is added to Sextante.
@@ -25,26 +44,12 @@ class AlgorithmProvider():
         Removal of config setting should be done here'''
         name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
         SextanteConfig.removeSetting(name)
+
     def getName(self):
         return "Generic algorithm provider"
 
-    def loadAlgorithms(self):
-        self.algs = []
-        name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
-        if not SextanteConfig.getSetting(name):
-            return
-        else:
-            self._loadAlgorithms()
 
-    #methods to be overridden.
-    #==============================
 
-    #Algorithm loading should take place here, filling self.algs, which is a list of
-    #elements of class GeoAlgorithm. Use that class to create your own algorithms
-    #Since algorithms should have a reference to the provider they come
-    #from, this is also the place to set the 'provider' variable of each algorithm
-    def _loadAlgorithms(self):
-        pass
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")

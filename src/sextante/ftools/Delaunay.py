@@ -6,7 +6,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
 import voronoi
 from sets import Set

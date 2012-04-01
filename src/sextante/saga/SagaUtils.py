@@ -14,7 +14,6 @@ class SagaUtils:
     SAGA_RESAMPLING_REGION_XMAX = "SAGA_RESAMPLING_REGION_XMAX"
     SAGA_RESAMPLING_REGION_YMAX = "SAGA_RESAMPLING_REGION_YMAX"
     SAGA_RESAMPLING_REGION_CELLSIZE = "SAGA_RESAMPLING_REGION_CELLSIZE"
-
     SAGA_FOLDER = "SAGA_FOLDER"
 
     @staticmethod
@@ -50,10 +49,10 @@ class SagaUtils:
             fout.write("set SAGA_MLB=" + SagaUtils.sagaPath()+ os.sep + "modules" + "\n");
             fout.write("PATH=PATH;%SAGA%;%SAGA_MLB%\n");
         else:
-            fout.write("!#/bin/sh\n");
-            fout.write("export SAGA_MLB=" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
-            fout.write("PATH=$PATH:" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
-            fout.write("export PATH\n");
+            pass
+            #fout.write("export SAGA_MLB=" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
+            #fout.write("PATH=$PATH:" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
+            #fout.write("export PATH\n");
 
         for command in commands:
             fout.write("saga_cmd " + command + "\n")
@@ -66,7 +65,7 @@ class SagaUtils:
         if SextanteUtils.isWindows():
             command = ["cmd.exe", "/C ", SagaUtils.sagaBatchJobFilename()]
         else:
-            os.chmod(SagaUtils.sagaBatchJobFilename(), stat.S_IEXEC)
+            os.chmod(SagaUtils.sagaBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             command = [SagaUtils.sagaBatchJobFilename()]
         loglines = []
         loglines.append("SAGA execution console output")

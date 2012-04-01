@@ -80,7 +80,7 @@ class SextanteConfig():
 
 
 class Setting():
-
+    '''A simple config parameter that will appear on the SEXTANTE config dialog'''
     def __init__(self, group, name, description, default):
         self.group=group
         self.name = name

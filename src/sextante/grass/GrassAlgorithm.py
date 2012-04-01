@@ -10,7 +10,6 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.outputs.OutputVector import OutputVector
-from sextante.saga.SagaUtils import SagaUtils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
@@ -200,13 +199,12 @@ class GrassAlgorithm(GeoAlgorithm):
                 commands.append(command)
 
         #4 Run GRASS
-        GrassUtils.createGrassScript(commands)
         loglines = []
         loglines.append("GRASS execution commands")
         for line in commands:
             loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
-        GrassUtils.executeGrass(progress);
+        GrassUtils.executeGrass(commands, progress);
 
 
     def exportVectorLayer(self, filename):

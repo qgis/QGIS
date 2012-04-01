@@ -54,7 +54,7 @@ class Sextante:
             Sextante.updateAlgsList()
         except:
             pass #This try catch block is here to avoid problems if the plugin with a provider is unloaded
-                 #after SEXTANTEe itself has been unloaded. It is a quick fix before I found out how to
+                 #after SEXTANTE itself has been unloaded. It is a quick fix before I found out how to
                  #properly avoid that
 
     @staticmethod
@@ -82,6 +82,7 @@ class Sextante:
         Sextante.addProvider(ScriptAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
+        Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()
@@ -260,14 +261,11 @@ class Sextante:
 
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
-        try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            AlgorithmExecutor.runalg(alg, SilentProgress())
-            QApplication.restoreOverrideCursor()
-            return alg.getOutputValuesAsDictionary()
-        except GeoAlgorithmExecutionException, e:
-            print "*****Error executing algorithm*****"
-            print e.msg
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        AlgorithmExecutor.runalg(alg, SilentProgress())
+        QApplication.restoreOverrideCursor()
+        return alg.getOutputValuesAsDictionary()
+
 
     @staticmethod
     def load(layer):
@@ -283,7 +281,7 @@ class Sextante:
     @staticmethod
     def getObject(uri):
         '''Returns the QGIS object identified the given URI'''
-        QGisLayers.getObjectFromUri(uri)
+        return QGisLayers.getObjectFromUri(uri)
 
     @staticmethod
     def runandload(name, *args):
@@ -313,13 +311,12 @@ class Sextante:
                     return
                 i = i +1
 
-        try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            AlgorithmExecutor.runalg(alg, SilentProgress())
-            QApplication.restoreOverrideCursor()
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        ret = AlgorithmExecutor.runalg(alg, SilentProgress())
+        QApplication.restoreOverrideCursor()
+        if ret:
             SextantePostprocessing.handleAlgorithmResults(alg)
-        except GeoAlgorithmExecutionException, e:
-            QMessageBox.critical(None, "Error",  e.msg)
+
 
 
 

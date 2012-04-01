@@ -7,7 +7,9 @@ from PyQt4 import QtGui
 import os.path
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
-
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+import traceback
+from sextante.core.SextanteLog import SextanteLog
 
 class GeoAlgorithm:
 
@@ -23,6 +25,10 @@ class GeoAlgorithm:
         #change any of the following if your algorithm should not appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
+        #true if the algorithm has been canceled while it was being executed
+        #default value is false, so it should be changed in processAlgorithm only if the algorithm
+        #gets canceled
+        self.canceled = False
 
         self.defineCharacteristics()
 
@@ -32,6 +38,8 @@ class GeoAlgorithm:
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
 
     def helpFile(self):
+        '''Returns the path to the help file with the description of this algorithm.
+        It should be an HTML file'''
         return None
 
     def processAlgorithm(self):
@@ -43,7 +51,8 @@ class GeoAlgorithm:
         pass
 
     def getCustomParametersDialog(self):
-        '''if the algorithm has a custom parameters dialog, it should be returned here, ready to be executed'''
+        '''if the algorithm has a custom parameters dialog, it should be returned
+        here, ready to be executed'''
         return None
 
     def getCustomModelerParametersDialog(self, modelAlg):
@@ -54,9 +63,29 @@ class GeoAlgorithm:
     #=========================================================
 
     def execute(self, progress):
+        '''The method to use to call a SEXTANTE algorithm.
+        Although the body of the algorithm is in processAlgorithm(),
+        it should be called using this method, since it performs
+        some additional operations.
+        The return value indicates whether the algorithm was canceled (false)
+        or successfully run (true).
+        Raises a GeoAlgorithmExecutionException in case anything goes wrong.'''
         self.setOutputCRSFromInputLayers()
         self.resolveTemporaryOutputs()
-        self.processAlgorithm(progress)
+        try:
+            self.processAlgorithm(progress)
+            return not self.canceled
+        except GeoAlgorithmExecutionException, gaee:
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, gaee.msg)
+            raise gaee
+        except Exception, e:
+            #if something goes wrong and is not caught in the algorithm,
+            #we catch it here and wrap it
+            lines = []
+            lines.append(str(e))
+            lines.append(traceback.format_exc().replace("\n", "|"))
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, lines)
+            raise GeoAlgorithmExecutionException(str(e))
 
     def resolveTemporaryOutputs(self):
         '''sets temporary outputs (output.value = None) with a temporary file instead'''
@@ -151,7 +180,6 @@ class GeoAlgorithm:
             if out.name == name:
                 return out.value
         return None
-
 
     def getAsCommand(self):
         '''Returns the command that would run this same algorithm from the console'''

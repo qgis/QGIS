@@ -102,21 +102,19 @@ class BatchProcessingDialog(QtGui.QDialog):
             row+=1
             self.algs.append(alg)
 
-        try:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            i=1
-            self.progress.setMaximum(len(self.algs))
-            for alg in self.algs:
-                AlgorithmExecutor.runalg(alg, SilentProgress())
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        i=1
+        self.progress.setMaximum(len(self.algs))
+        for alg in self.algs:
+            if AlgorithmExecutor.runalg(alg, SilentProgress()):
                 self.progress.setValue(i)
                 i+=1
-            QApplication.restoreOverrideCursor()
-            QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
-        except GeoAlgorithmExecutionException, e :
-            QApplication.restoreOverrideCursor()
-            QMessageBox.critical(self, "Error",e.msg)
-        finally:
-            self.close()
+            else:
+                QApplication.restoreOverrideCursor()
+                return
+        QApplication.restoreOverrideCursor()
+        QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
+        self.close()
 
 
     def cancelPressed(self):

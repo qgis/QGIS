@@ -10,6 +10,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.core.SextanteLog import SextanteLog
 from sextante.ftools import ftools_utils
 from sextante.parameters.ParameterString import ParameterString
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 class SumLines(GeoAlgorithm):
 
@@ -53,10 +54,10 @@ class SumLines(GeoAlgorithm):
         lineProvider.rewind()
         start = 15.00
         add = 85.00 / polyProvider.featureCount()
-        check = QFile(self.shapefileName)
+        check = QFile(output)
         if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                return
+            if not QgsVectorFileWriter.deleteShapeFile(output):
+                raise GeoAlgorithmExecutionException("Could not delete existing output file")
         writer = QgsVectorFileWriter(output, systemEncoding, fieldList, polyProvider.geometryType(), sRs)
         #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
         spatialIndex = ftools_utils.createIndex( lineProvider )

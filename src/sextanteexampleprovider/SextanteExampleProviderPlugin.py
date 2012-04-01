@@ -17,6 +17,5 @@ class SextanteExampleProviderPlugin:
         Sextante.addProvider(self.provider)
 
     def unload(self):
-        #Uncomment to add provider
         Sextante.removeProvider(self.provider)
 

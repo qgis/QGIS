@@ -1,7 +1,7 @@
 from sextante.core.Sextante import Sextante
 class DummyInterface:
 
-    def addVector(self,p1,p2,p3):
+    def addVectorLayer(self,p1,p2,p3):
         pass
 
     def mainWindow(self):

@@ -18,6 +18,7 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.r.RUtils import RUtils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteUtils import SextanteUtils
 
 class RAlgorithm(GeoAlgorithm):
 
@@ -144,9 +145,10 @@ class RAlgorithm(GeoAlgorithm):
             raise WrongScriptException("Could not load R script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
 
     def processAlgorithm(self, progress):
-        path = RUtils.RFolder()
-        if path == "":
-            raise GeoAlgorithmExecutionException("R folder is not configured.\nPlease configure it before running R script.")
+        if SextanteUtils.isWindows():
+            path = RUtils.RFolder()
+            if path == "":
+                raise GeoAlgorithmExecutionException("R folder is not configured.\nPlease configure it before running R script.")
         loglines = []
         loglines.append("R execution commands")
         loglines += self.getFullSetOfRCommands()

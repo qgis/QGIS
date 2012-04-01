@@ -26,6 +26,8 @@ from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.gui.RangePanel import RangePanel
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
+from sextante.gui.NumberInputPanel import NumberInputPanel
+from sextante.parameters.ParameterNumber import ParameterNumber
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -155,6 +157,8 @@ class Ui_ParametersDialog(object):
             for opt in options:
                 opts.append(opt.name())
             item = MultipleInputPanel(opts)
+        elif isinstance(param, ParameterNumber):
+            item = NumberInputPanel(param.default)
         else:
             item = QtGui.QLineEdit()
             item.setText(str(param.default))
@@ -262,6 +266,8 @@ class Ui_ParametersDialog(object):
             for index in widget.selectedoptions:
                 value.append(options[index])
             return param.setValue(value)
+        elif isinstance(param, ParameterNumber):
+            return param.setValue(widget.getValue())
         else:
             return param.setValue(str(widget.text()))
 
@@ -271,9 +277,10 @@ class Ui_ParametersDialog(object):
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())
-                AlgorithmExecutor.runalg(self.alg, self)
+                ret = AlgorithmExecutor.runalg(self.alg, self)
                 QApplication.restoreOverrideCursor()
-                SextantePostprocessing.handleAlgorithmResults(self.alg)
+                if ret:
+                    SextantePostprocessing.handleAlgorithmResults(self.alg)
                 self.dialog.executed = True
                 self.dialog.close()
 

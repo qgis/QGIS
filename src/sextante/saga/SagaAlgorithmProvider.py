@@ -6,6 +6,7 @@ from PyQt4.QtGui import *
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteUtils import SextanteUtils
 
 class SagaAlgorithmProvider(AlgorithmProvider):
 
@@ -16,7 +17,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
+        if SextanteUtils.isWindows():
+            SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_AUTO_RESAMPLING, "Use min covering grid system for resampling", True))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_XMIN, "Resampling region min x", 0))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_YMIN, "Resampling region min y", 0))
@@ -27,7 +29,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        SextanteConfig.removeSetting(SagaUtils.SAGA_FOLDER)
+        if SextanteUtils.isWindows():
+            SextanteConfig.removeSetting(SagaUtils.SAGA_FOLDER)
         SextanteConfig.removeSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMIN)

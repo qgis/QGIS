@@ -1,7 +1,7 @@
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 from os import path
 from sextante.core.SextanteConfig import SextanteConfig
 import os.path
