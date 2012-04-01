@@ -1108,9 +1108,9 @@ void QgsGeometryAnalyzer::createOffsetGeometry( QgsGeometry* geom, QgsGeometry* 
       //geos 3.3 needed for line offsets
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
       ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-      outputGeomList.push_back( GEOSOffsetCurve(( *inputGeomIt )->asGeos(), offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ ) );
+      outputGeomList.push_back( GEOSOffsetCurve(( *inputGeomIt )->asGeos(), -offset, 8 /*quadSegments*/, 0 /*joinStyle*/, 5.0 /*mitreLimit*/ ) );
 #else
-      outputGeomList.push_back( 0 );
+      outputGeomList.push_back( GEOSGeom_clone(( *inputGeomIt )->asGeos() ) );
 #endif
     }
     else if ( geom->type() == QGis::Point )
