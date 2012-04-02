@@ -521,11 +521,22 @@ void QgsLegend::updateGroupCheckStates( QTreeWidgetItem *item )
 
 void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 {
+  QStringList layersPriorToEvent = layerIDs();
   QTreeWidget::mouseReleaseEvent( e );
   mMousePressedFlag = false;
 
   if ( mItemsBeingMoved.isEmpty() )
+  {
+    //Trigger refresh because of check states on layers.
+    //If it comes from a check action on a group, it is not covered in handleItemChanges(),
+    //so we do it here
+    QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
+    if ( lg && ( layersPriorToEvent != layerIDs() ) )
+    {
+      mMapCanvas->refresh();
+    }
     return;
+  }
 
   setCursor( QCursor( Qt::ArrowCursor ) );
   hideLine();
@@ -1907,8 +1918,11 @@ QStringList QgsLegend::layerIDs()
     QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
     if ( ll )
     {
-      QgsMapLayer *lyr = ll->layer();
-      layers.push_front( lyr->id() );
+      if ( ll->checkState( 0 ) == Qt::Checked )
+      {
+        QgsMapLayer *lyr = ll->layer();
+        layers.push_front( lyr->id() );
+      }
     }
   }
 

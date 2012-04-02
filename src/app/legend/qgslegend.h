@@ -169,7 +169,7 @@ class QgsLegend : public QTreeWidget
     /**Removes an item from the legend. This is e.g. necessary before shifting it to another place*/
     void removeItem( QTreeWidgetItem* item );
 
-    /**Returns the ids of the layers contained in this legend. The order is bottom->top*/
+    /**Returns the ids of the visible layers contained in this legend. The order is bottom->top*/
     QStringList layerIDs();
 
     /**Updates layer set of map canvas*/
