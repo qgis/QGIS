@@ -175,7 +175,7 @@ void QgsBookmarks::deleteClicked()
     }
   }
 
-  if( rows.size() == 0 )
+  if ( rows.size() == 0 )
     return;
 
   // make sure the user really wants to delete these bookmarks
@@ -184,10 +184,10 @@ void QgsBookmarks::deleteClicked()
        QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
-  int i=0;
+  int i = 0;
   foreach( int row, rows )
   {
-    lstBookmarks->model()->removeRow( row-i );
+    lstBookmarks->model()->removeRow( row - i );
     i++;
   }
 }
@@ -217,9 +217,9 @@ void QgsBookmarks::zoomToBookmark()
        srid != QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().srsid() )
   {
     QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( srid, QgsCoordinateReferenceSystem::InternalCrsId ),
-			       QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs() );
+                               QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs() );
     rect = ct.transform( rect );
-    if( rect.isEmpty() )
+    if ( rect.isEmpty() )
     {
       QMessageBox::warning( this, tr( "Empty extent" ), tr( "Reprojected extent is empty." ) );
       return;

@@ -245,7 +245,7 @@ void HeatmapGui::enableOrDisableOkButton()
 void HeatmapGui::populateFields()
 {
   QgsVectorLayer* inputLayer = inputVectorLayer();
-  if( !inputLayer )
+  if ( !inputLayer )
     return;
 
   // The fields
@@ -277,7 +277,7 @@ void HeatmapGui::updateBBox()
 {
   // Set the row/cols and cell sizes here
   QgsVectorLayer *inputLayer = inputVectorLayer();
-  if( !inputLayer )
+  if ( !inputLayer )
     return;
 
   mBBox = inputLayer->extent();

@@ -79,7 +79,8 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! for debugging
     virtual QString dump();
 
-    enum Capabilities {
+    enum Capabilities
+    {
       SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
       RotationField = 1 <<  1,    // rotate symbols by attribute value
       MoreSymbolsPerFeature = 1 << 2  // may use more than one symbol to render a feature: symbolsForFeature() will return them
