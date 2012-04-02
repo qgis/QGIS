@@ -11,8 +11,9 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * drop support for Ubuntu hardy, intrepid, jaunty and karmic
   * add mssqlprovider plugin
   * copyright & policy update (synced from debiangis)
+  * run crssync in postinst
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 27 Mar 2012 22:59:36 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 03 Apr 2012 00:20:18 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
