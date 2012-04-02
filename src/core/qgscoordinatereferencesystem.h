@@ -398,9 +398,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     RecordMap getRecord( QString theSql );
 
-    // Open SQLite db and show message if ccannot be opened
+    // Open SQLite db and show message if cannot be opened
     // returns the same code as sqlite3_open
-    static int openDb( QString path, sqlite3 **db );
+    static int openDb( QString path, sqlite3 **db, bool readonly = true );
 
     //!The internal sqlite3 srs.db primary key for this srs
     long    mSrsId;

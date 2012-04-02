@@ -1244,10 +1244,12 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   return myProjString;
 }
 
-int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
+int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db, bool readonly )
 {
   QgsDebugMsgLevel( "path = " + path, 3 );
-  int myResult = sqlite3_open( path.toUtf8().data(), db );
+  int myResult = readonly
+                 ? sqlite3_open_v2( path.toUtf8().data(), db, SQLITE_OPEN_READONLY, NULL )
+                 : sqlite3_open( path.toUtf8().data(), db );
 
   if ( myResult != SQLITE_OK )
   {
