@@ -242,6 +242,15 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   QStringList myExtensions = fileExtensions();
 
+  // skip *.aux.xml files (GDAL auxilary metadata files) and .shp.xml files (ESRI metadata)
+  // unless that extension is in the list (*.xml might be though)
+  if ( thePath.right( 8 ).toLower() == ".aux.xml" &&
+       myExtensions.indexOf( "aux.xml" ) < 0 )
+    return 0;
+  if ( thePath.right( 8 ).toLower() == ".shp.xml" &&
+       myExtensions.indexOf( "shp.xml" ) < 0 )
+    return 0;
+
   // skip .tar.gz files
   if ( thePath.right( 7 ) == ".tar.gz" )
     return 0;
