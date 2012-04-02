@@ -20,7 +20,6 @@ class QgsFeature;
 class QgsField;
 #include <QDateTime>
 
-#include "qgsdataitem.h"
 #include "qgsvectordataprovider.h"
 #include <vector>
 
@@ -110,7 +109,7 @@ struct GMAP
   \class QgsGrassProvider
   \brief Data provider for GRASS vectors
 */
-class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
+class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -686,31 +685,5 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     static  std::vector<GLAYER> mLayers; // Map + field/attributes
     static  std::vector<GMAP> mMaps;     // Map
 };
-
-
-class QgsGrassLocationItem : public QgsDataCollectionItem
-{
-  public:
-    QgsGrassLocationItem( QgsDataItem* parent, QString path );
-    ~QgsGrassLocationItem();
-
-    static bool isLocation( QString path );
-    QVector<QgsDataItem*> createChildren();
-};
-
-class QgsGrassMapsetItem : public QgsDataCollectionItem
-{
-  public:
-    QgsGrassMapsetItem( QgsDataItem* parent, QString path );
-    ~QgsGrassMapsetItem();
-
-    static bool isMapset( QString path );
-    QVector<QgsDataItem*> createChildren();
-
-    QString mLocation;
-    QString mGisdbase;
-};
-
-
 
 #endif // QGSGRASSPROVIDER_H

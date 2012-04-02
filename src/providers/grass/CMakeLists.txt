@@ -16,7 +16,8 @@ INCLUDE_DIRECTORIES(
 # GRASS library
 #
 
-ADD_LIBRARY(qgisgrass SHARED qgsgrass.cpp)
+QT4_WRAP_CPP(GRASS_PROVIDER_MOC_SRCS qgsgrassprovider.h)
+ADD_LIBRARY(qgisgrass SHARED qgsgrass.cpp qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
 
 SET_TARGET_PROPERTIES(qgisgrass PROPERTIES
   CLEAN_DIRECT_OUTPUT 1
@@ -52,14 +53,7 @@ ENDIF (APPLE)
 # GRASS vector provider
 #
 
-QT4_WRAP_CPP(GRASS_PROVIDER_MOC_SRCS qgsgrassprovider.h)
-# provider must be built as module on OS X so it gets loaded,
-# other modules that need provider symbols must dynamically lookup them
-IF (APPLE)
-    ADD_LIBRARY(grassprovider MODULE qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
-ELSE (APPLE)
-    ADD_LIBRARY(grassprovider SHARED qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
-ENDIF (APPLE)
+ADD_LIBRARY(grassprovider MODULE qgsgrassprovidermodule.cpp)
 SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
 TARGET_LINK_LIBRARIES(grassprovider qgisgrass)
 
