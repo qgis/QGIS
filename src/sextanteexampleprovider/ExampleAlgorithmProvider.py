@@ -19,7 +19,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         algorithms in the provider'''
         AlgorithmProvider.initializeSettings(self)
         SextanteConfig.addSetting(Setting("Example algorithms", ExampleAlgorithmProvider.MY_DUMMY_SETTING, "Example setting", "Default value"))
-
+        '''To get the parameter of a setting parameter, use SextanteConfig.getSetting(name_of_parameter)'''
 
     def unload(self):
         '''Setting should be removed here, so they do not appear anymore

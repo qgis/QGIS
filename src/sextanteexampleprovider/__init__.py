@@ -2,7 +2,7 @@ from sextanteexampleprovider.SextanteExampleProviderPlugin import SextanteExampl
 def name():
     return "SEXTANTE example provider"
 def description():
-    return "An example plugin that adds algorithm to SEXTANTE"
+    return "An example plugin that adds algorithms to SEXTANTE. Mainly created to guide developers in the process of creating plugins that add new capabilities to SEXTANTE"
 def version():
     return "Version 1.0"
 def icon():
