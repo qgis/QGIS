@@ -33,7 +33,15 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 
 QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
-  return 0;
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
+
+  int band = elem.attribute( "band", "-1" ).toInt();
+  QgsRasterRenderer* r = new QgsSingleBandColorDataRenderer( provider, band );
+  r->readXML( elem );
+  return r;
 }
 
 void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
