@@ -382,12 +382,12 @@ void QgsContrastEnhancement::readXML( const QDomElement& elem )
   QDomElement minValueElem = elem.firstChildElement( "minValue" );
   if ( !minValueElem.isNull() )
   {
-    mMinimumValue = minValueElem.text().toInt();
+    mMinimumValue = minValueElem.text().toDouble();
   }
   QDomElement maxValueElem = elem.firstChildElement( "maxValue" );
   if ( !maxValueElem.isNull() )
   {
-    mMaximumValue = maxValueElem.text().toInt();
+    mMaximumValue = maxValueElem.text().toDouble();
   }
   QDomElement algorithmElem = elem.firstChildElement( "algorithm" );
   if ( !algorithmElem.isNull() )

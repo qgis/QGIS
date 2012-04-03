@@ -34,7 +34,24 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
 
 QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
-  return 0;
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
+
+  int grayBand = elem.attribute( "grayBand", "-1" ).toInt();
+  QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( provider, grayBand );
+  r->readXML( elem );
+
+  QDomElement contrastEnhancementElem = elem.firstChildElement( "contrastEnhancement" );
+  if ( !contrastEnhancementElem.isNull() )
+  {
+    QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+          provider->dataType( grayBand ) ) ) ;
+    ce->readXML( contrastEnhancementElem );
+    r->setContrastEnhancement( ce );
+  }
+  return r;
 }
 
 void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* ce )
