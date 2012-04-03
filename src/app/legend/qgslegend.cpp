@@ -2037,6 +2037,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
 
   bool changing = mChanging;
   mChanging = true;
+  bool mapCanvasFrozen = mMapCanvas->isFrozen(); //save freeze state
 
   if ( !changing )
   {
@@ -2091,7 +2092,7 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
   {
     // If it was on, turn it back on, otherwise leave it
     // off, as turning it on causes a refresh.
-    mMapCanvas->freeze( false );
+    mMapCanvas->freeze( mapCanvasFrozen );
 
     // update layer set
     updateMapCanvasLayerSet();
