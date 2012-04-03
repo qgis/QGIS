@@ -376,3 +376,22 @@ void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentEle
   algorithmElem.appendChild( algorithmText );
   parentElem.appendChild( algorithmElem );
 }
+
+void QgsContrastEnhancement::readXML( const QDomElement& elem )
+{
+  QDomElement minValueElem = elem.firstChildElement( "minValue" );
+  if ( !minValueElem.isNull() )
+  {
+    mMinimumValue = minValueElem.text().toInt();
+  }
+  QDomElement maxValueElem = elem.firstChildElement( "maxValue" );
+  if ( !maxValueElem.isNull() )
+  {
+    mMaximumValue = maxValueElem.text().toInt();
+  }
+  QDomElement algorithmElem = elem.firstChildElement( "algorithm" );
+  if ( !algorithmElem.isNull() )
+  {
+    setContrastEnhancementAlgorithm(( ContrastEnhancementAlgorithm )( algorithmElem.text().toInt() ) );
+  }
+}

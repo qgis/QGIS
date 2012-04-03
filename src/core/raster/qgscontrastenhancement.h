@@ -123,6 +123,8 @@ class CORE_EXPORT QgsContrastEnhancement
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
+    void readXML( const QDomElement& elem );
+
   private:
     /** \brief Current contrast enhancement algorithm */
     ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;

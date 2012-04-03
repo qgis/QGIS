@@ -57,7 +57,48 @@ void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhanceme
 
 QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
-  return 0;
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
+
+  //red band, green band, blue band
+  int redBand = elem.attribute( "redBand", "-1" ).toInt();
+  int greenBand = elem.attribute( "greenBand", "-1" ).toInt();
+  int blueBand = elem.attribute( "blueBand", "-1" ).toInt();
+
+  //contrast enhancements
+  QgsContrastEnhancement* redContrastEnhancement = 0;
+  QDomElement redContrastElem = elem.firstChildElement( "redContrastEnhancement" );
+  if ( !redContrastElem.isNull() )
+  {
+    redContrastEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+          provider->dataType( redBand ) ) );
+    redContrastEnhancement->readXML( redContrastElem );
+  }
+
+  QgsContrastEnhancement* greenContrastEnhancement = 0;
+  QDomElement greenContrastElem = elem.firstChildElement( "greenContrastEnhancement" );
+  if ( !greenContrastElem.isNull() )
+  {
+    greenContrastEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+          provider->dataType( greenBand ) ) );
+    greenContrastEnhancement->readXML( greenContrastElem );
+  }
+
+  QgsContrastEnhancement* blueContrastEnhancement = 0;
+  QDomElement blueContrastElem = elem.firstChildElement( "blueContrastEnhancement" );
+  if ( !blueContrastElem.isNull() )
+  {
+    blueContrastEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+          provider->dataType( blueBand ) ) );
+    blueContrastEnhancement->readXML( blueContrastElem );
+  }
+
+  QgsRasterRenderer* r = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand, redContrastEnhancement,
+      greenContrastEnhancement, blueContrastEnhancement );
+  r->readXML( elem );
+  return r;
 }
 
 void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
