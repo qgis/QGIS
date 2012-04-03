@@ -1,5 +1,6 @@
 import os
 import time
+import sys
 
 class SextanteUtils:
 
@@ -15,6 +16,10 @@ class SextanteUtils:
     @staticmethod
     def isWindows():
         return os.name =="nt"
+
+    @staticmethod
+    def isMac():
+        return sys.platform == "darwin"
 
     @staticmethod
     def tempFolder():

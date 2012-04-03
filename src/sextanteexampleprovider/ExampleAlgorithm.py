@@ -50,7 +50,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
         output = self.getOutputValue(self.OUTPUT_LAYER)
 
-        #input layers vales are always a string whit its location.
+        #input layers values are always a string with its location.
         #That string can be converted into a QGIS object (a QgsVectorLayer in this case))
         #using the Sextante.getObject() method
         vectorLayer = Sextante.getObject(inputFilename)

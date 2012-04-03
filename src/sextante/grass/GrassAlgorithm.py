@@ -59,10 +59,6 @@ class GrassAlgorithm(GeoAlgorithm):
                 line = line.strip("\n").strip()
                 if line.startswith("Parameter"):
                     self.addParameter(ParameterFactory.getFromString(line))
-                #===============================================================
-                # elif line.startswith("Region"):
-                #    self.needsregion = True
-                #===============================================================
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()

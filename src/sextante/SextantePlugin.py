@@ -122,6 +122,8 @@ class SextantePlugin:
         filename = os.path.dirname(__file__) + "/manual.pdf"
         if os.name == "nt":
             os.startfile(filename)
+        elif sys.platform == "darwin":
+            subprocess.call(('open', filename))
         else:
             subprocess.call(('xdg-open', filename))
 
