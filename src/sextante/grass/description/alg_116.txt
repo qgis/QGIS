@@ -1,6 +1,6 @@
 v.lidar.edgedetection
 Vector (v.*)
-ParameterVector|input|input|-1|False
+ParameterVector|input|input|0|False
 ParameterString|see|see|4
 ParameterString|sen|sen|4
 ParameterString|lambda_g|lambda_g|0.01

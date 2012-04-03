@@ -1,7 +1,6 @@
 v.info
 Vector (v.*)
 ParameterVector|map|map|-1|False
-ParameterString|layer|layer|1
 ParameterBoolean|-h|-h|True
 ParameterBoolean|-c|-c|True
 ParameterBoolean|-g|-g|True

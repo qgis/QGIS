@@ -2,5 +2,4 @@ r.reclass
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|rules|rules|/file
-ParameterString|title|title|
 OutputRaster|output|output

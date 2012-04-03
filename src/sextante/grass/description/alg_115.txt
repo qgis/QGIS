@@ -1,7 +1,6 @@
 r.quantile
 Raster (r.*)
 ParameterRaster|input|input|False
-ParameterString|quantiles|quantiles|4
+ParameterNumber|quantiles|quantiles|2|None|4
 ParameterString|percentiles|percentiles|
-ParameterString|bins|bins|1000000
 ParameterBoolean|-r|-r|True

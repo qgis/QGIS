@@ -1,9 +1,8 @@
 v.rast.stats
 Vector (v.*)
 ParameterVector|vector|vector|-1|False
-ParameterString|layer|layer|1
 ParameterRaster|raster|raster|False
 ParameterString|colprefix|colprefix|
-ParameterString|percentile|percentile|90
+ParameterNumber|percentile|percentile|0|100|90
 ParameterBoolean|-c|-c|True
 ParameterBoolean|-e|-e|True

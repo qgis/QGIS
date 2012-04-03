@@ -1,7 +1,0 @@
-r.null
-Raster (r.*)
-ParameterRaster|map|map|False
-ParameterString|setnull|setnull|
-ParameterString|null|null|
-ParameterBoolean|-f|-f|True
-ParameterBoolean|-i|-i|True

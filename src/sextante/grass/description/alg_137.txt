@@ -1,8 +1,0 @@
-v.what.vect
-Vector (v.*)
-ParameterVector|vector|vector|-1|False
-ParameterString|layer|layer|1
-ParameterString|column|column|
-ParameterVector|qvector|qvector|-1|False
-ParameterString|qcolumn|qcolumn|
-ParameterString|dmax|dmax|0.0

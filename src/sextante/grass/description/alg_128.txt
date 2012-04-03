@@ -1,5 +1,0 @@
-r.out.xyz
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|/file
-ParameterString|fs|fs|

@@ -1,6 +1,6 @@
 v.patch
 Vector (v.*)
-ParameterMultipleInput|input|input|5.0|False
+ParameterMultipleInput|input|input|-1|False
 ParameterBoolean|-a|-a|True
 ParameterBoolean|-e|-e|True
 OutputVector|output|output

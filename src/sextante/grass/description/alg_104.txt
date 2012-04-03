@@ -1,7 +1,0 @@
-r.out.pov
-Raster (r.*)
-ParameterRaster|map|map|False
-ParameterString|tga|tga|
-ParameterNumber|hftype|hftype|None|None|0.0
-ParameterNumber|bias|bias|None|None|0.0
-ParameterNumber|scale|scale|None|None|0.0

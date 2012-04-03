@@ -1,6 +1,5 @@
 r.transect
 Raster (r.*)
 ParameterRaster|map|map|False
-ParameterString|line|line|
-ParameterString|null|null|*
-ParameterBoolean|-g|-g|True
+ParameterString|line|line|0,0,0,100
+ParameterNumber|width|width|None|None|1

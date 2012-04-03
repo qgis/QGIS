@@ -1,5 +1,0 @@
-v.in.region
-Vector (v.*)
-ParameterSelection|type|type|line;area
-ParameterString|cat|cat|1
-OutputVector|output|output

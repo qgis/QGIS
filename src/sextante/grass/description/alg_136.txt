@@ -1,11 +1,10 @@
 v.outlier
 Vector (v.*)
 ParameterVector|input|input|-1|False
-ParameterString|soe|soe|10
-ParameterString|son|son|10
-ParameterString|lambda_i|lambda_i|0.1
-ParameterString|thres_o|thres_o|50
+ParameterNumber|soe|soe|None|None|10
+ParameterNumber|son|son|None|None|10
+ParameterNumber|lambda_i|lambda_i|None|None|0.1
+ParameterNumber|thres_o|thres_o|None|None|50
 ParameterBoolean|-e|-e|True
 OutputVector|output|output
 OutputVector|outlier|outlier
-OutputVector|qgis|qgis

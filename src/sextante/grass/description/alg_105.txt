@@ -2,9 +2,6 @@ r.random
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterRaster|cover|cover|False
-ParameterString|n|n|
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-d|-d|True
+ParameterNumber|n|n|None|None|10
 OutputRaster|raster_output|raster_output
 OutputVector|vector_output|vector_output
