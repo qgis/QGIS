@@ -84,58 +84,22 @@ class QgsBrowserTreeView : public QTreeView
 QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL )
 {
+  setupUi( this );
+
   setWindowTitle( tr( "Browser" ) );
 
   mBrowserView = new QgsBrowserTreeView( this );
+  mLayoutBrowser->addWidget( mBrowserView );
 
-  QToolButton* refreshButton = new QToolButton( this );
-  refreshButton->setIcon( QgsApplication::getThemeIcon( "mActionDraw.png" ) );
-  // remove this to save space
-  refreshButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-  refreshButton->setText( tr( "Refresh" ) );
-  refreshButton->setToolTip( tr( "Refresh" ) );
-  refreshButton->setAutoRaise( true );
-  connect( refreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
-
-  QToolButton* addLayersButton = new QToolButton( this );
-  addLayersButton->setIcon( QgsApplication::getThemeIcon( "mActionAddLayer.png" ) );
-  // remove this to save space
-  addLayersButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-  addLayersButton->setText( tr( "Add Selection" ) );
-  addLayersButton->setToolTip( tr( "Add Selected Layers" ) );
-  addLayersButton->setAutoRaise( true );
-  connect( addLayersButton, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
-
-  QToolButton* collapseButton = new QToolButton( this );
-  collapseButton->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
-  collapseButton->setToolTip( tr( "Collapse All" ) );
-  collapseButton->setAutoRaise( true );
-  connect( collapseButton, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
-
-  QVBoxLayout* layout = new QVBoxLayout();
-  QHBoxLayout* hlayout = new QHBoxLayout();
-  layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 0 );
-  hlayout->setContentsMargins( 0, 0, 0, 0 );
-  hlayout->setSpacing( 5 );
-  hlayout->setAlignment( Qt::AlignLeft );
-
-  hlayout->addSpacing( 5 );
-  hlayout->addWidget( refreshButton );
-  hlayout->addSpacing( 5 );
-  hlayout->addWidget( addLayersButton );
-  hlayout->addStretch( );
-  hlayout->addWidget( collapseButton );
-  layout->addLayout( hlayout );
-  layout->addWidget( mBrowserView );
-
-  QWidget* innerWidget = new QWidget( this );
-  innerWidget->setLayout( layout );
-  setWidget( innerWidget );
+  mBtnRefresh->setIcon( QgisApp::instance()->getThemeIcon( "mActionRefresh.png" ) );
+  mBtnAddLayers->setIcon( QgisApp::instance()->getThemeIcon( "mActionAdd.png" ) );
+  mBtnCollapse->setIcon( QgisApp::instance()->getThemeIcon( "mActionCollapseTree.png" ) );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
-
+  connect( mBtnRefresh, SIGNAL( clicked() ), this, SLOT( refresh() ) );
+  connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
+  connect( mBtnCollapse, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
 }
 
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
@@ -459,3 +423,4 @@ void QgsBrowserDockWidget::showProperties( )
     }
   }
 }
+

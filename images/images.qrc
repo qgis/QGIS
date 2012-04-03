@@ -20,6 +20,7 @@
     <file>themes/default/join_miter.png</file>
     <file>themes/default/join_round.png</file>
     <file>themes/default/join_style.svg</file>
+    <file>themes/default/mActionAdd.png</file>
     <file>themes/default/mActionAddAllToOverview.png</file>
     <file>themes/default/mActionAddArrow.png</file>
     <file>themes/default/mActionAddBasicShape.png</file>
@@ -126,6 +127,7 @@
     <file>themes/default/mActionPropertyItem.png</file>
     <file>themes/default/mActionQgisHomePage.png</file>
     <file>themes/default/mActionRaiseItems.png</file>
+    <file>themes/default/mActionRefresh.png</file>
     <file>themes/default/mActionRedo.png</file>
     <file>themes/default/mActionRemoveAllFromOverview.png</file>
     <file>themes/default/mActionRemoveLayer.png</file>

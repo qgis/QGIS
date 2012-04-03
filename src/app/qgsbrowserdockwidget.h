@@ -16,13 +16,14 @@
 #define QGSBROWSERDOCKWIDGET_H
 
 #include <QDockWidget>
+#include <ui_qgsbrowserdockwidgetbase.h>
 
 class QgsBrowserModel;
 class QModelIndex;
 class QTreeView;
 class QgsLayerItem;
 
-class QgsBrowserDockWidget : public QDockWidget
+class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
