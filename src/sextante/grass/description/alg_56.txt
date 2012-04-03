@@ -1,6 +1,6 @@
 r.cross
 Raster (r.*)
-ParameterMultipleInput|input|input|1.0|False
+ParameterMultipleInput|input|input|3|False
 ParameterBoolean|-z|-z|True
 ParameterBoolean|-q|-q|True
 OutputRaster|output|output

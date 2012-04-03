@@ -34,7 +34,8 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         self.infoText.setText(text)
         self.infoText.setEnabled(False)
         self.formulaText = QtGui.QLineEdit()
-        self.formulaText.setPlaceholderText("[Enter your formula here]")
+        if hasattr(self.formulaText, 'setPlaceholderText'):
+            self.formulaText.setPlaceholderText("[Enter your formula here]")
         self.setWindowTitle(self.alg.name)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)

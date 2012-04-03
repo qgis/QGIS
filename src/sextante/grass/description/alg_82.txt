@@ -3,8 +3,8 @@ Raster (r.*)
 ParameterRaster|elevation|elevation|False
 ParameterSelection|format|format|degrees;percent
 ParameterSelection|prec|prec|default;double;float;int
-ParameterString|zfactor|zfactor|1.0
-ParameterString|min_slp_allowed|min_slp_allowed|0.0
+ParameterNumber|zfactor|zfactor|None|None|1.0
+ParameterNumber|min_slp_allowed|min_slp_allowed|None|None|0.0
 ParameterBoolean|-q|-q|True
 ParameterBoolean|-a|-a|True
 OutputRaster|slope|slope

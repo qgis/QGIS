@@ -1,7 +1,7 @@
 r.prominence
 Raster (r.*)
 ParameterRaster|input|input|False
-ParameterString|radius|radius|1
+ParameterNumber|radius|radius|1|None|1
 ParameterBoolean|-a|-a|True
 ParameterBoolean|-l|-l|True
 ParameterBoolean|-g|-g|True

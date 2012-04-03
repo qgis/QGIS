@@ -2,7 +2,7 @@ v.out.pov
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterString|type|type|point,line,area,face
-ParameterString|output|output|
+ParameterString|output|output|/file
 ParameterString|size|size|10
 ParameterString|zmod|zmod|
 ParameterString|objmod|objmod|

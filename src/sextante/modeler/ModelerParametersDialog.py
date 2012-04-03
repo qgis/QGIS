@@ -259,7 +259,8 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.setFlags(QtCore.Qt.ItemIsEnabled)
                 self.tableWidget.setItem(i,0, item)
                 item = QLineEdit()
-                item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
+                if hasattr(self.item, 'setPlaceholderText'):
+                    item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
                 self.valueItems[output.name] = item
                 self.tableWidget.setCellWidget(i,1, item)
                 self.tableWidget.setRowHeight(i,22)

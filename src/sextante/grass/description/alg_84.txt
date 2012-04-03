@@ -1,16 +1,8 @@
 r.cost
 Raster (r.*)
 ParameterRaster|input|input|False
-ParameterVector|start_points|start_points|-1|False
-ParameterVector|stop_points|stop_points|-1|False
-ParameterRaster|start_rast|start_rast|False
-ParameterString|coordinate|coordinate|
-ParameterString|stop_coordinate|stop_coordinate|
-ParameterString|max_cost|max_cost|0
-ParameterString|null_cost|null_cost|
-ParameterString|percent_memory|percent_memory|100
-ParameterBoolean|-k|-k|True
+ParameterVector|start_points|start_points|0|False
+ParameterVector|stop_points|stop_points|0|False
+ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|True
 ParameterBoolean|-n|-n|True
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-v|-v|True
 OutputRaster|output|output

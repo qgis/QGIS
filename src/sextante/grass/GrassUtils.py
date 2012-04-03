@@ -4,6 +4,7 @@ import subprocess
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 import stat
+import shutil
 
 class GrassUtils:
 
@@ -161,14 +162,14 @@ class GrassUtils:
         GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "WIND"));
         mkdir(os.path.join(folder, "user", "dbf"))
         mkdir(os.path.join(folder, "user", ".tmp"))
-        outfile = open(mkdir(os.path.join(folder, "user", "VAR"), "w"))
+        outfile = open(os.path.join(folder, "user", "VAR"), "w")
         outfile.write("DB_DRIVER: dbf\n");
         outfile.write("DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n");
         outfile.close()
         GrassUtils.writeGrassWindow(os.path.join(folder, "user", "WIND"));
 
     @staticmethod
-    def writeGRASSWindow(filename):
+    def writeGrassWindow(filename):
         out = open(filename, "w")
         latlon = SextanteConfig.getSetting(GrassUtils.GRASS_LATLON)
         if not latlon:
@@ -232,9 +233,10 @@ class GrassUtils:
                     pass
             loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
 
-
-    def getGrassVersion(self):
+    @staticmethod
+    def getGrassVersion():
         #I do not know if this should be removed or let the user enter it
         #or something like that... This is just a temporary thing
         return "6.4.0"

@@ -2,6 +2,6 @@ r.spreadpath
 Raster (r.*)
 ParameterRaster|x_input|x_input|False
 ParameterRaster|y_input|y_input|False
-ParameterString|coordinate|coordinate|
+ParameterString|coordinate|coordinate|0,0
 ParameterBoolean|-v|-v|True
 OutputRaster|output|output

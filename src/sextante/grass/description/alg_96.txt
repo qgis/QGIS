@@ -10,6 +10,6 @@ ParameterNumber|n_buff|n_buff|None|None|0.0
 ParameterNumber|s_buff|s_buff|None|None|0.0
 ParameterNumber|maxdistance|maxdistance|None|None|0.0
 ParameterRaster|horizon|horizon|False
-ParameterString|coord|coord|
+ParameterString|coord|coord|0,0
 ParameterString|dist|dist|1.0
 ParameterBoolean|-d|-d|True

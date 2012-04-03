@@ -1,6 +1,6 @@
 v.random
 Vector (v.*)
-ParameterString|n|n|None|None|0.0
+ParameterNumber|n|n|None|None|0.0
 ParameterNumber|zmin|zmin|None|None|0.0
 ParameterString|zmax|zmax|None|None|0.0
 ParameterTableField|column|column|z

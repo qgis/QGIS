@@ -31,7 +31,7 @@ class ConvexHull(GeoAlgorithm):
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         output = self.getOutputValue(ConvexHull.OUTPUT)
         useSelection = self.getParameterValue(ConvexHull.USE_SELECTED)
-        useField = (self.getParameterValue(ConvexHull.METHOD) == ConvexHull.METHODS[1])
+        useField = (self.getParameterValue(ConvexHull.METHOD) == 1)
         field = self.getParameterValue(ConvexHull.FIELD)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(ConvexHull.INPUT))
         GEOS_EXCEPT = True

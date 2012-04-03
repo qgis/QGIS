@@ -1,5 +1,0 @@
-r.reclass.area.lesser
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|lesser|lesser|None|None|0.0
-OutputRaster|output|output

@@ -2,6 +2,6 @@ v.lidar.growing
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterVector|first|first|-1|False
-ParameterString|tj|tj|0.2
-ParameterString|td|td|0.6
+ParameterNumber|tj|tj|None|None|0.2
+ParameterNumber|td|td|None|None|0.6
 OutputVector|output|output

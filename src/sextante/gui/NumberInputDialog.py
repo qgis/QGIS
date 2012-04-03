@@ -25,7 +25,8 @@ class NumberInputDialog(QtGui.QDialog):
         self.tree.setHeaderHidden(True)
         self.fillTree()
         self.formulaText = QtGui.QLineEdit()
-        self.formulaText.setPlaceholderText("[Enter your formula here]")
+        if hasattr(self.formulaText, 'setPlaceholderText'):
+            self.formulaText.setPlaceholderText("[Enter your formula here]")
         self.setWindowTitle("Enter number or expression")
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
@@ -43,7 +44,7 @@ class NumberInputDialog(QtGui.QDialog):
 
     def fillTree(self):
         layersItem = QtGui.QTreeWidgetItem()
-        layersItem.setText(0, "Values from data layers")
+        layersItem.setText(0, "Values from data layers extents")
         self.tree.addTopLevelItem(layersItem)
         layers = QGisLayers.getAllLayers()
         for layer in layers:
@@ -57,6 +58,20 @@ class NumberInputDialog(QtGui.QDialog):
                 cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
                 layerItem.addChild(TreeValueItem("Cellsize", cellsize))
             layersItem.addChild(layerItem)
+        layersItem = QtGui.QTreeWidgetItem()
+        layersItem.setText(0, "Values from raster layers statistics")
+        self.tree.addTopLevelItem(layersItem)
+        layers = QGisLayers.getRasterLayers()
+        for layer in layers:
+            for i in range(layer.bandCount()):
+                stats = layer.bandStatistics(i)
+                layerItem = QtGui.QTreeWidgetItem()
+                layerItem.setText(0, str(layer.name()))
+                layerItem.addChild(TreeValueItem("Mean", stats.mean))
+                layerItem.addChild(TreeValueItem("Std. deviation", stats.stdDev))
+                layerItem.addChild(TreeValueItem("Max value", stats.maximumValue))
+                layerItem.addChild(TreeValueItem("Min value", stats.minimumValue))
+                layersItem.addChild(layerItem)
 
     def addValue(self):
         item = self.tree.currentItem()

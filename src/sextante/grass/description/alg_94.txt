@@ -1,8 +1,8 @@
 r.circle
 Raster (r.*)
-ParameterString|coordinate|coordinate|
-ParameterString|min|min|
-ParameterString|max|max|
-ParameterString|mult|mult|
+ParameterString|coordinate|coordinate|0,0
+Parameter-Number|min|min|None|None|10
+ParameterString|max|max|None|None|20
+ParameterString|mult|mult|1
 ParameterBoolean|-b|-b|True
 OutputRaster|output|output

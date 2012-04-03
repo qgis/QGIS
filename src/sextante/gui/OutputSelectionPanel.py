@@ -19,7 +19,8 @@ class OutputSelectionPanel(QtGui.QWidget):
         self.horizontalLayout.setObjectName("hLayout")
         self.text = QtGui.QLineEdit()
         self.text.setObjectName("label")
-        self.text.setPlaceholderText(OutputSelectionPanel.SAVE_TO_TEMP_FILE)
+        if hasattr(self.text, 'setPlaceholderText'):
+            self.text.setPlaceholderText(OutputSelectionPanel.SAVE_TO_TEMP_FILE)
         self.text.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()

@@ -1,6 +1,5 @@
 v.dissolve
 Vector (v.*)
 ParameterVector|input|input|-1|False
-ParameterString|layer|layer|1
-ParameterString|column|column|
+ParameterTableField|column|column|input
 OutputVector|output|output

@@ -1,9 +1,9 @@
 r.grow
 Raster (r.*)
 ParameterRaster|input|input|False
-ParameterString|radius|radius|1.01
+ParameterNumber|radius|radius|None|None|1.01
 ParameterSelection|metric|metric|euclidean;maximum;manhattan
-ParameterString|old|old|
-ParameterString|new|new|
+ParameterNumber|old|old|None|None|0
+ParameterNumber|new|new|None|None|1
 ParameterBoolean|-q|-q|True
 OutputRaster|output|output

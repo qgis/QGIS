@@ -1,5 +1,0 @@
-r.colors.stddev
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterBoolean|-b|-b|True
-ParameterBoolean|-z|-z|True

@@ -19,6 +19,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.grass.GrassUtils import GrassUtils
 import time
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.parameters.ParameterSelection import ParameterSelection
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -75,30 +76,41 @@ class GrassAlgorithm(GeoAlgorithm):
         if auto:
             first = True;
             for param in self.parameters:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
-                        value = param.value
+                if isinstance(param, ParameterRaster):
+                    if isinstance(param.value, QgsRasterLayer):
+                        layer = param.value
                     else:
-                        value = QGisLayers.getObjectFromUri(param.value)
-                    if first:
-                        self.xmin = value.extent().xMinimum()
-                        self.xmax = value.extent().xMaximum()
-                        self.ymin = value.extent().yMinimum()
-                        self.ymax = value.extent().yMaximum()
-                        self.cellsize = (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim()
-                        first = False
-                    else:
-                        self.xmin = min(self.xmin, value.extent().xMinimum())
-                        self.xmax = max(self.xmax, value.extent().xMaximum())
-                        self.ymin = min(self.ymin, value.extent().yMinimum())
-                        self.ymax = max(self.ymax, value.extent().yMaximum())
-                        self.cellsize = max(self.cellsize, (value.extent().xMaximum() - value.extent().xMinimum())/value.getRasterXDim())
+                        layer = QGisLayers.getObjectFromUri(param.value)
+                    self.addToResamplingExtent(layer, first)
+                    first = False
+                if isinstance(param, ParameterMultipleInput):
+                    if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                        layers = param.value.split(";")
+                        for layername in layers:
+                            layer = QGisLayers.getObjectFromUri(layername, first)
+                            self.addToResamplingExtent(layer, first)
+                            first = False
         else:
             self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)
             self.ymin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMIN)
             self.ymax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMAX)
             self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+
+
+    def addToResamplingExtent(self, layer, first):
+        if first:
+            self.xmin = layer.extent().xMinimum()
+            self.xmax = layer.extent().xMaximum()
+            self.ymin = layer.extent().yMinimum()
+            self.ymax = layer.extent().yMaximum()
+            self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
+        else:
+            self.xmin = min(self.xmin, layer.extent().xMinimum())
+            self.xmax = max(self.xmax, layer.extent().xMaximum())
+            self.ymin = min(self.ymin, layer.extent().yMinimum())
+            self.ymax = max(self.ymax, layer.extent().yMaximum())
+            self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 
 
     def processAlgorithm(self, progress):
@@ -110,11 +122,9 @@ class GrassAlgorithm(GeoAlgorithm):
         self.exportedLayers = {}
         self.numExportedLayers = 0;
 
-        ##if self.needsregion:
         self.calculateResamplingExtent()
         GrassUtils.createTempMapset();
 
-        ##if self.needsregion:
         command = "g.region"
         command += " n=" + str(self.ymax)
         command +=" s=" + str(self.ymin)
@@ -169,7 +179,10 @@ class GrassAlgorithm(GeoAlgorithm):
                 command+=(" " + param.name + "=" + s);
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += param.name
+                    command += (" " + param.name)
+            elif isinstance(param, ParameterSelection):
+                idx = int(param.value)
+                command+=(" " + param.name + "=" + str(param.options[idx]));
             else:
                 command+=(" " + param.name + "=" + str(param.value));
 

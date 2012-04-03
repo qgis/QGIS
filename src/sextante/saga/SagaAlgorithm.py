@@ -22,6 +22,7 @@ from sextante.outputs.OutputFactory import OutputFactory
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterSelection import ParameterSelection
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -194,7 +195,7 @@ class SagaAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command+=(" -" + param.name);
-            elif isinstance(param, ParameterNumber):
+            elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 command+=(" -" + param.name + " " + str(param.value));
             else:
                 command+=(" -" + param.name + " \"" + str(param.value) + "\"");

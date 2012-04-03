@@ -1,5 +1,4 @@
 from sextante.parameters.Parameter import Parameter
-from PyQt4 import QtGui
 
 class ParameterSelection(Parameter):
 
@@ -8,6 +7,14 @@ class ParameterSelection(Parameter):
         self.description = description
         self.options = options
         self.value = None
+
+    def setValue(self, n):
+        try:
+            n = int(n)
+            self.value = n
+            return True
+        except:
+            return False
 
     def getAsScriptCode(self):
         return "##" + self.name + "=selection " + ";".join(self.options)

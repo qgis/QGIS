@@ -218,7 +218,7 @@ class RAlgorithm(GeoAlgorithm):
                 commands.append(param.name + " = " + "readOGR(\"" + value + "\",layer=\"" + filename + "\")")
             if isinstance(param, (ParameterTableField, ParameterString)):
                 commands.append(param.name + "=\"" + param.value + "\"")
-            if isinstance(param, ParameterNumber):
+            if isinstance(param, (ParameterNumber, ParameterSelection)):
                 commands.append(param.name + "=" + str(param.value))
             if isinstance(param, ParameterBoolean):
                 if param.value:

@@ -2,12 +2,12 @@ v.surf.bspline
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterVector|sparse|sparse|-1|False
-ParameterString|sie|sie|4
-ParameterString|sin|sin|4
+ParameterNumber|sie|sie|None|None|4
+ParameterString|sin|sin|None|None|4
 ParameterSelection|method|method|bilinear;bicubic
-ParameterString|lambda_i|lambda_i|1
-ParameterString|layer|layer|0
-ParameterString|column|column|
+ParameterString|lambda_i|lambda_i|None|None|1
+ParameterString|layer|layer|1
+ParameterTableField|column|column|input
 ParameterBoolean|-c|-c|True
 ParameterBoolean|-e|-e|True
 OutputVector|output|output

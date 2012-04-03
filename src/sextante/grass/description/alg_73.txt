@@ -2,8 +2,6 @@ r.mfilter.fp
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|filter|filter|/file
-ParameterString|repeat|repeat|1
-ParameterString|title|title|
-ParameterBoolean|-q|-q|True
+ParameterNumber|repeat|repeat|None|None|1
 ParameterBoolean|-z|-z|True
 OutputRaster|output|output

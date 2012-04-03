@@ -1,5 +1,0 @@
-r.out.mat
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|/file
-ParameterBoolean|-v|-v|True

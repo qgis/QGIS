@@ -69,9 +69,11 @@ class ModelerDialog(QtGui.QDialog):
         #right hand side part
         #==================================
         self.textName = QtGui.QLineEdit()
-        self.textName.setPlaceholderText("[Enter model name here]")
+        if hasattr(self.textName, 'setPlaceholderText'):
+            self.textName.setPlaceholderText("[Enter model name here]")
         self.textGroup = QtGui.QLineEdit()
-        self.textGroup.setPlaceholderText("[Enter group name here]")
+        if hasattr(self.textGroup, 'setPlaceholderText'):
+            self.textGroup.setPlaceholderText("[Enter group name here]")
         self.horizontalLayoutNames = QtGui.QHBoxLayout()
         self.horizontalLayoutNames.setSpacing(2)
         self.horizontalLayoutNames.setMargin(0)
