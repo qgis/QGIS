@@ -1649,9 +1649,10 @@ void QgisApp::setupConnections()
            this, SLOT( markDirty() ) );
 
   // connect map layer registry
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ),
-           this, SLOT( layerWasAdded( QgsMapLayer * ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QgsMapLayer * ) ),
+           this, SLOT( layersWereAdded( QgsMapLayer * ) ) );
+  connect( QgsMapLayerRegistry::instance(),
+           SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( removingLayer( QString ) ) );
 
   // Connect warning dialog from project reading
@@ -2207,6 +2208,7 @@ void QgisApp::addVectorLayer()
 
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
+  QList<QgsMapLayer *> myList;
   foreach( QString src, theLayerQStringList )
   {
     src = src.trimmed();
@@ -2237,8 +2239,8 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
     {
       mMapCanvas->freeze( false );
 
-// Let render() do its own cursor management
-//      QApplication::restoreOverrideCursor();
+      // Let render() do its own cursor management
+      //      QApplication::restoreOverrideCursor();
 
       // XXX insert meaningful whine to the user here
       return false;
@@ -2268,8 +2270,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
         QString ligne = sublayers.at( 0 );
         QStringList elements = ligne.split( ":" );
         layer->setLayerName( elements.at( 1 ) );
-        // Register this layer with the layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer( layer );
+        myList << layer;
       }
       else
       {
@@ -2291,6 +2292,8 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
     }
 
   }
+  // Register this layer with the layers registry
+  QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
   // update UI
   qApp->processEvents();
@@ -2484,6 +2487,7 @@ void QgisApp::addDatabaseLayer()
 
 void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey )
 {
+  QList<QgsMapLayer *> myList;
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2521,8 +2525,9 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
     if ( layer->isValid() )
     {
-      // register this layer with the central layers registry
-      QgsMapLayerRegistry::instance()->addMapLayer( layer );
+      // add to list of layers to register
+      //with the central layers registry
+      myList << layer;
     }
     else
     {
@@ -2533,6 +2538,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     //qWarning("incrementing iterator");
   }
 
+  QgsMapLayerRegistry::instance()->addMapLayers( myList );
   statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   // update UI
@@ -4683,13 +4689,17 @@ void QgisApp::isInOverview()
   mMapLegend->legendLayerShowInOverview();
 }
 
-void QgisApp::removingLayer( QString layerId )
+void QgisApp::removingLayers( QStringList theLayers )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
-  if ( !vlayer || !vlayer->isEditable() )
-    return;
+  foreach (const QString &layerId, theLayers)
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
+          QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+    if ( !vlayer || !vlayer->isEditable() )
+      return;
 
-  toggleEditing( vlayer, false );
+    toggleEditing( vlayer, false );
+  }
 }
 
 void QgisApp::removeAllLayers()
@@ -5235,7 +5245,9 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   if ( layer && layer->isValid() )
   {
     // Register this layer with the layers registry
-    QgsMapLayerRegistry::instance()->addMapLayer( layer );
+    QList<QgsMapLayer *> myList;
+    myList << layer;
+    QgsMapLayerRegistry::instance()->addMapLayers( myList );
     statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   }
@@ -5275,7 +5287,9 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
   if ( theMapLayer->isValid() )
   {
     // Register this layer with the layers registry
-    QgsMapLayerRegistry::instance()->addMapLayer( theMapLayer );
+    QList<QgsMapLayer *> myList;
+    myList << theMapLayer;
+    QgsMapLayerRegistry::instance()->addMapLayers( myList );
     // add it to the mapcanvas collection
     // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
 
@@ -6001,31 +6015,35 @@ void QgisApp::markDirty()
   // notify the project that there was a change
   QgsProject::instance()->dirty( true );
 }
-
-void QgisApp::layerWasAdded( QgsMapLayer *layer )
+//changed from layerWasAdded to layersWereAdded in 1.8
+void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 {
-  QgsDataProvider *provider = 0;
-
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer )
-    provider = vlayer->dataProvider();
-
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( rlayer )
+  for (int i = 0; i < theLayers.size(); ++i)
   {
-    // connect up any request the raster may make to update the app progress
-    connect( rlayer, SIGNAL( drawingProgress( int, int ) ), this, SLOT( showProgress( int, int ) ) );
+    QgsMapLayer * layer = theLayers.at(i);
+    QgsDataProvider *provider = 0;
 
-    // connect up any request the raster may make to update the statusbar message
-    connect( rlayer, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vlayer )
+      provider = vlayer->dataProvider();
 
-    provider = rlayer->dataProvider();
-  }
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+    if ( rlayer )
+    {
+      // connect up any request the raster may make to update the app progress
+      connect( rlayer, SIGNAL( drawingProgress( int, int ) ), this, SLOT( showProgress( int, int ) ) );
 
-  if ( provider )
-  {
-    connect( provider, SIGNAL( dataChanged() ), layer, SLOT( clearCacheImage() ) );
-    connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
+      // connect up any request the raster may make to update the statusbar message
+      connect( rlayer, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+
+      provider = rlayer->dataProvider();
+    }
+
+    if ( provider )
+    {
+      connect( provider, SIGNAL( dataChanged() ), layer, SLOT( clearCacheImage() ) );
+      connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
+    }
   }
 }
 
@@ -6621,7 +6639,9 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
   }
 
   // register this layer with the central layers registry
-  QgsMapLayerRegistry::instance()->addMapLayer( theRasterLayer );
+  QList<QgsMapLayer *> myList;
+  myList << theRasterLayer;
+  QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
   return true;
 }

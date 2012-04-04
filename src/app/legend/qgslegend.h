@@ -207,7 +207,13 @@ class QgsLegend : public QTreeWidget
 
   public slots:
 
-    /*!Adds a new layer group with the maplayer to the canvas*/
+
+    /*!Adds a new layer group with the maplayers to the canvas*/
+    void addLayers( QList<QgsMapLayer *> );
+
+    /** Adds a new layer group with the maplayer to the canvas
+      * @note Deprecated since 1.8 - use addLayers rather
+      */
     void addLayer( QgsMapLayer * layer );
 
     void setLayerVisible( QgsMapLayer * layer, bool visible );
@@ -264,7 +270,13 @@ class QgsLegend : public QTreeWidget
      */
     void removeGroup( int groupIndex );
 
+    /*!
+     * @deprecated - use removeLayers() rather
+     */
     void removeLayer( QString );
+
+    /** Remove one or more layers from the legend */
+    void removeLayers( QStringList theLayers );
 
     /** called to read legend settings from project */
     void readProject( const QDomDocument & );

@@ -400,11 +400,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! mark project dirty
     void markDirty();
 
-    //! layer was added
-    void layerWasAdded( QgsMapLayer * );
+    /* changed from layerWasAdded in 1.8 */
+    void layersWereAdded( QList<QgsMapLayer *> );
 
-    //! layer will be removed
-    void removingLayer( QString );
+    /* layer will be removed - changed from removingLayer to removingLayers
+       in 1.8.
+    */
+    void removingLayers( QStringList );
 
     void updateUndoActions();
 

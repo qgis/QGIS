@@ -110,8 +110,10 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
     emit layersWillBeRemoved( theLayerIds );
 
   foreach (const QString &myId, theLayerIds) {
-      delete mMapLayers[myId];
-      mMapLayers.remove( myId );
+    if ( theEmitSignal )
+      emit layerWillBeRemoved( myId );
+    delete mMapLayers[myId];
+    mMapLayers.remove( myId );
   }
   emit layersWillBeRemoved(theLayerIds);
 }
@@ -120,10 +122,9 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
 void QgsMapLayerRegistry::removeMapLayer( QString theLayerId,
                                           bool theEmitSignal )
 {
-  if ( theEmitSignal )
-    emit layerWillBeRemoved( theLayerId );
-  delete mMapLayers[theLayerId];
-  mMapLayers.remove( theLayerId );
+  QStringList myList;
+  myList << theLayerId;
+  removeMapLayers( myList, theEmitSignal );
 }
 
 void QgsMapLayerRegistry::removeAllMapLayers()
@@ -133,14 +134,14 @@ void QgsMapLayerRegistry::removeAllMapLayers()
 
   // now let all canvas observers know to clear themselves,
   // and then consequently any of their map legends
-  while ( mMapLayers.size() > 0 )
+  QStringList myList;
+  QMap<QString, QgsMapLayer *>::iterator it;
+  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
   {
-    QString id = mMapLayers.begin().key();
-    emit layerWillBeRemoved( id );
-    delete mMapLayers[ id ]; // delete the map layer
-    mMapLayers.remove( id );
+    QString id = it.key();
+    myList << id;
   }
-
+  removeMapLayers(myList, false);
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 

@@ -44,10 +44,10 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
     ~QgsMapLayerRegistry();
 
-//! Retrieve a pointer to a loaded layer by id
+    //! Retrieve a pointer to a loaded layer by id
     QgsMapLayer * mapLayer( QString theLayerId );
 
-//! Retrieve the mapLayers collection (mainly intended for use by projectio)
+    //! Retrieve the mapLayers collection (mainly intended for use by projectio)
     QMap<QString, QgsMapLayer*> & mapLayers();
 
     /** Add a layer to the map of loaded layers
@@ -63,9 +63,9 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
        @note This method is deprecated since QGIS 1.8, you should use addMapLayers rather.
     */
-    QgsMapLayer *addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal = true );
+    Q_DECL_DEPRECATED QgsMapLayer *addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal = true );
 
-    /** Add a layer to the map of loaded layers
+    /** Add a list of layers to the map of loaded layers
        @returns QList<QgsMapLayer *> - a list of the map layers that were added
        successfully. If a layer is invalid, or already exists in the registry,
        it will not be part of the returned QList.
@@ -92,11 +92,10 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
        table entry.
        @note This method is deprecated since QGIS 1.8, you should use removeMapLayers rather.
     */
-    void removeMapLayer( QString theLayerId, bool theEmitSignal = true );
+    Q_DECL_DEPRECATED void removeMapLayer( QString theLayerId, bool theEmitSignal = true );
 
     /** Remove a set of layers from qgis
-       @note
-       As a side-effect QgsProject is made dirty.
+       @note As a side-effect QgsProject is made dirty.
        Any canvases using the affected layers will need to remove them
 
        If theEmitSignal is true (by default), a layersRemoved( QStringList theLayerIds )
@@ -136,7 +135,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
     /** emitted when a layer is removed from the registry
        connected to main map canvas and overview map canvas remove()
-       @note Deprecated in 1.8 - see layersWillBeRemoved
+       @note we should deprecate this at some stage
     */
     void layerWillBeRemoved( QString theLayerId );
 
@@ -146,7 +145,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
     void layersAdded( QList<QgsMapLayer *> theMapLayers );
     /** emitted when a layer is added to the registry
        connected to main map canvas and overview map canvas addLayer()
-       @note Deprecated in 1.8 - see layersAdded
+       @note we should deprecate this at some stage
     */
     void layerWasAdded( QgsMapLayer * theMapLayer );
 

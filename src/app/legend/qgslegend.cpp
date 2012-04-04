@@ -95,12 +95,14 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
            this, SLOT( writeProject( QDomDocument & ) ) );
 
   // connect map layer registry signal to legend
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
-           this, SLOT( removeLayer( QString ) ) );
+  connect( QgsMapLayerRegistry::instance(),
+           SIGNAL( layersWillBeRemoved( QStringList ) ),
+           this, SLOT( removeLayers( QStringList ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( removedAll() ),
            this, SLOT( removeAll() ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
-           this, SLOT( addLayer( QgsMapLayer * ) ) );
+  connect( QgsMapLayerRegistry::instance(),
+           SIGNAL( layersAdded( QList<QgsMapLayer*> ) ),
+           this, SLOT( addLayers( QList<QgsMapLayer *> ) ) );
 
   connect( mMapCanvas, SIGNAL( layersChanged() ),
            this, SLOT( refreshCheckStates() ) );
@@ -279,38 +281,48 @@ void QgsLegend::removeGroup( int groupIndex )
   }
 }
 
-void QgsLegend::removeLayer( QString layerId )
+void QgsLegend::removeLayers( QStringList theLayers )
 {
   QgsDebugMsg( "Entering." );
-
-  bool invLayerRemoved = false;
-
-  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
+  foreach (const QString &myId, theLayers)
   {
-    QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
-    if ( li )
-    {
-      // save legend layer (parent of a legend layer file we're going to delete)
-      QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
+    bool invLayerRemoved = false;
 
-      if ( ll && ll->layer() && ll->layer()->id() == layerId )
+    for ( QTreeWidgetItem* theItem = firstItem();
+          theItem; theItem = nextItem( theItem ) )
+    {
+      QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
+      if ( li )
       {
-        if ( !ll->isVisible() )
+        // save legend layer (parent of a legend layer file we're going to delete)
+        QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
+
+        if ( ll && ll->layer() && ll->layer()->id() == myId )
         {
-          invLayerRemoved = true;
+          if ( !ll->isVisible() )
+          {
+            invLayerRemoved = true;
+          }
+          removeItem( ll );
+          delete ll;
+          break;
         }
-        removeItem( ll );
-        delete ll;
-        break;
       }
     }
+    emit itemRemoved();
+    if ( invLayerRemoved )
+      emit invisibleLayerRemoved();
   }
   updateMapCanvasLayerSet();
   adjustIconSize();
+}
 
-  emit itemRemoved();
-  if ( invLayerRemoved )
-    emit invisibleLayerRemoved();
+//deprecated delegates to removeLayers now
+void QgsLegend::removeLayer( QString theLayer )
+{
+  QStringList myList;
+  myList << theLayer;
+  removeLayers(myList);
 }
 
 void QgsLegend::mousePressEvent( QMouseEvent * e )
@@ -846,7 +858,8 @@ int QgsLegend::getItemPos( QTreeWidgetItem* item )
   return -1;
 }
 
-void QgsLegend::addLayer( QgsMapLayer * layer )
+//introduced in QGIS 1.8 - add layers in a batch
+void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
 {
   QgsDebugMsg( "Entering." );
   if ( !mMapCanvas || mMapCanvas->isDrawing() )
@@ -854,69 +867,89 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     return;
   }
 
-  QgsLegendLayer* llayer = new QgsLegendLayer( layer );
-  if ( !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
-  {
-    QFont itemFont;
-    itemFont.setItalic( true );
-    llayer->setFont( 0, itemFont );
-  }
-
-  //set the correct check states
-  blockSignals( true );
-  llayer->setCheckState( 0, llayer->isVisible() ? Qt::Checked : Qt::Unchecked );
-  blockSignals( false );
-
-  QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
-  if ( !lg && currentItem() )
-  {
-    lg = dynamic_cast<QgsLegendGroup *>( currentItem()->parent() );
-  }
-
-  int index;
-  if ( lg )
-  {
-    index = lg->indexOfChild( currentItem() );
-  }
-  else
-  {
-    index = indexOfTopLevelItem( currentItem() );
-  }
-
-  if ( index < 0 )
-  {
-    index = 0;
-  }
-
   QSettings settings;
-  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+
+  //Note if the canvas was previously blank so we can
+  //zoom to all layers at the end if neeeded
+  bool myFirstLayerFlag = false;
+  if ( layers().count() > 0 ) myFirstLayerFlag = true;
+
+  //iteratively add the layers to the canvas
+  for (int i = 0; i < theLayerList.size(); ++i)
   {
-    lg->insertChild( index, llayer );
-  }
-  else
-  {
-    insertTopLevelItem( index, llayer );
-    setCurrentItem( llayer );
-  }
+    QgsMapLayer * layer = theLayerList.at(i);
+    QgsLegendLayer* llayer = new QgsLegendLayer( layer );
+    if ( !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+    {
+      QFont itemFont;
+      itemFont.setItalic( true );
+      llayer->setFont( 0, itemFont );
+    }
 
-  setItemExpanded( llayer, true );
-  //don't expand raster items by default, there could be too many
-  refreshLayerSymbology( layer->id(), layer->type() != QgsMapLayer::RasterLayer );
+    //set the correct check states
+    blockSignals( true );
+    llayer->setCheckState( 0, llayer->isVisible() ? Qt::Checked : Qt::Unchecked );
+    blockSignals( false );
 
-  updateMapCanvasLayerSet();
+    QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
+    if ( !lg && currentItem() )
+    {
+      lg = dynamic_cast<QgsLegendGroup *>( currentItem()->parent() );
+    }
 
+    int index = 0;
+    if ( lg )
+    {
+      index = lg->indexOfChild( currentItem() );
+    }
+    else
+    {
+      index = indexOfTopLevelItem( currentItem() );
+    }
+
+    if ( index < 0 )
+    {
+      index = 0;
+    }
+
+    if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+    {
+      lg->insertChild( index, llayer );
+    }
+    else
+    {
+      insertTopLevelItem( index, llayer );
+      setCurrentItem( llayer );
+    }
+
+    setItemExpanded( llayer, true );
+    //don't expand raster items by default, there could be too many
+    refreshLayerSymbology( layer->id(), layer->type() != QgsMapLayer::RasterLayer );
+
+    updateMapCanvasLayerSet();
+    emit itemAdded( indexFromItem( llayer ) );
+}
   // first layer?
-  if ( layers().count() == 1 )
+  if ( myFirstLayerFlag )
   {
+    QgsMapLayer * myFirstLayer = theLayerList.at(0);
     if ( !mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
-      mMapCanvas->mapRenderer()->setDestinationCrs( layer->crs() );
+      mMapCanvas->mapRenderer()->setDestinationCrs( myFirstLayer->crs() );
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
   }
   //make the QTreeWidget item up-to-date
   doItemsLayout();
 
-  emit itemAdded( indexFromItem( llayer ) );
+
+}
+
+//deprecated since 1.8 - delegates to addLayers
+void QgsLegend::addLayer( QgsMapLayer * layer )
+{
+  QList<QgsMapLayer *> myList;
+  myList << layer;
+  addLayers( myList );
 }
 
 void QgsLegend::setLayerVisible( QgsMapLayer * layer, bool visible )
