@@ -152,7 +152,9 @@ void SqlAnywhere::addSqlAnywhereLayer()
         SaDebugMsg( "Beautifying layer name.  new: " + layer->name() );
 
         // register this layer with the central layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer(( QgsVectorLayer* )layer );
+        QList<QgsMapLayer *> myList;
+        myList << ( QgsVectorLayer* )layer;
+        QgsMapLayerRegistry::instance()->addMapLayers( myList );
       }
       else
       {

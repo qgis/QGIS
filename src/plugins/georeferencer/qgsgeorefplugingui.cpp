@@ -146,7 +146,8 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->id(), false );
+    QgsMapLayerRegistry::instance()->removeMapLayers(
+          (QStringList() << mLayer->id()), false );
   }
 
   delete mToolZoomIn;
@@ -251,7 +252,8 @@ void QgsGeorefPluginGui::openRaster()
 
   //delete any old rasterlayers
   if ( mLayer )
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->id(), false );
+    QgsMapLayerRegistry::instance()->removeMapLayers(
+          QStringList() << mLayer->id(), false );
 
   // Add raster
   addRaster( mRasterFileName );
@@ -1039,7 +1041,8 @@ void QgsGeorefPluginGui::addRaster( QString file )
   mLayer = new QgsRasterLayer( file, "Raster" );
 
   // so layer is not added to legend
-  QgsMapLayerRegistry::instance()->addMapLayer( mLayer, false );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << mLayer, false );
 
   // add layer to map canvas
   QList<QgsMapCanvasLayer> layers;

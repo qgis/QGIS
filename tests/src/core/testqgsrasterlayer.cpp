@@ -90,8 +90,10 @@ void TestQgsRasterLayer::initTestCase()
   mpLandsatRasterLayer = new QgsRasterLayer( myLandsatRasterFileInfo.filePath(),
       myLandsatRasterFileInfo.completeBaseName() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
-  QgsMapLayerRegistry::instance()->addMapLayer( mpLandsatRasterLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << mpRasterLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << mpLandsatRasterLayer );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
@@ -237,8 +239,10 @@ void TestQgsRasterLayer::registry()
   QgsRasterLayer * mypLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() );
 
-  QgsMapLayerRegistry::instance()->addMapLayer( mypLayer, false );
-  QgsMapLayerRegistry::instance()->removeMapLayer( mypLayer->id() );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << mypLayer, false );
+  QgsMapLayerRegistry::instance()->removeMapLayers(
+        QStringList() << mypLayer->id() );
   //cleanup
   //delete mypLayer;
 }
