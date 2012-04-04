@@ -284,7 +284,7 @@ void QgsLegend::removeGroup( int groupIndex )
 void QgsLegend::removeLayers( QStringList theLayers )
 {
   QgsDebugMsg( "Entering." );
-  foreach (const QString &myId, theLayers)
+  foreach( const QString &myId, theLayers )
   {
     bool invLayerRemoved = false;
 
@@ -322,7 +322,7 @@ void QgsLegend::removeLayer( QString theLayer )
 {
   QStringList myList;
   myList << theLayer;
-  removeLayers(myList);
+  removeLayers( myList );
 }
 
 void QgsLegend::mousePressEvent( QMouseEvent * e )
@@ -875,9 +875,9 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
   if ( layers().count() > 0 ) myFirstLayerFlag = true;
 
   //iteratively add the layers to the canvas
-  for (int i = 0; i < theLayerList.size(); ++i)
+  for ( int i = 0; i < theLayerList.size(); ++i )
   {
-    QgsMapLayer * layer = theLayerList.at(i);
+    QgsMapLayer * layer = theLayerList.at( i );
     QgsLegendLayer* llayer = new QgsLegendLayer( layer );
     if ( !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
     {
@@ -928,11 +928,11 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
 
     updateMapCanvasLayerSet();
     emit itemAdded( indexFromItem( llayer ) );
-}
+  }
   // first layer?
   if ( myFirstLayerFlag )
   {
-    QgsMapLayer * myFirstLayer = theLayerList.at(0);
+    QgsMapLayer * myFirstLayer = theLayerList.at( 0 );
     if ( !mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
       mMapCanvas->mapRenderer()->setDestinationCrs( myFirstLayer->crs() );
     mMapCanvas->zoomToFullExtent();
@@ -1173,7 +1173,7 @@ void QgsLegend::removeGroup( QgsLegendGroup *lg )
 
     if ( cl )
       QgsMapLayerRegistry::instance()->removeMapLayers(
-            QStringList() << cl->layer()->id() );
+        QStringList() << cl->layer()->id() );
     else if ( cg )
       removeGroup( cg );
 
@@ -2422,7 +2422,7 @@ void QgsLegend::removeSelectedLayers()
     if ( ll && ll->layer() )
     {
       QgsMapLayerRegistry::instance()->removeMapLayers(
-            QStringList() << ll->layer()->id() );
+        QStringList() << ll->layer()->id() );
       continue;
     }
   }

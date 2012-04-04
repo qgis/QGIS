@@ -167,7 +167,7 @@ void TestQgsMapRenderer::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;

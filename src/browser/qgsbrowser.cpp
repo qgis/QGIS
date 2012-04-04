@@ -246,7 +246,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
   QgsDebugMsg( "Layer created" );
 
   QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mLayer );
+    QList<QgsMapLayer *>() << mLayer );
 
   return true;
 }
