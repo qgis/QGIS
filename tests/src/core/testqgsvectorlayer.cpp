@@ -82,7 +82,7 @@ class TestQgsVectorLayer: public QObject
                                               myDbfFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << mpNonSpatialLayer );
+        QList<QgsMapLayer *>() << mpNonSpatialLayer );
       //
       //create a point layer that will be used in all tests...
       //
@@ -92,7 +92,7 @@ class TestQgsVectorLayer: public QObject
                                           myPointFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << mpPointsLayer );
+        QList<QgsMapLayer *>() << mpPointsLayer );
 
       //
       //create a poly layer that will be used in all tests...
@@ -103,7 +103,7 @@ class TestQgsVectorLayer: public QObject
                                          myPolyFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << mpPolysLayer );
+        QList<QgsMapLayer *>() << mpPolysLayer );
 
 
       //
@@ -115,7 +115,7 @@ class TestQgsVectorLayer: public QObject
                                          myLineFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << mpLinesLayer );
+        QList<QgsMapLayer *>() << mpLinesLayer );
       //
       // We only need maprender instead of mapcanvas
       // since maprender does not require a qui

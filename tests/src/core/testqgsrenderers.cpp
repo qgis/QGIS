@@ -91,7 +91,7 @@ void TestQgsRenderers::initTestCase()
                                       myPointFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mpPointsLayer );
+    QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
@@ -102,7 +102,7 @@ void TestQgsRenderers::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mpPolysLayer );
+    QList<QgsMapLayer *>() << mpPolysLayer );
 
 
   //
@@ -114,7 +114,7 @@ void TestQgsRenderers::initTestCase()
                                      myLineFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << mpLinesLayer );
+    QList<QgsMapLayer *>() << mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui

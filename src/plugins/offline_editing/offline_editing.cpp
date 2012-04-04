@@ -183,7 +183,7 @@ void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
 
       // register this layer with the central layers registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << remoteLayer, true );
+        QList<QgsMapLayer *>() << remoteLayer, true );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -235,7 +235,7 @@ void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
 
       // remove offline layer
       QgsMapLayerRegistry::instance()->removeMapLayers(
-            (QStringList() << qgisLayerId), true );
+        ( QStringList() << qgisLayerId ), true );
 
       // disable offline project
       QString projectTitle = QgsProject::instance()->title();
@@ -498,7 +498,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
       // register this layer with the central layers registry
       QgsMapLayerRegistry::instance()->addMapLayers(
-            QList<QgsMapLayer *>() << newLayer );
+        QList<QgsMapLayer *>() << newLayer );
 
       if ( hasLabels )
       {
@@ -571,7 +571,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
       // remove remote layer
       QgsMapLayerRegistry::instance()->removeMapLayers(
-            QStringList() << layer->id() );
+        QStringList() << layer->id() );
     }
   }
 }
