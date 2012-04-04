@@ -541,10 +541,10 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       else
       {
         qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
-               .arg( rect.xMinimum() )
-               .arg( rect.yMinimum() )
-               .arg( rect.xMaximum() )
-               .arg( rect.yMaximum() )
+               .arg( rect.xMinimum(), 0, 'f', 16 )
+               .arg( rect.yMinimum(), 0, 'f', 16 )
+               .arg( rect.xMaximum(), 0, 'f', 16 )
+               .arg( rect.yMaximum(), 0, 'f', 16 )
                .arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
       }
 
