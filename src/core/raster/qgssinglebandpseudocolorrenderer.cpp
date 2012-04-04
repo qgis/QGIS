@@ -41,7 +41,22 @@ void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
 
 QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
 {
-  return 0;
+  if ( elem.isNull() )
+  {
+    return 0;
+  }
+
+  int band = elem.attribute( "band", "-1" ).toInt();
+  QgsRasterShader* shader = 0;
+  QDomElement rasterShaderElem = elem.firstChildElement( "rastershader" );
+  if ( !rasterShaderElem.isNull() )
+  {
+    shader = new QgsRasterShader();
+    shader->readXML( rasterShaderElem );
+  }
+  QgsRasterRenderer* r = new QgsSingleBandPseudoColorRenderer( provider, band, shader );
+  r->readXML( elem );
+  return r;
 }
 
 void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
