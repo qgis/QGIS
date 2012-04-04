@@ -298,7 +298,8 @@ bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
     delete addLyr;
     return false;
   }
-  QgsMapLayerRegistry::instance()->addMapLayer( addLyr );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << addLyr );
   return true;
 } // bool QgsSpatialQueryDialog::addLayerSubset( QString name, QString subset )
 

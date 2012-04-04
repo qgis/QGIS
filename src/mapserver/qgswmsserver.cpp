@@ -1423,7 +1423,8 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       if ( theMapLayer )
       {
         layerKeys.push_front( theMapLayer->id() );
-        QgsMapLayerRegistry::instance()->addMapLayer( theMapLayer, false );
+        QgsMapLayerRegistry::instance()->addMapLayers(
+              QList<QgsMapLayer *>() << theMapLayer, false );
       }
       else
       {

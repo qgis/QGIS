@@ -429,7 +429,11 @@ bool QgsNewSpatialiteLayerDialog::apply()
         if ( layer->isValid() )
         {
           // register this layer with the central layers registry
-          if ( QgsMapLayerRegistry::instance()->addMapLayer( layer ) )
+          QList<QgsMapLayer *> myList;
+          myList << layer;
+          //addMapLayers returns a list of all successfully added layers
+          //so we compare that to our original list.
+          if ( myList == QgsMapLayerRegistry::instance()->addMapLayers( myList ) )
             return true;
         }
         else

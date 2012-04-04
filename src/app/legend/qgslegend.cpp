@@ -1161,7 +1161,8 @@ void QgsLegend::removeGroup( QgsLegendGroup *lg )
     QgsLegendGroup *cg = dynamic_cast<QgsLegendGroup *>( child );
 
     if ( cl )
-      QgsMapLayerRegistry::instance()->removeMapLayer( cl->layer()->id() );
+      QgsMapLayerRegistry::instance()->removeMapLayers(
+            QStringList() << cl->layer()->id() );
     else if ( cg )
       removeGroup( cg );
 
@@ -2405,7 +2406,8 @@ void QgsLegend::removeSelectedLayers()
     QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
     if ( ll && ll->layer() )
     {
-      QgsMapLayerRegistry::instance()->removeMapLayer( ll->layer()->id() );
+      QgsMapLayerRegistry::instance()->removeMapLayers(
+            QStringList() << ll->layer()->id() );
       continue;
     }
   }

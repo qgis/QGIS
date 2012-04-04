@@ -85,7 +85,9 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
     QList<QgsField> attrList;
     attrList.append( QgsField( "one", QVariant::Int ) );
     prov->addAttributes( attrList );
-    QgsMapLayerRegistry::instance()->addMapLayer( myLayer );
+    QList<QgsMapLayer *> myList;
+    myList << myLayer;
+    QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
   }
   else

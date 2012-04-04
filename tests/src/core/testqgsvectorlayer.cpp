@@ -81,7 +81,8 @@ class TestQgsVectorLayer: public QObject
       mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),
                                               myDbfFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayer( mpNonSpatialLayer );
+      QgsMapLayerRegistry::instance()->addMapLayers(
+            QList<QgsMapLayer *>() << mpNonSpatialLayer );
       //
       //create a point layer that will be used in all tests...
       //
@@ -90,7 +91,8 @@ class TestQgsVectorLayer: public QObject
       mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                           myPointFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayer( mpPointsLayer );
+      QgsMapLayerRegistry::instance()->addMapLayers(
+            QList<QgsMapLayer *>() << mpPointsLayer );
 
       //
       //create a poly layer that will be used in all tests...
@@ -100,7 +102,8 @@ class TestQgsVectorLayer: public QObject
       mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                          myPolyFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+      QgsMapLayerRegistry::instance()->addMapLayers(
+            QList<QgsMapLayer *>() << mpPolysLayer );
 
 
       //
@@ -111,7 +114,8 @@ class TestQgsVectorLayer: public QObject
       mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
                                          myLineFileInfo.completeBaseName(), "ogr" );
       // Register the layer with the registry
-      QgsMapLayerRegistry::instance()->addMapLayer( mpLinesLayer );
+      QgsMapLayerRegistry::instance()->addMapLayers(
+            QList<QgsMapLayer *>() << mpLinesLayer );
       //
       // We only need maprender instead of mapcanvas
       // since maprender does not require a qui

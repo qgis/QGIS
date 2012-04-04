@@ -75,7 +75,9 @@ void Regression992::initTestCase()
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpRasterLayer );
+  QList<QgsMapLayer *> myList;
+  myList << mpRasterLayer;
+  QgsMapLayerRegistry::instance()->addMapLayers( myList );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;
