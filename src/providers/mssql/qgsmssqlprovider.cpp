@@ -69,7 +69,7 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
   mValid = true;
 
   mUseWkb = false;
-  mSkipFailures = true;
+  mSkipFailures = false;
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
 
@@ -274,18 +274,18 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
   }
   else if ( sqlTypeName.startsWith( "date", Qt::CaseInsensitive ) )
   {
-    type = QVariant::Date;
+    type = QVariant::String;
   }
   else if ( sqlTypeName.startsWith( "datetime", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "smalldatetime", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "datetime2", Qt::CaseInsensitive ) )
   {
-    type = QVariant::DateTime;
+    type = QVariant::String;
   }
   else if ( sqlTypeName.startsWith( "time", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "timestamp", Qt::CaseInsensitive ) )
   {
-    type = QVariant::Time;
+    type = QVariant::String;
   }
   else
   {
@@ -755,6 +755,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
     statement += ") VALUES (" + values + ")";
 
+    // use prepared statement to prevent from sql injection
     if ( !mQuery.prepare( statement ) )
     {
       QString msg = mQuery.lastError().text();
@@ -775,8 +776,34 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      // use prepared statement to prevent from sql injection
-      mQuery.addBindValue( *it2 );
+      QVariant::Type type = fld.type();
+      if ( it2->isNull() || !it2->isValid() )
+      {
+        // binding null values
+        if ( type == QVariant::Date || type == QVariant::DateTime )
+          mQuery.addBindValue( QVariant( QVariant::String ) );
+        else
+          mQuery.addBindValue( QVariant( type ) );
+      }
+      else if ( type == QVariant::Int )
+      {
+        // binding an INTEGER value
+        mQuery.addBindValue( it2->toInt() );
+      }
+      else if ( type == QVariant::Double )
+      {
+        // binding a DOUBLE value
+        mQuery.addBindValue( it2->toDouble() );
+      }
+      else if ( type == QVariant::String )
+      {
+        // binding a TEXT value
+        mQuery.addBindValue( it2->toString() );
+      }
+      else
+      {
+        mQuery.addBindValue( *it2 );
+      }
     }
 
     if ( !mGeometryColName.isEmpty() )
@@ -932,6 +959,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     // set attribute filter
     statement += QString( " WHERE [%1]=%2" ).arg( mFidColName, FID_TO_STRING( fid ) );
 
+    // use prepared statement to prevent from sql injection
     if ( !mQuery.prepare( statement ) )
     {
       QString msg = mQuery.lastError().text();
@@ -949,8 +977,34 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      // use prepared statement to prevent from sql injection
-      mQuery.addBindValue( *it2 );
+      QVariant::Type type = fld.type();
+      if ( it2->isNull() || !it2->isValid() )
+      {
+        // binding null values
+        if ( type == QVariant::Date || type == QVariant::DateTime )
+          mQuery.addBindValue( QVariant( QVariant::String ) );
+        else
+          mQuery.addBindValue( QVariant( type ) );
+      }
+      else if ( type == QVariant::Int )
+      {
+        // binding an INTEGER value
+        mQuery.addBindValue( it2->toInt() );
+      }
+      else if ( type == QVariant::Double )
+      {
+        // binding a DOUBLE value
+        mQuery.addBindValue( it2->toDouble() );
+      }
+      else if ( type == QVariant::String )
+      {
+        // binding a TEXT value
+        mQuery.addBindValue( it2->toString() );
+      }
+      else
+      {
+        mQuery.addBindValue( *it2 );
+      }
     }
 
     if ( !mQuery.exec() )
