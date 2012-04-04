@@ -1073,13 +1073,17 @@ void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
   {
     if ( mpLastLayer )  // disconnect previous layer
     {
-      disconnect( mpLastLayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
-      disconnect( mpLastLayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
+      disconnect( mpLastLayer, SIGNAL( editingStarted() ),
+                  this, SLOT( layerEditStateChanged() ) );
+      disconnect( mpLastLayer, SIGNAL( editingStopped() ),
+                  this, SLOT( layerEditStateChanged() ) );
     }
     if ( vlayer ) // connect new layer
     {
-      connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
-      connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
+      connect( vlayer, SIGNAL( editingStarted() ),
+               this, SLOT( layerEditStateChanged() ) );
+      connect( vlayer, SIGNAL( editingStopped() ),
+               this, SLOT( layerEditStateChanged() ) );
     }
     mpLastLayer = vlayer;
   }

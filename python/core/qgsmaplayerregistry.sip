@@ -26,6 +26,23 @@ public:
  //! Retrieve the mapLayers collection (mainly intended for use by projection)
  QMap<QString,QgsMapLayer*> & mapLayers();
 
+ /** Add a list of layers to the map of loaded layers
+    @returns QList<QgsMapLayer *> - a list of the map layers that were added
+    successfully. If a layer is invalid, or already exists in the registry,
+    it will not be part of the returned QList.
+    @note added in QGIS 1.8
+
+    As a side-effect QgsProject is made dirty.
+
+    If theEmitSignal is true (by default), a layersAdded( QList<QgsMapLayer *>)
+    signal will be emitted indicating that a batch of layers were added.
+    Not emitting signal is useful when you want to use registry for layers
+    on a different canvas and don't want them added to the main canvas automatically.
+ */
+ QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
+                                    bool theEmitSignal = true ) /Deprecated/;
+
+
  /** Add a layer to the map of loaded layers 
     @returns NULL if unable to add layer, otherwise pointer to newly added layer
     @note
@@ -38,17 +55,26 @@ public:
  */
  QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer /Transfer/, bool theEmitSignal = TRUE);
 
+ /** Remove a set of layers from qgis
+    @note As a side-effect QgsProject is made dirty.
+    Any canvases using the affected layers will need to remove them
+
+    If theEmitSignal is true (by default), a layersRemoved( QStringList theLayerIds )
+    signal will be emitted indicating to any listeners that the layers are being removed.
+
+    The layer being removed is deleted as well as the registry
+    table entry.
+ */
+ void removeMapLayers( QStringList theLayerIds, bool theEmitSignal = true );
+
+
  /** Remove a layer from qgis
-
     @note
-
     As a side-effect QgsProject is made dirty.
-
     Any canvases using that layer will need to remove it
- 
     theEmitSignal - see addMapLayer()
  */
- void removeMapLayer(QString theLayerId, bool theEmitSignal = TRUE);
+ void removeMapLayer(QString theLayerId, bool theEmitSignal = TRUE) /Deprecated/;
 
  /** Remove all registered layers 
 
@@ -72,17 +98,26 @@ public:
  void reloadAllLayers();
 
 signals:
+ /** Emitted when one or more layers are removed from the registry
+    @note intended to replace layerWillBeRemoved in QGIS 1.8
+ */
+ void layersWillBeRemoved( QStringList theLayerIds );
 
-    /** emitted when a layer is removed from the registry
-
-       connected to main map canvas and overview map canvas remove()
-    */
+ /** emitted when a layer is removed from the registry
+     connected to main map canvas and overview map canvas remove()
+     @note rather use layersWillBeRemoved
+ */
  void layerWillBeRemoved(QString theLayerId);
 
-    /** emitted when a layer is added to the registry
+ /** Emitted when one or more layers are added to the registry
+    @note intended to replace layerWasAdded in QGIS 1.8
+ */
+ void layersAdded( QList<QgsMapLayer *> theMapLayers );
 
-       connected to main map canvas and overview map canvas addLayer()
-    */
+ /** emitted when a layer is added to the registry
+     connected to main map canvas and overview map canvas addLayer()
+     @note rather use layersWereAdded
+ */
  void layerWasAdded(QgsMapLayer * theMapLayer);
 
  /** emitted when ALL layers are removed at once
