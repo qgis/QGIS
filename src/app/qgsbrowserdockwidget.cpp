@@ -20,9 +20,9 @@
 #include <QSettings>
 #include <QToolButton>
 #include <QFileDialog>
+#include <QSortFilterProxyModel>
 
 #include "qgsbrowsermodel.h"
-#include "qgsdataitem.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
@@ -81,8 +81,141 @@ class QgsBrowserTreeView : public QTreeView
     }
 };
 
+class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
+{
+  public:
+
+    QgsBrowserTreeFilterProxyModel( QObject *parent )
+        : QSortFilterProxyModel( parent ), mModel( 0 ),
+        mFilter( "" ), mPatternSyntax( QRegExp::Wildcard )
+    {
+      setDynamicSortFilter( true );
+    }
+
+    void setBrowserModel( QgsBrowserModel* model )
+    {
+      mModel = model;
+      setSourceModel( model );
+    }
+
+    void setFilterSyntax( const QRegExp::PatternSyntax & syntax )
+    {
+      QgsDebugMsg( QString( "syntax = %1" ).arg(( int ) mPatternSyntax ) );
+      if ( mPatternSyntax == syntax )
+        return;
+      mPatternSyntax = syntax;
+      updateFilter();
+    }
+
+    void setFilter( const QString & filter )
+    {
+      QgsDebugMsg( QString( "filter = %1" ).arg( mFilter ) );
+      if ( mFilter == filter )
+        return;
+      mFilter = filter;
+      updateFilter();
+    }
+
+    void updateFilter( )
+    {
+      QgsDebugMsg( QString( "filter = %1 syntax = %2" ).arg( mFilter ).arg(( int ) mPatternSyntax ) );
+      mREList.clear();
+      if ( mPatternSyntax == QRegExp::Wildcard ||
+           mPatternSyntax == QRegExp::WildcardUnix )
+      {
+        foreach( QString f, mFilter.split( "|" ) )
+        {
+          QRegExp rx( f.trimmed() );
+          rx.setPatternSyntax( mPatternSyntax );
+          mREList.append( rx );
+        }
+      }
+      else
+      {
+        QRegExp rx( mFilter.trimmed() );
+        rx.setPatternSyntax( mPatternSyntax );
+        mREList.append( rx );
+      }
+      invalidateFilter();
+    }
+
+  protected:
+
+    QgsBrowserModel* mModel;
+    QString mFilter; //filter string provided
+    QVector<QRegExp> mREList; //list of filters, seperated by "|"
+    QRegExp::PatternSyntax mPatternSyntax;
+
+    bool filterAcceptsString( const QString & value ) const
+    {
+      // return ( filterRegExp().exactMatch( fileInfo.fileName() ) );
+      if ( mPatternSyntax == QRegExp::Wildcard ||
+           mPatternSyntax == QRegExp::WildcardUnix )
+      {
+        foreach( QRegExp rx, mREList )
+        {
+          QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.exactMatch( value ) ) );
+          if ( rx.exactMatch( value ) )
+            return true;
+        }
+      }
+      else
+      {
+        foreach( QRegExp rx, mREList )
+        {
+          QgsDebugMsg( QString( "value: [%1] rx: [%2] match: %3" ).arg( value ).arg( rx.pattern() ).arg( rx.indexIn( value ) ) );
+          QRegExp rx2( "\\b(mail|letter|correspondence)\\b" );
+          QgsDebugMsg( QString( "value: [%1] rx2: [%2] match: %3" ).arg( value ).arg( rx2.pattern() ).arg( rx2.indexIn( value ) ) );
+          QgsDebugMsg( QString( "T1 %1" ).arg( rx2.indexIn( "I sent you an email" ) ) );     // returns -1 (no match)
+          QgsDebugMsg( QString( "T2 %2" ).arg( rx2.indexIn( "Please write the letter" ) ) );     // returns -1 (no match)
+          QgsDebugMsg( QString( "T3 %2" ).arg( rx.indexIn( "Please write the letter" ) ) );     // returns -1 (no match)
+
+          if ( rx.indexIn( value ) != -1 )
+            return true;
+        }
+      }
+      return false;
+    }
+
+    bool filterAcceptsRow( int sourceRow,
+                           const QModelIndex &sourceParent ) const
+    {
+      // if ( filterRegExp().pattern() == QString( "" ) ) return true;
+      if ( mFilter == "" ) return true;
+
+      QModelIndex index = sourceModel()->index( sourceRow, 0, sourceParent );
+      QgsDataItem* item = mModel->dataItem( index );
+      QgsDataItem* parentItem = mModel->dataItem( sourceParent );
+
+      // accept "invalid" items and data collections
+      if ( ! item )
+        return true;
+      if ( qobject_cast<QgsDataCollectionItem*>( item ) )
+        return true;
+
+      // filter layer items - this could be delegated to the providers but a little overkill
+      if ( parentItem && qobject_cast<QgsLayerItem*>( item ) )
+      {
+        // filter normal files by extension
+        if ( qobject_cast<QgsDirectoryItem*>( parentItem ) )
+        {
+          QFileInfo fileInfo( item->path() );
+          return filterAcceptsString( fileInfo.fileName() );
+        }
+        // filter other items (postgis, etc.) by name
+        else if ( qobject_cast<QgsDataCollectionItem*>( parentItem ) )
+        {
+          return filterAcceptsString( item->name() );
+        }
+      }
+
+      // accept anything else
+      return true;
+    }
+
+};
 QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
-    QDockWidget( parent ), mModel( NULL )
+    QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
 {
   setupUi( this );
 
@@ -95,11 +228,44 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   mBtnAddLayers->setIcon( QgisApp::instance()->getThemeIcon( "mActionAdd.png" ) );
   mBtnCollapse->setIcon( QgisApp::instance()->getThemeIcon( "mActionCollapseTree.png" ) );
 
-  connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
+  mWidgetFilter->hide();
+  // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
+  mBtnFilterShow->setIcon( QgisApp::instance()->getThemeIcon( "mActionFilter.png" ) );
+  mBtnFilter->setIcon( QgisApp::instance()->getThemeIcon( "mActionFilter.png" ) );
+  mBtnFilterClear->setIcon( QgisApp::instance()->getThemeIcon( "mActionFilterDelete.png" ) );
+
+  QMenu* menu = new QMenu( this );
+  menu->setSeparatorsCollapsible( false );
+  mBtnFilterOptions->setMenu( menu );
+  QActionGroup* group = new QActionGroup( menu );
+  QAction* action = new QAction( tr( "Filter Pattern Syntax" ), group );
+  action->setSeparator( true );
+  menu->addAction( action );
+  // group->addAction( action );
+  action = new QAction( tr( "Wildcard(s)" ), group );
+  action->setData( QVariant(( int ) QRegExp::Wildcard ) );
+  action->setCheckable( true );
+  action->setChecked( true );
+  menu->addAction( action );
+  // group->addAction( action );
+  // menu->addSeparator()->setText( tr( "Pattern Syntax" ) );
+  action = new QAction( tr( "Regular Expression" ), group );
+  action->setData( QVariant(( int ) QRegExp::RegExp ) );
+  action->setCheckable( true );
+  menu->addAction( action );
+  // group->addAction( action );
+
   connect( mBtnRefresh, SIGNAL( clicked() ), this, SLOT( refresh() ) );
   connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
   connect( mBtnCollapse, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
+  connect( mBtnFilterShow, SIGNAL( toggled( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
+  connect( mBtnFilter, SIGNAL( clicked() ), this, SLOT( setFilter() ) );
+  connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
+  connect( mBtnFilterClear, SIGNAL( clicked() ), this, SLOT( clearFilter() ) );
+  connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
+
+  connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
+  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
 }
 
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
@@ -108,8 +274,19 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   if ( mModel == NULL )
   {
     mModel = new QgsBrowserModel( mBrowserView );
-    mBrowserView->setModel( mModel );
 
+    bool useFilter = true;
+    if ( useFilter ) // enable proxy model
+    {
+      // mBrowserView->setModel( mModel );
+      mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
+      mProxyModel->setBrowserModel( mModel );
+      mBrowserView->setModel( mProxyModel );
+    }
+    else
+    {
+      mBrowserView->setModel( mModel );
+    }
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
@@ -131,7 +308,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
 {
   QModelIndex idx = mBrowserView->indexAt( pt );
-  QgsDataItem* item = mModel->dataItem( idx );
+  QgsDataItem* item = dataItem( idx );
   if ( !item )
     return;
 
@@ -188,7 +365,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
 
 void QgsBrowserDockWidget::addFavourite()
 {
-  QgsDataItem* item = mModel->dataItem( mBrowserView->currentIndex() );
+  QgsDataItem* item = dataItem( mBrowserView->currentIndex() );
   if ( !item )
     return;
 
@@ -220,7 +397,8 @@ void QgsBrowserDockWidget::addFavouriteDirectory( QString favDir )
 
 void QgsBrowserDockWidget::removeFavourite()
 {
-  QgsDataItem* item = mModel->dataItem( mBrowserView->currentIndex() );
+  QgsDataItem* item = dataItem( mBrowserView->currentIndex() );
+
   if ( !item )
     return;
   if ( item->type() != QgsDataItem::Directory )
@@ -249,7 +427,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   QgsDebugMsg( "Entered" );
   if ( index.isValid() )
   {
-    QgsDataItem *item = mModel->dataItem( index );
+    QgsDataItem *item = dataItem( index );
     if ( item )
     {
       QgsDebugMsg( "path = " + item->path() );
@@ -297,11 +475,11 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
 {
-  QgsDataItem *dataItem = mModel->dataItem( index );
+  QgsDataItem *item = dataItem( index );
 
-  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
+  if ( item != NULL && item->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
     if ( layerItem != NULL )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -328,10 +506,10 @@ void QgsBrowserDockWidget::addSelectedLayers()
   for ( int i = list.size() - 1; i >= 0; i-- )
   {
     QModelIndex index = list[i];
-    QgsDataItem *dataItem = mModel->dataItem( index );
-    if ( dataItem && dataItem->type() == QgsDataItem::Layer )
+    QgsDataItem *item = dataItem( index );
+    if ( item && item->type() == QgsDataItem::Layer )
     {
-      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
       if ( layerItem )
         addLayer( layerItem );
     }
@@ -343,11 +521,12 @@ void QgsBrowserDockWidget::addSelectedLayers()
 void QgsBrowserDockWidget::showProperties( )
 {
   QgsDebugMsg( "Entered" );
-  QgsDataItem* dataItem = mModel->dataItem( mBrowserView->currentIndex() );
+  QModelIndex index = mBrowserView->currentIndex();
+  QgsDataItem* item = dataItem( index );
 
-  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
+  if ( item != NULL && item->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
     if ( layerItem != NULL )
     {
       QgsMapLayer::LayerType type = layerItem->mapLayerType();
@@ -422,5 +601,40 @@ void QgsBrowserDockWidget::showProperties( )
       dialog->show();
     }
   }
+}
+
+void QgsBrowserDockWidget::showFilterWidget( bool visible )
+{
+  mWidgetFilter->setVisible( visible );
+  if ( ! visible )
+    clearFilter();
+}
+
+void QgsBrowserDockWidget::setFilter( )
+{
+  QString filter = mLeFilter->text();
+  if ( mProxyModel )
+    mProxyModel->setFilter( filter );
+}
+
+void QgsBrowserDockWidget::setFilterSyntax( QAction * action )
+{
+  if ( !action || ! mProxyModel )
+    return;
+  mProxyModel->setFilterSyntax(( QRegExp::PatternSyntax ) action->data().toInt() );
+}
+
+void QgsBrowserDockWidget::clearFilter( )
+{
+  mLeFilter->setText( "" );
+  setFilter();
+}
+
+QgsDataItem* QgsBrowserDockWidget::dataItem( const QModelIndex& index )
+{
+  if ( ! mProxyModel )
+    return mModel->dataItem( index );
+  else
+    return mModel->dataItem( mProxyModel->mapToSource( index ) );
 }
 

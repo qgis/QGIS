@@ -77,6 +77,8 @@
     <file>themes/default/mActionFileSaveAs.png</file>
     <file>themes/default/mActionFileSave.png</file>
     <file>themes/default/mActionFileSmall.png</file>
+    <file>themes/default/mActionFilter.png</file>
+    <file>themes/default/mActionFilterDelete.png</file>
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
