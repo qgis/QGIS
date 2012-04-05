@@ -1377,7 +1377,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   int           myResult;
   long          myRecordCount = 0;
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
