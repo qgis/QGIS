@@ -133,8 +133,10 @@ inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
   return diff > -epsilon && diff <= epsilon;
 }
 
-/** Wkt string that represents a geographic coord sys */
-const  QString GEOWkt =
+/** Wkt string that represents a geographic coord sys
+ * @note added in 1.8 to replace GEOWkt
+ */
+const  QString GEOWKT =
   "GEOGCS[\"WGS 84\", "
   "  DATUM[\"WGS_1984\", "
   "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
@@ -146,6 +148,11 @@ const  QString GEOWkt =
   "  AXIS[\"Lat\",NORTH], "
   "  AXIS[\"Long\",EAST], "
   "  AUTHORITY[\"EPSG\",4326]]";
+/** Wkt string that represents a geographic coord sys
+ * @note deprecated in 1.8 due to violation of coding conventions (globals
+ *  should be in all caps).
+*/
+Q_DECL_DEPRECATED const QString GEOWkt = GEOWKT;
 /** PROJ4 string that represents a geographic coord sys */
 const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 /** Magic number for a geographic coord sys in POSTGIS SRID */
