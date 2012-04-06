@@ -219,9 +219,10 @@ class GrassUtils:
             GrassUtils.createGrassScript(commands)
             command = ["cmd.exe", "/C ", GrassUtils.grassScriptFilename()]
         else:
+            os.putenv("GRASS_BATCH_JOB", GrassUtils.grassBatchJobFilename())
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-            #command = [SagaUtils.sagaBatchJobFilename()]
+            command = ["grass64", GrassUtils.grassMapsetFolder()]
         loglines = []
         loglines.append("GRASS execution console output")
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout

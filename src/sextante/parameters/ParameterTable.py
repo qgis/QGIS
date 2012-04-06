@@ -18,24 +18,26 @@ class ParameterTable(ParameterDataObject):
             else:
                 return False
         if isinstance(obj, QgsVectorLayer):
-            self.value = str(obj.source())
-            if self.value.endswith("shp"):
-                self.value = self.value[:-3] + "dbf"
+            source = str(obj.source())
+            if source.endswith("dbf") or source.endswith("csv"):
+                self.value = source
                 return True
             else:
                 return False
         else:
-            self.value = str(obj)
             layers = QGisLayers.getVectorLayers()
             for layer in layers:
                 if layer.name() == self.value:
-                    self.value = str(layer.source())
-                    if self.value.endswith("shp"):
-                        self.value = self.value[:-3] + "dbf"
+                    source = str(layer.source())
+                    if source.endswith("dbf") or source.endswith("csv"):
+                        self.value = source
                         return True
-                    else:
-                        return False
-            return True
+            val = str(obj)
+            if val.endswith("dbf") or val.endswith("csv"):
+                self.value = val
+                return True
+            else:
+                return False
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

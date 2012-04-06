@@ -19,6 +19,8 @@ class AlgorithmProvider():
             return
         else:
             self._loadAlgorithms()
+            for alg in self.algs:
+                alg.provider = self
 
     #methods to be overridden.
     #==============================
@@ -26,14 +28,12 @@ class AlgorithmProvider():
 
     def _loadAlgorithms(self):
         '''Algorithm loading should take place here, filling self.algs, which is a list of
-        elements of class GeoAlgorithm. Use that class to create your own algorithms
-        Since algorithms should have a reference to the provider they come
-        from, this is also the place to set the 'provider' variable of each algorithm'''
+        elements of class GeoAlgorithm. Use that class to create your own algorithms'''
         pass
 
     def initializeSettings(self):
-        '''this is the place where you should add config parameters to sextante using the SextanteConfig class.
-        this method is called when a provider is added to Sextante.
+        '''this is the place where you should add config parameters to SEXTANTE using the SextanteConfig class.
+        this method is called when a provider is added to SEXTANTE.
         By default it just adds a setting to activate or deactivate algorithms from the provider'''
         name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
         SextanteConfig.addSetting(Setting(self.getName(), name, "Activate", True))
@@ -47,8 +47,6 @@ class AlgorithmProvider():
 
     def getName(self):
         return "Generic algorithm provider"
-
-
 
 
     def getIcon(self):

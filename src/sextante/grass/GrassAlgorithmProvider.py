@@ -28,7 +28,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_REGION_CELLSIZE, "GRASS Region cellsize", 1))
 
         SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
-        #SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_USE_SELECTED, "Use only selected features in vector layers", False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -52,7 +51,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                 if descriptionFile.startswith("alg_"):
                     alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
-                        alg.provider = self
                         self.preloadedAlgs.append(alg)
                     else:
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)

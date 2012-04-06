@@ -25,7 +25,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_XMAX, "Resampling region max x", 1000))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_YMAX, "Resampling region max y", 1000))
         SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE, "Resampling region cellsize", 1))
-        SextanteConfig.addSetting(Setting("SAGA", SagaUtils.SAGA_USE_SELECTED, "Use only selected features in vector layers", False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -37,7 +36,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
-        SextanteConfig.removeSetting(SagaUtils.SAGA_USE_SELECTED)
 
     def createAlgsList(self):
         self.preloadedAlgs = []
@@ -47,7 +45,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                 if descriptionFile.startswith("alg_"):
                     alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":
-                        alg.provider = self
                         self.preloadedAlgs.append(alg)
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)

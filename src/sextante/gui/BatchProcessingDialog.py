@@ -12,7 +12,6 @@ from sextante.gui.FixedTablePanel import FixedTablePanel
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 import copy
 from sextante.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
 
 class BatchProcessingDialog(QtGui.QDialog):

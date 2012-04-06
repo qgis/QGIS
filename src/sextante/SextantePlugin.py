@@ -123,7 +123,7 @@ class SextantePlugin:
         if os.name == "nt":
             os.startfile(filename)
         elif sys.platform == "darwin":
-            subprocess.call(('open', filename))
+            subprocess.Popen(('open', filename))
         else:
             subprocess.call(('xdg-open', filename))
 

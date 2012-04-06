@@ -1,6 +1,5 @@
 v.segment
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|llayer|llayer|1
+ParameterVector|input|input|1|False
 ParameterString|file|file|/file
 OutputVector|output|output

@@ -1,7 +1,7 @@
 r.buffer
 Raster (r.*)
 ParameterRaster|input|input|False
-ParameterString|distances|distances|
+ParameterString|distances|distances|100,200,300
 ParameterSelection|units|units|meters;kilometers;feet;miles;nautmiles
 ParameterBoolean|-z|-z|True
 ParameterBoolean|-q|-q|True

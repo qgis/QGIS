@@ -12,7 +12,7 @@ class HTMLViewerDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.setObjectName("AboutDialog")
-        self.resize(80, 600)
+        self.resize(600, 500)
         self.webView = QtWebKit.QWebView()
         self.webView.setObjectName("webView")
         self.setWindowTitle("")

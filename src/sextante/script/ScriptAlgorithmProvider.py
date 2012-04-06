@@ -44,7 +44,6 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
                     fullpath = os.path.join(ScriptUtils.scriptsFolder(), descriptionFile)
                     alg = ScriptAlgorithm(fullpath)
                     if alg.name.strip() != "":
-                        alg.provider = self
                         self.algs.append(alg)
                 except WrongScriptException,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR,e.msg)

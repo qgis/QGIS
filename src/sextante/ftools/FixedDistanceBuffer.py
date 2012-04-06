@@ -9,7 +9,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterNumber import ParameterNumber
-import sextante.ftools.Buffer as buff
+from sextante.ftools import Buffer as buff
 
 class FixedDistanceBuffer(GeoAlgorithm):
 

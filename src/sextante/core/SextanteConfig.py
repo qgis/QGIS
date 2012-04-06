@@ -9,11 +9,13 @@ class SextanteConfig():
     VECTOR_LINE_STYLE = "VECTOR_LINE_STYLE"
     VECTOR_POLYGON_STYLE = "VECTOR_POLYGON_STYLE"
     SHOW_RECENT_ALGORITHMS = "SHOW_RECENT_ALGORITHMS"
+    USE_SELECTED = "USE_SELECTED"
 
     settings = {}
 
     @staticmethod
     def initialize():
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external application", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
                                            "Output folder", os.path.join(SextanteUtils.userFolder(),"outputs" )))

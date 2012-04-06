@@ -1,6 +1,0 @@
-r.in.poly
-Raster (r.*)
-ParameterString|input|input|/file
-ParameterString|title|title|
-ParameterString|rows|rows|4096
-OutputRaster|output|output

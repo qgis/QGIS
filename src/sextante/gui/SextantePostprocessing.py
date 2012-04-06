@@ -6,6 +6,7 @@ from sextante.core.SextanteResults import SextanteResults
 from sextante.gui.ResultsDialog import ResultsDialog
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.outputs.OutputHTML import OutputHTML
+from PyQt4.QtGui import *
 class SextantePostprocessing:
 
     @staticmethod
@@ -14,10 +15,11 @@ class SextantePostprocessing:
         for out in alg.outputs:
             if out.hidden:
                 continue
-            if isinstance(out, (OutputRaster, OutputVector)):
-                QGisLayers.load(out.value, out.description, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
-            elif isinstance(out, OutputTable):
-                pass #TODO*****
+            if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
+                try:
+                    QGisLayers.load(out.value, out.description, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
+                except Exception, e:
+                    QMessageBox.critical(None, "Error", str(e))
             elif isinstance(out, OutputHTML):
                 SextanteResults.addResult(out.description, out.value)
                 showResults = True

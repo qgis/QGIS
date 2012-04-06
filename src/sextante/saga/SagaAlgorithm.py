@@ -13,7 +13,6 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.outputs.OutputVector import OutputVector
 from sextante.saga.SagaUtils import SagaUtils
-import time
 from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
@@ -23,6 +22,7 @@ from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.core.LayerExporter import LayerExporter
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -32,7 +32,6 @@ class SagaAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
-        self.numExportedLayers = 0
         if self.resample:
             #reconsider resampling policy now that we know the input parameters
             self.resample = self.setResamplingPolicy()
@@ -123,10 +122,9 @@ class SagaAlgorithm(GeoAlgorithm):
             path = SagaUtils.sagaPath()
             if path == "":
                 raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
-        useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
+        #useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
         commands = list()
         self.exportedLayers = {}
-        self.numExportedLayers = 0;
 
         #1: Export rasters to sgrd and vectors to shp
         #   Tables must be in dbf format. We check that.
@@ -144,15 +142,16 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterVector):
                 if param.value == None:
                     continue
-                value = param.value
-                if (not value.endswith("shp")) or useSelection:
-                    self.exportVectorLayer(value)
+                layer = QGisLayers.getObjectFromUri(param.value, False)
+                if layer:
+                    filename = LayerExporter.exportVectorLayer(layer)
+                    self.exportedLayers[param.value]=filename
+                elif (not value.endswith("shp")):
+                        raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
                 value = param.value
-                if value.endswith("shp"):
-                    value = value[:-3] + "dbf"
                 if not value.endswith("dbf"):
                     raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterMultipleInput):
@@ -162,15 +161,19 @@ class SagaAlgorithm(GeoAlgorithm):
                 if layers == None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    for layer in layers:
-                        if not layer.endswith("sgrd"):
-                            commands.append(self.exportRasterLayer(layer))
+                    for layerfile in layers:
+                        if not layerfile.endswith("sgrd"):
+                            commands.append(self.exportRasterLayer(layerfile))
                         if self.resample:
-                            commands.append(self.resampleRasterLayer(layer));
+                            commands.append(self.resampleRasterLayer(layerfile));
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                    for layer in layers:
-                        if (not value.endswith("shp")) or useSelection:
-                            self.exportVectorLayer(value)
+                    for layerfile in layers:
+                        layer = QGisLayers.getObjectFromUri(layerfile, False)
+                        if layer:
+                            filename = LayerExporter.exportVectorLayer(layer)
+                            self.exportedLayers[param.value]=filename
+                        elif (not value.endswith("shp")):
+                            raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
         if SextanteUtils.isWindows():
@@ -245,11 +248,12 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def resampleRasterLayer(self,layer):
+        '''this is supposed to be run after having exported all raster layers'''
         if layer in self.exportedLayers.keys():
             inputFilename = self.exportedLayers[layer]
         else:
             inputFilename = layer
-        destFilename = self.getTempFilename("sgrd")
+        destFilename = SextanteUtils.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
             s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
@@ -262,56 +266,14 @@ class SagaAlgorithm(GeoAlgorithm):
         return s
 
 
-    def getObjectFromUri(self, uri):
-        layers = QGisLayers.getVectorLayers()
-        for layer in layers:
-            if layer.source() == uri:
-                return layer
-        return None
-
-    def exportVectorLayer(self, filename):
-        layer = self.getObjectFromUri(filename)
-        if layer:
-            settings = QSettings()
-            systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-            output = self.getTempFilename("shp")
-            provider = layer.dataProvider()
-            allAttrs = provider.attributeIndexes()
-            provider.select( allAttrs )
-            useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
-            if useSelection and layer.selectedFeatureCount() != 0:
-                writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
-                selection = layer.selectedFeatures()
-                for feat in selection:
-                    writer.addFeature(feat)
-                del writer
-                self.exportedLayers[filename]=output
-            else:
-                if (not filename.endswith("shp")):
-                    writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
-                    feat = QgsFeature()
-                    while provider.nextFeature(feat):
-                        writer.addFeature(feat)
-                    del writer
-                    self.exportedLayers[filename]=output
-        else:
-            if (not filename.endswith("shp")):
-                raise GeoAlgorithmExecutionException("Unsupported file format")
-
     def exportRasterLayer(self, layer):
-        destFilename = self.getTempFilename("sgrd")
+        destFilename = SextanteUtils.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
         else:
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""
 
-    def getTempFilename(self, ext):
-        self.numExportedLayers+=1
-        path = SextanteUtils.tempFolder()
-        filename = path + os.sep + str(time.time()) + str(SextanteUtils.NUM_EXPORTED) + "." + ext
-        SextanteUtils.NUM_EXPORTED +=1
 
-        return filename
 
 

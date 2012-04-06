@@ -16,12 +16,6 @@ from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
-from sextante.core.SextanteResults import SextanteResults
-from sextante.core.SextanteUtils import SextanteUtils
-from sextante.outputs.OutputRaster import OutputRaster
-from sextante.outputs.OutputVector import OutputVector
-from sextante.outputs.OutputTable import OutputTable
-from sextante.gui.ResultsDialog import ResultsDialog
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.gui.RangePanel import RangePanel
 from sextante.parameters.ParameterRange import ParameterRange
@@ -114,6 +108,7 @@ class Ui_ParametersDialog(object):
         elif isinstance(param, ParameterTable):
             item = QtGui.QComboBox()
             layers = QGisLayers.getTables()
+            QtGui.QMessageBox.critical(None, " ", str(layers))
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
@@ -149,10 +144,12 @@ class Ui_ParametersDialog(object):
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+            if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                options = QGisLayers.getRasterLayers()
+            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = QGisLayers.getVectorLayers()
             else:
-                options = QGisLayers.getRasterLayers()
+                options = QGisLayers.getVectorLayers(param.datatype)
             opts = []
             for opt in options:
                 opts.append(opt.name())
@@ -302,8 +299,6 @@ class Ui_ParametersDialog(object):
     def setPercentage(self, i):
         self.progress.setValue(i)
 
-    def setFinished(self):
-        pass
 
     def setText(self, text):
         self.progressLabel.setText(text)

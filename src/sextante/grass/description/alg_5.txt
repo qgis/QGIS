@@ -1,7 +1,0 @@
-r.in.arc
-Raster (r.*)
-ParameterString|input|input|/file
-ParameterSelection|type|type|CELL;FCELL;DCELL
-ParameterString|title|title|title
-ParameterString|mult|mult|1.0
-OutputRaster|output|output

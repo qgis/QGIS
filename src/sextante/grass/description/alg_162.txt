@@ -1,9 +1,9 @@
 r.carve
 Raster (r.*)
 ParameterRaster|rast|rast|False
-ParameterVector|vect|vect|-1|False
-ParameterString|width|width|
-ParameterString|depth|depth|
+ParameterVector|vect|vect|1|False
+ParameterNumber|width|width|None|None|1
+ParameterNumber|depth|depth|None|None|1
 ParameterBoolean|-n|-n|True
 ParameterBoolean|-q|-q|True
 OutputRaster|output|output

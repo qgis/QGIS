@@ -2,5 +2,5 @@ v.neighbors
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterSelection|method|method|count
-ParameterString|size|size|
+ParameterNumber|size|size|None|None|100
 OutputRaster|output|output

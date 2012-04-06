@@ -2,7 +2,7 @@ v.random
 Vector (v.*)
 ParameterNumber|n|n|None|None|0.0
 ParameterNumber|zmin|zmin|None|None|0.0
-ParameterString|zmax|zmax|None|None|0.0
+ParameterNumber|zmax|zmax|None|None|0.0
 ParameterTableField|column|column|z
 ParameterBoolean|-z|-z|True
 ParameterBoolean|-d|-d|True

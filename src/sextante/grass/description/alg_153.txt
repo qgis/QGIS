@@ -1,5 +1,5 @@
 r.surf.idw2
 Raster (r.*)
 ParameterRaster|input|input|False
-ParameterString|npoints|npoints|12
+ParameterNumber|npoints|npoints|1|None|12
 OutputRaster|output|output

@@ -2,7 +2,7 @@ r.describe
 Raster (r.*)
 ParameterRaster|map|map|False
 ParameterString|nv|nv|*
-ParameterString|nsteps|nsteps|255
+ParameterNumber|nsteps|nsteps|1|None|255
 ParameterBoolean|-1|-1|True
 ParameterBoolean|-r|-r|True
 ParameterBoolean|-n|-n|True

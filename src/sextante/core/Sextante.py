@@ -5,7 +5,6 @@ from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 import copy
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
@@ -18,6 +17,7 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
+from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 
 class Sextante:
 
@@ -83,6 +83,7 @@ class Sextante:
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
         Sextante.addProvider(GrassAlgorithmProvider())
+        Sextante.addProvider(GdalAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()
@@ -269,12 +270,12 @@ class Sextante:
 
     @staticmethod
     def load(layer):
-        '''loads a layer into QGIS'''
+        '''Loads a layer into QGIS'''
         QGisLayers.load(layer)
 
     @staticmethod
     def loadFromAlg(layersdict):
-        '''load all layer resulting from a given algorithm.
+        '''Load all layer resulting from a given algorithm.
         Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
         QGisLayers.loadFromDict(layersdict)
 

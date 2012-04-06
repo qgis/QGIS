@@ -1,4 +1,0 @@
-r.in.gridatb
-Raster (r.*)
-ParameterString|input|input|
-OutputRaster|output|output

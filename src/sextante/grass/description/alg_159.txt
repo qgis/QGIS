@@ -8,11 +8,11 @@ ParameterRaster|detin|detin|False
 ParameterRaster|tranin|tranin|False
 ParameterRaster|tauin|tauin|False
 ParameterRaster|manin|manin|False
-ParameterString|maninval|maninval|0.1
-ParameterString|nwalk|nwalk|
-ParameterString|niter|niter|10
-ParameterString|outiter|outiter|2
-ParameterString|diffc|diffc|0.8
+ParameterNumber|maninval|maninval|None|None|0.1
+ParameterNumber|nwalk|nwalk|None|None|1
+ParameterNumber|niter|niter|None|None|10
+ParameterNumber|outiter|outiter|None|None|2
+ParameterNumber|diffc|diffc|None|None|0.8
 OutputRaster|tc|tc
 OutputRaster|et|et
 OutputRaster|conc|conc

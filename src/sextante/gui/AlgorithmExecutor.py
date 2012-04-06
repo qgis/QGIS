@@ -14,8 +14,6 @@ class AlgorithmExecutor:
         except GeoAlgorithmExecutionException, e :
             QMessageBox.critical(None, "Error", e.msg)
             return False
-        finally:
-            progress.setFinished()
 
 class SilentProgress():
 
@@ -23,7 +21,4 @@ class SilentProgress():
         pass
 
     def setPercentage(self, i):
-        pass
-
-    def setFinished(self):
         pass

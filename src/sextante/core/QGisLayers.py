@@ -20,7 +20,7 @@ class QGisLayers:
 
         for layer in layers:
             if layer.type() == layer.RasterLayer:
-                if os.path.exists(layer.source()):#only file-based layers
+                if layer.usesProvider() and layer.providerKey() == 'gdal':#only gdal file-based layers
                     raster.append(layer)
         return raster
 
@@ -31,18 +31,16 @@ class QGisLayers:
         for layer in layers:
             if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
-                    if os.path.exists(layer.source()):
-                        vector.append(layer)
+                    #if os.path.exists(layer.source()):
+                    vector.append(layer)
         return vector
 
     @staticmethod
     def getAllLayers():
-        layers = QGisLayers.iface.legendInterface().layers()
-        layerslist = list()
-        for layer in layers:
-            if os.path.exists(layer.source()):
-                layerslist.append(layer)
-        return layerslist
+        layers = []
+        layers += QGisLayers.getRasterLayers();
+        layers += QGisLayers.getVectorLayers();
+        return layers
 
     @staticmethod
     def getTables():
@@ -50,8 +48,8 @@ class QGisLayers:
         tables = list()
         for layer in layers:
             if layer.type() == layer.VectorLayer :
-                uri = str(layer.dataProvider().dataSourceUri())
-                if (uri.endswith("shp")):
+                uri = str(layer.source())
+                if uri.endswith("csv") or uri.endswith("dbf"):
                     tables.append(layer)
         return tables
 
@@ -71,42 +69,41 @@ class QGisLayers:
             return
         prjSetting = None
         settings = QSettings()
-        try:
+        if crs != None:
+            prjSetting = settings.value("/Projections/defaultBehaviour")
+            settings.setValue("/Projections/defaultBehaviour", QVariant(""))
+        if name == None:
+            name = path.split(layer)[1]
+        qgslayer = QgsVectorLayer(layer, name , 'ogr')
+        if qgslayer.isValid():
             if crs != None:
-                prjSetting = settings.value("/Projections/defaultBehaviour")
-                settings.setValue("/Projections/defaultBehaviour", QVariant(""))
-            if name == None:
-                name = path.split(layer)[1]
-            qgslayer = QgsVectorLayer(layer, name , 'ogr')
+                qgslayer.setCrs(crs,False)
+            if style == None:
+                if qgslayer.geometryType == 0:
+                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POINT_STYLE)
+                elif qgslayer.geometryType == 1:
+                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_LINE_STYLE)
+                else:
+                    style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
+            qgslayer.loadNamedStyle(style)
+            QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+        else:
+            qgslayer = QgsRasterLayer(layer, name)
             if qgslayer.isValid():
                 if crs != None:
                     qgslayer.setCrs(crs,False)
                 if style == None:
-                    if qgslayer.geometryType == 0:
-                        style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POINT_STYLE)
-                    elif qgslayer.geometryType == 1:
-                        style = SextanteConfig.getSetting(SextanteConfig.VECTOR_LINE_STYLE)
-                    else:
-                        style = SextanteConfig.getSetting(SextanteConfig.VECTOR_POLYGON_STYLE)
+                    style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
                 qgslayer.loadNamedStyle(style)
                 QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+                QGisLayers.iface.legendInterface().refreshLayerSymbology(qgslayer)
             else:
-                qgslayer = QgsRasterLayer(layer, name)
-                if qgslayer.isValid():
-                    if crs != None:
-                        qgslayer.setCrs(crs,False)
-                    if style == None:
-                        style = SextanteConfig.getSetting(SextanteConfig.RASTER_STYLE)
-                    qgslayer.loadNamedStyle(style)
-                    QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
-                    QGisLayers.iface.legendInterface().refreshLayerSymbology(qgslayer)
-                else:
-                    QtGui.QMessageBox.critical(None, "Error", "Could not load layer: " + str(layer))
-        except Exception, e:
-            QtGui.QMessageBox.critical(None, "Error", "Could not load layer: " + str(layer))
-        finally:
-            if prjSetting:
-                settings.setValue("/Projections/defaultBehaviour", prjSetting)
+                if prjSetting:
+                    settings.setValue("/Projections/defaultBehaviour", prjSetting)
+                raise RuntimeError("Could not load layer: " + str(layer)
+                                       +"\nCheck the SEXTANTE log to look for errors in algorithm execution")
+        if prjSetting:
+            settings.setValue("/Projections/defaultBehaviour", prjSetting)
 
 
     @staticmethod

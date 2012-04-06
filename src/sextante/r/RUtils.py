@@ -47,7 +47,6 @@ class RUtils:
 
     @staticmethod
     def executeRAlgorithm(alg):
-        RUtils.consoleResults = []
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
@@ -61,11 +60,13 @@ class RUtils:
         RUtils.createConsoleOutput()
         loglines = []
         loglines.append("R execution console output")
-        loglines += RUtils.consoleResults
+        loglines += RUtils.allConsoleResults
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
     @staticmethod
     def createConsoleOutput():
+        RUtils.consoleResults = []
+        RUtils.allConsoleResults = []
         add = False
         lines = open(RUtils.getConsoleOutputFilename())
         line = lines.readline().strip("\n").strip(" ")
@@ -78,6 +79,7 @@ class RUtils:
                     add = False
             elif add:
                 RUtils.consoleResults.append("<p>" + line + "</p>\n");
+            RUtils.allConsoleResults.append(line);
             line = lines.readline().strip("\n").strip(" ")
 
 

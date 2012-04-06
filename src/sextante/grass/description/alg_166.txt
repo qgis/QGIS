@@ -1,8 +1,0 @@
-r.out.ppm3
-Raster (r.*)
-ParameterRaster|red|red|False
-ParameterRaster|green|green|False
-ParameterRaster|blue|blue|False
-ParameterString|output|output|
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-c|-c|True

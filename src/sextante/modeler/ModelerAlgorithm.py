@@ -244,10 +244,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 self.producedOutputs.append(outputs)
                 iAlg += 1
             except GeoAlgorithmExecutionException, e :
-                progress.setFinished()
                 raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
-
-        progress.setFinished()
 
 
     def getOutputType(self, i, outname):

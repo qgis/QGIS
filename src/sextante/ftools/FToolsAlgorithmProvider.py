@@ -42,8 +42,6 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                      ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                      Dissolve(), Difference(), Intersection(), Union(), Clip(), ExtentFromLayer(),
                      RandomSelection(), RandomSelectionWithinSubsets(), SelectByLocation()]
-        for alg in self.alglist:
-            alg.provider = self
 
     def getName(self):
         return "ftools"

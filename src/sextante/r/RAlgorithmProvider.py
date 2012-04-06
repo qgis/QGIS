@@ -45,7 +45,6 @@ class RAlgorithmProvider(AlgorithmProvider):
                     fullpath = os.path.join(RUtils.RScriptsFolder(), descriptionFile)
                     alg = RAlgorithm(fullpath)
                     if alg.name.strip() != "":
-                        alg.provider = self
                         self.algs.append(alg)
                 except WrongScriptException,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR,e.msg)

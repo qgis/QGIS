@@ -1,4 +1,0 @@
-v.in.gns
-Vector (v.*)
-ParameterString|file|file|/file
-OutputVector|vect|vect

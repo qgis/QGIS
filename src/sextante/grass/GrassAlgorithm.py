@@ -20,6 +20,7 @@ from sextante.grass.GrassUtils import GrassUtils
 import time
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.core.LayerExporter import LayerExporter
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -28,10 +29,6 @@ class GrassAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        #=======================================================================
-        # #true if the algorithms uses a region
-        # self.needsregion = False
-        #=======================================================================
 
     def __deepcopy__(self,memo):
         newone = GrassAlgorithm(self.descriptionFile)
@@ -67,19 +64,19 @@ class GrassAlgorithm(GeoAlgorithm):
                 raise e
         lines.close()
 
-    def calculateResamplingExtent(self):
+    def calculateRegion(self):
         auto = SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION)
         if auto:
             first = True;
             for param in self.parameters:
-                if isinstance(param, ParameterRaster):
-                    if isinstance(param.value, QgsRasterLayer):
+                if isinstance(param, (ParameterRaster, ParameterVector)):
+                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
                         layer = param.value
                     else:
                         layer = QGisLayers.getObjectFromUri(param.value)
                     self.addToResamplingExtent(layer, first)
                     first = False
-                if isinstance(param, ParameterMultipleInput):
+                elif isinstance(param, ParameterMultipleInput):
                     if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                         layers = param.value.split(";")
                         for layername in layers:
@@ -94,7 +91,7 @@ class GrassAlgorithm(GeoAlgorithm):
             self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
 
 
-    def addToResamplingExtent(self, layer, first):
+    def addToRegion(self, layer, first):
         if first:
             self.xmin = layer.extent().xMinimum()
             self.xmax = layer.extent().xMaximum()
@@ -116,9 +113,8 @@ class GrassAlgorithm(GeoAlgorithm):
 
         commands = []
         self.exportedLayers = {}
-        self.numExportedLayers = 0;
 
-        self.calculateResamplingExtent()
+        self.calculateRegion()
         GrassUtils.createTempMapset();
 
         command = "g.region"
@@ -216,9 +212,26 @@ class GrassAlgorithm(GeoAlgorithm):
         GrassUtils.executeGrass(commands, progress);
 
 
-    def exportVectorLayer(self, filename):
+    def exportVectorLayer(self, orgFilename):
+        #only export to an intermediate shp if the layer is not file-based.
+        #We assume that almost all file formats will be supported by ogr
+        #We also export if there is a selection
+        if not os.path.exists(orgFilename):
+            layer = QGisLayers.getObjectFromUri(orgFilename, False)
+            if layer:
+                filename = LayerExporter.exportVectorLayer(layer)
+        else:
+            layer = QGisLayers.getObjectFromUri(orgFilename, False)
+            if layer:
+                useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
+                if useSelection and layer.selectedFeatureCount() != 0:
+                    filename = LayerExporter.exportVectorLayer(layer)
+                else:
+                    filename = orgFilename
+            else:
+                filename = orgFilename
         destFilename = self.getTempFilename()
-        self.exportedLayers[filename]= destFilename
+        self.exportedLayers[orgFilename]= destFilename
         command = "v.in.ogr"
         command += " min_area=-1"
         command +=" dsn=\"" + os.path.dirname(filename) + "\""
@@ -240,10 +253,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
 
     def getTempFilename(self):
-        self.numExportedLayers+=1
-        filename =  str(time.time()) + str(SextanteUtils.NUM_EXPORTED)
-        SextanteUtils.NUM_EXPORTED +=1
-
+        filename =  str(time.time()) + str(SextanteUtils.getNumExportedLayers())
         return filename
 
 

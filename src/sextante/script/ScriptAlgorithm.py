@@ -1,3 +1,5 @@
+import os
+from PyQt4 import QtGui
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
@@ -10,9 +12,7 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
-import os
 from sextante.parameters.ParameterSelection import ParameterSelection
-from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber

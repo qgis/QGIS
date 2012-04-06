@@ -2,5 +2,5 @@ r.bilinear
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|north|north|None|None|0
-ParameterString|east|east|None|None|0
+ParameterNumber|east|east|None|None|0
 OutputRaster|output|output

@@ -5,8 +5,8 @@ ParameterRaster|depression|depression|False
 ParameterRaster|flow|flow|False
 ParameterRaster|disturbed.land|disturbed.land|False
 ParameterRaster|blocking|blocking|False
-ParameterNumber|threshold|threshold|0
-ParameterNumber|max.slope.length|max.slope.length|0
+ParameterNumber|threshold|threshold|None|None|0
+ParameterNumber|max.slope.length|max.slope.length|None|None|0
 ParameterBoolean|-4|-4|True
 OutputRaster|accumulation|accumulation
 OutputRaster|drainage|drainage

@@ -36,6 +36,16 @@ class SextanteUtils:
         out.value = filename
         SextanteUtils.NUM_EXPORTED += 1
 
+    @staticmethod
+    def getTempFilename(ext):
+        path = SextanteUtils.tempFolder()
+        filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers()) + "." + ext
+        return filename
+
+    @staticmethod
+    def getNumExportedLayers():
+        SextanteUtils.NUM_EXPORTED += 1
+        return SextanteUtils.NUM_EXPORTED
 
 def mkdir(newdir):
     if os.path.isdir(newdir):

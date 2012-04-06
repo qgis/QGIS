@@ -204,18 +204,19 @@ class RAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value
-                if not value.lower().endswith("asc") and not value.lower().endswith("tif"):
-                    raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 value = value.replace("\\", "/")
                 commands.append(param.name + " = " + "readGDAL(\"" + value + "\"")
             if isinstance(param, ParameterVector):
-                value = param.value
-                if not value.lower().endswith("shp"):
-                    raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
+                value = param.getSafeExportedLayer()
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
                 filename = filename[:-4]
-                commands.append(param.name + " = " + "readOGR(\"" + value + "\",layer=\"" + filename + "\")")
+                commands.append(param.name + " = readOGR(\"" + value + "\",layer=\"" + filename + "\")")
+            if isinstance(param, ParameterVector):
+                value = param.value
+                if not value.lower().endswith("csv"):
+                    raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
+                commands.append(param.name + " <- read.csv(\"" + value + "\", head=TRUE, sep=\",\")")
             if isinstance(param, (ParameterTableField, ParameterString)):
                 commands.append(param.name + "=\"" + param.value + "\"")
             if isinstance(param, (ParameterNumber, ParameterSelection)):
@@ -226,9 +227,9 @@ class RAlgorithm(GeoAlgorithm):
                 else:
                     commands.append(param.name + "=FALSE")
             if isinstance(param, ParameterMultipleInput):
-                layers = param.value.split(";")
                 iLayer = 0;
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                    layers = param.value.split(";")
                     for layer in layers:
                         if not layer.lower().endswith("asc") and not layer.lower().endswith("tif"):
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
@@ -236,6 +237,8 @@ class RAlgorithm(GeoAlgorithm):
                         commands.append("tempvar" + str(iLayer)+ " = " + "readGDAL(\"" + layer + "\"")
                         iLayer+=1
                 else:
+                    exported = param.getSafeExportedLayers()
+                    layers = exported.split(";")
                     for layer in layers:
                         if not layer.lower().endswith("shp"):
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
@@ -248,7 +251,7 @@ class RAlgorithm(GeoAlgorithm):
                 s += param.name
                 s += (" = c(")
                 iLayer = 0
-                for layer in list:
+                for layer in layers:
                     if iLayer != 0:
                         s +=","
                     s += "tempvar" + str(iLayer)

@@ -1,4 +1,0 @@
-v.in.geonames
-Vector (v.*)
-ParameterString|input|input|/file
-OutputVector|output|output

@@ -1,6 +1,6 @@
 r.surf.random
 Raster (r.*)
-ParameterString|min|min|0
-ParameterString|max|max|100
+ParameterNumber|min|min|None|None|0
+ParameterNumber|max|max|None|None|100
 ParameterBoolean|-i|-i|True
 OutputRaster|output|output
