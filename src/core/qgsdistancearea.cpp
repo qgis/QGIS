@@ -150,7 +150,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   else if ( parameter2.left( 3 ) == "rf=" )
   {
     mInvFlattening = parameter2.mid( 3 ).toDouble();
-    mSemiMinor = mSemiMajor - ( mInvFlattening / mSemiMajor );
+    mSemiMinor = mSemiMajor - ( mSemiMajor / mInvFlattening );
   }
   else
   {
