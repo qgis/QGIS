@@ -49,17 +49,25 @@ public:
    * Test using renderer to generate the image to be compared.
    * @param theTestName - to be used as the basis for writing a file to 
    * e.g. /tmp/theTestName.png
+   * @param theMismatchCount - defaults to 0 - the number of pixels that
+   * are allowed to be different from the control image. In some cases
+   * rendering may be non-deterministic. This parameter allows you to account
+   * for that by providing a tolerance.
    * @note make sure to call setExpectedImage and setMapRenderer first
    */
-  bool runTest( QString theTestName );
+  bool runTest( QString theTestName, unsigned int theMismatchCount=0 );
 
   /**
    * Test using two arbitary images (map renderer will not be used)
    * @param theTestName - to be used as the basis for writing a file to 
    * e.g. /tmp/theTestName.png
+   * @param theMismatchCount - defaults to 0 - the number of pixels that
+   * are allowed to be different from the control image. In some cases
+   * rendering may be non-deterministic. This parameter allows you to account
+   * for that by providing a tolerance.
    * @note: make sure to call setExpectedImage and setRenderedImage first.
    */
-  bool compareImages( QString theTestName );
+  bool compareImages( QString theTestName, unsigned int theMismatchCount=0 );
 private:
   QString mReport;
   QString mExpectedImageFile;

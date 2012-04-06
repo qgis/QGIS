@@ -89,7 +89,7 @@ void TestQgsMapRenderer::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1( "Value", QVariant::Int, "int", 10, 0, "Value on lon" );
   mFields.insert( 0, myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWkt );
+  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
   // Create the test dataset if it doesnt exist
   //

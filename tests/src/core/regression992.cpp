@@ -110,7 +110,8 @@ void Regression992::regression992()
   QgsRenderChecker myChecker;
   myChecker.setExpectedImage( myTestDataDir + "expected_rgbwcmyk01_YeGeo.jp2.png" );
   myChecker.setMapRenderer( mpMapRenderer );
-  bool myResultFlag = myChecker.runTest( "regression992" );
+  // allow up to 300 mismatched pixels
+  bool myResultFlag = myChecker.runTest( "regression992", 300 );
   mReport += "\n\n\n" + myChecker.report();
   QVERIFY( myResultFlag );
 }
