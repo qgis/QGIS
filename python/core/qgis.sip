@@ -100,8 +100,15 @@ public:
 };
 
 
-  /** Wkt string that represents a geographic coord sys */
-  const  QString GEOWkt;
+  /** Wkt string that represents a geographic coord sys
+   * @note added in 1.8 to replace GEOWkt
+  */
+  const  QString GEOWKT;
+  /** Wkt string that represents a geographic coord sys
+  * @note deprecated in 1.8 due to violation of coding conventions (globals
+  *  should be in all caps).
+  */
+  const  QString GEOWkt /Deprecated/;
   
   /** PROJ4 string that represents a geographic coord sys */
   const QString GEOPROJ4;
