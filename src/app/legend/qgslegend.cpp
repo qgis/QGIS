@@ -872,7 +872,10 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
   //Note if the canvas was previously blank so we can
   //zoom to all layers at the end if neeeded
   bool myFirstLayerFlag = false;
-  if ( layers().count() > 0 ) myFirstLayerFlag = true;
+  if ( layers().count() < 1 )
+  {
+    myFirstLayerFlag = true;
+  }
 
   //iteratively add the layers to the canvas
   for ( int i = 0; i < theLayerList.size(); ++i )
