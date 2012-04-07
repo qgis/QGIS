@@ -231,14 +231,20 @@ void TestQgsCoordinateReferenceSystem::toWkt()
   myCrs.createFromSrid( GEOSRID );
   QString myWkt = myCrs.toWkt();
   debugPrint( myCrs );
-  QVERIFY( myWkt == GEOWKT );
+  //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause...
+  QString myStrippedWkt("GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
+     "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+     "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+     "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
+     "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
+  QVERIFY( myWkt == myStrippedWkt );
 }
 void TestQgsCoordinateReferenceSystem::toProj4()
 {
   QgsCoordinateReferenceSystem myCrs;
   myCrs.createFromSrid( GEOSRID );
   debugPrint( myCrs );
-  QVERIFY( myCrs.toProj4() == GEOPROJ4 );
+  QVERIFY( myCrs.toProj4() == "+proj=longlat +datum=WGS84 +no_defs" );
 }
 void TestQgsCoordinateReferenceSystem::geographicFlag()
 {
