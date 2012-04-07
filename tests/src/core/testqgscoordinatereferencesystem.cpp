@@ -70,7 +70,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   QgsApplication::initQgis( );
   QgsApplication::showSettings();
 
-};
+}
 
 void TestQgsCoordinateReferenceSystem::wktCtor()
 {
@@ -126,7 +126,9 @@ void TestQgsCoordinateReferenceSystem::createFromSrid()
 void TestQgsCoordinateReferenceSystem::createFromWkt()
 {
   QgsCoordinateReferenceSystem myCrs;
-  QVERIFY( !myCrs.createFromWkt( GEOWKT ) );
+  myCrs.createFromWkt( GEOWKT );
+  debugPrint( myCrs );
+  QVERIFY( myCrs.isValid() );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrsId()
 {
@@ -160,7 +162,7 @@ void TestQgsCoordinateReferenceSystem::equality()
   QgsCoordinateReferenceSystem myCrs;
   myCrs.createFromSrid( GEOSRID );
   QgsCoordinateReferenceSystem myCrs2;
-  myCrs2.createFromSrsId( GEOSRID );
+  myCrs2.createFromSrsId( GEOCRS_ID );
   debugPrint( myCrs );
   QVERIFY( myCrs == myCrs2 );
 }
