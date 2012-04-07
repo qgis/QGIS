@@ -94,7 +94,10 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
         ADD_DEFINITIONS( /wd4996 /wd4701 /wd4702 )
       ELSE(MSVC)
         # disable all warnings
-        ADD_DEFINITIONS( -w -fpermissive )
+        ADD_DEFINITIONS( -w )
+        IF(NOT APPLE)
+          ADD_DEFINITIONS( -fpermissive )
+        ENDIF(NOT APPLE)
       ENDIF(MSVC)
     ENDIF(PEDANTIC)
 
