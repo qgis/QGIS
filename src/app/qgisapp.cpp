@@ -1649,11 +1649,11 @@ void QgisApp::setupConnections()
            this, SLOT( markDirty() ) );
 
   // connect map layer registry
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QgsMapLayer * ) ),
-           this, SLOT( layersWereAdded( QgsMapLayer * ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
+           this, SLOT( layersWereAdded( QList<QgsMapLayer *> ) ) );
   connect( QgsMapLayerRegistry::instance(),
            SIGNAL( layersWillBeRemoved( QStringList ) ),
-           this, SLOT( removingLayer( QString ) ) );
+           this, SLOT( removingLayers( QStringList ) ) );
 
   // Connect warning dialog from project reading
   connect( QgsProject::instance(), SIGNAL( oldProjectVersionWarning( QString ) ),
