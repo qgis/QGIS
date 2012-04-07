@@ -105,7 +105,8 @@ void TestQgsCoordinateReferenceSystem::assignmentCtor()
 void TestQgsCoordinateReferenceSystem::createFromId()
 {
   QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromId( GEOSRID, QgsCoordinateReferenceSystem::EpsgCrsId );
+  myCrs.createFromId( GEO_EPSG_CRS_ID,
+                      QgsCoordinateReferenceSystem::EpsgCrsId );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
 }
