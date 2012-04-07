@@ -1014,6 +1014,16 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
 {
   QString myWkt = toWkt();
   QString theirWkt = theSrs.toWkt();
+  // if there is a 0,0,0 based Bursa-Wolf conversion, we will test the
+  // wkt with the TOWGS84 string removed as OSRImportFromProj4
+  // (which is often used in the class to contruct an SRS)
+  // does not create the empty TOWGS84 string
+  // TODO check 3 parameter form too?
+  // see http://www.gdal.org/ogr/classOGRSpatialReference.html
+  // TODO this is probably an ugly hack, find a nicer approach TS
+  QString myToWGSString( ",TOWGS84[0,0,0,0,0,0,0]" );
+  myWkt.replace( myToWGSString, "" );
+  theirWkt.replace( myToWGSString, "" );
   return mIsValidFlag && theSrs.mIsValidFlag && myWkt == theirWkt;
 }
 
