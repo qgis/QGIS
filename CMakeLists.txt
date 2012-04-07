@@ -367,6 +367,9 @@ ELSE (WIN32)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
     # path for framework references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/${QGIS_FW_SUBDIR})
+    IF (WITH_GLOBE)
+        SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
+    ENDIF (WITH_GLOBE)
 
   ELSE (APPLE)
     # UNIX

@@ -1,0 +1,79 @@
+# 1osg - bundle OSG & osgEarth frameworks
+# ! cmakecache vars not available to external scripts
+#   so we configure it first to do substitutions
+#   make sure to use @varname@
+
+# kill boolean warnings
+CMAKE_POLICY (SET CMP0012 NEW)
+
+IF (@OSGEARTH_FOUND@)
+
+INCLUDE (@CMAKE_BINARY_DIR@/mac/0vars.cmake)
+INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
+
+SET (OSG_PLUGINS_PATH "@OSG_PLUGINS_PATH@")
+
+# list of osg frameworks to bundle
+
+SET (OSGLIST OpenThreads osg osgDB osgGA osgViewer osgEarth osgEarthAnnotation osgEarthFeatures osgEarthSymbology osgEarthUtil osgFX osgManipulator osgShadow osgSim osgTerrain osgText osgUtil osgWidget)
+#SET (PYOSGLIST future python bindings?)
+MYMESSAGE ("OSG list: ${OSGLIST}")
+
+# extract OSG framework path from OSGEARTH_LIBRARY, assume all in same prefix
+
+STRING (REPLACE "/osgEarth.framework" "" OSG_FW_DIR "@OSGEARTH_LIBRARY@")
+
+### copy OSG
+
+MESSAGE (STATUS "Copying OSG and osgEarth...")
+
+# osg frameworks
+FOREACH (OFW ${OSGLIST})
+	IF (NOT IS_DIRECTORY "${QFWDIR}/${OFW}.framework")
+		COPY_FRAMEWORK("${OSG_FW_DIR}" ${OFW} "${QFWDIR}")
+	ENDIF ()
+ENDFOREACH (OFW)
+
+# osg plugins
+
+IF (OSG_PLUGINS_PATH)
+	FILE (GLOB OSGPLUGLIST RELATIVE ${OSG_PLUGINS_PATH} ${OSG_PLUGINS_PATH}/*.so)
+	EXECUTE_PROCESS (COMMAND mkdir -p "${QPLUGDIR}/../osgPlugins")
+	FOREACH (OP ${OSGPLUGLIST})
+        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${OSG_PLUGINS_PATH}/${OP}" "${QPLUGDIR}/../osgPlugins/${OP}")
+	ENDFOREACH (OP)
+ENDIF ()
+
+# update lib paths
+
+MESSAGE (STATUS "Updating OSG library paths...")
+
+FOREACH (OFW ${OSGLIST})
+    # get install names from installed in case bundled copy already changed
+    # from a previous install attempt
+    GET_INSTALL_NAME ("${OSG_FW_DIR}/${OFW}.framework/${OFW}" ${OFW}.framework OO)
+    SET (OFW_CHG "${OO}")
+    SET (OFW_CHG_TO "${ATEXECUTABLE}/@QGIS_FW_SUBDIR@/${OFW}.framework/${OFW}")
+    # qgis app
+    INSTALLNAMETOOL_CHANGE ("${OFW_CHG}" "${OFW_CHG_TO}" "${QAPPDIR}/${QGIS_APP_NAME}")
+
+	SET (LIBPOST "${OFW}.framework/${OFW}")
+    # osg frameworks
+    IF (@OSX_HAVE_LOADERPATH@)
+        SET (OFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
+    ENDIF ()
+    FOREACH (OF ${OSGLIST})
+        INSTALLNAMETOOL_CHANGE ("${OFW_CHG}" "${OFW_CHG_TO}" "${QFWDIR}/${OF}.framework/${OF}")
+    ENDFOREACH (OF)
+    # osg plugins
+    IF (@OSX_HAVE_LOADERPATH@)
+        SET (OFW_CHG_TO "${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${LIBPOST}")
+    ENDIF ()
+    FOREACH (OP ${OSGPLUGLIST})
+        INSTALLNAMETOOL_CHANGE ("${OFW_CHG}" "${OFW_CHG_TO}" "${QPLUGDIR}/../osgPlugins/${OP}")
+    ENDFOREACH (OP)
+    # globe plugin
+    INSTALLNAMETOOL_CHANGE ("${OFW_CHG}" "${OFW_CHG_TO}" "${QPLUGDIR}/libglobeplugin.so")
+ENDFOREACH (OFW)
+
+ENDIF (@OSGEARTH_FOUND@)
