@@ -180,7 +180,10 @@ void TestQgsCoordinateReferenceSystem::equals()
   QgsCoordinateReferenceSystem myCrs;
   myCrs.createFromSrid( GEOSRID );
   debugPrint( myCrs );
-  QVERIFY( myCrs.equals( GEOPROJ4 ) );
+  //Note: OSRImportFromProj4 (used internally by equals)
+  //drops the TOWGS from the WKT which causes this test to fail
+  QString myProj4( GEOPROJ4 );
+  QVERIFY( myCrs.equals( myProj4 ) );
 }
 void TestQgsCoordinateReferenceSystem::readXML()
 {
