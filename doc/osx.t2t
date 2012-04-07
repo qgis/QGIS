@@ -102,6 +102,25 @@ may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
 CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
 
 
+== Install CMake for OSX ==
+
+Get the latest source release from here:
+
+http://www.cmake.org/cmake/resources/software.html
+
+Binary installers are available for OS X, but they are not recommended
+(2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
+strange application). Instead, download the source.
+NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
+Double-click the source tarball, then cd to the source folder and:
+
+``` 
+./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
+make
+sudo make install
+```
+
+
 == Install development frameworks for QGIS dependencies ==
 
 Download William Kyngesburye's excellent GDAL Complete package that includes
@@ -352,23 +371,99 @@ make
 sudo make install 
 ```
 
-== Install CMake for OSX ==
+=== Additional Dependencies: OSG & osgEarth ===
 
-Get the latest source release from here:
+If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
 
-http://www.cmake.org/cmake/resources/software.html
+First, **OpenSceneGraph**.  The main site is:
 
-Binary installers are available for OS X, but they are not recommended
-(2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
-strange application). Instead, download the source.
-NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
-Double-click the source tarball, then cd to the source folder and:
+http://www.openscenegraph.org/
 
-``` 
-./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
+Get the tarball (or zip) for the the latest 3.x version.
+Binary availability is unknown at this time as the site is down.
+
+Another place to get the source is github:
+
+http://github.com/openscenegraph/osg/tags
+
+Download the latest 3.1 version (you can select a tarball when you hover over
+the entry).  Double-click the source tarball to unpack it.
+(There is a version numbering oddity in the source, but since we'll be
+bundling OSG as it's meant to be, it really doesn't matter).
+
+Installation is a bit out of touch with OS X standards, so we'll stage it to a
+temporary location first.  You could stage it to the folder that the OSG source
+folder is in, or a common staging area like /Users/Shared/unix/osg.  Pick a
+folder not hidden and that doesn't need admin permissions to write to for simplicity.
+
+In a new Terminal cd to the source folder and:
+
+```
+mkdir build
+cd build
+cmake -D CMAKE_INSTALL_PREFIX=/path/to/some/staging/folder \
+-D OSG_COMPILE_FRAMEWORKS=ON \
+-D OSG_PLUGIN_SEARCH_INSTALL_DIR_FOR_PLUGINS=OFF \
+..
+make
+make install
+sudo mkdir -p "/Library/Application Support/OpenSceneGraph/PlugIns"
+```
+
+Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
+
+Now move all .frameworks from the lib/ folder in the staging area to /Library/Frameworks.  Move the files in the osgPlugins folder in the lib/ folder
+to /Library/Application Support/OpenSceneGraph/PlugIns.  The bin/ executables
+can be left where they are, we don't need them.
+
+
+Next up is **libzip**.  Get the latest tarball at:
+
+http://nih.at/libzip/
+
+Double-click the source tarball to unpack it.
+In a new Terminal cd to the source folder and:
+
+```
+./configure --disable-dependency-tracking --disable-shared CFLAGS=-Os
 make
 sudo make install
 ```
+
+
+Then it's time for **osgEarth**.  Downloads are also on github:
+
+http://github.com/gwaldron/osgearth/tags
+
+Download a tarball for the latest stable release (sorting can be confusing here).
+Double-click the source tarball to unpack it.
+
+This one also needs an intermediate staging area.  Choose a folder similar to OSG.
+
+In a new Terminal cd to the source folder and:
+
+```
+mkdir build
+cd build
+export PATH="/path/to/osg/staging/folder/bin:$PATH"
+cmake -D CMAKE_INSTALL_PREFIX=/path/to/some/staging/folder \
+-D CMAKE_BUILD_TYPE=MinSizeRel \
+-D OSGEARTH_BUILD_FRAMEWORKS=true \
+..
+make
+make install
+sudo mkdir -p "/Library/Application Support/OpenSceneGraph/Headers"
+```
+
+Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
+Also enter the OSG staging path /bin folder in the export above.
+
+Move all the .frameworks from the lib/ folder to /Library/Frameworks.
+Move the files in the osgPlugins folder in the lib/ folder to
+/Library/Application Support/OpenSceneGraph/PlugIns.  Move the osgEarthDrivers
+folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Headers.  And as for OSG, you can leave the bin/
+executables where they are.
+
 
 == QGIS source ==
 
@@ -400,8 +495,8 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
 mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
--D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
@@ -424,8 +519,8 @@ EOF
 sudo chmod +x /usr/local/bin/python32
 
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
--D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
@@ -433,7 +528,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
 ..
 ```
 
-The QGIS Mapserver feature requires fastcgi support.  This is included in
+The QGIS **Mapserver** feature requires fastcgi support.  This is included in
 Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the followling line before the last line in
 the above configuration:
@@ -445,21 +540,21 @@ the above configuration:
 On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.
 
+If you want the **Globe** plugin (and you compiled and installed OSG/osgEarth),
+add the following lines before the last line in the above configuration:
+
+```
+-D WITH_GLOBE=true \
+-D OSGEARTH_INCLUDE_DIR="/Library/Application Support/OpenSceneGraph/Headers" \
+-D OSG_PLUGINS_PATH="/Library/Application Support/OpenSceneGraph/PlugIns" \
+```
+
 __Bundling note:__ Older Qt versions may have problems with some Qt plugins and
-QGIS.  The way to handle this is to bundle Qt inside the QGIS application.  You
-can do this now or wait to see if there are immediate crashes when running QGIS.
-It's also a good idea to bundle Qt if you need to copy QGIS to other Macs (where
-you would have to install Xcode just so Qt would install!).
-
-To bundle Qt, add the following line before the last line (the ".." line) in
-the above cmake configurations:
-
-```
--D QGIS_MACAPP_BUNDLE=1 \
-```
+QGIS.  The way to handle this is to bundle Qt inside the QGIS application.  The
+default is to bundle Qt (and osg/osgEarth, if configured).
 
 Even better for distribution purposes, to also bundle any extra non-framework,
-non-standard, libs (ie postgres' libpq) bump the bundle number to 2:
+non-standard, libs (ie postgres' libpq) set the bundle value to 2:
 
 ```
 -D QGIS_MACAPP_BUNDLE=2 \
