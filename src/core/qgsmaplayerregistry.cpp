@@ -80,6 +80,8 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
     {
       mMapLayers[myLayer->id()] = myLayer;
       myResultList << mMapLayers[myLayer->id()];
+      if ( theEmitSignal )
+        emit layerWasAdded( myLayer );
     }
   }
   if ( theEmitSignal )
@@ -95,10 +97,6 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer,
   QList<QgsMapLayer *> myList;
   myList.append(theMapLayer);
   addMapLayers(myList, theEmitSignal);
-
-  if ( theEmitSignal )
-    emit layerWasAdded( theMapLayer );
-
   return theMapLayer;
 } //  QgsMapLayerRegistry::addMapLayer
 
