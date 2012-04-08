@@ -63,7 +63,7 @@ bool QgsRenderChecker::runTest( QString theTestName,
   mpMapRenderer->setOutputSize( QSize(
                                   myExpectedImage.width(),
                                   myExpectedImage.height() ),
-                                myExpectedImage.logicalDpiX() );
+                                  myExpectedImage.logicalDpiX());
   QTime myTime;
   myTime.start();
   mpMapRenderer->render( &myPainter );
@@ -73,8 +73,9 @@ bool QgsRenderChecker::runTest( QString theTestName,
   // Save the pixmap to disk so the user can make a
   // visual assessment if needed
   //
-  mRenderedImageFile = QDir::tempPath() + QDir::separator() + theTestName + "_result.png";
-  myImage.save( mRenderedImageFile );
+  mRenderedImageFile = QDir::tempPath() + QDir::separator() +
+      theTestName + "_result.png";
+  myImage.save( mRenderedImageFile, "PNG", 100 );
   return compareImages( theTestName, theMismatchCount );
 
 }
@@ -106,8 +107,11 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   QImage myExpectedImage( mExpectedImageFile );
   QImage myResultImage( mRenderedImageFile );
-  QImage myDifferenceImage( myExpectedImage.width(), myExpectedImage.height(), QImage::Format_RGB32 );
-  QString myResultDiffImage = QDir::tempPath() + QDir::separator() + theTestName + "_result_diff.png";
+  QImage myDifferenceImage( myExpectedImage.width(),
+                            myExpectedImage.height(),
+                            QImage::Format_RGB32 );
+  QString myResultDiffImage = QDir::tempPath() + QDir::separator() +
+      theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //
