@@ -29,10 +29,11 @@ h1{  background-color: #F6F6F6;
   padding: 0.75em 0 0;
   margin: 0;
   line-height: 1.1em;
+  border-bottom: 5px solid #DCEB5C;
 }
 h2{  background-color: #F6F6F6;
   color: #8FB171; 
-  font-size: medium;  
+  font-size: large;  
   font-weight: normal;
   font-family: luxi serif, georgia, times new roman, times, serif;
   background: none;
@@ -44,23 +45,19 @@ h3{  background-color: #F6F6F6;
   color: #729FCF;
   font-family: luxi serif, georgia, times new roman, times, serif;
   font-weight: bold;
-  font-size: large;
-  text-align: right;
-  border-bottom: 5px solid #DCEB5C;
+  font-size: medium;
 }
 h4{  background-color: #F6F6F6;
   color: #729FCF;
   font-family: luxi serif, georgia, times new roman, times, serif;
-  font-weight: bold;
+  font-weight: normal;
   font-size: medium;
-  text-align: right;
 }
 h5{    background-color: #F6F6F6;
    color: #729FCF;
    font-family: luxi serif, georgia, times new roman, times, serif;
    font-weight: bold;
    font-size: small;
-   text-align: right;
 }
 a{  color: #729FCF;
   font-family: arial,sans-serif;
@@ -80,12 +77,12 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Saturday April 07, 2012</H3>
+<H3>Sunday April 08, 2012</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Saturday April 07, 2012
+Last Updated: Sunday April 08, 2012
 Last Change : Saturday April 07, 2012
 </P>
 <DIV CLASS="toc">
@@ -120,8 +117,9 @@ Last Change : Saturday April 07, 2012
     <LI><A HREF="#toc22">5.5. QGIS source</A>
     <LI><A HREF="#toc23">5.6. Configure the build</A>
     <LI><A HREF="#toc24">5.7. Building</A>
+    <LI><A HREF="#toc25">5.8. Post-Install</A>
     </UL>
-  <LI><A HREF="#toc25">Authors and Acknowledgments</A>
+  <LI><A HREF="#toc26">Authors and Acknowledgments</A>
   </OL>
 
 </DIV>
@@ -2122,7 +2120,42 @@ make
 sudo make install 
 </PRE></div>
 
-<H3>5.4.8. Additional Dependencies: OSG &amp; osgEarth</H3>
+<H3>5.4.8. Additional Dependencies: gpsbabel</H3>
+
+<P>
+For integrated GPS Tools functions, a gpsbabel executable is required. You can
+find this at:
+</P>
+<P>
+<A HREF="http://www.gpsbabel.org/">http://www.gpsbabel.org/</A>
+</P>
+<P>
+Download the GPSBabel OS X package, and copy GPSBabelFE.app from the disk image to
+/Applications.  
+</P>
+
+<H3>5.4.9. Optional Dependencies: libfcgi</H3>
+
+<P>
+If you want to use the QGIS Mapserver, you need libfcgi.  This is included on
+systems up through Snow Leopard, but was dropped at Lion.  So, on Lion you need
+to get the source from:
+</P>
+<P>
+<A HREF="http://www.fastcgi.com/dist/">http://www.fastcgi.com/dist/</A>
+</P>
+<P>
+Grab the latest fcgi SNAP package there.  Double-click the source
+tarball to unpack it, then cd to the source folder and:
+</P>
+
+<div class="code"><PRE>
+./configure --disable-dependency-tracking CFLAGS=-Os
+make
+sudo make install 
+</PRE></div>
+
+<H3>5.4.10. Optional Dependencies: OSG &amp; osgEarth</H3>
 
 <P>
 If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
@@ -2289,7 +2322,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 <P>
 This will automatically find and use the previously installed frameworks, and
 the GRASS application if installed.  Remember to change the Qwt version if a
-different version was compiled.
+different version was installed.
 </P>
 <P>
 <U>Snow Leopard note:</U> To handle 32-bit Qt (Carbon), create a 32bit python wrapper
@@ -2304,7 +2337,7 @@ EOF
 
 sudo chmod +x /usr/local/bin/python32
 
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
 -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
@@ -2315,7 +2348,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
 </PRE></div>
 
 <P>
-The QGIS <B>Mapserver</B> feature requires fastcgi support.  This is included in
+<U>Mapserver note::</U> The QGIS Mapserver feature requires fastcgi support.  This is included in
 Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the followling line before the last line in
 the above configuration:
@@ -2330,7 +2363,7 @@ On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.
 </P>
 <P>
-If you want the <B>Globe</B> plugin (and you compiled and installed OSG/osgEarth),
+<U>Globe plugin note:</U> If you want the Globe plugin (and you compiled and installed OSG/osgEarth),
 add the following lines before the last line in the above configuration:
 </P>
 
@@ -2383,6 +2416,42 @@ sudo make install
 </PRE></div>
 
 <A NAME="toc25"></A>
+<H2>5.8. Post-Install</H2>
+
+<P>
+A couple things to take care of.
+</P>
+<P>
+<B>gpsbabel</B>
+</P>
+<P>
+For QGIS to <I>easily</I> find gpsbabel, you need to copy the gpsbabel executable
+to the QGIS application.  Assuming you installed QGIS in your home folder:
+</P>
+
+<div class="code"><PRE>
+cp -fp /Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel ~/QGIS.app/Contents/MacOS/bin/
+</PRE></div>
+
+<P>
+If you installed in /Applications, adjust the path accordingly and prefix the
+whole command with 'sudo '.
+</P>
+<P>
+<B>QGIS Mapserver</B>
+</P>
+<P>
+See the QGIS Mapserver wiki page at:
+</P>
+<P>
+<A HREF="http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial">http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial</A>
+</P>
+<P>
+for instructions on setting up Apache fastcgi and testing Mapserver, including
+installing the mod-fastcgi that is missing on Lion.
+</P>
+
+<A NAME="toc26"></A>
 <H1>6. Authors and Acknowledgments</H1>
 
 <P>
