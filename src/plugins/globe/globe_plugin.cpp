@@ -38,6 +38,7 @@
 
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
+#include <osgDB/Registry>
 
 #include <osgGA/StateSetManipulator>
 #include <osgGA/GUIEventHandler>
@@ -85,6 +86,13 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   //needed until https://trac.osgeo.org/qgis/changeset/15224
   setObjectName( "globePlugin" );
   setParent( theQgisInterface->mainWindow() );
+
+// add internal osg plugin path if bundled osg on OS X
+#ifdef QGIS_MACAPP_BUNDLE
+#if QGIS_MACAPP_BUNDLE > 0
+  setLibraryFilePathList( QgsApplication::prefixPath() + "/QGIS_PLUGIN_SUBDIR/../osgPlugins" );
+#endif
+#endif
 
   mSettingsDialog = new QgsGlobePluginDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   mQDockWidget = new QDockWidgetGlobe( tr( "Globe" ), theQgisInterface->mainWindow() );
