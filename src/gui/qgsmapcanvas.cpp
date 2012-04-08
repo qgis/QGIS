@@ -1560,3 +1560,28 @@ void QgsMapCanvas::mapToolDestroyed()
   QgsDebugMsg( "maptool destroyed" );
   mMapTool = 0;
 }
+
+#ifdef HAVE_TOUCH
+bool QgsMapCanvas::event( QEvent * e )
+{
+  bool done = false;
+  if ( mDrawing )
+  {
+    return done;
+  }
+  if (e->type() == QEvent::Gesture )
+  {
+    // call handler of current map tool
+    if ( mMapTool )
+    {
+      done = mMapTool->gestureEvent( static_cast<QGestureEvent*>(e) );
+    }
+  }
+  else
+  {
+    // pass other events to base class
+    done = QGraphicsView::event( e );
+  }
+  return done;
+}
+#endif

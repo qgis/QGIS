@@ -313,7 +313,6 @@ QIcon QgsPgTableModel::iconForWkbType( QGis::WkbType type )
     case QGis::WKBUnknown:
       break;
   }
-
   return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
 }
 

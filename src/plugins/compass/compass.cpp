@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "compass.h"
+#include "qgslogger.h"
 
 Compass::Compass()
 {
@@ -61,7 +62,7 @@ bool Compass::start()
   mSensor.start();
   if ( !mSensor.isActive() )
   {
-    qDebug() << "Compasssensor didn't start!" << endl;
+    QgsDebugMsg( "Compasssensor didn't start!" );
     return false;
   }
   return true;
@@ -72,7 +73,7 @@ bool Compass::stop()
   mSensor.stop();
   if ( mSensor.isActive() )
   {
-    qDebug() << "Compasssensor didn't stop!" << endl;
+    QgsDebugMsg( "Compasssensor didn't stop!" );
     return false;
   }
   return true;

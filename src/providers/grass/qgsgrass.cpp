@@ -853,6 +853,14 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
       list.append( l );
     }
 
+    /* Faces */
+    int nfaces = Vect_cidx_get_type_count( &map, field, GV_FACE );
+    if ( nfaces > 0 )
+    {
+      QString l = fs + "_face";
+      list.append( l );
+    }
+
     /* Polygons */
     int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
     if ( nareas > 0 )
