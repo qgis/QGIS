@@ -239,6 +239,9 @@ IF (ENABLE_TESTS)
   ENABLE_TESTING()
   # Define "make check" as alias for "make test" - thanks geos :-)
   add_custom_target(check COMMAND ctest --output-on-failure)
+  # For server side testing we have no X, we can use xfvb as a fake x
+  # sudo apt-get install xfvb
+  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10,1024x768x24" ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
 
