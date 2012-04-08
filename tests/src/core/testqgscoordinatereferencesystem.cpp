@@ -279,6 +279,8 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   QgsDebugMsg( "* Valid : " + ( theCrs.isValid() ? QString( "true" ) :
                                                    QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( theCrs.srsid() ) );
+  QgsDebugMsg( "* EPSG ID : " + theCrs.authid() );
+  QgsDebugMsg( "* PGIS ID : " + QString::number( theCrs.postgisSrid() ) );
   QgsDebugMsg( "* Proj4 : " + theCrs.toProj4() );
   QgsDebugMsg( "* WKT   : " + theCrs.toWkt() );
   QgsDebugMsg( "* Desc. : " + theCrs.description() );
