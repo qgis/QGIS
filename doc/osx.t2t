@@ -371,7 +371,37 @@ make
 sudo make install 
 ```
 
-=== Additional Dependencies: OSG & osgEarth ===
+
+=== Additional Dependencies: gpsbabel ===
+
+For integrated GPS Tools functions, a gpsbabel executable is required. You can
+find this at:
+ 
+http://www.gpsbabel.org/
+
+Download the GPSBabel OS X package, and copy GPSBabelFE.app from the disk image to
+/Applications.  
+
+
+=== Optional Dependencies: libfcgi ===
+
+If you want to use the QGIS Mapserver, you need libfcgi.  This is included on
+systems up through Snow Leopard, but was dropped at Lion.  So, on Lion you need
+to get the source from:
+
+http://www.fastcgi.com/dist/
+
+Grab the latest fcgi SNAP package there.  Double-click the source
+tarball to unpack it, then cd to the source folder and:
+
+```
+./configure --disable-dependency-tracking CFLAGS=-Os
+make
+sudo make install 
+```
+
+
+=== Optional Dependencies: OSG & osgEarth ===
 
 If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
 
@@ -505,7 +535,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 
 This will automatically find and use the previously installed frameworks, and
 the GRASS application if installed.  Remember to change the Qwt version if a
-different version was compiled.
+different version was installed.
 
 __Snow Leopard note:__ To handle 32-bit Qt (Carbon), create a 32bit python wrapper
 script and add arch flags to the configuration:
@@ -518,7 +548,7 @@ EOF
 
 sudo chmod +x /usr/local/bin/python32
 
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
 -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
@@ -528,7 +558,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
 ..
 ```
 
-The QGIS **Mapserver** feature requires fastcgi support.  This is included in
+__Mapserver note::__ The QGIS Mapserver feature requires fastcgi support.  This is included in
 Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the followling line before the last line in
 the above configuration:
@@ -540,7 +570,7 @@ the above configuration:
 On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.
 
-If you want the **Globe** plugin (and you compiled and installed OSG/osgEarth),
+__Globe plugin note:__ If you want the Globe plugin (and you compiled and installed OSG/osgEarth),
 add the following lines before the last line in the above configuration:
 
 ```
@@ -580,3 +610,28 @@ or, for an /Applications build:
 ```
 sudo make install
 ```
+
+== Post-Install ==
+
+A couple things to take care of.
+
+**gpsbabel**
+
+For QGIS to //easily// find gpsbabel, you need to copy the gpsbabel executable
+to the QGIS application.  Assuming you installed QGIS in your home folder:
+
+```
+cp -fp /Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel ~/QGIS.app/Contents/MacOS/bin/
+```
+
+If you installed in /Applications, adjust the path accordingly and prefix the
+whole command with 'sudo '.
+
+**QGIS Mapserver**
+
+See the QGIS Mapserver wiki page at:
+
+http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial
+
+for instructions on setting up Apache fastcgi and testing Mapserver, including
+installing the mod-fastcgi that is missing on Lion.
