@@ -554,6 +554,9 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
     breaks.append( minimumBreak + i * unit );
   }
 
+  if ( breaks.isEmpty() )
+    return breaks;
+
   if ( breaks.first() < minimum )
   {
     breaks[0] = minimum;
@@ -562,6 +565,7 @@ static QList<double> _calcPrettyBreaks( double minimum, double maximum, int clas
   {
     breaks[breaks.count()-1] = maximum;
   }
+
   return breaks;
 } // _calcPrettyBreaks
 
