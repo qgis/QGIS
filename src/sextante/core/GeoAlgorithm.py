@@ -10,6 +10,10 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 import traceback
 from sextante.core.SextanteLog import SextanteLog
+from sextante.outputs.OutputVector import OutputVector
+from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputTable import OutputTable
+from sextante.outputs.OutputHTML import OutputHTML
 
 class GeoAlgorithm:
 
@@ -72,6 +76,7 @@ class GeoAlgorithm:
         Raises a GeoAlgorithmExecutionException in case anything goes wrong.'''
         self.setOutputCRSFromInputLayers()
         self.resolveTemporaryOutputs()
+        self.checkOutputFileExtensions()
         try:
             self.processAlgorithm(progress)
             return not self.canceled
@@ -86,6 +91,29 @@ class GeoAlgorithm:
             lines.append(traceback.format_exc().replace("\n", "|"))
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(str(e))
+
+    def checkOutputFileExtensions(self):
+        '''Checks if the values of outputs are correct and have one of the supported output extensions.
+        If not, it adds the first one of the supported extensions, which is assumed to be the default one'''
+        for out in self.outputs:
+            if (not out.hidden) and out.value != None:
+                if isinstance(out, OutputRaster):
+                    exts = self.provider.getSupportedOutputRasterLayerExtensions()
+                elif isinstance(out, OutputVector):
+                    exts = self.provider.getSupportedOutputVectorLayerExtensions()
+                elif isinstance(out, OutputTable):
+                    exts = self.provider.getSupportedOutputTableExtensions()
+                elif isinstance(out, OutputHTML):
+                    exts =["html", "htm"]
+                else:
+                    continue
+                idx = out.value.rfind(".")
+                if idx == -1:
+                    out.value = out.value + "." + exts[0]
+                else:
+                    ext = out.value[idx + 1:]
+                    if ext not in exts:
+                        out.value = out.value + "." + exts[0]
 
     def resolveTemporaryOutputs(self):
         '''sets temporary outputs (output.value = None) with a temporary file instead'''

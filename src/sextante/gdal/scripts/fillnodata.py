@@ -4,6 +4,7 @@
 ##src_filename=raster
 ##dst_filename=output raster
 ##Analysis=group
+from sextante.gdal.GdalUtils import GdalUtils
 
 try:
     from osgeo import gdal, ogr
@@ -23,12 +24,11 @@ smoothing_iterations = 0
 options = []
 src_band = 1
 
-format = 'GTiff'
 gdal.AllRegister()
 src_ds = gdal.Open(src_filename, gdal.GA_ReadOnly)
 srcband = src_ds.GetRasterBand(src_band)
 maskband = srcband.GetMaskBand()
-drv = gdal.GetDriverByName(format)
+drv = gdal.GetDriverByName(GdalUtils.getFormatShortNameFromFilename(dst_filename))
 dst_ds = drv.Create(dst_filename,src_ds.RasterXSize, src_ds.RasterYSize,1,
                          srcband.DataType)
 wkt = src_ds.GetProjection()

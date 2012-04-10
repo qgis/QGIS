@@ -7,6 +7,12 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.gdal.GdalAlgorithm import GdalAlgorithm
 from sextante.gdal.nearblack import nearblack
 from sextante.gdal.information import information
+from sextante.gdal.GdalUtils import GdalUtils
+from sextante.gdal.warp import warp
+from sextante.gdal.rgb2pct import rgb2pct
+from sextante.gdal.translate import translate
+from sextante.gdal.pct2rgb import pct2rgb
+from sextante.gdal.merge import merge
 
 class GdalAlgorithmProvider(AlgorithmProvider):
 
@@ -44,7 +50,7 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def createAlgsList(self):
         #First we populate the list of algorihtms with those created extending
         #GeoAlgorithm directly (those that execute GDAL using the console)
-        self.preloadedAlgs = [nearblack(), information()]
+        self.preloadedAlgs = [nearblack(), information(), warp(), translate(), rgb2pct(), pct2rgb(), merge()]
         #And then we add those that are created as python scripts
         folder = self.scriptsFolder()
         for descriptionFile in os.listdir(folder):
@@ -55,3 +61,6 @@ class GdalAlgorithmProvider(AlgorithmProvider):
                     self.preloadedAlgs.append(alg)
                 except WrongScriptException,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR,e.msg)
+
+    def getSupportedOutputRasterLayerExtensions(self):
+        return GdalUtils.getSupportedRasterExtensions()

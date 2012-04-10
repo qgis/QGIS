@@ -5,6 +5,7 @@
 ##src_filename=raster
 ##dst_filename=output raster
 ##connectedness=selection 4;8
+from sextante.gdal.GdalUtils import GdalUtils
 
 try:
     from osgeo import gdal, ogr
@@ -15,13 +16,12 @@ except ImportError:
 threshold = 2
 connectedness=int(connectedness)
 options = []
-format = 'GTiff'
 
 src_ds = gdal.Open( src_filename, gdal.GA_ReadOnly )
 srcband = src_ds.GetRasterBand(1)
 maskband = srcband.GetMaskBand()
 
-drv = gdal.GetDriverByName(format)
+drv = gdal.GetDriverByName(GdalUtils.getFormatShortNameFromFilename(dst_filename))
 dst_ds = drv.Create( dst_filename,src_ds.RasterXSize, src_ds.RasterYSize,1,
                          srcband.DataType )
 wkt = src_ds.GetProjection()

@@ -18,7 +18,7 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external application", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
-                                           "Output folder", os.path.join(SextanteUtils.userFolder(),"outputs" )))
+                                           "Output folder", SextanteUtils.tempFolder()))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RASTER_STYLE,"Style for raster layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))

@@ -1,9 +1,13 @@
 from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 import subprocess
 from sextante.core.SextanteLog import SextanteLog
 import os
+import gdal
 
 class GdalUtils():
+
+    supportedRasters = None
 
     @staticmethod
     def runGdal(commands, progress):
@@ -25,4 +29,44 @@ class GdalUtils():
     def getConsoleOutput():
         return GdalUtils.consoleOutput
 
+    @staticmethod
+    def getSupportedRasters():
+        '''this has been adapted from GdalTools plugin'''
+        if GdalUtils.supportedRasters != None:
+            return GdalUtils.supportedRasters
 
+        if gdal.GetDriverCount() == 0:
+            gdal.AllRegister()
+
+        GdalUtils.supportedRasters = {}
+        for i in range(gdal.GetDriverCount()):
+            driver = gdal.GetDriver(i)
+            if driver == None:
+                continue
+
+            shortName = str(QString(driver.ShortName).remove( QRegExp( '\(.*$' ) ).trimmed())
+            metadata = driver.GetMetadata()
+            if metadata.has_key(gdal.DMD_EXTENSION):
+                extensions = metadata[gdal.DMD_EXTENSION].split("/")
+                if extensions:
+                    GdalUtils.supportedRasters[shortName] = extensions
+
+        return GdalUtils.supportedRasters
+
+    @staticmethod
+    def getSupportedRasterExtensions():
+        allexts = []
+        for exts in GdalUtils.getSupportedRasters().values():
+            for ext in exts:
+                allexts.append(ext)
+        return allexts
+
+    @staticmethod
+    def getFormatShortNameFromFilename(filename):
+        ext = filename[filename.rfind(".")+1:]
+        supported = GdalUtils.getSupportedRasters()
+        for name in supported.keys():
+            exts = supported[name]
+            if ext in exts:
+                return name
+        return "GTiff"

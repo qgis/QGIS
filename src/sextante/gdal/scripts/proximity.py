@@ -9,12 +9,12 @@
 ##nodata=number 0
 ##distunits=selection PIXEL;GEO
 ##fixed_buf_val=number 0
+from sextante.gdal.GdalUtils import GdalUtils
 try:
     from osgeo import gdal
 except ImportError:
     import gdal
 
-format = 'GTiff'
 creation_options = []
 options = []
 src_band_n = 1
@@ -49,7 +49,7 @@ except:
 #     Create output file.
 # =============================================================================
 if dst_ds is None:
-    drv = gdal.GetDriverByName(format)
+    drv = gdal.GetDriverByName(GdalUtils.getFormatShortNameFromFilename(dst_filename))
     dst_ds = drv.Create( dst_filename,
                          src_ds.RasterXSize, src_ds.RasterYSize, 1,
                          gdal.GetDataTypeByName(creation_type) )
