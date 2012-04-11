@@ -1,9 +1,8 @@
 import os
-from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 
-class GdalAlgorithmProvider(AlgorithmProvider):
+class OTBAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)

@@ -18,6 +18,7 @@ from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
+from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 
 class Sextante:
 
@@ -84,6 +85,7 @@ class Sextante:
         Sextante.addProvider(SagaAlgorithmProvider())
         Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.addProvider(GdalAlgorithmProvider())
+        Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()
