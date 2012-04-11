@@ -46,6 +46,8 @@
 #include <gdal.h>
 #include <geos_c.h>
 
+#include "qgsconfig.h"
+
 /**
  * \class QgsOptions - Set user options and preferences
  * Constructor
@@ -205,10 +207,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // Scan for contents of compressed files (.zip) in browser dock
   cmbScanZipInBrowser->clear();
   cmbScanZipInBrowser->addItem( tr( "No" ) );           // 0
-  cmbScanZipInBrowser->addItem( tr( "Basic scan" ) );   // 1
-  cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 2
+  cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1
+  // only add these options if zlib is available
+#ifdef HAVE_ZLIB
+  cmbScanZipInBrowser->addItem( tr( "Basic scan" ) );   // 2
   cmbScanZipInBrowser->addItem( tr( "Full scan" ) );    // 3
   cmbScanZipInBrowser->setCurrentIndex( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() );
+#else
+  if ( settings.value( "/qgis/scanZipInBrowser", 1 ) == 0 )
+    cmbScanZipInBrowser->setCurrentIndex( 0 );
+  else
+    cmbScanZipInBrowser->setCurrentIndex( 1 );
+#endif
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );

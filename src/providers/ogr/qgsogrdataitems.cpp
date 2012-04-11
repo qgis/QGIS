@@ -292,8 +292,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
     }
 
-    // unless setting== 2 (Passthru) or 3 (Full scan), return an item without testing
-    if ( scanZipSetting != 2 && scanZipSetting != 3 )
+    // if setting== 2 (Basic scan), return an item without testing
+    if ( scanZipSetting == 2 )
     {
       QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
       if ( item )

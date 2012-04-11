@@ -166,8 +166,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
     }
 
-    // unless setting== 2 (passthru) or 3 (Full scan), return an item without testing
-    if ( scanZipSetting != 2 && scanZipSetting != 3 )
+    // if setting = 2 (Basic scan), return an item without testing
+    if ( scanZipSetting == 2 )
     {
       QStringList sublayers;
       QgsDebugMsg( QString( "adding item name=%1 thePath=%2 uri=%3" ).arg( name ).arg( thePath ).arg( uri ) );

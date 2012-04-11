@@ -34,10 +34,13 @@
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
+#include "qgsconfig.h"
 
 // use internal quazip for /vsizip support
+#ifdef HAVE_ZLIB
 #define QUAZIP_STATIC
 #include <quazip/quazip.h>
+#endif
 
 // shared icons
 const QIcon &QgsLayerItem::iconPoint()
@@ -129,10 +132,10 @@ const QIcon &QgsDataCollectionItem::iconDir()
 const QIcon &QgsFavouritesItem::iconFavourites()
 {
   static QIcon icon;
-  
+
   if ( icon.isNull() )
     icon = QIcon( getThemePixmap( "/mIconFavourites.png" ) );
-  
+
   return icon;
 }
 
@@ -777,25 +780,40 @@ QgsZipItem::~QgsZipItem()
 QVector<QgsDataItem*> QgsZipItem::createChildren( )
 {
   QVector<QgsDataItem*> children;
-  QStringList fileList;
+  QStringList zipFileList;
   QString tmpPath;
   QString childPath;
 
   QSettings settings;
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
 
+  QgsDebugMsg( QString( "path = %1 name= %2 scanZipSetting= %3" ).arg( path() ).arg( name() ).arg( scanZipSetting ) );
+
+  // if scanZipBrowser == 0 (No): skip to the next file
   if ( scanZipSetting == 0 )
   {
     return children;
   }
-  // if scanZipBrowser == "Passthru": do not scan zip and allow to open directly with /vsigzip/
-  if ( scanZipSetting == 2 )
+
+#ifndef HAVE_ZLIB
+  // if zlib not available, only support Passthru
+  if ( scanZipSetting == 2 || scanZipSetting == 3 )
+  {
+    scanZipSetting = 1;
+    settings.setValue( "/qgis/scanZipInBrowser", 1 );
+  }
+#endif
+
+  // if scanZipBrowser == 1 (Passthru): do not scan zip and allow to open directly with /vsigzip/
+  if ( scanZipSetting == 1 )
   {
     mPath = "/vsizip/" + path(); // should check for extension
     QgsDebugMsg( "set path to " + path() );
     return children;
   }
 
+#ifdef HAVE_ZLIB
+  QgsDebugMsg( QString( "Open file %1 with quazip" ).arg( path() ) );
   // get list of files inside zip file
   QuaZip zip( path() );
   if ( ! zip.open( QuaZip::mdUnzip ) || ! zip.isOpen() )
@@ -806,12 +824,10 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   {
     for ( bool more = zip.goToFirstFile(); more; more = zip.goToNextFile() )
     {
-      // tmpPath = "/vsizip/" + path() + "/" + zip.getCurrentFileName();
-      // QgsDebugMsg( QString( "file %1 - %2" ).arg( zip.getCurrentFileName() ).arg( tmpPath ) );
       tmpPath = zip.getCurrentFileName();
       // skip directories (files ending with /)
       if ( tmpPath.right( 1 ) != "/" )
-        fileList << tmpPath;
+        zipFileList << tmpPath;
     }
   }
   zip.close();
@@ -819,9 +835,10 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   {
     QgsDebugMsg( QString( "Zip error: %1" ).arg( zip.getZipError() ) );
   }
+#endif
 
   // loop over files inside zip
-  foreach( QString fileName, fileList )
+  foreach( QString fileName, zipFileList )
   {
     QFileInfo info( fileName );
     tmpPath = "/vsizip/" + path() + "/" + fileName;
@@ -835,7 +852,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
       {
         if ( info.suffix() == "dbf" )
         {
-          if ( fileList.indexOf( fileName.left( fileName.count() - 4 ) + ".shp" ) != -1 )
+          if ( zipFileList.indexOf( fileName.left( fileName.count() - 4 ) + ".shp" ) != -1 )
             continue;
         }
         if ( info.completeSuffix().toLower() == "shp.xml" )
@@ -886,15 +903,15 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
   QString tmpPath = path;
   QgsZipItem * zipItem = 0;
 
-  QgsDebugMsg( "path = " + path + " name= " + name );
+  QgsDebugMsg( QString( "path = %1 name= %2 scanZipSetting= %3" ).arg( path ).arg( name ).arg( scanZipSetting ) );
 
   // if scanZipBrowser == 0 (No): skip to the next file
   if ( scanZipSetting == 0 )
   {
     return 0;
   }
-  // if scanZipBrowser == 2 (Passthru): do not scan zip and allow to open directly with /vsigzip/
-  else if ( scanZipSetting == 2 )
+  // if scanZipBrowser == 1 (Passthru): do not scan zip and allow to open directly with /vsigzip/
+  else if ( scanZipSetting == 1 )
   {
     tmpPath = "/vsizip/" + path;
     zipItem = 0;
@@ -906,17 +923,19 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
 
   if ( zipItem )
   {
+    // force populate zipItem
+    zipItem->populate();
     QgsDebugMsg( QString( "Got zipItem with %1 children, path=%2, name=%3" ).arg( zipItem->rowCount() ).arg( zipItem->path() ).arg( zipItem->name() ) );
   }
 
-  // only display if has children
-  // other option would be to delay until item is opened, but we would be polluting the tree with empty items
+// only display if has children
+// other option would be to delay until item is opened, but we would be polluting the tree with empty items
   if ( zipItem && zipItem->rowCount() > 1 )
   {
     QgsDebugMsg( "returning zipItem" );
     return zipItem;
   }
-  // if 1 or 0 child found, create a data item using the full path given by QgsZipItem
+// if 1 or 0 child found, create a data item using the full path given by QgsZipItem
   else
   {
     if ( zipItem )
