@@ -203,8 +203,8 @@ void QgsDataItem::populate()
 
 int QgsDataItem::rowCount()
 {
-  if ( !mPopulated )
-    populate();
+  // if ( !mPopulated )
+  //   populate();
   return mChildren.size();
 }
 bool QgsDataItem::hasChildren()

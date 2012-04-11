@@ -67,6 +67,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Populate children using children vector created by createChildren()
     virtual void populate();
+    bool isPopulated() { return mPopulated; }
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
