@@ -13,6 +13,7 @@ from sextante.gdal.rgb2pct import rgb2pct
 from sextante.gdal.translate import translate
 from sextante.gdal.pct2rgb import pct2rgb
 from sextante.gdal.merge import merge
+from sextante.gdal.polygonize import polygonize
 
 class GdalAlgorithmProvider(AlgorithmProvider):
 
@@ -50,7 +51,7 @@ class GdalAlgorithmProvider(AlgorithmProvider):
     def createAlgsList(self):
         #First we populate the list of algorihtms with those created extending
         #GeoAlgorithm directly (those that execute GDAL using the console)
-        self.preloadedAlgs = [nearblack(), information(), warp(), translate(), rgb2pct(), pct2rgb(), merge()]
+        self.preloadedAlgs = [nearblack(), information(), warp(), translate(), rgb2pct(), pct2rgb(), merge(), polygonize()]
         #And then we add those that are created as python scripts
         folder = self.scriptsFolder()
         for descriptionFile in os.listdir(folder):
