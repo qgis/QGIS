@@ -36,7 +36,7 @@ class RAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
 
     def defineCharacteristicsFromFile(self):
         self.script = ""
@@ -212,7 +212,7 @@ class RAlgorithm(GeoAlgorithm):
                 filename = os.path.basename(value)
                 filename = filename[:-4]
                 commands.append(param.name + " = readOGR(\"" + value + "\",layer=\"" + filename + "\")")
-            if isinstance(param, ParameterVector):
+            if isinstance(param, ParameterTable):
                 value = param.value
                 if not value.lower().endswith("csv"):
                     raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)

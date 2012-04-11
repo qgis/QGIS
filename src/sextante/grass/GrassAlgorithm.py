@@ -74,15 +74,14 @@ class GrassAlgorithm(GeoAlgorithm):
                         layer = param.value
                     else:
                         layer = QGisLayers.getObjectFromUri(param.value)
-                    self.addToResamplingExtent(layer, first)
+                    self.addToRegion(layer, first)
                     first = False
                 elif isinstance(param, ParameterMultipleInput):
-                    if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                        layers = param.value.split(";")
-                        for layername in layers:
-                            layer = QGisLayers.getObjectFromUri(layername, first)
-                            self.addToResamplingExtent(layer, first)
-                            first = False
+                    layers = param.value.split(";")
+                    for layername in layers:
+                        layer = QGisLayers.getObjectFromUri(layername, first)
+                        self.addToRegion(layer, first)
+                        first = False
         else:
             self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)
@@ -93,11 +92,13 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def addToRegion(self, layer, first):
         if first:
+            self.cellsize = 0
             self.xmin = layer.extent().xMinimum()
             self.xmax = layer.extent().xMaximum()
             self.ymin = layer.extent().yMinimum()
             self.ymax = layer.extent().yMaximum()
-            self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
+            if isinstance(layer, QgsRasterLayer):
+                self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
         else:
             self.xmin = min(self.xmin, layer.extent().xMinimum())
             self.xmax = max(self.xmax, layer.extent().xMaximum())
@@ -246,7 +247,7 @@ class GrassAlgorithm(GeoAlgorithm):
         self.exportedLayers[layer]= destFilename
         command = "r.in.gdal"
         command +=" input=\"" + layer + "\""
-        command +=" band=0"
+        command +=" band=1"
         command +=" out=" + destFilename;
         command +=" --overwrite -o"
         return command

@@ -73,8 +73,8 @@ class GrassUtils:
 
         #temporary gisrc file
         output = open(gisrc, "w")
-        mapset = "temp_mapset"
         location = "temp_location"
+        mapset = "user"
         gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
         output.write("GISDBASE: " + gisdbase + "\n");
         output.write("LOCATION_NAME: " + location + "\n");
@@ -83,11 +83,10 @@ class GrassUtils:
         output.close();
 
         output=open(script, "w")
-        shToolsPath = os.path.basename(shell)
         output.write("set HOME=" + os.path.expanduser("~") + "\n");
         output.write("set GISRC=" + gisrc + "\n")
-        output.write("set GRASS_SH=" + shell + "\n")
-        output.write("set PATH=" + shToolsPath + os.sep + "bin;" + shToolsPath + os.sep + "lib;" + "%PATH%\n")
+        output.write("set GRASS_SH=" + shell + "\\bin\\sh.exe\n")
+        output.write("set PATH=" + shell + os.sep + "bin;" + shell + os.sep + "lib;" + "%PATH%\n")
         output.write("set WINGISBASE=" + folder + "\n")
         output.write("set GISBASE=" + folder + "\n");
         output.write("set GRASS_PROJSHARE=" + folder + os.sep + "share" + os.sep + "proj" + "\n")
@@ -104,9 +103,9 @@ class GrassUtils:
         output.write("set PATHEXT=%PATHEXT%;.PY\n")
         output.write("set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n");
         output.write("\n")
-        output.write("g.gisenv.exe set=\"MAPSET=" + mapset + "\"\n")
-        output.write("g.gisenv.exe set=\"LOCATION=" + location + "\"\n")
-        output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\"\n")
+        output.write("g.gisenv.exe set=\"MAPSET= " + mapset + "\n")
+        output.write("g.gisenv.exe set=\"LOCATION=" + location + "\n")
+        output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\n")
         output.write("g.gisenv.exe set=\"GISDBASE=" + gisdbase + "\"\n")
         output.write("g.gisenv.exe set=\"GRASS_GUI=text\"\n")
         for command in commands:
@@ -125,7 +124,7 @@ class GrassUtils:
 
     @staticmethod
     def grassMapsetFolder():
-        tempfolder = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata", "temp_location", "temp_mapset")
+        tempfolder = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata", "temp_location")
         mkdir(tempfolder)
         return tempfolder
 
@@ -141,7 +140,7 @@ class GrassUtils:
         mkdir(os.path.join(folder, "PERMANENT"))
         mkdir(os.path.join(folder, "user"))
         mkdir(os.path.join(folder, "PERMANENT", ".tmp"))
-        mkdir(os.path.join(folder, "PERMANENT", "DEFAULT_WIND"))
+        GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "DEFAULT_WIND"));
         outfile = open(os.path.join(folder, "PERMANENT", "MYNAME"), "w")
         if not latlon:
             outfile.write("SEXTANTE GRASS interface: temporary x/y data processing location.\n");
@@ -229,10 +228,11 @@ class GrassUtils:
         for line in iter(proc.readline, ""):
             if "GRASS_INFO_PERCENT" in line:
                 try:
-                    progress.setPercentage(line[line.rfind(":") + 2:])
+                    progress.setPercentage(int(line[len("GRASS_INFO_PERCENT")+ 2:]))
                 except:
                     pass
-            loglines.append(line)
+            else:
+                loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
 

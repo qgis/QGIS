@@ -39,6 +39,7 @@ class GdalUtils():
             gdal.AllRegister()
 
         GdalUtils.supportedRasters = {}
+        GdalUtils.supportedRasters["GTiff"] = ["tif"]
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
             if driver == None:

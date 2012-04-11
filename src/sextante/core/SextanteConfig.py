@@ -10,12 +10,14 @@ class SextanteConfig():
     VECTOR_POLYGON_STYLE = "VECTOR_POLYGON_STYLE"
     SHOW_RECENT_ALGORITHMS = "SHOW_RECENT_ALGORITHMS"
     USE_SELECTED = "USE_SELECTED"
+    USE_FILENAME_AS_LAYER_NAME = "USE_FILENAME_AS_LAYER_NAME"
 
     settings = {}
 
     @staticmethod
     def initialize():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external application", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
                                            "Output folder", SextanteUtils.tempFolder()))

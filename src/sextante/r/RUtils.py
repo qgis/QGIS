@@ -1,3 +1,4 @@
+from PyQt4.QtGui import *
 from sextante.core.SextanteConfig import SextanteConfig
 import os
 from sextante.core.SextanteUtils import mkdir, SextanteUtils
@@ -69,8 +70,8 @@ class RUtils:
         RUtils.allConsoleResults = []
         add = False
         lines = open(RUtils.getConsoleOutputFilename())
-        line = lines.readline().strip("\n").strip(" ")
-        while line != "":
+        for line in lines:
+            line = line.strip("\n").strip(" ")
             if line.startswith(">"):
                 line = line[1:].strip(" ")
                 if line in RUtils.verboseCommands:
@@ -80,7 +81,6 @@ class RUtils:
             elif add:
                 RUtils.consoleResults.append("<p>" + line + "</p>\n");
             RUtils.allConsoleResults.append(line);
-            line = lines.readline().strip("\n").strip(" ")
 
 
     @staticmethod
