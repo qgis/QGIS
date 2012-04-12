@@ -67,6 +67,7 @@ class QgsMssqlGeometryParser
 
   protected:
     void CopyBytes( void* src, int len );
+    void CopyCoordinates( unsigned char* src );
     void CopyPoint( int iPoint );
     void ReadPoint( int iShape );
     void ReadMultiPoint( int iShape );
@@ -82,6 +83,8 @@ class QgsMssqlGeometryParser
     int GetSRSId() { return nSRSId; };
     int GetWkbLen() { return nWkbLen; };
     void DumpMemoryToLog( const char* pszMsg, unsigned char* pszInput, int nLen );
+    /* sql geo type */
+    bool IsGeography;
 };
 
 

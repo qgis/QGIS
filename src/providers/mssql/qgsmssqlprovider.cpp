@@ -341,6 +341,7 @@ void QgsMssqlProvider::loadFields()
       {
         mGeometryColName = mQuery.value( 3 ).toString();
         mGeometryColType = sqlTypeName;
+        parser.IsGeography = sqlTypeName == "geography";
       }
       else
       {
@@ -565,8 +566,20 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
   // set spatial filter
   if ( !rect.isEmpty() )
   {
+    // polygons should be CCW for SqlGeography
+    QString r;
+    QTextStream foo( &r );
+
+    foo.setRealNumberPrecision( 8 );
+    foo.setRealNumberNotation( QTextStream::FixedNotation );
+    foo <<  rect.xMinimum() << " " <<  rect.yMinimum() << ", "
+    <<  rect.xMaximum() << " " <<  rect.yMinimum() << ", "
+    <<  rect.xMaximum() << " " <<  rect.yMaximum() << ", "
+    <<  rect.xMinimum() << " " <<  rect.yMaximum() << ", "
+    <<  rect.xMinimum() << " " <<  rect.yMinimum();
+
     mStatement += QString( " where [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
-                    mGeometryColName, mGeometryColType, rect.asPolygon(), QString::number( mSRId ) );
+        mGeometryColName, mGeometryColType, r, QString::number( mSRId ) );
   }
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
@@ -593,13 +606,23 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   mNumberFeatures = 0;
   // get features to calculate the statistics
   QString statement;
+  bool readAll = false;
   if ( estimate )
   {
-    statement = QString( "select min([%1].STPointN(1).STX), min([%1].STPointN(1).STY), max([%1].STPointN(1).STX), max([%1].STPointN(1).STY), COUNT([%1])" ).arg( mGeometryColName );
+    if ( mGeometryColType == "geometry" )
+      statement = QString( "select min([%1].STPointN(1).STX), min([%1].STPointN(1).STY), max([%1].STPointN(1).STX), max([%1].STPointN(1).STY), COUNT([%1])" ).arg( mGeometryColName );
+    else
+      statement = QString( "select min([%1].STPointN(1).Long), min([%1].STPointN(1).Lat), max([%1].STPointN(1).Long), max([%1].STPointN(1).Lat), COUNT([%1])" ).arg( mGeometryColName );
   }
   else
   {
-    statement = QString( "select min([%1].STEnvelope().STPointN(1).STX), min([%1].STEnvelope().STPointN(1).STY), max([%1].STEnvelope().STPointN(2).STX), max([%1].STEnvelope().STPointN(2).STY), count([%1])" ).arg( mGeometryColName );
+    if ( mGeometryColType == "geometry" )
+      statement = QString( "select min([%1].STEnvelope().STPointN(1).STX), min([%1].STEnvelope().STPointN(1).STY), max([%1].STEnvelope().STPointN(3).STX), max([%1].STEnvelope().STPointN(3).STY), count([%1])" ).arg( mGeometryColName );
+    else
+    {
+      statement = QString( "select [%1]" ).arg( mGeometryColName );
+      readAll = true;
+    }
   }
 
   if ( mSchemaName.isEmpty() )
@@ -619,13 +642,49 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
   if ( mQuery.isActive() )
   {
     QgsGeometry geom;
-    if ( mQuery.next() )
+    if ( !readAll )
     {
-      mExtent.setXMinimum( mQuery.value( 0 ).toDouble() );
-      mExtent.setYMinimum( mQuery.value( 1 ).toDouble() );
-      mExtent.setXMaximum( mQuery.value( 2 ).toDouble() );
-      mExtent.setYMaximum( mQuery.value( 3 ).toDouble() );
-      mNumberFeatures = mQuery.value( 4 ).toInt();
+      if ( mQuery.next() )
+      {
+        mExtent.setXMinimum( mQuery.value( 0 ).toDouble() );
+        mExtent.setYMinimum( mQuery.value( 1 ).toDouble() );
+        mExtent.setXMaximum( mQuery.value( 2 ).toDouble() );
+        mExtent.setYMaximum( mQuery.value( 3 ).toDouble() );
+        mNumberFeatures = mQuery.value( 4 ).toInt();
+      }
+    }
+    else
+    {
+      // read all features
+      while ( mQuery.next() )
+      {
+        QByteArray ar = mQuery.value( 0 ).toByteArray();
+        unsigned char* wkb = parser.ParseSqlGeometry(( unsigned char* )ar.data(), ar.size() );
+        if ( wkb )
+        {
+          geom.fromWkb( wkb, parser.GetWkbLen() );
+          QgsRectangle rect = geom.boundingBox();
+
+          if ( mNumberFeatures > 0 )
+          {
+            if ( rect.xMinimum() < mExtent.xMinimum() )
+              mExtent.setXMinimum( rect.xMinimum() );
+            if ( rect.yMinimum() < mExtent.yMinimum() )
+              mExtent.setYMinimum( rect.yMinimum() );
+            if ( rect.xMaximum() > mExtent.xMaximum() )
+              mExtent.setXMaximum( rect.xMaximum() );
+            if ( rect.yMaximum() > mExtent.yMaximum() )
+              mExtent.setYMaximum( rect.yMaximum() );
+          }
+          else
+          {
+            mExtent = rect;
+            mWkbType = geom.wkbType();
+            mSRId = parser.GetSRSId();
+          }
+          ++mNumberFeatures;
+        }
+      }
     }
   }
 }
@@ -761,7 +820,12 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       QString msg = mQuery.lastError().text();
       QgsDebugMsg( msg );
       if ( !mSkipFailures )
+      {
+        QString msg = mQuery.lastError().text();
+        QgsDebugMsg( msg );
+        pushError( msg );
         return false;
+      }
       else
         continue;
     }
@@ -826,7 +890,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       QString msg = mQuery.lastError().text();
       QgsDebugMsg( msg );
       if ( !mSkipFailures )
+      {
+        pushError( msg );
         return false;
+      }
     }
   }
 
