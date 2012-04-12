@@ -122,6 +122,22 @@ void QgsMssqlGeometryParser::CopyBytes( void* src, int len )
 }
 
 /************************************************************************/
+/*                         CopyCoordinates()                            */
+/************************************************************************/
+
+void QgsMssqlGeometryParser::CopyCoordinates( unsigned char* src )
+{
+  if (IsGeography)
+  {
+    CopyBytes( src + 8, 8 ); // longitude
+    CopyBytes( src, 8 ); // latitude
+  }
+  else
+    // copy geometry coords
+    CopyBytes( src, nPointSize );
+}
+
+/************************************************************************/
 /*                         CopyPoint()                                  */
 /************************************************************************/
 
@@ -137,7 +153,7 @@ void QgsMssqlGeometryParser::CopyPoint( int iPoint )
     wkbType = QGis::WKBPoint;
   CopyBytes( &wkbType, 4 );
   // copy coordinates
-  CopyBytes( pszData + nPointPos + nPointSize * iPoint, nPointSize );
+  CopyCoordinates( pszData + nPointPos + nPointSize * iPoint );
 }
 
 /************************************************************************/
@@ -216,7 +232,7 @@ void QgsMssqlGeometryParser::ReadLineString( int iShape )
   i = 0;
   while ( iPoint < iNextPoint )
   {
-    CopyBytes( pszData + nPointPos + nPointSize * iPoint, nPointSize );
+    CopyCoordinates( pszData + nPointPos + nPointSize * iPoint );
     ++iPoint;
     ++i;
   }
@@ -290,7 +306,7 @@ void QgsMssqlGeometryParser::ReadPolygon( int iShape )
     i = 0;
     while ( iPoint < iNextPoint )
     {
-      CopyBytes( pszData + nPointPos + nPointSize * iPoint, nPointSize );
+      CopyCoordinates( pszData + nPointPos + nPointSize * iPoint );
       ++iPoint;
       ++i;
     }
@@ -460,7 +476,8 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
     int iCount = 2;
     CopyBytes( &iCount, 4 );
     // copy points
-    CopyBytes( pszData + nPointPos, nPointSize * 2 );
+    CopyCoordinates( pszData + nPointPos );
+    CopyCoordinates( pszData + nPointPos + nPointSize );
   }
   else
   {
