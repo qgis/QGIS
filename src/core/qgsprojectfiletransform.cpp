@@ -499,24 +499,69 @@ void QgsProjectFileTransform::transform1800to1900()
     //alphaBand was not saved until now (bug)
     rasterRendererElem.setAttribute( "alphaBand", -1 );
 
+    //gray band is used for several renderers
+    int grayBand = -1;
+    QDomElement grayBandNameElem = rasterPropertiesElem.firstChildElement( "mGrayBandName" );
+    if ( !grayBandNameElem.isNull() )
+    {
+      grayBand = rasterLayer.bandNumber( grayBandNameElem.text() );
+      if ( grayBand == 0 )
+      {
+        grayBand = -1;
+      }
+    }
+
     //convert renderer specific properties
     QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
     if ( drawingStyle == "SingleBandGray" )
     {
       rasterRendererElem.setAttribute( "type", "singlebandgray" );
-      QDomElement grayBandNameElem = rasterPropertiesElem.firstChildElement( "mGrayBandName" );
-      if ( !grayBandNameElem.isNull() )
-      {
-        int grayBand = rasterLayer.bandNumber( grayBandNameElem.text() );
-        if ( grayBand == 0 )
-        {
-          grayBand = -1;
-        }
-        rasterRendererElem.setAttribute( "grayBand", grayBand );
-      }
+      rasterRendererElem.setAttribute( "grayBand", grayBand );
       transformContrastEnhancement( mDom, rasterPropertiesElem, rasterRendererElem );
     }
-    //todo: other renderers
+    else if ( drawingStyle == "SingleBandPseudoColor" )
+    {
+      rasterRendererElem.setAttribute( "type", "singlebandpseudocolor" );
+      rasterRendererElem.setAttribute( "band", grayBand );
+      QDomElement newRasterShaderElem = mDom.createElement( "rastershader" );
+      QDomElement newColorRampShaderElem = mDom.createElement( "colorrampshader" );
+      newRasterShaderElem.appendChild( newColorRampShaderElem );
+      rasterRendererElem.appendChild( newRasterShaderElem );
+
+      //switch depending on mColorShadingAlgorithm
+      QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( "mColorShadingAlgorithm" ).text();
+      if ( colorShadingAlgorithm == "PseudoColorShader" )
+      {
+
+      }
+      else if ( colorShadingAlgorithm == "ColorRampShader" )
+      {
+        QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+        QString type = customColorRampElem.firstChildElement( "colorRampType" ).text();
+        newColorRampShaderElem.setAttribute( "colorRampType", type );
+        QDomNodeList colorNodeList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+
+        QString value, label;
+        QColor newColor;
+        int red, green, blue;
+        QDomElement currentItemElem;
+        for ( int i = 0; i < colorNodeList.size(); ++i )
+        {
+          currentItemElem = colorNodeList.at( i ).toElement();
+          value = currentItemElem.attribute( "value" );
+          label = currentItemElem.attribute( "label" );
+          red = currentItemElem.attribute( "red" ).toInt();
+          green = currentItemElem.attribute( "green" ).toInt();
+          blue = currentItemElem.attribute( "blue" ).toInt();
+          newColor = QColor( red, green, blue );
+          QDomElement newItemElem = mDom.createElement( "item" );
+          newItemElem.setAttribute( "value", value );
+          newItemElem.setAttribute( "label", label );
+          newItemElem.setAttribute( "color", newColor.name() );
+          newColorRampShaderElem.appendChild( newItemElem );
+        }
+      }
+    }
     else
     {
       return;
