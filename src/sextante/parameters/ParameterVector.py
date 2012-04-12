@@ -19,6 +19,7 @@ class ParameterVector(ParameterDataObject):
         self.exported = None
 
     def setValue(self, obj):
+        self.exported = None
         if obj == None:
             if self.optional:
                 self.value = None

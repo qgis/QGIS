@@ -3,6 +3,7 @@ from sextante.core.SextanteUtils import SextanteUtils
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from sextante.gdal.GdalUtils import GdalUtils
 
 class LayerExporter():
 
@@ -14,7 +15,7 @@ class LayerExporter():
     def exportVectorLayer(layer):
         '''Takes a QgsVectorLayer and returns the filename to refer to it, which allows external
         apps which support only file-based layers to use it. It performs the necessary export
-        in case the input layer is not in a standard format suitable for most appplications, it is
+        in case the input layer is not in a standard format suitable for most applications, it is
         a remote one or db-based (non-file based) one, or if there is a selection and it should be
         used, exporting just the selected features.
         Currently, the output is restricted to shapefiles, so anything that is not in a shapefile
@@ -45,5 +46,21 @@ class LayerExporter():
                 return str(layer.source())
 
 
+    @staticmethod
+    def exportRasterLayer(layer):
+        '''Takes a QgsRasterLayer and returns the filename to refer to it, which allows external
+        apps which support only file-based layers to use it. It performs the necessary export
+        in case the input layer is not in a standard format suitable for most applications, it is
+        a remote one or db-based (non-file based) one
+        Currently, the output is restricted to geotiff, but not all other formats are exported.
+        Only those formats not supported by GDAL are exported, so it is assumed that the external
+        app uses GDAL to read the layer'''
+        exts = GdalUtils.getSupportedRasterExtensions()
+        for ext in exts:
+            if (str(layer.source()).endswith(ext)):
+                return str(layer.source())
+
+        #TODO:Do the conversion here
+        return str(layer.source())
 
 

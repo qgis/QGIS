@@ -47,7 +47,12 @@ class GeoAlgorithm:
         return None
 
     def processAlgorithm(self):
-        '''here goes the algorithm itself'''
+        '''Here goes the algorithm itself
+        There is no return value from this method. If the algorithm gets canceled
+        while running this method, the self.canceled value should be set to false
+        instead to indicate it.
+        A GeoAlgorithmExecutionException should be raised in case something goes wrong.
+        '''
         pass
 
     def defineCharacteristics(self):
@@ -64,6 +69,14 @@ class GeoAlgorithm:
         it should be returned here, ready to be executed'''
         return None
 
+    def checkBeforeOpeningParametersDialog(self):
+        '''If there is any check to perform before the parameters dialog is opened,
+        it should be done here. This method returns an error message string if there
+        is any problem (for instance, an external app not configured yet), or None
+        if the parameters dialog can be opened.
+        Note that this check should also be done in the processAlgorithm method,
+        since algorithms can be called without opening the parameters dialog.'''
+        return None
     #=========================================================
 
     def execute(self, progress):

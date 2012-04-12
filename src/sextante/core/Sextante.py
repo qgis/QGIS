@@ -283,7 +283,7 @@ class Sextante:
 
     @staticmethod
     def getObject(uri):
-        '''Returns the QGIS object identified the given URI'''
+        '''Returns the QGIS object identified by the given URI'''
         return QGisLayers.getObjectFromUri(uri)
 
     @staticmethod

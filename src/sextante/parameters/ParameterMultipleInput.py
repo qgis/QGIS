@@ -26,6 +26,7 @@ class ParameterMultipleInput(ParameterDataObject):
         self.exported = None
 
     def setValue(self, obj):
+        self.exported = None
         if obj == None:
             if self.optional:
                 self.value = None
@@ -54,15 +55,16 @@ class ParameterMultipleInput(ParameterDataObject):
 
     def getSafeExportedLayers(self):
         '''Returns not the value entered by the user, but a string with semicolon-separated filenames
-        which contains the data of the selectec layers, but saved in a standard format (currently always
-        shapefiles) so that they can be opened by most external applications.
+        which contains the data of the selected layers, but saved in a standard format (currently
+        shapefiles for vector layers and GeoTiff for raster) so that they can be opened by most
+        external applications.
         If there is a selection and SEXTANTE is configured to use just the selection, if exports
         the layer even if it is already in a suitable format.
         Works only if the layer represented by the parameter value is currently loaded in QGIS.
         Otherwise, it will not perform any export and return the current value string.
         If the current value represents a layer in a suitable format, it does no export at all
         and returns that value.
-        Currently, it works just for vector layer. In the case of raster layers, it returs the
+        Currently, it works just for vector layer. In the case of raster layers, it returns the
         parameter value.
         The layers are exported just the first time the method is called. The method can be called
         several times and it will always return the same string, performing the export only the first time.'''
@@ -72,14 +74,19 @@ class ParameterMultipleInput(ParameterDataObject):
         layers = self.value.split(";")
         if layers == None or len(layers) == 0:
             return self.value
-        if self.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+            for layerfile in layers:
+                layer = QGisLayers.getObjectFromUri(layerfile, False)
+                if layer:
+                    filename = LayerExporter.exportRasterLayer(layer)
+                    self.exported = self.exported.replace(layerfile, filename)
+            return self.exported
+        else:
             for layerfile in layers:
                 layer = QGisLayers.getObjectFromUri(layerfile, False)
                 if layer:
                     filename = LayerExporter.exportVectorLayer(layer)
                     self.exported = self.exported.replace(layerfile, filename)
-            return self.exported
-        else:
             return self.exported
 
     def getAsString(self,value):

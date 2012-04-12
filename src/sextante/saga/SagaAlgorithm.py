@@ -91,7 +91,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                         layers = param.value.split(";")
                         for layername in layers:
-                            layer = QGisLayers.getObjectFromUri(layername, first)
+                            layer = QGisLayers.getObjectFromUri(layername)
                             self.addToResamplingExtent(layer, first)
                             first = False
         else:

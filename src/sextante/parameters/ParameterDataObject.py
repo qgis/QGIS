@@ -8,11 +8,6 @@ class ParameterDataObject(Parameter):
         if self.value == None:
             return str(None)
         else:
-            #===================================================================
-            # obj = QGisLayers.getObjectFromUri(str(self.value))
-            # if obj:
-            #    return "\"" + obj.name() + "\""
-            #===================================================================
             if not SextanteUtils.isWindows():
                 return "\"" + str(self.value) + "\""
             else:

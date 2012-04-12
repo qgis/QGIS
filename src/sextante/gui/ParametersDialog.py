@@ -222,6 +222,11 @@ class Ui_ParametersDialog(object):
             self.tableWidget.setRowHeight(i,22)
             i+=1
 
+        self.fillParameterValuesFromHistory()
+
+    def fillParameterValuesFromHistory(self):
+        pass
+    
     def setParamValues(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
