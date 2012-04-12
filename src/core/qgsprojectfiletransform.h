@@ -81,6 +81,11 @@ class QgsProjectFileTransform
     void transform0110to1000();
     void transform1100to1200();
     void transform1400to1500();
+    void transform1800to1900();
+
+    //helper functions
+    void transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem );
+    void transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem );
 };
 
 

@@ -19,12 +19,14 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsprojectversion.h"
 #include "qgslogger.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QTextStream>
 #include <QDomDocument>
 #include <QPrinter> //to find out screen resolution
 #include <cstdlib>
+#include "qgsproject.h"
 #include "qgsprojectproperty.h"
 
 typedef QgsProjectVersion PFV;
@@ -47,6 +49,8 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 1, 4, 0 ), PFV( 1, 5, 0 ), &QgsProjectFileTransform::transform1400to1500},
   {PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &QgsProjectFileTransform::transform1800to1900}
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -449,5 +453,162 @@ void QgsProjectFileTransform::transform1400to1500()
       currentLayerItemElem.replaceChild( classificationElement, currentTextItem );
     }
   }
+}
+
+void QgsProjectFileTransform::transform1800to1900()
+{
+  if ( mDom.isNull() )
+  {
+    return;
+  }
+
+  QDomNodeList layerItemList = mDom.elementsByTagName( "rasterproperties" );
+  for ( int i = 0; i < layerItemList.size(); ++i )
+  {
+    QDomElement rasterPropertiesElem = layerItemList.at( i ).toElement();
+    QDomElement rasterRendererElem = mDom.createElement( "rasterrenderer" );
+
+    //create raster layer (necessary to convert band name to band number
+    QDomNode layerNode = rasterPropertiesElem.parentNode();
+    QDomElement dataSourceElem = layerNode.firstChildElement( "datasource" );
+    QDomElement layerNameElem = layerNode.firstChildElement( "layername" );
+    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text() );
+
+    //convert general properties
+
+    //invert color
+    rasterRendererElem.setAttribute( "invertColor", "0" );
+    QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( "mInvertColor" );
+    if ( !invertColorElem.isNull() )
+    {
+      if ( invertColorElem.text() == "true" )
+      {
+        rasterRendererElem.setAttribute( "invertColor", "1" );
+      }
+    }
+
+    //opacity
+    rasterRendererElem.setAttribute( "opacity", "1" );
+    QDomElement transparencyElem = layerNode.firstChildElement( "transparencyLevelInt" );
+    if ( !transparencyElem.isNull() )
+    {
+      double transparency = transparencyElem.text().toInt();
+      rasterRendererElem.setAttribute( "opacity", transparency / 255.0 );
+    }
+
+    //alphaBand was not saved until now (bug)
+    rasterRendererElem.setAttribute( "alphaBand", -1 );
+
+    //convert renderer specific properties
+    QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
+    if ( drawingStyle == "SingleBandGray" )
+    {
+      rasterRendererElem.setAttribute( "type", "singlebandgray" );
+      QDomElement grayBandNameElem = rasterPropertiesElem.firstChildElement( "mGrayBandName" );
+      if ( !grayBandNameElem.isNull() )
+      {
+        int grayBand = rasterLayer.bandNumber( grayBandNameElem.text() );
+        if ( grayBand == 0 )
+        {
+          grayBand = -1;
+        }
+        rasterRendererElem.setAttribute( "grayBand", grayBand );
+      }
+      transformContrastEnhancement( mDom, rasterPropertiesElem, rasterRendererElem );
+    }
+    //todo: other renderers
+    else
+    {
+      return;
+    }
+
+    //replace rasterproperties element with rasterrenderer element
+    if ( !layerNode.isNull() )
+    {
+      layerNode.replaceChild( rasterRendererElem, rasterPropertiesElem );
+    }
+  }
+}
+
+void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem )
+{
+  if ( rasterproperties.isNull() || rendererElem.isNull() )
+  {
+    return;
+  }
+
+  double minimumValue = 0;
+  double maximumValue = 0;
+  QDomElement contrastMinMaxElem = rasterproperties.firstChildElement( "contrastEnhancementMinMaxValues" );
+  if ( contrastMinMaxElem.isNull() )
+  {
+    return;
+  }
+  QDomElement minMaxEntryElem = contrastMinMaxElem.firstChildElement( "minMaxEntry" );
+  if ( minMaxEntryElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement minElem = minMaxEntryElem.firstChildElement( "min" );
+  if ( minElem.isNull() )
+  {
+    return;
+  }
+  minimumValue = minElem.text().toDouble();
+
+  QDomElement maxElem = minMaxEntryElem.firstChildElement( "max" );
+  if ( maxElem.isNull() )
+  {
+    return;
+  }
+  maximumValue = maxElem.text().toDouble();
+
+  QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( "mContrastEnhancementAlgorithm" );
+  if ( contrastEnhancementAlgorithmElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement newContrastEnhancementElem = doc.createElement( "contrastEnhancement" );
+  QDomElement newMinValElem = doc.createElement( "minValue" );
+  QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
+  newMinValElem.appendChild( minText );
+  newContrastEnhancementElem.appendChild( newMinValElem );
+  QDomElement newMaxValElem = doc.createElement( "maxValue" );
+  QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
+  newMaxValElem.appendChild( maxText );
+  newContrastEnhancementElem.appendChild( newMaxValElem );
+
+  //convert enhancement name to enumeration
+  int algorithmEnum = 0;
+  QString algorithmString = contrastEnhancementAlgorithmElem.text();
+  if ( algorithmString == "StretchToMinimumMaximum" )
+  {
+    algorithmEnum = 1;
+  }
+  else if ( algorithmString == "StretchAndClipToMinimumMaximum" )
+  {
+    algorithmEnum = 2;
+  }
+  else if ( algorithmString == "ClipToMinimumMaximum" )
+  {
+    algorithmEnum = 3;
+  }
+  else if ( algorithmString == "UserDefinedEnhancement" )
+  {
+    algorithmEnum = 4;
+  }
+  QDomElement newAlgorithmElem = doc.createElement( "algorithm" );
+  QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
+  newAlgorithmElem.appendChild( newAlgorithmText );
+  newContrastEnhancementElem.appendChild( newAlgorithmElem );
+
+  rendererElem.appendChild( newContrastEnhancementElem );
+}
+
+void QgsProjectFileTransform::transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem )
+{
+  //soon...
 }
 
