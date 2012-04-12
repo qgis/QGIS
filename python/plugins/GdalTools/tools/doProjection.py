@@ -84,7 +84,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.inSelector.setFilename( inputDir )
 
   def fillDesiredSRSEdit( self ):
-      dialog = SRSDialog( "Select desired SRS" )
+      dialog = SRSDialog( "Select desired SRS", self )
       if dialog.exec_():
         self.desiredSRSEdit.setText( dialog.getProjection() )
 

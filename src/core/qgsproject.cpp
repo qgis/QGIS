@@ -751,7 +751,9 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
   // have the layer restore state that is stored in Dom node
   if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
   {
-    mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
+    QList<QgsMapLayer *> myLayers;
+    myLayers << mapLayer;
+    QgsMapLayerRegistry::instance()->addMapLayers( myLayers );
     QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
     if ( vLayer && vLayer->vectorJoins().size() > 0 )
     {

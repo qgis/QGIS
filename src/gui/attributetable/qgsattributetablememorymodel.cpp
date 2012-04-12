@@ -27,8 +27,8 @@
 // In-Memory model //
 /////////////////////
 
-QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer )
-    : QgsAttributeTableModel( theLayer )
+QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer )
+    : QgsAttributeTableModel( theCanvas, theLayer )
 {
   QgsDebugMsg( "entered." );
 }
@@ -49,24 +49,40 @@ void QgsAttributeTableMemoryModel::loadLayer()
 
   mLayer->select( mLayer->pendingAllAttributesList(), rect, false );
 
-  if( behaviour != 1 )
+  if ( behaviour != 1 )
     mFeatureMap.reserve( mLayer->pendingFeatureCount() + 50 );
   else
     mFeatureMap.reserve( mLayer->selectedFeatureCount() );
 
-  int n = 0;
+  int i = 0;
+
+  QTime t;
+  t.start();
 
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )
   {
-    if( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
+    if ( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
       continue;
 
-    mIdRowMap.insert( f.id(), n );
-    mRowIdMap.insert( n, f.id() );
+    mIdRowMap.insert( f.id(), i );
+    mRowIdMap.insert( i, f.id() );
     mFeatureMap.insert( f.id(), f );
-    n++;
+
+    i++;
+
+    if ( t.elapsed() > 5000 )
+    {
+      bool cancel = false;
+      emit progress( i, cancel );
+      if ( cancel )
+        break;
+
+      t.restart();
+    }
   }
+
+  emit finished();
 
   mFieldCount = mAttributes.size();
 }
@@ -99,10 +115,11 @@ void QgsAttributeTableMemoryModel::featureDeleted( QgsFeatureId fid )
   QgsAttributeTableModel::featureDeleted( fid );
 }
 
-void QgsAttributeTableMemoryModel::featureAdded( QgsFeatureId fid )
+void QgsAttributeTableMemoryModel::featureAdded( QgsFeatureId fid, bool inOperation )
 {
   QgsDebugMsg( "entered." );
   Q_UNUSED( fid );
+  Q_UNUSED( inOperation );
   loadLayer();
 }
 

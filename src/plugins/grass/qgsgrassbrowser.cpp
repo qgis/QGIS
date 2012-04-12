@@ -259,7 +259,7 @@ void QgsGrassBrowser::copyMap()
       typeName = "region";
     }
 
-    QgsGrassElementDialog ed;
+    QgsGrassElementDialog ed( this );
     bool ok;
     QString source;
     QString suggest;
@@ -344,7 +344,7 @@ void QgsGrassBrowser::renameMap()
       typeName = "region";
     }
 
-    QgsGrassElementDialog ed;
+    QgsGrassElementDialog ed( this );
     bool ok;
     QString newName = ed.getItem( element, tr( "New name" ),
                                   tr( "New name for layer \"%1\"" ).arg( map ), "", map, &ok );

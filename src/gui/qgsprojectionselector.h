@@ -29,9 +29,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 {
     Q_OBJECT
   public:
-    QgsProjectionSelector( QWidget* parent,
-                           const char * name = "",
-                           Qt::WFlags fl = 0 );
+    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WFlags fl = 0 );
 
     ~QgsProjectionSelector();
 
@@ -44,7 +42,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *
      * \todo Should this be public?
      */
-    void loadUserCrsList( QSet<QString> * crsFilter = 0 );
+    void loadUserCrsList( QSet<QString> *crsFilter = 0 );
 
     /**
      * \brief Populate the proj tree view with system projection names...
@@ -55,8 +53,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *
      * \todo Should this be public?
      */
-    void loadCrsList( QSet<QString> * crsFilter = 0 );
-
+    void loadCrsList( QSet<QString> *crsFilter = 0 );
 
     /*!
      * \brief Make the string safe for use in SQL statements.
@@ -113,9 +110,10 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      * \warning This function's behaviour is undefined if it is called after the widget is shown.
      */
     void setOgcWmsCrsFilter( QSet<QString> crsFilter );
-    void on_lstRecent_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
+    void on_lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void on_cbxHideDeprecated_stateChanged();
-    void on_leSearch_textChanged(const QString &);
+    void on_leSearch_textChanged( const QString & );
 
   protected:
     /** Used to ensure the projection list view is actually populated */
@@ -148,7 +146,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *          does not scroll the list to the selection if the widget is not visible.
      *          Therefore you will typically want to use this in a showEvent().
      */
-    void applySelection();
+    void applySelection( int column = NONE, QString value = QString::null );
 
     /**
        * \brief gets an arbitrary sqlite3 expression from the selection
@@ -189,23 +187,9 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone;
 
-    //! Is there a pending selection to be made by CRS Name?
-    bool mCRSNameSelectionPending;
-
-    //! Is there a pending selection to be made by CRS ID?
-    bool mCRSIDSelectionPending;
-
-    //! Is there a pending selection to be made by Authority ID?
-    bool mAuthIDSelectionPending;
-
-    //! The CRS Name that wants to be selected on this widget
-    QString mCRSNameSelection;
-
-    //! The CRS ID that wants to be selected on this widget
-    long mCRSIDSelection;
-
-    //! The Authority ID that wants to be selected on this widget
-    QString mAuthIDSelection;
+    enum columns { NAME_COLUMN, AUTHID_COLUMN, QGIS_CRS_ID_COLUMN, NONE };
+    int mSearchColumn;
+    QString mSearchValue;
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;
@@ -217,11 +201,6 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     void hideDeprecated( QTreeWidgetItem *item );
 
   private slots:
-    /**private handler for when user selects a cs
-     *it will cause wktSelected and sridSelected events to be spawned
-     */
-    void coordinateSystemSelected( QTreeWidgetItem* );
-
     //! get list of authorities
     QStringList authorities();
 

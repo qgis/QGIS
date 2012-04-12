@@ -2,8 +2,12 @@
 #include "qgsfeature.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
+
 #include <QPainter>
 #include <QSet>
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolHeight( 3 ),
     mFillColor( Qt::black ), mOutlineColor( Qt::white ), mOutlineWidth( 0 )
@@ -185,6 +189,115 @@ void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )
 QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
 {
   return QgsEllipseSymbolLayerV2::create( properties() );
+}
+
+void QgsEllipseSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  QDomElement symbolizerElem = doc.createElement( "se:PointSymbolizer" );
+  if ( !props.value( "uom", "" ).isEmpty() )
+    symbolizerElem.setAttribute( "uom", props.value( "uom", "" ) );
+  element.appendChild( symbolizerElem );
+
+  // <Geometry>
+  QgsSymbolLayerV2Utils::createGeometryElement( doc, symbolizerElem, props.value( "geom", "" ) );
+
+  writeSldMarker( doc, symbolizerElem, props );
+}
+
+void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  // <Graphic>
+  QDomElement graphicElem = doc.createElement( "se:Graphic" );
+  element.appendChild( graphicElem );
+
+  QgsSymbolLayerV2Utils::wellKnownMarkerToSld( doc, graphicElem, mSymbolName, mFillColor, mOutlineColor, mOutlineWidth, mSymbolWidth );
+
+  // store w/h factor in a <VendorOption>
+  double widthHeightFactor = mSymbolWidth / mSymbolHeight;
+  QDomElement factorElem = QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "widthHeightFactor", QString::number( widthHeightFactor ) );
+  graphicElem.appendChild( factorElem );
+
+  // <Rotation>
+  QString angleFunc = props.value( "angle", "" );
+  if ( angleFunc.isEmpty() )  // symbol has no angle set
+  {
+    if ( !mRotationField.isEmpty() )
+      angleFunc = mRotationField;
+    else if ( !doubleNear( mAngle, 0.0 ) )
+      angleFunc = QString::number( mAngle );
+  }
+  else if ( !mRotationField.isEmpty() )
+  {
+    // the symbol has an angle and the symbol layer have a rotation
+    // property set
+    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mRotationField );
+  }
+  else if ( !doubleNear( mAngle, 0.0 ) )
+  {
+    // both the symbol and the symbol layer have angle value set
+    bool ok;
+    double angle = angleFunc.toDouble( &ok );
+    if ( !ok )
+    {
+      // its a string (probably a property name or a function)
+      angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mAngle );
+    }
+    else if ( !doubleNear( angle + mAngle, 0.0 ) )
+    {
+      // it's a double value
+      angleFunc = QString::number( angle + mAngle );
+    }
+  }
+  QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
+}
+
+QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
+{
+  QgsDebugMsg( "Entered." );
+
+  QDomElement graphicElem = element.firstChildElement( "Graphic" );
+  if ( graphicElem.isNull() )
+    return NULL;
+
+  QString name = "circle";
+  QColor color, borderColor;
+  double borderWidth, size;
+  double widthHeightFactor = 1.0;
+
+  QgsStringMap vendorOptions = QgsSymbolLayerV2Utils::getVendorOptionList( graphicElem );
+  for ( QgsStringMap::iterator it = vendorOptions.begin(); it != vendorOptions.end(); ++it )
+  {
+    if ( it.key() == "widthHeightFactor" )
+    {
+      bool ok;
+      double v = it.value().toDouble( &ok );
+      if ( ok && !doubleNear( v, 0.0 ) && v > 0 )
+        widthHeightFactor = v;
+    }
+  }
+
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, color, borderColor, borderWidth, size ) )
+    return NULL;
+
+  double angle = 0.0;
+  QString angleFunc;
+  if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  {
+    bool ok;
+    double d = angleFunc.toDouble( &ok );
+    if ( ok )
+      angle = d;
+  }
+
+  QgsEllipseSymbolLayerV2 *m = new QgsEllipseSymbolLayerV2();
+  m->setSymbolName( name );
+  m->setColor( color );
+  m->setOutlineColor( borderColor );
+  m->setOutlineWidth( borderWidth );
+  m->setSymbolWidth( size );
+  m->setSymbolHeight( size / widthHeightFactor );
+  m->setAngle( angle );
+  return m;
 }
 
 QgsStringMap QgsEllipseSymbolLayerV2::properties() const

@@ -112,7 +112,7 @@
    <item row="9" column="1">
     <widget class="QDoubleSpinBox" name="spinOffset">
      <property name="decimals">
-      <number>2</number>
+      <number>5</number>
      </property>
      <property name="minimum">
       <double>-100000.000000000000000</double>

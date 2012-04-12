@@ -18,11 +18,14 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <QSettings>
+
 #include <math.h>
+#include <limits>
 
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
 
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
@@ -102,14 +105,30 @@ inline bool isNull( const QVariant& v ) { return v.isNull(); }
 const char* QgsExpression::BinaryOperatorText[] =
 {
   "OR", "AND",
-  "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "ILIKE", "IS", "IS NOT",
+  "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
   "+", "-", "*", "/", "%", "^",
   "||"
+};
+
+const char* QgsExpression::BinaryOgcOperatorText[] =
+{
+  "Or", "And",
+  "PropertyIsEqualTo", "PropertyIsNotEqualTo",
+  "PropertyIsGreaterThanOrEqualTo", "PropertyIsLessThanOrEqualTo",
+  "PropertyIsLessThan", "PropertyIsGreaterThan",
+  "", "PropertyIsLike", "", "", "",
+  "Add", "Sub", "Mul", "Div", "", "",
+  ""
 };
 
 const char* QgsExpression::UnaryOperatorText[] =
 {
   "NOT", "-"
+};
+
+const char* QgsExpression::UnaryOgcOperatorText[] =
+{
+  "Not", ""
 };
 
 ///////////////////////////////////////////////
@@ -136,13 +155,16 @@ static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 static int getIntValue( const QVariant& value, QgsExpression* parent )
 {
   bool ok;
-  int x = value.toInt( &ok );
-  if ( !ok )
+  qint64 x = value.toLongLong( &ok );
+  if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
+  {
+    return x;
+  }
+  else
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
     return 0;
   }
-  return x;
 }
 
 
@@ -541,6 +563,165 @@ QString QgsExpression::dump() const
   return mRootNode->dump();
 }
 
+void QgsExpression::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  if ( !mRootNode )
+    return;
+
+  mRootNode->toOgcFilter( doc, element );
+}
+
+QgsExpression* QgsExpression::createFromOgcFilter( QDomElement &element )
+{
+  if ( element.isNull() || !element.hasChildNodes() )
+    return NULL;
+
+  QgsExpression *expr = new QgsExpression();
+
+  QDomElement childElem = element.firstChildElement();
+  while ( !childElem.isNull() )
+  {
+    QString errorMsg;
+    QgsExpression::Node *node = QgsExpression::Node::createFromOgcFilter( childElem, errorMsg );
+    if ( !node )
+    {
+      // invalid expression, parser error
+      expr->mParserErrorString = errorMsg;
+      return expr;
+    }
+
+    // use the concat binary operator to append to the root node
+    if ( !expr->mRootNode )
+    {
+      expr->mRootNode = node;
+    }
+    else
+    {
+      expr->mRootNode = new QgsExpression::NodeBinaryOperator( boConcat, expr->mRootNode, node );
+    }
+
+    childElem = childElem.nextSiblingElement();
+  }
+
+  return expr;
+}
+
+void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
+{
+  if ( mRootNode )
+    mRootNode->accept( v );
+}
+
+
+QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &element, QString &errorMessage )
+{
+  if ( element.isNull() )
+    return NULL;
+
+  // check for unary operators
+  int unaryOpCount = sizeof( UnaryOgcOperatorText ) / sizeof( UnaryOgcOperatorText[0] );
+  for ( int i = 0; i < unaryOpCount; i++ )
+  {
+    QString ogcOperatorName = UnaryOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.localName() == ogcOperatorName )
+    {
+      QgsExpression::Node *node = QgsExpression::NodeUnaryOperator::createFromOgcFilter( element, errorMessage );
+      if ( node )
+        return node;
+
+      return NULL;
+    }
+  }
+
+  // check for binary operators
+  int binaryOpCount = sizeof( BinaryOgcOperatorText ) / sizeof( BinaryOgcOperatorText[0] );
+  for ( int i = 0; i < binaryOpCount; i++ )
+  {
+    QString ogcOperatorName = BinaryOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.localName() == ogcOperatorName )
+    {
+      QgsExpression::Node *node = QgsExpression::NodeBinaryOperator::createFromOgcFilter( element, errorMessage );
+      if ( node )
+        return node;
+
+      return NULL;
+    }
+  }
+
+  // check for other OGC operators, convert them to expressions
+
+  if ( element.localName() == "PropertyIsNull" )
+  {
+    return QgsExpression::NodeBinaryOperator::createFromOgcFilter( element, errorMessage );
+  }
+  else if ( element.localName() == "Literal" )
+  {
+    return QgsExpression::NodeLiteral::createFromOgcFilter( element, errorMessage );
+  }
+  else if ( element.localName() == "Function" )
+  {
+    return QgsExpression::NodeFunction::createFromOgcFilter( element, errorMessage );
+  }
+  else if ( element.localName() == "PropertyName" )
+  {
+    return QgsExpression::NodeColumnRef::createFromOgcFilter( element, errorMessage );
+  }
+  else if ( element.localName() == "PropertyIsBetween" )
+  {
+    // <ogc:PropertyIsBetween> encode a Range check
+    QgsExpression::Node *operand = 0, *lowerBound = 0, *upperBound = 0;
+
+    QDomElement operandElem = element.firstChildElement( "LowerBoundary" );
+    if ( !operandElem.isNull() )
+      lowerBound = createFromOgcFilter( operandElem, errorMessage );
+
+    operandElem = element.firstChildElement( "UpperBoundary" );
+    if ( !operandElem.isNull() )
+      upperBound = createFromOgcFilter( operandElem, errorMessage );
+
+    // <ogc:expression>
+    operandElem = element.firstChildElement();
+    while ( !operandElem.isNull() )
+    {
+      if ( operandElem.localName() != "LowerBoundary" &&
+           operandElem.localName() != "UpperBoundary" )
+      {
+        operand = createFromOgcFilter( operandElem, errorMessage );
+        break;
+      }
+
+      operandElem = operandElem.nextSiblingElement();
+    }
+
+    if ( !operand || !lowerBound || !upperBound )
+    {
+      if ( operand )
+        delete operand;
+
+      if ( lowerBound )
+        delete lowerBound;
+
+      if ( upperBound )
+        delete upperBound;
+
+      errorMessage = "missing some required sub-elements in ogc:PropertyIsBetween";
+      return NULL;
+    }
+
+    QgsExpression::Node *geOperator = new QgsExpression::NodeBinaryOperator( boGE, operand, lowerBound );
+    QgsExpression::Node *leOperator = new QgsExpression::NodeBinaryOperator( boLE, operand, upperBound );
+    return new QgsExpression::NodeBinaryOperator( boAnd, geOperator, leOperator );
+  }
+
+  errorMessage += QString( "unable to convert '%1' element to a valid expression: it is not supported yet or it has invalid arguments" ).arg( element.tagName() );
+  return NULL;
+}
 
 ///////////////////////////////////////////////
 // nodes
@@ -554,6 +735,14 @@ QString QgsExpression::NodeList::dump() const
     msg += n->dump();
   }
   return msg;
+}
+
+void QgsExpression::NodeList::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  foreach( Node* n, mList )
+  {
+    n->toOgcFilter( doc, element );
+  }
 }
 
 //
@@ -594,6 +783,58 @@ bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const Qgs
 QString QgsExpression::NodeUnaryOperator::dump() const
 {
   return QString( "%1 %2" ).arg( UnaryOperatorText[mOp] ).arg( mOperand->dump() );
+}
+
+void QgsExpression::NodeUnaryOperator::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  QDomElement uoElem;
+  switch ( mOp )
+  {
+    case uoMinus:
+      uoElem = doc.createElement( "ogc:Literal" );
+      uoElem.appendChild( doc.createTextNode( "-" ) );
+      break;
+    case uoNot:
+      uoElem = doc.createElement( "ogc:Not" );
+      break;
+
+    default:
+      element.appendChild( doc.createComment( QString( "Unary operator %1 not implemented yet" ).arg( UnaryOperatorText[mOp] ) ) );
+      return;
+  }
+  mOperand->toOgcFilter( doc, uoElem );
+  element.appendChild( uoElem );
+}
+
+QgsExpression::Node* QgsExpression::NodeUnaryOperator::createFromOgcFilter( QDomElement &element, QString &errorMessage )
+{
+  if ( element.isNull() )
+    return NULL;
+
+  int unaryOpCount = sizeof( UnaryOgcOperatorText ) / sizeof( UnaryOgcOperatorText[0] );
+  for ( int i = 0; i < unaryOpCount; i++ )
+  {
+    QString ogcOperatorName = UnaryOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.localName() != ogcOperatorName )
+      continue;
+
+    QDomElement operandElem = element.firstChildElement();
+    QgsExpression::Node* operand = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
+    if ( !operand )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = QString( "invalid operand for '%1' unary operator" ).arg( ogcOperatorName );
+      return NULL;
+    }
+
+    return new QgsExpression::NodeUnaryOperator(( UnaryOperator ) i, operand );
+  }
+
+  errorMessage = QString( "%1 unary operator not supported." ).arg( element.tagName() );
+  return NULL;
 }
 
 //
@@ -711,7 +952,9 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
 
     case boRegexp:
     case boLike:
+    case boNotLike:
     case boILike:
+    case boNotILike:
       if ( isNull( vL ) || isNull( vR ) )
         return TVL_Unknown;
       else
@@ -720,17 +963,23 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         QString regexp = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
         // TODO: cache QRegExp in case that regexp is a literal string (i.e. it will stay constant)
         bool matches;
-        if ( mOp == boLike || mOp == boILike ) // change from LIKE syntax to regexp
+        if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
           // XXX escape % and _  ???
           regexp.replace( "%", ".*" );
           regexp.replace( "_", "." );
-          matches = QRegExp( regexp, mOp == boLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
+          matches = QRegExp( regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
         {
           matches = QRegExp( regexp ).indexIn( str ) != -1;
         }
+
+        if ( mOp == boNotLike || mOp == boNotILike )
+        {
+          matches = !matches;
+        }
+
         return matches ? TVL_True : TVL_False;
       }
 
@@ -803,6 +1052,171 @@ QString QgsExpression::NodeBinaryOperator::dump() const
   return QString( "%1 %2 %3" ).arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
 }
 
+void QgsExpression::NodeBinaryOperator::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  if ( mOp == boConcat )
+  {
+    // the concat binary operator must only convert its operands
+    mOpLeft->toOgcFilter( doc, element );
+    mOpRight->toOgcFilter( doc, element );
+    return;
+  }
+
+  if ( mOp == boIs || mOp == boIsNot )
+  {
+    // check if one of the operands is NULL
+    QgsExpression::NodeLiteral *opLeftLiteral = dynamic_cast<QgsExpression::NodeLiteral *>( mOpLeft );
+    QgsExpression::NodeLiteral *opRightLiteral = dynamic_cast<QgsExpression::NodeLiteral *>( mOpRight );
+
+    if ( opLeftLiteral && opLeftLiteral->value().isNull() &&
+         opRightLiteral && opRightLiteral->value().isNull() )
+    {
+      // why could anybody find useful to use NULL IS NULL???
+      // BTW avoid issues by converting it to 1 = 1
+      QDomElement eqElem = doc.createElement( "ogc:PropertyIsEqual" );
+
+      QDomElement literalElem = doc.createElement( "ogc:Literal" );
+      literalElem.appendChild( doc.createTextNode( "1" ) );
+      eqElem.appendChild( literalElem );
+
+      literalElem = doc.createElement( "ogc:Literal" );
+      literalElem.appendChild( doc.createTextNode( "1" ) );
+      eqElem.appendChild( literalElem );
+
+      element.appendChild( eqElem );
+    }
+    else if (( opLeftLiteral && opLeftLiteral->value().isNull() ) ||
+             ( opRightLiteral && opRightLiteral->value().isNull() ) )
+    {
+      // at least one operand is NULL, use <ogc:PropertyIsNull> element
+      QDomElement isNullElem = doc.createElement( "ogc:PropertyIsNull" );
+      QgsExpression::Node *operand = opLeftLiteral->value().isNull() ? mOpRight : mOpLeft;
+      operand->toOgcFilter( doc, isNullElem );
+
+      if ( mOp == boIsNot )
+      {
+        // append to <ogc:Not> element if IS NOT operator was required
+        QDomElement notOpElem = doc.createElement( "ogc:Not" );
+        notOpElem.appendChild( isNullElem );
+        element.appendChild( notOpElem );
+      }
+      else
+      {
+        element.appendChild( isNullElem );
+      }
+    }
+    else
+    {
+      // both operands are not null, use <ogc:PropertyIsEqual> element
+      QDomElement eqElem = doc.createElement( "ogc:PropertyIsEqual" );
+      mOpLeft->toOgcFilter( doc, eqElem );
+      mOpRight->toOgcFilter( doc, eqElem );
+      element.appendChild( eqElem );
+    }
+    return;
+  }
+
+  if ( mOp == boILike )
+  {
+    // XXX why ogc:PropertyIsLikeType extends ogc:ComparisonOpsType
+    // which has no matchCase attribute? Shouldn't it be better if
+    // would extend BinaryComparisonOpType which has that attribute
+    // and doesn't require to have a ogc:PropertyName as first parameter?
+    QgsExpression ilikeExpr( QString( "upper( %1 ) LIKE upper( %2 )" ).arg( mOpLeft->dump() ).arg( mOpRight->dump() ) );
+    ilikeExpr.toOgcFilter( doc, element );
+    return;
+  }
+
+  QString opText = BinaryOgcOperatorText[mOp];
+  if ( opText.isEmpty() )
+  {
+    // not implemented binary operators
+    // TODO: regex, % (mod), ^ (pow) are not supported yet
+    element.appendChild( doc.createComment( QString( "Binary operator %1 not implemented yet" ).arg( BinaryOperatorText[mOp] ) ) );
+    return;
+  }
+
+  QDomElement boElem = doc.createElement( "ogc:" + opText );
+  if ( mOp == boLike )
+  {
+    // setup wildcards to <ogc:PropertyIsLike>
+    boElem.setAttribute( "wildCard", "%" );
+    boElem.setAttribute( "singleChar", "?" );
+    boElem.setAttribute( "escapeChar", "!" );
+  }
+
+  mOpLeft->toOgcFilter( doc, boElem );
+  mOpRight->toOgcFilter( doc, boElem );
+  element.appendChild( boElem );
+}
+
+QgsExpression::Node* QgsExpression::NodeBinaryOperator::createFromOgcFilter( QDomElement &element, QString &errorMessage )
+{
+  if ( element.isNull() )
+    return NULL;
+
+  QgsExpression::Node* opLeft = 0;
+  QgsExpression::Node* opRight = 0;
+
+  // convert ogc:PropertyIsNull to IS operator with NULL right operand
+  if ( element.localName() == "PropertyIsNull" )
+  {
+    QDomElement operandElem = element.firstChildElement();
+    opLeft = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
+    if ( !opLeft )
+      return NULL;
+
+    opRight = new QgsExpression::NodeLiteral( QVariant() );
+    return new QgsExpression::NodeBinaryOperator( boIs, opLeft, opRight );
+  }
+
+  // the other binary operators
+  int binaryOpCount = sizeof( BinaryOgcOperatorText ) / sizeof( BinaryOgcOperatorText[0] );
+  for ( int i = 0; i < binaryOpCount; i++ )
+  {
+    QString ogcOperatorName = BinaryOgcOperatorText[ i ];
+    if ( ogcOperatorName.isEmpty() )
+      continue;
+
+    if ( element.localName() != ogcOperatorName )
+      continue;
+
+    QDomElement operandElem = element.firstChildElement();
+    opLeft = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
+    if ( !opLeft )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = QString( "invalid left operand for '%1' binary operator" ).arg( ogcOperatorName );
+      break;
+    }
+
+    operandElem = operandElem.nextSiblingElement();
+    opRight = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
+    if ( !opRight )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( ogcOperatorName );
+      break;
+    }
+
+    return new QgsExpression::NodeBinaryOperator(( BinaryOperator ) i, opLeft, opRight );
+  }
+
+  if ( !opLeft && !opRight )
+  {
+    errorMessage = QString( "'%1' binary operator not supported." ).arg( element.tagName() );
+    return NULL;
+  }
+
+  if ( opLeft )
+    delete opLeft;
+
+  if ( opRight )
+    delete opRight;
+
+  return NULL;
+}
+
 //
 
 QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature* f )
@@ -866,6 +1280,31 @@ QString QgsExpression::NodeInOperator::dump() const
   return QString( "%1 IN (%2)" ).arg( mNode->dump() ).arg( mList->dump() );
 }
 
+void QgsExpression::NodeInOperator::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  // XXX use a function instead of multiple comparations?
+
+  QDomElement *parent = &element;
+
+  QDomElement orElem;
+  if ( mList->list().size() > 1 )
+  {
+    orElem = doc.createElement( "ogc:Or" );
+    element.appendChild( orElem );
+
+    parent = &orElem;
+  }
+
+  foreach( Node* n, mList->list() )
+  {
+    QDomElement eqElem = doc.createElement( "ogc:PropertyIsEqualTo" );
+    mNode->toOgcFilter( doc, eqElem );
+    n->toOgcFilter( doc, eqElem );
+
+    parent->appendChild( eqElem );
+  }
+}
+
 //
 
 QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f )
@@ -916,6 +1355,58 @@ QString QgsExpression::NodeFunction::dump() const
     return QString( "%1(%2)" ).arg( fd.mName ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }
 
+void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
+  if ( fd.mParams == 0 )
+    return; // TODO: special column
+
+  QDomElement funcElem = doc.createElement( "ogc:Function" );
+  funcElem.setAttribute( "name", fd.mName );
+  mArgs->toOgcFilter( doc, funcElem );
+  element.appendChild( funcElem );
+}
+
+QgsExpression::Node* QgsExpression::NodeFunction::createFromOgcFilter( QDomElement &element, QString &errorMessage )
+{
+  if ( element.isNull() )
+    return NULL;
+
+  if ( element.localName() != "Function" )
+  {
+    errorMessage = QString( "ogc:Function expected, got %1" ).arg( element.tagName() );
+    return NULL;
+  }
+
+  for ( int i = 0; i < BuiltinFunctions().size(); i++ )
+  {
+    QgsExpression::FunctionDef funcDef = BuiltinFunctions()[i];
+
+    if ( element.attribute( "name" ) != funcDef.mName )
+      continue;
+
+    QgsExpression::NodeList *args = new QgsExpression::NodeList();
+
+    QDomElement operandElem = element.firstChildElement();
+    while ( !operandElem.isNull() )
+    {
+      QgsExpression::Node* op = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
+      if ( !op )
+      {
+        delete args;
+        return NULL;
+      }
+      args->append( op );
+
+      operandElem = operandElem.nextSiblingElement();
+    }
+
+    return new QgsExpression::NodeFunction( i, args );
+  }
+
+  return NULL;
+}
+
 //
 
 QVariant QgsExpression::NodeLiteral::eval( QgsExpression* , QgsFeature* )
@@ -941,6 +1432,92 @@ QString QgsExpression::NodeLiteral::dump() const
     case QVariant::String: return QString( "'%1'" ).arg( mValue.toString() );
     default: return QObject::tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
+}
+
+void QgsExpression::NodeLiteral::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  QString value;
+  if ( !mValue.isNull() )
+  {
+    switch ( mValue.type() )
+    {
+      case QVariant::Int:
+        value = QString::number( mValue.toInt() );
+        break;
+      case QVariant::Double:
+        value = QString::number( mValue.toDouble() );
+        break;
+      case QVariant::String:
+        value = mValue.toString();
+        break;
+      default:
+        break;
+    }
+  }
+  QDomElement litElem = doc.createElement( "ogc:Literal" );
+  litElem.appendChild( doc.createTextNode( value ) );
+  element.appendChild( litElem );
+}
+
+QgsExpression::Node* QgsExpression::NodeLiteral::createFromOgcFilter( QDomElement &element, QString &errorMessage )
+{
+  if ( element.isNull() )
+    return NULL;
+
+  if ( element.localName() != "Literal" )
+  {
+    errorMessage = QString( "ogc:Literal expected, got %1" ).arg( element.tagName() );
+    return NULL;
+  }
+
+  QgsExpression::Node *root = 0;
+
+  // the literal content can have more children (e.g. CDATA section, text, ...)
+  QDomNode childNode = element.firstChild();
+  while ( !childNode.isNull() )
+  {
+    QgsExpression::Node* operand = 0;
+
+    if ( childNode.nodeType() == QDomNode::ElementNode )
+    {
+      // found a element node (e.g. PropertyName), convert it
+      QDomElement operandElem = childNode.toElement();
+      operand = QgsExpression::Node::createFromOgcFilter( operandElem, errorMessage );
+      if ( !operand )
+      {
+        if ( root )
+          delete root;
+
+        errorMessage = QString( "'%1' is an invalid or not supported content for ogc:Literal" ).arg( operandElem.tagName() );
+        return NULL;
+      }
+    }
+    else
+    {
+      // probably a text/CDATA node, convert its content to string
+      operand = new QgsExpression::NodeLiteral( childNode.nodeValue() );
+    }
+
+    if ( !operand )
+      continue;
+
+    // use the concat operator to merge the ogc:Literal children
+    if ( !root )
+    {
+      root = operand;
+    }
+    else
+    {
+      root = new QgsExpression::NodeBinaryOperator( boConcat, root, operand );
+    }
+
+    childNode = childNode.nextSibling();
+  }
+
+  if ( root )
+    return root;
+
+  return NULL;
 }
 
 //
@@ -970,96 +1547,114 @@ QString QgsExpression::NodeColumnRef::dump() const
   return mName;
 }
 
-bool QgsExpression::toOGCFilter( QDomDocument& doc ) const
+void QgsExpression::NodeColumnRef::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
-  if ( !mRootNode )
-  {
-    return false;
-  }
-
-  doc.clear();
-  QDomElement filterElem = doc.createElement( "Filter" );
-  doc.appendChild( filterElem );
-  return mRootNode->toOGCFilter( doc, filterElem );
+  QDomElement propElem = doc.createElement( "ogc:PropertyName" );
+  propElem.appendChild( doc.createTextNode( mName ) );
+  element.appendChild( propElem );
 }
 
-bool QgsExpression::NodeBinaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
+QgsExpression::Node* QgsExpression::NodeColumnRef::createFromOgcFilter( QDomElement &element, QString &errorMessage )
 {
-  QDomElement opElem;
-  switch ( mOp )
+  if ( element.isNull() )
+    return NULL;
+
+  if ( element.localName() != "PropertyName" )
   {
-    case boEQ:
-      opElem = doc.createElement( "PropertyIsEqualTo" );
-      break;
-    case boNE:
-      opElem = doc.createElement( "PropertyIsNotEqualTo" );
-      break;
-    case boLE:
-      opElem = doc.createElement( "PropertyIsLessThanOrEqualTo" );
-      break;
-    case boGE:
-      opElem = doc.createElement( "PropertyIsLessThanOrEqualTo" );
-      break;
-    case boLT:
-      opElem = doc.createElement( "PropertyIsLessThan" );
-      break;
-    case boGT:
-      opElem = doc.createElement( "PropertyIsGreaterThan" );
-      break;
-    case boOr:
-      opElem = doc.createElement( "Or" );
-      break;
-    case boAnd:
-      opElem = doc.createElement( "And" );
-      break;
-    default:
-      return false;
+    errorMessage = QString( "ogc:PropertyName expected, got %1" ).arg( element.tagName() );
+    return NULL;
   }
 
-  if ( mOpLeft )
-  {
-    mOpLeft->toOGCFilter( doc, opElem );
-  }
-  if ( mOpRight )
-  {
-    mOpRight->toOGCFilter( doc, opElem );
-  }
-
-  parent.appendChild( opElem );
-  return true;
+  return new QgsExpression::NodeColumnRef( element.firstChild().nodeValue() );
 }
 
-bool QgsExpression::NodeLiteral::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement literalElem = doc.createElement( "Literal" );
-  QDomText literalText = doc.createTextNode( mValue.toString() );
-  literalElem.appendChild( literalText );
-  parent.appendChild( literalElem );
-  return true;
-}
+//
 
-bool QgsExpression::NodeColumnRef::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
+QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* f )
 {
-  QDomElement propertyElem = doc.createElement( "PropertyName" );
-  QDomText propertyText = doc.createTextNode( mName );
-  propertyElem.appendChild( propertyText );
-  parent.appendChild( propertyElem );
-  return true;
-}
-
-bool QgsExpression::NodeUnaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  if ( mOp == uoNot )
+  foreach( WhenThen* cond, mConditions )
   {
-    QDomElement notElem = doc.createElement( "Not" );
-    if ( mOperand )
+    QVariant vWhen = cond->mWhenExp->eval( parent, f );
+    TVL tvl = getTVLValue( vWhen, parent );
+    ENSURE_NO_EVAL_ERROR;
+    if ( tvl == True )
     {
-      if ( mOperand->toOGCFilter( doc, notElem ) )
-      {
-        parent.appendChild( notElem );
-        return true;
-      }
+      QVariant vRes = cond->mThenExp->eval( parent, f );
+      ENSURE_NO_EVAL_ERROR;
+      return vRes;
     }
   }
+
+  if ( mElseExp )
+  {
+    QVariant vElse = mElseExp->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
+    return vElse;
+  }
+
+  // return NULL if no condition is matching
+  return QVariant();
+}
+
+bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+{
+  bool res;
+  foreach( WhenThen* cond, mConditions )
+  {
+    res = cond->mWhenExp->prepare( parent, fields )
+          & cond->mThenExp->prepare( parent, fields );
+    if ( !res ) return false;
+  }
+
+  if ( mElseExp )
+    return mElseExp->prepare( parent, fields );
+
+  return true;
+}
+
+QString QgsExpression::NodeCondition::dump() const
+{
+  QString msg = "CONDITION:\n";
+  foreach( WhenThen* cond, mConditions )
+  {
+    msg += QString( "- WHEN %1 THEN %2\n" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
+  }
+  if ( mElseExp )
+    msg += QString( "- ELSE %1" ).arg( mElseExp->dump() );
+  return msg;
+}
+
+void QgsExpression::NodeCondition::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
+{
+  // TODO: if(cond) ... [else if (cond2) ...]* [else ...]
+  element.appendChild( doc.createComment( "CASE operator not implemented yet" ) );
+}
+
+QStringList QgsExpression::NodeCondition::referencedColumns() const
+{
+  QStringList lst;
+  foreach( WhenThen* cond, mConditions )
+  {
+    lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->referencedColumns();
+
+  return lst;
+}
+
+bool QgsExpression::NodeCondition::needsGeometry() const
+{
+  foreach( WhenThen* cond, mConditions )
+  {
+    if ( cond->mWhenExp->needsGeometry() ||
+         cond->mThenExp->needsGeometry() )
+      return true;
+  }
+
+  if ( mElseExp && mElseExp->needsGeometry() )
+    return true;
+
   return false;
 }

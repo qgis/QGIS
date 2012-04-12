@@ -205,8 +205,8 @@
 				<grass name="r.cost.vect"/>
 				<grass name="r.drain"/>
 				<grass name="r.shaded.relief"/>
-				<grass name="r.slope.aspect.slope"/>
-				<grass name="r.slope.aspect.aspect"/>
+				<grass name="r.slope"/>
+				<grass name="r.aspect"/>
 				<grass name="r.param.scale"/>
 				<grass name="r.texture"/>
 				<grass name="r.texture.bis"/>
@@ -275,6 +275,7 @@
 				<grass name="r.category"/>
 			</section>
 			<section label="Statistics">
+                                <grass name="r.stats"/>
 				<grass name="r.sum"/>
 				<grass name="r.report"/>
 				<grass name="r.average"/>
@@ -329,6 +330,8 @@
 			</section>
 			<section label="Convert 2D vector to 3D by sampling raster">
 				<grass name="v.drape"/>
+				<grass name="v.extrude.fixed"/>
+				<grass name="v.extrude.attr"/>
 			</section>
 			<section label="Reproject vector from another Location">
 				<grass name="v.transform"/>

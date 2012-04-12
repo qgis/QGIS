@@ -29,7 +29,7 @@
 #include "qgsexpression.h"
 #include "qgsexpressionparser.hpp"
 #include <QRegExp>
-
+#include <QLocale>
 
 // if not defined, searches for isatty()
 // which doesn't in MSVC compiler
@@ -85,6 +85,8 @@ static QString stripColumnRef(QString text)
   return text;
 }
 
+// C locale for correct parsing of numbers even if the system locale is different
+static QLocale cLocale("C");
 
 %}
 
@@ -122,12 +124,14 @@ string      "'"{str_char}*"'"
 "<"   {  B_OP(boLT); return LT; }
 ">"   {  B_OP(boGT); return GT; }
 
-"~"      { B_OP(boRegexp); return REGEXP; }
-"LIKE"   { B_OP(boLike); return LIKE; }
-"ILIKE"  { B_OP(boILike); return ILIKE; }
-"IS"     { B_OP(boIs); return IS; }
-"IS NOT" { B_OP(boIsNot); return ISNOT; }
-"||"     { B_OP(boConcat); return CONCAT; }
+"~"         { B_OP(boRegexp); return REGEXP; }
+"LIKE"      { B_OP(boLike); return LIKE; }
+"NOT LIKE"  { B_OP(boNotLike); return LIKE; }
+"ILIKE"     { B_OP(boILike); return LIKE; }
+"NOT ILIKE" { B_OP(boNotILike); return LIKE; }
+"IS"        { B_OP(boIs); return IS; }
+"IS NOT"    { B_OP(boIsNot); return IS; }
+"||"        { B_OP(boConcat); return CONCAT; }
 
 "+"  { B_OP(boPlus); return PLUS; }
 "-"  { B_OP(boMinus); return MINUS; }
@@ -140,13 +144,18 @@ string      "'"{str_char}*"'"
 
 "NULL"	{ return NULLVALUE; }
 
+"CASE" { return CASE; }
+"WHEN" { return WHEN; }
+"THEN" { return THEN; }
+"ELSE" { return ELSE; }
+"END"  { return END;  }
 
 [()]      { return yytext[0]; }
 
 ","   { return COMMA; }
 
-{num_float}  { exp_lval.numberFloat  = atof(yytext); return NUMBER_FLOAT; }
-{num_int}  { exp_lval.numberInt  = atoi(yytext); return NUMBER_INT; }
+{num_float}  { exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_int}  { exp_lval.numberInt  = cLocale.toInt( QString::fromAscii(yytext), 0, 10); return NUMBER_INT; }
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
 

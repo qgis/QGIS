@@ -240,7 +240,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 
   //correct QPictures dpi correction
   QPicture* picture = new QPicture();
-  double pictureSize = entry->size  /  25.4 / entry->rasterScaleFactor  * picture->logicalDpiX();
+  double pictureSize = entry->size  /  25.4 / ( entry->rasterScaleFactor * entry->widthScaleFactor )  * picture->logicalDpiX();
   QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
 
 

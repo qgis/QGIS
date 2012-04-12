@@ -144,9 +144,11 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
       @param doc xml document
+      @param mapsToRestore for reading from project file: set preview move 'rectangle' to all maps and save the preview states to show composer maps on demand
       @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
       @param pos item position. Optional, take position from xml if 0*/
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands = false, QPointF* pos = 0 );
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore = 0,
+                          bool addUndoCommands = false, QPointF* pos = 0 );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
@@ -194,7 +196,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerLabel( QgsComposerLabel* label );
     /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map );
+    void addComposerMap( QgsComposerMap* map, bool setDefaultPreviewStyle = true );
     /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
     /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/

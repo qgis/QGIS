@@ -16,6 +16,7 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QSettings>
 #include <QStandardItemModel>
 
 #include "qgsapplication.h"
@@ -28,6 +29,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 {
 
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
 
 #if QT_VERSION >= 0x40500
   tabItemType->setDocumentMode( true );
@@ -67,6 +71,9 @@ void QgsStyleV2ManagerDialog::onFinished()
   {
     mStyle->save();
   }
+
+  QSettings settings;
+  settings.setValue( "/Windows/StyleV2Manager/geometry", saveGeometry() );
 }
 
 void QgsStyleV2ManagerDialog::populateTypes()

@@ -110,6 +110,7 @@ void addToTmpNodes(QgsRasterCalcNode* node)
 void joinTmpNodes(QgsRasterCalcNode* parent, QgsRasterCalcNode* left, QgsRasterCalcNode* right)
 {
   bool res;
+  Q_UNUSED(res);
 
   if (left)
   {

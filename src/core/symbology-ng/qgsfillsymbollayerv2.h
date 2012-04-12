@@ -25,6 +25,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -39,6 +40,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     Qt::BrushStyle brushStyle() const { return mBrushStyle; }
     void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
@@ -97,6 +100,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     ~QgsSVGFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -109,11 +113,20 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 
     QgsSymbolLayerV2* clone() const;
 
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
     //getters and setters
     void setSvgFilePath( const QString& svgPath );
     QString svgFilePath() const { return mSvgFilePath; }
     void setPatternWidth( double width ) { mPatternWidth = width;}
     double patternWidth() const { return mPatternWidth; }
+
+    void setSvgFillColor( const QColor& c ) { mSvgFillColor = c; }
+    QColor svgFillColor() const { return mSvgFillColor; }
+    void setSvgOutlineColor( const QColor& c ) { mSvgOutlineColor = c; }
+    QColor svgOutlineColor() const { return mSvgOutlineColor; }
+    void setSvgOutlineWidth( double w ) { mSvgOutlineWidth = w; }
+    double svgOutlineWidth() const { return mSvgOutlineWidth; }
 
   protected:
     /**Width of the pattern (in QgsSymbolV2 output units)*/
@@ -125,9 +138,16 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**SVG view box (to keep the aspect ratio */
     QRectF mSvgViewBox;
 
+    //param(fill), param(outline), param(outline-width) are going
+    //to be replaced in memory
+    QColor mSvgFillColor;
+    QColor mSvgOutlineColor;
+    double mSvgOutlineWidth;
+
   private:
     /**Helper function that gets the view box from the byte array*/
     void storeViewBox();
+    void setDefaultSvgParams(); //fills mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth with default values for mSvgFilePath
 };
 
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
@@ -137,6 +157,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     ~QgsLinePatternFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     QString layerType() const;
 
@@ -147,6 +168,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     //getters and setters
     void setLineAngle( double a ) { mLineAngle = a; }
@@ -179,6 +202,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     ~QgsPointPatternFillSymbolLayer();
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
+
     QString layerType() const;
 
     void startRender( QgsSymbolV2RenderContext& context );
@@ -188,6 +213,8 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     //getters and setters
     double distanceX() const { return mDistanceX; }
@@ -222,6 +249,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
     // implemented from base classes
 
@@ -236,6 +264,8 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
     void setColor( const QColor& color );
 

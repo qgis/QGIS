@@ -5,7 +5,7 @@
 #    --------------------------------------
 #   Date                 : Sun Sep 16 12:11:04 AKDT 2007
 #   Copyright            : (C) Copyright 2007 Martin Dobias
-#   Email                : 
+#   Email                :
 # Original authors of Perl version: Gary Sherman and Tim Sutton
 #***************************************************************************
 #*                                                                         *
@@ -18,12 +18,12 @@
 import os, sys, shutil, re
 
 def template_file(file):
-	return os.path.join('plugin_template', file)
+  return os.path.join('plugin_template', file)
 
 def plugin_file(pluginDir, file):
-	return os.path.join(pluginDir, file)
+  return os.path.join(pluginDir, file)
 
-# make sure we are in the plugins directory otherwise the changes this script will make will 
+# make sure we are in the plugins directory otherwise the changes this script will make will
 # wreak havoc....
 
 myDir = os.getcwd()
@@ -32,12 +32,12 @@ print "Checking that we are in the <qgis dir>/src/plugins/ directory....",
 pluginsDirectory = os.path.join('src','plugins')
 
 if myDir[-len(pluginsDirectory):] == pluginsDirectory:
-	print "yes"
+  print "yes"
 else:
-	print "no"
-	print myDir
- 	print "Please relocate to the plugins directory before attempting to run this script."
-	sys.exit(1)
+  print "no"
+  print myDir
+  print "Please relocate to the plugins directory before attempting to run this script."
+  sys.exit(1)
 
 
 # get the needed information from the user
@@ -71,6 +71,13 @@ print "Plugin description:",
 pluginDescription = raw_input()
 
 print
+print "Enter a plugin category. Category will help users"
+print "to understand where to find plugin. E.g. if plugin"
+print "will be available from Vector menu category is Vector"
+print "Plugin category:",
+pluginCategory = raw_input()
+
+print
 print "Enter the name of the application menu that will be created for your plugin"
 print "Clever Tools"
 print "Menu name:",
@@ -90,6 +97,7 @@ print "---------------------------------------------"
 print "Plugin directory:         ", pluginDir
 print "Name of the plugin:       ", pluginName
 print "Description of the plugin:", pluginDescription
+print "Category of the plugin:   ", pluginCategory
 print "Menu name:                ", menuName
 print "Menu item name:           ", menuItemName
 print
@@ -99,8 +107,8 @@ print "Create the plugin? [y/n]:",
 createIt = raw_input()
 
 if createIt.lower() != 'y':
-	print "Plugin creation cancelled, exiting"
-	sys.exit(2)
+  print "Plugin creation cancelled, exiting"
+  sys.exit(2)
 
 # create the plugin and modify the build files
 
@@ -123,37 +131,38 @@ shutil.copy(template_file('pluginguibase.ui'),    os.path.join(pluginDir, plugin
 #
 
 files = [ plugin_file(pluginDir, 'CMakeLists.txt'),
-	  plugin_file(pluginDir, 'README'),
-	  plugin_file(pluginDir, pluginLCaseName + '.qrc'),
-	  plugin_file(pluginDir, pluginLCaseName + '.cpp'),
-	  plugin_file(pluginDir, pluginLCaseName + '.h'),
-	  plugin_file(pluginDir, pluginLCaseName + 'gui.cpp'),
-	  plugin_file(pluginDir, pluginLCaseName + 'gui.h'),
-	  plugin_file(pluginDir, pluginLCaseName + 'guibase.ui') ]
+    plugin_file(pluginDir, 'README'),
+    plugin_file(pluginDir, pluginLCaseName + '.qrc'),
+    plugin_file(pluginDir, pluginLCaseName + '.cpp'),
+    plugin_file(pluginDir, pluginLCaseName + '.h'),
+    plugin_file(pluginDir, pluginLCaseName + 'gui.cpp'),
+    plugin_file(pluginDir, pluginLCaseName + 'gui.h'),
+    plugin_file(pluginDir, pluginLCaseName + 'guibase.ui') ]
 
 # replace occurences of [pluginlcasename], [pluginname], [plugindescription], [menuname], [menutiem]
 # in template with the values from user
 replacements = [ ('\\[pluginlcasename\\]', pluginLCaseName),
-	         ('\\[pluginname\\]', pluginName),
-	         ('\\[plugindescription\\]', pluginDescription),
-	         ('\\[menuname\\]', menuName),
-	         ('\\[menuitemname\\]', menuItemName) ]
+           ('\\[pluginname\\]', pluginName),
+           ('\\[plugindescription\\]', pluginDescription),
+           ('\\[plugincategory\\]', pluginCategory),
+           ('\\[menuname\\]', menuName),
+           ('\\[menuitemname\\]', menuItemName) ]
 
 for file in files:
-	
-	# read contents of the file
-	f = open(file)
-	content = f.read()
-	f.close()
-	
-	# replace everything necessary
-	for repl in replacements:
-		content = re.sub(repl[0], repl[1], content)
-	
-	# write changes to the file
-	f = open(file, "w")
-	f.write(content)
-	f.close()
+
+  # read contents of the file
+  f = open(file)
+  content = f.read()
+  f.close()
+
+  # replace everything necessary
+  for repl in replacements:
+    content = re.sub(repl[0], repl[1], content)
+
+  # write changes to the file
+  f = open(file, "w")
+  f.write(content)
+  f.close()
 
 
 # Add an entry to src/plugins/CMakeLists.txt

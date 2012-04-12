@@ -324,6 +324,7 @@ void QgsCubicRasterResampler::calculateControlPoints( int nCols, int nRows, int 
     int* alphaMatrix, double* xDerivativeMatrixRed, double* xDerivativeMatrixGreen, double* xDerivativeMatrixBlue, double* xDerivativeMatrixAlpha,
     double* yDerivativeMatrixRed, double* yDerivativeMatrixGreen, double* yDerivativeMatrixBlue, double* yDerivativeMatrixAlpha )
 {
+  Q_UNUSED(nRows);
   int idx00 = currentRow * nCols + currentCol;
   int idx10 = idx00 + 1;
   int idx01 = idx00 + nCols;

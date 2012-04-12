@@ -135,14 +135,12 @@ void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
   undoButton = new QPushButton( dockWidgetContents );
   undoButton->setObjectName( QString::fromUtf8( "undoButton" ) );
   undoButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionUndo.png" ) );
-  undoButton->setIconSize( QSize( 24, 24 ) );
 
   gridLayout->addWidget( undoButton, 1, 0, 1, 1 );
 
   redoButton = new QPushButton( dockWidgetContents );
   redoButton->setObjectName( QString::fromUtf8( "redoButton" ) );
   redoButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionRedo.png" ) );
-  redoButton->setIconSize( QSize( 24, 24 ) );
 
   gridLayout->addWidget( redoButton, 1, 1, 1, 1 );
 

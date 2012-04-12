@@ -94,6 +94,8 @@ void QgsGPSConnection::clearLastGPSInformation()
   mLastGPSInformation.satellitesInView.clear();
   mLastGPSInformation.speed = 0;
   mLastGPSInformation.vdop = 0;
+  mLastGPSInformation.hacc = -1;
+  mLastGPSInformation.vacc = -1;
   mLastGPSInformation.quality = -1;  // valid values: 0,1,2, maybe others
   mLastGPSInformation.satellitesUsed = 0;
   mLastGPSInformation.fixMode = ' ';

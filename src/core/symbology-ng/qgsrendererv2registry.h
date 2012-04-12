@@ -4,9 +4,11 @@
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
+#include <QDomElement>
+
+#include "qgis.h"
 
 class QgsFeatureRendererV2;
-class QDomElement;
 class QgsVectorLayer;
 class QgsStyleV2;
 class QgsRendererV2Widget;
@@ -22,6 +24,7 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
   public:
     QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() )
         : mName( name ), mVisibleName( visibleName ), mIcon( icon ) {}
+    virtual ~QgsRendererV2AbstractMetadata() {}
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
@@ -36,6 +39,9 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( renderer ); return NULL; }
 
+    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
+    { Q_UNUSED( elem ); Q_UNUSED( geomType ); return NULL; }
+
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)
     QString mName;
@@ -48,6 +54,7 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
 
 typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFunc )( QDomElement& );
 typedef QgsRendererV2Widget*( *QgsRendererV2WidgetFunc )( QgsVectorLayer*, QgsStyleV2*, QgsFeatureRendererV2* );
+typedef QgsFeatureRendererV2*( *QgsRendererV2CreateFromSldFunc )( QDomElement&, QGis::GeometryType geomType );
 
 /**
  Convenience metadata class that uses static functions to create renderer and its widget.
@@ -62,14 +69,34 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            QgsRendererV2CreateFunc pfCreate,
                            QIcon icon = QIcon(),
                            QgsRendererV2WidgetFunc pfWidget = NULL )
-        : QgsRendererV2AbstractMetadata( name, visibleName, icon ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
+        : QgsRendererV2AbstractMetadata( name, visibleName, icon )
+        , mCreateFunc( pfCreate )
+        , mWidgetFunc( pfWidget )
+        , mCreateFromSldFunc( NULL )
+    {}
+
+    QgsRendererV2Metadata( QString name,
+                           QString visibleName,
+                           QgsRendererV2CreateFunc pfCreate,
+                           QgsRendererV2CreateFromSldFunc pfCreateFromSld,
+                           QIcon icon = QIcon(),
+                           QgsRendererV2WidgetFunc pfWidget = NULL )
+        : QgsRendererV2AbstractMetadata( name, visibleName, icon )
+        , mCreateFunc( pfCreate )
+        , mWidgetFunc( pfWidget )
+        , mCreateFromSldFunc( pfCreateFromSld )
+    {}
 
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
+    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
+    { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : NULL; }
+
 
     QgsRendererV2CreateFunc createFunction() const { return mCreateFunc; }
     QgsRendererV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsRendererV2CreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
     void setWidgetFunction( QgsRendererV2WidgetFunc f ) { mWidgetFunc = f; }
 
@@ -78,6 +105,8 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     QgsRendererV2CreateFunc mCreateFunc;
     //! pointer to function that creates a widget for configuration of renderer's params
     QgsRendererV2WidgetFunc mWidgetFunc;
+    //! pointer to function that creates an instance of the renderer from SLD
+    QgsRendererV2CreateFromSldFunc mCreateFromSldFunc;
 };
 
 /**

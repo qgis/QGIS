@@ -81,12 +81,13 @@
 
 static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );
+static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 
 eVis::eVis( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
   mIdTool = 0;
@@ -116,13 +117,13 @@ void eVis::initGui( )
 
 
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mDatabaseConnectionActionPointer );
-  mQGisIface->addToolBarIcon( mEventIdToolActionPointer );
-  mQGisIface->addToolBarIcon( mEventBrowserActionPointer );
+  mQGisIface->addDatabaseToolBarIcon( mDatabaseConnectionActionPointer );
+  mQGisIface->addDatabaseToolBarIcon( mEventIdToolActionPointer );
+  mQGisIface->addDatabaseToolBarIcon( mEventBrowserActionPointer );
 
-  mQGisIface->addPluginToMenu( "&eVis", mDatabaseConnectionActionPointer );
-  mQGisIface->addPluginToMenu( "&eVis", mEventIdToolActionPointer );
-  mQGisIface->addPluginToMenu( "&eVis", mEventBrowserActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( "&eVis", mEventIdToolActionPointer );
+  mQGisIface->addPluginToDatabaseMenu( "&eVis", mEventBrowserActionPointer );
 
   mEventIdToolActionPointer->setCheckable( true );
 }
@@ -164,16 +165,16 @@ void eVis::launchEventBrowser( )
 void eVis::unload( )
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&eVis", mDatabaseConnectionActionPointer );
-  mQGisIface->removeToolBarIcon( mDatabaseConnectionActionPointer );
+  mQGisIface->removePluginDatabaseMenu( "&eVis", mDatabaseConnectionActionPointer );
+  mQGisIface->removeDatabaseToolBarIcon( mDatabaseConnectionActionPointer );
   delete mDatabaseConnectionActionPointer;
 
-  mQGisIface->removePluginMenu( "&eVis", mEventIdToolActionPointer );
-  mQGisIface->removeToolBarIcon( mEventIdToolActionPointer );
+  mQGisIface->removePluginDatabaseMenu( "&eVis", mEventIdToolActionPointer );
+  mQGisIface->removeDatabaseToolBarIcon( mEventIdToolActionPointer );
   delete mEventIdToolActionPointer;
 
-  mQGisIface->removePluginMenu( "&eVis", mEventBrowserActionPointer );
-  mQGisIface->removeToolBarIcon( mEventBrowserActionPointer );
+  mQGisIface->removePluginDatabaseMenu( "&eVis", mEventBrowserActionPointer );
+  mQGisIface->removeDatabaseToolBarIcon( mEventBrowserActionPointer );
   delete mEventBrowserActionPointer;
 
   while ( mTemporaryFileList.size( ) > 0 )
@@ -224,6 +225,12 @@ QGISEXTERN QString name( )
 QGISEXTERN QString description( )
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category( )
+{
+  return sCategory;
 }
 
 // Return the type ( either UI or MapLayer plugin )

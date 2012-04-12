@@ -500,9 +500,12 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
 
   if ( 0 < theBand && theBand <= ( int ) bandCount() )
   {
-    float myMin = std::numeric_limits<float>::max();
-    float myMax = -1 * std::numeric_limits<float>::max();
-    float myValue = 0.0;
+    // Was there any reason to use float for myMin, myMax, myValue?
+    // It was breaking Float64 data obviously, especially if an extreme value
+    // was used for NoDataValue.
+    double myMin = std::numeric_limits<double>::max();
+    double myMax = -1 * std::numeric_limits<double>::max();
+    double myValue = 0.0;
     for ( int myRow = 0; myRow < mLastViewPort.drawableAreaYDim; ++myRow )
     {
       for ( int myColumn = 0; myColumn < mLastViewPort.drawableAreaXDim; ++myColumn )
@@ -854,10 +857,25 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   if ( rendererContext.coordinateTransform() )
   {
     QgsDebugMsg( "coordinateTransform set -> project extents." );
-    myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox(
-                              rendererContext.extent() );
-    myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox(
-                               mLayerExtent );
+    try
+    {
+      myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsMessageLog::logMessage( tr( "Could not reproject view extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
+      myProjectedViewExtent.setMinimal();
+    }
+
+    try
+    {
+      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( mLayerExtent );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsMessageLog::logMessage( tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
+      myProjectedViewExtent.setMinimal();
+    }
   }
   else
   {
@@ -1847,7 +1865,7 @@ QString QgsRasterLayer::metadata()
   myMetadata += tr( "Layer Spatial Reference System: " );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
-  myMetadata += mCRS->toProj4();
+  myMetadata += crs().toProj4();
   myMetadata += "</p>\n";
 
   myMetadata += "<p class=\"glossy\">";
@@ -2251,7 +2269,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !myDataProvider )
   {
-    QgsMessageLog::logMessage( tr( "Cannot to instantiate the data provider" ), tr( "Raster" ) );
+    QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
     return NULL;
   }
   QgsDebugMsg( "Data driver created" );
@@ -2274,7 +2292,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QStringList const & layers,
                                       QStringList const & styles,
                                       QString const & format,
-                                      QString const & crs,
+                                      QString const & theCrs,
                                       bool loadDefaultStyleFlag )
 {
   Q_UNUSED( loadDefaultStyleFlag );
@@ -2300,18 +2318,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     return;
   }
 
-
-
-
-  QgsDebugMsg( "Instantiated the data provider plugin"
-               + QString( " with layer list of " ) + layers.join( ", " )
-               + " and style list of " + styles.join( ", " )
-               + " and format of " + format +  " and CRS of " + crs );
   if ( !mDataProvider->isValid() )
   {
-    if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !crs.isNull() )
+    if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !theCrs.isNull() )
     {
-      QgsMessageLog::logMessage( tr( "Data provider is invalid (layers %1, styles %2, formats: %3)" )
+      QgsMessageLog::logMessage( tr( "Data provider is invalid (layers: %1, styles: %2, formats: %3)" )
                                  .arg( layers.join( ", " ) )
                                  .arg( styles.join( ", " ) )
                                  .arg( format ),
@@ -2322,7 +2333,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   mDataProvider->addLayers( layers, styles );
   mDataProvider->setImageEncoding( format );
-  mDataProvider->setImageCrs( crs );
+  mDataProvider->setImageCrs( theCrs );
 
   setNoDataValue( mDataProvider->noDataValue() );
 
@@ -2358,21 +2369,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   // Setup source CRS
   if ( mProviderKey == "wms" )
   {
-    *mCRS = QgsCoordinateReferenceSystem();
-    mCRS->createFromOgcWmsCrs( crs );
+    QgsCoordinateReferenceSystem crs;
+    crs.createFromOgcWmsCrs( theCrs );
+    setCrs( crs );
   }
   else
   {
-    *mCRS = QgsCoordinateReferenceSystem( mDataProvider->crs() );
+    setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
   }
-  //get the project projection, defaulting to this layer's projection
-  //if none exists....
-  if ( !mCRS->isValid() )
-  {
-    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
-    mCRS->validate();
-  }
-  QString mySourceWkt = mCRS->toWkt();
+
+  QString mySourceWkt = crs().toWkt();
 
   QgsDebugMsg( "using wkt:\n" + mySourceWkt );
 
@@ -2428,6 +2434,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   else
   {
     mRasterType = GrayOrUndefined;
+  }
+
+  // Set min/max values for single band if we have them ready (no need to calculate which is slow)
+  // don't set min/max on multiband even if available because it would cause stretch of bands and thus colors distortion
+  if ( mDataProvider->bandCount() == 1 && ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactMinimumMaximum ) )
+  {
+    setMinimumValue( 1, mDataProvider->minimumValue( 1 ) );
+    setMaximumValue( 1, mDataProvider->maximumValue( 1 ) );
   }
 
   QgsDebugMsg( "mRasterType = " + QString::number( mRasterType ) );
@@ -2510,6 +2524,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mTransparencyBandName = TRSTRING_NOT_SET;  //sensible default
     mGrayBandName = bandName( 1 );
     setDrawingStyle( SingleBandGray );  //sensible default
+
+    // If we have min/max available (without calculation), it is better to use StretchToMinimumMaximum
+    // TODO: in GUI there is 'Contrast enhancement - Default' which is overwritten here
+    //       and that is confusing
+    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactMinimumMaximum )
+    {
+      setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+    }
 
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
@@ -2791,8 +2813,8 @@ void QgsRasterLayer::setMinimumMaximumUsingDataset()
   if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
   {
     QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mGrayBandName ) );
-    float myMin = myRasterBandStats.minimumValue;
-    float myMax = myRasterBandStats.maximumValue;
+    double myMin = myRasterBandStats.minimumValue;
+    double myMax = myRasterBandStats.maximumValue;
     setMinimumValue( grayBandName(), myMin );
     setMaximumValue( grayBandName(), myMax );
     setUserDefinedGrayMinimumMaximum( false );
@@ -2800,8 +2822,8 @@ void QgsRasterLayer::setMinimumMaximumUsingDataset()
   else if ( rasterType() == QgsRasterLayer::Multiband )
   {
     QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mRedBandName ) );
-    float myMin = myRasterBandStats.minimumValue;
-    float myMax = myRasterBandStats.maximumValue;
+    double myMin = myRasterBandStats.minimumValue;
+    double myMax = myRasterBandStats.maximumValue;
     setMinimumValue( redBandName(), myMin );
     setMaximumValue( redBandName(), myMax );
 
@@ -2876,7 +2898,7 @@ void QgsRasterLayer::setRedBandName( QString const & theBandName )
   mRedBandName = validateBandName( theBandName );
 }
 
-void QgsRasterLayer::setSubLayerVisibility( QString const & name, bool vis )
+void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
 {
 
   if ( mDataProvider )

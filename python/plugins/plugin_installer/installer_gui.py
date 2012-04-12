@@ -248,8 +248,8 @@ class QgsPluginInstallerPluginErrorDialog(QDialog, Ui_QgsPluginInstallerPluginEr
 # --- class QgsPluginInstallerDialog ------------------------------------------------------------------------- #
 class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
   # ----------------------------------------- #
-  def __init__(self, parent, fl):
-    QDialog.__init__(self, parent, fl)
+  def __init__(self, parent):
+    QDialog.__init__(self, parent)
     self.setupUi(self)
     self.reposGroup = "/Qgis/plugin-repos"
 

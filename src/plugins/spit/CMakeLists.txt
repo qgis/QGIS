@@ -5,6 +5,7 @@
 SET (SPIT_SRCS
      qgsspit.cpp
      ../../providers/postgres/qgspgnewconnection.cpp
+     ../../providers/postgres/qgspostgresconn.cpp
      qgspgutil.cpp
      qgsshapefile.cpp
 )
@@ -30,6 +31,7 @@ SET (SPIT_EXE_MOC_HDRS
      qgsspit.h
      qgsshapefile.h
      ../../providers/postgres/qgspgnewconnection.h
+     ../../providers/postgres/qgspostgresconn.h
 )
 
 SET (SPIT_PLUGIN_MOC_HDRS

@@ -4,4 +4,5 @@
 <qgisgrassmodule label="Create a MASK for limiting raster operation" module="r.mask">
 	<option key="input" />
 	<option key="maskcats" />
+        <flag key="r" />
 </qgisgrassmodule>

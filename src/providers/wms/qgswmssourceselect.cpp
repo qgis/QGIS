@@ -71,6 +71,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
 
   mTileWidth->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeight->setValidator( new QIntValidator( 0, 9999, this ) );
+  mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mImageFormatGroup = new QButtonGroup;
 
@@ -259,6 +260,7 @@ QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   item->setText( 1, names[0].simplified() );
   item->setText( 2, names[1].simplified() );
   item->setText( 3, names[2].simplified() );
+  item->setToolTip( 3, "<font color=black>" + names[2].simplified()  + "</font>" );
 
   items[ id ] = item;
 
@@ -469,6 +471,13 @@ void QgsWMSSourceSelect::addClicked()
                .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
   }
 
+  if ( mFeatureCount->text().toInt() > 0 )
+  {
+    if ( !connArgs.isEmpty() )
+      connArgs += ",";
+    connArgs += QString( "featureCount=%1" ).arg( mFeatureCount->text().toInt() );
+  }
+
   if ( !connArgs.isEmpty() )
   {
     if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "ignoreUrl=" ) )
@@ -482,10 +491,6 @@ void QgsWMSSourceSelect::addClicked()
   }
   QgsDebugMsg( "crs = " + crs );
 
-  // TODO: do it without QgisApp
-  //QgisApp::instance()->addRasterLayer( connInfo,
-  //                                     leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
-  //                                     "wms", layers, styles, format, crs );
   emit addRasterLayer( connInfo,
                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
                        "wms", layers, styles, format, crs );
@@ -499,7 +504,7 @@ void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
   if ( !layerName.isEmpty() && styleName.isEmpty() )
   {
     // layer
-    bool disable = !item->data( 0, Qt::UserRole + 2 ).toStringList().contains( mCRS );
+    bool disable = !item->data( 0, Qt::UserRole + 2 ).toStringList().contains( mCRS, Qt::CaseInsensitive );
 
     item->setDisabled( disable );
 
@@ -985,7 +990,6 @@ void QgsWMSSourceSelect::addDefaultServers()
   QMap<QString, QString> exampleServers;
   exampleServers["DM Solutions GMap"] = "http://www2.dmsolutions.ca/cgi-bin/mswms_gmap";
   exampleServers["Lizardtech server"] =  "http://wms.lizardtech.com/lizardtech/iserv/ows";
-  exampleServers["GEOIMAGE-AUSTRIA"] =  "http://wms.geoimage.at/dop-1mfree?";
   // Nice to have the qgis users map, but I'm not sure of the URL at the moment.
   //  exampleServers["Qgis users map"] = "http://qgis.org/wms.cgi";
 

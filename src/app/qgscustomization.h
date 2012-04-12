@@ -34,7 +34,7 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
 {
     Q_OBJECT
   public:
-    QgsCustomizationDialog();
+    QgsCustomizationDialog( QWidget *parent );
     ~QgsCustomizationDialog();
 
     // get item by path
@@ -113,7 +113,7 @@ class QgsCustomization : public QObject
     //! Returns the instance pointer, creating the object on the first call
     static QgsCustomization* instance();
 
-    void openDialog();
+    void openDialog( QWidget *parent );
     static void customizeWidget( QWidget * widget, QEvent * event );
     static void customizeWidget( QString path, QWidget * widget );
     static void removeFromLayout( QLayout *theLayout, QWidget * widget );

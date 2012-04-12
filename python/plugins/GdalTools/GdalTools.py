@@ -96,8 +96,7 @@ class GdalTools:
 
     if rasterMenu == None:
         # no Raster menu, create and insert it before the Help menu
-        self.menu = QMenu()
-        self.menu.setTitle( rasterText )
+        self.menu = QMenu( rasterText, self.iface.mainWindow() )
         lastAction = actions[ len( actions ) - 1 ]
         menu_bar.insertMenu( lastAction, self.menu )
     else:
@@ -105,7 +104,7 @@ class GdalTools:
         self.menu.addSeparator()
 
     # projections menu (Warp (Reproject), Assign projection)
-    self.projectionsMenu = QMenu( QCoreApplication.translate( "GdalTools", "Projections" ) )
+    self.projectionsMenu = QMenu( QCoreApplication.translate( "GdalTools", "Projections" ), self.iface.mainWindow() )
 
     self.warp = QAction( QIcon(":/icons/warp.png"),  QCoreApplication.translate( "GdalTools", "Warp (Reproject)" ), self.iface.mainWindow() )
     self.warp.setStatusTip( QCoreApplication.translate( "GdalTools", "Warp an image into a new coordinate system") )
@@ -122,7 +121,7 @@ class GdalTools:
     self.projectionsMenu.addActions( [ self.warp, self.projection, self.extractProj ] )
 
     # conversion menu (Rasterize (Vector to raster), Polygonize (Raster to vector), Translate, RGB to PCT, PCT to RGB)
-    self.conversionMenu = QMenu( QCoreApplication.translate( "GdalTools", "Conversion" ) )
+    self.conversionMenu = QMenu( QCoreApplication.translate( "GdalTools", "Conversion" ), self.iface.mainWindow() )
 
     if self.GdalVersion >= "1.3":
       self.rasterize = QAction( QIcon(":/icons/rasterize.png"), QCoreApplication.translate( "GdalTools", "Rasterize (Vector to raster)" ), self.iface.mainWindow() )
@@ -151,7 +150,7 @@ class GdalTools:
     self.conversionMenu.addActions( [ self.translate, self.paletted, self.rgb ] )
 
     # extraction menu (Clipper, Contour)
-    self.extractionMenu = QMenu( QCoreApplication.translate( "GdalTools", "Extraction" ) )
+    self.extractionMenu = QMenu( QCoreApplication.translate( "GdalTools", "Extraction" ), self.iface.mainWindow() )
 
     if self.GdalVersion >= "1.6":
       self.contour = QAction( QIcon(":/icons/contour.png"), QCoreApplication.translate( "GdalTools", "Contour" ), self.iface.mainWindow() )
@@ -166,7 +165,7 @@ class GdalTools:
     self.extractionMenu.addActions( [ self.clipper ] )
 
     # analysis menu (DEM (Terrain model), Grid (Interpolation), Near black, Proximity (Raster distance), Sieve)
-    self.analysisMenu = QMenu( QCoreApplication.translate( "GdalTools", "Analysis" ) )
+    self.analysisMenu = QMenu( QCoreApplication.translate( "GdalTools", "Analysis" ), self.iface.mainWindow() )
 
     if self.GdalVersion >= "1.6":
       self.sieve = QAction( QIcon(":/icons/sieve.png"), QCoreApplication.translate( "GdalTools", "Sieve" ), self.iface.mainWindow() )
@@ -207,7 +206,7 @@ class GdalTools:
     #self.analysisMenu.addActions( [  ] )
 
     # miscellaneous menu (Build overviews (Pyramids), Tile index, Information, Merge, Build Virtual Raster (Catalog))
-    self.miscellaneousMenu = QMenu( QCoreApplication.translate( "GdalTools", "Miscellaneous" ) )
+    self.miscellaneousMenu = QMenu( QCoreApplication.translate( "GdalTools", "Miscellaneous" ), self.iface.mainWindow() )
 
     if self.GdalVersion >= "1.6":
       self.buildVRT = QAction( QIcon(":/icons/vrt.png"), QCoreApplication.translate( "GdalTools", "Build Virtual Raster (Catalog)" ), self.iface.mainWindow() )

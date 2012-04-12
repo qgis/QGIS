@@ -89,7 +89,7 @@ void TestQgsMapRenderer::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1( "Value", QVariant::Int, "int", 10, 0, "Value on lon" );
   mFields.insert( 0, myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWkt );
+  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   //
   // Create the test dataset if it doesnt exist
   //
@@ -166,7 +166,8 @@ void TestQgsMapRenderer::initTestCase()
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
   QStringList myLayers;

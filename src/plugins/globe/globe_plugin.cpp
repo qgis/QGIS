@@ -38,6 +38,7 @@
 
 #include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
+#include <osgDB/Registry>
 
 #include <osgGA/StateSetManipulator>
 #include <osgGA/GUIEventHandler>
@@ -62,13 +63,14 @@ using namespace osgEarth::Util::Controls;
 
 static const QString sName = QObject::tr( "Globe" );
 static const QString sDescription = QObject::tr( "Overlay data on a 3D globe" );
+static const QString sCategory = QObject::tr( "Plugins" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 
 //constructor
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
     , mQActionPointer( NULL )
     , mQActionSettingsPointer( NULL )
@@ -84,6 +86,13 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   //needed until https://trac.osgeo.org/qgis/changeset/15224
   setObjectName( "globePlugin" );
   setParent( theQgisInterface->mainWindow() );
+
+// add internal osg plugin path if bundled osg on OS X
+#ifdef QGIS_MACAPP_BUNDLE
+#if QGIS_MACAPP_BUNDLE > 0
+  setLibraryFilePathList( QgsApplication::prefixPath() + "/QGIS_PLUGIN_SUBDIR/../osgPlugins" );
+#endif
+#endif
 
   mSettingsDialog = new QgsGlobePluginDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   mQDockWidget = new QDockWidgetGlobe( tr( "Globe" ), theQgisInterface->mainWindow() );
@@ -1069,6 +1078,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

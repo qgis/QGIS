@@ -65,13 +65,18 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( btnGraduatedDelete, SIGNAL( clicked() ), this, SLOT( deleteCurrentClass() ) );
   connect( btnGraduatedAdd, SIGNAL( clicked() ), this, SLOT( addClass() ) );
 
-
-
   // initialize from previously set renderer
   updateUiFromRenderer();
 
+  connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ) , this, SLOT( classifyGraduated() ) );
+  connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( classifyGraduated() ) );
+  connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ) , this, SLOT( reapplyColorRamp() ) );
+
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
+
+  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+
   mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
       mRenderer->rotationField(), mRenderer->sizeScaleField() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
@@ -142,6 +147,7 @@ void QgsGraduatedSymbolRendererV2Widget::populateColumns()
 void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged()
 {
   mRenderer->setClassAttribute( cboGraduatedColumn->currentText() );
+  classifyGraduated();
 }
 
 
@@ -175,8 +181,10 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
   // create and set new renderer
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
                                       mLayer, attrName, classes, mode, mGraduatedSymbol, ramp );
+  QApplication::restoreOverrideCursor();
   if ( !r )
   {
     QMessageBox::critical( this, tr( "Error" ), tr( "Renderer creation has failed." ) );
@@ -189,6 +197,16 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   populateRanges();
 }
 
+void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()
+{
+  QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
+  if ( ramp == NULL )
+    return;
+
+  mRenderer->updateColorRamp( ramp );
+  refreshSymbolView();
+}
+
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
   QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, mLayer, this );
@@ -196,6 +214,8 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
     return;
 
   updateGraduatedSymbolIcon();
+  mRenderer->updateSymbols( mGraduatedSymbol );
+  refreshSymbolView();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()
@@ -303,7 +323,6 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
     populateRanges();
 
   }
-
 }
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
@@ -391,4 +410,7 @@ void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
   populateRanges();
 }
 
-
+void QgsGraduatedSymbolRendererV2Widget::showSymbolLevels()
+{
+  showSymbolLevelsDialog( mRenderer );
+}

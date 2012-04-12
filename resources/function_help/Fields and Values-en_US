@@ -1,0 +1,5 @@
+<h3>Fields and Values</h3>
+Contains a list of fields from the layer.  Sample values can also be accessed via right-click.
+<br><br>
+Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
+

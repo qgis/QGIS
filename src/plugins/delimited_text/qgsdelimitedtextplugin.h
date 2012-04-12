@@ -51,6 +51,10 @@ class QgsDelimitedTextPlugin: public QObject, public QgisPlugin, private Ui::Qgs
      */
     virtual QString description();
     /**
+     * Virtual function to return a plugin category
+     */
+    virtual QString category();
+    /**
      * Return the plugin type
      */
     virtual int type();
@@ -78,6 +82,8 @@ class QgsDelimitedTextPlugin: public QObject, public QgisPlugin, private Ui::Qgs
     QString pluginVersionQString;
     //! Descrption of the plugin
     QString pluginDescriptionQString;
+    //! Category of the plugin
+    QString pluginCategoryQString;
     //! Plugin type as defined in Plugin::PLUGINTYPE
     int pluginType;
     //! Pointer to the QGIS interface object

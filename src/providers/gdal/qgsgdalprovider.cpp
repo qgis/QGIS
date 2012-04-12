@@ -172,15 +172,29 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
   if ( myGDALBand == NULL )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot get GDAL raster band: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
+    QStringList layers = subLayers();
 
-    GDALDereferenceDataset( mGdalBaseDataset );
-    mGdalBaseDataset = NULL;
+    // if there are no subdatasets, then close the dataset
+    if ( layers.size() == 0 )
+    {
+      QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                            QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
 
-    GDALClose( mGdalDataset );
-    mGdalDataset = NULL;
-    return;
+      GDALDereferenceDataset( mGdalBaseDataset );
+      mGdalBaseDataset = NULL;
+
+      GDALClose( mGdalDataset );
+      mGdalDataset = NULL;
+      return;
+    }
+    // if there are subdatasets, leave the dataset open for subsequent queries
+    else
+    {
+      QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
+                   QString( " but dataset has %1 subdatasets" ).arg( layers.size() ) );
+      return;
+    }
   }
 
   mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
@@ -280,7 +294,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
       }
     }
     mNoDataValue.append( myNoDataValue );
-    QgsDebugMsg( QString( "mNoDataValue[%1] = %1" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
   }
 
   mValid = true;
@@ -367,7 +381,7 @@ QString QgsGdalProvider::metadata()
   myMetadata += tr( "Dataset Description" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
-  myMetadata += QFile::decodeName( GDALGetDescription( mGdalDataset ) );
+  myMetadata += FROM8( GDALGetDescription( mGdalDataset ) );
   myMetadata += "</p>\n";
 
 
@@ -500,7 +514,7 @@ void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *bl
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //GDALReadBlock( myGdalBand, xBlock, yBlock, block );
 
-  /* We have to read with correct data type consistent with other readBlock functions */
+  // We have to read with correct data type consistent with other readBlock functions
   int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
   GDALRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, block, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType[theBandNo-1], 0, 0 );
@@ -743,12 +757,12 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   //GDALSetProjection( myGdalMemDataset, theDestCRS.toWkt().toAscii().constData() );
 
   double myMemGeoTransform[6];
-  myMemGeoTransform[0] = theExtent.xMinimum(); /* top left x */
-  myMemGeoTransform[1] = theExtent.width() / thePixelWidth; /* w-e pixel resolution */
-  myMemGeoTransform[2] = 0; /* rotation, 0 if image is "north up" */
-  myMemGeoTransform[3] = theExtent.yMaximum(); /* top left y */
-  myMemGeoTransform[4] = 0; /* rotation, 0 if image is "north up" */
-  myMemGeoTransform[5] = -1. *  theExtent.height() / thePixelHeight; /* n-s pixel resolution */
+  myMemGeoTransform[0] = theExtent.xMinimum(); // top left x
+  myMemGeoTransform[1] = theExtent.width() / thePixelWidth; // w-e pixel resolution
+  myMemGeoTransform[2] = 0; // rotation, 0 if image is "north up"
+  myMemGeoTransform[3] = theExtent.yMaximum(); // top left y
+  myMemGeoTransform[4] = 0; // rotation, 0 if image is "north up"
+  myMemGeoTransform[5] = -1. *  theExtent.height() / thePixelHeight; // n-s pixel resolution
 
   double myGeoTransform[6];
   GDALGetGeoTransform( mGdalDataset, myGeoTransform );
@@ -792,14 +806,14 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       NULL,
       FALSE, 0.0, 1
     );
-  /*
+#if 0
   myWarpOptions->pTransformerArg =
     GDALCreateGenImgProjTransformer2(
       mGdalDataset,
       myGdalMemDataset,
       NULL
     );
-  */
+#endif
   if ( !myWarpOptions->pTransformerArg )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
@@ -1036,7 +1050,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
     double x = thePoint.x();
     double y = thePoint.y();
 
-    /* Calculate the row / column where the point falls */
+    // Calculate the row / column where the point falls
     double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
     double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
 
@@ -1060,9 +1074,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
       }
 
       //double value = readValue( data, type, 0 );
-#ifdef QGISDEBUG
-      QgsLogger::debug( "value", value, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+      QgsDebugMsg( QString( "value=%1" ).arg( value ) );
       QString v;
 
       if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
@@ -1230,17 +1242,23 @@ QString QgsGdalProvider::description() const
 }
 
 // This is used also by global isValidRasterFileName
-QStringList subLayers_( GDALDatasetH dataset )
+QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 {
   QStringList subLayers;
 
+  if ( !dataset )
+  {
+    QgsDebugMsg( "dataset is NULL" );
+    return subLayers;
+  }
+
   char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
+
   if ( metadata )
   {
     for ( int i = 0; metadata[i] != NULL; i++ )
     {
       QString layer = QString::fromUtf8( metadata[i] );
-
       int pos = layer.indexOf( "_NAME=" );
       if ( pos >= 0 )
       {
@@ -1249,7 +1267,10 @@ QStringList subLayers_( GDALDatasetH dataset )
     }
   }
 
-  QgsDebugMsg( "sublayers:\n  " + subLayers.join( "\n  " ) );
+  if ( subLayers.size() > 0 )
+  {
+    QgsDebugMsg( "sublayers:\n  " + subLayers.join( "\n  " ) );
+  }
 
   return subLayers;
 }
@@ -1273,18 +1294,18 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
     theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
     int *myHistogramArray = new int[theBinCount];
 
-    /*
-     *  CPLErr GDALRasterBand::GetHistogram (
-     *          double       dfMin,
-     *          double      dfMax,
-     *          int     nBuckets,
-     *          int *   panHistogram,
-     *          int     bIncludeOutOfRange,
-     *          int     bApproxOK,
-     *          GDALProgressFunc    pfnProgress,
-     *          void *      pProgressData
-     *          )
-     */
+#if 0
+    CPLErr GDALRasterBand::GetHistogram(
+      double       dfMin,
+      double      dfMax,
+      int     nBuckets,
+      int *   panHistogram,
+      int     bIncludeOutOfRange,
+      int     bApproxOK,
+      GDALProgressFunc    pfnProgress,
+      void *      pProgressData
+    )
+#endif
 
     QgsGdalProgress myProg;
     myProg.type = ProgressHistogram;
@@ -1512,11 +1533,8 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
     myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) );
     myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) );
     myRasterPyramid.exists = false;
-#ifdef QGISDEBUG
-    QgsLogger::debug( "Pyramid", myRasterPyramid.level, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "xDim", myRasterPyramid.xDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "yDim", myRasterPyramid.yDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+
+    QgsDebugMsg( QString( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.level ).arg( myRasterPyramid.xDim ).arg( myRasterPyramid.yDim ) );
 
     //
     // Now we check if it actually exists in the raster layer
@@ -1572,7 +1590,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QStringList QgsGdalProvider::subLayers() const
 {
-  return subLayers_( mGdalDataset );
+  return subLayers( mGdalDataset );
 }
 
 void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )
@@ -1786,6 +1804,13 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
         theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
         theWildcards << "hdr.adf";
       }
+      else if ( myGdalDriverDescription == "HDF4" )
+      {
+        // HDF4 extension missing in driver metadata
+        QString glob = "*.hdf";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theExtensions << "hdf";
+      }
       else
       {
         catchallFilter << QString( GDALGetDescription( myGdalDriver ) );
@@ -1818,7 +1843,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   }
   else if ( GDALGetRasterCount( myDataset ) == 0 )
   {
-    QStringList layers = subLayers_( myDataset );
+    QStringList layers = QgsGdalProvider::subLayers( myDataset );
     if ( layers.size() == 0 )
     {
       GDALClose( myDataset );
@@ -1890,13 +1915,13 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
     myRasterBandStats.statsGathered = true;
 
 #ifdef QGISDEBUG
-    QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsDebugMsg( "************ STATS **************" );
+    QgsDebugMsg( QString( "VALID NODATA %1" ).arg( mValidNoDataValue ) );
+    QgsDebugMsg( QString( "MIN %1" ).arg( myRasterBandStats.minimumValue ) );
+    QgsDebugMsg( QString( "MAX %1" ).arg( myRasterBandStats.maximumValue ) );
+    QgsDebugMsg( QString( "RANGE %1" ).arg( myRasterBandStats.range ) );
+    QgsDebugMsg( QString( "MEAN %1" ).arg( myRasterBandStats.mean ) );
+    QgsDebugMsg( QString( "STDDEV %1" ).arg( myRasterBandStats.stdDev ) );
 #endif
 
     myRasterBandStats.statsGathered = true;

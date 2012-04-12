@@ -55,6 +55,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   mItemTreeView->setAcceptDrops( true );
   mItemTreeView->setDropIndicatorShown( true );
   mItemTreeView->setDragDropMode( QAbstractItemView::InternalMove );
+  mWrapCharLineEdit->setText( legend->wrapChar() );
 
   setGuiElements();
   connect( mItemTreeView, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
@@ -81,6 +82,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mTitleLineEdit->setText( mLegend->title() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
+  mGroupSpaceSpinBox->setValue( mLegend->groupSpace() );
   mLayerSpaceSpinBox->setValue( mLegend->layerSpace() );
   mSymbolSpaceSpinBox->setValue( mLegend->symbolSpace() );
   mIconLabelSpaceSpinBox->setValue( mLegend->iconLabelSpace() );
@@ -102,6 +104,18 @@ void QgsComposerLegendWidget::setGuiElements()
   }
 
   blockAllSignals( false );
+}
+
+void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Item wrapping changed" ), QgsComposerMergeCommand::ComposerLegendText );
+    mLegend->setWrapChar( text );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
 }
 
 void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString& text )
@@ -134,6 +148,18 @@ void QgsComposerLegendWidget::on_mSymbolHeightSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Legend symbol height" ), QgsComposerMergeCommand::LegendSymbolHeight );
     mLegend->setSymbolHeight( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mGroupSpaceSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend group space" ), QgsComposerMergeCommand::LegendGroupSpace );
+    mLegend->setGroupSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -641,6 +667,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mMapComboBox->blockSignals( b );
   mSymbolWidthSpinBox->blockSignals( b );
   mSymbolHeightSpinBox->blockSignals( b );
+  mGroupSpaceSpinBox->blockSignals( b );
   mLayerSpaceSpinBox->blockSignals( b );
   mSymbolSpaceSpinBox->blockSignals( b );
   mIconLabelSpaceSpinBox->blockSignals( b );

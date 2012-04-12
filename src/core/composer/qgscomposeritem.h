@@ -158,8 +158,30 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Reads parameter that are not subclass specific in document. Usually called from readXML methods of subclasses*/
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    bool frame() const {return mFrame;}
-    void setFrame( bool drawFrame ) {mFrame = drawFrame;}
+    /** Whether this item has a frame or not.
+     * @return boolean - true if there is a frame around this item, otherwise false.
+     * @note deprecated since 1.8 don't use!
+     * @see hasFrame
+     */
+    Q_DECL_DEPRECATED bool frame() const {return hasFrame();}
+    /** Whether this item has a frame or not.
+     * @returns true if there is a frame around this item, otherwise false.
+     * @note introduced since 1.8
+     */
+    bool hasFrame() const {return mFrame;}
+    /** Set whether this item has a frame drawn around it or not.
+     * @returns void
+     * @note deprecated since 1.8 don't use!
+     * @see setFrameEnabled
+     */
+    Q_DECL_DEPRECATED void setFrame( bool drawFrame ) { setFrameEnabled( drawFrame );}
+    /** Set whether this item has a frame drawn around it or not.
+     * @param drawFrame draw frame
+     * @returns nothing
+     * @note introduced in 1.8
+     * @see hasFrame
+     */
+    void setFrameEnabled( bool drawFrame ) {mFrame = drawFrame;}
 
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
@@ -179,7 +201,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     //painter down by the same factor for drawing
 
     /**Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
-     to work arount the Qt font bug)*/
+     to work around the Qt font bug)*/
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/

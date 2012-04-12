@@ -39,6 +39,8 @@ IF (WITH_GRASS)
   SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
 ENDIF (WITH_GRASS)
 
+SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+
 # mapserver by us disabled default because it needs FastCGI (which is optional dependency)
 SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should be built")
 
@@ -59,6 +61,7 @@ SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support shou
 
 IF (WITH_SPATIALITE)
   SET (WITH_INTERNAL_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
+  SET (WITH_PYSPATIALITE TRUE CACHE BOOL "Determines whether PYSPATIALITE should be built")
   IF(WITH_INTERNAL_SPATIALITE)
     SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
     SET(HAVE_SPATIALITE TRUE)
@@ -77,6 +80,36 @@ IF (WITH_BINDINGS)
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
+
+#BUILD WITH QtMobility by default on android only. Other platform can force it
+IF (ANDROID)
+    SET (DEFAULT_WITH_QTMOBILITY TRUE)
+ELSE (ANDROID)
+    SET (DEFAULT_WITH_QTMOBILITY FALSE)
+ENDIF (ANDROID)
+SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
+IF (WITH_QTMOBILITY)
+    FIND_PACKAGE(QtMobility 1.1.0)
+ENDIF (WITH_QTMOBILITY)
+
+IF (ANDROID)
+    SET (DEFAULT_WITH_TOUCH TRUE)
+ELSE (ANDROID)
+    SET (DEFAULT_WITH_TOUCH FALSE)
+ENDIF (ANDROID)
+#Add a touch mode if Qt has Qt Gestures (starting from 4.6)
+IF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+    SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
+ELSE ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+    SET (WITH_TOUCH FALSE)
+ENDIF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+IF (WITH_TOUCH)
+    ADD_DEFINITIONS(-DHAVE_TOUCH)
+    MESSAGE (STATUS "Touch support enabled")
+ELSE (WITH_TOUCH)
+    MESSAGE (STATUS "Touch support disabled")
+ENDIF (WITH_TOUCH)
+
 
 SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
 IF (WITH_GLOBE)
@@ -134,10 +167,9 @@ ENDIF(NOT WIN32 AND NOT ANDROID)
 
 # required
 FIND_PACKAGE(Proj)
-FIND_PACKAGE(Expat)    # GPS importer plugin
-FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
+FIND_PACKAGE(Expat)
 
 IF (NOT WITH_INTERNAL_SPATIALINDEX)
   FIND_PACKAGE(Spatialindex REQUIRED)
@@ -178,6 +210,9 @@ IF (SPATIALITE_FOUND)
   SET (HAVE_SPATIALITE TRUE)
 ENDIF (SPATIALITE_FOUND)
 
+# following variable is used in qgsconfig.h
+SET (HAVE_MSSQL TRUE)
+
 #############################################################
 # search for Qt4
 SET(QT_MIN_VERSION 4.4.0)
@@ -186,17 +221,27 @@ SET(QT_USE_QTXML 1)
 SET(QT_USE_QTNETWORK 1)
 SET(QT_USE_QTSVG 1)
 SET(QT_USE_QTSQL 1)
-SET(QT_USE_QTWEBKIT 1)
 
-IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND)
+IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND)
   MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
-ENDIF ()
+ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND)
+
+IF(WITH_DESKTOP)
+  SET(QT_USE_QTWEBKIT 1)
+
+  IF(NOT QT_QTWEBKIT_FOUND)
+    MESSAGE(SEND_ERROR "Qt Webkit module required for QGIS Desktop!")
+  ENDIF(NOT QT_QTWEBKIT_FOUND)
+ENDIF(WITH_DESKTOP)
 
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
   # Define "make check" as alias for "make test" - thanks geos :-)
-  add_custom_target(check COMMAND ctest)
+  add_custom_target(check COMMAND ctest --output-on-failure)
+  # For server side testing we have no X, we can use xfvb as a fake x
+  # sudo apt-get install xfvb
+  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10,1024x768x24" ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
 
@@ -325,6 +370,9 @@ ELSE (WIN32)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
     # path for framework references
     SET (CMAKE_INSTALL_NAME_DIR @executable_path/${QGIS_FW_SUBDIR})
+    IF (WITH_GLOBE)
+        SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
+    ENDIF (WITH_GLOBE)
 
   ELSE (APPLE)
     # UNIX
@@ -357,6 +405,12 @@ IF (WIN32)
   SET(DLLIMPORT "__declspec(dllimport)")
   SET(DLLEXPORT "__declspec(dllexport)")
 ELSE (WIN32)
+  IF(PEDANTIC AND NOT APPLE)
+    SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
+    SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
+  ENDIF(PEDANTIC AND NOT APPLE)
+
   SET(DLLIMPORT "")
   SET(DLLEXPORT "")
 ENDIF(WIN32)
@@ -449,9 +503,7 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 #############################################################
 # create qgsversion.h
-
 FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
-
 IF (GIT_MARKER)
   FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
   IF(GIT)

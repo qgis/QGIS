@@ -35,6 +35,7 @@
 
 static const QString sName = QObject::tr( "Dxf2Shp Converter" );
 static const QString sDescription = QObject::tr( "Converts from dxf to shp file format" );
+static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/dxf2shp_converter.png";
@@ -51,7 +52,7 @@ static const QString sPluginIcon = ":/dxf2shp_converter.png";
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 dxf2shpConverter::dxf2shpConverter( QgisInterface *theQgisInterface ): QgisPlugin
-    ( sName, sDescription, sPluginVersion, sPluginType ), mQGisIface
+    ( sName, sDescription, sCategory, sPluginVersion, sPluginType ), mQGisIface
     ( theQgisInterface ) {}
 
 dxf2shpConverter::~dxf2shpConverter()
@@ -78,8 +79,8 @@ void dxf2shpConverter::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
 
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+  mQGisIface->addVectorToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( tr( "&Dxf2Shp" ), mQActionPointer );
 
   // this is called when the icon theme is changed
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -111,8 +112,8 @@ void dxf2shpConverter::run()
 void dxf2shpConverter::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr( "&Dxf2Shp" ), mQActionPointer );
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginVectorMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+  mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
@@ -179,6 +180,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

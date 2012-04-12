@@ -1,6 +1,6 @@
 
 /**
- * \class QgsGenericProjectionSelector 
+ * \class QgsGenericProjectionSelector
  * \brief A generic dialog to prompt the user for a Coordinate Reference System
  */
 class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectionSelectorBase
@@ -13,7 +13,7 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     /**
      * Constructor
      */
-    QgsGenericProjectionSelector(QWidget *parent = 0, 
+    QgsGenericProjectionSelector(QWidget *parent = 0,
                                Qt::WFlags fl = QgisGui::ModalDialogFlags);
 
     //! Destructor
@@ -24,13 +24,19 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
        * 'define the CRS for this layer'.
        */
       void setMessage(QString theMessage="");
-      
-      QString selectedProj4String();
       long selectedCrsId();
+      QString selectedAuthId();
+
+      // @deprecated
       long selectedEpsg();
+      // @deprecated
+      QString selectedProj4String();
 
       void setSelectedCrsName(QString theName);
       void setSelectedCrsId(long theID);
+      void setSelectedAuthId( QString authId );
+
+      // @deprecated
       void setSelectedEpsg(long theID);
 
       /**
@@ -39,7 +45,7 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
        * Sets this dialog to filter the available projections to those listed
        * by the given Coordinate Reference Systems.
        *
-       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the 
+       * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
        *                  list of projections by.  This is useful in (e.g.) WMS situations
        *                  where you just want to offer what the WMS server can support.
        *
@@ -48,7 +54,4 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
        * \warning This function's behaviour is undefined if it is called after the dialog is shown.
        */
       void setOgcWmsCrsFilter(QSet<QString> crsFilter);
-
-
 };
-

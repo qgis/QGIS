@@ -20,117 +20,21 @@
    <property name="mouseTracking">
     <bool>true</bool>
    </property>
-   <layout class="QGridLayout" name="gridLayout_1">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
-     <widget class="QSplitter" name="mSplitter">
+     <widget class="QFrame" name="mViewFrame">
       <property name="mouseTracking">
        <bool>true</bool>
       </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
       </property>
-      <widget class="QFrame" name="mViewFrame">
-       <property name="mouseTracking">
-        <bool>true</bool>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-      </widget>
-      <widget class="QTabWidget" name="mOptionsTabWidget">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>150</width>
-         <height>10</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>32767</width>
-         <height>32767</height>
-        </size>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <widget class="QWidget" name="tab">
-        <attribute name="title">
-         <string>General</string>
-        </attribute>
-        <layout class="QGridLayout">
-         <property name="margin">
-          <number>9</number>
-         </property>
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <item row="1" column="0" colspan="2">
-          <widget class="QFrame" name="mCompositionOptionsFrame">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="mCompositionNameComboBox">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="textLabel1">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Composition</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Item</string>
-        </attribute>
-        <layout class="QGridLayout">
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <property name="spacing">
-          <number>6</number>
-         </property>
-         <item row="0" column="0">
-          <widget class="QStackedWidget" name="mItemStackedWidget">
-           <widget class="QWidget" name="page"/>
-           <widget class="QWidget" name="page_2"/>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
      </widget>
     </item>
     <item row="1" column="0">
@@ -143,6 +47,9 @@
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>Toolbar</string>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
@@ -171,7 +78,6 @@
    <addaction name="mActionAddNewLabel"/>
    <addaction name="mActionAddNewLegend"/>
    <addaction name="mActionAddNewScalebar"/>
-   <addaction name="mActionAddBasicShape"/>
    <addaction name="mActionAddArrow"/>
    <addaction name="mActionAddTable"/>
    <addaction name="separator"/>
@@ -246,10 +152,10 @@
      <normaloff>../themes/default/mActionAddLegend.png</normaloff>../themes/default/mActionAddLegend.png</iconset>
    </property>
    <property name="text">
-    <string>Add Vector Legend</string>
+    <string>Add Legend</string>
    </property>
    <property name="toolTip">
-    <string>Add new vect legend</string>
+    <string>Add new legend</string>
    </property>
   </action>
   <action name="mActionSelectMoveItem">
@@ -449,14 +355,6 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="mActionAddBasicShape">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Add Basic Shape</string>
-   </property>
-  </action>
   <action name="mActionAddArrow">
    <property name="checkable">
     <bool>true</bool>
@@ -512,11 +410,40 @@
     <string>Ctrl+Shift+Z</string>
    </property>
   </action>
+  <action name="mActionAddRectangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Rectangle</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Rectangle</string>
+   </property>
+  </action>
+  <action name="mActionAddTriangle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Triangle</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Triangle</string>
+   </property>
+  </action>
+  <action name="mActionAddEllipse">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Ellipse</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Ellipse</string>
+   </property>
+  </action>
  </widget>
- <tabstops>
-  <tabstop>mCompositionNameComboBox</tabstop>
-  <tabstop>mOptionsTabWidget</tabstop>
- </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

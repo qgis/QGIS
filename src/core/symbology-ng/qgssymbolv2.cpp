@@ -253,6 +253,19 @@ QString QgsSymbolV2::dump()
   return s;
 }
 
+void QgsSymbolV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  props[ "alpha" ] = QString::number( alpha() );
+  double scaleFactor = 1.0;
+  props[ "uom" ] = QgsSymbolLayerV2Utils::encodeSldUom( outputUnit(), &scaleFactor );
+  props[ "uomScale" ] = scaleFactor != 1 ? QString::number( scaleFactor ) : "";
+
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    ( *it )->toSld( doc, element, props );
+  }
+}
+
 QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
 {
   QgsSymbolLayerV2List lst;

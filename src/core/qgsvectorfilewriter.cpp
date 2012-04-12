@@ -187,17 +187,19 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QgsDebugMsg( "Created data source" );
 
   // use appropriate codec
-  mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().data() );
+  mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().constData() );
   if ( !mCodec )
   {
-    QSettings settings;
-    QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
-    mCodec = QTextCodec::codecForName( enc.toLocal8Bit().data() );
+
+    QSettings settings;
+    QString enc = settings.value( "/UI/encoding", "System" ).toString();
+    mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )
     {
       QgsDebugMsg( "error finding QTextCodec for " + enc );
       mCodec = QTextCodec::codecForLocale();
+      Q_ASSERT( mCodec );
     }
   }
 
@@ -405,8 +407,6 @@ QString QgsVectorFileWriter::errorMessage()
 
 bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 {
-  QgsAttributeMap::const_iterator it;
-
   // create the feature
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
@@ -455,6 +455,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       case QVariant::LongLong:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        break;
+      case QVariant::Invalid:
         break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )

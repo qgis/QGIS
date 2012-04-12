@@ -41,8 +41,10 @@ class QgsRasterPyramid;
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
 #else
 #define TO8F(x) QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
 #endif
 
 
@@ -230,6 +232,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
+    static QStringList subLayers( GDALDatasetH dataset );
+
     /** \brief If the provider supports it, return band stats for the
         given band.
         @note added in QGIS 1.7
@@ -255,6 +259,9 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
+
+  signals:
+    void statusChanged( QString );
 
   private:
     // initialize CRS from wkt

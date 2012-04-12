@@ -4,9 +4,12 @@
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-The base system here is Mac OS X 10.4 (__Tiger__), with a single architecture
-build.  Included are notes for building on Mac OS X 10.5 (__Leopard__), 10.6
+The base system here is Mac OS X 10.4 (__Tiger__), with a single, default,
+architecture build.  "Universal", SDK and non-default arch builds require
+more complex options and some fiddling with the system.
+Included are notes for building on Mac OS X 10.5 (__Leopard__), 10.6
 (__Snow Leopard__) and 10.7 (__Lion__).
+(These names will be used throughout the instructions.)
 Make sure to read each section completely before typing the first command you see.
 
 __General note on Terminal usage:__  When I say "cd" to a folder in a Terminal,
@@ -32,11 +35,35 @@ ie: Mac Pro "8 Core" model (2 quad core processors) = 8
 
 ie: Macbook Pro i5 (hyperthreading) = 2 cores X 2 = 4
 
+== Install Developer Tools ==
+
+Developer tools are not a part of a standard OS X installation.  Up through
+Snow Leopard, the Developer Tools, later called Xcode, were included with the
+system install disks, though it's best to download the latest version compatible
+with your system to get important updates fixing various issues.
+Starting with Lion, Xcode is available as a download and from the App Store.
+BUT, there is really no need for the full Xcode on Lion, and in fact could be
+tricky to use for compiling QGIS.
+
+Downloading Xcode/Developer Tools requires a free developer account at
+developer.apple.com.  Up through Snow Leopard, get the latest __Xcode__ that is
+supported for your system.  For Lion, all you need is the much smaller
+__Command Line Tools for Xcode__ (you don't get the IDE or system SDKs but they are not
+necessary for QGIS).  When installing Xcode up through Snow Leopard, make sure to
+do a custom install and install the Unix Development or Command Line Tools option.
+
+On Lion, if you have installed Xcode 4.0 - 4.2 and are upgrading to 4.3, it's
+a good idea to uninstall the old version first with:
+
+```
+sudo /Developer/Library/uninstall-devtools
+```
+
 == Install Qt4 from disk image ==
 
 You need a minimum of Qt-4.4.0. I suggest getting the latest.  There is no need
 for the full Qt SDK, so save yourself some download time and get the frameworks
-only.
+only.  This is available in the Libraries section of the Qt download page.
 
 __Snow Leopard+ note:__ If you are building on Snow Leopard+, you will need to
 decide between 32-bit support in the older Qt Carbon branch, or 64-bit
@@ -54,12 +81,15 @@ http://qt.nokia.com/downloads
 If you want debug frameworks, Qt also provides a separate download with these.
 These are in addition to the non-debug frameworks.
 
+Earlier OS X systems may need an old Qt version - check the requirements of the
+current Qt version.  To get old Qt downloads, there is an FTP link at the bottom
+of the download page.  Files are in the qt/source (yes, even the binary packages).
+
 Once downloaded open the disk image and run the installer. Note you need admin
 privileges to install.
 
-__Qt note:__ Starting in Qt 4.4, libQtCLucene was added, and in 4.5
-libQtUiTools was added, both in /usr/lib.  When using a system SDK
-these libraries will not be found.  To fix this problem,
+__Leopard note:__ Qt includes a couple non-framework libraries in /usr/lib.
+When using a system SDK these libraries will not be found.  To fix this problem,
 add symlinks to /usr/local:
 
 ```
@@ -67,9 +97,28 @@ sudo ln -s /usr/lib/libQtUiTools.a /usr/local/lib/
 sudo ln -s /usr/lib/libQtCLucene.dylib /usr/local/lib/
 ```
 
-These should then be found automatically on Leopard and above.  Earlier systems
+These should then be found automatically.  Earlier systems
 may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
 CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
+
+
+== Install CMake for OSX ==
+
+Get the latest source release from here:
+
+http://www.cmake.org/cmake/resources/software.html
+
+Binary installers are available for OS X, but they are not recommended
+(2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
+strange application). Instead, download the source.
+NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
+Double-click the source tarball, then cd to the source folder and:
+
+``` 
+./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
+make
+sudo make install
+```
 
 
 == Install development frameworks for QGIS dependencies ==
@@ -83,7 +132,7 @@ http://www.kyngchaos.com/wiki/software/frameworks
 Once downloaded, open and install the frameworks.
 
 William provides an additional installer package for Postgresql (for PostGIS
-support).  Qgis just needs the libpq client library, so unless you want to
+support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
 package.  It's available here:
 
@@ -93,11 +142,14 @@ Also available is a GRASS application:
 
 http://www.kyngchaos.com/wiki/software/grass
 
+Old versions of these packages for older systems are available in the
+software archive section.
+
 === Additional Dependencies: General compatibility note ===
 
 There are some additional dependencies that, at the time of writing, are not
 provided as frameworks or installers so we will need to build these from source.
-If you are wanting to build Qgis as a 64-bit application, you will need to 
+If you are wanting to build QGIS as a 64-bit application, you will need to 
 provide the appropriate build commands to produce 64-bit support in dependencies.
 Likewise, for 32-bit support on Snow Leopard, you will need to override the
 default system architecture, which is 64-bit, according to instructions for
@@ -131,7 +183,7 @@ in the system.  This Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lio
 So there is no need to install Python on Leopard and newer.
 You can still install Python from python.org if preferred.
 
-If installing from python.org, make sure you install at least the latest Python
+If installing from python.org, make sure you install the latest Python
 2.x from 
 
 http://www.python.org/download/
@@ -166,7 +218,7 @@ python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
 -e /usr/local/include -v /usr/local/share/sip -s MacOSX10.5.sdk
 ```
 
-__Snow Leopard+ system Python__
+__Snow Leopard system Python__
 
 Similar to Leopard, you should install outside the system Python path.
 Also, you need to specify the architecture you want (requires at least SIP
@@ -186,6 +238,17 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 ```
 python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
 -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.6.sdk
+```
+
+__Lion system Python__
+
+Similar to Snow Leopard, you should install outside the system Python path.
+There is no need for the SDK option (the CLI tools for Lion don't inlcude SDKs)
+or arch option:
+
+```
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip
 ```
 
 __continue...__
@@ -222,7 +285,7 @@ More configuration is needed to install outside the system path:
 python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
 ```
 
-__Snow Leopard+ system Python__
+__Snow Leopard system Python__
 
 Similar to Leopard, you should install outside the system Python path.
 Also, you need to specify the architecture you want (requires at least PyQt 4.6),
@@ -242,18 +305,16 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 ```
 
+__Snow Leopard system Python__
+
+Similar to Snow Leopard, you should install outside the system Python path.
+But you don't need the arch option:
+
+```
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin
+```
+
 __continue...__
-
-There is a problem with the configuration that needs to be fixed now
-(it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir
-line to:
-
-```
-    'qt_dir': '/usr',
-```
-
-Then continue with compilation and installation (this is a good place to use
-parallel compilation, if you can):
 
 ```
 make 
@@ -265,60 +326,31 @@ QtOpenGL/makefile and add ""-undefined dynamic_lookup"" to LFLAGS.
 Then make again.
 
 
-=== Additional Dependencies: Qwt/PyQwt ===
+=== Additional Dependencies: Qwt ===
 
-The GPS tracking feature uses Qwt.  Some popular 3rd-party plugins use PyQwt.
-You can take care of both with the PyQwt source from:
+The GPS tracking feature uses Qwt.
 
-http://pyqwt.sourceforge.net/
+NOTE: PyQwt is not compatible with PyQt 4.9, so we will skip that.
 
-Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0
-(comes with Qwt 5.2.1).  Normal compilation does both Qwt and PyQwt at the same
-time, but Qwt is statically linked into PyQwt, and Qgis can't use it.  So, we
-need to split the build.
+Download the latest Qwt 5.x source (6.x is untested) from:
 
-Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build
-and install:
+http://sourceforge.net/projects/qwt
+
+Double-click the tarball to unpack it.
+
+Now, cd to the qwt source folder in a Terminal.  Type these commands to build
+and install (assumes v5.2.2, adjust commands for other version as needed):
 
 ```
-cat >> qwtconfig.pri <<EOF
-CONFIG += release QwtDll
-EOF
 qmake -spec macx-g++
 make
 sudo make install
-sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib \
-/usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
+sudo install_name_tool -id /usr/local/qwt-5.2.2/lib/libqwt.5.dylib \
+/usr/local/qwt-5.2.2/lib/libqwt.5.dylib
 ```
 
-The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is
-the  minor.point version, and it may be an SVN version).  Remember this for
-QGIS and PyQwt configuration.
-
-Now for PyQwt.  Still in the Terminal (for all Pythons, except see Snow Leopard
-Carbon note below):
-
-```
-cd ../configure
-python configure.py --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
---extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
-make
-sudo make install
-```
-
-Make sure to use the qwt install path from the Qwt build above.
-
-__Snow Leopard+ note__
-
-If using Qt Carbon, you need to specify which architectures to build, otherwise
-it will default to a combination that does not work (ie x86_64 for a Carbon Qt).
-This is not needed for Qt Cocoa. Configure as follows:
-
-```
-python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
---extra-lflags="-arch i386" --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
---extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
-```
+The Qwt shared library is now installed in /usr/local/qwt-5.x.x (x.x is
+the  minor.point version).  Remember this for QGIS configuration.
 
 
 === Additional Dependencies: Bison ===
@@ -339,23 +371,129 @@ make
 sudo make install 
 ```
 
-== Install CMake for OSX ==
 
-Get the latest source release from here:
+=== Additional Dependencies: gpsbabel ===
 
-http://www.cmake.org/cmake/resources/software.html
+For integrated GPS Tools functions, a gpsbabel executable is required. You can
+find this at:
+ 
+http://www.gpsbabel.org/
 
-Binary installers are available for OS X, but they are not recommended
-(2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
-strange application). Instead, download the source.
-NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
-Double-click the source tarball, then cd to the source folder and:
+Download the GPSBabel OS X package, and copy GPSBabelFE.app from the disk image to
+/Applications.  
 
-``` 
-./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
+
+=== Optional Dependencies: libfcgi ===
+
+If you want to use the QGIS Mapserver, you need libfcgi.  This is included on
+systems up through Snow Leopard, but was dropped at Lion.  So, on Lion you need
+to get the source from:
+
+http://www.fastcgi.com/dist/
+
+Grab the latest fcgi SNAP package there.  Double-click the source
+tarball to unpack it, then cd to the source folder and:
+
+```
+./configure --disable-dependency-tracking CFLAGS=-Os
+make
+sudo make install 
+```
+
+
+=== Optional Dependencies: OSG & osgEarth ===
+
+If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
+
+First, **OpenSceneGraph**.  The main site is:
+
+http://www.openscenegraph.org/
+
+Get the tarball (or zip) for the the latest 3.x version.
+Binary availability is unknown at this time as the site is down.
+
+Another place to get the source is github:
+
+http://github.com/openscenegraph/osg/tags
+
+Download the latest 3.1 version (you can select a tarball when you hover over
+the entry).  Double-click the source tarball to unpack it.
+(There is a version numbering oddity in the source, but since we'll be
+bundling OSG as it's meant to be, it really doesn't matter).
+
+Installation is a bit out of touch with OS X standards, so we'll stage it to a
+temporary location first.  You could stage it to the folder that the OSG source
+folder is in, or a common staging area like /Users/Shared/unix/osg.  Pick a
+folder not hidden and that doesn't need admin permissions to write to for simplicity.
+
+In a new Terminal cd to the source folder and:
+
+```
+mkdir build
+cd build
+cmake -D CMAKE_INSTALL_PREFIX=/path/to/some/staging/folder \
+-D OSG_COMPILE_FRAMEWORKS=ON \
+-D OSG_PLUGIN_SEARCH_INSTALL_DIR_FOR_PLUGINS=OFF \
+..
+make
+make install
+sudo mkdir -p "/Library/Application Support/OpenSceneGraph/PlugIns"
+```
+
+Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
+
+Now move all .frameworks from the lib/ folder in the staging area to /Library/Frameworks.  Move the files in the osgPlugins folder in the lib/ folder
+to /Library/Application Support/OpenSceneGraph/PlugIns.  The bin/ executables
+can be left where they are, we don't need them.
+
+
+Next up is **libzip**.  Get the latest tarball at:
+
+http://nih.at/libzip/
+
+Double-click the source tarball to unpack it.
+In a new Terminal cd to the source folder and:
+
+```
+./configure --disable-dependency-tracking --disable-shared CFLAGS=-Os
 make
 sudo make install
 ```
+
+
+Then it's time for **osgEarth**.  Downloads are also on github:
+
+http://github.com/gwaldron/osgearth/tags
+
+Download a tarball for the latest stable release (sorting can be confusing here).
+Double-click the source tarball to unpack it.
+
+This one also needs an intermediate staging area.  Choose a folder similar to OSG.
+
+In a new Terminal cd to the source folder and:
+
+```
+mkdir build
+cd build
+export PATH="/path/to/osg/staging/folder/bin:$PATH"
+cmake -D CMAKE_INSTALL_PREFIX=/path/to/some/staging/folder \
+-D CMAKE_BUILD_TYPE=MinSizeRel \
+-D OSGEARTH_BUILD_FRAMEWORKS=true \
+..
+make
+make install
+sudo mkdir -p "/Library/Application Support/OpenSceneGraph/Headers"
+```
+
+Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
+Also enter the OSG staging path /bin folder in the export above.
+
+Move all the .frameworks from the lib/ folder to /Library/Frameworks.
+Move the files in the osgPlugins folder in the lib/ folder to
+/Library/Application Support/OpenSceneGraph/PlugIns.  Move the osgEarthDrivers
+folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Headers.  And as for OSG, you can leave the bin/
+executables where they are.
+
 
 == QGIS source ==
 
@@ -387,31 +525,17 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
 mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
--D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE \
--D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
--D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
+-D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
 ..
 ```
 
 This will automatically find and use the previously installed frameworks, and
-the GRASS application if installed.
-
-Or, to use a Unix-style build of GRASS, use the following cmake invocation
-(minimum GRASS version as stated in the Qgis requirements, substitute the GRASS
-path and version as required):
-
-```
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
--D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE \
--D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
--D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
--D GRASS_PREFIX=/user/local/grass-6.4.1 \
--D BISON_EXECUTABLE=/usr/local/bin/bison \
-..
-```
+the GRASS application if installed.  Remember to change the Qwt version if a
+different version was installed.
 
 __Snow Leopard note:__ To handle 32-bit Qt (Carbon), create a 32bit python wrapper
 script and add arch flags to the configuration:
@@ -424,9 +548,9 @@ EOF
 
 sudo chmod +x /usr/local/bin/python32
 
-cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
--D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE \
+cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
+-D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
+-D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
@@ -434,7 +558,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
 ..
 ```
 
-The Qgis Mapserver feature requires fastcgi support.  This is included in
+__Mapserver note::__ The QGIS Mapserver feature requires fastcgi support.  This is included in
 Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the followling line before the last line in
 the above configuration:
@@ -446,21 +570,21 @@ the above configuration:
 On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.
 
+__Globe plugin note:__ If you want the Globe plugin (and you compiled and installed OSG/osgEarth),
+add the following lines before the last line in the above configuration:
+
+```
+-D WITH_GLOBE=true \
+-D OSGEARTH_INCLUDE_DIR="/Library/Application Support/OpenSceneGraph/Headers" \
+-D OSG_PLUGINS_PATH="/Library/Application Support/OpenSceneGraph/PlugIns" \
+```
+
 __Bundling note:__ Older Qt versions may have problems with some Qt plugins and
-Qgis.  The way to handle this is to bundle Qt inside the Qgis application.  You
-can do this now or wait to see if there are immediate crashes when running Qgis.
-It's also a good idea to bundle Qt if you need to copy Qgis to other Macs (where
-you would have to install Xcode just so Qt would install!).
-
-To bundle Qt, add the following line before the last line (the ".." line) in
-the above cmake configurations:
-
-```
--D QGIS_MACAPP_BUNDLE=1 \
-```
+QGIS.  The way to handle this is to bundle Qt inside the QGIS application.  The
+default is to bundle Qt (and osg/osgEarth, if configured).
 
 Even better for distribution purposes, to also bundle any extra non-framework,
-non-standard, libs (ie postgres' libpq) bump the bundle number to 2:
+non-standard, libs (ie postgres' libpq) set the bundle value to 2:
 
 ```
 -D QGIS_MACAPP_BUNDLE=2 \
@@ -486,3 +610,28 @@ or, for an /Applications build:
 ```
 sudo make install
 ```
+
+== Post-Install ==
+
+A couple things to take care of.
+
+**gpsbabel**
+
+For QGIS to //easily// find gpsbabel, you need to copy the gpsbabel executable
+to the QGIS application.  Assuming you installed QGIS in your home folder:
+
+```
+cp -fp /Applications/GPSBabelFE.app/Contents/MacOS/gpsbabel ~/QGIS.app/Contents/MacOS/bin/
+```
+
+If you installed in /Applications, adjust the path accordingly and prefix the
+whole command with 'sudo '.
+
+**QGIS Mapserver**
+
+See the QGIS Mapserver wiki page at:
+
+http://hub.qgis.org/projects/quantum-gis/wiki/QGIS_Server_Tutorial
+
+for instructions on setting up Apache fastcgi and testing Mapserver, including
+installing the mod-fastcgi that is missing on Lion.

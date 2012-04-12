@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include <fstream>
 
 #include <QApplication>
@@ -31,7 +30,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 
-
 QgsClipboard::QgsClipboard()
     : mFeatureClipboard()
 {
@@ -43,18 +41,23 @@ QgsClipboard::~QgsClipboard()
 
 void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features )
 {
+  QSettings settings;
+  bool copyWKT = settings.value( "qgis/copyGeometryAsWKT", true ).toBool();
 
   // Replace the QGis clipboard.
   mFeatureClipboard = features;
   QgsDebugMsg( "replaced QGis clipboard." );
 
   // Replace the system clipboard.
-
   QStringList textLines;
   QStringList textFields;
 
   // first do the field names
-  textFields += "wkt_geom";
+  if ( copyWKT )
+  {
+    textFields += "wkt_geom";
+  }
+
   for ( QgsFieldMap::const_iterator fit = fields.begin(); fit != fields.end(); ++fit )
   {
     textFields += fit->name();
@@ -62,25 +65,23 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
   textLines += textFields.join( "\t" );
   textFields.clear();
 
-
   // then the field contents
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
     QgsAttributeMap attributes = it->attributeMap();
 
-
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
-
-    if ( it->geometry() )
-      textFields += it->geometry()->exportToWkt();
-    else
+    if ( copyWKT )
     {
-      QSettings settings;
-      textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
+      if ( it->geometry() )
+        textFields += it->geometry()->exportToWkt();
+      else
+      {
+        textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
+      }
     }
 
     // QgsDebugMsg("about to traverse fields.");
-    //
     for ( QgsAttributeMap::iterator it2 = attributes.begin(); it2 != attributes.end(); ++it2 )
     {
       // QgsDebugMsg(QString("inspecting field '%1'.").arg(it2->toString()));
@@ -113,15 +114,11 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
 
 QgsFeatureList QgsClipboard::copyOf()
 {
-
   QgsDebugMsg( "returning clipboard." );
 
   //TODO: Slurp from the system clipboard as well.
 
   return mFeatureClipboard;
-
-//  return mFeatureClipboard;
-
 }
 
 void QgsClipboard::clear()
@@ -145,7 +142,6 @@ bool QgsClipboard::empty()
 
 QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem destCRS )
 {
-
   QgsFeatureList featureList = copyOf();
   QgsCoordinateTransform ct( crs(), destCRS );
 

@@ -150,7 +150,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   else if ( parameter2.left( 3 ) == "rf=" )
   {
     mInvFlattening = parameter2.mid( 3 ).toDouble();
-    mSemiMinor = mSemiMajor - ( mInvFlattening / mSemiMajor );
+    mSemiMinor = mSemiMajor - ( mSemiMajor / mInvFlattening );
   }
   else
   {
@@ -761,11 +761,11 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       {
         if ( keepBaseUnit )
         {
-          unitLabel = QObject::tr( " m2" );
+          unitLabel = QObject::trUtf8( " m²" );
         }
         else if ( qAbs( value ) > 1000000.0 )
         {
-          unitLabel = QObject::tr( " km2" );
+          unitLabel = QObject::trUtf8( " km²" );
           value = value / 1000000.0;
         }
         else if ( qAbs( value ) > 10000.0 )
@@ -775,7 +775,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         }
         else
         {
-          unitLabel = QObject::tr( " m2" );
+          unitLabel = QObject::trUtf8( " m²" );
         }
       }
       else
@@ -808,14 +808,22 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
     case QGis::Feet:
       if ( isArea )
       {
-        if ( keepBaseUnit  || qAbs( value ) <= ( 528.0*528.0 ) )
+        if ( keepBaseUnit  || qAbs( value ) <= 0.5*43560.0 )
         {
+          // < 0.5 acre show sq ft
           unitLabel = QObject::tr( " sq ft" );
+        }
+        else if ( qAbs( value ) <= 0.5*5280.0*5280.0 )
+        {
+          // < 0.5 sq mile show acre
+          unitLabel = QObject::tr( " acres" );
+          value /= 43560.0;
         }
         else
         {
+          // above 0.5 acre show sq mi
           unitLabel = QObject::tr( " sq mile" );
-          value = value / ( 5280.0 * 5280.0 );
+          value /= 5280.0 * 5280.0;
         }
       }
       else
@@ -834,7 +842,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         else
         {
           unitLabel = QObject::tr( " mile" );
-          value = value / 5280.0;
+          value /= 5280.0;
         }
       }
       break;

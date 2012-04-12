@@ -30,11 +30,11 @@
 std::map<QString, QPixmap> mugs;
 */
 #ifdef Q_OS_MACX
-QgsAbout::QgsAbout()
-    : QDialog( NULL, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsAbout::QgsAbout( QWidget *parent )
+    : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
-QgsAbout::QgsAbout()
-    : QDialog( NULL )  // Normal dialog in non Mac-OS
+QgsAbout::QgsAbout( QWidget *parent )
+    : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );

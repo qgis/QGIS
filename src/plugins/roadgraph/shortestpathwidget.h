@@ -105,7 +105,7 @@ class RgShortestPathWidget : public QDockWidget
     /**
      * retrun path as a graph
      */
-    bool getPath( QgsGraph *, QgsPoint& p1, QgsPoint& p2 );
+    QgsGraph* getPath( QgsPoint& p1, QgsPoint& p2 );
 
     /**
      * This line edit show front points coordinates

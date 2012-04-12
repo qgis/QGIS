@@ -44,6 +44,8 @@ struct CORE_EXPORT QgsGPSInformation
   double pdop;
   double hdop;
   double vdop;
+  double hacc; //horizontal accurancy in meters
+  double vacc; //vertical accurancy in meters
   QDateTime utcDateTime;
   QChar fixMode;
   int fixType;

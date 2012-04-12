@@ -201,11 +201,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /*! Overloaded == operator used to compare to CRS's.
      *  Internally it will delegate to the equals method described below
      */
-    bool operator==( const QgsCoordinateReferenceSystem &theSrs );
+    bool operator==( const QgsCoordinateReferenceSystem &theSrs ) const;
     /*! Overloaded != operator used to compare to CRS's.
       *  Returns opposite bool value to operator ==
      */
-    bool operator!=( const QgsCoordinateReferenceSystem &theSrs );
+    bool operator!=( const QgsCoordinateReferenceSystem &theSrs ) const;
     /*! Overloaded == operator used to compare to CRS's.
      *  Internally it will use OGR isSameCRS() or isSameGeoCRS() methods as appropriate.
      *  Additionally logic may also be applied if the result from the OGR methods
@@ -308,6 +308,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool geographicFlag() const;
 
+    /*! return if axis is inverted (eg. for WMS 1.3)
+     * @return  bool Whether this is crs axis is inverted
+     * @note added in 1.9.90
+     */
+    bool axisInverted() const;
+
     /*! Get the units that the projection is in
      * @return QGis::UnitType that gives the units for the coordinate system
      */
@@ -352,7 +358,14 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     void setDescription( QString theDescription );
     /* Set the Proj Proj4String.
-     * @param  QString theProj4String Proj4 format specifies (excluding proj and ellips) that define this srs.
+     * @param  QString theProj4String Proj4 format specifies
+     * (excluding proj and ellips) that define this srs.
+     * @note some content of the PROJ4 string may be stripped off by this
+     * method due to the parsing of the string by OSRNewSpatialReference .
+     * For example input:
+     * +proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs
+     * Gets stored in the CRS as:
+     * +proj=longlat +datum=WGS84 +no_defs
      */
     void setProj4String( QString theProj4String );
     /*! Set this Geographic? flag
@@ -392,9 +405,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     RecordMap getRecord( QString theSql );
 
-    // Open SQLite db and show message if ccannot be opened
+    // Open SQLite db and show message if cannot be opened
     // returns the same code as sqlite3_open
-    static int openDb( QString path, sqlite3 **db );
+    static int openDb( QString path, sqlite3 **db, bool readonly = true );
 
     //!The internal sqlite3 srs.db primary key for this srs
     long    mSrsId;
@@ -432,6 +445,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool loadFromDb( QString db, QString expression, QString value );
 
     QString mValidationHint;
+    mutable QString mWkt;
+
+    //!Whether this is a coordinate system has inverted axis
+    mutable int mAxisInverted;
 
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
 };

@@ -144,8 +144,8 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   {
     theMapRenderer.setLayerSet( mMapRenderer->layerSet() );
   }
-  theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
   theMapRenderer.setDestinationCrs( mMapRenderer->destinationCrs() );
+  theMapRenderer.setProjectionsEnabled( mMapRenderer->hasCrsTransformEnabled() );
 
   //set antialiasing if enabled in options
   QSettings settings;
@@ -431,7 +431,7 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
 
   //read zoom mode
   //0: zoom, 1: zoom and recenter, 2: zoom to cursor, 3: nothing
-  int zoomMode = settings.value( "/qgis/wheel_action", 0 ).toInt();
+  int zoomMode = settings.value( "/qgis/wheel_action", 2 ).toInt();
   if ( zoomMode == 3 ) //do nothing
   {
     return;

@@ -14,6 +14,11 @@
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
 
+// browser layer properties dialog
+#include "qgsapplication.h"
+#include "qgsmapcanvas.h"
+#include <ui_qgsbrowserlayerpropertiesbase.h>
+
 #include <QDragEnterEvent>
 /**
 Utility class for correct drag&drop handling.
@@ -68,16 +73,45 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
 
   mBrowserView = new QgsBrowserTreeView( this );
 
-  mRefreshButton = new QToolButton( this );
-  mRefreshButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionDraw.png" ) );
-  mRefreshButton->setText( tr( "Refresh" ) );
-  mRefreshButton->setAutoRaise( true );
-  connect( mRefreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
+  QToolButton* refreshButton = new QToolButton( this );
+  refreshButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionDraw.png" ) );
+  // remove this to save space
+  refreshButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  refreshButton->setText( tr( "Refresh" ) );
+  refreshButton->setToolTip( tr( "Refresh" ) );
+  refreshButton->setAutoRaise( true );
+  connect( refreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
 
-  QVBoxLayout* layout = new QVBoxLayout( this );
+  QToolButton* addLayersButton = new QToolButton( this );
+  addLayersButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionAddLayer.png" ) );
+  // remove this to save space
+  addLayersButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  addLayersButton->setText( tr( "Add Selection" ) );
+  addLayersButton->setToolTip( tr( "Add Selected Layers" ) );
+  addLayersButton->setAutoRaise( true );
+  connect( addLayersButton, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
+
+  QToolButton* collapseButton = new QToolButton( this );
+  collapseButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionCollapseTree.png" ) );
+  collapseButton->setToolTip( tr( "Collapse All" ) );
+  collapseButton->setAutoRaise( true );
+  connect( collapseButton, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
+
+  QVBoxLayout* layout = new QVBoxLayout();
+  QHBoxLayout* hlayout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
-  layout->addWidget( mRefreshButton );
+  hlayout->setContentsMargins( 0, 0, 0, 0 );
+  hlayout->setSpacing( 5 );
+  hlayout->setAlignment( Qt::AlignLeft );
+
+  hlayout->addSpacing( 5 );
+  hlayout->addWidget( refreshButton );
+  hlayout->addSpacing( 5 );
+  hlayout->addWidget( addLayersButton );
+  hlayout->addStretch( );
+  hlayout->addWidget( collapseButton );
+  layout->addLayout( hlayout );
   layout->addWidget( mBrowserView );
 
   QWidget* innerWidget = new QWidget( this );
@@ -85,8 +119,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   setWidget( innerWidget );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  //connect( mBrowserView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
-  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
+  connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
 
 }
 
@@ -105,72 +138,6 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   }
 
   QDockWidget::showEvent( e );
-}
-
-
-void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
-{
-  QgsDataItem *item = mModel->dataItem( index );
-  if ( !item )
-    return;
-
-  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( mModel->dataItem( index ) );
-  if ( layerItem == NULL )
-    return;
-
-  QString uri = layerItem->uri();
-  if ( uri.isEmpty() )
-    return;
-
-  QgsMapLayer::LayerType type = layerItem->mapLayerType();
-  QString providerKey = layerItem->providerKey();
-
-  QgsDebugMsg( providerKey + " : " + uri );
-  QgsMapLayer* layer = NULL;
-  if ( type == QgsMapLayer::VectorLayer )
-  {
-    layer = new QgsVectorLayer( uri, layerItem->name(), providerKey );
-  }
-  if ( type == QgsMapLayer::RasterLayer )
-  {
-    // This should go to WMS provider
-    QStringList URIParts = uri.split( "|" );
-    QString rasterLayerPath = URIParts.at( 0 );
-    QStringList layers;
-    QStringList styles;
-    QString format;
-    QString crs;
-    for ( int i = 1 ; i < URIParts.size(); i++ )
-    {
-      QString part = URIParts.at( i );
-      int pos = part.indexOf( "=" );
-      QString field = part.left( pos );
-      QString value = part.mid( pos + 1 );
-
-      if ( field == "layers" )
-        layers = value.split( "," );
-      if ( field == "styles" )
-        styles = value.split( "," );
-      if ( field == "format" )
-        format = value;
-      if ( field == "crs" )
-        crs = value;
-    }
-    QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
-    QgsDebugMsg( "layers = " + layers.join( " " ) );
-
-    layer = new QgsRasterLayer( 0, rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
-  }
-
-  if ( !layer || !layer->isValid() )
-  {
-    qDebug( "No layer" );
-    delete layer;
-    return;
-  }
-
-  // add layer to the application
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
 }
 
 void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
@@ -198,6 +165,13 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       // only favourites can be removed
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
+  }
+
+  else if ( item->type() == QgsDataItem::Layer )
+  {
+    menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer( ) ) );
+    menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
+    menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
   }
 
   QList<QAction*> actions = item->actions();
@@ -258,7 +232,9 @@ void QgsBrowserDockWidget::removeFavourite()
 
 void QgsBrowserDockWidget::refresh()
 {
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   refreshModel( QModelIndex() );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
@@ -285,6 +261,184 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
     if ( mBrowserView->isExpanded( idx ) || !mModel->hasChildren( idx ) )
     {
       refreshModel( idx );
+    }
+  }
+}
+
+void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
+{
+  if ( layerItem == NULL )
+    return;
+
+  QString uri = layerItem->uri();
+  if ( uri.isEmpty() )
+    return;
+
+  QgsMapLayer::LayerType type = layerItem->mapLayerType();
+  QString providerKey = layerItem->providerKey();
+
+  QgsDebugMsg( providerKey + " : " + uri );
+  if ( type == QgsMapLayer::VectorLayer )
+  {
+    QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
+  }
+  if ( type == QgsMapLayer::RasterLayer )
+  {
+    // This should go to WMS provider
+    QStringList URIParts = uri.split( "|" );
+    QString rasterLayerPath = URIParts.at( 0 );
+    QStringList layers;
+    QStringList styles;
+    QString format;
+    QString crs;
+    for ( int i = 1 ; i < URIParts.size(); i++ )
+    {
+      QString part = URIParts.at( i );
+      int pos = part.indexOf( "=" );
+      QString field = part.left( pos );
+      QString value = part.mid( pos + 1 );
+
+      if ( field == "layers" )
+        layers = value.split( "," );
+      if ( field == "styles" )
+        styles = value.split( "," );
+      if ( field == "format" )
+        format = value;
+      if ( field == "crs" )
+        crs = value;
+    }
+    QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
+    QgsDebugMsg( "layers = " + layers.join( " " ) );
+
+    QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
+  }
+}
+
+void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
+{
+  QgsDataItem *dataItem = mModel->dataItem( index );
+
+  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
+  {
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    if ( layerItem != NULL )
+    {
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      addLayer( layerItem );
+      QApplication::restoreOverrideCursor();
+    }
+  }
+}
+
+void QgsBrowserDockWidget::addCurrentLayer( )
+{
+  addLayerAtIndex( mBrowserView->currentIndex() );
+}
+
+void QgsBrowserDockWidget::addSelectedLayers()
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  // get a sorted list of selected indexes
+  QModelIndexList list = mBrowserView->selectionModel()->selectedIndexes();
+  qSort( list );
+
+  // add items in reverse order so they are in correct order in the layers dock
+  for ( int i = list.size() - 1; i >= 0; i-- )
+  {
+    QModelIndex index = list[i];
+    QgsDataItem *dataItem = mModel->dataItem( index );
+    if ( dataItem && dataItem->type() == QgsDataItem::Layer )
+    {
+      QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+      if ( layerItem )
+        addLayer( layerItem );
+    }
+  }
+
+  QApplication::restoreOverrideCursor();
+}
+
+void QgsBrowserDockWidget::showProperties( )
+{
+  QgsDebugMsg( "Entered" );
+  QgsDataItem* dataItem = mModel->dataItem( mBrowserView->currentIndex() );
+
+  if ( dataItem != NULL && dataItem->type() == QgsDataItem::Layer )
+  {
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( dataItem );
+    if ( layerItem != NULL )
+    {
+      QgsMapLayer::LayerType type = layerItem->mapLayerType();
+      QString layerMetadata = tr( "Error" );
+      QgsCoordinateReferenceSystem layerCrs;
+      QString notice;
+
+      // temporarily override /Projections/defaultBehaviour to avoid dialog prompt
+      QSettings settings;
+      QString defaultProjectionOption = settings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
+      if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
+      {
+        settings.setValue( "/Projections/defaultBehaviour", "useProject" );
+      }
+
+      // find root item
+      // we need to create a temporary layer to get metadata
+      // we could use a provider but the metadata is not as complete and "pretty"  and this is easier
+      QgsDebugMsg( QString( "creating temporary layer using path %1" ).arg( layerItem->path() ) );
+      if ( type == QgsMapLayer::RasterLayer )
+      {
+        QgsDebugMsg( "creating raster layer" );
+        // should copy code from addLayer() to split uri ?
+        QgsRasterLayer* layer = new QgsRasterLayer( 0, layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+        if ( layer != NULL )
+        {
+          layerCrs = layer->crs();
+          layerMetadata = layer->metadata();
+          delete layer;
+        }
+      }
+      else if ( type == QgsMapLayer::VectorLayer )
+      {
+        QgsDebugMsg( "creating vector layer" );
+        QgsVectorLayer* layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+        if ( layer != NULL )
+        {
+          layerCrs = layer->crs();
+          layerMetadata = layer->metadata();
+          delete layer;
+        }
+      }
+
+      // restore /Projections/defaultBehaviour
+      if ( defaultProjectionOption == "prompt" )
+      {
+        settings.setValue( "/Projections/defaultBehaviour", defaultProjectionOption );
+      }
+
+      // initialize dialog
+      QDialog *dialog = new QDialog( this );
+      Ui::QgsBrowserLayerPropertiesBase ui;
+      ui.setupUi( dialog );
+
+      dialog->setWindowTitle( tr( "Layer Properties" ) );
+      ui.leName->setText( layerItem->name() );
+      ui.leSource->setText( layerItem->path() );
+      ui.leProvider->setText( layerItem->providerKey() );
+      QString myStyle = QgsApplication::reportStyleSheet();
+      ui.txtbMetadata->document()->setDefaultStyleSheet( myStyle );
+      ui.txtbMetadata->setHtml( layerMetadata );
+
+      // report if layer was set to to project crs without prompt (may give a false positive)
+      if ( defaultProjectionOption == "prompt" )
+      {
+        QgsCoordinateReferenceSystem defaultCrs =
+          QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs();
+        if ( layerCrs == defaultCrs )
+          ui.lblNotice->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ")" );
+      }
+
+      dialog->show();
     }
   }
 }

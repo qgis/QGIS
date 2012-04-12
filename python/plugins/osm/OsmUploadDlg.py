@@ -47,7 +47,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         @param plugin is pointer to instance of OSM Plugin.
         """
 
-        QDialog.__init__(self,None)
+        QDialog.__init__(self, plugin.iface.mainWindow())
         self.setupUi(self)
 
         self.dockWidget=plugin.dockWidget

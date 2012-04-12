@@ -148,6 +148,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     virtual QgsRectangle extent();
 
+    /** Update the extent for this data layer
+    */
+    virtual void updateExtents();
+
     /**  * Get the name of the primary key for the layer
     */
     QString getPrimaryKey();
@@ -276,6 +280,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
+    /** Check if a table/view has any triggers.  Triggers can be used on views to make them editable.*/
+    bool hasTriggers();
+
     /** convert a QgsField to work with SL */
     static bool convertField( QgsField &field );
 
@@ -356,6 +363,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
        * Spatial reference id of the layer
        */
     int mSrid;
+    /**
+      * auth id
+     */
+    QString mAuthId;
     /**
       * proj4text
      */

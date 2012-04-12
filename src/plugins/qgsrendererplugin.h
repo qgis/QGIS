@@ -30,7 +30,7 @@ vector layer properties dialog in the main qgis application*/
 class QgsRendererPlugin: public QgisPlugin
 {
   public:
-    QgsRendererPlugin( const QString& name, const QString& description, const QString& version ): QgisPlugin( name, description, version, QgisPlugin::RENDERER ) {}
+    QgsRendererPlugin( const QString& name, const QString& description, const QString& category, const QString& version ): QgisPlugin( name, description, category, version, QgisPlugin::RENDERER ) {}
     virtual ~QgsRendererPlugin() {}
     virtual QDialog* rendererDialog() = 0;
     virtual QgsRenderer* renderer() = 0;

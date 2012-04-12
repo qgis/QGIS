@@ -218,7 +218,7 @@ class QgsGrass
     static GRASS_LIB_EXPORT QList<QgsGrass::Color> colors( QString gisdbase, QString location,
         QString mapset, QString map );
 
-    // ! Get map value / feautre info
+    // ! Get map value / feature info
     static GRASS_LIB_EXPORT QMap<QString, QString> query( QString gisdbase, QString location,
         QString mapset, QString map, MapType type, double x, double y );
 

@@ -253,7 +253,7 @@ QList<QAction*> QgsSLRootItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionNew = new QAction( tr( "New..." ), this );
+  QAction* actionNew = new QAction( tr( "New Connection..." ), this );
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
@@ -293,7 +293,7 @@ void QgsSLRootItem::createDatabase()
 
   QString filename = QFileDialog::getSaveFileName( 0, tr( "New SpatiaLite Database File" ),
                      lastUsedDir,
-                     tr( "SpatiaLite (*.sqlite *.db )" ) );
+                     tr( "SpatiaLite" ) + " (*.sqlite *.db)" );
   if ( filename.isEmpty() )
     return;
 

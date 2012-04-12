@@ -230,7 +230,7 @@ namespace pal
 
 
   template <typename Data>
-  bool HashTable<Data>::removeElement( const char * key )
+  bool HashTable<Data>::removeElement( const char * )
   {
     // TODO: Remove the element that has this key from the hash table.
     // Return true if the entry is found or false otherwise.

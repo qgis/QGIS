@@ -215,7 +215,8 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
   tblAttributes->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tblAttributes->setSelectionMode( QAbstractItemView::MultiSelection );
+  tblAttributes->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  tblAttributes->verticalHeader()->hide();
 
   int row = 0;
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++, row++ )
@@ -310,6 +311,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::Calendar:
+    case QgsVectorLayer::UuidGenerator:
       break;
   }
 
@@ -583,6 +585,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
   editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
   editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
+  editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -690,6 +693,7 @@ void QgsVectorLayerProperties::apply()
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::Calendar:
+      case QgsVectorLayer::UuidGenerator:
         break;
     }
   }
@@ -946,14 +950,25 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file (.qml)" ), myLastUsedDir, tr( "QGIS Layer Style File (*.qml)" ) );
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
+                       tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
   {
     return;
   }
 
+  QString myMessage;
   bool defaultLoadedFlag = false;
-  QString myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
+
+  if ( myFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
+  {
+    // load from SLD
+    myMessage = layer->loadSldStyle( myFileName, defaultLoadedFlag );
+  }
+  else
+  {
+    myMessage = layer->loadNamedStyle( myFileName, defaultLoadedFlag );
+  }
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
@@ -962,7 +977,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
   else
   {
     //let the user know what went wrong
-    QMessageBox::information( this, tr( "Saved Style" ), myMessage );
+    QMessageBox::information( this, tr( "Load Style" ), myMessage );
   }
 
   QFileInfo myFI( myFileName );
@@ -975,7 +990,8 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file (.qml)" ), myLastUsedDir, tr( "QGIS Layer Style File (*.qml)" ) );
+  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), myLastUsedDir,
+                             tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
     return;
@@ -983,14 +999,25 @@ void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 
   apply(); // make sure the qml to save is uptodate
 
+  QString myMessage;
+  bool defaultLoadedFlag = false;
+
   //ensure the user never omitted the extension from the file name
-  if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
+  if ( myOutputFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
   {
-    myOutputFileName += ".qml";
+    // convert to SLD
+    myMessage = layer->saveSldStyle( myOutputFileName, defaultLoadedFlag );
+  }
+  else
+  {
+    if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
+    {
+      myOutputFileName += ".qml";
+    }
+
+    myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
   }
 
-  bool defaultLoadedFlag = false;
-  QString myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
@@ -1044,7 +1071,7 @@ void QgsVectorLayerProperties::on_pbnSelectEditForm_clicked()
 {
   QSettings myQSettings;
   QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
-  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file (*.ui)" ) );
+  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
 
   if ( uifilename.isNull() )
     return;
@@ -1250,6 +1277,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
   }
+}
+
+void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
+{
+  layer->updateExtents();
+  mMetadataFilled = false;
 }
 
 void QgsVectorLayerProperties::on_tabWidget_currentChanged( int index )

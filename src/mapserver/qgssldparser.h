@@ -27,7 +27,7 @@ class QPen;
 class QgsMapLayer;
 class QgsVectorLayer;
 class QgsRasterLayer;
-class QgsRenderer;
+class QgsFeatureRendererV2;
 
 #include "qgsconfigparser.h"
 #include "qgsmaprenderer.h"
@@ -56,6 +56,8 @@ class QgsSLDParser: public QgsConfigParser
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
     void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    void featureTypeList( QDomElement &, QDomDocument & ) const {};
+
     /**Returns number of layers in configuration*/
     int numberOfLayers() const;
 
@@ -83,7 +85,7 @@ class QgsSLDParser: public QgsConfigParser
     /**Don't use the default constructor*/
     QgsSLDParser();
     /**Creates a Renderer from a UserStyle SLD node. Returns 0 in case of error*/
-    QgsRenderer* rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;
+    QgsFeatureRendererV2* rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;
     /**Searches for a <TextSymbolizer> element and applies the settings to the vector layer
      @return true if settings have been applied, false in case of <TextSymbolizer> element not present or error*/
     bool labelSettingsFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;

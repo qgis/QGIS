@@ -28,14 +28,10 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     void apply();
     void onOK();
 
-    void showSymbolLevels();
-
     void useOldSymbology();
 
   signals:
     void useNewSymbology( bool );
-    void forceChkUsingFirstRule();
-    void forceUncheckSymbolLevels();
 
   protected:
 

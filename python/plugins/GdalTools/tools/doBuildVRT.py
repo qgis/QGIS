@@ -21,6 +21,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setType( self.inSelector.FILE )
       self.outSelector.setType( self.outSelector.FILE )
       self.recurseCheck.hide()
+      self.visibleRasterLayers = QStringList()
 
       self.setParamsStatus(
         [
@@ -30,13 +31,40 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0"),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),
           (self.separateCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
-          (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck)
+          (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
+          (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
+          (self.inputSelLayersCheck, SIGNAL("stateChanged(int)"))
         ]
       )
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect( self.inputDirCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
+      self.connect( self.inputSelLayersCheck, SIGNAL( "stateChanged( int )" ), self.switchLayerMode )
+      self.connect( self.iface.mapCanvas(), SIGNAL( "stateChanged( int )" ), self.switchLayerMode )
+
+
+  def initialize(self):
+      # connect to mapCanvas.layerChanged() signal
+      self.connect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
+      self.onVisibleLayersChanged()
+      BasePluginWidget.initialize(self)
+
+  def onClosing(self):
+      # disconnect from mapCanvas.layerChanged() signal
+      self.disconnect(self.iface.mapCanvas(), SIGNAL("layersChanged()"), self.onVisibleLayersChanged)
+      BasePluginWidget.onClosing(self)
+
+
+  def onVisibleLayersChanged(self):
+      # refresh list of visible raster layers
+      self.visibleRasterLayers = QStringList()
+      for layer in self.iface.mapCanvas().layers():
+        if Utils.LayerRegistry.isRaster( layer ):
+          self.visibleRasterLayers << layer.source()
+
+      # refresh the text in the command viewer
+      self.someValueChanged()
 
   def switchToolMode(self):
       self.recurseCheck.setVisible( self.inputDirCheck.isChecked() )
@@ -53,6 +81,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
         QObject.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
         QObject.disconnect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputDir)
+
+  def switchLayerMode(self):
+      enableInputFiles = not self.inputSelLayersCheck.isChecked()
+      self.inputDirCheck.setEnabled( enableInputFiles )
+      self.inSelector.setEnabled( enableInputFiles )
+      self.recurseCheck.setEnabled( enableInputFiles )
 
   def fillInputFilesEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -84,8 +118,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.srcNoDataCheck.isChecked():
         arguments << "-srcnodata"
         arguments << str(self.srcNoDataSpin.value())
+      if self.allowProjDiffCheck.isChecked():
+        arguments << "-allow_projection_difference"
       arguments << self.getOutputFileName()
-      if self.inputDirCheck.isChecked():
+      if self.inputSelLayersCheck.isChecked():
+        arguments << self.visibleRasterLayers
+      elif self.inputDirCheck.isChecked():
         arguments << Utils.getRasterFiles( self.getInputFileName(), self.recurseCheck.isChecked() )
       else:
         arguments << self.getInputFileName()

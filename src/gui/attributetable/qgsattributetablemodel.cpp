@@ -24,13 +24,11 @@
 
 #include <QtGui>
 #include <QVariant>
+
 #include <limits>
 
-QgsRectangle QgsAttributeTableModel::mCurrentExtent; // static member
-
-
-QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
-    : QAbstractTableModel( parent )
+QgsAttributeTableModel::QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorLayer *theLayer, QObject *parent )
+    : QAbstractTableModel( parent ), mCanvas( canvas ), mLayer( theLayer )
 {
   QgsDebugMsg( "entered." );
 
@@ -38,7 +36,6 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   mFeatureMap.clear();
   mFeatureQueue.clear();
 
-  mLayer = theLayer;
   loadAttributes();
 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
@@ -46,6 +43,9 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+
+  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+  extentsChanged();
 }
 
 bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
@@ -64,9 +64,9 @@ bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
   else if ( mLayer->featureAtId( fid, mFeat, false, true ) )
   {
     QSettings settings;
-    int cacheSize = settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt();
+    int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
 
-    if ( mFeatureQueue.size() == cacheSize )
+    while ( mFeatureQueue.size() >= cacheSize )
     {
       mFeatureMap.remove( mFeatureQueue.dequeue() );
     }
@@ -179,10 +179,6 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  if ( mFeatureMap.contains( fid ) )
-  {
-    mFeatureMap[ fid ].changeAttribute( fieldCol( idx ), value );
-  }
   setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 
@@ -214,15 +210,15 @@ void QgsAttributeTableModel::loadAttributes()
     attributes << it.key();
   }
 
-  if ( mFieldCount < attributes.size() )
+  if ( columnCount() < attributes.size() )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
+    beginInsertColumns( QModelIndex(), columnCount(), attributes.size() - 1 );
   }
-  else if ( attributes.size() < mFieldCount )
+  else if ( attributes.size() < columnCount() )
   {
     rm = true;
-    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
+    beginRemoveColumns( QModelIndex(), attributes.size(), columnCount() - 1 );
   }
 
   mFieldCount = attributes.size();
@@ -249,14 +245,31 @@ void QgsAttributeTableModel::loadLayer()
 
   QSettings settings;
   int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+  int i = 0;
+
+  QTime t;
+  t.start();
 
   if ( behaviour == 1 )
   {
-    beginInsertRows( QModelIndex(), 0, mLayer->selectedFeatureCount() );
+    beginInsertRows( QModelIndex(), 0, mLayer->selectedFeatureCount() - 1 );
     foreach( QgsFeatureId fid, mLayer->selectedFeaturesIds() )
     {
       featureAdded( fid, false );
+
+      i++;
+
+      if ( t.elapsed() > 5000 )
+      {
+        bool cancel = false;
+        emit progress( i, cancel );
+        if ( cancel )
+          break;
+
+        t.restart();
+      }
     }
+    emit finished();
     endInsertRows();
   }
   else
@@ -271,10 +284,21 @@ void QgsAttributeTableModel::loadLayer()
     mLayer->select( QgsAttributeList(), rect, false );
 
     QgsFeature f;
-    for ( int i = 0; mLayer->nextFeature( f ); ++i )
+    for ( i = 0; mLayer->nextFeature( f ); ++i )
     {
       featureAdded( f.id() );
+
+      if ( t.elapsed() > 5000 )
+      {
+        bool cancel = false;
+        emit progress( i, cancel );
+        if ( cancel )
+          break;
+
+        t.restart();
+      }
     }
+    emit finished();
   }
 
   mFieldCount = mAttributes.size();
@@ -345,7 +369,7 @@ int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return mFieldCount;
+  return qMax( 1, mFieldCount );  // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -356,7 +380,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     {
       return QVariant( section );
     }
-    else
+    else if ( section < mFieldCount )
     {
       QString attributeName = mLayer->attributeAlias( mAttributes[section] );
       if ( attributeName.isEmpty() )
@@ -365,6 +389,10 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
         attributeName = field.name();
       }
       return QVariant( attributeName );
+    }
+    else
+    {
+      return tr( "feature id" );
     }
   }
   else
@@ -375,21 +403,34 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 {
-  QgsAttributeMap row;
-  QgsAttributeList attrs;
-  QgsFeature f;
-
-  attrs.append( mAttributes[column] );
+  if ( column >= mFieldCount )
+    return;
 
   emit layoutAboutToBeChanged();
 // QgsDebugMsg("SORTing");
 
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+
+  QgsRectangle rect;
+  if ( behaviour == 2 )
+  {
+    // current canvas only
+    rect = mCurrentExtent;
+  }
+
   mSortList.clear();
-  mLayer->select( attrs, QgsRectangle(), false );
+
+  int idx = fieldIdx( column );
+  mLayer->select( QgsAttributeList() << idx, rect, false );
+
+  QgsFeature f;
   while ( mLayer->nextFeature( f ) )
   {
-    row = f.attributeMap();
-    mSortList.append( QgsAttributeTableIdColumnPair( f.id(), row[ mAttributes[column] ] ) );
+    if ( behaviour == 1 && !mIdRowMap.contains( f.id() ) )
+      continue;
+
+    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attributeMap()[idx] );
   }
 
   if ( order == Qt::AscendingOrder )
@@ -420,6 +461,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
+  QgsFeatureId rowId = rowToId( index.row() );
+
+  if ( index.column() >= mFieldCount )
+    return role == Qt::DisplayRole ? rowId : QVariant();
+
   int fieldId = mAttributes[ index.column()];
 
   QVariant::Type fldType = mLayer->pendingFields()[ fieldId ].type();
@@ -434,7 +480,6 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   // if we don't have the row in current cache, load it from layer first
-  QgsFeatureId rowId = rowToId( index.row() );
   if ( mFeat.id() != rowId )
   {
     if ( !featureAtId( rowId ) )
@@ -460,9 +505,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == Qt::DisplayRole && mValueMaps.contains( index.column() ) )
+  if ( role == Qt::DisplayRole && mValueMaps.contains( fieldId ) )
   {
-    return mValueMaps[ index.column()]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
+    return mValueMaps[ fieldId ]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
   }
 
   return val.toString();
@@ -470,13 +515,20 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
 bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( !index.isValid() || role != Qt::EditRole || !mLayer->isEditable() )
+  if ( !index.isValid() || index.column() >= mFieldCount || role != Qt::EditRole || !mLayer->isEditable() )
     return false;
 
-  QgsFeatureId rowId = rowToId( index.row() );
-  if ( mFeat.id() == rowId || featureAtId( rowId ) )
+  QgsFeatureId fid = rowToId( index.row() );
+  int idx = fieldIdx( index.column() );
+
+  if ( mFeatureMap.contains( fid ) )
   {
-    mFeat.changeAttribute( mAttributes[ index.column()], value );
+    mFeatureMap[ fid ].changeAttribute( idx, value );
+  }
+
+  if ( mFeat.id() == fid || featureAtId( fid ) )
+  {
+    mFeat.changeAttribute( idx, value );
   }
 
   if ( !mLayer->isModified() )
@@ -492,6 +544,9 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
 
+  if ( index.column() >= mFieldCount )
+    return Qt::NoItemFlags;
+
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
   if ( mLayer->isEditable() &&
@@ -503,6 +558,13 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
+  for ( int row = index1.row(); row <= index2.row(); row++ )
+  {
+    QgsFeatureId fid = rowToId( row );
+    mFeatureMap.remove( fid );
+    mFeatureQueue.removeOne( fid );
+  }
+
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
@@ -524,26 +586,23 @@ void QgsAttributeTableModel::incomingChangeLayout()
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
 {
-  QgsAttributeMap attributes;
-
-  for ( int i = 0; i < mAttributes.size(); i++ )
-  {
-    attributes.insert( i, data( index( idx.row(), i ), Qt::EditRole ) );
-  }
-
-  mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );
+  QgsFeature f = feature( idx );
+  mLayer->actions()->doAction( action, f, fieldIdx( idx.column() ) );
 }
 
-QgsFeature QgsAttributeTableModel::feature( QModelIndex &idx )
+QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
-  QgsAttributeMap attributes;
-
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    f.changeAttribute( i, data( index( idx.row(), i ), Qt::EditRole ) );
+    f.changeAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   return f;
+}
+
+void QgsAttributeTableModel::extentsChanged()
+{
+  mCurrentExtent = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, mCanvas->extent() );
 }

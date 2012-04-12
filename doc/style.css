@@ -20,10 +20,11 @@ h1{  background-color: #F6F6F6;
   padding: 0.75em 0 0;
   margin: 0;
   line-height: 1.1em;
+  border-bottom: 5px solid #DCEB5C;
 }
 h2{  background-color: #F6F6F6;
   color: #8FB171; 
-  font-size: medium;  
+  font-size: large;  
   font-weight: normal;
   font-family: luxi serif, georgia, times new roman, times, serif;
   background: none;
@@ -35,23 +36,19 @@ h3{  background-color: #F6F6F6;
   color: #729FCF;
   font-family: luxi serif, georgia, times new roman, times, serif;
   font-weight: bold;
-  font-size: large;
-  text-align: right;
-  border-bottom: 5px solid #DCEB5C;
+  font-size: medium;
 }
 h4{  background-color: #F6F6F6;
   color: #729FCF;
   font-family: luxi serif, georgia, times new roman, times, serif;
-  font-weight: bold;
+  font-weight: normal;
   font-size: medium;
-  text-align: right;
 }
 h5{    background-color: #F6F6F6;
    color: #729FCF;
    font-family: luxi serif, georgia, times new roman, times, serif;
    font-weight: bold;
    font-size: small;
-   text-align: right;
 }
 a{  color: #729FCF;
   font-family: arial,sans-serif;

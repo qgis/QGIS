@@ -86,14 +86,14 @@ class CORE_EXPORT QgsLogger
       os << var.toLocal8Bit().data() << " = " << val;
       if ( line == -1 )
       {
-        qDebug( "%s: (%s) %s", file, function, os.str().c_str() );
+        qDebug( "%s: (%s) %s", file + sPrefixLength, function, os.str().c_str() );
       }
       else
       {
 #if defined(_MSC_VER)
-        qDebug( "%s(%d): (%s) %s", file, line, function, os.str().c_str() );
+        qDebug( "%s(%d): (%s) %s", file + sPrefixLength, line, function, os.str().c_str() );
 #else
-        qDebug( "%s: %d: (%s) %s", file, line, function, os.str().c_str() );
+        qDebug( "%s: %d: (%s) %s", file + sPrefixLength, line, function, os.str().c_str() );
 #endif
       }
     }
@@ -124,7 +124,8 @@ class CORE_EXPORT QgsLogger
     static const char* debugFile();
 
     /** current debug level */
-    static int mDebugLevel;
+    static int sDebugLevel;
+    static int sPrefixLength;
 };
 
 #endif

@@ -100,7 +100,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = "UTF-8";
   QgsField myField1( "Field1", QVariant::String, "String", 10, 0, "Field 1 comment" );
   mFields.insert( 0, myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWkt );
+  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   mPoint1 = QgsPoint( 10.0, 10.0 );
   mPoint2 = QgsPoint( 15.0, 10.0 );
   mPoint3 = QgsPoint( 15.0, 12.0 );

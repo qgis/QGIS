@@ -20,6 +20,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
 
+#include <QMessageBox>
+
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
@@ -27,6 +29,7 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
 
   //fill data types into the combo box
   const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
+  mLayerType = vlayer->storageType();
 
   for ( int i = 0; i < typelist.size(); i++ )
   {
@@ -68,6 +71,17 @@ void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
     mPrec->setValue( mPrec->minimum() );
   if ( mPrec->value() > mPrec->maximum() )
     mPrec->setValue( mPrec->maximum() );
+}
+
+void QgsAddAttrDialog::accept()
+{
+  if ( mLayerType == "ESRI Shapefile" && mNameEdit->text().toLower() == "shape" )
+  {
+    QMessageBox::warning( this, tr( "Warning" ),
+                          tr( "Invalid field name. This field name is reserved and cannot be used." ) );
+    return;
+  }
+  QDialog::accept();
 }
 
 QgsField QgsAddAttrDialog::field() const

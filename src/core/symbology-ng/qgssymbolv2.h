@@ -12,6 +12,9 @@ class QPainter;
 class QSize;
 class QPointF;
 class QPolygonF;
+
+class QDomDocument;
+class QDomElement;
 //class
 
 class QgsFeature;
@@ -89,16 +92,20 @@ class CORE_EXPORT QgsSymbolV2
 
     virtual QgsSymbolV2* clone() const = 0;
 
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
     OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
     //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
     //! @note added in 1.5
-    int renderHints() { return mRenderHints; }
+    int renderHints() const { return mRenderHints; }
 
     QSet<QString> usedAttributes() const;
 
@@ -137,7 +144,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
     bool selected() const { return mSelected; }

@@ -34,7 +34,8 @@ QgsRenderChecker::QgsRenderChecker( ) :
 {
 
 }
-bool QgsRenderChecker::runTest( QString theTestName )
+bool QgsRenderChecker::runTest( QString theTestName,
+                                unsigned int theMismatchCount )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -53,11 +54,16 @@ bool QgsRenderChecker::runTest( QString theTestName )
   //
   // Now render our layers onto a pixmap
   //
-  QImage myImage( myExpectedImage.width(), myExpectedImage.height(), QImage::Format_RGB32 );
+  QImage myImage( myExpectedImage.width(),
+                  myExpectedImage.height(),
+                  QImage::Format_RGB32 );
   myImage.fill( qRgb( 152, 219, 249 ) );
   QPainter myPainter( &myImage );
+  myPainter.setRenderHint( QPainter::Antialiasing );
   mpMapRenderer->setOutputSize( QSize(
-                                  myExpectedImage.width(), myExpectedImage.height() ), myExpectedImage.logicalDpiX() );
+                                  myExpectedImage.width(),
+                                  myExpectedImage.height() ),
+                                  myExpectedImage.logicalDpiX());
   QTime myTime;
   myTime.start();
   mpMapRenderer->render( &myPainter );
@@ -67,14 +73,16 @@ bool QgsRenderChecker::runTest( QString theTestName )
   // Save the pixmap to disk so the user can make a
   // visual assessment if needed
   //
-  mRenderedImageFile = QDir::tempPath() + QDir::separator() + theTestName + "_result.png";
-  myImage.save( mRenderedImageFile );
-  return compareImages( theTestName );
+  mRenderedImageFile = QDir::tempPath() + QDir::separator() +
+      theTestName + "_result.png";
+  myImage.save( mRenderedImageFile, "PNG", 100 );
+  return compareImages( theTestName, theMismatchCount );
 
 }
 
 
-bool QgsRenderChecker::compareImages( QString theTestName )
+bool QgsRenderChecker::compareImages( QString theTestName,
+                                      unsigned int theMismatchCount )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -99,8 +107,11 @@ bool QgsRenderChecker::compareImages( QString theTestName )
   //
   QImage myExpectedImage( mExpectedImageFile );
   QImage myResultImage( mRenderedImageFile );
-  QImage myDifferenceImage( myExpectedImage.width(), myExpectedImage.height(), QImage::Format_RGB32 );
-  QString myResultDiffImage = QDir::tempPath() + QDir::separator() + theTestName + "_result_diff.png";
+  QImage myDifferenceImage( myExpectedImage.width(),
+                            myExpectedImage.height(),
+                            QImage::Format_RGB32 );
+  QString myResultDiffImage = QDir::tempPath() + QDir::separator() +
+      theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //
@@ -190,7 +201,7 @@ bool QgsRenderChecker::compareImages( QString theTestName )
   mReport += "</td></tr>";
 
 
-  if ( mMismatchCount == 0 )
+  if ( mMismatchCount <= theMismatchCount )
   {
     mReport += "<tr><td colspan = 3>\n";
     mReport += "Test image and result image for " + theTestName + " are matched<br>";

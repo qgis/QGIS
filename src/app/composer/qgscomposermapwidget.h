@@ -39,7 +39,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mHeightLineEdit_editingFinished();
     void on_mPreviewModeComboBox_activated( int i );
     void on_mScaleLineEdit_editingFinished();
-    void on_mRotationSpinBox_valueChanged( int value );
+    void on_mRotationSpinBox_valueChanged( double value );
     void on_mSetToMapCanvasExtentButton_clicked();
     void on_mUpdatePreviewButton_clicked();
     void on_mKeepLayerListCheckBox_stateChanged( int state );

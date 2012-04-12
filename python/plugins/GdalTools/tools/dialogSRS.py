@@ -5,8 +5,8 @@ from qgis.core import *
 from qgis.gui import *
 
 class GdalToolsSRSDialog(QDialog):
-  def __init__(self, title):
-      QDialog.__init__(self)
+  def __init__(self, title, parent=None):
+      QDialog.__init__(self, parent)
       self.setWindowTitle( title )
 
       layout = QVBoxLayout()

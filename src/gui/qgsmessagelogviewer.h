@@ -23,23 +23,35 @@
 
 #include <QString>
 
+class QStatusBar;
+class QToolButton;
+class QShowEvent;
+class QHideEvent;
+
 /** \ingroup gui
  * A generic message for displaying QGIS log messages.
  * \note added in 1.8
  */
-class GUI_EXPORT QgsMessageLogViewer: public QDialog, public QgsMessageLog, private Ui::QgsMessageLogViewer
+class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogViewer
 {
     Q_OBJECT
   public:
-    QgsMessageLogViewer( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsMessageLogViewer();
 
-    void logMessage( QString message, QString tag = QString::null, int level = 0 );
+  public slots:
+    void logMessage( QString message, QString tag, int level );
 
-    static void logger( QString message, QString tag, int level );
+  private:
+    void showEvent( QShowEvent * );
+    void hideEvent( QHideEvent * );
+
+    QToolButton *mButton;
+    int mCount;
 
   private slots:
     void closeTab( int index );
+    void buttonToggled( bool checked );
 };
 
 #endif

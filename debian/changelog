@@ -2,8 +2,18 @@ qgis (1.9.90) UNRELEASED; urgency=low
 
   * new development version 1.9.90 after branch of 1.8.0
   * include function help in package
+  * include heatmap plugin
+  * drop extra include path for QtWebkit on oneiric and natty
+  * add translations for desktop link
+  * add browser desktop entry
+  * add support for Debian wheezy and Ubuntu precise
+  * build package with internal libspatialite where libspatialite not available
+  * drop support for Ubuntu hardy, intrepid, jaunty and karmic
+  * add mssqlprovider plugin
+  * copyright & policy update (synced from debiangis)
+  * run crssync in postinst
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 26 Nov 2011 23:43:48 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 03 Apr 2012 00:20:18 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

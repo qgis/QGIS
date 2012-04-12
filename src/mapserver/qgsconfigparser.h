@@ -19,6 +19,7 @@
 #define QGSCONFIGPARSER_H
 
 #include "qgsmaprenderer.h"
+#include <QColor>
 #include <QDomDocument>
 #include <QFont>
 #include <QList>
@@ -40,6 +41,8 @@ class QgsConfigParser
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.*/
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
+
+    virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
        If no layers/style are found, an empty list is returned
@@ -86,6 +89,8 @@ class QgsConfigParser
 
     /**Returns an ID-list of layers which are not queryable*/
     virtual QStringList identifyDisabledLayers() const { return QStringList(); }
+    /**Returns an ID-list of layers which queryable in WFS service*/
+    virtual QStringList wfsLayers() const { return QStringList(); }
 
     /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
@@ -112,6 +117,12 @@ class QgsConfigParser
 
     /**Appends service metadata to the capabilities document*/
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+
+    QColor selectionColor() const { return mSelectionColor; }
+    void setSelectionColor( const QColor& c ) { mSelectionColor = c; }
+
+    int maxWidth() const { return mMaxWidth; }
+    int maxHeight() const { return mMaxHeight; }
 
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
@@ -149,6 +160,12 @@ class QgsConfigParser
     double mLegendIconLabelSpace;
     double mLegendSymbolWidth;
     double mLegendSymbolHeight;
+
+    QColor mSelectionColor;
+
+    //maximum width/height for the GetMap request. Disabled by default (-1)
+    int mMaxWidth;
+    int mMaxHeight;
 
     /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
     void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;

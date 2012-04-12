@@ -1,5 +1,5 @@
 /***************************************************************************
-               qgsgpsinformationwidget.h  -  description
+               qgsgpsinformationwidget.cpp  -  description
                              -------------------
     begin                : Sat Jan 01 2010
     copyright            : (C) 2010 by Tim Sutton and Marco Hugentobler
@@ -20,8 +20,8 @@
 #include "qgsgpsdetector.h"
 #include "info.h"
 #include "qgscoordinatetransform.h"
-#include <qgspoint.h>
-#include <qgsrubberband.h>
+#include "qgspoint.h"
+#include "qgsrubberband.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -30,7 +30,7 @@
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
 #include "qgsgeometry.h"
-#include <qgisapp.h>
+#include "qgisapp.h"
 
 //for avoid intersections static method
 #include "qgsmaptooladdfeature.h"
@@ -59,10 +59,10 @@
 #include <QPixmap>
 #include <QPen>
 
-QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f ):
-    QWidget( parent, f ),
-    mNmea( 0 ),
-    mpCanvas( thepCanvas )
+QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f )
+    : QWidget( parent, f )
+    , mNmea( 0 )
+    , mpCanvas( thepCanvas )
 {
   setupUi( this );
 
@@ -184,6 +184,10 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   {
     mRadAutodetect->setChecked( true );
   }
+  else if ( myPortMode == "internalGPS" )
+  {
+    mRadInternal->setChecked( true );
+  }
   else if ( myPortMode == "explicitPort" )
   {
     mRadUserPath->setChecked( true );
@@ -192,6 +196,11 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   {
     mRadGpsd->setChecked( true );
   }
+  //disable the internal port method if build is without QtLocation
+#ifndef HAVE_QT_MOBILITY_LOCATION
+  mRadInternal->setDisabled( true );
+  mRadAutodetect->setChecked( true );
+#endif
 
   //auto digitising behaviour
   mCbxAutoAddVertices->setChecked( mySettings.value( "/gps/autoAddVertices", "false" ).toBool() );
@@ -256,6 +265,10 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   {
     mySettings.setValue( "/gps/portMode", "scanPorts" );
   }
+  else if ( mRadInternal->isChecked() )
+  {
+    mySettings.setValue( "/gps/portMode", "internalGPS" );
+  }
   else if ( mRadUserPath->isChecked() )
   {
     mySettings.setValue( "/gps/portMode", "explicitPort" );
@@ -309,20 +322,6 @@ void QgsGPSInformationWidget::on_mBtnTrackColor_clicked( )
     }
   }
 }
-
-#if 0 //no longer used
-void QgsGPSInformationWidget::setTrackColor( )
-{
-  QSettings mySettings;
-  QColor myColor( mySettings.value( "/qgis/gps/line_color_red", 255 ).toInt(),
-                  mySettings.value( "/qgis/gps/line_color_green", 0 ).toInt(),
-                  mySettings.value( "/qgis/gps/line_color_blue", 0 ).toInt() );
-  if ( mpRubberBand )
-  {
-    mpRubberBand->setColor( myColor );
-  }
-}
-#endif
 
 void QgsGPSInformationWidget::on_mBtnPosition_clicked( )
 {
@@ -406,6 +405,10 @@ void QgsGPSInformationWidget::connectGps()
   {
     port = QString( "%1:%2:%3" ).arg( mGpsdHost->text() ).arg( mGpsdPort->text() ).arg( mGpsdDevice->text() );
   }
+  else if ( mRadInternal->isChecked() )
+  {
+    port = QString( "internalGPS" );
+  }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );
   showStatusBarMessage( tr( "Connecting to GPS device..." ) );
@@ -427,8 +430,8 @@ void QgsGPSInformationWidget::timedout()
 void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
 {
   mNmea = conn;
-  QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
-                    this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
+           this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
   mGPSPlainTextEdit->appendPlainText( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Dis&connect" ) );
   //insert connection into registry such that it can also be used by other dialogs or plugins
@@ -449,7 +452,7 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
       // crude way to separate chunks - use when manually editing file - NMEA parsers should discard
       mLogFileTextStream << "====" << "\r\n";
 
-      QObject::connect( mNmea, SIGNAL( nmeaSentenceReceived( const QString& ) ), this, SLOT( logNmeaSentence( const QString& ) ) ); // added to handle raw data
+      connect( mNmea, SIGNAL( nmeaSentenceReceived( const QString& ) ), this, SLOT( logNmeaSentence( const QString& ) ) ); // added to handle raw data
     }
     else  // error opening file
     {
@@ -466,7 +469,7 @@ void QgsGPSInformationWidget::disconnectGps()
 {
   if ( mLogFile && mLogFile->isOpen() )
   {
-    QObject::disconnect( mNmea, SIGNAL( nmeaSentenceReceived( const QString& ) ), this, SLOT( logNmeaSentence( const QString& ) ) );
+    disconnect( mNmea, SIGNAL( nmeaSentenceReceived( const QString& ) ), this, SLOT( logNmeaSentence( const QString& ) ) );
     mLogFile->close();
     delete mLogFile;
     mLogFile = 0;
@@ -568,34 +571,6 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
 #endif
     } //signal
 
-#if 0
-    if ( mStackedWidget->currentIndex() == 4 ) //debug
-    {
-#if 0   // temporarily removed as the info isn't being set in GSA/GSV processing
-      //    mGPSPlainTextEdit->appendPlainText( "Satellite" );
-      if ( currentInfo.inUse )
-      {
-        mGPSPlainTextEdit->appendPlainText( "Satellite In use" );
-      }
-      else
-      {
-        mGPSPlainTextEdit->appendPlainText( "Satellite Not in use" );
-      }
-#endif
-#if 0
-      mGPSPlainTextEdit->appendPlainText( "id: " + QString::number( currentInfo.id ) );
-      mGPSPlainTextEdit->appendPlainText( "elevation: " + QString::number( currentInfo.elevation ) );
-      mGPSPlainTextEdit->appendPlainText( "azimuth: " + QString::number( currentInfo.azimuth ) );
-      mGPSPlainTextEdit->appendPlainText( "signal: " + QString::number( currentInfo.signal ) );
-#else // as a single line per satellite - easier to read
-      mGPSPlainTextEdit->appendPlainText( "sat: " + QString::number( currentInfo.id )
-                                          + ", elev: " + QString::number( currentInfo.elevation )
-                                          + ", azimuth: " + QString::number( currentInfo.azimuth )
-                                          + ", signal: " + QString::number( currentInfo.signal ) );
-#endif
-    } //debug
-#endif
-
     if ( mStackedWidget->currentIndex() == 2 && info.satInfoComplete ) //satellites
     {
       QColor bg( Qt::white ); // moved several items outside of the following if block to minimize loop time
@@ -654,6 +629,11 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mpSatellitesWidget->replot();
   } //satellites
 
+  if ( validFlag )
+  {
+    validFlag = info.longitude >= -180.0 && info.longitude <= 180.0 && info.latitude >= -90.0 && info.latitude <= 90.0;
+  }
+
   QgsPoint myNewCenter;
   if ( validFlag )
   {
@@ -678,42 +658,18 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
       mTxtDateTime->setText( info.utcDateTime.toString( mDateTimeFormat ) );  //user specified format string for testing the millisecond part of time
     }
     mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
-    mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) );
+    mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QString::fromUtf8( "°" ) );
     mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
     mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
     mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
+    mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
+    mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : "" ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : "" ); // allowing for anything else
     mTxtSatellitesUsed->setText( QString::number( info.satellitesUsed ) );
     mTxtStatus->setText( info.status == 'A' ? tr( "Valid" ) : info.status == 'V' ? tr( "Invalid" ) : "" );
   } //position
-
-#if 0
-  if ( mStackedWidget->currentIndex() == 4 )    //debug
-  {
-    QString s;
-    for ( int i = 0; i < info.satPrn.size(); i++ )
-    {
-      if ( info.satPrn.at( i ) > 0 )  //don't show 0 (no satellite)
-      {
-        s.append( QString::number( info.satPrn.at( i ) ).append( " " ) );
-      }
-    }
-    mGPSPlainTextEdit->appendPlainText( "UTC date/time: " + info.utcDateTime.toString() );
-    mGPSPlainTextEdit->appendPlainText( "longitude: " + QString::number( info.longitude, 'f', 8 ) );
-    mGPSPlainTextEdit->appendPlainText( "latitude: " + QString::number( info.latitude, 'f', 8 ) );
-    mGPSPlainTextEdit->appendPlainText( "elevation: " + QString::number( info.elevation ) );
-    mGPSPlainTextEdit->appendPlainText( "speed (knots): " + QString::number( info.speed ) );
-    mGPSPlainTextEdit->appendPlainText( "direction: " + QString::number( info.direction ) );
-    mGPSPlainTextEdit->appendPlainText( "pdop: " + QString::number( info.pdop ) );
-    mGPSPlainTextEdit->appendPlainText( "hdop: " + QString::number( info.hdop ) );
-    mGPSPlainTextEdit->appendPlainText( "vdop: " + QString::number( info.vdop ) );
-    mGPSPlainTextEdit->appendPlainText( "satellites in use: " + s );
-    mGPSPlainTextEdit->appendPlainText( "fix mode: " + QString( info.fixMode ) );
-    mGPSPlainTextEdit->appendPlainText( "fix type: " + QString::number( info.fixType ) );
-  } //debug
-#endif
 
   // Avoid refreshing / panning if we havent moved
   if ( mLastGpsPosition != myNewCenter )
@@ -773,27 +729,14 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   } // show marker
 }
 
-#if 0 // not needed - signals/slots set up in UI file; may be needed in the future if GPS valid is used to control whether button is available (should use enable/disable instead of show/hide)
-void QgsGPSInformationWidget::on_mCbxAutoAddVertices_toggled( bool theFlag )
-{
-  if ( theFlag )
-  {
-    mBtnAddVertex->hide();
-  }
-  else
-  {
-    mBtnAddVertex->show();
-  }
-}
-#endif
-
 void QgsGPSInformationWidget::on_mBtnAddVertex_clicked( )
 {
   addVertex();
 }
 
-void QgsGPSInformationWidget::addVertex( )
+void QgsGPSInformationWidget::addVertex()
 {
+  QgsDebugMsg( "Adding Vertex" );
 
   if ( !mpRubberBand )
   {
@@ -803,6 +746,7 @@ void QgsGPSInformationWidget::addVertex( )
   // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
   mCaptureList.push_back( mLastGpsPosition );
+
   // we store the rubber band points in map canvas CRS so transform to map crs
   // potential problem with transform errors and wrong coordinates if map CRS is changed after points are stored - SLM
   // should catch map CRS change and transform the points
@@ -816,6 +760,7 @@ void QgsGPSInformationWidget::addVertex( )
   {
     myPoint = mLastGpsPosition;
   }
+
   mpRubberBand->addPoint( myPoint );
 }
 
@@ -834,58 +779,6 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
 
   // -------------- preconditions ------------------------
   // most of these preconditions are already handled due to the button being enabled/disabled based on layer geom type and editing capabilities, but not on valid GPS data
-#if 0
-  if ( !vlayer )
-  {
-    QMessageBox::information( 0, tr( "Not a vector layer" ),
-                              tr( "The current layer is not a vector layer" ) );
-    return;
-  }
-  QGis::WkbType layerWKBType = vlayer->wkbType();
-
-  //no support for adding features to 2.5D types yet
-  if ( layerWKBType == QGis::WKBPoint25D ||
-       layerWKBType == QGis::WKBLineString25D ||
-       layerWKBType == QGis::WKBPolygon25D ||
-       layerWKBType == QGis::WKBMultiPoint25D ||
-       layerWKBType == QGis::WKBMultiLineString25D ||
-       layerWKBType == QGis::WKBMultiPolygon25D )
-  {
-    QMessageBox::critical( 0, tr( "2.5D shape type not supported" ), tr(
-                             "Adding features to 2.5D shapetypes is not supported yet. Please "
-                             "select a different editable, non 2.5D layer and try again." ) );
-    return;
-  }
-
-  // Multipart features not supported
-  if ( layerWKBType == QGis::WKBMultiPoint ||
-       layerWKBType == QGis::WKBMultiLineString ||
-       layerWKBType == QGis::WKBMultiPolygon )
-  {
-    QMessageBox::critical( 0, tr( "Multipart shape type not supported" ), tr(
-                             "Adding features to multipart shapetypes is not supported yet. Please "
-                             "select a different editable, non 2.5D layer and try again." ) );
-    return;
-
-  }
-
-  QgsVectorDataProvider* provider = vlayer->dataProvider();
-
-  if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
-  {
-    QMessageBox::information( 0, tr( "Layer cannot be added to" ),
-                              tr( "The data provider for this layer does not support the addition of features." ) );
-    return;
-  }
-
-  if ( !vlayer->isEditable() )
-  {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
-    return;
-  }
-#endif
 
   //lines: bail out if there are not at least two vertices
   if ( layerWKBType == QGis::WKBLineString  && mCaptureList.size() < 2 )
@@ -931,7 +824,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
 
     f->setGeometryAndOwnership( &wkb[0], size );
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, this );
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
     {
       if ( mCbxAutoCommit->isChecked() )
@@ -1060,7 +953,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
       return; //unknown wkbtype
     } // layerWKBType == QGis::WKBPolygon
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, this );
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
     {
       if ( mCbxAutoCommit->isChecked() )
@@ -1095,7 +988,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
 
 void QgsGPSInformationWidget::connectGpsSlot( )
 {
-  QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ), this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+  connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
+           this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
 }
 
 void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked( )
@@ -1136,27 +1030,6 @@ void QgsGPSInformationWidget::createRubberBand( )
   mpRubberBand->show();
 }
 
-#if 0 // this function isn't used
-QPointF QgsGPSInformationWidget::gpsToPixelPosition( const QgsPoint& point )
-{
-  //transform to map crs
-  QgsPoint myCenter;
-  if ( mpCanvas && mpCanvas->mapRenderer() )
-  {
-    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationCrs() );
-    myCenter = t.transform( point );
-  }
-  else
-  {
-    myCenter = point;
-  }
-
-  double x = myCenter.x(), y = myCenter.y();
-  mpCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPointF( x, y ) ;
-}
-#endif
-
 void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
 {
 //=========================
@@ -1165,7 +1038,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
   QSettings settings;
   QString settingPath( "/gps/lastLogFileDir" );
   QString lastUsedDir = settings.value( settingPath, "." ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files (*.nmea)" ) );
+  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled
   {
     return;
@@ -1200,13 +1073,17 @@ void QgsGPSInformationWidget::updateCloseFeatureButton( QgsMapLayer * lyr )
   {
     if ( mpLastLayer )  // disconnect previous layer
     {
-      disconnect( mpLastLayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
-      disconnect( mpLastLayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
+      disconnect( mpLastLayer, SIGNAL( editingStarted() ),
+                  this, SLOT( layerEditStateChanged() ) );
+      disconnect( mpLastLayer, SIGNAL( editingStopped() ),
+                  this, SLOT( layerEditStateChanged() ) );
     }
     if ( vlayer ) // connect new layer
     {
-      connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( layerEditStateChanged() ) );
-      connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( layerEditStateChanged() ) );
+      connect( vlayer, SIGNAL( editingStarted() ),
+               this, SLOT( layerEditStateChanged() ) );
+      connect( vlayer, SIGNAL( editingStopped() ),
+               this, SLOT( layerEditStateChanged() ) );
     }
     mpLastLayer = vlayer;
   }

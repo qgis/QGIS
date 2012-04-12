@@ -41,7 +41,8 @@
 
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mMapCanvas( mapCanvas )
+    : QDialog( parent, fl )
+    , mMapCanvas( mapCanvas )
 {
   setupUi( this );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
@@ -63,9 +64,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
   btnGrpMapUnits->setEnabled( !myProjectionEnabled );
 
-  long myCRSID = myRenderer->destinationCrs().srsid();
-  QgsDebugMsg( "Read project CRSID: " + QString::number( myCRSID ) );
-  projectionSelector->setSelectedCrsId( myCRSID );
+  mProjectSrsId = myRenderer->destinationCrs().srsid();
+  QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
+  projectionSelector->setSelectedCrsId( mProjectSrsId );
 
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
@@ -111,6 +112,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+
+  if ( mMapCanvas->currentLayer() )
+  {
+    mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
+  }
+  else if ( mapLayers.size() > 0 )
+  {
+    mLayerSrsId = mapLayers.begin().value()->crs().srsid();
+  }
+  else
+  {
+    mLayerSrsId = mProjectSrsId;
+  }
 
   twIdentifyLayers->setColumnCount( 3 );
   twIdentifyLayers->horizontalHeader()->setVisible( true );
@@ -161,7 +175,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     twIdentifyLayers->setCellWidget( i, 2, cb );
   }
 
-  grpWMSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( "WMSServiceCapabilities", "/", false ) );
+  grpOWSServiceCapabilities->setChecked( QgsProject::instance()->readBoolEntry( "WMSServiceCapabilities", "/", false ) );
   mWMSTitle->setText( QgsProject::instance()->readEntry( "WMSServiceTitle", "/" ) );
   mWMSContactOrganization->setText( QgsProject::instance()->readEntry( "WMSContactOrganization", "/", "" ) );
   mWMSContactPerson->setText( QgsProject::instance()->readEntry( "WMSContactPerson", "/", "" ) );
@@ -214,6 +228,52 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   bool addWktGeometry = QgsProject::instance()->readBoolEntry( "WMSAddWktGeometry", "/" );
   mAddWktGeometryCheckBox->setChecked( addWktGeometry );
+
+  //WMS maxWidth / maxHeight
+  mMaxWidthLineEdit->setValidator( new QIntValidator( mMaxWidthLineEdit ) );
+  int maxWidth = QgsProject::instance()->readNumEntry( "WMSMaxWidth", "/", -1 );
+  if ( maxWidth != -1 )
+  {
+    mMaxWidthLineEdit->setText( QString::number( maxWidth ) );
+  }
+  mMaxHeightLineEdit->setValidator( new QIntValidator( mMaxHeightLineEdit ) );
+  int maxHeight = QgsProject::instance()->readNumEntry( "WMSMaxHeight", "/", -1 );
+  if ( maxHeight != -1 )
+  {
+    mMaxHeightLineEdit->setText( QString::number( maxHeight ) );
+  }
+
+  QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( "WFSLayers", "/" );
+
+  twWFSLayers->setColumnCount( 2 );
+  twWFSLayers->horizontalHeader()->setVisible( true );
+  twWFSLayers->setRowCount( mapLayers.size() );
+
+  i = 0;
+  int j = 0;
+  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); it++, i++ )
+  {
+    currentLayer = it.value();
+    if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+    {
+
+      QTableWidgetItem *twi = new QTableWidgetItem( QString::number( j ) );
+      twWFSLayers->setVerticalHeaderItem( j, twi );
+
+      twi = new QTableWidgetItem( currentLayer->name() );
+      twi->setData( Qt::UserRole, it.key() );
+      twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+      twWFSLayers->setItem( j, 0, twi );
+
+      QCheckBox *cb = new QCheckBox();
+      cb->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
+      twWFSLayers->setCellWidget( j, 1, cb );
+      j++;
+
+    }
+  }
+  twWFSLayers->setRowCount( j );
+  twWFSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
   restoreState();
 }
@@ -366,7 +426,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", noIdentifyLayerList );
 
-  QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpWMSServiceCapabilities->isChecked() );
+  QgsProject::instance()->writeEntry( "WMSServiceCapabilities", "/", grpOWSServiceCapabilities->isChecked() );
   QgsProject::instance()->writeEntry( "WMSServiceTitle", "/", mWMSTitle->text() );
   QgsProject::instance()->writeEntry( "WMSContactOrganization", "/", mWMSContactOrganization->text() );
   QgsProject::instance()->writeEntry( "WMSContactPerson", "/", mWMSContactPerson->text() );
@@ -414,6 +474,37 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "WMSAddWktGeometry", "/", mAddWktGeometryCheckBox->isChecked() );
 
+  QString maxWidthText = mMaxWidthLineEdit->text();
+  if ( maxWidthText.isEmpty() )
+  {
+    QgsProject::instance()->removeEntry( "WMSMaxWidth", "/" );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSMaxWidth", "/", maxWidthText.toInt() );
+  }
+  QString maxHeightText = mMaxHeightLineEdit->text();
+  if ( maxHeightText.isEmpty() )
+  {
+    QgsProject::instance()->removeEntry( "WMSMaxHeight", "/" );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "WMSMaxHeight", "/", maxHeightText.toInt() );
+  }
+
+  QStringList wfsLayerList;
+  for ( int i = 0; i < twWFSLayers->rowCount(); i++ )
+  {
+    QCheckBox *cb = qobject_cast<QCheckBox *>( twWFSLayers->cellWidget( i, 1 ) );
+    if ( cb && cb->isChecked() )
+    {
+      QString id = twWFSLayers->item( i, 0 )->data( Qt::UserRole ).toString();
+      wfsLayerList << id;
+    }
+  }
+  QgsProject::instance()->writeEntry( "WFSLayers", "/", wfsLayerList );
+
   //todo XXX set canvas color
   emit refresh();
 }
@@ -454,6 +545,17 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {
   btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
+
+  if ( state != Qt::Checked )
+  {
+    mProjectSrsId = projectionSelector->selectedCrsId();
+    projectionSelector->setSelectedCrsId( mLayerSrsId );
+  }
+  else
+  {
+    mLayerSrsId = projectionSelector->selectedCrsId();
+    projectionSelector->setSelectedCrsId( mProjectSrsId );
+  }
 }
 
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
@@ -541,7 +643,9 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
 {
   foreach( QListWidgetItem *item, mWMSList->selectedItems() )
-  delete item;
+  {
+    delete item;
+  }
 }
 
 void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()

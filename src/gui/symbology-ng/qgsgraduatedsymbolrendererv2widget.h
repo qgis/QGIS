@@ -24,6 +24,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void changeGraduatedSymbol();
     void graduatedColumnChanged();
     void classifyGraduated();
+    void reapplyColorRamp();
     void rangesDoubleClicked( const QModelIndex & idx );
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
@@ -35,6 +36,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
+
+    void showSymbolLevels();
 
   protected:
     void updateUiFromRenderer();

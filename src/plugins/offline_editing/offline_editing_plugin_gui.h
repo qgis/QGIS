@@ -36,6 +36,8 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
 
   private:
     void updateLayerList( bool filterEditableLayers );
+    void saveState();
+    void restoreState();
 
     static const int context_id = 0;
     QString mOfflineDataPath;

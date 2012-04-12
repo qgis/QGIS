@@ -10,11 +10,17 @@
 QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/EmbedLayer/geometry" ).toByteArray() );
+
   QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
 
 QgsEmbedLayerDialog::~QgsEmbedLayerDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/EmbedLayer/geometry", saveGeometry() );
 }
 
 QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedGroups() const
@@ -56,7 +62,10 @@ void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( true );
 
   QSettings s;
-  QString projectFile = QFileDialog::getOpenFileName( 0, tr( "Select project file" ), s.value( "/qgis/last_embedded_project_path" ).toString() , tr( "QGIS project files (*.qgs)" ) );
+  QString projectFile = QFileDialog::getOpenFileName( this,
+                        tr( "Select project file" ),
+                        s.value( "/qgis/last_embedded_project_path" ).toString() ,
+                        tr( "QGis files" ) + " (*.qgs *.QGS)" );
   if ( !projectFile.isEmpty() )
   {
     mProjectFileLineEdit->setText( projectFile );

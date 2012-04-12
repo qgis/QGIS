@@ -108,6 +108,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case PostGIS:
         doc = savePgConnections( items );
         break;
+      case MSSQL:
+        doc = saveMssqlConnections( items );
+        break;
     }
 
     QFile file( mFileName );
@@ -161,6 +164,9 @@ void QgsManageConnectionsDialog::doExportImport()
       case PostGIS:
         loadPgConnections( doc, items );
         break;
+      case MSSQL:
+        loadMssqlConnections( doc, items );
+        break;
     }
     // clear connections list and close window
     listConnections->clear();
@@ -186,6 +192,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case PostGIS:
         settings.beginGroup( "/PostgreSQL/connections" );
+        break;
+      case MSSQL:
+        settings.beginGroup( "/MSSQL/connections" );
         break;
     }
     QStringList keys = settings.childGroups();
@@ -253,6 +262,15 @@ bool QgsManageConnectionsDialog::populateConnections()
         {
           QMessageBox::information( this, tr( "Loading connections" ),
                                     tr( "The file is not an PostGIS connections exchange file." ) );
+          return false;
+        }
+        break;
+
+      case MSSQL:
+        if ( root.tagName() != "qgsMssqlConnections" )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not an MSSQL connections exchange file." ) );
           return false;
         }
         break;
@@ -335,6 +353,47 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   {
     path = "/PostgreSQL/connections/" + connections[ i ];
     QDomElement el = doc.createElement( "postgis" );
+    el.setAttribute( "name", connections[ i ] );
+    el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
+    el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
+    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
+    el.setAttribute( "service", settings.value( path + "/service", "" ).toString() );
+    el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
+
+    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    {
+      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+    }
+
+    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+
+    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    {
+      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+    }
+
+    root.appendChild( el );
+  }
+
+  return doc;
+}
+
+QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList &connections )
+{
+  QDomDocument doc( "connections" );
+  QDomElement root = doc.createElement( "qgsMssqlConnections" );
+  root.setAttribute( "version", "1.0" );
+  doc.appendChild( root );
+
+  QSettings settings;
+  QString path;
+  for ( int i = 0; i < connections.count(); ++i )
+  {
+    path = "/MSSQL/connections/" + connections[ i ];
+    QDomElement el = doc.createElement( "mssql" );
     el.setAttribute( "name", connections[ i ] );
     el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
@@ -592,6 +651,96 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/PostgreSQL/connections/" + connectionName );
+
+    settings.setValue( "/host", child.attribute( "host" ) );
+    settings.setValue( "/port", child.attribute( "port" ) );
+    settings.setValue( "/database", child.attribute( "database" ) );
+    if ( child.hasAttribute( "service" ) )
+    {
+      settings.setValue( "/service", child.attribute( "service" ) );
+    }
+    else
+    {
+      settings.setValue( "/service", "" );
+    }
+    settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
+    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
+    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
+    settings.setValue( "/username", child.attribute( "username" ) );
+    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
+    settings.setValue( "/password", child.attribute( "password" ) );
+    settings.endGroup();
+
+    child = child.nextSiblingElement();
+  }
+}
+
+void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, const QStringList &items )
+{
+  QDomElement root = doc.documentElement();
+  if ( root.tagName() != "qgsMssqlConnections" )
+  {
+    QMessageBox::information( this,
+                              tr( "Loading connections" ),
+                              tr( "The file is not an PostGIS connections exchange file." ) );
+    return;
+  }
+
+  QString connectionName;
+  QSettings settings;
+  settings.beginGroup( "/MSSQL/connections" );
+  QStringList keys = settings.childGroups();
+  settings.endGroup();
+  QDomElement child = root.firstChildElement();
+  bool prompt = true;
+  bool overwrite = true;
+
+  while ( !child.isNull() )
+  {
+    connectionName = child.attribute( "name" );
+    if ( !items.contains( connectionName ) )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    // check for duplicates
+    if ( keys.contains( connectionName ) && prompt )
+    {
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading connections" ),
+                                      tr( "Connection with name '%1' already exists. Overwrite?" )
+                                      .arg( connectionName ),
+                                      QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      switch ( res )
+      {
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
+          continue;
+        case QMessageBox::Yes:
+          overwrite = true;
+          break;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
+          overwrite = false;
+          break;
+      }
+    }
+
+    if ( keys.contains( connectionName ) && !overwrite )
+    {
+      child = child.nextSiblingElement();
+      continue;
+    }
+
+    //no dups detected or overwrite is allowed
+    settings.beginGroup( "/MSSQL/connections/" + connectionName );
 
     settings.setValue( "/host", child.attribute( "host" ) );
     settings.setValue( "/port", child.attribute( "port" ) );

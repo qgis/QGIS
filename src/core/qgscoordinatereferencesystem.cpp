@@ -29,7 +29,7 @@
 #include "qgsapplication.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
-#include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
 
 #include <sqlite3.h>
@@ -166,11 +166,13 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
     mProjectionAcronym = srs.mProjectionAcronym;
     mEllipsoidAcronym = srs.mEllipsoidAcronym;
     mGeoFlag = srs.mGeoFlag;
+    mAxisInverted = srs.mAxisInverted;
     mMapUnits = srs.mMapUnits;
     mSRID = srs.mSRID;
     mAuthId = srs.mAuthId;
     mIsValidFlag = srs.mIsValidFlag;
     mValidationHint = srs.mValidationHint;
+    mWkt = srs.mWkt;
     if ( mIsValidFlag )
     {
       OSRDestroySpatialReference( mCRS );
@@ -209,7 +211,8 @@ bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
-  return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() : QgsApplication::qgisUserDbFilePath(),
+  return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
+                      QgsApplication::qgisUserDbFilePath(),
                      "srs_id", QString::number( id ) );
 }
 
@@ -217,6 +220,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
 {
   QgsDebugMsgLevel( "load CRS from " + db + " where " + expression + " is " + value, 3 );
   mIsValidFlag = false;
+  mWkt.clear();
 
   QFileInfo myInfo( db );
   if ( !myInfo.exists() )
@@ -249,19 +253,26 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     is_geo integer NOT NULL);
   */
 
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo from tbl_srs where " + expression + "=" + quotedValue( value );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+  QString mySql = "select srs_id,description,projection_acronym,"
+    "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
+    "from tbl_srs where " + expression + "=" + quotedValue( value );
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(),
+                              mySql.toUtf8().length(),
+                              &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
   {
-    mSrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ).toLong();
-    mDescription = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
+    mSrsId = QString::fromUtf8(( char * )sqlite3_column_text(
+                                 myPreparedStatement, 0 ) ).toLong();
+    mDescription = QString::fromUtf8(( char * )sqlite3_column_text(
+                                 myPreparedStatement, 1 ) );
     mProjectionAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) );
     mEllipsoidAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 3 ) );
     QString toProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
     mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
     mAuthId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) );
     mGeoFlag = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt() != 0;
+    mAxisInverted = -1;
 
     if ( mSrsId >= USER_CRS_START_ID && mAuthId.isEmpty() )
     {
@@ -289,9 +300,26 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
   return mIsValidFlag;
 }
 
+bool QgsCoordinateReferenceSystem::axisInverted() const
+{
+  if ( mAxisInverted == -1 )
+  {
+    OGRAxisOrientation orientation;
+    const char *axis0 = OSRGetAxis( mCRS, mGeoFlag ? "GEOGCS" : "PROJCS", 0, &orientation );
+    mAxisInverted = mGeoFlag
+                    ? ( orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
+                    : ( orientation == OAO_North || orientation == OAO_South );
+    QgsDebugMsg( QString( "srid:%1 axis0:%2 orientation:%3 inverted:%4" ).arg( mSRID ).arg( axis0 ).arg( OSRAxisEnumToName( orientation ) ).arg( mAxisInverted ) );
+    Q_UNUSED( axis0 );
+  }
+
+  return mAxisInverted != 0;
+}
+
 bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
 {
   mIsValidFlag = false;
+  mWkt.clear();
 
   if ( theWkt.isEmpty() )
   {
@@ -369,6 +397,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   //
   QgsDebugMsg( "proj4: " + theProj4String );
   mIsValidFlag = false;
+  mWkt.clear();
 
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( theProj4String );
@@ -455,7 +484,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
 
   if ( myRecord.empty() )
   {
-    // match all arameters individually:
+    // match all parameters individually:
     // - order of parameters doesn't matter
     // - found definition may have more parameters (like +towgs84 in GDAL)
     // - retry without datum, if no match is found (looks like +datum<>WGS84 was dropped in GDAL)
@@ -463,7 +492,10 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     QString sql = "SELECT * FROM tbl_srs WHERE ";
     QString delim = "";
     QString datum;
-    foreach( QString param, theProj4String.split( " ", QString::SkipEmptyParts ) )
+
+    // split on spaces followed by a plus sign (+) to deal
+    // also with parameters containing spaces (e.g. +nadgrids)
+    foreach( QString param, theProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -561,7 +593,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       }
     }
   }
-
 
   return mIsValidFlag;
 }
@@ -781,7 +812,10 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
   setlocale( LC_NUMERIC, "C" );
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
-  mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() ) == OGRERR_NONE;
+  mIsValidFlag =
+      OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() )
+      == OGRERR_NONE;
+  mWkt.clear();
   setMapUnits();
 
 #if defined(QGISDEBUG) && QGISDEBUG>=3
@@ -876,9 +910,11 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 long QgsCoordinateReferenceSystem::findMatchingProj()
 {
   QgsDebugMsg( "entered." );
-  if ( mEllipsoidAcronym.isNull() ||  mProjectionAcronym.isNull() || !mIsValidFlag )
+  if ( mEllipsoidAcronym.isNull() ||  mProjectionAcronym.isNull()
+       || !mIsValidFlag )
   {
-    QgsDebugMsg( "QgsCoordinateReferenceSystem::findMatchingProj will only work if prj acr ellipsoid acr and proj4string are set"
+    QgsDebugMsg( "QgsCoordinateReferenceSystem::findMatchingProj will only "
+                 "work if prj acr ellipsoid acr and proj4string are set"
                  " and the current projection is valid!" );
     return 0;
   }
@@ -888,8 +924,10 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
 
-  // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql = QString( "select srs_id,parameters from tbl_srs where projection_acronym=%1 and ellipsoid_acronym=%2" )
+  // Set up the query to retrieve the projection information
+  // needed to populate the list
+  QString mySql = QString( "select srs_id,parameters from tbl_srs where "
+                           "projection_acronym=%1 and ellipsoid_acronym=%2" )
                   .arg( quotedValue( mProjectionAcronym ) )
                   .arg( quotedValue( mEllipsoidAcronym ) );
   // Get the full path name to the sqlite3 spatial reference database.
@@ -972,38 +1010,12 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   return 0;
 }
 
-bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &theSrs )
+bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &theSrs ) const
 {
-  if ( !mIsValidFlag || !theSrs.mIsValidFlag )
-  {
-    return false;
-  }
-  char *thisStr;
-  char *otherStr;
-
-  // OSRIsSame is not relaibel when it comes to comparing +towgs84 parameters
-  // Use string compare on WKT instead.
-  if (( OSRExportToWkt( mCRS, &thisStr ) == OGRERR_NONE ) )
-  {
-    if ( OSRExportToWkt( theSrs.mCRS, &otherStr ) == OGRERR_NONE )
-    {
-      QgsDebugMsgLevel( QString( "Comparing " ) + thisStr, 3 );
-      QgsDebugMsgLevel( QString( "     with " ) + otherStr, 3 );
-      if ( !strcmp( thisStr, otherStr ) )
-      {
-        QgsDebugMsgLevel( QString( "MATCHED!" ) + otherStr, 3 );
-        CPLFree( thisStr );
-        CPLFree( otherStr );
-        return true;
-      }
-      CPLFree( otherStr );
-    }
-    CPLFree( thisStr );
-  }
-  return false;
+  return mIsValidFlag && theSrs.mIsValidFlag && theSrs.authid() == authid();
 }
 
-bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs )
+bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs ) const
 {
   return  !( *this == theSrs );
 }
@@ -1011,21 +1023,22 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
 bool QgsCoordinateReferenceSystem::equals( QString theProj4String )
 {
   QgsCoordinateReferenceSystem r;
-  r.setProj4String( theProj4String );
+  r.createFromProj4( theProj4String );
   return *this == r;
 }
 
 QString QgsCoordinateReferenceSystem::toWkt() const
 {
-  QString myWkt;
-  char* Wkt;
-  if ( OSRExportToWkt( mCRS, &Wkt ) == OGRERR_NONE )
+  if ( mWkt.isEmpty() )
   {
-    myWkt = Wkt;
-    OGRFree( Wkt );
+    char *wkt;
+    if ( OSRExportToWkt( mCRS, &wkt ) == OGRERR_NONE )
+    {
+      mWkt = wkt;
+      OGRFree( wkt );
+    }
   }
-
-  return myWkt;
+  return mWkt;
 }
 
 bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
@@ -1112,7 +1125,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
         setMapUnits();
 
         //@TODO this srs needs to be validated!!!
-        mIsValidFlag = true;//shamelessly hard coded for now
+        mIsValidFlag = true; //shamelessly hard coded for now
       }
     }
   }
@@ -1187,8 +1200,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
 
   QString myDatabaseFileName;
   QString myProjString;
-  QString mySql = "select parameters from tbl_srs where srs_id = ";
-  mySql += QString::number( theSrsId );
+  QString mySql = QString( "select parameters from tbl_srs where srs_id = %1" ).arg( theSrsId );
 
   QgsDebugMsg( "mySrsId = " + QString::number( theSrsId ) );
   QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
@@ -1245,10 +1257,12 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   return myProjString;
 }
 
-int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
+int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db, bool readonly )
 {
   QgsDebugMsgLevel( "path = " + path, 3 );
-  int myResult = sqlite3_open( path.toUtf8().data(), db );
+  int myResult = readonly
+                 ? sqlite3_open_v2( path.toUtf8().data(), db, SQLITE_OPEN_READONLY, NULL )
+                 : sqlite3_open( path.toUtf8().data(), db );
 
   if ( myResult != SQLITE_OK )
   {
@@ -1256,13 +1270,10 @@ int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     // ... unfortunately it happens on Windows
-    QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( "Error" );
-    output->setMessage( QObject::tr( "Could not open CRS database %1<br>Error(%2): %3" )
-                        .arg( path )
-                        .arg( myResult )
-                        .arg( sqlite3_errmsg( *db ) ), QgsMessageOutput::MessageText );
-    output->showMessage();
+    QgsMessageLog::logMessage( QObject::tr( "Could not open CRS database %1\nError(%2): %3" )
+                               .arg( path )
+                               .arg( myResult )
+                               .arg( sqlite3_errmsg( *db ) ), QObject::tr( "CRS" ) );
   }
   return myResult;
 }
@@ -1364,6 +1375,9 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   sqlite3_step( myPreparedStatement );
+
+  QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
+
   // XXX Need to free memory from the error msg if one is set
   return myResult == SQLITE_OK;
 }
@@ -1376,7 +1390,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   int           myResult;
   long          myRecordCount = 0;
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );

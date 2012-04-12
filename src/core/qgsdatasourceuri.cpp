@@ -27,6 +27,7 @@ QgsDataSourceURI::QgsDataSourceURI()
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
+    , mWkbType( QGis::WKBUnknown )
 {
   // do nothing
 }
@@ -36,6 +37,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
+    , mWkbType( QGis::WKBUnknown )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -122,6 +124,42 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       else if ( pname == "estimatedmetadata" )
       {
         mUseEstimatedMetadata = pval == "true";
+      }
+      else if ( pname == "srid" )
+      {
+        mSrid = pval;
+      }
+      else if ( pname == "type" )
+      {
+        QString geomTypeUpper = pval.toUpper();
+        if ( geomTypeUpper == "POINT" )
+        {
+          mWkbType = QGis::WKBPoint;
+        }
+        else if ( geomTypeUpper == "LINESTRING" || geomTypeUpper == "LINE" )
+        {
+          mWkbType = QGis::WKBLineString;
+        }
+        else if ( geomTypeUpper == "POLYGON" )
+        {
+          mWkbType = QGis::WKBPolygon;
+        }
+        else if ( geomTypeUpper == "MULTIPOINT" )
+        {
+          mWkbType = QGis::WKBMultiPoint;
+        }
+        else if ( geomTypeUpper == "MULTLINESTRING" )
+        {
+          mWkbType = QGis::WKBMultiLineString;
+        }
+        else if ( geomTypeUpper == "MULTIPOLYGON" )
+        {
+          mWkbType = QGis::WKBMultiPolygon;
+        }
+        else
+        {
+          mWkbType = QGis::WKBUnknown;
+        }
       }
       else if ( pname == "selectatid" )
       {
@@ -483,6 +521,59 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " estimatedmetadata=true" );
   }
 
+  if ( !mSrid.isEmpty() )
+  {
+    theUri += QString( " srid=%1" ).arg( mSrid );
+  }
+
+  if ( mWkbType != QGis::WKBUnknown && mWkbType != QGis::WKBNoGeometry )
+  {
+    theUri += " type=";
+
+    switch( mWkbType )
+    {
+    case QGis::WKBPoint:
+      theUri += "POINT";
+      break;
+    case QGis::WKBLineString:
+      theUri += "LINESTRING";
+      break;
+    case QGis::WKBPolygon:
+      theUri += "POLYGON";
+      break;
+    case QGis::WKBMultiPoint:
+      theUri += "MULTIPOINT";
+      break;
+    case QGis::WKBMultiLineString:
+      theUri += "MULTILINESTRING";
+      break;
+    case QGis::WKBMultiPolygon:
+      theUri += "MULTIPOLYGON";
+      break;
+    case QGis::WKBPoint25D:
+      theUri += "POINTM";
+      break;
+    case QGis::WKBLineString25D:
+      theUri += "LINESTRINGM";
+      break;
+    case QGis::WKBPolygon25D:
+      theUri += "POLYGONM";
+      break;
+    case QGis::WKBMultiPoint25D:
+      theUri += "MULTIPOINTM";
+      break;
+    case QGis::WKBMultiLineString25D:
+      theUri += "MULTILINESTRINGM";
+      break;
+    case QGis::WKBMultiPolygon25D:
+      theUri += "MULTIPOLYGONM";
+      break;
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
+      break;
+    }
+  }
+
   if ( mSelectAtIdDisabled )
   {
     theUri += QString( " selectatid=false" );
@@ -551,4 +642,24 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
 void QgsDataSourceURI::setDatabase( const QString &database )
 {
   mDatabase = database;
+}
+
+QGis::WkbType QgsDataSourceURI::wkbType() const
+{
+  return mWkbType;
+}
+
+void QgsDataSourceURI::setWkbType( QGis::WkbType wkbType )
+{
+  mWkbType = wkbType;
+}
+
+QString QgsDataSourceURI::srid() const
+{
+  return mSrid;
+}
+
+void QgsDataSourceURI::setSrid( QString srid )
+{
+  mSrid = srid;
 }

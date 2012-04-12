@@ -68,6 +68,36 @@ QString QgsRendererCategoryV2::dump()
   return QString( "%1::%2::%3\n" ).arg( mValue.toString() ).arg( mLabel ).arg( mSymbol->dump() );
 }
 
+void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+{
+  if ( !mSymbol || props.value( "attribute", "" ).isEmpty() )
+    return;
+
+  QString attrName = props[ "attribute" ];
+
+  QDomElement ruleElem = doc.createElement( "se:Rule" );
+  element.appendChild( ruleElem );
+
+  QDomElement nameElem = doc.createElement( "se:Name" );
+  nameElem.appendChild( doc.createTextNode( mLabel ) );
+  ruleElem.appendChild( nameElem );
+
+  QDomElement descrElem = doc.createElement( "se:Description" );
+  QString descrStr = QString( "%1 is '%2'" ).arg( attrName ).arg( mValue.toString() );
+  descrElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
+  ruleElem.appendChild( descrElem );
+
+  // create the ogc:Filter for the range
+  QDomElement filterElem = doc.createElement( "ogc:Filter" );
+  QString filterFunc = QString( "%1 = '%2'" )
+                       .arg( attrName.replace( "\"", "\"\"" ) )
+                       .arg( mValue.toString().replace( "'", "''" ) );
+  QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
+  ruleElem.appendChild( filterElem );
+
+  mSymbol->toSld( doc, ruleElem, props );
+}
+
 ///////////////////
 
 QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName, QgsCategoryList categories )
@@ -143,7 +173,10 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   // find the right symbol for the category
   QgsSymbolV2* symbol = symbolForValue( *ita );
   if ( symbol == NULL )
-    return NULL;
+  {
+    // if no symbol found use default one
+    return symbolForValue( QVariant( "" ) );
+  }
 
   if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
     return symbol; // no data-defined rotation/scaling - just return the symbol
@@ -326,6 +359,23 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   return r;
+}
+
+void QgsCategorizedSymbolRendererV2::toSld( QDomDocument &doc, QDomElement &element ) const
+{
+  QgsStringMap props;
+  props[ "attribute" ] = mAttrName;
+  if ( !mRotationField.isEmpty() )
+    props[ "angle" ] = QString( mRotationField ).append( "\"" ).prepend( "\"" );
+  if ( !mSizeScaleField.isEmpty() )
+    props[ "scale" ] = QString( mSizeScaleField ).append( "\"" ).prepend( "\"" );
+
+  // create a Rule for each range
+  for ( QgsCategoryList::const_iterator it = mCategories.constBegin(); it != mCategories.constEnd(); it++ )
+  {
+    QgsStringMap catProps( props );
+    it->toSld( doc, element, catProps );
+  }
 }
 
 QgsSymbolV2List QgsCategorizedSymbolRendererV2::symbols()

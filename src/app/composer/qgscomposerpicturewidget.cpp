@@ -30,7 +30,7 @@
 #include <QSettings>
 #include <QSvgRenderer>
 
-QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture ), mPreviewInitialized( false )
+QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QWidget(), mPicture( picture )
 {
   setupUi( this );
 
@@ -43,8 +43,6 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   setGuiElementValues();
 
   mPreviewListWidget->setIconSize( QSize( 30, 30 ) );
-
-  //add preview icons on demand in showEvent()
 
   connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   connect( mPicture, SIGNAL( rotationChanged( double ) ), this, SLOT( setGuiElementValues() ) );
@@ -261,17 +259,6 @@ void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged(
   mPicture->endCommand();
 }
 
-void QgsComposerPictureWidget::showEvent( QShowEvent * event )
-{
-  refreshMapComboBox();
-  if ( !mPreviewInitialized )
-  {
-    addStandardDirectoriesToPreview();
-    mPreviewInitialized = true;
-  }
-  QWidget::showEvent( event );
-}
-
 void QgsComposerPictureWidget::on_mComposerMapComboBox_activated( const QString & text )
 {
   if ( !mPicture || text.isEmpty() || !mPicture->useRotationMap() )
@@ -481,6 +468,8 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
 
 void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 {
+  mPreviewListWidget->clear();
+
   //list all directories in $prefix/share/qgis/svg
   QStringList svgPaths = QgsApplication::svgPaths();
   for ( int i = 0; i < svgPaths.size(); i++ )
@@ -536,3 +525,10 @@ bool QgsComposerPictureWidget::testImageFile( const QString& filename ) const
   QString formatName = QString( QImageReader::imageFormat( filename ) );
   return !formatName.isEmpty(); //file is in a supported pixel format
 }
+
+void QgsComposerPictureWidget::showEvent( QShowEvent * event )
+{
+  Q_UNUSED( event );
+  refreshMapComboBox();
+}
+

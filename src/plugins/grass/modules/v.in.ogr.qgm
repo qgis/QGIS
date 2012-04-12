@@ -2,8 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Import OGR vector" module="v.in.ogr">
-	<flag key="o" answer="on" hidden="yes" />
-	<file key="dsn" type="old" label="OGR file" />
+	<file key="dsn" />
 	<option key="output" />	
         <option key="type" advanced="yes"/>
         <flag key="z" answer="off" hidden="no" advanced="yes"/>
@@ -11,4 +10,5 @@
         <option key="snap" advanced="yes" />
         <option key="min_area" advanced="yes" />
         <option key="where" advanced="yes"/>
+	<flag key="o" answer="on" advanced="yes" />
 </qgisgrassmodule>

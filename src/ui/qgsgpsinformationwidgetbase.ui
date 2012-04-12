@@ -247,7 +247,7 @@ gray = no data
    <item row="4" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout" name="gridLayout_11">
@@ -264,8 +264,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>209</width>
-            <height>501</height>
+            <width>193</width>
+            <height>504</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -506,7 +506,7 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="12" column="1">
+             <item row="14" column="1">
               <spacer name="verticalSpacer_3">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -522,7 +522,7 @@ gray = no data
                </property>
               </spacer>
              </item>
-             <item row="13" column="1">
+             <item row="15" column="1">
               <widget class="QLineEdit" name="mTxtFixMode">
                <property name="toolTip">
                 <string>GPS receiver configuration 2D/3D mode: Automatic or Manual</string>
@@ -532,14 +532,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="13" column="0">
+             <item row="15" column="0">
               <widget class="QLabel" name="mLblFixMode">
                <property name="text">
                 <string>Mode</string>
                </property>
               </widget>
              </item>
-             <item row="14" column="1">
+             <item row="16" column="1">
               <widget class="QLineEdit" name="mTxtFixType">
                <property name="toolTip">
                 <string>position fix dimensions: 2D, 3D or No fix</string>
@@ -549,14 +549,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="14" column="0">
+             <item row="16" column="0">
               <widget class="QLabel" name="mLblFixType">
                <property name="text">
                 <string>Dimensions</string>
                </property>
               </widget>
              </item>
-             <item row="15" column="1">
+             <item row="17" column="1">
               <widget class="QLineEdit" name="mTxtQuality">
                <property name="toolTip">
                 <string>quality of the position fix: Differential, Non-differential or No position</string>
@@ -566,14 +566,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="15" column="0">
+             <item row="17" column="0">
               <widget class="QLabel" name="mLblQuality">
                <property name="text">
                 <string>Quality</string>
                </property>
               </widget>
              </item>
-             <item row="16" column="1">
+             <item row="18" column="1">
               <widget class="QLineEdit" name="mTxtStatus">
                <property name="toolTip">
                 <string>position fix status: Valid or Invalid</string>
@@ -583,14 +583,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="16" column="0">
+             <item row="18" column="0">
               <widget class="QLabel" name="mLblStatus">
                <property name="text">
                 <string>Status</string>
                </property>
               </widget>
              </item>
-             <item row="17" column="1">
+             <item row="19" column="1">
               <widget class="QLineEdit" name="mTxtSatellitesUsed">
                <property name="toolTip">
                 <string>number of satellites used in the position fix</string>
@@ -600,10 +600,30 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="17" column="0">
+             <item row="19" column="0">
               <widget class="QLabel" name="mLblSatellitesUsed">
                <property name="text">
                 <string>Satellites</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="1">
+              <widget class="QLineEdit" name="mTxtHacc"/>
+             </item>
+             <item row="13" column="1">
+              <widget class="QLineEdit" name="mTxtVacc"/>
+             </item>
+             <item row="12" column="0">
+              <widget class="QLabel" name="mLblHacc">
+               <property name="text">
+                <string>H accurancy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="0">
+              <widget class="QLabel" name="mLblVacc">
+               <property name="text">
+                <string>V accurancy</string>
                </property>
               </widget>
              </item>
@@ -635,8 +655,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>209</width>
-            <height>501</height>
+            <width>287</width>
+            <height>638</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -801,6 +821,13 @@ gray = no data
                <widget class="QRadioButton" name="mRadGpsd">
                 <property name="text">
                  <string>gpsd</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="mRadInternal">
+                <property name="text">
+                 <string>Internal</string>
                 </property>
                </widget>
               </item>
@@ -1211,12 +1238,12 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>167</x>
-     <y>65</y>
+     <x>186</x>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>147</y>
+     <x>196</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -1227,12 +1254,12 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>231</x>
-     <y>93</y>
+     <x>250</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>203</x>
-     <y>147</y>
+     <x>242</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -1243,8 +1270,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>172</x>
-     <y>79</y>
+     <x>191</x>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1259,8 +1286,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>86</y>
+     <x>278</x>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1275,8 +1302,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>86</y>
+     <x>278</x>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1291,8 +1318,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>60</x>
-     <y>104</y>
+     <x>79</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
      <x>142</x>
@@ -1307,8 +1334,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>114</y>
+     <x>278</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1323,8 +1350,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>114</y>
+     <x>278</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1339,12 +1366,12 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>114</y>
+     <x>278</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>235</x>
-     <y>169</y>
+     <x>253</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -1355,12 +1382,12 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>114</y>
+     <x>278</x>
+     <y>188</y>
     </hint>
     <hint type="destinationlabel">
-     <x>264</x>
-     <y>168</y>
+     <x>277</x>
+     <y>216</y>
     </hint>
    </hints>
   </connection>
@@ -1371,12 +1398,12 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>86</y>
+     <x>278</x>
+     <y>140</y>
     </hint>
     <hint type="destinationlabel">
-     <x>264</x>
-     <y>168</y>
+     <x>277</x>
+     <y>216</y>
     </hint>
    </hints>
   </connection>
@@ -1387,8 +1414,8 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>56</x>
-     <y>190</y>
+     <x>75</x>
+     <y>243</y>
     </hint>
     <hint type="destinationlabel">
      <x>196</x>
@@ -1403,8 +1430,8 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>198</y>
+     <x>278</x>
+     <y>243</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1419,8 +1446,8 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>198</y>
+     <x>278</x>
+     <y>243</y>
     </hint>
     <hint type="destinationlabel">
      <x>264</x>
@@ -1435,12 +1462,12 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>198</y>
+     <x>278</x>
+     <y>243</y>
     </hint>
     <hint type="destinationlabel">
-     <x>235</x>
-     <y>169</y>
+     <x>253</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -1451,12 +1478,12 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>265</x>
-     <y>198</y>
+     <x>278</x>
+     <y>243</y>
     </hint>
     <hint type="destinationlabel">
-     <x>264</x>
-     <y>168</y>
+     <x>277</x>
+     <y>216</y>
     </hint>
    </hints>
   </connection>
@@ -1467,12 +1494,12 @@ gray = no data
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>339</y>
+     <x>151</x>
+     <y>597</y>
     </hint>
     <hint type="destinationlabel">
-     <x>141</x>
-     <y>360</y>
+     <x>180</x>
+     <y>622</y>
     </hint>
    </hints>
   </connection>
@@ -1483,12 +1510,12 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>320</y>
+     <x>151</x>
+     <y>573</y>
     </hint>
     <hint type="destinationlabel">
-     <x>141</x>
-     <y>360</y>
+     <x>180</x>
+     <y>622</y>
     </hint>
    </hints>
   </connection>
@@ -1499,12 +1526,12 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>382</y>
+     <x>151</x>
+     <y>652</y>
     </hint>
     <hint type="destinationlabel">
-     <x>141</x>
-     <y>360</y>
+     <x>180</x>
+     <y>622</y>
     </hint>
    </hints>
   </connection>
@@ -1515,8 +1542,8 @@ gray = no data
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>94</x>
-     <y>348</y>
+     <x>130</x>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>122</x>
@@ -1551,8 +1578,88 @@ gray = no data
      <y>71</y>
     </hint>
     <hint type="destinationlabel">
+     <x>109</x>
+     <y>684</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadInternal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdHost</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>54</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>99</x>
+     <y>261</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadInternal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdPort</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>100</x>
+     <y>288</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadInternal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mGpsdDevice</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>27</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel">
      <x>107</x>
-     <y>563</y>
+     <y>319</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadInternal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mCboDevices</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>140</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>129</x>
+     <y>211</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadInternal</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mBtnRefreshDevices</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>150</x>
+     <y>153</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>204</y>
     </hint>
    </hints>
   </connection>

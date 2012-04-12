@@ -15,6 +15,7 @@ class QgsRenderContext;
 class CORE_EXPORT QgsDiagram
 {
   public:
+    virtual ~QgsDiagram() {}
     /**Draws the diagram at the given position (in pixel coordinates)*/
     virtual void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
     virtual QString diagramName() const = 0;

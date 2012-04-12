@@ -26,6 +26,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgswmsserver.h"
+#include "qgswfsserver.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
 #include "qgsprojectparser.h"
@@ -264,24 +265,124 @@ int main( int argc, char * argv[] )
 
     //request to WMS?
     QString serviceString;
-#ifndef QGISDEBUG
-    serviceString = parameterMap.value( "SERVICE", "WMS" );
-#else
     paramIt = parameterMap.find( "SERVICE" );
     if ( paramIt == parameterMap.constEnd() )
     {
+#ifndef QGISDEBUG
+      serviceString = parameterMap.value( "SERVICE", "WMS" );
+#else
       QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
+#endif
     }
     else
     {
       serviceString = paramIt.value();
     }
-#endif
 
     QgsWMSServer* theServer = 0;
+    if ( serviceString == "WFS" )
+    {
+      delete theServer;
+      QgsWFSServer* theServer = 0;
+      try
+      {
+        theServer = new QgsWFSServer( parameterMap );
+      }
+      catch ( QgsMapServiceException e ) //admin.sld may be invalid
+      {
+        theRequestHandler->sendServiceException( e );
+        continue;
+      }
+
+      theServer->setAdminConfigParser( adminConfigParser );
+
+
+      //request type
+      QString request = parameterMap.value( "REQUEST" );
+      if ( request.isEmpty() )
+      {
+        //do some error handling
+        QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+        theRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+
+      if ( request == "GetCapabilities" )
+      {
+        QDomDocument capabilitiesDocument;
+        try
+        {
+          capabilitiesDocument = theServer->getCapabilities();
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending GetCapabilities response" );
+        theRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+      else if ( request == "DescribeFeatureType" )
+      {
+        QDomDocument describeDocument;
+        try
+        {
+          describeDocument = theServer->describeFeatureType();
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        QgsDebugMsg( "sending GetCapabilities response" );
+        theRequestHandler->sendGetCapabilitiesResponse( describeDocument );
+        delete theRequestHandler;
+        delete theServer;
+        continue;
+      }
+      else if ( request == "GetFeature" )
+      {
+        //output format for GetFeature
+        QString outputFormat = parameterMap.value( "OUTPUTFORMAT" );
+        try
+        {
+          if ( theServer->getFeature( *theRequestHandler, outputFormat ) != 0 )
+          {
+            delete theRequestHandler;
+            delete theServer;
+            continue;
+          }
+          else
+          {
+            delete theRequestHandler;
+            delete theServer;
+            continue;
+          }
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+      }
+
+      return 0;
+    }
+
     try
     {
       theServer = new QgsWMSServer( parameterMap, theMapRenderer );

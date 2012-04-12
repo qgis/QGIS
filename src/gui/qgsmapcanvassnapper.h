@@ -18,12 +18,11 @@
 #ifndef QGSMAPCANVASSNAPPER_H
 #define QGSMAPCANVASSNAPPER_H
 
-#include "qgssnapper.h"
 #include <QList>
+#include "qgssnapper.h"
 
 class QgsMapCanvas;
 class QPoint;
-class QgsSnapper;
 
 /** \ingroup gui
  * This class reads the snapping properties from the current project and

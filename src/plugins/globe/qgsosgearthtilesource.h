@@ -25,8 +25,7 @@ namespace osgEarth
 
         osg::Image* createImage( const TileKey& key, ProgressCallback* progress );
 
-        osg::HeightField* createHeightField( const TileKey* key,
-                                             ProgressCallback* progress )
+        virtual osg::HeightField* createHeightField( const TileKey &key, ProgressCallback* progress )
         {
           Q_UNUSED( key );
           Q_UNUSED( progress );
@@ -48,7 +47,7 @@ namespace osgEarth
 
       private:
 
-        QImage* createImage( int width, int height ) const;
+        QImage* createQImage( int width, int height ) const;
         bool intersects( const TileKey* key );
 
         //! Pointer to the QGIS interface object

@@ -155,27 +155,8 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
 
         //store the driver shortnames and the corresponding extensions
         //(just in case the user does not give an extension for the output file name)
-        int index = 0;
-        while (( driverMetadata ) && driverMetadata[index] != 0 )
-        {
-          QStringList metadataTokens = QString( driverMetadata[index] ).split( "=", QString::SkipEmptyParts );
-          if ( metadataTokens.size() < 1 )
-          {
-            break;
-          }
-
-          if ( metadataTokens[0] == "DMD_EXTENSION" )
-          {
-            if ( metadataTokens.size() < 2 )
-            {
-              ++index;
-              continue;
-            }
-            mDriverExtensionMap.insert( QString( GDALGetDriverShortName( driver ) ), metadataTokens[1] );
-            break;
-          }
-          ++index;
-        }
+        QString driverExtension = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSION, NULL );
+        mDriverExtensionMap.insert( QString( GDALGetDriverShortName( driver ) ), driverExtension );
       }
     }
   }

@@ -45,6 +45,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
   setSelectionColor();
+  setMaxWidthHeight();
 
   //accelerate search for layers and groups
   if ( mXMLDoc )
@@ -136,6 +137,64 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   parentElement.appendChild( layerParentElem );
   combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
+}
+
+void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
+{
+  QStringList wfsLayersId = wfsLayers();
+
+  if ( mProjectLayerElements.size() < 1 )
+  {
+    return;
+  }
+
+  QMap<QString, QgsMapLayer *> layerMap;
+
+  foreach( const QDomElement &elem, mProjectLayerElements )
+  {
+    QString type = elem.attribute( "type" );
+    if ( type == "vector" )
+    {
+      //QgsMapLayer *layer = createLayerFromElement( *layerIt );
+      QgsMapLayer *layer = createLayerFromElement( elem );
+      if ( layer && wfsLayersId.contains( layer->id() ) )
+      {
+        QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+        layerMap.insert( layer->id(), layer );
+
+        QDomElement layerElem = doc.createElement( "FeatureType" );
+        QDomElement nameElem = doc.createElement( "Name" );
+        //We use the layer name even though it might not be unique.
+        //Because the id sometimes contains user/pw information and the name is more descriptive
+        QDomText nameText = doc.createTextNode( layer->name() );
+        nameElem.appendChild( nameText );
+        layerElem.appendChild( nameElem );
+
+        QDomElement titleElem = doc.createElement( "Title" );
+        QDomText titleText = doc.createTextNode( layer->name() );
+        titleElem.appendChild( titleText );
+        layerElem.appendChild( titleElem );
+
+        //appendExGeographicBoundingBox( layerElem, doc, layer->extent(), layer->crs() );
+
+        QDomElement srsElem = doc.createElement( "SRS" );
+        QDomText srsText = doc.createTextNode( layer->crs().authid() );
+        srsElem.appendChild( srsText );
+        layerElem.appendChild( srsElem );
+
+        QgsRectangle layerExtent = layer->extent();
+        QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
+        bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
+        bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
+        bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
+        bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
+        layerElem.appendChild( bBoxElement );
+
+        parentElement.appendChild( layerElem );
+      }
+    }
+  }
+  return;
 }
 
 void QgsProjectParser::addLayers( QDomDocument &doc,
@@ -301,7 +360,7 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
     if ( childElem.tagName() != "Layer" )
       continue;
 
-    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem );
+    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem, doc );
     if ( !bbox.isEmpty() )
     {
       if ( firstBBox )
@@ -582,6 +641,37 @@ QStringList QgsProjectParser::identifyDisabledLayers() const
     disabledList << valueList.at( i ).toElement().text();
   }
   return disabledList;
+}
+
+QStringList QgsProjectParser::wfsLayers() const
+{
+  QStringList wfsList;
+  if ( !mXMLDoc )
+  {
+    return wfsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomElement wfsLayersElem = propertiesElem.firstChildElement( "WFSLayers" );
+  if ( wfsLayersElem.isNull() )
+  {
+    return wfsList;
+  }
+  QDomNodeList valueList = wfsLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    wfsList << valueList.at( i ).toElement().text();
+  }
+  return wfsList;
 }
 
 QStringList QgsProjectParser::supportedOutputCrsList() const
@@ -1074,6 +1164,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     {
       QgsComposerMap* map = new QgsComposerMap( composition );
       map->readXML( currentElem, *mXMLDoc );
+      map->setPreviewMode( QgsComposerMap::Rectangle );
       composition->addItem( map );
       mapList.push_back( map );
     }
@@ -1349,6 +1440,27 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   }
 
   serviceElem.appendChild( contactInfoElem );
+
+  //MaxWidth / MaxHeight for WMS 1.3
+  QString version = doc.documentElement().attribute( "version" );
+  if ( version != "1.1.1" )
+  {
+    if ( mMaxWidth != -1 )
+    {
+      QDomElement maxWidthElem = doc.createElement( "MaxWidth" );
+      QDomText maxWidthText = doc.createTextNode( QString::number( mMaxWidth ) );
+      maxWidthElem.appendChild( maxWidthText );
+      serviceElem.appendChild( maxWidthElem );
+    }
+    if ( mMaxHeight != -1 )
+    {
+      QDomElement maxHeightElem = doc.createElement( "MaxHeight" );
+      QDomText maxHeightText = doc.createTextNode( QString::number( mMaxHeight ) );
+      maxHeightElem.appendChild( maxHeightText );
+      serviceElem.appendChild( maxHeightElem );
+    }
+  }
+
   parentElement.appendChild( serviceElem );
 }
 
@@ -1448,7 +1560,32 @@ void QgsProjectParser::setSelectionColor()
     }
   }
 
-  QgsRenderer::setSelectionColor( QColor( red, green, blue, alpha ) );
+  mSelectionColor = QColor( red, green, blue, alpha );
+}
+
+void QgsProjectParser::setMaxWidthHeight()
+{
+  if ( mXMLDoc )
+  {
+    QDomElement qgisElem = mXMLDoc->documentElement();
+    if ( !qgisElem.isNull() )
+    {
+      QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+      if ( !propertiesElem.isNull() )
+      {
+        QDomElement maxWidthElem = propertiesElem.firstChildElement( "WMSMaxWidth" );
+        if ( !maxWidthElem.isNull() )
+        {
+          mMaxWidth = maxWidthElem.text().toInt();
+        }
+        QDomElement maxHeightElem = propertiesElem.firstChildElement( "WMSMaxHeight" );
+        if ( !maxHeightElem.isNull() )
+        {
+          mMaxHeight = maxHeightElem.text().toInt();
+        }
+      }
+    }
+  }
 }
 
 const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
@@ -1466,7 +1603,7 @@ const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
   return QgsCRSCache::instance()->crsByEpsgId( GEO_EPSG_CRS_ID );
 }
 
-QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const
+QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem, const QDomDocument &doc ) const
 {
   QgsRectangle BBox;
   if ( layerElem.isNull() )
@@ -1504,11 +1641,21 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
     return BBox;
   }
 
+
+  QString version = doc.documentElement().attribute( "version" );
+
   //create layer crs
-  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( "CRS" ) );
+  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( version == "1.1.1" ? "SRS" : "CRS" ) );
   if ( !layerCrs.isValid() )
   {
     return BBox;
+  }
+
+  BBox.set( minx, miny, maxx, maxy );
+
+  if ( version == "1.3.0" && layerCrs.axisInverted() )
+  {
+    BBox.invert();
   }
 
   //get project crs
@@ -1516,6 +1663,6 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   QgsCoordinateTransform t( layerCrs, projectCrs );
 
   //transform
-  BBox = t.transformBoundingBox( QgsRectangle( minx, miny, maxx, maxy ) );
+  BBox = t.transformBoundingBox( BBox );
   return BBox;
 }

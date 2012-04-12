@@ -37,7 +37,7 @@ from ui_frmIntersectLines import Ui_Dialog
 class Dialog(QDialog, Ui_Dialog):
 
     def __init__(self, iface):
-        QDialog.__init__(self)
+        QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
         # Set up the user interface from Designer.
         self.setupUi(self)
@@ -51,8 +51,12 @@ class Dialog(QDialog, Ui_Dialog):
 
     def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Line])
+        self.inLine1.blockSignals( True )
+        self.inLine2.blockSignals( True )
         self.inLine1.clear()
         self.inLine2.clear()
+        self.inLine1.blockSignals( False )
+        self.inLine2.blockSignals( False )
         self.inLine1.addItems(layers)
         self.inLine2.addItems(layers)
 

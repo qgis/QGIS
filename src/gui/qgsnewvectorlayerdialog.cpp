@@ -18,6 +18,7 @@
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
 //#include "qgisapp.h" // <- for theme icons
+#include "qgis.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
@@ -33,6 +34,9 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
     : QDialog( parent, fl )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/NewVectorLayer/geometry" ).toByteArray() );
 
   // TODO: do it without QgisApp
   //mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
@@ -61,6 +65,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
 
   QgsCoordinateReferenceSystem srs;
+  srs.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   srs.validate();
 
   mCrsId = srs.srsid();
@@ -75,6 +80,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
 
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/NewVectorLayer/geometry", saveGeometry() );
 }
 
 void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )

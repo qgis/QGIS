@@ -23,7 +23,7 @@ class QgsSponsors : public QDialog, private Ui::QgsSponsorsBase
 {
     Q_OBJECT
   public:
-    QgsSponsors();
+    QgsSponsors( QWidget *parent );
     ~QgsSponsors();
 
   private:

@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour" module="v.drape">
-	<option key="input" typeoption="type"/>
+        <option key="input" />
 	<option key="rast" />
 	<option key="method" />
 	<option key="output" />

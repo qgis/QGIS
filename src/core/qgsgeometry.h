@@ -241,9 +241,10 @@ class CORE_EXPORT QgsGeometry
      * @param minDistPoint Receives the nearest point on the segment
      * @param beforeVertex Receives index of the vertex before the closest segment. The vertex
      * after the closest segment is always beforeVertex + 1
+     * @param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& beforeVertex );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& beforeVertex, double* leftOf = 0 );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -360,6 +361,11 @@ class CORE_EXPORT QgsGeometry
      */
     QString exportToWkt();
 
+    /** Exports the geometry to mGeoJSON
+        @return true in case of success and false else
+     */
+    QString exportToGeoJSON();
+
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
@@ -415,13 +421,13 @@ class CORE_EXPORT QgsGeometry
      */
     int avoidIntersections();
 
-
     class Error
     {
         QString message;
         QgsPoint location;
         bool hasLocation;
       public:
+        Error() : message( "none" ), hasLocation( false ) {}
         Error( QString m ) : message( m ), hasLocation( false ) {}
         Error( QString m, QgsPoint p ) : message( m ), location( p ), hasLocation( true ) {}
 
@@ -434,9 +440,6 @@ class CORE_EXPORT QgsGeometry
      * @note added in 1.5
      **/
     void validateGeometry( QList<Error> &errors );
-
-    static void validatePolyline( QList<Error> &errors, int i, QgsPolyline polyline, bool ring = false );
-    static void validatePolygon( QList<Error> &errors, int i, const QgsPolygon &polygon );
 
   private:
     // Private variables
@@ -566,12 +569,11 @@ class CORE_EXPORT QgsGeometry
     /** return polygon from wkb */
     QgsPolygon asPolygon( unsigned char*& ptr, bool hasZValue );
 
-    static void checkRingIntersections( QList<Error> &errors,
-                                        int p0, int i0, const QgsPolyline &ring0,
-                                        int p1, int i1, const QgsPolyline &ring1 );
-
     static bool geosRelOp( char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
                            QgsGeometry *a, QgsGeometry *b );
+
+    /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
+    double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
 
 
     static int refcount;

@@ -480,12 +480,12 @@ float QgsMapLayer::maximumScale()
 }
 
 
-QStringList QgsMapLayer::subLayers()
+QStringList QgsMapLayer::subLayers() const
 {
   return QStringList();  // Empty
 }
 
-void QgsMapLayer::setLayerOrder( QStringList layers )
+void QgsMapLayer::setLayerOrder( const QStringList &layers )
 {
   Q_UNUSED( layers );
   // NOOP
@@ -513,6 +513,13 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
   *mCRS = srs;
+
+  if ( !mCRS->isValid() )
+  {
+    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
+    mCRS->validate();
+  }
+
   if ( emitSignal )
     emit layerCrsChanged();
 }
@@ -850,7 +857,146 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   return myErrorMessage;
 }
 
+QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
+{
+  QDomDocument myDocument = QDomDocument();
 
+  QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
+  myDocument.appendChild( header );
+
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
+  root.setAttribute( "version", "1.1.0" );
+  root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
+  root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+  root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
+  root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  myDocument.appendChild( root );
+
+  // Create the NamedLayer element
+  QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
+  root.appendChild( namedLayerNode );
+
+  QString errorMsg;
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+  if ( !vlayer )
+  {
+    theResultFlag = false;
+    return tr( "Could not save symbology because:\n%1" ).arg( "Non-vector layers not supported yet" );
+  }
+
+  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+  {
+    theResultFlag = false;
+    return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+  }
+
+  // check if the uri is a file or ends with .sld,
+  // which indicates that it should become one
+  QString filename;
+  if ( vlayer->providerType() == "ogr" )
+  {
+    QStringList theURIParts = theURI.split( "|" );
+    filename = theURIParts[0];
+  }
+  else if ( vlayer->providerType() == "delimitedtext" )
+  {
+    filename = QUrl::fromEncoded( theURI.toAscii() ).toLocalFile();
+  }
+  else
+  {
+    filename = theURI;
+  }
+
+  QFileInfo myFileInfo( filename );
+  if ( myFileInfo.exists() || filename.endsWith( ".sld", Qt::CaseInsensitive ) )
+  {
+    QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
+    if ( !myDirInfo.isWritable() )
+    {
+      return tr( "The directory containing your dataset needs to be writable!" );
+    }
+
+    // now construct the file name for our .sld style file
+    QString myFileName = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".sld";
+
+    QFile myFile( myFileName );
+    if ( myFile.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      QTextStream myFileStream( &myFile );
+      // save as utf-8 with 2 spaces for indents
+      myDocument.save( myFileStream, 2 );
+      myFile.close();
+      theResultFlag = true;
+      return tr( "Created default style file as %1" ).arg( myFileName );
+    }
+  }
+
+  theResultFlag = false;
+  return tr( "ERROR: Failed to created SLD style file as %1. Check file permissions and retry." ).arg( filename );
+}
+
+QString QgsMapLayer::loadSldStyle( const QString theURI, bool &theResultFlag )
+{
+  QgsDebugMsg( "Entered." );
+
+  theResultFlag = false;
+
+  QDomDocument myDocument;
+
+  // location of problem associated with errorMsg
+  int line, column;
+  QString myErrorMessage;
+
+  QFile myFile( theURI );
+  if ( myFile.open( QFile::ReadOnly ) )
+  {
+    // read file
+    theResultFlag = myDocument.setContent( &myFile, true, &myErrorMessage, &line, &column );
+    if ( !theResultFlag )
+      myErrorMessage = tr( "%1 at line %2 column %3" ).arg( myErrorMessage ).arg( line ).arg( column );
+    myFile.close();
+  }
+  else
+  {
+    myErrorMessage = tr( "Unable to open file %1" ).arg( theURI );
+  }
+
+  if ( !theResultFlag )
+  {
+    return myErrorMessage;
+  }
+
+  // check for root SLD element
+  QDomElement myRoot = myDocument.firstChildElement( "StyledLayerDescriptor" );
+  if ( myRoot.isNull() )
+  {
+    myErrorMessage = QString( "Error: StyledLayerDescriptor element not found in %1" ).arg( theURI );
+    theResultFlag = false;
+    return myErrorMessage;
+  }
+
+  // now get the style node out and pass it over to the layer
+  // to deserialise...
+  QDomElement namedLayerElem = myRoot.firstChildElement( "NamedLayer" );
+  if ( namedLayerElem.isNull() )
+  {
+    myErrorMessage = QString( "Info: NamedLayer element not found." );
+    theResultFlag = false;
+    return myErrorMessage;
+  }
+
+  QString errorMsg;
+  theResultFlag = readSld( namedLayerElem, errorMsg );
+  if ( !theResultFlag )
+  {
+    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( errorMsg );
+    return myErrorMessage;
+  }
+
+  return "";
+}
 
 
 QUndoStack* QgsMapLayer::undoStack()

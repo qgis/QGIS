@@ -50,9 +50,14 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
     void remove();
     void insert();
     void insertField();
+    void insertExpression();
     void apply();
     void update();
+    void addDefaultActions();
     void itemSelectionChanged();
+
+  private slots:
+    void updateButtons();
 
   private:
 

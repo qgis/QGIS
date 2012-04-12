@@ -122,6 +122,17 @@ const QIcon &QgsDataCollectionItem::iconDir()
   return icon;
 }
 
+const QIcon &QgsFavouritesItem::iconFavourites()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QIcon( getThemePixmap( "/mIconFavourites.png" ) );
+  // this icon added by ET, modfied mIconNew and set colour to that of folder icon
+
+  return icon;
+}
+
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
     : QObject( parent ), mType( type ), mParent( parent ), mPopulated( false ), mName( name ), mPath( path )
 {
@@ -172,6 +183,13 @@ QVector<QgsDataItem*> QgsDataItem::createChildren( )
 
 void QgsDataItem::populate()
 {
+  if ( mPopulated )
+    return;
+
+  QgsDebugMsg( "mPath = " + mPath );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   QVector<QgsDataItem*> children = createChildren( );
   foreach( QgsDataItem *child, children )
   {
@@ -179,6 +197,8 @@ void QgsDataItem::populate()
     addChildItem( child );
   }
   mPopulated = true;
+
+  QApplication::restoreOverrideCursor();
 }
 
 int QgsDataItem::rowCount()
@@ -194,12 +214,26 @@ bool QgsDataItem::hasChildren()
 
 void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
 {
-  QgsDebugMsg( "mName = " + child->mName );
+  QgsDebugMsg( QString( "add child #%1 - %2" ).arg( mChildren.size() ).arg( child->mName ) );
+
   int i;
-  for ( i = 0; i < mChildren.size(); i++ )
+  if ( type() == Directory )
   {
-    if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
-      break;
+    for ( i = 0; i < mChildren.size(); i++ )
+    {
+      // sort items by type, so directories are before data items
+      if ( mChildren[i]->mType == child->mType &&
+           mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+        break;
+    }
+  }
+  else
+  {
+    for ( i = 0; i < mChildren.size(); i++ )
+    {
+      if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+        break;
+    }
   }
 
   if ( refresh )
@@ -245,6 +279,8 @@ void QgsDataItem::refresh()
 {
   QgsDebugMsg( "mPath = " + mPath );
 
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   QVector<QgsDataItem*> items = createChildren( );
 
   // Remove no more present items
@@ -271,6 +307,8 @@ void QgsDataItem::refresh()
     }
     addChildItem( item, true );
   }
+
+  QApplication::restoreOverrideCursor();
 }
 
 bool QgsDataItem::equal( const QgsDataItem *other )
@@ -599,4 +637,35 @@ QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
 
 QgsErrorItem::~QgsErrorItem()
 {
+}
+
+QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, QString name, QString path )
+    : QgsDataCollectionItem( parent, name, path )
+{
+  mType = Collection; //favourites?
+  mIcon = iconFavourites();
+}
+
+QgsFavouritesItem::~QgsFavouritesItem()
+{
+}
+
+QVector<QgsDataItem*> QgsFavouritesItem::createChildren( )
+{
+  QVector<QgsDataItem*> children;
+  QgsDataItem* item;
+
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
+
+  foreach( QString favDir, favDirs )
+  {
+    item = new QgsDirectoryItem( this, favDir, favDir );
+    if ( item )
+    {
+      children.append( item );
+    }
+  }
+
+  return children;
 }

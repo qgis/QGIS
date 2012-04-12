@@ -113,6 +113,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_mFindMaximumValueButton_clicked();
     void on_mBackgroundColorButton_clicked();
     void on_mDiagramPenColorButton_clicked();
+    void on_pbnUpdateExtents_clicked();
 
     void enableLabelOptions( bool theFlag );
     void addAttribute();

@@ -108,9 +108,11 @@
         <file>themes/default/mActionNewFolder.png</file>
         <file>themes/default/mActionNewVectorLayer.png</file>
         <file>themes/default/mActionNodeTool.png</file>
+        <file>themes/default/mActionOffsetCurve.png</file>
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOptions.png</file>
         <file>themes/default/mActionPan.png</file>
+        <file>themes/default/mActionPanToSelected.png</file>
         <file>themes/default/mAction.png</file>
         <file>themes/default/mActionProjectProperties.png</file>
         <file>themes/default/mActionPropertyItem.png</file>
@@ -154,8 +156,11 @@
         <file>themes/default/mActionZoomOut.png</file>
         <file>themes/default/mActionZoomToLayer.png</file>
         <file>themes/default/mActionZoomToSelected.png</file>
+        <file>themes/default/mIconConnect.png</file>
+        <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconEditable.png</file>
+        <file>themes/default/mIconFavourites.png</file>
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
         <file>themes/default/mIconLast.png</file>
@@ -163,25 +168,31 @@
         <file>themes/default/mIconLineLayer.png</file>
         <file>themes/default/mIconLock.png</file>
         <file>themes/default/mIconNew.png</file>
+        <file>themes/default/mIconMssql.png</file>
         <file>themes/default/mIconNext.png</file>
         <file>themes/default/mIconNoPyramid.png</file>
         <file>themes/default/mIconPointLayer.png</file>
         <file>themes/default/mIconPolygonLayer.png</file>
+        <file>themes/default/mIconPostgis.png</file>
         <file>themes/default/mIconPrevious.png</file>
         <file>themes/default/mIconProjectionDisabled.png</file>
         <file>themes/default/mIconProjectionEnabled.png</file>
         <file>themes/default/mIconProjectionProblem.png</file>
         <file>themes/default/mIconProperties.png</file>
         <file>themes/default/mIconPyramid.png</file>
+        <file>themes/default/mIconSpatialite.png</file>
         <file>themes/default/mIconStopRendering.png</file>
+        <file>themes/default/mIconRaster.png</file>
         <file>themes/default/mIconRenderingEnabled.png</file>
         <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconSymbology.png</file>
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
+        <file>themes/default/mIconWfs.png</file>
         <file>themes/default/mIconWms.png</file>
         <file>themes/default/mIconWmsLayer.png</file>
+        <file>themes/default/mIconWarn.png</file>
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/plugin.png</file>
         <file>themes/default/propertyicons/action.png</file>
@@ -294,6 +305,7 @@
         <file>themes/gis/mActionNodeTool.png</file>
         <file>themes/gis/mActionOpenTable.png</file>
         <file>themes/gis/mActionPan.png</file>
+        <file>themes/gis/mActionPanToSelected.png</file>
         <file>themes/gis/mActionRaiseItems.png</file>
         <file>themes/gis/mActionRedo.png</file>
         <file>themes/gis/mActionRemoveLayer.png</file>
@@ -359,8 +371,13 @@
         <file>themes/gis/mIconSpatialite.png</file>
         <file>themes/gis/mIconRaster.png</file>
         <file>themes/gis/mIconPostgis.png</file>
+        <file>themes/gis/mIconMssql.png</file>
         <file>themes/gis/mIconConnect.png</file>
         <file>themes/gis/mIconDbSchema.png</file>
+        <file>themes/gis/mActionTouch.png</file>
+        <file>themes/default/mActionAddMssqlLayer.png</file>
+        <file>themes/default/mActionTouch.png</file>
+        <file>themes/classic/mActionTouch.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

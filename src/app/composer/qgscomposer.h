@@ -20,12 +20,14 @@
 #include "qgscomposermap.h"
 #include "qgscontexthelp.h"
 #include <QPrinter>
+#include <QDockWidget>
 
 class QgisApp;
 class QgsComposerArrow;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;
+class QgsComposerPictureWidget;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -57,6 +59,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupTheme();
 
     void setIconSizes( int size );
+    void setFontSize( int size );
 
     //! Open and show, set defaults if first time
     void open();
@@ -73,9 +76,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Return current composition
     //QgsComposition *composition(void);
 
-    //! Show composition options in widget
-    void showCompositionOptions( QWidget *w );
-
     //! Restore the window and toolbar state
     void restoreWindowState();
 
@@ -87,6 +87,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
   protected:
     //! Move event
     virtual void moveEvent( QMoveEvent * );
+
+    virtual void closeEvent( QCloseEvent * );
 
     //! Resize event
     virtual void resizeEvent( QResizeEvent * );
@@ -156,8 +158,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Add new picture
     void on_mActionAddImage_triggered();
 
-    //! Add ellipse shape item
-    void on_mActionAddBasicShape_triggered();
+    void on_mActionAddRectangle_triggered();
+
+    void on_mActionAddTriangle_triggered();
+
+    void on_mActionAddEllipse_triggered();
 
     //! Add attribute table
     void on_mActionAddTable_triggered();
@@ -300,9 +305,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     bool mFirstTime;
 
     //! Layout
-    QGridLayout *mCompositionOptionsLayout;
-
-    //! Layout
     QGridLayout *mItemOptionsLayout;
 
     //! Size grip
@@ -320,7 +322,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QUndoView* mUndoView;
 
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
-    QMap< QgsComposerMap*, QgsComposerMap::PreviewMode > mMapsToRestore;
+    QMap< QgsComposerMap*, int > mMapsToRestore;
+    QList< QgsComposerPictureWidget* > mPicturePreviews;
+
+    QDockWidget* mItemDock;
+    QDockWidget* mUndoDock;
+    QDockWidget* mGeneralDock;
 };
 
 #endif

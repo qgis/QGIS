@@ -22,23 +22,25 @@
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 
+class QgsMapCanvas;
 class QgsVectorLayer;
 class QMenu;
-
+class QProgressDialog;
 
 class GUI_EXPORT QgsAttributeTableView : public QTableView
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget* parent = NULL );
+    QgsAttributeTableView( QWidget* parent = 0 );
     virtual ~QgsAttributeTableView();
 
     /**
      * Sets the layer
+     * @param canvas canvas pointer
      * @param layer layer pointer
      */
-    void setLayer( QgsVectorLayer* layer );
+    void setCanvasAndLayer( QgsMapCanvas *canvas, QgsVectorLayer *layer );
 
     /**
      * Saves geometry to the settings on close
@@ -51,7 +53,11 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   signals:
     void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
+    void finished();
+    void progress( int i, bool &cancel );
+
   private:
+    QgsMapCanvas *mCanvas;
     QgsAttributeTableModel* mModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QMenu *mActionPopup;

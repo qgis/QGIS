@@ -7,6 +7,8 @@
 #include <QMap>
 #include <QPointF>
 #include <QSet>
+#include <QDomDocument>
+#include <QDomElement>
 
 #include "qgssymbolv2.h"
 
@@ -17,8 +19,6 @@ class QSize;
 class QPolygonF;
 
 class QgsRenderContext;
-class QgsSymbolV2;
-
 
 class CORE_EXPORT QgsSymbolLayerV2
 {
@@ -36,6 +36,9 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void stopRender( QgsSymbolV2RenderContext& context ) = 0;
 
     virtual QgsSymbolLayerV2* clone() const = 0;
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
     virtual QgsStringMap properties() const = 0;
 
@@ -90,6 +93,11 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
+
+    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
+    { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );

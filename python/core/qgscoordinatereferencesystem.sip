@@ -159,11 +159,11 @@ class QgsCoordinateReferenceSystem
         /*! Overloaded == operator used to compare to CRS's.
          *  Internally it will delegate to the equals method described below
          */
-         bool operator==(const QgsCoordinateReferenceSystem &theSrs);
+         bool operator==(const QgsCoordinateReferenceSystem &theSrs) const;
         /*! Overloaded != operator used to compare to CRS's.
           *  Returns opposite bool value to operator ==
          */
-         bool operator!=(const QgsCoordinateReferenceSystem &theSrs);
+         bool operator!=(const QgsCoordinateReferenceSystem &theSrs) const;
         /*! Overloaded == operator used to compare to CRS's.
          *  Internally it will use OGR isSameCRS() or isSameGeoCRS() methods as appropriate.
          *  Additionally logic may also be applied if the result from the OGR methods

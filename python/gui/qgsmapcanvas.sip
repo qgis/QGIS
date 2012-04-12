@@ -12,16 +12,16 @@ class QgsMapCanvasLayer
 
 public:
   QgsMapCanvasLayer(QgsMapLayer* layer, bool visible = TRUE, bool isInOverview = FALSE);
-  
+
   void setVisible(bool visible);
   void setInOverview(bool isInOverview);
-  
+
   bool isVisible() const;
   bool isInOverview() const;
-  
+
   QgsMapLayer* layer();
   //const QgsMapLayer* layer() const;
-  
+
 };
 
 
@@ -53,17 +53,17 @@ class QgsMapCanvas : QGraphicsView
     ~QgsMapCanvas();
 
     void setLayerSet(QList<QgsMapCanvasLayer>& layers);
-    
+
     void setCurrentLayer(QgsMapLayer* layer);
-    
+
     void updateOverview();
-    
+
     void enableOverviewMode(QgsMapOverviewCanvas* overview);
-    
+
     QgsMapCanvasMap* map();
-    
+
     QgsMapRenderer* mapRenderer();
-    
+
     //! Accessor for the canvas pixmap
     // @deprecated use canvasPaintDevice()
     QPixmap& canvasPixmap() /Deprecated/;
@@ -99,24 +99,28 @@ class QgsMapCanvas : QGraphicsView
 
     // ! Clears the list of extents and sets current extent as first item
     void clearExtentHistory();
- 
+
     /** Zoom to the extent of the selected features of current (vector) layer.
       Added in version 1.2: optionally specify different than current layer */
     void zoomToSelected(QgsVectorLayer* layer = NULL);
 
+    /** Pan to the selected features of current (vector) layer keeping same extent.
+      @note added in 2.0 */
+    void panToSelected( QgsVectorLayer* layer = NULL );
+
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool(QgsMapTool* mapTool);
-    
-    /** \brief Unset the current mapset tool or last non zoom tool if 
-     *         it the same as passed map tool pointer. The tool is not 
-     *         referenced/used any more, but the instance is not deleted 
+
+    /** \brief Unset the current mapset tool or last non zoom tool if
+     *         it the same as passed map tool pointer. The tool is not
+     *         referenced/used any more, but the instance is not deleted
      *         by this method.
      */
     void unsetMapTool(QgsMapTool* mapTool);
 
     /**Returns the currently active tool*/
     QgsMapTool* mapTool();
-    
+
     /** Write property of QColor bgColor. */
     virtual void setCanvasColor(const QColor & _newVal);
 
@@ -128,7 +132,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! return the map layer at position index in the layer stack
     QgsMapLayer *layer(int index);
-    
+
     //! return number of layers on the map
     int layerCount() const;
 
@@ -162,10 +166,10 @@ class QgsMapCanvas : QGraphicsView
 
     //! true if canvas currently drawing
     bool isDrawing();
-    
+
     //! returns current layer (set by legend widget)
     QgsMapLayer* currentLayer();
-    
+
     //! set wheel action and zoom factor (should be greater than 1)
     void setWheelAction(WheelAction action, double factor = 2);
 
@@ -178,7 +182,7 @@ class QgsMapCanvas : QGraphicsView
     //! Zoom to a specific scale
     // added in 1.5
     void zoomScale( double scale );
-    
+
     //! Zoom with the factor supplied. Factor > 1 zooms in
     void zoomByFactor( double scaleFactor );
 
@@ -187,7 +191,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing(bool theFlag);
-    
+
     //! Select which Qt class to render with
     void useImageToRender(bool theFlag);
 
@@ -197,10 +201,10 @@ class QgsMapCanvas : QGraphicsView
     void panActionEnd(QPoint releasePoint);
     //! Called when mouse is moving and pan is activated
     void panAction(QMouseEvent * event);
-    
+
     //! returns last position of mouse cursor
     QPoint mouseLastXY();
-  
+
   public slots:
 
     /**Sets dirty=true and calls render()*/
@@ -222,19 +226,19 @@ class QgsMapCanvas : QGraphicsView
 
     /** The map units may have changed, so cope with that */
     void mapUnitsChanged();
-    
+
     /** updates pixmap on render progress */
     void updateMap();
-    
+
     //! show whatever error is exposed by the QgsMapLayer.
     void showError(QgsMapLayer * mapLayer);
-    
+
     //! called to read map canvas settings from project
     void readProject(const QDomDocument &);
-    
+
     //! called to write map canvas settings to project
     void writeProject(QDomDocument &);
-    
+
   signals:
     /** Let the owner know how far we are with render operations */
     void setProgress(int,int);
@@ -271,7 +275,7 @@ class QgsMapCanvas : QGraphicsView
 
     //! Emit key release event
     void keyReleased(QKeyEvent * e);
-   
+
     //! Emit map tool changed event
     void mapToolSet(QgsMapTool *tool);
 
@@ -315,7 +319,6 @@ class QgsMapCanvas : QGraphicsView
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();
 
- 
 }; // class QgsMapCanvas
 
 

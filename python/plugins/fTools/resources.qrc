@@ -90,6 +90,7 @@
         <file>icons/gis/delaunay.png</file>
         <file>icons/gis/layer_extent.png</file>
         <file>icons/gis/voronoi.png</file>
+        <file>icons/gis/merge_shapes.png</file>
         <file>icons/default/voronoi.png</file>
     </qresource>
 </RCC>

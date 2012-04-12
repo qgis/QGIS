@@ -204,8 +204,34 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 
 
 
-    bool frame() const;
+    /** Whether this item has a frame or not.
+     * @param none
+     * @return boolean - true if there is a frame around this item, otherwise false.
+     * @note deprecated since 1.8 don't use!
+     * @see hasFrame
+     */
+    bool frame();
+    /** Whether this item has a frame or not.
+     * @param none
+     * @return boolean - true if there is a frame around this item, otherwise false.
+     * @note introduced since 1.8
+     * @see hasFrame
+     */
+    bool hasFrame();
+    /** Set whether this item has a frame drawn around it or not.
+     * @param none
+     * @return void
+     * @note deprecated since 1.8 don't use!
+     * @see setFrameEnabled
+     */
     void setFrame( bool drawFrame );
+    /** Set whether this item has a frame drawn around it or not.
+     * @param none
+     * @return void
+     * @note introduced in 1.8
+     * @see hasFrame
+     */
+    void setFrameEnabled( bool drawFrame );
 
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item );
@@ -217,7 +243,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     //painter down by the same factor for drawing
 
     /**Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
-     to work arount the Qt font bug)*/
+     to work around the Qt font bug)*/
     void drawText( QPainter* p, int x, int y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/

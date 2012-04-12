@@ -132,17 +132,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the sublayers of this layer
      * (Useful for providers that manage their own layers, such as WMS)
      */
-    virtual QStringList subLayers();
+    virtual QStringList subLayers() const;
 
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
      * (Useful for providers that manage their own layers, such as WMS)
      */
-    virtual void setLayerOrder( QStringList layers );
+    virtual void setLayerOrder( const QStringList &layers );
 
     /** Set the visibility of the given sublayer name */
     virtual void setSubLayerVisibility( QString name, bool vis );
-
 
     /** True if the layer can be edited */
     virtual bool isEditable() const;
@@ -235,7 +234,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-
     /** A convenience function to capitalise the layer name */
     static QString capitaliseLayerName( const QString name );
 
@@ -290,6 +288,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @sa saveDefaultStyle()
      */
     virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );
+
+    virtual QString saveSldStyle( const QString theURI, bool & theResultFlag );
+    virtual QString loadSldStyle( const QString theURI, bool &theResultFlag );
+
+    virtual bool readSld( const QDomNode& node, QString& errorMessage )
+    { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
+
 
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
@@ -418,15 +423,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Name of the layer - used for display */
     QString mLayerName;
 
-    /** layer's Spatial reference system */
-    QgsCoordinateReferenceSystem* mCRS;
-
     QString mTitle;
 
     /**Description of the layer*/
     QString mAbstract;
 
   private:
+    /** layer's spatial reference system.
+        private to make sure setCrs must be used and layerCrsChanged() is emitted */
+    QgsCoordinateReferenceSystem* mCRS;
 
     /** private copy constructor - QgsMapLayer not copyable */
     QgsMapLayer( QgsMapLayer const & );

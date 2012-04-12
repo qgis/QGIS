@@ -1,11 +1,14 @@
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
 
+IF(WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(
+    ../../src/core/spatialite/headers
+    ../../src/core/spatialite/headers/spatialite
+  )
+ENDIF(WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(
-  ../../src/core/spatialite/headers
-  ../../src/core/spatialite/headers/spatialite
-
   ${PYTHON_INCLUDE_PATH}
   ${GEOS_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
@@ -42,6 +45,10 @@ IF (NOT APPLE)
 ENDIF (NOT APPLE)
 
 TARGET_LINK_LIBRARIES(pyspatialite qgis_core)
+
+IF(NOT WITH_INTERNAL_SPATIALITE)
+  TARGET_LINK_LIBRARIES(pyspatialite ${SPATIALITE_LIBRARY})
+ENDIF(NOT WITH_INTERNAL_SPATIALITE)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(pyspatialite PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")

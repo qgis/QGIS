@@ -37,7 +37,7 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * Constructor
      * @param theLayer layer pointer
      */
-    QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer );
+    QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer );
 
     /**
      * Returns the number of rows
@@ -59,8 +59,9 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
     /**
      * Launched when a feature has been deleted
      * @param fid feature id
+     * @param inOperation guard insertion with beginInsertRows() / endInsertRows()
      */
-    virtual void featureAdded( QgsFeatureId fid );
+    virtual void featureAdded( QgsFeatureId fid, bool inOperation = true );
     /**
      * Launched when layer has been deleted
      */

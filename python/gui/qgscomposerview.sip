@@ -30,7 +30,9 @@ class QgsComposerView: QGraphicsView
       AddLabel,        // add label
       AddScalebar,     // add scalebar
       AddPicture,       // add raster/vector picture
-      AddShape, //add shape item (ellipse, rectangle, triangle)
+      AddRectangle,
+      AddEllipse,
+      AddTriangle,
       MoveItemContent //move content of item (e.g. content of map)
     };
 

@@ -64,6 +64,7 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
   pluginNameQString = tr( "GrassVector" );
   pluginVersionQString = tr( "0.1" );
   pluginDescriptionQString = tr( "GRASS layer" );
+  pluginCategoryQString = tr( "Plugins" );
 }
 
 QgsGrassPlugin::~QgsGrassPlugin()
@@ -89,6 +90,11 @@ QString QgsGrassPlugin::version()
 QString QgsGrassPlugin::description()
 {
   return pluginDescriptionQString;
+}
+
+QString QgsGrassPlugin::category()
+{
+  return pluginCategoryQString;
 }
 
 void QgsGrassPlugin::help()
@@ -175,7 +181,6 @@ void QgsGrassPlugin::initGui()
 
   // Add the toolbar to the main window
   toolBarPointer = qGisInterface->addToolBar( tr( "GRASS" ) );
-  toolBarPointer->setIconSize( QSize( 24, 24 ) );
   toolBarPointer->setObjectName( "GRASS" );
 
   // Add to the toolbar
@@ -286,7 +291,7 @@ void QgsGrassPlugin::addVector()
 // QgsDebugMsg("entered.");
   QString uri;
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::VECTOR );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::VECTOR );
   if ( sel->exec() )
   {
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
@@ -381,7 +386,7 @@ void QgsGrassPlugin::addRaster()
 // QgsDebugMsg("entered.");
   QString uri;
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::RASTER );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::RASTER );
   if ( sel->exec() )
   {
     QString element;
@@ -514,7 +519,7 @@ void QgsGrassPlugin::newVector()
   bool ok;
   QString name;
 
-  QgsGrassElementDialog dialog;
+  QgsGrassElementDialog dialog( qGisInterface->mainWindow() );
   name = dialog.getItem( "vector", tr( "New vector name" ),
                          tr( "New vector name" ), "", "", &ok );
 
@@ -704,7 +709,7 @@ void QgsGrassPlugin::openMapset()
 
   QString element;
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::MAPSET );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MAPSET );
 
   if ( !sel->exec() )
     return;
@@ -927,6 +932,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return QObject::tr( "GRASS layer" );
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return QObject::tr( "Plugins" );
 }
 
 // Return the type (either UI or MapLayer plugin)

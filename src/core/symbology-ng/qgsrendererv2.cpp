@@ -54,11 +54,11 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
   double x, y;
-  #ifdef ANDROID
-    qreal z;
-  #else
-    double z;
-  #endif //ANDROID
+#ifdef ANDROID
+  qreal z;
+#else
+  double z;
+#endif //ANDROID
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
@@ -120,11 +120,11 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
-  #ifdef ANDROID
-    qreal z = 0; // dummy variable for coordiante transform
-  #else
-    double z = 0; // dummy variable for coordiante transform
-  #endif
+#ifdef ANDROID
+  qreal z = 0; // dummy variable for coordiante transform
+#else
+  double z = 0; // dummy variable for coordiante transform
+#endif
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10; double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
@@ -188,12 +188,18 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 }
 
 
-void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature );
   if ( symbol == NULL )
-    return;
+    return false;
 
+  renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+  return true;
+}
+
+void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbolV2* symbol, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+{
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
   QgsGeometry* geom = feature.geometry();
@@ -356,7 +362,6 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
-    r->setUsingFirstRule( element.attribute( "firstrule", "0" ).toInt() );
   }
   return r;
 }
@@ -365,6 +370,110 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
 {
   // create empty renderer element
   return doc.createElement( RENDERER_TAG_NAME );
+}
+
+QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage )
+{
+  QDomElement element = node.toElement();
+  if ( element.isNull() )
+    return NULL;
+
+  // get the UserStyle element
+  QDomElement userStyleElem = element.firstChildElement( "UserStyle" );
+  if ( userStyleElem.isNull() )
+  {
+    // UserStyle element not found, nothing will be rendered
+    errorMessage = "Info: UserStyle element not found.";
+    return NULL;
+  }
+
+  // get the FeatureTypeStyle element
+  QDomElement featTypeStyleElem = userStyleElem.firstChildElement( "FeatureTypeStyle" );
+  if ( featTypeStyleElem.isNull() )
+  {
+    errorMessage = "Info: FeatureTypeStyle element not found.";
+    return NULL;
+  }
+
+  // use the RuleRenderer when more rules are present or the rule
+  // has filters or min/max scale denominators set,
+  // otherwise use the SingleSymbol renderer
+  bool needRuleRenderer = false;
+  int ruleCount = 0;
+
+  QDomElement ruleElem = featTypeStyleElem.firstChildElement( "Rule" );
+  while ( !ruleElem.isNull() )
+  {
+    ruleCount++;
+
+    // more rules present, use the RuleRenderer
+    if ( ruleCount > 1 )
+    {
+      QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
+      needRuleRenderer = true;
+      break;
+    }
+
+    QDomElement ruleChildElem = ruleElem.firstChildElement();
+    while ( !ruleChildElem.isNull() )
+    {
+      // rule has filter or min/max scale denominator, use the RuleRenderer
+      if ( ruleChildElem.localName() == "Filter" ||
+           ruleChildElem.localName() == "MinScaleDenominator" ||
+           ruleChildElem.localName() == "MaxScaleDenominator" )
+      {
+        QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+        needRuleRenderer = true;
+        break;
+      }
+
+      ruleChildElem = ruleChildElem.nextSiblingElement();
+    }
+
+    if ( needRuleRenderer )
+    {
+      break;
+    }
+
+    ruleElem = ruleElem.nextSiblingElement( "Rule" );
+  }
+
+  QString rendererType;
+  if ( needRuleRenderer )
+  {
+    rendererType = "RuleRenderer";
+  }
+  else
+  {
+    rendererType = "singleSymbol";
+  }
+  QgsDebugMsg( QString( "Instantiating a '%1' renderer..." ).arg( rendererType ) );
+
+  // create the renderer and return it
+  QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
+  if ( m == NULL )
+  {
+    errorMessage = QString( "Error: Unable to get metadata for '%1' renderer." ).arg( rendererType );
+    return NULL;
+  }
+
+  QgsFeatureRendererV2* r = m->createRendererFromSld( featTypeStyleElem, geomType );
+  return r;
+}
+
+QDomElement QgsFeatureRendererV2::writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const
+{
+  QDomElement userStyleElem = doc.createElement( "UserStyle" );
+
+  QDomElement nameElem = doc.createElement( "se:Name" );
+  nameElem.appendChild( doc.createTextNode( layer.name() ) );
+  userStyleElem.appendChild( nameElem );
+
+  QDomElement featureTypeStyleElem = doc.createElement( "se:FeatureTypeStyle" );
+  toSld( doc, featureTypeStyleElem );
+  userStyleElem.appendChild( featureTypeStyleElem );
+
+  return userStyleElem;
 }
 
 QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSize )
@@ -411,4 +520,12 @@ void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPol
       renderVertexMarker( pt, context );
     }
   }
+}
+
+QgsSymbolV2List QgsFeatureRendererV2::symbolsForFeature( QgsFeature& feat )
+{
+  QgsSymbolV2List lst;
+  QgsSymbolV2* s = symbolForFeature( feat );
+  if ( s ) lst.append( s );
+  return lst;
 }

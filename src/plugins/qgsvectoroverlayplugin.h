@@ -28,7 +28,7 @@ class QWidget;
 class QgsVectorOverlayPlugin: public QgisPlugin
 {
   public:
-    QgsVectorOverlayPlugin( const QString& name, const QString& description, const QString& version ): QgisPlugin( name, description, version, QgisPlugin::VECTOR_OVERLAY ) {}
+    QgsVectorOverlayPlugin( const QString& name, const QString& description, const QString& category, const QString& version ): QgisPlugin( name, description, category, version, QgisPlugin::VECTOR_OVERLAY ) {}
 
     virtual ~QgsVectorOverlayPlugin() {}
 

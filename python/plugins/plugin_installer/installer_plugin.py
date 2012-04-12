@@ -164,8 +164,7 @@ class InstallerPlugin():
         if QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier):
           keepQuiet = True
 
-    flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
-    self.guiDlg = QgsPluginInstallerDialog(parent,flags)
+    self.guiDlg = QgsPluginInstallerDialog(parent)
     self.guiDlg.show()
 
 

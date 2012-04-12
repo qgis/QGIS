@@ -79,6 +79,12 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       QgsDebugMsg( "extensions: " + extensions.join( " " ) );
       QgsDebugMsg( "wildcards: " + wildcards.join( " " ) );
     }
+    // skip *.aux.xml files (GDAL auxilary metadata files)
+    // unless that extension is in the list (*.xml might be though)
+    if ( thePath.right( 8 ) == ".aux.xml" &&
+         extensions.indexOf( "aux.xml" ) < 0 )
+      return 0;
+
     if ( extensions.indexOf( info.suffix().toLower() ) < 0 )
     {
       bool matches = false;
@@ -101,16 +107,42 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if ( !hDS )
       return 0;
 
+    QStringList sublayers = QgsGdalProvider::subLayers( hDS );
+
     GDALClose( hDS );
 
     QgsDebugMsg( "GdalDataset opened " + thePath );
 
-    QString name = info.completeBaseName();
+    //extract basename with extension
+    QString name = info.completeBaseName() + "." + QFileInfo( thePath ).suffix();
     QString uri = thePath;
 
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, uri );
+
+    QgsDataItem * childItem = NULL;
+    GDALDatasetH hChildDS = NULL;
+
+    if ( item && sublayers.count() > 1 )
+    {
+      QgsDebugMsg( QString( "dataItem() got %1 sublayers" ).arg( sublayers.count() ) );
+      for ( int i = 0; i < sublayers.count(); i++ )
+      {
+        hChildDS = GDALOpen( TO8F( sublayers[i] ), GA_ReadOnly );
+        if ( hChildDS )
+        {
+          GDALClose( hChildDS );
+
+          QString name = sublayers[i];
+          //replace full path with basename+extension
+          name.replace( thePath, QFileInfo( thePath ).completeBaseName() + "." + QFileInfo( thePath ).suffix() );
+          childItem = new QgsGdalLayerItem( item, name, thePath + "/" + name, sublayers[i] );
+          if ( childItem )
+            item->addChildItem( childItem );
+        }
+      }
+    }
+
     return item;
   }
   return 0;
 }
-

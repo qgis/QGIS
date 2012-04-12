@@ -465,7 +465,7 @@ QgsSqlAnywhereProvider::subsetString()
 } // QgsSqlAnywhereProvider::subsetString()
 
 bool
-QgsSqlAnywhereProvider::setSubsetString( QString theSQL )
+QgsSqlAnywhereProvider::setSubsetString( QString theSQL, bool )
 {
   QString   prevSubsetString = mSubsetString;
   QString   prevKeyColumn = mKeyColumn;

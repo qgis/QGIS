@@ -27,6 +27,8 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
 
+    void showSymbolLevels();
+
   protected:
 
     QgsSingleSymbolRendererV2* mRenderer;

@@ -49,6 +49,10 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
 
   QSettings settings;
   QString selected = settings.value( "/Oracle/connections/selected" ).toString();
+
+  restoreGeometry( settings.value( "/Oracle/geometry" ).toByteArray() );
+
+  cmbConnections->setCurrentIndex( cmbConnections->findText( selected ) );
   if ( selected == cmbConnections->currentText() )
   {
     connectToServer();
@@ -57,6 +61,9 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
 
 QgsOracleSelectGeoraster::~QgsOracleSelectGeoraster()
 {
+  QSettings settings;
+  settings.setValue( "/Oracle/geometry", saveGeometry() );
+  settings.setValue( "/Oracle/connections/selected", cmbConnections->currentText() );
 }
 
 void QgsOracleSelectGeoraster::populateConnectionList()

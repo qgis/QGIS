@@ -98,6 +98,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="mCloseButton">
+       <property name="text">
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="1" column="0">
@@ -230,6 +237,32 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mPanMapToSelectedRowsButton">
+       <property name="toolTip">
+        <string>Pan map to the selected rows (Ctrl+P)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionPanToSelected.png</normaloff>../../images/themes/default/mActionPanToSelected.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+P</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mToggleEditingButton">
        <property name="toolTip">
         <string>Toggle editing mode (Ctrl+E)</string>
@@ -283,7 +316,7 @@
         <string>Ctrl+E</string>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>

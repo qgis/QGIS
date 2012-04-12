@@ -42,7 +42,7 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
 {
-  QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, this );
+  QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, -1, this );
   return action.addFeature();
 }
 
@@ -226,7 +226,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
       else // polygon
       {
-        QgsGeometry *g;
         if ( layerWKBType == QGis::WKBPolygon ||  layerWKBType == QGis::WKBPolygon25D )
         {
           g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
@@ -242,6 +241,12 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           return; //unknown wkbtype
         }
 
+        if ( !g )
+        {
+          stopCapturing();
+          delete f;
+          return; // invalid geometry; one possibility is from duplicate points
+        }
         f->setGeometry( g );
 
         int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
@@ -249,7 +254,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           //not a polygon type. Impossible to get there
         }
-        else if ( avoidIntersectionsReturn == 2 )
+#if 0
+        else if ( avoidIntersectionsReturn == 2 ) //MH120131: disable this error message until there is a better way to cope with the single type / multi type problem
         {
           //bail out...
           QMessageBox::critical( 0, tr( "Error" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type" ) );
@@ -257,6 +263,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           stopCapturing();
           return;
         }
+#endif
         else if ( avoidIntersectionsReturn == 3 )
         {
           QMessageBox::critical( 0, tr( "Error" ), tr( "An error was reported during intersection removal" ) );

@@ -130,11 +130,11 @@ void QgsComposerItemWidget::on_mFrameCheckBox_stateChanged( int state )
   mItem->beginCommand( tr( "Item frame toggled" ) );
   if ( state == Qt::Checked )
   {
-    mItem->setFrame( true );
+    mItem->setFrameEnabled( true );
   }
   else
   {
-    mItem->setFrame( false );
+    mItem->setFrameEnabled( false );
   }
   mItem->update();
   mItem->endCommand();
@@ -155,7 +155,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOpacitySlider->setValue( mItem->brush().color().alpha() );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
-  if ( mItem->frame() )
+  if ( mItem->hasFrame() )
   {
     mFrameCheckBox->setCheckState( Qt::Checked );
   }

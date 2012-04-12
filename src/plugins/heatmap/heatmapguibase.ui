@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HeatmapGuiBase</class>
+ <widget class="QDialog" name="HeatmapGuiBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>430</width>
+    <height>380</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>430</width>
+    <height>380</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Heatmap Plugin</string>
+  </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mInputLabel">
+     <property name="text">
+      <string>Input Point Vector</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mInputVectorCombo"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mOutputLabel">
+     <property name="text">
+      <string>Output Raster</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="mOutputRasterLineEdit"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="mBrowseButton">
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mFormatLabel">
+     <property name="text">
+      <string>Output Format</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="mFormatCombo"/>
+   </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mRadiusLabel">
+     <property name="text">
+      <string>Radius</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="mBufferLineEdit">
+     <property name="text">
+      <string>10</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QComboBox" name="mRadiusUnitCombo">
+     <item>
+      <property name="text">
+       <string>meters</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>map units</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mDecayLabel">
+     <property name="text">
+      <string>Decay Ratio</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="2">
+    <widget class="QLineEdit" name="mDecayLineEdit">
+     <property name="text">
+      <string>0.1</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QGroupBox" name="advancedGroupBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title">
+      <string>Advanced</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="gridLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>30</y>
+        <width>391</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="advancedGrid">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetFixedSize</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="rowLabel">
+         <property name="text">
+          <string>Row</string>
+         </property>
+         <property name="buddy">
+          <cstring>rowLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="cellsizeXLabel">
+         <property name="text">
+          <string>Cell Size X</string>
+         </property>
+         <property name="buddy">
+          <cstring>cellXLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="columnLabel">
+         <property name="text">
+          <string>Column</string>
+         </property>
+         <property name="buddy">
+          <cstring>columnLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="cellsizeYLabel">
+         <property name="text">
+          <string>Cell Size Y</string>
+         </property>
+         <property name="buddy">
+          <cstring>cellYLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="rowLineEdit"/>
+       </item>
+       <item row="0" column="3">
+         <widget class="QLineEdit" name="columnLineEdit"/>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="cellXLineEdit"/>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="cellYLineEdit"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="gridLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>391</width>
+        <height>61</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="useRadius">
+         <property name="text">
+          <string>Use Radius from field</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="radiusFieldCombo">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QComboBox" name="radiusFieldUnitCombo">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>meters</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>map units</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="useWeight">
+         <property name="text">
+          <string>Use Weight from field</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QComboBox" name="weightFieldCombo">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>HeatmapGuiBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>79</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>HeatmapGuiBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>213</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>79</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useWeight</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>weightFieldCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>315</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>318</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useRadius</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radiusFieldCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>283</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useRadius</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>radiusFieldUnitCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>283</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>408</x>
+     <y>286</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useRadius</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mBufferLineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>283</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useRadius</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mRadiusUnitCombo</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>283</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>420</x>
+     <y>131</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useRadius</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mRadiusLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>275</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>58</x>
+     <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

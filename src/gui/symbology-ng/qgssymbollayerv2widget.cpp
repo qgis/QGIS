@@ -676,7 +676,10 @@ void QgsSvgMarkerSymbolLayerV2Widget::setOffset()
 void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString file = QFileDialog::getOpenFileName( 0, tr( "Select SVG file" ), s.value( "/UI/lastSVGMarkerDir" ).toString(), "SVG files (*.svg)" );
+  QString file = QFileDialog::getOpenFileName( 0,
+                 tr( "Select SVG file" ),
+                 s.value( "/UI/lastSVGMarkerDir" ).toString(),
+                 tr( "SVG files" ) + " (*.svg)" );
   QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {
@@ -825,6 +828,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mRotationSpinBox->setValue( mLayer->angle() );
   }
   updateOutlineIcon();
+  updateParamGui();
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
@@ -865,11 +869,13 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & t
   }
   mLayer->setSvgFilePath( text );
   emit changed();
+  updateParamGui();
 }
 
 void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 {
   mSVGLineEdit->setText( item.data( Qt::UserRole ).toString() );
+  updateParamGui();
 }
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
@@ -905,6 +911,55 @@ void QgsSVGFillSymbolLayerWidget::updateOutlineIcon()
   {
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeOutlinePushButton->iconSize() );
     mChangeOutlinePushButton->setIcon( icon );
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::updateParamGui()
+{
+  //activate gui for svg parameters only if supported by the svg file
+  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  QColor defaultFill, defaultOutline;
+  double defaultOutlineWidth;
+  QgsSvgCache::instance()->containsParams( mSVGLineEdit->text(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
+  mChangeColorButton->setEnabled( hasFillParam );
+  mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mChangeColorButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QColor c = QColorDialog::getColor( mLayer->svgFillColor() );
+  if ( c.isValid() )
+  {
+    mLayer->setSvgFillColor( c );
+    emit changed();
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mChangeBorderColorButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QColor c = QColorDialog::getColor( mLayer->svgOutlineColor() );
+  if ( c.isValid() )
+  {
+    mLayer->setSvgOutlineColor( c );
+    emit changed();
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mBorderWidthSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setSvgOutlineWidth( d );
+    emit changed();
   }
 }
 

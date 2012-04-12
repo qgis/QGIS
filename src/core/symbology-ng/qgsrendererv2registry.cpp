@@ -14,7 +14,9 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   // add default renderers
   addRenderer( new QgsRendererV2Metadata( "singleSymbol",
                                           QObject::tr( "Single Symbol" ),
-                                          QgsSingleSymbolRendererV2::create ) );
+                                          QgsSingleSymbolRendererV2::create,
+                                          QgsSingleSymbolRendererV2::createFromSld ) );
+
   addRenderer( new QgsRendererV2Metadata( "categorizedSymbol",
                                           QObject::tr( "Categorized" ),
                                           QgsCategorizedSymbolRendererV2::create ) );
@@ -24,7 +26,9 @@ QgsRendererV2Registry::QgsRendererV2Registry()
 
   addRenderer( new QgsRendererV2Metadata( "RuleRenderer",
                                           QObject::tr( "Rule-based" ),
-                                          QgsRuleBasedRendererV2::create ) );
+                                          QgsRuleBasedRendererV2::create,
+                                          QgsRuleBasedRendererV2::createFromSld ) );
+
   addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
                                           QObject::tr( "Point displacement" ),
                                           QgsPointDisplacementRenderer::create ) );

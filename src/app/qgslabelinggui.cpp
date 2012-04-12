@@ -32,6 +32,7 @@
 #include <QTextEdit>
 #include <QApplication>
 #include <QMessageBox>
+#include <QSettings>
 
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
@@ -39,6 +40,9 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   if ( !layer ) return;
 
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
@@ -125,7 +129,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
     chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
     chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( ! ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+    if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
       chkLineOrientationDependent->setChecked( true );
   }
 
@@ -137,6 +141,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
+  wrapCharacterEdit->setText( lyr.wrapChar );
 
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
   chkScaleBasedVisibility->setChecked( scaleBased );
@@ -206,6 +211,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
 QgsLabelingGui::~QgsLabelingGui()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/Labeling/geometry", saveGeometry() );
 }
 
 void QgsLabelingGui::apply()
@@ -320,6 +327,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
+  lyr.wrapChar = wrapCharacterEdit->text();
 
   //data defined labeling
   setDataDefinedProperty( mSizeAttributeComboBox, QgsPalLayerSettings::Size, lyr );
@@ -451,9 +459,9 @@ void QgsLabelingGui::changeTextFont()
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), this, QString(), QFontDialog::DontUseNativeDialog );
+  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), this );
+  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font() );
 #endif
   if ( ok )
   {
@@ -495,7 +503,7 @@ void QgsLabelingGui::showExpressionDialog()
   dlg.setWindowTitle( tr( "Expression based label" ) );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QString expression =  dlg.expressionBuilder()->getExpressionString();
+    QString expression =  dlg.expressionText();
     //Only add the expression if the user has entered some text.
     if ( !expression.isEmpty() )
     {
@@ -519,7 +527,7 @@ void QgsLabelingGui::updateUi()
   spinDecimals->setEnabled( chkFormattedNumbers->isChecked() );
 
   bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
-  offlineOptions->setEnabled ( offline );
+  offlineOptions->setEnabled( offline );
 }
 
 void QgsLabelingGui::changeBufferColor()

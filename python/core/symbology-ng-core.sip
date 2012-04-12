@@ -77,11 +77,22 @@ public:
 
   virtual QString dump();
 
+  enum Capabilities
+  {
+    SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+    RotationField = 2,    // rotate symbols by attribute value
+    MoreSymbolsPerFeature = 4  // may use more than one symbol to render a feature: symbolsForFeature() will return them
+  };
+
+  //! returns bitwise OR-ed capabilities of the renderer
+  //! \note added in 2.0
+  virtual int capabilities();
+
   virtual QgsFeatureRendererV2* clone()=0 /Factory/;
 
   virtual QgsSymbolV2List symbols()=0;
 
-  virtual void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+  virtual bool renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
   bool usingSymbolLevels() const;
   void setUsingSymbolLevels(bool usingSymbolLevels);
@@ -97,6 +108,25 @@ public:
 
   //! set type and size of editing vertex markers for subsequent rendering
   void setVertexMarkerAppearance( int type, int size );
+
+  //! return rotation field name (or empty string if not set or not supported by renderer)
+  //! @note added in 1.9
+  virtual QString rotationField() const;
+  //! sets rotation field of renderer (if supported by the renderer)
+  //! @note added in 1.9
+  virtual void setRotationField( QString fieldName );
+
+  //! return whether the renderer will render a feature or not.
+  //! Must be called between startRender() and stopRender() calls.
+  //! Default implementation uses symbolForFeature().
+  //! @note added in 1.9
+  virtual bool willRenderFeature( QgsFeature& feat );
+
+  //! return list of symbols used for rendering the feature.
+  //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
+  //! to use symbolForFeature()
+  //! @note added in 1.9
+  virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
 protected:
   QgsFeatureRendererV2(QString type);
@@ -146,6 +176,10 @@ public:
   QString sizeScaleField() const;
 
   virtual QString dump();
+
+  //! returns bitwise OR-ed capabilities of the renderer
+  //! \note added in 2.0
+  virtual int capabilities();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
 
@@ -213,6 +247,10 @@ public:
   virtual QList<QString> usedAttributes();
 
   virtual QString dump();
+
+  //! returns bitwise OR-ed capabilities of the renderer
+  //! \note added in 2.0
+  virtual int capabilities();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
 
@@ -313,6 +351,10 @@ public:
 
   virtual QString dump();
 
+  //! returns bitwise OR-ed capabilities of the renderer
+  //! \note added in 2.0
+  virtual int capabilities();
+
   virtual QgsFeatureRendererV2* clone() /Factory/;
 
   virtual QgsSymbolV2List symbols();
@@ -390,6 +432,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
   public:
 
+    //typedef QList<QgsRuleBasedRendererV2::Rule*> RuleList;
+
     /**
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
@@ -401,46 +445,103 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     class Rule
     {
       public:
-        //! Constructor takes ownership of the symbol
-        Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString() );
-        Rule( const QgsRuleBasedRendererV2::Rule& other );
+
+        Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
+              QString label = QString(), QString description = QString() );
         ~Rule();
-        QString dump() const;
-        QStringList needsFields() const;
+        QString dump( int offset = 0 ) const;
+        QSet<QString> usedAttributes();
+        QgsSymbolV2List symbols();
+        // TODO QgsLegendSymbolList legendSymbolItems();
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol();
+        QString label() const;
         bool dependsOnScale() const;
         int scaleMinDenom() const;
         int scaleMaxDenom() const;
-        QString filterExpression() const;
         QgsExpression* filter() const;
+        QString filterExpression() const;
+        QString description() const;
 
+        //! set a new symbol (or NULL). Deletes old symbol.
+        void setSymbol( QgsSymbolV2* sym /Transfer/ );
+        void setLabel( QString label );
         void setScaleMinDenom( int scaleMinDenom );
         void setScaleMaxDenom( int scaleMaxDenom );
         void setFilterExpression( QString filterExp );
+        void setDescription( QString description );
 
-        //Rule& operator=( const Rule& other );
+        //! clone this rule, return new instance
+        QgsRuleBasedRendererV2::Rule* clone() const /Factory/;
+
+        QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
+
+        //! prepare the rule for rendering and its children (build active children array)
+        bool startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+        //! get all used z-levels from this rule and children
+        QSet<int> collectZLevels();
+        //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
+        // TODO void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
+
+        // TODO bool renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
+
+        //! only tell whether a feature will be rendered without actually rendering it
+        //! @note added in 1.9
+        bool willRenderFeature( QgsFeature& feat );
+
+        //! tell which symbols will be used to render the feature
+        //! @note added in 1.9
+        QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+
+        void stopRender( QgsRenderContext& context );
+
+        static QgsRuleBasedRendererV2::Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap ) /Factory/;
+
+        QList<QgsRuleBasedRendererV2::Rule*>& children();
+        QgsRuleBasedRendererV2::Rule* parent();
+
+        //! add child rule, take ownership, sets this as parent
+        void appendChild( QgsRuleBasedRendererV2::Rule* rule /Transfer/ );
+        //! add child rule, take ownership, sets this as parent
+        void insertChild( int i, QgsRuleBasedRendererV2::Rule* rule /Transfer/ );
+        //! delete child rule
+        void removeChild( QgsRuleBasedRendererV2::Rule* rule );
+        //! delete child rule
+        void removeChildAt( int i );
+        //! take child rule out, set parent as null
+        void takeChild( QgsRuleBasedRendererV2::Rule* rule );
+        //! take child rule out, set parent as null
+        QgsRuleBasedRendererV2::Rule* takeChildAt( int i );
+
     };
 
     /////
 
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
 
-    //! Constructor. Takes ownership of the defult symbol.
+    //! Constructs the renderer from given tree of rules
+    QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root /Transfer/ );
+    //! Constructor for convenience. Creates a root rule and adds a default rule with symbol
     QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol /Transfer/ );
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
 
     virtual void stopRender( QgsRenderContext& context );
 
     virtual QList<QString> usedAttributes();
+
+    virtual QString dump();
+
+    //! returns bitwise OR-ed capabilities of the renderer
+    //! \note added in 2.0
+    virtual int capabilities();
 
     virtual QgsFeatureRendererV2* clone() /Factory/;
 
@@ -452,29 +553,28 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! return a list of symbology items for the legend 
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ); 
 
+    //! return whether the renderer will render a feature or not.
+    //! Must be called between startRender() and stopRender() calls.
+    //! @note added in 1.9
+    virtual bool willRenderFeature( QgsFeature& feat );
+
+    //! return list of symbols used for rendering the feature.
+    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
+    //! to use symbolForFeature()
+    //! @note added in 1.9
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+
     /////
 
-    //! return the total number of rules
-    int ruleCount();
-    //! get reference to rule at index (valid indexes: 0...count-1)
-    QgsRuleBasedRendererV2::Rule& ruleAt( int index );
-    //! add rule to the end of the list of rules
-    void addRule( const QgsRuleBasedRendererV2::Rule& rule );
-    //! insert rule to a specific position of the list of rules
-    void insertRule( int index, const QgsRuleBasedRendererV2::Rule& rule );
-    //! modify the rule at a specific position of the list of rules
-    void updateRuleAt( int index, const QgsRuleBasedRendererV2::Rule& rule );
-    //! remove the rule at the specified index
-    void removeRuleAt( int index );
 
     //////
 
     //! take a rule and create a list of new rules based on the categories from categorized symbol renderer
-    static QList<QgsRuleBasedRendererV2::Rule> refineRuleCategories( QgsRuleBasedRendererV2::Rule& initialRule, QgsCategorizedSymbolRendererV2* r );
+    //static QgsRuleBasedRendererV2::RuleList refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
     //! take a rule and create a list of new rules based on the ranges from graduated symbol renderer
-    static QList<QgsRuleBasedRendererV2::Rule> refineRuleRanges( QgsRuleBasedRendererV2::Rule& initialRule, QgsGraduatedSymbolRendererV2* r );
+    //static QgsRuleBasedRendererV2::RuleList refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
-    static QList<QgsRuleBasedRendererV2::Rule> refineRuleScales( QgsRuleBasedRendererV2::Rule& initialRule, QList<int> scales );
+    //static QgsRuleBasedRendererV2::RuleList refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales );
 
 };
 
@@ -625,11 +725,13 @@ class QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha );
 
     bool selected() const;
-    void setSelected( bool selected ) const;
+    void setSelected( bool selected );
 
     //! @note added in 1.5
     int renderHints() const;
@@ -741,7 +843,7 @@ public:
     void setAlpha( qreal alpha );
 
     //! @note added in 1.5
-    int renderHints() const;
+    int renderHints();
     //! @note added in 1.5
     void setRenderHints( int hints );
 

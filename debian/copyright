@@ -1,58 +1,203 @@
-This package was debianized by Steve Halasz <debian at adkgis.org> on
-Wed, 31 Dec 2003 10:07:40 -0500.
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Quantum GIS
+Upstream-Contact: qgis-developer@lists.osgeo.org
+Source: git://github.com/qgis/Quantum-GIS.git
 
-It was downloaded from:
- https://svn.osgeo.org/qgis/trunk/qgis
+Files: *
+Comment: The upstream contributors are listed in the PROVENANCE file
+ and here reported.
+Copyright: Gary E.Sherman <sherman@mrcc dot com>
+ Steve Halasz	<stevehalasz@users.sourceforge.net>
+ Marco Hugentobler	<mhugent@users.sourceforge.net>
+ Tim Sutton	<tim@linfiniti.com>
+ Denis Antipov	<rawbytes@users.sourceforge.net>
+ Mark Coletti	<mcoletti@users.sourceforge.net>
+ Lars Luthman	<larsl@users.sourceforge.net>
+ Jens Oberender	<j.obi@troja.net>
+ Christoph Spoerri	<spoerri@users.sourceforge.net>
+ Carl Anderson	<>
+ Gavin Macaulay	<g_j_m@users.sourceforge.net>
+ Masaru Hoshi	<hoshi@users.sourceforge.net>
+ Peter Brewer	<p.w.brewer@rdg dot ac dot uk>
+ Radim Blazek	<blazek@itc.it>
+ Tom Elwertowski	<telwertowski@users.sourceforge.net>
+ Godofredo Contreras	<frdcn@hotmail.com>
+ Martin Dobias	<wonder.sk@gmail.com>
+ Brendan Morley	<morb@beagle.com.au>
+ Magnus Homann	<magnus@homann.se>
+ Jürgen E. Fischer	<jef@norbit.de>
+ Tisham Dhar	<tisham@apogee.com.au>
+ Leonardo Lami	<lami@faunalia.it>
+ Marco Pasetti	<marco.pasetti@alice.it>
+ Mateusz Loskot	<mateusz@loskot dot net>
+ Peter Ersts	<ersts@amnh.org>
+ Borys Jurgiel	<borysiasty@aster.pl>
+ Paolo Cavallini	<cavallini@faunalia.it>
+ Carson J. Q. Farmer	<carson dot farmer@gmail dot com>
+ Lorenzo Masini	<lorenxo86@gmail.com>
+ Werner Macho	<werner.macho@gmail.com>
+ Giuseppe Sucameli	<brush.tyler@gmail.com>
+ Alessandro Furieri	<a.furieri@lqt.it>
+ 2008 Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+License: GPL-2+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as
+ published by the Free Software Foundation; either version 2 of
+ the License, or (at your option) any later version.
 
-The upstream contributors are listed in the AUTHORS file and here
-reported:
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General Public
+ License can be found in the /usr/share/common-licenses/GPL-2 file.
 
-	Gary E.Sherman		<sherman at mrcc dot com>
-	Steve Halasz		<stevehalasz at users.sourceforge.net>
-	Marco Hugentobler	<mhugent at users.sourceforge.net>
-	Tim Sutton		<tim at linfiniti.com>
-	Denis Antipov		<rawbytes at users.sourceforge.net>
-	Mark Coletti		<mcoletti at users.sourceforge.net>
-	Lars Luthman		<larsl at users.sourceforge.net>
-	Jens Oberender		<j.obi at troja.net>
-	Christoph Spoerri	<spoerri at users.sourceforge.net>
-	Carl Anderson		<>
-	Gavin Macaulay		<g_j_m at users.sourceforge.net>
-	Masaru Hoshi		<hoshi at users.sourceforge.net>
-	Peter Brewer		<p.w.brewer at rdg dot ac dot uk>
-	Radim Blazek		<blazek at itc.it>
-	Tom Elwertowski		<telwertowski at users.sourceforge.net>
-	Godofredo Contreras	<frdcn at hotmail.com>
-	Martin Dobias		<wonder.sk at gmail.com>
-	Brendan Morley		<morb at beagle.com.au>
-	Magnus Homann		<magnus at homann.se>
-	Jürgen E. Fischer	<jef at norbit.de>
-	Tisham Dhar		<tisham at apogee.com.au>
-	Leonardo Lami		<lami at faunalia.it>
-	Marco Pasetti		<marco.pasetti at alice.it>
-	Mateusz Loskot		<mateusz at loskot dot net>
-	Peter Ersts		<ersts at amnh.org>
-	Borys Jurgiel		<borysiasty at aster.pl>
-	Paolo Cavallini		<cavallini at faunalia.it>
-	Carson J. Q. Farmer	<carson dot farmer at gmail dot com>
-	Lorenzo Masini		<lorenxo86 at gmail.com>
-	Werner Macho		<werner.macho at gmail.com>
-	Giuseppe Sucameli	<brush.tyler at gmail.com>
-	Alessandro Furieri	<a.furieri at lqt.it>
+Files: python/pyspatialite/*
+Copyright: 2004-2007 Gerhard Häring <gh@ghaering.de>
+License: Zlib
+ This software is provided 'as-is', without any express or implied
+ warranty.  In no event will the authors be held liable for any damages
+ arising from the use of this software.
+ .
+ Permission is granted to anyone to use this software for any purpose,
+ including commercial applications, and to alter it and redistribute it
+ freely, subject to the following restrictions:
+ .
+ 1. The origin of this software must not be misrepresented; you must not
+    claim that you wrote the original software. If you use this software
+    in a product, an acknowledgment in the product documentation would be
+    appreciated but is not required.
+ 2. Altered source versions must be plainly marked as such, and must not be
+    misrepresented as being the original software.
+ 3. This notice may not be removed or altered from any source distribution.
 
-Copyright:
+Files: src/plugins/dxf2shp_converter/builder.cpp
+Copyright: 1999, Frank Warmerdam <warmerda@pobox.com>
+Comment: The code is heavily based on Christopher Michaelis' DXF to
+ Shapefile Converter (http://www.wanderingidea.com/content/view/12/25/),
+ released under GPL License
+ .
+ This code is based on two other products:
+    DXFLIB (http://www.ribbonsoft.com/dxflib.html)
+ This is a library for reading DXF files, also GPL.
+    SHAPELIB (http://shapelib.maptools.org/)
+ Used for the Shapefile functionality.
+License: Expat
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated
+ documentation files (the "Software"), to deal in the Software without
+ restriction, including without limitation
+ the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ and/or sell copies of the Software,
+ and to permit persons to whom the Software is furnished to do so, subject to
+ the following conditions:
+ .
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Softwa
+ .
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTY
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+ NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDER
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
 
-  Copyright (C) 2003-2010 the authors
-                                                                                
-  This program is free software; you can redistribute it and/or
-  modify it under the terms of the GNU General Public License as
-  published by the Free Software Foundation; either version 2 of
-  the License, or (at your option) any later version.
-                                                                                
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-                                                                                
-  On Debian systems, the complete text of the GNU General Public
-  License can be found in the /usr/share/common-licenses/GPL-2 file.
+Files: src/core/gps/config.h
+ src/core/gps/context.c
+ src/core/gps/context.h
+ src/core/gps/gmath.c
+ src/core/gps/gmath.h
+ src/core/gps/info.c
+ src/core/gps/info.h
+ src/core/gps/nmeatime.h
+ src/core/gps/parse.c
+ src/core/gps/parse.h
+ src/core/gps/parser.h
+ src/core/gps/sentence.c
+ src/core/gps/sentence.h
+ src/core/gps/time.c
+ src/core/gps/tok.c
+ src/core/gps/tok.h
+ src/core/gps/units.h
+Copyright: Tim <xtimor@gmail.com>
+License: LGPL-2+
+
+Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/*
+License: LGPL-2+
+
+Files: src/providers/sqlanywhere/sqlanyconnection/sacapi/*
+Copyright: 2008-2010 iAnywhere Solutions, Inc.
+License: Apache
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+ .
+ http://www.apache.org/licenses/LICENSE-2.0
+ .
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ .
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ .
+ While not a requirement of the license, if you do modify this file, we
+ would appreciate hearing about it. Please email
+ sqlany_interfaces@sybase.com
+
+Files: cmake/PythonCompile.py
+Copyright: Simon Edwards <simon@simonzone.com>
+License: public-domain
+
+Files: cmake/*.cmake
+License: BSD
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ .
+ 1. Redistributions of source code must retain the copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+ 3. The name of the author may not be used to endorse or promote products
+    derived from this software without specific prior written permission.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Files: src/core/spatialindex/include/LineSegment.h
+ src/core/spatialindex/include/Point.h
+ src/core/spatialindex/include/PointerPool.h
+ src/core/spatialindex/include/PoolPointer.h
+ src/core/spatialindex/include/RTree.h
+ src/core/spatialindex/include/Region.h
+ src/core/spatialindex/include/SmartPointer.h
+ src/core/spatialindex/include/SpatialIndex.h
+ src/core/spatialindex/include/TemporaryFile.h
+ src/core/spatialindex/include/Tools.h
+Copyright: 2004, Navel Ltd.
+License: LGPL-2.1+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ .
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU Lesser General Public
+ License can be found in the /usr/share/common-licenses/LGPL-2.1 file.

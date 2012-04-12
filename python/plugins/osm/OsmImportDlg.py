@@ -53,7 +53,7 @@ class OsmImportDlg(QDialog, Ui_OsmImportDlg):
         @param plugin is pointer to instance of OSM Plugin
         """
 
-        QDialog.__init__(self, None)
+        QDialog.__init__(self, plugin.iface.mainWindow())
         self.setupUi(self)
 
         self.plugin=plugin

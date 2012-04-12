@@ -19,6 +19,7 @@
 
 #include <qgsgenericprojectionselector.h>
 #include <QApplication>
+#include <QSettings>
 
 /**
  * \class QgsGenericProjectionSelector
@@ -29,6 +30,10 @@ QgsGenericProjectionSelector::QgsGenericProjectionSelector( QWidget *parent,
     : QDialog( parent, fl )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/ProjectionSelector/geometry" ).toByteArray() );
+
   //we will show this only when a message is set
   textEdit->hide();
 }
@@ -55,7 +60,10 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
 }
 //! Destructor
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
-{}
+{
+  QSettings settings;
+  settings.setValue( "/Windows/ProjectionSelector/geometry", saveGeometry() );
+}
 
 void QgsGenericProjectionSelector::setSelectedEpsg( long theId )
 {

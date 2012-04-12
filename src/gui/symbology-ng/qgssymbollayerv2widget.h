@@ -251,6 +251,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void setOutputUnit();
     void insertIcons();
     void updateOutlineIcon();
+    void updateParamGui();
 
   private slots:
     void on_mBrowseToolButton_clicked();
@@ -259,6 +260,9 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void setFile( const QModelIndex& item );
     void on_mChangeOutlinePushButton_clicked();
     void on_mRotationSpinBox_valueChanged( double d );
+    void on_mChangeColorButton_clicked();
+    void on_mChangeBorderColorButton_clicked();
+    void on_mBorderWidthSpinBox_valueChanged( double d );
 };
 
 //////////

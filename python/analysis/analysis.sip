@@ -1,4 +1,3 @@
-
 %Module qgis.analysis 0
 
 %Import QtCore/QtCoremod.sip

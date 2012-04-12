@@ -20,10 +20,17 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgisinterface.h"
 
-QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog(), mIface( iface )
+#include <QSettings>
+
+QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog( iface->mainWindow() ), mIface( iface )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
+
   insertAvailableLayers();
   mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
 }
@@ -31,11 +38,15 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDia
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( 0 ), mIface( 0 )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
 }
 
 QgsZonalStatisticsDialog::~QgsZonalStatisticsDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "Plugin-ZonalStatistics/geometry", saveGeometry() );
 }
 
 void QgsZonalStatisticsDialog::insertAvailableLayers()
@@ -50,14 +61,22 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     QgsRasterLayer* rl = dynamic_cast<QgsRasterLayer*>( layer_it.value() );
     if ( rl )
     {
-      mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+      QgsRasterDataProvider* rp = rl->dataProvider();
+      if ( rp && rp->name() == "gdal" )
+      {
+        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+      }
     }
     else
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
       if ( vl && vl->geometryType() == QGis::Polygon )
       {
-        mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->id() ) );
+        QgsVectorDataProvider* provider  = vl->dataProvider();
+        if ( provider->capabilities() & QgsVectorDataProvider::AddAttributes )
+        {
+          mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->id() ) );
+        }
       }
     }
   }

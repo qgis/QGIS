@@ -241,6 +241,8 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   double myNoDataValue = noDataValue();
   QgsRasterBandStats myRasterBandStats;
   myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
+  myRasterBandStats.bandName = generateBandName( theBandNo );
+  myRasterBandStats.bandNumber = theBandNo;
 
   int myDataType = dataType( theBandNo );
 

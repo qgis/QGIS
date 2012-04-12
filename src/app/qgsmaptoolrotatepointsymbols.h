@@ -60,7 +60,7 @@ class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
       @param vl the point vector layer
       @param attList out: the list containing the rotation indices
       @return 0 in case of success*/
-    static int layerRotationAttributes( const QgsVectorLayer* vl, QList<int>& attList );
+    static int layerRotationAttributes( QgsVectorLayer* vl, QList<int>& attList );
     void drawArrow( double azimut ) const;
     /**Calculates the azimut between mousePos and mSnappedPoint*/
     double calculateAzimut( const QPoint& mousePos );

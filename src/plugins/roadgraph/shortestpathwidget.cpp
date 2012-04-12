@@ -89,7 +89,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( selectBackPoint );
   v->addLayout( h );
 
-  h = new QHBoxLayout( this );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Criterion" ), myWidget );
   mCriterionName = new QComboBox( myWidget );
   mCriterionName->insertItem( 0, tr( "Length" ) );
@@ -98,7 +98,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mCriterionName );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Length" ), myWidget );
   mPathCostLineEdit = new QLineEdit( myWidget );
   mPathCostLineEdit->setReadOnly( true );
@@ -106,7 +106,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mPathCostLineEdit );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Time" ), myWidget );
   mPathTimeLineEdit = new QLineEdit( myWidget );
   mPathTimeLineEdit->setReadOnly( true );
@@ -114,7 +114,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mPathTimeLineEdit );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   mCalculate = new QPushButton( tr( "Calculate" ), myWidget );
   h->addWidget( mCalculate );
   QPushButton *pbExport = new QPushButton( tr( "Export" ), myWidget );
@@ -126,7 +126,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mClear );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   QPushButton *helpButton = new QPushButton( tr( "Help" ), this );
   helpButton->setIcon( style()->standardIcon( QStyle::SP_DialogHelpButton ) );
   h->addWidget( helpButton );
@@ -230,12 +230,12 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mrbBackPoint->show();
 }
 
-bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoint& p2 )
+QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
 {
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
   {
     QMessageBox::critical( this, tr( "Point not selected" ), tr( "First, select start and stop points." ) );
-    return false;
+    return NULL;
   }
 
   QgsGraphBuilder builder(
@@ -247,7 +247,7 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
     if ( director == NULL )
     {
       QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
-      return false;
+      return NULL;
     }
     connect( director, SIGNAL( buildProgress( int, int ) ), mPlugin->iface()->mainWindow(), SLOT( showProgress( int, int ) ) );
     connect( director, SIGNAL( buildMessage( QString ) ), mPlugin->iface()->mainWindow(), SLOT( showStatusMessage( QString ) ) );
@@ -268,12 +268,12 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
   if ( p1 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
-    return false;
+    return NULL;
   }
   if ( p2 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
-    return false;
+    return NULL;
   }
 
   QgsGraph *graph = builder.graph();
@@ -287,44 +287,43 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
   if ( mCriterionName->currentIndex() > 0 )
     criterionNum = 1;
 
-  QgsGraphAnalyzer::shortestpath( graph, startVertexIdx, criterionNum, pointIdx, pointCost, shortestTree );
+  QgsGraph* shortestpathTree = QgsGraphAnalyzer::shortestTree( graph, startVertexIdx, criterionNum );
 
   delete graph;
 
-  if ( shortestTree->findVertex( p2 ) == -1 )
+  if ( shortestpathTree->findVertex( p2 ) == -1 )
   {
     QMessageBox::critical( this, tr( "Path not found" ), tr( "Path not found" ) );
-    return false;
+    return NULL;
   }
-  return true;
+  return shortestpathTree;
 }
 
 void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
-  QgsGraph path;
-
-  if ( !getPath( &path, p1, p2 ) )
+  QgsGraph *path = getPath( p1, p2 );
+  if ( path == NULL )
     return;
 
   mrbPath->reset( false );
   double time = 0.0;
   double cost = 0.0;
 
-  int startVertexIdx = path.findVertex( p1 );
-  int stopVertexIdx  = path.findVertex( p2 );
+  int startVertexIdx = path->findVertex( p1 );
+  int stopVertexIdx  = path->findVertex( p2 );
   QList< QgsPoint > p;
   while ( startVertexIdx != stopVertexIdx )
   {
-    QgsGraphArcIdList l = path.vertex( stopVertexIdx ).inArc();
+    QgsGraphArcIdList l = path->vertex( stopVertexIdx ).inArc();
     if ( l.empty() )
       break;
-    const QgsGraphArc& e = path.arc( l.front() );
+    const QgsGraphArc& e = path->arc( l.front() );
 
     cost += e.property( 0 ).toDouble();
     time += e.property( 1 ).toDouble();
 
-    p.push_front( path.vertex( e.inVertex() ).point() );
+    p.push_front( path->vertex( e.inVertex() ).point() );
 
     stopVertexIdx = e.outVertex();
   }
@@ -342,6 +341,8 @@ void RgShortestPathWidget::findingPath()
   mPathTimeLineEdit->setText( QString().setNum( time / timeUnit.multipler() ) + timeUnit.name() );
 
   mrbPath->setColor( Qt::red );
+
+  delete path;
 }
 
 void RgShortestPathWidget::clear()
@@ -361,32 +362,32 @@ void RgShortestPathWidget::exportPath()
   if ( !dlg.exec() )
     return;
 
-  QgsPoint p1, p2;
-  QgsGraph path;
-  if ( !getPath( &path, p1, p2 ) )
-    return;
-
   QgsVectorLayer *vl = dlg.mapLayer();
   if ( vl == NULL )
+    return;
+
+  QgsPoint p1, p2;
+  QgsGraph *path = getPath( p1, p2 );
+  if ( path == NULL )
     return;
 
   QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
                              vl->crs() );
 
-  int startVertexIdx = path.findVertex( p1 );
-  int stopVertexIdx  = path.findVertex( p2 );
+  int startVertexIdx = path->findVertex( p1 );
+  int stopVertexIdx  = path->findVertex( p2 );
 
   QgsPolyline p;
   while ( startVertexIdx != stopVertexIdx )
   {
-    QgsGraphArcIdList l = path.vertex( stopVertexIdx ).inArc();
+    QgsGraphArcIdList l = path->vertex( stopVertexIdx ).inArc();
     if ( l.empty() )
       break;
-    const QgsGraphArc& e = path.arc( l.front() );
-    p.push_front( path.vertex( e.inVertex() ).point() );
+    const QgsGraphArc& e = path->arc( l.front() );
+    p.push_front( ct.transform( path->vertex( e.inVertex() ).point() ) );
     stopVertexIdx = e.outVertex();
   }
-  p.push_front( p1 );
+  p.push_front( ct.transform( p1 ) );
 
   vl->startEditing();
   QgsFeature f;
@@ -395,6 +396,7 @@ void RgShortestPathWidget::exportPath()
   vl->updateExtents();
 
   mPlugin->iface()->mapCanvas()->update();
+  delete path;
 }
 
 void RgShortestPathWidget::helpRequested()

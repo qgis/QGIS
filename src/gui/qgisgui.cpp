@@ -31,16 +31,8 @@ namespace QgisGui
   {
     Q_UNUSED( enc );
 
-    bool haveLastUsedFilter = false; // by default, there is no last
-    // used filter
-
-    QSettings settings;         // where we keep last used filter in
-    // persistent state
-
-    haveLastUsedFilter = settings.contains( "/UI/" + filterName );
-    QString lastUsedFilter = settings.value( "/UI/" + filterName,
-                             QVariant( QString::null ) ).toString();
-
+    QSettings settings;
+    QString lastUsedFilter = settings.value( "/UI/" + filterName, "" ).toString();
     QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
 
     QgsDebugMsg( "Opening file dialog with filters: " + filters );
@@ -51,9 +43,11 @@ namespace QgisGui
     else //we have to use non-native dialog to add cancel all button
     {
       QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString( "" ) );
+
       // allow for selection of more than one file
       openFileDialog->setFileMode( QFileDialog::ExistingFiles );
-      if ( haveLastUsedFilter )     // set the filter to the last one used
+
+      if ( !lastUsedFilter.isEmpty() )
       {
         openFileDialog->selectFilter( lastUsedFilter );
       }
@@ -77,104 +71,100 @@ namespace QgisGui
       // Fix by Tim - getting the dirPath from the dialog
       // directly truncates the last node in the dir path.
       // This is a workaround for that
-      QString myFirstFileName = selectedFiles.first();
-      QFileInfo myFI( myFirstFileName );
-      QString myPath = myFI.path();
+      QString firstFileName = selectedFiles.first();
+      QFileInfo fi( firstFileName );
+      QString path = fi.path();
 
-      QgsDebugMsg( "Writing last used dir: " + myPath );
+      QgsDebugMsg( "Writing last used dir: " + path );
 
       settings.setValue( "/UI/" + filterName, lastUsedFilter );
-      settings.setValue( "/UI/" + filterName + "Dir", myPath );
+      settings.setValue( "/UI/" + filterName + "Dir", path );
     }
     return false;
   }
 
-  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage )
+  QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget *theParent, QString theMessage )
   {
-    Q_UNUSED( theMessage );
-    //create a map to hold the QImageIO names and the filter names
-    //the QImageIO name must be passed to the mapcanvas saveas image function
-    typedef QMap<QString, QString> FilterMap;
-    FilterMap myFilterMap;
-
-    //find out the last used filter
-    QSettings myQSettings;  // where we keep last used filter in persistent state
-    QString myLastUsedFilter = myQSettings.value( "/UI/lastSaveAsImageFilter" ).toString();
-    QString myLastUsedDir = myQSettings.value( "/UI/lastSaveAsImageDir", "." ).toString();
-
     // get a list of supported output image types
-    int myCounterInt = 0;
-    QString myFilters;
-    QList<QByteArray> formats = QImageWriter::supportedImageFormats();
-
-    for ( ; myCounterInt < formats.count(); myCounterInt++ )
+    QMap<QString, QString> filterMap;
+    foreach( QByteArray format, QImageWriter::supportedImageFormats() )
     {
-      QString myFormat = QString( formats.at( myCounterInt ) );
       //svg doesnt work so skip it
-      if ( myFormat ==  "svg" )
+      if ( format ==  "svg" )
         continue;
 
-      QString myFilter = createFileFilter_( myFormat + " format", "*." + myFormat );
-      if ( !myFilters.isEmpty() )
-        myFilters += ";;";
-      myFilters += myFilter;
-      myFilterMap[myFilter] = myFormat;
+      filterMap.insert( createFileFilter_( format + " format", "*." + format ), format );
     }
+
 #ifdef QGISDEBUG
     QgsDebugMsg( "Available Filters Map: " );
-    FilterMap::Iterator myIterator;
-    for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
+    for ( QMap<QString, QString>::iterator it = filterMap.begin(); it != filterMap.end(); ++it )
     {
-      QgsDebugMsg( myIterator.key() + "  :  " + myIterator.value() );
+      QgsDebugMsg( it.key() + "  :  " + it.value() );
     }
 #endif
 
+    //find out the last used filter
+    QSettings settings;  // where we keep last used filter in persistent state
+    QString lastUsedFilter = settings.value( "/UI/lastSaveAsImageFilter" ).toString();
+    QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
+
+    QString outputFileName;
+    QString selectedFilter = lastUsedFilter;
+    QString ext;
+
+#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+    outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
+
+    if ( !outputFileName.isNull() )
+    {
+      ext = filterMap.value( selectedFilter, QString::null );
+      if ( !ext.isNull() )
+        settings.setValue( "/UI/lastSaveAsImageFilter", selectedFilter );
+      settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
+    }
+#else
     //create a file dialog using the the filter list generated above
-    std::auto_ptr < QFileDialog > myQFileDialog( new QFileDialog( theParent,
-        QObject::tr( "Choose a file name to save the map image as" ),
-        myLastUsedDir, myFilters ) );
+    std::auto_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, lastUsedDir, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file
-    myQFileDialog->setFileMode( QFileDialog::AnyFile );
+    fileDialog->setFileMode( QFileDialog::AnyFile );
+    fileDialog->setAcceptMode( QFileDialog::AcceptSave );
+    fileDialog->setConfirmOverwrite( true );
 
-    myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-    myQFileDialog->setConfirmOverwrite( true );
-
-
-    if ( !myLastUsedFilter.isEmpty() )     // set the filter to the last one used
+    if ( !lastUsedFilter.isEmpty() )     // set the filter to the last one used
     {
-      myQFileDialog->selectFilter( myLastUsedFilter );
+      fileDialog->selectFilter( lastUsedFilter );
     }
 
     //prompt the user for a fileName
-    QString myOutputFileName; // = myQFileDialog->getSaveFileName(); //delete this
-    if ( myQFileDialog->exec() == QDialog::Accepted )
+    if ( fileDialog->exec() == QDialog::Accepted )
     {
-      myOutputFileName = myQFileDialog->selectedFiles().first();
+      outputFileName = fileDialog->selectedFiles().first();
     }
 
-    QString myFilterString = myQFileDialog->selectedFilter();
-    QgsDebugMsg( "Selected filter: " + myFilterString );
-    QgsDebugMsg( "Image type: " + myFilterMap[myFilterString] );
+    selectedFilter = fileDialog->selectedFilter();
+    QgsDebugMsg( "Selected filter: " + selectedFilter );
+    ext = filterMap.value( selectedFilter, QString::null );
+
+    if ( !ext.isNull() )
+      settings.setValue( "/UI/lastSaveAsImageFilter", selectedFilter );
+
+    settings.setValue( "/UI/lastSaveAsImageDir", fileDialog->directory().absolutePath() );
+#endif
 
     // Add the file type suffix to the fileName if required
-    if ( !myOutputFileName.endsWith( myFilterMap[myFilterString] ) )
+    if ( !ext.isNull() && !outputFileName.endsWith( "." + ext ) )
     {
-      myOutputFileName += "." + myFilterMap[myFilterString];
+      outputFileName += "." + ext;
     }
 
-    myQSettings.setValue( "/UI/lastSaveAsImageFilter", myFilterString );
-    myQSettings.setValue( "/UI/lastSaveAsImageDir", myQFileDialog->directory().absolutePath() );
-    QPair <QString, QString> myPair;
-    myPair.first = myOutputFileName;
-    myPair.second = myFilterMap[myFilterString];
-    return myPair;
-  } //
+    return qMakePair<QString, QString>( outputFileName, ext );
+  }
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {
     return longName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
-  }                               // createFileFilter_
+  }
 
 } // end of QgisGui namespace

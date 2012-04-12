@@ -79,6 +79,8 @@ class CORE_EXPORT QgsVectorLayerImport
     /** retrieves error message */
     QString errorMessage();
 
+    int errorCount() const { return mErrorCount; }
+
     /** add feature to the new created layer */
     bool addFeature( QgsFeature& feature );
 
@@ -92,6 +94,8 @@ class CORE_EXPORT QgsVectorLayerImport
     /** contains error value */
     ImportError mError;
     QString mErrorMessage;
+
+    int mErrorCount;
 
     QgsVectorDataProvider *mProvider;
 

@@ -7,6 +7,7 @@
 #include "qgslogger.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerv2.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -171,6 +172,24 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone()
   return r;
 }
 
+void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element ) const
+{
+  QgsStringMap props;
+  if ( !mRotationField.isEmpty() )
+    props[ "angle" ] = QString( mRotationField ).append( "\"" ).prepend( "\"" );
+  if ( !mSizeScaleField.isEmpty() )
+    props[ "scale" ] = QString( mSizeScaleField ).append( "\"" ).prepend( "\"" );
+
+  QDomElement ruleElem = doc.createElement( "se:Rule" );
+  element.appendChild( ruleElem );
+
+  QDomElement nameElem = doc.createElement( "se:Name" );
+  nameElem.appendChild( doc.createTextNode( "Single symbol" ) );
+  ruleElem.appendChild( nameElem );
+
+  mSymbol->toSld( doc, ruleElem, props );
+}
+
 QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
 {
   QgsSymbolV2List lst;
@@ -204,6 +223,70 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
 
   // TODO: symbol levels
   return r;
+}
+
+QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& element, QGis::GeometryType geomType )
+{
+  // XXX this renderer can handle only one Rule!
+
+  // get the first Rule element
+  QDomElement ruleElem = element.firstChildElement( "Rule" );
+  if ( ruleElem.isNull() )
+  {
+    QgsDebugMsg( "no Rule elements found!" );
+    return NULL;
+  }
+
+  QString label, description;
+  QgsSymbolLayerV2List layers;
+
+  // retrieve the Rule element child nodes
+  QDomElement childElem = ruleElem.firstChildElement();
+  while ( !childElem.isNull() )
+  {
+    if ( childElem.localName() == "Name" )
+    {
+      label = childElem.firstChild().nodeValue();
+    }
+    else if ( childElem.localName() == "Description" || childElem.localName() == "Abstract" )
+    {
+      description = childElem.firstChild().nodeValue();
+    }
+    else if ( childElem.localName().endsWith( "Symbolizer" ) )
+    {
+      // create symbol layers for this symbolizer
+      QgsSymbolLayerV2Utils::createSymbolLayerV2ListFromSld( childElem, geomType, layers );
+    }
+
+    childElem = childElem.nextSiblingElement();
+  }
+
+  // now create the symbol
+  QgsSymbolV2 *symbol = 0;
+  if ( layers.size() > 0 )
+  {
+    switch ( geomType )
+    {
+      case QGis::Line:
+        symbol = new QgsLineSymbolV2( layers );
+        break;
+
+      case QGis::Polygon:
+        symbol = new QgsFillSymbolV2( layers );
+        break;
+
+      case QGis::Point:
+        symbol = new QgsMarkerSymbolV2( layers );
+        break;
+
+      default:
+        QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+        return NULL;
+    }
+  }
+
+  // and finally return the new renderer
+  return new QgsSingleSymbolRendererV2( symbol );
 }
 
 QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )

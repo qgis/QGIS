@@ -9,14 +9,15 @@
 #include <QVariant>
 #include <QPair>
 #include <QPixmap>
-
-class QDomDocument;
-class QDomElement;
+#include <QDomDocument>
+#include <QDomElement>
 
 class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
 class QgsVectorLayer;
+
+typedef QMap<QString, QString> QgsStringMap;
 
 typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
@@ -73,10 +74,21 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() = 0;
 
-    virtual void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! for debugging
     virtual QString dump();
+
+    enum Capabilities
+    {
+      SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      RotationField = 1 <<  1,    // rotate symbols by attribute value
+      MoreSymbolsPerFeature = 1 << 2  // may use more than one symbol to render a feature: symbolsForFeature() will return them
+    };
+
+    //! returns bitwise OR-ed capabilities of the renderer
+    //! \note added in 2.0
+    virtual int capabilities() { return 0; }
 
     //! for symbol levels
     virtual QgsSymbolV2List symbols() = 0;
@@ -84,15 +96,33 @@ class CORE_EXPORT QgsFeatureRendererV2
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
-    bool usingFirstRule() const { return mUsingFirstRule; }
-    void setUsingFirstRule( bool usingFirstRule ) { mUsingFirstRule = usingFirstRule; }
-
-
     //! create a renderer from XML element
     static QgsFeatureRendererV2* load( QDomElement& symbologyElem );
 
     //! store renderer info to XML element
     virtual QDomElement save( QDomDocument& doc );
+
+    //! create the SLD UserStyle element following the SLD v1.1 specs
+    //! @note added in 1.9
+    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
+
+    /** create a new renderer according to the information contained in
+     * the UserStyle element of a SLD style document
+     * @param node the node in the SLD document whose the UserStyle element
+     * is a child
+     * @param geomType the geometry type of the features, used to convert
+     * Symbolizer elements
+     * @param errorMessage it will contain the error message if something
+     * went wrong
+     * @return the renderer
+     * @note added in 1.9
+     */
+    static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage );
+
+    //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
+    //! @note added in 1.9
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const
+    { element.appendChild( doc.createComment( QString( "FeatureRendererV2 %1 not implemented yet" ).arg( type() ) ) ); }
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
@@ -104,8 +134,34 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! set type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );
 
+    //! return rotation field name (or empty string if not set or not supported by renderer)
+    //! @note added in 1.9
+    virtual QString rotationField() const { return ""; }
+    //! sets rotation field of renderer (if supported by the renderer)
+    //! @note added in 1.9
+    virtual void setRotationField( QString fieldName ) { Q_UNUSED( fieldName ); }
+
+    //! return whether the renderer will render a feature or not.
+    //! Must be called between startRender() and stopRender() calls.
+    //! Default implementation uses symbolForFeature().
+    //! @note added in 1.9
+    virtual bool willRenderFeature( QgsFeature& feat ) { return symbolForFeature( feat ) != NULL; }
+
+    //! return list of symbols used for rendering the feature.
+    //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
+    //! to use symbolForFeature()
+    //! @note added in 1.9
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+
   protected:
     QgsFeatureRendererV2( QString type );
+
+    void renderFeatureWithSymbol( QgsFeature& feature,
+                                  QgsSymbolV2* symbol,
+                                  QgsRenderContext& context,
+                                  int layer,
+                                  bool selected,
+                                  bool drawVertexMarker );
 
     //! render editing vertex marker at specified point
     void renderVertexMarker( QPointF& pt, QgsRenderContext& context );
@@ -121,7 +177,6 @@ class CORE_EXPORT QgsFeatureRendererV2
     QString mType;
 
     bool mUsingSymbolLevels;
-    bool mUsingFirstRule;
 
     /** The current type of editing marker */
     int mCurrentVertexMarkerType;
@@ -130,4 +185,4 @@ class CORE_EXPORT QgsFeatureRendererV2
 };
 
 
-#endif
+#endif // QGSRENDERERV2_H

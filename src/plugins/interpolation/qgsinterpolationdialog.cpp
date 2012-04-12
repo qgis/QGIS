@@ -36,6 +36,9 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Interpolation/geometry" ).toByteArray() );
+
   //enter available layers into the combo box
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
@@ -56,13 +59,16 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
   //only inverse distance weighting available for now
   mInterpolationMethodComboBox->insertItem( 0, tr( "Triangular interpolation (TIN)" ) );
   mInterpolationMethodComboBox->insertItem( 1, tr( "Inverse Distance Weighting (IDW)" ) );
+  mInterpolationMethodComboBox->setCurrentIndex( settings.value( "/Interpolation/lastMethod", 0 ).toInt() );
 
   enableOrDisableOkButton();
 }
 
 QgsInterpolationDialog::~QgsInterpolationDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "/Interpolation/geometry", saveGeometry() );
+  settings.setValue( "/Interpolation/lastMethod", mInterpolationMethodComboBox->currentIndex() );
 }
 
 void QgsInterpolationDialog::enableOrDisableOkButton()
@@ -294,7 +300,6 @@ void QgsInterpolationDialog::on_mRemovePushButton_clicked()
   enableOrDisableOkButton();
 }
 
-
 void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 {
   //get last output file dir
@@ -353,11 +358,11 @@ void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged
   delete mInterpolatorDialog;
   if ( text == tr( "Inverse Distance Weighting (IDW)" ) )
   {
-    mInterpolatorDialog = new QgsIDWInterpolatorDialog( 0, mIface );
+    mInterpolatorDialog = new QgsIDWInterpolatorDialog( this, mIface );
   }
   else if ( text == tr( "Triangular interpolation (TIN)" ) )
   {
-    mInterpolatorDialog = new QgsTINInterpolatorDialog( 0, mIface );
+    mInterpolatorDialog = new QgsTINInterpolatorDialog( this, mIface );
   }
 }
 

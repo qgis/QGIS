@@ -81,6 +81,11 @@
        <string>Value relation</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>UUID generator</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -92,7 +97,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>12</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
       <layout class="QVBoxLayout" name="verticalLayout_1">
@@ -596,7 +601,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page">
+     <widget class="QWidget" name="valueRelationPage">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="1" column="0">
         <widget class="QLabel" name="label_5">
@@ -676,6 +681,30 @@
           <string>Order by value</string>
          </property>
         </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="uuidGenPage">
+      <layout class="QVBoxLayout" name="verticalLayout_14">
+       <item>
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Read-only field that generates a UUID if empty.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_11">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>294</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

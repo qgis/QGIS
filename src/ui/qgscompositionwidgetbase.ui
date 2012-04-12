@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
+    <width>352</width>
     <height>570</height>
    </rect>
   </property>
@@ -23,8 +23,17 @@
    <property name="margin">
     <number>0</number>
    </property>
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <item row="0" column="0">
     <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -33,17 +42,29 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>395</width>
-        <height>579</height>
+        <width>352</width>
+        <height>570</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
+       <property name="margin">
+        <number>3</number>
+       </property>
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Paper and quality</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
           <item row="0" column="0">
            <widget class="QLabel" name="textLabel3">
             <property name="sizePolicy">
@@ -63,7 +84,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="0" column="1">
            <widget class="QComboBox" name="mPaperSizeComboBox">
             <property name="enabled">
              <bool>true</bool>
@@ -76,39 +97,62 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QDoubleSpinBox" name="mPaperWidthDoubleSpinBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="prefix">
+               <string>Width </string>
+              </property>
+              <property name="suffix">
+               <string/>
+              </property>
+              <property name="maximum">
+               <double>99999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="mPaperHeightDoubleSpinBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="prefix">
+               <string>Height </string>
+              </property>
+              <property name="suffix">
+               <string/>
+              </property>
+              <property name="maximum">
+               <double>99999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mPaperUnitsComboBox">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="textLabel5">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Units</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mPaperUnitsComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QComboBox" name="mPaperUnitsComboBox">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
            <widget class="QLabel" name="textLabel7">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -127,7 +171,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="2" column="1">
            <widget class="QComboBox" name="mPaperOrientationComboBox">
             <property name="enabled">
              <bool>true</bool>
@@ -140,15 +184,27 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="3" column="0">
            <widget class="QCheckBox" name="mPrintAsRasterCheckBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Print as raster</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="3" column="1">
            <widget class="QSpinBox" name="mResolutionSpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="suffix">
              <string> dpi</string>
             </property>
@@ -157,134 +213,6 @@
             </property>
             <property name="maximum">
              <number>3000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QDoubleSpinBox" name="mPaperWidthDoubleSpinBox">
-            <property name="prefix">
-             <string>Width </string>
-            </property>
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="maximum">
-             <double>99999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QDoubleSpinBox" name="mPaperHeightDoubleSpinBox">
-            <property name="prefix">
-             <string>Height </string>
-            </property>
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="maximum">
-             <double>99999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="mSnapGroupBox">
-         <property name="title">
-          <string>Snapping</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="mSnapToGridCheckBox">
-            <property name="text">
-             <string>Snap to grid</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
-            <property name="prefix">
-             <string>Spacing </string>
-            </property>
-            <property name="suffix">
-             <string/>
-            </property>
-            <property name="maximum">
-             <double>9999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
-            <property name="prefix">
-             <string>X offset </string>
-            </property>
-            <property name="maximum">
-             <double>9999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
-            <property name="prefix">
-             <string>Y offset </string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
-            <property name="prefix">
-             <string>Pen width </string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="mGridColorLabel">
-            <property name="text">
-             <string>Grid color</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mGridColorButton</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QgsColorButton" name="mGridColorButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="mGridStyleLabel">
-            <property name="text">
-             <string>Grid style</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mGridStyleComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QComboBox" name="mGridStyleComboBox"/>
-          </item>
-          <item row="9" column="0">
-           <widget class="QDoubleSpinBox" name="mSelectionToleranceSpinBox">
-            <property name="prefix">
-             <string>Selection tolerance (mm) </string>
             </property>
            </widget>
           </item>
@@ -304,6 +232,133 @@
          </property>
         </spacer>
        </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="mSnapGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Snapping</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="mSnapToGridCheckBox">
+            <property name="text">
+             <string>Snap to grid</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+              <property name="prefix">
+               <string>X offset </string>
+              </property>
+              <property name="maximum">
+               <double>9999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+              <property name="prefix">
+               <string>Y offset </string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mGridColorLabel">
+            <property name="text">
+             <string>Grid color</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mGridColorButton</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsColorButton" name="mGridColorButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="mGridStyleLabel">
+            <property name="text">
+             <string>Grid style</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mGridStyleComboBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="mGridStyleComboBox"/>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QDoubleSpinBox" name="mSelectionToleranceSpinBox">
+            <property name="prefix">
+             <string>Selection tolerance (mm) </string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="prefix">
+             <string>Spacing </string>
+            </property>
+            <property name="suffix">
+             <string/>
+            </property>
+            <property name="maximum">
+             <double>9999.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="prefix">
+             <string>Pen width </string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -320,20 +375,11 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mPaperSizeComboBox</tabstop>
-  <tabstop>mPaperUnitsComboBox</tabstop>
-  <tabstop>mPaperWidthDoubleSpinBox</tabstop>
-  <tabstop>mPaperHeightDoubleSpinBox</tabstop>
-  <tabstop>mPaperOrientationComboBox</tabstop>
-  <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mPrintAsRasterCheckBox</tabstop>
   <tabstop>mSnapToGridCheckBox</tabstop>
   <tabstop>mGridResolutionSpinBox</tabstop>
   <tabstop>mOffsetXSpinBox</tabstop>
-  <tabstop>mOffsetYSpinBox</tabstop>
   <tabstop>mPenWidthSpinBox</tabstop>
-  <tabstop>mGridColorButton</tabstop>
-  <tabstop>mGridStyleComboBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

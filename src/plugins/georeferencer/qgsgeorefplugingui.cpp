@@ -146,7 +146,8 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->id(), false );
+    QgsMapLayerRegistry::instance()->removeMapLayers(
+      ( QStringList() << mLayer->id() ), false );
   }
 
   delete mToolZoomIn;
@@ -251,7 +252,8 @@ void QgsGeorefPluginGui::openRaster()
 
   //delete any old rasterlayers
   if ( mLayer )
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->id(), false );
+    QgsMapLayerRegistry::instance()->removeMapLayers(
+      QStringList() << mLayer->id(), false );
 
   // Add raster
   addRaster( mRasterFileName );
@@ -562,7 +564,7 @@ void QgsGeorefPluginGui::loadGCPsDialog()
 {
   QString selectedFile = mRasterFileName.isEmpty() ? "" : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP points" ),
-                       selectedFile, "GCP file (*.points)" );
+                       selectedFile, tr( "GCP file" ) + " (*.points)" );
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
@@ -580,7 +582,7 @@ void QgsGeorefPluginGui::saveGCPsDialog()
   QString selectedFile = mRasterFileName.isEmpty() ? "" : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP points" ),
                        selectedFile,
-                       "GCP file (*.points)" );
+                       tr( "GCP file" ) + " (*.points)" );
 
   if ( mGCPpointsFileName.isEmpty() )
     return;
@@ -921,7 +923,7 @@ void QgsGeorefPluginGui::createMapCanvas()
            this, SLOT( releasePoint( const QPoint & ) ) );
 
   QSettings s;
-  int action = s.value( "/qgis/wheel_action", 0 ).toInt();
+  int action = s.value( "/qgis/wheel_action", 2 ).toInt();
   double zoomFactor = s.value( "/qgis/zoom_factor", 2 ).toDouble();
   mCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
 
@@ -1039,7 +1041,8 @@ void QgsGeorefPluginGui::addRaster( QString file )
   mLayer = new QgsRasterLayer( file, "Raster" );
 
   // so layer is not added to legend
-  QgsMapLayerRegistry::instance()->addMapLayer( mLayer, false );
+  QgsMapLayerRegistry::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mLayer, false );
 
   // add layer to map canvas
   QList<QgsMapCanvasLayer> layers;
@@ -1494,7 +1497,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   titleLabel->setText( rasterFi.fileName() );
   composition->addItem( titleLabel );
   titleLabel->setSceneRect( QRectF( leftMargin, 5, contentWidth, 8 ) );
-  titleLabel->setFrame( false );
+  titleLabel->setFrameEnabled( false );
 
   //composer map
   QgsRectangle canvasExtent = mCanvas->extent();
@@ -1549,7 +1552,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     parameterLabel->adjustSizeToText();
     composition->addItem( parameterLabel );
     parameterLabel->setSceneRect( QRectF( leftMargin, composerMap->rect().bottom() + composerMap->transform().dy() + 5, contentWidth, 8 ) );
-    parameterLabel->setFrame( false );
+    parameterLabel->setFrameEnabled( false );
 
     //calculate mean error
     double meanError = 0;
@@ -1581,7 +1584,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   residualLabel->setText( tr( "Residuals" ) );
   composition->addItem( residualLabel );
   residualLabel->setSceneRect( QRectF( leftMargin, previousItem->rect().bottom() + previousItem->transform().dy() + 5, contentWidth, 6 ) );
-  residualLabel->setFrame( false );
+  residualLabel->setFrameEnabled( false );
 
   //residual plot
   QgsResidualPlotItem* resPlotItem = new QgsResidualPlotItem( composition );

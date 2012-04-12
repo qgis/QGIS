@@ -47,6 +47,7 @@
 
 static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
+static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 static const QString icon_ = ":/icons/spatialquery.png";
@@ -58,7 +59,7 @@ static const QString icon_ = ":/icons/spatialquery.png";
 * @parma mIface Pointer to the QGIS interface object
 */
 QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, version_, type_ )
+    : QgisPlugin( name_, description_, category_, version_, type_ )
     , mDialog( 0 )
     , mIface( iface )
     , mSpatialQueryAction( 0 )
@@ -85,8 +86,8 @@ void QgsSpatialQueryPlugin::initGui()
   connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add the icon to the toolbar and to the plugin menu
-  mIface->addToolBarIcon( mSpatialQueryAction );
-  mIface->addPluginToMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
+  mIface->addVectorToolBarIcon( mSpatialQueryAction );
+  mIface->addPluginToVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
 }
 
@@ -94,8 +95,8 @@ void QgsSpatialQueryPlugin::initGui()
 void QgsSpatialQueryPlugin::unload()
 {
   // remove the GUI
-  mIface->removeToolBarIcon( mSpatialQueryAction );
-  mIface->removePluginMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
+  mIface->removeVectorToolBarIcon( mSpatialQueryAction );
+  mIface->removePluginVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
   delete mSpatialQueryAction;
 
@@ -182,6 +183,13 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)

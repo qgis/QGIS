@@ -37,7 +37,7 @@ import math
 
 class VisualDialog( QDialog, Ui_Dialog ):
   def __init__( self, iface, function ):
-    QDialog.__init__( self )
+    QDialog.__init__( self, iface.mainWindow() )
     self.iface = iface
     self.setupUi( self )
     self.myFunction = function

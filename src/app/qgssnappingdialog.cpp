@@ -69,8 +69,8 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
     connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( apply() ) );
     connect( mButtonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   }
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ), this, SLOT( addLayer( QgsMapLayer * ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layerWillBeRemoved( QString ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer * > ) ), this, SLOT( addLayers( QList<QgsMapLayer * > ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
   connect( cbxEnableTopologicalEditingCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_cbxEnableTopologicalEditingCheckBox_stateChanged( int ) ) );
 
   mLayerTreeWidget->clear();
@@ -178,6 +178,14 @@ void QgsSnappingDialog::show()
     mDock->setVisible( true );
   else
     QDialog::show();
+}
+
+void QgsSnappingDialog::addLayers( QList<QgsMapLayer *> layers )
+{
+  foreach( QgsMapLayer* layer, layers )
+  {
+    addLayer( layer );
+  }
 }
 
 void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
@@ -298,20 +306,23 @@ void QgsSnappingDialog::addLayer( QgsMapLayer * theMapLayer )
   }
 }
 
-void QgsSnappingDialog::layerWillBeRemoved( QString theLayerId )
+void QgsSnappingDialog::layersWillBeRemoved( QStringList thelayers )
 {
-  QTreeWidgetItem *item = 0;
-
-  for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
+  foreach( QString theLayerId, thelayers )
   {
-    item = mLayerTreeWidget->topLevelItem( i );
-    if ( item && item->data( 0, Qt::UserRole ).toString() == theLayerId )
-      break;
-    item = 0;
-  }
+    QTreeWidgetItem *item = 0;
 
-  if ( item )
-    delete item;
+    for ( int i = 0; i < mLayerTreeWidget->topLevelItemCount(); ++i )
+    {
+      item = mLayerTreeWidget->topLevelItem( i );
+      if ( item && item->data( 0, Qt::UserRole ).toString() == theLayerId )
+        break;
+      item = 0;
+    }
+
+    if ( item )
+      delete item;
+  }
 }
 
 void QgsSnappingDialog::setTopologicalEditingState()

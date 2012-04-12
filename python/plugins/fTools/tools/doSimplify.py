@@ -40,7 +40,7 @@ from ui_frmSimplify import Ui_Dialog
 
 class Dialog( QDialog, Ui_Dialog ):
   def __init__( self, iface, function ):
-    QDialog.__init__( self )
+    QDialog.__init__( self, iface.mainWindow() )
     self.setupUi( self )
     self.iface = iface
     self.myFunction = function
@@ -385,7 +385,7 @@ class GeomThread( QThread ):
         for f in selection:
           featGeometry = QgsGeometry( f.geometry() )
           attrMap = f.attributeMap()
-          newGeometry = densifyGeometry( featGeometry, self.tolerance, isPolygon )
+          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
 
           feature = QgsFeature()
           feature.setGeometry( newGeometry )
@@ -406,7 +406,7 @@ class GeomThread( QThread ):
         while vProvider.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
           attrMap = f.attributeMap()
-          newGeometry = densifyGeometry( featGeometry, self.tolerance, isPolygon )
+          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
 
           feature = QgsFeature()
           feature.setGeometry( newGeometry )
@@ -433,7 +433,7 @@ class GeomThread( QThread ):
         for f in selection:
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )
-          newGeometry = densifyGeometry( featGeometry, self.tolerance, isPolygon )
+          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
 
           self.inputLayer.changeGeometry( featureId, newGeometry )
           self.emit( SIGNAL( "featureProcessed()" ) )
@@ -451,7 +451,7 @@ class GeomThread( QThread ):
         while vProvider.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )
-          newGeometry = densifyGeometry( featGeometry, self.tolerance, isPolygon )
+          newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
 
           self.inputLayer.changeGeometry( featureId, newGeometry )
           self.emit( SIGNAL( "featureProcessed()" ) )

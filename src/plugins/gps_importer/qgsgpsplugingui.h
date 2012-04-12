@@ -65,6 +65,9 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
     void populatePortComboBoxes();
     void populateCONVDialog();
 
+    void saveState();
+    void restoreState();
+
 #if 0
     void populateLoadDialog();
     void populateDLDialog();

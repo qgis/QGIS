@@ -26,9 +26,11 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
+  raster/qgshillshadefilter.cpp
   raster/qgsslopefilter.cpp
   raster/qgsaspectfilter.cpp
   raster/qgstotalcurvaturefilter.cpp
+  raster/qgsrelief.cpp
   raster/qgsrastercalcnode.cpp
   raster/qgsrastercalculator.cpp
   raster/qgsrastermatrix.cpp
@@ -59,6 +61,14 @@ QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  raster/qgsaspectfilter.h
+  raster/qgsderivativefilter.h
+  raster/qgshillshadefilter.h
+  raster/qgsninecellfilter.h
+  raster/qgsrastercalculator.h
+  raster/qgsrelief.h
+  raster/qgsruggednessfilter.h
+  raster/qgsslopefilter.h
   vector/qgsgeometryanalyzer.h
   vector/qgszonalstatistics.h
   interpolation/qgsinterpolator.h

@@ -125,6 +125,22 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       {
         //close polygon
         closePolygon();
+        //avoid intersections
+        QgsGeometry* geom = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
+        if ( geom )
+        {
+          geom->avoidIntersections();
+          QgsPolygon poly = geom->asPolygon();
+          if ( poly.size() < 1 )
+          {
+            stopCapturing();
+            delete geom;
+            vlayer->destroyEditCommand();
+            return;
+          }
+          setPoints( geom->asPolygon()[0].toList() );
+          delete geom;
+        }
       }
 
       vlayer->beginEditCommand( tr( "Part added" ) );

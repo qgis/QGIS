@@ -30,12 +30,13 @@
 
 static const QString sName = QObject::tr( "OfflineEditing" );
 static const QString sDescription = QObject::tr( "Allow offline editing and synchronizing with database" );
+static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
     , mActionConvertProject( NULL )
     , mActionSynchronize( NULL )
@@ -57,14 +58,14 @@ void QgsOfflineEditingPlugin::initGui()
   // Connect the action to the run
   connect( mActionConvertProject, SIGNAL( triggered() ), this, SLOT( convertProject() ) );
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mActionConvertProject );
+  mQGisIface->addDatabaseToolBarIcon( mActionConvertProject );
   mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
   mActionConvertProject->setEnabled( false );
 
   mActionSynchronize = new QAction( QIcon( ":/offline_editing/offline_editing_sync.png" ), tr( "Synchronize" ), this );
   mActionSynchronize->setWhatsThis( tr( "Synchronize offline project with remote layers" ) );
   connect( mActionSynchronize, SIGNAL( triggered() ), this, SLOT( synchronize() ) );
-  mQGisIface->addToolBarIcon( mActionSynchronize );
+  mQGisIface->addDatabaseToolBarIcon( mActionSynchronize );
   mQGisIface->addPluginToDatabaseMenu( tr( "&Offline Editing" ), mActionSynchronize );
   mActionSynchronize->setEnabled( false );
 
@@ -116,9 +117,9 @@ void QgsOfflineEditingPlugin::unload()
 
   // remove the GUI
   mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
-  mQGisIface->removeToolBarIcon( mActionConvertProject );
+  mQGisIface->removeDatabaseToolBarIcon( mActionConvertProject );
   mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionSynchronize );
-  mQGisIface->removeToolBarIcon( mActionSynchronize );
+  mQGisIface->removeDatabaseToolBarIcon( mActionSynchronize );
   delete mActionConvertProject;
   delete mActionSynchronize;
 }
@@ -158,6 +159,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

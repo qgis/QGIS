@@ -54,7 +54,6 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdbtablemodel.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
@@ -62,6 +61,7 @@ SET(QGIS_CORE_SRCS
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp
+  qgsgeometryvalidator.cpp
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
@@ -201,6 +201,13 @@ ELSE(WIN32)
     ADD_DEFINITIONS(-D_TTY_POSIX_)
 ENDIF(WIN32)
 
+IF (QT_MOBILITY_LOCATION_FOUND)
+    SET(QGIS_CORE_SRCS
+        ${QGIS_CORE_SRCS}
+        gps/qgsqtlocationconnection.cpp
+        )
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
+
 IF (WITH_INTERNAL_SPATIALITE)
   IF (WIN32 OR APPLE OR ANDROID)
     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
@@ -244,13 +251,13 @@ SET(QGIS_CORE_MOC_HDRS
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
-  qgsdbtablemodel.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmessageoutput.h
+  qgsmessagelog.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
@@ -259,6 +266,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
@@ -282,6 +290,13 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qextserialport/qextserialport.h
   gps/qextserialport/qextserialenumerator.h
 )
+
+IF (QT_MOBILITY_LOCATION_FOUND)
+    SET(QGIS_CORE_MOC_HDRS
+        ${QGIS_CORE_MOC_HDRS}
+        gps/qgsqtlocationconnection.h
+        )
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
@@ -403,6 +418,13 @@ SET(QGIS_CORE_HDRS
   qgsspatialindex.h
 )
 
+IF (QT_MOBILITY_LOCATION_FOUND)
+    SET(QGIS_CORE_HDRS
+        ${QGIS_CORE_HDRS}
+        gps/qgsqtlocationconnection.h
+        )
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
+
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   composer
@@ -502,6 +524,10 @@ ENDIF (WIN32)
 IF(APPLE)
   TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
 ENDIF(APPLE)
+
+IF (QT_MOBILITY_LOCATION_FOUND)
+    TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTMAIN_LIBRARY}

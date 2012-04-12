@@ -64,6 +64,31 @@ class QgisInterface : QObject
     virtual int addToolBarIcon(QAction *qAction) =0;
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon(QAction *qAction) = 0;
+    //! Add an icon to the Raster toolbar
+    //! @note added in 2.0
+    virtual int addRasterToolBarIcon(QAction *qAction) =0;
+    //! Remove an action (icon) from the Raster toolbar
+    //! @note added in 2.0
+    virtual void removeRasterToolBarIcon(QAction *qAction) = 0;
+    //! Add an icon to the Vector toolbar
+    //! @note added in 2.0
+    virtual int addVectorToolBarIcon(QAction *qAction) =0;
+    //! Remove an action (icon) from the Vector toolbar
+    //! @note added in 2.0
+    virtual void removeVectorToolBarIcon(QAction *qAction) = 0;
+    //! Add an icon to the Database toolbar
+    //! @note added in 2.0
+    virtual int addDatabaseToolBarIcon(QAction *qAction) =0;
+    //! Remove an action (icon) from the Database toolbar
+    //! @note added in 2.0
+    virtual void removeDatabaseToolBarIcon(QAction *qAction) = 0;
+    //! Add an icon to the Web toolbar
+    //! @note added in 2.0
+    virtual int addWebToolBarIcon(QAction *qAction) =0;
+    //! Remove an action (icon) from the Web toolbar
+    //! @note added in 2.0
+    virtual void removeWebToolBarIcon(QAction *qAction) = 0;
+
     //! Add toolbar with specified name
     virtual QToolBar* addToolBar(QString name)=0 /Factory/;
 
@@ -114,6 +139,36 @@ class QgisInterface : QObject
       * @note added in 1.7
       */
     virtual void removePluginDatabaseMenu(QString name, QAction* action)=0;
+
+    /** Add action to the Raster menu
+      * @note added in 2.0
+      */
+    virtual void addPluginToRasterMenu(QString name, QAction* action)=0;
+
+    /** Remove action from the Raster menu
+      * @note added in 2.0
+      */
+    virtual void removePluginRasterMenu(QString name, QAction* action)=0;
+
+    /** Add action to the Vector menu
+      * @note added in 2.0
+      */
+    virtual void addPluginToVectorMenu(QString name, QAction* action)=0;
+
+    /** Remove action from the Vector menu
+      * @note added in 2.0
+      */
+    virtual void removePluginVectorMenu(QString name, QAction* action)=0;
+
+    /** Add action to the Web menu
+      * @note added in 2.0
+      */
+    virtual void addPluginToWebMenu(QString name, QAction* action)=0;
+
+    /** Remove action from the Web menu
+      * @note added in 2.0
+      */
+    virtual void removePluginWebMenu(QString name, QAction* action)=0;
 
     /** Add a dock widget to the main window
        @note added in 1.7 */
@@ -167,6 +222,12 @@ class QgisInterface : QObject
     virtual QMenu *layerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
+    virtual QMenu *rasterMenu() = 0;
+    //** @note added in 2.0
+    virtual QMenu *vectorMenu() = 0;
+    //** @note added in 2.0
+    virtual QMenu *webMenu() = 0;
+    virtual QMenu *databaseMenu() = 0;
     virtual QMenu *firstRightStandardMenu() = 0;
     virtual QMenu *windowMenu() = 0;
     virtual QMenu *helpMenu() = 0;
@@ -181,6 +242,12 @@ class QgisInterface : QObject
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
     virtual QToolBar *rasterToolBar() = 0;
+    //** @note added in 2.0
+    virtual QToolBar *vectorToolBar() = 0;
+    //** @note added in 2.0
+    virtual QToolBar *databaseToolBar() = 0;
+    //** @note added in 2.0
+    virtual QToolBar *webToolBar() = 0;
 
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
@@ -222,6 +289,7 @@ class QgisInterface : QObject
 
     //! View menu actions
     virtual QAction *actionPan() = 0;
+    virtual QAction *actionPanToSelected() = 0;
     virtual QAction *actionZoomIn() = 0;
     virtual QAction *actionZoomOut() = 0;
     virtual QAction *actionSelect() = 0;

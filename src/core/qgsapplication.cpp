@@ -18,6 +18,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsexception.h"
+#include "qgsgeometry.h"
 
 #include <QDir>
 #include <QFileOpenEvent>
@@ -37,20 +38,20 @@
 #include <ogr_api.h>
 #include <cpl_conv.h> // for setting gdal options
 
-QObject * QgsApplication::mFileOpenEventReceiver;
-QStringList QgsApplication::mFileOpenEventList;
-QString QgsApplication::mPrefixPath;
-QString QgsApplication::mPluginPath;
-QString QgsApplication::mPkgDataPath;
-QString QgsApplication::mLibraryPath;
-QString QgsApplication::mLibexecPath;
-QString QgsApplication::mThemeName;
-QStringList QgsApplication::mDefaultSvgPaths;
-QString QgsApplication::mConfigPath = QDir::homePath() + QString( "/.qgis/" );
-bool QgsApplication::mRunningFromBuildDir = false;
-QString QgsApplication::mBuildSourcePath;
-QString QgsApplication::mBuildOutputPath;
-QStringList QgsApplication::mGdalSkipList;
+QObject * ABISYM( QgsApplication::mFileOpenEventReceiver );
+QStringList ABISYM( QgsApplication::mFileOpenEventList );
+QString ABISYM( QgsApplication::mPrefixPath );
+QString ABISYM( QgsApplication::mPluginPath );
+QString ABISYM( QgsApplication::mPkgDataPath );
+QString ABISYM( QgsApplication::mLibraryPath );
+QString ABISYM( QgsApplication::mLibexecPath );
+QString ABISYM( QgsApplication::mThemeName );
+QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
+QString ABISYM( QgsApplication::mConfigPath );
+bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
+QString ABISYM( QgsApplication::mBuildSourcePath );
+QString ABISYM( QgsApplication::mBuildOutputPath );
+QStringList ABISYM( QgsApplication::mGdalSkipList );
 
 /*!
   \class QgsApplication
@@ -72,6 +73,12 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
 }
 void QgsApplication::init( QString customConfigPath )
 {
+  if ( customConfigPath.isEmpty() )
+  {
+    customConfigPath = QDir::homePath() + QString( "/.qgis/" );
+  }
+  qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+
   // check if QGIS is run from build directory (not the install directory)
   QDir appDir( applicationDirPath() );
   if ( appDir.exists( "source_path.txt" ) )
@@ -79,27 +86,27 @@ void QgsApplication::init( QString customConfigPath )
     QFile f( applicationDirPath() + "/source_path.txt" );
     if ( f.open( QIODevice::ReadOnly ) )
     {
-      mRunningFromBuildDir = true;
-      mBuildSourcePath = f.readAll();
+      ABISYM( mRunningFromBuildDir ) = true;
+      ABISYM( mBuildSourcePath ) = f.readAll();
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
-      mBuildOutputPath = applicationDirPath();
+      ABISYM( mBuildOutputPath ) = applicationDirPath();
 #else
-      mBuildOutputPath = applicationDirPath() + "/.."; // on linux
+      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/.."; // on linux
 #endif
       qDebug( "Running from build directory!" );
-      qDebug( "- source directory: %s", mBuildSourcePath.toAscii().data() );
-      qDebug( "- output directory of the build: %s", mBuildOutputPath.toAscii().data() );
+      qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toAscii().data() );
+      qDebug( "- output directory of the build: %s", ABISYM( mBuildOutputPath ).toAscii().data() );
     }
   }
 
-  if ( mRunningFromBuildDir )
+  if ( ABISYM( mRunningFromBuildDir ) )
   {
     // we run from source directory - not installed to destination (specified prefix)
-    mPrefixPath = QString(); // set invalid path
-    setPluginPath( mBuildOutputPath + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
-    setPkgDataPath( mBuildSourcePath ); // directly source path - used for: doc, resources, svg
-    mLibraryPath = mBuildOutputPath + "/" + QGIS_LIB_SUBDIR + "/";
-    mLibexecPath = mBuildOutputPath + "/" + QGIS_LIBEXEC_SUBDIR + "/";
+    ABISYM( mPrefixPath ) = QString(); // set invalid path
+    setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
+    setPkgDataPath( ABISYM( mBuildSourcePath ) ); // directly source path - used for: doc, resources, svg
+    ABISYM( mLibraryPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIB_SUBDIR + "/";
+    ABISYM( mLibexecPath ) = ABISYM( mBuildOutputPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
   }
   else
   {
@@ -115,10 +122,10 @@ void QgsApplication::init( QString customConfigPath )
 
   if ( !customConfigPath.isEmpty() )
   {
-    mConfigPath = customConfigPath + "/"; // make sure trailing slash is included
+    ABISYM( mConfigPath ) = customConfigPath + "/"; // make sure trailing slash is included
   }
 
-  mDefaultSvgPaths << qgisSettingsDirPath() + QString( "svg/" );
+  ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
 
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
@@ -151,17 +158,17 @@ bool QgsApplication::event( QEvent * event )
   if ( event->type() == QEvent::FileOpen )
   {
     // handle FileOpen event (double clicking a file icon in Mac OS X Finder)
-    if ( mFileOpenEventReceiver )
+    if ( ABISYM( mFileOpenEventReceiver ) )
     {
       // Forward event to main window.
-      done = notify( mFileOpenEventReceiver, event );
+      done = notify( ABISYM( mFileOpenEventReceiver ), event );
     }
     else
     {
       // Store filename because receiver has not registered yet.
       // If QGIS has been launched by double clicking a file icon, FileOpen will be
       // the first event; the main window is not yet ready to handle the event.
-      mFileOpenEventList.append( static_cast<QFileOpenEvent *>( event )->file() );
+      ABISYM( mFileOpenEventList ).append( static_cast<QFileOpenEvent *>( event )->file() );
       done = true;
     }
   }
@@ -206,73 +213,73 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
 void QgsApplication::setFileOpenEventReceiver( QObject * receiver )
 {
   // Set receiver for FileOpen events
-  mFileOpenEventReceiver = receiver;
+  ABISYM( mFileOpenEventReceiver ) = receiver;
   // Propagate any events collected before the receiver has registered.
-  if ( mFileOpenEventList.count() > 0 )
+  if ( ABISYM( mFileOpenEventList ).count() > 0 )
   {
-    QStringListIterator i( mFileOpenEventList );
+    QStringListIterator i( ABISYM( mFileOpenEventList ) );
     while ( i.hasNext() )
     {
       QFileOpenEvent foe( i.next() );
-      QgsApplication::sendEvent( mFileOpenEventReceiver, &foe );
+      QgsApplication::sendEvent( ABISYM( mFileOpenEventReceiver ), &foe );
     }
-    mFileOpenEventList.clear();
+    ABISYM( mFileOpenEventList ).clear();
   }
 }
 
 void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefaultPaths )
 {
-  mPrefixPath = thePrefixPath;
+  ABISYM( mPrefixPath ) = thePrefixPath;
 #if defined(_MSC_VER)
-  if ( mPrefixPath.endsWith( "/bin" ) )
+  if ( ABISYM( mPrefixPath ).endsWith( "/bin" ) )
   {
-    mPrefixPath.chop( 4 );
+    ABISYM( mPrefixPath ).chop( 4 );
   }
 #endif
   if ( useDefaultPaths )
   {
-    setPluginPath( mPrefixPath + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
-    setPkgDataPath( mPrefixPath + "/" + QString( QGIS_DATA_SUBDIR ) );
+    setPluginPath( ABISYM( mPrefixPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
+    setPkgDataPath( ABISYM( mPrefixPath ) + "/" + QString( QGIS_DATA_SUBDIR ) );
   }
-  mLibraryPath = mPrefixPath + "/" + QGIS_LIB_SUBDIR + "/";
-  mLibexecPath = mPrefixPath + "/" + QGIS_LIBEXEC_SUBDIR + "/";
+  ABISYM( mLibraryPath ) = ABISYM( mPrefixPath ) + "/" + QGIS_LIB_SUBDIR + "/";
+  ABISYM( mLibexecPath ) = ABISYM( mPrefixPath ) + "/" + QGIS_LIBEXEC_SUBDIR + "/";
 }
 
 void QgsApplication::setPluginPath( const QString thePluginPath )
 {
-  mPluginPath = thePluginPath;
+  ABISYM( mPluginPath ) = thePluginPath;
 }
 
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
 {
-  mPkgDataPath = thePkgDataPath;
-  QString mySvgPath = thePkgDataPath + ( mRunningFromBuildDir ? "/images/svg/" : "/svg/" );
+  ABISYM( mPkgDataPath ) = thePkgDataPath;
+  QString mySvgPath = thePkgDataPath + ( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
   // avoid duplicate entries
-  if ( !mDefaultSvgPaths.contains( mySvgPath ) )
-    mDefaultSvgPaths << mySvgPath;
+  if ( !ABISYM( mDefaultSvgPaths ).contains( mySvgPath ) )
+    ABISYM( mDefaultSvgPaths ) << mySvgPath;
 }
 
 void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
 {
-  mDefaultSvgPaths = pathList;
+  ABISYM( mDefaultSvgPaths ) = pathList;
 }
 
 const QString QgsApplication::prefixPath()
 {
-  if ( mRunningFromBuildDir )
+  if ( ABISYM( mRunningFromBuildDir ) )
   {
     qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
   }
 
-  return mPrefixPath;
+  return ABISYM( mPrefixPath );
 }
 const QString QgsApplication::pluginPath()
 {
-  return mPluginPath;
+  return ABISYM( mPluginPath );
 }
 const QString QgsApplication::pkgDataPath()
 {
-  return mPkgDataPath;
+  return ABISYM( mPkgDataPath );
 }
 const QString QgsApplication::defaultThemePath()
 {
@@ -280,7 +287,7 @@ const QString QgsApplication::defaultThemePath()
 }
 const QString QgsApplication::activeThemePath()
 {
-  return ":/images/themes/" + mThemeName + "/";
+  return ":/images/themes/" + themeName() + "/";
 }
 
 
@@ -304,11 +311,11 @@ void QgsApplication::setThemeName( const QString theThemeName )
   //check it exists and if not roll back to default theme
   if ( QFile::exists( myPath ) )
   {
-    mThemeName = theThemeName;
+    ABISYM( mThemeName ) = theThemeName;
   }
   else
   {
-    mThemeName = "default";
+    ABISYM( mThemeName ) = "default";
   }
 }
 /*!
@@ -316,28 +323,28 @@ void QgsApplication::setThemeName( const QString theThemeName )
  */
 const QString QgsApplication::themeName()
 {
-  return mThemeName;
+  return ABISYM( mThemeName );
 }
 /*!
   Returns the path to the authors file.
 */
 const QString QgsApplication::authorsFilePath()
 {
-  return mPkgDataPath + QString( "/doc/AUTHORS" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/AUTHORS" );
 }
 /*!
   Returns the path to the contributors file.
 */
 const QString QgsApplication::contributorsFilePath()
 {
-  return mPkgDataPath + QString( "/doc/CONTRIBUTORS" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/CONTRIBUTORS" );
 }
 /*!
   Returns the path to the sponsors file.
 */
 const QString QgsApplication::sponsorsFilePath()
 {
-  return mPkgDataPath + QString( "/doc/SPONSORS" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/SPONSORS" );
 }
 
 /*!
@@ -345,7 +352,7 @@ const QString QgsApplication::sponsorsFilePath()
 */
 const QString QgsApplication::donorsFilePath()
 {
-  return mPkgDataPath + QString( "/doc/DONORS" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/DONORS" );
 }
 
 /*!
@@ -354,7 +361,7 @@ const QString QgsApplication::donorsFilePath()
 */
 const QString QgsApplication::translatorsFilePath()
 {
-  return mPkgDataPath + QString( "/doc/TRANSLATORS" );
+  return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
 const QString QgsApplication::developerPath()
@@ -381,10 +388,10 @@ const QString QgsApplication::helpAppPath()
 */
 const QString QgsApplication::i18nPath()
 {
-  if ( mRunningFromBuildDir )
-    return mBuildOutputPath + QString( "/i18n" );
+  if ( ABISYM( mRunningFromBuildDir ) )
+    return ABISYM( mBuildOutputPath ) + QString( "/i18n" );
   else
-    return mPkgDataPath + QString( "/i18n/" );
+    return ABISYM( mPkgDataPath ) + QString( "/i18n/" );
 }
 
 /*!
@@ -392,7 +399,7 @@ const QString QgsApplication::i18nPath()
 */
 const QString QgsApplication::qgisMasterDbFilePath()
 {
-  return mPkgDataPath + QString( "/resources/qgis.db" );
+  return ABISYM( mPkgDataPath ) + QString( "/resources/qgis.db" );
 }
 
 /*!
@@ -400,7 +407,7 @@ const QString QgsApplication::qgisMasterDbFilePath()
  */
 const QString QgsApplication::qgisSettingsDirPath()
 {
-  return mConfigPath;
+  return ABISYM( mConfigPath );
 }
 
 /*!
@@ -424,14 +431,14 @@ const QString QgsApplication::splashPath()
 */
 const QString QgsApplication::iconsPath()
 {
-  return mPkgDataPath + QString( "/images/icons/" );
+  return ABISYM( mPkgDataPath ) + QString( "/images/icons/" );
 }
 /*!
   Returns the path to the srs.db file.
 */
 const QString QgsApplication::srsDbFilePath()
 {
-  return mPkgDataPath + QString( "/resources/srs.db" );
+  return ABISYM( mPkgDataPath ) + QString( "/resources/srs.db" );
 }
 
 /*!
@@ -449,7 +456,7 @@ const QStringList QgsApplication::svgPaths()
     myPathList = myPaths.split( "|" );
   }
 
-  myPathList << mDefaultSvgPaths;
+  myPathList << ABISYM( mDefaultSvgPaths );
   return myPathList;
 }
 
@@ -458,8 +465,8 @@ const QStringList QgsApplication::svgPaths()
 */
 const QString QgsApplication::svgPath()
 {
-  QString svgSubDir( mRunningFromBuildDir ? "/images/svg/" : "/svg/" );
-  return mPkgDataPath + svgSubDir;
+  QString svgSubDir( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
+  return ABISYM( mPkgDataPath ) + svgSubDir;
 }
 
 const QString QgsApplication::userStyleV2Path()
@@ -469,17 +476,17 @@ const QString QgsApplication::userStyleV2Path()
 
 const QString QgsApplication::defaultStyleV2Path()
 {
-  return mPkgDataPath + QString( "/resources/symbology-ng-style.xml" );
+  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.xml" );
 }
 
 const QString QgsApplication::libraryPath()
 {
-  return mLibraryPath;
+  return ABISYM( mLibraryPath );
 }
 
 const QString QgsApplication::libexecPath()
 {
-  return mLibexecPath;
+  return ABISYM( mLibexecPath );
 }
 
 QgsApplication::endian_t QgsApplication::endian()
@@ -505,17 +512,17 @@ void QgsApplication::exitQgis()
 QString QgsApplication::showSettings()
 {
   QString myState = tr( "Application state:\n"
-                             "Prefix:\t\t%1\n"
-                             "Plugin Path:\t\t%2\n"
-                             "Package Data Path:\t%3\n"
-                             "Active Theme Name:\t%4\n"
-                             "Active Theme Path:\t%5\n"
-                             "Default Theme Path:\t%6\n"
-                             "SVG Search Paths:\t%7\n"
-                             "User DB Path:\t%8\n" )
-                    .arg( mPrefixPath )
-                    .arg( mPluginPath )
-                    .arg( mPkgDataPath )
+                        "Prefix:\t\t%1\n"
+                        "Plugin Path:\t\t%2\n"
+                        "Package Data Path:\t%3\n"
+                        "Active Theme Name:\t%4\n"
+                        "Active Theme Path:\t%5\n"
+                        "Default Theme Path:\t%6\n"
+                        "SVG Search Paths:\t%7\n"
+                        "User DB Path:\t%8\n" )
+                    .arg( prefixPath() )
+                    .arg( pluginPath() )
+                    .arg( pkgDataPath() )
                     .arg( themeName() )
                     .arg( activeThemePath() )
                     .arg( defaultThemePath() )
@@ -735,32 +742,32 @@ QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targe
 
 void QgsApplication::skipGdalDriver( QString theDriver )
 {
-  if ( mGdalSkipList.contains( theDriver ) || theDriver.isEmpty() )
+  if ( ABISYM( mGdalSkipList ).contains( theDriver ) || theDriver.isEmpty() )
   {
     return;
   }
-  mGdalSkipList << theDriver;
+  ABISYM( mGdalSkipList ) << theDriver;
   applyGdalSkippedDrivers();
 }
 
 void QgsApplication::restoreGdalDriver( QString theDriver )
 {
-  if ( !mGdalSkipList.contains( theDriver ) )
+  if ( !ABISYM( mGdalSkipList ).contains( theDriver ) )
   {
     return;
   }
-  int myPos = mGdalSkipList.indexOf( theDriver );
+  int myPos = ABISYM( mGdalSkipList ).indexOf( theDriver );
   if ( myPos >= 0 )
   {
-    mGdalSkipList.removeAt( myPos );
+    ABISYM( mGdalSkipList ).removeAt( myPos );
   }
   applyGdalSkippedDrivers();
 }
 
 void QgsApplication::applyGdalSkippedDrivers()
 {
-  mGdalSkipList.removeDuplicates();
-  QString myDriverList = mGdalSkipList.join( " " );
+  ABISYM( mGdalSkipList ).removeDuplicates();
+  QString myDriverList = ABISYM( mGdalSkipList ).join( " " );
   QgsDebugMsg( "Gdal Skipped driver list set to:" );
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );

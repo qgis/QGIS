@@ -91,7 +91,7 @@ class QgsCoordinateTransform : QObject
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsPoint in Destination Coordinate System
      */    
-   QgsPoint transform(const QgsPoint p,TransformDirection direction=ForwardTransform);
+   QgsPoint transform(const QgsPoint p,TransformDirection direction=ForwardTransform) throw (QgsCsException);
 
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -101,7 +101,7 @@ class QgsCoordinateTransform : QObject
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsPoint in Destination Coordinate System
      */
-   QgsPoint transform(const double x, const double y,TransformDirection direction=ForwardTransform);
+   QgsPoint transform(const double x, const double y,TransformDirection direction=ForwardTransform) throw (QgsCsException);
 
     /*! Transform a QgsRectangle to the dest Coordinate system 
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -113,12 +113,12 @@ class QgsCoordinateTransform : QObject
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRectangle in Destination Coordinate System
      */        
-   QgsRectangle transformBoundingBox(const QgsRectangle theRect,TransformDirection direction=ForwardTransform);
+   QgsRectangle transformBoundingBox(const QgsRectangle theRect,TransformDirection direction=ForwardTransform) throw (QgsCsException);
 
    // Same as for the other transform() functions, but alters the x
    // and y variables in place. The second one works with good old-fashioned
    // C style arrays.
-   void transformInPlace(double& x, double& y, double &z, TransformDirection direction = ForwardTransform);
+   void transformInPlace(double& x, double& y, double &z, TransformDirection direction = ForwardTransform) throw (QgsCsException);
 
    // TODO: argument not supported
    //void transformInPlace(std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, 
@@ -131,7 +131,7 @@ class QgsCoordinateTransform : QObject
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRectangle in Destination Coordinate System
      */        
-   QgsRectangle transform(const QgsRectangle theRect,TransformDirection direction=ForwardTransform);
+   QgsRectangle transform(const QgsRectangle theRect,TransformDirection direction=ForwardTransform) throw (QgsCsException);
     
     /*! Transform an array of coordinates to a different Coordinate System
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -141,7 +141,7 @@ class QgsCoordinateTransform : QObject
     * @param direction TransformDirection (defaults to ForwardTransform)
     * @return QgsRectangle in Destination Coordinate System
      */        
-   void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=ForwardTransform);
+   void transformCoords( const int &numPoint, double *x, double *y, double *z,TransformDirection direction=ForwardTransform) throw (QgsCsException);
 
   /*! 
    * Flag to indicate whether the coordinate systems have been initialised

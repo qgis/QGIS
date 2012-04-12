@@ -34,37 +34,16 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
   public slots:
     void accept();
 
-    void on_mUpdateExistingFieldCheckBox_stateChanged( int state );
-    void on_mFieldsListWidget_itemDoubleClicked( QListWidgetItem * item );
-    void on_mValueListWidget_itemDoubleClicked( QListWidgetItem * item );
-    void on_mPlusPushButton_clicked();
-    void on_mMinusPushButton_clicked();
-    void on_mMultiplyPushButton_clicked();
-    void on_mDividePushButton_clicked();
-    void on_mSqrtButton_clicked();
-    void on_mExpButton_clicked();
-    void on_mSinButton_clicked();
-    void on_mCosButton_clicked();
-    void on_mTanButton_clicked();
-    void on_mASinButton_clicked();
-    void on_mACosButton_clicked();
-    void on_mATanButton_clicked();
-    void on_mOpenBracketPushButton_clicked();
-    void on_mCloseBracketPushButton_clicked();
-    void on_mToRealButton_clicked();
-    void on_mToIntButton_clicked();
-    void on_mToStringButton_clicked();
-    void on_mLengthButton_clicked();
-    void on_mAreaButton_clicked();
-    void on_mRowNumButton_clicked();
-    void on_mConcatButton_clicked();
-    void on_mAllPushButton_clicked();
+    void on_mNewFieldGroupBox_toggled( bool on );
+    void on_mUpdateExistingGroupBox_toggled( bool on );
     void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
-    void on_mExpressionTextEdit_textChanged();
     void on_mOutputFieldTypeComboBox_activated( int index );
-    void on_mFieldsListWidget_currentItemChanged( QListWidgetItem * current, QListWidgetItem * previous );
 
     void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
+  private slots:
+    /**Sets the ok button enabled / disabled*/
+    void setOkButtonState();
 
   private:
     //default constructor forbidden
@@ -73,11 +52,6 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void populateFields();
     /**Inserts the types supported by the provider into the combo box*/
     void populateOutputFieldTypes();
-    /**Gets field values and inserts them into mValueListWidget
-    @limit 0: get all feature, != 0 stop after getting limit values*/
-    void getFieldValues( int limit );
-    /**Sets the ok button enabled / disabled*/
-    void setOkButtonState();
 
     QgsVectorLayer* mVectorLayer;
     /**Key: field name, Value: field index*/
@@ -85,6 +59,8 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 
     /**idx of changed attribute*/
     int mAttributeId;
+
+    bool mExpressionValid;
 };
 
 #endif // QGSFIELDCALCULATOR_H

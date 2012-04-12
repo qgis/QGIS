@@ -38,6 +38,7 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       WMS,
       PostGIS,
       WFS,
+      MSSQL,
     };
 
     // constructor
@@ -55,9 +56,11 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
     QDomDocument saveWMSConnections( const QStringList &connections );
     QDomDocument saveWFSConnections( const QStringList &connections );
     QDomDocument savePgConnections( const QStringList & connections );
+    QDomDocument saveMssqlConnections( const QStringList & connections );
     void loadWMSConnections( const QDomDocument &doc, const QStringList &items );
     void loadWFSConnections( const QDomDocument &doc, const QStringList &items );
     void loadPgConnections( const QDomDocument &doc, const QStringList &items );
+    void loadMssqlConnections( const QDomDocument &doc, const QStringList &items );
 
     QString mFileName;
     Mode mDialogMode;

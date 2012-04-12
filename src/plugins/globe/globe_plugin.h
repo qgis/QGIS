@@ -196,6 +196,7 @@ namespace osgEarth
         public:
           virtual void onMouseDown( class Control* control, int mouseButtonMask ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); }
           virtual void onClick( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); Q_UNUSED( ea ); Q_UNUSED( aa ); }
+          virtual void onClick( class Control* control, int mouseButtonMask ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); }
       };
 
       class NavigationControl : public ImageControl

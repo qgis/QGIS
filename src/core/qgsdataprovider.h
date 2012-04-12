@@ -191,7 +191,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * (in order from bottom to top)
      * \note   layers must have been previously added.
      */
-    virtual void setLayerOrder( QStringList layers )
+    virtual void setLayerOrder( const QStringList &layers )
     {
       //prevent unused var warnings
       if ( layers.count() < 1 )
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( QString name, bool vis )
+    virtual void setSubLayerVisibility( const QString &name, bool vis )
     {
       //prevent unused var warnings
       if ( name.isEmpty() || !vis )

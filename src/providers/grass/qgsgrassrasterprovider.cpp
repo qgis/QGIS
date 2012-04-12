@@ -253,17 +253,27 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
 double  QgsGrassRasterProvider::noDataValue() const
 {
   double nul;
+  // TODO: avoid showing these strange numbers in GUI
+  // TODO: don't save no data values in project file, add a flag if value was defined by user
   if ( mGrassDataType == CELL_TYPE )
   {
-    nul = -2147483647;
+    //limit: -2147483647;
+    nul = -2000000000;
   }
   else if ( mGrassDataType == DCELL_TYPE )
   {
-    nul = 2.2250738585072014e-308;
+    // Don't use numeric limits, raster layer is using
+    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
+    // if the mNoDataValue would be a limit, the subtraction could overflow.
+    // No data value is shown in GUI, use some nice number.
+    // Choose values with small representation error.
+    // limit: 1.7976931348623157e+308
+    nul = -1e+300;
   }
   else if ( mGrassDataType == FCELL_TYPE )
   {
-    nul = 1.17549435e-38F;
+    // limit: 3.40282347e+38
+    nul = -1e+30;
   }
   QgsDebugMsg( QString( "noDataValue = %1" ).arg( nul ) );
   return nul;

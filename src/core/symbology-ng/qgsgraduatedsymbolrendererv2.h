@@ -1,6 +1,7 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
+#include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
 
 class CORE_EXPORT QgsRendererRangeV2
@@ -24,6 +25,8 @@ class CORE_EXPORT QgsRendererRangeV2
 
     // debugging
     QString dump();
+
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const;
 
   protected:
     double mLowerValue, mUpperValue;
@@ -54,6 +57,12 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     virtual QString dump();
 
     virtual QgsFeatureRendererV2* clone();
+
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+
+    //! returns bitwise OR-ed capabilities of the renderer
+    //! \note added in 2.0
+    virtual int capabilities() { return SymbolLevels | RotationField; }
 
     virtual QgsSymbolV2List symbols();
 
@@ -109,6 +118,14 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
 
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
+
+    /** Update the color ramp used. Also updates all symbols colors.
+      * Doesn't alter current breaks.
+      */
+    void updateColorRamp( QgsVectorColorRampV2* ramp );
+
+    /** Update the all symbols but leave breaks and colors. */
+    void updateSymbols( QgsSymbolV2* sym );
 
     //! @note added in 1.6
     void setRotationField( QString fieldName ) { mRotationField = fieldName; }

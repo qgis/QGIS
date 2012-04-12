@@ -169,7 +169,7 @@ class QgsLegend : public QTreeWidget
     /**Removes an item from the legend. This is e.g. necessary before shifting it to another place*/
     void removeItem( QTreeWidgetItem* item );
 
-    /**Returns the ids of the layers contained in this legend. The order is bottom->top*/
+    /**Returns the ids of the visible layers contained in this legend. The order is bottom->top*/
     QStringList layerIDs();
 
     /**Updates layer set of map canvas*/
@@ -207,7 +207,13 @@ class QgsLegend : public QTreeWidget
 
   public slots:
 
-    /*!Adds a new layer group with the maplayer to the canvas*/
+
+    /*!Adds a new layer group with the maplayers to the canvas*/
+    void addLayers( QList<QgsMapLayer *> );
+
+    /** Adds a new layer group with the maplayer to the canvas
+      * @note Deprecated since 1.8 - use addLayers rather
+      */
     void addLayer( QgsMapLayer * layer );
 
     void setLayerVisible( QgsMapLayer * layer, bool visible );
@@ -227,7 +233,7 @@ class QgsLegend : public QTreeWidget
      * the legend, and in the map.
      * @return void
      */
-    void selectAll( bool select );
+    void setLayersVisible( bool visible );
 
     /*!
      * Slot called when user wishes to add a new empty layer group to the legend.
@@ -264,7 +270,13 @@ class QgsLegend : public QTreeWidget
      */
     void removeGroup( int groupIndex );
 
+    /*!
+     * @deprecated - use removeLayers() rather
+     */
     void removeLayer( QString );
+
+    /** Remove one or more layers from the legend */
+    void removeLayers( QStringList theLayers );
 
     /** called to read legend settings from project */
     void readProject( const QDomDocument & );
@@ -312,6 +324,9 @@ class QgsLegend : public QTreeWidget
 
     /** Update drawing order */
     void unsetUpdateDrawingOrder( bool dontUpdateDrawingOrder ) { setUpdateDrawingOrder( !dontUpdateDrawingOrder ); }
+
+    /** Create a new group for the selected items **/
+    void groupSelectedLayers();
 
   protected:
 
@@ -512,7 +527,10 @@ class QgsLegend : public QTreeWidget
     void updateGroupCheckStates( QTreeWidgetItem *item );
 
   signals:
+    void itemAdded( QModelIndex index );
     void itemMoved( QModelIndex oldIndex, QModelIndex newIndex );
+    void itemMovedGroup( QgsLegendItem *item, int newGroupIndex ); // should we add oldGroup?
+    void itemRemoved( ); // should we add an argument?
 
     void zOrderChanged();
     void invisibleLayerRemoved();

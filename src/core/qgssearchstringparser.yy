@@ -215,6 +215,7 @@ void addToTmpNodes(QgsSearchTreeNode* node)
 void joinTmpNodes(QgsSearchTreeNode* parent, QgsSearchTreeNode* left, QgsSearchTreeNode* right)
 {
   bool res;
+  Q_UNUSED(res);
 
   if (left)
   {

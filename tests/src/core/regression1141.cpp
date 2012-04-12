@@ -97,7 +97,7 @@ void Regression1141::diacriticalTest()
   mEncoding = "UTF-8";
   QgsField myField( "ąęćń", QVariant::Int, "int", 10, 0, "Value on lon" );
   mFields.insert( 0, myField );
-  mCRS = QgsCoordinateReferenceSystem( GEOWkt );
+  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
 
   qDebug( "Checking test dataset exists...\n%s", mFileName.toLocal8Bit().constData() );
 

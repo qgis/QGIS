@@ -56,6 +56,7 @@ class GUI_EXPORT QgsDetailedItemDelegate :
 
   private:
     QFont detailFont( const QStyleOptionViewItem &theOption ) const;
+    QFont categoryFont( const QStyleOptionViewItem &theOption ) const;
     QFont titleFont( const QStyleOptionViewItem &theOption ) const;
     void drawHighlight( const QStyleOptionViewItem &theOption,
                         QPainter * thepPainter,

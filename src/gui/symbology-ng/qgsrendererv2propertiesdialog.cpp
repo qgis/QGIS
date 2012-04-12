@@ -11,8 +11,6 @@
 #include "qgsrulebasedrendererv2widget.h"
 #include "qgspointdisplacementrendererwidget.h"
 
-#include "qgssymbollevelsv2dialog.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -71,7 +69,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   }
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( btnSymbolLevels, SIGNAL( clicked() ), this, SLOT( showSymbolLevels() ) );
   connect( btnOldSymbology, SIGNAL( clicked() ), this, SLOT( useOldSymbology() ) );
 
   // initialize registry's widget functions
@@ -146,15 +143,11 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     mActiveWidget = w;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
-
-    btnSymbolLevels->setEnabled( true );
   }
   else
   {
     // set default "no edit widget available" page
     stackedWidget->setCurrentWidget( pageNoWidget );
-
-    btnSymbolLevels->setEnabled( false );
   }
 
 }
@@ -194,39 +187,6 @@ void QgsRendererV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
 }
 
 
-void QgsRendererV2PropertiesDialog::showSymbolLevels()
-{
-  if ( !mActiveWidget )
-    return;
-
-  QgsFeatureRendererV2* r = mActiveWidget->renderer();
-  QgsSymbolV2List symbols = r->symbols();
-
-  QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
-  connect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ) );
-  connect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ) );
-
-  if ( dlg.exec() )
-  {
-    r->setUsingSymbolLevels( dlg.usingLevels() );
-
-    if ( r->type() == "RuleRenderer" )
-    {
-      if ( dlg.usingLevels() )
-      {
-        r->setUsingFirstRule( true );
-        emit forceChkUsingFirstRule();
-      }
-      else
-      {
-        emit forceUncheckSymbolLevels();
-      }
-    }
-  }
-
-  disconnect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ) );
-  disconnect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ) );
-}
 
 
 void QgsRendererV2PropertiesDialog::useOldSymbology()

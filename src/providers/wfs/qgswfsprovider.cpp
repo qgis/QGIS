@@ -17,7 +17,9 @@
 
 #define WFS_THRESHOLD 200
 
+#include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -47,11 +49,15 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
     : QgsVectorDataProvider( uri ),
     mNetworkRequestFinished( true ),
-    mEncoding( QgsWFSProvider::GET ),
+    mRequestEncoding( QgsWFSProvider::GET ),
     mUseIntersect( false ),
+    mWKBType( QGis::WKBUnknown ),
     mSourceCRS( 0 ),
     mFeatureCount( 0 ),
-    mValid( true )
+    mValid( true ),
+    mLayer( 0 ),
+    mGetRenderedOnly( false ),
+    mInitGro( false )
 {
   mSpatialIndex = 0;
   if ( uri.isEmpty() )
@@ -60,7 +66,39 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     return;
   }
 
-  reloadData();
+  //Local url or HTTP?  [WBC 111221] refactored from getFeature()
+  if ( uri.startsWith( "http" ) )
+  {
+    mRequestEncoding = QgsWFSProvider::GET;
+  }
+  else
+  {
+    mRequestEncoding = QgsWFSProvider::FILE;
+  }
+
+  //create mSourceCRS from url if possible [WBC 111221] refactored from GetFeatureGET()
+  QString srsname = parameterFromUrl( "SRSNAME" );
+  if ( !srsname.isEmpty() )
+  {
+    mSourceCRS.createFromOgcWmsCrs( srsname );
+  }
+
+  //fetch attributes of layer and type of its geometry attribute
+  //WBC 111221: extracting geometry type here instead of getFeature allows successful
+  //layer creation even when no features are retrieved (due to, e.g., BBOX or FILTER)
+  if ( describeFeatureType( uri, mGeometryAttribute, mFields, mWKBType ) )
+  {
+    mValid = false;
+    QgsDebugMsg( QString( "describeFeatureType failed, URI=%1" ).arg( uri ) );
+    QMessageBox( QMessageBox::Warning, "DescribeFeatureType failed!",
+                 QString( "Layer cannot be created from\n%1" ).arg( uri ) );
+    return;
+  }
+
+  if ( ! uri.contains( "BBOX" ) )
+  { //"Cache Features" option; get all features in layer immediately
+    reloadData();
+  } //otherwise, defer feature retrieval until layer is first rendered
 
   if ( mValid )
   {
@@ -231,30 +269,76 @@ void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
 
-  QString dsURI = dataSourceUri();
-  if ( dsURI.contains( "BBOX" ) )
-  {
-    QUrl url( dsURI );
-    url.removeQueryItem( "BBOX" );
-    url.addQueryItem( "BBOX", QString::number( rect.xMinimum() ) + "," + QString::number( rect.yMinimum() ) + ","
-                      + QString::number( rect.xMaximum() ) + "," + QString::number( rect.yMaximum() ) );
-    setDataSourceUri( url.toString() );
-    reloadData();
+  if ( rect.isEmpty() )
+  { //select all features
+    mSpatialFilter = mExtent;
     mSelectedFeatures = mFeatures.keys();
-    mSpatialFilter = rect;
   }
   else
-  {
-    if ( rect.isEmpty() )
-    {
-      mSpatialFilter = mExtent;
-      mSelectedFeatures = mFeatures.keys();
+  { //select features intersecting caller's extent
+    QString dsURI = dataSourceUri();
+    //first time through, initialize GetRenderedOnly args
+    //ctor cannot initialize because layer object not available then
+    if ( ! mInitGro )
+    { //did user check "Cache Features" in WFS layer source selection?
+      if ( dsURI.contains( "BBOX" ) )
+      { //no: initialize incremental getFeature
+        if ( initGetRenderedOnly( rect ) )
+        {
+          mGetRenderedOnly = true;
+        }
+        else
+        { //initialization failed;
+          QgsDebugMsg( QString( "GetRenderedOnly initialization failed; incorrect operation may occur\n%1" )
+                       .arg( dataSourceUri() ) );
+          QMessageBox( QMessageBox::Warning, "Non-Cached layer initialization failed!",
+                       QString( "Incorrect operation may occur:\n%1" ).arg( dataSourceUri() ) );
+        }
+      }
+      mInitGro = true;
     }
-    else
-    {
-      mSpatialFilter = rect;
-      mSelectedFeatures = mSpatialIndex->intersects( mSpatialFilter );
+
+    if ( mGetRenderedOnly )
+    { //"Cache Features" was not selected for this layer
+      //has rendered extent expanded beyond last-retrieved WFS extent?
+      //NB: "intersect" instead of "contains" tolerates rounding errors;
+      //    avoids unnecessary second fetch on zoom-in/zoom-out sequences
+      QgsRectangle olap( rect );
+      olap = olap.intersect( &mGetExtent );
+      if ( doubleNear( rect.width(), olap.width() ) && doubleNear( rect.height(), olap.height() ) )
+      { //difference between canvas and layer extents is within rounding error: do not re-fetch
+        QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: no fetch required" ).arg( mLayer->name() ) );
+      }
+      else
+      { //combined old and new extents might speed up local panning & zooming
+        mGetExtent.combineExtentWith( &rect );
+        //but see if the combination is useless or too big
+        double pArea = mGetExtent.width() * mGetExtent.height();
+        double cArea = rect.width() * rect.height();
+        if ( olap.isEmpty() || pArea > ( cArea * 4.0 ) )
+        { //new canvas extent does not overlap or combining old and new extents would
+          //fetch > 4 times the area to be rendered; get only what will be rendered
+          mGetExtent = rect;
+        }
+        QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: fetching extent %2" )
+                     .arg( mLayer->name(), mGetExtent.asWktCoordinates() ) );
+        dsURI = dsURI.replace( QRegExp( "BBOX=[^&]*" ),
+                               QString( "BBOX=%1,%2,%3,%4" )
+                               .arg( mGetExtent.xMinimum(), 0, 'f' )
+                               .arg( mGetExtent.yMinimum(), 0, 'f' )
+                               .arg( mGetExtent.xMaximum(), 0, 'f' )
+                               .arg( mGetExtent.yMaximum(), 0, 'f' ) );
+        //TODO: BBOX may not be combined with FILTER. WFS spec v. 1.1.0, sec. 14.7.3 ff.
+        //      if a FILTER is present, the BBOX must be merged into it, capabilities permitting.
+        //      Else one criterion must be abandoned and the user warned.  [WBC 111221]
+        setDataSourceUri( dsURI );
+        reloadData();
+        mLayer->updateExtents();
+      }
     }
+
+    mSpatialFilter = rect;
+    mSelectedFeatures = mSpatialIndex->intersects( mSpatialFilter );
   }
 
   mFeatureIterator = mSelectedFeatures.begin();
@@ -262,41 +346,11 @@ void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
 
 int QgsWFSProvider::getFeature( const QString& uri )
 {
-  QString geometryAttribute;
-
-  //Local url or HTTP?
-  if ( uri.startsWith( "http" ) )
-  {
-    mEncoding = QgsWFSProvider::GET;
-  }
-  else
-  {
-    mEncoding = QgsWFSProvider::FILE;
-  }
-
-  if ( mEncoding == QgsWFSProvider::FILE )
-  {
-    //guess geometry attribute and other attributes from schema or from .gml file
-    if ( describeFeatureTypeFile( uri, mGeometryAttribute, mFields ) != 0 )
-    {
-      return 1;
-    }
-  }
-  else //take schema with describeFeatureType request
-  {
-    QString describeFeatureUri = uri;
-    describeFeatureUri.replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) );
-    if ( describeFeatureType( describeFeatureUri, mGeometryAttribute, mFields ) != 0 )
-    {
-      return 1;
-    }
-  }
-
-  if ( mEncoding == QgsWFSProvider::GET )
+  if ( mRequestEncoding == QgsWFSProvider::GET )
   {
     return getFeatureGET( uri, mGeometryAttribute );
   }
-  else//local file
+  else  //local file
   {
     return getFeatureFILE( uri, mGeometryAttribute ); //read the features from disk
   }
@@ -658,16 +712,27 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   }
 }
 
-int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
+int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAttribute,
+    QgsFieldMap& fields, QGis::WkbType& geomType )
+//NB: also called from QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked() to build filters.
+//    a temporary provider object is constructed with a null URI, which bypasses much provider
+//    instantiation logic: refresh(), getFeature(), etc.  therefore, many provider class members
+//    are only default values or uninitialized when running under the source select dialog!
 {
   fields.clear();
-  switch ( mEncoding )
+  //Local url or HTTP?  WBC111221 refactored here from getFeature()
+  switch ( mRequestEncoding )
   {
     case QgsWFSProvider::GET:
-      return describeFeatureTypeGET( uri, geometryAttribute, fields );
+    {
+      return describeFeatureTypeGET( uri, geometryAttribute, fields, geomType );
+    }
     case QgsWFSProvider::FILE:
-      return describeFeatureTypeFile( uri, geometryAttribute, fields );
+    {
+      return describeFeatureTypeFile( uri, geometryAttribute, fields, geomType );
+    }
   }
+  QgsDebugMsg( "SHOULD NOT OCCUR: mEncoding undefined" );
   return 1;
 }
 
@@ -680,13 +745,6 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   for ( QgsFieldMap::const_iterator it = mFields.begin(); it != mFields.end(); ++it )
   {
     thematicAttributes.insert( it.value().name(), qMakePair( it.key(), it.value() ) );
-  }
-
-  //create mSourceCRS from url if possible
-  QString srsname = parameterFromUrl( "SRSNAME" );
-  if ( !srsname.isEmpty() )
-  {
-    mSourceCRS.createFromOgcWmsCrs( srsname );
   }
 
   QgsWFSData dataReader( uri, &mExtent, mFeatures, mIdMap, geometryAttribute, thematicAttributes, &mWKBType );
@@ -765,7 +823,7 @@ int QgsWFSProvider::getFeatureFILE( const QString& uri, const QString& geometryA
   return 0;
 }
 
-int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
+int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType )
 {
   if ( !mNetworkRequestFinished )
   {
@@ -774,7 +832,9 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
 
   mNetworkRequestFinished = false;
 
-  QNetworkRequest request( uri );
+  QString describeFeatureUri = uri;
+  describeFeatureUri.replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) );
+  QNetworkRequest request( describeFeatureUri );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
   while ( !mNetworkRequestFinished )
@@ -792,8 +852,10 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
     return 2;
   }
 
-  if ( readAttributesFromSchema( describeFeatureDocument, geometryAttribute, fields ) != 0 )
+  if ( readAttributesFromSchema( describeFeatureDocument,
+                                 geometryAttribute, fields, geomType ) != 0 )
   {
+    QgsDebugMsg( QString( "FAILED: readAttributesFromSchema" ) );
     return 3;
   }
 
@@ -805,7 +867,7 @@ void QgsWFSProvider::networkRequestFinished()
   mNetworkRequestFinished = true;
 }
 
-int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields )
+int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType )
 {
   //first look in the schema file
   QString noExtension = uri;
@@ -821,7 +883,7 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
       return 1; //xml file not readable or not valid
     }
 
-    if ( readAttributesFromSchema( schemaDoc, geometryAttribute, fields ) != 0 )
+    if ( readAttributesFromSchema( schemaDoc, geometryAttribute, fields, geomType ) != 0 )
     {
       return 2;
     }
@@ -846,7 +908,7 @@ int QgsWFSProvider::describeFeatureTypeFile( const QString& uri, QString& geomet
   return 0;
 }
 
-int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields )
+int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType )
 {
   //get the <schema> root element
   QDomNodeList schemaNodeList = schemaDoc.elementsByTagNameNS( "http://www.w3.org/2001/XMLSchema", "schema" );
@@ -921,9 +983,11 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
 
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
-    if (( type.startsWith( "gml:" ) && type.endsWith( "PropertyType" ) ) || name.isEmpty() )
+    QRegExp gmlPT( "gml:(.*)PropertyType" );
+    if ( type.indexOf( gmlPT ) == 0 || name.isEmpty() )
     {
       geometryAttribute = name;
+      geomType = geomTypeFromPropertyType( geometryAttribute, gmlPT.cap( 1 ) );
     }
     else //todo: distinguish between numerical and non-numerical types
     {
@@ -2286,6 +2350,58 @@ void QgsWFSProvider::appendSupportedOperations( const QDomElement& operationsEle
       capabilities |= QgsVectorDataProvider::DeleteFeatures;
     }
   }
+}
+
+//initialization for getRenderedOnly option
+//(formerly "Only request features overlapping the current view extent")
+bool QgsWFSProvider::initGetRenderedOnly( const QgsRectangle rect )
+{
+  Q_UNUSED( rect );
+
+  //find our layer
+  QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer*>::const_iterator layersIt = layers.begin();
+  for ( ; layersIt != layers.end() ; ++layersIt )
+  {
+    if (( mLayer = dynamic_cast<QgsVectorLayer*>( layersIt.value() ) ) )
+    {
+      if ( mLayer->dataProvider() == this )
+      {
+        QgsDebugMsg( QString( "found layer %1" ).arg( mLayer->name() ) );
+        break;
+      }
+    }
+  }
+  if ( layersIt == layers.end() )
+  {
+    QgsDebugMsg( "SHOULD NOT OCCUR: initialize() did not find layer." );
+    return false;
+  }
+  return true;
+}
+
+QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( QString attName, QString propType )
+{
+  Q_UNUSED( attName );
+  const QStringList geomTypes = ( QStringList()
+                                  //all GML v.2.1.3 _geometryProperty group members, except MultiGeometryPropertyType
+                                  //sequence must exactly match enum Qgis::WkbType
+                                  << ""  // unknown geometry, enum 0
+                                  << "Point"
+                                  << "LineString"
+                                  << "Polygon"
+                                  << "MultiPoint"
+                                  << "MultiLineString"
+                                  << "MultiPolygon" );
+
+  QgsDebugMsg( QString( "DescribeFeatureType geometry attribute \"%1\" type is \"%2\"" )
+               .arg( attName, propType ) );
+  int i = geomTypes.indexOf( propType );
+  if ( i <= 0 )
+  { // feature type missing or unknown
+    i = ( int ) QGis::WKBUnknown;
+  }
+  return ( QGis::WkbType ) i;
 }
 
 void QgsWFSProvider::handleException( const QDomDocument& serverResponse ) const

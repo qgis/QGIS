@@ -30,6 +30,10 @@
 #include <QGraphicsView>
 #include <QtCore>
 
+#ifdef HAVE_TOUCH
+#include <QGestureEvent>
+#endif
+
 class QWheelEvent;
 class QPixmap;
 class QPaintEvent;
@@ -155,6 +159,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Zoom to the extent of the selected features of current (vector) layer.
       Added in version 1.2: optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = NULL );
+
+    /** Pan to the selected features of current (vector) layer keeping same extent.
+      @note added in 2.0 */
+    void panToSelected( QgsVectorLayer* layer = NULL );
 
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool( QgsMapTool* mapTool );
@@ -297,6 +305,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
+  private slots:
+    //! called when current maptool is destroyed
+    void mapToolDestroyed();
+
   signals:
     /** Let the owner know how far we are with render operations */
     void setProgress( int, int );
@@ -349,6 +361,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomNextStatusChanged( bool );
 
   protected:
+#ifdef HAVE_TOUCH
+    //! Overridden standard event to be gestures aware
+    bool event( QEvent * e );
+#endif
+
     //! Overridden key press event
     void keyPressEvent( QKeyEvent * e );
 
@@ -390,6 +407,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /// Handle pattern for implementation object
     std::auto_ptr<CanvasProperties> mCanvasProperties;
+
+  private slots:
+    void crsTransformEnabled( bool );
 
   private:
     /// this class is non-copyable
