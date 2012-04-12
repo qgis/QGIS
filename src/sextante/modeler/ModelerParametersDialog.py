@@ -320,7 +320,8 @@ class ModelerParametersDialog(QtGui.QDialog):
         return True
 
     def setParamStringValue(self, param, widget):
-        if widget.currentIndex() < 0:
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
             name =  self.model.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
@@ -332,7 +333,8 @@ class ModelerParametersDialog(QtGui.QDialog):
 
 
     def setParamNumberValue(self, param, widget):
-        if widget.currentIndex() < 0:
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
             name =  self.model.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value

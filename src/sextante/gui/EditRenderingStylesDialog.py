@@ -4,6 +4,7 @@ from PyQt4 import QtCore, QtGui
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.gui.RenderingStyles import RenderingStyles
+from sextante.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
 
 class EditRenderingStylesDialog(QtGui.QDialog):
     def __init__(self, alg):
@@ -58,7 +59,7 @@ class EditRenderingStylesDialog(QtGui.QDialog):
                     item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
                     item.setFlags(QtCore.Qt.ItemIsEnabled)
                     self.tableWidget.setItem(i, 0, item)
-                    item = QtGui.QLineEdit()
+                    item = RenderingStyleFilePanel()
                     style = RenderingStyles.getStyle(self.alg.commandLineName(), output.name)
                     if style:
                         item.setText(str(style))
@@ -70,7 +71,7 @@ class EditRenderingStylesDialog(QtGui.QDialog):
     def okPressed(self):
         styles = {}
         for key in self.valueItems.keys():
-            styles[key] = str(self.valueItems[key].text())
+            styles[key] = str(self.valueItems[key].getValue())
         RenderingStyles.addAlgStylesAndSave(self.alg.commandLineName(), styles)
         self.close()
 

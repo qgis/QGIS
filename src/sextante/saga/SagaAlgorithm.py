@@ -146,7 +146,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if layer:
                     filename = LayerExporter.exportVectorLayer(layer)
                     self.exportedLayers[param.value]=filename
-                elif (not value.endswith("shp")):
+                elif not param.value.endswith("shp"):
                         raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterTable):
                 if param.value == None:

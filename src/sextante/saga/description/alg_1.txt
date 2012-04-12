@@ -1,4 +1,4 @@
-Average With Thereshold 2
+Average With Threshold 2
 contrib_a_perego
 ParameterRaster|INPUT|Input|False
 ParameterNumber|RX|Radius X|1|None|3

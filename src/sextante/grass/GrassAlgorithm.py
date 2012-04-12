@@ -108,9 +108,10 @@ class GrassAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
-        path = GrassUtils.grassPath()
-        if path == "":
-            raise GeoAlgorithmExecutionException("GRASS folder is not configured.\nPlease configure it before running GRASS algorithms.")
+        if SextanteUtils.isWindows():
+            path = GrassUtils.grassPath()
+            if path == "":
+                raise GeoAlgorithmExecutionException("GRASS folder is not configured.\nPlease configure it before running GRASS algorithms.")
 
         commands = []
         self.exportedLayers = {}

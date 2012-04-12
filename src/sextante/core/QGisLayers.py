@@ -4,7 +4,6 @@ from PyQt4.QtGui import *
 from PyQt4 import QtGui
 from os import path
 from sextante.core.SextanteConfig import SextanteConfig
-import os.path
 
 class QGisLayers:
     '''This class contains method to communicate SEXTANTE with the QGIS interface,
@@ -123,13 +122,22 @@ class QGisLayers:
             if layer.source() == uri:
                 return layer
         if forceLoad:
+            settings = QSettings()
+            prjSetting = settings.value("/Projections/defaultBehaviour")
+            settings.setValue("/Projections/defaultBehaviour", QVariant(""))
             #if is not opened, we open it
             layer = QgsVectorLayer(uri, uri , 'ogr')
             if layer.isValid():
+                if prjSetting:
+                    settings.setValue("/Projections/defaultBehaviour", prjSetting)
                 return layer
             layer = QgsRasterLayer(uri, uri)
             if layer.isValid():
+                if prjSetting:
+                    settings.setValue("/Projections/defaultBehaviour", prjSetting)
                 return layer
+            if prjSetting:
+                    settings.setValue("/Projections/defaultBehaviour", prjSetting)
         else:
             return None
 

@@ -22,6 +22,7 @@ from sextante.parameters.ParameterRange import ParameterRange
 from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 from sextante.gui.NumberInputPanel import NumberInputPanel
 from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -87,34 +88,58 @@ class Ui_ParametersDialog(object):
         QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
+    def somethingDependsOnThisParameter(self, parent):
+        for param in self.alg.parameters:
+            if isinstance(param, ParameterTableField):
+                if param.parent == parent.name:
+                    return True
+        return False
 
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
-            item = QtGui.QComboBox()
             layers = QGisLayers.getRasterLayers()
+            items = []
             if (param.optional):
-                item.addItem(self.NOT_SELECTED, None)
+                items.append((self.NOT_SELECTED, None))
             for layer in layers:
-                item.addItem(layer.name(), layer)
+                items.append((layer.name(), layer))
+            item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterVector):
-            item = QtGui.QComboBox()
-            layers = QGisLayers.getVectorLayers(param.shapetype)
-            if (param.optional):
-                item.addItem(self.NOT_SELECTED, None)
-            for layer in layers:
-                item.addItem(layer.name(), layer)
-            item.currentIndexChanged.connect(self.updateDependentFields)
-            item.name = param.name
+            if self.somethingDependsOnThisParameter(param):
+                item = QtGui.QComboBox()
+                layers = QGisLayers.getVectorLayers(param.shapetype)
+                if (param.optional):
+                    item.addItem(self.NOT_SELECTED, None)
+                for layer in layers:
+                    item.addItem(layer.name(), layer)
+                item.currentIndexChanged.connect(self.updateDependentFields)
+                item.name = param.name
+            else:
+                layers = QGisLayers.getVectorLayers(param.shapetype)
+                items = []
+                if (param.optional):
+                    items.append((self.NOT_SELECTED, None))
+                for layer in layers:
+                    items.append((layer.name(), layer))
+                item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterTable):
-            item = QtGui.QComboBox()
-            layers = QGisLayers.getTables()
-            QtGui.QMessageBox.critical(None, " ", str(layers))
-            if (param.optional):
-                item.addItem(self.NOT_SELECTED, None)
-            for layer in layers:
-                item.addItem(layer.name(), layer)
-            item.currentIndexChanged.connect(self.updateDependentFields)
-            item.name = param.name
+            if self.somethingDependsOnThisParameter(param):
+                item = QtGui.QComboBox()
+                layers = QGisLayers.getTables()
+                if (param.optional):
+                    item.addItem(self.NOT_SELECTED, None)
+                for layer in layers:
+                    item.addItem(layer.name(), layer)
+                item.currentIndexChanged.connect(self.updateDependentFields)
+                item.name = param.name
+            else:
+                layers = QGisLayers.getTables()
+                items = []
+                if (param.optional):
+                    items.append((self.NOT_SELECTED, None))
+                for layer in layers:
+                    items.append((layer.name(), layer))
+                item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem("Yes")
@@ -131,7 +156,11 @@ class Ui_ParametersDialog(object):
                 items = []
                 self.dependentItems[param.parent] = items
             items.append(param.name)
-            layers = QGisLayers.getVectorLayers()
+            parent = self.alg.getParameterFromName(param.parent)
+            if isinstance(parent, ParameterVector):
+                layers = QGisLayers.getVectorLayers(parent.shapetype)
+            else:
+                layers = QGisLayers.getTables()
             if len(layers)>0:
                 fields = self.getFields(layers[0])
                 for i in fields:
@@ -226,7 +255,7 @@ class Ui_ParametersDialog(object):
 
     def fillParameterValuesFromHistory(self):
         pass
-    
+
     def setParamValues(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
@@ -244,11 +273,12 @@ class Ui_ParametersDialog(object):
 
     def setParamValue(self, param, widget):
         if isinstance(param, ParameterRaster):
-            return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
-        elif isinstance(param, ParameterVector):
-            return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
-        elif isinstance(param, ParameterTable):
-            return  param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
+            return param.setValue(widget.getValue())
+        elif isinstance(param, (ParameterVector, ParameterTable)):
+            try:
+                return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
+            except:
+                return param.setValue(widget.getValue())
         elif isinstance(param, ParameterBoolean):
             return param.setValue(widget.currentIndex() == 0)
         elif isinstance(param, ParameterSelection):
