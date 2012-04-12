@@ -70,9 +70,9 @@ public:
   //! description strings for feature types
   //static const char *qgisFeatureTypes[];
 
-  /** Map units that qgis supports
-   * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-   */
+  // Map units that qgis supports
+  // @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
+  //
   enum UnitType
   {
     Meters = 0,
@@ -100,41 +100,42 @@ public:
 };
 
 
-  /** Wkt string that represents a geographic coord sys
-   * @note added in 1.8 to replace GEOWkt
-  */
+  // Wkt string that represents a geographic coord sys
+  // @note added in 1.8 to replace GEOWkt
+ 
   const  QString GEOWKT;
-  /** Wkt string that represents a geographic coord sys
-  * @note deprecated in 1.8 due to violation of coding conventions (globals
-  *  should be in all caps).
-  */
+
+  // Wkt string that represents a geographic coord sys
+  // @note deprecated in 1.8 due to violation of coding conventions (globals
+  // should be in all caps).
+
   const  QString GEOWkt /Deprecated/;
   
-  /** PROJ4 string that represents a geographic coord sys */
+  // PROJ4 string that represents a geographic coord sys
   const QString GEOPROJ4;
-  /** Magic number for a geographic coord sys in POSTGIS SRID */
+  // Magic number for a geographic coord sys in POSTGIS SRID
   const long GEOSRID;
-  /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
+  // Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id
   const long GEOCRS_ID;
-  /**  Magic number for a geographic coord sys in EpsgCrsId ID format */
+  //  Magic number for a geographic coord sys in EpsgCrsId ID format
   const long GEO_EPSG_CRS_ID;
-  /** The length of teh string "+proj=" */
+  // The length of the string "+proj="
   const int PROJ_PREFIX_LEN;
-  /** The length of teh string "+ellps=" */
+  // The length of the string "+ellps="
   const int ELLPS_PREFIX_LEN;
-  /** The length of the string "+lat_1=" */
+  // The length of the string "+lat_1="
   const int LAT_PREFIX_LEN;
-  /** Magick number that determins whether a projection srsid is a system (srs.db)
-   *  or user (~/.qgis.qgis.db) defined projection. */
+  // Magick number that determines whether a projection srsid is a system (srs.db)
+  // or user (~/.qgis.qgis.db) defined projection.
   const int USER_CRS_START_ID;
 
   //
   // Constants for point symbols
   //
 
-  /** Magic number that determines the minimum allowable point size for point symbols */
+  // Magic number that determines the minimum allowable point size for point symbols
   const float MINIMUM_POINT_SIZE;
-  /** Magic number that determines the minimum allowable point size for point symbols */
+  // Magic number that determines the minimum allowable point size for point symbols
   const float DEFAULT_POINT_SIZE;
   const double DEFAULT_LINE_WIDTH;
 

@@ -1,5 +1,4 @@
-
-%Module qgis.gui 0
+%Module (name=qgis.gui, version=0)
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip

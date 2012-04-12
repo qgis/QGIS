@@ -1,4 +1,4 @@
-%Module qgis.networkanalysis 0
+%Module (name=qgis.networkanalysis, version=0)
 
 %Import QtCore/QtCoremod.sip
 %Import core/core.sip
