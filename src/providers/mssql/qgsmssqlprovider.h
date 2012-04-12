@@ -270,6 +270,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     /** convert a QgsField to work with MSSQL */
     static bool convertField( QgsField &field );
 
+    /**Returns the default value for field specified by @c fieldId */
+    QVariant defaultValue( int fieldId );
+
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
@@ -294,6 +297,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     //! Fields
     QgsFieldMap mAttributeFields;
+    QMap<int, QVariant> mDefaultValues;
 
     QgsMssqlGeometryParser parser;
 
