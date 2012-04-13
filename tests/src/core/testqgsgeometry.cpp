@@ -314,8 +314,7 @@ bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment )
   QString myFileName = myTmpDir + theTestName + ".png";
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myChecker.controlImagePath() +
-                              "expected_" + theTestName + ".png" );
+  myChecker.setControlName( "expected_" + theTestName );
   myChecker.setRenderedImage( myFileName );
   bool myResultFlag = myChecker.compareImages( theTestName );
   mReport += myChecker.report();

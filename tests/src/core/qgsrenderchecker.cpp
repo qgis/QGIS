@@ -43,6 +43,13 @@ QString QgsRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
+void QgsRenderChecker::setControlName(const QString theName)
+{
+  mControlName = theName;
+  mExpectedImageFile = controlImagePath() + theName + QDir::separator() +
+      theName + ".png";
+}
+
 bool QgsRenderChecker::runTest( QString theTestName,
                                 unsigned int theMismatchCount )
 {

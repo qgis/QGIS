@@ -216,9 +216,7 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   //ensure the rendered output matches our control image
   mpMapRenderer->setExtent( mpPointsLayer->extent() );
   QgsRenderChecker myChecker;
-  QString myExpectedImage = myChecker.controlImagePath() +
-      "expected_" + theTestType + ".png";
-  myChecker.setExpectedImage( myExpectedImage );
+  myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();

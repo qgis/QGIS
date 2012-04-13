@@ -193,8 +193,7 @@ void TestQgsMapRenderer::performanceTest()
 {
   mpMapRenderer->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage(
-        myChecker.controlImagePath() + "expected_maprender.png" );
+  myChecker.setControlName( "expected_maprender" );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( "maprender" );
   mReport += myChecker.report();

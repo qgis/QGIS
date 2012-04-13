@@ -44,7 +44,11 @@ public:
   //only records time for actual render part
   int elapsedTime() { return mElapsedTime; };
   void setElapsedTimeTarget(int theTarget) { mElapsedTimeTarget = theTarget; };
-  void setExpectedImage (QString theImageFileName) { mExpectedImageFile = theImageFileName; };
+  /** Base directory name for the control image (with control image path
+    * suffixed) the path to the image will be constructed like this:
+    * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
+    */
+  void setControlName(const QString theName);
   void setRenderedImage (QString theImageFileName) { mRenderedImageFile = theImageFileName; };
   void setMapRenderer ( QgsMapRenderer *  thepMapRenderer) { mpMapRenderer = thepMapRenderer; };
   /**
@@ -73,6 +77,7 @@ public:
 private:
   QString mReport;
   QString mExpectedImageFile;
+  QString mControlName;
   QString mRenderedImageFile; 
   unsigned int mMismatchCount;
   unsigned int mMatchTarget;

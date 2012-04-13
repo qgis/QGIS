@@ -106,8 +106,7 @@ void Regression992::regression992()
   QVERIFY( mpRasterLayer->isValid() );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myChecker.controlImagePath() +
-                              "expected_rgbwcmyk01_YeGeo.jp2.png" );
+  myChecker.setControlName( "expected_rgbwcmyk01_YeGeo.jp2" );
   myChecker.setMapRenderer( mpMapRenderer );
   // allow up to 300 mismatched pixels
   bool myResultFlag = myChecker.runTest( "regression992", 300 );

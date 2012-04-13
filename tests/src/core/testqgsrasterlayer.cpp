@@ -256,8 +256,7 @@ bool TestQgsRasterLayer::render( QString theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myChecker.controlImagePath()
-                              + "expected_" + theTestType + ".png" );
+  myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += "\n\n\n" + myChecker.report();
