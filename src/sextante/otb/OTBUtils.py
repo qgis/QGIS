@@ -34,7 +34,10 @@ class OTBUtils:
         loglines = []
         loglines.append("OTB execution console output")
         os.putenv('ITK_AUTOLOAD_PATH', OTBUtils.otbLibPath())
-        proc = subprocess.Popen(commands, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+        fused_command = ''
+        for c in commands:
+          fused_command += c + ' '
+        proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             if "[*" in line:
                 idx = line.find("[*")
