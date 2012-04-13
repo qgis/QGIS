@@ -297,8 +297,26 @@ QImage* QgsWMSServer::getLegendGraphics()
     return 0;
   }
 
+  //scale
+  double scaleDenominator = -1;
+  QMap<QString, QString>::const_iterator scaleIt = mParameterMap.find( "SCALE" );
+  if ( scaleIt != mParameterMap.constEnd() )
+  {
+    bool conversionSuccess;
+    double scaleValue = scaleIt.value().toDouble( &conversionSuccess );
+    if ( conversionSuccess )
+    {
+      scaleDenominator = scaleValue;
+    }
+  }
+
   QgsCoordinateReferenceSystem dummyCRS;
-  QStringList layerIds = layerSet( layersList, stylesList, dummyCRS );
+  QStringList layerIds = layerSet( layersList, stylesList, dummyCRS, scaleDenominator );
+  if ( layerIds.size() < 1 )
+  {
+    return 0;
+  }
+
   QgsLegendModel legendModel;
   legendModel.setLayerSet( layerIds );
 
@@ -1394,7 +1412,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 
 QStringList QgsWMSServer::layerSet( const QStringList &layersList,
                                     const QStringList &stylesList,
-                                    const QgsCoordinateReferenceSystem &destCRS ) const
+                                    const QgsCoordinateReferenceSystem &destCRS, double scaleDenominator ) const
 {
   Q_UNUSED( destCRS );
   QStringList layerKeys;
@@ -1430,9 +1448,15 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       QgsDebugMsg( QString( "Checking layer: %1" ).arg( theMapLayer->name() ) );
       if ( theMapLayer )
       {
-        layerKeys.push_front( theMapLayer->id() );
-        QgsMapLayerRegistry::instance()->addMapLayers(
-          QList<QgsMapLayer *>() << theMapLayer, false );
+        //test if layer is visible in requested scale
+        bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
+        if ( !useScaleConstraint ||
+             ( theMapLayer->minimumScale() <= scaleDenominator && theMapLayer->maximumScale() >= scaleDenominator ) )
+        {
+          layerKeys.push_front( theMapLayer->id() );
+          QgsMapLayerRegistry::instance()->addMapLayers(
+            QList<QgsMapLayer *>() << theMapLayer, false );
+        }
       }
       else
       {
