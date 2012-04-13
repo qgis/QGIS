@@ -34,6 +34,15 @@ QgsRenderChecker::QgsRenderChecker( ) :
 {
 
 }
+
+QString QgsRenderChecker::controlImagePath() const
+{
+  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myControlImageDir = myDataDir + QDir::separator() + "control_images"
+       + QDir::separator() ;
+  return myControlImageDir;
+}
+
 bool QgsRenderChecker::runTest( QString theTestName,
                                 unsigned int theMismatchCount )
 {

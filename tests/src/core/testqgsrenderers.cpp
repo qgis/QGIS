@@ -215,8 +215,9 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mpMapRenderer->setExtent( mpPointsLayer->extent() );
-  QString myExpectedImage = mTestDataDir + "expected_" + theTestType + ".png";
   QgsRenderChecker myChecker;
+  QString myExpectedImage = myChecker.controlImagePath() +
+      "expected_" + theTestType + ".png";
   myChecker.setExpectedImage( myExpectedImage );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );

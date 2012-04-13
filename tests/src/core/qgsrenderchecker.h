@@ -34,6 +34,8 @@ public:
   //! Destructor
    ~QgsRenderChecker(){};
 
+  QString controlImagePath() const;
+
   QString report() { return mReport; };
   float matchPercent() { return static_cast<float>(mMismatchCount) / 
                                 static_cast<float>(mMatchTarget) * 100; };

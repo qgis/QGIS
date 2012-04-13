@@ -105,10 +105,9 @@ void Regression992::regression992()
 {
   QVERIFY( mpRasterLayer->isValid() );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myTestDataDir + "expected_rgbwcmyk01_YeGeo.jp2.png" );
+  myChecker.setExpectedImage( myChecker.controlImagePath() +
+                              "expected_rgbwcmyk01_YeGeo.jp2.png" );
   myChecker.setMapRenderer( mpMapRenderer );
   // allow up to 300 mismatched pixels
   bool myResultFlag = myChecker.runTest( "regression992", 300 );

@@ -176,7 +176,6 @@ void TestQgsMapRenderer::initTestCase()
   mReport += "<h1>Map Render Tests</h1>\n";
 }
 
-
 void TestQgsMapRenderer::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
@@ -188,24 +187,19 @@ void TestQgsMapRenderer::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
-
 }
-
-
 
 void TestQgsMapRenderer::performanceTest()
 {
   mpMapRenderer->setExtent( mpPolysLayer->extent() );
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myTestDataDir + "expected_maprender.png" );
+  myChecker.setExpectedImage(
+        myChecker.controlImagePath() + "expected_maprender.png" );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( "maprender" );
   mReport += myChecker.report();
   QVERIFY( myResultFlag );
 }
-
 
 QTEST_MAIN( TestQgsMapRenderer )
 #include "moc_testqgsmaprenderer.cxx"

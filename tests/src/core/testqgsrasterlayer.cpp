@@ -255,10 +255,9 @@ void TestQgsRasterLayer::registry()
 bool TestQgsRasterLayer::render( QString theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myTestDataDir + "expected_" + theTestType + ".png" );
+  myChecker.setExpectedImage( myChecker.controlImagePath()
+                              + "expected_" + theTestType + ".png" );
   myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += "\n\n\n" + myChecker.report();

@@ -312,11 +312,10 @@ bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment )
   mReport += "<h3>" + theComment + "</h3>\n";
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   QString myFileName = myTmpDir + theTestName + ".png";
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage( myTestDataDir + "expected_" + theTestName + ".png" );
+  myChecker.setExpectedImage( myChecker.controlImagePath() +
+                              "expected_" + theTestName + ".png" );
   myChecker.setRenderedImage( myFileName );
   bool myResultFlag = myChecker.compareImages( theTestName );
   mReport += myChecker.report();
