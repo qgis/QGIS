@@ -8,8 +8,8 @@ MESSAGE (STATUS "Bundling other frameworks is not functional yet, skipping...")
 # kill boolean warnings
 CMAKE_POLICY (SET CMP0012 NEW)
 
-INCLUDE (@CMAKE_BINARY_DIR@/mac/0vars.cmake)
-INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
+INCLUDE ("@CMAKE_BINARY_DIR@/mac/0vars.cmake")
+INCLUDE ("@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake")
 
 # 
 

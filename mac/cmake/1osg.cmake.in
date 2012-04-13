@@ -8,8 +8,8 @@ CMAKE_POLICY (SET CMP0012 NEW)
 
 IF (@OSGEARTH_FOUND@)
 
-INCLUDE (@CMAKE_BINARY_DIR@/mac/0vars.cmake)
-INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
+INCLUDE ("@CMAKE_BINARY_DIR@/mac/0vars.cmake")
+INCLUDE ("@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake")
 
 SET (OSG_PLUGINS_PATH "@OSG_PLUGINS_PATH@")
 
