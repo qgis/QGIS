@@ -1,14 +1,14 @@
 otbcli_Rasterization
 Rasterization
 OTB
-ParameterVector|-in|InputVectorData|False
+ParameterVector|-in|InputVectorData|-1|False
 OutputRaster|-out|OutputImage|
 ParameterRaster|-im|InputImage|True
-ParameterNumber|-szx|SizeX|None|None|None
-ParameterNumber|-szy|SizeY|None|None|None
-ParameterNumber|-epsg|RSID|None|None|None
-ParameterNumber|-orx|OriginX|None|None|None
-ParameterNumber|-ory|OriginY|None|None|None
-ParameterNumber|-spx|SpacingX|None|None|None
-ParameterNumber|-spy|SpacingY|None|None|None
+ParameterNumber|-szx|SizeX|None|None|0.0
+ParameterNumber|-szy|SizeY|None|None|0.0
+ParameterNumber|-epsg|RSID|None|None|0
+ParameterNumber|-orx|OriginX|None|None|0.0
+ParameterNumber|-ory|OriginY|None|None|0.0
+ParameterNumber|-spx|SpacingX|None|None|0.0
+ParameterNumber|-spy|SpacingY|None|None|0.0
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

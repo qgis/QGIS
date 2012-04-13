@@ -1,6 +1,6 @@
 otbcli_ObtainUTMZoneFromGeoPoint
 ObtainUTMZoneFromGeoPoint
 OTB
-ParameterNumber|-lat|Latitude|None|None|None
-ParameterNumber|-lon|Longitude|None|None|None
-ParameterNumber|-utm|UTMZone|None|None|None
+ParameterNumber|-lat|Latitude|None|None|0.0
+ParameterNumber|-lon|Longitude|None|None|0.0
+ParameterNumber|-utm|UTMZone|None|None|0

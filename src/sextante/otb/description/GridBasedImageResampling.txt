@@ -7,8 +7,8 @@ ParameterRaster|-grid.in|Input resampling grid|False
 ParameterSelection|-grid.type|Grid Type|def;loc;
 ParameterNumber|-out.ulx|Upper Left X|None|None|0.0
 ParameterNumber|-out.uly|Upper Left Y|None|None|0.0
-ParameterNumber|-out.sizex|Size X|None|None|None
-ParameterNumber|-out.sizey|Size Y|None|None|None
+ParameterNumber|-out.sizex|Size X|None|None|0
+ParameterNumber|-out.sizey|Size Y|None|None|0
 ParameterNumber|-out.spacingx|Pixel Size X|None|None|1.0
 ParameterNumber|-out.spacingy|Pixel Size Y|None|None|1.0
 ParameterNumber|-out.default|Default value|None|None|0.0

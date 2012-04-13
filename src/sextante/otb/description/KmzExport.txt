@@ -3,7 +3,7 @@ KmzExport
 OTB
 ParameterRaster|-in|Input image|False
 ParameterString|-out|Output .kmz product|
-ParameterNumber|-tilesize|Tile Size|None|None|None
+ParameterNumber|-tilesize|Tile Size|None|None|0
 ParameterRaster|-logo|Image logo|True
 ParameterRaster|-legend|Image legend|True
 ParameterSelection|-elev|Elevation management|dem;average;

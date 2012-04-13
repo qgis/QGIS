@@ -1,7 +1,7 @@
 otbcli_VectorDataExtractROIApplication
 VectorDataExtractROIApplication
 OTB
-ParameterVector|-io.vd|Input Vector data|False
+ParameterVector|-io.vd|Input Vector data|-1|False
 ParameterRaster|-io.in|Support image|False
 OutputVector|-io.out|Output Vector data|
 ParameterSelection|-elev|Elevation management|dem;average;

@@ -2,7 +2,7 @@ otbcli_ComputePolylineFeatureFromImage
 ComputePolylineFeatureFromImage
 OTB
 ParameterRaster|-in|Input Image|False
-ParameterVector|-vd|Vector Data|False
+ParameterVector|-vd|Vector Data|-1|False
 ParameterSelection|-elev|Elevation management|dem;average;
 ParameterString|-elev.dem.path|DEM directory|
 ParameterString|-elev.dem.geoid|Geoid File|

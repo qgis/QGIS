@@ -1,7 +1,7 @@
 otbcli_VectorDataDSValidation
 VectorDataDSValidation
 OTB
-ParameterVector|-in|Input Vector Data|False
+ParameterVector|-in|Input Vector Data|-1|False
 ParameterString|-descmod|Descriptors model filename|
 ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)
 ParameterNumber|-thd|Criterion threshold|None|None|0.5

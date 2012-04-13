@@ -1,8 +1,8 @@
 otbcli_DSFuzzyModelEstimation
 DSFuzzyModelEstimation
 OTB
-ParameterVector|-psin|Input Positive Vector Data|False
-ParameterVector|-nsin|Input Negative Vector Data|False
+ParameterVector|-psin|Input Positive Vector Data|-1|False
+ParameterVector|-nsin|Input Negative Vector Data|-1|False
 ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)
 ParameterNumber|-wgt|Weighting|None|None|0.5
 ParameterString|-initmod|initialization model|
