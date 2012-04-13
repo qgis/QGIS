@@ -80,12 +80,12 @@ class Sextante:
         Sextante.addProvider(MMQGISAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
-        Sextante.addProvider(ScriptAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
         Sextante.addProvider(GrassAlgorithmProvider())
         Sextante.addProvider(GdalAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
+        Sextante.addProvider(ScriptAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
         SextanteLog.startLogging()

@@ -97,7 +97,8 @@ class SextanteToolbox(QtGui.QDockWidget):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = Sextante.getAlgorithm(item.alg.commandLineName())
-            if alg.checkBeforeOpeningParametersDialog():
+            message = alg.checkBeforeOpeningParametersDialog()
+            if message:
                 QtGui.QMessageBox.warning(self, "Warning", message)
                 return
             alg = copy.deepcopy(alg)

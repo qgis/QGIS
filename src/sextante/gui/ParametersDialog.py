@@ -35,7 +35,7 @@ class ParametersDialog(QtGui.QDialog):
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
         QtGui.QDialog.__init__(self)
-        self.setModal(True)
+        self.setModal(False)
         self.ui = Ui_ParametersDialog()
         self.ui.setupUi(self, alg)
         self.executed = False

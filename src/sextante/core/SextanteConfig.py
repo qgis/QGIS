@@ -82,6 +82,12 @@ class SextanteConfig():
         else:
             return None
 
+    @staticmethod
+    def setSettingValue(name, value):
+        if name in SextanteConfig.settings.keys():
+            SextanteConfig.settings[name].value = value
+            SextanteConfig.saveSettings()
+
 
 class Setting():
     '''A simple config parameter that will appear on the SEXTANTE config dialog'''

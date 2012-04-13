@@ -31,6 +31,19 @@ class ExtentSelectionPanel(QtGui.QWidget):
         self.connect(self.tool, SIGNAL("rectangleCreated()"), self.fillCoords)
 
     def buttonPushed(self):
+        popupmenu = QMenu()
+        useLayerExtentAction = QtGui.QAction("Use layer/canvas extent", self.pushButton)
+        useLayerExtentAction.triggered.connect(self.useLayerExtent)
+        popupmenu.addAction(useLayerExtentAction)
+        selectOnCanvasAction = QtGui.QAction("Select extent on canvas", self.pushButton)
+        selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
+        popupmenu.addAction(selectOnCanvasAction)
+        popupmenu.exec_(QtGui.QCursor.pos())
+
+    def useLayerExtent(self):
+        pass
+
+    def selectOnCanvas(self):
         canvas = QGisLayers.iface.mapCanvas()
         canvas.setMapTool(self.tool)
 

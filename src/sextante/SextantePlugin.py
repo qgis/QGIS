@@ -13,6 +13,7 @@ from sextante.modeler.ModelerDialog import ModelerDialog
 from sextante.gui.ResultsDialog import ResultsDialog
 from sextante.about.AboutDialog import AboutDialog
 import subprocess
+from sextante.core.SextanteExternalAppsConfigurer import SextanteExternalAppsConfigurer
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -25,6 +26,8 @@ class SextantePlugin:
         QGisLayers.setInterface(iface)
         Sextante.initialize()
         Sextante.setInterface(iface)
+        SextanteExternalAppsConfigurer.autoConfigure()
+
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)

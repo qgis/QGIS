@@ -43,7 +43,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         line = lines.readline()
         while line != "":
             if line.startswith("##"):
-                self.processParameterLine(line.strip("\n"))
+                try:
+                    self.processParameterLine(line.strip("\n"))
+                except:
+                    raise  WrongScriptException("Could not load script: " + self.descriptionFile +"\n" + "Problem with line: " + line)
             self.script += line
             line = lines.readline()
         lines.close()

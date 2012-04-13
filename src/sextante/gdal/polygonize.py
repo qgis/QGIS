@@ -24,7 +24,7 @@ class polygonize(GeoAlgorithm):
         self.addOutput(OutputVector(polygonize.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        commands = ["polygonize"]
+        commands = ["gdal_polygonize"]
         commands.append(self.getParameterValue(polygonize.INPUT))
         commands.append("-f")
         commands.append("ESRI Shapefile")
