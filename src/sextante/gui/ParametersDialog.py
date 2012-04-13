@@ -23,6 +23,8 @@ from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 from sextante.gui.NumberInputPanel import NumberInputPanel
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
+from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -185,6 +187,8 @@ class Ui_ParametersDialog(object):
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default)
+        elif isinstance(param, ParameterExtent):
+            item = ExtentSelectionPanel(param.default)
         else:
             item = QtGui.QLineEdit()
             item.setText(str(param.default))

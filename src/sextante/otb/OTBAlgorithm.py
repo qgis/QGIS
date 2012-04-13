@@ -56,11 +56,10 @@ class OTBAlgorithm(GeoAlgorithm):
 
 
     def processAlgorithm(self, progress):
-        if SextanteUtils.isWindows():
-            path = OTBUtils.otbPath()
-            libpath = OTBUtils.otbLibPath()
-            if path == "" or libpath == "":
-                raise GeoAlgorithmExecutionException("OTB folder is not configured.\nPlease configure it before running OTB algorithms.")
+        path = OTBUtils.otbPath()
+        libpath = OTBUtils.otbLibPath()
+        if path == "" or libpath == "":
+            raise GeoAlgorithmExecutionException("OTB folder is not configured.\nPlease configure it before running OTB algorithms.")
 
         commands = []
         commands.append(path + os.sep + self.cliName)

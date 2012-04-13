@@ -5,6 +5,7 @@ from sextante.core.Sextante import Sextante
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from sextante.parameters.ParameterExtent import ParameterExtent
 
 
 class ExampleAlgorithm(GeoAlgorithm):

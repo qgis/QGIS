@@ -38,12 +38,10 @@ class OTBAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if SextanteUtils.isWindows():
-            SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_FOLDER, "OTB folder", OTBUtils.otbPath()))
-            SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_LIB_FOLDER, "OTB library folder", OTBUtils.otbLibPath()))
+        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_FOLDER, "OTB folder", OTBUtils.otbPath()))
+        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_LIB_FOLDER, "OTB library folder", OTBUtils.otbLibPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if SextanteUtils.isWindows():
-            SextanteConfig.removeSetting(OTBUtils.OTB_FOLDER)
-            SextanteConfig.removeSetting(OTBUtils.OTB_LIB_FOLDER)
+        SextanteConfig.removeSetting(OTBUtils.OTB_FOLDER)
+        SextanteConfig.removeSetting(OTBUtils.OTB_LIB_FOLDER)

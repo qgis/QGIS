@@ -2,6 +2,7 @@ import os
 import subprocess
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteUtils import SextanteUtils
 
 class OTBUtils:
 

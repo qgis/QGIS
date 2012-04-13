@@ -12,10 +12,12 @@ class ParameterFixedTable(Parameter):
         self.value = None
 
     def setValue(self, obj):
+        ##TODO: check that it contains a correct number of elements
         if isinstance(obj, str):
             self.value = obj
         else:
             self.value = ParameterFixedTable.tableToString(obj)
+        return True
 
     @staticmethod
     def tableToString(table):

@@ -86,15 +86,12 @@ class SextanteToolbox(QtGui.QDockWidget):
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
 
-
     def executeAlgorithmAsBatchProcess(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = Sextante.getAlgorithm(item.alg.commandLineName())
             dlg = BatchProcessingDialog(alg)
             dlg.exec_()
-
-
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
