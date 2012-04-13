@@ -6,8 +6,8 @@
 # kill boolean warnings
 CMAKE_POLICY (SET CMP0012 NEW)
 
-INCLUDE (@CMAKE_BINARY_DIR@/mac/0vars.cmake)
-INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
+INCLUDE ("@CMAKE_BINARY_DIR@/mac/0vars.cmake")
+INCLUDE ("@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake")
 
 # Qt framework version is major version
 SET (QT_FWVER @QT_VERSION_MAJOR@)

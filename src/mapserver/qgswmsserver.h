@@ -119,8 +119,9 @@ class QgsWMSServer
     /**Appends feature info xml for the layer to the layer element of the dom document*/
     int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint* infoPoint, QDomDocument& infoDocument, QDomElement& layerElement, QString version ) const;
 
-    /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles*/
-    QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS ) const;
+    /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles
+       @param scaleDenominator Filter out layer if scale based visibility does not match (or use -1 if no scale restriction)*/
+    QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS, double scaleDenominator = -1 ) const;
 
     //helper functions for GetLegendGraphics
     /**Draws layer item and subitems

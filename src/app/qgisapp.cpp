@@ -645,6 +645,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef HAVE_TOUCH
   //add reacting to long click in android
   grabGesture( Qt::TapAndHoldGesture );
+#else
+  //remove mActionTouch button
+  delete mActionTouch;
+  mActionTouch=0;
 #endif
 
   // update windows
@@ -2286,12 +2290,16 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
       // since the layer is bad, stomp on it
       delete layer;
-
-      // XXX should we return false here, or just grind through
-      // XXX the remaining arguments?
     }
 
   }
+
+  // make sure at least one layer was succesfully added
+  if ( myList.count() == 0 )
+  {
+    return false;
+  }
+
   // Register this layer with the layers registry
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
@@ -2785,6 +2793,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
+
 #ifdef HAVE_TOUCH
   mMapCanvas->setMapTool( mMapTools.mTouch );
   mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
