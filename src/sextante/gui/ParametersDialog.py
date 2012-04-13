@@ -186,7 +186,7 @@ class Ui_ParametersDialog(object):
                 opts.append(opt.name())
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
-            item = NumberInputPanel(param.default)
+            item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self.dialog, param.default)
         else:

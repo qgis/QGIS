@@ -6,7 +6,14 @@ class ParameterNumber(Parameter):
     def __init__(self, name="", description="", minValue = None, maxValue = None, default = 0):
         self.name = name
         self.description = description
-        self.default = default
+        '''if the passed value is an int or looks like one, then we assume that float values
+        are not allowed'''
+        try:
+            self.default = int(str(default))
+            self.isInteger = True
+        except:
+            self.default = default
+            self.isInteger = False
         self.min = minValue
         self.max = maxValue
         self.value = None
@@ -34,12 +41,18 @@ class ParameterNumber(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        for i in range (2,5):
+        for i in range (2,4):
             if tokens[i] == str(None):
                 tokens[i] = None
             else:
                 tokens[i] = float(tokens[i])
-        return ParameterNumber(tokens[0], tokens[1], tokens[2], tokens[3], tokens[4])
+        '''we force the default to int if possible, since that indicates if it is restricted
+        to ints or not'''
+        try:
+            val = int(tokens[4])
+        except:
+            val = float(tokens[4])
+        return ParameterNumber(tokens[0], tokens[1], tokens[2], tokens[3], val)
 
     def getAsScriptCode(self):
         return "##" + self.name + "=number " + str(self.default)

@@ -19,8 +19,8 @@ class merge(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "rgb2pct"
-        self.group = "Conversion"
+        self.name = "merge"
+        self.group = "Miscellaneous"
         self.addParameter(ParameterMultipleInput(merge.INPUT, "Input layers", ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterBoolean(merge.PCT, "Grab pseudocolor table from first layer", False))
         self.addParameter(ParameterBoolean(merge.SEPARATE, "Layer stack", False))

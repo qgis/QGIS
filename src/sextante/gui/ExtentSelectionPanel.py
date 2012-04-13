@@ -42,7 +42,17 @@ class ExtentSelectionPanel(QtGui.QWidget):
         popupmenu.exec_(QtGui.QCursor.pos())
 
     def useLayerExtent(self):
-        pass
+        extentsDict = {}
+        extentsDict["[Canvas]"] = QGisLayers.iface.mapCanvas().extent()
+        extents = ["[Canvas]"]
+        layers = QGisLayers.getAllLayers()
+        for layer in layers:
+            extents.append(layer.name())
+            extentsDict[str(layer.name())] = layer.extent()
+        item, ok = QtGui.QInputDialog.getItem(self, "Select extent", "Use extent from", extents, False)
+        if ok:
+            item = str(item)
+            self.setValueFromRect(extentsDict[item])
 
     def selectOnCanvas(self):
         canvas = QGisLayers.iface.mapCanvas()
@@ -51,6 +61,9 @@ class ExtentSelectionPanel(QtGui.QWidget):
 
     def fillCoords(self):
         r = self.tool.rectangle()
+        self.setValueFromRect(r)
+
+    def setValueFromRect(self,r):
         s = str(r.xMinimum()) + "," + str(r.xMaximum()) + "," + str(r.yMinimum()) + "," + str(r.yMaximum())
         self.text.setText(s)
         self.tool.reset()
