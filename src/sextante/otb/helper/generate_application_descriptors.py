@@ -220,6 +220,9 @@ def generate_parameter_InputVectorData( appInstance, paramKey ):
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
+  out += "-1"
+  out += "|"
+  
   out += str(not appInstance.IsMandatory(paramKey))
   
   return out
