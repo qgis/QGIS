@@ -1,0 +1,7 @@
+otbcli_SarRadiometricCalibration
+SarRadiometricCalibration
+OTB
+ParameterRaster|-in|Input complex image|True
+OutputRaster|-out|Output calibrated complex image|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterBoolean|-noise|Flag to disable noise|

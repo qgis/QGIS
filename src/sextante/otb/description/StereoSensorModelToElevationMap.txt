@@ -1,0 +1,21 @@
+otbcli_StereoSensorModelToElevationMap
+StereoSensorModelToElevationMap
+OTB
+ParameterRaster|-ref|The reference image.|True
+ParameterRaster|-sec|The secondary image.|True
+OutputRaster|-out|The output image.|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterNumber|-r|Radius (in pixels) of the metric computation window (default is 3).|None|None|3
+ParameterNumber|-ct|Threshold bellow which correlation is considered invalid (default is 0.7).|None|None|0.699999988079
+ParameterNumber|-vt|Threshold on the master patch variance bellow which no height exploration is performed (default is 4).|None|None|4.0
+ParameterNumber|-minh|Minimum height offset with respect to local initial height for height exploration (default is -20 meters).|None|None|-20.0
+ParameterNumber|-maxh|Maximum height offset with respect to local initial height for height exploration (default is 20 meters).|None|None|20.0
+ParameterNumber|-step|Step of height exploration (default is 1 meter).|None|None|1.0
+ParameterNumber|-ae|If no DEM is used, provide the initial height value (default is 0 meters)|None|None|0.0
+ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
+ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
+ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
+ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
+ParameterNumber|-rgs|(optional) Perform a gaussian smoothing of the reference image. Parameter is gaussian sigma (in pixels). Default is no smoothing.|None|None|1.0
+ParameterNumber|-sgs|(optional) Perform a gaussian smoothing of the secondary image. Parameter is gaussian sigma (in pixels). Default is no smoothing.|None|None|1.0
+ParameterBoolean|-s|If activated, the elevation map will contain only the estimated height offset from the initial height (either average elevation or DEM)|

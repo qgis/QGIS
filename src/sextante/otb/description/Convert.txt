@@ -1,0 +1,7 @@
+otbcli_Convert
+Convert
+OTB
+ParameterRaster|-in|Input image|True
+ParameterSelection|-type|Transfer function for the rescaling|none;linear;log2;
+OutputRaster|-out|Output image|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128

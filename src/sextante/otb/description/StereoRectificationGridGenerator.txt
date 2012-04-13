@@ -1,0 +1,25 @@
+otbcli_StereoRectificationGridGenerator
+StereoRectificationGridGenerator
+OTB
+ParameterRaster|-io.inleft|The left input image to resample|True
+ParameterRaster|-io.inright|The right input image to resample|True
+OutputRaster|-io.outleft|The output deformation grid to be used to resample the left input image|
+OutputRaster|-io.outright|The output deformation grid to be used to resample the right input image|
+ParameterSelection|-epi.elevation|Manage elevation source for stereo-rectification|avg;avgdem;dem;
+ParameterNumber|-epi.elevation.avg.value|Average elevation value|None|None|None
+ParameterString|-epi.elevation.avgdem.path|Path to the DEM directory|
+ParameterString|-epi.elevation.avgdem.geoid|Path to the geoid file|
+ParameterNumber|-epi.elevation.avgdem.step|Step of sub-sampling for average elevation estimation|None|None|1
+ParameterNumber|-epi.elevation.avgdem.value|Average elevation value estimated from DEM|None|None|None
+ParameterNumber|-epi.elevation.avgdem.mindisp|Disparity corresponding to estimated minimum elevation over the left image|None|None|None
+ParameterNumber|-epi.elevation.avgdem.maxdisp|Disparity corresponding to estimated maximum elevation over the left image|None|None|None
+ParameterString|-epi.elevation.dem.path|Path to the DEM directory|
+ParameterString|-epi.elevation.dem.geoid|Path to the geoid file|
+ParameterNumber|-epi.scale|The scale parameter allows to generated zoomed-in (scale < 1) or zoomed-out (scale > 1) epipolar images.|None|None|1.0
+ParameterNumber|-epi.step|Stereo-rectification deformation grid only varies slowly. Therefore, it is recommanded to use a coarser grid (higher step value) in case of large images|None|None|1
+ParameterNumber|-epi.rectsizex|The application computes the optimal rectified image size so that the whole left input image fits into the rectified area. However, due to the scale and step parameter, this size may not match the size of the deformation field output. In this case, one can use these output values.|None|None|None
+ParameterNumber|-epi.rectsizey|The application computes the optimal rectified image size so that the whole left input image fits into the rectified area. However, due to the scale and step parameter, this size may not match the size of the deformation field output. In this case, one can use these output values.|None|None|None
+ParameterNumber|-epi.baseline|This parameter is the mean value, in meters, of the baseline to sensor altitude ratio. It can be used to convert disparities to physical elevation, since a disparity of one pixel will corresspond to an elevation offset of this value with respect to the mean elevation.|None|None|None
+OutputRaster|-inverse.outleft|The output deformation grid to be used to resample the epipolar left image|
+OutputRaster|-inverse.outright|The output deformation grid to be used to resample the epipolar right image|
+ParameterNumber|-inverse.ssrate|Grid inversion is an heavy process that implies spline regression on control points. To avoid eating to much memory, this parameter allows to first sub-sample the field to invert.|None|None|16

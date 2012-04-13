@@ -1,0 +1,8 @@
+otbcli_Rescale
+Rescale
+OTB
+ParameterRaster|-in|The image to scale.|True
+OutputRaster|-out|The rescaled image filename.|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterNumber|-outmin|Minimum value of the output image.|None|None|0.0
+ParameterNumber|-outmax|Maximum value of the output image.|None|None|255.0

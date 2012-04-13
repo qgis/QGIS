@@ -1,0 +1,10 @@
+otbcli_ExtractROI
+ExtractROI
+OTB
+ParameterRaster|-in|Input image.|True
+OutputRaster|-out|Output image.|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterNumber|-startx|ROI start x position.|None|None|0
+ParameterNumber|-starty|ROI start y position.|None|None|0
+ParameterNumber|-sizex|size along x in pixels.|None|None|0
+ParameterNumber|-sizey|size along y in pixels.|None|None|0

@@ -1,0 +1,7 @@
+otbcli_VectorDataSetField
+VectorDataSetField
+OTB
+ParameterVector|-in|Input Vector Data|True
+OutputVector|-out|Output Vector Data|
+ParameterString|-fn|Field name|
+ParameterString|-fv|Field value|

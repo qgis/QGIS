@@ -1,0 +1,34 @@
+otbcli_ReadImageInfo
+ReadImageInfo
+OTB
+ParameterRaster|-in|Input image to analyse|True
+ParameterBoolean|-keywordlist|Output the OSSIM keyword list. It contains metadata information (sensor model, geometry ). Informations are stored in keyword list (pairs of key/value)|
+ParameterNumber|-sizex|X size (in pixels)|None|None|None
+ParameterNumber|-sizey|Y size (in pixels)|None|None|None
+ParameterNumber|-spacingx|Pixel size along X (in physical units)|None|None|None
+ParameterNumber|-spacingy|Pixel size along Y (in physical units)|None|None|None
+ParameterNumber|-originx|Origin along X|None|None|None
+ParameterNumber|-originy|Origin along Y|None|None|None
+ParameterNumber|-estimatedgroundspacingx|Estimated ground spacing along X (in meters).|None|None|None
+ParameterNumber|-estimatedgroundspacingy|Estimated ground spacing along Y (in meters).|None|None|None
+ParameterNumber|-numberbands|Number of bands|None|None|None
+ParameterString|-sensor|Sensor identifier|
+ParameterString|-id|Image identifier|
+ParameterString|-time|Acquisition time.|
+ParameterNumber|-ullat|Lattitude of the upper left corner.|None|None|0.0
+ParameterNumber|-ullon|Longitude of the upper left corner.|None|None|0.0
+ParameterNumber|-urlat|Lattitude of the upper right corner.|None|None|0.0
+ParameterNumber|-urlon|Longitude of the upper right corner.|None|None|0.0
+ParameterNumber|-lrlat|Lattitude of the lower right corner.|None|None|0.0
+ParameterNumber|-lrlon|Longitude of the lower right corner.|None|None|0.0
+ParameterNumber|-lllat|Lattitude of the lower left corner.|None|None|0.0
+ParameterNumber|-lllon|Longitude of the lower left corner.|None|None|0.0
+ParameterString|-town|Main town near center of image|
+ParameterString|-country|Country of the image|
+ParameterNumber|-rgb.r|Red band Number|None|None|1
+ParameterNumber|-rgb.g|Green band Number|None|None|2
+ParameterNumber|-rgb.b|Blue band Number|None|None|3
+ParameterString|-projectionref|Projection Coordinate System|
+ParameterString|-keyword|Image keyword list|
+ParameterNumber|-gcp.count|Number of GCPs|None|None|0
+ParameterString|-gcp.proj|Projection Coordinate System for GCPs|

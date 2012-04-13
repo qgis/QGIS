@@ -1,0 +1,17 @@
+otbcli_ColorMapping
+ColorMapping
+OTB
+ParameterRaster|-in|Input image filename|True
+OutputRaster|-out|Output image filename|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterSelection|-op|Selection of the operation to execute (default is : label to color).|labeltocolor;colortolabel;
+ParameterNumber|-op.colortolabel.notfound|Label to use for unknown colors.|None|None|404
+ParameterSelection|-method|Selection of color mapping methods and their parameters.|custom;continuous;optimal;image;
+ParameterString|-method.custom.lut|An ASCII file containing the look-up table\nwith one color per line\n(for instance the line '1 255 0 0' means that all pixels with label 1 will be replaced by RGB color 255 0 0)\nLines beginning with a # are ignored|
+ParameterSelection|-method.continuous.lut|Available look-up tables.|red;green;blue;grey;hot;cool;spring;summer;autumn;winter;copper;jet;hsv;overunder;relief;
+ParameterNumber|-method.continuous.min|Set the lower input value of the mapping range.|None|None|0.0
+ParameterNumber|-method.continuous.max|Set the higher input value of the mapping range.|None|None|255.0
+ParameterNumber|-method.optimal.background|Value of the background label|None|None|0
+ParameterRaster|-method.image.in|Support image filename. LUT is calculated using the mean af pixel value on the area. First of all image is normalized with extrema rejection|True
+ParameterNumber|-method.image.low|lower quantile for image normalisation|None|None|2
+ParameterNumber|-method.image.up|upper quantile for image normalisation|None|None|2

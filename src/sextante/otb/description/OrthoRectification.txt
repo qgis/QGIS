@@ -1,0 +1,30 @@
+otbcli_OrthoRectification
+OrthoRectification
+OTB
+ParameterRaster|-io.in|The input image to ortho-rectify|True
+OutputRaster|-io.out|The ortho-rectified output image|
+ParameterSelection|-map|Parameters of the ouptut map projection to be used.|utm;lambert2;lambert93;transmercator;wgs;epsg;
+ParameterNumber|-map.utm.zone|The zone number ranges from 1 to 60 and allows to define the transverse mercator projection (along with the hemisphere)|None|None|None
+ParameterBoolean|-map.utm.northhem|The transverse mercator projections are defined by their zone number as well as the hemisphere. Activate this parameter if your image is in the northern hemisphere.|
+ParameterNumber|-map.transmercator.falseeasting| Transmercator false easting value.|None|None|0.0
+ParameterNumber|-map.transmercator.falsenorthing| Transmercator false northing value.|None|None|0.0
+ParameterNumber|-map.transmercator.scale| Transmercator scale factor value.|None|None|1.0
+ParameterNumber|-map.epsg.code|See www.spatialreference.org to find which EPSG code is associated to your projection|None|None|32631
+ParameterSelection|-outputs.mode||auto;autosize;autospacing;
+ParameterNumber|-outputs.ulx|Cartographic X coordinate of upper-left corner (meters for cartographic projections, degrees for geographic ones)|None|None|None
+ParameterNumber|-outputs.uly|Cartographic Y coordinate of the upper-left corner (meters for cartographic projections, degrees for geographic ones)|None|None|None
+ParameterNumber|-outputs.sizex|Size of projected image along X (in pixels)|None|None|None
+ParameterNumber|-outputs.sizey|Size of projected image along Y (in pixels)|None|None|None
+ParameterNumber|-outputs.spacingx|Size of each pixel along X axis (meters for cartographic projections, degrees for geographic ones)|None|None|None
+ParameterNumber|-outputs.spacingy|Default value to write when outside of input image.|None|None|None
+ParameterBoolean|-outputs.isotropic|Default spacing (pixel size) values are estimated from the sensor modeling of the image. It can therefore result in a non-isotropic spacing. This option allows you to force default values to be isotropic (in this case, the minimum of spacing in both direction is applied. Values overriden by user are not affected by this option.|True
+ParameterNumber|-outputs.default||None|None|0.0
+ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
+ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
+ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
+ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
+ParameterSelection|-interpolator|This group of parameters allows to define how the input image will be interpolated during resampling.|nn;linear;bco;
+ParameterNumber|-interpolator.bco.radius|This parameter allows to control the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artefacts.|None|None|2
+ParameterNumber|-opt.rpc|Enabling RPC modeling allows to speed-up SPOT5 ortho-rectification. Value is the number of control points per axis for RPC estimation|None|None|10
+ParameterNumber|-opt.ram|This allows to set the maximum amount of RAM available for processing. As the writing task is time consuming, it is better to write large pieces of data, which can be achieved by increasing this parameter (pay attention to your system capabilities)|None|None|128
+ParameterNumber|-opt.gridspacing|Resampling is done according to a coordinate mapping grid, whose pixel size is set by this parameter. The closer to the output spacing this parameter is, the more precise will be the ortho-rectified image, but increasing this parameter allows to reduce processing time.|None|None|4.0

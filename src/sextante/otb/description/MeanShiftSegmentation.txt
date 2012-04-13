@@ -1,0 +1,12 @@
+otbcli_MeanShiftSegmentation
+MeanShiftSegmentation
+OTB
+ParameterRaster|-in|The input image.|True
+OutputRaster|-fout|The filtered output image.|
+OutputRaster|-cout|The clustered output image.|
+OutputRaster|-lout|The label output image.|
+OutputRaster|-cbout|The cluster boundaries output image.|
+ParameterNumber|-spatialr|Spatial radius defining neighborhood.|None|None|5
+ParameterNumber|-ranger|Range radius defining the interval in the color space.|None|None|15.0
+ParameterNumber|-minsize|Minimun size of a region to be kept after clustering.|None|None|100
+ParameterNumber|-scale|Scale to stretch the image before processing.|None|None|100000.0

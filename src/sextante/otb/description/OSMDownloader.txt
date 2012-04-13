@@ -1,0 +1,12 @@
+otbcli_OSMDownloader
+OSMDownloader
+OTB
+OutputVector|-out|Generated output vector data path|
+ParameterRaster|-support|Image used as support to estimate the models|True
+ParameterString|-key|OSM tag key to extract (highway, building...)|
+ParameterString|-value|OSM tag value to extract (motorway, footway...)|
+ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
+ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
+ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
+ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
+ParameterBoolean|-printclasses|Print the key/value classes available for the bounding box of the input image \n				  ** If not used : Note that the options OSMKey (-key) and Output (-out) become mandatory|

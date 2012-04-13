@@ -1,0 +1,12 @@
+otbcli_Quicklook
+Quicklook
+OTB
+ParameterRaster|-in|The image to read|True
+OutputRaster|-out|The subsampled image|
+ParameterNumber|-rox|first point of ROI in x-direction|None|None|0
+ParameterNumber|-roy|first point of ROI in y-direction|None|None|0
+ParameterNumber|-rsx|size of ROI in x-direction|None|None|0
+ParameterNumber|-rsy|size of ROI in y-direction|None|None|0
+ParameterNumber|-sr|Sampling Ratio, default is 2|None|None|2
+ParameterNumber|-sx|quicklook size in x-direction (used if no sampling ration is given)|None|None|None
+ParameterNumber|-sy|quicklook size in y-direction (used if no sampling ration is given)|None|None|None

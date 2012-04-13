@@ -1,0 +1,12 @@
+otbcli_VectorDataTransform
+VectorDataTransform
+OTB
+ParameterVector|-vd|Input vector data to transform|True
+OutputVector|-out|Output transformed vector data|
+ParameterRaster|-in|Image needed as a support to the vector data|True
+ParameterNumber|-transform.tx|Translation in the X direction (in pixels)|None|None|0.0
+ParameterNumber|-transform.ty|Translation in the Y direction (in pixels)|None|None|0.0
+ParameterNumber|-transform.ro|Angle of the rotation to apply in degrees|None|None|0.0
+ParameterNumber|-transform.centerx|X coordinate of the rotation center (in physical units)|None|None|0.0
+ParameterNumber|-transform.centery|Y coordinate of the rotation center (in physical units)|None|None|0.0
+ParameterNumber|-transform.scale|The scale to apply|None|None|1.0

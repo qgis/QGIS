@@ -1,74 +1,20 @@
 otbcli_RadiometricVegetationIndices
-Radiometric vegetation indices
+RadiometricVegetationIndices
 OTB
-ParameterRaster|-in|Input image|False
-ParameterNumber|-channels.red|Red Channel|1|None|1
-ParameterNumber|-channels.nir|Near infrared channel|1|None|1
-ParameterBoolean|-index.ndvi|NDVI|True
-ParameterBoolean|-index.tndvi|TNDVI|True
-ParameterBoolean|-index.rvi|RVI|True
-ParameterBoolean|-index.savi|SAVI|True
-ParameterBoolean|-index.tsavi|TSAVI|True
-ParameterBoolean|-index.msavi|MSAVI|True
-ParameterBoolean|-index.msavi2|MSAVI2|True
-ParameterBoolean|-index.gemi|GEMI|True
-ParameterBoolean|-index.ipvi|IPVI|True
-ParameterBoolean|-index.laindvilog|LAIFromNDVILog|True
-ParameterBoolean|-index.lairefl|LAIFromReflLinear|True
-ParameterBoolean|-index.laindviformo|LAIFromNDVIFormo|True
-OutputRaster|-out|Output image
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ParameterRaster|-in|Input image, with at least red and NIR channels|True
+OutputRaster|-out|Radiometric indices output image|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterNumber|-channels.red|Red channel index|None|None|3
+ParameterNumber|-channels.nir|NIR channel index|None|None|4
+ParameterBoolean|-index.ndvi|Normalized Difference Vegetation Index|
+ParameterBoolean|-index.tndvi| Transformed Normalized Difference Vegetation Index|
+ParameterBoolean|-index.rvi|Ratio Vegetation Index|
+ParameterBoolean|-index.savi|Soil Adjusted Vegetation Index|
+ParameterBoolean|-index.tsavi|Transformed Soil Adjusted Vegetation Index|
+ParameterBoolean|-index.msavi|Modified Soil Adjusted Vegetation Index|
+ParameterBoolean|-index.msavi2|Modified Soil Adjusted Vegetation Index 2|
+ParameterBoolean|-index.gemi|Global Environment Monitoring Index|
+ParameterBoolean|-index.ipvi|Infrared Percentage Vegetation Index|
+ParameterBoolean|-index.laindvilog|Leaf Area Index from NDVI using a logarithmic relationship|
+ParameterBoolean|-index.lairefl|Leaf Area Index from reflectance using a linear relationship|
+ParameterBoolean|-index.laindviformo|Leaf Area Index from reflectance using using formula a*(exp(nir-red)/((red+nir)*b)-exp(c*b)), with a = 0.1519 b = 3.9443 c = 0.13. This formula is only valid for Formosat 2 reflectance TOCa linear relationship.|

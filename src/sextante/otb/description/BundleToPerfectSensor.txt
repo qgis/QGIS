@@ -1,0 +1,12 @@
+otbcli_BundleToPerfectSensor
+BundleToPerfectSensor
+OTB
+ParameterRaster|-inp| Input panchromatic image.|True
+ParameterRaster|-inxs| Input XS image.|True
+ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
+ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
+ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
+ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
+ParameterNumber|-lms| Spacing of the deformation field. Default is 10 times the PAN image spacing.|None|None|None
+OutputRaster|-out| Output image.|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128

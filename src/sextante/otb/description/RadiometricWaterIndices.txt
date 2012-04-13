@@ -1,0 +1,19 @@
+otbcli_RadiometricWaterIndices
+RadiometricWaterIndices
+OTB
+ParameterRaster|-in|Input image|True
+OutputRaster|-out|Radiometric indices output image|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterNumber|-channels.blue|Blue channel index|None|None|1
+ParameterNumber|-channels.green|Green channel index|None|None|2
+ParameterNumber|-channels.red|Red channel index|None|None|3
+ParameterNumber|-channels.nir|NIR channel index|None|None|4
+ParameterNumber|-channels.mir|Mir channel index|None|None|4
+ParameterNumber|-channels.rho860|860nm band channel index|None|None|2
+ParameterNumber|-channels.rho1240|1240nm band channel index|None|None|5
+ParameterBoolean|-index.ndwi| Normalized Difference Water Index|
+ParameterBoolean|-index.ndwi2| Normalized Difference Water Index 2|
+ParameterBoolean|-index.mndwi|Modified Normalized Difference Water Index|
+ParameterBoolean|-index.ndpi|Normalized Difference Pond Index|
+ParameterBoolean|-index.ndti|Normalized Difference Turbidity Index|
+ParameterBoolean|-index.srwi|List of available radiometric indices, using Modis 860 and 1240 nm bands|

@@ -1,0 +1,6 @@
+otbcli_ObtainUTMZoneFromGeoPoint
+ObtainUTMZoneFromGeoPoint
+OTB
+ParameterNumber|-lat|Latitude value of desired point.|None|None|None
+ParameterNumber|-lon|Longitude value of desired point.|None|None|None
+ParameterNumber|-utm|UTM Zone|None|None|None

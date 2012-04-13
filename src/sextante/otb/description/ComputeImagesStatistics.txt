@@ -1,0 +1,4 @@
+otbcli_ComputeImagesStatistics
+ComputeImagesStatistics
+OTB
+ParameterString|-out|XML filename where the statistics are saved for future reuse.|

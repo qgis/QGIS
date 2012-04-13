@@ -1,0 +1,17 @@
+otbcli_GridBasedImageResampling
+GridBasedImageResampling
+OTB
+ParameterRaster|-io.in|The input image to resample|True
+OutputRaster|-io.out|The resampled output image|
+ParameterRaster|-grid.in|The resampling grid|True
+ParameterSelection|-grid.type|Allows to choose between two grid types|def;loc;
+ParameterNumber|-out.ulx|X Coordinate of the upper-left pixel of the output resampled image|None|None|0.0
+ParameterNumber|-out.uly|Y Coordinate of the upper-left pixel of the output resampled image|None|None|0.0
+ParameterNumber|-out.sizex|Size of the output resampled image along X (in pixels)|None|None|None
+ParameterNumber|-out.sizey|Size of the output resampled image along Y (in pixels)|None|None|None
+ParameterNumber|-out.spacingx|Size of each pixel along X axis|None|None|1.0
+ParameterNumber|-out.spacingy|Size of each pixel along Y axis|None|None|1.0
+ParameterNumber|-out.default|The default value to give to pixel that falls outside of the input image.|None|None|0.0
+ParameterSelection|-interpolator|This group of parameters allows to define how the input image will be interpolated during resampling.|nn;linear;bco;
+ParameterNumber|-interpolator.bco.radius|This parameter allows to control the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artefacts.|None|None|2
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128

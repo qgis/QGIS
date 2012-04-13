@@ -1,0 +1,10 @@
+otbcli_MultiResolutionPyramid
+MultiResolutionPyramid
+OTB
+ParameterRaster|-in||True
+ParameterString|-out|will be used to get the prefix and the extension of the images to write|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterNumber|-level|Number of levels in the pyramid (default is 1).|None|None|1
+ParameterNumber|-sfactor|Subsampling factor between each level of the pyramid (default is 2).|None|None|2
+ParameterNumber|-vfactor|Variance factor use in smoothing. It is multiplied by the subsampling factor of each level in the  pyramid (default is 0.6).|None|None|0.600000023842
+ParameterBoolean|-fast|If used, this option allows to speed-up computation by iteratively subsampling previous level of pyramid instead of processing the full input.|

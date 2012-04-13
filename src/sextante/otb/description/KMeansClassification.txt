@@ -1,0 +1,12 @@
+otbcli_KMeansClassification
+KMeansClassification
+OTB
+ParameterRaster|-in|Input image to classify.|True
+OutputRaster|-out|Output image containing the class indexes.|
+ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterRaster|-vm|Validity mask. Only non-zero pixels will be used to estimate KMeans modes.|False
+ParameterNumber|-ts|Size of the training set (in pixels).|None|None|100
+ParameterNumber|-nc|Number of modes, which will be used to generate class membership.|None|None|5
+ParameterNumber|-maxit|Maximum number of iterations for the learning step.|None|None|1000
+ParameterNumber|-ct|Convergence threshold for class centroid  (L2 distance, by default 0.01).|None|None|9.99999974738e-05
+ParameterString|-outmeans|Output text file containing centroid positions|

@@ -1,0 +1,14 @@
+otbcli_CompareImages
+CompareImages
+OTB
+ParameterRaster|-ref.in|Image used as reference in the comparaison|True
+ParameterNumber|-ref.channel|Used channel for the reference image|None|None|1
+ParameterRaster|-meas.in|Image used as measured in the comparaison|True
+ParameterNumber|-meas.channel|Used channel for the measured image|None|None|1
+ParameterNumber|-roi.startx|ROI start x position.|None|None|0
+ParameterNumber|-roi.starty|ROI start y position.|None|None|0
+ParameterNumber|-roi.sizex|size along x in pixels.|None|None|0
+ParameterNumber|-roi.sizey|size along y in pixels.|None|None|0
+ParameterNumber|-mse|Mean Squared Error value|None|None|None
+ParameterNumber|-mae|Mean Absolute Error value|None|None|None
+ParameterNumber|-psnr|Peak Signal to Noise Ratio value|None|None|None

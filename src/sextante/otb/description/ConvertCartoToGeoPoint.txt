@@ -1,0 +1,14 @@
+otbcli_ConvertCartoToGeoPoint
+ConvertCartoToGeoPoint
+OTB
+ParameterNumber|-carto.x|X cartographic coordinates in the specified projection.|None|None|None
+ParameterNumber|-carto.y|Y cartographic coordinates in the specified projection.|None|None|None
+ParameterSelection|-mapproj|Parameters of the ouptut map projection to be used.|utm;lambert2;lambert93;transmercator;wgs;epsg;
+ParameterNumber|-mapproj.utm.zone|The zone number ranges from 1 to 60 and allows to define the transverse mercator projection (along with the hemisphere)|None|None|None
+ParameterBoolean|-mapproj.utm.northhem|The transverse mercator projections are defined by their zone number as well as the hemisphere. Activate this parameter if your image is in the northern hemisphere.|
+ParameterNumber|-mapproj.transmercator.falseeasting| Transmercator false easting value.|None|None|0.0
+ParameterNumber|-mapproj.transmercator.falsenorthing| Transmercator false northing value.|None|None|0.0
+ParameterNumber|-mapproj.transmercator.scale| Transmercator scale factor value.|None|None|1.0
+ParameterNumber|-mapproj.epsg.code|See www.spatialreference.org to find which EPSG code is associated to your projection|None|None|32631
+ParameterNumber|-long|Point longitude coordinates.|None|None|None
+ParameterNumber|-lat|Point latitude coordinates.|None|None|None
