@@ -8,6 +8,7 @@ from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.QGisLayers import QGisLayers
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -105,7 +106,18 @@ class SextanteToolbox(QtGui.QDockWidget):
             dlg = alg.getCustomParametersDialog()
             if not dlg:
                 dlg = ParametersDialog(alg)
+            #dlg.setWindowModality(Qt.WindowModal)
+            #dlg.setWindowFlags(dlg.windowFlags() | Qt.WindowStaysOnTopHint)
+            canvas = QGisLayers.iface.mapCanvas()
+            prevMapTool = canvas.mapTool()
+            dlg.show()
             dlg.exec_()
+            if canvas.mapTool()!=prevMapTool:
+                try:
+                    canvas.mapTool().reset()
+                except:
+                    pass
+                canvas.setMapTool(prevMapTool)
             if dlg.executed:
                 showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
                 if showRecent:

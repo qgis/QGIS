@@ -35,7 +35,7 @@ class ParametersDialog(QtGui.QDialog):
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
         QtGui.QDialog.__init__(self)
-        self.setModal(False)
+        #self.setModal(False)
         self.ui = Ui_ParametersDialog()
         self.ui.setupUi(self, alg)
         self.executed = False
@@ -188,7 +188,7 @@ class Ui_ParametersDialog(object):
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default)
         elif isinstance(param, ParameterExtent):
-            item = ExtentSelectionPanel(param.default)
+            item = ExtentSelectionPanel(self.dialog, param.default)
         else:
             item = QtGui.QLineEdit()
             item.setText(str(param.default))

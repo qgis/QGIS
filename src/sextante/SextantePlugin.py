@@ -34,7 +34,7 @@ class SextantePlugin:
         self.toolbox.setVisible(False)
         Sextante.addAlgListListener(self.toolbox)
 
-        self.menu = QMenu()
+        self.menu = QMenu(self.iface.mainWindow())
         self.menu.setTitle("SEXTANTE")
 
         icon = QIcon(os.path.dirname(__file__) + "/images/toolbox.png")

@@ -12,10 +12,14 @@ class HistoryDialog(QtGui.QDialog):
     def setupUi(self):
         self.setObjectName("HistoryDialog")
         self.resize(650, 505)
-        self.tree = QtGui.QTreeWidget(self)
-        self.tree.setGeometry(QtCore.QRect(5, 5, 640, 245))
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setSpacing(2)
+        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.tree = QtGui.QTreeWidget()
         self.tree.setHeaderHidden(True)
         self.tree.doubleClicked.connect(self.executeAlgorithm)
+        self.verticalLayout.addWidget(self.tree)
         QObject.connect(self.tree, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*, int)"), self.changeText)
         self.groupIcon = QtGui.QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_DirClosedIcon),
@@ -25,11 +29,12 @@ class HistoryDialog(QtGui.QDialog):
         self.keyIcon = QtGui.QIcon()
         self.keyIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_FileIcon))
         self.fillTree()
-        self.text = QtGui.QTextEdit(self)
-        self.text.setGeometry(QtCore.QRect(5, 260, 640, 245))
+        self.text = QtGui.QTextEdit()
+        self.verticalLayout.addWidget(self.text)
         self.text.setObjectName("text")
         self.text.setReadOnly(True)
         self.setWindowTitle("History")
+        self.setLayout(self.verticalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def fillTree(self):

@@ -7,8 +7,9 @@ from sextante.core.QGisLayers import QGisLayers
 
 class ExtentSelectionPanel(QtGui.QWidget):
 
-    def __init__(self, default):
+    def __init__(self, dialog, default):
         super(ExtentSelectionPanel, self).__init__(None)
+        self.dialog = dialog
         self.setObjectName("ESPanel")
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -46,11 +47,19 @@ class ExtentSelectionPanel(QtGui.QWidget):
     def selectOnCanvas(self):
         canvas = QGisLayers.iface.mapCanvas()
         canvas.setMapTool(self.tool)
+        self.dialog.showMinimized()
 
     def fillCoords(self):
-        self.text.setText(str(self.tool.rectangle()))
+        r = self.tool.rectangle()
+        s = str(r.xMinimum()) + "," + str(r.xMaximum()) + "," + str(r.yMinimum()) + "," + str(r.yMaximum())
+        self.text.setText(s)
+        self.tool.reset()
         canvas = QGisLayers.iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
+        self.dialog.showNormal()
+        self.dialog.raise_()
+        self.dialog.activateWindow()
+
 
     def getValue(self):
         return str(self.text.text())
