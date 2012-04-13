@@ -4580,7 +4580,11 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
       viewPort->mDrawnExtent.xMaximum(),
       viewPort->mDrawnExtent.yMaximum()
     );
-    mDataProvider->readBlock( bandNo, partExtent, viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, viewPort->mSrcCRS, viewPort->mDestCRS, data );
+    mDataProvider->readBlock( bandNo, partExtent,
+                              viewPort->drawableAreaXDim,
+                              viewPort->drawableAreaYDim,
+                              viewPort->mSrcCRS,
+                              viewPort->mDestCRS, data );
   }
   return data;
 }

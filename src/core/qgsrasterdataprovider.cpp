@@ -23,7 +23,12 @@
 #include <QMap>
 #include <QByteArray>
 
-void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data )
+void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
+                                       const & viewExtent, int width,
+                                       int height,
+                                       QgsCoordinateReferenceSystem theSrcCRS,
+                                       QgsCoordinateReferenceSystem theDestCRS,
+                                       void *data )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "viewExtent = " + viewExtent.toString() );

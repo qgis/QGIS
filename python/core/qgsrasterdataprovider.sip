@@ -151,5 +151,14 @@ class QgsRasterDataProvider : QgsDataProvider
     /**Sets the output device resolution.
       @note: this method was added in version 1.2*/
     void setDpi( int dpi );
+
+    /** read block of data using give extent and size */
+    /*virtual void readBlock( int bandNo,
+                            QgsRectangle const & viewExtent,
+                            int width, int height,
+                            QgsCoordinateReferenceSystem theSrcCRS,
+                            QgsCoordinateReferenceSystem theDestCRS,
+                            void *data ); */
+
 };
 
