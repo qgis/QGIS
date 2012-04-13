@@ -1,4 +1,4 @@
-%Module qgis.analysis 0
+%Module(name=qgis.analysis, version=0)
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
