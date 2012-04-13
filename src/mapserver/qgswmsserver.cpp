@@ -1317,7 +1317,11 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       QMap<int, QString>::const_iterator aliasIt = aliasMap.find( it.key() );
       if ( aliasIt != aliasMap.constEnd() )
       {
-        attributeName = aliasIt.value();
+        QString aliasName = aliasIt.value();
+        if ( !aliasName.isEmpty() )
+        {
+          attributeName = aliasName;
+        }
       }
 
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
