@@ -1,5 +1,5 @@
 otbcli_ConcatenateImages
 ConcatenateImages
 OTB
-OutputRaster|-out|The concatenated output image|
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+OutputRaster|-out|Output Image|
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

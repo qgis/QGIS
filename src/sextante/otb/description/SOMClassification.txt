@@ -1,19 +1,19 @@
 otbcli_SOMClassification
 SOMClassification
 OTB
-ParameterRaster|-in|Input image to classify.|False
-OutputRaster|-out|Output classified image (each pixel contains the index of its corresponding vector in the SOM).|
-ParameterRaster|-vm|Validity mask (only pixels corresponding to a mask value greater than 0 will be used for learning)|True
-ParameterNumber|-tp|Probability for a sample to be selected in the training set|None|None|1.0
-ParameterNumber|-ts|Maximum training set size (in pixels)|None|None|None
-ParameterNumber|-sl|Number of lines in each streaming block (used during data sampling)|None|None|None
-OutputRaster|-som|Output image containing the Self-Organizing Map|
-ParameterNumber|-sx|X size of the SOM map|None|None|32
-ParameterNumber|-sy|Y size of the SOM map|None|None|32
-ParameterNumber|-nx|X size of the initial neighborhood in the SOM map|None|None|10
-ParameterNumber|-ny|Y size of the initial neighborhood in the SOM map|None|None|10
-ParameterNumber|-ni|Number of iterations for SOM learning|None|None|5
-ParameterNumber|-bi|Initial learning coefficient|None|None|1.0
-ParameterNumber|-bf|Final learning coefficient|None|None|0.10000000149
-ParameterNumber|-iv|Maximum initial neuron weight|None|None|0.0
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterRaster|-in|InputImage|False
+OutputRaster|-out|OutputImage|
+ParameterRaster|-vm|ValidityMask|True
+ParameterNumber|-tp|TrainingProbability|None|None|1.0
+ParameterNumber|-ts|TrainingSetSize|None|None|None
+ParameterNumber|-sl|StreamingLines|None|None|None
+OutputRaster|-som|SOM Map|
+ParameterNumber|-sx|SizeX|None|None|32
+ParameterNumber|-sy|SizeY|None|None|32
+ParameterNumber|-nx|NeighborhoodX|None|None|10
+ParameterNumber|-ny|NeighborhoodY|None|None|10
+ParameterNumber|-ni|NumberIteration|None|None|5
+ParameterNumber|-bi|BetaInit|None|None|1.0
+ParameterNumber|-bf|BetaFinal|None|None|0.10000000149
+ParameterNumber|-iv|InitialValue|None|None|0.0
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

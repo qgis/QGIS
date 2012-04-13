@@ -1,10 +1,10 @@
 otbcli_ConvertSensorToGeoPoint
 ConvertSensorToGeoPoint
 OTB
-ParameterRaster|-in|Input sensor image.|False
-ParameterNumber|-input.idx|X coordinate of the point to transform.|None|None|None
-ParameterNumber|-input.idy|Y coordinate of the point to transform.|None|None|None
-ParameterNumber|-output.idx|Output point longitude coordinate.|None|None|None
-ParameterNumber|-output.idy|Output point latitude coordinate.|None|None|None
-ParameterString|-output.town|Nearest main town of the computed geographic point.|
-ParameterString|-output.country|Country of the input image|
+ParameterRaster|-in|Sensor image|False
+ParameterNumber|-input.idx|X value of desired point|None|None|None
+ParameterNumber|-input.idy|Y value of desired point|None|None|None
+ParameterNumber|-output.idx|Output Point Longitude|None|None|None
+ParameterNumber|-output.idy|Output Point Latitude|None|None|None
+ParameterString|-output.town|Main town near the coordinates computed|
+ParameterString|-output.country|Country of the image|

@@ -1,12 +1,12 @@
 otbcli_VectorDataTransform
 VectorDataTransform
 OTB
-ParameterVector|-vd|Input vector data to transform|False
-OutputVector|-out|Output transformed vector data|
-ParameterRaster|-in|Image needed as a support to the vector data|False
-ParameterNumber|-transform.tx|Translation in the X direction (in pixels)|None|None|0.0
-ParameterNumber|-transform.ty|Translation in the Y direction (in pixels)|None|None|0.0
-ParameterNumber|-transform.ro|Angle of the rotation to apply in degrees|None|None|0.0
-ParameterNumber|-transform.centerx|X coordinate of the rotation center (in physical units)|None|None|0.0
-ParameterNumber|-transform.centery|Y coordinate of the rotation center (in physical units)|None|None|0.0
-ParameterNumber|-transform.scale|The scale to apply|None|None|1.0
+ParameterVector|-vd|Input Vector data|False
+OutputVector|-out|Output Vector data|
+ParameterRaster|-in|Support image|False
+ParameterNumber|-transform.tx|Translation X|None|None|0.0
+ParameterNumber|-transform.ty|Translation Y|None|None|0.0
+ParameterNumber|-transform.ro|Rotation Angle|None|None|0.0
+ParameterNumber|-transform.centerx|Center X|None|None|0.0
+ParameterNumber|-transform.centery|Center Y|None|None|0.0
+ParameterNumber|-transform.scale|Scale|None|None|1.0

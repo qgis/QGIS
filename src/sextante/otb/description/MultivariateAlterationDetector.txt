@@ -1,7 +1,7 @@
 otbcli_MultivariateAlterationDetector
 MultivariateAlterationDetector
 OTB
-ParameterRaster|-in1|Image which describe initial state of the scene.|False
-ParameterRaster|-in2|Image which describe scene after perturbations.|False
-OutputRaster|-out|Image of detected changes.|
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterRaster|-in1|Input Image 1|False
+ParameterRaster|-in2|Input Image 2|False
+OutputRaster|-out|Change Map|
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

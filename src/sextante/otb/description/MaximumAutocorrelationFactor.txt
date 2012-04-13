@@ -1,5 +1,5 @@
 otbcli_MaximumAutocorrelationFactor
 MaximumAutocorrelationFactor
 OTB
-ParameterRaster|-in|The input image to apply MAF decomposition on.|False
-OutputRaster|-out|MAF decomposition of the input image. Components are ordered by decreasing eigenvalues.|
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|MAF output|

@@ -1,25 +1,25 @@
 otbcli_FineRegistration
 FineRegistration
 OTB
-ParameterRaster|-ref|The reference image.|False
-ParameterRaster|-sec|The secondary image.|False
-OutputRaster|-out|The output image.|
-ParameterNumber|-erx|The exploration radius along x (in pixels)|None|None|None
-ParameterNumber|-ery|The exploration radius along y (in pixels)|None|None|None
-ParameterNumber|-mrx|Radius along x (in pixels) of the metric computation window|None|None|None
-ParameterNumber|-mry|Radius along y (in pixels) of the metric computation window|None|None|None
-ParameterRaster|-w|The image to warp after disparity estimation is completed|True
-OutputRaster|-wo|The output warped image|
-ParameterNumber|-cox|Coarse offset along x (in physical space) between the two images|None|None|0.0
-ParameterNumber|-coy|Coarse offset along y (in physical space) between the two images|None|None|0.0
-ParameterNumber|-ssrx|Generates a result at a coarser resolution with a given sub-sampling rate along X|None|None|1.0
-ParameterNumber|-ssry|Generates a result at a coarser resolution with a given sub-sampling rate along Y|None|None|1.0
-ParameterNumber|-rgsx|Performs a gaussian smoothing of the reference image. Parameter is gaussian sigma (in pixels) in X direction.|None|None|None
-ParameterNumber|-rgsy|Performs a gaussian smoothing of the reference image. Parameter is gaussian sigma (in pixels) in Y direction.|None|None|None
-ParameterNumber|-sgsx|Performs a gaussian smoothing of the secondary image. Parameter is gaussian sigma (in pixels) in X direction.|None|None|None
-ParameterNumber|-sgsy|Performs a gaussian smoothing of the secondary image. Parameter is gaussian sigma (in pixels) in Y direction.|None|None|None
-ParameterString|-m|Choose the metric used for block matching. Available metrics are cross-correlation (CC), cross-correlation with subtracted mean (CCSM), mean-square difference (MSD), mean reciprocal square difference (MRSD) and mutual information (MI). Default is cross-correlation|
-ParameterNumber|-spa|Metric extrema location will be refined up to the given accuracy. Default is 0.01|None|None|0.00999999977648
-ParameterNumber|-vmlt|Lower threshold to obtain a validity mask.|None|None|None
-ParameterNumber|-vmut|Upper threshold to obtain a validity mask.|None|None|None
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterRaster|-ref|Reference Image|False
+ParameterRaster|-sec|Secondary Image|False
+OutputRaster|-out|Output Image|
+ParameterNumber|-erx|Exploration Radius X|None|None|None
+ParameterNumber|-ery|Exploration Radius Y|None|None|None
+ParameterNumber|-mrx|Metric Radius X|None|None|None
+ParameterNumber|-mry|Metric Radius Y|None|None|None
+ParameterRaster|-w|Image To Warp|True
+OutputRaster|-wo|Output Warped Image|
+ParameterNumber|-cox|Coarse Offset X|None|None|0.0
+ParameterNumber|-coy|Coarse Offset Y|None|None|0.0
+ParameterNumber|-ssrx|Sub-Sampling Rate X|None|None|1.0
+ParameterNumber|-ssry|Sub-Sampling Rate Y|None|None|1.0
+ParameterNumber|-rgsx|Reference Gaussian Smoothing X|None|None|None
+ParameterNumber|-rgsy|Reference Gaussian Smoothing Y|None|None|None
+ParameterNumber|-sgsx|Secondary Gaussian Smoothing X|None|None|None
+ParameterNumber|-sgsy|Secondary Gaussian Smoothing Y|None|None|None
+ParameterString|-m|Metric|
+ParameterNumber|-spa|SubPixelAccuracy|None|None|0.00999999977648
+ParameterNumber|-vmlt|Validity Mask Lower Threshold|None|None|None
+ParameterNumber|-vmut|Validity Mask Upper Threshold|None|None|None
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

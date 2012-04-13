@@ -1,10 +1,10 @@
 otbcli_ImageEnvelope
 ImageEnvelope
 OTB
-ParameterRaster|-in|Input image.|False
-OutputVector|-out|Vector data file containing the envelope|
-ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
-ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
-ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
-ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
-ParameterString|-proj|Projection to be used to compute the envelope (default is WGS84)|
+ParameterRaster|-in|Input Image|False
+OutputVector|-out|Output Vector Data|
+ParameterSelection|-elev|Elevation management|dem;average;
+ParameterString|-elev.dem.path|DEM directory|
+ParameterString|-elev.dem.geoid|Geoid File|
+ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterString|-proj|Projection|

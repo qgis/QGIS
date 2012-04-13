@@ -1,11 +1,11 @@
 otbcli_DSFuzzyModelEstimation
 DSFuzzyModelEstimation
 OTB
-ParameterVector|-psin|Ground truth vector data for positive samples|False
-ParameterVector|-nsin|Ground truth vector data for negative samples|False
-ParameterString|-cri|Dempster Shafer criterion (by default (belief+plausibility)/2)|((Belief + Plausibility)/2.)
-ParameterNumber|-wgt|Coefficient between 0 and 1 to promote undetection or false detections (default 0.5)|None|None|0.5
-ParameterString|-initmod|Initialization model (xml file) to be used. If the xml initialization model is set, the descriptor list is not used (specified using the option -desclist)|
-ParameterNumber|-maxnbit|Maximum number of optimizer iteration (default 200)|None|None|200
-ParameterBoolean|-optobs|Activate the optimizer observer|
-ParameterString|-out|Output model file name (xml file) contains the optimal model to perform informations fusion.|
+ParameterVector|-psin|Input Positive Vector Data|False
+ParameterVector|-nsin|Input Negative Vector Data|False
+ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)
+ParameterNumber|-wgt|Weighting|None|None|0.5
+ParameterString|-initmod|initialization model|
+ParameterNumber|-maxnbit|Maximum number of iterations|None|None|200
+ParameterBoolean|-optobs|Optimizer Observer|
+ParameterString|-out|Output filename|

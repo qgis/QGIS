@@ -1,12 +1,12 @@
 otbcli_ComputePolylineFeatureFromImage
 ComputePolylineFeatureFromImage
 OTB
-ParameterRaster|-in|An image to compute the descriptors on.|False
-ParameterVector|-vd|Vector data containing the polylines where the features will be computed.|False
-ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
-ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
-ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
-ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
-ParameterString|-expr|The feature formula (b1 < 0.3) where b1 is the standard name of input image first band|
-ParameterString|-field|The field name corresponding to the feature codename (NONDVI, ROADSA...)|
-OutputVector|-out|The output vector data containing polylines with a new field|
+ParameterRaster|-in|Input Image|False
+ParameterVector|-vd|Vector Data|False
+ParameterSelection|-elev|Elevation management|dem;average;
+ParameterString|-elev.dem.path|DEM directory|
+ParameterString|-elev.dem.geoid|Geoid File|
+ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterString|-expr|Feature expression|
+ParameterString|-field|Feature name|
+OutputVector|-out|Output Vector Data|

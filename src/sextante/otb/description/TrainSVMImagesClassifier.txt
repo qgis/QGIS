@@ -1,17 +1,17 @@
 otbcli_TrainSVMImagesClassifier
 TrainSVMImagesClassifier
 OTB
-ParameterString|-io.imstat|Filename of an XML file containing mean and standard deviation of input images.|
-ParameterString|-io.out|Output file containing the SVM model estimated|
-ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
-ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
-ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
-ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
-ParameterNumber|-sample.mt|Maximum size of the training sample list (default = -1).|None|None|-1
-ParameterNumber|-sample.mv|Maximum size of the validation sample list (default = -1)|None|None|-1
-ParameterBoolean|-sample.edg|Take pixels on polygon edge into consideration when building training and validation samples.|
-ParameterNumber|-sample.vtr|Ratio between training and validation samples (0.0 = all training, 1.0 = all validation) default = 0.5.|None|None|0.5
-ParameterString|-sample.vfn|Name of the field used to discriminate class in the vector data files.|Class
-ParameterSelection|-svm.k|SVM Kernel Type.|linear;rbf;poly;sigmoid;
-ParameterNumber|-svm.c|SVM models have a cost parameter C (1 by default) to control the trade-off between training errors and forcing rigid margins.|None|None|1.0
-ParameterBoolean|-svm.opt|SVM optimization flag|
+ParameterString|-io.imstat|XML image statistics file|
+ParameterString|-io.out|Output SVM model|
+ParameterSelection|-elev|Elevation management|dem;average;
+ParameterString|-elev.dem.path|DEM directory|
+ParameterString|-elev.dem.geoid|Geoid File|
+ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterNumber|-sample.mt|Maximum training sample size|None|None|-1
+ParameterNumber|-sample.mv|Maximum validation sample size|None|None|-1
+ParameterBoolean|-sample.edg|On edge pixel inclusion|
+ParameterNumber|-sample.vtr|training and validation sample ratio|None|None|0.5
+ParameterString|-sample.vfn|Name of the discrimination field|Class
+ParameterSelection|-svm.k|SVM Kernel Type|linear;rbf;poly;sigmoid;
+ParameterNumber|-svm.c|Cost parameter C.|None|None|1.0
+ParameterBoolean|-svm.opt|parameters optimization|

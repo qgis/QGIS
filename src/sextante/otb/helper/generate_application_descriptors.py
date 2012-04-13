@@ -81,7 +81,7 @@ def generate_parameter_Empty( appInstance, paramKey ):
   out += "|"
   out += "-" + paramKey
   out += "|"
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   if appInstance.IsParameterEnabled(paramKey):
     out += "True"
@@ -95,7 +95,7 @@ def generate_parameter_Int( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   out += "None"
@@ -119,7 +119,7 @@ def generate_parameter_Float( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   out += "None"
@@ -142,7 +142,7 @@ def generate_parameter_String( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   defaultVal = ""
@@ -170,7 +170,7 @@ def generate_parameter_Choice( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   for choice in appInstance.GetChoiceKeys(paramKey):
@@ -185,7 +185,7 @@ def generate_parameter_InputImage( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   out += str(not appInstance.IsMandatory(paramKey))
@@ -203,7 +203,7 @@ def generate_parameter_InputVectorData( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   out += str(not appInstance.IsMandatory(paramKey))
@@ -222,7 +222,7 @@ def generate_parameter_OutputImage( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   return out
@@ -239,7 +239,7 @@ def generate_parameter_OutputVectorData( appInstance, paramKey ):
   out += "-" + paramKey
   out += "|"
   
-  out += convertendl(appInstance.GetParameterDescription(paramKey))
+  out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
   return out

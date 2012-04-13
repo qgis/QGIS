@@ -1,10 +1,10 @@
 otbcli_LineSegmentDetection
 LineSegmentDetection
 OTB
-ParameterRaster|-in| Input image on which lines while be detected.|False
-OutputVector|-out| Output detected line segments (vector data).|
-ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
-ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
-ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|
-ParameterNumber|-elev.average.value|This parameter allows to pick up an average elevation for all the points of the image.|None|None|0.0
-ParameterBoolean|-norescale|By default, the input image amplitude is rescaled between [0,255]. Turn on this parameter to skip rescaling|
+ParameterRaster|-in|Input Image|False
+OutputVector|-out|Output Detected lines|
+ParameterSelection|-elev|Elevation management|dem;average;
+ParameterString|-elev.dem.path|DEM directory|
+ParameterString|-elev.dem.geoid|Geoid File|
+ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterBoolean|-norescale|No rescaling in [0, 255]|

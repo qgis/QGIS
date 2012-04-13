@@ -1,13 +1,13 @@
 otbcli_HooverCompareSegmentation
 HooverCompareSegmentation
 OTB
-ParameterRaster|-ingt|A partial ground truth segmentation image.|False
-ParameterRaster|-inms|A machine segmentation image.|False
-ParameterNumber|-bg|Label value of the background in the input segmentations|None|None|0
-ParameterNumber|-th|Overlapping threshold used to find Hoover instances.|None|None|0.75
-OutputRaster|-outgt|The colored ground truth output image.|
-OutputRaster|-outms|The colored machine segmentation output image.|
-ParameterNumber|-rc|Overall score for correct detection (RC)|None|None|None
-ParameterNumber|-rf|Overall score for over segmentation (RF)|None|None|None
-ParameterNumber|-ra|Overall score for under segmentation (RA)|None|None|None
-ParameterNumber|-rm|Overall score for missed detection (RM)|None|None|None
+ParameterRaster|-ingt|Input ground truth|False
+ParameterRaster|-inms|Input machine segmentation|False
+ParameterNumber|-bg|Background label|None|None|0
+ParameterNumber|-th|Overlapping threshold|None|None|0.75
+OutputRaster|-outgt|Colored ground truth output|
+OutputRaster|-outms|Colored machine segmentation output|
+ParameterNumber|-rc|Correct detection score|None|None|None
+ParameterNumber|-rf|Over-segmentation score|None|None|None
+ParameterNumber|-ra|Under-segmentation score|None|None|None
+ParameterNumber|-rm|Missed detection score|None|None|None

@@ -1,12 +1,12 @@
 otbcli_Quicklook
 Quicklook
 OTB
-ParameterRaster|-in|The image to read|False
-OutputRaster|-out|The subsampled image|
-ParameterNumber|-rox|first point of ROI in x-direction|None|None|0
-ParameterNumber|-roy|first point of ROI in y-direction|None|None|0
-ParameterNumber|-rsx|size of ROI in x-direction|None|None|0
-ParameterNumber|-rsy|size of ROI in y-direction|None|None|0
-ParameterNumber|-sr|Sampling Ratio, default is 2|None|None|2
-ParameterNumber|-sx|quicklook size in x-direction (used if no sampling ration is given)|None|None|None
-ParameterNumber|-sy|quicklook size in y-direction (used if no sampling ration is given)|None|None|None
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image|
+ParameterNumber|-rox|ROI Origin X|None|None|0
+ParameterNumber|-roy|ROI Origin Y|None|None|0
+ParameterNumber|-rsx|ROI Size X|None|None|0
+ParameterNumber|-rsy|ROI Size Y|None|None|0
+ParameterNumber|-sr|Sampling ratio|None|None|2
+ParameterNumber|-sx|Size X|None|None|None
+ParameterNumber|-sy|Size Y|None|None|None

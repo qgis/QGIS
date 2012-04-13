@@ -1,4 +1,4 @@
 otbcli_ConcatenateVectorData
 ConcatenateVectorData
 OTB
-OutputVector|-out|Output conctenated VectorData|
+OutputVector|-out|Concatenated VectorData|

@@ -1,11 +1,11 @@
 otbcli_Smoothing
 Smoothing
 OTB
-ParameterRaster|-in|Input image to smooth.|False
-OutputRaster|-out|Output smoothed image.|
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
-ParameterSelection|-type|Smoothing kernel to apply|mean;gaussian;anidif;
-ParameterNumber|-type.mean.radius|Mean radius (in pixels)|None|None|2
-ParameterNumber|-type.gaussian.radius|Gaussian radius (in pixels)|None|None|2
-ParameterNumber|-type.anidif.timestep|Diffusion equation time step|None|None|0.125
-ParameterNumber|-type.anidif.nbiter|Number of iterations|None|None|10
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image|
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterSelection|-type|Smoothing Type|mean;gaussian;anidif;
+ParameterNumber|-type.mean.radius|Radius|None|None|2
+ParameterNumber|-type.gaussian.radius|Radius|None|None|2
+ParameterNumber|-type.anidif.timestep|Time Step|None|None|0.125
+ParameterNumber|-type.anidif.nbiter|Nb Iterations|None|None|10

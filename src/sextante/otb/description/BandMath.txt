@@ -1,6 +1,6 @@
 otbcli_BandMath
 BandMath
 OTB
-OutputRaster|-out|Output image.|
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
-ParameterString|-exp|The mathematical expression to apply. \nUse im1b1 for the first band, im1b2 for the second one...|
+OutputRaster|-out|Output Image|
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterString|-exp|Expression|

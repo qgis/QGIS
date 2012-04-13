@@ -1,33 +1,33 @@
 otbcli_PixelWiseBlockMatching
 PixelWiseBlockMatching
 OTB
-ParameterRaster|-io.inleft|The left input image (reference)|False
-ParameterRaster|-io.inright|The right input (secondary)|False
-OutputRaster|-io.out|An image containing the estimated disparities as well as the metric values if the option is used|
-OutputRaster|-io.outmaskleft|A left mask image corresponding to all citerions (see masking parameters). Only required if variance threshold or nodata criterions are set.|
-OutputRaster|-io.outmaskright|A right mask image corresponding to all citerions (see masking parameters). Only required if variance threshold or nodata criterions are set.|
-ParameterBoolean|-io.outmetric|If used, the output image will have a second component with metric optimal values|
-ParameterRaster|-mask.inleft|This parameter allows to provide a custom mask for the left image|True
-ParameterRaster|-mask.inright|This parameter allows to provide a custom mask for the right image|True
-ParameterNumber|-mask.nodata|This parameter allows to discard pixels whose value is equal to the user-defined no-data value.|None|None|0.0
-ParameterNumber|-mask.variancet|This parameter allows to discard pixels whose local variance is too small (the size of the neighborhood is given by the radius parameter)|None|None|100.0
-ParameterSelection|-bm.metric||ssd;ncc;lp;
-ParameterNumber|-bm.metric.lp.p|Value of the p parameter in Lp pseudo-norm (must be positive)|None|None|1.0
-ParameterNumber|-bm.radius|The radius (in pixels) of blocks in Block-Matching|None|None|3
-ParameterNumber|-bm.minhd|Minimum horizontal disparity to explore (can be negative)|None|None|None
-ParameterNumber|-bm.maxhd|Maximum horizontal disparity to explore (can be negative)|None|None|None
-ParameterNumber|-bm.minvd|Minimum vertical disparity to explore (can be negative)|None|None|None
-ParameterNumber|-bm.maxvd|Maximum vertical disparity to explore (can be negative)|None|None|None
-ParameterSelection|-bm.subpixel|Estimate disparities with sub-pixel precision|none;parabolic;triangular;dichotomy;
-ParameterNumber|-bm.medianfilter.radius|Radius for median filter|None|None|None
-ParameterNumber|-bm.medianfilter.incoherence|Incoherence threshold between original and filtered disparity|None|None|None
-ParameterSelection|-bm.initdisp||none;uniform;maps;
-ParameterNumber|-bm.initdisp.uniform.hdisp|Value of the uniform horizontal disparity initial estimate (in pixels)|None|None|0
-ParameterNumber|-bm.initdisp.uniform.vdisp|Value of the uniform vertical disparity initial estimate (in pixels)|None|None|0
-ParameterNumber|-bm.initdisp.uniform.hrad|Horizontal exploration radius around the initial disparity estimate (in pixels)|None|None|0
-ParameterNumber|-bm.initdisp.uniform.vrad|Vertical exploration radius around the initial disparity estimate (in pixels)|None|None|0
-ParameterRaster|-bm.initdisp.maps.hmap|Map of the initial horizontal disparities|False
-ParameterRaster|-bm.initdisp.maps.vmap|Map of the initial vertical disparities|False
-ParameterNumber|-bm.initdisp.maps.hrad|Horizontal exploration radius around the initial disparity estimate (in pixels)|None|None|0
-ParameterNumber|-bm.initdisp.maps.vrad|Vertical exploration radius around the initial disparity estimate (in pixels)|None|None|0
-ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
+ParameterRaster|-io.inleft|Left input image|False
+ParameterRaster|-io.inright|Right input image|False
+OutputRaster|-io.out|The output disparity map|
+OutputRaster|-io.outmaskleft|The left output mask corresponding to all criterions|
+OutputRaster|-io.outmaskright|The right output mask corresponding to all criterions|
+ParameterBoolean|-io.outmetric|Output optimal metric values as well|
+ParameterRaster|-mask.inleft|Discard left pixels from mask image|True
+ParameterRaster|-mask.inright|Discard right pixels from mask image|True
+ParameterNumber|-mask.nodata|Discard pixels with no-data value|None|None|0.0
+ParameterNumber|-mask.variancet|Discard pixels with low local variance|None|None|100.0
+ParameterSelection|-bm.metric|Block-matching metric|ssd;ncc;lp;
+ParameterNumber|-bm.metric.lp.p|p value|None|None|1.0
+ParameterNumber|-bm.radius|Radius of blocks|None|None|3
+ParameterNumber|-bm.minhd|Minimum horizontal disparity|None|None|None
+ParameterNumber|-bm.maxhd|Maximum horizontal disparity|None|None|None
+ParameterNumber|-bm.minvd|Minimum vertical disparity|None|None|None
+ParameterNumber|-bm.maxvd|Maximum vertical disparity|None|None|None
+ParameterSelection|-bm.subpixel|Sub-pixel interpolation|none;parabolic;triangular;dichotomy;
+ParameterNumber|-bm.medianfilter.radius|Radius|None|None|None
+ParameterNumber|-bm.medianfilter.incoherence|Incoherence threshold|None|None|None
+ParameterSelection|-bm.initdisp|Initial disparities|none;uniform;maps;
+ParameterNumber|-bm.initdisp.uniform.hdisp|Horizontal initial disparity|None|None|0
+ParameterNumber|-bm.initdisp.uniform.vdisp|Vertical initial disparity|None|None|0
+ParameterNumber|-bm.initdisp.uniform.hrad|Horizontal exploration radius|None|None|0
+ParameterNumber|-bm.initdisp.uniform.vrad|Vertical exploration radius|None|None|0
+ParameterRaster|-bm.initdisp.maps.hmap|Horizontal initial disparity map|False
+ParameterRaster|-bm.initdisp.maps.vmap|Vertical initial disparity map|False
+ParameterNumber|-bm.initdisp.maps.hrad|Horizontal exploration radius|None|None|0
+ParameterNumber|-bm.initdisp.maps.vrad|Vertical exploration radius|None|None|0
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
