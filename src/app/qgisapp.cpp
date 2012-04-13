@@ -648,6 +648,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #else
   //remove mActionTouch button
   delete mActionTouch;
+  mActionTouch=0;
 #endif
 
   // update windows
