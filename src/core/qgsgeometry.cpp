@@ -2405,7 +2405,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
 double QgsGeometry::closestSegmentWithContext(
   const QgsPoint& point,
   QgsPoint& minDistPoint,
-  int& beforeVertex,
+  int& afterVertex,
   double* leftOf )
 {
   QgsDebugMsg( "Entering." );
@@ -2484,7 +2484,7 @@ double QgsGeometry::closestSegmentWithContext(
           ptr += sizeof( double );
         }
       }
-      beforeVertex = closestSegmentIndex;
+      afterVertex = closestSegmentIndex;
       break;
     }
     case QGis::WKBMultiLineString25D:
@@ -2531,7 +2531,7 @@ double QgsGeometry::closestSegmentWithContext(
           ++pointindex;
         }
       }
-      beforeVertex = closestSegmentIndex;
+      afterVertex = closestSegmentIndex;
       break;
     }
     case QGis::WKBPolygon25D:
@@ -2577,7 +2577,7 @@ double QgsGeometry::closestSegmentWithContext(
           ++index;
         }
       }
-      beforeVertex = closestSegmentIndex;
+      afterVertex = closestSegmentIndex;
       break;
     }
     case QGis::WKBMultiPolygon25D:
@@ -2630,7 +2630,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
         }
       }
-      beforeVertex = closestSegmentIndex;
+      afterVertex = closestSegmentIndex;
       break;
     }
     case QGis::WKBUnknown:

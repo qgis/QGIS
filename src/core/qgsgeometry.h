@@ -239,12 +239,12 @@ class CORE_EXPORT QgsGeometry
      * Searches for the closest segment of geometry to the given point
      * @param point Specifies the point for search
      * @param minDistPoint Receives the nearest point on the segment
-     * @param beforeVertex Receives index of the vertex before the closest segment. The vertex
-     * after the closest segment is always beforeVertex + 1
+     * @param afterVertex Receives index of the vertex after the closest segment. The vertex
+     * before the closest segment is always afterVertex - 1
      * @param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& beforeVertex, double* leftOf = 0 );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& afterVertex, double* leftOf = 0 );
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
