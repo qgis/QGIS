@@ -1,8 +1,8 @@
 otbcli_ImageSVMClassifier
 ImageSVMClassifier
 OTB
-ParameterRaster|-in|The input image to classify.|True
-ParameterRaster|-mask|The mask allows to restrict classification of the input image to the area where mask pixel values are greater than 0.|False
+ParameterRaster|-in|The input image to classify.|False
+ParameterRaster|-mask|The mask allows to restrict classification of the input image to the area where mask pixel values are greater than 0.|True
 ParameterString|-svm|A SVM model file (*.svm extension, produced by TrainSVMImagesClassifier application).|
 ParameterString|-imstat|A XML file containing mean and standard deviation to center and reduce samples before classification (produced by ComputeImagesStatistics application).|
 OutputRaster|-out|Output image containing class labels|

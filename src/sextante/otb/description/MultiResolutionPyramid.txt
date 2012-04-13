@@ -1,7 +1,7 @@
 otbcli_MultiResolutionPyramid
 MultiResolutionPyramid
 OTB
-ParameterRaster|-in||True
+ParameterRaster|-in||False
 ParameterString|-out|will be used to get the prefix and the extension of the images to write|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterNumber|-level|Number of levels in the pyramid (default is 1).|None|None|1

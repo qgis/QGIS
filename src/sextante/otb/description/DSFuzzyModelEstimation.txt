@@ -1,8 +1,8 @@
 otbcli_DSFuzzyModelEstimation
 DSFuzzyModelEstimation
 OTB
-ParameterVector|-psin|Ground truth vector data for positive samples|True
-ParameterVector|-nsin|Ground truth vector data for negative samples|True
+ParameterVector|-psin|Ground truth vector data for positive samples|False
+ParameterVector|-nsin|Ground truth vector data for negative samples|False
 ParameterString|-cri|Dempster Shafer criterion (by default (belief+plausibility)/2)|((Belief + Plausibility)/2.)
 ParameterNumber|-wgt|Coefficient between 0 and 1 to promote undetection or false detections (default 0.5)|None|None|0.5
 ParameterString|-initmod|Initialization model (xml file) to be used. If the xml initialization model is set, the descriptor list is not used (specified using the option -desclist)|

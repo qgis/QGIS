@@ -1,9 +1,9 @@
 otbcli_CompareImages
 CompareImages
 OTB
-ParameterRaster|-ref.in|Image used as reference in the comparaison|True
+ParameterRaster|-ref.in|Image used as reference in the comparaison|False
 ParameterNumber|-ref.channel|Used channel for the reference image|None|None|1
-ParameterRaster|-meas.in|Image used as measured in the comparaison|True
+ParameterRaster|-meas.in|Image used as measured in the comparaison|False
 ParameterNumber|-meas.channel|Used channel for the measured image|None|None|1
 ParameterNumber|-roi.startx|ROI start x position.|None|None|0
 ParameterNumber|-roi.starty|ROI start y position.|None|None|0

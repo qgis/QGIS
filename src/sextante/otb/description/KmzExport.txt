@@ -1,11 +1,11 @@
 otbcli_KmzExport
 KmzExport
 OTB
-ParameterRaster|-in|Input image|True
+ParameterRaster|-in|Input image|False
 ParameterString|-out|Output Kmz product directory (with .kmz extension)|
 ParameterNumber|-tilesize|Size of the tiles in the kmz product, in number of pixels.|None|None|None
-ParameterRaster|-logo|Path to the image logo to add to the KMZ product.|False
-ParameterRaster|-legend|Path to the image legend to add to the KMZ product.|False
+ParameterRaster|-logo|Path to the image logo to add to the KMZ product.|True
+ParameterRaster|-legend|Path to the image legend to add to the KMZ product.|True
 ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
 ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
 ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|

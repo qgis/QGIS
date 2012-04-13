@@ -1,9 +1,9 @@
 otbcli_GridBasedImageResampling
 GridBasedImageResampling
 OTB
-ParameterRaster|-io.in|The input image to resample|True
+ParameterRaster|-io.in|The input image to resample|False
 OutputRaster|-io.out|The resampled output image|
-ParameterRaster|-grid.in|The resampling grid|True
+ParameterRaster|-grid.in|The resampling grid|False
 ParameterSelection|-grid.type|Allows to choose between two grid types|def;loc;
 ParameterNumber|-out.ulx|X Coordinate of the upper-left pixel of the output resampled image|None|None|0.0
 ParameterNumber|-out.uly|Y Coordinate of the upper-left pixel of the output resampled image|None|None|0.0

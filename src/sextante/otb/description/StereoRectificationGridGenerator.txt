@@ -1,8 +1,8 @@
 otbcli_StereoRectificationGridGenerator
 StereoRectificationGridGenerator
 OTB
-ParameterRaster|-io.inleft|The left input image to resample|True
-ParameterRaster|-io.inright|The right input image to resample|True
+ParameterRaster|-io.inleft|The left input image to resample|False
+ParameterRaster|-io.inright|The right input image to resample|False
 OutputRaster|-io.outleft|The output deformation grid to be used to resample the left input image|
 OutputRaster|-io.outright|The output deformation grid to be used to resample the right input image|
 ParameterSelection|-epi.elevation|Manage elevation source for stereo-rectification|avg;avgdem;dem;

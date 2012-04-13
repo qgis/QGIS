@@ -1,7 +1,7 @@
 otbcli_OrthoRectification
 OrthoRectification
 OTB
-ParameterRaster|-io.in|The input image to ortho-rectify|True
+ParameterRaster|-io.in|The input image to ortho-rectify|False
 OutputRaster|-io.out|The ortho-rectified output image|
 ParameterSelection|-map|Parameters of the ouptut map projection to be used.|utm;lambert2;lambert93;transmercator;wgs;epsg;
 ParameterNumber|-map.utm.zone|The zone number ranges from 1 to 60 and allows to define the transverse mercator projection (along with the hemisphere)|None|None|None

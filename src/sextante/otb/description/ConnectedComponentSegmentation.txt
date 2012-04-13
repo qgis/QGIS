@@ -1,7 +1,7 @@
 otbcli_ConnectedComponentSegmentation
 ConnectedComponentSegmentation
 OTB
-ParameterRaster|-in|The image to segment.|True
+ParameterRaster|-in|The image to segment.|False
 OutputVector|-out|The segmentation shape.|
 ParameterString|-mask|Mask mathematical expression (only if support image is given)|
 ParameterString|-expr|Formula used for connected component segmentation|

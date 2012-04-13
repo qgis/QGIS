@@ -1,14 +1,14 @@
 otbcli_PixelWiseBlockMatching
 PixelWiseBlockMatching
 OTB
-ParameterRaster|-io.inleft|The left input image (reference)|True
-ParameterRaster|-io.inright|The right input (secondary)|True
+ParameterRaster|-io.inleft|The left input image (reference)|False
+ParameterRaster|-io.inright|The right input (secondary)|False
 OutputRaster|-io.out|An image containing the estimated disparities as well as the metric values if the option is used|
 OutputRaster|-io.outmaskleft|A left mask image corresponding to all citerions (see masking parameters). Only required if variance threshold or nodata criterions are set.|
 OutputRaster|-io.outmaskright|A right mask image corresponding to all citerions (see masking parameters). Only required if variance threshold or nodata criterions are set.|
 ParameterBoolean|-io.outmetric|If used, the output image will have a second component with metric optimal values|
-ParameterRaster|-mask.inleft|This parameter allows to provide a custom mask for the left image|False
-ParameterRaster|-mask.inright|This parameter allows to provide a custom mask for the right image|False
+ParameterRaster|-mask.inleft|This parameter allows to provide a custom mask for the left image|True
+ParameterRaster|-mask.inright|This parameter allows to provide a custom mask for the right image|True
 ParameterNumber|-mask.nodata|This parameter allows to discard pixels whose value is equal to the user-defined no-data value.|None|None|0.0
 ParameterNumber|-mask.variancet|This parameter allows to discard pixels whose local variance is too small (the size of the neighborhood is given by the radius parameter)|None|None|100.0
 ParameterSelection|-bm.metric||ssd;ncc;lp;
@@ -26,8 +26,8 @@ ParameterNumber|-bm.initdisp.uniform.hdisp|Value of the uniform horizontal dispa
 ParameterNumber|-bm.initdisp.uniform.vdisp|Value of the uniform vertical disparity initial estimate (in pixels)|None|None|0
 ParameterNumber|-bm.initdisp.uniform.hrad|Horizontal exploration radius around the initial disparity estimate (in pixels)|None|None|0
 ParameterNumber|-bm.initdisp.uniform.vrad|Vertical exploration radius around the initial disparity estimate (in pixels)|None|None|0
-ParameterRaster|-bm.initdisp.maps.hmap|Map of the initial horizontal disparities|True
-ParameterRaster|-bm.initdisp.maps.vmap|Map of the initial vertical disparities|True
+ParameterRaster|-bm.initdisp.maps.hmap|Map of the initial horizontal disparities|False
+ParameterRaster|-bm.initdisp.maps.vmap|Map of the initial vertical disparities|False
 ParameterNumber|-bm.initdisp.maps.hrad|Horizontal exploration radius around the initial disparity estimate (in pixels)|None|None|0
 ParameterNumber|-bm.initdisp.maps.vrad|Vertical exploration radius around the initial disparity estimate (in pixels)|None|None|0
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128

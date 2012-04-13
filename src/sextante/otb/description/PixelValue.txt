@@ -1,7 +1,7 @@
 otbcli_PixelValue
 PixelValue
 OTB
-ParameterRaster|-in|Input image|True
+ParameterRaster|-in|Input image|False
 ParameterNumber|-coordx|Column index of the wanted pixel (starts at 0).|None|None|None
 ParameterNumber|-coordy|Line index of the wanted pixel (starts at 0).|None|None|None
 ParameterString|-value|Pixel radiometric value|

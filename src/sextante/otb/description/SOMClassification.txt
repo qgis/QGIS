@@ -1,9 +1,9 @@
 otbcli_SOMClassification
 SOMClassification
 OTB
-ParameterRaster|-in|Input image to classify.|True
+ParameterRaster|-in|Input image to classify.|False
 OutputRaster|-out|Output classified image (each pixel contains the index of its corresponding vector in the SOM).|
-ParameterRaster|-vm|Validity mask (only pixels corresponding to a mask value greater than 0 will be used for learning)|False
+ParameterRaster|-vm|Validity mask (only pixels corresponding to a mask value greater than 0 will be used for learning)|True
 ParameterNumber|-tp|Probability for a sample to be selected in the training set|None|None|1.0
 ParameterNumber|-ts|Maximum training set size (in pixels)|None|None|None
 ParameterNumber|-sl|Number of lines in each streaming block (used during data sampling)|None|None|None

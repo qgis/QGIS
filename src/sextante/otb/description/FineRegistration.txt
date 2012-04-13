@@ -1,14 +1,14 @@
 otbcli_FineRegistration
 FineRegistration
 OTB
-ParameterRaster|-ref|The reference image.|True
-ParameterRaster|-sec|The secondary image.|True
+ParameterRaster|-ref|The reference image.|False
+ParameterRaster|-sec|The secondary image.|False
 OutputRaster|-out|The output image.|
 ParameterNumber|-erx|The exploration radius along x (in pixels)|None|None|None
 ParameterNumber|-ery|The exploration radius along y (in pixels)|None|None|None
 ParameterNumber|-mrx|Radius along x (in pixels) of the metric computation window|None|None|None
 ParameterNumber|-mry|Radius along y (in pixels) of the metric computation window|None|None|None
-ParameterRaster|-w|The image to warp after disparity estimation is completed|False
+ParameterRaster|-w|The image to warp after disparity estimation is completed|True
 OutputRaster|-wo|The output warped image|
 ParameterNumber|-cox|Coarse offset along x (in physical space) between the two images|None|None|0.0
 ParameterNumber|-coy|Coarse offset along y (in physical space) between the two images|None|None|0.0

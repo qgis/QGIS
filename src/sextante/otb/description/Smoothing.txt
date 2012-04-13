@@ -1,7 +1,7 @@
 otbcli_Smoothing
 Smoothing
 OTB
-ParameterRaster|-in|Input image to smooth.|True
+ParameterRaster|-in|Input image to smooth.|False
 OutputRaster|-out|Output smoothed image.|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterSelection|-type|Smoothing kernel to apply|mean;gaussian;anidif;

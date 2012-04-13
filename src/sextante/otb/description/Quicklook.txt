@@ -1,7 +1,7 @@
 otbcli_Quicklook
 Quicklook
 OTB
-ParameterRaster|-in|The image to read|True
+ParameterRaster|-in|The image to read|False
 OutputRaster|-out|The subsampled image|
 ParameterNumber|-rox|first point of ROI in x-direction|None|None|0
 ParameterNumber|-roy|first point of ROI in y-direction|None|None|0

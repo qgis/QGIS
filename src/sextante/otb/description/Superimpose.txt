@@ -1,8 +1,8 @@
 otbcli_Superimpose
 Superimpose
 OTB
-ParameterRaster|-inr|The input reference image.|True
-ParameterRaster|-inm|The image to reproject into the geometry of the reference input.|True
+ParameterRaster|-inr|The input reference image.|False
+ParameterRaster|-inm|The image to reproject into the geometry of the reference input.|False
 ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
 ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
 ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|

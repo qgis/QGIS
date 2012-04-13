@@ -1,7 +1,7 @@
 otbcli_RadiometricWaterIndices
 RadiometricWaterIndices
 OTB
-ParameterRaster|-in|Input image|True
+ParameterRaster|-in|Input image|False
 OutputRaster|-out|Radiometric indices output image|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterNumber|-channels.blue|Blue channel index|None|None|1

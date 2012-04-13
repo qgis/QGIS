@@ -1,7 +1,7 @@
 otbcli_HyperspectralUnmixing
 HyperspectralUnmixing
 OTB
-ParameterRaster|-in|The hyperspectral data cube to unmix|True
+ParameterRaster|-in|The hyperspectral data cube to unmix|False
 OutputRaster|-out|The output abundance map|
-ParameterRaster|-ie|The endmembers (estimated pure pixels) to use for unmixing. Must be stored as a multispectral image, where each pixel is interpreted as an endmember|True
+ParameterRaster|-ie|The endmembers (estimated pure pixels) to use for unmixing. Must be stored as a multispectral image, where each pixel is interpreted as an endmember|False
 ParameterSelection|-ua|The algorithm to use for unmixing|ucls;ncls;isra;mdmdnmf;

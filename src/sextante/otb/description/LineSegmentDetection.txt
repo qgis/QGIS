@@ -1,7 +1,7 @@
 otbcli_LineSegmentDetection
 LineSegmentDetection
 OTB
-ParameterRaster|-in| Input image on which lines while be detected.|True
+ParameterRaster|-in| Input image on which lines while be detected.|False
 OutputVector|-out| Output detected line segments (vector data).|
 ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
 ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|

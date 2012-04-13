@@ -1,7 +1,7 @@
 otbcli_ColorMapping
 ColorMapping
 OTB
-ParameterRaster|-in|Input image filename|True
+ParameterRaster|-in|Input image filename|False
 OutputRaster|-out|Output image filename|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterSelection|-op|Selection of the operation to execute (default is : label to color).|labeltocolor;colortolabel;
@@ -12,6 +12,6 @@ ParameterSelection|-method.continuous.lut|Available look-up tables.|red;green;bl
 ParameterNumber|-method.continuous.min|Set the lower input value of the mapping range.|None|None|0.0
 ParameterNumber|-method.continuous.max|Set the higher input value of the mapping range.|None|None|255.0
 ParameterNumber|-method.optimal.background|Value of the background label|None|None|0
-ParameterRaster|-method.image.in|Support image filename. LUT is calculated using the mean af pixel value on the area. First of all image is normalized with extrema rejection|True
+ParameterRaster|-method.image.in|Support image filename. LUT is calculated using the mean af pixel value on the area. First of all image is normalized with extrema rejection|False
 ParameterNumber|-method.image.low|lower quantile for image normalisation|None|None|2
 ParameterNumber|-method.image.up|upper quantile for image normalisation|None|None|2

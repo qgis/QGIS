@@ -1,8 +1,8 @@
 otbcli_StereoSensorModelToElevationMap
 StereoSensorModelToElevationMap
 OTB
-ParameterRaster|-ref|The reference image.|True
-ParameterRaster|-sec|The secondary image.|True
+ParameterRaster|-ref|The reference image.|False
+ParameterRaster|-sec|The secondary image.|False
 OutputRaster|-out|The output image.|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterNumber|-r|Radius (in pixels) of the metric computation window (default is 3).|None|None|3

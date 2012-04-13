@@ -1,9 +1,9 @@
 otbcli_Rasterization
 Rasterization
 OTB
-ParameterVector|-in|The input vector data to be rasterized|True
+ParameterVector|-in|The input vector data to be rasterized|False
 OutputRaster|-out|An output image containing the rasterized vector data|
-ParameterRaster|-im|A reference image for extraction region and projection information (optional)|False
+ParameterRaster|-im|A reference image for extraction region and projection information (optional)|True
 ParameterNumber|-szx|OutputSize[0] (useless if support image is given)|None|None|None
 ParameterNumber|-szy|OutputSize[1] (useless if support image is given)|None|None|None
 ParameterNumber|-epsg|Projection System RSID number (RSID 4326 for WGS84 32631 for UTM31N)  (useless if support image is given)|None|None|None

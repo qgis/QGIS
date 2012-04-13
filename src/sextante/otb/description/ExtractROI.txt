@@ -1,7 +1,7 @@
 otbcli_ExtractROI
 ExtractROI
 OTB
-ParameterRaster|-in|Input image.|True
+ParameterRaster|-in|Input image.|False
 OutputRaster|-out|Output image.|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterNumber|-startx|ROI start x position.|None|None|0

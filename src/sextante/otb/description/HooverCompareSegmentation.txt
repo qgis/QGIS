@@ -1,8 +1,8 @@
 otbcli_HooverCompareSegmentation
 HooverCompareSegmentation
 OTB
-ParameterRaster|-ingt|A partial ground truth segmentation image.|True
-ParameterRaster|-inms|A machine segmentation image.|True
+ParameterRaster|-ingt|A partial ground truth segmentation image.|False
+ParameterRaster|-inms|A machine segmentation image.|False
 ParameterNumber|-bg|Label value of the background in the input segmentations|None|None|0
 ParameterNumber|-th|Overlapping threshold used to find Hoover instances.|None|None|0.75
 OutputRaster|-outgt|The colored ground truth output image.|

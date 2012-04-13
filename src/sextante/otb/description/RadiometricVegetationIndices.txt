@@ -1,7 +1,7 @@
 otbcli_RadiometricVegetationIndices
 RadiometricVegetationIndices
 OTB
-ParameterRaster|-in|Input image, with at least red and NIR channels|True
+ParameterRaster|-in|Input image, with at least red and NIR channels|False
 OutputRaster|-out|Radiometric indices output image|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterNumber|-channels.red|Red channel index|None|None|3

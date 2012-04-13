@@ -1,7 +1,7 @@
 otbcli_OpticalCalibration
 OpticalCalibration
 OTB
-ParameterRaster|-in|Input image filename (values in DN)|True
+ParameterRaster|-in|Input image filename (values in DN)|False
 OutputRaster|-out|Output calibrated image filename|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
 ParameterSelection|-level||toa;toc;

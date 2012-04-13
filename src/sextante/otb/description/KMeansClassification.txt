@@ -1,10 +1,10 @@
 otbcli_KMeansClassification
 KMeansClassification
 OTB
-ParameterRaster|-in|Input image to classify.|True
+ParameterRaster|-in|Input image to classify.|False
 OutputRaster|-out|Output image containing the class indexes.|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128
-ParameterRaster|-vm|Validity mask. Only non-zero pixels will be used to estimate KMeans modes.|False
+ParameterRaster|-vm|Validity mask. Only non-zero pixels will be used to estimate KMeans modes.|True
 ParameterNumber|-ts|Size of the training set (in pixels).|None|None|100
 ParameterNumber|-nc|Number of modes, which will be used to generate class membership.|None|None|5
 ParameterNumber|-maxit|Maximum number of iterations for the learning step.|None|None|1000

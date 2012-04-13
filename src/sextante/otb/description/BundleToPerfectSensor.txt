@@ -1,8 +1,8 @@
 otbcli_BundleToPerfectSensor
 BundleToPerfectSensor
 OTB
-ParameterRaster|-inp| Input panchromatic image.|True
-ParameterRaster|-inxs| Input XS image.|True
+ParameterRaster|-inp| Input panchromatic image.|False
+ParameterRaster|-inxs| Input XS image.|False
 ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
 ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|
 ParameterString|-elev.dem.geoid|Use a geoid grid to get the height above the ellipsoid used|

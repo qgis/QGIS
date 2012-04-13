@@ -1,7 +1,7 @@
 otbcli_MeanShiftSegmentation
 MeanShiftSegmentation
 OTB
-ParameterRaster|-in|The input image.|True
+ParameterRaster|-in|The input image.|False
 OutputRaster|-fout|The filtered output image.|
 OutputRaster|-cout|The clustered output image.|
 OutputRaster|-lout|The label output image.|

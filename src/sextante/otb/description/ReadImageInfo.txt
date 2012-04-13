@@ -1,7 +1,7 @@
 otbcli_ReadImageInfo
 ReadImageInfo
 OTB
-ParameterRaster|-in|Input image to analyse|True
+ParameterRaster|-in|Input image to analyse|False
 ParameterBoolean|-keywordlist|Output the OSSIM keyword list. It contains metadata information (sensor model, geometry ). Informations are stored in keyword list (pairs of key/value)|
 ParameterNumber|-sizex|X size (in pixels)|None|None|None
 ParameterNumber|-sizey|Y size (in pixels)|None|None|None

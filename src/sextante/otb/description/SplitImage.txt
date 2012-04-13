@@ -1,6 +1,6 @@
 otbcli_SplitImage
 SplitImage
 OTB
-ParameterRaster|-in|Input multiband image filename.|True
+ParameterRaster|-in|Input multiband image filename.|False
 ParameterString|-out|Output filename that will be used to get the prefix and the extension of the output images to write|
 ParameterNumber|-ram|Available memory for processing (in MB)|None|None|128

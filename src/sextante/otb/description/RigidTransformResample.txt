@@ -1,7 +1,7 @@
 otbcli_RigidTransformResample
 RigidTransformResample
 OTB
-ParameterRaster|-in|The input image to translate.|True
+ParameterRaster|-in|The input image to translate.|False
 OutputRaster|-out|The translated output image.|
 ParameterNumber|-tx|The translation value along X axis (in physical units).|None|None|None
 ParameterNumber|-ty|The translation value along Y axis (in physical units)|None|None|None

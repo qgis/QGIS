@@ -1,8 +1,8 @@
 otbcli_VectorDataExtractROIApplication
 VectorDataExtractROIApplication
 OTB
-ParameterVector|-io.vd|Input vector data|True
-ParameterRaster|-io.in|Support image that specifies the extracted region|True
+ParameterVector|-io.vd|Input vector data|False
+ParameterRaster|-io.in|Support image that specifies the extracted region|False
 OutputVector|-io.out|Output extracted vector data|
 ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
 ParameterString|-elev.dem.path|This parameter allows to select a directory containing Digital Elevation Model tiles|

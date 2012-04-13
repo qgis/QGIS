@@ -1,7 +1,7 @@
 otbcli_VectorDataDSValidation
 VectorDataDSValidation
 OTB
-ParameterVector|-in|Input vector data to validate|True
+ParameterVector|-in|Input vector data to validate|False
 ParameterString|-descmod|Fuzzy descriptors model (xml file)|
 ParameterString|-cri|Dempster Shafer criterion (by default (belief+plausibility)/2)|((Belief + Plausibility)/2.)
 ParameterNumber|-thd|Criterion threshold (default 0.5)|None|None|0.5

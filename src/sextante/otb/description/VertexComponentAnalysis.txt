@@ -1,6 +1,6 @@
 otbcli_VertexComponentAnalysis
 VertexComponentAnalysis
 OTB
-ParameterRaster|-in|Input hyperspectral data cube|True
+ParameterRaster|-in|Input hyperspectral data cube|False
 ParameterNumber|-ne|The number of endmembers to extract from the data cube|None|None|1
 OutputRaster|-outendm|The endmebers, stored in a one-line multi-spectral image, each pixel representing an endmember|

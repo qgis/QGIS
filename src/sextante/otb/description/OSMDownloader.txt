@@ -2,7 +2,7 @@ otbcli_OSMDownloader
 OSMDownloader
 OTB
 OutputVector|-out|Generated output vector data path|
-ParameterRaster|-support|Image used as support to estimate the models|True
+ParameterRaster|-support|Image used as support to estimate the models|False
 ParameterString|-key|OSM tag key to extract (highway, building...)|
 ParameterString|-value|OSM tag value to extract (motorway, footway...)|
 ParameterSelection|-elev|This group of parameters allows to manage elevation values. Supported formats are SRTM, DTED or any geotiff processed by the DEM import application|dem;average;
