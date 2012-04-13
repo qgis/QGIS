@@ -103,7 +103,7 @@ def generate_parameter_Int( appInstance, paramKey ):
   out += "None"
   out += "|"
   
-  defaultVal = "None"
+  defaultVal = "0"
   try:
     defaultVal = str(appInstance.GetParameterInt(paramKey))
   except:
@@ -127,7 +127,7 @@ def generate_parameter_Float( appInstance, paramKey ):
   out += "None"
   out += "|"
   
-  defaultVal = "None"
+  defaultVal = "0.0"
   try:
     defaultVal = str(appInstance.GetParameterFloat(paramKey))
   except:
