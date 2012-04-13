@@ -2286,12 +2286,16 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
       // since the layer is bad, stomp on it
       delete layer;
-
-      // XXX should we return false here, or just grind through
-      // XXX the remaining arguments?
     }
 
   }
+
+  // make sure at least one layer was succesfully added
+  if ( myList.count() == 0 )
+  {
+    return false;
+  }
+
   // Register this layer with the layers registry
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
 
