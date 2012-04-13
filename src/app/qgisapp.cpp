@@ -645,6 +645,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef HAVE_TOUCH
   //add reacting to long click in android
   grabGesture( Qt::TapAndHoldGesture );
+#else
+  //remove mActionTouch button
+  delete mActionTouch;
 #endif
 
   // update windows
@@ -2785,6 +2788,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
+
 #ifdef HAVE_TOUCH
   mMapCanvas->setMapTool( mMapTools.mTouch );
   mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
