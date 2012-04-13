@@ -1,4 +1,5 @@
 otbcli_ComputeImagesStatistics
 ComputeImagesStatistics
 OTB
+ParameterMultipleInput|-il|Input images|3|False
 ParameterString|-out|Output XML file|

@@ -1,6 +1,8 @@
 otbcli_ValidateSVMImagesClassifier
 ValidateSVMImagesClassifier
 OTB
+ParameterMultipleInput|-il|Input Image List|3|False
+ParameterMultipleInput|-vd|Vector Data List|-1|False
 ParameterString|-imstat|XML image statistics file|
 ParameterSelection|-elev|Elevation management|dem;average;
 ParameterString|-elev.dem.path|DEM directory|

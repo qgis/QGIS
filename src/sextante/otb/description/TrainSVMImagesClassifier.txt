@@ -1,6 +1,8 @@
 otbcli_TrainSVMImagesClassifier
 TrainSVMImagesClassifier
 OTB
+ParameterMultipleInput|-io.il|Input Image List|3|False
+ParameterMultipleInput|-io.vd|Vector Data List|-1|False
 ParameterString|-io.imstat|XML image statistics file|
 ParameterString|-io.out|Output SVM model|
 ParameterSelection|-elev|Elevation management|dem;average;

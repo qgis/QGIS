@@ -194,7 +194,21 @@ def generate_parameter_InputImage( appInstance, paramKey ):
 
 
 def generate_parameter_InputImageList( appInstance, paramKey ):
-  return ""
+  out = "ParameterMultipleInput"
+  out += "|"
+  
+  out += "-" + paramKey
+  out += "|"
+  
+  out += convertendl(appInstance.GetParameterName(paramKey))
+  out += "|"
+  
+  out += "3"
+  out += "|"
+  
+  out += str(not appInstance.IsMandatory(paramKey))
+  
+  return out
 
 def generate_parameter_InputVectorData( appInstance, paramKey ):
   out = "ParameterVector"
@@ -212,7 +226,21 @@ def generate_parameter_InputVectorData( appInstance, paramKey ):
 
 
 def generate_parameter_InputVectorDataList( appInstance, paramKey ):
-  return ""
+  out = "ParameterMultipleInput"
+  out += "|"
+  
+  out += "-" + paramKey
+  out += "|"
+  
+  out += convertendl(appInstance.GetParameterName(paramKey))
+  out += "|"
+  
+  out += "-1"
+  out += "|"
+  
+  out += str(not appInstance.IsMandatory(paramKey))
+  
+  return out
 
 
 def generate_parameter_OutputImage( appInstance, paramKey ):

@@ -1,5 +1,6 @@
 otbcli_ConcatenateImages
 ConcatenateImages
 OTB
+ParameterMultipleInput|-il|Input images list|3|False
 OutputRaster|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128
