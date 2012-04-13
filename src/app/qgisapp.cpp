@@ -138,6 +138,7 @@
 #include "qgsmessageviewer.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
+#include "qgsmultibandcolorrenderer.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
@@ -157,10 +158,12 @@
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgsscalecombobox.h"
 #include "qgsshortcutsmanager.h"
+#include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgssponsors.h"
 #include "qgstextannotationitem.h"
@@ -5057,52 +5060,10 @@ void QgisApp::options()
 
 void QgisApp::fullHistogramStretch()
 {
-  QgsMapLayer * layer = mMapLegend->currentLayer();
-
-  if ( !layer )
-  {
-    QMessageBox::information( this,
-                              tr( "No Layer Selected" ),
-                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
-    return;
-  }
-
-  QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rlayer )
-  {
-    QMessageBox::information( this,
-                              tr( "No Raster Layer Selected" ),
-                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
-    return;
-  }
-  if ( rlayer->providerType() == "wms" )
-  {
-    return;
-  }
-  if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
-       rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray ||
-       rlayer->drawingStyle() == QgsRasterLayer::MultiBandColor
-     )
-  {
-    rlayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-    rlayer->setMinimumMaximumUsingDataset();
-    rlayer->setCacheImage( NULL );
-    //refreshLayerSymbology( rlayer->getLayerID() );
-    mMapCanvas->refresh();
-    return;
-  }
-  else
-  {
-    QMessageBox::information( this,
-                              tr( "No Valid Raster Layer Selected" ),
-                              tr( "To perform a local histogram stretch, you need to have a grayscale "
-                                  "or multiband (multiband single layer, singleband grayscale or multiband color) "
-                                  " raster layer selected." ) );
-    return;
-  }
+  histogramStretch( false );
 }
 
-void QgisApp::localHistogramStretch()
+void QgisApp::histogramStretch( bool visibleAreaOnly )
 {
   QgsMapLayer * layer = mMapLegend->currentLayer();
 
@@ -5110,7 +5071,7 @@ void QgisApp::localHistogramStretch()
   {
     QMessageBox::information( this,
                               tr( "No Layer Selected" ),
-                              tr( "To perform a local histogram stretch, you need to have a raster layer selected." ) );
+                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
     return;
   }
 
@@ -5119,32 +5080,121 @@ void QgisApp::localHistogramStretch()
   {
     QMessageBox::information( this,
                               tr( "No Raster Layer Selected" ),
-                              tr( "To perform a local histogram stretch, you need to have a raster layer selected." ) );
+                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
     return;
   }
-  if ( rlayer->drawingStyle() == QgsRasterLayer::SingleBandGray ||
-       rlayer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray ||
-       rlayer->drawingStyle() == QgsRasterLayer::MultiBandColor
-     )
+
+  QgsRasterDataProvider* provider = rlayer->dataProvider();
+  if ( !provider )
   {
-    rlayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-    rlayer->setMinimumMaximumUsingLastExtent();
-    rlayer->setCacheImage( NULL );
-    //refreshLayerSymbology( rlayer->getLayerID() );
-    mMapCanvas->refresh();
     return;
+  }
+
+  //get renderer
+  QgsRasterRenderer* renderer = rlayer->renderer();
+  if ( !renderer )
+  {
+    return;
+  }
+
+  //singleband gray <-> multiband color
+  if ( renderer->type() == "singlebandgray" )
+  {
+    QgsSingleBandGrayRenderer* grayRenderer = static_cast<QgsSingleBandGrayRenderer*>( renderer );
+    if ( !grayRenderer )
+    {
+      return;
+    }
+
+    //create new contrast enhancements
+    int grayBand = grayRenderer->grayBand();
+    if ( grayBand == -1 )
+    {
+      return;
+    }
+
+    QgsContrastEnhancement* e = rasterContrastEnhancement( rlayer, grayBand, visibleAreaOnly );
+    if ( !e )
+    {
+      return;
+    }
+    grayRenderer->setContrastEnhancement( e );
+  }
+  else if ( renderer->type() == "multibandcolor" )
+  {
+    QgsMultiBandColorRenderer* colorRenderer = static_cast<QgsMultiBandColorRenderer*>( renderer );
+    if ( !colorRenderer )
+    {
+      return;
+    }
+
+    QgsContrastEnhancement* redEnhancement = rasterContrastEnhancement( rlayer, colorRenderer->redBand(), visibleAreaOnly );
+    if ( redEnhancement )
+    {
+      colorRenderer->setRedContrastEnhancement( redEnhancement );
+    }
+    QgsContrastEnhancement* greenEnhancement = rasterContrastEnhancement( rlayer, colorRenderer->greenBand(), visibleAreaOnly );
+    if ( greenEnhancement )
+    {
+      colorRenderer->setGreenContrastEnhancement( greenEnhancement );
+    }
+    QgsContrastEnhancement* blueEnhancement = rasterContrastEnhancement( rlayer, colorRenderer->blueBand(), visibleAreaOnly );
+    if ( blueEnhancement )
+    {
+      colorRenderer->setBlueContrastEnhancement( blueEnhancement );
+    }
   }
   else
   {
-    QMessageBox::information( this,
-                              tr( "No Valid Raster Layer Selected" ),
-                              tr( "To perform a local histogram stretch, you need to have a grayscale "
-                                  "or multiband (multiband single layer, singleband grayscale or multiband color) "
-                                  " raster layer selected." ) );
     return;
   }
+
+  mMapCanvas->refresh();
 }
 
+QgsContrastEnhancement* QgisApp::rasterContrastEnhancement( QgsRasterLayer* rlayer, int band,
+    bool visibleAreaOnly ) const
+{
+  if ( !rlayer || band == -1 )
+  {
+    return 0;
+  }
+
+  QgsRasterDataProvider* provider = rlayer->dataProvider();
+  if ( !provider )
+  {
+    return 0;
+  }
+
+  QgsContrastEnhancement* e = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+        provider->dataType( band ) ) );
+  double minValue = 0;
+  double maxValue = 0;
+
+  if ( visibleAreaOnly )
+  {
+    double minMax[2];
+    rlayer->computeMinimumMaximumFromLastExtent( band, minMax );
+    minValue = minMax[0];
+    maxValue = minMax[1];
+  }
+  else
+  {
+    QgsRasterBandStats rasterBandStats = rlayer->bandStatistics( band );
+    minValue = rasterBandStats.minimumValue;
+    maxValue = rasterBandStats.maximumValue;
+  }
+
+  e->setMinimumValue( minValue );
+  e->setMaximumValue( maxValue );
+  e->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+  return e;
+}
+
+void QgisApp::localHistogramStretch()
+{
+  histogramStretch( true );
+}
 
 void QgisApp::helpContents()
 {
