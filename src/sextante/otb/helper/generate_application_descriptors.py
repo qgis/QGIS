@@ -3,7 +3,7 @@
 import os, sys
 import otbApplication
 
-outputpath='/home/jmalik/otb-sextante'
+outputpath= os.path.join( os.environ["HOME"], ".qgis/python/plugins/sextante/otb/description" )
 endl = os.linesep
 
 def convertendl(s):
@@ -188,7 +188,7 @@ def generate_parameter_InputImage( appInstance, paramKey ):
   out += convertendl(appInstance.GetParameterDescription(paramKey))
   out += "|"
   
-  out += str(appInstance.IsMandatory(paramKey))
+  out += str(not appInstance.IsMandatory(paramKey))
   
   return out
 
@@ -206,7 +206,7 @@ def generate_parameter_InputVectorData( appInstance, paramKey ):
   out += convertendl(appInstance.GetParameterDescription(paramKey))
   out += "|"
   
-  out += str(appInstance.IsMandatory(paramKey))
+  out += str(not appInstance.IsMandatory(paramKey))
   
   return out
 
