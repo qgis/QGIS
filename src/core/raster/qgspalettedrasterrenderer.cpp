@@ -209,3 +209,11 @@ void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parent
 
   parentElem.appendChild( rasterRendererElem );
 }
+
+void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const
+{
+  for ( int i = 0; i < mNColors; ++i )
+  {
+    symbolItems.push_back( qMakePair( QString::number( i ), mColors[i] ) );
+  }
+}

@@ -40,6 +40,8 @@ class QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+
   private:
     int mBandNumber;
     /**Color array*/
