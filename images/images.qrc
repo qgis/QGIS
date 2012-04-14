@@ -424,6 +424,7 @@
         <file>flags/xh.png</file>
         <file>flags/zh_CN.png</file>
         <file>flags/zh_TW.png</file>
+        <file>flags/en_US.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

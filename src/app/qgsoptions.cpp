@@ -361,7 +361,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
   QStringList myI18nList = i18nList();
-  cboLocale->addItems( myI18nList );
+  foreach( QString l, myI18nList )
+  {
+#if QT_VERSION >= 0x040800
+    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName() );
+#else
+    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), l );
+#endif
+  }
   if ( myI18nList.contains( myUserLocale ) )
   {
     cboLocale->setCurrentIndex( myI18nList.indexOf( myUserLocale ) );
