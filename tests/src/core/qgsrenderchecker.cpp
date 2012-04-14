@@ -277,10 +277,12 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   // And send it to CDash
   //
-  std::cout << "<DartMeasurement name=\"Mismatch Count "
-            << "\" type=\"numeric/integer\">";
-  std::cout << mMismatchCount;
-  std::cout << "</DartMeasurement>" << std::endl;
+  myDashMessage = "<DartMeasurement name=\"Mismatch Count "
+             "\" type=\"numeric/integer\">" +
+      QString::number( mMismatchCount ) + "/" +
+      QString::number( mMatchTarget ) +
+      "</DartMeasurement>";
+  qDebug( ) << myDashMessage;
 
   bool myAnomalyMatchFlag = isKnownAnomaly( myDifferenceImage );
 
