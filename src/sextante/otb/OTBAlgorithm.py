@@ -9,6 +9,7 @@ from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
@@ -73,6 +74,10 @@ class OTBAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterMultipleInput):
                 commands.append(param.name)
                 commands.append(str(param.value.replace(";"," ")))
+            elif isinstance(param, ParameterSelection):
+	        commands.append(param.name)
+                idx = int(param.value)
+                commands.append(str(param.options[idx]))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name)
