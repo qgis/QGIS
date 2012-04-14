@@ -190,3 +190,12 @@ void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   }
   parentElem.appendChild( rasterRendererElem );
 }
+
+void QgsSingleBandGrayRenderer::legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const
+{
+  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+  {
+    symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->minimumValue() ), QColor( 0, 0, 0 ) ) );
+    symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), QColor( 255, 255, 255 ) ) );
+  }
+}

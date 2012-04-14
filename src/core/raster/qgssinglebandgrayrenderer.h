@@ -41,6 +41,8 @@ class QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+
   private:
     int mGrayBand;
     QgsContrastEnhancement* mContrastEnhancement;
