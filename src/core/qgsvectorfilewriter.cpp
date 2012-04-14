@@ -59,7 +59,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   const QgsCoordinateReferenceSystem* srs,
   const QString& driverName,
   const QStringList &datasourceOptions,
-  const QStringList &layerOptions
+  const QStringList &layerOptions,
+  QString *newFilename
 )
     : mDS( NULL )
     , mLayer( NULL )
@@ -387,6 +388,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     // create geometry which will be used for import
     mGeom = createEmptyGeometry( mWkbType );
   }
+
+  if ( newFilename )
+    *newFilename = vectorFileName;
 }
 
 OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WkbType wkbType )
@@ -584,7 +588,8 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     QString *errorMessage,
     const QStringList &datasourceOptions,
     const QStringList &layerOptions,
-    bool skipAttributeCreation )
+    bool skipAttributeCreation,
+    QString *newFilename )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
@@ -607,7 +612,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions );
+    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, driverName, datasourceOptions, layerOptions, newFilename );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();

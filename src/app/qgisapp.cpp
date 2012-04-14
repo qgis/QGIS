@@ -648,7 +648,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #else
   //remove mActionTouch button
   delete mActionTouch;
-  mActionTouch=0;
+  mActionTouch = 0;
 #endif
 
   // update windows
@@ -765,7 +765,7 @@ bool QgisApp::event( QEvent * event )
     done = true;
   }
 #ifdef HAVE_TOUCH
-  else if (event->type() == QEvent::Gesture )
+  else if ( event->type() == QEvent::Gesture )
   {
     done = gestureEvent( static_cast<QGestureEvent*>( event ) );
   }
@@ -3631,12 +3631,14 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
 
     QgsVectorFileWriter::WriterError error;
     QString errorMessage;
+    QString newFilename;
     error = QgsVectorFileWriter::writeAsVectorFormat(
               vlayer, vectorFilename, encoding, &destCRS, format,
               saveOnlySelection,
               &errorMessage,
               datasourceOptions, dialog->layerOptions(),
-              dialog->skipAttributeCreation() );
+              dialog->skipAttributeCreation(),
+              &newFilename );
 
     QApplication::restoreOverrideCursor();
 
@@ -3644,7 +3646,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     {
       if ( dialog->addToCanvas() )
       {
-        addVectorLayers( QStringList( vectorFilename ), encoding, "file" );
+        addVectorLayers( QStringList( newFilename ), encoding, "file" );
       }
       QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
     }
@@ -4700,10 +4702,10 @@ void QgisApp::isInOverview()
 
 void QgisApp::removingLayers( QStringList theLayers )
 {
-  foreach (const QString &layerId, theLayers)
+  foreach( const QString &layerId, theLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
-          QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+                               QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
     if ( !vlayer || !vlayer->isEditable() )
       return;
 
@@ -6027,9 +6029,9 @@ void QgisApp::markDirty()
 //changed from layerWasAdded to layersWereAdded in 1.8
 void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 {
-  for (int i = 0; i < theLayers.size(); ++i)
+  for ( int i = 0; i < theLayers.size(); ++i )
   {
-    QgsMapLayer * layer = theLayers.at(i);
+    QgsMapLayer * layer = theLayers.at( i );
     QgsDataProvider *provider = 0;
 
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
@@ -7448,7 +7450,7 @@ QMenu* QgisApp::createPopupMenu()
 }
 
 #ifdef HAVE_TOUCH
-bool QgisApp::gestureEvent(QGestureEvent *event)
+bool QgisApp::gestureEvent( QGestureEvent *event )
 {
   if ( QGesture *tapAndHold = event->gesture( Qt::TapAndHoldGesture ) )
   {

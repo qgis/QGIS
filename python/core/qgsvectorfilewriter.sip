@@ -52,7 +52,8 @@ public:
                                             QString *errorMessage = 0,
 					    const QStringList &datasourceOptions = QStringList(),
 					    const QStringList &layerOptions = QStringList(),
-                                            bool skipAttributeCreation = FALSE // added in 1.7
+                                            bool skipAttributeCreation = FALSE, // added in 1.7
+					    QString *newFilename = 0
                                             );
 
     /** create shapefile and initialize it */
@@ -63,7 +64,8 @@ public:
                         const QgsCoordinateReferenceSystem* srs,
 			const QString& driverName = "ESRI Shapefile",
 			const QStringList &datasourceOptions = QStringList(),
-			const QStringList &layerOptions = QStringList() );
+			const QStringList &layerOptions = QStringList(),
+                        QString *newFilename = 0 );
 
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
