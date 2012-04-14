@@ -104,7 +104,9 @@ build-stamp: debian/build/CMakeCache.txt
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite - and ignore the outcome for now
-	LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) $(MAKE) -C debian/build test || true
+	LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) $(MAKE) -C debian/build check || true
+else
+	echo Skipping tests.
 endif
 
 	touch $@
