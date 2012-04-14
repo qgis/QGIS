@@ -244,6 +244,10 @@ void TestQgsCoordinateReferenceSystem::toWkt()
      "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
      "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
      "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
+  qDebug() << "myWkt:\n";
+  qDebug() << myWkt;
+  qDebug() << "myStrippedWkt:\n";
+  qDebug() << myStrippedWkt;
   QVERIFY( myWkt == myStrippedWkt );
 }
 void TestQgsCoordinateReferenceSystem::toProj4()
