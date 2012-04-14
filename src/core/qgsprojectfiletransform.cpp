@@ -582,7 +582,34 @@ void QgsProjectFileTransform::transform1800to1900()
         }
       }
     }
-    else
+    else if ( drawingStyle == "PalettedColor" )
+    {
+      rasterRendererElem.setAttribute( "type", "paletted" );
+      rasterRendererElem.setAttribute( "band", grayBand );
+      QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+      QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+      QDomElement newColorPaletteElem = mDom.createElement( "colorPalette" );
+
+      int red = 0;
+      int green = 0;
+      int blue = 0;
+      int value = 0;
+      QDomElement colorRampEntryElem;
+      for ( int i = 0; i < colorRampEntryList.size(); ++i )
+      {
+        colorRampEntryElem = colorRampEntryList.at( i ).toElement();
+        QDomElement newPaletteElem = mDom.createElement( "paletteEntry" );
+        int value = ( int )( colorRampEntryElem.attribute( "value" ).toDouble() );
+        newPaletteElem.setAttribute( "value", value );
+        red = colorRampEntryElem.attribute( "red" ).toInt();
+        green = colorRampEntryElem.attribute( "green" ).toInt();
+        blue = colorRampEntryElem.attribute( "blue" ).toInt();
+        newPaletteElem.setAttribute( "color", QColor( red, green, blue ).name() );
+        newColorPaletteElem.appendChild( newPaletteElem );
+      }
+      rasterRendererElem.appendChild( newColorPaletteElem );
+    }
+    else //todo: multiband color
     {
       return;
     }
@@ -593,6 +620,7 @@ void QgsProjectFileTransform::transform1800to1900()
       layerNode.replaceChild( rasterRendererElem, rasterPropertiesElem );
     }
   }
+  QgsDebugMsg( mDom.toString() );
 }
 
 void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem )

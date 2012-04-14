@@ -58,6 +58,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
     {
       entryElem = paletteEntries.at( i ).toElement();
       value = entryElem.attribute( "value", "0" ).toInt();
+      QgsDebugMsg( entryElem.attribute( "color", "#000000" ) );
       colors[value] = QColor( entryElem.attribute( "color", "#000000" ) );
     }
   }
