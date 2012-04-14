@@ -2,6 +2,6 @@ otbcli_Convert
 Convert
 OTB
 ParameterRaster|-in|Input image|False
-ParameterSelection|-type|Rescale type|none;linear;log2;
+ParameterSelection|-type|Rescale type|none;linear;log2
 OutputRaster|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

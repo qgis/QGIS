@@ -5,7 +5,7 @@ ParameterMultipleInput|-io.il|Input Image List|3|False
 ParameterMultipleInput|-io.vd|Vector Data List|-1|False
 ParameterString|-io.imstat|XML image statistics file|
 ParameterString|-io.out|Output SVM model|
-ParameterSelection|-elev|Elevation management|dem;average;
+ParameterSelection|-elev|Elevation management|dem;average
 ParameterString|-elev.dem.path|DEM directory|
 ParameterString|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
@@ -14,6 +14,6 @@ ParameterNumber|-sample.mv|Maximum validation sample size|None|None|-1
 ParameterBoolean|-sample.edg|On edge pixel inclusion|
 ParameterNumber|-sample.vtr|training and validation sample ratio|None|None|0.5
 ParameterString|-sample.vfn|Name of the discrimination field|Class
-ParameterSelection|-svm.k|SVM Kernel Type|linear;rbf;poly;sigmoid;
+ParameterSelection|-svm.k|SVM Kernel Type|linear;rbf;poly;sigmoid
 ParameterNumber|-svm.c|Cost parameter C.|None|None|1.0
 ParameterBoolean|-svm.opt|parameters optimization|

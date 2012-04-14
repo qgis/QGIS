@@ -11,17 +11,17 @@ ParameterRaster|-mask.inleft|Discard left pixels from mask image|True
 ParameterRaster|-mask.inright|Discard right pixels from mask image|True
 ParameterNumber|-mask.nodata|Discard pixels with no-data value|None|None|0.0
 ParameterNumber|-mask.variancet|Discard pixels with low local variance|None|None|100.0
-ParameterSelection|-bm.metric|Block-matching metric|ssd;ncc;lp;
+ParameterSelection|-bm.metric|Block-matching metric|ssd;ncc;lp
 ParameterNumber|-bm.metric.lp.p|p value|None|None|1.0
 ParameterNumber|-bm.radius|Radius of blocks|None|None|3
 ParameterNumber|-bm.minhd|Minimum horizontal disparity|None|None|0
 ParameterNumber|-bm.maxhd|Maximum horizontal disparity|None|None|0
 ParameterNumber|-bm.minvd|Minimum vertical disparity|None|None|0
 ParameterNumber|-bm.maxvd|Maximum vertical disparity|None|None|0
-ParameterSelection|-bm.subpixel|Sub-pixel interpolation|none;parabolic;triangular;dichotomy;
+ParameterSelection|-bm.subpixel|Sub-pixel interpolation|none;parabolic;triangular;dichotomy
 ParameterNumber|-bm.medianfilter.radius|Radius|None|None|0
 ParameterNumber|-bm.medianfilter.incoherence|Incoherence threshold|None|None|0.0
-ParameterSelection|-bm.initdisp|Initial disparities|none;uniform;maps;
+ParameterSelection|-bm.initdisp|Initial disparities|none;uniform;maps
 ParameterNumber|-bm.initdisp.uniform.hdisp|Horizontal initial disparity|None|None|0
 ParameterNumber|-bm.initdisp.uniform.vdisp|Vertical initial disparity|None|None|0
 ParameterNumber|-bm.initdisp.uniform.hrad|Horizontal exploration radius|None|None|0

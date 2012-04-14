@@ -7,7 +7,7 @@ ParameterString|-mask|Mask expression|
 ParameterString|-expr|Connected Component Expression|
 ParameterNumber|-minsize|Minimum Object Size|None|None|2
 ParameterString|-obia|OBIA Expression|
-ParameterSelection|-elev|Elevation management|dem;average;
+ParameterSelection|-elev|Elevation management|dem;average
 ParameterString|-elev.dem.path|DEM directory|
 ParameterString|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0

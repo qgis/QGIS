@@ -4,11 +4,11 @@ OTB
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128
-ParameterSelection|-op|Operation|labeltocolor;colortolabel;
+ParameterSelection|-op|Operation|labeltocolor;colortolabel
 ParameterNumber|-op.colortolabel.notfound|Not Found Label|None|None|404
-ParameterSelection|-method|Color mapping method|custom;continuous;optimal;image;
+ParameterSelection|-method|Color mapping method|custom;continuous;optimal;image
 ParameterString|-method.custom.lut|Look-up table file|
-ParameterSelection|-method.continuous.lut|Look-up tables|red;green;blue;grey;hot;cool;spring;summer;autumn;winter;copper;jet;hsv;overunder;relief;
+ParameterSelection|-method.continuous.lut|Look-up tables|red;green;blue;grey;hot;cool;spring;summer;autumn;winter;copper;jet;hsv;overunder;relief
 ParameterNumber|-method.continuous.min|Mapping range lower value|None|None|0.0
 ParameterNumber|-method.continuous.max|Mapping range higher value|None|None|255.0
 ParameterNumber|-method.optimal.background|Background label|None|None|0

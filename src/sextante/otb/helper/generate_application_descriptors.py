@@ -173,9 +173,12 @@ def generate_parameter_Choice( appInstance, paramKey ):
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
+  choices = ""
   for choice in appInstance.GetChoiceKeys(paramKey):
-    out += choice
-    out += ";"
+    choices += choice
+    choices += ";"
+  out += choices[:-1]
+  
   return out
 
 def generate_parameter_InputImage( appInstance, paramKey ):

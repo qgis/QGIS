@@ -4,7 +4,7 @@ OTB
 ParameterVector|-io.vd|Input Vector data|-1|False
 ParameterRaster|-io.in|Support image|False
 OutputVector|-io.out|Output Vector data|
-ParameterSelection|-elev|Elevation management|dem;average;
+ParameterSelection|-elev|Elevation management|dem;average
 ParameterString|-elev.dem.path|DEM directory|
 ParameterString|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0

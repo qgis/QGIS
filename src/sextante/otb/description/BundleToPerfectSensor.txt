@@ -3,7 +3,7 @@ BundleToPerfectSensor
 OTB
 ParameterRaster|-inp|Input PAN Image|False
 ParameterRaster|-inxs|Input XS Image|False
-ParameterSelection|-elev|Elevation management|dem;average;
+ParameterSelection|-elev|Elevation management|dem;average
 ParameterString|-elev.dem.path|DEM directory|
 ParameterString|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0

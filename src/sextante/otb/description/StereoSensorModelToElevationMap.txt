@@ -12,7 +12,7 @@ ParameterNumber|-minh|MinHeightOffset|None|None|-20.0
 ParameterNumber|-maxh|MaxHeightOffset|None|None|20.0
 ParameterNumber|-step|HeightStep|None|None|1.0
 ParameterNumber|-ae|AverageElevation|None|None|0.0
-ParameterSelection|-elev|Elevation management|dem;average;
+ParameterSelection|-elev|Elevation management|dem;average
 ParameterString|-elev.dem.path|DEM directory|
 ParameterString|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
