@@ -263,7 +263,6 @@ class ModelerAlgorithm(GeoAlgorithm):
 
 
     def getAsPythonCode(self):
-        return
         s = []
         for param in self.parameters:
             s.append(str(param.getAsScriptCode().lower()))
