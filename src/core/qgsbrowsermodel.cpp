@@ -35,33 +35,14 @@ void QgsBrowserModel::addRootItems()
   mRootItems << item;
 
   // add favourite directories
-  QSettings settings;
-  QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
-  // if there are 5 or more items, create a "Favourites" Root item
-  // perhaps this should be the default?
-  if ( favDirs.count() >= 5 )
+  QgsFavouritesItem *favitem = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
+  if ( favitem )
   {
-    QgsFavouritesItem *item = new QgsFavouritesItem( NULL, tr( "Favourites" ), "" );
-    if ( item )
-    {
-      connectItem( item );
-      mRootItems << item;
-    }
-  }
-  else
-  {
-    foreach( QString favDir, favDirs )
-    {
-      item = new QgsDirectoryItem( NULL, favDir, favDir );
-      if ( item )
-      {
-        item->setIcon( QgsFavouritesItem::iconFavourites() );
-        mRootItems << item;
-        connectItem( item );
-      }
-    }
+    connectItem( favitem );
+    mRootItems << favitem;
   }
 
+  // add drives
   foreach( QFileInfo drive, QDir::drives() )
   {
     QString path = drive.absolutePath();

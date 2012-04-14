@@ -642,7 +642,7 @@ QgsErrorItem::~QgsErrorItem()
 QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mType = Collection; //favourites?
+  mType = Favourites;
   mIcon = iconFavourites();
 }
 

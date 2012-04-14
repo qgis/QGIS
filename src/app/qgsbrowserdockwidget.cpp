@@ -135,6 +135,15 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
+
+    // find root favourites item
+    for ( int i = 0; i < mModel->rowCount(); i++ )
+    {
+      QModelIndex index = mModel->index( i, 0 );
+      QgsDataItem* item = mModel->dataItem( index );
+      if ( item && item->type() == QgsDataItem::Favourites )
+        mBrowserView->expand( index );
+    }
   }
 
   QDockWidget::showEvent( e );
