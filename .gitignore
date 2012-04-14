@@ -41,3 +41,4 @@ scripts/Debug
 scripts/RelWithDebInfo
 /CMakeLists.txt.user
 qgis-test.ctest
+i18n/*.qm

@@ -212,7 +212,13 @@ p, li { white-space: pre-wrap; }
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="QTextBrowser" name="txtTranslators"/>
+        <widget class="QWebView" name="txtTranslators">
+         <property name="url">
+          <url>
+           <string>about:blank</string>
+          </url>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -238,13 +244,19 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKit/QWebView</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>btnQgisHome</tabstop>
   <tabstop>btnQgisUser</tabstop>
   <tabstop>txtProviders</tabstop>
   <tabstop>lstDevelopers</tabstop>
-  <tabstop>txtTranslators</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>txtDonors</tabstop>
   <tabstop>lstContributors</tabstop>
