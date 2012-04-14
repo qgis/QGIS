@@ -38,8 +38,10 @@ class OTBAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_FOLDER, "OTB folder", OTBUtils.otbPath()))
-        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_LIB_FOLDER, "OTB library folder", OTBUtils.otbLibPath()))
+        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_FOLDER, "OTB command line tools folder", OTBUtils.otbPath()))
+        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_LIB_FOLDER, "OTB applications folder", OTBUtils.otbLibPath()))
+        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_SRTM_FOLDER, "SRTM tiles folder", OTBUtils.otbSRTMPath()))
+        SextanteConfig.addSetting(Setting("OTB", OTBUtils.OTB_GEOID_FILE, "Geoid file", OTBUtils.otbGeoidPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)

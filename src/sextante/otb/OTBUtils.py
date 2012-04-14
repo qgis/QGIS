@@ -8,13 +8,14 @@ class OTBUtils:
 
     OTB_FOLDER = "OTB_FOLDER"
     OTB_LIB_FOLDER = "OTB_LIB_FOLDER"
+    OTB_SRTM_FOLDER = "OTB_SRTM_FOLDER"
+    OTB_GEOID_FILE = "OTB_GEOID_FILE"
 
     @staticmethod
     def otbPath():
         folder = SextanteConfig.getSetting(OTBUtils.OTB_FOLDER)
         if folder == None:
             folder =""
-
         return folder
 
     @staticmethod
@@ -22,8 +23,21 @@ class OTBUtils:
         folder = SextanteConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
         if folder == None:
             folder =""
-
         return folder
+
+    @staticmethod
+    def otbSRTMPath():
+        folder = SextanteConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
+        if folder == None:
+            folder =""
+        return folder
+
+    @staticmethod
+    def otbGeoidPath():
+        filepath = SextanteConfig.getSetting(OTBUtils.OTB_GEOID_FILE)
+        if filepath == None:
+            filepath =""
+        return filepath
 
     @staticmethod
     def otbDescriptionPath():

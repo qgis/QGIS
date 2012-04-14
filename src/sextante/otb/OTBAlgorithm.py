@@ -46,7 +46,15 @@ class OTBAlgorithm(GeoAlgorithm):
             try:
                 line = line.strip("\n").strip()
                 if line.startswith("Parameter"):
-                    self.addParameter(ParameterFactory.getFromString(line))
+                    param = ParameterFactory.getFromString(line)
+
+                    # Hack for initializing the elevation parameters from Sextante configuration
+                    if param.name == "-elev.dem.path":
+                        param.default = OTBUtils.otbSRTMPath()
+                    if param.name == "-elev.dem.geoid":
+                        param.default = OTBUtils.otbGeoidPath()
+
+                    self.addParameter(param)
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
