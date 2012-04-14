@@ -65,7 +65,7 @@ class OTBAlgorithm(GeoAlgorithm):
         commands.append(path + os.sep + self.cliName)
 
         for param in self.parameters:
-            if param.value == None:
+            if param.value == None or param.value == "":
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 commands.append(param.name)
