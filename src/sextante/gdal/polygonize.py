@@ -5,6 +5,7 @@ import os
 from sextante.gdal.GdalUtils import GdalUtils
 from sextante.parameters.ParameterString import ParameterString
 from sextante.outputs.OutputVector import OutputVector
+from sextante.core.SextanteUtils import SextanteUtils
 
 class polygonize(GeoAlgorithm):
 
@@ -24,11 +25,14 @@ class polygonize(GeoAlgorithm):
         self.addOutput(OutputVector(polygonize.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        commands = ["gdal_polygonize"]
+        if SextanteUtils.isWindows():
+            commands = ["cmd.exe", "/C ", "gdal_polygonize.bat"]
+        else:
+            commands = ["gdal_polygonize.py"]
         commands.append(self.getParameterValue(polygonize.INPUT))
-        commands.append("-f")
-        commands.append("ESRI Shapefile")
+        commands.append('-f')
+        commands.append('"ESRI Shapefile"')
         commands.append(self.getOutputValue(polygonize.OUTPUT))
         commands.append(self.getParameterValue(polygonize.FIELD))
-
+        
         GdalUtils.runGdal(commands, progress)
