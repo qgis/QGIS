@@ -532,7 +532,14 @@ void QgsProjectFileTransform::transform1800to1900()
         double breakSize = ( maxValue - minValue ) / 3;
 
         QStringList colorList;
-        colorList << "#0000ff" << "#00ffff" << "#ffff00" << "#ff0000";
+        if ( colorShadingAlgorithm == "FreakOutShader" )
+        {
+          colorList << "#ff00ff" << "#00ffff" << "#ff0000" << "#00ff00";
+        }
+        else //pseudocolor
+        {
+          colorList << "#0000ff" << "#00ffff" << "#ffff00" << "#ff0000";
+        }
         QStringList::const_iterator colorIt = colorList.constBegin();
         double boundValue = minValue;
         for ( ; colorIt != colorList.constEnd(); ++colorIt )
