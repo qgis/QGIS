@@ -611,8 +611,10 @@ void QgsProjectFileTransform::transform1800to1900()
       rasterRendererElem.setAttribute( "redBand", redBand );
       rasterRendererElem.setAttribute( "greenBand", greenBand );
       rasterRendererElem.setAttribute( "blueBand", blueBand );
+
+      transformContrastEnhancement( mDom, rasterPropertiesElem, rasterRendererElem );
     }
-    else //todo: multiband color
+    else
     {
       return;
     }
@@ -661,41 +663,12 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, c
   {
     return;
   }
-  QDomElement minMaxEntryElem = contrastMinMaxElem.firstChildElement( "minMaxEntry" );
-  if ( minMaxEntryElem.isNull() )
-  {
-    return;
-  }
-
-  QDomElement minElem = minMaxEntryElem.firstChildElement( "min" );
-  if ( minElem.isNull() )
-  {
-    return;
-  }
-  minimumValue = minElem.text().toDouble();
-
-  QDomElement maxElem = minMaxEntryElem.firstChildElement( "max" );
-  if ( maxElem.isNull() )
-  {
-    return;
-  }
-  maximumValue = maxElem.text().toDouble();
 
   QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( "mContrastEnhancementAlgorithm" );
   if ( contrastEnhancementAlgorithmElem.isNull() )
   {
     return;
   }
-
-  QDomElement newContrastEnhancementElem = doc.createElement( "contrastEnhancement" );
-  QDomElement newMinValElem = doc.createElement( "minValue" );
-  QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
-  newMinValElem.appendChild( minText );
-  newContrastEnhancementElem.appendChild( newMinValElem );
-  QDomElement newMaxValElem = doc.createElement( "maxValue" );
-  QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
-  newMaxValElem.appendChild( maxText );
-  newContrastEnhancementElem.appendChild( newMaxValElem );
 
   //convert enhancement name to enumeration
   int algorithmEnum = 0;
@@ -716,12 +689,57 @@ void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, c
   {
     algorithmEnum = 4;
   }
-  QDomElement newAlgorithmElem = doc.createElement( "algorithm" );
-  QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
-  newAlgorithmElem.appendChild( newAlgorithmText );
-  newContrastEnhancementElem.appendChild( newAlgorithmElem );
 
-  rendererElem.appendChild( newContrastEnhancementElem );
+  QDomNodeList minMaxEntryList = contrastMinMaxElem.elementsByTagName( "minMaxEntry" );
+  QStringList enhancementNameList;
+  if ( minMaxEntryList.size() == 1 )
+  {
+    enhancementNameList << "contrastEnhancement";
+  }
+  if ( minMaxEntryList.size() ==  3 )
+  {
+    enhancementNameList << "redContrastEnhancement" << "greenContrastEnhancement" << "blueContrastEnhancement";
+  }
+  if ( minMaxEntryList.size() > enhancementNameList.size() )
+  {
+    return;
+  }
+
+  QDomElement minMaxEntryElem;
+  for ( int i = 0; i < minMaxEntryList.size(); ++i )
+  {
+    minMaxEntryElem = minMaxEntryList.at( i ).toElement();
+    QDomElement minElem = minMaxEntryElem.firstChildElement( "min" );
+    if ( minElem.isNull() )
+    {
+      return;
+    }
+    minimumValue = minElem.text().toDouble();
+
+    QDomElement maxElem = minMaxEntryElem.firstChildElement( "max" );
+    if ( maxElem.isNull() )
+    {
+      return;
+    }
+    maximumValue = maxElem.text().toDouble();
+
+    QDomElement newContrastEnhancementElem = doc.createElement( enhancementNameList.at( i ) );
+    QDomElement newMinValElem = doc.createElement( "minValue" );
+    QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
+    newMinValElem.appendChild( minText );
+    newContrastEnhancementElem.appendChild( newMinValElem );
+    QDomElement newMaxValElem = doc.createElement( "maxValue" );
+    QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
+    newMaxValElem.appendChild( maxText );
+    newContrastEnhancementElem.appendChild( newMaxValElem );
+
+    QDomElement newAlgorithmElem = doc.createElement( "algorithm" );
+    QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
+    newAlgorithmElem.appendChild( newAlgorithmText );
+    newContrastEnhancementElem.appendChild( newAlgorithmElem );
+
+    rendererElem.appendChild( newContrastEnhancementElem );
+  }
 }
 
 void QgsProjectFileTransform::transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem )
