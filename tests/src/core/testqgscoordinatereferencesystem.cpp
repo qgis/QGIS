@@ -244,18 +244,27 @@ void TestQgsCoordinateReferenceSystem::toWkt()
      "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
      "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
      "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
+  // for GDAL 1.7
+  QString myAltStrippedWkt("GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
+     "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+     "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+     "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
+     "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
   qDebug() << "myWkt:\n";
   qDebug() << myWkt;
   qDebug() << "myStrippedWkt:\n";
   qDebug() << myStrippedWkt;
-  QVERIFY( myWkt == myStrippedWkt );
+  QVERIFY( myWkt == myStrippedWkt || myWkt == myAltStrippedWkt );
 }
 void TestQgsCoordinateReferenceSystem::toProj4()
 {
   QgsCoordinateReferenceSystem myCrs;
   myCrs.createFromSrid( GEOSRID );
   debugPrint( myCrs );
-  QVERIFY( myCrs.toProj4() == "+proj=longlat +datum=WGS84 +no_defs" );
+  //first proj string produced by gdal 1.8-1.9
+  //second by gdal 1.7
+  QVERIFY( myCrs.toProj4() == "+proj=longlat +datum=WGS84 +no_defs" ||
+           myCrs.toProj4() == "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 }
 void TestQgsCoordinateReferenceSystem::geographicFlag()
 {
