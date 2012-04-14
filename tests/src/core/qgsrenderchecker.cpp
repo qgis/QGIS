@@ -20,7 +20,8 @@
 #include <QPainter>
 #include <QImage>
 #include <QTime>
-
+#include <QCryptographicHash>
+#include <QByteArray>
 
 QgsRenderChecker::QgsRenderChecker( ) :
     mReport( "" ),
@@ -46,8 +47,50 @@ QString QgsRenderChecker::controlImagePath() const
 void QgsRenderChecker::setControlName(const QString theName)
 {
   mControlName = theName;
-  mExpectedImageFile = controlImagePath() + theName + QDir::separator() +
-      theName + ".png";
+  mExpectedImageFile = controlImagePath() + theName + QDir::separator()
+                    + theName + ".png";
+}
+
+bool QgsRenderChecker::isKnownAnomaly( QImage theDifferenceImage )
+{
+  QString myControlImageDir = controlImagePath() + mControlName
+      + QDir::separator();
+  QDir myDirectory = QDir(myControlImageDir);
+  QStringList myList;
+  QString myFilename = "*";
+  myList = myDirectory.entryList(QStringList(myFilename),
+                               QDir::Files | QDir::NoSymLinks);
+  //remove the control file from teh list as the anomalies are
+  //all files except the control file
+  myList.removeAt(myList.indexOf(mExpectedImageFile));
+  //todo compare each hash to diff path
+  QByteArray myData((const char*)theDifferenceImage.bits(),
+                    theDifferenceImage.numBytes());
+  QByteArray mySourceHash = QCryptographicHash::hash(
+        myData, QCryptographicHash::Md5);
+  for (int i = 0; i < myList.size(); ++i)
+  {
+    QString myFile = myList.at(i);
+    mReport += "<tr><td colspan=3>"
+        "Checking if " + myFile + " is a known anomaly.";
+    mReport += "</td></tr>";
+    QImage myAnomalyImage( myFile );
+    QByteArray myData((const char*)myAnomalyImage.bits(),
+                      myAnomalyImage.numBytes());
+    QByteArray myAnomolyHash = QCryptographicHash::hash(
+          myData, QCryptographicHash::Md5);
+    if ( mySourceHash.toHex() == myAnomolyHash.toHex() )
+    {
+      mReport += "<tr><td colspan=3>"
+          "Anomaly found! " + myFile;
+      mReport += "</td></tr>";
+      return true;
+    }
+  }
+  mReport += "<tr><td colspan=3>"
+      "No anomaly found! ";
+  mReport += "</td></tr>";
+  return false;
 }
 
 bool QgsRenderChecker::runTest( QString theTestName,
@@ -214,11 +257,27 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   mReport += "<tr><td colspan=3>" +
              QString::number( mMismatchCount ) + "/" +
              QString::number( mMatchTarget ) +
-             " pixels mismatched";
+             " pixels mismatched (allowed threshold: " +
+             QString::number( theMismatchCount ) + ")";
   mReport += "</td></tr>";
 
+  bool myAnomalyMatchFlag = isKnownAnomaly( myDifferenceImage );
 
-  if ( mMismatchCount <= theMismatchCount )
+  if ( myAnomalyMatchFlag )
+  {
+    mReport += "<tr><td colspan=3>"
+               "Difference image matched a known anomaly - passing test! "
+               "</td></tr>";
+    return true;
+  }
+  else
+  {
+    mReport += "<tr><td colspan=3>"
+               "Difference image did not match any known anomaly."
+               "</td></tr>";
+  }
+
+  if ( mMismatchCount <= theMismatchCount)
   {
     mReport += "<tr><td colspan = 3>\n";
     mReport += "Test image and result image for " + theTestName + " are matched<br>";

@@ -18,7 +18,7 @@
 
 #include <QString>
 #include <qgsmaprenderer.h> 
-
+class QImage;
 
 /** \ingroup UnitTests
  * This is a helper class for unit tests that need to 
@@ -74,7 +74,17 @@ public:
    * @note: make sure to call setExpectedImage and setRenderedImage first.
    */
   bool compareImages( QString theTestName, unsigned int theMismatchCount=0 );
+  /** Get a list of all teh anomalies. An anomaly is a rendered difference
+    * file where there is some red pixel content (indicating a render check
+    * mismatch), but where the output was still acceptible. If the render
+    * diff matches one of these anomalies we will still consider it to be
+    * acceptible.
+    * @return a bool indicating if the diff matched one of the anomaly files
+  */
+  bool isKnownAnomaly( QImage theDifferenceImage );
+
 private:
+
   QString mReport;
   QString mExpectedImageFile;
   QString mControlName;
