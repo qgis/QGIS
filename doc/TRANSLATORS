@@ -43,7 +43,7 @@
 <tr><td><img src="qrc:/images/flags/lt.png"></td><td>Lithuanian</td><td><div class="bartodo"><div class="bardone" style="width:1.4px">1.4</div></div></td><td>Kestas M</tr></tr>
 <tr><td><img src="qrc:/images/flags/he.png"></td><td>Hebrew</td><td><div class="bartodo"><div class="bardone" style="width:0.2px">0.2</div></div></td><td></tr></tr>
 <tr><td><img src="qrc:/images/flags/ca_ES.png"></td><td>Catalan (Spain)</td><td><div class="bartodo"><div class="bardone" style="width:0.2px">0.2</div></div></td><td>Xavi</tr></tr>
-<tr><td><img src="qrc:/images/flags/da.png"></td><td>Danish</td><td><div class="bartodo"><div class="bardone" style="width:0.0px">0.0</div></div></td><td>Henriette Roued</tr></tr>
+<tr><td><img src="qrc:/images/flags/da_DK.png"></td><td>Danish (Denmark)</td><td><div class="bartodo"><div class="bardone" style="width:0.0px">0.0</div></div></td><td>Henriette Roued</tr></tr>
 <tr><td><img src="qrc:/images/flags/no.png"></td><td>Norwegian</td><td><div class="bartodo"><div class="bardone" style="width:0.0px">0.0</div></div></td><td></tr></tr>
 <tr><td><img src="qrc:/images/flags/ta.png"></td><td>Tamil</td><td><div class="bartodo"><div class="bardone" style="width:0.0px">0.0</div></div></td><td></tr></tr>
 <tr><td><img src="qrc:/images/flags/xh.png"></td><td>Xhosa</td><td><div class="bartodo"><div class="bardone" style="width:0.0px">0.0</div></div></td><td></tr></tr></table>
