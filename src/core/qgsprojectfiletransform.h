@@ -31,6 +31,8 @@
 #include <vector>
 #include "qgsprojectversion.h"
 
+class QgsRasterLayer;
+
 class QgsProjectFileTransform
 {
   public:
@@ -84,6 +86,7 @@ class QgsProjectFileTransform
     void transform1800to1900();
 
     //helper functions
+    int rasterBandNumber( const QDomElement& rasterPropertiesElem, const QString bandName, QgsRasterLayer* rlayer );
     void transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem );
     void transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem );
 };

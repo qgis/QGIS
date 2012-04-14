@@ -500,16 +500,7 @@ void QgsProjectFileTransform::transform1800to1900()
     rasterRendererElem.setAttribute( "alphaBand", -1 );
 
     //gray band is used for several renderers
-    int grayBand = -1;
-    QDomElement grayBandNameElem = rasterPropertiesElem.firstChildElement( "mGrayBandName" );
-    if ( !grayBandNameElem.isNull() )
-    {
-      grayBand = rasterLayer.bandNumber( grayBandNameElem.text() );
-      if ( grayBand == 0 )
-      {
-        grayBand = -1;
-      }
-    }
+    int grayBand = rasterBandNumber( rasterPropertiesElem, "mGrayBandName", &rasterLayer );
 
     //convert renderer specific properties
     QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
@@ -599,7 +590,7 @@ void QgsProjectFileTransform::transform1800to1900()
       {
         colorRampEntryElem = colorRampEntryList.at( i ).toElement();
         QDomElement newPaletteElem = mDom.createElement( "paletteEntry" );
-        int value = ( int )( colorRampEntryElem.attribute( "value" ).toDouble() );
+        value = ( int )( colorRampEntryElem.attribute( "value" ).toDouble() );
         newPaletteElem.setAttribute( "value", value );
         red = colorRampEntryElem.attribute( "red" ).toInt();
         green = colorRampEntryElem.attribute( "green" ).toInt();
@@ -608,6 +599,18 @@ void QgsProjectFileTransform::transform1800to1900()
         newColorPaletteElem.appendChild( newPaletteElem );
       }
       rasterRendererElem.appendChild( newColorPaletteElem );
+    }
+    else if ( drawingStyle == "MultiBandColor" )
+    {
+      rasterRendererElem.setAttribute( "type", "multibandcolor" );
+
+      //red band, green band, blue band
+      int redBand = rasterBandNumber( rasterPropertiesElem, "mRedBandName", &rasterLayer );
+      int greenBand = rasterBandNumber( rasterPropertiesElem, "mGreenBandName", &rasterLayer );
+      int blueBand = rasterBandNumber( rasterPropertiesElem, "mBlueBandName", &rasterLayer );
+      rasterRendererElem.setAttribute( "redBand", redBand );
+      rasterRendererElem.setAttribute( "greenBand", greenBand );
+      rasterRendererElem.setAttribute( "blueBand", blueBand );
     }
     else //todo: multiband color
     {
@@ -621,6 +624,27 @@ void QgsProjectFileTransform::transform1800to1900()
     }
   }
   QgsDebugMsg( mDom.toString() );
+}
+
+int QgsProjectFileTransform::rasterBandNumber( const QDomElement& rasterPropertiesElem, const QString bandName,
+    QgsRasterLayer* rlayer )
+{
+  if ( !rlayer )
+  {
+    return -1;
+  }
+
+  int band = -1;
+  QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
+  if ( !rasterBandElem.isNull() )
+  {
+    band = rlayer->bandNumber( rasterBandElem.text() );
+    if ( band == 0 )
+    {
+      band = -1;
+    }
+  }
+  return band;
 }
 
 void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem )
