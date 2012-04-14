@@ -28,9 +28,9 @@ class merge(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         if SextanteUtils.isWindows():
-            commands = ["cmd.exe", "/C ", "merge.bat"]
+            commands = ["cmd.exe", "/C ", "gdal_merge.bat"]
         else:
-            commands = ["merge.py"]
+            commands = ["gdal_merge.py"]
         if self.getParameterValue(merge.SEPARATE):
             commands.append("-separate")
         if self.getParameterValue(merge.PCT):
