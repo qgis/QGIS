@@ -22,6 +22,7 @@
 #include <QTime>
 #include <QCryptographicHash>
 #include <QByteArray>
+#include <QDebug>
 
 QgsRenderChecker::QgsRenderChecker( ) :
     mReport( "" ),
@@ -206,6 +207,18 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                            myResultDiffImage  +
                            "\"></td>\n</tr>\n</table>";
   //
+  // To get the images into CDash
+  //
+  QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image\""
+              " type=\"image/png\">" + mRenderedImageFile +
+              "</DartMeasurementFile>"
+              "<DartMeasurementFile name=\"Expected Image\" type=\"image/png\">" +
+              mExpectedImageFile + "</DartMeasurementFile>"
+              "<DartMeasurementFile name=\"Difference Image\" type=\"image/png\">" +
+              myResultDiffImage + "</DartMeasurementFile>";
+  qDebug( ) << myDashMessage;
+
+  //
   // Put the same info to debug too
   //
 
@@ -260,6 +273,14 @@ bool QgsRenderChecker::compareImages( QString theTestName,
              " pixels mismatched (allowed threshold: " +
              QString::number( theMismatchCount ) + ")";
   mReport += "</td></tr>";
+
+  //
+  // And send it to CDash
+  //
+  std::cout << "<DartMeasurement name=\"Mismatch Count "
+            << "\" type=\"numeric/integer\">";
+  std::cout << mMismatchCount;
+  std::cout << "</DartMeasurement>" << std::endl;
 
   bool myAnomalyMatchFlag = isKnownAnomaly( myDifferenceImage );
 
