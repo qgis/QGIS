@@ -237,8 +237,15 @@ ENDIF(WITH_DESKTOP)
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
+  # Adds some testing specific build targets e.g. make Experimental
+  INCLUDE(Dart)
   # Define "make check" as alias for "make test" - thanks geos :-)
   add_custom_target(check COMMAND ctest --output-on-failure)
+  # Additional test configuration options e.g. max upload size of test report
+  CONFIGURE_FILE(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake"
+    IMMEDIATE @ONLY)
   # For server side testing we have no X, we can use xfvb as a fake x
   # sudo apt-get install xfvb
   add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10,1024x768x24" ctest --output-on-failure)

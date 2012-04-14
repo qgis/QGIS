@@ -1,0 +1,32 @@
+SET (CTEST_SOURCE_DIRECTORY "/home/jmalik/Utils/src/qgis-dev")
+SET (CTEST_BINARY_DIRECTORY "/home/jmalik/Utils/build/qgis-dev-system")
+
+SET( CTEST_CMAKE_GENERATOR  "Unix Makefiles" )
+SET (CTEST_CMAKE_COMMAND "cmake" )
+SET (CTEST_BUILD_COMMAND "/usr/bin/make -j3 -i -k" )
+SET (CTEST_SITE "jmalik.c-s.fr" )
+SET (CTEST_BUILD_NAME "Ubuntu10.10-32bits-Release")
+SET (CTEST_BUILD_CONFIGURATION "Release")
+
+
+SET (INITIAL_CACHE "
+BUILDNAME:STRING=${CTEST_BUILD_NAME}
+SITE:STRING=${CTEST_SITE}
+CTEST_USE_LAUNCHERS:BOOL=ON
+")
+
+SET (CTEST_NOTES_FILES
+${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}
+${CTEST_BINARY_DIRECTORY}/CMakeCache.txt
+)
+
+ctest_empty_binary_directory (${CTEST_BINARY_DIRECTORY})
+ctest_start(Nightly)
+ctest_update(SOURCE "${CTEST_SOURCE_DIRECTORY}")
+file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" ${INITIAL_CACHE})
+ctest_configure (BUILD "${CTEST_BINARY_DIRECTORY}")
+ctest_read_custom_files(${CTEST_BINARY_DIRECTORY})
+ctest_build (BUILD "${CTEST_BINARY_DIRECTORY}")
+ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 3)
+ctest_submit ()
+
