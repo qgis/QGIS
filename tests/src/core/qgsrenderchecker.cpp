@@ -170,7 +170,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
   QString myResultDiffImage = QDir::tempPath() + QDir::separator() +
-      "control_images" + QDir::separator()  +
+      QDir::separator()  +
       theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
