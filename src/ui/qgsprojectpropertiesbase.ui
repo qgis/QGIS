@@ -49,13 +49,13 @@
       <attribute name="title">
        <string>General</string>
       </attribute>
-      <layout class="QGridLayout">
+      <layout class="QGridLayout" name="gridLayout_25">
        <item row="0" column="0">
         <widget class="QGroupBox" name="titleBox">
          <property name="title">
           <string>General settings</string>
          </property>
-         <layout class="QGridLayout">
+         <layout class="QGridLayout" name="gridLayout_26">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
@@ -196,7 +196,7 @@
          <property name="title">
           <string>Layer units (only used when CRS transformation is disabled)</string>
          </property>
-         <layout class="QGridLayout">
+         <layout class="QGridLayout" name="gridLayout_27">
           <item row="0" column="0">
            <widget class="QRadioButton" name="radMeters">
             <property name="text">
@@ -236,7 +236,7 @@
          <property name="title">
           <string>Precision</string>
          </property>
-         <layout class="QGridLayout">
+         <layout class="QGridLayout" name="gridLayout_28">
           <item row="0" column="0">
            <widget class="QRadioButton" name="radAutomatic">
             <property name="toolTip">
@@ -305,7 +305,7 @@
       <attribute name="title">
        <string>Coordinate Reference System (CRS)</string>
       </attribute>
-      <layout class="QGridLayout">
+      <layout class="QGridLayout" name="gridLayout_29">
        <property name="leftMargin">
         <number>3</number>
        </property>
