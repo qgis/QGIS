@@ -378,6 +378,52 @@
         <file>themes/default/mActionAddMssqlLayer.png</file>
         <file>themes/default/mActionTouch.png</file>
         <file>themes/classic/mActionTouch.png</file>
+        <file>flags/af.png</file>
+        <file>flags/ar.png</file>
+        <file>flags/bg.png</file>
+        <file>flags/ca_ES.png</file>
+        <file>flags/cs_CZ.png</file>
+        <file>flags/de.png</file>
+        <file>flags/el_GR.png</file>
+        <file>flags/es.png</file>
+        <file>flags/et.png</file>
+        <file>flags/fa.png</file>
+        <file>flags/fi.png</file>
+        <file>flags/fr.png</file>
+        <file>flags/gl_ES.png</file>
+        <file>flags/he.png</file>
+        <file>flags/hr_HR.png</file>
+        <file>flags/hu.png</file>
+        <file>flags/id.png</file>
+        <file>flags/is.png</file>
+        <file>flags/it.png</file>
+        <file>flags/ja.png</file>
+        <file>flags/ka_GE.png</file>
+        <file>flags/ko_KR.png</file>
+        <file>flags/lo.png</file>
+        <file>flags/lt.png</file>
+        <file>flags/lv.png</file>
+        <file>flags/mn.png</file>
+        <file>flags/nl.png</file>
+        <file>flags/no.png</file>
+        <file>flags/pl_PL.png</file>
+        <file>flags/pt_BR.png</file>
+        <file>flags/pt_PT.png</file>
+        <file>flags/ro.png</file>
+        <file>flags/ru.png</file>
+        <file>flags/sk.png</file>
+        <file>flags/sl_SI.png</file>
+        <file>flags/sq_AL.png</file>
+        <file>flags/sr_CS-Latn.png</file>
+        <file>flags/sv.png</file>
+        <file>flags/ta.png</file>
+        <file>flags/th.png</file>
+        <file>flags/tr.png</file>
+        <file>flags/uk.png</file>
+        <file>flags/vi.png</file>
+        <file>flags/xh.png</file>
+        <file>flags/zh_CN.png</file>
+        <file>flags/zh_TW.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
