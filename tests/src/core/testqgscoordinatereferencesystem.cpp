@@ -24,6 +24,9 @@ Email                : sherman at mrcc dot com
 #include <qgscoordinatereferencesystem.h>
 #include <qgis.h>
 
+#include <proj_api.h>
+#include <gdal.h>
+
 class TestQgsCoordinateReferenceSystem: public QObject
 {
     Q_OBJECT
@@ -296,6 +299,9 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   {
     QgsDebugMsg( "* Units : degrees" );
   }
+
+  QgsDebugMsg( QString( "** GDAL version: %1" ).arg( GDAL_RELEASE_NAME ) );
+  QgsDebugMsg( QString( "** PROJ.4 version: %1" ).arg( PJ_VERSION ) );
 }
 
 QTEST_MAIN( TestQgsCoordinateReferenceSystem )
