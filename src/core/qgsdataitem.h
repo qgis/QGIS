@@ -48,6 +48,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Directory,
       Layer,
       Error,
+      Favourites
     };
 
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
@@ -277,7 +278,7 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsFavouritesItem( QgsDataItem* parent, QString name, QString path );
+    QgsFavouritesItem( QgsDataItem* parent, QString name, QString path = QString() );
     ~QgsFavouritesItem();
 
     QVector<QgsDataItem*> createChildren();
