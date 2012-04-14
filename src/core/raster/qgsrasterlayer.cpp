@@ -1169,6 +1169,13 @@ QString QgsRasterLayer::lastErrorTitle()
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
+  if ( mRenderer )
+  {
+    mRenderer->legendSymbologyItems( symbolList );
+  }
+  return symbolList;
+
+#if 0
   if ( mDrawingStyle == SingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == MultiBandSingleBandGray )
   {
     //add min/max from contrast enhancement
@@ -1244,6 +1251,7 @@ QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
     }
   }
   return symbolList;
+#endif //0
 }
 
 /**

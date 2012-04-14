@@ -179,3 +179,15 @@ void QgsSingleBandPseudoColorRenderer::writeXML( QDomDocument& doc, QDomElement&
   }
   parentElem.appendChild( rasterRendererElem );
 }
+
+void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const
+{
+  if ( mShader )
+  {
+    QgsRasterShaderFunction* shaderFunction = mShader->rasterShaderFunction();
+    if ( shaderFunction )
+    {
+      shaderFunction->legendSymbologyItems( symbolItems );
+    }
+  }
+}

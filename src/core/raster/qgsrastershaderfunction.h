@@ -24,6 +24,9 @@ email                : ersts@amnh.org
  * typically used to render grayscale images as false color.
  */
 
+#include <QColor>
+#include <QPair>
+
 class CORE_EXPORT QgsRasterShaderFunction
 {
 
@@ -47,6 +50,8 @@ class CORE_EXPORT QgsRasterShaderFunction
 
     double minimumValue() const { return mMinimumValue; }
     double maximumValue() const { return mMaximumValue; }
+
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
   protected:
     /** \brief User defineable maximum value for the shading function */

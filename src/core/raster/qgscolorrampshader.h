@@ -91,6 +91,8 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /** \brief Generates and new RGB value based on original RGB value */
     bool shade( double, double, double, int*, int*, int* );
 
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+
   private:
     /** Current index from which to start searching the color table*/
     int mCurrentColorRampItemIndex;

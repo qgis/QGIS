@@ -19,6 +19,7 @@
 #define QGSRASTERRENDERER_H
 
 #include "qgsrasterdataprovider.h"
+#include <QPair>
 
 class QPainter;
 class QgsMapToPixel;
@@ -75,6 +76,9 @@ class QgsRasterRenderer
 
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
     double maxOversampling() const { return mMaxOversampling; }
+
+    /**Get symbology items if provided by renderer*/
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
     virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const = 0;
 
