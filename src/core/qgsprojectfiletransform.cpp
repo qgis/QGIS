@@ -530,9 +530,29 @@ void QgsProjectFileTransform::transform1800to1900()
 
       //switch depending on mColorShadingAlgorithm
       QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( "mColorShadingAlgorithm" ).text();
-      if ( colorShadingAlgorithm == "PseudoColorShader" )
+      if ( colorShadingAlgorithm == "PseudoColorShader" || colorShadingAlgorithm == "FreakOutShader" )
       {
+        newColorRampShaderElem.setAttribute( "colorRampType", "INTERPOLATED" );
 
+        //get minmax from rasterlayer
+        QgsRasterBandStats rasterBandStats = rasterLayer.bandStatistics( grayBand );
+        double minValue = rasterBandStats.minimumValue;
+        double maxValue = rasterBandStats.maximumValue;
+        double breakSize = ( maxValue - minValue ) / 3;
+
+        QStringList colorList;
+        colorList << "#0000ff" << "#00ffff" << "#ffff00" << "#ff0000";
+        QStringList::const_iterator colorIt = colorList.constBegin();
+        double boundValue = minValue;
+        for ( ; colorIt != colorList.constEnd(); ++colorIt )
+        {
+          QDomElement newItemElem = mDom.createElement( "item" );
+          newItemElem.setAttribute( "value", QString::number( boundValue ) );
+          newItemElem.setAttribute( "label", QString::number( boundValue ) );
+          newItemElem.setAttribute( "color", *colorIt );
+          newColorRampShaderElem.appendChild( newItemElem );
+          boundValue += breakSize;
+        }
       }
       else if ( colorShadingAlgorithm == "ColorRampShader" )
       {
