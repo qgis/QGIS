@@ -222,6 +222,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     /** Indicates whether running from build directory (not installed)
        @note added in 2.0 */
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
+#ifdef _MSC_VER
+    static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
+#endif
     /** Returns path to the source directory. Valid only when running from build directory
         @note added in 2.0 */
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
@@ -277,6 +280,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     static bool ABISYM( mRunningFromBuildDir );
     /** path to the source directory. valid only when running from build directory. */
     static QString ABISYM( mBuildSourcePath );
+#ifdef _MSC_VER
+    /** configuration internal dir */
+    static QString ABISYM( mCfgIntDir );
+#endif
     /** path to the output directory of the build. valid only when running from build directory */
     static QString ABISYM( mBuildOutputPath );
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
