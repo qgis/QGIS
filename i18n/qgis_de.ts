@@ -1321,13 +1321,15 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erweiterungs-Fehler</translation>
     </message>
     <message>
         <source>Unable to load %1 plugin. 
 The required &quot;%2&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Erweiterung %1 nicht lade.
+Benötigtes Modul %2 fehlt.
+Installieren und erneut versuchen.</translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
@@ -7670,7 +7672,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="159"/>
         <source>Creation error for features from #%1 to #%2. Provider errors was: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekterzeugungsfehler von #%1 bis #%2. Fehler des Datenlieferanten war: %3</translation>
     </message>
     <message>
         <source>Creation error for features from #%1 to #%2</source>
@@ -7688,6 +7690,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2947"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3271"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="136"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5027"/>
         <source>Connection to database failed</source>
@@ -7704,6 +7707,14 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3088"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Laden des Layers %1 gescheitert</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3286"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3314"/>
+        <source>Unable to delete layer %1: 
+%2</source>
+        <translation>Konnte Ebene %1 nicht löschen: 
+%2</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1628"/>
@@ -8431,6 +8442,11 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <translation>Einzufügende Rasterlayer wählen...</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="2602"/>
+        <source>Cannot get MSSQL select dialog from provider.</source>
+        <translation>Konnte den MSSQL-Auswahldialog nicht vom Datenlieferanten holen.</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="2873"/>
         <location filename="../src/app/qgisapp.cpp" line="3016"/>
         <location filename="../src/app/qgisapp.cpp" line="3068"/>
@@ -8568,9 +8584,8 @@ Diese Fehler immer ignorieren?</translation>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2602"/>
         <source>Cannot get MS SQL select dialog from provider.</source>
-        <translation>Konnte den MSSQL-Auswahldialog nicht vom Datenlieferanten holen.</translation>
+        <translation type="obsolete">Konnte den MSSQL-Auswahldialog nicht vom Datenlieferanten holen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2626"/>
@@ -8953,7 +8968,7 @@ Fehler: %2
     <message>
         <location filename="../src/ui/qgsabout.ui" line="218"/>
         <source>about:blank</source>
-        <translation type="unfinished">about:blank</translation>
+        <translation>about:blank</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="227"/>
@@ -23285,34 +23300,34 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlConnectionItem</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="299"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="304"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="303"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="308"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="343"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="348"/>
         <source>%1: Not a vector layer!</source>
         <translation>%1: Kein Vektorlayer!</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="359"/>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="368"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="364"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="373"/>
         <source>%1: OK!</source>
         <translation>%1: OK!</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="379"/>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="383"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="384"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="388"/>
         <source>Import to MSSQL database</source>
         <translation>In MSSQL-Datenbank importieren</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="379"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="384"/>
         <source>Failed to import some layers!
 
 </source>
@@ -23321,7 +23336,7 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="383"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="388"/>
         <source>Import was successful.</source>
         <translation>Import war erfolgreich.</translation>
     </message>
@@ -23384,8 +23399,12 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlNewConnectionBase</name>
     <message>
-        <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
         <source>Create a New MS SQL connection</source>
+        <translation type="obsolete">Neue MSSQL-Verbindung erstellen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
+        <source>Create a New MSSQL connection</source>
         <translation>Neue MSSQL-Verbindung erstellen</translation>
     </message>
     <message>
@@ -23540,7 +23559,7 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlRootItem</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="540"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="545"/>
         <source>New Connection...</source>
         <translation>Neue Verbindung...</translation>
     </message>
@@ -23548,12 +23567,12 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlSchemaItem</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="467"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="472"/>
         <source>%1 as %2 in %3</source>
         <translation>%1 als %2 in %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="494"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="499"/>
         <source>as geometryless table</source>
         <translation>als geometrielose Tabelle</translation>
     </message>
@@ -23561,8 +23580,12 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlSourceSelect</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="128"/>
         <source>Add MS SQL Table(s)</source>
+        <translation type="obsolete">MSSQL-Tabelle(n) hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="128"/>
+        <source>Add MSSQL Table(s)</source>
         <translation>MSSQL-Tabelle(n) hinzufügen</translation>
     </message>
     <message>
@@ -25028,28 +25051,28 @@ Primärschlüssel erzeugen</translation>
         <location filename="../src/app/qgsoptions.cpp" line="348"/>
         <location filename="../src/app/qgsoptions.cpp" line="745"/>
         <source>No Stretch</source>
-        <translation type="unfinished">Kein Strecken</translation>
+        <translation>Kein Strecken</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="341"/>
         <location filename="../src/app/qgsoptions.cpp" line="352"/>
         <location filename="../src/app/qgsoptions.cpp" line="749"/>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished">Strecke auf MinMax</translation>
+        <translation>Strecken auf MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="342"/>
         <location filename="../src/app/qgsoptions.cpp" line="356"/>
         <location filename="../src/app/qgsoptions.cpp" line="753"/>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished">Strecken und Zuschneiden auf MinMax</translation>
+        <translation>Strecken und Zuschneiden auf MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="343"/>
         <location filename="../src/app/qgsoptions.cpp" line="360"/>
         <location filename="../src/app/qgsoptions.cpp" line="757"/>
         <source>Clip To MinMax</source>
-        <translation type="unfinished">Zuschneiden auf MinMax</translation>
+        <translation>Zuschneiden auf MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="425"/>
@@ -25538,37 +25561,37 @@ Primärschlüssel erzeugen</translation>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="882"/>
         <source>Rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="888"/>
         <source>RGB band selection</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB Kanalauswahl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="895"/>
         <source>Red band</source>
-        <translation type="unfinished">Roter Kanal</translation>
+        <translation>Roter Kanal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="905"/>
         <source>Green band</source>
-        <translation type="unfinished">Grüner Kanal</translation>
+        <translation>Grüner Kanal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="915"/>
         <source>Blue band</source>
-        <translation type="unfinished">Blauer Kanal</translation>
+        <translation>Blauer Kanal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="925"/>
         <source>Use standard deviation</source>
-        <translation type="unfinished">Standardabweichung verwenden</translation>
+        <translation>Standardabweichung verwenden</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="932"/>
         <source>Contrast enhancement</source>
-        <translation type="unfinished">Kontrastverbesserung</translation>
+        <translation>Kontrastverbesserung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1123"/>
@@ -25943,44 +25966,44 @@ Primärschlüssel erzeugen</translation>
 <context>
     <name>QgsPGConnectionItem</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="38"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="40"/>
         <source>Failed to retrieve layers</source>
         <translation>Konnte Layer nicht bestimmen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="44"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="46"/>
         <source>No layers found.</source>
         <translation>Keine Layer gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="134"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="136"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="138"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="140"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="179"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="181"/>
         <source>%1: Not a vector layer!</source>
         <translation>%1: Kein Vektorlayer!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="195"/>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="197"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="206"/>
         <source>%1: OK!</source>
         <translation>%1: OK!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="215"/>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="219"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="217"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="221"/>
         <source>Import to PostGIS database</source>
         <translation>In PostGIS-Datenbank importieren</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="215"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="217"/>
         <source>Failed to import some layers!
 
 </source>
@@ -25989,15 +26012,30 @@ Primärschlüssel erzeugen</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="219"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="221"/>
         <source>Import was successful.</source>
         <translation>Import war erfolgreich.</translation>
     </message>
 </context>
 <context>
+    <name>QgsPGLayerItem</name>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="246"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="259"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="263"/>
+        <source>Delete layer</source>
+        <translation>Layer löschen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="263"/>
+        <source>Layer deleted successfully.</source>
+        <translation>Layer erfolgreich gelöscht.</translation>
+    </message>
+</context>
+<context>
     <name>QgsPGRootItem</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="347"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="375"/>
         <source>New Connection...</source>
         <translation>Neue Verbindung...</translation>
     </message>
@@ -26005,12 +26043,12 @@ Primärschlüssel erzeugen</translation>
 <context>
     <name>QgsPGSchemaItem</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="281"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="309"/>
         <source>%1 as %2 in %3</source>
         <translation>%1 als %2 in %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="308"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="336"/>
         <source>as geometryless table</source>
         <translation>als geometrielose Tabelle</translation>
     </message>
@@ -27972,13 +28010,13 @@ Datenbankfehler: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1144"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Feld %1 ignoriert, weil von nicht unterstütztem Typ %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
-        <translation>Feld %1 ignoriert, weil von nicht unterstütztem Typtyp %2</translation>
+        <translation type="obsolete">Feld %1 ignoriert, weil von nicht unterstütztem Typtyp %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1169"/>

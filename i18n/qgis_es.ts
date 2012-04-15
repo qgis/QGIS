@@ -7290,6 +7290,11 @@ Error(%2): %3</translation>
 %3</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unable to delete layer %1: 
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -10011,7 +10016,11 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Cannot get MS SQL select dialog from provider.</source>
-        <translation>No se puede obtener el diálogo de selección de MS SQL del proveedor.</translation>
+        <translation type="obsolete">No se puede obtener el diálogo de selección de MS SQL del proveedor.</translation>
+    </message>
+    <message>
+        <source>Cannot get MSSQL select dialog from provider.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22608,7 +22617,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <name>QgsMssqlNewConnectionBase</name>
     <message>
         <source>Create a New MS SQL connection</source>
-        <translation>Crear una nueva conexión MS SQL</translation>
+        <translation type="obsolete">Crear una nueva conexión MS SQL</translation>
     </message>
     <message>
         <source>Connection Information</source>
@@ -22669,6 +22678,10 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Use estimated table parameters</source>
         <translation>Utilizar parámetros de tabla estimados</translation>
+    </message>
+    <message>
+        <source>Create a New MSSQL connection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22752,7 +22765,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <name>QgsMssqlSourceSelect</name>
     <message>
         <source>Add MS SQL Table(s)</source>
-        <translation>Añadir tabla(s) MS SQL</translation>
+        <translation type="obsolete">Añadir tabla(s) MS SQL</translation>
     </message>
     <message>
         <source>&amp;Add</source>
@@ -22841,6 +22854,10 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Connect</source>
         <translation>Conectar</translation>
+    </message>
+    <message>
+        <source>Add MSSQL Table(s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24896,6 +24913,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Import was successful.</source>
         <translation>La importación tuvo éxito.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPGLayerItem</name>
+    <message>
+        <source>Delete layer</source>
+        <translation type="unfinished">Borrar capa</translation>
+    </message>
+    <message>
+        <source>Layer deleted successfully.</source>
+        <translation type="unfinished">Capa borrada con éxito</translation>
     </message>
 </context>
 <context>
@@ -26973,7 +27001,7 @@ Error de la base de datos: %2</translation>
     </message>
     <message>
         <source>Field %1 ignored, because of unsupported type type %2</source>
-        <translation>Campo %1 ignorado porque es del tipo %2 no soportado</translation>
+        <translation type="obsolete">Campo %1 ignorado porque es del tipo %2 no soportado</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>

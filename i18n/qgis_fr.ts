@@ -8590,6 +8590,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2947"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3271"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="136"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5027"/>
         <source>Connection to database failed</source>
@@ -8606,6 +8607,13 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3088"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Échec du chargement de la couche %1</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3286"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3314"/>
+        <source>Unable to delete layer %1: 
+%2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1628"/>
@@ -9064,6 +9072,11 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
         <location filename="../src/app/qgisapp.cpp" line="6709"/>
         <source>Invalid Data Source</source>
         <translation>Source de données non valide</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2602"/>
+        <source>Cannot get MSSQL select dialog from provider.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2626"/>
@@ -9724,11 +9737,6 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
         <location filename="../src/app/qgisapp.cpp" line="2602"/>
         <source>MSSQL</source>
         <translation type="unfinished">MSSQL</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2602"/>
-        <source>Cannot get MS SQL select dialog from provider.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2655"/>
@@ -27183,34 +27191,34 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlConnectionItem</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="299"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="304"/>
         <source>Edit...</source>
         <translation type="unfinished">Editer...</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="303"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="308"/>
         <source>Delete</source>
         <translation type="unfinished">Effacer</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="343"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="348"/>
         <source>%1: Not a vector layer!</source>
         <translation type="unfinished">%1 : N&apos;est pas une couche vecteur !</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="359"/>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="368"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="364"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="373"/>
         <source>%1: OK!</source>
         <translation type="unfinished">%1: OK!</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="379"/>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="383"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="384"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="388"/>
         <source>Import to MSSQL database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="379"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="384"/>
         <source>Failed to import some layers!
 
 </source>
@@ -27218,7 +27226,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="383"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="388"/>
         <source>Import was successful.</source>
         <translation type="unfinished">Importation réussie.</translation>
     </message>
@@ -27278,7 +27286,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <name>QgsMssqlNewConnectionBase</name>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
-        <source>Create a New MS SQL connection</source>
+        <source>Create a New MSSQL connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -27433,7 +27441,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlRootItem</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="540"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="545"/>
         <source>New Connection...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27441,12 +27449,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 <context>
     <name>QgsMssqlSchemaItem</name>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="467"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="472"/>
         <source>%1 as %2 in %3</source>
         <translation type="unfinished">%1 comme %2 dans %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="494"/>
+        <location filename="../src/providers/mssql/qgsmssqldataitems.cpp" line="499"/>
         <source>as geometryless table</source>
         <translation type="unfinished">en tant que table sans géométrie</translation>
     </message>
@@ -27455,7 +27463,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <name>QgsMssqlSourceSelect</name>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="128"/>
-        <source>Add MS SQL Table(s)</source>
+        <source>Add MSSQL Table(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -30118,44 +30126,44 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPGConnectionItem</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="38"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="40"/>
         <source>Failed to retrieve layers</source>
         <translation>Impossible de retrouver les couches</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="44"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="46"/>
         <source>No layers found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="134"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="136"/>
         <source>Edit...</source>
         <translation>Editer...</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="138"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="140"/>
         <source>Delete</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="179"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="181"/>
         <source>%1: Not a vector layer!</source>
         <translation type="unfinished">%1 : N&apos;est pas une couche vecteur !</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="195"/>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="204"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="197"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="206"/>
         <source>%1: OK!</source>
         <translation type="unfinished">%1: OK!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="215"/>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="219"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="217"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="221"/>
         <source>Import to PostGIS database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="215"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="217"/>
         <source>Failed to import some layers!
 
 </source>
@@ -30163,9 +30171,24 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="219"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="221"/>
         <source>Import was successful.</source>
         <translation type="unfinished">Importation réussie.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPGLayerItem</name>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="246"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="259"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="263"/>
+        <source>Delete layer</source>
+        <translation type="unfinished">Supprimer la couche</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="263"/>
+        <source>Layer deleted successfully.</source>
+        <translation type="unfinished">Couche supprimée.</translation>
     </message>
 </context>
 <context>
@@ -30175,7 +30198,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nouveau...</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="347"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="375"/>
         <source>New Connection...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -30183,12 +30206,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPGSchemaItem</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="281"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="309"/>
         <source>%1 as %2 in %3</source>
         <translation>%1 comme %2 dans %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="308"/>
+        <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="336"/>
         <source>as geometryless table</source>
         <translation>en tant que table sans géométrie</translation>
     </message>
@@ -32515,12 +32538,8 @@ Database error: %2</source>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1144"/>
-        <source>Field %1 ignored, because of unsupported type %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
-        <source>Field %1 ignored, because of unsupported type type %2</source>
+        <source>Field %1 ignored, because of unsupported type %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

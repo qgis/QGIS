@@ -6959,6 +6959,11 @@ Error(%2): %3</source>
 %3</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unable to delete layer %1: 
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -9188,11 +9193,11 @@ QWT Version: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot get MS SQL select dialog from provider.</source>
+        <source>QGis files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGis files</source>
+        <source>Cannot get MSSQL select dialog from provider.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21702,10 +21707,6 @@ eigenschappen
 <context>
     <name>QgsMssqlNewConnectionBase</name>
     <message>
-        <source>Create a New MS SQL connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Connection Information</source>
         <translation type="unfinished">Verbindingsinformatie</translation>
     </message>
@@ -21763,6 +21764,10 @@ eigenschappen
     </message>
     <message>
         <source>Use estimated table parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a New MSSQL connection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21845,10 +21850,6 @@ eigenschappen
 </context>
 <context>
     <name>QgsMssqlSourceSelect</name>
-    <message>
-        <source>Add MS SQL Table(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>&amp;Add</source>
         <translation type="unfinished">&amp;Toevoegen</translation>
@@ -21936,6 +21937,10 @@ eigenschappen
     <message>
         <source>Connect</source>
         <translation type="unfinished">Verbinden</translation>
+    </message>
+    <message>
+        <source>Add MSSQL Table(s)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23993,6 +23998,17 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPGLayerItem</name>
+    <message>
+        <source>Delete layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer deleted successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPGRootItem</name>
     <message>
         <source>New Connection...</source>
@@ -26022,10 +26038,6 @@ Database error: %2</source>
     </message>
     <message>
         <source>Field %1 ignored, because of unsupported type %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Field %1 ignored, because of unsupported type type %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
