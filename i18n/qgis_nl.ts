@@ -1559,6 +1559,16 @@ De plugin wordt niet geactiveerd.</translation>
         <source>Fill raster regions by interpolation from edges</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Plugin error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to load %1 plugin. 
+The required &quot;%2&quot; module is missing. 
+Install it and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsAboutDialog</name>
@@ -5590,7 +5600,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source> km2</source>
-        <translation>km2</translation>
+        <translation type="obsolete">km2</translation>
     </message>
     <message>
         <source>Label</source>
@@ -5610,7 +5620,7 @@ gebruikt u het  qgis.utils.iface object (een instantie van QgisInterface class).
     </message>
     <message>
         <source> m2</source>
-        <translation>m2</translation>
+        <translation type="obsolete">m2</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -6787,10 +6797,6 @@ Error(%2): %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Creation error for features from #%1 to #%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Vector import</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6934,6 +6940,23 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>MSSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source> m²</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source> km²</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> acres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation error for features from #%1 to #%2. Provider errors was: 
+%3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9281,7 +9304,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation>&lt;p&gt;De volgende mensen hebben bijgedragen aan QGIS door vertaling van interface of documentatie&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;De volgende mensen hebben bijgedragen aan QGIS door vertaling van interface of documentatie&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
@@ -9293,11 +9316,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Language</source>
-        <translation>Taal</translation>
+        <translation type="obsolete">Taal</translation>
     </message>
     <message>
         <source>Names</source>
-        <translation>Namen</translation>
+        <translation type="obsolete">Namen</translation>
     </message>
     <message>
         <source>Qt Image Plugin Search Paths &lt;br&gt;</source>
@@ -9306,6 +9329,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Translators</source>
         <translation>Vertalers</translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished">about:blank</translation>
     </message>
 </context>
 <context>
@@ -23214,6 +23241,22 @@ p, li { white-space: pre-wrap; }
         <source>Bevel</source>
         <translation type="unfinished">Hoekig</translation>
     </message>
+    <message>
+        <source>No Stretch</source>
+        <translation type="unfinished">Geen &apos;Strech&apos;</translation>
+    </message>
+    <message>
+        <source>Stretch To MinMax</source>
+        <translation type="unfinished">&apos;Stretch&apos; tot MinMax</translation>
+    </message>
+    <message>
+        <source>Stretch And Clip To MinMax</source>
+        <translation type="unfinished">&apos;Stretch&apos; en &apos;Clip&apos; tot MinMax</translation>
+    </message>
+    <message>
+        <source>Clip To MinMax</source>
+        <translation type="unfinished">Clip naar MinMax</translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -23828,6 +23871,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Miter limit for curve offset</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasters</source>
+        <translation type="unfinished">Rasters</translation>
+    </message>
+    <message>
+        <source>RGB band selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Red band</source>
+        <translation type="unfinished">Rode band</translation>
+    </message>
+    <message>
+        <source>Green band</source>
+        <translation type="unfinished">Groene band</translation>
+    </message>
+    <message>
+        <source>Blue band</source>
+        <translation type="unfinished">Blauwe band</translation>
+    </message>
+    <message>
+        <source>Use standard deviation</source>
+        <translation type="unfinished">Gebruik standaard afwijking</translation>
+    </message>
+    <message>
+        <source>Contrast enhancement</source>
+        <translation type="unfinished">Contrastverhoging</translation>
     </message>
 </context>
 <context>
@@ -26356,6 +26427,14 @@ Doorgaan?</translation>
         <source>Published</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Maximum width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum height</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -27647,7 +27726,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Sla huidige RGB-compositie op als standaard. Deze instelling wordt gedeeldt tussen verschillende QGIS-sessies.</translation>
+        <translation type="obsolete">Sla huidige RGB-compositie op als standaard. Deze instelling wordt gedeeldt tussen verschillende QGIS-sessies.</translation>
     </message>
     <message>
         <source>Custom min / max values</source>
@@ -27679,7 +27758,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Sla het huidige standaard afwijking op als standaard. Deze instelling geld dan voor alle QGIS-sessies.</translation>
+        <translation type="obsolete">Sla het huidige standaard afwijking op als standaard. Deze instelling geld dan voor alle QGIS-sessies.</translation>
     </message>
     <message>
         <source>Single band properties</source>
@@ -27727,11 +27806,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Sla het huidige algorithme voor contrastverhoging op als standaard. Deze instelling geld dan voor alle QGIS-sessies.</translation>
+        <translation type="obsolete">Sla het huidige algorithme voor contrastverhoging op als standaard. Deze instelling geld dan voor alle QGIS-sessies.</translation>
     </message>
     <message>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Slaat het huidige algorithme voor contrastverhoging op als standaard. Deze instelling geld dan voor alle QGIS-sessies.</translation>
+        <translation type="obsolete">Slaat het huidige algorithme voor contrastverhoging op als standaard. Deze instelling geld dan voor alle QGIS-sessies.</translation>
     </message>
     <message>
         <source>Default</source>
@@ -27953,6 +28032,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;

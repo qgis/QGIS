@@ -1519,6 +1519,16 @@ Spraudnis netiks ieslēgts.</translation>
         <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Plugin error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to load %1 plugin. 
+The required &quot;%2&quot; module is missing. 
+Install it and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsAboutDialog</name>
@@ -5386,7 +5396,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source> km2</source>
-        <translation> km2</translation>
+        <translation type="obsolete"> km2</translation>
     </message>
     <message>
         <source> ha</source>
@@ -5394,7 +5404,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source> m2</source>
-        <translation> m2</translation>
+        <translation type="obsolete"> m2</translation>
     </message>
     <message>
         <source> m</source>
@@ -6686,10 +6696,6 @@ Error(%2): %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Creation error for features from #%1 to #%2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Vector import</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6867,6 +6873,23 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>MSSQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source> m²</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source> km²</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> acres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation error for features from #%1 to #%2. Provider errors was: 
+%3</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8856,15 +8879,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Sekojošas personas ir palīdzējušas QGIS veicot tā grafiskās saskarnes vai dokumentācijas tulkošanu&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Sekojošas personas ir palīdzējušas QGIS veicot tā grafiskās saskarnes vai dokumentācijas tulkošanu&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation>Valoda</translation>
+        <translation type="obsolete">Valoda</translation>
     </message>
     <message>
         <source>Names</source>
-        <translation>Vārdi</translation>
+        <translation type="obsolete">Vārdi</translation>
     </message>
     <message>
         <source>Translators</source>
@@ -8877,6 +8900,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;p&gt;For a list of individuals and institutions who have contributed money to fund QGIS development and other project costs see &lt;a href=&quot;http://qgis.org/en/sponsorship/donors.html&quot;&gt;http://qgis.org/en/sponsorship/donors.html&lt;/a&gt;&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished">about:blank</translation>
     </message>
 </context>
 <context>
@@ -22886,6 +22913,22 @@ p, li { white-space: pre-wrap; }
         <source>Bevel</source>
         <translation type="unfinished">Slīpums</translation>
     </message>
+    <message>
+        <source>No Stretch</source>
+        <translation type="unfinished">Neizstiept</translation>
+    </message>
+    <message>
+        <source>Stretch To MinMax</source>
+        <translation type="unfinished">Izstiept līdz MinMaks</translation>
+    </message>
+    <message>
+        <source>Stretch And Clip To MinMax</source>
+        <translation type="unfinished">Izstiept un apcirst līdz MinMaks</translation>
+    </message>
+    <message>
+        <source>Clip To MinMax</source>
+        <translation type="unfinished">Apcirst līdz MinMaks</translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -23500,6 +23543,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Miter limit for curve offset</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB band selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Red band</source>
+        <translation type="unfinished">Sarkanais kanāls</translation>
+    </message>
+    <message>
+        <source>Green band</source>
+        <translation type="unfinished">Zaļais kanāls</translation>
+    </message>
+    <message>
+        <source>Blue band</source>
+        <translation type="unfinished">Zilais kanāls</translation>
+    </message>
+    <message>
+        <source>Use standard deviation</source>
+        <translation type="unfinished">lietot standarta novirzi</translation>
+    </message>
+    <message>
+        <source>Contrast enhancement</source>
+        <translation type="unfinished">Kontrasta uzlabošana</translation>
     </message>
 </context>
 <context>
@@ -25906,6 +25977,14 @@ Proceed?</source>
         <source>Published</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Maximum width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum height</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProjectionSelector</name>
@@ -27111,10 +27190,6 @@ p, li { white-space: pre-wrap; }
         <translation>Zilais kanāls</translation>
     </message>
     <message>
-        <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Custom min / max values</source>
         <translation>Pielāgotas min / maks vērtības</translation>
     </message>
@@ -27141,10 +27216,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Blue max</source>
         <translation>Zilais max</translation>
-    </message>
-    <message>
-        <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Single band properties</source>
@@ -27196,11 +27267,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Saglabāt pašreizējo kontrasta uzlabošanas algoritmu kā noklusējumu. Šis parametrs tiks saglabāts starp QGIS darba sesijām.</translation>
+        <translation type="obsolete">Saglabāt pašreizējo kontrasta uzlabošanas algoritmu kā noklusējumu. Šis parametrs tiks saglabāts starp QGIS darba sesijām.</translation>
     </message>
     <message>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Saglabā pašreizējo kontrasta uzlabošanas algoritmu kā noklusējumu. Šis parametrs tiek saglabāts starp QGIS darba sesijām.</translation>
+        <translation type="obsolete">Saglabā pašreizējo kontrasta uzlabošanas algoritmu kā noklusējumu. Šis parametrs tiek saglabāts starp QGIS darba sesijām.</translation>
     </message>
     <message>
         <source>Default</source>
@@ -27482,6 +27553,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
