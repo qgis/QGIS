@@ -110,7 +110,7 @@ class CORE_EXPORT QgsGeometry
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
     */
-    unsigned char * asWkb();
+    unsigned char *asWkb( QGis::GeometryType requestedType = QGis::UnknownGeometry );
 
     /**
        Returns the size of the WKB in asWkb().
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsGeometry
 
     /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
         @note this method was added in version 1.1*/
-    GEOSGeometry* asGeos();
+    GEOSGeometry *asGeos();
 
     /** Returns type of wkb (point / linestring / polygon etc.) */
     QGis::WkbType wkbType();
@@ -477,7 +477,7 @@ class CORE_EXPORT QgsGeometry
     /** Converts from the GEOS geometry to the WKB geometry.
         @return   true in case of success and false else
      */
-    bool exportGeosToWkb();
+    bool exportGeosToWkb( QGis::GeometryType type = QGis::UnknownGeometry );
 
     /** Insert a new vertex before the given vertex index (first number is index 0)
      *  in the given GEOS Coordinate Sequence.

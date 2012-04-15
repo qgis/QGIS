@@ -152,7 +152,10 @@ const  QString GEOWKT =
  * @note deprecated in 1.8 due to violation of coding conventions (globals
  *  should be in all caps).
 */
-Q_DECL_DEPRECATED const QString GEOWkt = GEOWKT;
+#ifndef _MSC_VER
+Q_DECL_DEPRECATED
+#endif
+const QString GEOWkt = GEOWKT;
 /** PROJ4 string that represents a geographic coord sys */
 const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 /** Magic number for a geographic coord sys in POSTGIS SRID */
