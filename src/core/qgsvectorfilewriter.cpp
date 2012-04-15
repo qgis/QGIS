@@ -501,7 +501,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
         return false;
       }
 
-      OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb( QGis::Polygon ), geom->wkbSize() );
+      OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
       if ( err != OGRERR_NONE )
       {
         QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );

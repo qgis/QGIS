@@ -578,12 +578,12 @@ void QgsGeometry::fromWkb( unsigned char * wkb, size_t length )
   mDirtyGeos  = true;
 }
 
-unsigned char * QgsGeometry::asWkb( QGis::GeometryType requestedType )
+unsigned char * QgsGeometry::asWkb()
 {
-  if ( mDirtyWkb || (requestedType!=QGis::UnknownGeometry && requestedType!=type()) )
+  if ( mDirtyWkb )
   {
     // convert from GEOS
-    exportGeosToWkb( requestedType );
+    exportGeosToWkb();
   }
 
   return mGeometry;
@@ -4725,7 +4725,7 @@ bool QgsGeometry::exportWkbToGeos()
   return true;
 }
 
-bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
+bool QgsGeometry::exportGeosToWkb()
 {
   //QgsDebugMsg("entered.");
   if ( !mDirtyWkb )
@@ -4751,27 +4751,7 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
   // set up byteOrder
   char byteOrder = QgsApplication::endian();
 
-  int type = GEOSGeomTypeId( mGeos );
-
-  if( type == GEOS_GEOMETRYCOLLECTION )
-  {
-    switch( geomType )
-    {
-    case QGis::Point:
-      type = GEOS_MULTIPOINT;
-      break;
-    case QGis::Line:
-      type = GEOS_MULTILINESTRING;
-      break;
-    case QGis::Polygon:
-      type = GEOS_MULTIPOLYGON;
-      break;
-    default:
-      break;
-    }
-  }
-
-  switch ( type )
+  switch ( GEOSGeomTypeId( mGeos ) )
   {
     case GEOS_POINT:                 // a point
     {
@@ -4943,23 +4923,11 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
 
     case GEOS_MULTIPOINT:            // a collection of points
     {
-      QList<const GEOSGeometry *> points;
-
       // determine size of geometry
       int geometrySize = 1 + 2 * sizeof( int );
       for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
-        const GEOSGeometry *point = GEOSGetGeometryN( mGeos, i );
-        if( GEOSGeomTypeId( point ) != GEOS_POINT )
-	  continue;
-        points << point;
         geometrySize += 1 + sizeof( int ) + 2 * sizeof( double );
-      }
-
-      if ( points.size() == 0 )
-      {
-        QgsMessageLog::logMessage( "Empty multipolygon skipped." );
-	return false;
       }
 
       mGeometry = new unsigned char[geometrySize];
@@ -4971,13 +4939,14 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
       int wkbtype = QGis::WKBMultiPoint;
       memcpy( &mGeometry[wkbPosition], &wkbtype, sizeof( int ) );
       wkbPosition += sizeof( int );
-      int numPoints = points.size();
+      int numPoints = GEOSGetNumGeometries( mGeos );
       memcpy( &mGeometry[wkbPosition], &numPoints, sizeof( int ) );
       wkbPosition += sizeof( int );
 
       int pointType = QGis::WKBPoint;
+      const GEOSGeometry *currentPoint = 0;
 
-      foreach( const GEOSGeometry *point, points )
+      for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
         //copy endian and point type
         memcpy( &mGeometry[wkbPosition], &byteOrder, 1 );
@@ -4985,7 +4954,9 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
         memcpy( &mGeometry[wkbPosition], &pointType, sizeof( int ) );
         wkbPosition += sizeof( int );
 
-        const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( point );
+        currentPoint = GEOSGetGeometryN( mGeos, i );
+
+        const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( currentPoint );
 
         GEOSCoordSeq_getX( cs, 0, ( double* )&mGeometry[wkbPosition] );
         wkbPosition += sizeof( double );
@@ -4998,25 +4969,12 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
 
     case GEOS_MULTILINESTRING:       // a collection of linestrings
     {
-      QList<const GEOSGeometry *> linestrings;
-
       // determine size of geometry
       int geometrySize = 1 + 2 * sizeof( int );
       for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
-        const GEOSGeometry *linestring = GEOSGetGeometryN( mGeos, i );
-	if( GEOSGeomTypeId( linestring ) != GEOS_LINESTRING )
-          continue;
-
-	linestrings << linestring;
         geometrySize += 1 + 2 * sizeof( int );
-        geometrySize += getNumGeosPoints( linestring ) * 2 * sizeof( double );
-      }
-
-      if ( linestrings.size() == 0 )
-      {
-        QgsMessageLog::logMessage( "Empty multilinestring skipped." );
-	return false;
+        geometrySize += getNumGeosPoints( GEOSGetGeometryN( mGeos, i ) ) * 2 * sizeof( double );
       }
 
       mGeometry = new unsigned char[geometrySize];
@@ -5028,7 +4986,7 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
       int wkbtype = QGis::WKBMultiLineString;
       memcpy( &mGeometry[wkbPosition], &wkbtype, sizeof( int ) );
       wkbPosition += sizeof( int );
-      int numLines = linestrings.size();
+      int numLines = GEOSGetNumGeometries( mGeos );
       memcpy( &mGeometry[wkbPosition], &numLines, sizeof( int ) );
       wkbPosition += sizeof( int );
 
@@ -5037,7 +4995,7 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
       const GEOSCoordSequence *cs = 0;
       unsigned int lineSize;
 
-      foreach( const GEOSGeometry *linestring, linestrings )
+      for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
         //endian and type WKBLineString
         memcpy( &mGeometry[wkbPosition], &byteOrder, 1 );
@@ -5045,7 +5003,7 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
         memcpy( &mGeometry[wkbPosition], &lineType, sizeof( int ) );
         wkbPosition += sizeof( int );
 
-        cs = GEOSGeom_getCoordSeq( linestring );
+        cs = GEOSGeom_getCoordSeq( GEOSGetGeometryN( mGeos, i ) );
 
         //line size
         GEOSCoordSeq_getSize( cs, &lineSize );
@@ -5067,36 +5025,24 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
 
     case GEOS_MULTIPOLYGON:          // a collection of polygons
     {
-      QList<const GEOSGeometry *> polygons;
-
       //first determine size of geometry
       int geometrySize = 1 + ( 2 * sizeof( int ) ); //endian, type, number of polygons
       for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
-        const GEOSGeometry *poly = GEOSGetGeometryN( mGeos, i );
-	if( GEOSGeomTypeId( poly ) != GEOS_POLYGON )
-	   continue;
-
-        polygons << poly;
+        const GEOSGeometry *thePoly = GEOSGetGeometryN( mGeos, i );
         geometrySize += 1 + 2 * sizeof( int ); //endian, type, number of rings
         //exterior ring
         geometrySize += sizeof( int ); //number of points in exterior ring
-        const GEOSGeometry *exRing = GEOSGetExteriorRing( poly );
+        const GEOSGeometry *exRing = GEOSGetExteriorRing( thePoly );
         geometrySize += 2 * sizeof( double ) * getNumGeosPoints( exRing );
 
         const GEOSGeometry *intRing = 0;
-        for ( int j = 0; j < GEOSGetNumInteriorRings( poly ); j++ )
+        for ( int j = 0; j < GEOSGetNumInteriorRings( thePoly ); j++ )
         {
           geometrySize += sizeof( int ); //number of points in ring
-          intRing = GEOSGetInteriorRingN( poly, j );
+          intRing = GEOSGetInteriorRingN( thePoly, j );
           geometrySize += 2 * sizeof( double ) * getNumGeosPoints( intRing );
         }
-      }
-
-      if ( polygons.size() == 0 )
-      {
-        QgsMessageLog::logMessage( "Empty multipolyon skipped." );
-	return false;
       }
 
       mGeometry = new unsigned char[geometrySize];
@@ -5108,24 +5054,25 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
       int wkbtype = QGis::WKBMultiPolygon;
       memcpy( &mGeometry[wkbPosition], &wkbtype, sizeof( int ) );
       wkbPosition += sizeof( int );
-      int numPolygons = polygons.size();
+      int numPolygons = GEOSGetNumGeometries( mGeos );
       memcpy( &mGeometry[wkbPosition], &numPolygons, sizeof( int ) );
       wkbPosition += sizeof( int );
 
       //loop over polygons
-      foreach ( const GEOSGeometry *poly, polygons )
+      for ( int i = 0; i < GEOSGetNumGeometries( mGeos ); i++ )
       {
+        const GEOSGeometry *thePoly = GEOSGetGeometryN( mGeos, i );
         memcpy( &mGeometry[wkbPosition], &byteOrder, 1 );
         wkbPosition += 1;
         int polygonType = QGis::WKBPolygon;
         memcpy( &mGeometry[wkbPosition], &polygonType, sizeof( int ) );
         wkbPosition += sizeof( int );
-        int numRings = GEOSGetNumInteriorRings( poly ) + 1;
+        int numRings = GEOSGetNumInteriorRings( thePoly ) + 1;
         memcpy( &mGeometry[wkbPosition], &numRings, sizeof( int ) );
         wkbPosition += sizeof( int );
 
         //exterior ring
-        const GEOSGeometry *theRing = GEOSGetExteriorRing( poly );
+        const GEOSGeometry *theRing = GEOSGetExteriorRing( thePoly );
         int nPointsInRing = getNumGeosPoints( theRing );
         memcpy( &mGeometry[wkbPosition], &nPointsInRing, sizeof( int ) );
         wkbPosition += sizeof( int );
@@ -5140,9 +5087,9 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
         }
 
         //interior rings
-        for ( int j = 0; j < GEOSGetNumInteriorRings( poly ); j++ )
+        for ( int j = 0; j < GEOSGetNumInteriorRings( thePoly ); j++ )
         {
-          theRing = GEOSGetInteriorRingN( poly, j );
+          theRing = GEOSGetInteriorRingN( thePoly, j );
           nPointsInRing = getNumGeosPoints( theRing );
           memcpy( &mGeometry[wkbPosition], &nPointsInRing, sizeof( int ) );
           wkbPosition += sizeof( int );
@@ -5163,7 +5110,8 @@ bool QgsGeometry::exportGeosToWkb( QGis::GeometryType geomType )
 
     case GEOS_GEOMETRYCOLLECTION:    // a collection of heterogeneus geometries
     {
-      QgsMessageLog::logMessage( "Geometry collection skipped." );
+      // TODO
+      QgsDebugMsg( "geometry collection - not supported" );
       break;
     } // case GEOS_GEOM::GEOS_GEOMETRYCOLLECTION
 

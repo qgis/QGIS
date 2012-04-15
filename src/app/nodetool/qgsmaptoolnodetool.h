@@ -52,6 +52,11 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     //! called when map tool is being deactivated
     void deactivate();
 
+    /**
+     * Returns closest vertex to given point from selected feature
+     */
+    QgsPoint closestVertex( QgsPoint point );
+
   public slots:
     void selectedFeatureDestroyed();
 
@@ -127,7 +132,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QgsFeatureId mAnother;
 
     /** stored position of last press down action to count how much vertexes should be moved */
-    QgsPoint mLastCoordinates;
+    QgsPoint* mLastCoordinates;
 
     /** closest vertex to click */
     QgsPoint mClosestVertex;
