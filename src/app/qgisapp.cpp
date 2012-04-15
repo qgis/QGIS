@@ -636,20 +636,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QgsDebugMsg( "Tips are disabled" );
   }
 
+#ifdef HAVE_TOUCH
+  //add reacting to long click in android
+  grabGesture( Qt::TapAndHoldGesture );
+#else
+  //remove mActionTouch button before populuating the shortcuts
+  delete mActionTouch;
+  mActionTouch = 0;
+#endif
+
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildrenActions( this );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
-
-#ifdef HAVE_TOUCH
-  //add reacting to long click in android
-  grabGesture( Qt::TapAndHoldGesture );
-#else
-  //remove mActionTouch button
-  delete mActionTouch;
-  mActionTouch = 0;
-#endif
 
   // update windows
   qApp->processEvents();
