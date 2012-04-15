@@ -69,6 +69,7 @@ bool QgsRenderChecker::isKnownAnomaly( QImage theDifferenceImage )
                     theDifferenceImage.numBytes());
   QByteArray mySourceHash = QCryptographicHash::hash(
         myData, QCryptographicHash::Md5);
+
   for (int i = 0; i < myList.size(); ++i)
   {
     QString myFile = myList.at(i);
@@ -80,6 +81,14 @@ bool QgsRenderChecker::isKnownAnomaly( QImage theDifferenceImage )
                       myAnomalyImage.numBytes());
     QByteArray myAnomolyHash = QCryptographicHash::hash(
           myData, QCryptographicHash::Md5);
+    QString myHashMessage = QString("Source image hash %1 : Anomaly hash: %2").arg(
+          QString(mySourceHash.toHex())).arg(QString(myAnomolyHash.toHex()));
+    //fro CDash
+    QString myMeasureMessage = "<DartMeasurement name=\"Anomoly check"
+              "\" type=\"text/text\">" +  myHashMessage +
+              "</DartMeasurement>";
+    qDebug() << myMeasureMessage;
+    mReport += "<tr><td colspan=3>" + myHashMessage + "</td></tr>";
     if ( mySourceHash.toHex() == myAnomolyHash.toHex() )
     {
       mReport += "<tr><td colspan=3>"
