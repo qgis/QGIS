@@ -8708,7 +8708,8 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3314"/>
         <source>Unable to delete layer %1: 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile cancellare layer %1: 
+%2</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1628"/>
@@ -10732,7 +10733,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2602"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile ottenere pannello selezione MSSQL dalla sorgente dati.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3066"/>
@@ -27386,7 +27387,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
         <source>Create a New MSSQL connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea una nuova connessione MSSQL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="38"/>
@@ -27568,7 +27569,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="128"/>
         <source>Add MSSQL Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi tabella(e) MSSQL</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="135"/>
@@ -30252,12 +30253,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="259"/>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="263"/>
         <source>Delete layer</source>
-        <translation type="unfinished">Cancella layer</translation>
+        <translation>Cancella layer</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="263"/>
         <source>Layer deleted successfully.</source>
-        <translation type="unfinished">Layer cancellato con successo.</translation>
+        <translation>Layer cancellato con successo.</translation>
     </message>
 </context>
 <context>
