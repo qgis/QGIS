@@ -215,7 +215,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
-  bool overwrite = options->take( "overwrite" ).toBool();
+  bool overwrite = false;
+  if ( options )
+  {
+    overwrite = options->take( "overwrite" ).toBool();
+  }
 
   QgsVectorLayerImport * writer =
     new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, overwrite, options );
