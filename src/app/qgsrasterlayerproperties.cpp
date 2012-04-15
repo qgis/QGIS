@@ -186,6 +186,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   cboGray->addItem( TRSTRING_NOT_SET );
   cboxTransparencyBand->addItem( TRSTRING_NOT_SET );
 
+  cboxInvertColorMap->setChecked( mRasterLayer->invertHistogram() );
+
   QIcon myPyramidPixmap( QgisApp::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgisApp::getThemeIcon( "/mIconNoPyramid.png" ) );
 
