@@ -67,6 +67,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mProjectSrsId = myRenderer->destinationCrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
+  projectionSelector->setEnabled( myProjectionEnabled );
 
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
@@ -545,6 +546,7 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {
   btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
+  projectionSelector->setEnabled( state == Qt::Checked );
 
   if ( state != Qt::Checked )
   {
