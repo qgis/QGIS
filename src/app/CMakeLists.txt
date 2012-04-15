@@ -186,6 +186,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
   qgslabelpropertydialog.h
+  qgsshortcutsmanager.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h

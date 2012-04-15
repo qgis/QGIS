@@ -17,22 +17,23 @@
 
 #include <QSettings>
 
-QgsShortcutsManager::QgsShortcutsManager()
+QgsShortcutsManager::QgsShortcutsManager( QObject *parent ) : QObject( parent )
 {
 }
 
 QgsShortcutsManager* QgsShortcutsManager::mInstance = NULL;
 
-QgsShortcutsManager* QgsShortcutsManager::instance()
+QgsShortcutsManager* QgsShortcutsManager::instance( QObject *parent )
 {
   if ( !mInstance )
-    mInstance = new QgsShortcutsManager;
+    mInstance = new QgsShortcutsManager( parent );
   return mInstance;
 }
 
 bool QgsShortcutsManager::registerAction( QAction* action, QString defaultShortcut )
 {
   mActions.insert( action, defaultShortcut );
+  connect( action, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
 
   QString actionText = action->text();
   actionText.remove( '&' ); // remove the accelerator
@@ -114,4 +115,9 @@ void QgsShortcutsManager::registerAllChildrenActions( QObject* object )
       registerAction( a, a->shortcut() );
     }
   }
+}
+
+void QgsShortcutsManager::actionDestroyed()
+{
+  mActions.remove( static_cast<QAction*>( sender() ) );
 }

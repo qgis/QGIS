@@ -640,7 +640,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   //add reacting to long click in android
   grabGesture( Qt::TapAndHoldGesture );
 #else
-  //remove mActionTouch button before populuating the shortcuts
+  //remove mActionTouch button
   delete mActionTouch;
   mActionTouch = 0;
 #endif
