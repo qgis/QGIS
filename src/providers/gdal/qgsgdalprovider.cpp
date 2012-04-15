@@ -1866,7 +1866,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   QgsRasterBandStats myRasterBandStats;
-  int bApproxOK = false;
+  int bApproxOK = true;
   double pdfMin;
   double pdfMax;
   double pdfMean;

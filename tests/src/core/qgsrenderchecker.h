@@ -49,6 +49,9 @@ public:
     * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
     */
   void setControlName(const QString theName);
+  /** Get an md5 hash that uniquely identifies an image */
+  QString imageToHash( QString theImageFile );
+
   void setRenderedImage (QString theImageFileName) { mRenderedImageFile = theImageFileName; };
   void setMapRenderer ( QgsMapRenderer *  thepMapRenderer) { mpMapRenderer = thepMapRenderer; };
   /**
@@ -81,7 +84,7 @@ public:
     * acceptible.
     * @return a bool indicating if the diff matched one of the anomaly files
   */
-  bool isKnownAnomaly( QImage theDifferenceImage );
+  bool isKnownAnomaly( QString theDiffImageFile );
 
 private:
 
