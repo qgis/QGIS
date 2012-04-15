@@ -824,6 +824,8 @@ void QgisApp::createActions()
   connect( mActionCutFeatures, SIGNAL( triggered() ), this, SLOT( editCut() ) );
   connect( mActionCopyFeatures, SIGNAL( triggered() ), this, SLOT( editCopy() ) );
   connect( mActionPasteFeatures, SIGNAL( triggered() ), this, SLOT( editPaste() ) );
+  connect( mActionCopyStyle, SIGNAL( triggered() ), this, SLOT( copyStyle() ) );
+  connect( mActionPasteStyle, SIGNAL( triggered() ), this, SLOT( pasteStyle() ) );
   connect( mActionAddFeature, SIGNAL( triggered() ), this, SLOT( addFeature() ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
@@ -4294,7 +4296,6 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   }
 }
 
-
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -4373,6 +4374,76 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 }
 
+void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
+{
+  QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer();
+  if ( selectionLayer )
+  {
+    QDomImplementation DomImplementation;
+    QDomDocumentType documentType =
+      DomImplementation.createDocumentType(
+					   "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+    QDomDocument doc( documentType );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+    doc.appendChild( rootNode );
+    QString errorMsg;
+    if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
+    {
+      QMessageBox::warning( this,
+			    tr( "Error" ),
+			    tr( "Cannot copy style: %1" )
+			    .arg( errorMsg ),
+			    QMessageBox::Ok );
+      return;
+    }
+    QClipboard* clipboard = QApplication::clipboard();
+    QMimeData *mimeData = new QMimeData();
+    mimeData->setData( "application/qgis.style", doc.toByteArray() );
+    // transfers the ownership to the clipboard object
+    clipboard->setMimeData( mimeData );
+  }
+}
+
+void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
+{
+  QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
+  if ( selectionLayer )
+  {
+    QClipboard* clipboard = QApplication::clipboard();
+
+    const QMimeData* mimeData = clipboard->mimeData();
+    if ( mimeData->hasFormat( "application/qgis.style" ) )
+    {
+      QDomDocument doc( "qgis" );
+      QString errorMsg;
+      int errorLine, errorColumn;
+      if ( !doc.setContent ( mimeData->data( "application/qgis.style" ), false, &errorMsg, &errorLine, &errorColumn ) )
+      {
+	QMessageBox::information( this,
+				  tr( "Error" ),
+				  tr( "Cannot parse style: %1:%2:%3" )
+				  .arg( errorMsg )
+				  .arg( errorLine )
+				  .arg( errorColumn ),
+				  QMessageBox::Ok );
+	return;
+      }
+      QDomElement rootNode = doc.firstChildElement( "qgis" );
+      if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
+      {
+	QMessageBox::information( this,
+				  tr( "Error" ),
+				  tr( "Cannot read style: %1" )
+				  .arg( errorMsg ),
+				  QMessageBox::Ok );
+	return;
+      }
+
+      mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );
+    }
+  }
+}
 
 void QgisApp::pasteTransformations()
 {
@@ -6296,6 +6367,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
+    mActionCopyStyle->setEnabled( false );
+    mActionPasteStyle->setEnabled( false );
 
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
@@ -6325,6 +6398,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionLayerProperties->setEnabled( true );
   mActionAddToOverview->setEnabled( true );
   mActionZoomToLayer->setEnabled( true );
+
+  mActionCopyStyle->setEnabled( true );
+  mActionPasteStyle->setEnabled( QApplication::clipboard()->mimeData()->hasFormat( "application/qgis.style" ) );
 
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
