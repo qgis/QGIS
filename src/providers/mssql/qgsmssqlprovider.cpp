@@ -49,7 +49,7 @@
 #include "qgsmssqldataitems.h"
 
 static const QString TEXT_PROVIDER_KEY = "mssql";
-static const QString TEXT_PROVIDER_DESCRIPTION = "MS SQL spatial data provider";
+static const QString TEXT_PROVIDER_DESCRIPTION = "MSSQL spatial data provider";
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -423,7 +423,7 @@ QVariant QgsMssqlProvider::defaultValue( int fieldId )
 
 QString QgsMssqlProvider::storageType() const
 {
-  return "MS SQL spatial database";
+  return "MSSQL spatial database";
 }
 
 bool QgsMssqlProvider::featureAtId( QgsFeatureId featureId,

@@ -1160,7 +1160,7 @@ bool QgsPostgresProvider::loadFields()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
       continue;
     }
 

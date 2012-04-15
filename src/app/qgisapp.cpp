@@ -2595,11 +2595,11 @@ void QgisApp::addMssqlLayer()
     return;
   }
 
-  // show the MS SQL dialog
+  // show the MSSQL dialog
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "mssql" ), this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MS SQL select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MSSQL select dialog from provider." ) );
     return;
   }
   connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
