@@ -59,7 +59,15 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
-  TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
+  TARGET_LINK_LIBRARIES(qgis_${testname}
+    ${QT_QTXML_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTSVG_LIBRARY}
+    ${QT_QTTEST_LIBRARY}
+    ${PROJ_LIBRARY}
+    ${GEOS_LIBRARY}
+    ${GDAL_LIBRARY}
+    qgis_core)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
