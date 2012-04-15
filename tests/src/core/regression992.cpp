@@ -74,6 +74,11 @@ void Regression992::initTestCase()
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
+  if ( ! mpRasterLayer->isValid() )
+  {
+    QSKIP( "This test requires the JPEG2000 GDAL driver", SkipAll );
+  }
+
   // Register the layer with the registry
   QList<QgsMapLayer *> myList;
   myList << mpRasterLayer;
@@ -103,7 +108,6 @@ void Regression992::cleanupTestCase()
 
 void Regression992::regression992()
 {
-  QVERIFY( mpRasterLayer->isValid() );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_rgbwcmyk01_YeGeo.jp2" );
