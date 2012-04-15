@@ -2934,9 +2934,9 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   }
   schemaTableName += quotedIdentifier( tableName );
 
-  QgsDebugMsg( QString( "Connection info is " ).arg( dsUri.connectionInfo() ) );
-  QgsDebugMsg( QString( "Geometry column is: " ).arg( geometryColumn ) );
-  QgsDebugMsg( QString( "Schema is: " ).arg( schemaName ) );
+  QgsDebugMsg( QString( "Connection info is: %1" ).arg( dsUri.connectionInfo() ) );
+  QgsDebugMsg( QString( "Geometry column is: %1" ).arg( geometryColumn ) );
+  QgsDebugMsg( QString( "Schema is: %1" ).arg( schemaName ) );
   QgsDebugMsg( QString( "Table name is: %1" ).arg( tableName ) );
 
   // create the table
@@ -3247,4 +3247,77 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
            oldToNewAttrIdxMap, errorMessage, options
          );
+}
+
+QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
+{
+  QgsDebugMsg( "deleting layer " + uri );
+
+  QgsDataSourceURI dsUri( uri );
+  QString schemaName = dsUri.schema();
+  QString tableName = dsUri.table();
+  QString geometryCol = dsUri.geometryColumn();
+
+  QString schemaTableName;
+  if ( !schemaName.isEmpty() )
+  {
+    schemaTableName = QgsPostgresConn::quotedIdentifier( schemaName ) + ".";
+  }
+  schemaTableName += QgsPostgresConn::quotedIdentifier( tableName );
+
+  QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+
+  // check the geometry column count
+  QString sql = QString( "SELECT count(*) "
+                         "FROM geometry_columns, pg_class, pg_namespace "
+                         "WHERE f_table_name=relname AND f_table_schema=nspname "
+                         "AND pg_class.relnamespace=pg_namespace.oid "
+                         "AND f_table_schema=%1 AND f_table_name=%2" )
+                .arg( QgsPostgresConn::quotedValue( schemaName ) )
+                .arg( QgsPostgresConn::quotedValue( tableName ) );
+  QgsPostgresResult result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK  )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
+               .arg( schemaTableName )
+               .arg( result.PQresultErrorMessage() );
+    conn->disconnect();
+    return false;
+  }
+
+  int count = result.PQgetvalue( 0, 0 ).toInt();
+
+  if ( !geometryCol.isEmpty() && count > 1 )
+  {
+    // the table has more geometry columns, drop just the geometry column
+    sql = QString( "SELECT DropGeometryColumn(%1,%2,%3)" )
+          .arg( QgsPostgresConn::quotedValue( schemaName ) )
+          .arg( QgsPostgresConn::quotedValue( tableName ) )
+          .arg( QgsPostgresConn::quotedValue( geometryCol ) );
+  }
+  else
+  {
+    // drop the table
+    sql = QString( "SELECT DropGeometryTable(%1,%2)" )
+          .arg( QgsPostgresConn::quotedValue( schemaName ) )
+          .arg( QgsPostgresConn::quotedValue( tableName ) );
+  }
+
+  result = conn->PQexec( sql );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
+               .arg( schemaTableName )
+               .arg( result.PQresultErrorMessage() );
+    conn->disconnect();
+    return false;
+  }
+
+  conn->disconnect();
+  return true;
 }
