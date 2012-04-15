@@ -8,6 +8,8 @@
 
 #include <QMessageBox>
 
+QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
+
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
@@ -235,6 +237,32 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
 
 QgsPGLayerItem::~QgsPGLayerItem()
 {
+}
+
+QList<QAction*> QgsPGLayerItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
+  lst.append( actionDeleteLayer );
+
+  return lst;
+}
+
+void QgsPGLayerItem::deleteLayer()
+{
+  QString errCause;
+  bool res = ::deleteLayer( mUri, errCause );
+  if ( !res )
+  {
+    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+  }
+  else
+  {
+    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    mParent->refresh();
+  }
 }
 
 QString QgsPGLayerItem::createUri()

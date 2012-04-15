@@ -83,6 +83,11 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QString createUri();
 
+    virtual QList<QAction*> actions();
+
+  public slots:
+    void deleteLayer();
+
   private:
     QgsPostgresLayerProperty mLayerProperty;
 };
