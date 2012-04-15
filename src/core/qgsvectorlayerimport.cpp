@@ -153,9 +153,14 @@ bool QgsVectorLayerImport::flushBuffer()
 
   if ( !mProvider->addFeatures( mFeatureBuffer ) )
   {
-    mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2" )
+    QStringList errors = mProvider->errors();
+    mProvider->clearErrors();
+
+    mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2. Provider errors was: \n%3" )
                     .arg( mFeatureBuffer.first().id() )
-                    .arg( mFeatureBuffer.last().id() );
+                    .arg( mFeatureBuffer.last().id() )
+                    .arg( errors.join( "\n" ) );
+
     mError = ErrFeatureWriteFailed;
     mErrorCount += mFeatureBuffer.count();
 
@@ -210,8 +215,10 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
 
+  bool overwrite = options->take( "overwrite" ).toBool();
+
   QgsVectorLayerImport * writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, false, options );
+    new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, overwrite, options );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
