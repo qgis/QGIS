@@ -1,4 +1,4 @@
-Help I think I found a bug!
+﻿Help I think I found a bug!
 ---------------------------
 
 If you find a bug in QGIS, you can report it using the QGIS ticket/bug database at:
@@ -9,9 +9,9 @@ http://hub.qgis.org/projects/quantum-gis/issues/new
 Some hints about when you should file a bug:
 
 
- - just because a bug is filed doesnt always mean we can or will fix it.
-   Sometimes people ask for things that will require many man hours to to and
-   offer little reward to work ratio benifit when compared to the other issues
+ - just because a bug is filed doesn't always mean we can or will fix it.
+   Sometimes people ask for things that will require many man hours to do and
+   offer little reward to work ratio benefit when compared to the other issues
    in the queue. Also some things are simply not fixable due to whatever
    technical reason.
  - sometimes we don't fix a bug because the user's vision of how QGIS should

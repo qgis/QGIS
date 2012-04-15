@@ -202,7 +202,7 @@ void QgsAbout::setWhatsNew( )
   QString myStyle = QgsApplication::reportStyleSheet();
   txtWhatsNew->clear();
   txtWhatsNew->document()->setDefaultStyleSheet( myStyle );
-  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/changelog.html" );
+  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/news.html" );
 }
 
 void QgsAbout::setPluginInfo()
