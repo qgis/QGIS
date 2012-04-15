@@ -25,23 +25,40 @@ from qgis.core import *
 # Initialize Qt resources from file resources_rc.py
 import resources_rc
 
-# Import required modules and if missing show the right module's name
-req_mods = { "osgeo": "osgeo [python-gdal]" }
+# are all dependecies satisfied?
+valid = True
 
+# Import required modules
+req_mods = { "osgeo": "osgeo [python-gdal]" }
 try:
   from osgeo import gdal
   from osgeo import ogr
 except ImportError, e:
-  error_str = e.args[0]
-  error_mod = error_str.replace( "No module named ", "" )
-  if req_mods.has_key( error_mod ):
-    error_str = error_str.replace( error_mod, req_mods[error_mod] )
-  raise ImportError( error_str )
+  valid = False
+
+  # if the plugin is shipped with QGis catch the exception and 
+  # display an error message
+  import os.path
+  qgisUserPluginPath = os.path.abspath( os.path.join( str( QgsApplication.qgisSettingsDirPath() ), "python") )
+  if not os.path.dirname(__file__).startswith( qgisUserPluginPath ):
+    title = QCoreApplication.translate( "GdalTools", "Plugin error" )
+    message = QCoreApplication.translate( "GdalTools", u'Unable to load %1 plugin. \nThe required "%2" module is missing. \nInstall it and try again.' )
+    import qgis.utils
+    QMessageBox.warning( qgis.utils.iface.mainWindow(), title, message.arg( "GdalTools" ).arg( req_mods["osgeo"] ) )
+  else:
+    # if a module is missing show a more friendly module's name
+    error_str = e.args[0]
+    error_mod = error_str.replace( "No module named ", "" )
+    if req_mods.has_key( error_mod ):
+      error_str = error_str.replace( error_mod, req_mods[error_mod] )
+    raise ImportError( error_str )
 
 
 class GdalTools:
 
   def __init__( self, iface ):
+    if not valid: return
+
     # Save reference to the QGIS interface
     self.iface = iface
     try:
@@ -72,6 +89,7 @@ class GdalTools:
         QCoreApplication.installTranslator( self.translator )
 
   def initGui( self ):
+    if not valid: return
     if int( self.QgisVersion ) < 1:
       QMessageBox.warning( self.iface.getMainWindow(), "Gdal Tools",
       QCoreApplication.translate( "GdalTools", "Quantum GIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
@@ -258,6 +276,7 @@ class GdalTools:
     menu_bar.insertMenu( lastAction, self.menu )
 
   def unload( self ):
+    if not valid: return
     pass
 
   def doBuildVRT( self ):
