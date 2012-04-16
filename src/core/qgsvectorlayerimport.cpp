@@ -268,6 +268,15 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   // write all features
   while ( layer->nextFeature( fet ) )
   {
+    if ( writer->errorCount() > 1000 )
+    {
+      if ( errorMessage )
+      {
+        *errorMessage += "\n" + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
+      }
+      break;
+    }
+
     if ( onlySelected && !ids.contains( fet.id() ) )
       continue;
 
@@ -304,17 +313,6 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       {
         *errorMessage += "\n" + writer->errorMessage();
       }
-
-      if ( writer->errorCount() > 1000 )
-      {
-        if ( errorMessage )
-        {
-          *errorMessage += "\n" + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
-        }
-
-        n = -1;
-        break;
-      }
     }
     n++;
   }
@@ -338,7 +336,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
   if ( errorMessage )
   {
-    if ( n > 0 && errors > 0 )
+    if ( errors > 0 )
     {
       *errorMessage += "\n" + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
     }
