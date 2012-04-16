@@ -33,6 +33,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsclipboard.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -702,7 +703,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   {
     QgisApp* app = QgisApp::instance();
     theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
-    if ( QApplication::clipboard()->mimeData()->hasFormat( "application/qgis.style" ) )
+    if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
     {
       theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
     }

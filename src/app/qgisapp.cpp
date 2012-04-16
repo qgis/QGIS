@@ -4400,11 +4400,10 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
 			    QMessageBox::Ok );
       return;
     }
-    QClipboard* clipboard = QApplication::clipboard();
-    QMimeData *mimeData = new QMimeData();
-    mimeData->setData( "application/qgis.style", doc.toByteArray() );
-    // transfers the ownership to the clipboard object
-    clipboard->setMimeData( mimeData );
+    // Copies data in text form as well, so the XML can be pasted into a text editor
+    clipboard()->setData( QGSCLIPBOARD_STYLE_MIME, doc.toByteArray(), doc.toString() );
+    // Enables the paste menu element
+    mActionPasteStyle->setEnabled( true );
   }
 }
 
@@ -4413,15 +4412,12 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
   if ( selectionLayer )
   {
-    QClipboard* clipboard = QApplication::clipboard();
-
-    const QMimeData* mimeData = clipboard->mimeData();
-    if ( mimeData->hasFormat( "application/qgis.style" ) )
+    if ( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
     {
       QDomDocument doc( "qgis" );
       QString errorMsg;
       int errorLine, errorColumn;
-      if ( !doc.setContent ( mimeData->data( "application/qgis.style" ), false, &errorMsg, &errorLine, &errorColumn ) )
+      if ( !doc.setContent ( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
       {
 	QMessageBox::information( this,
 				  tr( "Error" ),
@@ -6403,7 +6399,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionZoomToLayer->setEnabled( true );
 
   mActionCopyStyle->setEnabled( true );
-  mActionPasteStyle->setEnabled( QApplication::clipboard()->mimeData()->hasFormat( "application/qgis.style" ) );
+  mActionPasteStyle->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) );
 
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
