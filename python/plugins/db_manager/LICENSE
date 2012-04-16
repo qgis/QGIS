@@ -1,0 +1,17 @@
+DB Manager * Copyright (c) 2011 Giuseppe Sucameli
+
+Licensed under the terms of GNU GPL v2 (or any layer)
+http://www.gnu.org/copyleft/gpl.html
+
+
+Code:
+- some code is derived from PG_Manager by Martin Dobias (GPLv2 license)
+- highlighter is based on "Python Syntax Highlighting Example" by Carson J. Q. Farmer (GPLv2 license)
+- autocompletion based on "QTextEdit with autocompletion using pyqt" by rowinggolfer (GPLv2 license)
+
+Icons:
+- toolbar icons are derived from gis-0.1 iconset by Robert Szczepanek (Creative Commons Attribution-Share Alike 3.0 Unported license)
+- refresh toolbar icon is from Tango project (public domain)
+- table, view and namespace icons in database view are from pgAdmin3 (BSD license)
+- other icons are from QGIS project (GPLv2 license)
+- plugin icon by Sandro Santilli, using qgis icon and database icon by Dracos - http://commons.wikimedia.org/wiki/File:Applications-database.svg (Creative Commons Attribution-Share Alike 3.0 Unported license)

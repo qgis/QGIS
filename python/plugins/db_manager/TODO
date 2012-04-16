@@ -1,0 +1,35 @@
+DB Manager TODO and DONE list.
+
+
+DONE:
+* run only the selected part of a query (v0.1.20)
+* add versioning support to PostgreSQL dbs (v0.1.19)
+* completer for sql keywords/functions (v0.1.18)
+* highlights PG and SL functions, fix slow connection to PG db (v0.1.17)
+* add contestual menu to db tree, use service param when available to connect to PG dbs (v0.1.16)
+* close transactions before doing changes to tables (v0.1.15)
+* improve error handling running a query in sql window (v0.1.14)
+* fix error dialog (v0.1.13)
+* improve error handling, add Re-connect button (v0.1.12)
+* add "Run Vacuum" and "Move to schema" to menu (v0.1.11)
+* fix encoding support and import layer on Win (v0.1.10)
+* allow to copy contents from views (v0.1.9)
+* GUI to import data by drag'n'drop (v0.1.8)
+* edit table (v0.1.8)
+* create table (v0.1.7)
+* display schemas and tables comments (v0.1.6)
+* SQL syntax highlighting (v0.1.5)
+* load a query as layer into canvas (v0.1.4)
+* import/export OGR layers and non-spatial data using Import Vector Layer feature (v.0.1.0)
+
+
+TODO:
+- PGManager
+    * GUI to import/export data (from shapefiles)
+- RT_Sql_Layer
+    * query builder
+    * query manager
+- QSpatialite
+    * GUI to import QGis layer
+- SPIT
+    * mass import of shapefiles
