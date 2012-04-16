@@ -230,7 +230,7 @@ class GrassUtils:
             os.putenv("GRASS_BATCH_JOB", GrassUtils.grassBatchJobFilename())
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-            command = ["grass64", GrassUtils.grassMapsetFolder()]
+            command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
         loglines = []
         loglines.append("GRASS execution console output")
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
