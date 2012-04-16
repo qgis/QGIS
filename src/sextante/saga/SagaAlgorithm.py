@@ -236,7 +236,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 if SextanteUtils.isWindows():
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
                 else:
-                    commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE " + filename + "\"");
+                    commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
 
         #4 Run SAGA
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)

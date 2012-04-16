@@ -1,9 +1,0 @@
-Pythagoras' Tree
-recreations_fractals
-ParameterSelection|TYPE|Shape Type|[0] Lines;[1] Polygons
-ParameterNumber|ANGLE|Angle [Degree]|None|None|0
-ParameterNumber|MINSIZE|Minimum Size [%]|None|None|0
-ParameterSelection|METHOD|Method|[0] Fixed angle;[1] Constant variation range;[2] Low variation for low sizes;[3] High variation for low sizes
-ParameterRange|VARRANGE_MIN|Constant Variation Range [Degree]
-ParameterRange|VARRANGE_MAX|Constant Variation Range [Degree]
-OutputVector|RESULT|Pythagoras' Tree

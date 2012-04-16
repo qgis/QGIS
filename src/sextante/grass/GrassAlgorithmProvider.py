@@ -48,12 +48,11 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         folder = GrassUtils.grassDescriptionPath()
         for descriptionFile in os.listdir(folder):
             try:
-                if descriptionFile.startswith("alg_"):
-                    alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != "":
-                        self.preloadedAlgs.append(alg)
-                    else:
-                        SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
+                alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
+                if alg.name.strip() != "":
+                    self.preloadedAlgs.append(alg)
+                else:
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
 
@@ -67,10 +66,10 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
     def createDescriptionFiles(self):
-        folder = GrassUtils.grassDescriptionPath()
+        folder = "C:\\descs\\grass"
         i = 0
-        for alg in self.algs:
-            f = open (os.path.join(folder, "alg_" + str(i)+".txt"), "w")
+        for alg in self.preloadedAlgs:
+            f = open (os.path.join(folder, alg.name +".txt"), "w")
             f.write(alg.name + "\n")
             f.write(alg.group + "\n")
             for param in alg.parameters:

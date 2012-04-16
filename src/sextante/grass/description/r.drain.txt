@@ -1,0 +1,9 @@
+r.drain
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterString|coordinate|coordinate(E,N)|
+ParameterMultipleInput|vector_points|vector_points|0.0|False
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-a|-a|True
+ParameterBoolean|-n|-n|True
+OutputRaster|output|output

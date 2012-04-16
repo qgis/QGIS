@@ -1,6 +1,0 @@
-Grid Calculator
-grid_calculus
-ParameterMultipleInput|GRIDS|Grids|3|False
-ParameterString|FORMULA|Formula|
-ParameterBoolean|USE_NODATA   |Use NoData|True
-OutputRaster|RESULT|Result

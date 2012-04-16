@@ -1,5 +1,0 @@
-r.random.cells
-Raster (r.*)
-ParameterNumber|distance|distance|None|None|0.0
-ParameterNumber|seed|seed|None|None|0.0
-OutputRaster|output|output

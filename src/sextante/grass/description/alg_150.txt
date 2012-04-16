@@ -1,8 +1,0 @@
-v.kcv
-Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterNumber|k|k|2|None|10
-ParameterString|column|column|part
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-q|-q|True
-OutputVector|output|output

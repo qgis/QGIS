@@ -1,5 +1,0 @@
-r.univar
-Raster (r.*)
-ParameterMultipleInput|map|map|3|False
-ParameterNumber|percentile|percentile|0|100|90
-ParameterBoolean|-e|-e|True

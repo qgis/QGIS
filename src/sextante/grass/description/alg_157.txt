@@ -1,7 +1,0 @@
-r.neighbors
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterSelection|method|method|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
-ParameterNumber|size|size|1|None|3
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output

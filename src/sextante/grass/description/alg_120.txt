@@ -1,6 +1,0 @@
-v.qcount
-Vector (v.*)
-ParameterVector|input|input|0|False
-ParameterNumber|n|n|0|None|4
-ParameterNumber|r|r|0|None|10
-OutputVector|output|output

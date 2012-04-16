@@ -42,10 +42,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             try:
-                if descriptionFile.startswith("alg_"):
-                    alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != "":
-                        self.preloadedAlgs.append(alg)
+                alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
+                if alg.name.strip() != "":
+                    self.preloadedAlgs.append(alg)
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
 
@@ -59,10 +58,10 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 
     def createDescriptionFiles(self):
-        folder = SagaUtils.sagaDescriptionPath()
+        folder = "C:\\descs\\saga"
         i = 0
-        for alg in self.algs:
-            f = open (os.path.join(folder, "alg_" + str(i)+".txt"), "w")
+        for alg in self.preloadedAlgs:
+            f = open (os.path.join(folder, alg.name.replace(" ","").replace("/", "") + ".txt"), "w")
             f.write(alg.name + "\n")
             f.write(alg.undecoratedGroup + "\n")
             for param in alg.parameters:

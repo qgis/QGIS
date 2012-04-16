@@ -1,0 +1,5 @@
+Fill Sinks XXL (Wang & Liu)
+ta_preprocessor
+ParameterRaster|ELEV|DEM|False
+ParameterNumber|MINSLOPE|Minimum Slope [Degree]|0.0|None|0.01
+OutputRaster|FILLED|Filled DEM

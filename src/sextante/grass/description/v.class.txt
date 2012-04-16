@@ -1,0 +1,8 @@
+v.class
+Vector (v.*)
+ParameterVector|map|map|-1|False
+ParameterTableField|column|column|map
+ParameterString|where|where|
+ParameterSelection|algorithm|algorithm|int;std;qua;equ;dis
+ParameterNumber|nbclasses|nbclasses|2.0|None|3
+ParameterBoolean|-g|-g|True

@@ -133,10 +133,14 @@ class ModelerDialog(QtGui.QDialog):
         self.saveButton = QtGui.QPushButton()
         self.saveButton.setObjectName("saveButton")
         self.saveButton.setText("Save")
-        self.buttonBox.addButton(self.openButton, QtGui.QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.saveButton, QtGui.QDialogButtonBox.ActionRole)
+        self.closeButton = QtGui.QPushButton()
+        self.closeButton.setObjectName("closeButton")
+        self.closeButton.setText("Close")
+        self.buttonBox.addButton(self.closeButton, QtGui.QDialogButtonBox.ActionRole)
         QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openModel)
         QObject.connect(self.saveButton, QtCore.SIGNAL("clicked()"), self.saveModel)
+        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
 
         self.globalLayout = QtGui.QVBoxLayout()
         self.globalLayout.setSpacing(2)
@@ -148,6 +152,9 @@ class ModelerDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
         self.view.ensureVisible(0, 0, 10, 10)
+
+    def closeWindow(self):
+        self.close()
 
     def createScript(self):
         if str(self.textGroup.text()).strip() == "":

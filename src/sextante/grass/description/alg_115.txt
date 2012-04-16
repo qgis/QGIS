@@ -1,6 +1,0 @@
-r.quantile
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|quantiles|quantiles|2|None|4
-ParameterString|percentiles|percentiles|
-ParameterBoolean|-r|-r|True

@@ -1,9 +1,0 @@
-r.mfilter
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|filter|filter|/file
-ParameterNumber|repeat|repeat|1|100|1
-ParameterString|title|title|
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-z|-z|True
-OutputRaster|output|output

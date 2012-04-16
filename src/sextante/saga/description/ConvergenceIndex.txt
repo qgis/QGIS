@@ -1,0 +1,6 @@
+Convergence Index
+ta_morphometry
+ParameterRaster|ELEVATION|Elevation|False
+ParameterSelection|METHOD|Method|[0] Aspect;[1] Gradient
+ParameterSelection|NEIGHBOURS|Gradient Calculation|[0] 2 x 2;[1] 3 x 3
+OutputRaster|RESULT|Convergence Index

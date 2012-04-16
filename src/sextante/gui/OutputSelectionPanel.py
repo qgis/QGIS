@@ -32,11 +32,15 @@ class OutputSelectionPanel(QtGui.QWidget):
 
     def showSelectionDialog(self):
         filefilter = self.output.getFileFilter(self.alg)
-        if OutputSelectionPanel.lastOutputFolder == None:
-            OutputSelectionPanel.lastOutputFolder = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(OutputSelectionPanel.lastOutputFolder), filefilter)
+        settings = QtCore.QSettings()
+        if settings.contains("/SextanteQGIS/LastOutputPath"):
+            path = str(settings.value( "/SextanteQGIS/LastOutputPath", QtCore.QVariant( "" ) ).toString())
+        else:
+            path = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER)
+        filename = QtGui.QFileDialog.getSaveFileName(self, "Save file", QtCore.QString(path), filefilter)
         if filename:
             self.text.setText(str(filename))
+            settings.setValue("/SextanteQGIS/LastOutputPath", os.path.dirname(str(filename)))
 
     def getValue(self):
         filename = str(self.text.text())

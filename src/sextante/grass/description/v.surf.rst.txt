@@ -1,0 +1,27 @@
+v.surf.rst
+Vector (v.*)
+ParameterVector|input|input|0|False
+ParameterString|where|where|
+ParameterRaster|maskmap|maskmap|False
+ParameterTableField|zcolumn|zcolumn|input
+ParameterNumber|tension|tension|None|None|40
+ParameterNumber|segmax|segmax|None|None|40
+ParameterNumber|npmin|npmin|None|None|300
+ParameterNumber|dmin|dmin|None|None|0.5
+ParameterNumber|dmax|dmax|None|None|2.5
+ParameterNumber|zmult|zmult|None|None|1.0
+ParameterNumber|theta|theta|None|None|0
+ParameterNumber|scalex|scalex|None|None|0
+ParameterBoolean|-c|-c|True
+ParameterBoolean|-t|-t|True
+ParameterBoolean|-d|-d|True
+OutputRaster|elev|elev
+OutputRaster|slope|slope
+OutputRaster|aspect|aspect
+OutputRaster|pcurv|pcurv
+OutputRaster|tcurv|tcurv
+OutputRaster|mcurv|mcurv
+OutputVector|devi|devi
+OutputVector|cvdev|cvdev
+OutputVector|treefile|treefile
+OutputVector|overfile|overfile

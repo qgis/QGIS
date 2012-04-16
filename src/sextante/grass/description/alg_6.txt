@@ -1,9 +1,0 @@
-r.resamp.rst
-Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|ew_res|ew_res|0|None|1
-Parameternumber|ns_res|ns_res|0|None|1
-ParameterBoolean|-t|-t|True
-ParameterBoolean|-d|-d|True
-OutputRaster|elev|elev
-

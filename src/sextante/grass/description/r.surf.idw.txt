@@ -1,0 +1,6 @@
+r.surf.idw
+Raster (r.*)
+ParameterRaster|input|input|False
+ParameterNumber|npoints|npoints|1.0|None|12
+ParameterBoolean|-e|-e|False
+OutputRaster|output|output

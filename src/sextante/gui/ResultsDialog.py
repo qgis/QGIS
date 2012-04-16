@@ -33,10 +33,23 @@ class ResultsDialog(QtGui.QDialog):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.addWidget(self.tree)
         self.horizontalLayout.addWidget(self.webView)
-        self.setLayout(self.horizontalLayout)
+        self.closeButton = QtGui.QPushButton()
+        self.closeButton.setObjectName("closeButton")
+        self.closeButton.setText("Close")
+        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        self.verticalLayout= QtGui.QVBoxLayout()
+        self.verticalLayout.setSpacing(2)
+        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout.addLayout(self.horizontalLayout)
+        self.verticalLayout.addWidget(self.closeButton)
+        self.setLayout(self.verticalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
         if self.lastUrl:
             self.webView.load(self.lastUrl)
+
+    def closeWindow(self):
+        self.close()
 
     def fillTree(self):
         elements = SextanteResults.getResults()

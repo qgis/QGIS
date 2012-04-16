@@ -68,7 +68,10 @@ class MeanCoords(GeoAlgorithm):
                     if weightIndex == -1:
                         weight = 1.00
                     else:
-                        weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
+                        try:
+                            weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
+                        except:
+                            weight = 1.00
                     geom = QgsGeometry(feat.geometry())
                     geom = ftools_utils.extractPoints(geom)
                     for i in geom:

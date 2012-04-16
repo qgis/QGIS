@@ -1,7 +1,0 @@
-v.patch
-Vector (v.*)
-ParameterMultipleInput|input|input|-1|False
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputVector|bbox|bbox

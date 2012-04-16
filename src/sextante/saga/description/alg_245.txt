@@ -1,6 +1,0 @@
-Water Retention Capacity
-sim_hydrology
-ParameterVector|SHAPES|Plot Holes|-1|False
-ParameterRaster|DEM|DEM|False
-OutputVector|OUTPUT|Final Parameters
-OutputRaster|RETENTION|Water Retention Capacity

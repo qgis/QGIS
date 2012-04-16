@@ -1,0 +1,15 @@
+r.report
+Raster (r.*)
+ParameterMultipleInput|map|map|3.0|False
+ParameterSelection|units|units|mi;me;k;a;h;c;p
+ParameterString|null|null|*
+ParameterNumber|nsteps|nsteps|None|None|255
+ParameterBoolean|-q|-q|True
+ParameterBoolean|-h|-h|True
+ParameterBoolean|-f|-f|True
+ParameterBoolean|-e|-e|True
+ParameterBoolean|-n|-n|True
+ParameterBoolean|-N|-N|True
+ParameterBoolean|-C|-C|True
+ParameterBoolean|-i|-i|True
+OutputHTML|output|output

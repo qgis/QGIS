@@ -33,9 +33,19 @@ class HistoryDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.text)
         self.text.setObjectName("text")
         self.text.setReadOnly(True)
+        self.closeButton = QtGui.QPushButton()
+        self.closeButton.setObjectName("closeButton")
+        self.closeButton.setText("Close")
+        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        self.verticalLayout.addWidget(self.closeButton)
         self.setWindowTitle("History")
         self.setLayout(self.verticalLayout)
         QtCore.QMetaObject.connectSlotsByName(self)
+
+
+    def closeWindow(self):
+        self.close()
+
 
     def fillTree(self):
         elements = SextanteLog.getLogEntries()

@@ -1,0 +1,11 @@
+Convergence Index (Search Radius)
+ta_morphometry
+ParameterRaster|ELEVATION|Elevation|False
+ParameterNumber|RADIUS|Radius [Cells]|1.0|None|10
+ParameterSelection|DISTANCE_WEIGHTING_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
+ParameterNumber|DISTANCE_WEIGHTING_IDW_POWER|Inverse Distance Weighting Power|None|None|1
+ParameterBoolean|DISTANCE_WEIGHTING_IDW_OFFSET     |Inverse Distance Offset|True
+ParameterNumber|DISTANCE_WEIGHTING_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|None|None|1
+ParameterBoolean|SLOPE                             |Gradient|True
+ParameterSelection|DIFFERENCE|Difference|[0] direction to the center cell;[1] center cell's aspect direction
+OutputRaster|CONVERGENCE|Convergence Index

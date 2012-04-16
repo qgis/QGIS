@@ -1,0 +1,9 @@
+Bifurcation
+recreations_fractals
+ParameterNumber|ITERATIONS|Value Count|None|None|0
+ParameterNumber|NVALUES|Value Count|None|None|0
+ParameterNumber|SEED|Seed Value|None|None|0
+ParameterRange|RANGE_MIN|Range
+ParameterRange|RANGE_MAX|Range
+ParameterNumber|STEP|Number of Steps|None|None|0
+OutputTable|TABLE|Output

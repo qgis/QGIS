@@ -1,8 +1,0 @@
-Line Dissolve
-shapes_lines
-ParameterVector|LINES|Lines|-1|False
-ParameterTableField|FIELD_1|1. Attribute|LINES
-ParameterTableField|FIELD_2|2. Attribute|LINES
-ParameterTableField|FIELD_3|3. Attribute|LINES
-ParameterSelection|ALL|Dissolve...|[0] lines with same attribute value(s);[1] all lines
-OutputVector|DISSOLVED|Dissolved Lines
