@@ -1,3 +1,7 @@
+import os
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4 import QtGui, QtCore
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
@@ -10,15 +14,14 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
-import os
 from sextante.parameters.ParameterSelection import ParameterSelection
-from PyQt4 import QtGui
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.r.RUtils import RUtils
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteUtils import SextanteUtils
+import subprocess
 
 class RAlgorithm(GeoAlgorithm):
 
@@ -148,7 +151,7 @@ class RAlgorithm(GeoAlgorithm):
         if SextanteUtils.isWindows():
             path = RUtils.RFolder()
             if path == "":
-                raise GeoAlgorithmExecutionException("R folder is not configured.\nPlease configure it before running R script.")
+                raise GeoAlgorithmExecutionException("R folder is not configured.\nPlease configure it before running R scripts.")
         loglines = []
         loglines.append("R execution commands")
         loglines += self.getFullSetOfRCommands()
@@ -271,4 +274,22 @@ class RAlgorithm(GeoAlgorithm):
     def getRCommands(self):
         return self.commands
 
+
+    def checkBeforeOpeningParametersDialog(self):
+        if SextanteUtils.isWindows():
+            path = RUtils.RFolder()
+            if path == "":
+                return "R folder is not configured.\nPlease configure it before running R scripts."
+        else:
+            R_INSTALLED = "R_INSTALLED"
+            settings = QSettings()
+            if settings.contains(R_INSTALLED):
+                return
+            command = ["R CMD BATCH"]
+            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+            for line in iter(proc.readline, ""):
+                if "no input file" in line:
+                    settings.setValue(R_INSTALLED, True)
+                    return
+            return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
 

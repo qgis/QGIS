@@ -5,6 +5,7 @@ from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 import stat
 import shutil
+import plugin_installer
 
 class GrassUtils:
 
@@ -39,7 +40,13 @@ class GrassUtils:
     def grassPath():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_FOLDER)
         if folder == None:
-            folder =""
+            folder = plugin_installer.__file__
+            idx = folder.find('qgis')
+            folder = folder[:idx] + "grass"
+            for subfolder in os.listdir(folder):
+                if subfolder.startswith("grass"):
+                    folder = folder + os.sep + subfolder
+                    break
 
         return folder
 
@@ -53,11 +60,13 @@ class GrassUtils:
 
     @staticmethod
     def grassWinShell():
-        shell = SextanteConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
-        if shell == None:
-            shell =""
+        folder = SextanteConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
+        if folder == None:
+            folder = plugin_installer.__file__
+            idx = folder.find('qgis')
+            folder = folder[:idx] + "msys"
 
-        return shell
+        return folder
 
     @staticmethod
     def grassDescriptionPath():

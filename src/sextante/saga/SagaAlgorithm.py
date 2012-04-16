@@ -23,6 +23,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
+import subprocess
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -275,5 +276,21 @@ class SagaAlgorithm(GeoAlgorithm):
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""
 
 
-
+    def checkBeforeOpeningParametersDialog(self):
+        if SextanteUtils.isWindows():
+            path = SagaUtils.sagaPath()
+            if path == "":
+                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
+        else:
+            SAGA_INSTALLED = "SAGA_INSTALLED"
+            settings = QSettings()
+            if settings.contains(SAGA_INSTALLED):
+                return
+            command = ["saga_cmd"]
+            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+            for line in iter(proc.readline, ""):
+                if "-------------" in line:
+                    settings.setValue(SAGA_INSTALLED, True)
+                    return
+            return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
 

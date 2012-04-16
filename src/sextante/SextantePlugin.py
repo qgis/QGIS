@@ -26,8 +26,6 @@ class SextantePlugin:
         QGisLayers.setInterface(iface)
         Sextante.initialize()
         Sextante.setInterface(iface)
-        SextanteExternalAppsConfigurer.autoConfigure()
-
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
