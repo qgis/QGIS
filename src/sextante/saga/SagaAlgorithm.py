@@ -289,7 +289,7 @@ class SagaAlgorithm(GeoAlgorithm):
             command = ["saga_cmd"]
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
             for line in iter(proc.readline, ""):
-                if "-------------" in line:
+                if "________" in line:
                     settings.setValue(SAGA_INSTALLED, True)
                     return
             return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
