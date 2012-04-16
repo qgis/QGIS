@@ -490,7 +490,7 @@ bool QgsMssqlProvider::nextFeature( QgsFeature& feature )
   feature.setValid( false );
   if ( !mValid )
   {
-    QgsDebugMsg( "Read attempt on an invalid mssql data source" );
+    QgsDebugMsg( "Read attempt on an invalid MSSQL data source" );
     return false;
   }
 
@@ -1625,7 +1625,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   if ( !provider->isValid() )
   {
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Loading of the mssql provider failed" );
+      *errorMessage = QObject::tr( "Loading of the MSSQL provider failed" );
 
     delete provider;
     return QgsVectorLayerImport::ErrInvalidLayer;
