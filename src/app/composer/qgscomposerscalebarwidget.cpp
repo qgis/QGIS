@@ -25,6 +25,10 @@
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QWidget(), mComposerScaleBar( scaleBar )
 {
   setupUi( this );
+  if ( scaleBar )
+  {
+    QObject::connect( scaleBar, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+  }
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
@@ -43,9 +47,9 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mAlignmentComboBox->insertItem( 0, tr( "Left" ) );
   mAlignmentComboBox->insertItem( 1, tr( "Middle" ) );
   mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
+  blockMemberSignals( false );
 
   setGuiElements(); //set the GUI elements to the state of scaleBar
-  blockMemberSignals( false );
 }
 
 QgsComposerScaleBarWidget::~QgsComposerScaleBarWidget()
@@ -144,6 +148,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
     return;
   }
 
+  blockMemberSignals( true );
   mNumberOfSegmentsSpinBox->setValue( mComposerScaleBar->numSegments() );
   mSegmentsLeftSpinBox->setValue( mComposerScaleBar->numSegmentsLeft() );
   mSegmentSizeSpinBox->setValue( mComposerScaleBar->numUnitsPerSegment() );
@@ -171,6 +176,7 @@ void QgsComposerScaleBarWidget::setGuiElements()
 
   //alignment
   mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
+  blockMemberSignals( false );
 }
 
 //slots
