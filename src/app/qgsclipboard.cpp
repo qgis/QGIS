@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QClipboard>
 #include <QSettings>
+#include <QMimeData>
 
 #include "qgsclipboard.h"
 #include "qgsfeature.h"
@@ -104,9 +105,9 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
   // docs). With a Linux X server, ::Clipboard was required.
   // The simple solution was to put the text into both clipboards.
 
-  // The ::Selection setText() below one may need placing inside so
-  // #ifdef so that it doesn't get compiled under Windows.
+#ifndef Q_OS_WIN
   cb->setText( textCopy, QClipboard::Selection );
+#endif
   cb->setText( textCopy, QClipboard::Clipboard );
 
   QgsDebugMsg( QString( "replaced system clipboard with: %1." ).arg( textCopy ) );
@@ -162,4 +163,39 @@ void QgsClipboard::setCRS( QgsCoordinateReferenceSystem crs )
 QgsCoordinateReferenceSystem QgsClipboard::crs()
 {
   return mCRS;
+}
+
+void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString* text )
+{
+    QMimeData *mdata = new QMimeData();
+    mdata->setData( mimeType, data );
+    if ( text )
+    {
+	mdata->setText( *text );
+    }
+    // Transfers ownership to the clipboard object
+#ifndef Q_OS_WIN
+    QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
+#endif
+    QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
+}
+
+void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString& text )
+{
+    setData( mimeType, data, &text );
+}
+
+void QgsClipboard::setData( const QString& mimeType, const QByteArray& data )
+{
+    setData( mimeType, data, 0 );
+}
+
+bool QgsClipboard::hasFormat( const QString& mimeType )
+{
+    return QApplication::clipboard()->mimeData()->hasFormat( mimeType );
+}
+
+QByteArray QgsClipboard::data( const QString& mimeType )
+{
+    return QApplication::clipboard()->mimeData()->data( mimeType );
 }
