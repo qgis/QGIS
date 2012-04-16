@@ -1158,10 +1158,10 @@ QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist
 {
   QgsPoint p( x, y );
   QgsPoint minDistPoint;
-  int beforeVertexNr;
-  lineGeom->closestSegmentWithContext( p, minDistPoint, beforeVertexNr );
+  int afterVertexNr;
+  lineGeom->closestSegmentWithContext( p, minDistPoint, afterVertexNr );
 
-  int afterVertexNr = beforeVertexNr + 1;
+  int beforeVertexNr = afterVertexNr - 1;
   QgsPoint beforeVertex = lineGeom->vertexAt( beforeVertexNr );
   QgsPoint afterVertex = lineGeom->vertexAt( afterVertexNr );
 
