@@ -318,9 +318,17 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   }
   else
   {
+    QString myMessage = "Difference image did not match any known anomaly.";
     mReport += "<tr><td colspan=3>"
-               "Difference image did not match any known anomaly."
                "</td></tr>";
+    QString myMeasureMessage = "<DartMeasurement name=\"No Anomalies Match"
+              "\" type=\"text/text\">" +  myMessage +
+              " If you feel the difference image should be considered an anomaly "
+              "you can do something like this\n"
+              "cp " + myDiffImageFile  + "../tests/testdata/control_images/" + theTestName + 
+              "/<imagename>.png"
+              "</DartMeasurement>";
+    qDebug() << myMeasureMessage;
   }
 
   if ( mMismatchCount <= theMismatchCount)
