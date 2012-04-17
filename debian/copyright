@@ -176,28 +176,3 @@ License: BSD
  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-Files: src/core/spatialindex/include/LineSegment.h
- src/core/spatialindex/include/Point.h
- src/core/spatialindex/include/PointerPool.h
- src/core/spatialindex/include/PoolPointer.h
- src/core/spatialindex/include/RTree.h
- src/core/spatialindex/include/Region.h
- src/core/spatialindex/include/SmartPointer.h
- src/core/spatialindex/include/SpatialIndex.h
- src/core/spatialindex/include/TemporaryFile.h
- src/core/spatialindex/include/Tools.h
-Copyright: 2004, Navel Ltd.
-License: LGPL-2.1+
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
- .
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- .
- On Debian systems, the complete text of the GNU Lesser General Public
- License can be found in the /usr/share/common-licenses/LGPL-2.1 file.

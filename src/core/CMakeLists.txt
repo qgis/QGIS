@@ -195,58 +195,25 @@ IF(HAVE_ZLIB)
 ENDIF(HAVE_ZLIB)
 
 IF(WIN32)
-    SET(QGIS_CORE_SRCS
-        ${QGIS_CORE_SRCS}
-        gps/qextserialport/win_qextserialport.cpp
-        )
-    ADD_DEFINITIONS(-D_TTY_WIN_)
+  SET(QGIS_CORE_SRCS
+    ${QGIS_CORE_SRCS}
+    gps/qextserialport/win_qextserialport.cpp
+  )
+  ADD_DEFINITIONS(-D_TTY_WIN_)
 ELSE(WIN32)
-    SET(QGIS_CORE_SRCS
-        ${QGIS_CORE_SRCS}
-        gps/qextserialport/posix_qextserialport.cpp
-    )
-    ADD_DEFINITIONS(-D_TTY_POSIX_)
+  SET(QGIS_CORE_SRCS
+    ${QGIS_CORE_SRCS}
+    gps/qextserialport/posix_qextserialport.cpp
+  )
+  ADD_DEFINITIONS(-D_TTY_POSIX_)
 ENDIF(WIN32)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-    SET(QGIS_CORE_SRCS
-        ${QGIS_CORE_SRCS}
-        gps/qgsqtlocationconnection.cpp
-        )
-ENDIF (QT_MOBILITY_LOCATION_FOUND)
-
-IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE OR ANDROID)
-    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-  ENDIF (WIN32 OR APPLE OR ANDROID)
-  IF (WIN32)
-    ADD_DEFINITIONS(-DDLL_EXPORT)
-  ENDIF (WIN32)
-
-#
-# sqlite3 requires some extraflags to be defined
-# in order to support:
-# - huge database > 2 GB
-# - RTree Spatial Index
-#
-  ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
-  ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
-
   SET(QGIS_CORE_SRCS
     ${QGIS_CORE_SRCS}
-    spatialite/sqlite3.c
-    spatialite/spatialite.c
-    )
-
-  IF(MSVC)
-    # dirty code
-    SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS /W0)
-  ELSE(MSVC)
-    SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
-  ENDIF(MSVC)
-
-  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
-ENDIF (WITH_INTERNAL_SPATIALITE)
+    gps/qgsqtlocationconnection.cpp
+  )
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
 
@@ -307,10 +274,10 @@ ENDIF(HAVE_ZLIB)
 
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-    SET(QGIS_CORE_MOC_HDRS
-        ${QGIS_CORE_MOC_HDRS}
-        gps/qgsqtlocationconnection.h
-        )
+  SET(QGIS_CORE_MOC_HDRS
+    ${QGIS_CORE_MOC_HDRS}
+    gps/qgsqtlocationconnection.h
+  )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
@@ -434,10 +401,10 @@ SET(QGIS_CORE_HDRS
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-    SET(QGIS_CORE_HDRS
-        ${QGIS_CORE_HDRS}
-        gps/qgsqtlocationconnection.h
-        )
+  SET(QGIS_CORE_HDRS
+    ${QGIS_CORE_HDRS}
+    gps/qgsqtlocationconnection.h
+  )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 INCLUDE_DIRECTORIES(
@@ -449,22 +416,12 @@ INCLUDE_DIRECTORIES(
   symbology
   symbology-ng
   gps/qextserialport
+  ${SPATIALINDEX_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
 )
-
-# put SPATIALINDEX include dir in front
-# (otherwise GEOS's spatialite.h might be found first)
-IF (NOT WITH_INTERNAL_SPATIALINDEX)
-  INCLUDE_DIRECTORIES(BEFORE ${SPATIALINDEX_INCLUDE_DIR})
-ELSE (NOT WITH_INTERNAL_SPATIALINDEX)
-  INCLUDE_DIRECTORIES(BEFORE spatialindex/include)
-ENDIF (NOT WITH_INTERNAL_SPATIALINDEX)
-
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 
 IF (WIN32)
   IF (MSVC)
@@ -480,30 +437,6 @@ IF (WIN32)
 ELSE (WIN32)
     ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
 ENDIF (WIN32)
-
-#############################################################
-# spatial indexing library
-
-IF (WITH_INTERNAL_SPATIALINDEX)
-  # add path prefix to every specified file
-  MACRO(PATH_PREFIX OUTPUT PREFIX)
-    FOREACH(F ${ARGN})
-      SET(${OUTPUT} ${${OUTPUT}} ${PREFIX}/${F})
-    ENDFOREACH(F)
-  ENDMACRO(PATH_PREFIX)
-  
-  # tools library
-  PATH_PREFIX(TOOLS_SRC tools Tools.cc)
-  
-  # spatial index library
-  PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc LineSegment.cc Point.cc Region.cc)
-  PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
-  PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
-  
-  SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
-  
-  PATH_PREFIX(INDEX_SRC spatialindex/src ${SPINDEX_SRC})
-ENDIF (WITH_INTERNAL_SPATIALINDEX)
 
 #############################################################
 # qgis_core library
@@ -555,29 +488,13 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}
+  ${SQLITE3_LIBRARY}
+  ${SPATIALINDEX_LIBRARY}
 )
-
-IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE)
-    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
-  ENDIF (WIN32 OR APPLE)
-  IF (ANDROID)
-    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY} ${CHARSET_LIBRARY})
-  ENDIF (ANDROID)
-  IF (UNIX AND NOT ANDROID)
-    TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
-  ENDIF (UNIX AND NOT ANDROID)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
-ENDIF (WITH_INTERNAL_SPATIALITE)
-
-IF (NOT WITH_INTERNAL_SPATIALINDEX)
-  TARGET_LINK_LIBRARIES(qgis_core ${SPATIALINDEX_LIBRARY})
-ENDIF (NOT WITH_INTERNAL_SPATIALINDEX)
 
 IF (HAVE_ZLIB)
   INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-  TARGET_LINK_LIBRARIES(qgis_core ${ZLIB_LIBRARIES})
+  TARGET_LINK_LIBRARIES(qgis_core ${ZLIB_LIBRARY})
 ENDIF (HAVE_ZLIB)
 
 IF (APPLE)

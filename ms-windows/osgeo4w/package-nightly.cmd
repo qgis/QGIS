@@ -94,13 +94,11 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_ASTYLE=TRUE ^
 	-D WITH_GLOBE=TRUE ^
-	-D WITH_INTERNAL_SPATIALITE=FALSE ^
-	-D WITH_INTERNAL_SPATIALINDEX=FALSE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GEOS_LIBRARY=%OSGEO4W_ROOT%/lib/geos_c_i.lib ^
-	-D SQLITE3_LIBRARY=%OSGEO4W_ROOT%/lib/sqlite3_i.lib ^
-	-D SPATIALITE_LIBRARY=%OSGEO4W_ROOT%/lib/spatialite_i.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
+	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
+	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python27/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python27/libs/python27.lib ^
@@ -130,11 +128,11 @@ if not errorlevel 1 goto error
 
 echo ZERO_CHECK: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ZERO_CHECK /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
-if errorlevel 1 goto error 
+if errorlevel 1 goto error
 
 echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
-if errorlevel 1 goto error 
+if errorlevel 1 goto error
 
 echo RUN_TESTS: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project Nightly /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1

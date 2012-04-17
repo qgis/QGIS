@@ -1,13 +1,6 @@
 SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
 
-IF(WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(
-    ../../src/core/spatialite/headers
-    ../../src/core/spatialite/headers/spatialite
-  )
-ENDIF(WITH_INTERNAL_SPATIALITE)
-
 INCLUDE_DIRECTORIES(
   ${PYTHON_INCLUDE_PATH}
   ${GEOS_INCLUDE_DIR}
@@ -44,11 +37,7 @@ IF (NOT APPLE)
   TARGET_LINK_LIBRARIES(pyspatialite ${PYTHON_LIBRARY})
 ENDIF (NOT APPLE)
 
-TARGET_LINK_LIBRARIES(pyspatialite qgis_core)
-
-IF(NOT WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(pyspatialite ${SPATIALITE_LIBRARY})
-ENDIF(NOT WITH_INTERNAL_SPATIALITE)
+TARGET_LINK_LIBRARIES(pyspatialite qgis_core ${SPATIALITE_LIBRARY})
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(pyspatialite PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -60,11 +49,7 @@ IF (WIN32)
   SET_TARGET_PROPERTIES(pyspatialite PROPERTIES SUFFIX ".pyd")
 ENDIF (WIN32)
 
-FOREACH(file
-  lib/__init__.py
-  lib/dbapi2.py
-  lib/dump.py
-)
+FOREACH(file lib/__init__.py lib/dbapi2.py lib/dump.py)
   ADD_CUSTOM_COMMAND(TARGET pyspatialite
 	  POST_BUILD
 	  COMMAND ${CMAKE_COMMAND} -E copy ${file} ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite/${file}

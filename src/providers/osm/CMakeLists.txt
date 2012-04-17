@@ -21,20 +21,12 @@ INCLUDE_DIRECTORIES (
   ../../core
   ../../core/renderer
   ${GEOS_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
 )
-
-IF (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(BEFORE ../../core/spatialite/headers/spatialite)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-ENDIF (WITH_INTERNAL_SPATIALITE)
 
 ADD_LIBRARY (osmprovider MODULE ${OSM_SRCS} ${OSM_MOC_SRCS})
 
-TARGET_LINK_LIBRARIES (osmprovider
-  qgis_core
-)
-
+TARGET_LINK_LIBRARIES (osmprovider qgis_core)
 
 ########################################################
 # Install

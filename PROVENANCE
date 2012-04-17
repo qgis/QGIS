@@ -68,60 +68,6 @@ licensed under the GPL or LGPL, version 2.
 == External Source Files ==
 The following files are included in the QGIS source tree from external
 sources. The source, license, and copyright are noted for each.
-=== src/core/spatialindex/include ===
-Copyright (C) Navel Ltd., LGPL
-* LineSegment.h
-* Point.h
-* PointerPool.h
-* PoolPointer.h
-* RTree.h
-* Region.h
-* SmartPointer.h
-* SpatialIndex.h
-* TemporaryFile.h
-* Tools.h
-=== src/core/spatialindex/storagemanager ===
-Copyright (C) Navel Ltd., LGPL
-* Buffer.cc
-* Buffer.h
-* DiskStorageManager.cc
-* DiskStorageManager.h
-* MemoryStorageManager.cc
-* MemoryStorageManager.h
-* RandomEvictionsBuffer.cc
-* RandomEvictionsBuffer.h
-=== src/core/spatialindex/rtree  ===
-Copyright (C) Navel Ltd., LGPL
-* BulkLoader.cc
-* BulkLoader.h
-* Index.cc
-* Index.h
-* Leaf.cc
-* Leaf.h
-* Node.cc
-* Node.h
-* PointerPoolNode.h
-* RTree.cc
-* RTree.h
-* Statistics.cc
-* Statistics.h
-
-=== src/core/spatialindex/tools ===
-Copyright (C) Navel Ltd., LGPL
-* ExternalSort.cc
-* ExternalSort.h
-* TemporaryFile.cc
-* Tools.cc
-
-=== src/plugins/grid_maker ===
-NOTE: These files have since been removed from SVN:
-* shapefile.h  Copyright (c) 1999, Frank Warmerdam, MIT or LGPL
-* utils.h 
-**Taken from txt2dbf 1.0.2 by Frank Koormann, see
-http://www.usf.uni-osnabrueck.de/~fkoorman/software/dbftools.en.html.  Licensed
-as "The program is free of charge as well as the source" but no license is
-mentioned 
- 
 === src/core/quazip ===
 QuaZIP is the C++ wrapper for the Gilles Vollant's ZIP/UNZIP package
 using Trolltech's Qt library. 

@@ -100,11 +100,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/interpolation
   ../plugins/diagram_overlay
   .
-  )
-
-IF (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(BEFORE ../core/spatialite/headers/spatialite)
-ENDIF (WITH_INTERNAL_SPATIALITE)
+)
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   qgis_core 
