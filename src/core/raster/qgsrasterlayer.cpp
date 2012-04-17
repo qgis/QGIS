@@ -3261,8 +3261,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   QStringList sl = subLayers();
   QStringList sls = mDataProvider->subLayerStyles();
 
-  QStringList::const_iterator layerStyle = sls.begin();
-
   // <mDrawingStyle>
   QDomElement drawStyleElement = document.createElement( "mDrawingStyle" );
   QDomText    drawStyleText    = document.createTextNode( drawingStyleAsString() );

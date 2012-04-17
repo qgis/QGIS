@@ -28,8 +28,13 @@
 #include <QPainter>
 #include <cmath>
 
-QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ),
-    mNumUnitsPerSegment( 0 ), mSegmentMillimeters( 0.0 ), mAlignment( Left )
+QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
+  : QgsComposerItem( composition )
+  , mComposerMap( 0 )
+  , mNumUnitsPerSegment( 0 )
+  , mStyle( 0 )
+  , mSegmentMillimeters( 0.0 )
+  , mAlignment( Left )
 {
   applyDefaultSettings();
   applyDefaultSize();
