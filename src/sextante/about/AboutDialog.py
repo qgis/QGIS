@@ -12,17 +12,24 @@ class AboutDialog(QtGui.QDialog):
 
     def setupUi(self):
         self.setObjectName("AboutDialog")
-        self.resize(500, 400)
+        self.resize(600, 500)
         self.webView = QtWebKit.QWebView()
         self.webView.setObjectName("webView")
         self.setWindowTitle("About SEXTANTE")
-        self.horizontalLayout= QtGui.QHBoxLayout()
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
-        self.horizontalLayout.addWidget(self.webView)
-        self.setLayout(self.horizontalLayout)
+        self.verticalLayout= QtGui.QVBoxLayout()
+        self.verticalLayout.setSpacing(2)
+        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setObjectName("horizontalLayout")
+        self.verticalLayout.addWidget(self.webView)
+        self.closeButton = QtGui.QPushButton()
+        self.closeButton.setObjectName("closeButton")
+        self.closeButton.setText("Close")
+        QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        self.verticalLayout.addWidget(self.closeButton)
+        self.setLayout(self.verticalLayout)
         filename = os.path.dirname(__file__) + "/about.htm"
         url = QtCore.QUrl(filename)
         self.webView.load(url)
 
+    def closeWindow(self):
+        self.close()
