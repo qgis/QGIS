@@ -131,9 +131,6 @@ class Dialog(QDialog, Ui_Dialog):
             outFeat.setGeometry(inGeom)
             pointList = []
             count = 0
-            #(check, pointList) = pointLayer.featuresInRectangle(inGeom.boundingBox(), True, True)
-            #pointLayer.select(inGeom.boundingBox(), False)
-            #pointList = pointLayer.selectedFeatures()
             pointList = spatialIndex.intersects(inGeom.boundingBox())
             if len(pointList) > 0: check = 0
             else: check = 1
@@ -141,7 +138,7 @@ class Dialog(QDialog, Ui_Dialog):
                 for i in pointList:
                     pointProvider.featureAtId( int( i ), inFeatB , True, allAttrs )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
-                    if inGeom.intersects(tmpGeom.asPoint()):
+                    if inGeom.intersects( tmpGeom ):
                         count = count + 1
             outFeat.setAttributeMap(atMap)
             outFeat.addAttribute(index, QVariant(count))

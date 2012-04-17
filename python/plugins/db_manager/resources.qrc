@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/db_manager">
+        <file>icons/layer_line.png</file>
+        <file>icons/layer_point.png</file>
+        <file>icons/layer_polygon.png</file>
+        <file>icons/layer_raster.png</file>
+        <file>icons/layer_unknown.png</file>
+        <file>icons/namespace.png</file>
+        <file>icons/namespaces.xpm</file>
+        <file>icons/table.png</file>
+        <file>icons/tables.xpm</file>
+        <file>icons/user.xpm</file>
+        <file>icons/users.xpm</file>
+        <file>icons/view.png</file>
+        <file alias="warning">icons/warning-20px.png</file>
+        <file>icons/plugged.png</file>
+        <file>icons/unplugged.png</file>
+        <file alias="icon">icons/dbmanager.png</file>
+        <file>icons/about.png</file>
+    </qresource>
+    <qresource prefix="/db_manager/actions">
+        <file alias="del_table">icons/toolbar/action_del_table.png</file>
+        <file alias="edit_table">icons/toolbar/action_edit_table.png</file>
+        <file>icons/toolbar/action_export.png</file>
+        <file>icons/toolbar/action_import.png</file>
+        <file alias="create_table">icons/toolbar/action_new_table.png</file>
+        <file alias="refresh">icons/toolbar/action_refresh.png</file>
+        <file alias="sql_window">icons/toolbar/action_sql_window.png</file>
+    </qresource>
+</RCC>

@@ -110,6 +110,8 @@ if [ -n "$add" ]; then
 fi
 echo Updating translations
 $LUPDATE$opts -verbose qgis_ts.pro
+echo Updating TRANSLATORS File
+./scripts/tsstat.pl > doc/TRANSLATORS
 
 if [ -n "$add" ]; then
 	for i in $add; do

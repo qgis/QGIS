@@ -59,6 +59,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.inShape.addItems(layers)
         self.cmbLayer.addItems(layers)
 
+        self.crs = None
+
     def updateProj1(self, layerName):
         self.inRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
@@ -94,11 +96,10 @@ class Dialog(QDialog, Ui_Dialog):
             if vLayer == "Error":
                 QMessageBox.information(self, self.tr("Define current projection"), self.tr("Cannot define projection for PostGIS data...yet!"))
             else:
-                srsDefine = QgsCoordinateReferenceSystem()
+                srsDefine = None
                 if self.rdoProjection.isChecked():
                     outProj = self.txtProjection.text().split( " - " )[ 0 ]
-                    #srsDefine.createFromProj4(outProj)
-                    srsDefine.createFromString(outProj)
+                    srsDefine = self.crs
                 else:
                     destLayer = ftools_utils.getVectorLayerByName(self.cmbLayer.currentText())
                     srsDefine = destLayer.crs()
@@ -151,13 +152,12 @@ class Dialog(QDialog, Ui_Dialog):
         projSelector = QgsGenericProjectionSelector(self)
         projSelector.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
         if projSelector.exec_():
-            crs = QgsCoordinateReferenceSystem()
-            crs.createFromOgcWmsCrs( projSelector.selectedAuthId() )
+            self.crs = QgsCoordinateReferenceSystem( projSelector.selectedCrsId(), QgsCoordinateReferenceSystem.InternalCrsId )
             if projSelector.selectedAuthId().isEmpty():
                 QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No Valid CRS selected"))
                 return
             else:
                 self.txtProjection.clear()
-                self.txtProjection.insert(crs.authid() + " - " + crs.description())
+                self.txtProjection.insert(self.crs.authid() + " - " + self.crs.description())
         else:
             return

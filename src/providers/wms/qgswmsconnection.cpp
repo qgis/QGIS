@@ -23,6 +23,7 @@
 //#include "qgisapp.h" //for getThemeIcon
 //#include "qgscontexthelp.h"
 //#include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 //#include "qgsgenericprojectionselector.h"
 //#include "qgslogger.h"
 //#include "qgsmanageconnectionsdialog.h"
@@ -63,6 +64,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
+  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -76,6 +78,8 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
       password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), "Password", QLineEdit::Password );
     }
     mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
+    mUri.setParam( "username", username );
+    mUri.setParam( "password", password );
   }
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
@@ -88,10 +92,13 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
       connArgs += "GetMap";
       if ( ignoreGetFeatureInfo )
         connArgs += ";";
+      mUri.setParam( "ignoreUrl", "GetMap" );
     }
     if ( ignoreGetFeatureInfo )
+    {
       connArgs += "GetFeatureInfo";
-
+      mUri.setParam( "ignoreUrl", "GetFeatureInfo" );
+    }
     if ( mConnectionInfo.startsWith( "username=" ) )
     {
       mConnectionInfo.prepend( connArgs + "," );
@@ -115,6 +122,11 @@ QString QgsWMSConnection::connectionInfo( )
   return mConnectionInfo;
 }
 
+QgsDataSourceURI QgsWMSConnection::uri()
+{
+  return mUri;
+}
+
 QgsWmsProvider * QgsWMSConnection::provider( )
 {
   // TODO: Create and bind to data provider
@@ -123,7 +135,7 @@ QgsWmsProvider * QgsWMSConnection::provider( )
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
   QgsWmsProvider *wmsProvider =
-    ( QgsWmsProvider* ) pReg->provider( "wms", mConnectionInfo );
+    ( QgsWmsProvider* ) pReg->provider( "wms", mUri.encodedUri() );
 
   return wmsProvider;
 }

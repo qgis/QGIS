@@ -17,6 +17,7 @@
 
 #ifndef QGSWMSCONNECTION_H
 #define QGSWMSCONNECTION_H
+#include "qgsdatasourceuri.h"
 #include "qgisgui.h"
 //#include "qgscontexthelp.h"
 
@@ -56,6 +57,8 @@ class QgsWMSConnection : public QObject
     QString connectionInfo();
     QString mConnName;
     QString mConnectionInfo;
+    QgsDataSourceURI uri();
+    QgsDataSourceURI mUri;
 };
 
 

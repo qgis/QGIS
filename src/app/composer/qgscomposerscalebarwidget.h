@@ -48,6 +48,8 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     void on_mBoxSizeSpinBox_valueChanged( double d );
     void on_mAlignmentComboBox_currentIndexChanged( int index );
 
+  private slots:
+    void setGuiElements();
 
   protected:
     void showEvent( QShowEvent * event );
@@ -56,7 +58,6 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     QgsComposerScaleBar* mComposerScaleBar;
 
     void refreshMapComboBox();
-    void setGuiElements();
     /**Enables/disables the signals of the input gui elements*/
     void blockMemberSignals( bool enable );
 };

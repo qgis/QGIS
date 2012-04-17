@@ -30,6 +30,7 @@
 #include <cmath>
 
 #include "qgscoordinatetransform.h"
+#include "qgsdatasourceuri.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -118,77 +119,48 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
   QgsDebugMsg( "exiting constructor." );
 }
 
-void QgsWmsProvider::parseUri( QString uri )
+void QgsWmsProvider::parseUri( QString uriString )
 {
-  // Strip off and store the user name and password (if they exist)
-  if ( !uri.startsWith( " http:" ) )
+  QgsDebugMsg( "uriString = " + uriString );
+  QgsDataSourceURI uri;
+  uri.setEncodedUri( uriString );
+
+  mTiled = false;
+  mTileWidth = 0;
+  mTileHeight = 0;
+  mResolutions.clear();
+  mIgnoreGetMapUrl = false;
+  mIgnoreGetFeatureInfoUrl = false;
+
+  httpuri = uri.param( "url" );
+  QgsDebugMsg( "set httpuri to " + httpuri );
+
+  mUserName = uri.param( "username" );
+  QgsDebugMsg( "set username to " + mUserName );
+
+  mPassword = uri.param( "password" );
+  QgsDebugMsg( "set password to " + mPassword );
+
+  addLayers( uri.params( "layers" ), uri.params( "styles" ) );
+  setImageEncoding( uri.param( "format" ) );
+  setImageCrs( uri.param( "crs" ) );
+
+  if ( uri.hasParam( "tileWidth" ) )
   {
-    mTiled = false;
-    mTileWidth = 0;
-    mTileHeight = 0;
-    mResolutions.clear();
-
-    mIgnoreGetMapUrl = false;
-    mIgnoreGetFeatureInfoUrl = false;
-
-    // uri potentially contains username and password
-    QStringList parts = uri.split( "," );
-    QStringListIterator iter( parts );
-    while ( iter.hasNext() )
+    mTiled = true;
+    mTileWidth = uri.param( "tileWidth" ).toInt();
+    mTileHeight = uri.param( "tileHeight" ).toInt();
+    foreach( QString p, uri.params( "tileResolutions" ) )
     {
-      QString item = iter.next();
-      QgsDebugMsg( "testing for creds: " + item );
-      if ( item.startsWith( "username=" ) )
-      {
-        mUserName = item.mid( 9 );
-        QgsDebugMsg( "set username to " + mUserName );
-      }
-      else if ( item.startsWith( "password=" ) )
-      {
-        mPassword = item.mid( 9 );
-        QgsDebugMsg( "set password to " + mPassword );
-      }
-      else if ( item.startsWith( "tiled=" ) )
-      {
-        QStringList params = item.mid( 6 ).split( ";" );
-
-        mTiled = true;
-        mTileWidth = params.takeFirst().toInt();
-        mTileHeight = params.takeFirst().toInt();
-
-        mResolutions.clear();
-        foreach( QString r, params )
-        {
-          mResolutions << r.toDouble();
-        }
-        qSort( mResolutions );
-      }
-      else if ( item.startsWith( "featureCount=" ) )
-      {
-        mFeatureCount = item.mid( 13 ).toInt();
-      }
-      else if ( item.startsWith( "url=" ) )
-      {
-        // strip the authentication information from the front of the uri
-        httpuri = item.mid( 4 );
-        QgsDebugMsg( "set httpuri to " + httpuri );
-      }
-      else if ( item.startsWith( "ignoreUrl=" ) )
-      {
-        foreach( QString param, item.mid( 10 ).split( ";" ) )
-        {
-          if ( param == "GetMap" )
-          {
-            mIgnoreGetMapUrl = true;
-          }
-          else if ( param == "GetFeatureInfo" )
-          {
-            mIgnoreGetFeatureInfoUrl = true;
-          }
-        }
-      }
+      mResolutions << p.toDouble();
     }
+    qSort( mResolutions );
   }
+
+  mFeatureCount = uri.param( "featureCount" ).toInt(); // default to 0
+
+  mIgnoreGetMapUrl = uri.params( "ignoreUrl" ).contains( "GetMap" );
+  mIgnoreGetFeatureInfoUrl = uri.params( "ignoreUrl" ).contains( "GetFeatureInfo" );
 }
 
 QString QgsWmsProvider::prepareUri( QString uri ) const
@@ -2274,6 +2246,7 @@ bool QgsWmsProvider::calculateExtent()
                  .arg( layers ).arg( styles ).arg( imageCrs ) );
     for ( int i = 0; i < tilesetsSupported.size(); i++ )
     {
+      QgsDebugMsg( "tilesetsSupported[i].crs = " + tilesetsSupported[i].crs + " imageCrs = " + imageCrs );
       if ( tilesetsSupported[i].layers.join( "," ) == layers &&
            tilesetsSupported[i].styles.join( "," ) == styles &&
            tilesetsSupported[i].crs == imageCrs )
@@ -2304,6 +2277,7 @@ bool QgsWmsProvider::calculateExtent()
 
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
   }
+  QgsDebugMsg( "imageCrs = " + imageCrs );
 
   bool firstLayer = true; //flag to know if a layer is the first to be successfully transformed
   for ( QStringList::Iterator it  = activeSubLayers.begin();
@@ -2313,11 +2287,13 @@ bool QgsWmsProvider::calculateExtent()
     QgsDebugMsg( "Sublayer Iterator: " + *it );
     // This is the extent for the layer name in *it
     QgsRectangle extent = extentForLayer.find( *it ).value();
+    QgsDebugMsg( "extent = " + extent.toString() );
 
     // Convert to the user's CRS as required
     try
     {
       extent = mCoordinateTransform->transformBoundingBox( extent, QgsCoordinateTransform::ForwardTransform );
+      QgsDebugMsg( "extent = " + extent.toString() );
     }
     catch ( QgsCsException &cse )
     {
