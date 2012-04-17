@@ -33,6 +33,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsclipboard.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -42,6 +43,7 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QTreeWidgetItem>
+#include <QClipboard>
 
 const int AUTOSCROLL_MARGIN = 16;
 
@@ -695,6 +697,16 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
       theMenu.addAction( tr( "&Group Selected" ), this, SLOT( groupSelectedLayers() ) );
     }
     // ends here
+  }
+
+  if ( selectedLayers().length() == 1 )
+  {
+    QgisApp* app = QgisApp::instance();
+    theMenu.addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+    if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+    {
+      theMenu.addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+    }
   }
 
   theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
