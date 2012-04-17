@@ -113,7 +113,6 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
   if ( ptr->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
     flags |= Qt::ItemIsDragEnabled;
   }
   if ( ptr->acceptDrop() )
