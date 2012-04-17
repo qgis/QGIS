@@ -232,12 +232,12 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   // To get the images into CDash
   //
-  QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image\""
+  QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + theTestName + "\""
               " type=\"image/png\">" + mRenderedImageFile +
               "</DartMeasurementFile>"
-              "<DartMeasurementFile name=\"Expected Image\" type=\"image/png\">" +
+              "<DartMeasurementFile name=\"Expected Image " + theTestName + "\" type=\"image/png\">" +
               mExpectedImageFile + "</DartMeasurementFile>"
-              "<DartMeasurementFile name=\"Difference Image\" type=\"image/png\">" +
+              "<DartMeasurementFile name=\"Difference Image " + theTestName + "\" type=\"image/png\">" +
               myDiffImageFile + "</DartMeasurementFile>";
   qDebug( ) << myDashMessage;
 
