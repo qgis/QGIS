@@ -38,6 +38,9 @@ class GrassUtils:
 
     @staticmethod
     def grassPath():
+        if not SextanteUtils.isWindows():
+            return ""
+
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_FOLDER)
         if folder == None:
             folder = plugin_installer.__file__
@@ -53,9 +56,16 @@ class GrassUtils:
     @staticmethod
     def grassHelpPath():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
-        if folder == None:
-            folder = os.path.join(GrassUtils.grassPath(), "docs", "html")
-
+        if folder is None:
+            if SextanteUtils.isWindows():
+                testfolders = os.path.join(GrassUtils.grassPath(), "docs", "html")
+            else:
+                testfolders = ['/usr/share/doc/grass-doc/html']
+            for f in testfolders:
+                if os.path.exists(f):
+                    folder = f
+                    break
+                    
         return folder
 
     @staticmethod

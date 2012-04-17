@@ -39,7 +39,7 @@ class GrassAlgorithm(GeoAlgorithm):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
     def helpFile(self):
-        folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
+        folder = GrassUtils.grassHelpPath()
         if str(folder).strip() != "":
             helpfile = str(folder) + os.sep + self.name + ".html"
             return helpfile
