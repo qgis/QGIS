@@ -264,6 +264,20 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
     NO_DEFAULT_PATH
     )
 
+
+#############################################################
+# search for zlib optional, used by quazip
+# this uses script provided by cmake
+# if WIN32 should use zlib from QT
+FIND_PACKAGE(ZLIB)
+IF (ZLIB_FOUND)
+  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+  SET(HAVE_ZLIB TRUE)
+ELSE (ZLIB_FOUND)
+  MESSAGE(STATUS "Could not find zlib (optional)")
+ENDIF(ZLIB_FOUND)
+
+
 #############################################################
 # enable warnings
 

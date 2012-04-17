@@ -602,6 +602,60 @@
                 </item>
                </layout>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_14">
+                <item>
+                 <widget class="QLabel" name="label_25">
+                  <property name="text">
+                   <string>Scan for valid items in the browser dock</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_12">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_13">
+                <item>
+                 <widget class="QLabel" name="label_24">
+                  <property name="text">
+                   <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_11">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbScanZipInBrowser"/>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1615,7 +1669,7 @@
              <property name="title">
               <string>Other settings</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_12">
+             <layout class="QGridLayout" name="gridLayout_28">
               <item row="0" column="0">
                <widget class="QCheckBox" name="chkDisableAttributeValuesDlg">
                 <property name="text">
@@ -1647,7 +1701,7 @@
                <widget class="QComboBox" name="mValidateGeometries"/>
               </item>
               <item row="3" column="0">
-               <widget class="QLabel" name="label_21">
+               <widget class="QLabel" name="label_26">
                 <property name="text">
                  <string>Join style for curve offset</string>
                 </property>
@@ -1657,7 +1711,7 @@
                <widget class="QComboBox" name="mOffsetJoinStyleComboBox"/>
               </item>
               <item row="4" column="0">
-               <widget class="QLabel" name="label_22">
+               <widget class="QLabel" name="label_27">
                 <property name="text">
                  <string>Quadrantsegments for curve offset</string>
                 </property>
@@ -1667,7 +1721,7 @@
                <widget class="QSpinBox" name="mOffsetQuadSegSpinBox"/>
               </item>
               <item row="5" column="0">
-               <widget class="QLabel" name="label_23">
+               <widget class="QLabel" name="label_28">
                 <property name="text">
                  <string>Miter limit for curve offset</string>
                 </property>

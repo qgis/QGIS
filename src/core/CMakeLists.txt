@@ -177,6 +177,21 @@ SET(QGIS_CORE_SRCS
   qgsspatialindex.cpp
 )
 
+IF(HAVE_ZLIB)
+  SET(QGIS_CORE_SRCS
+    ${QGIS_CORE_SRCS}
+    quazip/unzip.c  
+    quazip/zip.c
+    quazip/JlCompress.cpp
+    quazip/qioapi.cpp
+    quazip/quaadler32.cpp
+    quazip/quacrc32.cpp
+    quazip/quazip.cpp
+    quazip/quazipfile.cpp
+    quazip/quazipnewinfo.cpp
+    )
+ENDIF(HAVE_ZLIB)
+
 IF(WIN32)
     SET(QGIS_CORE_SRCS
         ${QGIS_CORE_SRCS}
@@ -280,6 +295,14 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qextserialport/qextserialport.h
   gps/qextserialport/qextserialenumerator.h
 )
+
+IF (HAVE_ZLIB)
+  SET(QGIS_CORE_MOC_HDRS
+    ${QGIS_CORE_MOC_HDRS}
+    quazip/quazipfile.h
+    )
+ENDIF(HAVE_ZLIB)
+
 
 IF (QT_MOBILITY_LOCATION_FOUND)
     SET(QGIS_CORE_MOC_HDRS
@@ -550,6 +573,10 @@ IF (NOT WITH_INTERNAL_SPATIALINDEX)
   TARGET_LINK_LIBRARIES(qgis_core ${SPATIALINDEX_LIBRARY})
 ENDIF (NOT WITH_INTERNAL_SPATIALINDEX)
 
+IF (HAVE_ZLIB)
+  INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
+  TARGET_LINK_LIBRARIES(qgis_core ${ZLIB_LIBRARIES})
+ENDIF (HAVE_ZLIB)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
