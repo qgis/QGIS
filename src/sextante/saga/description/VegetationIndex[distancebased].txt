@@ -2,8 +2,8 @@ Vegetation Index[distance based]
 imagery_tools
 ParameterRaster|NIR|Near Infrared Band|False
 ParameterRaster|RED|Red Band|False
-ParameterNumber|SLOPE|Slope of the soil line|None|None|0
-ParameterNumber|INTERCEPT|Intercept of the soil line|None|None|0
+ParameterNumber|SLOPE|Slope of the soil line|None|None|0.0
+ParameterNumber|INTERCEPT|Intercept of the soil line|None|None|0.0
 OutputRaster|PVI|PVI (Richardson and Wiegand)
 OutputRaster|PVI1|PVI (Perry & Lautenschlager)
 OutputRaster|PVI2|PVI (Walther & Shabaani)

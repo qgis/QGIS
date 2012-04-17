@@ -1,7 +1,7 @@
 Multiple Regression Analysis (Grid/Grids)
 geostatistics_regression
 ParameterRaster|DEPENDENT|Dependent|False
-ParameterMultipleInput|GRIDS|Grids|3.0|False
+ParameterMultipleInput|GRIDS|Grids|3|False
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 ParameterBoolean|COORD_X         |Include X Coordinate|True
 ParameterBoolean|COORD_Y         |Include Y Coordinate|True

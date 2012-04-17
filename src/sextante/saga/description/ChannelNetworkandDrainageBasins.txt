@@ -1,7 +1,7 @@
 Channel Network and Drainage Basins
 ta_channels
 ParameterRaster|DEM|Elevation|False
-ParameterNumber|THRESHOLD|Threshold|None|None|5
+ParameterNumber|THRESHOLD|Threshold|None|None|5.0
 OutputRaster|DIRECTION|Flow Direction
 OutputRaster|CONNECTION|Flow Connectivity
 OutputRaster|ORDER|Strahler Order

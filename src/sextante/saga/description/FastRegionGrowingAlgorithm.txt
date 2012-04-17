@@ -1,6 +1,6 @@
 Fast Region Growing Algorithm
 imagery_rga
-ParameterMultipleInput|INPUT|Input Grids|3.0|False
+ParameterMultipleInput|INPUT|Input Grids|3|False
 ParameterRaster|START|Seeds Grid|False
 ParameterRaster|REP|Smooth Rep|True
 OutputRaster|RESULT|Segmente

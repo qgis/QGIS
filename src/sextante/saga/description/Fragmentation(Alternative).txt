@@ -9,7 +9,7 @@ ParameterBoolean|BORDER                |Add Border|True
 ParameterNumber|WEIGHT|Connectivity Weighting|None|None|1.1
 ParameterNumber|DENSITY_MIN|Minimum Density [Percent]|None|None|10
 ParameterNumber|DENSITY_INT|Minimum Density for Interior Forest [Percent]|None|None|99
-ParameterNumber|LEVEL_GROW|Search Distance Increment|None|None|0
+ParameterNumber|LEVEL_GROW|Search Distance Increment|None|None|0.0
 ParameterBoolean|DENSITY_MEAN          |Density from Neighbourhood|True
 OutputRaster|DENSITY|Density [Percent]
 OutputRaster|CONNECTIVITY|Connectivity [Percent]

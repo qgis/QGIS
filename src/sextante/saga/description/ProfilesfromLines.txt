@@ -1,7 +1,7 @@
 Profiles from Lines
 ta_profiles
 ParameterRaster|DEM|DEM|False
-ParameterMultipleInput|VALUES|Values|3.0|True
+ParameterMultipleInput|VALUES|Values|3|True
 ParameterVector|LINES|Lines|1|False
 ParameterTableField|NAME|Name|LINES
 ParameterBoolean|SPLIT         |Each Line as new Profile|True

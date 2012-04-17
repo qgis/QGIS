@@ -1,4 +1,4 @@
 Grids Sum
 grid_calculus
-ParameterMultipleInput|GRIDS|Grids|3.0|False
+ParameterMultipleInput|GRIDS|Grids|3|False
 OutputRaster|RESULT|Sum

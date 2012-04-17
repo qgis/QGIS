@@ -7,13 +7,13 @@ ParameterSelection|WEIGHTING|Distance Weighting|[0] inverse distance to a power;
 ParameterNumber|POWER|Inverse Distance Power|0.0|None|2
 ParameterNumber|BANDWIDTH|Exponential and Gaussian Weighting Bandwidth|0.0|None|1
 ParameterSelection|RANGE|Search Range|[0] search radius (local);[1] no search radius (global)
-ParameterNumber|RADIUS|Search Radius|None|None|100
+ParameterNumber|RADIUS|Search Radius|None|None|100.0
 ParameterSelection|MODE|Search Mode|[0] all directions;[1] quadrants
 ParameterSelection|POINTS|Number of Points|[0] maximum number of points;[1] all points
 ParameterNumber|NPOINTS|Maximum Number of Points|None|None|10
-ParameterNumber|USER_XMIN|Left|None|None|0
-ParameterNumber|USER_XMAX|Right|None|None|0
-ParameterNumber|USER_YMIN|Bottom|None|None|0
-ParameterNumber|USER_YMAX|Top|None|None|0
-ParameterNumber|USER_SIZE|Cellsize|None|None|0
+ParameterNumber|USER_XMIN|Left|None|None|0.0
+ParameterNumber|USER_XMAX|Right|None|None|0.0
+ParameterNumber|USER_YMIN|Bottom|None|None|0.0
+ParameterNumber|USER_YMAX|Top|None|None|0.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|0.0
 OutputRaster|USER_GRID|Grid

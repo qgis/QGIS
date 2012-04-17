@@ -8,5 +8,5 @@ ParameterNumber|LOCALPOINTS|Number of Points for Local Interpolation|None|None|1
 ParameterBoolean|EXTENDED         |Extended Neighourhood|True
 ParameterSelection|NEIGHBOURS|Neighbourhood|[0] Neumann;[1] Moore
 ParameterNumber|RADIUS|Radius (Cells)|None|None|0
-ParameterNumber|RELAXATION|Relaxation|None|None|0
+ParameterNumber|RELAXATION|Relaxation|None|None|0.0
 OutputRaster|CLOSED|Closed Gaps Grid

@@ -1,6 +1,6 @@
 Statistics for Grids
 geostatistics_grid
-ParameterMultipleInput|GRIDS|Grids|3.0|False
+ParameterMultipleInput|GRIDS|Grids|3|False
 OutputRaster|MEAN|Arithmetic Mean
 OutputRaster|MIN|Minimum
 OutputRaster|MAX|Maximum

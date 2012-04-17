@@ -7,7 +7,7 @@ ParameterRaster|MATERIAL|Material|True
 ParameterRaster|TARGET|Target|True
 ParameterNumber|STEP|Step|None|None|1
 ParameterSelection|Method|Method|[0] Rho 8;[1] Kinematic Routing Algorithm;[2] DEMON
-ParameterNumber|MINDQV|DEMON - Min. DQV|None|None|0
+ParameterNumber|MINDQV|DEMON - Min. DQV|None|None|0.0
 ParameterBoolean|CORRECT         |Flow Correction|True
 OutputRaster|CAREA|Catchment Area
 OutputRaster|CHEIGHT|Catchment Height

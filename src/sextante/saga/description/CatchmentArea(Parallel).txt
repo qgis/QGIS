@@ -8,10 +8,10 @@ ParameterRaster|TARGET|Target|True
 ParameterNumber|STEP|Step|None|None|1
 ParameterSelection|Method|Method|[0] Deterministic 8;[1] Rho 8;[2] Braunschweiger Reliefmodell;[3] Deterministic Infinity;[4] Multiple Flow Direction;[5] Multiple Triangular Flow Directon
 ParameterBoolean|DOLINEAR             |Linear Flow|True
-ParameterNumber|LINEARTHRS|Linear Flow Threshold|None|None|500
+ParameterNumber|LINEARTHRS|Linear Flow Threshold|None|None|500.0
 ParameterRaster|LINEARTHRS_GRID|Linear Flow Threshold Grid|True
 ParameterRaster|CHDIR_GRID|Channel Direction|True
-ParameterNumber|CONVERGENCE|Convergence|None|None|1
+ParameterNumber|CONVERGENCE|Convergence|None|None|1.0
 OutputRaster|CAREA|Catchment Area
 OutputRaster|CHEIGHT|Catchment Height
 OutputRaster|CSLOPE|Catchment Slope

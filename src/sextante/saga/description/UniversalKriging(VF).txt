@@ -11,7 +11,7 @@ ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None|0
 ParameterNumber|VAR_NCLASSES|Lag Distance Classes|None|None|0
 ParameterNumber|VAR_NSKIP|Skip|None|None|0
 ParameterString|VAR_MODEL|Model|
-ParameterMultipleInput|GRIDS|Grids|3.0|True
+ParameterMultipleInput|GRIDS|Grids|3|True
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 ParameterBoolean|COORDS             |Coordinates|True
 ParameterSelection|GLOBAL|Search Range|[0] local;[1] global
@@ -21,10 +21,10 @@ ParameterNumber|NPOINTS_MIN|Minimum|None|None|0
 ParameterNumber|NPOINTS_MAX|Maximum|None|None|0
 ParameterSelection|MODE|Search Mode|[0] all directions;[1] quadrants
 ParameterBoolean|USER_BVARIANCE     |Create Quality Grid|True
-ParameterNumber|USER_XMIN|Left|None|None|0
-ParameterNumber|USER_XMAX|Right|None|None|0
-ParameterNumber|USER_YMIN|Bottom|None|None|0
-ParameterNumber|USER_YMAX|Top|None|None|0
-ParameterNumber|USER_SIZE|Cellsize|None|None|0
+ParameterNumber|USER_XMIN|Left|None|None|0.0
+ParameterNumber|USER_XMAX|Right|None|None|0.0
+ParameterNumber|USER_YMIN|Bottom|None|None|0.0
+ParameterNumber|USER_YMAX|Top|None|None|0.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
 OutputRaster|USER_GRID|Grid
 OutputRaster|USER_VARIANCE|Quality Measure
