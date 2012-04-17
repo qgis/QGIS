@@ -40,6 +40,7 @@
 #include <QFile>
 #include <QHash>
 #include <QTime>
+#include <QSettings>
 
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
@@ -105,13 +106,29 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   mGdalDataset = NULL;
 
+  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+  // TODO suppress error messages and report in debug, like in OGR provider
+  // TODO use the file name of the file inside the zip, needs unzip.h
+  if ( uri.right( 4 ) == ".zip" )
+  {
+    if ( uri.left( 8 ) != "/vsizip/" )
+      setDataSourceUri( "/vsizip/" + uri );
+    QgsDebugMsg( QString( "Trying /vsizip syntax, uri= %1" ).arg( dataSourceUri() ) );
+  }
+  else if ( uri.right( 3 ) == ".gz" )
+  {
+    if ( uri.left( 9 ) != "/vsigzip/" )
+      setDataSourceUri( "/vsigzip/" + uri );
+    QgsDebugMsg( QString( "Trying /vsigzip syntax, uri= %1" ).arg( dataSourceUri() ) );
+  }
+
   //mGdalBaseDataset = GDALOpen( QFile::encodeName( uri ).constData(), GA_ReadOnly );
-  mGdalBaseDataset = GDALOpen( TO8F( uri ), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
 
   CPLErrorReset();
   if ( mGdalBaseDataset == NULL )
   {
-    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     return;
   }
 
@@ -167,16 +184,18 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     mGeoTransform[5] = -1;
   }
 
-  //check if this file has pyramids
+  // get sublayers
+  mSubLayers = QgsGdalProvider::subLayers( mGdalDataset );
+
+  // check if this file has bands or subdatasets
   CPLErrorReset();
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
   if ( myGDALBand == NULL )
   {
     QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
-    QStringList layers = subLayers();
 
     // if there are no subdatasets, then close the dataset
-    if ( layers.size() == 0 )
+    if ( mSubLayers.size() == 0 )
     {
       QMessageBox::warning( 0, QObject::tr( "Warning" ),
                             QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
@@ -192,11 +211,12 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     else
     {
       QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
-                   QString( " but dataset has %1 subdatasets" ).arg( layers.size() ) );
+                   QString( " but dataset has %1 subdatasets" ).arg( mSubLayers.size() ) );
       return;
     }
   }
 
+  // check if this file has pyramids
   mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
 
   // Get the layer's projection info and set up the
@@ -1058,7 +1078,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
     int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
     int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
 
-    QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
@@ -1074,7 +1094,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
       }
 
       //double value = readValue( data, type, 0 );
-      QgsDebugMsg( QString( "value=%1" ).arg( value ) );
+      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
       QString v;
 
       if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
@@ -1590,7 +1610,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QStringList QgsGdalProvider::subLayers() const
 {
-  return subLayers( mGdalDataset );
+  return mSubLayers;
 }
 
 void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )
@@ -1815,11 +1835,24 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       {
         catchallFilter << QString( GDALGetDescription( myGdalDriver ) );
       }
-    }
+    } // each loaded GDAL driver
 
     myGdalDriverExtension = myGdalDriverLongName = "";  // reset for next driver
 
   }                           // each loaded GDAL driver
+
+  // VSIFileHandler (see qgsogrprovider.cpp)
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
+  // QSettings settings;
+  // if ( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() != 0 )
+  if ( 1 )
+  {
+    QString glob = "*.zip";
+    glob += " *.gz";
+    theFileFiltersString += ";;[GDAL] " + QObject::tr( "GDAL/OGR VSIFileHandler" ) + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+    theExtensions << "zip" << "gz";
+  }
+#endif
 
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
 }                               // buildSupportedRasterFileFilter_()
@@ -1832,9 +1865,26 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 
   CPLErrorReset();
 
+  QString fileName = theFileNameQString;
+
+  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+  // TODO suppress error messages and report in debug, like in OGR provider
+  if ( fileName.right( 4 ) == ".zip" )
+  {
+    if ( fileName.left( 8 ) != "/vsizip/" )
+      fileName = "/vsizip/" + fileName;
+    QgsDebugMsg( QString( "Trying /vsizip syntax, fileName= %1" ).arg( fileName ) );
+  }
+  if ( fileName.right( 3 ) == ".gz" )
+  {
+    if ( fileName.left( 9 ) != "/vsigzip/" )
+      fileName = "/vsigzip/" + fileName;
+    QgsDebugMsg( QString( "Trying /vsigzip syntax, fileName= %1" ).arg( fileName ) );
+  }
+
   //open the file using gdal making sure we have handled locale properly
   //myDataset = GDALOpen( QFile::encodeName( theFileNameQString ).constData(), GA_ReadOnly );
-  myDataset = GDALOpen( TO8F( theFileNameQString ), GA_ReadOnly );
+  myDataset = GDALOpen( TO8F( fileName ), GA_ReadOnly );
   if ( myDataset == NULL )
   {
     if ( CPLGetLastErrorNo() != CPLE_OpenFailed )
@@ -1948,3 +1998,4 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   QStringList wildcards;
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
+
