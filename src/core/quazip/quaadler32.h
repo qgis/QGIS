@@ -13,17 +13,17 @@
 class QUAZIP_EXPORT QuaAdler32 : public QuaChecksum32
 {
 
-public:
-	QuaAdler32();
+  public:
+    QuaAdler32();
 
-	quint32 calculate(const QByteArray &data);
+    quint32 calculate( const QByteArray &data );
 
-	void reset();
-	void update(const QByteArray &buf);
-	quint32 value();
+    void reset();
+    void update( const QByteArray &buf );
+    quint32 value();
 
-private:
-	quint32 checksum;
+  private:
+    quint32 checksum;
 };
 
 #endif //QUAADLER32_H

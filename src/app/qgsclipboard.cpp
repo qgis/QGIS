@@ -167,35 +167,35 @@ QgsCoordinateReferenceSystem QgsClipboard::crs()
 
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString* text )
 {
-    QMimeData *mdata = new QMimeData();
-    mdata->setData( mimeType, data );
-    if ( text )
-    {
-	mdata->setText( *text );
-    }
-    // Transfers ownership to the clipboard object
+  QMimeData *mdata = new QMimeData();
+  mdata->setData( mimeType, data );
+  if ( text )
+  {
+    mdata->setText( *text );
+  }
+  // Transfers ownership to the clipboard object
 #ifndef Q_OS_WIN
-    QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
+  QApplication::clipboard()->setMimeData( mdata, QClipboard::Selection );
 #endif
-    QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
+  QApplication::clipboard()->setMimeData( mdata, QClipboard::Clipboard );
 }
 
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data, const QString& text )
 {
-    setData( mimeType, data, &text );
+  setData( mimeType, data, &text );
 }
 
 void QgsClipboard::setData( const QString& mimeType, const QByteArray& data )
 {
-    setData( mimeType, data, 0 );
+  setData( mimeType, data, 0 );
 }
 
 bool QgsClipboard::hasFormat( const QString& mimeType )
 {
-    return QApplication::clipboard()->mimeData()->hasFormat( mimeType );
+  return QApplication::clipboard()->mimeData()->hasFormat( mimeType );
 }
 
 QByteArray QgsClipboard::data( const QString& mimeType )
 {
-    return QApplication::clipboard()->mimeData()->data( mimeType );
+  return QApplication::clipboard()->mimeData()->data( mimeType );
 }

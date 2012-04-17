@@ -375,8 +375,8 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     }
   }
 #else //GEOS_VERSION>=3.3
-  Q_UNUSED(offset);
-  Q_UNUSED(leftSide);
+  Q_UNUSED( offset );
+  Q_UNUSED( leftSide );
 #endif //GEOS_VERSION>=3.3
 }
 

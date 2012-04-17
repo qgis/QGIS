@@ -4,25 +4,25 @@
 
 QuaAdler32::QuaAdler32()
 {
-	reset();
+  reset();
 }
 
-quint32 QuaAdler32::calculate(const QByteArray &data)
+quint32 QuaAdler32::calculate( const QByteArray &data )
 {
-	return adler32( adler32(0L, Z_NULL, 0), (const Bytef*)data.data(), data.size() );
+  return adler32( adler32( 0L, Z_NULL, 0 ), ( const Bytef* )data.data(), data.size() );
 }
 
 void QuaAdler32::reset()
 {
-	checksum = adler32(0L, Z_NULL, 0);
+  checksum = adler32( 0L, Z_NULL, 0 );
 }
 
-void QuaAdler32::update(const QByteArray &buf)
+void QuaAdler32::update( const QByteArray &buf )
 {
-	checksum = adler32( checksum, (const Bytef*)buf.data(), buf.size() );
+  checksum = adler32( checksum, ( const Bytef* )buf.data(), buf.size() );
 }
 
 quint32 QuaAdler32::value()
 {
-	return checksum;
+  return checksum;
 }

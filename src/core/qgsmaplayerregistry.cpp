@@ -59,13 +59,13 @@ QgsMapLayer * QgsMapLayerRegistry::mapLayer( QString theLayerId )
 
 //introduced in 1.8
 QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
-                                    QList<QgsMapLayer *> theMapLayers,
-                                    bool theEmitSignal )
+  QList<QgsMapLayer *> theMapLayers,
+  bool theEmitSignal )
 {
   QList<QgsMapLayer *> myResultList;
-  for (int i = 0; i < theMapLayers.size(); ++i)
+  for ( int i = 0; i < theMapLayers.size(); ++i )
   {
-    QgsMapLayer * myLayer = theMapLayers.at(i);
+    QgsMapLayer * myLayer = theMapLayers.at( i );
     if ( !myLayer || !myLayer->isValid() )
     {
       QgsDebugMsg( "cannot add invalid layers" );
@@ -73,7 +73,7 @@ QList<QgsMapLayer *> QgsMapLayerRegistry::addMapLayers(
     }
     //check the layer is not already registered!
     QMap<QString, QgsMapLayer*>::iterator myIterator =
-        mMapLayers.find( myLayer->id() );
+      mMapLayers.find( myLayer->id() );
     //if myIterator returns mMapLayers.end() then it
     //does not exist in registry and its safe to add it
     if ( myIterator == mMapLayers.end() )
@@ -97,30 +97,31 @@ QgsMapLayerRegistry::addMapLayer( QgsMapLayer * theMapLayer,
                                   bool theEmitSignal )
 {
   QList<QgsMapLayer *> myList;
-  myList.append(theMapLayer);
-  addMapLayers(myList, theEmitSignal);
+  myList.append( theMapLayer );
+  addMapLayers( myList, theEmitSignal );
   return theMapLayer;
 } //  QgsMapLayerRegistry::addMapLayer
 
 //introduced in 1.8
 void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
-                                           bool theEmitSignal )
+    bool theEmitSignal )
 {
   if ( theEmitSignal )
     emit layersWillBeRemoved( theLayerIds );
 
-  foreach (const QString &myId, theLayerIds) {
+  foreach( const QString &myId, theLayerIds )
+  {
     if ( theEmitSignal )
       emit layerWillBeRemoved( myId );
     delete mMapLayers[myId];
     mMapLayers.remove( myId );
   }
-  emit layersWillBeRemoved(theLayerIds);
+  emit layersWillBeRemoved( theLayerIds );
 }
 
 //deprecated 1.8 use removeMapLayers rather
 void QgsMapLayerRegistry::removeMapLayer( QString theLayerId,
-                                          bool theEmitSignal )
+    bool theEmitSignal )
 {
   QStringList myList;
   myList << theLayerId;
@@ -141,7 +142,7 @@ void QgsMapLayerRegistry::removeAllMapLayers()
     QString id = it.key();
     myList << id;
   }
-  removeMapLayers(myList, false);
+  removeMapLayers( myList, false );
   mMapLayers.clear();
 } // QgsMapLayerRegistry::removeAllMapLayers()
 

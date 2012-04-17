@@ -34,19 +34,20 @@
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-typedef voidpf (ZCALLBACK *open_file_func) OF((voidpf opaque, voidpf file, int mode));
-typedef uLong  (ZCALLBACK *read_file_func) OF((voidpf opaque, voidpf stream, void* buf, uLong size));
-typedef uLong  (ZCALLBACK *write_file_func) OF((voidpf opaque, voidpf stream, const void* buf, uLong size));
-typedef uLong   (ZCALLBACK *tell_file_func) OF((voidpf opaque, voidpf stream));
-typedef int   (ZCALLBACK *seek_file_func) OF((voidpf opaque, voidpf stream, uLong offset, int origin));
-typedef int    (ZCALLBACK *close_file_func) OF((voidpf opaque, voidpf stream));
-typedef int    (ZCALLBACK *testerror_file_func) OF((voidpf opaque, voidpf stream));
+  typedef voidpf( ZCALLBACK *open_file_func ) OF(( voidpf opaque, voidpf file, int mode ) );
+  typedef uLong( ZCALLBACK *read_file_func ) OF(( voidpf opaque, voidpf stream, void* buf, uLong size ) );
+  typedef uLong( ZCALLBACK *write_file_func ) OF(( voidpf opaque, voidpf stream, const void* buf, uLong size ) );
+  typedef uLong( ZCALLBACK *tell_file_func ) OF(( voidpf opaque, voidpf stream ) );
+  typedef int ( ZCALLBACK *seek_file_func ) OF(( voidpf opaque, voidpf stream, uLong offset, int origin ) );
+  typedef int ( ZCALLBACK *close_file_func ) OF(( voidpf opaque, voidpf stream ) );
+  typedef int ( ZCALLBACK *testerror_file_func ) OF(( voidpf opaque, voidpf stream ) );
 
-typedef struct zlib_filefunc_def_s
-{
+  typedef struct zlib_filefunc_def_s
+  {
     open_file_func      zopen_file;
     read_file_func      zread_file;
     write_file_func     zwrite_file;
@@ -55,11 +56,11 @@ typedef struct zlib_filefunc_def_s
     close_file_func     zclose_file;
     testerror_file_func zerror_file;
     voidpf              opaque;
-} zlib_filefunc_def;
+  } zlib_filefunc_def;
 
 
 
-void fill_qiodevice_filefunc OF((zlib_filefunc_def* pzlib_filefunc_def));
+  void fill_qiodevice_filefunc OF(( zlib_filefunc_def* pzlib_filefunc_def ) );
 
 #define ZREAD(filefunc,filestream,buf,size) ((*((filefunc).zread_file))((filefunc).opaque,filestream,buf,size))
 #define ZWRITE(filefunc,filestream,buf,size) ((*((filefunc).zwrite_file))((filefunc).opaque,filestream,buf,size))

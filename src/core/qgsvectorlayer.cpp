@@ -125,7 +125,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 #else
     bool use_symbology_ng_default = true;
 #endif
-        if ( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() && hasGeometryType() )
+    if ( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() && hasGeometryType() )
     {
       // using symbology-ng!
       setUsingRendererV2( true );

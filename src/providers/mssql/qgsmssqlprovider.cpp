@@ -415,7 +415,7 @@ void QgsMssqlProvider::loadFields()
 
 QVariant QgsMssqlProvider::defaultValue( int fieldId )
 {
-  if ( mDefaultValues.contains(fieldId) )
+  if ( mDefaultValues.contains( fieldId ) )
     return mDefaultValues[fieldId];
   else
     return QVariant( QString::null );
@@ -592,7 +592,7 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
     <<  rect.xMinimum() << " " <<  rect.yMinimum();
 
     mStatement += QString( " where [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
-        mGeometryColName, mGeometryColType, r, QString::number( mSRId ) );
+                    mGeometryColName, mGeometryColType, r, QString::number( mSRId ) );
   }
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
@@ -783,7 +783,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains(it2.key()) && mDefaultValues[it2.key()] == *it2 )
+      if ( mDefaultValues.contains( it2.key() ) && mDefaultValues[it2.key()] == *it2 )
         continue; // skip fields having default values
 
       if ( !first )
@@ -856,7 +856,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains(it2.key()) && mDefaultValues[it2.key()] == *it2 )
+      if ( mDefaultValues.contains( it2.key() ) && mDefaultValues[it2.key()] == *it2 )
         continue; // skip fields having default values
 
       QVariant::Type type = fld.type();
