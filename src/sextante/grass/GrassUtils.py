@@ -54,7 +54,7 @@ class GrassUtils:
     def grassHelpPath():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
         if folder == None:
-            folder =""
+            folder = os.path.join(GrassUtils.grassPath(), "docs", "html")
 
         return folder
 

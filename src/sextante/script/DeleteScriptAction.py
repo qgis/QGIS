@@ -1,5 +1,6 @@
 from sextante.script.ScriptAlgorithm import ScriptAlgorithm
 from sextante.gui.ContextAction import ContextAction
+import os
 
 class DeleteScriptAction(ContextAction):
 
@@ -10,4 +11,5 @@ class DeleteScriptAction(ContextAction):
         return isinstance(self.alg, ScriptAlgorithm)
 
     def execute(self, alg):
-        pass
+        os.remove(self.alg.descriptionFile)
+        self.toolbox.updateTree()

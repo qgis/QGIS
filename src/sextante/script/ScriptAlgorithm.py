@@ -104,10 +104,10 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputTable()
         elif tokens[1].lower().strip().startswith("output html"):
             out = OutputHTML()
-        elif tokens[1].lower().strip().startswith("output number"):
-            out = OutputNumber()
-
-
+        #=======================================================================
+        # elif tokens[1].lower().strip().startswith("output number"):
+        #    out = OutputNumber()
+        #=======================================================================
 
         if param != None:
             self.addParameter(param)

@@ -2,11 +2,12 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterSelection(Parameter):
 
-    def __init__(self, name="", description="", options=[]):
+    def __init__(self, name="", description="", options=[], default = 0):
         self.name = name
         self.description = description
         self.options = options
         self.value = None
+        self.default = default
 
     def setValue(self, n):
         try:
@@ -21,7 +22,10 @@ class ParameterSelection(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"))
+        if len(tokens) == 4:
+            return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"), int(tokens[3]))
+        else:
+            return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"))
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
