@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -151,6 +151,9 @@
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
     <addaction name="mActionAddWfsLayer"/>
+    <addaction name="separator"/>
+    <addaction name="mActionCopyStyle"/>
+    <addaction name="mActionPasteStyle"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionSaveEdits"/>
@@ -1646,6 +1649,24 @@
    </property>
    <property name="text">
     <string>Offset Curve</string>
+   </property>
+  </action>
+  <action name="mActionCopyStyle">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditCopy.png</normaloff>:/images/themes/default/mActionEditCopy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy style</string>
+   </property>
+  </action>
+  <action name="mActionPasteStyle">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+   </property>
+   <property name="text">
+    <string>Paste style</string>
    </property>
   </action>
  </widget>

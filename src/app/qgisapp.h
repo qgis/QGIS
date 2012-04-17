@@ -429,6 +429,17 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
+    /**
+       \param sourceLayer  The layer where the style will be taken from
+                                        (defaults to the active layer on the legend)
+     */
+    void copyStyle( QgsMapLayer * sourceLayer = 0 );
+    //! copies style on the clipboard to the active layer
+    /**
+       \param destinatioLayer  The layer that the clipboard will be pasted to
+                                (defaults to the active layer on the legend)
+     */
+    void pasteStyle( QgsMapLayer * destinationLayer = 0 );
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 
