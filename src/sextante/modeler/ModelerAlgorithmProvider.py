@@ -10,13 +10,14 @@ from sextante.modeler.EditModelAction import EditModelAction
 from sextante.modeler.CreateNewModelAction import CreateNewModelAction
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from PyQt4 import QtGui
+from sextante.modeler.DeleteModelAction import DeleteModelAction
 
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions = [CreateNewModelAction()]
-        self.contextMenuActions = [EditModelAction()]
+        self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
