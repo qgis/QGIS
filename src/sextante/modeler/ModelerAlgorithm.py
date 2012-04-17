@@ -346,6 +346,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 self.removeOutputFromName(name)
         del self.algs[index]
         del self.algParameters[index]
+        del self.algOutputs[index]
         del self.algPos[index]
         self.updateModelerView()
         return True
@@ -363,8 +364,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         if isinstance(element, Parameter):
             for alg in self.algParameters:
                 for aap in alg.values():
-                    if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.param == element.name:
-                        return True
+                    if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
+                        if aap.param == element.name:
+                            return True
+                        elif aap.param in self.paramValues: #check for multiple inputs
+                            aap2 = self.paramValues[aap.param]
+                            if element.name in aap2:
+                                return True
             if isinstance(element, ParameterVector):
                 for param in self.parameters:
                     if isinstance(param, ParameterTableField):
