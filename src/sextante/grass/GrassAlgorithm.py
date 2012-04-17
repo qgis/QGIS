@@ -198,7 +198,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 command += " output=\"" + filename + "\""
                 commands.append(command)
             if isinstance(out, OutputVector):
-                command = "v.out.ogr -e -z input=" + out.name
+                command = "v.out.ogr -e input=" + out.name
                 command += " dsn=\"" + os.path.dirname(out.value) + "\""
                 command += " format=ESRI_Shapefile"
                 command += " olayer=" + os.path.basename(out.value)
