@@ -56,10 +56,12 @@ class Ui_ParametersDialog(object):
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.showHelpButton = QtGui.QPushButton()
-        self.showHelpButton.setObjectName("showHelpButton")
-        self.showHelpButton.setText("Show help")
-        self.buttonBox.addButton(self.showHelpButton, QtGui.QDialogButtonBox.ActionRole)
+        if self.alg.helpFile():
+            self.showHelpButton = QtGui.QPushButton()
+            self.showHelpButton.setObjectName("showHelpButton")
+            self.showHelpButton.setText("Show help")
+            self.buttonBox.addButton(self.showHelpButton, QtGui.QDialogButtonBox.ActionRole)
+            QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
@@ -87,7 +89,6 @@ class Ui_ParametersDialog(object):
         dialog.setLayout(self.verticalLayout)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
-        QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
     def somethingDependsOnThisParameter(self, parent):
