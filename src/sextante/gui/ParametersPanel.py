@@ -1,3 +1,4 @@
+import os
 from PyQt4 import QtCore, QtGui
 from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
 from sextante.core.QGisLayers import QGisLayers
@@ -18,12 +19,12 @@ from sextante.gui.MultipleInputPanel import MultipleInputPanel
 from sextante.gui.NumberInputPanel import NumberInputPanel
 from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from sextante.parameters.ParameterExtent import ParameterExtent
-import os
+from sextante.core.SextanteConfig import SextanteConfig
 
-class ParametersTable(QtGui.QWidget):
+class ParametersPanel(QtGui.QWidget):
 
     def __init__(self, alg, paramDialog):
-        super(ParametersTable, self).__init__(None)
+        super(ParametersPanel, self).__init__(None)
         self.alg = alg;
         self.paramDialog = paramDialog
         self.valueItems = {}
@@ -31,50 +32,64 @@ class ParametersTable(QtGui.QWidget):
         self.iterateButtons = {}
         self.initGUI()
 
-
     def initGUI(self):
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.verticalLayout = QtGui.QVBoxLayout()
-        self.verticalLayout.setSpacing(5)
-        self.verticalLayout.setMargin(20)
-
-        for param in self.alg.parameters:
-            label = QtGui.QLabel(param.description)
-            widget = self.getWidgetFromParameter(param)
-            self.valueItems[param.name] = widget
-            if isinstance(param, ParameterVector):
-                layout = QtGui.QHBoxLayout()
-                layout.setSpacing(2)
-                layout.setMargin(0)
-                layout.addWidget(widget)
-                button = QtGui.QToolButton()
-                icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/iterate.png")
-                button.setIcon(icon)
-                button.setToolTip("Iterate over this layer")
-                button.setCheckable(True)
-                button.setMaximumWidth(30)
-                button.setMaximumHeight(30)
-                layout.addWidget(button)
-                self.iterateButtons[param.name] = button
-                QtCore.QObject.connect(button, QtCore.SIGNAL("toggled(bool)"), self.buttonToggled)
-                widget = QtGui.QWidget()
-                widget.setLayout(layout)
+        tableLike = SextanteConfig.getSetting(SextanteConfig.TABLE_LIKE_PARAM_PANEL)
+        if tableLike:
+            self.tableWidget = QtGui.QTableWidget()
+            self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+            self.tableWidget.setColumnCount(2)
+            self.tableWidget.setColumnWidth(0,300)
+            self.tableWidget.setColumnWidth(1,300)
+            self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Parameter"))
+            self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
+            self.tableWidget.verticalHeader().setVisible(False)
+            self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+            self.setTableContent()
+            self.verticalLayout = QtGui.QVBoxLayout()
+            self.verticalLayout.setSpacing(0)
+            self.verticalLayout.setMargin(0)
+            self.verticalLayout.addWidget(self.tableWidget)
+            self.setLayout(self.verticalLayout)
+        else:
+            self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+            self.verticalLayout = QtGui.QVBoxLayout()
+            self.verticalLayout.setSpacing(5)
+            self.verticalLayout.setMargin(20)
+            for param in self.alg.parameters:
+                label = QtGui.QLabel(param.description)
+                widget = self.getWidgetFromParameter(param)
+                self.valueItems[param.name] = widget
+                if isinstance(param, ParameterVector):
+                    layout = QtGui.QHBoxLayout()
+                    layout.setSpacing(2)
+                    layout.setMargin(0)
+                    layout.addWidget(widget)
+                    button = QtGui.QToolButton()
+                    icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/iterate.png")
+                    button.setIcon(icon)
+                    button.setToolTip("Iterate over this layer")
+                    button.setCheckable(True)
+                    button.setMaximumWidth(30)
+                    button.setMaximumHeight(30)
+                    layout.addWidget(button)
+                    self.iterateButtons[param.name] = button
+                    QtCore.QObject.connect(button, QtCore.SIGNAL("toggled(bool)"), self.buttonToggled)
+                    widget = QtGui.QWidget()
+                    widget.setLayout(layout)
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
-            self.verticalLayout.addWidget(label)
-            self.verticalLayout.addWidget(widget)
 
-        for output in self.alg.outputs:
-            if output.hidden:
-                continue
-            label = QtGui.QLabel(output.description)
-            widget = OutputSelectionPanel(output,self.alg)
-            self.verticalLayout.addWidget(label)
-            self.verticalLayout.addWidget(widget)
-            self.valueItems[output.name] = widget
+            for output in self.alg.outputs:
+                if output.hidden:
+                    continue
+                label = QtGui.QLabel(output.description)
+                widget = OutputSelectionPanel(output,self.alg)
+                self.verticalLayout.addWidget(label)
+                self.verticalLayout.addWidget(widget)
+                self.valueItems[output.name] = widget
 
-        self.verticalLayout.addStretch(1000)
-        self.setLayout(self.verticalLayout)
+            self.verticalLayout.addStretch(1000)
+            self.setLayout(self.verticalLayout)
 
     def buttonToggled(self, value):
         if value:
@@ -206,3 +221,37 @@ class ParametersTable(QtGui.QWidget):
                 if param.parent == parent.name:
                     return True
         return False
+
+    def setTableContent(self):
+        params = self.alg.parameters
+        outputs = self.alg.outputs
+        numParams = len(self.alg.parameters)
+        numOutputs = 0
+        for output in outputs:
+            if not output.hidden:
+                numOutputs += 1
+        self.tableWidget.setRowCount(numParams + numOutputs)
+
+        i=0
+        for param in params:
+            item = QtGui.QTableWidgetItem(param.description)
+            item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.tableWidget.setItem(i,0, item)
+            item = self.getWidgetFromParameter(param)
+            self.valueItems[param.name] = item
+            self.tableWidget.setCellWidget(i,1, item)
+            self.tableWidget.setRowHeight(i,22)
+            i+=1
+
+        for output in outputs:
+            if output.hidden:
+                continue
+            item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
+            item.setFlags(QtCore.Qt.ItemIsEnabled)
+            self.tableWidget.setItem(i,0, item)
+            item = OutputSelectionPanel(output,self.alg)
+            self.valueItems[output.name] = item
+            self.tableWidget.setCellWidget(i,1, item)
+            self.tableWidget.setRowHeight(i,22)
+            i+=1
+

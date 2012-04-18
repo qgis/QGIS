@@ -3,6 +3,7 @@ import os.path
 
 class SextanteConfig():
 
+    TABLE_LIKE_PARAM_PANEL = "TABLE_LIKE_PARAM_PANEL"
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
     RASTER_STYLE = "RASTER_STYLE"
     VECTOR_POINT_STYLE = "VECTOR_POINT_STYLE"
@@ -16,7 +17,8 @@ class SextanteConfig():
 
     @staticmethod
     def initialize():
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external application", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external applications", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,

@@ -82,6 +82,8 @@ class GrassAlgorithm(GeoAlgorithm):
                         layer = QGisLayers.getObjectFromUri(layername, first)
                         self.addToRegion(layer, first)
                         first = False
+            if self.cellsize == 0:
+                self.cellsize = 1
         else:
             self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)

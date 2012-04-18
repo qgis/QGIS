@@ -15,6 +15,10 @@ class AlgorithmExecutor:
             QMessageBox.critical(None, "Error", e.msg)
             return False
 
+    @staticmethod
+    def runalgIterating(alg,paramtoIter,progress):
+        return False
+
 class SilentProgress():
 
     def setText(self, text):
