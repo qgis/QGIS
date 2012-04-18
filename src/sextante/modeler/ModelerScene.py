@@ -29,7 +29,10 @@ class ModelerScene(QtGui.QGraphicsScene):
         return self.paramItems[-1]
 
     def getLastAlgorithmItem(self):
-        return self.algItems[-1]
+        if self.algItems:
+            return self.algItems[-1]
+        else:
+            return None
 
 
     def getItemsFromAAP(self, aap, isMultiple):

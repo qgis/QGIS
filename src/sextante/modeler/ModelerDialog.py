@@ -22,7 +22,9 @@ class ModelerDialog(QtGui.QDialog):
             self.textGroup.setText(alg.group)
             self.textName.setText(alg.name)
             self.repaintModel()
-            self.view.ensureVisible(self.scene.getLastAlgorithmItem())
+            last = self.scene.getLastAlgorithmItem()
+            if last:
+                self.view.ensureVisible(last)
         else:
             self.alg = ModelerAlgorithm()
         self.alg.setModelerView(self)
