@@ -106,8 +106,6 @@ class SextanteToolbox(QtGui.QDockWidget):
             dlg = alg.getCustomParametersDialog()
             if not dlg:
                 dlg = ParametersDialog(alg)
-            #dlg.setWindowModality(Qt.WindowModal)
-            #dlg.setWindowFlags(dlg.windowFlags() | Qt.WindowStaysOnTopHint)
             canvas = QGisLayers.iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
