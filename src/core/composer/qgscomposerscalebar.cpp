@@ -28,8 +28,13 @@
 #include <QPainter>
 #include <cmath>
 
-QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ),
-    mSegmentMillimeters( 0.0 ), mAlignment( Left )
+QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
+    : QgsComposerItem( composition )
+    , mComposerMap( 0 )
+    , mNumUnitsPerSegment( 0 )
+    , mStyle( 0 )
+    , mSegmentMillimeters( 0.0 )
+    , mAlignment( Left )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -77,6 +82,7 @@ void QgsComposerScaleBar::setNumSegments( int nSegments )
   mNumSegments = nSegments;
   double widthAfter = mStyle->calculateBoxSize().width();
   correctXPositionAlignment( width, widthAfter );
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::setNumUnitsPerSegment( double units )
@@ -91,6 +97,7 @@ void QgsComposerScaleBar::setNumUnitsPerSegment( double units )
   refreshSegmentMillimeters();
   double widthAfter = mStyle->calculateBoxSize().width();
   correctXPositionAlignment( width, widthAfter );
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::setNumSegmentsLeft( int nSegmentsLeft )
@@ -104,6 +111,7 @@ void QgsComposerScaleBar::setNumSegmentsLeft( int nSegmentsLeft )
   mNumSegmentsLeft = nSegmentsLeft;
   double widthAfter = mStyle->calculateBoxSize().width();
   correctXPositionAlignment( width, widthAfter );
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::setBoxContentSpace( double space )
@@ -117,6 +125,7 @@ void QgsComposerScaleBar::setBoxContentSpace( double space )
   mBoxContentSpace = space;
   double widthAfter = mStyle->calculateBoxSize().width();
   correctXPositionAlignment( width, widthAfter );
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
@@ -134,6 +143,7 @@ void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
   connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
 
   refreshSegmentMillimeters();
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::invalidateCurrentMap()
@@ -181,6 +191,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
 
   mLabelBarSpace = 3.0;
   mBoxContentSpace = 1.0;
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::applyDefaultSize()
@@ -199,6 +210,7 @@ void QgsComposerScaleBar::applyDefaultSize()
 
   refreshSegmentMillimeters();
   adjustBoxSize();
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::adjustBoxSize()
@@ -229,6 +241,7 @@ void QgsComposerScaleBar::updateSegmentSize()
   double widthAfter = mStyle->calculateBoxSize().width();
   correctXPositionAlignment( width, widthAfter );
   update();
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::segmentPositions( QList<QPair<double, double> >& posWidthList ) const
@@ -286,6 +299,7 @@ void QgsComposerScaleBar::setStyle( const QString& styleName )
   {
     mStyle = new QgsNumericScaleBarStyle( this );
   }
+  emit itemChanged();
 }
 
 QString QgsComposerScaleBar::style() const
@@ -322,6 +336,7 @@ void QgsComposerScaleBar::setFont( const QFont& font )
   mFont = font;
   adjustBoxSize();
   update();
+  emit itemChanged();
 }
 
 bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) const

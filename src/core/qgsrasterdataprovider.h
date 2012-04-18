@@ -379,7 +379,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     QString  generateBandName( int theBandNumber )
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
-    };
+    }
 
     /**
      * Get metadata in a format suitable for feeding directly

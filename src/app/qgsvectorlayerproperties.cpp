@@ -1408,7 +1408,7 @@ void QgsVectorLayerProperties::initDiagramTab()
   mMinimumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMinimumDiagramScaleLineEdit ) );
   mMaximumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMaximumDiagramScaleLineEdit ) );
 
-  mDiagramUnitComboBox->insertItem( 0, tr( "MM" ) );
+  mDiagramUnitComboBox->insertItem( 0, tr( "mm" ) );
   mDiagramUnitComboBox->insertItem( 1, tr( "Map units" ) );
 
   QGis::GeometryType layerType = layer->geometryType();

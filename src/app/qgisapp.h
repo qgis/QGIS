@@ -429,6 +429,17 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
 
+    /**
+       \param sourceLayer  The layer where the style will be taken from
+                                        (defaults to the active layer on the legend)
+     */
+    void copyStyle( QgsMapLayer * sourceLayer = 0 );
+    //! copies style on the clipboard to the active layer
+    /**
+       \param destinatioLayer  The layer that the clipboard will be pasted to
+                                (defaults to the active layer on the legend)
+     */
+    void pasteStyle( QgsMapLayer * destinationLayer = 0 );
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 
@@ -458,16 +469,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     virtual bool event( QEvent * event );
 
     /** Open a raster layer using the Raster Data Provider.
-     *  Note this is included to support WMS layers only at this stage,
-     *  GDAL layer support via a Provider is not yet implemented.
+     *  \note added in 1.9
      */
-    QgsRasterLayer* addRasterLayer( QString const & rasterLayerPath,
-                                    QString const & baseName,
-                                    QString const & providerKey,
-                                    QStringList const & layers,
-                                    QStringList const & styles,
-                                    QString const & format,
-                                    QString const & crs );
+    QgsRasterLayer* addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
 
     void addWfsLayer( QString uri, QString typeName );
 
@@ -1190,8 +1194,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QString mOldScale;
 
 #ifdef HAVE_TOUCH
-    bool gestureEvent(QGestureEvent *event);
-    void tapAndHoldTriggered(QTapAndHoldGesture *gesture);
+    bool gestureEvent( QGestureEvent *event );
+    void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 #endif
 };
 

@@ -49,7 +49,7 @@
 #include "qgsmssqldataitems.h"
 
 static const QString TEXT_PROVIDER_KEY = "mssql";
-static const QString TEXT_PROVIDER_DESCRIPTION = "MS SQL spatial data provider";
+static const QString TEXT_PROVIDER_DESCRIPTION = "MSSQL spatial data provider";
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -415,7 +415,7 @@ void QgsMssqlProvider::loadFields()
 
 QVariant QgsMssqlProvider::defaultValue( int fieldId )
 {
-  if ( mDefaultValues.contains(fieldId) )
+  if ( mDefaultValues.contains( fieldId ) )
     return mDefaultValues[fieldId];
   else
     return QVariant( QString::null );
@@ -423,7 +423,7 @@ QVariant QgsMssqlProvider::defaultValue( int fieldId )
 
 QString QgsMssqlProvider::storageType() const
 {
-  return "MS SQL spatial database";
+  return "MSSQL spatial database";
 }
 
 bool QgsMssqlProvider::featureAtId( QgsFeatureId featureId,
@@ -490,7 +490,7 @@ bool QgsMssqlProvider::nextFeature( QgsFeature& feature )
   feature.setValid( false );
   if ( !mValid )
   {
-    QgsDebugMsg( "Read attempt on an invalid mssql data source" );
+    QgsDebugMsg( "Read attempt on an invalid MSSQL data source" );
     return false;
   }
 
@@ -592,7 +592,7 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
     <<  rect.xMinimum() << " " <<  rect.yMinimum();
 
     mStatement += QString( " where [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
-        mGeometryColName, mGeometryColType, r, QString::number( mSRId ) );
+                    mGeometryColName, mGeometryColType, r, QString::number( mSRId ) );
   }
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
@@ -783,7 +783,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains(it2.key()) && mDefaultValues[it2.key()] == *it2 )
+      if ( mDefaultValues.contains( it2.key() ) && mDefaultValues[it2.key()] == *it2 )
         continue; // skip fields having default values
 
       if ( !first )
@@ -856,7 +856,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( fld.name().isEmpty() )
         continue; // invalid
 
-      if ( mDefaultValues.contains(it2.key()) && mDefaultValues[it2.key()] == *it2 )
+      if ( mDefaultValues.contains( it2.key() ) && mDefaultValues[it2.key()] == *it2 )
         continue; // skip fields having default values
 
       QVariant::Type type = fld.type();
@@ -1625,7 +1625,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   if ( !provider->isValid() )
   {
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Loading of the mssql provider failed" );
+      *errorMessage = QObject::tr( "Loading of the MSSQL provider failed" );
 
     delete provider;
     return QgsVectorLayerImport::ErrInvalidLayer;

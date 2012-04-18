@@ -1160,7 +1160,7 @@ bool QgsPostgresProvider::loadFields()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
+      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
       continue;
     }
 
@@ -3281,7 +3281,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
                 .arg( QgsPostgresConn::quotedValue( schemaName ) )
                 .arg( QgsPostgresConn::quotedValue( tableName ) );
   QgsPostgresResult result = conn->PQexec( sql );
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK  )
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
     errCause = QObject::tr( "Unable to delete layer %1: \n%2" )
                .arg( schemaTableName )

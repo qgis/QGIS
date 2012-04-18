@@ -127,7 +127,7 @@ void QgsMssqlGeometryParser::CopyBytes( void* src, int len )
 
 void QgsMssqlGeometryParser::CopyCoordinates( unsigned char* src )
 {
-  if (IsGeography)
+  if ( IsGeography )
   {
     CopyBytes( src + 8, 8 ); // longitude
     CopyBytes( src, 8 ); // latitude

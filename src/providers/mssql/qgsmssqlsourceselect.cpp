@@ -1,6 +1,6 @@
 /***************************************************************************
                              qgsmssqlsourceselect.cpp
-       Dialog to select MS SQL layer(s) and add it to the map canvas
+       Dialog to select MSSQL layer(s) and add it to the map canvas
                               -------------------
     begin                : 2011-10-08
     copyright            : (C) 2011 by Tamas Szekeres
@@ -125,7 +125,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WFlags fl, bool
 {
   setupUi( this );
 
-  setWindowTitle( tr( "Add MS SQL Table(s)" ) );
+  setWindowTitle( tr( "Add MSSQL Table(s)" ) );
 
   if ( mEmbeddedMode )
   {

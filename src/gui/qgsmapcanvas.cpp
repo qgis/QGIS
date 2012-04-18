@@ -1569,12 +1569,12 @@ bool QgsMapCanvas::event( QEvent * e )
   {
     return done;
   }
-  if (e->type() == QEvent::Gesture )
+  if ( e->type() == QEvent::Gesture )
   {
     // call handler of current map tool
     if ( mMapTool )
     {
-      done = mMapTool->gestureEvent( static_cast<QGestureEvent*>(e) );
+      done = mMapTool->gestureEvent( static_cast<QGestureEvent*>( e ) );
     }
   }
   else

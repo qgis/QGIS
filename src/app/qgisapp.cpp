@@ -746,7 +746,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       }
       else if ( u.layerType == "raster" )
       {
-        addRasterLayer( u.uri, u.name, u.providerKey, QStringList(), QStringList(), QString(), QString() );
+        addRasterLayer( u.uri, u.name, u.providerKey );
       }
     }
   }
@@ -824,6 +824,8 @@ void QgisApp::createActions()
   connect( mActionCutFeatures, SIGNAL( triggered() ), this, SLOT( editCut() ) );
   connect( mActionCopyFeatures, SIGNAL( triggered() ), this, SLOT( editCopy() ) );
   connect( mActionPasteFeatures, SIGNAL( triggered() ), this, SLOT( editPaste() ) );
+  connect( mActionCopyStyle, SIGNAL( triggered() ), this, SLOT( copyStyle() ) );
+  connect( mActionPasteStyle, SIGNAL( triggered() ), this, SLOT( pasteStyle() ) );
   connect( mActionAddFeature, SIGNAL( triggered() ), this, SLOT( addFeature() ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
   connect( mActionReshapeFeatures, SIGNAL( triggered() ), this, SLOT( reshapeFeatures() ) );
@@ -2325,8 +2327,10 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     return;
 
   QStringList sublayers = layer->subLayers();
+  QgsDebugMsg( QString( "raster has %1 sublayers" ).arg( layer->subLayers().size() ) );
 
-  QgsDebugMsg( "sublayers:\n  " + sublayers.join( "  \n" ) + "\n" );
+  if ( sublayers.size() < 1 )
+    return;
 
   // if promptLayers=Load all, load all sublayers without prompting
   QSettings settings;
@@ -2401,6 +2405,7 @@ void QgisApp::loadGDALSublayers( QString uri, QStringList list )
       else
         delete subLayer;
     }
+
   }
 }
 
@@ -2595,11 +2600,11 @@ void QgisApp::addMssqlLayer()
     return;
   }
 
-  // show the MS SQL dialog
+  // show the MSSQL dialog
   QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "mssql" ), this ) );
   if ( !dbs )
   {
-    QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MS SQL select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MSSQL select dialog from provider." ) );
     return;
   }
   connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
@@ -2626,10 +2631,8 @@ void QgisApp::addWmsLayer()
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
     return;
   }
-  connect( wmss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const &, QStringList const &, QStringList const &, QString const &,
-                                          QString const & ) ),
-           this , SLOT( addRasterLayer( QString const &, QString const &, QString const &, QStringList const &, QStringList const &, QString const &,
-                                        QString const & ) ) );
+  connect( wmss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+           this , SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
   wmss->exec();
   delete wmss;
 }
@@ -4296,7 +4299,6 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   }
 }
 
-
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -4375,6 +4377,72 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   }
 }
 
+void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
+{
+  QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer();
+  if ( selectionLayer )
+  {
+    QDomImplementation DomImplementation;
+    QDomDocumentType documentType =
+      DomImplementation.createDocumentType(
+        "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+    QDomDocument doc( documentType );
+    QDomElement rootNode = doc.createElement( "qgis" );
+    rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+    doc.appendChild( rootNode );
+    QString errorMsg;
+    if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
+    {
+      QMessageBox::warning( this,
+                            tr( "Error" ),
+                            tr( "Cannot copy style: %1" )
+                            .arg( errorMsg ),
+                            QMessageBox::Ok );
+      return;
+    }
+    // Copies data in text form as well, so the XML can be pasted into a text editor
+    clipboard()->setData( QGSCLIPBOARD_STYLE_MIME, doc.toByteArray(), doc.toString() );
+    // Enables the paste menu element
+    mActionPasteStyle->setEnabled( true );
+  }
+}
+
+void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
+{
+  QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
+  if ( selectionLayer )
+  {
+    if ( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+    {
+      QDomDocument doc( "qgis" );
+      QString errorMsg;
+      int errorLine, errorColumn;
+      if ( !doc.setContent( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
+      {
+        QMessageBox::information( this,
+                                  tr( "Error" ),
+                                  tr( "Cannot parse style: %1:%2:%3" )
+                                  .arg( errorMsg )
+                                  .arg( errorLine )
+                                  .arg( errorColumn ),
+                                  QMessageBox::Ok );
+        return;
+      }
+      QDomElement rootNode = doc.firstChildElement( "qgis" );
+      if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
+      {
+        QMessageBox::information( this,
+                                  tr( "Error" ),
+                                  tr( "Cannot read style: %1" )
+                                  .arg( errorMsg ),
+                                  QMessageBox::Ok );
+        return;
+      }
+
+      mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );
+    }
+  }
+}
 
 void QgisApp::pasteTransformations()
 {
@@ -6298,6 +6366,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
     mActionPasteFeatures->setEnabled( false );
+    mActionCopyStyle->setEnabled( false );
+    mActionPasteStyle->setEnabled( false );
 
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
@@ -6327,6 +6397,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   mActionLayerProperties->setEnabled( true );
   mActionAddToOverview->setEnabled( true );
   mActionZoomToLayer->setEnabled( true );
+
+  mActionCopyStyle->setEnabled( true );
+  mActionPasteStyle->setEnabled( clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) );
 
   /***********Vector layers****************/
   if ( layer->type() == QgsMapLayer::VectorLayer )
@@ -6730,22 +6803,17 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
 
 /** Add a raster layer directly without prompting user for location
   The caller must provide information compatible with the provider plugin
-  using the rasterLayerPath and baseName. The provider can use these
+  using the uri and baseName. The provider can use these
   parameters in any way necessary to initialize the layer. The baseName
   parameter is used in the Map Legend so it should be formed in a meaningful
   way.
 
   \note   Copied from the equivalent addVectorLayer function in this file
-  TODO    Make it work for rasters specifically.
   */
 QgsRasterLayer* QgisApp::addRasterLayer(
-  QString const &rasterLayerPath,
+  QString const &uri,
   QString const &baseName,
-  QString const &providerKey,
-  QStringList const & layers,
-  QStringList const & styles,
-  QString const &format,
-  QString const &crs )
+  QString const &providerKey )
 {
   QgsDebugMsg( "about to get library for " + providerKey );
 
@@ -6756,42 +6824,21 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 
   mMapCanvas->freeze();
 
-// Let render() do its own cursor management
-//  QApplication::setOverrideCursor(Qt::WaitCursor);
-
   // create the layer
   QgsRasterLayer *layer;
-  /* Eliminate the need to instantiate the layer based on provider type.
-     The caller is responsible for cobbling together the needed information to
-     open the layer
-     */
-  QgsDebugMsg( "Creating new raster layer using " + rasterLayerPath
-               + " with baseName of " + baseName
-               + " and layer list of " + layers.join( ", " )
-               + " and style list of " + styles.join( ", " )
-               + " and format of " + format
-               + " and providerKey of " + providerKey
-               + " and CRS of " + crs );
+  QgsDebugMsg( "Creating new raster layer using " + uri
+               + " with baseName of " + baseName );
 
   // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-  layer = new QgsRasterLayer( 0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs );
+  layer = new QgsRasterLayer( uri, baseName, providerKey );
 
   QgsDebugMsg( "Constructed new layer." );
 
-  if ( layer && shouldAskUserForGDALSublayers( layer ) )
-  {
-    askUserForGDALSublayers( layer );
-
-    // The first layer loaded is not useful in that case. The user can select it in
-    // the list if he wants to load it.
-    delete layer;
-  }
-  else if ( layer && layer->isValid() )
+  if ( layer && layer->isValid() )
   {
     addRasterLayer( layer );
 
     statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
-
   }
   else
   {
@@ -6804,11 +6851,8 @@ QgsRasterLayer* QgisApp::addRasterLayer(
   // draw the map
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
+
   return layer;
-
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
-
 } // QgisApp::addRasterLayer
 
 
@@ -6849,7 +6893,8 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       QFileInfo myFileInfo( *myIterator );
       // get the directory the .adf file was in
       QString myDirNameQString = myFileInfo.path();
-      QString myBaseNameQString = myFileInfo.completeBaseName();
+      //extract basename with extension
+      QString myBaseNameQString = myFileInfo.completeBaseName() + "." + myFileInfo.suffix();
       //only allow one copy of a ai grid file to be loaded at a
       //time to prevent the user selecting all adfs in 1 dir which
       //actually represent 1 coverage,

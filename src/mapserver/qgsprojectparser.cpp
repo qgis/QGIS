@@ -171,9 +171,24 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
         layerElem.appendChild( nameElem );
 
         QDomElement titleElem = doc.createElement( "Title" );
-        QDomText titleText = doc.createTextNode( layer->name() );
+        QString titleName = layer->title();
+        if ( titleName.isEmpty() )
+        {
+          titleName = layer->name();
+        }
+        QDomText titleText = doc.createTextNode( titleName );
         titleElem.appendChild( titleText );
         layerElem.appendChild( titleElem );
+
+        QDomElement abstractElem = doc.createElement( "Abstract" );
+        QString abstractName = layer->abstract();
+        if ( abstractName.isEmpty() )
+        {
+          abstractName = "";
+        }
+        QDomText abstractText = doc.createTextNode( abstractName );
+        abstractElem.appendChild( abstractText );
+        layerElem.appendChild( abstractElem );
 
         //appendExGeographicBoundingBox( layerElem, doc, layer->extent(), layer->crs() );
 

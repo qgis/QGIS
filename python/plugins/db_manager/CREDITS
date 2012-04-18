@@ -1,0 +1,23 @@
+CREDITS: 2011/10/13
+
+DB Manager plugin for QuantumGIS
+
+Author and maintainer:
+  Giuseppe Sucameli <brush.tyler@gmail.com>
+
+
+The following is a list of contributors who have participated in the project:
+
+Version 0.1.18 includes:
+  - autocompletion based on "QTextEdit with autocompletion using pyqt" by rowinggolfer (see http://rowinggolfer.blogspot.com/2010/08/qtextedit-with-autocompletion-using.html)
+
+Version 0.1.5 includes patches from:
+  - Sandro Santilli <strk@keybit.net> for plugin icon.
+
+Version 0.1.2 includes:
+  - syntax highlighting based on "Python Syntax Highlighting Example" by Carson J. Q. Farmer (see http://www.carsonfarmer.com/?p=333)
+  - TopoViewer plugin based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net> (see at https://github.com/strk/qgis_pgis_topoview/)
+
+Version 0.1.0 includes patches from:
+  - Mauricio de Paulo <mauricio.dev@gmail.com> for PostGIS Rasters support.
+

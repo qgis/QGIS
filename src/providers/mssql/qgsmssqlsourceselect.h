@@ -80,10 +80,10 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 
 
 /*! \class QgsMssqlSourceSelect
- * \brief Dialog to create connections and add tables from MS SQL.
+ * \brief Dialog to create connections and add tables from MSSQL.
  *
  * This dialog allows the user to define and save connection information
- * for MS SQL databases. The user can then connect and add
+ * for MSSQL databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
 class QgsMssqlSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase

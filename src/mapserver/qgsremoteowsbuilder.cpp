@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdatasourceuri.h"
 #include "qgsremoteowsbuilder.h"
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
@@ -206,7 +207,13 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   QgsDebugMsg( "layerList first item: " + layerList.at( 0 ) );
   QgsDebugMsg( "styleList first item: " + styleList.at( 0 ) );
 
-  result = new QgsRasterLayer( 0, baseUrl, "", "wms", layerList, styleList, format, crs );
+  QgsDataSourceURI uri;
+  uri.setParam( "url", baseUrl );
+  uri.setParam( "format", format );
+  uri.setParam( "crs", crs );
+  uri.setParam( "layers", layerList );
+  uri.setParam( "styles", styleList );
+  result = new QgsRasterLayer( uri.encodedUri(), "", "wms" );
   if ( !result->isValid() )
   {
     return 0;

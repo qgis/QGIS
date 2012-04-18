@@ -427,6 +427,10 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     {
       mySettings.setValue( "/PythonPlugins/GdalTools", true );
     }
+    if ( !mySettings.contains( "/PythonPlugins/db_manager" ) )
+    {
+      mySettings.setValue( "/PythonPlugins/db_manager", true );
+    }
 
     for ( int i = 0; i < pluginList.size(); i++ )
     {
