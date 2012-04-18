@@ -97,7 +97,12 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   }
   else
   {
-    pkCol = pkText = layerProperty.pkCols[0];
+    if ( layerProperty.pkCols.size() > 1 )
+    {
+      pkText = tr( "Select..." );
+    }
+
+    pkCol = layerProperty.pkCols[0];
   }
 
   QStandardItem *pkItem = new QStandardItem( pkText );
@@ -323,9 +328,9 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   if ( idx.column() == dbtmType || idx.column() == dbtmSrid || idx.column() == dbtmPkCol )
   {
-    QGis::GeometryType geomType = ( QGis::GeometryType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QGis::WkbType geomType = ( QGis::WkbType ) idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt();
 
-    bool ok = geomType != QGis::UnknownGeometry;
+    bool ok = geomType != QGis::WKBUnknown;
 
     if ( ok && geomType != QGis::NoGeometry )
       idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
