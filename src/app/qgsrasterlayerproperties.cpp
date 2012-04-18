@@ -1464,8 +1464,12 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
-    //it worked so do it quietly
-    sync();
+    QgsRasterRenderer* renderer = mRasterLayer->renderer();
+    if ( renderer )
+    {
+      setRendererWidget( renderer->type() );
+    }
+    mRasterLayer->triggerRepaint();
   }
   else
   {
@@ -1516,20 +1520,18 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   QString message = mRasterLayer->loadNamedStyle( fileName, defaultLoadedFlag );
   if ( defaultLoadedFlag )
   {
-    sync();
+    settings.setValue( "style/lastStyleDir", QFileInfo( fileName ).absolutePath() );
+    QgsRasterRenderer* renderer = mRasterLayer->renderer();
+    if ( renderer )
+    {
+      setRendererWidget( renderer->type() );
+    }
+    mRasterLayer->triggerRepaint();
   }
   else
   {
     QMessageBox::information( this, tr( "Saved Style" ), message );
   }
-
-  settings.setValue( "style/lastStyleDir", QFileInfo( fileName ).absolutePath() );
-  QgsRasterRenderer* renderer = mRasterLayer->renderer();
-  if ( renderer )
-  {
-    setRendererWidget( renderer->type() );
-  }
-  mRasterLayer->triggerRepaint();
 }
 
 
