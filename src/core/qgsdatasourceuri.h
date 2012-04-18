@@ -21,16 +21,10 @@
 
 #include "qgis.h"
 
-#include <QMap>
-
 /** \ingroup core
  * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
  * This structure stores the database connection information, including host, database,
  * user name, password, schema, password, and sql where clause
- *
- * Extended to support generic params so that it may be used by any provider.
- * The 2 modes (the old - RDMS specific and the new generic) may not yet be mixed.
- * (Radim Blazek 4/2012)
  */
 class CORE_EXPORT QgsDataSourceURI
 {
@@ -41,15 +35,8 @@ class CORE_EXPORT QgsDataSourceURI
     //! default constructor
     QgsDataSourceURI();
 
-    //! copy constructor (generic mode)
-    QgsDataSourceURI( const QgsDataSourceURI& dataSourceURI );
-
     //! constructor which parses input URI
     QgsDataSourceURI( QString uri );
-
-    //! constructor which parses input encoded URI (generic mode)
-    // \note added in 1.9
-    QgsDataSourceURI( const QByteArray & uri );
 
     //! return connection part of URI
     QString connectionInfo() const;
@@ -57,38 +44,8 @@ class CORE_EXPORT QgsDataSourceURI
     //! return complete uri
     QString uri() const;
 
-    //! return complete encoded uri (generic mode)
-    // \note added in 1.9
-    QByteArray encodedUri() const;
-
-    //! set complete encoded uri (generic mode)
-    // \note added in 1.9
-    void setEncodedUri( const QByteArray & uri );
-
-    //! set complete encoded uri (generic mode)
-    // \note added in 1.9
-    void setEncodedUri( const QString & uri );
-
     //! quoted table name
     QString quotedTablename() const;
-
-    //! Set generic param (generic mode)
-    // \note if key exists, another is inserted
-    // \note added in 1.9
-    void setParam( const QString &key, const QString &value );
-    void setParam( const QString &key, const QStringList &value );
-
-    //! Get generic param (generic mode)
-    // \note added in 1.9
-    QString param( const QString &key ) const;
-
-    //! Get multiple generic param (generic mode)
-    // \note added in 1.9
-    QStringList params( const QString &key ) const;
-
-    //! Test if param exists (generic mode)
-    // \note added in 1.9
-    bool hasParam( const QString &key ) const;
 
     //! Set all connection related members at once
     //! \note This optional sslmode parameter has been added in version 1.1
@@ -206,8 +163,6 @@ class CORE_EXPORT QgsDataSourceURI
     QGis::WkbType mWkbType;
     //! SRID or a null string if not specified
     QString mSrid;
-    //! Generic params store
-    QMap<QString, QString> mParams;
 };
 
 #endif //QGSDATASOURCEURI_H

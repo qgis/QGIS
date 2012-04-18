@@ -46,7 +46,7 @@ class QgisInterface : QObject
     //! Add a raster layer given a raster layer file name
     virtual QgsRasterLayer* addRasterLayer(QString rasterLayerPath, QString baseName = QString())=0;
     //! Add a WMS layer
-    virtual QgsRasterLayer* addRasterLayer(const QString& uri, const QString& baseName, const QString& providerKey) = 0;
+    virtual QgsRasterLayer* addRasterLayer(const QString& url, const QString& layerName, const QString& providerKey, const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs) = 0;
 
     //! Add a project
     virtual bool addProject(QString theProject)=0;

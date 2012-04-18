@@ -21,7 +21,6 @@
 
 #include <QStringList>
 #include <QRegExp>
-#include <QUrl>
 
 QgsDataSourceURI::QgsDataSourceURI()
     : mSSLmode( SSLprefer )
@@ -31,11 +30,6 @@ QgsDataSourceURI::QgsDataSourceURI()
     , mWkbType( QGis::WKBUnknown )
 {
   // do nothing
-}
-
-QgsDataSourceURI::QgsDataSourceURI( const QgsDataSourceURI& dataSourceURI )
-{
-  mParams = dataSourceURI.mParams;
 }
 
 QgsDataSourceURI::QgsDataSourceURI( QString uri )
@@ -536,47 +530,47 @@ QString QgsDataSourceURI::uri() const
   {
     theUri += " type=";
 
-    switch ( mWkbType )
+    switch( mWkbType )
     {
-      case QGis::WKBPoint:
-        theUri += "POINT";
-        break;
-      case QGis::WKBLineString:
-        theUri += "LINESTRING";
-        break;
-      case QGis::WKBPolygon:
-        theUri += "POLYGON";
-        break;
-      case QGis::WKBMultiPoint:
-        theUri += "MULTIPOINT";
-        break;
-      case QGis::WKBMultiLineString:
-        theUri += "MULTILINESTRING";
-        break;
-      case QGis::WKBMultiPolygon:
-        theUri += "MULTIPOLYGON";
-        break;
-      case QGis::WKBPoint25D:
-        theUri += "POINTM";
-        break;
-      case QGis::WKBLineString25D:
-        theUri += "LINESTRINGM";
-        break;
-      case QGis::WKBPolygon25D:
-        theUri += "POLYGONM";
-        break;
-      case QGis::WKBMultiPoint25D:
-        theUri += "MULTIPOINTM";
-        break;
-      case QGis::WKBMultiLineString25D:
-        theUri += "MULTILINESTRINGM";
-        break;
-      case QGis::WKBMultiPolygon25D:
-        theUri += "MULTIPOLYGONM";
-        break;
-      case QGis::WKBUnknown:
-      case QGis::WKBNoGeometry:
-        break;
+    case QGis::WKBPoint:
+      theUri += "POINT";
+      break;
+    case QGis::WKBLineString:
+      theUri += "LINESTRING";
+      break;
+    case QGis::WKBPolygon:
+      theUri += "POLYGON";
+      break;
+    case QGis::WKBMultiPoint:
+      theUri += "MULTIPOINT";
+      break;
+    case QGis::WKBMultiLineString:
+      theUri += "MULTILINESTRING";
+      break;
+    case QGis::WKBMultiPolygon:
+      theUri += "MULTIPOLYGON";
+      break;
+    case QGis::WKBPoint25D:
+      theUri += "POINTM";
+      break;
+    case QGis::WKBLineString25D:
+      theUri += "LINESTRINGM";
+      break;
+    case QGis::WKBPolygon25D:
+      theUri += "POLYGONM";
+      break;
+    case QGis::WKBMultiPoint25D:
+      theUri += "MULTIPOINTM";
+      break;
+    case QGis::WKBMultiLineString25D:
+      theUri += "MULTILINESTRINGM";
+      break;
+    case QGis::WKBMultiPolygon25D:
+      theUri += "MULTIPOLYGONM";
+      break;
+    case QGis::WKBUnknown:
+    case QGis::WKBNoGeometry:
+      break;
     }
   }
 
@@ -591,36 +585,6 @@ QString QgsDataSourceURI::uri() const
             .arg( mSql );
 
   return theUri;
-}
-
-QByteArray QgsDataSourceURI::encodedUri() const
-{
-  QUrl url;
-  foreach( QString key, mParams.uniqueKeys() )
-  {
-    foreach( QString value, mParams.values( key ) )
-    {
-      url.addQueryItem( key, value );
-    }
-  }
-  return url.encodedQuery();
-}
-
-void QgsDataSourceURI::setEncodedUri( const QByteArray & uri )
-{
-  mParams.clear();
-  QUrl url;
-  url.setEncodedQuery( uri );
-  QPair<QString, QString> item;
-  foreach( item, url.queryItems() )
-  {
-    mParams.insertMulti( item.first, item.second );
-  }
-}
-
-void QgsDataSourceURI::setEncodedUri( const QString & uri )
-{
-  setEncodedUri( uri.toAscii() );
 }
 
 QString QgsDataSourceURI::quotedTablename() const
@@ -698,33 +662,4 @@ QString QgsDataSourceURI::srid() const
 void QgsDataSourceURI::setSrid( QString srid )
 {
   mSrid = srid;
-}
-
-void QgsDataSourceURI::setParam( const QString &key, const QString &value )
-{
-  // may be multiple
-  mParams.insertMulti( key, value );
-}
-
-void QgsDataSourceURI::setParam( const QString &key, const QStringList &value )
-{
-  foreach( QString val, value )
-  {
-    mParams.insertMulti( key, val );
-  }
-}
-
-QString QgsDataSourceURI::param( const QString &key ) const
-{
-  return mParams.value( key );
-}
-
-QStringList QgsDataSourceURI::params( const QString &key ) const
-{
-  return mParams.values( key );
-}
-
-bool QgsDataSourceURI::hasParam( const QString &key ) const
-{
-  return mParams.contains( key );
 }

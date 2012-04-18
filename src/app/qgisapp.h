@@ -469,9 +469,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     virtual bool event( QEvent * event );
 
     /** Open a raster layer using the Raster Data Provider.
-     *  \note added in 1.9
+     *  Note this is included to support WMS layers only at this stage,
+     *  GDAL layer support via a Provider is not yet implemented.
      */
-    QgsRasterLayer* addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
+    QgsRasterLayer* addRasterLayer( QString const & rasterLayerPath,
+                                    QString const & baseName,
+                                    QString const & providerKey,
+                                    QStringList const & layers,
+                                    QStringList const & styles,
+                                    QString const & format,
+                                    QString const & crs );
 
     void addWfsLayer( QString uri, QString typeName );
 
@@ -1194,8 +1201,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QString mOldScale;
 
 #ifdef HAVE_TOUCH
-    bool gestureEvent( QGestureEvent *event );
-    void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
+    bool gestureEvent(QGestureEvent *event);
+    void tapAndHoldTriggered(QTapAndHoldGesture *gesture);
 #endif
 };
 
