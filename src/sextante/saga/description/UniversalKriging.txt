@@ -6,7 +6,7 @@ ParameterBoolean|BVARIANCE              |Create Variance Grid|True
 ParameterSelection|TARGET|Target Grid|[0] user defined
 ParameterSelection|MODEL|Variogram Model|[0] Spherical Model;[1] Exponential Model;[2] Gaussian Model;[3] Linear Regression;[4] Exponential Regression;[5] Power Function Regression
 ParameterBoolean|BLOCK                  |Block Kriging|True
-ParameterNumber|DBLOCK|Block Size|None|None|100
+ParameterNumber|DBLOCK|Block Size|0|None|100
 ParameterBoolean|BLOG                   |Logarithmic Transformation|True
 ParameterNumber|NUGGET|Nugget|None|None|0.0
 ParameterNumber|SILL|Sill|None|None|0.0
@@ -20,7 +20,7 @@ ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear
 ParameterNumber|NPOINTS_MIN|Min.Number of m_Points|None|None|4
 ParameterNumber|NPOINTS_MAX|Max. Number of m_Points|None|None|20
 ParameterNumber|MAXRADIUS|Maximum Search Radius (map units)|None|None|1000.0
-ParameterNumber|USER_CELL_SIZE|Grid Size|None|None|0
+ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
 ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
 ParameterNumber|USER_X_EXTENT_MIN|X-Extent Min|None|None|0.0
 ParameterNumber|USER_X_EXTENT_MAX|X-Extent Max|None|None|0.0
