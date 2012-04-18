@@ -93,4 +93,5 @@ ADD_QGIS_TEST(pointtest testqgspoint.cpp)
 ADD_QGIS_TEST(searchstringtest testqgssearchstring.cpp)
 ADD_QGIS_TEST(vectorlayertest testqgsvectorlayer.cpp)
 ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
+ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
 
