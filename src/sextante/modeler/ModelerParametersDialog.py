@@ -38,12 +38,10 @@ class ModelerParametersDialog(QtGui.QDialog):
     def setupUi(self):
         self.valueItems = {}
         self.dependentItems = {}
-        self.setObjectName("Parameters")
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
@@ -51,7 +49,6 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.tableWidget.setColumnWidth(1,300)
         self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Parameter"))
         self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
-        self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.verticalHeader().setVisible(False)
         self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.setTableContent()
@@ -59,7 +56,6 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("hLayout")
         self.verticalLayout.addWidget(self.tableWidget)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)

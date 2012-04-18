@@ -25,6 +25,7 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
+from sextante.gui.ParametersTable import ParametersTable
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -47,32 +48,33 @@ class Ui_ParametersDialog(object):
     def setupUi(self, dialog, alg):
         self.alg = alg
         self.dialog = dialog
-
-        self.valueItems = {}
-        self.dependentItems = {}
-        dialog.setObjectName(_fromUtf8("Parameters"))
+        #self.valueItems = {}
+        #self.dependentItems = {}
         dialog.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         if self.alg.helpFile():
             self.showHelpButton = QtGui.QPushButton()
-            self.showHelpButton.setObjectName("showHelpButton")
             self.showHelpButton.setText("Show help")
             self.buttonBox.addButton(self.showHelpButton, QtGui.QDialogButtonBox.ActionRole)
             QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
-        self.tableWidget = QtGui.QTableWidget()
-        self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
-        self.tableWidget.setColumnCount(2)
-        self.tableWidget.setColumnWidth(0,300)
-        self.tableWidget.setColumnWidth(1,300)
-        self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Parameter"))
-        self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
-        self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
-        self.tableWidget.verticalHeader().setVisible(False)
-        self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.setTableContent()
+        #=======================================================================
+        # self.tableWidget = QtGui.QTableWidget()
+        # self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
+        # self.tableWidget.setColumnCount(2)
+        # self.tableWidget.setColumnWidth(0,300)
+        # self.tableWidget.setColumnWidth(1,300)
+        # self.tableWidget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("Parameter"))
+        # self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
+        # self.tableWidget.verticalHeader().setVisible(False)
+        # self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
+        # self.setTableContent()
+        #=======================================================================
+        self.paramTable = ParametersTable(self.alg, self.dialog)
+        self.scrollArea = QtGui.QScrollArea()
+        self.scrollArea.setWidget(self.paramTable)
+        self.scrollArea.setWidgetResizable(True)
         dialog.setWindowTitle(self.alg.name)
         self.progressLabel = QtGui.QLabel()
         self.progress = QtGui.QProgressBar()
@@ -81,8 +83,7 @@ class Ui_ParametersDialog(object):
         self.verticalLayout = QtGui.QVBoxLayout(dialog)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("hLayout")
-        self.verticalLayout.addWidget(self.tableWidget)
+        self.verticalLayout.addWidget(self.scrollArea)
         self.verticalLayout.addWidget(self.progressLabel)
         self.verticalLayout.addWidget(self.progress)
         self.verticalLayout.addWidget(self.buttonBox)
@@ -91,131 +92,132 @@ class Ui_ParametersDialog(object):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
-    def somethingDependsOnThisParameter(self, parent):
-        for param in self.alg.parameters:
-            if isinstance(param, ParameterTableField):
-                if param.parent == parent.name:
-                    return True
-        return False
-
-    def getWidgetFromParameter(self, param):
-        if isinstance(param, ParameterRaster):
-            layers = QGisLayers.getRasterLayers()
-            items = []
-            if (param.optional):
-                items.append((self.NOT_SELECTED, None))
-            for layer in layers:
-                items.append((layer.name(), layer))
-            item = InputLayerSelectorPanel(items)
-        elif isinstance(param, ParameterVector):
-            if self.somethingDependsOnThisParameter(param):
-                item = QtGui.QComboBox()
-                layers = QGisLayers.getVectorLayers(param.shapetype)
-                if (param.optional):
-                    item.addItem(self.NOT_SELECTED, None)
-                for layer in layers:
-                    item.addItem(layer.name(), layer)
-                item.currentIndexChanged.connect(self.updateDependentFields)
-                item.name = param.name
-            else:
-                layers = QGisLayers.getVectorLayers(param.shapetype)
-                items = []
-                if (param.optional):
-                    items.append((self.NOT_SELECTED, None))
-                for layer in layers:
-                    items.append((layer.name(), layer))
-                item = InputLayerSelectorPanel(items)
-        elif isinstance(param, ParameterTable):
-            if self.somethingDependsOnThisParameter(param):
-                item = QtGui.QComboBox()
-                layers = QGisLayers.getTables()
-                if (param.optional):
-                    item.addItem(self.NOT_SELECTED, None)
-                for layer in layers:
-                    item.addItem(layer.name(), layer)
-                item.currentIndexChanged.connect(self.updateDependentFields)
-                item.name = param.name
-            else:
-                layers = QGisLayers.getTables()
-                items = []
-                if (param.optional):
-                    items.append((self.NOT_SELECTED, None))
-                for layer in layers:
-                    items.append((layer.name(), layer))
-                item = InputLayerSelectorPanel(items)
-        elif isinstance(param, ParameterBoolean):
-            item = QtGui.QComboBox()
-            item.addItem("Yes")
-            item.addItem("No")
-            if param.default:
-                item.setCurrentIndex(0)
-            else:
-                item.setCurrentIndex(1)
-        elif isinstance(param, ParameterTableField):
-            item = QtGui.QComboBox()
-            if param.parent in self.dependentItems:
-                items = self.dependentItems[param.parent]
-            else:
-                items = []
-                self.dependentItems[param.parent] = items
-            items.append(param.name)
-            parent = self.alg.getParameterFromName(param.parent)
-            if isinstance(parent, ParameterVector):
-                layers = QGisLayers.getVectorLayers(parent.shapetype)
-            else:
-                layers = QGisLayers.getTables()
-            if len(layers)>0:
-                fields = self.getFields(layers[0])
-                for i in fields:
-                    item.addItem(fields[i].name())
-        elif isinstance(param, ParameterSelection):
-            item = QtGui.QComboBox()
-            item.addItems(param.options)
-            item.setCurrentIndex(param.default)
-        elif isinstance(param, ParameterFixedTable):
-            item = FixedTablePanel(param)
-        elif isinstance(param, ParameterRange):
-            item = RangePanel(param)
-        elif isinstance(param, ParameterMultipleInput):
-            if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                options = QGisLayers.getRasterLayers()
-            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
-                options = QGisLayers.getVectorLayers()
-            else:
-                options = QGisLayers.getVectorLayers(param.datatype)
-            opts = []
-            for opt in options:
-                opts.append(opt.name())
-            item = MultipleInputPanel(opts)
-        elif isinstance(param, ParameterNumber):
-            item = NumberInputPanel(param.default, param.isInteger)
-        elif isinstance(param, ParameterExtent):
-            item = ExtentSelectionPanel(self.dialog, param.default)
-        else:
-            item = QtGui.QLineEdit()
-            item.setText(str(param.default))
-
-        return item
-
-    def updateDependentFields(self):
-        sender = self.dialog.sender()
-        if not isinstance(sender, QComboBox):
-            return
-        if not sender.name in self.dependentItems:
-            return
-        layer = sender.itemData(sender.currentIndex()).toPyObject()
-        children = self.dependentItems[sender.name]
-        for child in children:
-            widget = self.valueItems[child]
-            widget.clear()
-            fields = self.getFields(layer)
-            for i in fields:
-                widget.addItem(fields[i].name())
-
-
-    def getFields(self, layer):
-        return layer.dataProvider().fields()
-
+#===============================================================================
+#    def somethingDependsOnThisParameter(self, parent):
+#        for param in self.alg.parameters:
+#            if isinstance(param, ParameterTableField):
+#                if param.parent == parent.name:
+#                    return True
+#        return False
+#
+#    def getWidgetFromParameter(self, param):
+#        if isinstance(param, ParameterRaster):
+#            layers = QGisLayers.getRasterLayers()
+#            items = []
+#            if (param.optional):
+#                items.append((self.NOT_SELECTED, None))
+#            for layer in layers:
+#                items.append((layer.name(), layer))
+#            item = InputLayerSelectorPanel(items)
+#        elif isinstance(param, ParameterVector):
+#            if self.somethingDependsOnThisParameter(param):
+#                item = QtGui.QComboBox()
+#                layers = QGisLayers.getVectorLayers(param.shapetype)
+#                if (param.optional):
+#                    item.addItem(self.NOT_SELECTED, None)
+#                for layer in layers:
+#                    item.addItem(layer.name(), layer)
+#                item.currentIndexChanged.connect(self.updateDependentFields)
+#                item.name = param.name
+#            else:
+#                layers = QGisLayers.getVectorLayers(param.shapetype)
+#                items = []
+#                if (param.optional):
+#                    items.append((self.NOT_SELECTED, None))
+#                for layer in layers:
+#                    items.append((layer.name(), layer))
+#                item = InputLayerSelectorPanel(items)
+#        elif isinstance(param, ParameterTable):
+#            if self.somethingDependsOnThisParameter(param):
+#                item = QtGui.QComboBox()
+#                layers = QGisLayers.getTables()
+#                if (param.optional):
+#                    item.addItem(self.NOT_SELECTED, None)
+#                for layer in layers:
+#                    item.addItem(layer.name(), layer)
+#                item.currentIndexChanged.connect(self.updateDependentFields)
+#                item.name = param.name
+#            else:
+#                layers = QGisLayers.getTables()
+#                items = []
+#                if (param.optional):
+#                    items.append((self.NOT_SELECTED, None))
+#                for layer in layers:
+#                    items.append((layer.name(), layer))
+#                item = InputLayerSelectorPanel(items)
+#        elif isinstance(param, ParameterBoolean):
+#            item = QtGui.QComboBox()
+#            item.addItem("Yes")
+#            item.addItem("No")
+#            if param.default:
+#                item.setCurrentIndex(0)
+#            else:
+#                item.setCurrentIndex(1)
+#        elif isinstance(param, ParameterTableField):
+#            item = QtGui.QComboBox()
+#            if param.parent in self.dependentItems:
+#                items = self.dependentItems[param.parent]
+#            else:
+#                items = []
+#                self.dependentItems[param.parent] = items
+#            items.append(param.name)
+#            parent = self.alg.getParameterFromName(param.parent)
+#            if isinstance(parent, ParameterVector):
+#                layers = QGisLayers.getVectorLayers(parent.shapetype)
+#            else:
+#                layers = QGisLayers.getTables()
+#            if len(layers)>0:
+#                fields = self.getFields(layers[0])
+#                for i in fields:
+#                    item.addItem(fields[i].name())
+#        elif isinstance(param, ParameterSelection):
+#            item = QtGui.QComboBox()
+#            item.addItems(param.options)
+#            item.setCurrentIndex(param.default)
+#        elif isinstance(param, ParameterFixedTable):
+#            item = FixedTablePanel(param)
+#        elif isinstance(param, ParameterRange):
+#            item = RangePanel(param)
+#        elif isinstance(param, ParameterMultipleInput):
+#            if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+#                options = QGisLayers.getRasterLayers()
+#            elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+#                options = QGisLayers.getVectorLayers()
+#            else:
+#                options = QGisLayers.getVectorLayers(param.datatype)
+#            opts = []
+#            for opt in options:
+#                opts.append(opt.name())
+#            item = MultipleInputPanel(opts)
+#        elif isinstance(param, ParameterNumber):
+#            item = NumberInputPanel(param.default, param.isInteger)
+#        elif isinstance(param, ParameterExtent):
+#            item = ExtentSelectionPanel(self.dialog, param.default)
+#        else:
+#            item = QtGui.QLineEdit()
+#            item.setText(str(param.default))
+#
+#        return item
+#
+#    def updateDependentFields(self):
+#        sender = self.dialog.sender()
+#        if not isinstance(sender, QComboBox):
+#            return
+#        if not sender.name in self.dependentItems:
+#            return
+#        layer = sender.itemData(sender.currentIndex()).toPyObject()
+#        children = self.dependentItems[sender.name]
+#        for child in children:
+#            widget = self.valueItems[child]
+#            widget.clear()
+#            fields = self.getFields(layer)
+#            for i in fields:
+#                widget.addItem(fields[i].name())
+#
+#
+#    def getFields(self, layer):
+#        return layer.dataProvider().fields()
+#===============================================================================
 
     def showHelp(self):
         if self.alg.helpFile():
@@ -224,56 +226,58 @@ class Ui_ParametersDialog(object):
         else:
             QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
 
-    def setTableContent(self):
-        params = self.alg.parameters
-        outputs = self.alg.outputs
-        numParams = len(self.alg.parameters)
-        numOutputs = 0
-        for output in outputs:
-            if not output.hidden:
-                numOutputs += 1
-        self.tableWidget.setRowCount(numParams + numOutputs)
-
-        i=0
-        for param in params:
-            item = QtGui.QTableWidgetItem(param.description)
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i,0, item)
-            item = self.getWidgetFromParameter(param)
-            self.valueItems[param.name] = item
-            self.tableWidget.setCellWidget(i,1, item)
-            self.tableWidget.setRowHeight(i,22)
-            i+=1
-
-        for output in outputs:
-            if output.hidden:
-                continue
-            item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i,0, item)
-            item = OutputSelectionPanel(output,self.alg)
-            self.valueItems[output.name] = item
-            self.tableWidget.setCellWidget(i,1, item)
-            self.tableWidget.setRowHeight(i,22)
-            i+=1
-
-        self.fillParameterValuesFromHistory()
-
-    def fillParameterValuesFromHistory(self):
-        pass
+#===============================================================================
+#    def setTableContent(self):
+#        params = self.alg.parameters
+#        outputs = self.alg.outputs
+#        numParams = len(self.alg.parameters)
+#        numOutputs = 0
+#        for output in outputs:
+#            if not output.hidden:
+#                numOutputs += 1
+#        self.tableWidget.setRowCount(numParams + numOutputs)
+#
+#        i=0
+#        for param in params:
+#            item = QtGui.QTableWidgetItem(param.description)
+#            item.setFlags(QtCore.Qt.ItemIsEnabled)
+#            self.tableWidget.setItem(i,0, item)
+#            item = self.getWidgetFromParameter(param)
+#            self.valueItems[param.name] = item
+#            self.tableWidget.setCellWidget(i,1, item)
+#            self.tableWidget.setRowHeight(i,22)
+#            i+=1
+#
+#        for output in outputs:
+#            if output.hidden:
+#                continue
+#            item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
+#            item.setFlags(QtCore.Qt.ItemIsEnabled)
+#            self.tableWidget.setItem(i,0, item)
+#            item = OutputSelectionPanel(output,self.alg)
+#            self.valueItems[output.name] = item
+#            self.tableWidget.setCellWidget(i,1, item)
+#            self.tableWidget.setRowHeight(i,22)
+#            i+=1
+#
+#        self.fillParameterValuesFromHistory()
+#
+#    def fillParameterValuesFromHistory(self):
+#        pass
+#===============================================================================
 
     def setParamValues(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
 
         for param in params:
-            if not self.setParamValue(param, self.valueItems[param.name]):
+            if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
                 return False
 
         for output in outputs:
             if output.hidden:
                 continue
-            output.value = self.valueItems[output.name].getValue()
+            output.value = self.paramTable.valueItems[output.name].getValue()
 
         return True
 
@@ -339,7 +343,6 @@ class Ui_ParametersDialog(object):
 
     def setPercentage(self, i):
         self.progress.setValue(i)
-
 
     def setText(self, text):
         self.progressLabel.setText(text)

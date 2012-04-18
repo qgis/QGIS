@@ -11,15 +11,12 @@ class HTMLViewerDialog(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("AboutDialog")
         self.resize(600, 500)
         self.webView = QtWebKit.QWebView()
-        self.webView.setObjectName("webView")
         self.setWindowTitle("")
         self.horizontalLayout= QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.addWidget(self.webView)
         self.setLayout(self.horizontalLayout)
         try:

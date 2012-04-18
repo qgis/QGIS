@@ -13,12 +13,10 @@ class NumberInputDialog(QtGui.QDialog):
         self.value = None
 
     def setupUi(self):
-        self.setObjectName("Parameters")
         self.resize(500, 350)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
         self.label = QtGui.QLabel()
         self.label.setText("Enter expression in the text field.\nDouble click on elements in the tree to add their values to the expression.")
         self.tree = QtGui.QTreeWidget()
@@ -31,7 +29,6 @@ class NumberInputDialog(QtGui.QDialog):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("hLayout")
         self.verticalLayout.addWidget(self.label)
         self.verticalLayout.addWidget(self.tree)
         self.verticalLayout.addWidget(self.formulaText)

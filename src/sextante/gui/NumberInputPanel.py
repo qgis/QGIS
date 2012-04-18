@@ -5,11 +5,9 @@ class NumberInputPanel(QtGui.QWidget):
 
     def __init__(self, number, isInteger):
         super(NumberInputPanel, self).__init__(None)
-        self.setObjectName("NIPanel")
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("hLayout")
         self.isInteger = isInteger
         if isInteger:
             self.spin = QtGui.QSpinBox()
@@ -20,12 +18,10 @@ class NumberInputPanel(QtGui.QWidget):
             self.setLayout(self.horizontalLayout)
         else:
             self.text = QtGui.QLineEdit()
-            self.text.setObjectName("linedit")
             self.text.setText(str(number))
             self.text.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
             self.horizontalLayout.addWidget(self.text)
             self.pushButton = QtGui.QPushButton()
-            self.pushButton.setObjectName("pushButton")
             self.pushButton.setText("...")
             self.pushButton.clicked.connect(self.showNumberInputDialog)
             self.horizontalLayout.addWidget(self.pushButton)

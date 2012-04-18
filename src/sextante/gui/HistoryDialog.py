@@ -10,12 +10,10 @@ class HistoryDialog(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("HistoryDialog")
         self.resize(650, 505)
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("verticalLayout")
         self.tree = QtGui.QTreeWidget()
         self.tree.setHeaderHidden(True)
         self.tree.doubleClicked.connect(self.executeAlgorithm)
@@ -31,10 +29,8 @@ class HistoryDialog(QtGui.QDialog):
         self.fillTree()
         self.text = QtGui.QTextEdit()
         self.verticalLayout.addWidget(self.text)
-        self.text.setObjectName("text")
         self.text.setReadOnly(True)
         self.closeButton = QtGui.QPushButton()
-        self.closeButton.setObjectName("closeButton")
         self.closeButton.setText("Close")
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
         self.verticalLayout.addWidget(self.closeButton)

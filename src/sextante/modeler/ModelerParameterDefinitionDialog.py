@@ -36,18 +36,15 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         self.param = None
 
     def setupUi(self):
-        self.setObjectName("Dialog")
         self.setWindowTitle("Parameter definition")
 
         self.verticalLayout = QtGui.QVBoxLayout(self)
         self.verticalLayout.setSpacing(40)
         self.verticalLayout.setMargin(20)
-        self.verticalLayout.setObjectName("vLayout")
 
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("hLayout")
         self.label = QtGui.QLabel("Parameter name")
         self.horizontalLayout.addWidget(self.label)
         self.nameTextBox = QtGui.QLineEdit()
@@ -57,11 +54,9 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         self.horizontalLayout2 = QtGui.QHBoxLayout(self)
         self.horizontalLayout2.setSpacing(2)
         self.horizontalLayout2.setMargin(0)
-        self.horizontalLayout2.setObjectName("hLayout2")
         self.horizontalLayout3 = QtGui.QHBoxLayout(self)
         self.horizontalLayout3.setSpacing(2)
         self.horizontalLayout3.setMargin(0)
-        self.horizontalLayout3.setObjectName("hLayout2")
 
         if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN:
             self.horizontalLayout2.addWidget(QtGui.QLabel("Default value"))

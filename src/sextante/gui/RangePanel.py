@@ -4,11 +4,9 @@ class RangePanel(QtGui.QWidget):
 
     def __init__(self, param):
         super(RangePanel, self).__init__(None)
-        self.setObjectName("RangePanel")
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("hLayout")
         self.labelmin = QtGui.QLabel()
         self.labelmin.setText("Min")
         self.textmin = QtGui.QLineEdit()

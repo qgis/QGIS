@@ -13,19 +13,15 @@ class FixedTableDialog(QtGui.QDialog):
         self.rettable = None
 
     def setupUi(self):
-        self.setObjectName("Dialog")
         self.resize(600, 350)
         self.setWindowTitle("Fixed Table")
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
         self.table = QtGui.QTableWidget()
-        self.table.setObjectName("table")
         self.table.setColumnCount(len(self.param.cols))
         for i in range(len(self.param.cols)):
             self.table.setColumnWidth(i,380 / len(self.param.cols))
@@ -36,11 +32,9 @@ class FixedTableDialog(QtGui.QDialog):
             self.table.setRowHeight(i,22)
         self.table.verticalHeader().setVisible(False)
         self.addRowButton = QtGui.QPushButton()
-        self.addRowButton.setObjectName("addRowButton")
         self.addRowButton.setText("Add row")
         self.addRowButton.setEnabled(not self.param.fixedNumOfRows)
         self.removeRowButton = QtGui.QPushButton()
-        self.removeRowButton.setObjectName("removeRowButton")
         self.removeRowButton.setText("Remove row")
         self.removeRowButton.setEnabled(not self.param.fixedNumOfRows)
         self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)

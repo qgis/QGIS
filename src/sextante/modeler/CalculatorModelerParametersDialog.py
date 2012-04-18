@@ -18,12 +18,10 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
     def setupUi(self):
         self.valueItems = {}
         self.dependentItems = {}
-        self.setObjectName("Parameters")
         self.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
         self.infoText = QtGui.QTextEdit()
         numbers = self.getNumbers();
         text = "You can refer to model values in you formula, using single-letter variables, as follows:\n\n"
@@ -40,7 +38,6 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("hLayout")
         self.verticalLayout.addWidget(self.infoText)
         self.verticalLayout.addWidget(self.formulaText)
         self.verticalLayout.addWidget(self.buttonBox)

@@ -11,18 +11,14 @@ class AboutDialog(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("AboutDialog")
         self.resize(600, 500)
         self.webView = QtWebKit.QWebView()
-        self.webView.setObjectName("webView")
         self.setWindowTitle("About SEXTANTE")
         self.verticalLayout= QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("horizontalLayout")
         self.verticalLayout.addWidget(self.webView)
         self.closeButton = QtGui.QPushButton()
-        self.closeButton.setObjectName("closeButton")
         self.closeButton.setText("Close")
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
         self.verticalLayout.addWidget(self.closeButton)

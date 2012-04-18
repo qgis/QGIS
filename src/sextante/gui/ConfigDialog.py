@@ -11,15 +11,12 @@ class ConfigDialog(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.setObjectName("ConfigDialog")
         self.resize(700, 500)
         self.setWindowTitle("SEXTANTE options")
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("verticalLayout")
         self.searchBox = QtGui.QLineEdit()
-        self.searchBox.setObjectName("searchBox")
         self.searchBox.textChanged.connect(self.fillTree)
         self.verticalLayout.addWidget(self.searchBox)
         self.groupIcon = QtGui.QIcon()
@@ -38,7 +35,6 @@ class ConfigDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.setObjectName("buttonBox")
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)

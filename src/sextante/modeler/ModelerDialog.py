@@ -31,19 +31,16 @@ class ModelerDialog(QtGui.QDialog):
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
 
     def setupUi(self):
-        self.setObjectName("ModelerDialog")
         self.resize(1000, 600)
         self.setWindowTitle("SEXTANTE Modeler")
         self.tabWidget = QtGui.QTabWidget()
         self.tabWidget.setMaximumSize(QtCore.QSize(350, 10000))
         self.tabWidget.setMinimumWidth(300)
-        self.tabWidget.setObjectName("tabWidget")
 
         #left hand side part
         #==================================
         self.inputsTree = QtGui.QTreeWidget()
         self.inputsTree.setHeaderHidden(True)
-        self.inputsTree.setObjectName("inputsTree")
         self.fillInputsTree()
         self.inputsTree.doubleClicked.connect(self.addInput)
         self.tabWidget.addTab(self.inputsTree, "Inputs")
@@ -51,20 +48,16 @@ class ModelerDialog(QtGui.QDialog):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.setObjectName("verticalLayout")
         self.searchBox = QtGui.QLineEdit()
-        self.searchBox.setObjectName("searchBox")
         self.searchBox.textChanged.connect(self.fillAlgorithmTree)
         self.verticalLayout.addWidget(self.searchBox)
         self.algorithmTree = QtGui.QTreeWidget()
         self.algorithmTree.setHeaderHidden(True)
-        self.algorithmTree.setObjectName("algorithmTree")
         self.fillAlgorithmTree()
         self.verticalLayout.addWidget(self.algorithmTree)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
         self.algorithmsTab = QtGui.QWidget()
-        self.algorithmsTab.setObjectName("AlgorithmsTab")
         self.algorithmsTab.setLayout(self.verticalLayout)
         self.tabWidget.addTab(self.algorithmsTab, "Algorithms")
 
@@ -79,7 +72,6 @@ class ModelerDialog(QtGui.QDialog):
         self.horizontalLayoutNames = QtGui.QHBoxLayout()
         self.horizontalLayoutNames.setSpacing(2)
         self.horizontalLayoutNames.setMargin(0)
-        self.horizontalLayoutNames.setObjectName("horizontalLayoutNames")
         self.horizontalLayoutNames.addWidget(self.textName)
         self.horizontalLayoutNames.addWidget(self.textGroup)
 
@@ -88,19 +80,16 @@ class ModelerDialog(QtGui.QDialog):
 
         self.canvasTabWidget = QtGui.QTabWidget()
         self.canvasTabWidget.setMinimumWidth(300)
-        self.canvasTabWidget.setObjectName("canvasTabWidget")
         self.view = QtGui.QGraphicsView(self.scene)
 
         self.canvasTabWidget.addTab(self.view, "Design")
         self.pythonText = QtGui.QTextEdit()
         self.createScriptButton = QtGui.QPushButton()
-        self.createScriptButton.setObjectName("createScriptButton")
         self.createScriptButton.setText("Create script from model code")
         self.createScriptButton.clicked.connect(self.createScript)
         self.verticalLayoutPython = QtGui.QVBoxLayout()
         self.verticalLayoutPython.setSpacing(2)
         self.verticalLayoutPython.setMargin(0)
-        self.verticalLayoutPython.setObjectName("verticalLayoutPython")
         self.verticalLayoutPython.addWidget(self.pythonText)
         self.verticalLayoutPython.addWidget(self.createScriptButton)
         self.pythonWidget = QtGui.QWidget()
@@ -110,7 +99,6 @@ class ModelerDialog(QtGui.QDialog):
         self.canvasLayout = QtGui.QVBoxLayout()
         self.canvasLayout.setSpacing(2)
         self.canvasLayout.setMargin(0)
-        self.canvasLayout.setObjectName("canvasLayout")
         self.canvasLayout.addLayout(self.horizontalLayoutNames)
         self.canvasLayout.addWidget(self.canvasTabWidget)
 
@@ -119,7 +107,6 @@ class ModelerDialog(QtGui.QDialog):
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.horizontalLayout.setObjectName("horizontalLayout")
         self.horizontalLayout.addWidget(self.tabWidget)
         self.horizontalLayout.addLayout(self.canvasLayout)
 
@@ -127,17 +114,13 @@ class ModelerDialog(QtGui.QDialog):
         #==========================
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setObjectName("buttonBox")
         self.openButton = QtGui.QPushButton()
-        self.openButton.setObjectName("openButton")
         self.openButton.setText("Open")
         self.buttonBox.addButton(self.openButton, QtGui.QDialogButtonBox.ActionRole)
         self.saveButton = QtGui.QPushButton()
-        self.saveButton.setObjectName("saveButton")
         self.saveButton.setText("Save")
         self.buttonBox.addButton(self.saveButton, QtGui.QDialogButtonBox.ActionRole)
         self.closeButton = QtGui.QPushButton()
-        self.closeButton.setObjectName("closeButton")
         self.closeButton.setText("Close")
         self.buttonBox.addButton(self.closeButton, QtGui.QDialogButtonBox.ActionRole)
         QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openModel)
@@ -147,7 +130,6 @@ class ModelerDialog(QtGui.QDialog):
         self.globalLayout = QtGui.QVBoxLayout()
         self.globalLayout.setSpacing(2)
         self.globalLayout.setMargin(0)
-        self.globalLayout.setObjectName("globalLayout")
         self.globalLayout.addLayout(self.horizontalLayout)
         self.globalLayout.addWidget(self.buttonBox)
         self.setLayout(self.globalLayout)

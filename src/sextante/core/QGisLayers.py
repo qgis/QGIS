@@ -30,8 +30,9 @@ class QGisLayers:
         for layer in layers:
             if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
-                    #if os.path.exists(layer.source()):
-                    vector.append(layer)
+                    uri = str(layer.source())
+                    if not uri.endswith("csv") and not uri.endswith("dbf"):
+                        vector.append(layer)
         return vector
 
     @staticmethod
