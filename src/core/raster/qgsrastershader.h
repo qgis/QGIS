@@ -47,6 +47,7 @@ class CORE_EXPORT QgsRasterShader
     double minimumValue() { return mMinimumValue; }
 
     QgsRasterShaderFunction* rasterShaderFunction() { return mRasterShaderFunction; }
+    const QgsRasterShaderFunction* rasterShaderFunction() const { return mRasterShaderFunction; }
 
     /*
      *

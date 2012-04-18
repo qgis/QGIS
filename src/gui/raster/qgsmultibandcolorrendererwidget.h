@@ -38,6 +38,8 @@ class QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private U
 
     QgsRasterRenderer* renderer();
 
+    void setFromRenderer( const QgsRasterRenderer* r );
+
   private slots:
     void on_mLoadPushButton_clicked();
 

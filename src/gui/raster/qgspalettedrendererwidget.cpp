@@ -39,35 +39,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer ): Q
       mBandComboBox->addItem( provider->colorInterpretationName( i ), i );
     }
 
-    QgsPalettedRasterRenderer* r = dynamic_cast<QgsPalettedRasterRenderer*>( mRasterLayer->renderer() );
-    if ( r )
-    {
-      //read values and colors and fill into tree widget
-      int nColors = r->nColors();
-      QColor* colors = r->colors();
-      for ( int i = 0; i < nColors; ++i )
-      {
-        QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
-        item->setText( 0, QString::number( i ) );
-        item->setBackground( 1, QBrush( colors[i] ) );
-      }
-      delete[] colors;
-    }
-    else
-    {
-      //read default palette settings from layer
-      QList<QgsColorRampShader::ColorRampItem>* itemList =
-        mRasterLayer->colorTable( mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt() );
-      QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList->constBegin();
-      int index = 0;
-      for ( ; itemIt != itemList->constEnd(); ++itemIt )
-      {
-        QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
-        item->setText( 0, QString::number( index ) );
-        item->setBackground( 1, QBrush( itemIt->color ) );
-        ++index;
-      }
-    }
+    setFromRenderer( mRasterLayer->renderer() );
   }
 }
 
@@ -96,6 +68,39 @@ void QgsPalettedRendererWidget::on_mTreeWidget_itemDoubleClicked( QTreeWidgetIte
     if ( c.isValid() )
     {
       item->setBackground( column, QBrush( c ) );
+    }
+  }
+}
+
+void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
+{
+  const QgsPalettedRasterRenderer* pr = dynamic_cast<const QgsPalettedRasterRenderer*>( r );
+  if ( pr )
+  {
+    //read values and colors and fill into tree widget
+    int nColors = pr->nColors();
+    QColor* colors = pr->colors();
+    for ( int i = 0; i < nColors; ++i )
+    {
+      QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
+      item->setText( 0, QString::number( i ) );
+      item->setBackground( 1, QBrush( colors[i] ) );
+    }
+    delete[] colors;
+  }
+  else
+  {
+    //read default palette settings from layer
+    QList<QgsColorRampShader::ColorRampItem>* itemList =
+      mRasterLayer->colorTable( mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt() );
+    QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList->constBegin();
+    int index = 0;
+    for ( ; itemIt != itemList->constEnd(); ++itemIt )
+    {
+      QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
+      item->setText( 0, QString::number( index ) );
+      item->setBackground( 1, QBrush( itemIt->color ) );
+      ++index;
     }
   }
 }

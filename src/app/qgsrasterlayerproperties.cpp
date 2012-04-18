@@ -399,6 +399,22 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   tableTransparency->resizeRowsToContents();
 }
 
+void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
+{
+  delete mRendererWidget;
+  mRendererWidget = 0;
+
+  QgsRasterRendererRegistryEntry rendererEntry;
+  if ( QgsRasterRendererRegistry::instance()->rendererData( rendererName, rendererEntry ) )
+  {
+    if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
+    {
+      mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
+      mRendererStackedWidget->addWidget( mRendererWidget );
+    }
+  }
+}
+
 /**
   @note moved from ctor
 
@@ -940,30 +956,13 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
 void QgsRasterLayerProperties::on_mRenderTypeComboBox_currentIndexChanged( int index )
 {
-  delete mRendererWidget;
-  mRendererWidget = 0;
-
   if ( index < 0 )
   {
     return;
   }
 
   QString rendererName = mRenderTypeComboBox->itemData( index ).toString();
-
-  QgsRasterRendererRegistryEntry rendererEntry;
-  if ( QgsRasterRendererRegistry::instance()->rendererData( rendererName, rendererEntry ) )
-  {
-    if ( rendererEntry.widgetCreateFunction )
-    {
-      mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
-      mRendererStackedWidget->addWidget( mRendererWidget );
-    }
-    else //single band color data renderer e.g. has no widget
-    {
-      delete mRendererWidget;
-      mRendererWidget = 0;
-    }
-  }
+  setRendererWidget( rendererName );
 }
 
 void QgsRasterLayerProperties::on_pbnAddValuesFromDisplay_clicked()
@@ -1525,6 +1524,12 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   }
 
   settings.setValue( "style/lastStyleDir", QFileInfo( fileName ).absolutePath() );
+  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  if ( renderer )
+  {
+    setRendererWidget( renderer->type() );
+  }
+  mRasterLayer->triggerRepaint();
 }
 
 

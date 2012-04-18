@@ -33,6 +33,8 @@ class QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer ) { return new QgsSingleBandPseudoColorRendererWidget( layer ); }
     QgsRasterRenderer* renderer();
 
+    void setFromRenderer( const QgsRasterRenderer* r );
+
   private:
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
 

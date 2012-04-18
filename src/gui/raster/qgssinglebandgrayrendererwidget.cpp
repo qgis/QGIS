@@ -46,19 +46,7 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     mContrastEnhancementComboBox->addItem( tr( "Stretch and clip to MinMax" ), 2 );
     mContrastEnhancementComboBox->addItem( tr( "Clip to MinMax" ), 3 );
 
-    QgsSingleBandGrayRenderer* r = dynamic_cast<QgsSingleBandGrayRenderer*>( layer->renderer() );
-    if ( r )
-    {
-      //band
-      mGrayBandComboBox->setCurrentIndex( mGrayBandComboBox->findData( r->grayBand() ) );
-      const QgsContrastEnhancement* ce = r->contrastEnhancement();
-      //minmax
-      mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
-      mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
-      //contrast enhancement algorithm
-      mContrastEnhancementComboBox->setCurrentIndex(
-        mContrastEnhancementComboBox->findData(( int )( ce->contrastEnhancementAlgorithm() ) ) );
-    }
+    setFromRenderer( layer->renderer() );
   }
 }
 
@@ -132,4 +120,21 @@ void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
 
   mMinLineEdit->setText( QString::number( minVal ) );
   mMaxLineEdit->setText( QString::number( maxVal ) );
+}
+
+void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
+{
+  const QgsSingleBandGrayRenderer* gr = dynamic_cast<const QgsSingleBandGrayRenderer*>( r );
+  if ( gr )
+  {
+    //band
+    mGrayBandComboBox->setCurrentIndex( mGrayBandComboBox->findData( gr->grayBand() ) );
+    const QgsContrastEnhancement* ce = gr->contrastEnhancement();
+    //minmax
+    mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
+    mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
+    //contrast enhancement algorithm
+    mContrastEnhancementComboBox->setCurrentIndex(
+      mContrastEnhancementComboBox->findData(( int )( ce->contrastEnhancementAlgorithm() ) ) );
+  }
 }

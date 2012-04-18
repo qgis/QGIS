@@ -54,40 +54,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   mClassificationModeComboBox->addItem( tr( "Equal interval" ) );
   //quantile would be nice as well
 
-  QgsSingleBandPseudoColorRenderer* r = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( layer->renderer() );
-  if ( r )
-  {
-    QgsRasterShader* rasterShader = r->shader();
-    if ( rasterShader )
-    {
-      QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( rasterShader->rasterShaderFunction() );
-      if ( colorRampShader )
-      {
-        if ( colorRampShader->colorRampType() == QgsColorRampShader::INTERPOLATED )
-        {
-          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
-        }
-        else if ( colorRampShader->colorRampType() == QgsColorRampShader::DISCRETE )
-        {
-          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Discrete" ) ) );
-        }
-        else
-        {
-          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Exact" ) ) );
-        }
-
-        const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
-        QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
-        for ( ; it != colorRampItemList.end(); ++it )
-        {
-          QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
-          newItem->setText( 0, QString::number( it->value, 'f' ) );
-          newItem->setBackground( 1, QBrush( it->color ) );
-          newItem->setText( 2, it->label );
-        }
-      }
-    }
-  }
+  setFromRenderer( layer->renderer() );
 }
 
 QgsSingleBandPseudoColorRendererWidget::~QgsSingleBandPseudoColorRendererWidget()
@@ -477,5 +444,43 @@ void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleCl
   else
   {
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
+{
+  const QgsSingleBandPseudoColorRenderer* pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer*>( r );
+  if ( pr )
+  {
+    const QgsRasterShader* rasterShader = pr->shader();
+    if ( rasterShader )
+    {
+      const QgsColorRampShader* colorRampShader = dynamic_cast<const QgsColorRampShader*>( rasterShader->rasterShaderFunction() );
+      if ( colorRampShader )
+      {
+        if ( colorRampShader->colorRampType() == QgsColorRampShader::INTERPOLATED )
+        {
+          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
+        }
+        else if ( colorRampShader->colorRampType() == QgsColorRampShader::DISCRETE )
+        {
+          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Discrete" ) ) );
+        }
+        else
+        {
+          mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Exact" ) ) );
+        }
+
+        const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
+        QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
+        for ( ; it != colorRampItemList.end(); ++it )
+        {
+          QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+          newItem->setText( 0, QString::number( it->value, 'f' ) );
+          newItem->setBackground( 1, QBrush( it->color ) );
+          newItem->setText( 2, it->label );
+        }
+      }
+    }
   }
 }

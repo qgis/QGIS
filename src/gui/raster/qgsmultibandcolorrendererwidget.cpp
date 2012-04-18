@@ -51,23 +51,7 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
       mBlueBandComboBox->addItem( provider->colorInterpretationName( i ), i );
     }
 
-    QgsMultiBandColorRenderer* r = dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() );
-    if ( r )
-    {
-      mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findData( r->redBand() ) );
-      mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findData( r->greenBand() ) );
-      mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findData( r->blueBand() ) );
-
-      setMinMaxValue( r->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
-      setMinMaxValue( r->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
-      setMinMaxValue( r->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
-    }
-    else
-    {
-      mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findText( tr( "Red" ) ) );
-      mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findText( tr( "Green" ) ) );
-      mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findText( tr( "Blue" ) ) );
-    }
+    setFromRenderer( mRasterLayer->renderer() );
   }
 }
 
@@ -255,4 +239,25 @@ void QgsMultiBandColorRendererWidget::loadMinMaxValueForBand( int band, QLineEdi
 
   minEdit->setText( QString::number( minVal ) );
   maxEdit->setText( QString::number( maxVal ) );
+}
+
+void QgsMultiBandColorRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
+{
+  const QgsMultiBandColorRenderer* mbcr = dynamic_cast<const QgsMultiBandColorRenderer*>( r );
+  if ( mbcr )
+  {
+    mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findData( mbcr->redBand() ) );
+    mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findData( mbcr->greenBand() ) );
+    mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findData( mbcr->blueBand() ) );
+
+    setMinMaxValue( mbcr->redContrastEnhancement(), mRedMinLineEdit, mRedMaxLineEdit );
+    setMinMaxValue( mbcr->greenContrastEnhancement(), mGreenMinLineEdit, mGreenMaxLineEdit );
+    setMinMaxValue( mbcr->blueContrastEnhancement(), mBlueMinLineEdit, mBlueMaxLineEdit );
+  }
+  else
+  {
+    mRedBandComboBox->setCurrentIndex( mRedBandComboBox->findText( tr( "Red" ) ) );
+    mGreenBandComboBox->setCurrentIndex( mGreenBandComboBox->findText( tr( "Green" ) ) );
+    mBlueBandComboBox->setCurrentIndex( mBlueBandComboBox->findText( tr( "Blue" ) ) );
+  }
 }

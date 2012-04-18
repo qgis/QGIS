@@ -34,6 +34,8 @@ class QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::Qgs
 
     QgsRasterRenderer* renderer();
 
+    void setFromRenderer( const QgsRasterRenderer* r );
+
   private slots:
     void on_mTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
 };

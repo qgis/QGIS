@@ -139,8 +139,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
     void populateTransparencyTable();
 
-    /**Restores the state of the colormap tab*/
-    void syncColormapTab();
+    void setRendererWidget( const QString& rendererName );
 
     //@TODO we should move these gradient generators somewhere more generic
     //so they can be used generically throughut the app
