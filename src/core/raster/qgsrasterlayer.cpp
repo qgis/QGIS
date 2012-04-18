@@ -20,6 +20,7 @@ email                : tim at linfiniti.com
 #include "qgsmessagelog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
+#include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
@@ -3062,257 +3063,39 @@ void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMes
 bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMessage )
 {
   Q_UNUSED( errorMessage );
-  QDomNode mnl = layer_node.namedItem( "rasterproperties" );
+  QDomElement rasterRendererElem;
 
-  QDomNode snode = mnl.namedItem( "mDrawingStyle" );
-  QDomElement myElement = snode.toElement();
-  setDrawingStyle( myElement.text() );
-
-  snode = mnl.namedItem( "mColorShadingAlgorithm" );
-  myElement = snode.toElement();
-  setColorShadingAlgorithm( myElement.text() );
-
-  snode = mnl.namedItem( "mInvertColor" );
-  myElement = snode.toElement();
-  QVariant myVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setInvertHistogram( myVariant.toBool() );
-
-  snode = mnl.namedItem( "mRedBandName" );
-  myElement = snode.toElement();
-  setRedBandName( myElement.text() );
-
-  snode = mnl.namedItem( "mGreenBandName" );
-  myElement = snode.toElement();
-  setGreenBandName( myElement.text() );
-
-  snode = mnl.namedItem( "mBlueBandName" );
-  myElement = snode.toElement();
-  setBlueBandName( myElement.text() );
-
-  snode = mnl.namedItem( "mGrayBandName" );
-  myElement = snode.toElement();
-  QgsDebugMsg( QString( " Setting gray band to : " ) + myElement.text() );
-  setGrayBandName( myElement.text() );
-
-  snode = mnl.namedItem( "mStandardDeviations" );
-  myElement = snode.toElement();
-  setStandardDeviations( myElement.text().toDouble() );
-
-  snode = mnl.namedItem( "mUserDefinedRGBMinimumMaximum" );
-  myElement = snode.toElement();
-  myVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setUserDefinedRGBMinimumMaximum( myVariant.toBool() );
-
-  snode = mnl.namedItem( "mRGBMinimumMaximumEstimated" );
-  myElement = snode.toElement();
-  myVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setRGBMinimumMaximumEstimated( myVariant.toBool() );
-
-  snode = mnl.namedItem( "mUserDefinedGrayMinimumMaximum" );
-  myElement = snode.toElement();
-  myVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setUserDefinedGrayMinimumMaximum( myVariant.toBool() );
-
-  snode = mnl.namedItem( "mGrayMinimumMaximumEstimated" );
-  myElement = snode.toElement();
-  myVariant = ( QVariant ) myElement.attribute( "boolean" );
-  setGrayMinimumMaximumEstimated( myVariant.toBool() );
-
-  snode = mnl.namedItem( "mContrastEnhancementAlgorithm" );
-  myElement = snode.toElement();
-  setContrastEnhancementAlgorithm( myElement.text(), false );
-
-  QDomNode contrastEnhancementMinMaxValues = mnl.namedItem( "contrastEnhancementMinMaxValues" );
-  QDomNodeList minMaxValueList = contrastEnhancementMinMaxValues.toElement().elementsByTagName( "minMaxEntry" );
-  for ( int i = 0; i < minMaxValueList.size(); ++i )
+  //rasterlayerproperties element there -> old format
+  if( !layer_node.firstChildElement("rasterproperties").isNull() )
   {
-    QDomNode minMaxEntry = minMaxValueList.at( i ).toElement();
-    if ( minMaxEntry.isNull() )
-    {
-      continue;
-    }
-    QDomNode minEntry = minMaxEntry.namedItem( "min" );
-    QDomNode maxEntry = minMaxEntry.namedItem( "max" );
-
-    setMinimumValue( i + 1, minEntry.toElement().text().toDouble(), false );
-    setMaximumValue( i + 1, maxEntry.toElement().text().toDouble(), false );
+    //copy node because layer_node is const
+    QDomNode layerNodeCopy = layer_node.cloneNode();
+    QDomDocument doc = layerNodeCopy.ownerDocument();
+    QDomElement rasterPropertiesElem = layerNodeCopy.firstChildElement( "rasterproperties");
+    QgsProjectFileTransform::convertRasterProperties( doc, layerNodeCopy, rasterPropertiesElem,
+                             this );
+    rasterRendererElem = layerNodeCopy.firstChildElement( "rasterrenderer" );
+    QgsDebugMsg( doc.toString() );
+  }
+  else
+  {
+    rasterRendererElem = layer_node.firstChildElement( "rasterrenderer" );
   }
 
-  QgsDebugMsg( "ReadXml: gray band name " + mGrayBandName );
-  QgsDebugMsg( "ReadXml: red band name " + mRedBandName );
-  QgsDebugMsg( "ReadXml: green band name  " + mGreenBandName );
-  QgsDebugMsg( "Drawing style " + drawingStyleAsString() );
-
-  /*
-   * Transparency tab
-   */
-  snode = mnl.namedItem( "mNoDataValue" );
-  myElement = snode.toElement();
-  QgsDebugMsg( "ReadXml: mNoDataValue = " + myElement.text() );
-  setNoDataValue( myElement.text().toDouble() );
-  QgsDebugMsg( "ReadXml: mNoDataValue = " + QString::number( mNoDataValue ) );
-  if ( myElement.attribute( "mValidNoDataValue", "false" ).compare( "true" ) )
+  if( !rasterRendererElem.isNull() )
   {
-    // If flag element is not true, set to false.
-    mValidNoDataValue = false;
-  }
-
-  QDomNode singleValuePixelListNode = mnl.namedItem( "singleValuePixelList" );
-  if ( !singleValuePixelListNode.isNull() )
-  {
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> newSingleValuePixelList;
-
-    //entries
-    QDomNodeList singleValuePixelList = singleValuePixelListNode.toElement().elementsByTagName( "pixelListEntry" );
-    for ( int i = 0; i < singleValuePixelList.size(); ++i )
+    delete mRenderer;
+    mRenderer = 0;
+    if ( !rasterRendererElem.isNull() )
     {
-      QgsRasterTransparency::TransparentSingleValuePixel myNewItem;
-      QDomElement singleValuePixelListElement = singleValuePixelList.at( i ).toElement();
-      if ( singleValuePixelListElement.isNull() )
+      QString rendererType = rasterRendererElem.attribute( "type" );
+      QgsRasterRendererRegistryEntry rendererEntry;
+      if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
       {
-        continue;
-      }
-
-      myNewItem.pixelValue = singleValuePixelListElement.attribute( "pixelValue" ).toDouble();
-      myNewItem.percentTransparent = singleValuePixelListElement.attribute( "percentTransparent" ).toDouble();
-
-      newSingleValuePixelList.push_back( myNewItem );
-    }
-    mRasterTransparency.setTransparentSingleValuePixelList( newSingleValuePixelList );
-  }
-
-  QDomNode threeValuePixelListNode = mnl.namedItem( "threeValuePixelList" );
-  if ( !threeValuePixelListNode.isNull() )
-  {
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> newThreeValuePixelList;
-
-    //entries
-    QDomNodeList threeValuePixelList = threeValuePixelListNode.toElement().elementsByTagName( "pixelListEntry" );
-    for ( int i = 0; i < threeValuePixelList.size(); ++i )
-    {
-      QgsRasterTransparency::TransparentThreeValuePixel myNewItem;
-      QDomElement threeValuePixelListElement = threeValuePixelList.at( i ).toElement();
-      if ( threeValuePixelListElement.isNull() )
-      {
-        continue;
-      }
-
-      myNewItem.red = threeValuePixelListElement.attribute( "red" ).toDouble();
-      myNewItem.green = threeValuePixelListElement.attribute( "green" ).toDouble();
-      myNewItem.blue = threeValuePixelListElement.attribute( "blue" ).toDouble();
-      myNewItem.percentTransparent = threeValuePixelListElement.attribute( "percentTransparent" ).toDouble();
-
-      newThreeValuePixelList.push_back( myNewItem );
-    }
-    mRasterTransparency.setTransparentThreeValuePixelList( newThreeValuePixelList );
-  }
-
-  //raster renderer
-  delete mRenderer;
-  mRenderer = 0;
-  QDomElement rendererElem = layer_node.firstChildElement( "rasterrenderer" );
-  if ( !rendererElem.isNull() )
-  {
-    QString rendererType = rendererElem.attribute( "type" );
-    QgsRasterRendererRegistryEntry rendererEntry;
-    if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
-    {
-      mRenderer = rendererEntry.rendererCreateFunction( rendererElem, dataProvider() );
-    }
-  }
-
-#if 0
-  /*
-   * Color Ramp tab
-   */
-  //restore custom color ramp settings
-  QDomNode customColorRampNode = mnl.namedItem( "customColorRamp" );
-  if ( !customColorRampNode.isNull() )
-  {
-    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
-
-    //TODO: Remove the customColorRampType check and following if() in v2.0,
-    //added for compatibility with older ( bugged ) project files
-    QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "customColorRampType" );
-    QDomNode colorRampTypeNode = customColorRampNode.namedItem( "colorRampType" );
-    QString myRampType = "";
-    if ( "" == customColorRampTypeNode.toElement().text() )
-    {
-      myRampType = colorRampTypeNode.toElement().text();
-    }
-    else
-    {
-      myRampType = customColorRampTypeNode.toElement().text();
-    }
-    myColorRampShader->setColorRampType( myRampType );
-
-
-    //entries
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList;
-    QDomNodeList colorRampEntryList = customColorRampNode.toElement().elementsByTagName( "colorRampEntry" );
-    for ( int i = 0; i < colorRampEntryList.size(); ++i )
-    {
-      QgsColorRampShader::ColorRampItem myNewItem;
-      QDomElement colorRampEntryElement = colorRampEntryList.at( i ).toElement();
-      if ( colorRampEntryElement.isNull() )
-      {
-        continue;
-      }
-
-      myNewItem.color = QColor( colorRampEntryElement.attribute( "red" ).toInt(), colorRampEntryElement.attribute( "green" ).toInt(), colorRampEntryElement.attribute( "blue" ).toInt() );
-      myNewItem.label = colorRampEntryElement.attribute( "label" );
-      myNewItem.value = colorRampEntryElement.attribute( "value" ).toDouble();
-
-      myColorRampItemList.push_back( myNewItem );
-    }
-    myColorRampShader->setColorRampItemList( myColorRampItemList );
-  }
-
-  //resampler
-
-  //max oversampling
-  if ( mRenderer )
-  {
-    QDomElement maxOversamplingElem = mnl.firstChildElement( "MaxOversampling" );
-    if ( !maxOversamplingElem.isNull() )
-    {
-      bool conversion;
-      double maxOversampling = maxOversamplingElem.text().toDouble( &conversion );
-      if ( conversion )
-      {
-        mRenderer->setMaxOversampling( maxOversampling );
+        mRenderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
       }
     }
   }
-
-  QDomElement zoomedInResamplerElem = mnl.firstChildElement( "zoomedInResampler" );
-  if ( mRenderer && !zoomedInResamplerElem.isNull() )
-  {
-    QgsRasterResampler* zoomedInResampler = 0;
-    QString zoomedInResamplerType = zoomedInResamplerElem.text();
-    if ( zoomedInResamplerType == "bilinear" )
-    {
-      zoomedInResampler = new QgsBilinearRasterResampler();
-    }
-    else if ( zoomedInResamplerType == "cubic" )
-    {
-      zoomedInResampler = new QgsCubicRasterResampler();
-    }
-    mRenderer->setZoomedInResampler( zoomedInResampler );
-  }
-  QDomElement zoomedOutResamplerElem = mnl.firstChildElement( "zoomedOutResampler" );
-  if ( mRenderer && !zoomedOutResamplerElem.isNull() )
-  {
-    QgsRasterResampler* zoomedOutResampler = 0;
-    QString zoomedOutResamplerType = zoomedOutResamplerElem.text();
-    if ( zoomedOutResamplerType == "bilinear" )
-    {
-      zoomedOutResampler = new QgsBilinearRasterResampler();
-    }
-    mRenderer->setZoomedOutResampler( zoomedOutResampler );
-  }
-#endif //0
-
   return true;
 } //readSymbology
 
@@ -3439,15 +3222,14 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & document, QString& errorMessage ) const
 {
   Q_UNUSED( errorMessage );
-  // <rasterproperties>
-  QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
-  layer_node.appendChild( rasterPropertiesElement );
+  QDomElement layerElem = layer_node.toElement();
+  if( mRenderer )
+  {
+    mRenderer->writeXML( document, layerElem );
+  }
 
-  QStringList sl = subLayers();
-  QStringList sls = mDataProvider->subLayerStyles();
-
-  QStringList::const_iterator layerStyle = sls.begin();
-
+  //is it still needed?
+#if 0
   if ( mProviderKey == "wms" )
   {
     // <rasterproperties><wmsSublayer>
@@ -3487,220 +3269,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     formatElement.appendChild( formatText );
     rasterPropertiesElement.appendChild( formatElement );
   }
-
-  // <mRedBandName>
-  QDomElement mRedBandNameElement = document.createElement( "mRedBandName" );
-  QString writtenRedBandName =  redBandName();
-  if ( writtenRedBandName == TRSTRING_NOT_SET )
-  {
-    // Write english "not set" only.
-    writtenRedBandName = QSTRING_NOT_SET;
-  }
-  QDomText    mRedBandNameText    = document.createTextNode( writtenRedBandName );
-
-  mRedBandNameElement.appendChild( mRedBandNameText );
-
-  rasterPropertiesElement.appendChild( mRedBandNameElement );
-
-
-  // <mGreenBandName>
-  QDomElement mGreenBandNameElement = document.createElement( "mGreenBandName" );
-  QString writtenGreenBandName =  greenBandName();
-  if ( writtenGreenBandName == TRSTRING_NOT_SET )
-  {
-    // Write english "not set" only.
-    writtenGreenBandName = QSTRING_NOT_SET;
-  }
-  QDomText    mGreenBandNameText    = document.createTextNode( writtenGreenBandName );
-
-  mGreenBandNameElement.appendChild( mGreenBandNameText );
-
-  rasterPropertiesElement.appendChild( mGreenBandNameElement );
-
-  // <mBlueBandName>
-  QDomElement mBlueBandNameElement = document.createElement( "mBlueBandName" );
-  QString writtenBlueBandName =  blueBandName();
-  if ( writtenBlueBandName == TRSTRING_NOT_SET )
-  {
-    // Write english "not set" only.
-    writtenBlueBandName = QSTRING_NOT_SET;
-  }
-  QDomText    mBlueBandNameText    = document.createTextNode( writtenBlueBandName );
-
-  mBlueBandNameElement.appendChild( mBlueBandNameText );
-
-  rasterPropertiesElement.appendChild( mBlueBandNameElement );
-
-  // <mGrayBandName>
-  QDomElement mGrayBandNameElement = document.createElement( "mGrayBandName" );
-  QString writtenGrayBandName =  grayBandName();
-  if ( writtenGrayBandName == TRSTRING_NOT_SET )
-  {
-    // Write english "not set" only.
-    writtenGrayBandName = QSTRING_NOT_SET;
-  }
-  QDomText    mGrayBandNameText    = document.createTextNode( writtenGrayBandName );
-
-  mGrayBandNameElement.appendChild( mGrayBandNameText );
-  rasterPropertiesElement.appendChild( mGrayBandNameElement );
-
-  // <mStandardDeviations>
-  QDomElement mStandardDeviationsElement = document.createElement( "mStandardDeviations" );
-  QDomText    mStandardDeviationsText    = document.createTextNode( QString::number( standardDeviations() ) );
-
-  mStandardDeviationsElement.appendChild( mStandardDeviationsText );
-
-  rasterPropertiesElement.appendChild( mStandardDeviationsElement );
-
-  // <mUserDefinedRGBMinimumMaximum>
-  QDomElement userDefinedRGBMinMaxFlag = document.createElement( "mUserDefinedRGBMinimumMaximum" );
-
-  if ( hasUserDefinedRGBMinimumMaximum() )
-  {
-    userDefinedRGBMinMaxFlag.setAttribute( "boolean", "true" );
-  }
-  else
-  {
-    userDefinedRGBMinMaxFlag.setAttribute( "boolean", "false" );
-  }
-
-  rasterPropertiesElement.appendChild( userDefinedRGBMinMaxFlag );
-
-  // <mRGBMinimumMaximumEstimated>
-  QDomElement RGBMinimumMaximumEstimated = document.createElement( "mRGBMinimumMaximumEstimated" );
-
-  if ( isRGBMinimumMaximumEstimated() )
-  {
-    RGBMinimumMaximumEstimated.setAttribute( "boolean", "true" );
-  }
-  else
-  {
-    RGBMinimumMaximumEstimated.setAttribute( "boolean", "false" );
-  }
-
-  rasterPropertiesElement.appendChild( RGBMinimumMaximumEstimated );
-
-  // <mUserDefinedGrayMinimumMaximum>
-  QDomElement userDefinedGrayMinMaxFlag = document.createElement( "mUserDefinedGrayMinimumMaximum" );
-
-  if ( hasUserDefinedGrayMinimumMaximum() )
-  {
-    userDefinedGrayMinMaxFlag.setAttribute( "boolean", "true" );
-  }
-  else
-  {
-    userDefinedGrayMinMaxFlag.setAttribute( "boolean", "false" );
-  }
-
-  rasterPropertiesElement.appendChild( userDefinedGrayMinMaxFlag );
-
-  // <mGrayMinimumMaximumEstimated>
-  QDomElement GrayMinimumMaximumEstimated = document.createElement( "mGrayMinimumMaximumEstimated" );
-
-  if ( isGrayMinimumMaximumEstimated() )
-  {
-    GrayMinimumMaximumEstimated.setAttribute( "boolean", "true" );
-  }
-  else
-  {
-    GrayMinimumMaximumEstimated.setAttribute( "boolean", "false" );
-  }
-
-  rasterPropertiesElement.appendChild( GrayMinimumMaximumEstimated );
-
-  /*
-   * Transparency tab
-   */
-  // <mNodataValue>
-  QDomElement mNoDataValueElement = document.createElement( "mNoDataValue" );
-  QDomText    mNoDataValueText    = document.createTextNode( QString::number( mNoDataValue, 'f' ) );
-  if ( mValidNoDataValue )
-  {
-    mNoDataValueElement.setAttribute( "mValidNoDataValue", "true" );
-  }
-  else
-  {
-    mNoDataValueElement.setAttribute( "mValidNoDataValue", "false" );
-  }
-
-  mNoDataValueElement.appendChild( mNoDataValueText );
-
-  rasterPropertiesElement.appendChild( mNoDataValueElement );
-
-#if 0
-  if ( mRasterTransparency.transparentSingleValuePixelList().count() > 0 )
-  {
-    QDomElement singleValuePixelListElement = document.createElement( "singleValuePixelList" );
-
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myPixelList = mRasterTransparency.transparentSingleValuePixelList();
-    QList<QgsRasterTransparency::TransparentSingleValuePixel>::iterator it;
-    for ( it =  myPixelList.begin(); it != myPixelList.end(); ++it )
-    {
-      QDomElement pixelListElement = document.createElement( "pixelListEntry" );
-      pixelListElement.setAttribute( "pixelValue", QString::number( it->pixelValue, 'f' ) );
-      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
-
-      singleValuePixelListElement.appendChild( pixelListElement );
-    }
-
-    rasterPropertiesElement.appendChild( singleValuePixelListElement );
-  }
-
-  if ( mRasterTransparency.transparentThreeValuePixelList().count() > 0 )
-  {
-    QDomElement threeValuePixelListElement = document.createElement( "threeValuePixelList" );
-
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myPixelList = mRasterTransparency.transparentThreeValuePixelList();
-    QList<QgsRasterTransparency::TransparentThreeValuePixel>::iterator it;
-    for ( it =  myPixelList.begin(); it != myPixelList.end(); ++it )
-    {
-      QDomElement pixelListElement = document.createElement( "pixelListEntry" );
-      pixelListElement.setAttribute( "red", QString::number( it->red, 'f' ) );
-      pixelListElement.setAttribute( "green", QString::number( it->green, 'f' ) );
-      pixelListElement.setAttribute( "blue", QString::number( it->blue, 'f' ) );
-      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
-
-      threeValuePixelListElement.appendChild( pixelListElement );
-    }
-
-    rasterPropertiesElement.appendChild( threeValuePixelListElement );
-  }
-
-  /*
-   * Color Ramp tab
-   */
-  if ( QgsRasterLayer::ColorRampShader ==  colorShadingAlgorithm() )
-  {
-    QDomElement customColorRampElement = document.createElement( "customColorRamp" );
-
-    QDomElement customColorRampType = document.createElement( "colorRampType" );
-    QDomText customColorRampTypeText = document.createTextNode((( QgsColorRampShader* )mRasterShader->rasterShaderFunction() )->colorRampTypeAsQString() );
-    customColorRampType.appendChild( customColorRampTypeText );
-    customColorRampElement.appendChild( customColorRampType );
-
-    QList<QgsColorRampShader::ColorRampItem> myColorRampItemList = (( QgsColorRampShader* )mRasterShader->rasterShaderFunction() )->colorRampItemList();
-    QList<QgsColorRampShader::ColorRampItem>::iterator it;
-    for ( it =  myColorRampItemList.begin(); it != myColorRampItemList.end(); ++it )
-    {
-      QDomElement colorRampEntryElement = document.createElement( "colorRampEntry" );
-      colorRampEntryElement.setAttribute( "red", QString::number( it->color.red() ) );
-      colorRampEntryElement.setAttribute( "green", QString::number( it->color.green() ) );
-      colorRampEntryElement.setAttribute( "blue", QString::number( it->color.blue() ) );
-      colorRampEntryElement.setAttribute( "value", QString::number( it->value, 'f' ) );
-      colorRampEntryElement.setAttribute( "label", it->label );
-
-      customColorRampElement.appendChild( colorRampEntryElement );
-    }
-
-    rasterPropertiesElement.appendChild( customColorRampElement );
-  }
 #endif //0
-
-  if ( mRenderer )
-  {
-    QDomElement layerElem = layer_node.toElement();
-    mRenderer->writeXML( document, layerElem );
-  }
 
   return true;
 } // bool QgsRasterLayer::writeSymbology
