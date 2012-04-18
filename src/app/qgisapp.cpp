@@ -4385,7 +4385,7 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     QDomImplementation DomImplementation;
     QDomDocumentType documentType =
       DomImplementation.createDocumentType(
-					   "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+        "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
     QDomDocument doc( documentType );
     QDomElement rootNode = doc.createElement( "qgis" );
     rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
@@ -4394,10 +4394,10 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
     {
       QMessageBox::warning( this,
-			    tr( "Error" ),
-			    tr( "Cannot copy style: %1" )
-			    .arg( errorMsg ),
-			    QMessageBox::Ok );
+                            tr( "Error" ),
+                            tr( "Cannot copy style: %1" )
+                            .arg( errorMsg ),
+                            QMessageBox::Ok );
       return;
     }
     // Copies data in text form as well, so the XML can be pasted into a text editor
@@ -4417,26 +4417,26 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       QDomDocument doc( "qgis" );
       QString errorMsg;
       int errorLine, errorColumn;
-      if ( !doc.setContent ( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
+      if ( !doc.setContent( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
       {
-	QMessageBox::information( this,
-				  tr( "Error" ),
-				  tr( "Cannot parse style: %1:%2:%3" )
-				  .arg( errorMsg )
-				  .arg( errorLine )
-				  .arg( errorColumn ),
-				  QMessageBox::Ok );
-	return;
+        QMessageBox::information( this,
+                                  tr( "Error" ),
+                                  tr( "Cannot parse style: %1:%2:%3" )
+                                  .arg( errorMsg )
+                                  .arg( errorLine )
+                                  .arg( errorColumn ),
+                                  QMessageBox::Ok );
+        return;
       }
       QDomElement rootNode = doc.firstChildElement( "qgis" );
       if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
       {
-	QMessageBox::information( this,
-				  tr( "Error" ),
-				  tr( "Cannot read style: %1" )
-				  .arg( errorMsg ),
-				  QMessageBox::Ok );
-	return;
+        QMessageBox::information( this,
+                                  tr( "Error" ),
+                                  tr( "Cannot read style: %1" )
+                                  .arg( errorMsg ),
+                                  QMessageBox::Ok );
+        return;
       }
 
       mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );

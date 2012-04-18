@@ -26,26 +26,26 @@ quazip/(un)zip.h files for details, basically it's zlib license.
 #include "quazipnewinfo.h"
 
 
-QuaZipNewInfo::QuaZipNewInfo(const QString& name):
-  name(name), dateTime(QDateTime::currentDateTime()), internalAttr(0), externalAttr(0)
+QuaZipNewInfo::QuaZipNewInfo( const QString& name ):
+    name( name ), dateTime( QDateTime::currentDateTime() ), internalAttr( 0 ), externalAttr( 0 )
 {
 }
 
-QuaZipNewInfo::QuaZipNewInfo(const QString& name, const QString& file):
-  name(name), internalAttr(0), externalAttr(0)
+QuaZipNewInfo::QuaZipNewInfo( const QString& name, const QString& file ):
+    name( name ), internalAttr( 0 ), externalAttr( 0 )
 {
-  QFileInfo info(file);
+  QFileInfo info( file );
   QDateTime lm = info.lastModified();
-  if (!info.exists())
+  if ( !info.exists() )
     dateTime = QDateTime::currentDateTime();
   else
     dateTime = lm;
 }
 
-void QuaZipNewInfo::setFileDateTime(const QString& file)
+void QuaZipNewInfo::setFileDateTime( const QString& file )
 {
-  QFileInfo info(file);
+  QFileInfo info( file );
   QDateTime lm = info.lastModified();
-  if (info.exists())
+  if ( info.exists() )
     dateTime = lm;
 }

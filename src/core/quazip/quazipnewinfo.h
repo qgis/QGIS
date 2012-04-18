@@ -35,7 +35,8 @@ quazip/(un)zip.h files for details, basically it's zlib license.
  * passing this structure to
  * QuaZipFile::open(OpenMode,const QuaZipNewInfo&,int,int,bool).
  **/
-struct QUAZIP_EXPORT QuaZipNewInfo {
+struct QUAZIP_EXPORT QuaZipNewInfo
+{
   /// File name.
   /** This field holds file name inside archive, including path relative
    * to archive root.
@@ -70,17 +71,17 @@ struct QUAZIP_EXPORT QuaZipNewInfo {
    * time. Attributes are initialized with zeros, comment and extra
    * field with null values.
    **/
-  QuaZipNewInfo(const QString& name);
+  QuaZipNewInfo( const QString& name );
   /// Constructs QuaZipNewInfo instance.
   /** Initializes name with \a name and dateTime with timestamp of the
    * file named \a file. If the \a file does not exists or its timestamp
    * is inaccessible (e. g. you do not have read permission for the
    * directory file in), uses current date and time. Attributes are
    * initialized with zeros, comment and extra field with null values.
-   * 
+   *
    * \sa setFileDateTime()
    **/
-  QuaZipNewInfo(const QString& name, const QString& file);
+  QuaZipNewInfo( const QString& name, const QString& file );
   /// Sets the file timestamp from the existing file.
   /** Use this function to set the file timestamp from the existing
    * file. Use it like this:
@@ -96,7 +97,7 @@ struct QUAZIP_EXPORT QuaZipNewInfo {
    * This function does not change dateTime if some error occured (e. g.
    * file is inaccessible).
    **/
-  void setFileDateTime(const QString& file);
+  void setFileDateTime( const QString& file );
 };
 
 #endif

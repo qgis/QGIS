@@ -40,6 +40,7 @@ my $translators= {
     it => 'Paolo Cavallini, Flavio Rigolon, Maurizio Napolitano, Roberto Angeletti, Alessandro Fanna, Michele Beneventi, Marco Braida, Luca Casagrande, Luca Delucchi, Anne Gishla',
     ja => 'BABA Yoshihiko, Yoichi Kayama',
     ka_GE => 'Shota Murtskhvaladze, George Machitidze',
+    ko_KR => 'BJ Jang',
     lo => 'Anousak Souphavanh',
     lv => 'Maris Nartiss, Pēteris Brūns',
     lt => 'Kestas M',

@@ -212,7 +212,7 @@ bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
   return loadFromDb( id < USER_CRS_START_ID ? QgsApplication::srsDbFilePath() :
-                      QgsApplication::qgisUserDbFilePath(),
+                     QgsApplication::qgisUserDbFilePath(),
                      "srs_id", QString::number( id ) );
 }
 
@@ -254,8 +254,8 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
   */
 
   QString mySql = "select srs_id,description,projection_acronym,"
-    "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
-    "from tbl_srs where " + expression + "=" + quotedValue( value );
+                  "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
+                  "from tbl_srs where " + expression + "=" + quotedValue( value );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(),
                               mySql.toUtf8().length(),
                               &myPreparedStatement, &myTail );
@@ -265,7 +265,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     mSrsId = QString::fromUtf8(( char * )sqlite3_column_text(
                                  myPreparedStatement, 0 ) ).toLong();
     mDescription = QString::fromUtf8(( char * )sqlite3_column_text(
-                                 myPreparedStatement, 1 ) );
+                                       myPreparedStatement, 1 ) );
     mProjectionAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 2 ) );
     mEllipsoidAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 3 ) );
     QString toProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
@@ -813,8 +813,8 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
   mIsValidFlag =
-      OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() )
-      == OGRERR_NONE;
+    OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() )
+    == OGRERR_NONE;
   mWkt.clear();
   setMapUnits();
 
