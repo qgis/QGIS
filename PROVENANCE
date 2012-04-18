@@ -117,7 +117,40 @@ Copyright (C) Navel Ltd., LGPL
 NOTE: These files have since been removed from SVN:
 * shapefile.h  Copyright (c) 1999, Frank Warmerdam, MIT or LGPL
 * utils.h 
-**Taken from txt2dbf 1.0.2 by Frank Koormann, see http://www.usf.uni-osnabrueck.de/~fkoorman/software/dbftools.en.html.  Licensed as "The program is free of charge as well as the source" but no license is mentioned 
+**Taken from txt2dbf 1.0.2 by Frank Koormann, see
+http://www.usf.uni-osnabrueck.de/~fkoorman/software/dbftools.en.html.  Licensed
+as "The program is free of charge as well as the source" but no license is
+mentioned 
  
+=== src/core/quazip ===
+QuaZIP is the C++ wrapper for the Gilles Vollant's ZIP/UNZIP package
+using Trolltech's Qt library. 
+Copyright (C) 2005-2011 Sergey A. Tachenov
+Added to the QGIS source tree 17 April 2012 as part of a patch from 
+Etienne Tourigny <etourigny.dev@gmail.com>
 
+ * COPYING
+ * ioapi.h     
+ * JlCompress.h  
+ * quaadler32.cpp  
+ * quachecksum32.h  
+ * quacrc32.h  
+ * quazipfile.cpp  
+ * quazipfileinfo.h  
+ * quazip.h       
+ * quazipnewinfo.h  
+ * unzip.c  
+ * zip.c
+ * crypt.h  
+ * JlCompress.cpp  
+ * qioapi.cpp    
+ * quaadler32.h    
+ * quacrc32.cpp 
+ * quazip.cpp  
+ * quazipfile.h    
+ * quazip_global.h   
+ * quazipnewinfo.cpp  
+ * README.txt   
+ * unzip.h  
+ * zip.h
 
