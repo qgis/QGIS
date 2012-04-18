@@ -35,7 +35,8 @@ Build-Depends:
  git,
  doxygen,
  graphviz,
- txt2tags
+ txt2tags,
+ xvfb, xauth, xfonts-base
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.9.3
 X-Python-Version: current
@@ -129,7 +130,7 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), python-pyspatialite, ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Description: Python bindings to Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
