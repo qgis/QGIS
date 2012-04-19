@@ -3,6 +3,7 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputFile import OutputFile
 
 class OutputFactory():
 
