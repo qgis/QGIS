@@ -40,15 +40,6 @@ int main( int argc, char ** argv )
 {
   QgsApplication a( argc, argv, false );
 
-#if defined(Q_WS_MACX)
-  // If we're on Mac, we have the resource library way above us...
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
-#elif defined(Q_WS_WIN)
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/" QGIS_DATA_SUBDIR );
-#else
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/../" QGIS_DATA_SUBDIR );
-#endif
-
   std::cout << "Synchronizing CRS database with PROJ definitions." << std::endl;
 
   CPLPushErrorHandler( showError );

@@ -87,6 +87,8 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake -G "Visual Studio 9 2008" ^
+	-D BUILDNAME="OSGeo4W-Nightly-VC9" ^
+	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_SPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
@@ -135,7 +137,7 @@ echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 if errorlevel 1 goto error 
 
 echo RUN_TESTS: %DATE% %TIME%>>%LOG% 2>&1
-%DEVENV% qgis%VERSION%.sln /Project Experimental /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
+%DEVENV% qgis%VERSION%.sln /Project Nightly /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 REM if errorlevel 1 echo "TESTS WERE NOT SUCCESSFUL."
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
