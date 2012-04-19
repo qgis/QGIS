@@ -2,7 +2,7 @@ otbcli_RadiometricVegetationIndices
 Radiometric Vegetation
 Feature Extraction
 ParameterRaster|-in|Input Image|False
-OutputRaster|-out|Output Image|
+OutputRaster|-out|Output Image
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128
 ParameterNumber|-channels.red|Red Channel|None|None|3
 ParameterNumber|-channels.nir|NIR Channel|None|None|4

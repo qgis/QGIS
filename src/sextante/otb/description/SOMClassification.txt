@@ -2,12 +2,12 @@ otbcli_SOMClassification
 SOM Classification
 Learning
 ParameterRaster|-in|InputImage|False
-OutputRaster|-out|OutputImage|
+OutputRaster|-out|OutputImage
 ParameterRaster|-vm|ValidityMask|True
 ParameterNumber|-tp|TrainingProbability|None|None|1.0
 ParameterNumber|-ts|TrainingSetSize|None|None|0
 ParameterNumber|-sl|StreamingLines|None|None|0
-OutputRaster|-som|SOM Map|
+OutputRaster|-som|SOM Map
 ParameterNumber|-sx|SizeX|None|None|32
 ParameterNumber|-sy|SizeY|None|None|32
 ParameterNumber|-nx|NeighborhoodX|None|None|10

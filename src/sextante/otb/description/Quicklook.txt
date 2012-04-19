@@ -2,7 +2,7 @@ otbcli_Quicklook
 Quick Look
 Image Manipulation
 ParameterRaster|-in|Input Image|False
-OutputRaster|-out|Output Image|
+OutputRaster|-out|Output Image
 ParameterNumber|-rox|ROI Origin X|None|None|0
 ParameterNumber|-roy|ROI Origin Y|None|None|0
 ParameterNumber|-rsx|ROI Size X|None|None|0

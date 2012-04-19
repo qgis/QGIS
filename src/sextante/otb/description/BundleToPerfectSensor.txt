@@ -5,8 +5,8 @@ ParameterRaster|-inp|Input PAN Image|False
 ParameterRaster|-inxs|Input XS Image|False
 ParameterSelection|-elev|Elevation management|dem;average|1
 ParameterFile|-elev.dem.path|DEM directory|
-ParameterFile|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.geoid|Geoid File||
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
 ParameterNumber|-lms|Spacing of the deformation field|None|None|0.0
-OutputRaster|-out|Output image|
+OutputRaster|-out|Output image
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

@@ -171,12 +171,12 @@ def generate_parameter_InputFilename( appInstance, paramKey ):
   out += convertendl(appInstance.GetParameterName(paramKey))
   out += "|"
   
-  defaultVal = ""
   try:
     defaultVal = str(appInstance.GetParameterString(paramKey))
+    out += "|" + defaultVal
   except:
     pass
-  out += defaultVal
+  
   return out
 
 
@@ -188,11 +188,8 @@ def generate_parameter_OutputFilename( appInstance, paramKey ):
   out += "|"
   
   out += convertendl(appInstance.GetParameterName(paramKey))
-  out += "|"
   
   return out
-
-  return generate_parameter_String( appInstance, paramKey )
 
 def generate_parameter_Directory( appInstance, paramKey ):
   out = "ParameterFile"
@@ -202,14 +199,13 @@ def generate_parameter_Directory( appInstance, paramKey ):
   out += "|"
   
   out += convertendl(appInstance.GetParameterName(paramKey))
-  out += "|"
   
-  defaultVal = ""
   try:
     defaultVal = str(appInstance.GetParameterString(paramKey))
+    out += "|" + defaultVal
   except:
     pass
-  out += defaultVal
+  
   return out
 
 def generate_parameter_Choice( appInstance, paramKey ):
@@ -309,7 +305,6 @@ def generate_parameter_OutputImage( appInstance, paramKey ):
   out += "|"
   
   out += convertendl(appInstance.GetParameterName(paramKey))
-  out += "|"
   
   return out
 
@@ -326,7 +321,6 @@ def generate_parameter_OutputVectorData( appInstance, paramKey ):
   out += "|"
   
   out += convertendl(appInstance.GetParameterName(paramKey))
-  out += "|"
   
   return out
 

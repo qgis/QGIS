@@ -2,6 +2,6 @@ otbcli_VectorDataSetField
 Vector data set field
 Vector Data Manipulation
 ParameterVector|-in|Input|-1|False
-OutputVector|-out|Output|
+OutputVector|-out|Output
 ParameterString|-fn|Field|
 ParameterString|-fv|Value|

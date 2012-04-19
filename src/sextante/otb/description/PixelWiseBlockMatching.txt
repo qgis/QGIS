@@ -3,9 +3,9 @@ otbcli_PixelWiseBlockMatching
 Stereo
 ParameterRaster|-io.inleft|Left input image|False
 ParameterRaster|-io.inright|Right input image|False
-OutputRaster|-io.out|The output disparity map|
-OutputRaster|-io.outmaskleft|The left output mask corresponding to all criterions|
-OutputRaster|-io.outmaskright|The right output mask corresponding to all criterions|
+OutputRaster|-io.out|The output disparity map
+OutputRaster|-io.outmaskleft|The left output mask corresponding to all criterions
+OutputRaster|-io.outmaskright|The right output mask corresponding to all criterions
 ParameterBoolean|-io.outmetric|Output optimal metric values as well|
 ParameterRaster|-mask.inleft|Discard left pixels from mask image|True
 ParameterRaster|-mask.inright|Discard right pixels from mask image|True

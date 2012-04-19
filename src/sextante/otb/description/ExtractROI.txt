@@ -2,7 +2,7 @@ otbcli_ExtractROI
 Extract ROI
 Image Manipulation
 ParameterRaster|-in|Input Image|False
-OutputRaster|-out|Output Image|
+OutputRaster|-out|Output Image
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128
 ParameterNumber|-startx|Start X|None|None|0
 ParameterNumber|-starty|Start Y|None|None|0

@@ -2,7 +2,7 @@ otbcli_Rasterization
 Rasterization
 Vector Data Manipulation
 ParameterVector|-in|InputVectorData|-1|False
-OutputRaster|-out|OutputImage|
+OutputRaster|-out|OutputImage
 ParameterRaster|-im|InputImage|True
 ParameterNumber|-szx|SizeX|None|None|0.0
 ParameterNumber|-szy|SizeY|None|None|0.0

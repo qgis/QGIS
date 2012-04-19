@@ -2,7 +2,7 @@ otbcli_RadiometricWaterIndices
 Radiometric Water
 Feature Extraction
 ParameterRaster|-in|Input Image|False
-OutputRaster|-out|Output Image|
+OutputRaster|-out|Output Image
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128
 ParameterNumber|-channels.blue|Blue Channel|None|None|1
 ParameterNumber|-channels.green|Green Channel|None|None|2
