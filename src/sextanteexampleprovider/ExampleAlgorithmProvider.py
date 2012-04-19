@@ -9,8 +9,6 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [ExampleAlgorithm()]
-        for alg in self.alglist:
-            alg.provider = self
 
     def initializeSettings(self):
         '''In this method we add settings needed to configure our provider.

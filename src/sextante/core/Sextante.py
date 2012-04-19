@@ -19,6 +19,8 @@ from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+from sextante.lastools.LasToolsAlgorithmProvider import LasToolsAlgorithmProvider
+from sextante.core.SextanteUtils import SextanteUtils
 
 class Sextante:
 
@@ -80,11 +82,13 @@ class Sextante:
         Sextante.addProvider(MMQGISAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
+        Sextante.addProvider(GdalAlgorithmProvider())
+        if SextanteUtils.isWindows():
+            Sextante.addProvider(LasToolsAlgorithmProvider())
+        Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
         Sextante.addProvider(GrassAlgorithmProvider())
-        Sextante.addProvider(GdalAlgorithmProvider())
-        Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(ScriptAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize

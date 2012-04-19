@@ -20,6 +20,8 @@ from sextante.gui.NumberInputPanel import NumberInputPanel
 from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.gui.FileSelectionPanel import FileSelectionPanel
 
 class ParametersPanel(QtGui.QWidget):
 
@@ -176,6 +178,8 @@ class ParametersPanel(QtGui.QWidget):
             item = FixedTablePanel(param)
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
+        elif isinstance(param, ParameterFile):
+            item = FileSelectionPanel()
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                 options = QGisLayers.getRasterLayers()

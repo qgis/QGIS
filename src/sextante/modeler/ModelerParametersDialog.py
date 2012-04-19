@@ -20,6 +20,8 @@ from sextante.modeler.ModelerAlgorithm import AlgorithmAndParameter
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.gui.RangePanel import RangePanel
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.outputs.OutputFile import OutputFile
 
 class ModelerParametersDialog(QtGui.QDialog):
 
@@ -127,6 +129,20 @@ class ModelerParametersDialog(QtGui.QDialog):
             i+=1
         return numbers
 
+    def getFiles(self):
+        files = []
+        params = self.model.parameters
+        for param in params:
+            if isinstance(param, ParameterFile):
+                files.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
+        i=0
+        for alg in self.model.algs:
+            for out in alg.outputs:
+                if isinstance(out, OutputFile):
+                    files.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            i+=1
+        return files
 
     def getBooleans(self):
         booleans = []
@@ -218,6 +234,13 @@ class ModelerParametersDialog(QtGui.QDialog):
             numbers = self.getNumbers()
             for n in numbers:
                 item.addItem(n.name(), n)
+            item.setEditText(str(param.default))
+        elif isinstance(param, ParameterNumber):
+            item = QtGui.QComboBox()
+            item.setEditable(True)
+            files = self.getFiles()
+            for f in files:
+                item.addItem(f.name(), f)
             item.setEditText(str(param.default))
         else:
             item = QtGui.QLineEdit()
@@ -327,6 +350,18 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
         return True
 
+    def setParamFileValue(self, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            name = self.model.getSafeNameForHarcodedParameter(param)
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            self.params[param.name] = value
+            s = str(widget.currentText())
+            self.values[name] = s
+        else:
+            value = widget.itemData(widget.currentIndex()).toPyObject()
+            self.params[param.name] = value
+        return True
 
     def setParamNumberValue(self, param, widget):
         idx = widget.findText(widget.currentText())
@@ -358,6 +393,8 @@ class ModelerParametersDialog(QtGui.QDialog):
             return self.setParamStringValue(param, widget)
         elif isinstance(param, ParameterNumber):
             return self.setParamNumberValue(param, widget)
+        elif isinstance(param, ParameterFile):
+            return self.setParamFileValue(param, widget)
         elif isinstance(param, ParameterSelection):
             name =  self.model.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)

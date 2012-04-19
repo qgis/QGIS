@@ -46,6 +46,7 @@ class LayerExporter():
                 return str(layer.source())
 
 
+
     @staticmethod
     def exportRasterLayer(layer):
         '''Takes a QgsRasterLayer and returns the filename to refer to it, which allows external

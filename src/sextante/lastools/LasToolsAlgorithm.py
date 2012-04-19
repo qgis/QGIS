@@ -1,0 +1,31 @@
+from sextante.lastools.LasToolsUtils import LasToolsUtils
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.parameters.ParameterBoolean import ParameterBoolean
+
+class LasToolsAlgorithm(GeoAlgorithm):
+
+    FIRST_ONLY = "FIRST_ONLY"
+    LAST_ONLY = "LAST_ONLY"
+    SINGLE_RET_ONLY = "SINGLE_RET_ONLY"
+    DOUBLE_RET_ONLY = "DOUBLE_RET_ONLY"
+
+    def checkBeforeOpeningParametersDialog(self):
+            path = LasToolsUtils.LasToolsPath()
+            if path == "":
+                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
+
+    def addCommonParameters(self):
+        self.addParameter(ParameterBoolean(LasToolsAlgorithm.FIRST_ONLY, "Keep first return only", False))
+        self.addParameter(ParameterBoolean(LasToolsAlgorithm.LAST_ONLY, "Keep last return only", False))
+        self.addParameter(ParameterBoolean(LasToolsAlgorithm.SINGLE_RET_ONLY, "Keep single returns only", False))
+        self.addParameter(ParameterBoolean(LasToolsAlgorithm.DOUBLE_RET_ONLY, "Keep double returns only", False))
+
+    def addCommonParameterValuesToCommand(self, commands):
+        if self.getParameterValue(LasToolsAlgorithm.LAST_ONLY):
+            commands.append("-last_only")
+        if self.getParameterValue(LasToolsAlgorithm.FIRST_ONLY):
+            commands.append("-first_only")
+        if self.getParameterValue(LasToolsAlgorithm.SINGLE_RET_ONLY):
+            commands.append("-single_returns_only")
+        if self.getParameterValue(LasToolsAlgorithm.DOUBLE_RET_ONLY):
+            commands.append("-double_returns_only")

@@ -8,7 +8,7 @@ class OutputFactory():
 
     @staticmethod
     def getFromString(s):
-        classes = [OutputRaster, OutputVector, OutputTable, OutputHTML, OutputNumber]
+        classes = [OutputRaster, OutputVector, OutputTable, OutputHTML, OutputNumber, OutputFile]
         for clazz in classes:
             if s.startswith(clazz().outputTypeName()):
                 tokens = s[len(clazz().outputTypeName())+1:].split("|")

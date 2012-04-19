@@ -19,6 +19,7 @@ from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 from sextante.parameters.ParameterNumber import ParameterNumber
 
 from sextante.gui.ParametersPanel import ParametersPanel
+from sextante.parameters.ParameterFile import ParameterFile
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -123,7 +124,7 @@ class Ui_ParametersDialog(object):
             for index in widget.selectedoptions:
                 value.append(options[index])
             return param.setValue(value)
-        elif isinstance(param, ParameterNumber):
+        elif isinstance(param, (ParameterNumber, ParameterFile)):
             return param.setValue(widget.getValue())
         else:
             return param.setValue(str(widget.text()))
@@ -153,7 +154,7 @@ class Ui_ParametersDialog(object):
                     QApplication.restoreOverrideCursor()
                     if ret:
                         SextantePostprocessing.handleAlgorithmResults(self.alg)
-                    
+
                 self.dialog.executed = True
                 self.dialog.close()
 

@@ -9,6 +9,7 @@ from sextante.outputs.OutputHTML import OutputHTML
 from PyQt4.QtGui import *
 from sextante.core.SextanteConfig import SextanteConfig
 import os
+from sextante.outputs.OutputFile import OutputFile
 class SextantePostprocessing:
 
     @staticmethod
