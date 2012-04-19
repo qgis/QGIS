@@ -5,7 +5,7 @@ ParameterRaster|-io.inleft|Left input image|False
 ParameterRaster|-io.inright|Right input image|False
 OutputRaster|-io.outleft|Left output deformation grid|
 OutputRaster|-io.outright|Right output deformation grid|
-ParameterSelection|-epi.elevation|Elevation management|avg;avgdem;dem
+ParameterSelection|-epi.elevation|Elevation management|avg;avgdem;dem|0
 ParameterNumber|-epi.elevation.avg.value|Average elevation value|None|None|0.0
 ParameterFile|-epi.elevation.avgdem.path|DEM directory|
 ParameterFile|-epi.elevation.avgdem.geoid|Geoid file|

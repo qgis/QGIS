@@ -3,7 +3,7 @@ Cartographic to geographic coordinates conversion
 Geometry
 ParameterNumber|-carto.x|X cartographic coordinates|None|None|0.0
 ParameterNumber|-carto.y|Y cartographic coordinates|None|None|0.0
-ParameterSelection|-mapproj|Output Cartographic Map Projection|utm;lambert2;lambert93;transmercator;wgs;epsg
+ParameterSelection|-mapproj|Output Cartographic Map Projection|utm;lambert2;lambert93;transmercator;wgs;epsg|5
 ParameterNumber|-mapproj.utm.zone|Zone number|None|None|0
 ParameterBoolean|-mapproj.utm.northhem|Northern Hemisphere|
 ParameterNumber|-mapproj.transmercator.falseeasting|False easting|None|None|0.0

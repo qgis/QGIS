@@ -228,6 +228,9 @@ def generate_parameter_Choice( appInstance, paramKey ):
     choices += ";"
   out += choices[:-1]
   
+  out += "|"
+  out += str(appInstance.GetParameterInt(paramKey))
+  
   return out
 
 def generate_parameter_InputImage( appInstance, paramKey ):
