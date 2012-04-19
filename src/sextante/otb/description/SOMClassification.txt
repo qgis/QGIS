@@ -1,5 +1,5 @@
 otbcli_SOMClassification
-SOMClassification
+SOM Classification
 Learning
 ParameterRaster|-in|InputImage|False
 OutputRaster|-out|OutputImage|

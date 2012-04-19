@@ -1,5 +1,5 @@
 otbcli_MeanShiftSegmentation
-MeanShiftSegmentation
+Mean Shift segmentation
 Segmentation
 ParameterRaster|-in|Input Image|False
 OutputRaster|-fout|Filtered output|

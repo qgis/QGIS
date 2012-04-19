@@ -1,5 +1,5 @@
 otbcli_KMeansClassification
-KMeansClassification
+Unsupervised KMeans image classification
 Learning
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|

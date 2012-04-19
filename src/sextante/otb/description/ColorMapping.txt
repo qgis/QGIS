@@ -1,5 +1,5 @@
 otbcli_ColorMapping
-ColorMapping
+Color Mapping
 Learning
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|

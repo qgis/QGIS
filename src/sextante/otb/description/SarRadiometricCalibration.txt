@@ -1,5 +1,5 @@
 otbcli_SarRadiometricCalibration
-SarRadiometricCalibration
+SAR Radiometric calibration
 Calibration
 ParameterRaster|-in|Input Complex Image|False
 OutputRaster|-out|Output Image|

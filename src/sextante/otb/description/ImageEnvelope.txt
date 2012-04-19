@@ -1,5 +1,5 @@
 otbcli_ImageEnvelope
-ImageEnvelope
+Image Envelope
 Geometry
 ParameterRaster|-in|Input Image|False
 OutputVector|-out|Output Vector Data|

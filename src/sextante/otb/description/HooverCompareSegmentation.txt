@@ -1,5 +1,5 @@
 otbcli_HooverCompareSegmentation
-HooverCompareSegmentation
+Hoover compare segmentation
 Segmentation
 ParameterRaster|-ingt|Input ground truth|False
 ParameterRaster|-inms|Input machine segmentation|False

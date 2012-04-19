@@ -1,5 +1,5 @@
 otbcli_CompareImages
-CompareImages
+Images comparaison
 Miscellaneous
 ParameterRaster|-ref.in|Reference image|False
 ParameterNumber|-ref.channel|Reference image channel|None|None|1

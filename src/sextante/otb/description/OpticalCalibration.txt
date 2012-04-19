@@ -1,5 +1,5 @@
 otbcli_OpticalCalibration
-OpticalCalibration
+Optical calibration
 Calibration
 ParameterRaster|-in|Input|False
 OutputRaster|-out|Output|

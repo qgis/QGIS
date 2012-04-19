@@ -1,5 +1,5 @@
 otbcli_OrthoRectification
-OrthoRectification
+Ortho-rectification
 Geometry
 ParameterRaster|-io.in|Input Image|False
 OutputRaster|-io.out|Output Image|

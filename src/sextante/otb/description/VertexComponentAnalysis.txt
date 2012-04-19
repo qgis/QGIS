@@ -1,5 +1,5 @@
 otbcli_VertexComponentAnalysis
-VertexComponentAnalysis
+Vertex Component Analysis
 Miscellaneous
 ParameterRaster|-in|Input Image|False
 ParameterNumber|-ne|Number of endmembers|None|None|1

@@ -1,5 +1,5 @@
 otbcli_LineSegmentDetection
-LineSegmentDetection
+Line segment detection
 Feature Extraction
 ParameterRaster|-in|Input Image|False
 OutputVector|-out|Output Detected lines|

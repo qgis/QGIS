@@ -1,5 +1,5 @@
 otbcli_RadiometricVegetationIndices
-RadiometricVegetationIndices
+Radiometric Vegetation
 Feature Extraction
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|

@@ -1,5 +1,5 @@
 otbcli_StereoSensorModelToElevationMap
-StereoSensorModelToElevationMap
+Stereo sensor model to elevation map
 Stereo
 ParameterRaster|-ref|Reference|False
 ParameterRaster|-sec|Secondary|False

@@ -1,5 +1,5 @@
 otbcli_Rescale
-Rescale
+Rescale Image
 Image Manipulation
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|

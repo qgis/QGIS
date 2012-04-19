@@ -1,5 +1,5 @@
 otbcli_ComputePolylineFeatureFromImage
-ComputePolylineFeatureFromImage
+Compute Polyline Feature From Image
 Feature Extraction
 ParameterRaster|-in|Input Image|False
 ParameterVector|-vd|Vector Data|-1|False

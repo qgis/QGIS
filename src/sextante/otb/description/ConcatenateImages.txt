@@ -1,5 +1,5 @@
 otbcli_ConcatenateImages
-ConcatenateImages
+Images Concatenation
 Image Manipulation
 ParameterMultipleInput|-il|Input images list|3|False
 OutputRaster|-out|Output Image|

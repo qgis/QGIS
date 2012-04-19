@@ -1,5 +1,5 @@
 otbcli_ReadImageInfo
-ReadImageInfo
+Read image information
 Image Manipulation
 ParameterRaster|-in|Input Image|False
 ParameterBoolean|-keywordlist|Display the OSSIM keywordlist|

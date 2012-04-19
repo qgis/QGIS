@@ -1,5 +1,5 @@
 otbcli_MultivariateAlterationDetector
-MultivariateAlterationDetector
+Multivariate alteration detector
 Feature Extraction
 ParameterRaster|-in1|Input Image 1|False
 ParameterRaster|-in2|Input Image 2|False

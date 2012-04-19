@@ -1,5 +1,5 @@
 otbcli_BundleToPerfectSensor
-BundleToPerfectSensor
+Bundle to perfect sensor
 Geometry
 ParameterRaster|-inp|Input PAN Image|False
 ParameterRaster|-inxs|Input XS Image|False

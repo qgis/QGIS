@@ -1,5 +1,5 @@
 otbcli_RigidTransformResample
-RigidTransformResample
+Image resampling with a rigid transform
 Geometry
 ParameterRaster|-in|Input image|False
 OutputRaster|-out|Output image|

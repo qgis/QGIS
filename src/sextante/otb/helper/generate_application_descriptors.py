@@ -35,7 +35,7 @@ def generate_app_descriptor( appliname ) :
 
   # long name
   # for the moment, long name == short name
-  out += convertendl(appInstance.GetName()) + endl
+  out += convertendl(appInstance.GetDocName()) + endl
   
   # group
   out += get_group(appInstance) + endl

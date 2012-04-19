@@ -1,5 +1,5 @@
 otbcli_TrainSVMImagesClassifier
-TrainSVMImagesClassifier
+Train SVM classifier from multiple images
 Learning
 ParameterMultipleInput|-io.il|Input Image List|3|False
 ParameterMultipleInput|-io.vd|Vector Data List|-1|False

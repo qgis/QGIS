@@ -1,5 +1,5 @@
 otbcli_VectorDataTransform
-VectorDataTransform
+Vector Data Transformation
 Vector Data Manipulation
 ParameterVector|-vd|Input Vector data|-1|False
 OutputVector|-out|Output Vector data|

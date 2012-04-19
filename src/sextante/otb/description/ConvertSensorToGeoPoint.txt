@@ -1,5 +1,5 @@
 otbcli_ConvertSensorToGeoPoint
-ConvertSensorToGeoPoint
+Convert Sensor Point To Geographic Point
 Geometry
 ParameterRaster|-in|Sensor image|False
 ParameterNumber|-input.idx|X value of desired point|None|None|0.0

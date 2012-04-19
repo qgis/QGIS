@@ -1,5 +1,5 @@
 otbcli_Quicklook
-Quicklook
+Quick Look
 Image Manipulation
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|

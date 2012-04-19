@@ -1,5 +1,5 @@
 otbcli_PixelWiseBlockMatching
-PixelWiseBlockMatching
+ Pixel-wise Block-Matching
 Stereo
 ParameterRaster|-io.inleft|Left input image|False
 ParameterRaster|-io.inright|Right input image|False

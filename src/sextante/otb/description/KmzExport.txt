@@ -1,5 +1,5 @@
 otbcli_KmzExport
-KmzExport
+Image to KMZ Export
 Miscellaneous
 ParameterRaster|-in|Input image|False
 ParameterString|-out|Output .kmz product|

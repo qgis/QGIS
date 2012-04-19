@@ -1,5 +1,5 @@
 otbcli_BandMath
-BandMath
+Band Math
 Miscellaneous
 ParameterMultipleInput|-il|Input image list|3|False
 OutputRaster|-out|Output Image|

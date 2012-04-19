@@ -1,5 +1,5 @@
 otbcli_ConvertCartoToGeoPoint
-ConvertCartoToGeoPoint
+Cartographic to geographic coordinates conversion
 Geometry
 ParameterNumber|-carto.x|X cartographic coordinates|None|None|0.0
 ParameterNumber|-carto.y|Y cartographic coordinates|None|None|0.0

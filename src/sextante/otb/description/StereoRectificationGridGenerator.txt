@@ -1,5 +1,5 @@
 otbcli_StereoRectificationGridGenerator
-StereoRectificationGridGenerator
+Stereo-rectification deformation grid generator
 Geometry
 ParameterRaster|-io.inleft|Left input image|False
 ParameterRaster|-io.inright|Right input image|False

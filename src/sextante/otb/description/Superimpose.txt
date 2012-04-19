@@ -1,5 +1,5 @@
 otbcli_Superimpose
-Superimpose
+Superimpose sensor
 Geometry
 ParameterRaster|-inr|Reference input|False
 ParameterRaster|-inm|The image to reproject|False

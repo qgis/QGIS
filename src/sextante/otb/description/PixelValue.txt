@@ -1,5 +1,5 @@
 otbcli_PixelValue
-PixelValue
+Pixel Value
 Miscellaneous
 ParameterRaster|-in|Input Image|False
 ParameterNumber|-coordx|Col index|None|None|0

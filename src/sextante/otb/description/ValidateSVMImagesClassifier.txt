@@ -1,5 +1,5 @@
 otbcli_ValidateSVMImagesClassifier
-ValidateSVMImagesClassifier
+Validate SVM Images Classifier
 Learning
 ParameterMultipleInput|-il|Input Image List|3|False
 ParameterMultipleInput|-vd|Vector Data List|-1|False

@@ -1,5 +1,5 @@
 otbcli_DSFuzzyModelEstimation
-DSFuzzyModelEstimation
+Fuzzy Model estimation
 Feature Extraction
 ParameterVector|-psin|Input Positive Vector Data|-1|False
 ParameterVector|-nsin|Input Negative Vector Data|-1|False

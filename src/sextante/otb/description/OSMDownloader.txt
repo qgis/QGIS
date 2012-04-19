@@ -1,5 +1,5 @@
 otbcli_OSMDownloader
-OSMDownloader
+Open Street Map layers importations applications
 Miscellaneous
 OutputVector|-out|Output vector data|
 ParameterRaster|-support|Support image|False
