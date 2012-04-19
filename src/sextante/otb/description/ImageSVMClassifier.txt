@@ -3,7 +3,7 @@ Image SVM Classification
 Learning
 ParameterRaster|-in|Input Image|False
 ParameterRaster|-mask|Input Mask|True
-ParameterString|-svm|SVM Model file|
-ParameterString|-imstat|Statistics file|
+ParameterFile|-svm|SVM Model file|
+ParameterFile|-imstat|Statistics file|
 OutputRaster|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

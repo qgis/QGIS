@@ -4,8 +4,8 @@ Feature Extraction
 ParameterRaster|-in|Input Image|False
 ParameterVector|-vd|Vector Data|-1|False
 ParameterSelection|-elev|Elevation management|dem;average
-ParameterString|-elev.dem.path|DEM directory|
-ParameterString|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
 ParameterString|-expr|Feature expression|
 ParameterString|-field|Feature name|

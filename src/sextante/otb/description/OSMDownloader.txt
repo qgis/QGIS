@@ -6,7 +6,7 @@ ParameterRaster|-support|Support image|False
 ParameterString|-key|OSM tag key|
 ParameterString|-value|OSM tag value|
 ParameterSelection|-elev|Elevation management|dem;average
-ParameterString|-elev.dem.path|DEM directory|
-ParameterString|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
 ParameterBoolean|-printclasses|option to display available key/value classes|

@@ -4,7 +4,7 @@ Geometry
 ParameterRaster|-in|Input Image|False
 OutputVector|-out|Output Vector Data|
 ParameterSelection|-elev|Elevation management|dem;average
-ParameterString|-elev.dem.path|DEM directory|
-ParameterString|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
 ParameterString|-proj|Projection|

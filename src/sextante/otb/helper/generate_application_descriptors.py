@@ -162,13 +162,55 @@ def generate_parameter_String( appInstance, paramKey ):
 
 
 def generate_parameter_InputFilename( appInstance, paramKey ):
-  return generate_parameter_String( appInstance, paramKey )
+  out = "ParameterFile"
+  out += "|"
+  
+  out += "-" + paramKey
+  out += "|"
+  
+  out += convertendl(appInstance.GetParameterName(paramKey))
+  out += "|"
+  
+  defaultVal = ""
+  try:
+    defaultVal = str(appInstance.GetParameterString(paramKey))
+  except:
+    pass
+  out += defaultVal
+  return out
+
 
 def generate_parameter_OutputFilename( appInstance, paramKey ):
+  out = "OutputFile"
+  out += "|"
+  
+  out += "-" + paramKey
+  out += "|"
+  
+  out += convertendl(appInstance.GetParameterName(paramKey))
+  out += "|"
+  
+  return out
+
   return generate_parameter_String( appInstance, paramKey )
 
 def generate_parameter_Directory( appInstance, paramKey ):
-  return generate_parameter_String( appInstance, paramKey )
+  out = "ParameterFile"
+  out += "|"
+  
+  out += "-" + paramKey
+  out += "|"
+  
+  out += convertendl(appInstance.GetParameterName(paramKey))
+  out += "|"
+  
+  defaultVal = ""
+  try:
+    defaultVal = str(appInstance.GetParameterString(paramKey))
+  except:
+    pass
+  out += defaultVal
+  return out
 
 def generate_parameter_Choice( appInstance, paramKey ):
   out = "ParameterSelection"

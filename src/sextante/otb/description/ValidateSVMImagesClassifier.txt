@@ -3,11 +3,11 @@ Validate SVM Images Classifier
 Learning
 ParameterMultipleInput|-il|Input Image List|3|False
 ParameterMultipleInput|-vd|Vector Data List|-1|False
-ParameterString|-imstat|XML image statistics file|
+ParameterFile|-imstat|XML image statistics file|
 ParameterSelection|-elev|Elevation management|dem;average
-ParameterString|-elev.dem.path|DEM directory|
-ParameterString|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
-ParameterString|-out|Output filename|
-ParameterString|-svm|SVM validation filename|
+OutputFile|-out|Output filename|
+ParameterFile|-svm|SVM validation filename|
 ParameterNumber|-rand|set user defined seed|None|None|0

@@ -2,11 +2,11 @@ otbcli_KmzExport
 Image to KMZ Export
 Miscellaneous
 ParameterRaster|-in|Input image|False
-ParameterString|-out|Output .kmz product|
+OutputFile|-out|Output .kmz product|
 ParameterNumber|-tilesize|Tile Size|None|None|0
 ParameterRaster|-logo|Image logo|True
 ParameterRaster|-legend|Image legend|True
 ParameterSelection|-elev|Elevation management|dem;average
-ParameterString|-elev.dem.path|DEM directory|
-ParameterString|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0

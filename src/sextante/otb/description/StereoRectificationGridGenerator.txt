@@ -7,14 +7,14 @@ OutputRaster|-io.outleft|Left output deformation grid|
 OutputRaster|-io.outright|Right output deformation grid|
 ParameterSelection|-epi.elevation|Elevation management|avg;avgdem;dem
 ParameterNumber|-epi.elevation.avg.value|Average elevation value|None|None|0.0
-ParameterString|-epi.elevation.avgdem.path|DEM directory|
-ParameterString|-epi.elevation.avgdem.geoid|Geoid file|
+ParameterFile|-epi.elevation.avgdem.path|DEM directory|
+ParameterFile|-epi.elevation.avgdem.geoid|Geoid file|
 ParameterNumber|-epi.elevation.avgdem.step|Sub-sampling step|None|None|1
 ParameterNumber|-epi.elevation.avgdem.value|Average elevation value|None|None|0.0
 ParameterNumber|-epi.elevation.avgdem.mindisp|Minimum disparity from DEM|None|None|0.0
 ParameterNumber|-epi.elevation.avgdem.maxdisp|Maximum disparity from DEM|None|None|0.0
-ParameterString|-epi.elevation.dem.path|DEM directory|
-ParameterString|-epi.elevation.dem.geoid|Geoid file|
+ParameterFile|-epi.elevation.dem.path|DEM directory|
+ParameterFile|-epi.elevation.dem.geoid|Geoid file|
 ParameterNumber|-epi.scale|Scale of epipolar images|None|None|1.0
 ParameterNumber|-epi.step|Step of the deformation grid (in nb. of pixels)|None|None|1
 ParameterNumber|-epi.rectsizex|Rectified image size X|None|None|0

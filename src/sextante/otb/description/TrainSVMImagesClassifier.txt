@@ -3,11 +3,11 @@ Train SVM classifier from multiple images
 Learning
 ParameterMultipleInput|-io.il|Input Image List|3|False
 ParameterMultipleInput|-io.vd|Vector Data List|-1|False
-ParameterString|-io.imstat|XML image statistics file|
-ParameterString|-io.out|Output SVM model|
+ParameterFile|-io.imstat|XML image statistics file|
+OutputFile|-io.out|Output SVM model|
 ParameterSelection|-elev|Elevation management|dem;average
-ParameterString|-elev.dem.path|DEM directory|
-ParameterString|-elev.dem.geoid|Geoid File|
+ParameterFile|-elev.dem.path|DEM directory|
+ParameterFile|-elev.dem.geoid|Geoid File|
 ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
 ParameterNumber|-sample.mt|Maximum training sample size|None|None|-1
 ParameterNumber|-sample.mv|Maximum validation sample size|None|None|-1
