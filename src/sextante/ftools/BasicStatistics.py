@@ -21,7 +21,7 @@ class BasicStatistics(GeoAlgorithm):
     USE_SELECTION = "USE_SELECTION"
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/icons/basic_Statistics.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + "/icons/basic_statistics.png")
 
 
     def createHTML(self, outputFile, lstStats):

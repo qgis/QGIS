@@ -74,7 +74,7 @@ class PointsInPolygon(GeoAlgorithm):
                 for i in pointList:
                     pointProvider.featureAtId( int( i ), inFeatB , True, allAttrs )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
-                    if inGeom.contains(tmpGeom.asPoint()):
+                    if inGeom.contains(tmpGeom):
                         count = count + 1
             outFeat.setAttributeMap(atMap)
             outFeat.addAttribute(index, QVariant(count))

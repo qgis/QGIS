@@ -25,6 +25,8 @@ from sextante.gui.FileSelectionPanel import FileSelectionPanel
 
 class ParametersPanel(QtGui.QWidget):
 
+    NOT_SELECTED = "[Not selected]"
+
     def __init__(self, alg, paramDialog):
         super(ParametersPanel, self).__init__(None)
         self.alg = alg;
@@ -32,7 +34,7 @@ class ParametersPanel(QtGui.QWidget):
         self.valueItems = {}
         self.dependentItems = {}
         self.iterateButtons = {}
-        self.NOT_SELECTED = ""
+
         self.initGUI()
 
     def initGUI(self):
