@@ -32,6 +32,7 @@ class ParametersPanel(QtGui.QWidget):
         self.valueItems = {}
         self.dependentItems = {}
         self.iterateButtons = {}
+        self.NOT_SELECTED = ""
         self.initGUI()
 
     def initGUI(self):
