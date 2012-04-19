@@ -801,10 +801,10 @@ void QgsWmsProvider::tileReplyFinished()
 
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( !contentType.startsWith( "image/" ) )
+    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) )
     {
       QByteArray text = reply->readAll();
-      if ( contentType == "text/xml" && parseServiceExceptionReportDom( text ) )
+      if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
       {
         showMessageBox( mErrorCaption, mError );
       }
@@ -909,7 +909,7 @@ void QgsWmsProvider::cacheReplyFinished()
 
     QString contentType = cacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/" ) )
+    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
     {
       QImage myLocalImage = QImage::fromData( cacheReply->readAll() );
       if ( !myLocalImage.isNull() )
@@ -925,7 +925,7 @@ void QgsWmsProvider::cacheReplyFinished()
     else
     {
       QByteArray text = cacheReply->readAll();
-      if ( contentType == "text/xml" && parseServiceExceptionReportDom( text ) )
+      if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
       {
         showMessageBox( mErrorCaption, mError );
       }
