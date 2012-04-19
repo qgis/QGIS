@@ -1,6 +1,6 @@
 otbcli_VectorDataExtractROIApplication
 VectorDataExtractROIApplication
-OTB
+Vector Data Manipulation
 ParameterVector|-io.vd|Input Vector data|-1|False
 ParameterRaster|-io.in|Support image|False
 OutputVector|-io.out|Output Vector data|

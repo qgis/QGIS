@@ -1,6 +1,6 @@
 otbcli_FineRegistration
 FineRegistration
-OTB
+Stereo
 ParameterRaster|-ref|Reference Image|False
 ParameterRaster|-sec|Secondary Image|False
 OutputRaster|-out|Output Image|

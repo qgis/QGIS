@@ -1,6 +1,6 @@
 otbcli_ConnectedComponentSegmentation
 ConnectedComponentSegmentation
-OTB
+Segmentation
 ParameterRaster|-in|Input Image|False
 OutputVector|-out|Output Shape|
 ParameterString|-mask|Mask expression|

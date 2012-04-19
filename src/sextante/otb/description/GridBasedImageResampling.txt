@@ -1,6 +1,6 @@
 otbcli_GridBasedImageResampling
 GridBasedImageResampling
-OTB
+Geometry
 ParameterRaster|-io.in|Input image|False
 OutputRaster|-io.out|Output Image|
 ParameterRaster|-grid.in|Input resampling grid|False

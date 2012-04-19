@@ -1,6 +1,6 @@
 otbcli_VectorDataSetField
 VectorDataSetField
-OTB
+Vector Data Manipulation
 ParameterVector|-in|Input|-1|False
 OutputVector|-out|Output|
 ParameterString|-fn|Field|

@@ -1,6 +1,6 @@
 otbcli_VectorDataDSValidation
 VectorDataDSValidation
-OTB
+Feature Extraction
 ParameterVector|-in|Input Vector Data|-1|False
 ParameterString|-descmod|Descriptors model filename|
 ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)

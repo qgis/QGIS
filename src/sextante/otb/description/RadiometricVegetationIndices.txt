@@ -1,6 +1,6 @@
 otbcli_RadiometricVegetationIndices
 RadiometricVegetationIndices
-OTB
+Feature Extraction
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

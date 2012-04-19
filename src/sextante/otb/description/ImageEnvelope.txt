@@ -1,6 +1,6 @@
 otbcli_ImageEnvelope
 ImageEnvelope
-OTB
+Geometry
 ParameterRaster|-in|Input Image|False
 OutputVector|-out|Output Vector Data|
 ParameterSelection|-elev|Elevation management|dem;average

@@ -1,6 +1,6 @@
 otbcli_KmzExport
 KmzExport
-OTB
+Miscellaneous
 ParameterRaster|-in|Input image|False
 ParameterString|-out|Output .kmz product|
 ParameterNumber|-tilesize|Tile Size|None|None|0

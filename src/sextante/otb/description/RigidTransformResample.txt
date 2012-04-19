@@ -1,6 +1,6 @@
 otbcli_RigidTransformResample
 RigidTransformResample
-OTB
+Geometry
 ParameterRaster|-in|Input image|False
 OutputRaster|-out|Output image|
 ParameterNumber|-tx|The X translation (in physical units)|None|None|0.0

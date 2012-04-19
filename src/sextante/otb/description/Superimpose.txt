@@ -1,6 +1,6 @@
 otbcli_Superimpose
 Superimpose
-OTB
+Geometry
 ParameterRaster|-inr|Reference input|False
 ParameterRaster|-inm|The image to reproject|False
 ParameterSelection|-elev|Elevation management|dem;average

@@ -1,6 +1,6 @@
 otbcli_OSMDownloader
 OSMDownloader
-OTB
+Miscellaneous
 OutputVector|-out|Output vector data|
 ParameterRaster|-support|Support image|False
 ParameterString|-key|OSM tag key|

@@ -1,6 +1,6 @@
 otbcli_CompareImages
 CompareImages
-OTB
+Miscellaneous
 ParameterRaster|-ref.in|Reference image|False
 ParameterNumber|-ref.channel|Reference image channel|None|None|1
 ParameterRaster|-meas.in|Measured image|False

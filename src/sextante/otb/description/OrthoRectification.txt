@@ -1,6 +1,6 @@
 otbcli_OrthoRectification
 OrthoRectification
-OTB
+Geometry
 ParameterRaster|-io.in|Input Image|False
 OutputRaster|-io.out|Output Image|
 ParameterSelection|-map|Output Cartographic Map Projection|utm;lambert2;lambert93;transmercator;wgs;epsg

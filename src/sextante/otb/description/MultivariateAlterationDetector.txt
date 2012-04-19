@@ -1,6 +1,6 @@
 otbcli_MultivariateAlterationDetector
 MultivariateAlterationDetector
-OTB
+Feature Extraction
 ParameterRaster|-in1|Input Image 1|False
 ParameterRaster|-in2|Input Image 2|False
 OutputRaster|-out|Change Map|

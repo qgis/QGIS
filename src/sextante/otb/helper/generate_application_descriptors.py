@@ -38,7 +38,7 @@ def generate_app_descriptor( appliname ) :
   out += convertendl(appInstance.GetName()) + endl
   
   # group
-  out += "OTB" + endl
+  out += get_group(appInstance) + endl
   
   for paramKey in appInstance.GetParametersKeys():
     pdesc =  generate_param_descriptor(appInstance, paramKey) 
@@ -47,8 +47,15 @@ def generate_app_descriptor( appliname ) :
   
   with open( os.path.join(outputpath, appliname + '.txt'), 'w' ) as outfile:
     outfile.write(out)
-    
-  
+
+def get_group( appInstance ) :
+    tags = appInstance.GetDocTags()
+    sectionTags = ["Image Manipulation","Vector Data Manipulation", "Calibration","Geometry", "Image Filtering","Feature Extraction","Stereo","Learning","Segmentation"]
+    for sectionTag in sectionTags:
+        for tag in tags:
+            if tag == sectionTag:
+                return sectionTag
+    return "Miscellaneous"
 
 def generate_param_descriptor( appInstance, paramKey ):
   paramcreationfunction = {

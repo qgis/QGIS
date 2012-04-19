@@ -1,6 +1,6 @@
 otbcli_Rasterization
 Rasterization
-OTB
+Vector Data Manipulation
 ParameterVector|-in|InputVectorData|-1|False
 OutputRaster|-out|OutputImage|
 ParameterRaster|-im|InputImage|True

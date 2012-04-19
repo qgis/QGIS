@@ -1,6 +1,6 @@
 otbcli_SplitImage
 SplitImage
-OTB
+Image Manipulation
 ParameterRaster|-in|Input Image|False
 ParameterString|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

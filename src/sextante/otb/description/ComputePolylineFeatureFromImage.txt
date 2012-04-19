@@ -1,6 +1,6 @@
 otbcli_ComputePolylineFeatureFromImage
 ComputePolylineFeatureFromImage
-OTB
+Feature Extraction
 ParameterRaster|-in|Input Image|False
 ParameterVector|-vd|Vector Data|-1|False
 ParameterSelection|-elev|Elevation management|dem;average

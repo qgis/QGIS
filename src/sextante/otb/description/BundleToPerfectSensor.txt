@@ -1,6 +1,6 @@
 otbcli_BundleToPerfectSensor
 BundleToPerfectSensor
-OTB
+Geometry
 ParameterRaster|-inp|Input PAN Image|False
 ParameterRaster|-inxs|Input XS Image|False
 ParameterSelection|-elev|Elevation management|dem;average

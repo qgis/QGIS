@@ -1,6 +1,6 @@
 otbcli_HyperspectralUnmixing
 HyperspectralUnmixing
-OTB
+Miscellaneous
 ParameterRaster|-in|Input Image Filename|False
 OutputRaster|-out|Output Image|
 ParameterRaster|-ie|Input endmembers|False

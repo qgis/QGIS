@@ -1,6 +1,6 @@
 otbcli_OpticalCalibration
 OpticalCalibration
-OTB
+Calibration
 ParameterRaster|-in|Input|False
 OutputRaster|-out|Output|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

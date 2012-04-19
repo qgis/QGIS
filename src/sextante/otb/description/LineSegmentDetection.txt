@@ -1,6 +1,6 @@
 otbcli_LineSegmentDetection
 LineSegmentDetection
-OTB
+Feature Extraction
 ParameterRaster|-in|Input Image|False
 OutputVector|-out|Output Detected lines|
 ParameterSelection|-elev|Elevation management|dem;average

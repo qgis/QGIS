@@ -1,6 +1,6 @@
 otbcli_ConvertCartoToGeoPoint
 ConvertCartoToGeoPoint
-OTB
+Geometry
 ParameterNumber|-carto.x|X cartographic coordinates|None|None|0.0
 ParameterNumber|-carto.y|Y cartographic coordinates|None|None|0.0
 ParameterSelection|-mapproj|Output Cartographic Map Projection|utm;lambert2;lambert93;transmercator;wgs;epsg

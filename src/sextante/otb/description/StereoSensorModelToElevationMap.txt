@@ -1,6 +1,6 @@
 otbcli_StereoSensorModelToElevationMap
 StereoSensorModelToElevationMap
-OTB
+Stereo
 ParameterRaster|-ref|Reference|False
 ParameterRaster|-sec|Secondary|False
 OutputRaster|-out|Output Image|

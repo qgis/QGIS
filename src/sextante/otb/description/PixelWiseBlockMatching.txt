@@ -1,6 +1,6 @@
 otbcli_PixelWiseBlockMatching
 PixelWiseBlockMatching
-OTB
+Stereo
 ParameterRaster|-io.inleft|Left input image|False
 ParameterRaster|-io.inright|Right input image|False
 OutputRaster|-io.out|The output disparity map|

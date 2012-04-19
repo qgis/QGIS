@@ -1,6 +1,6 @@
 otbcli_Quicklook
 Quicklook
-OTB
+Image Manipulation
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|
 ParameterNumber|-rox|ROI Origin X|None|None|0

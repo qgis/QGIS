@@ -1,6 +1,6 @@
 otbcli_ReadImageInfo
 ReadImageInfo
-OTB
+Image Manipulation
 ParameterRaster|-in|Input Image|False
 ParameterBoolean|-keywordlist|Display the OSSIM keywordlist|
 ParameterNumber|-sizex|Size X|None|None|0

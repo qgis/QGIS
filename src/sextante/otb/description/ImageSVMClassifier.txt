@@ -1,6 +1,6 @@
 otbcli_ImageSVMClassifier
 ImageSVMClassifier
-OTB
+Learning
 ParameterRaster|-in|Input Image|False
 ParameterRaster|-mask|Input Mask|True
 ParameterString|-svm|SVM Model file|

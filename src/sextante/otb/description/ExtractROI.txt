@@ -1,6 +1,6 @@
 otbcli_ExtractROI
 ExtractROI
-OTB
+Image Manipulation
 ParameterRaster|-in|Input Image|False
 OutputRaster|-out|Output Image|
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

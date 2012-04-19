@@ -1,6 +1,6 @@
 otbcli_PixelValue
 PixelValue
-OTB
+Miscellaneous
 ParameterRaster|-in|Input Image|False
 ParameterNumber|-coordx|Col index|None|None|0
 ParameterNumber|-coordy|Line index|None|None|0

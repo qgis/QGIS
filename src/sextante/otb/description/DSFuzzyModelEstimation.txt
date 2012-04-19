@@ -1,6 +1,6 @@
 otbcli_DSFuzzyModelEstimation
 DSFuzzyModelEstimation
-OTB
+Feature Extraction
 ParameterVector|-psin|Input Positive Vector Data|-1|False
 ParameterVector|-nsin|Input Negative Vector Data|-1|False
 ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)

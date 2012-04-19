@@ -1,6 +1,6 @@
 otbcli_TrainSVMImagesClassifier
 TrainSVMImagesClassifier
-OTB
+Learning
 ParameterMultipleInput|-io.il|Input Image List|3|False
 ParameterMultipleInput|-io.vd|Vector Data List|-1|False
 ParameterString|-io.imstat|XML image statistics file|
@@ -17,3 +17,4 @@ ParameterString|-sample.vfn|Name of the discrimination field|Class
 ParameterSelection|-svm.k|SVM Kernel Type|linear;rbf;poly;sigmoid
 ParameterNumber|-svm.c|Cost parameter C.|None|None|1.0
 ParameterBoolean|-svm.opt|parameters optimization|
+ParameterNumber|-rand|set user defined seed|None|None|0
