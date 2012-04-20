@@ -55,7 +55,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
-        self.createDescriptionFiles()
+        #self.createDescriptionFiles()
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs

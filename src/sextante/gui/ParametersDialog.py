@@ -20,6 +20,7 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 
 from sextante.gui.ParametersPanel import ParametersPanel
 from sextante.parameters.ParameterFile import ParameterFile
+from sextante.parameters.ParameterCrs import ParameterCrs
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -124,7 +125,7 @@ class Ui_ParametersDialog(object):
             for index in widget.selectedoptions:
                 value.append(options[index])
             return param.setValue(value)
-        elif isinstance(param, (ParameterNumber, ParameterFile)):
+        elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs)):
             return param.setValue(widget.getValue())
         else:
             return param.setValue(str(widget.text()))
@@ -142,11 +143,8 @@ class Ui_ParametersDialog(object):
                         break
                 if iterateParam:
                     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                    #SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())
-                    ret = AlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
+                    AlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
                     QApplication.restoreOverrideCursor()
-                    #if ret:
-                        #SextantePostprocessing.handleAlgorithmResults(self.alg)
                 else:
                     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                     SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())

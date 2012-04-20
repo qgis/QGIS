@@ -22,6 +22,8 @@ from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.gui.FileSelectionPanel import FileSelectionPanel
+from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
 
 class ParametersPanel(QtGui.QWidget):
 
@@ -198,6 +200,8 @@ class ParametersPanel(QtGui.QWidget):
             item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):
             item = ExtentSelectionPanel(self.paramDialog, param.default)
+        elif isinstance(param, ParameterCrs):
+            item = CrsSelectionPanel(param.default)
         else:
             item = QtGui.QLineEdit()
             item.setText(str(param.default))

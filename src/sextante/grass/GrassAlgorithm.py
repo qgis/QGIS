@@ -143,7 +143,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 if param.value == None:
                     continue
                 value = param.value
-                self.exportVectorLayer(value)
+                commands.append(self.exportVectorLayer(value))
             if isinstance(param, ParameterTable):
                 pass
             if isinstance(param, ParameterMultipleInput):
@@ -200,7 +200,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 command = "r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\""
                 command += " input="
                 command += out.name
-                command += " output=\"" + filename + "\""
+                command += " output=\"" + filename[:-4] + "\""
                 commands.append(command)
             if isinstance(out, OutputVector):
                 command = "v.out.ogr -e input=" + out.name
@@ -242,7 +242,7 @@ class GrassAlgorithm(GeoAlgorithm):
         command = "v.in.ogr"
         command += " min_area=-1"
         command +=" dsn=\"" + os.path.dirname(filename) + "\""
-        command +=" layer=" + os.path.basename(filename)
+        command +=" layer=" + os.path.basename(filename)[:-4]
         command +=" output=" + destFilename;
         command +=" --overwrite -o"
         return command
@@ -260,7 +260,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
 
     def getTempFilename(self):
-        filename =  str(time.time()) + str(SextanteUtils.getNumExportedLayers())
+        filename =  "tmp" + str(time.time()).replace(".","") + str(SextanteUtils.getNumExportedLayers())
         return filename
 
 
