@@ -4282,23 +4282,16 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     return;
   }
 
-  QgsMapLayer *selectionLayer = layerContainingSelection ? layerContainingSelection : activeLayer();
+  // Test for feature support in this layer
+  QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
+  if ( !selectionVectorLayer )
+    return;
 
-  if ( selectionLayer )
-  {
-    // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
+  clipboard()->replaceWithCopyOf( selectionVectorLayer );
 
-    if ( selectionVectorLayer != 0 )
-    {
-      QgsFeatureList features = selectionVectorLayer->selectedFeatures();
-      clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
-      clipboard()->setCRS( selectionVectorLayer->crs() );
-      selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
-      selectionVectorLayer->deleteSelectedFeatures();
-      selectionVectorLayer->endEditCommand();
-    }
-  }
+  selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
+  selectionVectorLayer->deleteSelectedFeatures();
+  selectionVectorLayer->endEditCommand();
 }
 
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
@@ -4308,20 +4301,12 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
     return;
   }
 
-  QgsMapLayer *selectionLayer = layerContainingSelection ? layerContainingSelection : activeLayer();
+  QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
+  if ( !selectionVectorLayer )
+    return;
 
-  if ( selectionLayer )
-  {
-    // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
-
-    if ( selectionVectorLayer != 0 )
-    {
-      QgsFeatureList features = selectionVectorLayer->selectedFeatures();
-      clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
-      clipboard()->setCRS( selectionVectorLayer->crs() );
-    }
-  }
+  // Test for feature support in this layer
+  clipboard()->replaceWithCopyOf( selectionVectorLayer );
 }
 
 
@@ -4332,51 +4317,54 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     return;
   }
 
-  QgsMapLayer *pasteLayer = destinationLayer ? destinationLayer : activeLayer();
+  QgsVectorLayer *pasteVectorLayer = qobject_cast<QgsVectorLayer *>( destinationLayer ? destinationLayer : activeLayer() );
+  if ( !pasteVectorLayer )
+    return;
 
-  if ( pasteLayer )
+  pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
+  QgsFeatureList features;
+  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
   {
-    // Test for feature support in this layer
-    QgsVectorLayer* pasteVectorLayer = qobject_cast<QgsVectorLayer *>( pasteLayer );
-
-    if ( pasteVectorLayer != 0 )
-    {
-      pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-      QgsFeatureList features;
-      if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
-      {
-        features = clipboard()->transformedCopyOf( pasteVectorLayer->crs() );
-      }
-      else
-      {
-        features = clipboard()->copyOf();
-      }
-
-      QgsAttributeList dstAttr = pasteVectorLayer->pendingAllAttributesList();
-
-      for ( int i = 0; i < features.size(); i++ )
-      {
-        QgsFeature &f = features[i];
-        QgsAttributeMap srcMap = f.attributeMap();
-        QgsAttributeMap dstMap;
-
-        int j = 0;
-        foreach( int id, srcMap.keys() )
-        {
-          if ( j >= dstAttr.size() )
-            break;
-
-          dstMap[ dstAttr[j++] ] = srcMap[id];
-        }
-
-        f.setAttributeMap( dstMap );
-      }
-
-      pasteVectorLayer->addFeatures( features );
-      pasteVectorLayer->endEditCommand();
-      mMapCanvas->refresh();
-    }
+    features = clipboard()->transformedCopyOf( pasteVectorLayer->crs() );
   }
+  else
+  {
+    features = clipboard()->copyOf();
+  }
+
+  QHash<int, int> remap;
+  const QgsFieldMap &fields = clipboard()->fields();
+  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
+  {
+    int dst = pasteVectorLayer->fieldNameIndex( it->name() );
+    if ( dst < 0 )
+    {
+      continue;
+    }
+    remap.insert( it.key(), dst );
+  }
+
+  for ( int i = 0; i < features.size(); i++ )
+  {
+    QgsFeature &f = features[i];
+    const QgsAttributeMap &srcMap = f.attributeMap();
+    QgsAttributeMap dstMap;
+
+    foreach( int src, srcMap.keys() )
+    {
+      int dst = remap.value( src, -1 );
+      if ( dst < 0 )
+        continue;
+
+      dstMap.insert( dst, srcMap[ src ] );
+    }
+
+    f.setAttributeMap( dstMap );
+  }
+
+  pasteVectorLayer->addFeatures( features );
+  pasteVectorLayer->endEditCommand();
+  mMapCanvas->refresh();
 }
 
 void QgisApp::copyStyle( QgsMapLayer * sourceLayer )

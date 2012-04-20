@@ -41,6 +41,8 @@
   TODO: Make it work
 */
 
+class QgsVectorLayer;
+
 /*
  * Constants used to describe copy-paste MIME types
  */
@@ -61,7 +63,7 @@ class QgsClipboard
      *  Place a copy of features on the internal clipboard,
      *  destroying the previous contents.
      */
-    void replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features );
+    void replaceWithCopyOf( QgsVectorLayer *src );
 
     /*
      *  Returns a copy of features on the internal clipboard,
@@ -94,11 +96,6 @@ class QgsClipboard
     QgsFeatureList transformedCopyOf( QgsCoordinateReferenceSystem destCRS );
 
     /*
-     *  Set the clipboard CRS
-     */
-    void setCRS( QgsCoordinateReferenceSystem crs );
-
-    /*
      *  Get the clipboard CRS
      */
     QgsCoordinateReferenceSystem crs();
@@ -129,6 +126,12 @@ class QgsClipboard
      * No copy is involved, since the return QByteArray is implicitly shared
      */
     QByteArray data( const QString& mimeType );
+
+    /*
+     * source fields
+     */
+    const QgsFieldMap &fields() { return mFeatureFields; }
+
   private:
 
     /** QGIS-internal vector feature clipboard.
@@ -136,7 +139,7 @@ class QgsClipboard
         involves a deep copy anyway.
      */
     QgsFeatureList mFeatureClipboard;
-
+    QgsFieldMap mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
 };
 
