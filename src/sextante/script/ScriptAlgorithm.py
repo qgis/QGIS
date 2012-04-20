@@ -16,6 +16,9 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.outputs.OutputFile import OutputFile
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -81,6 +84,12 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip() == "boolean":
             default = tokens[1].strip()[len("boolean")+1:]
             param = ParameterBoolean(tokens[0],  desc, default)
+        elif tokens[1].lower().strip() == "extent":
+            param = ParameterExtent(tokens[0],  desc)
+        elif tokens[1].lower().strip() == "file":
+            param = ParameterFile(tokens[0],  desc, False)
+        elif tokens[1].lower().strip() == "folder":
+            param = ParameterFile(tokens[0],  desc, True)
         elif tokens[    1].lower().strip().startswith("number"):
             default = tokens[1].strip()[len("number")+1:]
             param = ParameterNumber(tokens[0],  desc, default=default)
@@ -104,10 +113,8 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputTable()
         elif tokens[1].lower().strip().startswith("output html"):
             out = OutputHTML()
-        #=======================================================================
-        # elif tokens[1].lower().strip().startswith("output number"):
-        #    out = OutputNumber()
-        #=======================================================================
+        elif tokens[1].lower().strip().startswith("output file"):
+            out = OutputFile()
 
         if param != None:
             self.addParameter(param)

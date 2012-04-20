@@ -22,6 +22,9 @@ from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionEx
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteUtils import SextanteUtils
 import subprocess
+from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.outputs.OutputFile import OutputFile
 
 class RAlgorithm(GeoAlgorithm):
 
@@ -122,21 +125,23 @@ class RAlgorithm(GeoAlgorithm):
                     break
             if found:
                 param = ParameterTableField(tokens[0],  tokens[0], field)
+        elif tokens[1].lower().strip() == "extent":
+            param = ParameterExtent(tokens[0],  desc)
+        elif tokens[1].lower().strip() == "file":
+            param = ParameterFile(tokens[0],  desc, False)
+        elif tokens[1].lower().strip() == "folder":
+            param = ParameterFile(tokens[0],  desc, True)
         elif tokens[1].lower().strip().startswith("string"):
             default = tokens[1].strip()[len("string")+1:]
             param = ParameterString(tokens[0],  desc, default)
         elif tokens[1].lower().strip().startswith("output raster"):
             out = OutputRaster()
-            if tokens[1].strip().endswith("*"):
-                self.silentOutputs.append(tokens[0])
         elif tokens[1].lower().strip().startswith("output vector"):
             out = OutputVector()
-            if tokens[1].strip().endswith("*"):
-                self.silentOutputs.append(tokens[0])
         elif tokens[1].lower().strip().startswith("output table"):
             out = OutputTable()
-            if tokens[1].strip().endswith("*"):
-                self.silentOutputs.append(tokens[0])
+        elif tokens[1].lower().strip().startswith("output file"):
+            out = OutputFile()
 
         if param != None:
             self.addParameter(param)
@@ -291,5 +296,5 @@ class RAlgorithm(GeoAlgorithm):
                 if "no input file" in line:
                     settings.setValue(R_INSTALLED, True)
                     return
-            return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
+            return "It seems that R is not correctly installed in your system.\nPlease install it before running R Scripts."
 

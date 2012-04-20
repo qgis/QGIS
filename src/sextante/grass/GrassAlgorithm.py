@@ -106,7 +106,8 @@ class GrassAlgorithm(GeoAlgorithm):
             self.xmax = max(self.xmax, layer.extent().xMaximum())
             self.ymin = min(self.ymin, layer.extent().yMinimum())
             self.ymax = max(self.ymax, layer.extent().yMaximum())
-            self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
+            if isinstance(layer, QgsRasterLayer):
+                self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
 
 
     def processAlgorithm(self, progress):

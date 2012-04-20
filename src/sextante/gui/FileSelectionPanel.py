@@ -3,8 +3,9 @@ from sextante.core.SextanteUtils import SextanteUtils
 
 class FileSelectionPanel(QtGui.QWidget):
 
-    def __init__(self):
+    def __init__(self, isFolder):
         super(FileSelectionPanel, self).__init__(None)
+        self.isFolder = isFolder;
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
@@ -18,9 +19,14 @@ class FileSelectionPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", QtCore.QString(""), "*.*")
-        if filename:
-            self.text.setText(str(filename))
+        if self.isFolder:
+            folder = QtGui.QFileDialog.getExistingDirectory (self, "Select folder")
+            if folder:
+                self.text.setText(str(folder))
+        else:
+            filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", QtCore.QString(""), "*.*")
+            if filename:
+                self.text.setText(str(filename))
 
     def getValue(self):
         s = str(self.text.text())

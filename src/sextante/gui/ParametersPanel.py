@@ -182,7 +182,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterRange):
             item = RangePanel(param)
         elif isinstance(param, ParameterFile):
-            item = FileSelectionPanel()
+            item = FileSelectionPanel(param.isFolder)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                 options = QGisLayers.getRasterLayers()
