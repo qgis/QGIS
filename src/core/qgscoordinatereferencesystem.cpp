@@ -20,6 +20,7 @@
 #include <cmath>
 
 #include <QDir>
+#include <QTemporaryFile>
 #include <QDomNode>
 #include <QDomElement>
 #include <QFileInfo>
@@ -1423,10 +1424,17 @@ QString QgsCoordinateReferenceSystem::quotedValue( QString value )
 int QgsCoordinateReferenceSystem::syncDb()
 {
   int updated = 0, errors = 0;
+
   sqlite3 *database;
   if ( sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &database ) != SQLITE_OK )
   {
-    qCritical( "Can't open database: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    qCritical( "Could not open database: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    return -1;
+  }
+
+  if ( sqlite3_exec( database, "BEGIN TRANSACTION", 0, 0, 0 ) != SQLITE_OK )
+  {
+    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
   }
 
@@ -1520,7 +1528,6 @@ int QgsCoordinateReferenceSystem::syncDb()
     if ( proj4 != params )
     {
       char *errMsg = NULL;
-
       sql = QString( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
             .arg( quotedValue( proj4 ) )
             .arg( quotedValue( auth_name ) )
@@ -1548,6 +1555,13 @@ int QgsCoordinateReferenceSystem::syncDb()
   OSRDestroySpatialReference( crs );
 
   sqlite3_finalize( select );
+
+  if ( sqlite3_exec( database, "COMMIT", 0, 0, 0 ) != SQLITE_OK )
+  {
+    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    return -1;
+  }
+
   sqlite3_close( database );
 
   if ( errors > 0 )
