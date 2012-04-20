@@ -1,5 +1,4 @@
 from PyQt4 import QtGui, QtCore
-from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.CrsSelectionDialog import CrsSelectionDialog
 
 class CrsSelectionPanel(QtGui.QWidget):
