@@ -470,9 +470,10 @@ const QString QgsApplication::srsDbFilePath()
 
     return tempCopy;
   }
-
-  QString svgSubDir( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
-  return ABISYM( mPkgDataPath ) + QString( "/resources/srs.db" );
+  else
+  {
+    return ABISYM( mPkgDataPath ) + QString( "/resources/srs.db" );
+  }
 }
 
 /*!
