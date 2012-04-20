@@ -38,7 +38,7 @@ CMAKE_OPTS := \
 	-D WITH_APIDOC=TRUE
 
 ifneq (,$(findstring $(DISTRIBUTION),"sid"))
-	-D WITH_PYSPATIALITE=FALSE
+	CMAKE_OPTS += -D WITH_PYSPATIALITE=FALSE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"lenny squeeze lucid maverick natty oneiric"))
