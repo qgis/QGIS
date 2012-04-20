@@ -835,6 +835,8 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   {
     QgsDebugMsg( QString( "Zip error: %1" ).arg( zip.getZipError() ) );
   }
+#else
+  QgsDebugMsg( QString( "Cannot open file %1 with quazip - zlib not configured" ).arg( path() ) );
 #endif
 
   // loop over files inside zip
