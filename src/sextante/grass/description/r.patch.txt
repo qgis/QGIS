@@ -1,4 +1,5 @@
 r.patch
+r.patch
 Raster (r.*)
 ParameterMultipleInput|input|input|1.0|False
 ParameterBoolean|-q|-q|True

@@ -1,4 +1,5 @@
 r.composite
+r.composite
 Raster (r.*)
 ParameterRaster|red|red|False
 ParameterRaster|green|green|False

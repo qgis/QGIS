@@ -1,4 +1,5 @@
 v.mkgrid
+v.mkgrid
 Vector (v.*)
 ParameterString|grid|grid|10,10
 ParameterSelection|position|position|region;coor

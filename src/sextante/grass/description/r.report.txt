@@ -1,4 +1,5 @@
 r.report
+r.report
 Raster (r.*)
 ParameterMultipleInput|map|map|3.0|False
 ParameterSelection|units|units|mi;me;k;a;h;c;p

@@ -1,4 +1,5 @@
 r.describe
+r.describe
 Raster (r.*)
 ParameterRaster|map|map|False
 ParameterString|nv|nv|*

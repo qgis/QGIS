@@ -1,4 +1,5 @@
 v.distance
+v.distance
 Vector (v.*)
 ParameterVector|from|from|0|False
 ParameterVector|to|to|-1|False

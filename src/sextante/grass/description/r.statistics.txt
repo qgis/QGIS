@@ -1,4 +1,5 @@
 r.statistics
+r.statistics
 Raster (r.*)
 ParameterRaster|base|base|False
 ParameterRaster|cover|cover|False

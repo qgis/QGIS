@@ -1,4 +1,5 @@
 r.spreadpath
+r.spreadpath
 Raster (r.*)
 ParameterRaster|x_input|x_input|False
 ParameterRaster|y_input|y_input|False

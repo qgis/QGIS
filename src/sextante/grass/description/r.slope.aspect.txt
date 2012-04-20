@@ -1,4 +1,5 @@
 r.slope.aspect
+r.slope.aspect
 Raster (r.*)
 ParameterRaster|elevation|elevation|False
 ParameterSelection|format|format|degrees;percent

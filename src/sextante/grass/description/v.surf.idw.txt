@@ -1,4 +1,5 @@
 v.surf.idw
+v.surf.idw
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterNumber|npoints|npoints|None|None|12

@@ -1,0 +1,9 @@
+v.buffer
+v.buffer.distance
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|distance|distance|
+ParameterString|tolerance|tolerance|0.01
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-c|-c|True
+OutputVector|output|output

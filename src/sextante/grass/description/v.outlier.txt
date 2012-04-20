@@ -1,4 +1,5 @@
 v.outlier
+v.outlier
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterNumber|soe|soe|None|None|10

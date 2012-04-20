@@ -48,6 +48,8 @@ class GrassAlgorithm(GeoAlgorithm):
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
+        self.grassName = line
+        line = lines.readline().strip("\n").strip()
         self.name = line
         line = lines.readline().strip("\n").strip()
         self.group = line
@@ -158,7 +160,7 @@ class GrassAlgorithm(GeoAlgorithm):
                         commands.append(self.exportVectorLayer(layer))
 
         #2: set parameters and outputs
-        command = self.name
+        command = self.grassName
         for param in self.parameters:
             if param.value == None:
                 continue

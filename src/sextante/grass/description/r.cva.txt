@@ -1,4 +1,5 @@
 r.cva
+r.cva
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterRaster|target_mask|target_mask|False

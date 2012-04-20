@@ -1,4 +1,5 @@
 r.circle
+r.circle
 Raster (r.*)
 ParameterString|coordinate|coordinate|0,0
 ParameterNumber|min|min|None|None|10

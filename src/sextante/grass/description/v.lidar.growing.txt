@@ -1,4 +1,5 @@
 v.lidar.growing
+v.lidar.growing
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterVector|first|first|-1|False

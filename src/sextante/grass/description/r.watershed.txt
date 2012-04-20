@@ -1,4 +1,5 @@
 r.watershed
+r.watershed
 Raster (r.*)
 ParameterRaster|elevation|elevation|False
 ParameterRaster|depression|depression|False

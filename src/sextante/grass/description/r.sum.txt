@@ -1,3 +1,4 @@
 r.sum
+r.sum
 Raster (r.*)
 ParameterRaster|rast|rast|False

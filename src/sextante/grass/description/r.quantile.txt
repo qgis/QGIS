@@ -1,4 +1,5 @@
 r.quantile
+r.quantile
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|quantiles|quantiles|2.0|None|4

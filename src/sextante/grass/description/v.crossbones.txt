@@ -1,4 +1,5 @@
 v.crossbones
+v.crossbones
 Vector (v.*)
 ParameterString|input|input|/file
 ParameterSelection|mode|mode|darts;lines;planes_h;planes_v;points;pyramids

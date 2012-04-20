@@ -1,4 +1,5 @@
 r.spread
+r.spread
 Raster (r.*)
 ParameterRaster|max|max|False
 ParameterRaster|dir|dir|False

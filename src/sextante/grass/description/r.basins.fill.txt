@@ -1,4 +1,5 @@
 r.basins.fill
+r.basins.fill
 Raster (r.*)
 ParameterNumber|number|number|None|None|0.0
 ParameterRaster|c_map|c_map|False

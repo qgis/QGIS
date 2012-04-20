@@ -1,4 +1,5 @@
 r.distance
+r.distance
 Raster (r.*)
 ParameterRaster|maps|maps|False
 ParameterString|fs|fs|:

@@ -1,4 +1,5 @@
 r.carve
+r.carve
 Raster (r.*)
 ParameterRaster|rast|rast|False
 ParameterVector|vect|vect|1|False

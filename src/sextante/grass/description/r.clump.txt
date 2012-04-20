@@ -1,4 +1,5 @@
 r.clump
+r.clump
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|title|title|

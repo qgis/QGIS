@@ -1,4 +1,5 @@
 r.thin
+r.thin
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|iterations|iterations|200

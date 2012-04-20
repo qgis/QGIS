@@ -1,4 +1,5 @@
 r.terraflow.short
+r.terraflow.short
 Raster (r.*)
 ParameterRaster|elevation|elevation|False
 ParameterString|d8cut|d8cut|infinity

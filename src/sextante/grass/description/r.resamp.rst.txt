@@ -1,4 +1,5 @@
 r.resamp.rst
+r.resamp.rst
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|ew_res|ew_res|0.0|None|1

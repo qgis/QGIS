@@ -1,4 +1,5 @@
 r.prominence
+r.prominence
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|radius|radius|1.0|None|1

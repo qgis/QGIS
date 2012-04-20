@@ -1,4 +1,5 @@
 r.stats
+r.stats
 Raster (r.*)
 ParameterMultipleInput|input|input|3.0|False
 ParameterString|output|output|/file

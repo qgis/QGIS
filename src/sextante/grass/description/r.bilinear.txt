@@ -1,4 +1,5 @@
 r.bilinear
+r.bilinear
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|north|north|None|None|0

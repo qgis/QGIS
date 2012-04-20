@@ -1,4 +1,5 @@
 r.covar
+r.covar
 Raster (r.*)
 ParameterMultipleInput|map|map|3.0|False
 ParameterBoolean|-r|-r|True

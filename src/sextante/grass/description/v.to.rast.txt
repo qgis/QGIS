@@ -1,4 +1,5 @@
 v.to.rast
+v.to.rast
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterSelection|use|use|attr;cat;val;z;dir

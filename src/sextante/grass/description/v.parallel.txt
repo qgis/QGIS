@@ -1,4 +1,5 @@
 v.parallel
+v.parallel
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterNumber|distance|distance|None|None|1

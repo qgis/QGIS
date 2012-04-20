@@ -1,4 +1,5 @@
 r.walk
+r.walk
 Raster (r.*)
 ParameterRaster|elevation|elevation|False
 ParameterRaster|friction|friction|False

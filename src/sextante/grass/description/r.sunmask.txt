@@ -1,4 +1,5 @@
 r.sunmask
+r.sunmask
 Raster (r.*)
 ParameterRaster|elev|elev|False
 ParameterNumber|altitude|altitude|None|None|0.0

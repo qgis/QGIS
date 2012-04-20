@@ -1,4 +1,5 @@
 r.water.outlet
+r.water.outlet
 Raster (r.*)
 ParameterRaster|drainage|drainage|False
 ParameterNumber|easting|easting|None|None|0

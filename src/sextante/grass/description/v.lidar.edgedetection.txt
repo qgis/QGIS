@@ -1,4 +1,5 @@
 v.lidar.edgedetection
+v.lidar.edgedetection
 Vector (v.*)
 ParameterVector|input|input|0|False
 ParameterString|see|see|4

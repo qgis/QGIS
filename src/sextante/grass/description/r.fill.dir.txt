@@ -1,4 +1,5 @@
 r.fill.dir
+r.fill.dir
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|type|type|grass

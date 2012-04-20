@@ -1,4 +1,5 @@
 r.mapcalculator
+r.mapcalculator
 Raster (r.*)
 ParameterRaster|amap|amap|False
 ParameterRaster|bmap|bmap|False

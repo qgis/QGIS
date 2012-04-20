@@ -1,4 +1,5 @@
 r.mfilter
+r.mfilter
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|filter|filter|/file

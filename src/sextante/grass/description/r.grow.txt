@@ -1,4 +1,5 @@
 r.grow
+r.grow
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|radius|radius|None|None|1.01

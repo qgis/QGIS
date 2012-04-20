@@ -1,4 +1,5 @@
 v.info
+v.info
 Vector (v.*)
 ParameterVector|map|map|-1|False
 ParameterBoolean|-h|-h|True

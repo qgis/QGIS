@@ -1,4 +1,5 @@
 v.normal
+v.normal
 Vector (v.*)
 ParameterVector|map|map|-1|False
 ParameterString|tests|tests|1-3

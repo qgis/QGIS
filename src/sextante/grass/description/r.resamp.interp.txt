@@ -1,4 +1,5 @@
 r.resamp.interp
+r.resamp.interp
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterSelection|method|method|nearest;bilinear;bicubic

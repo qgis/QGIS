@@ -1,4 +1,5 @@
 r.bitpattern
+r.bitpattern
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|pattern|pattern|

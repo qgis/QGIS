@@ -1,4 +1,5 @@
 r.shaded.relief
+r.shaded.relief
 Raster (r.*)
 ParameterRaster|map|map|False
 ParameterNumber|altitude|altitude|None|None|30.0

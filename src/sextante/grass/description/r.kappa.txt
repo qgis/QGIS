@@ -1,4 +1,5 @@
 r.kappa
+r.kappa
 Raster (r.*)
 ParameterRaster|classification|classification|False
 ParameterRaster|reference|reference|False

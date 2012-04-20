@@ -1,4 +1,5 @@
 r.univar
+r.univar
 Raster (r.*)
 ParameterMultipleInput|map|map|3.0|False
 ParameterNumber|percentile|percentile|0.0|100.0|90

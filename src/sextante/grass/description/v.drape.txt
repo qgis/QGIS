@@ -1,4 +1,5 @@
 v.drape
+v.drape
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterRaster|rast|rast|False

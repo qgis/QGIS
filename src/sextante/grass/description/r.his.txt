@@ -1,4 +1,5 @@
 r.his
+r.his
 Raster (r.*)
 ParameterRaster|h_map|h_map|False
 ParameterRaster|i_map|i_map|False

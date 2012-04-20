@@ -1,4 +1,5 @@
 r.neighbors
+r.neighbors
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterSelection|method|method|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion

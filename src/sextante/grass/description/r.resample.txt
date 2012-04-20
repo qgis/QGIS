@@ -1,4 +1,5 @@
 r.resample
+r.resample
 Raster (r.*)
 ParameterRaster|input|input|False
 OutputRaster|output|output

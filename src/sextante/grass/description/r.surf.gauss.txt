@@ -1,4 +1,5 @@
 r.surf.gauss
+r.surf.gauss
 Raster (r.*)
 ParameterString|mean|mean|0.0
 ParameterString|sigma|sigma|1.0

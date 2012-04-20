@@ -1,4 +1,5 @@
 v.out.pov
+v.out.pov
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterString|type|type|point,line,area,face

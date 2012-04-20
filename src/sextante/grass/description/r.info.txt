@@ -1,4 +1,5 @@
 r.info
+r.info
 Raster (r.*)
 ParameterRaster|map|map|False
 ParameterBoolean|-r|-r|True

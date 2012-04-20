@@ -1,4 +1,5 @@
 r.to.vect
+r.to.vect
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterSelection|feature|feature|point;line;area

@@ -1,4 +1,5 @@
 r.gwflow
+r.gwflow
 Raster (r.*)
 ParameterString|phead|phead|
 ParameterString|status|status|

@@ -1,4 +1,5 @@
 r.colors
+r.colors
 Raster (r.*)
 ParameterRaster|map|map|False
 ParameterSelection|color|color|aspect;aspectcolr;bcyr;bgyr;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;gdd;grey;grey1.0;grey255;gyr;haxby;ndvi;population;precipitation;rainbow;ramp;rstcurv;ryb;ryg;sepia;slope;srtm;terrain;wave;random;grey.eq;grey.log;rules

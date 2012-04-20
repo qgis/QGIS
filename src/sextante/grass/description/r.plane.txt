@@ -1,4 +1,5 @@
 r.plane
+r.plane
 Raster (r.*)
 ParameterNumber|dip|dip|None|None|0.0
 ParameterNumber|azimuth|azimuth|None|None|0.0

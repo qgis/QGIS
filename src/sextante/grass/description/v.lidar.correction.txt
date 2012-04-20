@@ -1,4 +1,5 @@
 v.lidar.correction
+v.lidar.correction
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterString|sce|sce|25

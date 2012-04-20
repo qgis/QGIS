@@ -1,4 +1,5 @@
 v.in.wfs
+v.in.wfs
 Vector (v.*)
 ParameterString|wfs|wfs|wfs_string
 OutputVector|output|output

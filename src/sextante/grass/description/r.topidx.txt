@@ -1,4 +1,5 @@
 r.topidx
+r.topidx
 Raster (r.*)
 ParameterRaster|input|input|False
 OutputRaster|output|output

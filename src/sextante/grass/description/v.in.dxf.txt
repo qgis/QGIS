@@ -1,4 +1,5 @@
 v.in.dxf
+v.in.dxf
 Vector (v.*)
 ParameterString|input|input|/file
 ParameterString|layers|layers|

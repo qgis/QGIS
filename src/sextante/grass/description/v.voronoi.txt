@@ -1,4 +1,5 @@
 v.voronoi
+v.voronoi
 Vector (v.*)
 ParameterVector|input|input|0|False
 ParameterBoolean|-l|-l|True

@@ -1,4 +1,5 @@
 v.random
+v.random
 Vector (v.*)
 ParameterNumber|n|n|None|None|0.0
 ParameterNumber|zmin|zmin|None|None|0.0

@@ -1,4 +1,5 @@
 r.surf.area
+r.surf.area
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|vscale|vscale|None|None|0.0

@@ -1,4 +1,5 @@
 v.class
+v.class
 Vector (v.*)
 ParameterVector|map|map|-1|False
 ParameterTableField|column|column|map

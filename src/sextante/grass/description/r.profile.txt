@@ -1,4 +1,5 @@
 r.profile
+r.profile
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|output|output|/file

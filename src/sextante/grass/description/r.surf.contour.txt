@@ -1,4 +1,5 @@
 r.surf.contour
+r.surf.contour
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterBoolean|-f|-f|True

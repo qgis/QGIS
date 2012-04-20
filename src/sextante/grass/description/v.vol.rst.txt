@@ -1,4 +1,5 @@
 v.vol.rst
+v.vol.rst
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterRaster|cellinp|cellinp|False

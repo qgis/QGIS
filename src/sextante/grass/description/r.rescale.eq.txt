@@ -1,4 +1,5 @@
 r.rescale.eq
+r.rescale.eq
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterRange|from|from

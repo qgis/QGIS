@@ -1,4 +1,5 @@
 r.terraflow
+r.terraflow
 Raster (r.*)
 ParameterRaster|elevation|elevation|False
 ParameterBoolean|-s|-s|True

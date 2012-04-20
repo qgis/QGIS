@@ -1,4 +1,5 @@
 v.surf.bspline
+v.surf.bspline
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterVector|sparse|sparse|-1|False

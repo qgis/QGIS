@@ -1,4 +1,5 @@
 r.sun
+r.sun
 Raster (r.*)
 ParameterRaster|elevin|elevin|False
 ParameterRaster|aspin|aspin|False

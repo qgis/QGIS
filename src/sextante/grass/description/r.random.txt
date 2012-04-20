@@ -1,4 +1,5 @@
 r.random
+r.random
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterRaster|cover|cover|False

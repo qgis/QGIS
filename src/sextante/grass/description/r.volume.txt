@@ -1,4 +1,5 @@
 r.volume
+r.volume
 Raster (r.*)
 ParameterRaster|data|data|False
 ParameterRaster|clump|clump|False

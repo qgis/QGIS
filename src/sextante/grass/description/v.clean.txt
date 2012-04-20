@@ -1,4 +1,5 @@
 v.clean
+v.clean
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterSelection|tool|tool|break;snap;rmdangle;chdangle;rmbridge;chbridge;rmdupl;rmdac;bpol;prune;rmarea;rmline;rmsa

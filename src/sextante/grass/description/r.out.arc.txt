@@ -1,4 +1,5 @@
 r.out.arc
+r.out.arc
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|output|output|/file

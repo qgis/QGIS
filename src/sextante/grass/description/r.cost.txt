@@ -1,4 +1,5 @@
 r.cost
+r.cost
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterVector|start_points|start_points|0|False

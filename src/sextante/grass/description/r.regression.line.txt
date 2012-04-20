@@ -1,4 +1,5 @@
 r.regression.line
+r.regression.line
 Raster (r.*)
 ParameterRaster|map1|map1|False
 ParameterRaster|map2|map2|False

@@ -1,4 +1,5 @@
 r.average
+r.average
 Raster (r.*)
 ParameterRaster|base|base|False
 ParameterRaster|cover|cover|False

@@ -1,4 +1,5 @@
 v.generalize
+v.generalize
 Vector (v.*)
 ParameterVector|input|input|-1|False
 ParameterSelection|method|method|douglas;douglas_reduction;lang;reduction;reumann;remove_small;boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes;network;displacement

@@ -1,4 +1,5 @@
 v.rast.stats
+v.rast.stats
 Vector (v.*)
 ParameterVector|vector|vector|-1|False
 ParameterRaster|raster|raster|False

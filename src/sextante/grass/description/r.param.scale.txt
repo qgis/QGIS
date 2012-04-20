@@ -1,4 +1,5 @@
 r.param.scale
+r.param.scale
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterNumber|s_tol|s_tol|None|None|1.0

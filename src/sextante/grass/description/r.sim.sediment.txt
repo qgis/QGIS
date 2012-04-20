@@ -1,4 +1,5 @@
 r.sim.sediment
+r.sim.sediment
 Raster (r.*)
 ParameterRaster|elevin|elevin|False
 ParameterRaster|wdepth|wdepth|False

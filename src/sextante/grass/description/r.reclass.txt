@@ -1,4 +1,5 @@
 r.reclass
+r.reclass
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|rules|rules|/file

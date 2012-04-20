@@ -1,4 +1,5 @@
 r.contour
+r.contour
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|levels|levels|

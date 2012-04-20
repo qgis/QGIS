@@ -1,4 +1,5 @@
 r.texture
+r.texture
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|size|size|3

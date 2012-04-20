@@ -1,4 +1,5 @@
 r.quant
+r.quant
 Raster (r.*)
 ParameterRaster|basemap|basemap|False
 ParameterMultipleInput|input|input|1.0|False

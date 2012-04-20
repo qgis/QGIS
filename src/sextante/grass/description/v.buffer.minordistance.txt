@@ -1,0 +1,9 @@
+v.buffer
+v.buffer.minordistance
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterString|minordistance|minordistance|
+ParameterString|tolerance|tolerance|0.01
+ParameterBoolean|-s|-s|True
+ParameterBoolean|-c|-c|True
+OutputVector|output|output

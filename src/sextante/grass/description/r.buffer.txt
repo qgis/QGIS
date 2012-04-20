@@ -1,4 +1,5 @@
 r.buffer
+r.buffer
 Raster (r.*)
 ParameterRaster|input|input|False
 ParameterString|distances|distances|100,200,300
