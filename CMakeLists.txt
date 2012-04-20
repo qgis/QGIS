@@ -526,19 +526,19 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 # create qgsversion.h
 FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 IF (GIT_MARKER)
-  FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
-  IF(GIT)
+  FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
+  IF(GITCOMMAND)
     IF(MSVC)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GIT}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ELSE(MSVC)
       EXECUTE_PROCESS(
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GIT} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
+        COMMAND ${GITCOMMAND} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
       )
       STRING(STRIP "${REVISION}" REVISION)
       ADD_CUSTOM_COMMAND(
@@ -548,11 +548,11 @@ IF (GIT_MARKER)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ENDIF(MSVC)
-  ELSE(GIT)
+  ELSE(GITCOMMAND)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
     SET(REVISION "unknown")
     FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
-  ENDIF(GIT)
+  ENDIF(GITCOMMAND)
 ELSE (GIT_MARKER)
   SET(REVISION "exported")
   FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")
