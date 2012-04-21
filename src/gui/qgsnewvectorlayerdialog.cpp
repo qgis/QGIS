@@ -46,7 +46,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   mTypeBox->addItem( tr( "Decimal number" ), "Real" );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
-  mPrecision->setValidator( new QIntValidator( 0, 5, this ) );
+  mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
   mPointRadioButton->setChecked( true );
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
