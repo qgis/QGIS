@@ -69,6 +69,13 @@ class GeoAlgorithm:
         it should be returned here, ready to be executed'''
         return None
 
+    def getParameterDescriptions(self):
+        '''Returns a dict with param names as keys and detailed descriptions of each param
+        as value. These descriptions are used as tool tips in the parameters dialog.
+        If a description does not exist, the parameter's human-readable name is used'''
+        descs = {}
+        return descs
+
     def checkBeforeOpeningParametersDialog(self):
         '''If there is any check to perform before the parameters dialog is opened,
         it should be done here. This method returns an error message string if there

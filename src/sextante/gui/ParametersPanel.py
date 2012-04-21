@@ -40,6 +40,7 @@ class ParametersPanel(QtGui.QWidget):
         self.initGUI()
 
     def initGUI(self):
+        tooltips = self.alg.getParameterDescriptions()
         tableLike = SextanteConfig.getSetting(SextanteConfig.TABLE_LIKE_PARAM_PANEL)
         if tableLike:
             self.tableWidget = QtGui.QTableWidget()
@@ -83,6 +84,12 @@ class ParametersPanel(QtGui.QWidget):
                     QtCore.QObject.connect(button, QtCore.SIGNAL("toggled(bool)"), self.buttonToggled)
                     widget = QtGui.QWidget()
                     widget.setLayout(layout)
+                if param.name in tooltips.keys():
+                    tooltip = tooltips[param.name]
+                else:
+                    tooltip = param.description
+                label.setToolTip(tooltip)
+                widget.setToolTip(tooltip)
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 

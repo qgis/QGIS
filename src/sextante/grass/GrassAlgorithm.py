@@ -41,9 +41,30 @@ class GrassAlgorithm(GeoAlgorithm):
     def helpFile(self):
         folder = GrassUtils.grassHelpPath()
         if str(folder).strip() != "":
-            helpfile = str(folder) + os.sep + self.name + ".html"
+            helpfile = str(folder) + os.sep + self.grassName + ".html"
             return helpfile
         return None
+
+    def getParameterDescriptions(self):
+        descs = {}
+        helpfile = self.helpFile()
+        if helpfile:
+            try:
+                infile = open(helpfile)
+                lines = infile.readlines()
+                for i in range(len(lines)):
+                    if lines[i].startswith("<DT><b>"):
+                        for param in self. parameters:
+                            searchLine = "<b>" + param.name + "</b>"
+                            if searchLine in lines[i]:
+                                i+=1
+                                descs[param.name] = lines[i][4:-6]
+                                break
+
+                infile.close()
+            except Exception:
+                pass
+        return descs
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
