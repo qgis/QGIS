@@ -264,12 +264,6 @@ class GdalTools:
     QObject.connect( self.settings, SIGNAL( "triggered()" ), self.doSettings )
     self.menu.addAction( self.settings )
 
-    self.about = QAction( QIcon( ":icons/about.png" ), QCoreApplication.translate( "GdalTools", "About GdalTools" ), self.iface.mainWindow() )
-    self.about.setStatusTip( QCoreApplication.translate( "GdalTools", "Displays information about Gdal Tools" ) )
-    QObject.connect( self.about, SIGNAL( "triggered()" ), self.doAbout )
-    self.menu.addSeparator()
-    self.menu.addAction( self.about )
-
     menu_bar = self.iface.mainWindow().menuBar()
     actions = menu_bar.actions()
     lastAction = actions[ len( actions ) - 1 ]
@@ -392,9 +386,4 @@ class GdalTools:
   def doSettings( self ):
     from tools.doSettings import GdalToolsSettingsDialog as Settings
     d = Settings( self.iface )
-    d.exec_()
-
-  def doAbout( self ):
-    from tools.doAbout import GdalToolsAboutDialog as About
-    d = About( self.iface )
     d.exec_()
