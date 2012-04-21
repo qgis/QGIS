@@ -1201,8 +1201,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QString mOldScale;
 
 #ifdef HAVE_TOUCH
-    bool gestureEvent(QGestureEvent *event);
-    void tapAndHoldTriggered(QTapAndHoldGesture *gesture);
+    bool gestureEvent( QGestureEvent *event );
+    void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 #endif
 };
 

@@ -113,12 +113,12 @@ void TestQgsPoint::toDegreesMinutesSeconds()
   mReport += "<p>" + mPoint3.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toDegreesMinutesSeconds( 2 )  +  "</p>";
   qDebug() << mPoint4.toDegreesMinutesSeconds( 2 );
-  QString myControlString = QString( "80" ) + QChar( 176 ) + 
-    QString( "0'0.00" ) + 
-    QString( '"' ) + 
-    QString( "E,20" ) + QChar( 176 ) + 
-    QString( "0'0.00" ) + QString( '"' ) + 
-    QString( "N" );
+  QString myControlString = QString( "80" ) + QChar( 176 ) +
+                            QString( "0'0.00" ) +
+                            QString( '"' ) +
+                            QString( "E,20" ) + QChar( 176 ) +
+                            QString( "0'0.00" ) + QString( '"' ) +
+                            QString( "N" );
   qDebug() << myControlString;
   QVERIFY( mPoint4.toDegreesMinutesSeconds( 2 ) == myControlString );
 

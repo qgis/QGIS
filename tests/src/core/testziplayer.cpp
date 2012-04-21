@@ -35,10 +35,7 @@ class TestZipLayer: public QObject
 
     void testZipLayer()
     {
-      // init QGIS's paths - true means that all path will be inited from prefix
-      QString qgisPath = QCoreApplication::applicationDirPath();
-      QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
-      // Instantiate the plugin directory so that providers are loaded
+      QgsApplication::init();
       QgsProviderRegistry::instance( QgsApplication::pluginPath() );
       //
       //create a point layer that will be used in all tests...
@@ -47,9 +44,8 @@ class TestZipLayer: public QObject
       myDataDir += QDir::separator();
       QString myPointsFileName = myDataDir + "points.zip";
       QFileInfo myPointFileInfo( myPointsFileName );
-      QgsVectorLayer * mypPointsLayer;
-      mypPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                          myPointFileInfo.completeBaseName(), "ogr" );
+      QgsVectorLayer * mypPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+          myPointFileInfo.completeBaseName(), "ogr" );
       QVERIFY( mypPointsLayer->isValid() );
       delete mypPointsLayer;
     }

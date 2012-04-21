@@ -69,10 +69,8 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
-  QgsApplication::initQgis( );
+  QgsApplication::init();
   QgsApplication::showSettings();
-
 }
 
 void TestQgsCoordinateReferenceSystem::wktCtor()
@@ -100,7 +98,7 @@ void TestQgsCoordinateReferenceSystem::copyCtor()
 void TestQgsCoordinateReferenceSystem::assignmentCtor()
 {
   QgsCoordinateReferenceSystem myCrs( GEOSRID,
-                                    QgsCoordinateReferenceSystem::EpsgCrsId );
+                                      QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsCoordinateReferenceSystem myCrs2 = myCrs;
   debugPrint( myCrs2 );
   QVERIFY( myCrs2.isValid() );
@@ -186,8 +184,7 @@ void TestQgsCoordinateReferenceSystem::equals()
   debugPrint( myCrs );
   //Note: OSRImportFromProj4 (used internally by equals)
   //drops the TOWGS from the WKT which causes this test to fail
-  QString myProj4( GEOPROJ4 );
-  QVERIFY( myCrs.equals( myProj4 ) );
+  QVERIFY( myCrs.equals( GEOPROJ4 ) );
 }
 void TestQgsCoordinateReferenceSystem::readXML()
 {
@@ -239,17 +236,17 @@ void TestQgsCoordinateReferenceSystem::toWkt()
   QString myWkt = myCrs.toWkt();
   debugPrint( myCrs );
   //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause...
-  QString myStrippedWkt("GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
-     "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
-     "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
-     "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
-     "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
+  QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
+                         "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+                         "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+                         "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
+                         "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
   // for GDAL 1.7
-  QString myAltStrippedWkt("GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
-     "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
-     "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
-     "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
-     "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
+  QString myAltStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
+                            "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+                            "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+                            "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
+                            "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
   qDebug() << "myWkt:\n";
   qDebug() << myWkt;
   qDebug() << "myStrippedWkt:\n";
@@ -263,8 +260,7 @@ void TestQgsCoordinateReferenceSystem::toProj4()
   debugPrint( myCrs );
   //first proj string produced by gdal 1.8-1.9
   //second by gdal 1.7
-  QVERIFY( myCrs.toProj4() == "+proj=longlat +datum=WGS84 +no_defs" ||
-           myCrs.toProj4() == "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+  QVERIFY( myCrs.toProj4() == GEOPROJ4 );
 }
 void TestQgsCoordinateReferenceSystem::geographicFlag()
 {
@@ -289,11 +285,11 @@ void TestQgsCoordinateReferenceSystem::setValidationHint()
 }
 
 void TestQgsCoordinateReferenceSystem::debugPrint(
-                              QgsCoordinateReferenceSystem &theCrs )
+  QgsCoordinateReferenceSystem &theCrs )
 {
   QgsDebugMsg( "***SpatialRefSystem***" );
   QgsDebugMsg( "* Valid : " + ( theCrs.isValid() ? QString( "true" ) :
-                                                   QString( "false" ) ) );
+                                QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( theCrs.srsid() ) );
   QgsDebugMsg( "* EPSG ID : " + theCrs.authid() );
   QgsDebugMsg( "* PGIS ID : " + QString::number( theCrs.postgisSrid() ) );

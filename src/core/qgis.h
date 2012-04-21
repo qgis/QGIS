@@ -136,7 +136,7 @@ inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 /** Wkt string that represents a geographic coord sys
  * @note added in 1.8 to replace GEOWkt
  */
-const  QString GEOWKT =
+const QString GEOWKT =
   "GEOGCS[\"WGS 84\", "
   "  DATUM[\"WGS_1984\", "
   "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
@@ -157,7 +157,7 @@ Q_DECL_DEPRECATED
 #endif
 const QString GEOWkt = GEOWKT;
 /** PROJ4 string that represents a geographic coord sys */
-const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+extern const QString GEOPROJ4;
 /** Magic number for a geographic coord sys in POSTGIS SRID */
 const long GEOSRID = 4326;
 /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */

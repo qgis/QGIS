@@ -11,40 +11,40 @@
 #include <QApplication>
 #include <QToolBar>
 
-TestRendererV2GUI::TestRendererV2GUI(QWidget *parent) :
-    QMainWindow(parent)
+TestRendererV2GUI::TestRendererV2GUI( QWidget *parent ) :
+    QMainWindow( parent )
 {
-  resize(640,480);
+  resize( 640, 480 );
 
-  QToolBar* toolBar = addToolBar("Actions");
-  toolBar->addAction( "set renderer", this, SLOT(setRenderer()) );
+  QToolBar* toolBar = addToolBar( "Actions" );
+  toolBar->addAction( "set renderer", this, SLOT( setRenderer() ) );
 
-  mMapCanvas = new QgsMapCanvas(this);
+  mMapCanvas = new QgsMapCanvas( this );
   mMapCanvas->setCanvasColor( Qt::white );
-  setCentralWidget(mMapCanvas);
+  setCentralWidget( mMapCanvas );
 
-  connect( QgsProject::instance(), SIGNAL(readProject(QDomDocument)), mMapCanvas, SLOT(readProject(QDomDocument)));
+  connect( QgsProject::instance(), SIGNAL( readProject( QDomDocument ) ), mMapCanvas, SLOT( readProject( QDomDocument ) ) );
 }
 
 void TestRendererV2GUI::loadLayers()
 {
   // load just first vector layer
   QList<QgsMapCanvasLayer> canvasLayers;
-  foreach (QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values())
+  foreach( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
       canvasLayers << QgsMapCanvasLayer( layer );
   }
 
-  mMapCanvas->setLayerSet(canvasLayers);
+  mMapCanvas->setLayerSet( canvasLayers );
 }
 
 void TestRendererV2GUI::setRenderer()
 {
-  QgsMapLayer* layer = mMapCanvas->layer(0);
+  QgsMapLayer* layer = mMapCanvas->layer( 0 );
   Q_ASSERT( layer );
   Q_ASSERT( layer->type() == QgsMapLayer::VectorLayer );
-  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>(layer);
+  QgsVectorLayer* vlayer = static_cast<QgsVectorLayer*>( layer );
 
   QgsRendererV2PropertiesDialog dlg( vlayer, QgsStyleV2::defaultStyle() );
   dlg.exec();
@@ -52,9 +52,9 @@ void TestRendererV2GUI::setRenderer()
   mMapCanvas->refresh();
 }
 
-int main(int argc, char* argv[])
+int main( int argc, char* argv[] )
 {
-  QApplication app(argc, argv);
+  QApplication app( argc, argv );
 
   if ( argc < 2 )
   {
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
   bool res = QgsProject::instance()->read();
   if ( !res )
   {
-    qDebug("Failed to open project!");
+    qDebug( "Failed to open project!" );
     return 1;
   }
 

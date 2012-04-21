@@ -77,13 +77,9 @@ void TestQgsMapRenderer::initTestCase()
   //
   // Runs once before any tests are run
   //
-  // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init();
   QgsApplication::showSettings();
-  // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-
 
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";

@@ -96,16 +96,16 @@ class TestQgsExpression: public QObject
     {
       // check that parsing of numbers works correctly even when using some other locale
 
-      char* old_locale = setlocale(LC_NUMERIC, NULL);
-      qDebug("Old locale: %s", old_locale);
-      setlocale(LC_NUMERIC, "de_DE.UTF8");
-      char* new_locale = setlocale(LC_NUMERIC, NULL);
-      qDebug("New locale: %s", new_locale);
+      char* old_locale = setlocale( LC_NUMERIC, NULL );
+      qDebug( "Old locale: %s", old_locale );
+      setlocale( LC_NUMERIC, "de_DE.UTF8" );
+      char* new_locale = setlocale( LC_NUMERIC, NULL );
+      qDebug( "New locale: %s", new_locale );
 
       QgsExpression exp( "1.23 + 4.56" );
       QVERIFY( !exp.hasParserError() );
 
-      setlocale(LC_NUMERIC, "");
+      setlocale( LC_NUMERIC, "" );
 
       QVariant v = exp.evaluate();
       QCOMPARE( v.toDouble(), 5.79 );

@@ -22,6 +22,8 @@
 
 #include "qgsconfig.h"
 
+#include <ogr_api.h>
+
 // Version constants
 //
 
@@ -37,6 +39,12 @@ const int QGis::QGIS_VERSION_INT = VERSION_INT;
 
 // Release name
 const char* QGis::QGIS_RELEASE_NAME = RELEASE_NAME;
+
+#if GDAL_VERSION_NUM > 1800
+const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
+#else
+const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+#endif
 
 const char* QGis::qgisVectorGeometryType[] =
 {

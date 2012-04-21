@@ -42,15 +42,15 @@ QString QgsRenderChecker::controlImagePath() const
 {
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myControlImageDir = myDataDir + QDir::separator() + "control_images"
-       + QDir::separator() ;
+                              + QDir::separator() ;
   return myControlImageDir;
 }
 
-void QgsRenderChecker::setControlName(const QString theName)
+void QgsRenderChecker::setControlName( const QString theName )
 {
   mControlName = theName;
   mExpectedImageFile = controlImagePath() + theName + QDir::separator()
-                    + theName + ".png";
+                       + theName + ".png";
 }
 
 QString QgsRenderChecker::imageToHash( QString theImageFile )
@@ -59,60 +59,60 @@ QString QgsRenderChecker::imageToHash( QString theImageFile )
   myImage.load( theImageFile );
   QByteArray myByteArray;
   QBuffer myBuffer( &myByteArray );
-  myImage.save(&myBuffer, "PNG");
+  myImage.save( &myBuffer, "PNG" );
   QString myImageString = QString::fromUtf8( myByteArray.toBase64().data() );
   QCryptographicHash myHash( QCryptographicHash::Md5 );
-  myHash.addData(myImageString.toUtf8());
+  myHash.addData( myImageString.toUtf8() );
   return myHash.result().toHex().constData();
 }
 
 bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
 {
   QString myControlImageDir = controlImagePath() + mControlName
-      + QDir::separator();
-  QDir myDirectory = QDir(myControlImageDir);
+                              + QDir::separator();
+  QDir myDirectory = QDir( myControlImageDir );
   QStringList myList;
   QString myFilename = "*";
-  myList = myDirectory.entryList(QStringList(myFilename),
-                               QDir::Files | QDir::NoSymLinks);
+  myList = myDirectory.entryList( QStringList( myFilename ),
+                                  QDir::Files | QDir::NoSymLinks );
   //remove the control file from teh list as the anomalies are
   //all files except the control file
-  myList.removeAt(myList.indexOf(mExpectedImageFile));
+  myList.removeAt( myList.indexOf( mExpectedImageFile ) );
 
   QString myImageHash = imageToHash( theDiffImageFile );
 
 
-  for (int i = 0; i < myList.size(); ++i)
+  for ( int i = 0; i < myList.size(); ++i )
   {
-    QString myFile = myList.at(i);
+    QString myFile = myList.at( i );
     mReport += "<tr><td colspan=3>"
-        "Checking if " + myFile + " is a known anomaly.";
+               "Checking if " + myFile + " is a known anomaly.";
     mReport += "</td></tr>";
     QString myAnomalyHash = imageToHash( controlImagePath() + mControlName
                                          + QDir::separator() + myFile );
     QString myHashMessage = QString(
-          "Checking if anomaly %1 (hash %2)")
-          .arg( myFile )
-          .arg( myAnomalyHash );
+                              "Checking if anomaly %1 (hash %2)" )
+                            .arg( myFile )
+                            .arg( myAnomalyHash );
     myHashMessage += QString( " matches %1 (hash %2)" )
-          .arg( theDiffImageFile )
-          .arg( myImageHash );
+                     .arg( theDiffImageFile )
+                     .arg( myImageHash );
     //foo CDash
     QString myMeasureMessage = "<DartMeasurement name=\"Anomoly check"
-              "\" type=\"text/text\">" +  myHashMessage +
-              "</DartMeasurement>";
+                               "\" type=\"text/text\">" +  myHashMessage +
+                               "</DartMeasurement>";
     qDebug() << myMeasureMessage;
     mReport += "<tr><td colspan=3>" + myHashMessage + "</td></tr>";
     if ( myImageHash == myAnomalyHash )
     {
       mReport += "<tr><td colspan=3>"
-          "Anomaly found! " + myFile;
+                 "Anomaly found! " + myFile;
       mReport += "</td></tr>";
       return true;
     }
   }
   mReport += "<tr><td colspan=3>"
-      "No anomaly found! ";
+             "No anomaly found! ";
   mReport += "</td></tr>";
   return false;
 }
@@ -146,7 +146,7 @@ bool QgsRenderChecker::runTest( QString theTestName,
   mpMapRenderer->setOutputSize( QSize(
                                   myExpectedImage.width(),
                                   myExpectedImage.height() ),
-                                  myExpectedImage.logicalDpiX());
+                                myExpectedImage.logicalDpiX() );
   QTime myTime;
   myTime.start();
   mpMapRenderer->render( &myPainter );
@@ -157,7 +157,7 @@ bool QgsRenderChecker::runTest( QString theTestName,
   // visual assessment if needed
   //
   mRenderedImageFile = QDir::tempPath() + QDir::separator() +
-      theTestName + "_result.png";
+                       theTestName + "_result.png";
   myImage.save( mRenderedImageFile, "PNG", 100 );
   return compareImages( theTestName, theMismatchCount );
 
@@ -194,8 +194,8 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
   QString myDiffImageFile = QDir::tempPath() + QDir::separator() +
-      QDir::separator()  +
-      theTestName + "_result_diff.png";
+                            QDir::separator()  +
+                            theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
   //
@@ -233,12 +233,12 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   // To get the images into CDash
   //
   QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + theTestName + "\""
-              " type=\"image/png\">" + mRenderedImageFile +
-              "</DartMeasurementFile>"
-              "<DartMeasurementFile name=\"Expected Image " + theTestName + "\" type=\"image/png\">" +
-              mExpectedImageFile + "</DartMeasurementFile>"
-              "<DartMeasurementFile name=\"Difference Image " + theTestName + "\" type=\"image/png\">" +
-              myDiffImageFile + "</DartMeasurementFile>";
+                          " type=\"image/png\">" + mRenderedImageFile +
+                          "</DartMeasurementFile>"
+                          "<DartMeasurementFile name=\"Expected Image " + theTestName + "\" type=\"image/png\">" +
+                          mExpectedImageFile + "</DartMeasurementFile>"
+                          "<DartMeasurementFile name=\"Difference Image " + theTestName + "\" type=\"image/png\">" +
+                          myDiffImageFile + "</DartMeasurementFile>";
   qDebug( ) << myDashMessage;
 
   //
@@ -301,10 +301,10 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   // And send it to CDash
   //
   myDashMessage = "<DartMeasurement name=\"Mismatch Count "
-             "\" type=\"numeric/integer\">" +
-      QString::number( mMismatchCount ) + "/" +
-      QString::number( mMatchTarget ) +
-      "</DartMeasurement>";
+                  "\" type=\"numeric/integer\">" +
+                  QString::number( mMismatchCount ) + "/" +
+                  QString::number( mMatchTarget ) +
+                  "</DartMeasurement>";
   qDebug( ) << myDashMessage;
 
   bool myAnomalyMatchFlag = isKnownAnomaly( myDiffImageFile );
@@ -322,16 +322,16 @@ bool QgsRenderChecker::compareImages( QString theTestName,
     mReport += "<tr><td colspan=3>"
                "</td></tr>";
     QString myMeasureMessage = "<DartMeasurement name=\"No Anomalies Match"
-              "\" type=\"text/text\">" +  myMessage +
-              " If you feel the difference image should be considered an anomaly "
-              "you can do something like this\n"
-              "cp " + myDiffImageFile  + "../tests/testdata/control_images/" + theTestName + 
-              "/<imagename>.png"
-              "</DartMeasurement>";
+                               "\" type=\"text/text\">" +  myMessage +
+                               " If you feel the difference image should be considered an anomaly "
+                               "you can do something like this\n"
+                               "cp " + myDiffImageFile  + "../tests/testdata/control_images/" + theTestName +
+                               "/<imagename>.png"
+                               "</DartMeasurement>";
     qDebug() << myMeasureMessage;
   }
 
-  if ( mMismatchCount <= theMismatchCount)
+  if ( mMismatchCount <= theMismatchCount )
   {
     mReport += "<tr><td colspan = 3>\n";
     mReport += "Test image and result image for " + theTestName + " are matched<br>";

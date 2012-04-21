@@ -19,6 +19,12 @@ endif
 
 DEB_BUILD_NAME ?= $(DISTRIBUTION)-$(DEB_BUILD_ARCH)
 
+ifeq (,$(DISPLAY))
+TESTMAKE=xvfb-run -a -n 1 -s "-screen 0 1280x1024x24 -dpi 96" $(MAKE)
+else
+TESTMAKE=$(MAKE)
+endif
+
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -113,7 +119,7 @@ build-stamp: debian/build/CMakeCache.txt
 
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Code to run the package test suite - and ignore the outcome for now
-	LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) xvfb-run -a -n 1 -s "-screen 0 1280x1024x24" $(MAKE) -C debian/build $(DEB_TEST_TARGET) || true
+	LD_LIBRARY_PATH=$(PWD)/debian/build/output/lib:$(LD_LIBRARY_PATH) $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET) || true
 else
 	echo Skipping tests.
 endif
