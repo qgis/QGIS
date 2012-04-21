@@ -33,6 +33,7 @@ my $translators= {
     fa => 'Mola Pahnadayan',
     fi => 'Marko Jarvenpaa',
     fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui',
+    gl_ES => 'Xan Vieiro',
     hu => 'Zoltan Siki',
     hr_HR => 'Zoran Jankovic',
     is => 'Thordur Ivarsson',
