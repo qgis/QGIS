@@ -26,6 +26,8 @@
 #include <qgsrasterlayer.h>
 #include <qgsdataitem.h>
 #include "qgsconfig.h"
+#include <qgsrenderer.h>
+#include <qgsuniquevaluerenderer.h>
 
 /** \ingroup UnitTests
  * This is a unit test to verify that zip vector layers work
@@ -41,9 +43,15 @@ class TestZipLayer: public QObject
     int mMaxScanZipSetting;
     int mScanZipSetting;
 
-    bool testPassthruVector( QString myFileName );
-    bool testPassthruRaster( QString myFileName );
+    // get map layer using Passthru
+    QgsMapLayer * getLayer( QString myPath, QString myName, QString myProviderKey );
+    bool testZipItemPassthru( QString myFileName, QString myProviderKey );
+    // get map layer using QgsZipItem (only 1 child)
+    QgsMapLayer * getZipLayer( QString myPath, QString myName );
+    // test item(s) in zip item (supply name or test all)
     bool testZipItem( QString myFileName, QString myChildName );
+    // get layer transparency to test for .qml loading
+    int getLayerTransparency( QString myFileName, QString myProviderKey, int myScanZipSetting = 1 );
 
   private slots:
 
@@ -63,29 +71,57 @@ class TestZipLayer: public QObject
     void testZipItemRaster();
     void testZipItemVector();
     void testZipItemAll();
-
+    // test that styles are loaded from .qml files outside zip files
+    void testZipItemVectorTransparency();
+    void testGipItemVectorTransparency();
+    void testZipItemRasterTransparency();
+    void testGZipItemRasterTransparency();
 };
 
 
-bool TestZipLayer::testPassthruVector( QString myFileName )
+QgsMapLayer *TestZipLayer::getLayer( QString myPath, QString myName, QString myProviderKey )
 {
-  QFileInfo myFileInfo( myFileName );
-  QgsVectorLayer * myVectorLayer;
-  myVectorLayer = new QgsVectorLayer( myFileInfo.filePath(),
-                                      myFileInfo.completeBaseName(), "ogr" );
-  bool ok = myVectorLayer->isValid();
-  delete myVectorLayer;
-  return ok;
+  if ( myName == "" )
+  {
+    QFileInfo myFileInfo( myPath );
+    myName = myFileInfo.completeBaseName();
+  }
+  QgsMapLayer *myLayer = NULL;
+
+  if ( myProviderKey == "ogr" )
+  {
+    myLayer = new QgsVectorLayer( myPath, myName, "ogr" );
+  }
+  else if ( myProviderKey == "gdal" )
+  {
+    myLayer = new QgsRasterLayer( myPath, myName, "gdal" );
+  }
+  // item should not have other provider key, but if it does will return NULL
+
+  return myLayer;
 }
 
-bool TestZipLayer::testPassthruRaster( QString myFileName )
+QgsMapLayer *TestZipLayer::getZipLayer( QString myPath, QString myName )
 {
-  QFileInfo myFileInfo( myFileName );
-  QgsRasterLayer * myRasterLayer;
-  myRasterLayer = new QgsRasterLayer( myFileInfo.filePath(),
-                                      myFileInfo.completeBaseName(), "gdal" );
-  bool ok = myRasterLayer->isValid();
-  delete myRasterLayer;
+  QgsMapLayer *myLayer = NULL;
+  QgsDirectoryItem *dirItem = new QgsDirectoryItem( NULL, "/", "" );
+  QgsDataItem* myItem = QgsZipItem::itemFromPath( dirItem, myPath, myName );
+  if ( myItem )
+  {
+    QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem*>( myItem );
+    if ( layerItem )
+      myLayer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
+  }
+  delete dirItem;
+  return myLayer;
+}
+
+bool TestZipLayer::testZipItemPassthru( QString myFileName, QString myProviderKey )
+{
+  QgsMapLayer * myLayer = getLayer( myFileName, "", myProviderKey );
+  bool ok = myLayer && myLayer->isValid();
+  if ( myLayer )
+    delete myLayer;
   return ok;
 }
 
@@ -110,33 +146,18 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName = "" )
         QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( layerItem->providerKey() ).arg( layerItem->path() ) );
         if ( myChildName == "" || myChildName == item->name() )
         {
-          QgsMapLayer* myLayer = NULL;
-          if ( layerItem->providerKey() == "ogr" )
-          {
-            myLayer = new QgsVectorLayer( item->path(), item->name(), "ogr" );
-          }
-          else if ( layerItem->providerKey() == "gdal" )
-          {
-            myLayer = new QgsRasterLayer( item->path(), item->name(), "gdal" );
-          }
-          else
-          {
-            // item should not have other provider key, but if it does the test will fail
-            ok = false;
-            QWARN( QString( "Invalid provider %1" ).arg( layerItem->providerKey() ).toLocal8Bit().data() );
-            break;
-          }
-          if ( myLayer != NULL )
+          QgsMapLayer* layer = getLayer( layerItem->path(), layerItem->name(), layerItem->providerKey() );
+          if ( layer != NULL )
           {
             // we got a layer, check if it is valid and exit
-            QgsDebugMsg( QString( "valid: %1" ).arg( myLayer->isValid() ) );
-            ok = myLayer->isValid();
-            delete myLayer;
+            // if no child name given in argument, then pass to next one (unless current child is invalid)
+            QgsDebugMsg( QString( "valid: %1" ).arg( layer->isValid() ) );
+            ok = layer->isValid();
+            delete layer;
             if ( ! ok )
             {
-              QWARN( QString( "Invalid item %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
+              QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             }
-            // if no child name given, then pass to next one (unless current child is invalid)
             if ( myChildName == "" )
             {
               if ( ! ok )
@@ -149,14 +170,14 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName = "" )
           }
           else
           {
-            QWARN( QString( "Invalid item %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
+            QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             break;
           }
         }
       }
       else
       {
-        QWARN( QString( "Invalid item %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
+        QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
         break;
       }
     }
@@ -165,6 +186,24 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName = "" )
   return ok;
 }
 
+int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, int myScanZipSetting )
+{
+  int myTransparency = -1;
+  mSettings.setValue( "/qgis/scanZipInBrowser", myScanZipSetting );
+  QgsMapLayer * myLayer = NULL;
+  if ( myScanZipSetting == 1 )
+    myLayer = getLayer( myFileName, "", myProviderKey );
+  else
+    myLayer = getZipLayer( myFileName, "" );
+  if ( myLayer && myLayer->isValid() )
+    myTransparency = myLayer->getTransparency();
+  if ( myLayer )
+    delete myLayer;
+  return myTransparency;
+}
+
+
+// slots
 void TestZipLayer::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -197,7 +236,7 @@ void TestZipLayer::testPassthruVectorZip()
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
     mSettings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( testPassthruVector( mDataDir + "points.zip" ) );
+    QVERIFY( testZipItemPassthru( mDataDir + "points2.zip", "ogr" ) );
   }
 }
 
@@ -206,7 +245,7 @@ void TestZipLayer::testPassthruVectorGzip()
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
     mSettings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( testPassthruVector( mDataDir + "points.geojson.gz" ) );
+    QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
   }
 }
 
@@ -215,7 +254,7 @@ void TestZipLayer::testPassthruRasterZip()
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
     mSettings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( testPassthruRaster( mDataDir + "landsat_b1.zip" ) );
+    QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
   }
 }
 
@@ -224,7 +263,7 @@ void TestZipLayer::testPassthruRasterGzip()
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
     mSettings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( testPassthruRaster( mDataDir + "landsat_b1.tif.gz" ) );
+    QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
   }
 }
 
@@ -266,9 +305,43 @@ void TestZipLayer::testZipItemAll()
   QVERIFY( testZipItem( mDataDir + "testzip.zip", "" ) );
 }
 
+
+void TestZipLayer::testZipItemVectorTransparency()
+{
+  int myTarget = 250;
+  int myTransparency = getLayerTransparency( mDataDir + "points2.zip", "ogr", 1 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  myTransparency = getLayerTransparency( mDataDir + "points2.zip", "ogr", 2 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+}
+
+void TestZipLayer::testGipItemVectorTransparency()
+{
+  int myTarget = 250;
+  int myTransparency = getLayerTransparency( mDataDir + "points3.geojson.gz", "ogr", 1 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  myTransparency = getLayerTransparency( mDataDir + "points3.geojson.gz", "ogr", 2 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+}
+
+void TestZipLayer::testZipItemRasterTransparency()
+{
+  int myTarget = 250;
+  int myTransparency = getLayerTransparency( mDataDir + "landsat_b1.zip", "gdal", 1 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  myTransparency = getLayerTransparency( mDataDir + "landsat_b1.zip", "gdal", 2 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+}
+
+void TestZipLayer::testGZipItemRasterTransparency()
+{
+  int myTarget = 250;
+  int myTransparency = getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 1 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  myTransparency = getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 2 );
+  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+}
+
+
 QTEST_MAIN( TestZipLayer )
 #include "moc_testziplayer.cxx"
-
-
-
-
