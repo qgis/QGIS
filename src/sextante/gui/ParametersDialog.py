@@ -30,8 +30,7 @@ except AttributeError:
 class ParametersDialog(QtGui.QDialog):
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
-        QtGui.QDialog.__init__(self)
-        #self.setModal(False)
+        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.ui = Ui_ParametersDialog()
         self.ui.setupUi(self, alg)
         self.executed = False
