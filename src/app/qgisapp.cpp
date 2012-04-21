@@ -2138,15 +2138,16 @@ void QgisApp::about()
     versionString += "</tr><tr>";
 
     versionString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "Running against Qt" ) + "</td><td>" + qVersion() + "</td>";
+    versionString += "<td>" + tr( "Running against Qt" )  + "</td><td>" + qVersion() + "</td>";
 
     versionString += "</tr><tr>";
 
-    versionString += "<td>" + tr( "GDAL/OGR Version" )  + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
-    versionString += "<td>" + tr( "GEOS Version" )      + "</td><td>" + GEOS_VERSION + "</td>";
+    versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
+    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
 
     versionString += "</tr><tr>";
 
+    versionString += "<td>" + tr( "GEOS Version" ) + "</td><td>" + GEOS_VERSION + "</td>";
     versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
     versionString += PG_VERSION;
@@ -2154,6 +2155,8 @@ void QgisApp::about()
     versionString += tr( "No support." );
 #endif
     versionString += "</td>";
+
+    versionString += "</tr><tr>";
 
     versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
 #ifdef HAVE_SPATIALITE
@@ -2163,12 +2166,11 @@ void QgisApp::about()
 #endif
     versionString += "</td>";
 
-    versionString += "</tr><tr>";
 
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
 
 #ifdef QGISDEBUG
-    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+    versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
     versionString += "</tr></table></div></body></html>";
