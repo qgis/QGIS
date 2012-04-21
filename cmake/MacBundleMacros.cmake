@@ -132,6 +132,11 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
             SET (LIB_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         ENDIF ()
         INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/libqgispython.dylib")
+        # crssync
+        IF (${OSX_HAVE_LOADERPATH})
+            SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+        ENDIF ()
+        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/crssync")
         # GRASS libexec stuff
         IF (EXISTS "${QLIBXDIR}/grass/bin/qgis.g.browser")
            IF (${OSX_HAVE_LOADERPATH})
