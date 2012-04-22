@@ -35,6 +35,7 @@ class AlgorithmProvider():
         '''this is the place where you should add config parameters to SEXTANTE using the SextanteConfig class.
         this method is called when a provider is added to SEXTANTE.
         By default it just adds a setting to activate or deactivate algorithms from the provider'''
+        SextanteConfig.settingIcons[self.getName()] = self.getIcon()
         name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
         SextanteConfig.addSetting(Setting(self.getName(), name, "Activate", True))
 

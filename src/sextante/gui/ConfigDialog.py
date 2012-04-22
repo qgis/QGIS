@@ -50,10 +50,12 @@ class ConfigDialog(QtGui.QDialog):
         for group in settings.keys():
             groupItem = QtGui.QTreeWidgetItem()
             groupItem.setText(0,group)
-            groupItem.setIcon(0,self.groupIcon)
+            icon = SextanteConfig.getGroupIcon(group)
+            groupItem.setIcon(0, icon)
+            #groupItem.setIcon(0,self.groupIcon)
             for setting in settings[group]:
                 if text =="" or text.lower() in setting.description.lower():
-                    settingItem = TreeSettingItem(setting, self.keyIcon)
+                    settingItem = TreeSettingItem(setting, icon)
                     self.items[setting]=settingItem
                     groupItem.addChild(settingItem)
             self.tree.addTopLevelItem(groupItem)

@@ -1,5 +1,6 @@
 from sextante.core.SextanteUtils import SextanteUtils
 import os.path
+from PyQt4 import QtGui
 
 class SextanteConfig():
 
@@ -14,9 +15,12 @@ class SextanteConfig():
     USE_FILENAME_AS_LAYER_NAME = "USE_FILENAME_AS_LAYER_NAME"
 
     settings = {}
+    settingIcons= {}
 
     @staticmethod
     def initialize():
+        icon =  QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
+        SextanteConfig.settingIcons["General"] = icon
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external applications", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", True))
@@ -27,6 +31,17 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
+
+    @staticmethod
+    def setGroupIcon(group, icon):
+        SextanteConfig.settingIcons[group] = icon
+
+    @staticmethod
+    def getGroupIcon(group):
+        if group in SextanteConfig.settingIcons:
+            return SextanteConfig.settingIcons[group]
+        else:
+            return QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
 
     @staticmethod
     def addSetting(setting):
