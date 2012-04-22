@@ -12,7 +12,7 @@ class LasToolsAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
             path = LasToolsUtils.LasToolsPath()
             if path == "":
-                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
+                return "LasTools folder is not configured.\nPlease configure it before running LasTools algorithms."
 
     def addCommonParameters(self):
         self.addParameter(ParameterBoolean(LasToolsAlgorithm.FIRST_ONLY, "Keep first return only", False))

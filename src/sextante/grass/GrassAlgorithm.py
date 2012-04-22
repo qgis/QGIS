@@ -221,13 +221,13 @@ class GrassAlgorithm(GeoAlgorithm):
                 command = "r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\""
                 command += " input="
                 command += out.name
-                command += " output=\"" + filename[:-4] + "\""
+                command += " output=\"" + filename + "\""
                 commands.append(command)
             if isinstance(out, OutputVector):
                 command = "v.out.ogr -e input=" + out.name
                 command += " dsn=\"" + os.path.dirname(out.value) + "\""
                 command += " format=ESRI_Shapefile"
-                command += " olayer=" + os.path.basename(out.value)
+                command += " olayer=" + os.path.basename(out.value)[:-4]
                 command += " type=auto"
                 commands.append(command)
 

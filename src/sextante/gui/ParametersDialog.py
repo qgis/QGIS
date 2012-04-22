@@ -59,7 +59,10 @@ class Ui_ParametersDialog(object):
         self.scrollArea.setWidgetResizable(True)
         dialog.setWindowTitle(self.alg.name)
         self.progressLabel = QtGui.QLabel()
+        self.progressLabel.setText("Processing algorithm...")
+        self.progressLabel.setVisible(False)
         self.progress = QtGui.QProgressBar()
+        self.progress.setVisible(False)
         self.progress.setMinimum(0)
         self.progress.setMaximum(100)
         self.verticalLayout = QtGui.QVBoxLayout(dialog)
@@ -140,6 +143,8 @@ class Ui_ParametersDialog(object):
                     if button.isChecked():
                         iterateParam = buttons.keys()[i]
                         break
+                self.progress.setVisible(True)
+                self.progressLabel.setVisible(True)
                 if iterateParam:
                     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                     AlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
@@ -172,6 +177,7 @@ class Ui_ParametersDialog(object):
 
     def setPercentage(self, i):
         self.progress.setValue(i)
+
 
     def setText(self, text):
         self.progressLabel.setText(text)
