@@ -157,7 +157,7 @@ Q_DECL_DEPRECATED
 #endif
 const QString GEOWkt = GEOWKT;
 /** PROJ4 string that represents a geographic coord sys */
-extern const QString GEOPROJ4;
+extern CORE_EXPORT const QString GEOPROJ4;
 /** Magic number for a geographic coord sys in POSTGIS SRID */
 const long GEOSRID = 4326;
 /** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
