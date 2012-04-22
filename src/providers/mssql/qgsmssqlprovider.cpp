@@ -73,6 +73,8 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
   mUseEstimatedMetadata = anUri.useEstimatedMetadata();
 
+  mSqlWhereClause = anUri.sql();
+
   mDatabase = GetDatabase( anUri.service(), anUri.host(), anUri.database(), anUri.username(), anUri.password() );
 
   if ( !OpenDatabase( mDatabase ) )
@@ -470,6 +472,11 @@ bool QgsMssqlProvider::featureAtId( QgsFeatureId featureId,
   // set attribute filter
   query += QString( " where [%1] = %2" ).arg( mFidColName, QString::number( featureId ) );
 
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    query += " and (" + mSqlWhereClause + ")";
+  }
+
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
   // issue the sql query
@@ -594,6 +601,12 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
     mStatement += QString( " where [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mGeometryColName, mGeometryColType, r, QString::number( mSRId ) );
   }
+
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    mStatement += " and (" + mSqlWhereClause + ")";
+  }
+
   mFetchGeom = fetchGeometry;
   mAttributesToFetch = fetchAttributes;
   // issue the sql query
@@ -642,6 +655,11 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
     statement += QString( " from [%1]" ).arg( mTableName );
   else
     statement += QString( " from [%1].[%2]" ).arg( mSchemaName, mTableName );
+
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    statement += " where (" + mSqlWhereClause + ")";
+  }
 
   mQuery = QSqlQuery( mDatabase );
   mQuery.setForwardOnly( true );
@@ -1287,13 +1305,58 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
   return mCrs;
 }
 
+QString QgsMssqlProvider::subsetString()
+{
+  return mSqlWhereClause;
+}
 
 QString  QgsMssqlProvider::name() const
 {
   return TEXT_PROVIDER_KEY;
 } // ::name()
 
+bool QgsMssqlProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+{
+  QString prevWhere = mSqlWhereClause;
 
+  mSqlWhereClause = theSQL.trimmed();
+
+  QString sql = QString( "select count(*) from " );
+
+  if ( !mSchemaName.isEmpty() )
+    mStatement += "[" + mSchemaName + "].";
+
+  sql += "[" + mTableName + "]";
+
+  if ( !mSqlWhereClause.isEmpty() )
+  {
+    sql += QString( " where %1" ).arg( mSqlWhereClause );
+  }
+
+  QSqlQuery query = QSqlQuery( mDatabase );
+  query.setForwardOnly( true );
+  if ( !query.exec( sql ) )
+  {
+    pushError( query.lastError().text() );
+    mSqlWhereClause = prevWhere;
+    return false;
+  }
+
+  if ( query.isActive() )
+  {
+    if ( query.next() )
+      mNumberFeatures = query.value( 0 ).toInt();
+  }
+
+  QgsDataSourceURI anUri = QgsDataSourceURI( dataSourceUri() );
+  anUri.setSql( mSqlWhereClause );
+
+  setDataSourceUri( anUri.uri() );
+
+  mExtent.setMinimal();
+
+  return true;
+}
 
 QString  QgsMssqlProvider::description() const
 {
