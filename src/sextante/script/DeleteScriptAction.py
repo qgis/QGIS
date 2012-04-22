@@ -1,6 +1,7 @@
 from sextante.script.ScriptAlgorithm import ScriptAlgorithm
 from sextante.gui.ContextAction import ContextAction
 import os
+from PyQt4 import QtGui
 
 class DeleteScriptAction(ContextAction):
 
@@ -11,5 +12,9 @@ class DeleteScriptAction(ContextAction):
         return isinstance(self.alg, ScriptAlgorithm)
 
     def execute(self, alg):
-        os.remove(self.alg.descriptionFile)
-        self.toolbox.updateTree()
+        reply = QtGui.QMessageBox.question(None, 'Confirmation',
+                            "Are you sure you want to delete this script?", QtGui.QMessageBox.Yes |
+                            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+        if reply == QtGui.QMessageBox.Yes:
+            os.remove(self.alg.descriptionFile)
+            self.toolbox.updateTree()
