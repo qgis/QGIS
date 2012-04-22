@@ -332,7 +332,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
     bool ok = geomType != QGis::WKBUnknown;
 
-    if ( ok && geomType != QGis::NoGeometry )
+    if ( ok && geomType != QGis::WKBNoGeometry )
       idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();

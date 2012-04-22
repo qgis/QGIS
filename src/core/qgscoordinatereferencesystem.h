@@ -210,8 +210,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *  Internally it will use OGR isSameCRS() or isSameGeoCRS() methods as appropriate.
      *  Additionally logic may also be applied if the result from the OGR methods
      *  is inconclusive.
+     * @deprecated in 1.8 as the same proj.4 string not necessarily means the same CRS
      */
-    bool equals( QString theProj4String );
+    Q_DECL_DEPRECATED bool equals( QString theProj4String );
 
     /*! Restores state from the given Dom node.
     * @param theNode The node from which state will be restored

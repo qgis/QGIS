@@ -950,7 +950,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
     {
       QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
       QString myProj4String = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
-      if ( equals( myProj4String ) )
+      if ( toProj4() == myProj4String.trimmed() )
       {
         QgsDebugMsg( "-------> MATCH FOUND in srs.db srsid: " + mySrsId );
         // close the sqlite3 statement
@@ -989,7 +989,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
     {
       QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
       QString myProj4String = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) );
-      if ( equals( myProj4String ) )
+      if ( toProj4() == myProj4String.trimmed() )
       {
         QgsDebugMsg( "-------> MATCH FOUND in user qgis.db srsid: " + mySrsId );
         // close the sqlite3 statement
