@@ -270,13 +270,19 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
     if ( mFilePath.left( 8 ) != "/vsizip/" )
+    {
       mFilePath = "/vsizip/" + mFilePath;
+      setDataSourceUri( mFilePath );
+    }
     QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
   else if ( mFilePath.right( 3 ) == ".gz" )
   {
     if ( mFilePath.left( 9 ) != "/vsigzip/" )
+    {
       mFilePath = "/vsigzip/" + mFilePath;
+      setDataSourceUri( mFilePath );
+    }
     QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
 

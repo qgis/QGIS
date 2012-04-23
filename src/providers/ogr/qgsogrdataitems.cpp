@@ -228,16 +228,25 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   QgsDebugMsg( "thePath: " + thePath );
 
-  QFileInfo info( thePath );
-  QString name = info.fileName();
+  // zip settings + info
   QSettings settings;
   int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
+  bool is_vsizip = ( thePath.left( 8 ) == "/vsizip/" ) || ( thePath.right( 4 ) == ".zip" ) ;
+  bool is_vsigzip = ( thePath.left( 9 ) == "/vsigzip/" ) || ( thePath.right( 3 ) == ".gz" ) ;
 
-  // allow normal files or VSIFILE items to pass
-  if ( ! info.isFile() &&
-       thePath.left( 8 ) != "/vsizip/" &&
-       thePath.left( 9 ) != "/vsigzip/" )
+  // get suffix, removing .gz if present
+  QString tmpPath = thePath; //path used for testing, not for layer creation
+  if ( is_vsigzip )
+    tmpPath.chop( 3 );
+  QFileInfo info( tmpPath );
+  QString suffix = info.suffix().toLower();
+  // extract basename with extension
+  info.setFile( thePath );
+  QString name = info.fileName();
+
+  // allow only normal files or VSIFILE items to continue
+  if ( ! info.isFile() && ! is_vsizip && ! is_vsigzip )
     return 0;
 
   QStringList myExtensions = fileExtensions();
@@ -281,44 +290,41 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       return 0;
   }
 
-  // vsifile : depending on options we should just add the item without testing
-  if ( thePath.left( 8 ) == "/vsizip/" )
+  // add /vsizip/ or /vsigzip/ to path if file extension is .zip or .gz
+  if ( is_vsigzip )
   {
-    // if this is a /vsigzip/path.zip/file_inside_zip change the name
-    if ( thePath.left( 8 ) == "/vsizip/" &&
-         thePath != "/vsizip/" + parentItem->path() )
+    if ( thePath.left( 9 ) != "/vsigzip/" )
+      thePath = "/vsigzip/" + thePath;
+  }
+  else if ( is_vsizip )
+  {
+    if ( thePath.left( 8 ) != "/vsizip/" )
+      thePath = "/vsizip/" + thePath;
+    // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
+    if ( thePath != "/vsizip/" + parentItem->path() )
     {
       name = thePath;
       name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
     }
-
-    // if setting== 2 (Basic scan), return an item without testing
-    if ( scanZipSetting == 2 )
-    {
-      QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
-      if ( item )
-        return item;
-    }
   }
 
-  // if scan items == "Check extension", add item here without trying to open
-  if ( scanItemsSetting == 1 )
+  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
+  if ( is_vsizip && scanZipSetting == 2 )
   {
+    QStringList sublayers;
+    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
     QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
     if ( item )
       return item;
   }
 
-  // try to open using VSIFileHandler
-  if ( thePath.right( 4 ) == ".zip" )
+  // if scan items == "Check extension", add item here without trying to open
+  // unless item is /vsizip
+  if ( scanItemsSetting == 1 && !is_vsizip  && !is_vsigzip )
   {
-    if ( thePath.left( 8 ) != "/vsizip/" )
-      thePath = "/vsizip/" + thePath;
-  }
-  else if ( thePath.right( 3 ) == ".gz" )
-  {
-    if ( thePath.left( 9 ) != "/vsigzip/" )
-      thePath = "/vsigzip/" + thePath;
+    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
+    if ( item )
+      return item;
   }
 
   // test that file is valid with OGR
