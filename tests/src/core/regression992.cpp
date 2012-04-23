@@ -33,6 +33,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
+#include <qgsproviderregistry.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -63,10 +64,10 @@ class Regression992: public QObject
 void Regression992::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::init( INSTALL_PREFIX );
-  QgsApplication::initQgis();
+  QgsApplication::init();
   QgsApplication::showSettings();
+  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
+
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CMakeLists.txt
@@ -104,6 +105,9 @@ void Regression992::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
+
+  delete mpRasterLayer;
+  delete mpMapRenderer;
 }
 
 void Regression992::regression992()
