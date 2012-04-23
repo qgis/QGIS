@@ -1,3 +1,4 @@
+ValidateSVMImagesClassifier
 otbcli_ValidateSVMImagesClassifier
 Validate SVM Images Classifier
 Learning

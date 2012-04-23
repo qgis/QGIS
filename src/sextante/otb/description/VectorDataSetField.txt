@@ -1,3 +1,4 @@
+VectorDataSetField
 otbcli_VectorDataSetField
 Vector data set field
 Vector Data Manipulation

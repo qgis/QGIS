@@ -1,3 +1,4 @@
+PixelValue
 otbcli_PixelValue
 Pixel Value
 Miscellaneous

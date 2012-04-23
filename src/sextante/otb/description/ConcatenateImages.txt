@@ -1,3 +1,4 @@
+ConcatenateImages
 otbcli_ConcatenateImages
 Images Concatenation
 Image Manipulation

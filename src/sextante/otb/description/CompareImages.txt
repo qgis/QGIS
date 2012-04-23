@@ -1,3 +1,4 @@
+CompareImages
 otbcli_CompareImages
 Images comparaison
 Miscellaneous

@@ -1,3 +1,4 @@
+ReadImageInfo
 otbcli_ReadImageInfo
 Read image information
 Image Manipulation

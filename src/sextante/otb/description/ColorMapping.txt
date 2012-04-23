@@ -1,3 +1,4 @@
+ColorMapping
 otbcli_ColorMapping
 Color Mapping
 Learning

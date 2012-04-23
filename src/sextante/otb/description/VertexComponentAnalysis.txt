@@ -1,3 +1,4 @@
+VertexComponentAnalysis
 otbcli_VertexComponentAnalysis
 Vertex Component Analysis
 Miscellaneous

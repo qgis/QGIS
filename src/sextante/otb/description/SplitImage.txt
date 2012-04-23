@@ -1,3 +1,4 @@
+SplitImage
 otbcli_SplitImage
 Split Image
 Image Manipulation

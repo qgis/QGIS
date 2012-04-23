@@ -1,3 +1,4 @@
+LineSegmentDetection
 otbcli_LineSegmentDetection
 Line segment detection
 Feature Extraction

@@ -1,3 +1,4 @@
+HooverCompareSegmentation
 otbcli_HooverCompareSegmentation
 Hoover compare segmentation
 Segmentation

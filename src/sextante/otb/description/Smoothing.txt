@@ -1,3 +1,4 @@
+Smoothing
 otbcli_Smoothing
 Smoothing
 Image Filtering

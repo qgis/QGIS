@@ -1,3 +1,4 @@
+KMeansClassification
 otbcli_KMeansClassification
 Unsupervised KMeans image classification
 Learning

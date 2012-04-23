@@ -1,3 +1,4 @@
+StereoSensorModelToElevationMap
 otbcli_StereoSensorModelToElevationMap
 Stereo sensor model to elevation map
 Stereo

@@ -1,3 +1,4 @@
+RigidTransformResample
 otbcli_RigidTransformResample
 Image resampling with a rigid transform
 Geometry

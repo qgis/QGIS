@@ -1,3 +1,4 @@
+MultivariateAlterationDetector
 otbcli_MultivariateAlterationDetector
 Multivariate alteration detector
 Feature Extraction

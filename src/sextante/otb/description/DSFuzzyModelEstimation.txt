@@ -1,3 +1,4 @@
+DSFuzzyModelEstimation
 otbcli_DSFuzzyModelEstimation
 Fuzzy Model estimation
 Feature Extraction

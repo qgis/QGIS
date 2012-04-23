@@ -1,3 +1,4 @@
+ComputePolylineFeatureFromImage
 otbcli_ComputePolylineFeatureFromImage
 Compute Polyline Feature From Image
 Feature Extraction

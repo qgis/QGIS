@@ -1,3 +1,4 @@
+Rescale
 otbcli_Rescale
 Rescale Image
 Image Manipulation

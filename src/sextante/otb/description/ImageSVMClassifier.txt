@@ -1,3 +1,4 @@
+ImageSVMClassifier
 otbcli_ImageSVMClassifier
 Image SVM Classification
 Learning

@@ -1,3 +1,4 @@
+FineRegistration
 otbcli_FineRegistration
 Fine Registration
 Stereo

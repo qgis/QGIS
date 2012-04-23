@@ -1,3 +1,4 @@
+MeanShiftSegmentation
 otbcli_MeanShiftSegmentation
 Mean Shift segmentation
 Segmentation

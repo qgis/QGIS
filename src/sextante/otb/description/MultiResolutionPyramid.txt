@@ -1,3 +1,4 @@
+MultiResolutionPyramid
 otbcli_MultiResolutionPyramid
 Multi Resolution Pyramid
 Image Manipulation

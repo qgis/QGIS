@@ -1,3 +1,4 @@
+RadiometricWaterIndices
 otbcli_RadiometricWaterIndices
 Radiometric Water
 Feature Extraction

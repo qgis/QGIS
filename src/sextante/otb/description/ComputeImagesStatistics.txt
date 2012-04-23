@@ -1,3 +1,4 @@
+ComputeImagesStatistics
 otbcli_ComputeImagesStatistics
 Compute Images second order statistics
 Learning

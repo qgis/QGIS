@@ -33,9 +33,17 @@ class OTBAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/otb.png")
 
+    def helpFile(self):
+        folder = os.path.join( OTBUtils.otbDescriptionPath(), 'doc' )
+        if str(folder).strip() != "":
+            helpfile = os.path.join( str(folder), self.appkey + ".html")
+            return helpfile
+        return None
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
+        line = lines.readline().strip("\n").strip()
+        self.appkey = line
         line = lines.readline().strip("\n").strip()
         self.cliName = line
         line = lines.readline().strip("\n").strip()

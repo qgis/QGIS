@@ -21,6 +21,7 @@ def generate_all_app_descriptors( ) :
   for appliname in get_app_list():
     appliIdx = appliIdx+1
     generate_app_descriptor( appliname )
+    #generate_app_doc( appliname )
 
 def generate_app_descriptor( appliname ) :
   print appliname
@@ -30,16 +31,18 @@ def generate_app_descriptor( appliname ) :
   
   out = ""
   
+  # the application key
+  out += appliname + endl
+
   # the executable
   out += "otbcli_" + appliname + endl
 
   # long name
-  # for the moment, long name == short name
   out += convertendl(appInstance.GetDocName()) + endl
   
   # group
   out += get_group(appInstance) + endl
-  
+
   for paramKey in appInstance.GetParametersKeys():
     pdesc =  generate_param_descriptor(appInstance, paramKey) 
     if len(pdesc) > 0:
@@ -47,6 +50,18 @@ def generate_app_descriptor( appliname ) :
   
   with open( os.path.join(outputpath, appliname + '.txt'), 'w' ) as outfile:
     outfile.write(out)
+
+def generate_app_doc( appliname ) :
+  appInstance = otbApplication.Registry.CreateApplication(appliname)
+  appInstance.UpdateParameters() # TODO need this ?
+  html = appInstance.GetHtmlExample()
+  
+  docpath= os.path.join(outputpath, 'doc')
+  if not os.path.exists(docpath):
+      os.makedirs(docpath)
+  
+  with open( os.path.join(docpath, appliname + '.html'), 'w' ) as outfile:
+      outfile.write(html)
 
 def get_group( appInstance ) :
     tags = appInstance.GetDocTags()

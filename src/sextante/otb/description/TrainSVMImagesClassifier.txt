@@ -1,3 +1,4 @@
+TrainSVMImagesClassifier
 otbcli_TrainSVMImagesClassifier
 Train SVM classifier from multiple images
 Learning

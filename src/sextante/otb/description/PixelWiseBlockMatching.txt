@@ -1,3 +1,4 @@
+PixelWiseBlockMatching
 otbcli_PixelWiseBlockMatching
  Pixel-wise Block-Matching
 Stereo

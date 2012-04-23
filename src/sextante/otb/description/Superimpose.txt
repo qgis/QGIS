@@ -1,3 +1,4 @@
+Superimpose
 otbcli_Superimpose
 Superimpose sensor
 Geometry

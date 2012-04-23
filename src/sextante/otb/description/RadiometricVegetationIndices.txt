@@ -1,3 +1,4 @@
+RadiometricVegetationIndices
 otbcli_RadiometricVegetationIndices
 Radiometric Vegetation
 Feature Extraction

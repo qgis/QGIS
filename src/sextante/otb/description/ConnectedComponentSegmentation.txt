@@ -1,3 +1,4 @@
+ConnectedComponentSegmentation
 otbcli_ConnectedComponentSegmentation
 Connected Component Segmentation
 Segmentation
