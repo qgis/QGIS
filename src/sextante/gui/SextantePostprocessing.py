@@ -9,12 +9,11 @@ from sextante.outputs.OutputHTML import OutputHTML
 from PyQt4.QtGui import *
 from sextante.core.SextanteConfig import SextanteConfig
 import os
-from sextante.outputs.OutputFile import OutputFile
 class SextantePostprocessing:
 
     @staticmethod
-    def handleAlgorithmResults(alg):
-        showResults = False;
+    def handleAlgorithmResults(alg, showResults = True):
+        htmlResults = False;
         for out in alg.outputs:
             if out.hidden:
                 continue
@@ -29,7 +28,7 @@ class SextantePostprocessing:
                     QMessageBox.critical(None, "Error", str(e))
             elif isinstance(out, OutputHTML):
                 SextanteResults.addResult(out.description, out.value)
-                showResults = True
-        if showResults:
+                htmlResults = True
+        if showResults and htmlResults:
             dlg = ResultsDialog()
             dlg.exec_()

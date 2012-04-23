@@ -179,22 +179,23 @@ class ModelerDialog(QtGui.QDialog):
             filename = self.alg.descriptionFile
         else:
             filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)"))
-            if not filename.endswith(".model"):
-                filename += ".model"
-            self.alg.descriptionFile = filename
+            if filename:
+                if not filename.endswith(".model"):
+                    filename += ".model"
+                    self.alg.descriptionFile = filename
         if filename:
             text = self.alg.serialize()
             fout = open(filename, "w")
             fout.write(text)
             fout.close()
             self.update = True
-
-        #if help strings were defined before saving the model for the first time, we do it here
-        if self.help:
-            f = open(self.alg.descriptionFile + ".help", "wb")
-            pickle.dump(self.help, f)
-            f.close()
-            self.help = None
+            #if help strings were defined before saving the model for the first time, we do it here
+            if self.help:
+                f = open(self.alg.descriptionFile + ".help", "wb")
+                pickle.dump(self.help, f)
+                f.close()
+                self.help = None
+            QtGui.QMessageBox.information(self, "Model saving", "Model was correctly saved.")
 
     def openModel(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)")

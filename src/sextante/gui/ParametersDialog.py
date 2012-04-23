@@ -135,6 +135,7 @@ class Ui_ParametersDialog(object):
     def accept(self):
         try:
             if self.setParamValues():
+                keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
                 buttons = self.paramTable.iterateButtons
                 iterateParam = None
@@ -154,10 +155,10 @@ class Ui_ParametersDialog(object):
                     ret = AlgorithmExecutor.runalg(self.alg, self)
                     QApplication.restoreOverrideCursor()
                     if ret:
-                        SextantePostprocessing.handleAlgorithmResults(self.alg)
+                        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
 
                 self.dialog.executed = True
-                if not SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN):
+                if not keepOpen:
                     self.dialog.close()
                 else:
                     self.progressLabel.setText("")

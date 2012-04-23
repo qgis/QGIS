@@ -57,20 +57,21 @@ class EditScriptDialog(QtGui.QDialog):
             filename = self.alg.descriptionFile
         else:
             filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
+
         if filename:
             text = self.text.toPlainText()
             fout = open(filename, "w")
             fout.write(text)
             fout.close()
             self.update = True
-            self.close()
-
-        #if help strings were defined before saving the model for the first time, we do it here
-        if self.help:
-            f = open(self.alg.descriptionFile + ".help", "wb")
-            pickle.dump(self.help, f)
-            f.close()
-            self.help = None
+            #if help strings were defined before saving the model for the first time, we do it here
+            if self.help:
+                f = open(self.alg.descriptionFile + ".help", "wb")
+                pickle.dump(self.help, f)
+                f.close()
+                self.help = None
+            #self.close()
+            QtGui.QMessageBox.information(self, "Script saving", "Script was correctly saved.")
 
     def cancelPressed(self):
         self.update = False

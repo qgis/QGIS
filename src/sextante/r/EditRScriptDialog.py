@@ -3,6 +3,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.r.RUtils import RUtils
 import pickle
+from sextante.gui.HelpEditionDialog import HelpEditionDialog
 
 class EditRScriptDialog(QtGui.QDialog):
     def __init__(self, alg):
@@ -51,14 +52,14 @@ class EditRScriptDialog(QtGui.QDialog):
             fout.write(text)
             fout.close()
             self.update = True
-            self.close()
-
-        #if help strings were defined before saving the model for the first time, we do it here
-        if self.help:
-            f = open(self.alg.descriptionFile + ".help", "wb")
-            pickle.dump(self.help, f)
-            f.close()
-            self.help = None
+            #if help strings were defined before saving the model for the first time, we do it here
+            if self.help:
+                f = open(self.alg.descriptionFile + ".help", "wb")
+                pickle.dump(self.help, f)
+                f.close()
+                self.help = None
+            QtGui.QMessageBox.information(self, "Script saving", "Script was correctly saved.")
+            #self.close()
 
     def cancelPressed(self):
         self.update = False

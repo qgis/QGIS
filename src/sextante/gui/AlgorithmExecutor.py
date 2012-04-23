@@ -1,5 +1,7 @@
 from PyQt4.QtGui import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.QGisLayers import QGisLayers
+from sextante.core.SextanteUtils import SextanteUtils
 
 class AlgorithmExecutor:
 
@@ -16,8 +18,44 @@ class AlgorithmExecutor:
             return False
 
     @staticmethod
-    def runalgIterating(alg,paramtoIter,progress):
-        return False
+    def runalgIterating(alg,paramToIter,progress):
+        #generate all single-feature layers
+        settings = QSettings()
+        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        layerfile = alg.getParameterFromName(paramToIter)
+        layer = QGisLayers.getObjectFromUri(layerfile, False)
+        provider = layer.dataProvider()
+        allAttrs = provider.attributeIndexes()
+        provider.select( allAttrs )
+        feat = QgsFeature()
+        filelist = []
+        outputs = {}
+        while provider.nextFeature(feat):
+            output = SextanteUtils.getTempFilename("shp")
+            filelist.append(output)
+            writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+            writer.addFeature(feat)
+            del writer
+        #now run all the algorithms
+        for out in alg.outputs:
+            output[out.name] = out.value
+
+        i = 1
+        for f in filelist:
+            alg.setOutputValue(paramToIter, f)
+            for out in alg.outputs:
+                filename = outputs[out.name]
+                if filename:
+                    filename = filename[:filename.rfind(".")] + "_" + str(i) +  filename[filename.rfind("."):]
+                out.value = filename
+            if AlgorithmExecutor.runalg(alg, SilentProgress()):
+                progress.setValue(i/len(f))
+                i+=1
+            else:
+                return False;
+
+        return True
+
 
 class SilentProgress():
 

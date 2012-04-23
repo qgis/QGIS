@@ -144,7 +144,7 @@ class GeoAlgorithm:
     def setOutputCRSFromInputLayers(self):
         layers = QGisLayers.getAllLayers()
         for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector ,ParameterMultipleInput)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 inputlayers = param.value.split(";")
                 for inputlayer in inputlayers:
                     for layer in layers:
@@ -166,7 +166,7 @@ class GeoAlgorithm:
     def setParameterValue(self, paramName, value):
         for param in self.parameters:
             if param.name == paramName:
-                param.value = value
+                return param.setValue(value)
 
     def setOutputValue(self, outputName, value):
         for out in self.outputs:
