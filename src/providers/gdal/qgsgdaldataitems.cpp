@@ -116,9 +116,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
 
   // allow normal files or VSIFILE items to pass
-  if ( ! info.isFile() &&
-       thePath.left( 8 ) != "/vsizip/" &&
-       thePath.left( 9 ) != "/vsigzip/" )
+  if ( !info.isFile() &&
+       !thePath.startsWith( "/vsizip/" ) &&
+       !thePath.startsWith( "/vsigzip/" ) )
     return 0;
 
   // get supported extensions
@@ -131,16 +131,16 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // skip *.aux.xml files (GDAL auxilary metadata files)
   // unless that extension is in the list (*.xml might be though)
-  if ( thePath.right( 8 ).toLower() == ".aux.xml" &&
-       extensions.indexOf( "aux.xml" ) < 0 )
+  if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
+       ! extensions.contains( "aux.xml" ) )
     return 0;
 
   // skip .tar.gz files
-  if ( thePath.right( 7 ) == ".tar.gz" )
+  if ( thePath.endsWith( ".tar.gz", Qt::CaseInsensitive ) )
     return 0;
 
   // Filter files by extension
-  if ( extensions.indexOf( info.suffix().toLower() ) < 0 )
+  if ( !extensions.contains( info.suffix().toLower() ) )
   {
     bool matches = false;
     foreach( QString wildcard, wildcards )
@@ -157,7 +157,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   }
 
   // vsifile : depending on options we should just add the item without testing
-  if ( thePath.left( 8 ) == "/vsizip/" )
+  if ( thePath.startsWith( "/vsizip/" ) )
   {
     // if this is a /vsigzip/path.zip/file_inside_zip change the name
     if ( thePath != "/vsizip/" + parentItem->path() )
@@ -189,14 +189,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
 
   // try to open using VSIFileHandler
-  if ( thePath.right( 4 ) == ".zip" )
+  if ( thePath.endsWith( ".zip", Qt::CaseInsensitive ) )
   {
-    if ( thePath.left( 8 ) != "/vsizip/" )
+    if ( !thePath.startsWith( "/vsizip/" ) )
       thePath = "/vsizip/" + thePath;
   }
-  else if ( thePath.right( 3 ) == ".gz" )
+  else if ( thePath.endsWith( ".gz", Qt::CaseInsensitive ) )
   {
-    if ( thePath.left( 9 ) != "/vsigzip/" )
+    if ( !thePath.startsWith( "/vsigzip/" ) )
       thePath = "/vsigzip/" + thePath;
   }
 

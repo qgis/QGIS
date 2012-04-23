@@ -264,18 +264,18 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  if ( mFilePath.right( 4 ) == ".zip" )
+  if ( mFilePath.endsWith( ".zip", Qt::CaseInsensitive ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
-    if ( mFilePath.left( 8 ) != "/vsizip/" )
+    if ( !mFilePath.startsWith( "/vsizip/" ) )
       mFilePath = "/vsizip/" + mFilePath;
     QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
-  else if ( mFilePath.right( 3 ) == ".gz" )
+  else if ( mFilePath.endsWith( ".gz", Qt::CaseInsensitive ) )
   {
-    if ( mFilePath.left( 9 ) != "/vsigzip/" )
+    if ( !mFilePath.startsWith( "/vsigzip/" ) )
       mFilePath = "/vsigzip/" + mFilePath;
     QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
@@ -287,12 +287,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
 
   // first try to open in update mode (unless specified otherwise)
-  if ( ! openReadOnly )
+  if ( !openReadOnly )
     ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
 
   if ( !ogrDataSource )
   {
-
     QgsDebugMsg( "OGR failed to opened in update mode, trying in read-only mode" );
 
     // try to open read-only
@@ -305,7 +304,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   if ( ogrDataSource )
   {
-
     QgsDebugMsg( "OGR opened using Driver " + QString( OGR_Dr_GetName( ogrDriver ) ) );
 
     ogrDriverName = OGR_Dr_GetName( ogrDriver );
