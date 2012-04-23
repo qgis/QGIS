@@ -10,6 +10,8 @@ from sextante.modeler.ModelerScene import ModelerScene
 import copy
 from sextante.modeler.Providers import Providers
 from sextante.script.ScriptUtils import ScriptUtils
+from sextante.gui.HelpEditionDialog import HelpEditionDialog
+import pickle
 
 class ModelerDialog(QtGui.QDialog):
     def __init__(self, alg=None):
@@ -28,6 +30,7 @@ class ModelerDialog(QtGui.QDialog):
         else:
             self.alg = ModelerAlgorithm()
         self.alg.setModelerView(self)
+        self.help = None
         self.update = False #indicates whether to update or not the toolbox after closing this dialog
 
     def setupUi(self):
@@ -112,8 +115,12 @@ class ModelerDialog(QtGui.QDialog):
 
         #And the whole layout
         #==========================
+
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+        self.editHelpButton = QtGui.QPushButton()
+        self.editHelpButton.setText("Edit model help")
+        self.buttonBox.addButton(self.editHelpButton, QtGui.QDialogButtonBox.ActionRole)
         self.openButton = QtGui.QPushButton()
         self.openButton.setText("Open")
         self.buttonBox.addButton(self.openButton, QtGui.QDialogButtonBox.ActionRole)
@@ -126,6 +133,7 @@ class ModelerDialog(QtGui.QDialog):
         QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openModel)
         QObject.connect(self.saveButton, QtCore.SIGNAL("clicked()"), self.saveModel)
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        QObject.connect(self.editHelpButton, QtCore.SIGNAL("clicked()"), self.editHelp)
 
         self.globalLayout = QtGui.QVBoxLayout()
         self.globalLayout.setSpacing(2)
@@ -139,6 +147,14 @@ class ModelerDialog(QtGui.QDialog):
 
     def closeWindow(self):
         self.close()
+
+    def editHelp(self):
+        dlg = HelpEditionDialog(self.alg)
+        dlg.exec_()
+        #We store the description string in case there were not saved because there was no
+        #filename defined yet
+        if self.alg.descriptionFile is None and dlg.descriptions:
+            self.help = dlg.descriptions
 
     def createScript(self):
         if str(self.textGroup.text()).strip() == "":
@@ -172,6 +188,13 @@ class ModelerDialog(QtGui.QDialog):
             fout.write(text)
             fout.close()
             self.update = True
+
+        #if help strings were defined before saving the model for the first time, we do it here
+        if self.help:
+            f = open(self.alg.descriptionFile + ".help", "wb")
+            pickle.dump(self.help, f)
+            f.close()
+            self.help = None
 
     def openModel(self):
         filename = QtGui.QFileDialog.getOpenFileName(self, "Open Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)")

@@ -33,7 +33,7 @@ class SextantePlugin:
         Sextante.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow())
-        self.menu.setTitle("SEXTANTE")
+        self.menu.setTitle("Analysis")
 
         icon = QIcon(os.path.dirname(__file__) + "/images/toolbox.png")
         self.toolboxAction = QAction(icon, \

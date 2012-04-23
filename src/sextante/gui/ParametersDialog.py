@@ -21,6 +21,7 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.gui.ParametersPanel import ParametersPanel
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.core.SextanteConfig import SextanteConfig
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -59,12 +60,10 @@ class Ui_ParametersDialog(object):
         self.scrollArea.setWidgetResizable(True)
         dialog.setWindowTitle(self.alg.name)
         self.progressLabel = QtGui.QLabel()
-        self.progressLabel.setText("Processing algorithm...")
-        self.progressLabel.setVisible(False)
         self.progress = QtGui.QProgressBar()
-        self.progress.setVisible(False)
         self.progress.setMinimum(0)
         self.progress.setMaximum(100)
+        self.progress.setValue(0)
         self.verticalLayout = QtGui.QVBoxLayout(dialog)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
@@ -136,6 +135,7 @@ class Ui_ParametersDialog(object):
     def accept(self):
         try:
             if self.setParamValues():
+                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
                 buttons = self.paramTable.iterateButtons
                 iterateParam = None
                 for i in range(len(buttons.values())):
@@ -143,8 +143,7 @@ class Ui_ParametersDialog(object):
                     if button.isChecked():
                         iterateParam = buttons.keys()[i]
                         break
-                self.progress.setVisible(True)
-                self.progressLabel.setVisible(True)
+                self.progressLabel.setText("Processing algorithm...")
                 if iterateParam:
                     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                     AlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
@@ -158,7 +157,12 @@ class Ui_ParametersDialog(object):
                         SextantePostprocessing.handleAlgorithmResults(self.alg)
 
                 self.dialog.executed = True
-                self.dialog.close()
+                if not SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN):
+                    self.dialog.close()
+                else:
+                    self.progressLabel.setText("")
+                    self.progress.setValue(0)
+                    self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
             else:
                 QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
@@ -172,7 +176,7 @@ class Ui_ParametersDialog(object):
 
 
     def reject(self):
-        self.dialog.executed = False
+        #self.dialog.executed = False
         self.dialog.close()
 
     def setPercentage(self, i):
