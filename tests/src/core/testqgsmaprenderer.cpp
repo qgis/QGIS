@@ -26,7 +26,7 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsvectorlayer.h> //defines QgsFieldMap 
+#include <qgsvectorlayer.h> //defines QgsFieldMap
 #include <qgsvectorfilewriter.h> //logic for writing shpfiles
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
 #include <qgsgeometry.h> //each feature needs a geometry
@@ -95,7 +95,7 @@ void TestQgsMapRenderer::initTestCase()
   QString myFileName = myTmpDir +  "maprender_testdata.shp";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
-  QFile::copy( myQmlFileName, myTmpDir + "maprender_testdata.qml" );
+  QVERIFY( QFile::copy( myQmlFileName, myTmpDir + "maprender_testdata.qml" ) );
   qDebug( "Checking test dataset exists...\n%s", myFileName.toLocal8Bit().constData() );
   if ( !QFile::exists( myFileName ) )
   {
@@ -161,14 +161,12 @@ void TestQgsMapRenderer::initTestCase()
   QFileInfo myPolyFileInfo( myFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
                                      myPolyFileInfo.completeBaseName(), "ogr" );
+  QVERIFY( mpPolysLayer->isValid() );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
   mpMapRenderer = new QgsMapRenderer();
-  QStringList myLayers;
-  myLayers << mpPolysLayer->id();
-  mpMapRenderer->setLayerSet( myLayers );
+  mpMapRenderer->setLayerSet( QStringList( mpPolysLayer->id() ) );
   mReport += "<h1>Map Render Tests</h1>\n";
 }
 
