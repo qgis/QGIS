@@ -24,6 +24,8 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 
+#include <gdal.h>
+
 /** \ingroup UnitTests
  * This is a unit test to verify that zip vector layers work
  */
@@ -40,9 +42,12 @@ class TestZipLayer: public QObject
       //
       //create a point layer that will be used in all tests...
       //
-      QString myDataDir( TEST_DATA_DIR );
-      myDataDir += QDir::separator();
-      QString myPointsFileName = myDataDir + "points.zip";
+      QString myPointsFileName( QString( TEST_DATA_DIR ) + QDir::separator() + "points.zip" );
+      qDebug() << "GDAL: " << GDAL_RELEASE_NAME;
+#if GDAL_VERSION_NUM < 1800
+      myPointsFileName = "/vsizip/" + myPointsFileName + "/points.shp";
+#endif
+      qDebug() << "FILE: " << myPointsFileName;
       QFileInfo myPointFileInfo( myPointsFileName );
       QgsVectorLayer * mypPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
           myPointFileInfo.completeBaseName(), "ogr" );
