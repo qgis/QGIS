@@ -1943,6 +1943,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   {
     if ( !uri.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
+      QgsDebugMsg( QString( "uri %1 doesn't end with .shp" ).arg( uri ) );
       return false;
     }
 
@@ -1971,6 +1972,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), NULL );
   if ( !dataSource )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -2028,6 +2030,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, NULL );
   if ( !layer )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -2040,7 +2043,6 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     codec = QTextCodec::codecForLocale();
     Q_ASSERT( codec );
   }
-
 
   for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
