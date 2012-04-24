@@ -86,9 +86,11 @@ void TestQgsRasterLayer::initTestCase()
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
+  qDebug() << "tenbyteraster metadata: " << mpRasterLayer->dataProvider()->metadata();
   QFileInfo myLandsatRasterFileInfo( myLandsatFileName );
   mpLandsatRasterLayer = new QgsRasterLayer( myLandsatRasterFileInfo.filePath(),
       myLandsatRasterFileInfo.completeBaseName() );
+  qDebug() << "landsat metadata: " << mpLandsatRasterLayer->dataProvider()->metadata();
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpRasterLayer );

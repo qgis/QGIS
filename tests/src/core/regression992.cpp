@@ -63,9 +63,13 @@ class Regression992: public QObject
 //runs before all tests
 void Regression992::initTestCase()
 {
+  mpMapRenderer = 0;
+
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::showSettings();
+  // QgsApplication::skipGdalDriver( "JP2ECW" );
+  // QgsApplication::skipGdalDriver( "JP2MrSID" );
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //create some objects that will be used in all tests...
@@ -79,6 +83,10 @@ void Regression992::initTestCase()
   {
     QSKIP( "This test requires the JPEG2000 GDAL driver", SkipAll );
   }
+  else
+  {
+    qDebug() << mpRasterLayer->dataProvider()->metadata();
+  }
 
   // Register the layer with the registry
   QList<QgsMapLayer *> myList;
@@ -90,8 +98,8 @@ void Regression992::initTestCase()
   myLayers << mpRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
   mReport += "<h1>Regression 992 Test</h1>\n";
-  mReport += "<p>See <a href=\"https://trac.osgeo.org/qgis/ticket/992\">"
-             "trac ticket 992</a> for more details.</p>";
+  mReport += "<p>See <a href=\"http://hub.qgis.org/issues/992\">"
+             "redmine ticket 992</a> for more details.</p>";
 }
 //runs after all tests
 void Regression992::cleanupTestCase()
