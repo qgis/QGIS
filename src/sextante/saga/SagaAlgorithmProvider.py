@@ -45,14 +45,17 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                 alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
                 if alg.name.strip() != "":
                     self.preloadedAlgs.append(alg)
-            except Exception,e:
+            except Exception:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
-    def getName(self):
+    def getDescription(self):
         return "SAGA"
+
+    def getName(self):
+        return "saga"
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")

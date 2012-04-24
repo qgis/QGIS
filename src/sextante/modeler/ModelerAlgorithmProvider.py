@@ -29,8 +29,11 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def modelsFolder(self):
         return ModelerUtils.modelsFolder()
 
-    def getName(self):
+    def getDescription(self):
         return "Modeler"
+
+    def getName(self):
+        return "model"
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")

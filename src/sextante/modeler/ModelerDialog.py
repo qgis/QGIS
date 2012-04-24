@@ -307,7 +307,7 @@ class ModelerDialog(QtGui.QDialog):
 
             if len(groups) > 0:
                 providerItem = QtGui.QTreeWidgetItem()
-                providerItem.setText(0, providerName)
+                providerItem.setText(0, Providers.providers[providerName].getDescription())
                 providerItem.setIcon(0, Providers.providers[providerName].getIcon())
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)

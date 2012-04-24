@@ -35,8 +35,11 @@ class GdalAlgorithmProvider(AlgorithmProvider):
         '''The folder where script algorithms are stored'''
         return os.path.dirname(__file__) + "/scripts"
 
+    def getDescription(self):
+        return "GDAL"
+
     def getName(self):
-        return "Gdal"
+        return "gdal"
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + "/icons/gdalicon.png")

@@ -26,8 +26,12 @@ class LasToolsAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         SextanteConfig.addSetting(Setting("LASTools", LasToolsUtils.LASTOOLS_FOLDER, "LASTools folder", LasToolsUtils.LasToolsPath()))
+
     def getName(self):
-        return "LASTools"
+        return "lastools"
+
+    def getDescription(self):
+        return "LASTools (Tools for LiDAR data)"
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + "/../images/tool.png")

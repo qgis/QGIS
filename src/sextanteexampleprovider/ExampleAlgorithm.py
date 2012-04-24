@@ -6,6 +6,7 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.parameters.ParameterCrs import ParameterCrs
 
 
 class ExampleAlgorithm(GeoAlgorithm):
@@ -39,6 +40,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         #It is a mandatory (not optional) one, hence the False argument
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterExtent("EXTENT","EXTENT"))
+        self.addParameter(ParameterCrs("CRS", "CRS"))
         # we add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer with selected features"))
 

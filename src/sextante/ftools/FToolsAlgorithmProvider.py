@@ -43,6 +43,9 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                      Dissolve(), Difference(), Intersection(), Union(), Clip(), ExtentFromLayer(),
                      RandomSelection(), RandomSelectionWithinSubsets(), SelectByLocation()]
 
+    def getDescription(self):
+        return "fTools (Vector analysis)"
+
     def getName(self):
         return "ftools"
 

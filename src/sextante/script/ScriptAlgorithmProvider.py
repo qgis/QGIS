@@ -34,6 +34,9 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         return ScriptUtils.scriptsFolder()
 
     def getName(self):
+        return "script"
+
+    def getDescription(self):
         return "Scripts"
 
     def _loadAlgorithms(self):

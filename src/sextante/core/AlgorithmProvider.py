@@ -47,6 +47,11 @@ class AlgorithmProvider():
         SextanteConfig.removeSetting(name)
 
     def getName(self):
+        '''Returns the name to use to create the command-line name. Should be a short descriptive name of the provider'''
+        return "sextante"
+
+    def getDescription(self):
+        '''Returns the full name of the provider'''
         return "Generic algorithm provider"
 
 

@@ -34,8 +34,12 @@ class RAlgorithmProvider(AlgorithmProvider):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
 
+
+    def getDescription(self):
+        return "R scripts"
+
     def getName(self):
-        return "R"
+        return "r"
 
     def _loadAlgorithms(self):
         folder = RUtils.RScriptsFolder()

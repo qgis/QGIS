@@ -64,8 +64,11 @@ class GrassAlgorithmProvider(AlgorithmProvider):
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
+    def getDescription(self):
+        return "GRASS commands"
+
     def getName(self):
-        return "GRASS"
+        return "grass"
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")

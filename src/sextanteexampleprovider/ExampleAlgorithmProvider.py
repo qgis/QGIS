@@ -27,9 +27,12 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
 
 
     def getName(self):
-        '''This is the name that will appear on the toolbox group.
-        It is also used to create the command line name of all the algorithms
+        '''This name is  used to create the command line name of all the algorithms
         from this provider'''
+        return "exampleprovider"
+
+    def getDescription(self):
+        '''This is the name that will appear on the toolbox group.'''
         return "Example algorithms"
 
     def getIcon(self):

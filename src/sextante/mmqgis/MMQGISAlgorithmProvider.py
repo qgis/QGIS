@@ -15,6 +15,8 @@ class MMQGISAlgorithmProvider(AlgorithmProvider):
     def scriptsFolder(self):
         return os.path.dirname(__file__) + "/scripts"
 
+    def getDescription(self):
+        return "MMQGIS (Vector and table tools)"
     def getName(self):
         return "mmqgis"
 

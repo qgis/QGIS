@@ -13,8 +13,12 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.createAlgsList()
 
+
+    def getDescription(self):
+        return "Orfeo Toolbox (Image analysis)"
+
     def getName(self):
-        return "OTB"
+        return "otb"
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + "/../images/otb.png")

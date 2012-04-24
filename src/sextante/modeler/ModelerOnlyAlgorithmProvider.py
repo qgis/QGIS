@@ -12,8 +12,10 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
 
-
     def getName(self):
+        return "modelertools"
+
+    def getDescription(self):
         return "Modeler-only tools"
 
     def getIcon(self):
