@@ -1,6 +1,8 @@
 from sextante.lastools.LasToolsUtils import LasToolsUtils
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterBoolean import ParameterBoolean
+import os
+from PyQt4 import QtGui
 
 class LasToolsAlgorithm(GeoAlgorithm):
 
@@ -8,6 +10,10 @@ class LasToolsAlgorithm(GeoAlgorithm):
     LAST_ONLY = "LAST_ONLY"
     SINGLE_RET_ONLY = "SINGLE_RET_ONLY"
     DOUBLE_RET_ONLY = "DOUBLE_RET_ONLY"
+
+    def getIcon(self):
+        filepath = os.path.dirname(__file__) + "/../images/tool.png"
+        return QtGui.QIcon(filepath)
 
     def checkBeforeOpeningParametersDialog(self):
             path = LasToolsUtils.LasToolsPath()

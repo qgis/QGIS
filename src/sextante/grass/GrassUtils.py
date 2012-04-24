@@ -65,7 +65,7 @@ class GrassUtils:
                 if os.path.exists(f):
                     folder = f
                     break
-                    
+
         return folder
 
     @staticmethod
@@ -122,9 +122,9 @@ class GrassUtils:
         output.write("set PATHEXT=%PATHEXT%;.PY\n")
         output.write("set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n");
         output.write("\n")
-        output.write("g.gisenv.exe set=\"MAPSET= " + mapset + "\n")
-        output.write("g.gisenv.exe set=\"LOCATION=" + location + "\n")
-        output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\n")
+        output.write("g.gisenv.exe set=\"MAPSET=" + mapset + "\"\n")
+        output.write("g.gisenv.exe set=\"LOCATION=" + location + "\"\n")
+        output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\"\n")
         output.write("g.gisenv.exe set=\"GISDBASE=" + gisdbase + "\"\n")
         output.write("g.gisenv.exe set=\"GRASS_GUI=text\"\n")
         for command in commands:

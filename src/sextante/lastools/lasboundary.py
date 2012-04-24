@@ -17,11 +17,6 @@ class lasboundary(LasToolsAlgorithm):
     DISJOINT = "DISJOINT"
     HOLES = "HOLES"
 
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/../images/tool.png"
-        return QtGui.QIcon(filepath)
-
     def defineCharacteristics(self):
         self.name = "lasboundary"
         self.group = "Tools"

@@ -92,19 +92,20 @@ class GrassAlgorithm(GeoAlgorithm):
         if auto:
             first = True;
             for param in self.parameters:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
-                    self.addToRegion(layer, first)
-                    first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(";")
-                    for layername in layers:
-                        layer = QGisLayers.getObjectFromUri(layername, first)
+                if param.value:
+                    if isinstance(param, (ParameterRaster, ParameterVector)):
+                        if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
+                            layer = param.value
+                        else:
+                            layer = QGisLayers.getObjectFromUri(param.value)
                         self.addToRegion(layer, first)
                         first = False
+                    elif isinstance(param, ParameterMultipleInput):
+                        layers = param.value.split(";")
+                        for layername in layers:
+                            layer = QGisLayers.getObjectFromUri(layername, first)
+                            self.addToRegion(layer, first)
+                            first = False
             if self.cellsize == 0:
                 self.cellsize = 1
         else:

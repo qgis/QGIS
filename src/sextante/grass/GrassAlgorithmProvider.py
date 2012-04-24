@@ -8,6 +8,7 @@ from sextante.grass.GrassUtils import GrassUtils
 from sextante.grass.GrassAlgorithm import GrassAlgorithm
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.grass.DefineGrassRegionAction import DefineGrassRegionAction
+from sextante.grass.nviz import nviz
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
@@ -57,6 +58,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
+        self.preloadedAlgs.append(nviz())
         #self.createDescriptionFiles()
 
     def _loadAlgorithms(self):

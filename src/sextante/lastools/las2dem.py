@@ -13,10 +13,6 @@ class las2dem(LasToolsAlgorithm):
     OUTPUT = "OUTPUT"
     INTENSITY = "INTENSITY"
 
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/../images/tool.png"
-        return QtGui.QIcon(filepath)
-
     def defineCharacteristics(self):
         self.name = "las2dem"
         self.group = "Tools"

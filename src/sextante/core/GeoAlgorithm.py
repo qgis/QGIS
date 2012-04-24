@@ -145,12 +145,13 @@ class GeoAlgorithm:
         layers = QGisLayers.getAllLayers()
         for param in self.parameters:
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
-                inputlayers = param.value.split(";")
-                for inputlayer in inputlayers:
-                    for layer in layers:
-                        if layer.source() == inputlayer:
-                            self.crs = layer.crs()
-                            return
+                if param.value:
+                    inputlayers = param.value.split(";")
+                    for inputlayer in inputlayers:
+                        for layer in layers:
+                            if layer.source() == inputlayer:
+                                self.crs = layer.crs()
+                                return
 
 
     def addOutput(self, output):

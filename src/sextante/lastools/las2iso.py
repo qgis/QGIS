@@ -16,10 +16,6 @@ class las2iso(LasToolsAlgorithm):
     SIMPLIFY = "SIMPLIFY"
     INTERVAL = "INTERVAL"
 
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/../images/tool.png"
-        return QtGui.QIcon(filepath)
-
     def defineCharacteristics(self):
         self.name = "las2iso"
         self.group = "Tools"

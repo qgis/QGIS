@@ -1,5 +1,4 @@
 import os
-from PyQt4 import QtGui
 from sextante.lastools.LasToolsUtils import LasToolsUtils
 from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterFile import ParameterFile
@@ -9,10 +8,6 @@ class lasinfo(LasToolsAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
-
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/../images/tool.png"
-        return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
         self.name = "lasinfo"

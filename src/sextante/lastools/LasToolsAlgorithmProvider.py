@@ -11,13 +11,17 @@ from sextante.lastools.las2iso import las2iso
 from sextante.lastools.lasgrid import lasgrid
 from sextante.lastools.lasground import lasground
 from sextante.lastools.lasinfo import lasinfo
+from sextante.lastools.lasheight import lasheight
+from sextante.lastools.lasprecision import lasprecision
+from sextante.lastools.lassplit import lassplit
 
 
 class LasToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.algsList = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(), lasinfo()]
+        self.algsList = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(),
+                         lasinfo(), lasheight(), lasprecision(), lassplit()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

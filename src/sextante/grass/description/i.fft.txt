@@ -1,0 +1,6 @@
+i.fft
+i.fft
+Imagery (i.*)
+ParameterRaster|input_image|input_image|False
+OutputRaster|real_image|real_image
+OutputRaster|imaginary_image|imaginary_image

@@ -17,10 +17,6 @@ class lasground(LasToolsAlgorithm):
     METHOD = "METHOD"
     METHODS = ["terrain", "town", "city"]
 
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/../images/tool.png"
-        return QtGui.QIcon(filepath)
-
     def defineCharacteristics(self):
         self.name = "lasground"
         self.group = "Tools"

@@ -16,10 +16,6 @@ class lasgrid(LasToolsAlgorithm):
     METHOD = "METHOD"
     METHODS = ["-average", "-lowest", "-highest", "-stddev"]
 
-    def getIcon(self):
-        filepath = os.path.dirname(__file__) + "/../images/tool.png"
-        return QtGui.QIcon(filepath)
-
     def defineCharacteristics(self):
         self.name = "lasgrid"
         self.group = "Tools"

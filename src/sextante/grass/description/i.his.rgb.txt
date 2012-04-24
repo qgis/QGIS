@@ -1,0 +1,9 @@
+i.his.rgb
+i.his.rgb
+Imagery (i.*)
+ParameterRaster|hue_input|hue_input|False
+ParameterRaster|intensity_input|intensity_input|False
+ParameterRaster|saturation_input|saturation_input|False
+OutputRaster|red_output|red_output
+OutputRaster|green_output|green_output
+OutputRaster|blue_output|blue_output

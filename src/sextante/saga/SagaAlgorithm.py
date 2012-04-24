@@ -81,20 +81,21 @@ class SagaAlgorithm(GeoAlgorithm):
         if auto:
             first = True;
             for param in self.parameters:
-                if isinstance(param, ParameterRaster):
-                    if isinstance(param.value, QgsRasterLayer):
-                        layer = param.value
-                    else:
-                        layer = QGisLayers.getObjectFromUri(param.value)
-                    self.addToResamplingExtent(layer, first)
-                    first = False
-                if isinstance(param, ParameterMultipleInput):
-                    if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                        layers = param.value.split(";")
-                        for layername in layers:
-                            layer = QGisLayers.getObjectFromUri(layername)
-                            self.addToResamplingExtent(layer, first)
-                            first = False
+                if param.value:
+                    if isinstance(param, ParameterRaster):
+                        if isinstance(param.value, QgsRasterLayer):
+                            layer = param.value
+                        else:
+                            layer = QGisLayers.getObjectFromUri(param.value)
+                        self.addToResamplingExtent(layer, first)
+                        first = False
+                    if isinstance(param, ParameterMultipleInput):
+                        if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                            layers = param.value.split(";")
+                            for layername in layers:
+                                layer = QGisLayers.getObjectFromUri(layername)
+                                self.addToResamplingExtent(layer, first)
+                                first = False
         else:
             self.xmin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
@@ -183,7 +184,7 @@ class SagaAlgorithm(GeoAlgorithm):
             command = "lib" + self.undecoratedGroup  + " \"" + self.name + "\""
 
         for param in self.parameters:
-            if param.value == None:
+            if param.value is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value

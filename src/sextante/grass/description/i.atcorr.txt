@@ -1,0 +1,13 @@
+i.attcorr
+i.attcorr
+Imagery (i.*)
+ParameterBoolean|-f|-f|False
+ParameterBoolean|-a|-a|False
+ParameterBoolean|-b|-b|False
+ParameterBoolean|-o|-o|False
+ParameterRaster|iimg|iimg|False
+ParameterRaster|ialt|ialt|True
+ParameterRaster|ivis|ivis|True
+ParameterRange|iscl|iscl|0,255
+ParameterFile|icnd|icnd|False
+OutputRaster|oimg|oimg

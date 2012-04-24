@@ -1,0 +1,6 @@
+i.ifft
+i.ifft
+Imagery (i.*)
+ParameterRaster|real_image|real_image|False
+ParameterRaster|imaginary_image|imaginary_image|False
+OutputRaster|output_image|output_image
