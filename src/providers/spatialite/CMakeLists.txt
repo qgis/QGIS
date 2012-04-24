@@ -29,17 +29,30 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-  ${SPATIALITE_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
 )
+
+IF(WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(
+    ../../core/spatialite/headers
+    ../../core/spatialite/headers/spatialite
+  )
+ELSE(WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+ENDIF(WITH_INTERNAL_SPATIALITE)
+
+INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
 
 ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS} ${SPATIALITE_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(spatialiteprovider
   qgis_core
   qgis_gui
-  ${SPATIALITE_LIBRARY}
 )
+
+IF(NOT WITH_INTERNAL_SPATIALITE)
+  TARGET_LINK_LIBRARIES(spatialiteprovider ${SPATIALITE_LIBRARY})
+ENDIF(NOT WITH_INTERNAL_SPATIALITE)
+
 
 ########################################################
 # Install
