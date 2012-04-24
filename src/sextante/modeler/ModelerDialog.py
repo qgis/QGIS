@@ -12,6 +12,8 @@ from sextante.modeler.Providers import Providers
 from sextante.script.ScriptUtils import ScriptUtils
 from sextante.gui.HelpEditionDialog import HelpEditionDialog
 import pickle
+from sextante.gui.ParametersDialog import ParametersDialog
+from sextante.core.SextanteUtils import SextanteUtils
 
 class ModelerDialog(QtGui.QDialog):
     def __init__(self, alg=None):
@@ -121,6 +123,9 @@ class ModelerDialog(QtGui.QDialog):
         self.editHelpButton = QtGui.QPushButton()
         self.editHelpButton.setText("Edit model help")
         self.buttonBox.addButton(self.editHelpButton, QtGui.QDialogButtonBox.ActionRole)
+        self.runButton = QtGui.QPushButton()
+        self.runButton.setText("Run")
+        self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
         self.openButton = QtGui.QPushButton()
         self.openButton.setText("Open")
         self.buttonBox.addButton(self.openButton, QtGui.QDialogButtonBox.ActionRole)
@@ -133,6 +138,7 @@ class ModelerDialog(QtGui.QDialog):
         QObject.connect(self.openButton, QtCore.SIGNAL("clicked()"), self.openModel)
         QObject.connect(self.saveButton, QtCore.SIGNAL("clicked()"), self.saveModel)
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        QObject.connect(self.runButton, QtCore.SIGNAL("clicked()"), self.runModel)
         QObject.connect(self.editHelpButton, QtCore.SIGNAL("clicked()"), self.editHelp)
 
         self.globalLayout = QtGui.QVBoxLayout()
@@ -167,6 +173,23 @@ class ModelerDialog(QtGui.QDialog):
             fout.write(self.alg.getAsPythonCode())
             fout.close()
             self.update = True
+
+    def runModel(self):
+        ##TODO: enable alg cloning without saving to file
+        if self.alg.descriptionFile is None:
+            self.alg.descriptionFile = SextanteUtils.getTempFilename("model")
+            text = self.alg.serialize()
+            fout = open(self.alg.descriptionFile, "w")
+            fout.write(text)
+            fout.close()
+            self.alg.provider = Providers.providers["Modeler"]
+            alg = copy.deepcopy(self.alg)
+            self.alg.descriptionFile = None
+            alg.descriptionFile = None
+        else:
+            alg = copy.deepcopy(self.alg)
+        dlg = ParametersDialog(alg)
+        dlg.exec_()
 
     def saveModel(self):
         if str(self.textGroup.text()).strip() == "" or str(self.textName.text()).strip() == "":

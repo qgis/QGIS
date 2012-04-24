@@ -151,7 +151,9 @@ class Ui_ParametersDialog(object):
                     QApplication.restoreOverrideCursor()
                 else:
                     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                    SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())
+                    command = self.alg.getAsCommand()
+                    if command:
+                        SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     ret = AlgorithmExecutor.runalg(self.alg, self)
                     QApplication.restoreOverrideCursor()
                     if ret:

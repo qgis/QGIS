@@ -7,11 +7,13 @@ from sextante.core.SextanteLog import SextanteLog
 from sextante.grass.GrassUtils import GrassUtils
 from sextante.grass.GrassAlgorithm import GrassAlgorithm
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.grass.DefineGrassRegionAction import DefineGrassRegionAction
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self.actions.append(DefineGrassRegionAction())
         self.createAlgsList() #preloading algorithms to speed up
 
     def initializeSettings(self):

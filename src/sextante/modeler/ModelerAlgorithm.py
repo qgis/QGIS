@@ -153,8 +153,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(len(self.algs))
 
     def serialize(self):
-        s="NAME:" + self.name + "\n"
-        s +="GROUP:" + self.group + "\n"
+        s="NAME:" + str(self.name) + "\n"
+        s +="GROUP:" + str(self.group) + "\n"
 
         i = 0
         for param in self.parameters:
@@ -325,6 +325,12 @@ class ModelerAlgorithm(GeoAlgorithm):
                 return True
         return False
 
+
+    def getAsCommand(self):
+        if self.descriptionFile:
+            return GeoAlgorithm.getAsCommand(self)
+        else:
+            return None
 
     def commandLineName(self):
         return "modeler:" + os.path.basename(self.descriptionFile)[:-5].lower()
