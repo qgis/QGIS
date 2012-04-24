@@ -88,7 +88,6 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     QIcon getThemeIcon( const QString &theThemeName );
-    void about();
 
     //////////////////////////////////////////////////////////////////////
     //
@@ -109,7 +108,6 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mActionRunGeoref;
-    QAction *mActionAbout;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
