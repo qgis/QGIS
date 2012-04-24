@@ -95,8 +95,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     //! show the help document
     void help();
 
-    //! show about window
-    void about();
   private slots:
     /**
      * set show roads direction
@@ -130,10 +128,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     */
     QAction * mQSettingsAction;
 
-    /**
-     * pointer ot the about action
-     */
-    QAction * mInfoAction;
     /**
      * GUI for use shortest path finder
      */
