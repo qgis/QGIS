@@ -6,6 +6,7 @@ import os
 from sextante.gdal.GdalUtils import GdalUtils
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.parameters.ParameterCrs import ParameterCrs
 
 class warp(GeoAlgorithm):
 
@@ -24,17 +25,17 @@ class warp(GeoAlgorithm):
         self.name = "warp"
         self.group = "Projections"
         self.addParameter(ParameterRaster(warp.INPUT, "Input layer", False))
-        self.addParameter(ParameterString(warp.SOURCE_SRS, "Source SRS (EPSG Code)", "4326"))
-        self.addParameter(ParameterString(warp.DEST_SRS, "Destination SRS (EPSG Code)", "4326"))
+        self.addParameter(ParameterCrs(warp.SOURCE_SRS, "Source SRS (EPSG Code)", "4326"))
+        self.addParameter(ParameterCrs(warp.DEST_SRS, "Destination SRS (EPSG Code)", "4326"))
         self.addParameter(ParameterSelection(warp.METHOD, "Resampling method", warp.METHOD_OPTIONS))
         self.addOutput(OutputRaster(warp.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
         commands = ["gdalwarp"]
         commands.append("-s_srs")
-        commands.append("EPSG:" + self.getParameterValue(warp.SOURCE_SRS))
+        commands.append("EPSG:" + str(self.getParameterValue(warp.SOURCE_SRS)))
         commands.append("-t_srs")
-        commands.append("EPSG:" + self.getParameterValue(warp.DEST_SRS))
+        commands.append("EPSG:" + str(self.getParameterValue(warp.DEST_SRS)))
         commands.append("-r")
         commands.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
         commands.append("-of")

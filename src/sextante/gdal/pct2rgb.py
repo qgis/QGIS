@@ -21,7 +21,10 @@ class pct2rgb(GeoAlgorithm):
         self.name = "pct2rgb"
         self.group = "Conversion"
         self.addParameter(ParameterRaster(pct2rgb.INPUT, "Input layer", False))
-        self.addParameter(ParameterSelection(pct2rgb.NBAND, "Band to convert", range(25)))
+        options = []
+        for i in range(25):
+            options.append(str(i + 1))
+        self.addParameter(ParameterSelection(pct2rgb.NBAND, "Band to convert", options))
         self.addOutput(OutputRaster(pct2rgb.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
