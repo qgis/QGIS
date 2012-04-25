@@ -65,6 +65,7 @@ qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgscredentialdialog.cpp
+qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
@@ -137,6 +138,7 @@ qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
 qgscredentialdialog.h
+qgsowssourceselect.h
 qgsprojectionselector.h
 qgsquickprint.h
 qgsludialog.h
@@ -172,6 +174,7 @@ qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessageviewer.h
 qgscredentialdialog.h
+qgsowssourceselect.h
 qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
@@ -204,6 +207,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h

@@ -76,6 +76,7 @@ SET(QGIS_CORE_SRCS
   qgsmessagelog.cpp
   qgscredentials.cpp
   qgsoverlayobject.cpp
+  qgsowsconnection.cpp
   qgspalgeometry.cpp
   qgspallabeling.cpp
   qgspalobjectpositionmanager.cpp
@@ -326,6 +327,7 @@ SET(QGIS_CORE_HDRS
   qgsmimedatautils.h
   qgscredentials.h
   qgsoverlayobjectpositionmanager.h
+  qgsowsconnection.h
   qgspallabeling.h
   qgspalobjectpositionmanager.h
   qgspluginlayer.h

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -150,6 +150,7 @@
     <addaction name="mActionAddMssqlLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
+    <addaction name="mActionAddWcsLayer"/>
     <addaction name="mActionAddWfsLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
@@ -253,6 +254,7 @@
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
    <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
@@ -1646,6 +1648,15 @@
    </property>
    <property name="text">
     <string>Offset Curve</string>
+   </property>
+  </action>
+  <action name="mActionAddWcsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.png</normaloff>:/images/themes/default/mActionAddWcsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add WCS Layer...</string>
    </property>
   </action>
  </widget>

@@ -33,6 +33,7 @@
         <file>themes/default/mActionAddRing.png</file>
         <file>themes/default/mActionAddSpatiaLiteLayer.png</file>
         <file>themes/default/mActionAddVertex.png</file>
+        <file>themes/default/mActionAddWcsLayer.png</file>
         <file>themes/default/mActionAddWmsLayer.png</file>
         <file>themes/default/mActionAlignBottom.png</file>
         <file>themes/default/mActionAlignHCenter.png</file>
