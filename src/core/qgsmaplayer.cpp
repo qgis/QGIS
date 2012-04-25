@@ -549,25 +549,57 @@ QString QgsMapLayer::capitaliseLayerName( const QString name )
   return layerName;
 }
 
-QString QgsMapLayer::loadDefaultStyle( bool & theResultFlag )
+QString QgsMapLayer::styleURI( )
 {
   QString myURI = publicSource();
+
+  // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
+  if ( myURI.left( 9 ) == "/vsigzip/" )
+  {
+    myURI.remove( 1, 9 );
+  }
+  else if ( myURI.left( 8 ) == "/vsizip/" &&  myURI.right( 4 ) == ".zip" )
+  {
+    // ideally we should look for .qml file inside zip file
+    myURI.remove( 1, 8 );
+  }
+
   QFileInfo myFileInfo( myURI );
   QString key;
+
   if ( myFileInfo.exists() )
   {
+    // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
+    if ( myURI.right( 3 ) == ".gz" )
+    {
+      myURI.chop( 3 );
+      myFileInfo.setFile( myURI );
+    }
+    else if ( myURI.right( 4 ) == ".zip" )
+    {
+      myURI.chop( 4 );
+      myFileInfo.setFile( myURI );
+    }
     // get the file name for our .qml style file
     key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
   }
   else
   {
-    key = myURI;
+    key = publicSource();
   }
-  return loadNamedStyle( key, theResultFlag );
+
+  return key;
+}
+
+QString QgsMapLayer::loadDefaultStyle( bool & theResultFlag )
+{
+  return loadNamedStyle( styleURI(), theResultFlag );
 }
 
 bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml )
 {
+  QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db ).arg( theURI ) );
+
   bool theResultFlag = false;
 
   // read from database
@@ -610,6 +642,8 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
 
 QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 {
+  QgsDebugMsg( QString( "uri = %1 myURI = %2" ).arg( theURI ).arg( publicSource() ) );
+
   theResultFlag = false;
 
   QDomDocument myDocument( "qgis" );
@@ -692,7 +726,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 
 QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
 {
-  return saveNamedStyle( publicSource(), theResultFlag );
+  return saveNamedStyle( styleURI(), theResultFlag );
 }
 
 QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )

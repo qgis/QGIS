@@ -2278,6 +2278,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     return;
   }
 
+  if ( provider == "gdal" )
+  {
+    // make sure that the /vsigzip or /vsizip is added to uri, if applicable
+    mDataSource = mDataProvider->dataSourceUri();
+  }
+
   mDataProvider->addLayers( layers, styles );
   mDataProvider->setImageEncoding( format );
   mDataProvider->setImageCrs( theCrs );

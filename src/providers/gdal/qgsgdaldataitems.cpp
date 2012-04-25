@@ -105,20 +105,29 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( thePath.isEmpty() )
     return 0;
 
-  QgsDebugMsg( "thePath= " + thePath );
-
-  QString uri = thePath;
-  QFileInfo info( thePath );
+  // zip settings + info
   QSettings settings;
-  //extract basename with extension
-  QString name = info.fileName();
   int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
+  bool is_vsizip = ( thePath.startsWith( "/vsizip/" ) ||
+                     thePath.endsWith( ".zip", Qt::CaseInsensitive ) );
+  bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
+                      thePath.endsWith( ".gz", Qt::CaseInsensitive ) );
 
-  // allow normal files or VSIFILE items to pass
-  if ( !info.isFile() &&
-       !thePath.startsWith( "/vsizip/" ) &&
-       !thePath.startsWith( "/vsigzip/" ) )
+  // get suffix, removing .gz if present
+  QString tmpPath = thePath; //path used for testing, not for layer creation
+  if ( is_vsigzip )
+    tmpPath.chop( 3 );
+  QFileInfo info( tmpPath );
+  QString suffix = info.suffix().toLower();
+  // extract basename with extension
+  info.setFile( thePath );
+  QString name = info.fileName();
+
+  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath );
+
+  // allow only normal files or VSIFILE items to continue
+  if ( !info.isFile() && !is_vsizip && !is_vsigzip )
     return 0;
 
   // get supported extensions
@@ -132,7 +141,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // skip *.aux.xml files (GDAL auxilary metadata files)
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
-       ! extensions.contains( "aux.xml" ) )
+       !extensions.contains( "aux.xml" ) )
     return 0;
 
   // skip .tar.gz files
@@ -156,48 +165,43 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       return 0;
   }
 
-  // vsifile : depending on options we should just add the item without testing
-  if ( thePath.startsWith( "/vsizip/" ) )
+  // add /vsizip/ or /vsigzip/ to path if file extension is .zip or .gz
+  if ( is_vsigzip )
   {
-    // if this is a /vsigzip/path.zip/file_inside_zip change the name
+    if ( !thePath.startsWith( "/vsigzip/" ) )
+      thePath = "/vsigzip/" + thePath;
+  }
+  else if ( is_vsizip )
+  {
+    if ( !thePath.startsWith( "/vsizip/" ) )
+      thePath = "/vsizip/" + thePath;
+    // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     if ( thePath != "/vsizip/" + parentItem->path() )
     {
       name = thePath;
       name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
     }
-
-    // if setting = 2 (Basic scan), return an item without testing
-    if ( scanZipSetting == 2 )
-    {
-      QStringList sublayers;
-      QgsDebugMsg( QString( "adding item name=%1 thePath=%2 uri=%3" ).arg( name ).arg( thePath ).arg( uri ) );
-      QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
-      if ( item )
-        return item;
-    }
   }
 
-  // if scan items == "Check extension", add item here without trying to open
-  if ( scanItemsSetting == 1 )
+  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
+  if ( is_vsizip && scanZipSetting == 2 )
   {
     QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2 uri=%3" ).arg( name ).arg( thePath ).arg( uri ) );
+    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
     if ( item )
       return item;
   }
 
-
-  // try to open using VSIFileHandler
-  if ( thePath.endsWith( ".zip", Qt::CaseInsensitive ) )
+  // if scan items == "Check extension", add item here without trying to open
+  // unless item is /vsizip
+  if ( scanItemsSetting == 1 && !is_vsizip )
   {
-    if ( !thePath.startsWith( "/vsizip/" ) )
-      thePath = "/vsizip/" + thePath;
-  }
-  else if ( thePath.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !thePath.startsWith( "/vsigzip/" ) )
-      thePath = "/vsigzip/" + thePath;
+    QStringList sublayers;
+    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    if ( item )
+      return item;
   }
 
   // test that file is valid with GDAL
