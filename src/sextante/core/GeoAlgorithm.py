@@ -84,6 +84,13 @@ class GeoAlgorithm:
         Note that this check should also be done in the processAlgorithm method,
         since algorithms can be called without opening the parameters dialog.'''
         return None
+
+    def checkParameterValuesBeforeExecuting(self):
+        '''If there is any check to do before launching the execution of the algorithm,
+        it should be done here. If values are not correct, a message should be returned
+        explaining the problem
+        This check is called from the parameters dialog, and also when calling from the console'''
+        return None
     #=========================================================
 
     def execute(self, progress):
@@ -237,6 +244,7 @@ class GeoAlgorithm:
         for param in self.parameters:
             s+=param.getValueAsCommandLineParameter() + ","
         for out in self.outputs:
-            s+=out.getValueAsCommandLineParameter() + ","
+            if not out.hidden:
+                s+=out.getValueAsCommandLineParameter() + ","
         s= s[:-1] + ")"
         return s

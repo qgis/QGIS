@@ -43,8 +43,6 @@ class Ui_ParametersDialog(object):
     def setupUi(self, dialog, alg):
         self.alg = alg
         self.dialog = dialog
-        #self.valueItems = {}
-        #self.dependentItems = {}
         dialog.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -134,7 +132,12 @@ class Ui_ParametersDialog(object):
 
     def accept(self):
         try:
+            keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
             if self.setParamValues():
+                msg = self.alg.checkParameterValuesBeforeExecuting()
+                if msg:
+                    QMessageBox.critical(self.dialog, "Unable to execute algorithm", msg)
+                    return
                 keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
                 buttons = self.paramTable.iterateButtons
@@ -174,12 +177,15 @@ class Ui_ParametersDialog(object):
             QApplication.restoreOverrideCursor()
             QMessageBox.critical(self, "Error",e.msg)
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
-            self.dialog.executed = False
-            self.dialog.close()
+            if not keepOpen:
+                self.dialog.close()
+            else:
+                self.progressLabel.setText("")
+                self.progress.setValue(0)
+                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
 
     def reject(self):
-        #self.dialog.executed = False
         self.dialog.close()
 
     def setPercentage(self, i):

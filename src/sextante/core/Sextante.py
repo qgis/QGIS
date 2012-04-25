@@ -21,6 +21,7 @@ from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 from sextante.lastools.LasToolsAlgorithmProvider import LasToolsAlgorithmProvider
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
 
 class Sextante:
 
@@ -79,6 +80,7 @@ class Sextante:
     @staticmethod
     def initialize():
         #add the basic providers
+        Sextante.addProvider(SextanteAlgorithmProvider())
         Sextante.addProvider(MMQGISAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())

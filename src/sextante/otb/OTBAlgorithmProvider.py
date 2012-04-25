@@ -1,7 +1,6 @@
 import os
 from PyQt4.QtGui import *
 from sextante.core.AlgorithmProvider import AlgorithmProvider
-from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.otb.OTBUtils import OTBUtils
 from sextante.otb.OTBAlgorithm import OTBAlgorithm
