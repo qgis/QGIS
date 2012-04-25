@@ -17,6 +17,7 @@ class MMQGISAlgorithmProvider(AlgorithmProvider):
 
     def getDescription(self):
         return "MMQGIS (Vector and table tools)"
+
     def getName(self):
         return "mmqgis"
 

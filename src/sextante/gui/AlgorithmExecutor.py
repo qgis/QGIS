@@ -1,7 +1,10 @@
 from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+from qgis.core import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
 
 class AlgorithmExecutor:
 
@@ -22,7 +25,7 @@ class AlgorithmExecutor:
         #generate all single-feature layers
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        layerfile = alg.getParameterFromName(paramToIter)
+        layerfile = alg.getParameterValue(paramToIter)
         layer = QGisLayers.getObjectFromUri(layerfile, False)
         provider = layer.dataProvider()
         allAttrs = provider.attributeIndexes()
@@ -36,20 +39,24 @@ class AlgorithmExecutor:
             writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
             writer.addFeature(feat)
             del writer
-        #now run all the algorithms
-        for out in alg.outputs:
-            output[out.name] = out.value
 
+        #store output values to use them later as basenames for all outputs
+        for out in alg.outputs:
+            outputs[out.name] = out.value
+
+        #now run all the algorithms
         i = 1
         for f in filelist:
-            alg.setOutputValue(paramToIter, f)
+            alg.setParameterValue(paramToIter, f)
             for out in alg.outputs:
                 filename = outputs[out.name]
                 if filename:
-                    filename = filename[:filename.rfind(".")] + "_" + str(i) +  filename[filename.rfind("."):]
+                    filename = filename[:filename.rfind(".")] + "_" + str(i) + filename[filename.rfind("."):]
                 out.value = filename
+            progress.setText("Executing iteration " + str(i) + "/" + str(len(filelist)) + "...")
+            progress.setPercentage((i * 100) / len(filelist))
             if AlgorithmExecutor.runalg(alg, SilentProgress()):
-                progress.setValue(i/len(f))
+                SextantePostprocessing.handleAlgorithmResults(alg, False)
                 i+=1
             else:
                 return False;

@@ -37,7 +37,7 @@ class AlgorithmProvider():
         By default it just adds a setting to activate or deactivate algorithms from the provider'''
         SextanteConfig.settingIcons[self.getName()] = self.getIcon()
         name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
-        SextanteConfig.addSetting(Setting(self.getName(), name, "Activate", True))
+        SextanteConfig.addSetting(Setting(self.getDescription(), name, "Activate", True))
 
     def unload(self):
         '''Do here anything that you want to be done when the provider is removed from the list of available ones.

@@ -20,17 +20,16 @@ class GrassAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if SextanteUtils.isWindows():
-            SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
-            SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_AUTO_REGION, "Use min covering region", True))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_LATLON, "Coordinates are lat/lon", False))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_REGION_XMIN, "GRASS Region min x", 0))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_REGION_YMIN, "GRASS Region min y", 0))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_REGION_XMAX, "GRASS Region max x", 1000))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_REGION_YMAX, "GRASS Region max y", 1000))
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_REGION_CELLSIZE, "GRASS Region cellsize", 1))
-
-        SextanteConfig.addSetting(Setting("GRASS", GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
+            SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
+            SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_AUTO_REGION, "Use min covering region", True))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LATLON, "Coordinates are lat/lon", False))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_REGION_XMIN, "GRASS Region min x", 0))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_REGION_YMIN, "GRASS Region min y", 0))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_REGION_XMAX, "GRASS Region max x", 1000))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_REGION_YMAX, "GRASS Region max y", 1000))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_REGION_CELLSIZE, "GRASS Region cellsize", 1))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)

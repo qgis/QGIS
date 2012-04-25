@@ -191,7 +191,6 @@ class Ui_ParametersDialog(object):
     def setPercentage(self, i):
         self.progress.setValue(i)
 
-
     def setText(self, text):
         self.progressLabel.setText(text)
 

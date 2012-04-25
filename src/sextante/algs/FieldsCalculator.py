@@ -58,4 +58,5 @@ class FieldsCalculator(GeoAlgorithm):
 
     def checkParameterValuesBeforeExecuting(self):
         ##TODO check that formula is correct and fields exist
+        pass
 

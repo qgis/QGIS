@@ -21,7 +21,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("Scripts", ScriptUtils.SCRIPTS_FOLDER, "Scripts folder", ScriptUtils.scriptsFolder()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), ScriptUtils.SCRIPTS_FOLDER, "Scripts folder", ScriptUtils.scriptsFolder()))
 
     def unload(self):
         AlgorithmProvider.unload(self)

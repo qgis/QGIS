@@ -25,7 +25,7 @@ class LasToolsAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("LASTools", LasToolsUtils.LASTOOLS_FOLDER, "LASTools folder", LasToolsUtils.LasToolsPath()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), LasToolsUtils.LASTOOLS_FOLDER, "LASTools folder", LasToolsUtils.LasToolsPath()))
 
     def getName(self):
         return "lastools"

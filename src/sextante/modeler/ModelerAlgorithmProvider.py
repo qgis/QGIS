@@ -21,7 +21,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("Modeler", ModelerUtils.MODELS_FOLDER, "Models folder", ModelerUtils.modelsFolder()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), ModelerUtils.MODELS_FOLDER, "Models folder", ModelerUtils.modelsFolder()))
 
     def setAlgsList(self, algs):
         ModelerUtils.allAlgs = algs

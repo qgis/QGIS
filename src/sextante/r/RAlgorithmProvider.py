@@ -21,9 +21,9 @@ class RAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting("R", RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
         if SextanteUtils.isWindows():
-            SextanteConfig.addSetting(Setting("R", RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
+            SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
