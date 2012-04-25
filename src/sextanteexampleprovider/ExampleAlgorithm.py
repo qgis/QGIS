@@ -66,7 +66,7 @@ class ExampleAlgorithm(GeoAlgorithm):
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         provider = vectorLayer.dataProvider()
-        writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+        writer = QgsVectorFileWriter( output, systemEncoding, provider.fields(), provider.geometryType(), provider.crs() )
 
         #Now we take the selected features and add them to the output layer
         selection = vectorLayer.selectedFeatures()

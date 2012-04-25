@@ -268,6 +268,11 @@ class Sextante:
                     return
                 i = i +1
 
+        msg = alg.checkParameterValuesBeforeExecuting()
+        if msg:
+            print ("Unable to execute algorithm\n" + msg)
+            return
+
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -319,6 +324,11 @@ class Sextante:
                     QMessageBox.critical(None, "Error", "Error: Wrong output value: " + args[i])
                     return
                 i = i +1
+
+        msg = alg.checkParameterValuesBeforeExecuting()
+        if msg:
+            QMessageBox.critical(None, "Unable to execute algorithm", msg)
+            return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         ret = AlgorithmExecutor.runalg(alg, SilentProgress())
