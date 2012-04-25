@@ -35,10 +35,15 @@ public:
                     bool loadDefaultStyleFlag = true );
 
     /**  \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( const QString & uri,
-                    const QString & baseName,
-                    const QString & providerKey,
-                    bool loadDefaultStyleFlag = true );
+    QgsRasterLayer( int dummy,
+                    const QString & baseName = QString(),
+                    const QString & path = QString(),
+                    const QString & providerLib = QString(),
+                    const QStringList & layers = QStringList(),
+                    const QStringList & styles = QStringList(),
+                    const QString & format = QString(),
+                    const QString & crs = QString());
+
 
     /** \brief The destructor */
     ~QgsRasterLayer();
@@ -190,7 +195,11 @@ public:
     QString redBandName();
 
     /**  [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider );
+    void setDataProvider( const QString & provider,
+                          const QStringList & layers,
+                          const QStringList & styles,
+                          const QString & format,
+                          const QString & crs );
 
     /** \brief Mutator for drawing style */
     void setDrawingStyle( const DrawingStyle &  theDrawingStyle );

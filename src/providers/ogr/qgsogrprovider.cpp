@@ -264,18 +264,18 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  if ( mFilePath.right( 4 ) == ".zip" )
+  if ( mFilePath.endsWith( ".zip", Qt::CaseInsensitive ) )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
-    if ( mFilePath.left( 8 ) != "/vsizip/" )
+    if ( !mFilePath.startsWith( "/vsizip/" ) )
       mFilePath = "/vsizip/" + mFilePath;
     QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
-  else if ( mFilePath.right( 3 ) == ".gz" )
+  else if ( mFilePath.endsWith( ".gz", Qt::CaseInsensitive ) )
   {
-    if ( mFilePath.left( 9 ) != "/vsigzip/" )
+    if ( !mFilePath.startsWith( "/vsigzip/" ) )
       mFilePath = "/vsigzip/" + mFilePath;
     QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
@@ -287,12 +287,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
 
   // first try to open in update mode (unless specified otherwise)
-  if ( ! openReadOnly )
+  if ( !openReadOnly )
     ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
 
   if ( !ogrDataSource )
   {
-
     QgsDebugMsg( "OGR failed to opened in update mode, trying in read-only mode" );
 
     // try to open read-only
@@ -305,7 +304,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   if ( ogrDataSource )
   {
-
     QgsDebugMsg( "OGR opened using Driver " + QString( OGR_Dr_GetName( ogrDriver ) ) );
 
     ogrDriverName = OGR_Dr_GetName( ogrDriver );
@@ -340,7 +338,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   // FIXME: sync with app/qgsnewvectorlayerdialog.cpp
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
-  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 5 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
   ;
 }
@@ -1945,6 +1943,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   {
     if ( !uri.endsWith( ".shp", Qt::CaseInsensitive ) )
     {
+      QgsDebugMsg( QString( "uri %1 doesn't end with .shp" ).arg( uri ) );
       return false;
     }
 
@@ -1973,6 +1972,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   dataSource = OGR_Dr_CreateDataSource( driver, TO8F( uri ), NULL );
   if ( !dataSource )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Creating the data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -2030,6 +2030,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, NULL );
   if ( !layer )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );
     return false;
   }
 
@@ -2042,7 +2043,6 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     codec = QTextCodec::codecForLocale();
     Q_ASSERT( codec );
   }
-
 
   for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {

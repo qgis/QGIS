@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 
 #include <QDir>
+#include <QFile>
 #include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
@@ -454,7 +455,25 @@ const QString QgsApplication::iconsPath()
 */
 const QString QgsApplication::srsDbFilePath()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/srs.db" );
+  if ( ABISYM( mRunningFromBuildDir ) )
+  {
+    QString tempCopy = QDir::tempPath() + "/srs.db";
+
+    if ( !QFile( tempCopy ).exists() )
+    {
+      QFile f( ABISYM( mPkgDataPath ) + "/resources/srs.db" );
+      if ( !f.copy( tempCopy ) )
+      {
+        qFatal( "Could not create temporary copy" );
+      }
+    }
+
+    return tempCopy;
+  }
+  else
+  {
+    return ABISYM( mPkgDataPath ) + QString( "/resources/srs.db" );
+  }
 }
 
 /*!

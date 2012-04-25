@@ -41,7 +41,7 @@
 /** \ingroup UnitTests
  * This is a regression test ticket 1141.
  * broken Polish characters support since r8592
- * https://trac.osgeo.org/qgis/ticket/1141
+ * http://hub.qgis.org/issues/1141
  *
  */
 class Regression1141: public QObject

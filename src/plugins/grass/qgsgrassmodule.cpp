@@ -1689,7 +1689,8 @@ void QgsGrassModule::viewOutput()
                   + "/cellhd/" + map;
 
     //mIface->addRasterLayer( uri, map );
-    mIface->addRasterLayer( uri, map, "grassraster" );
+    mIface->addRasterLayer( uri, map, "grassraster", QStringList(), QStringList(),
+                            QString(), QString() );
   }
 }
 

@@ -60,11 +60,7 @@ IF (WIN32)
   SET_TARGET_PROPERTIES(pyspatialite PROPERTIES SUFFIX ".pyd")
 ENDIF (WIN32)
 
-FOREACH(file
-  lib/__init__.py
-  lib/dbapi2.py
-  lib/dump.py
-)
+FOREACH(file lib/__init__.py lib/dbapi2.py lib/dump.py)
   ADD_CUSTOM_COMMAND(TARGET pyspatialite
 	  POST_BUILD
 	  COMMAND ${CMAKE_COMMAND} -E copy ${file} ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite/${file}

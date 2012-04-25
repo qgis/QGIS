@@ -39,7 +39,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   connect( builder, SIGNAL( expressionParsed( bool ) ), this, SLOT( setOkButtonState() ) );
 
   //default values for field width and precision
-  mOuputFieldWidthSpinBox->setValue( 10 );
+  mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
   // disable creation of new fields if not supported by data provider
@@ -93,7 +93,7 @@ void QgsFieldCalculator::accept()
     QgsField newField( mOutputFieldNameLineEdit->text(),
                        ( QVariant::Type ) mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole ).toInt(),
                        mOutputFieldTypeComboBox->itemData( mOutputFieldTypeComboBox->currentIndex(), Qt::UserRole + 1 ).toString(),
-                       mOuputFieldWidthSpinBox->value(),
+                       mOutputFieldWidthSpinBox->value(),
                        mOutputFieldPrecisionSpinBox->value() );
 
     if ( !mVectorLayer->addAttribute( newField ) )
@@ -231,13 +231,13 @@ void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString 
 
 void QgsFieldCalculator::on_mOutputFieldTypeComboBox_activated( int index )
 {
-  mOuputFieldWidthSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 2 ).toInt() );
-  mOuputFieldWidthSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 3 ).toInt() );
-  mOuputFieldWidthSpinBox->setEnabled( mOuputFieldWidthSpinBox->minimum() < mOuputFieldWidthSpinBox->maximum() );
-  if ( mOuputFieldWidthSpinBox->value() < mOuputFieldWidthSpinBox->minimum() )
-    mOuputFieldWidthSpinBox->setValue( mOuputFieldWidthSpinBox->minimum() );
-  if ( mOuputFieldWidthSpinBox->value() > mOuputFieldWidthSpinBox->maximum() )
-    mOuputFieldWidthSpinBox->setValue( mOuputFieldWidthSpinBox->maximum() );
+  mOutputFieldWidthSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 2 ).toInt() );
+  mOutputFieldWidthSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 3 ).toInt() );
+  mOutputFieldWidthSpinBox->setEnabled( mOutputFieldWidthSpinBox->minimum() < mOutputFieldWidthSpinBox->maximum() );
+  if ( mOutputFieldWidthSpinBox->value() < mOutputFieldWidthSpinBox->minimum() )
+    mOutputFieldWidthSpinBox->setValue( mOutputFieldWidthSpinBox->minimum() );
+  if ( mOutputFieldWidthSpinBox->value() > mOutputFieldWidthSpinBox->maximum() )
+    mOutputFieldWidthSpinBox->setValue( mOutputFieldWidthSpinBox->maximum() );
 
   mOutputFieldPrecisionSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 4 ).toInt() );
   mOutputFieldPrecisionSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 5 ).toInt() );

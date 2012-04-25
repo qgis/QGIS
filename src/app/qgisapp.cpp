@@ -746,7 +746,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       }
       else if ( u.layerType == "raster" )
       {
-        addRasterLayer( u.uri, u.name, u.providerKey );
+        addRasterLayer( u.uri, u.name, u.providerKey, QStringList(), QStringList(), QString(), QString() );
       }
     }
   }
@@ -2138,15 +2138,16 @@ void QgisApp::about()
     versionString += "</tr><tr>";
 
     versionString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
-    versionString += "<td>" + tr( "Running against Qt" ) + "</td><td>" + qVersion() + "</td>";
+    versionString += "<td>" + tr( "Running against Qt" )  + "</td><td>" + qVersion() + "</td>";
 
     versionString += "</tr><tr>";
 
-    versionString += "<td>" + tr( "GDAL/OGR Version" )  + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
-    versionString += "<td>" + tr( "GEOS Version" )      + "</td><td>" + GEOS_VERSION + "</td>";
+    versionString += "<td>" + tr( "Compiled against GDAL/OGR" ) + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
+    versionString += "<td>" + tr( "Running against GDAL/OGR" )  + "</td><td>" + GDALVersionInfo( "RELEASE_NAME" ) + "</td>";
 
     versionString += "</tr><tr>";
 
+    versionString += "<td>" + tr( "GEOS Version" ) + "</td><td>" + GEOS_VERSION + "</td>";
     versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
     versionString += PG_VERSION;
@@ -2154,6 +2155,8 @@ void QgisApp::about()
     versionString += tr( "No support." );
 #endif
     versionString += "</td>";
+
+    versionString += "</tr><tr>";
 
     versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
 #ifdef HAVE_SPATIALITE
@@ -2163,12 +2166,11 @@ void QgisApp::about()
 #endif
     versionString += "</td>";
 
-    versionString += "</tr><tr>";
 
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
 
 #ifdef QGISDEBUG
-    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
+    versionString += "</tr><tr><td colspan=4>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
     versionString += "</tr></table></div></body></html>";
@@ -2631,8 +2633,10 @@ void QgisApp::addWmsLayer()
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
     return;
   }
-  connect( wmss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this , SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  connect( wmss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const &, QStringList const &, QStringList const &, QString const &,
+                                          QString const & ) ),
+           this , SLOT( addRasterLayer( QString const &, QString const &, QString const &, QStringList const &, QStringList const &, QString const &,
+                                        QString const & ) ) );
   wmss->exec();
   delete wmss;
 }
@@ -4280,23 +4284,16 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     return;
   }
 
-  QgsMapLayer *selectionLayer = layerContainingSelection ? layerContainingSelection : activeLayer();
+  // Test for feature support in this layer
+  QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
+  if ( !selectionVectorLayer )
+    return;
 
-  if ( selectionLayer )
-  {
-    // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
+  clipboard()->replaceWithCopyOf( selectionVectorLayer );
 
-    if ( selectionVectorLayer != 0 )
-    {
-      QgsFeatureList features = selectionVectorLayer->selectedFeatures();
-      clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
-      clipboard()->setCRS( selectionVectorLayer->crs() );
-      selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
-      selectionVectorLayer->deleteSelectedFeatures();
-      selectionVectorLayer->endEditCommand();
-    }
-  }
+  selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
+  selectionVectorLayer->deleteSelectedFeatures();
+  selectionVectorLayer->endEditCommand();
 }
 
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
@@ -4306,20 +4303,12 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
     return;
   }
 
-  QgsMapLayer *selectionLayer = layerContainingSelection ? layerContainingSelection : activeLayer();
+  QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
+  if ( !selectionVectorLayer )
+    return;
 
-  if ( selectionLayer )
-  {
-    // Test for feature support in this layer
-    QgsVectorLayer* selectionVectorLayer = qobject_cast<QgsVectorLayer *>( selectionLayer );
-
-    if ( selectionVectorLayer != 0 )
-    {
-      QgsFeatureList features = selectionVectorLayer->selectedFeatures();
-      clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
-      clipboard()->setCRS( selectionVectorLayer->crs() );
-    }
-  }
+  // Test for feature support in this layer
+  clipboard()->replaceWithCopyOf( selectionVectorLayer );
 }
 
 
@@ -4330,51 +4319,54 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     return;
   }
 
-  QgsMapLayer *pasteLayer = destinationLayer ? destinationLayer : activeLayer();
+  QgsVectorLayer *pasteVectorLayer = qobject_cast<QgsVectorLayer *>( destinationLayer ? destinationLayer : activeLayer() );
+  if ( !pasteVectorLayer )
+    return;
 
-  if ( pasteLayer )
+  pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
+  QgsFeatureList features;
+  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
   {
-    // Test for feature support in this layer
-    QgsVectorLayer* pasteVectorLayer = qobject_cast<QgsVectorLayer *>( pasteLayer );
-
-    if ( pasteVectorLayer != 0 )
-    {
-      pasteVectorLayer->beginEditCommand( tr( "Features pasted" ) );
-      QgsFeatureList features;
-      if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
-      {
-        features = clipboard()->transformedCopyOf( pasteVectorLayer->crs() );
-      }
-      else
-      {
-        features = clipboard()->copyOf();
-      }
-
-      QgsAttributeList dstAttr = pasteVectorLayer->pendingAllAttributesList();
-
-      for ( int i = 0; i < features.size(); i++ )
-      {
-        QgsFeature &f = features[i];
-        QgsAttributeMap srcMap = f.attributeMap();
-        QgsAttributeMap dstMap;
-
-        int j = 0;
-        foreach( int id, srcMap.keys() )
-        {
-          if ( j >= dstAttr.size() )
-            break;
-
-          dstMap[ dstAttr[j++] ] = srcMap[id];
-        }
-
-        f.setAttributeMap( dstMap );
-      }
-
-      pasteVectorLayer->addFeatures( features );
-      pasteVectorLayer->endEditCommand();
-      mMapCanvas->refresh();
-    }
+    features = clipboard()->transformedCopyOf( pasteVectorLayer->crs() );
   }
+  else
+  {
+    features = clipboard()->copyOf();
+  }
+
+  QHash<int, int> remap;
+  const QgsFieldMap &fields = clipboard()->fields();
+  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
+  {
+    int dst = pasteVectorLayer->fieldNameIndex( it->name() );
+    if ( dst < 0 )
+    {
+      continue;
+    }
+    remap.insert( it.key(), dst );
+  }
+
+  for ( int i = 0; i < features.size(); i++ )
+  {
+    QgsFeature &f = features[i];
+    const QgsAttributeMap &srcMap = f.attributeMap();
+    QgsAttributeMap dstMap;
+
+    foreach( int src, srcMap.keys() )
+    {
+      int dst = remap.value( src, -1 );
+      if ( dst < 0 )
+        continue;
+
+      dstMap.insert( dst, srcMap[ src ] );
+    }
+
+    f.setAttributeMap( dstMap );
+  }
+
+  pasteVectorLayer->addFeatures( features );
+  pasteVectorLayer->endEditCommand();
+  mMapCanvas->refresh();
 }
 
 void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
@@ -6803,17 +6795,22 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
 
 /** Add a raster layer directly without prompting user for location
   The caller must provide information compatible with the provider plugin
-  using the uri and baseName. The provider can use these
+  using the rasterLayerPath and baseName. The provider can use these
   parameters in any way necessary to initialize the layer. The baseName
   parameter is used in the Map Legend so it should be formed in a meaningful
   way.
 
   \note   Copied from the equivalent addVectorLayer function in this file
+  TODO    Make it work for rasters specifically.
   */
 QgsRasterLayer* QgisApp::addRasterLayer(
-  QString const &uri,
+  QString const &rasterLayerPath,
   QString const &baseName,
-  QString const &providerKey )
+  QString const &providerKey,
+  QStringList const & layers,
+  QStringList const & styles,
+  QString const &format,
+  QString const &crs )
 {
   QgsDebugMsg( "about to get library for " + providerKey );
 
@@ -6824,21 +6821,42 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 
   mMapCanvas->freeze();
 
+// Let render() do its own cursor management
+//  QApplication::setOverrideCursor(Qt::WaitCursor);
+
   // create the layer
   QgsRasterLayer *layer;
-  QgsDebugMsg( "Creating new raster layer using " + uri
-               + " with baseName of " + baseName );
+  /* Eliminate the need to instantiate the layer based on provider type.
+     The caller is responsible for cobbling together the needed information to
+     open the layer
+     */
+  QgsDebugMsg( "Creating new raster layer using " + rasterLayerPath
+               + " with baseName of " + baseName
+               + " and layer list of " + layers.join( ", " )
+               + " and style list of " + styles.join( ", " )
+               + " and format of " + format
+               + " and providerKey of " + providerKey
+               + " and CRS of " + crs );
 
   // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-  layer = new QgsRasterLayer( uri, baseName, providerKey );
+  layer = new QgsRasterLayer( 0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs );
 
   QgsDebugMsg( "Constructed new layer." );
 
-  if ( layer && layer->isValid() )
+  if ( layer && shouldAskUserForGDALSublayers( layer ) )
+  {
+    askUserForGDALSublayers( layer );
+
+    // The first layer loaded is not useful in that case. The user can select it in
+    // the list if he wants to load it.
+    delete layer;
+  }
+  else if ( layer && layer->isValid() )
   {
     addRasterLayer( layer );
 
     statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+
   }
   else
   {
@@ -6853,6 +6871,10 @@ QgsRasterLayer* QgisApp::addRasterLayer(
   mMapCanvas->refresh();
 
   return layer;
+
+// Let render() do its own cursor management
+//  QApplication::restoreOverrideCursor();
+
 } // QgisApp::addRasterLayer
 
 

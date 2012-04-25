@@ -169,7 +169,7 @@ class QgsCoordinateReferenceSystem
          *  Additionally logic may also be applied if the result from the OGR methods
          *  is inconclusive.
          */
-         bool equals(QString theProj4String);
+         bool equals(QString theProj4String) /Deprecated/;
 
          /*! Restores state from the given Dom node.
          * @param theNode The node from which state will be restored

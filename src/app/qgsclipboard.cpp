@@ -30,9 +30,11 @@
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
 
 QgsClipboard::QgsClipboard()
     : mFeatureClipboard()
+    , mFeatureFields()
 {
 }
 
@@ -40,13 +42,19 @@ QgsClipboard::~QgsClipboard()
 {
 }
 
-void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList& features )
+void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
 {
+  if ( !src )
+    return;
+
   QSettings settings;
   bool copyWKT = settings.value( "qgis/copyGeometryAsWKT", true ).toBool();
 
   // Replace the QGis clipboard.
-  mFeatureClipboard = features;
+  mFeatureFields = src->pendingFields();
+  mFeatureClipboard = src->selectedFeatures();
+  mCRS = src->crs();
+
   QgsDebugMsg( "replaced QGis clipboard." );
 
   // Replace the system clipboard.
@@ -59,7 +67,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
     textFields += "wkt_geom";
   }
 
-  for ( QgsFieldMap::const_iterator fit = fields.begin(); fit != fields.end(); ++fit )
+  for ( QgsFieldMap::const_iterator fit = mFeatureFields.begin(); fit != mFeatureFields.end(); ++fit )
   {
     textFields += fit->name();
   }
@@ -67,7 +75,7 @@ void QgsClipboard::replaceWithCopyOf( const QgsFieldMap& fields, QgsFeatureList&
   textFields.clear();
 
   // then the field contents
-  for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
+  for ( QgsFeatureList::iterator it = mFeatureClipboard.begin(); it != mFeatureClipboard.end(); ++it )
   {
     QgsAttributeMap attributes = it->attributeMap();
 
@@ -153,11 +161,6 @@ QgsFeatureList QgsClipboard::transformedCopyOf( QgsCoordinateReferenceSystem des
   }
 
   return featureList;
-}
-
-void QgsClipboard::setCRS( QgsCoordinateReferenceSystem crs )
-{
-  mCRS = crs;
 }
 
 QgsCoordinateReferenceSystem QgsClipboard::crs()

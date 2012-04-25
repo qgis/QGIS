@@ -320,10 +320,6 @@ class DBManager(QMainWindow):
 				self.unregisterAction( action, menuName )
 		del self._registeredDbActions
 
-	def about(self):
-		from .dlg_about import DlgAbout
-		DlgAbout(self).exec_()
-
 	def setupUi(self):
 		self.setWindowTitle("DB Manager")
 		self.setWindowIcon(QIcon(":/db_manager/icon"))
@@ -359,8 +355,6 @@ class DBManager(QMainWindow):
 		actionMenuSchema = self.menuBar.addMenu(self.menuSchema)
 		self.menuTable = QMenu("&Table", self)
 		actionMenuTable = self.menuBar.addMenu(self.menuTable)
-		self.menuHelp = QMenu("&Help", self)
-		actionMenuHelp = self.menuBar.addMenu(self.menuHelp)
 
 		self.setMenuBar(self.menuBar)
 
@@ -390,9 +384,6 @@ class DBManager(QMainWindow):
 		self.actionShowSystemTables.setCheckable(True)
 		self.actionShowSystemTables.setChecked(True)
 		self.actionShowSystemTables.setVisible(False)
-
-		# menu HELP
-		self.actionAbout = self.menuHelp.addAction(QIcon(":/db_manager/about"), "&About", self.about)
 
 		# add actions to the toolbar
 		self.toolBar.addAction( self.actionRefresh )

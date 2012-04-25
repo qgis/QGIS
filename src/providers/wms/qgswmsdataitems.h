@@ -2,7 +2,6 @@
 #define QGSWMSDATAITEMS_H
 
 #include "qgsdataitem.h"
-#include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
 
 class QgsWMSConnectionItem : public QgsDataCollectionItem
@@ -33,13 +32,13 @@ class QgsWMSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QgsWmsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWmsLayerProperty layerProperties );
+                     QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
     ~QgsWMSLayerItem();
 
     QString createUri();
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QgsDataSourceURI mDataSourceUri;
+    QString mConnInfo;
     QgsWmsLayerProperty mLayerProperty;
 };
 

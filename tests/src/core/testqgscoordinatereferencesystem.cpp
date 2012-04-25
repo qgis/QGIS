@@ -46,7 +46,6 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void validate();
     void equality();
     void noEquality();
-    void equals();
     void readXML();
     void writeXML();
     void setCustomSrsValidation();
@@ -69,10 +68,12 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
-  QgsApplication::initQgis( );
+  QgsApplication::init();
   QgsApplication::showSettings();
-
+  qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
+  qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
+  qDebug() << "GDAL version (runtime): " << GDALVersionInfo("RELEASE_NAME");
+  qDebug() << "PROJ.4 version:         " << PJ_VERSION;
 }
 
 void TestQgsCoordinateReferenceSystem::wktCtor()
@@ -100,7 +101,7 @@ void TestQgsCoordinateReferenceSystem::copyCtor()
 void TestQgsCoordinateReferenceSystem::assignmentCtor()
 {
   QgsCoordinateReferenceSystem myCrs( GEOSRID,
-                                    QgsCoordinateReferenceSystem::EpsgCrsId );
+                                      QgsCoordinateReferenceSystem::EpsgCrsId );
   QgsCoordinateReferenceSystem myCrs2 = myCrs;
   debugPrint( myCrs2 );
   QVERIFY( myCrs2.isValid() );
@@ -179,16 +180,6 @@ void TestQgsCoordinateReferenceSystem::noEquality()
   debugPrint( myCrs );
   QVERIFY( myCrs != myCrs2 );
 }
-void TestQgsCoordinateReferenceSystem::equals()
-{
-  QgsCoordinateReferenceSystem myCrs;
-  myCrs.createFromSrid( GEOSRID );
-  debugPrint( myCrs );
-  //Note: OSRImportFromProj4 (used internally by equals)
-  //drops the TOWGS from the WKT which causes this test to fail
-  QString myProj4( GEOPROJ4 );
-  QVERIFY( myCrs.equals( myProj4 ) );
-}
 void TestQgsCoordinateReferenceSystem::readXML()
 {
   //QgsCoordinateReferenceSystem myCrs;
@@ -238,23 +229,24 @@ void TestQgsCoordinateReferenceSystem::toWkt()
   myCrs.createFromSrid( GEOSRID );
   QString myWkt = myCrs.toWkt();
   debugPrint( myCrs );
+#if GDAL_VERSION_NUM >= 1800
   //Note: this is not the same as GEOWKT as OGR strips off the TOWGS clause...
-  QString myStrippedWkt("GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
-     "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
-     "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
-     "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
-     "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
-  // for GDAL 1.7
-  QString myAltStrippedWkt("GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
-     "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
-     "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
-     "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
-     "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]");
-  qDebug() << "myWkt:\n";
-  qDebug() << myWkt;
-  qDebug() << "myStrippedWkt:\n";
-  qDebug() << myStrippedWkt;
-  QVERIFY( myWkt == myStrippedWkt || myWkt == myAltStrippedWkt );
+  QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
+                         "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+                         "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+                         "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY"
+                         "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
+#else
+  // for GDAL <1.8
+  QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
+                            "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+                            "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+                            "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
+                            "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
+#endif
+  qDebug() << "wkt:      " << myWkt;
+  qDebug() << "stripped: " << myStrippedWkt;
+  QVERIFY( myWkt == myStrippedWkt );
 }
 void TestQgsCoordinateReferenceSystem::toProj4()
 {
@@ -263,8 +255,7 @@ void TestQgsCoordinateReferenceSystem::toProj4()
   debugPrint( myCrs );
   //first proj string produced by gdal 1.8-1.9
   //second by gdal 1.7
-  QVERIFY( myCrs.toProj4() == "+proj=longlat +datum=WGS84 +no_defs" ||
-           myCrs.toProj4() == "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+  QVERIFY( myCrs.toProj4() == GEOPROJ4 );
 }
 void TestQgsCoordinateReferenceSystem::geographicFlag()
 {
@@ -289,11 +280,11 @@ void TestQgsCoordinateReferenceSystem::setValidationHint()
 }
 
 void TestQgsCoordinateReferenceSystem::debugPrint(
-                              QgsCoordinateReferenceSystem &theCrs )
+  QgsCoordinateReferenceSystem &theCrs )
 {
   QgsDebugMsg( "***SpatialRefSystem***" );
   QgsDebugMsg( "* Valid : " + ( theCrs.isValid() ? QString( "true" ) :
-                                                   QString( "false" ) ) );
+                                QString( "false" ) ) );
   QgsDebugMsg( "* SrsId : " + QString::number( theCrs.srsid() ) );
   QgsDebugMsg( "* EPSG ID : " + theCrs.authid() );
   QgsDebugMsg( "* PGIS ID : " + QString::number( theCrs.postgisSrid() ) );
@@ -312,9 +303,6 @@ void TestQgsCoordinateReferenceSystem::debugPrint(
   {
     QgsDebugMsg( "* Units : degrees" );
   }
-
-  QgsDebugMsg( QString( "** GDAL version: %1" ).arg( GDAL_RELEASE_NAME ) );
-  QgsDebugMsg( QString( "** PROJ.4 version: %1" ).arg( PJ_VERSION ) );
 }
 
 QTEST_MAIN( TestQgsCoordinateReferenceSystem )

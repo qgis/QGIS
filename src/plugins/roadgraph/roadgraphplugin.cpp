@@ -101,21 +101,17 @@ void RoadGraphPlugin::initGui()
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mQShortestPathDock );
 
   // Create the action for tool
-  mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Road graph settings" ), this );
-  mInfoAction = new QAction( QIcon( ":/roadgraph/about.png" ), tr( "About" ), this );
+  mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Settings" ), this );
 
   // Set the what's this text
   mQSettingsAction->setWhatsThis( tr( "Road graph plugin settings" ) );
-  mInfoAction->setWhatsThis( tr( "About Road graph plugin" ) );
 
   setGuiElementsToDefault();
 
   // Connect the action to slots
   connect( mQSettingsAction, SIGNAL( triggered() ), this, SLOT( property() ) );
-  connect( mInfoAction, SIGNAL( triggered() ), SLOT( about() ) );
 
   mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mInfoAction );
 
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
@@ -131,7 +127,6 @@ void RoadGraphPlugin::unload()
 {
   // remove the GUI
   mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mInfoAction );
 
   // disconnect
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -184,57 +179,6 @@ void RoadGraphPlugin::property()
   QgsProject::instance()->writeEntry( "roadgraphplugin", "/topologyToleranceFactor", mTopologyToleranceFactor );
   setGuiElementsToDefault();
 } //RoadGraphPlugin::property()
-
-void RoadGraphPlugin::about()
-{
-  QDialog dlg( mQGisIface->mainWindow() );
-  dlg.setWindowFlags( dlg.windowFlags() | Qt::MSWindowsFixedSizeDialogHint );
-  dlg.setWindowFlags( dlg.windowFlags() &~ Qt::WindowContextHelpButtonHint );
-  dlg.setWindowTitle( tr( "About RoadGraph" ) );
-  QVBoxLayout *lines = new QVBoxLayout( &dlg );
-  QLabel *title = new QLabel( "<b>RoadGraph plugin</b>" );
-  title->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
-  QLabel *version = new QLabel( sPluginVersion );
-  version->setAlignment( Qt::AlignHCenter | Qt::AlignVCenter );
-  lines->addWidget( title );
-  lines->addWidget( version );
-  lines->addWidget( new QLabel( tr( "Find shortest path on road's graph" ) ) );
-  lines->addWidget( new QLabel( tr( "<b>Developers:</b>" ) ) );
-  lines->addWidget( new QLabel( "    Sergey Yakushev" ) );
-  lines->addWidget( new QLabel( tr( "<b>Homepage:</b>" ) ) );
-
-  QSettings settings;
-  QString localeFullName, localeShortName;
-  bool overrideLocale = settings.value( "locale/overrideFlag", QVariant( false ) ).toBool();
-  if ( !overrideLocale )
-  {
-    localeFullName = QLocale().system().name();
-  }
-  else
-  {
-    localeFullName = settings.value( "locale/userLocale", QVariant( "" ) ).toString();
-  }
-
-  localeShortName = localeFullName.left( 2 );
-  QLabel *link = new QLabel();
-  if ( localeShortName == "ru" || localeShortName == "uk" )
-  {
-    link->setText( "<a href=\"http://gis-lab.info/qa/road-graph.html\">http://gis-lab.info/qa/road-graph.html</a>" );
-  }
-  else
-  {
-    link->setText( "<a href=\"http://gis-lab.info/qa/road-graph-eng.html\">http://gis-lab.info/qa/road-graph-eng.html</a>" );
-  }
-
-  link->setOpenExternalLinks( true );
-  lines->addWidget( link );
-
-  QPushButton *btnClose = new QPushButton( tr( "Close" ) );
-  lines->addWidget( btnClose );
-  QObject::connect( btnClose, SIGNAL( clicked() ), &dlg, SLOT( close() ) );
-
-  dlg.exec();
-} //RoadGraphPlugin::about()
 
 void RoadGraphPlugin::projectRead()
 {

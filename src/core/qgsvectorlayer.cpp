@@ -4018,7 +4018,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   foreach( QgsFeatureId fid, mSelectedFeatureIds )
   {
     features.push_back( QgsFeature() );
-    featureAtId( fid, features.back(), true, true );
+    featureAtId( fid, features.back(), geometryType() != QGis::NoGeometry, true );
   }
 
   return features;

@@ -21,12 +21,12 @@
 
 class Test[testClassCamelCaseName]: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     [TestMethods]
 };
 
-QTEST_MAIN(Test[testClassCamelCaseName])
+QTEST_MAIN( Test[testClassCamelCaseName] )
 #include "test[testClassLowerCaseName].moc.cpp"
 
 

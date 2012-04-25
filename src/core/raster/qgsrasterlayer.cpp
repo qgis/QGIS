@@ -16,7 +16,6 @@ email                : tim at linfiniti.com
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmaplayerregistry.h"
@@ -81,12 +80,6 @@ typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QStrin
 // doubles can take for the current system.  (Yes, 20 was arbitrary.)
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
-QgsRasterLayer::QgsRasterLayer()
-    : QgsMapLayer( RasterLayer )
-{
-  init();
-  mValid = false;
-}
 
 QgsRasterLayer::QgsRasterLayer(
   QString const & path,
@@ -106,12 +99,18 @@ QgsRasterLayer::QgsRasterLayer(
 
   // TODO, call constructor with provider key for now
   init();
-  setDataProvider( "gdal" );
+  setDataProvider( "gdal", QStringList(), QStringList(), QString(), QString(), loadDefaultStyleFlag );
 
   if ( mValid && loadDefaultStyleFlag )
   {
     bool defaultLoadedFlag = false;
     loadDefaultStyle( defaultLoadedFlag );
+    // I'm no sure if this should be used somehow, in pre raster-providers there was
+    // only mLastViewPort init after this block, nothing to do with style
+    //if ( defaultLoadedFlag )
+    //{
+    //return;
+    //}
   }
   return;
 
@@ -122,14 +121,15 @@ QgsRasterLayer::QgsRasterLayer(
  * @todo Rename into a general constructor when the old raster interface is retired
  * parameter dummy is just there to distinguish this function signature from the old non-provider one.
  */
-QgsRasterLayer::QgsRasterLayer( const QString & uri,
-                                const QString & baseName,
-                                const QString & providerKey,
-                                bool loadDefaultStyleFlag )
-    : QgsMapLayer( RasterLayer, baseName, uri )
-    // Constant that signals property not used.
-    , QSTRING_NOT_SET( "Not Set" )
-    , TRSTRING_NOT_SET( tr( "Not Set" ) )
+QgsRasterLayer::QgsRasterLayer( int dummy,
+                                QString const & rasterLayerPath,
+                                QString const & baseName,
+                                QString const & providerKey,
+                                QStringList const & layers,
+                                QStringList const & styles,
+                                QString const & format,
+                                QString const & crs )
+    : QgsMapLayer( RasterLayer, baseName, rasterLayerPath )
     , mStandardDeviations( 0 )
     , mDataProvider( 0 )
     , mEditable( false )
@@ -138,15 +138,22 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     , mInvertColor( false )
     , mModified( false )
     , mProviderKey( providerKey )
+    , mLayers( layers )
+    , mStyles( styles )
+    , mFormat( format )
+    , mCrs( crs )
 {
-  init();
-  setDataProvider( providerKey );
+  Q_UNUSED( dummy );
 
-  if ( mValid && loadDefaultStyleFlag )
-  {
-    bool defaultLoadedFlag = false;
-    loadDefaultStyle( defaultLoadedFlag );
-  }
+  QgsDebugMsg( "(8 arguments) starting. with layer list of " +
+               layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
+               format +  " and CRS of " + crs );
+
+
+  init();
+  // if we're given a provider type, try to create and bind one to this layer
+  bool loadDefaultStyleFlag = false ; // ???
+  setDataProvider( providerKey, layers, styles, format, crs, loadDefaultStyleFlag );
 
   // Default for the popup menu
   // TODO: popMenu = 0;
@@ -161,6 +168,8 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 
 
   // TODO: Connect signals from the dataprovider to the qgisapp
+
+  QgsDebugMsg( "(8 arguments) exiting." );
 
   emit statusChanged( tr( "QgsRasterLayer created" ) );
 } // QgsRasterLayer ctor
@@ -2199,11 +2208,26 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
   return myDataProvider;
 }
 
+void QgsRasterLayer::setDataProvider( QString const & provider,
+                                      QStringList const & layers,
+                                      QStringList const & styles,
+                                      QString const & format,
+                                      QString const & crs )
+{
+  setDataProvider( provider, layers, styles, format, crs, false );
+}
+
 /** Copied from QgsVectorLayer::setDataProvider
  *  TODO: Make it work in the raster environment
  */
-void QgsRasterLayer::setDataProvider( QString const & provider )
+void QgsRasterLayer::setDataProvider( QString const & provider,
+                                      QStringList const & layers,
+                                      QStringList const & styles,
+                                      QString const & format,
+                                      QString const & theCrs,
+                                      bool loadDefaultStyleFlag )
 {
+  Q_UNUSED( loadDefaultStyleFlag );
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
@@ -2211,6 +2235,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mValid = false;            // assume the layer is invalid until we determine otherwise
 
   // set the layer name (uppercase first character)
+
   if ( ! mLayerName.isEmpty() )   // XXX shouldn't this happen in parent?
   {
     setLayerName( mLayerName );
@@ -2224,6 +2249,30 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     return;
   }
+
+
+  QgsDebugMsg( QString( "Instantiated the data provider plugin with layer list of %1 and style list of %2 and format of %3 and CRS of %4" )
+               .arg( layers.join( ", " ) )
+               .arg( styles.join( ", " ) )
+               .arg( format )
+               .arg( theCrs )
+             );
+  if ( !mDataProvider->isValid() )
+  {
+    if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !theCrs.isNull() )
+    {
+      QgsMessageLog::logMessage( tr( "Data provider is invalid (layers: %1, styles: %2, formats: %3)" )
+                                 .arg( layers.join( ", " ) )
+                                 .arg( styles.join( ", " ) )
+                                 .arg( format ),
+                                 tr( "Raster" ) );
+    }
+    return;
+  }
+
+  mDataProvider->addLayers( layers, styles );
+  mDataProvider->setImageEncoding( format );
+  mDataProvider->setImageCrs( theCrs );
 
   setNoDataValue( mDataProvider->noDataValue() );
 
@@ -2250,7 +2299,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mDrawingStyle = MultiBandColor;  //sensible default
 
   // Setup source CRS
-  setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
+  if ( mProviderKey == "wms" )
+  {
+    QgsCoordinateReferenceSystem crs;
+    crs.createFromOgcWmsCrs( theCrs );
+    setCrs( crs );
+  }
+  else
+  {
+    setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
+  }
 
   QString mySourceWkt = crs().toWkt();
 
@@ -3175,42 +3233,33 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 
   QDomNode rpNode = layer_node.namedItem( "rasterproperties" );
 
+  // Collect sublayer names and styles
+  mLayers.clear();
+  mStyles.clear();
+
   if ( mProviderKey == "wms" )
   {
-    // >>> BACKWARD COMPATIBILITY < 1.9
-    // The old WMS URI format does not contains all the informations, we add them here.
-    if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
+    QDomElement layerElement = rpNode.firstChildElement( "wmsSublayer" );
+    while ( !layerElement.isNull() )
     {
-      QgsDebugMsg( "Old WMS URI format detected -> adding params" );
-      QgsDataSourceURI uri;
-      uri.setEncodedUri( mDataSource );
-      QDomElement layerElement = rpNode.firstChildElement( "wmsSublayer" );
-      while ( !layerElement.isNull() )
-      {
-        // TODO: sublayer visibility - post-0.8 release timeframe
+      // TODO: sublayer visibility - post-0.8 release timeframe
 
-        // collect name for the sublayer
-        uri.setParam( "layers",  layerElement.namedItem( "name" ).toElement().text() );
+      // collect name for the sublayer
+      mLayers += layerElement.namedItem( "name" ).toElement().text();
 
-        // collect style for the sublayer
-        uri.setParam( "styles", layerElement.namedItem( "style" ).toElement().text() );
+      // collect style for the sublayer
+      mStyles += layerElement.namedItem( "style" ).toElement().text();
 
-        layerElement = layerElement.nextSiblingElement( "wmsSublayer" );
-      }
-
-      // Collect format
-      QDomNode formatNode = rpNode.namedItem( "wmsFormat" );
-      uri.setParam( "format", rpNode.namedItem( "wmsFormat" ).toElement().text() );
-
-      // WMS CRS URL param should not be mixed with that assigned to the layer.
-      // In the old WMS URI version there was no CRS and layer crs().authid() was used.
-      uri.setParam( "crs", crs().authid() );
-      mDataSource = uri.encodedUri();
+      layerElement = layerElement.nextSiblingElement( "wmsSublayer" );
     }
-    // <<< BACKWARD COMPATIBILITY < 1.9
+
+    // Collect format
+    mFormat = rpNode.namedItem( "wmsFormat" ).toElement().text();
   }
 
-  setDataProvider( mProviderKey );
+  mCrs = crs().authid();
+  // Collect CRS
+  setDataProvider( mProviderKey, mLayers, mStyles, mFormat, mCrs );
 
   QString theError;
   bool res = readSymbology( layer_node, theError );
@@ -3238,7 +3287,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
       QgsDebugMsg( "data changed, reload provider" );
       closeDataProvider();
       init();
-      setDataProvider( mProviderKey );
+      setDataProvider( mProviderKey, mLayers, mStyles, mFormat, mCrs );
     }
   }
 
@@ -3260,6 +3309,48 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 
   QStringList sl = subLayers();
   QStringList sls = mDataProvider->subLayerStyles();
+
+  QStringList::const_iterator layerStyle = sls.begin();
+
+  if ( mProviderKey == "wms" )
+  {
+    // <rasterproperties><wmsSublayer>
+    for ( QStringList::const_iterator layerName  = sl.begin();
+          layerName != sl.end();
+          ++layerName )
+    {
+
+      QgsDebugMsg( QString( "<rasterproperties><wmsSublayer> %1" ).arg( layerName->toLocal8Bit().data() ) );
+
+      QDomElement sublayerElement = document.createElement( "wmsSublayer" );
+
+      // TODO: sublayer visibility - post-0.8 release timeframe
+
+      // <rasterproperties><wmsSublayer><name>
+      QDomElement sublayerNameElement = document.createElement( "name" );
+      QDomText sublayerNameText = document.createTextNode( *layerName );
+      sublayerNameElement.appendChild( sublayerNameText );
+      sublayerElement.appendChild( sublayerNameElement );
+
+      // <rasterproperties><wmsSublayer><style>
+      QDomElement sublayerStyleElement = document.createElement( "style" );
+      QDomText sublayerStyleText = document.createTextNode( *layerStyle );
+      sublayerStyleElement.appendChild( sublayerStyleText );
+      sublayerElement.appendChild( sublayerStyleElement );
+
+      rasterPropertiesElement.appendChild( sublayerElement );
+
+      // This assumes there are exactly the same number of "layerName"s as there are "layerStyle"s
+      ++layerStyle;
+    }
+
+    // <rasterproperties><wmsFormat>
+    QDomElement formatElement = document.createElement( "wmsFormat" );
+    QDomText formatText =
+      document.createTextNode( mDataProvider->imageEncoding() );
+    formatElement.appendChild( formatText );
+    rasterPropertiesElement.appendChild( formatElement );
+  }
 
   // <mDrawingStyle>
   QDomElement drawStyleElement = document.createElement( "mDrawingStyle" );
@@ -4561,7 +4652,7 @@ bool QgsRasterLayer::update()
     QgsDebugMsg( "reload data" );
     closeDataProvider();
     init();
-    setDataProvider( mProviderKey );
+    setDataProvider( mProviderKey, mLayers, mStyles, mFormat, mCrs );
     emit dataChanged();
   }
   return mValid;

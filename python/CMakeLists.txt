@@ -34,7 +34,6 @@ INCLUDE_DIRECTORIES(
     ../src/core/gps/qextserialport
     ../src/core/raster
     ../src/core/renderer
-    ../src/core/spatialindex
     ../src/core/symbology
     ../src/core/symbology-ng
     ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h

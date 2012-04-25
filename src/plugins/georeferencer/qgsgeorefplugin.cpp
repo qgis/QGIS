@@ -52,7 +52,6 @@
 #include "qgsgeorefplugin.h"
 
 #include <QFile>
-//#include <QDialog>
 #include <QMessageBox>
 
 //
@@ -101,9 +100,6 @@ void QgsGeorefPlugin::initGui()
   // Connect the action to the run
   connect( mActionRunGeoref, SIGNAL( triggered() ), this, SLOT( run() ) );
 
-  mActionAbout = new QAction( QIcon(), tr( "&About" ), this );
-  connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
-
   setCurrentTheme( "" );
   // this is called when the icon theme is changed
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -111,7 +107,6 @@ void QgsGeorefPlugin::initGui()
   // Add to the toolbar & menu
   mQGisIface->addRasterToolBarIcon( mActionRunGeoref );
   mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
-  mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionAbout );
 }
 
 // Slot called when the buffer menu item is triggered
@@ -127,12 +122,10 @@ void QgsGeorefPlugin::run()
 void QgsGeorefPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionAbout );
   mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
   mQGisIface->removeRasterToolBarIcon( mActionRunGeoref );
 
   delete mActionRunGeoref;
-  delete mActionAbout;
 
   delete mPluginGui;
   mPluginGui = NULL;
@@ -142,7 +135,6 @@ void QgsGeorefPlugin::unload()
 void QgsGeorefPlugin::setCurrentTheme( QString )
 {
   mActionRunGeoref->setIcon( getThemeIcon( "/mGeorefRun.png" ) );
-  mActionAbout->setIcon( getThemeIcon( "/mActionAbout.png" ) );
 }
 
 QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
@@ -161,37 +153,11 @@ QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
   }
 }
 
-void QgsGeorefPlugin::about( )
-{
-  QString title = QString( "About Georeferencer" );
-  // sort by date of contribution
-  QString text = QString( "<center><b>Georeferencer GDAL</b></center>"
-                          "<center>%1</center>"
-                          "<p>Adding projection info to rasters using GDAL<br>"
-                          "<b>Developers:</b>"
-                          "<ol type=disc>"
-                          "<li>Jack R"
-                          "<li>Maxim Dubinin"
-                          "<li>Manuel Massing"
-                          "<li>Lars Luthman"
-                          "</ol>"
-                          "<p><b>Homepage:</b><br>"
-                          "<a href=\"http://gis-lab.info/qa/qgis-georef-new-eng.html\">http://gis-lab.info/qa/qgis-georef-new-eng.html</a>" ).arg( sPluginVersion );
-
-  // this is required for adding georef icon in to left side of dialog
-  // create dynamicaly because on Mac this dialog is modeless
-  QWidget *w = new QWidget;
-  w->setAttribute( Qt::WA_DeleteOnClose );
-  w->setWindowIcon( getThemeIcon( "/mGeorefRun.png" ) );
-  QMessageBox::about( w, title, text );
-}
-
 //////////////////////////////////////////////////////////////////////
 //
 //                  END OF MANDATORY PLUGIN METHODS
 //
 //////////////////////////////////////////////////////////////////////
-
 
 
 //////////////////////////////////////////////////////////////////////////

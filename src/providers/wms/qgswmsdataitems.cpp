@@ -2,7 +2,6 @@
 
 #include "qgslogger.h"
 
-#include "qgsdatasourceuri.h"
 #include "qgswmsconnection.h"
 #include "qgswmssourceselect.h"
 
@@ -28,8 +27,8 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   if ( !wmsProvider )
     return children;
 
-  QgsDataSourceURI uri = connection.uri();
-  QgsDebugMsg( "uri = " + uri.encodedUri() );
+  QString mConnInfo = connection.connectionInfo();
+  QgsDebugMsg( "mConnInfo = " + mConnInfo );
 
   // Attention: supportedLayers() gives tree leafes, not top level
   if ( !wmsProvider->supportedLayers( mLayerProperties ) )
@@ -51,7 +50,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
 
-    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, uri, layerProperty );
+    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, mConnInfo, layerProperty );
 
     children.append( layer );
   }
@@ -104,15 +103,14 @@ void QgsWMSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, QgsWmsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWmsLayerProperty layerProperty )
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperty )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" ),
     mCapabilitiesProperty( capabilitiesProperty ),
-    mDataSourceUri( dataSourceUri ),
+    mConnInfo( connInfo ),
     mLayerProperty( layerProperty )
     //mProviderKey ("wms"),
     //mLayerType ( QgsLayerItem::Raster )
 {
-  QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
   foreach( QgsWmsLayerProperty layerProperty, mLayerProperty.layer )
@@ -120,7 +118,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
-    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, mDataSourceUri, layerProperty );
+    QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, mConnInfo, layerProperty );
     mChildren.append( layer );
   }
 
@@ -137,16 +135,28 @@ QgsWMSLayerItem::~QgsWMSLayerItem()
 
 QString QgsWMSLayerItem::createUri()
 {
+  QString uri;
   if ( mLayerProperty.name.isEmpty() )
-    return ""; // layer collection
+    return uri; // layer collection
+
+  QString rasterLayerPath = mConnInfo;
+  QString baseName = mLayerProperty.name;
 
   // Number of styles must match number of layers
-  mDataSourceUri.setParam( "layers", mLayerProperty.name );
-  QString style = mLayerProperty.style.size() > 0 ? mLayerProperty.style[0].name : "";
-  mDataSourceUri.setParam( "styles", style );
+  QStringList layers;
+  layers << mLayerProperty.name;
+  QStringList styles;
+  if ( mLayerProperty.style.size() > 0 )
+  {
+    styles.append( mLayerProperty.style[0].name );
+  }
+  else
+  {
+    styles << ""; // TODO: use loadDefaultStyleFlag
+  }
 
   QString format;
-  // get first supported by qt and server
+  // get first supporte by qt and server
   QVector<QgsWmsSupportedFormat> formats = QgsWmsProvider::supportedFormats();
   foreach( QgsWmsSupportedFormat f, formats )
   {
@@ -156,8 +166,6 @@ QString QgsWMSLayerItem::createUri()
       break;
     }
   }
-  mDataSourceUri.setParam( "format", format );
-
   QString crs;
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
@@ -174,10 +182,9 @@ QString QgsWMSLayerItem::createUri()
   {
     crs = mLayerProperty.crs[0];
   }
-  mDataSourceUri.setParam( "crs", crs );
-  //uri = rasterLayerPath + "|layers=" + layers.join( "," ) + "|styles=" + styles.join( "," ) + "|format=" + format + "|crs=" + crs;
+  uri = rasterLayerPath + "|layers=" + layers.join( "," ) + "|styles=" + styles.join( "," ) + "|format=" + format + "|crs=" + crs;
 
-  return mDataSourceUri.encodedUri();
+  return uri;
 }
 
 // ---------------------------------------------------------------------------

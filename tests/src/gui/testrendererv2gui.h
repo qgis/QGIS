@@ -8,17 +8,17 @@ class QgsMapCanvas;
 class TestRendererV2GUI : public QMainWindow
 {
     Q_OBJECT
-public:
-    explicit TestRendererV2GUI(QWidget *parent = 0);
+  public:
+    explicit TestRendererV2GUI( QWidget *parent = 0 );
     void loadLayers();
 
-signals:
+  signals:
 
-public slots:
+  public slots:
     void setRenderer();
 
-protected:
-  QgsMapCanvas* mMapCanvas;
+  protected:
+    QgsMapCanvas* mMapCanvas;
 };
 
 #endif // TESTRENDERERV2GUI_H

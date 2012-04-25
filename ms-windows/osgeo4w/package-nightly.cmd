@@ -87,18 +87,18 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake -G "Visual Studio 9 2008" ^
+	-D BUILDNAME="OSGeo4W-Nightly-VC9" ^
+	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_SPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_ASTYLE=TRUE ^
 	-D WITH_GLOBE=TRUE ^
-	-D WITH_INTERNAL_SPATIALITE=FALSE ^
-	-D WITH_INTERNAL_SPATIALINDEX=FALSE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GEOS_LIBRARY=%OSGEO4W_ROOT%/lib/geos_c_i.lib ^
-	-D SQLITE3_LIBRARY=%OSGEO4W_ROOT%/lib/sqlite3_i.lib ^
-	-D SPATIALITE_LIBRARY=%OSGEO4W_ROOT%/lib/spatialite_i.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
+	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
+	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python27/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python27/libs/python27.lib ^
@@ -111,6 +111,8 @@ cmake -G "Visual Studio 9 2008" ^
 	-D QT_PNG_LIBRARY=%O4W_ROOT%/lib/libpng13.lib ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
+	-D ZLIB_INCLUDE_DIR=%O4W_ROOT%/include ^
+	-D ZLIB_LIBRARY=%O4W_ROOT%/lib/zlib.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /Od /D NDEBUG" ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
@@ -126,14 +128,14 @@ if not errorlevel 1 goto error
 
 echo ZERO_CHECK: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ZERO_CHECK /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
-if errorlevel 1 goto error 
+if errorlevel 1 goto error
 
 echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
-if errorlevel 1 goto error 
+if errorlevel 1 goto error
 
 echo RUN_TESTS: %DATE% %TIME%>>%LOG% 2>&1
-%DEVENV% qgis%VERSION%.sln /Project Experimental /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
+%DEVENV% qgis%VERSION%.sln /Project Nightly /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 REM if errorlevel 1 echo "TESTS WERE NOT SUCCESSFUL."
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1

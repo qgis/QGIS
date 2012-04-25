@@ -40,7 +40,7 @@ public:
     on a different canvas and don't want them added to the main canvas automatically.
  */
  QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
-                                    bool theEmitSignal = true ) /Deprecated/;
+                                    bool theEmitSignal = true );
 
 
  /** Add a layer to the map of loaded layers 
@@ -53,7 +53,7 @@ public:
     Not emitting signal is useful when you want to use registry also for layers
     which won't be used in main map canvas but will be used in a special one
  */
- QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer /Transfer/, bool theEmitSignal = TRUE);
+ QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer /Transfer/, bool theEmitSignal = TRUE) /Deprecated/;
 
  /** Remove a set of layers from qgis
     @note As a side-effect QgsProject is made dirty.
@@ -116,7 +116,7 @@ signals:
 
  /** emitted when a layer is added to the registry
      connected to main map canvas and overview map canvas addLayer()
-     @note rather use layersWereAdded
+     @note rather use layerAdded
  */
  void layerWasAdded(QgsMapLayer * theMapLayer);
 

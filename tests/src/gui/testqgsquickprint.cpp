@@ -23,9 +23,9 @@
 
 #include <iostream>
 //qgis includes...
-#include <qgsmaprenderer.h> 
-#include <qgsmaplayer.h> 
-#include <qgsvectorlayer.h> 
+#include <qgsmaprenderer.h>
+#include <qgsmaplayer.h>
+#include <qgsvectorlayer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
@@ -38,16 +38,16 @@
  */
 class TestQgsQuickPrint: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(){};// will be called before each testfunction is executed.
-    void cleanup(){};// will be called after every testfunction.
+    void init() {};// will be called before each testfunction is executed.
+    void cleanup() {};// will be called after every testfunction.
 
     void basicMapTest();
   private:
-    bool imageCheck(QString theType); //as above
+    bool imageCheck( QString theType ); //as above
     QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpLinesLayer;
@@ -62,43 +62,43 @@ void TestQgsQuickPrint::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
   QgsApplication::showSettings();
   // Instantiate the plugin directory so that providers are loaded
-  QgsProviderRegistry::instance(QgsApplication::pluginPath());
+  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //
   //create a point layer that will be used in all tests...
   //
-  QString myDataDir (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + QDir::separator();
   QString myPointsFileName = mTestDataDir + "points.shp";
-  QFileInfo myPointFileInfo ( myPointsFileName );
-  mpPointsLayer = new QgsVectorLayer ( myPointFileInfo.filePath(),
-            myPointFileInfo.completeBaseName(), "ogr" );
+  QFileInfo myPointFileInfo( myPointsFileName );
+  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                      myPointFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpPointsLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
   //
   QString myPolysFileName = mTestDataDir + "polys.shp";
-  QFileInfo myPolyFileInfo ( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer ( myPolyFileInfo.filePath(),
-            myPolyFileInfo.completeBaseName(), "ogr" );
+  QFileInfo myPolyFileInfo( myPolysFileName );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
+                                     myPolyFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpPolysLayer);
-  
+  QgsMapLayerRegistry::instance()->addMapLayer( mpPolysLayer );
+
   //
   // Create a line layer that will be used in all tests...
   //
   QString myLinesFileName = mTestDataDir + "lines.shp";
-  QFileInfo myLineFileInfo ( myLinesFileName );
-  mpLinesLayer = new QgsVectorLayer ( myLineFileInfo.filePath(),
-            myLineFileInfo.completeBaseName(), "ogr" );
+  QFileInfo myLineFileInfo( myLinesFileName );
+  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
+                                     myLineFileInfo.completeBaseName(), "ogr" );
   // Register the layer with the registry
-  QgsMapLayerRegistry::instance()->addMapLayer(mpLinesLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
@@ -109,9 +109,9 @@ void TestQgsQuickPrint::initTestCase()
   myLayers << mpPointsLayer->getLayerID();
   myLayers << mpPolysLayer->getLayerID();
   myLayers << mpLinesLayer->getLayerID();
-  mpMapRenderer->setLayerSet(myLayers);
-  mpMapRenderer->setExtent(mpPointsLayer->extent());
-  mReport+= "<h1>QuickPrint Tests</h1>\n";
+  mpMapRenderer->setLayerSet( myLayers );
+  mpMapRenderer->setExtent( mpPointsLayer->extent() );
+  mReport += "<h1>QuickPrint Tests</h1>\n";
 }
 void TestQgsQuickPrint::cleanupTestCase()
 {
@@ -126,25 +126,25 @@ void TestQgsQuickPrint::cleanupTestCase()
     QDesktopServices::openUrl("file://"+myReportFile);
   }
   */
-  
+
 }
 
 void TestQgsQuickPrint::basicMapTest()
 {
   //make the legends really long so we can test
   //word wrapping
-  mpPointsLayer->setLayerName("This is a very very very long name it should word wrap");
-  mpPolysLayer->setLayerName("This is a very very very long name it should also word wrap");
-  mpLinesLayer->setLayerName("This is a very very very very long name it should word wrap");
-  
+  mpPointsLayer->setLayerName( "This is a very very very long name it should word wrap" );
+  mpPolysLayer->setLayerName( "This is a very very very long name it should also word wrap" );
+  mpLinesLayer->setLayerName( "This is a very very very very long name it should word wrap" );
+
   //now print the map
   QgsQuickPrint myQuickPrint;
-  myQuickPrint.setMapBackgroundColor ( Qt::cyan );
-  myQuickPrint.setOutputPdf (QDir::tempPath() + QDir::separator() + "quickprinttest.pdf");
-  myQuickPrint.setMapRenderer (mpMapRenderer);
-  myQuickPrint.setTitle ("Map Title");
-  myQuickPrint.setName ("Map Name");
-  myQuickPrint.setCopyright ("Copyright Text");
+  myQuickPrint.setMapBackgroundColor( Qt::cyan );
+  myQuickPrint.setOutputPdf( QDir::tempPath() + QDir::separator() + "quickprinttest.pdf" );
+  myQuickPrint.setMapRenderer( mpMapRenderer );
+  myQuickPrint.setTitle( "Map Title" );
+  myQuickPrint.setName( "Map Name" );
+  myQuickPrint.setCopyright( "Copyright Text" );
   //void setNorthArrow(QString theFileName);
   //void setLogo1(QString theFileName);
   //void setLogo2(QString theFileName);
@@ -156,20 +156,20 @@ void TestQgsQuickPrint::basicMapTest()
 // Helper functions below
 //
 
-bool TestQgsQuickPrint::imageCheck(QString theTestType)
+bool TestQgsQuickPrint::imageCheck( QString theTestType )
 {
-  //use the QgsRenderChecker test utility class to 
+  //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mpMapRenderer->setExtent(mpPointsLayer->extent());
+  mpMapRenderer->setExtent( mpPointsLayer->extent() );
   QString myExpectedImage = mTestDataDir + "expected_" + theTestType + ".png";
   QgsRenderChecker myChecker;
-  myChecker.setExpectedImage ( myExpectedImage );
-  myChecker.setMapRenderer ( mpMapRenderer );
+  myChecker.setExpectedImage( myExpectedImage );
+  myChecker.setMapRenderer( mpMapRenderer );
   bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
-QTEST_MAIN(TestQgsQuickPrint)
+QTEST_MAIN( TestQgsQuickPrint )
 #include "moc_testqgsquickprint.cxx"
 

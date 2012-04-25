@@ -116,7 +116,7 @@ extern "C"
 #define APPEND_STATUS_CREATEAFTER   (1)
 #define APPEND_STATUS_ADDINZIP      (2)
 
-  extern zipFile ZEXPORT zipOpen OF(( voidpf file, int append ) );
+  extern zipFile ZEXPORT zipOpen( voidpf file, int append );
   /*
     Create a zipfile.
        file is whatever the IO API accepts. For Qt IO API it's a pointer to
@@ -136,21 +136,21 @@ extern "C"
      Of couse, you can use RAW reading and writing to copy the file you did not want delte
   */
 
-  extern zipFile ZEXPORT zipOpen2 OF(( voidpf file,
-                                         int append,
-                                         zipcharpc* globalcomment,
-                                         zlib_filefunc_def* pzlib_filefunc_def ) );
+  extern zipFile ZEXPORT zipOpen2( voidpf file,
+                                     int append,
+                                     zipcharpc* globalcomment,
+                                     zlib_filefunc_def* pzlib_filefunc_def );
 
-  extern int ZEXPORT zipOpenNewFileInZip OF(( zipFile file,
-        const char* filename,
-        const zip_fileinfo* zipfi,
-        const void* extrafield_local,
-        uInt size_extrafield_local,
-        const void* extrafield_global,
-        uInt size_extrafield_global,
-        const char* comment,
-        int method,
-        int level ) );
+  extern int ZEXPORT zipOpenNewFileInZip( zipFile file,
+                                            const char* filename,
+                                            const zip_fileinfo* zipfi,
+                                            const void* extrafield_local,
+                                            uInt size_extrafield_local,
+                                            const void* extrafield_global,
+                                            uInt size_extrafield_global,
+                                            const char* comment,
+                                            int method,
+                                            int level );
   /*
     Open a file in the ZIP for writing.
     filename : the filename in zip (if NULL, '-' without quote will be used
@@ -165,7 +165,7 @@ extern "C"
   */
 
 
-  extern int ZEXPORT zipOpenNewFileInZip2 OF(( zipFile file,
+  extern int ZEXPORT zipOpenNewFileInZip2( zipFile file,
         const char* filename,
         const zip_fileinfo* zipfi,
         const void* extrafield_local,
@@ -175,13 +175,13 @@ extern "C"
         const char* comment,
         int method,
         int level,
-        int raw ) );
+        int raw );
 
   /*
     Same than zipOpenNewFileInZip, except if raw=1, we write raw file
    */
 
-  extern int ZEXPORT zipOpenNewFileInZip3 OF(( zipFile file,
+  extern int ZEXPORT zipOpenNewFileInZip3( zipFile file,
         const char* filename,
         const zip_fileinfo* zipfi,
         const void* extrafield_local,
@@ -196,7 +196,7 @@ extern "C"
         int memLevel,
         int strategy,
         const char* password,
-        uLong crcForCtypting ) );
+        uLong crcForCtypting );
 
   /*
     Same than zipOpenNewFileInZip2, except
@@ -206,29 +206,29 @@ extern "C"
    */
 
 
-  extern int ZEXPORT zipWriteInFileInZip OF(( zipFile file,
-        const void* buf,
-        unsigned len ) );
+  extern int ZEXPORT zipWriteInFileInZip( zipFile file,
+                                            const void* buf,
+                                            unsigned len );
   /*
     Write data in the zipfile
   */
 
-  extern int ZEXPORT zipCloseFileInZip OF(( zipFile file ) );
+  extern int ZEXPORT zipCloseFileInZip( zipFile file );
   /*
     Close the current file in the zipfile
   */
 
-  extern int ZEXPORT zipCloseFileInZipRaw OF(( zipFile file,
+  extern int ZEXPORT zipCloseFileInZipRaw( zipFile file,
         uLong uncompressed_size,
-        uLong crc32 ) );
+        uLong crc32 );
   /*
     Close the current file in the zipfile, for fiel opened with
       parameter raw=1 in zipOpenNewFileInZip2
     uncompressed_size and crc32 are value for the uncompressed size
   */
 
-  extern int ZEXPORT zipClose OF(( zipFile file,
-                                     const char* global_comment ) );
+  extern int ZEXPORT zipClose( zipFile file,
+                                 const char* global_comment );
   /*
     Close the zipfile
   */

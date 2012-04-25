@@ -55,13 +55,10 @@ ENDIF (WITH_POSTGRESQL)
 
 SET (WITH_INTERNAL_QWTPOLAR TRUE CACHE BOOL "Use internal build of QwtPolar")
 
-SET (WITH_INTERNAL_SPATIALINDEX TRUE CACHE BOOL "Use internal build of Spatialindex")
-
 SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built")
-
 IF (WITH_SPATIALITE)
-  SET (WITH_INTERNAL_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
-  SET (WITH_PYSPATIALITE TRUE CACHE BOOL "Determines whether PYSPATIALITE should be built")
+  SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
+  SET (WITH_PYSPATIALITE FALSE CACHE BOOL "Determines whether PYSPATIALITE should be built")
   IF(WITH_INTERNAL_SPATIALITE)
     SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
     SET(HAVE_SPATIALITE TRUE)
@@ -170,10 +167,7 @@ FIND_PACKAGE(Proj)
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(Expat)
-
-IF (NOT WITH_INTERNAL_SPATIALINDEX)
-  FIND_PACKAGE(Spatialindex REQUIRED)
-ENDIF(NOT WITH_INTERNAL_SPATIALINDEX)
+FIND_PACKAGE(Spatialindex REQUIRED)
 
 FIND_PACKAGE(Qwt REQUIRED)
 IF (NOT WITH_INTERNAL_QWTPOLAR)
@@ -271,7 +265,7 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 # if WIN32 should use zlib from QT
 FIND_PACKAGE(ZLIB)
 IF (ZLIB_FOUND)
-  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARY}")
   SET(HAVE_ZLIB TRUE)
 ELSE (ZLIB_FOUND)
   MESSAGE(STATUS "Could not find zlib (optional)")
@@ -526,19 +520,19 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 # create qgsversion.h
 FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 IF (GIT_MARKER)
-  FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
-  IF(GIT)
+  FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
+  IF(GITCOMMAND)
     IF(MSVC)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GIT}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ELSE(MSVC)
       EXECUTE_PROCESS(
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GIT} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
+        COMMAND ${GITCOMMAND} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
       )
       STRING(STRIP "${REVISION}" REVISION)
       ADD_CUSTOM_COMMAND(
@@ -548,11 +542,11 @@ IF (GIT_MARKER)
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ENDIF(MSVC)
-  ELSE(GIT)
+  ELSE(GITCOMMAND)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
     SET(REVISION "unknown")
     FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
-  ENDIF(GIT)
+  ENDIF(GITCOMMAND)
 ELSE (GIT_MARKER)
   SET(REVISION "exported")
   FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")

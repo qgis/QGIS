@@ -107,9 +107,10 @@ QgsRasterLayer* QgisAppInterface::addRasterLayer( QString rasterLayerPath, QStri
   return qgis->addRasterLayer( rasterLayerPath, baseName );
 }
 
-QgsRasterLayer* QgisAppInterface::addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey )
+QgsRasterLayer* QgisAppInterface::addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey,
+    const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs )
 {
-  return qgis->addRasterLayer( url, baseName, providerKey );
+  return qgis->addRasterLayer( url, baseName, providerKey, layers, styles, format, crs );
 }
 
 bool QgisAppInterface::addProject( QString theProjectName )
