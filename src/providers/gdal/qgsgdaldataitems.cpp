@@ -1,6 +1,8 @@
 #include "qgsgdaldataitems.h"
 #include "qgsgdalprovider.h"
 #include "qgslogger.h"
+//#include "qgsowssourceselect.h"
+#include "qgswcssourceselect.h"
 
 #include <QFileInfo>
 
@@ -145,4 +147,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return item;
   }
   return 0;
+}
+
+QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  return new QgsWCSSourceSelect( parent, fl );
 }

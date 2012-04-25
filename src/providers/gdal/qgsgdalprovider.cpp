@@ -24,11 +24,13 @@
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
+#include "qgswcscapabilities.h"
 
 #include <QImage>
 #include <QSettings>
@@ -105,8 +107,33 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   mGdalDataset = NULL;
 
+  // The uri is either a file name or encoded parameters for WCS
+  QString gdalUri = uri;
+  if ( uri.contains("url=") && uri.contains("identifier=") && !QFile::exists(uri) )
+  {
+    // WCS
+    QgsDataSourceURI dsUri;
+    dsUri.setEncodedUri( uri );
+    gdalUri = "<WCS_GDAL>";
+    // prepareUri adds ? or & if necessary, GDAL fails otherwise
+    gdalUri += "<ServiceURL>" + QgsWcsCapabilities::prepareUri( dsUri.param("url") ) + "</ServiceURL>";
+    gdalUri += "<CoverageName>" + dsUri.param("identifier") + "</CoverageName>";
+    gdalUri += "<PreferredFormat>" + dsUri.param("format") + "</PreferredFormat>";
+    
+    // TODO: There is no tag for CRS response.
+    // There is undocumented CRS tag, but it only overrides CRS param in requests 
+    // but BBOX is left unchanged and thus results in server error (usually).
+    gdalUri += "<GetCoverageExtra>&amp;RESPONSE_CRS=" + dsUri.param("crs") + "</GetCoverageExtra>";
+    if ( dsUri.hasParam("username") && dsUri.hasParam("password") ) 
+    {
+      gdalUri += "<UserPwd>" + dsUri.param("username") + ":" + dsUri.param("password") + "</UserPwd>";
+    }
+    gdalUri += "</WCS_GDAL>";
+    QgsDebugMsg( "WCS uri: " + gdalUri );
+  }
+
   //mGdalBaseDataset = GDALOpen( QFile::encodeName( uri ).constData(), GA_ReadOnly );
-  mGdalBaseDataset = GDALOpen( TO8F( uri ), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
 
   CPLErrorReset();
   if ( mGdalBaseDataset == NULL )
@@ -1168,6 +1195,8 @@ int QgsGdalProvider::srcDataType( int bandNo ) const
 
 int QgsGdalProvider::dataType( int bandNo ) const
 {
+  if ( mGdalDataType.size() == 0 ) return QgsRasterDataProvider::UnknownDataType;
+
   return dataTypeFormGdal( mGdalDataType[bandNo-1] );
 }
 
