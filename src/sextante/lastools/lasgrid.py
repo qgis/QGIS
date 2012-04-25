@@ -19,7 +19,7 @@ class lasgrid(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lasgrid"
         self.group = "Tools"
-        self.addParameter(ParameterFile(lasgrid.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(lasgrid.INPUT, "Input las layer"))
         self.addParameter(ParameterBoolean(lasgrid.INTENSITY, "Use intensity instead of elevation", False))
         self.addParameter(ParameterSelection(lasgrid.METHOD, "Method", lasgrid.METHODS))
         self.addOutput(OutputRaster(lasgrid.OUTPUT, "Output grid layer"))

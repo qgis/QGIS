@@ -20,7 +20,7 @@ class lasboundary(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lasboundary"
         self.group = "Tools"
-        self.addParameter(ParameterFile(lasboundary.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(lasboundary.INPUT, "Input las layer"))
         self.addParameter(ParameterNumber(lasboundary.CONCAVITY, "Concavity threshold", 0, None, 50.0))
         self.addParameter(ParameterBoolean(lasboundary.HOLES, "Compute also interior holes", False))
         self.addParameter(ParameterBoolean(lasboundary.DISJOINT, "Compute disjoint hull", False))

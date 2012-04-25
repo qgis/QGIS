@@ -12,7 +12,7 @@ class lasinfo(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lasinfo"
         self.group = "Tools"
-        self.addParameter(ParameterFile(lasinfo.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(lasinfo.INPUT, "Input las layer"))
         self.addOutput(OutputHTML(lasinfo.OUTPUT, "Output info file"))
 
     def processAlgorithm(self, progress):

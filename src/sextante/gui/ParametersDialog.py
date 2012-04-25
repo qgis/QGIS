@@ -22,6 +22,7 @@ from sextante.gui.ParametersPanel import ParametersPanel
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.parameters.ParameterExtent import ParameterExtent
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -124,7 +125,7 @@ class Ui_ParametersDialog(object):
             for index in widget.selectedoptions:
                 value.append(options[index])
             return param.setValue(value)
-        elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs)):
+        elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
             return param.setValue(widget.getValue())
         else:
             return param.setValue(str(widget.text()))

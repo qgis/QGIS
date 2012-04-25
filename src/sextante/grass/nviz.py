@@ -24,11 +24,41 @@ class nviz(GeoAlgorithm):
         vector = self.getParameterValue(self.VECTOR);
         elevation = self.getParameterValue(self.ELEVATION);
         if vector:
+            layers = vector.split(";")
+            for layer in layers:
+                newfilename = self.exportVectorLayer(layer)
+                vector = vector.replace(layer, newfilename)
             command += (" vector=" + vector.replace(";", ","))
         if elevation:
+            layers = elevation.split(";")
+            for layer in layers:
+                newfilename = self.exportRasterLayer(layer)
+                elevation = elevation.replace(layer, newfilename)
             command += (" elevation=" + elevation.replace(";", ","))
         if elevation is None and vector is None:
             command += " -q"
         commands.append(command)
         GrassUtils.createTempMapset();
         GrassUtils.executeGrass(commands, progress)
+
+
+    def exportVectorLayer(self,layer):
+        destFilename = self.getTempFilename()
+        command = "v.in.ogr"
+        command += " min_area=-1"
+        command +=" dsn=\"" + os.path.dirname(filename) + "\""
+        command +=" layer=" + os.path.basename(filename)[:-4]
+        command +=" output=" + destFilename;
+        command +=" --overwrite -o"
+        return destFilename
+
+
+    def exportRasterLayer(self, layer):
+        destFilename = self.getTempFilename()
+        command = "r.in.gdal"
+        command +=" input=\"" + layer + "\""
+        command +=" band=1"
+        command +=" out=" + destFilename;
+        command +=" --overwrite -o"
+        return destFilename
+

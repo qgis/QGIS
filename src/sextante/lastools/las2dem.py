@@ -16,7 +16,7 @@ class las2dem(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "las2dem"
         self.group = "Tools"
-        self.addParameter(ParameterFile(las2dem.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(las2dem.INPUT, "Input las layer"))
         self.addParameter(ParameterBoolean(las2dem.INTENSITY, "Use intensity instead of elevation", False))
         self.addOutput(OutputRaster(las2dem.OUTPUT, "Output dem layer"))
         self.addCommonParameters()

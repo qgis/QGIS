@@ -14,7 +14,7 @@ class lassplit(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lassplit"
         self.group = "Tools"
-        self.addParameter(ParameterFile(lassplit.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(lassplit.INPUT, "Input las layer"))
         self.addParameter(ParameterNumber(lassplit.NUM_POINTS, "Point in each output file", 1, None, 1000000))
         self.addOutput(OutputFile(lassplit.OUTPUT, "Output las file basename"))
         self.addCommonParameters()

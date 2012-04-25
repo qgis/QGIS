@@ -20,7 +20,7 @@ class lasground(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lasground"
         self.group = "Tools"
-        self.addParameter(ParameterFile(lasground.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(lasground.INPUT, "Input las layer"))
         self.addParameter(ParameterSelection(lasground.METHOD, "Method", lasground.METHODS))
         self.addOutput(OutputFile(lasground.OUTPUT, "Output ground las file"))
         self.addCommonParameters()

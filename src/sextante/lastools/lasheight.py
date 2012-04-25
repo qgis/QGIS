@@ -12,7 +12,7 @@ class lasheight(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lasheight"
         self.group = "Tools"
-        self.addParameter(ParameterFile(lasheight.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(lasheight.INPUT, "Input las layer"))
         self.addOutput(OutputFile(lasheight.OUTPUT, "Output height las file"))
         self.addCommonParameters()
 

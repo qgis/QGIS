@@ -19,7 +19,7 @@ class las2iso(LasToolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "las2iso"
         self.group = "Tools"
-        self.addParameter(ParameterFile(las2iso.INPUT, "Input las layer", ""))
+        self.addParameter(ParameterFile(las2iso.INPUT, "Input las layer"))
         self.addParameter(ParameterNumber(las2iso.INTERVAL, "Interval between isolines", 0, None, 10.0))
         self.addParameter(ParameterNumber(las2iso.CLEAN, "Clean isolines shorter than (0 = do not clean)", None, None, 0.0))
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY, "simplify segments shorter than (0 = do not simplify)", None, None, 0.0))
