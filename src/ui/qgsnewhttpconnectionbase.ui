@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>507</width>
-    <height>322</height>
+    <width>500</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QGroupBox" name="GroupBox1">
+    <widget class="QGroupBox" name="mGroupBox">
      <property name="title">
       <string>Connection details</string>
      </property>

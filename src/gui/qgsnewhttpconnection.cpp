@@ -53,14 +53,19 @@ QgsNewHttpConnection::QgsNewHttpConnection(
       cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
       cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
     }
-    else
-    {
-      cbxIgnoreGetMapURI->setVisible( false );
-      cbxIgnoreGetFeatureInfoURI->setVisible( false );
-    }
-
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+  }
+  if ( mBaseKey != "/Qgis/connections-wms/" )
+  {
+    cbxIgnoreGetMapURI->setVisible( false );
+    cbxIgnoreGetFeatureInfoURI->setVisible( false );
+    mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
+    mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+    // Adjust height
+    int w = width();
+    adjustSize();
+    resize(w, height());
   }
 
   on_txtName_textChanged( connName );
