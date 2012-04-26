@@ -6,8 +6,7 @@ from sextante.core.LayerExporter import LayerExporter
 class ParameterRaster(ParameterDataObject):
 
     def __init__(self, name="", description="", optional=False):
-        self.name = name
-        self.description = description
+        ParameterDataObject.__init__(self, name, description)
         self.optional = optional
         self.value = None
         self.exported = None

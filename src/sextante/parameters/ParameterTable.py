@@ -5,8 +5,7 @@ from qgis.core import *
 class ParameterTable(ParameterDataObject):
 
     def __init__(self, name="", description="", optional=False):
-        self.name = name
-        self.description = description
+        ParameterDataObject.__init__(self, name, description)
         self.optional = optional
         self.value = None
 

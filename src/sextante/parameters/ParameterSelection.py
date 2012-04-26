@@ -3,8 +3,7 @@ from sextante.parameters.Parameter import Parameter
 class ParameterSelection(Parameter):
 
     def __init__(self, name="", description="", options=[], default = 0):
-        self.name = name
-        self.description = description
+        Parameter.__init__(self, name, description)
         self.options = options
         self.value = None
         self.default = default

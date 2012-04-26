@@ -3,8 +3,7 @@ from sextante.parameters.Parameter import Parameter
 class ParameterTableField(Parameter):
 
     def __init__(self, name="", description="", parent=None):
-        self.name = name
-        self.description = description
+        Parameter.__init__(self, name, description)
         self.parent = parent
         self.value = None
 

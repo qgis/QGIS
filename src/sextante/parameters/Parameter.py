@@ -6,6 +6,9 @@ class Parameter:
         self.description = description
         self.value = None
 
+        #this is not used yet
+        self.isAdvanced = False
+
 
     def setValue(self, obj):
         '''sets the value of the parameter.

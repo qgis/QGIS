@@ -1,9 +1,9 @@
 from sextante.parameters.Parameter import Parameter
 
 class ParameterExtent(Parameter):
+
     def __init__(self, name="", description="", default="0,1,0,1"):
-        self.name = name
-        self.description = description
+        Parameter.__init__(self, name, description)
         self.default = default
         self.value = None #The value is a string in the form "xmin, xmax, ymin, y max"
 

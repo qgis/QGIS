@@ -4,8 +4,7 @@ class ParameterCrs(Parameter):
 
     def __init__(self, name="", description="", default = "4326"):
         '''The values is the EPSG code of the CRS'''
-        self.name = name
-        self.description = description
+        Parameter.__init__(self, name, description)
         self.value = None
         self.default = default
 

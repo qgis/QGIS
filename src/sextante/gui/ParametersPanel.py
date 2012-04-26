@@ -34,9 +34,11 @@ class ParametersPanel(QtGui.QWidget):
         self.alg = alg;
         self.paramDialog = paramDialog
         self.valueItems = {}
+        self.labels = {}
+        self.widgets = {}
         self.dependentItems = {}
         self.iterateButtons = {}
-
+        self.showAdvanced = False
         self.initGUI()
 
     def initGUI(self):
@@ -64,10 +66,19 @@ class ParametersPanel(QtGui.QWidget):
             self.verticalLayout.setSpacing(5)
             self.verticalLayout.setMargin(20)
             for param in self.alg.parameters:
+                if param.isAdvanced:
+                    self.advancedButton = QtGui.QPushButton()
+                    self.advancedButton.setText("Show advanced parameters")
+                    self.advancedButton.setMaximumWidth(150)
+                    QtCore.QObject.connect(self.advancedButton, QtCore.SIGNAL("clicked()"), self.showAdvancedParametersClicked)
+                    self.verticalLayout.addWidget(self.advancedButton)
+                    break
+            for param in self.alg.parameters:
                 desc = param.description
                 if isinstance(param, ParameterExtent):
                     desc += "(xmin, xmax, ymin, ymax)"
                 label = QtGui.QLabel(desc)
+                self.labels[param.name] = label
                 widget = self.getWidgetFromParameter(param)
                 self.valueItems[param.name] = widget
                 if isinstance(param, ParameterVector):
@@ -93,6 +104,10 @@ class ParametersPanel(QtGui.QWidget):
                     tooltip = param.description
                 label.setToolTip(tooltip)
                 widget.setToolTip(tooltip)
+                if param.isAdvanced:
+                    label.setVisible(self.showAdvanced)
+                    widget.setVisible(self.showAdvanced)
+                    self.widgets[param.name] = widget
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
@@ -107,6 +122,17 @@ class ParametersPanel(QtGui.QWidget):
 
             self.verticalLayout.addStretch(1000)
             self.setLayout(self.verticalLayout)
+
+    def showAdvancedParametersClicked(self):
+        self.showAdvanced = not self.showAdvanced
+        if self.showAdvanced:
+            self.advancedButton.setText("Hide advanced parameters")
+        else:
+            self.advancedButton.setText("Show advanced parameters")
+        for param in self.alg.parameters:
+            if param.isAdvanced:
+                self.labels[param.name].setVisible(self.showAdvanced)
+                self.widgets[param.name].setVisible(self.showAdvanced)
 
     def buttonToggled(self, value):
         if value:

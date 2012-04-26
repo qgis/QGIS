@@ -43,7 +43,7 @@ class Union(GeoAlgorithm):
         else:
             if not crsA != crsB:
                 SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Union. Non-matching CRSs. Results might be unexpected")
-        fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
+        fields = ftools_utils.combineVectorFields(vlayerA, vlayerB )
         longNames = ftools_utils.checkFieldNameLength( fields )
         if not longNames.isEmpty():
             raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )

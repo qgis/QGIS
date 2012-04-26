@@ -11,8 +11,7 @@ class ParameterVector(ParameterDataObject):
     VECTOR_TYPE_ANY = -1
 
     def __init__(self, name="", description="", shapetype=-1, optional=False):
-        self.name = name
-        self.description = description
+        ParameterDataObject.__init__(self, name, description)
         self.optional = optional
         self.shapetype = shapetype
         self.value = None

@@ -3,8 +3,7 @@ from sextante.parameters.Parameter import Parameter
 class ParameterRange(Parameter):
 
     def __init__(self, name="", description="", default="0,1"):
-        self.name = name
-        self.description = description
+        Parameter.__init__(self, name, description)
         self.default = default
         self.value = None
 

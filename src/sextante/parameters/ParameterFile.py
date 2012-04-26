@@ -3,8 +3,7 @@ from sextante.parameters.Parameter import Parameter
 class ParameterFile(Parameter):
 
     def __init__(self, name="", description="", isFolder = False):
-        self.name = name
-        self.description = description
+        Parameter.__init__(self, name, description)
         self.value = None
         self.isFolder = isFolder
 

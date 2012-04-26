@@ -18,8 +18,7 @@ class ParameterMultipleInput(ParameterDataObject):
     TYPE_RASTER = 3
 
     def __init__(self, name="", description="", datatype=-1, optional = False):
-        self.name = name
-        self.description = description
+        ParameterDataObject.__init__(self, name, description)
         self.datatype = datatype
         self.optional = optional
         self.value = None
