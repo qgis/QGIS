@@ -105,6 +105,12 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
 
     void on_mDialogButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+  signals:
+    void addRasterLayer( QString const & rasterLayerPath,
+                         QString const & baseName,
+                         QString const & providerKey );
+    void connectionsChanged();
+
   protected:
     /**
      * List of image formats (encodings) supported by provider
@@ -113,12 +119,12 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     virtual QList<QgsOWSSupportedFormat> providerFormats();
 
     //! List of formats supported for currently selected layer item(s)
-    virtual QStringList serverFormats();
+    virtual QStringList selectedLayersFormats();
 
     //! Server CRS supported for currently selected layer item(s)
-    virtual QStringList serverCRS();
+    virtual QStringList selectedLayersCRSs();
 
-    virtual QStringList layerCRS( int id );
+    //virtual QStringList layerCRS( int id );
 
     //! Populate the connection list combo box
     void populateConnectionList();
@@ -150,25 +156,13 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     //! Embedded mode, without 'Close'
     bool mEmbeddedMode;
 
-    //! Selected CRS
-    QString mCRS;
-
-    //! Common CRSs for selected layers
-    QSet<QString> mCRSs;
-
-    //! Supported formats
-    QList<QgsOWSSupportedFormat> mProviderFormats;
-
-    //! Map mime types to supported formats
-    QMap<QString, int> mMimeMap;
 
     /**
-     * \brief Populate the layer list - private for now.
+     * \brief Populate the layer list.
      *
-     * \retval false if the layers could not be retrieved or parsed -
-     *         see mWmsProvider->errorString() for more info
+     * \retval false if the layers could not be retrieved or parsed 
      */
-    virtual bool populateLayerList( );
+    virtual void populateLayerList( );
 
     //! create an item including possible parents
     QgsNumericSortTreeWidgetItem *createItem( int id,
@@ -194,26 +188,17 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     void addWMSListRow( const QDomElement& item, int row );
     void addWMSListItem( const QDomElement& el, int row, int column );
 
-    void applySelectionConstraints( QTreeWidgetItem *item );
-    void collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles );
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
     //! Returns currently selected format
     QString selectedFormat();
 
     //! Returns currently selected Crs
-    QString selectedCrs();
+    QString selectedCRS();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
     QTableWidgetItem* mCurrentTileset;
 
-  signals:
-    void addRasterLayer( QString const & rasterLayerPath,
-                         QString const & baseName,
-                         QString const & providerKey );
-    void connectionsChanged();
-
-  protected:
     //! Name for selected connection
     QString mConnName;
 
@@ -222,6 +207,19 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
 
     //! URI for selected connection
     QgsDataSourceURI mUri;
+
+  private:
+    //! Selected CRS
+    QString mSelectedCRS;
+
+    //! Common CRSs for selected layers
+    QSet<QString> mSelectedLayersCRSs;
+
+    //! Supported formats
+    QList<QgsOWSSupportedFormat> mProviderFormats;
+
+    //! Map mime types to supported formats
+    QMap<QString, int> mMimeMap;
 
   private slots:
     void on_mSearchButton_clicked();

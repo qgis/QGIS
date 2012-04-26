@@ -66,32 +66,15 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
   private:
     QgsWcsCapabilities mCapabilities;
 
-    /**
-     * \brief Populate the layer list - private for now.
-     *
-     * \retval false if the layers could not be retrieved or parsed -
-     *         see mWmsProvider->errorString() for more info
-     */
-    bool populateLayerList( );
-
-    //! Add layer
+    // QgsWcsCapabilities virtual methods
+    void populateLayerList( );
     void addClicked();
-
-    //! Signaled when a layer selection is changed.
     void on_mLayersTreeWidget_itemSelectionChanged();
-
     void enableLayersForCrs( QTreeWidgetItem *item );
-
     void updateButtons();
-
     QList<QgsOWSSupportedFormat> providerFormats();
-
-    QStringList serverFormats();
-
-    QStringList serverCRS();
-    
-    QStringList layerCRS( int id );
-
+    QStringList selectedLayersFormats();
+    QStringList selectedLayersCRSs();
 };
 #endif // QGSWCSSOURCESELECT_H
 

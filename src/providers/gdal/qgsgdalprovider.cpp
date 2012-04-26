@@ -42,6 +42,7 @@
 #include <QFile>
 #include <QHash>
 #include <QTime>
+#include <QTextDocument>
 
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
@@ -112,11 +113,13 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   if ( uri.contains("url=") && uri.contains("identifier=") && !QFile::exists(uri) )
   {
     // WCS
+    // GDAL currently (4/2012) supports  WCS 1.0.0 (default) and 1.1.0
+    //
     QgsDataSourceURI dsUri;
     dsUri.setEncodedUri( uri );
     gdalUri = "<WCS_GDAL>";
     // prepareUri adds ? or & if necessary, GDAL fails otherwise
-    gdalUri += "<ServiceURL>" + QgsWcsCapabilities::prepareUri( dsUri.param("url") ) + "</ServiceURL>";
+    gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param("url") ) ) + "</ServiceURL>";
     gdalUri += "<CoverageName>" + dsUri.param("identifier") + "</CoverageName>";
     gdalUri += "<PreferredFormat>" + dsUri.param("format") + "</PreferredFormat>";
     
@@ -124,6 +127,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     // There is undocumented CRS tag, but it only overrides CRS param in requests 
     // but BBOX is left unchanged and thus results in server error (usually).
     gdalUri += "<GetCoverageExtra>&amp;RESPONSE_CRS=" + dsUri.param("crs") + "</GetCoverageExtra>";
+
     if ( dsUri.hasParam("username") && dsUri.hasParam("password") ) 
     {
       gdalUri += "<UserPwd>" + dsUri.param("username") + ":" + dsUri.param("password") + "</UserPwd>";

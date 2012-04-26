@@ -53,7 +53,7 @@
       <bool>true</bool>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="mLayersTab">
       <attribute name="title">
@@ -259,7 +259,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="mCRSLabel">
+           <widget class="QLabel" name="mSelectedCRSLabel">
             <property name="text">
              <string>Coordinate Reference System</string>
             </property>

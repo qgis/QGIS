@@ -301,6 +301,9 @@ class QgsWcsCapabilities : public QObject
     //! URL part of URI (httpuri)
     //QString mBaseUrl;
 
+    //! Response capabilities version
+    QString mVersion;
+
     /**
      * Capabilities of the WCS Server (raw)
      */
@@ -349,7 +352,7 @@ class QgsWcsCapabilities : public QObject
     /**
      * The error caption associated with the last WCS error.
      */
-    QString mErrorCaption;
+    QString mErrorTitle;
 
     /**
      * The error message associated with the last WCS error.

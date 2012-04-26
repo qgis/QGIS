@@ -166,8 +166,17 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( bool forceRefresh )
 
   if ( mCapabilitiesResponse.isNull() || forceRefresh )
   {
-    // TODO: version
-    QString url = prepareUri( mUri.param("url") ) + "SERVICE=WCS&REQUEST=GetCapabilities";
+    // Check if user tried to force version
+    QString userVersion = QUrl( mUri.param("url") ).queryItemValue("VERSION");
+    if ( !userVersion.isEmpty() && !userVersion.startsWith("1.1.") ) 
+    {
+      mErrorTitle = tr( "Version not supported" );
+      mErrorFormat = "text/plain";
+      mError = tr( "The version %1 specified in connection URL parameter VERSION is not supported by QGIS" ).arg( userVersion );
+      return false;
+    }
+
+    QString url = prepareUri( mUri.param("url") ) + "SERVICE=WCS&REQUEST=GetCapabilities&VERSION=1.1.0";
 
     mError = "";
 
@@ -213,7 +222,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( bool forceRefresh )
     if ( !domOK )
     {
       // We had an Dom exception -
-      // mErrorCaption and mError are pre-filled by parseCapabilitiesDom
+      // mErrorTitle and mError are pre-filled by parseCapabilitiesDom
 
       mError += tr( "\nTried URL: %1" ).arg( url );
 
@@ -305,7 +314,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
 
   if ( !contentSuccess )
   {
-    mErrorCaption = tr( "Dom Exception" );
+    mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = tr( "Could not get WCS capabilities: %1 at line %2 column %3\nThis is probably due to an incorrect WMS Server URL.\nResponse was:\n\n%4" )
              .arg( errorMsg )
@@ -324,10 +333,12 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   QgsDebugMsg( "testing tagName " + docElem.tagName() );
 
   if (
-    docElem.tagName() != "Capabilities" 
+    // We don't support 1.0, but try WCS_Capabilities tag to get version 
+    docElem.tagName() != "WCS_Capabilities" && // 1.0
+    docElem.tagName() != "Capabilities"  // 1.1
   )
   {
-    mErrorCaption = tr( "Dom Exception" );
+    mErrorTitle = tr( "Dom Exception" );
     mErrorFormat = "text/plain";
     mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WMS Server URL.\nTag:%3\nResponse was:\n%4" )
              .arg( "Capabilities" )
@@ -340,6 +351,20 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   }
 
   capabilities.version = docElem.attribute( "version" );
+  mVersion = capabilities.version;
+
+  if ( !mVersion.startsWith("1.1.") )
+  {
+    mErrorTitle = tr( "Version not supported" );
+    mErrorFormat = "text/plain";
+    mError = tr( "Could not get WCS capabilities in the expected version 1.1.\nResponse version was: %1" )
+             .arg( mVersion );
+
+    QgsLogger::debug( "WCS version: " + mError );
+
+    return false;
+  }
+
 
   // Start walking through XML.
   QDomNode n = docElem.firstChild();
@@ -618,7 +643,7 @@ void QgsWcsCapabilities::coverageParents( QMap<int, int> &parents, QMap<int, QSt
 
 QString QgsWcsCapabilities::lastErrorTitle()
 {
-  return mErrorCaption;
+  return mErrorTitle;
 }
 
 QString QgsWcsCapabilities::lastError()

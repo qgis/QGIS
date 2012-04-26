@@ -54,18 +54,21 @@ QgsWCSSourceSelect::~QgsWCSSourceSelect()
 {
 }
 
-bool QgsWCSSourceSelect::populateLayerList(  )
+void QgsWCSSourceSelect::populateLayerList(  )
 {
   QgsDebugMsg( "entered" );
-//  mCRSs.clear();
-
-  // TODO: showError 
 
   mCapabilities.setUri ( mUri );
 
+  if ( !mCapabilities.lastError().isEmpty() )
+  {
+    showError( mCapabilities.lastErrorTitle(), mCapabilities.lastErrorFormat(), mCapabilities.lastError() );
+    return;
+  }
+
   QVector<QgsWcsCoverageSummary> coverages;
   if ( !mCapabilities.supportedCoverages( coverages ) )
-    return false;
+    return;
   
   QMap<int, QgsNumericSortTreeWidgetItem *> items;
   QMap<int, int> coverageParents;
@@ -102,8 +105,6 @@ bool QgsWCSSourceSelect::populateLayerList(  )
   {
     mLayersTreeWidget->expandItem( mLayersTreeWidget->topLevelItem( 0 ) );
   }
-
-  return true;
 }
 
 void QgsWCSSourceSelect::addClicked( )
@@ -118,7 +119,7 @@ void QgsWCSSourceSelect::addClicked( )
 
   uri.setParam( "identifier", identifier );
 
-  uri.setParam( "crs", selectedCrs() );
+  uri.setParam( "crs", selectedCRS() );
   
   QgsDebugMsg ( "selectedFormat = " +  selectedFormat() );
   uri.setParam( "format", selectedFormat() ); 
@@ -139,7 +140,6 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 void QgsWCSSourceSelect::updateButtons()
 {
   QgsDebugMsg ( "entered");
-  //updateCRSWidgets();
 
   if ( mLayersTreeWidget->selectedItems().isEmpty() )
   {
@@ -147,13 +147,13 @@ void QgsWCSSourceSelect::updateButtons()
   }
   else
   {
-    if ( mCRS.isEmpty() )
+    if ( selectedCRS().isEmpty() )
     {
       showStatusMessage( tr( "No CRS selected" ) );
     }
   }
 
-  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !mCRS.isEmpty() && !selectedFormat().isEmpty() );
+  mAddButton->setEnabled( !mLayersTreeWidget->selectedItems().isEmpty() && !selectedCRS().isEmpty() && !selectedFormat().isEmpty() );
 }
 
 QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
@@ -199,7 +199,7 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
   return formats;
 }
 
-QStringList QgsWCSSourceSelect::serverFormats()
+QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
   QgsDebugMsg ( "entered");
 
@@ -212,7 +212,7 @@ QStringList QgsWCSSourceSelect::serverFormats()
   return c.supportedFormat;  
 }
 
-QStringList QgsWCSSourceSelect::serverCRS()
+QStringList QgsWCSSourceSelect::selectedLayersCRSs()
 {
   QgsDebugMsg ( "entered");
 
@@ -224,20 +224,6 @@ QStringList QgsWCSSourceSelect::serverCRS()
   QgsWcsCoverageSummary c = mCapabilities.coverageSummary(identifier);
 
   return c.supportedCrs;
-}
-
-QStringList QgsWCSSourceSelect::layerCRS( int id )
-{
-  QVector<QgsWcsCoverageSummary> coverages;
-  if ( !mCapabilities.supportedCoverages( coverages ) )
-  foreach ( QgsWcsCoverageSummary c, coverages )
-  {
-    if ( c.orderId == id ) 
-    {
-      return c.supportedCrs;
-    }
-  }
-  return QStringList();
 }
 
 void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )

@@ -90,12 +90,9 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
       QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
       if ( currentRefSys.isValid() )
       {
-        mCRS = currentRefSys.authid();
+        mSelectedCRS = currentRefSys.authid();
       }
     }
-
-    // set up the default WMS Coordinate Reference System
-    //mCRSLabel->setText( descriptionForAuthId( mCRS ) );
   }
   else
   {
@@ -143,33 +140,24 @@ void QgsOWSSourceSelect::populateFormats()
       layout->addWidget( btn );
     }
 
-    // default to first encoding
-    /*
-    if ( mImageFormatGroup->buttons().size() > 0 ) 
-    {
-      mImageFormatGroup->button( 0 )->setChecked( true );
-    }
-    */
-    //mImageFormatsGroupBox->setDisabled( true );
-
     layout->addStretch();
     mImageFormatsGroupBox->setLayout( layout );
   }
-  // Show supported by server only
 
+  // Show supported by server only
   foreach( QAbstractButton *b, mImageFormatGroup->buttons() )
   {
     b->setHidden( true );
   }
 
   int firstVisible = -1;
-  foreach( QString encoding, serverFormats() )
+  foreach( QString format, selectedLayersFormats() )
   {
-    QgsDebugMsg( "server format = " + encoding );
-    int id = mMimeMap.value( encoding, -1 );
+    QgsDebugMsg( "server format = " + format );
+    int id = mMimeMap.value( format, -1 );
     if ( id < 0 )
     {
-      QgsDebugMsg( QString( "encoding %1 not supported." ).arg( encoding ) );
+      QgsDebugMsg( QString( "format %1 not supported." ).arg( format ) );
       continue;
     }
 
@@ -177,7 +165,7 @@ void QgsOWSSourceSelect::populateFormats()
     if ( firstVisible == -1 ) firstVisible = id;
   }
   // Set first if no one visible is checked
-  if ( !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() && firstVisible > -1 ) 
+  if ( mImageFormatGroup->checkedId() < 0 || ( !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() && firstVisible > -1 ) ) 
   {
     mImageFormatGroup->button( firstVisible )->setChecked(true);
   }
@@ -302,9 +290,8 @@ QgsNumericSortTreeWidgetItem *QgsOWSSourceSelect::createItem(
   return item;
 }
 
-bool QgsOWSSourceSelect::populateLayerList( )
+void QgsOWSSourceSelect::populateLayerList( )
 {
-  return true;
 }
 
 void QgsOWSSourceSelect::on_mConnectButton_clicked()
@@ -320,10 +307,7 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsDebugMsg( "call populateLayerList" );
-  if ( !populateLayerList() )
-  {
-    //showError( theProvider );
-  }
+  populateLayerList();
 
   QApplication::restoreOverrideCursor();
 }
@@ -331,88 +315,10 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
 void QgsOWSSourceSelect::addClicked()
 {
   QgsDebugMsg( "entered");
-/*
-  QStringList layers;
-  QStringList styles;
-  QString format;
-  QString crs;
-
-  QgsDataSourceURI uri = mUri;
-
-  if ( mTilesetsTableWidget->selectedItems().isEmpty() )
-  {
-    collectSelectedLayers( layers, styles );
-    crs = mCRS;
-    //format = mProviderFormats[ mImageFormatGroup->checkedId()].format;
-
-    if ( mTileWidthLineEdit->text().toInt() > 0 && mTileHeightLineEdit->text().toInt() > 0 )
-    {
-      uri.setParam( "tileWidth", mTileWidthLineEdit->text() );
-      uri.setParam( "tileHeight", mTileHeightLineEdit->text() );
-    }
-  }
-  else
-  {
-    QTableWidgetItem *item = mTilesetsTableWidget->selectedItems().first();
-    layers = item->data( Qt::UserRole + 0 ).toStringList();
-    styles = item->data( Qt::UserRole + 1 ).toStringList();
-    format = item->data( Qt::UserRole + 2 ).toString();
-    crs    = item->data( Qt::UserRole + 3 ).toString();
-
-    uri.setParam( "tileWidth",  item->data( Qt::UserRole + 4 ).toString() );
-    uri.setParam( "tileHeight", item->data( Qt::UserRole + 5 ).toString() );
-    uri.setParam( "tileResolutions", item->data( Qt::UserRole + 6 ).toStringList() );
-  }
-  uri.setParam( "layers", layers );
-  uri.setParam( "styles", styles );
-  //uri.setParam( "format", format );
-  uri.setParam( "crs", crs );
-
-  if ( mFeatureCountLineEdit->text().toInt() > 0 )
-  {
-    uri.setParam( "featureCount", mFeatureCountLineEdit->text() );
-  }
-
-  QgsDebugMsg( "crs = " + crs );
-
-  QgsDebugMsg( "uri = " + uri.encodedUri() );
-
-  // TODO
-  QString providerKey = "gdal";
-  emit addRasterLayer( uri.encodedUri(),
-                       mLayerNameLineEdit->text().isEmpty() ? layers.join( "/" ) : mLayerNameLineEdit->text(),
-                       providerKey );
-*/
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
 {
-/*
-  QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
-  QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
-
-  if ( !layerName.isEmpty() && styleName.isEmpty() )
-  {
-    // layer
-    bool disable = !item->data( 0, Qt::UserRole + 2 ).toStringList().contains( mCRS, Qt::CaseInsensitive );
-
-    item->setDisabled( disable );
-
-    // propagate to styles
-    for ( int i = 0; i < item->childCount(); i++ )
-    {
-      item->child( i )->setDisabled( disable );
-    }
-  }
-  else
-  {
-    // recurse to child layers
-    for ( int i = 0; i < item->childCount(); i++ )
-    {
-      enableLayersForCrs( item->child( i ) );
-    }
-  }
-*/
 }
 
 void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
@@ -427,7 +333,7 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
 
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
-  mySelector->setOgcWmsCrsFilter( mCRSs );
+  mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
   QString myDefaultCrs = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
   QgsCoordinateReferenceSystem defaultCRS;
@@ -439,218 +345,43 @@ void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
   if ( !mySelector->exec() )
     return;
 
-  mCRS = mySelector->selectedAuthId();
+  mSelectedCRS = mySelector->selectedAuthId();
   delete mySelector;
 
-  mCRSLabel->setText( descriptionForAuthId( mCRS ) );
+  mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
 
   for ( int i = 0; i < mLayersTreeWidget->topLevelItemCount(); i++ )
   {
     enableLayersForCrs( mLayersTreeWidget->topLevelItem( i ) );
   }
 
-  // TODO
-  //updateButtons();
-
-  // update the display of this widget
-  update();
+  updateButtons();
 }
 
-void QgsOWSSourceSelect::applySelectionConstraints( QTreeWidgetItem *item )
-{
-  if ( item->childCount() == 0 )
-  {
-    return;
-  }
-
-  int styles = 0;
-  for ( int i = 0; i < item->childCount(); i++ )
-  {
-    QTreeWidgetItem *child = item->child( i );
-    QString style = child->data( 0, Qt::UserRole + 1 ).toString();
-    if ( !style.isEmpty() )
-      styles++;
-  }
-
-  if ( styles > 0 )
-  {
-    if ( styles < item->childCount() )
-    {
-      return;
-    }
-
-    QTreeWidgetItem *style = 0;
-    QTreeWidgetItem *firstNewStyle = 0;
-    for ( int i = 0; i < item->childCount(); i++ )
-    {
-      QTreeWidgetItem *child = item->child( i );
-      if ( child->isSelected() )
-      {
-        if ( !firstNewStyle && !mCurrentSelection.contains( child ) )
-          firstNewStyle = child;
-
-        if ( !style )
-          style = child;
-
-        child->setSelected( false );
-      }
-    }
-
-    if ( firstNewStyle || style )
-    {
-      // individual style selected => unselect layer and all parent groups
-      QTreeWidgetItem *parent = item;
-      while ( parent )
-      {
-        parent->setSelected( false );
-        parent = parent->parent();
-      }
-
-      if ( firstNewStyle )
-        firstNewStyle->setSelected( true );
-      else if ( style )
-        style->setSelected( true );
-    }
-  }
-  else
-  {
-    // no styles => layer or layer group =>
-    //   process child layers and style selection first
-    // then
-    //   if some child layers are selected, deselect the group and all parents
-    //   otherwise keep the selection state of the group
-    int n = 0;
-    for ( int i = 0; i < item->childCount(); i++ )
-    {
-      QTreeWidgetItem *child = item->child( i );
-      applySelectionConstraints( child );
-      if ( child->isSelected() )
-        n++;
-    }
-
-    if ( n > 0 )
-    {
-      if ( item->isSelected() )
-      {
-        for ( int i = 0; i < n; i++ )
-        {
-          QTreeWidgetItem *child = item->child( i );
-          child->setSelected( false );
-        }
-        item->setExpanded( false );
-      }
-      else
-      {
-        for ( QTreeWidgetItem *parent = item->parent(); parent;  parent = parent->parent() )
-        {
-          parent->setSelected( false );
-        }
-      }
-    }
-  }
-}
-
-void QgsOWSSourceSelect::collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles )
-{
-  QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
-  QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
-  if ( layerName.isEmpty() )
-  {
-    // layer group
-    for ( int i = 0; i < item->childCount(); i++ )
-      collectNamedLayers( item->child( i ), layers, styles );
-  }
-  else if ( styleName.isEmpty() )
-  {
-    // named layers
-    layers << layerName;
-    styles << "";
-
-    if ( mCRSs.isEmpty() )
-      mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
-    else
-      mCRSs.intersect( item->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
-  }
-}
-
-/**
- * retrieve selected layers
- */
 void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
-  QgsDebugMsg ( "entered");
-  mLayersTreeWidget->blockSignals( true );
-  for ( int i = 0; i < mLayersTreeWidget->topLevelItemCount(); i++ )
-  {
-    applySelectionConstraints( mLayersTreeWidget->topLevelItem( i ) );
-  }
-  mCurrentSelection = mLayersTreeWidget->selectedItems();
-  mLayersTreeWidget->blockSignals( false );
-
-
-  // selected layers with styles
-  QStringList layers;
-  QStringList styles;
-
-  mCRSs.clear();
-
-  // determine selected layers and styles and set of crses that are available for all layers
-  foreach( QTreeWidgetItem *item, mLayersTreeWidget->selectedItems() )
-  {
-    QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
-    QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
-
-    if ( layerName.isEmpty() )
-    {
-      // layers groups: collect named layers of group and add using the default style
-      collectNamedLayers( item, layers, styles );
-    }
-    else if ( styleName.isEmpty() )
-    {
-      // named layer: add using default style
-      layers << layerName;
-      styles << "";
-      if ( mCRSs.isEmpty() )
-        mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
-      else
-        mCRSs.intersect( item->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
-    }
-    else
-    {
-      // style: add named layer with selected style
-      layers << layerName;
-      styles << styleName;
-      if ( mCRSs.isEmpty() )
-        mCRSs = item->parent()->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
-      else
-        mCRSs.intersect( item->parent()->data( 0, Qt::UserRole + 2 ).toStringList().toSet() );
-    }
-  }
-
-  updateButtons();
 }
 
 void QgsOWSSourceSelect::populateCRS()
 {
-  mCRSs = serverCRS().toSet();
-  //mCRSGroupBox->setTitle( tr( "Options (%n coordinate reference systems available)", "crs count", mCRSs.count() ) );
-  mCRSGroupBox->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mCRSs.count() ) );
+  mSelectedLayersCRSs = selectedLayersCRSs().toSet();
+  mCRSGroupBox->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) );
 
-  mChangeCRSButton->setDisabled( mCRSs.isEmpty() );
+  mChangeCRSButton->setDisabled( mSelectedLayersCRSs.isEmpty() );
 
-  if ( !mCRSs.isEmpty() )
+  if ( !mSelectedLayersCRSs.isEmpty() )
   {
     // check whether current CRS is supported
     // if not, use one of the available CRS
     QString defaultCRS;
-    QSet<QString>::const_iterator it = mCRSs.begin();
-    for ( ; it != mCRSs.end(); it++ )
+    QSet<QString>::const_iterator it = mSelectedLayersCRSs.begin();
+    for ( ; it != mSelectedLayersCRSs.end(); it++ )
     {
-      if ( it->compare( mCRS, Qt::CaseInsensitive ) == 0 )
+      if ( it->compare( mSelectedCRS, Qt::CaseInsensitive ) == 0 )
         break;
 
       // save first CRS in case the current CRS is not available
-      if ( it == mCRSs.begin() )
+      if ( it == mSelectedLayersCRSs.begin() )
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
@@ -658,20 +389,20 @@ void QgsOWSSourceSelect::populateCRS()
         defaultCRS = *it;
     }
 
-    if ( it == mCRSs.end() )
+    if ( it == mSelectedLayersCRSs.end() )
     {
       // not found
-      mCRS = defaultCRS;
-      mCRSLabel->setText( descriptionForAuthId( mCRS ) );
+      mSelectedCRS = defaultCRS;
+      mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
     }
 
   }
   else
   {
-    mCRS = "";
-    mCRSLabel->setText( "" );
+    mSelectedCRS = "";
+    mSelectedCRSLabel->setText( "" );
   }
-  mChangeCRSButton->setEnabled( !mCRSs.isEmpty() ); 
+  mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() ); 
 }
 
 void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
@@ -720,15 +451,15 @@ QString QgsOWSSourceSelect::selectedFormat()
   }
   else
   {
-    // TODO: do encoding in subclass (WMS)
+    // TODO: do format in subclass (WMS)
     //return QUrl::toPercentEncoding( mProviderFormats[ id ].format );
     return mProviderFormats[ id ].format;
   }
 }
 
-QString QgsOWSSourceSelect::selectedCrs()
+QString QgsOWSSourceSelect::selectedCRS()
 {
-  return mCRS;
+  return mSelectedCRS;
 }
 
 void QgsOWSSourceSelect::setConnectionListPosition()
@@ -991,19 +722,13 @@ QList<QgsOWSSupportedFormat> QgsOWSSourceSelect::providerFormats()
   return QList<QgsOWSSupportedFormat>(); 
 }
 
-QStringList QgsOWSSourceSelect::serverFormats()
+QStringList QgsOWSSourceSelect::selectedLayersFormats()
 {
   return QStringList();
 }
 
-QStringList QgsOWSSourceSelect::serverCRS()
+QStringList QgsOWSSourceSelect::selectedLayersCRSs()
 {
-  return QStringList();
-}
-
-QStringList QgsOWSSourceSelect::layerCRS( int id )
-{
-  Q_UNUSED ( id );
   return QStringList();
 }
 
