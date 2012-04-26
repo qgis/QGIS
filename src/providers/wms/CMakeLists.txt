@@ -1,6 +1,19 @@
-
-SET (WMS_SRCS      qgswmsprovider.cpp)
-SET (WMS_MOC_HDRS  qgswmsprovider.h)
+SET (WMS_SRCS      
+  qgswmsprovider.cpp 
+  qgswmssourceselect.cpp 
+  qgswmsconnection.cpp 
+  qgswmsdataitems.cpp
+  qgstilescalewidget.cpp
+  qgswmtsdimensions.cpp
+)
+SET (WMS_MOC_HDRS  
+  qgswmsprovider.h 
+  qgswmssourceselect.h 
+  qgswmsconnection.h 
+  qgswmsdataitems.h
+  qgstilescalewidget.h
+  qgswmtsdimensions.h
+)
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 

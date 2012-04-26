@@ -126,6 +126,8 @@ class CORE_EXPORT QgsProviderRegistry
     /** type for data provider metadata associative container */
     typedef std::map<QString, QgsProviderMetadata*> Providers;
 
+    void registerGuis( QWidget *widget );
+
   private:
 
     /** ctor private since instance() creates it */

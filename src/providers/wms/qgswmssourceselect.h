@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgserversourceselect.h  -  selector for WMS servers, etc.
+    qgswmssourceselect.h  -  selector for WMS servers, etc.
                              -------------------
     begin                : 3 April 2005
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
@@ -188,6 +188,17 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QList<QTreeWidgetItem*> mCurrentSelection;
     QTableWidgetItem* mCurrentTileset;
 
+    QList<QgsWmtsTileLayer> mTileLayers;
+
+  signals:
+    void addRasterLayer( QString const & rasterLayerPath,
+                         QString const & baseName,
+                         QString const & providerKey,
+                         QStringList const & layers,
+                         QStringList const & styles,
+                         QString const & format,
+                         QString const & crs );
+    void connectionsChanged();
   private slots:
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();
