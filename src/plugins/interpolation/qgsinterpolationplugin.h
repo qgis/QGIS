@@ -39,8 +39,8 @@ class QgsInterpolationPlugin: public QObject, public QgisPlugin
     void unload();
 
   public slots:
-    //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    //~ //! update the plugins theme when the app tells us its theme is changed
+    //~ void setCurrentTheme( QString theThemeName );
 
   private slots:
     void showInterpolationDialog();

@@ -26,7 +26,7 @@ static const QString name_ = QObject::tr( "Interpolation plugin" );
 static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
 static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.001" );
-static const QString icon_ = ":/interpolation.png";
+static const QString icon_ = ":/raster-interpolate.png";
 
 QgsInterpolationPlugin::QgsInterpolationPlugin( QgisInterface* iface ): mIface( iface ), mInterpolationAction( 0 )
 {
@@ -42,8 +42,8 @@ void QgsInterpolationPlugin::initGui()
 {
   if ( mIface )
   {
-    mInterpolationAction = new QAction( QIcon(), tr( "&Interpolation" ), 0 );
-    setCurrentTheme( "" );
+    mInterpolationAction = new QAction( QIcon( ":/raster-interpolate.png" ), tr( "&Interpolation" ), 0 );
+    //~ setCurrentTheme( "" );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addRasterToolBarIcon( mInterpolationAction );
     mIface->addPluginToRasterMenu( tr( "&Interpolation" ), mInterpolationAction );
@@ -65,30 +65,30 @@ void QgsInterpolationPlugin::showInterpolationDialog()
   dialog.exec();
 }
 
-//! Set icons to the current theme
-void QgsInterpolationPlugin::setCurrentTheme( QString theThemeName )
-{
-  Q_UNUSED( theThemeName );
-  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/interpolation.png";
-  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/interpolation.png";
-  QString myQrcPath = ":/interpolation.png";
-  if ( QFile::exists( myCurThemePath ) )
-  {
-    mInterpolationAction->setIcon( QIcon( myCurThemePath ) );
-  }
-  else if ( QFile::exists( myDefThemePath ) )
-  {
-    mInterpolationAction->setIcon( QIcon( myDefThemePath ) );
-  }
-  else if ( QFile::exists( myQrcPath ) )
-  {
-    mInterpolationAction->setIcon( QIcon( myQrcPath ) );
-  }
-  else
-  {
-    mInterpolationAction->setIcon( QIcon() );
-  }
-}
+//~ //! Set icons to the current theme
+//~ void QgsInterpolationPlugin::setCurrentTheme( QString theThemeName )
+//~ {
+  //~ Q_UNUSED( theThemeName );
+  //~ QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/interpolation.png";
+  //~ QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/interpolation.png";
+  //~ QString myQrcPath = ":/interpolation.png";
+  //~ if ( QFile::exists( myCurThemePath ) )
+  //~ {
+    //~ mInterpolationAction->setIcon( QIcon( myCurThemePath ) );
+  //~ }
+  //~ else if ( QFile::exists( myDefThemePath ) )
+  //~ {
+    //~ mInterpolationAction->setIcon( QIcon( myDefThemePath ) );
+  //~ }
+  //~ else if ( QFile::exists( myQrcPath ) )
+  //~ {
+    //~ mInterpolationAction->setIcon( QIcon( myQrcPath ) );
+  //~ }
+  //~ else
+  //~ {
+    //~ mInterpolationAction->setIcon( QIcon() );
+  //~ }
+//~ }
 
 QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
