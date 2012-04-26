@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -1100,6 +1100,10 @@
    </property>
   </action>
   <action name="mActionShowRasterCalculator">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowRasterCalculator.png</normaloff>:/images/themes/default/mActionShowRasterCalculator.png</iconset>
+   </property>
    <property name="text">
     <string>Raster calculator ...</string>
    </property>

@@ -1560,6 +1560,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
   mActionZoomFullExtent->setIcon( getThemeIcon( "/mActionZoomFullExtent.png" ) );
   mActionZoomToSelected->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
+  mActionShowRasterCalculator->setIcon( getThemeIcon( "/mActionShowRasterCalculator.png" ) );
 #ifdef HAVE_TOUCH
   mActionTouch->setIcon( getThemeIcon( "/mActionTouch.png" ) );
 #endif
