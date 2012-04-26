@@ -24,8 +24,11 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
 import subprocess
+from sextante.parameters.ParameterExtent import ParameterExtent
 
 class SagaAlgorithm(GeoAlgorithm):
+
+    OUTPUT_EXTENT = "OUTPUT_EXTENT"
 
     def __init__(self, descriptionfile):
         self.resample = True #True if it should resample
@@ -70,6 +73,9 @@ class SagaAlgorithm(GeoAlgorithm):
                 self.addParameter(ParameterFactory.getFromString(line))
             elif line.startswith("DontResample"):
                 self.resample = False
+            elif line.startswith("Extent"): #An extent parameter that wraps 4 SAGA numerical parameters
+                self.extentParamNames = line[6:].strip().split(" ")
+                self.addParameter(ParameterExtent(self.OUTPUT_EXTENT, "Output extent", "0,1,0,1"))
             else:
                 self.addOutput(OutputFactory.getFromString(line))
             line = lines.readline().strip("\n").strip()
@@ -200,10 +206,16 @@ class SagaAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command+=(" -" + param.name);
+            elif isinstance(param, ParameterExtent):
+                values = param.value.split(",")
+                for i in range(4):
+                    command+=(" -" + self.extentParamNames[i] + " " + str(values[i]));
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 command+=(" -" + param.name + " " + str(param.value));
             else:
                 command+=(" -" + param.name + " \"" + str(param.value) + "\"");
+
+
 
 
         for out in self.outputs:

@@ -64,7 +64,10 @@ class ParametersPanel(QtGui.QWidget):
             self.verticalLayout.setSpacing(5)
             self.verticalLayout.setMargin(20)
             for param in self.alg.parameters:
-                label = QtGui.QLabel(param.description)
+                desc = param.description
+                if isinstance(param, ParameterExtent):
+                    desc += "(xmin, xmax, ymin, ymax)"
+                label = QtGui.QLabel(desc)
                 widget = self.getWidgetFromParameter(param)
                 self.valueItems[param.name] = widget
                 if isinstance(param, ParameterVector):

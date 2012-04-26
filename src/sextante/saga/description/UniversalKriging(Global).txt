@@ -19,9 +19,6 @@ ParameterMultipleInput|GRIDS|Grids|3|False
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
 ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
-ParameterNumber|USER_X_EXTENT_MIN|X-Extent Min|None|None|0.0
-ParameterNumber|USER_X_EXTENT_MAX|X-Extent Max|None|None|0.0
-ParameterNumber|USER_Y_EXTENT_MIN|Y-Extent Min|None|None|0.0
-ParameterNumber|USER_Y_EXTENT_MAX|Y-Extent Max|None|None|0.0
+Extent USER_X_EXTENT_MIN USER_X_EXTENT_MAX USER_Y_EXTENT_MIN USER_Y_EXTENT_MIN
 OutputRaster|GRID|Grid
 OutputRaster|VARIANCE|Variance

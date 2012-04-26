@@ -6,10 +6,7 @@ ParameterMultipleInput|SOURCE|Source|3|False
 ParameterBoolean|CREATE_XY                 |Create X/Y Grids|True
 ParameterSelection|INTERPOLATION|Interpolation|[0] Nearest Neigbhor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 ParameterSelection|TARGET_TYPE|Target|[0] user defined
-ParameterNumber|GET_USER_XMIN|Left|None|None|0.0
-ParameterNumber|GET_USER_XMAX|Right|None|None|0.0
-ParameterNumber|GET_USER_YMIN|Bottom|None|None|0.0
-ParameterNumber|GET_USER_YMAX|Top|None|None|0.0
+Extent GET_USER_XMIN GET_USER_XMAX GET_USER_YMIN GET_USER_YMAX
 ParameterNumber|GET_USER_SIZE|Cellsize|None|None|0.0
 OutputRaster|TARGET|Target
 OutputRaster|SHAPES|Shapes

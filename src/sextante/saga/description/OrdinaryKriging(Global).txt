@@ -17,9 +17,6 @@ ParameterNumber|POW_A|Power Function - A|None|None|1.0
 ParameterNumber|POW_B|Power Function - B|None|None|0.5
 ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
 ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
-ParameterNumber|USER_X_EXTENT_MIN|X-Extent Min|None|None|0.0
-ParameterNumber|USER_X_EXTENT_MAX|X-Extent Max|None|None|0.0
-ParameterNumber|USER_Y_EXTENT_MIN|Y-Extent Min|None|None|0.0
-ParameterNumber|USER_Y_EXTENT_MAX|Y-Extent Max|None|None|0.0
+Extent USER_X_EXTENT_MIN USER_X_EXTENT_MAX USER_Y_EXTENT_MIN USER_Y_EXTENT_MIN
 OutputRaster|GRID|Grid
 OutputRaster|VARIANCE|Variance

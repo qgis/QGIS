@@ -5,7 +5,7 @@ class ParameterExtent(Parameter):
         self.name = name
         self.description = description
         self.default = default
-        self.value = None #The value is a string in the form "N,S,E,W"
+        self.value = None #The value is a string in the form "xmin, xmax, ymin, y max"
 
     def setValue(self, text):
         tokens = text.split(",")
