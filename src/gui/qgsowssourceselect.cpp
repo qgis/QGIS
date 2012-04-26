@@ -56,7 +56,7 @@
 
 QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )
-    , mService ( service )
+    , mService( service )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mCurrentTileset( 0 )
@@ -122,7 +122,7 @@ QgsOWSSourceSelect::~QgsOWSSourceSelect()
 
 void QgsOWSSourceSelect::populateFormats()
 {
-  QgsDebugMsg ( "entered");
+  QgsDebugMsg( "entered" );
   if ( mProviderFormats.size() == 0 )
   {
     QHBoxLayout *layout = new QHBoxLayout;
@@ -165,9 +165,9 @@ void QgsOWSSourceSelect::populateFormats()
     if ( firstVisible == -1 ) firstVisible = id;
   }
   // Set first if no one visible is checked
-  if ( mImageFormatGroup->checkedId() < 0 || ( !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() && firstVisible > -1 ) ) 
+  if ( mImageFormatGroup->checkedId() < 0 || ( !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() && firstVisible > -1 ) )
   {
-    mImageFormatGroup->button( firstVisible )->setChecked(true);
+    mImageFormatGroup->button( firstVisible )->setChecked( true );
   }
 
   mImageFormatsGroupBox->setEnabled( true );
@@ -176,7 +176,7 @@ void QgsOWSSourceSelect::populateFormats()
 void QgsOWSSourceSelect::populateConnectionList()
 {
   mConnectionsComboBox->clear();
-  mConnectionsComboBox->addItems( QgsOWSConnection::connectionList(mService) );
+  mConnectionsComboBox->addItems( QgsOWSConnection::connectionList( mService ) );
 
   setConnectionListPosition();
 
@@ -264,13 +264,13 @@ QgsNumericSortTreeWidgetItem *QgsOWSSourceSelect::createItem(
   const QMap<int, int> &layerParents,
   const QMap<int, QStringList> &layerParentNames )
 {
-  QgsDebugMsg( QString( "id = %1 layerAndStyleCount = %2 names = %3 ").arg( id).arg(layerAndStyleCount).arg(names.join(",") ) );
+  QgsDebugMsg( QString( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ) );
   if ( items.contains( id ) )
     return items[id];
 
 
   QgsNumericSortTreeWidgetItem *item;
-  if ( layerParents.contains( id ) ) 
+  if ( layerParents.contains( id ) )
   {
     // it has parent -> create first its parent
     int parent = layerParents[ id ];
@@ -314,7 +314,7 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
 
 void QgsOWSSourceSelect::addClicked()
 {
-  QgsDebugMsg( "entered");
+  QgsDebugMsg( "entered" );
 }
 
 void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
@@ -393,16 +393,15 @@ void QgsOWSSourceSelect::populateCRS()
     {
       // not found
       mSelectedCRS = defaultCRS;
-      mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
     }
-
+    mSelectedCRSLabel->setText( descriptionForAuthId( mSelectedCRS ) );
   }
   else
   {
     mSelectedCRS = "";
     mSelectedCRSLabel->setText( "" );
   }
-  mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() ); 
+  mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() );
 }
 
 void QgsOWSSourceSelect::on_mTilesetsTableWidget_itemClicked( QTableWidgetItem *item )
@@ -498,7 +497,7 @@ void QgsOWSSourceSelect::showError( QString const &theTitle, QString const &theF
   }
   else
   {
-    mv->setMessageAsPlainText( tr( "Could not understand the response:\n%1" ).arg( theError) );
+    mv->setMessageAsPlainText( tr( "Could not understand the response:\n%1" ).arg( theError ) );
   }
   mv->showMessage( true ); // Is deleted when closed
 }
@@ -717,9 +716,9 @@ void QgsOWSSourceSelect::on_mLayerDownButton_clicked()
   selectedItem->setSelected( true );
 }
 
-QList<QgsOWSSupportedFormat> QgsOWSSourceSelect::providerFormats() 
-{ 
-  return QList<QgsOWSSupportedFormat>(); 
+QList<QgsOWSSupportedFormat> QgsOWSSourceSelect::providerFormats()
+{
+  return QList<QgsOWSSupportedFormat>();
 }
 
 QStringList QgsOWSSourceSelect::selectedLayersFormats()

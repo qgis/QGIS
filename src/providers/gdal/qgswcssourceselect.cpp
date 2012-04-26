@@ -37,28 +37,30 @@
 #endif
 
 QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
-    : QgsOWSSourceSelect ( "WCS", parent, fl, managerMode, embeddedMode )
+    : QgsOWSSourceSelect( "WCS", parent, fl, managerMode, embeddedMode )
 {
-  // Hide irrelevant widgets 
+  // Hide irrelevant widgets
   mWMSGroupBox->hide();
-  mLayersTab->layout()->removeWidget ( mWMSGroupBox );
+  mLayersTab->layout()->removeWidget( mWMSGroupBox );
   mTabWidget->removeTab( mTabWidget->indexOf( mLayerOrderTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mTilesetsTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mSearchTab ) );
   mAddDefaultButton->hide();
-  
-  mLayersTreeWidget->setSelectionMode ( QAbstractItemView::SingleSelection );
+
+  mLayersTreeWidget->setSelectionMode( QAbstractItemView::SingleSelection );
 }
 
 QgsWCSSourceSelect::~QgsWCSSourceSelect()
 {
 }
 
-void QgsWCSSourceSelect::populateLayerList(  )
+void QgsWCSSourceSelect::populateLayerList( )
 {
   QgsDebugMsg( "entered" );
 
-  mCapabilities.setUri ( mUri );
+  mLayersTreeWidget->clear();
+
+  mCapabilities.setUri( mUri );
 
   if ( !mCapabilities.lastError().isEmpty() )
   {
@@ -69,13 +71,12 @@ void QgsWCSSourceSelect::populateLayerList(  )
   QVector<QgsWcsCoverageSummary> coverages;
   if ( !mCapabilities.supportedCoverages( coverages ) )
     return;
-  
+
   QMap<int, QgsNumericSortTreeWidgetItem *> items;
   QMap<int, int> coverageParents;
   QMap<int, QStringList> coverageParentNames;
   mCapabilities.coverageParents( coverageParents, coverageParentNames );
 
-  mLayersTreeWidget->clear();
   mLayersTreeWidget->setSortingEnabled( true );
 
   int coverageAndStyleCount = -1;
@@ -84,7 +85,7 @@ void QgsWCSSourceSelect::populateLayerList(  )
         coverage != coverages.end();
         coverage++ )
   {
-    QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2").arg(coverage->orderId).arg(coverage->identifier) );
+    QgsDebugMsg( QString( "coverage orderId = %1 identifier = %2" ).arg( coverage->orderId ).arg( coverage->identifier ) );
 
     QgsNumericSortTreeWidgetItem *lItem = createItem( coverage->orderId, QStringList() << coverage->identifier << coverage->title << coverage->abstract, items, coverageAndStyleCount, coverageParents, coverageParentNames );
 
@@ -109,37 +110,45 @@ void QgsWCSSourceSelect::populateLayerList(  )
 
 void QgsWCSSourceSelect::addClicked( )
 {
-  QgsDebugMsg ( "entered");
-  QgsDataSourceURI uri = mUri; 
-  
+  QgsDebugMsg( "entered" );
+  QgsDataSourceURI uri = mUri;
+
   QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
   if ( selectionList.size() < 1 ) return; // should not happen
-  QString identifier = selectionList.value(0)->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg ( " identifier = " + identifier );
+  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
+  QgsDebugMsg( " identifier = " + identifier );
 
   uri.setParam( "identifier", identifier );
 
-  uri.setParam( "crs", selectedCRS() );
-  
-  QgsDebugMsg ( "selectedFormat = " +  selectedFormat() );
-  uri.setParam( "format", selectedFormat() ); 
+  // Set crs only if necessary (multiple offered), so that we can decide in the
+  // provider if WCS 1.0 with RESPONSE_CRS has to be used.  Not perfect, they can
+  // add more CRS in future and URI will be saved in project without any.
+  if ( selectedLayersCRSs().size() > 1 )
+  {
+    uri.setParam( "crs", selectedCRS() );
+  }
+
+  QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
+  uri.setParam( "format", selectedFormat() );
 
   emit addRasterLayer( uri.encodedUri(), identifier, "gdal" );
 }
 
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
-  QgsDebugMsg ( "entered");
+  QgsDebugMsg( "entered" );
   populateFormats();
 
   populateCRS();
 
-  mAddButton->setEnabled(true);
+  updateButtons();
+
+  mAddButton->setEnabled( true );
 }
 
 void QgsWCSSourceSelect::updateButtons()
 {
-  QgsDebugMsg ( "entered");
+  QgsDebugMsg( "entered" );
 
   if ( mLayersTreeWidget->selectedItems().isEmpty() )
   {
@@ -158,16 +167,16 @@ void QgsWCSSourceSelect::updateButtons()
 
 QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
-  QgsDebugMsg ( "entered");
+  QgsDebugMsg( "entered" );
   QList<QgsOWSSupportedFormat> formats;
   GDALAllRegister();
 
-  QgsDebugMsg ( QString( "GDAL drivers cont %1").arg(GDALGetDriverCount()) );
+  QgsDebugMsg( QString( "GDAL drivers cont %1" ).arg( GDALGetDriverCount() ) );
   for ( int i = 0; i < GDALGetDriverCount(); ++i )
   {
     GDALDriverH driver = GDALGetDriver( i );
     Q_CHECK_PTR( driver );
-    
+
     if ( !driver )
     {
       QgsLogger::warning( "unable to get driver " + QString::number( i ) );
@@ -176,7 +185,7 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
 
     QString desc = GDALGetDescription( driver );
 
-    QString mimeType = GDALGetMetadataItem ( driver, "DMD_MIMETYPE", "" );
+    QString mimeType = GDALGetMetadataItem( driver, "DMD_MIMETYPE", "" );
 
     if ( mimeType.isEmpty() ) continue;
 
@@ -184,15 +193,15 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
 
     QgsOWSSupportedFormat format = { mimeType, desc };
 
-    QgsDebugMsg ( "add GDAL format " + mimeType + " " + desc );
+    QgsDebugMsg( "add GDAL format " + mimeType + " " + desc );
 
     if ( mimeType == "image/tiff" )
     {
-      formats.prepend ( format );
+      formats.prepend( format );
     }
     else
     {
-      formats.append ( format );
+      formats.append( format );
     }
   }
 
@@ -201,27 +210,27 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
 
 QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
-  QgsDebugMsg ( "entered");
+  QgsDebugMsg( "entered" );
 
   QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
   if ( selectionList.size() < 1 ) return QStringList();
-  QString identifier = selectionList.value(0)->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg ( " identifier = " + identifier );
-  
-  QgsWcsCoverageSummary c = mCapabilities.coverageSummary(identifier);
-  return c.supportedFormat;  
+  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
+  QgsDebugMsg( " identifier = " + identifier );
+
+  QgsWcsCoverageSummary c = mCapabilities.coverageSummary( identifier );
+  return c.supportedFormat;
 }
 
 QStringList QgsWCSSourceSelect::selectedLayersCRSs()
 {
-  QgsDebugMsg ( "entered");
+  QgsDebugMsg( "entered" );
 
   QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
   if ( selectionList.size() < 1 ) return QStringList();
-  QString identifier = selectionList.value(0)->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg ( " identifier = " + identifier );
+  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
+  QgsDebugMsg( " identifier = " + identifier );
 
-  QgsWcsCoverageSummary c = mCapabilities.coverageSummary(identifier);
+  QgsWcsCoverageSummary c = mCapabilities.coverageSummary( identifier );
 
   return c.supportedCrs;
 }

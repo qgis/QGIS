@@ -160,19 +160,9 @@ class QgsWcsCapabilities : public QObject
      * \brief   Returns a map for the hierarchy of layers
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
-    
+
     //! Get coverage summare for identifier
-    QgsWcsCoverageSummary coverageSummary ( QString const & theIdentifier );
-
-    /**
-     * Set the name of the connection for use in authentication where required
-     * \note added in 1.1
-     */
-    //void setConnectionName( QString const & connName );
-
-    /**Returns the base url
-     */
-    //QString baseUrl() const;
+    QgsWcsCoverageSummary coverageSummary( QString const & theIdentifier );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -188,12 +178,6 @@ class QgsWcsCapabilities : public QObject
 
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
-
-    //! get WCS Server version string
-    //QString wmsVersion();
-
-    //! get raster image encodings supported by the WCS Server, expressed as MIME types
-    //QStringList supportedImageEncodings();
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -220,8 +204,6 @@ class QgsWcsCapabilities : public QObject
      */
     QString lastErrorFormat();
 
-    //static QVector<QgsWcsSupportedFormat> supportedFormats();
-
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -238,7 +220,7 @@ class QgsWcsCapabilities : public QObject
     void showMessageBox( const QString& title, const QString& text );
 
     //! Get tag name without namespace
-    QString stripNS ( const QString & name );
+    QString stripNS( const QString & name );
 
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
@@ -274,32 +256,10 @@ class QgsWcsCapabilities : public QObject
 
     //! parse the WCS Layer XML element
     void parseCoverageSummary( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
-                     QgsWcsCoverageSummary *parent = 0 );
-
-    //! parse the WCS Layer XML element
-    //void parseContents( QDomElement const &e, QgsWcsContents &contents );
-
-    /**
-     * \brief parse the full WCS ServiceExceptionReport XML document
-     *
-     * \note mErrorCaption and mError are updated to suit the results of this function.
-     */
-    //bool parseServiceExceptionReportDom( QByteArray const &xml );
-
-    //! parse the WCS ServiceException XML element
-    //void parseServiceException( QDomElement const &e );
-
-    //! Data source URI of the WCS for this layer
-    //QString httpuri;
-
-    //! Name of the stored connection
-    //QString connectionName;
+                               QgsWcsCoverageSummary *parent = 0 );
 
     //! Data source uri
     QgsDataSourceURI mUri;
-
-    //! URL part of URI (httpuri)
-    //QString mBaseUrl;
 
     //! Response capabilities version
     QString mVersion;
@@ -330,21 +290,6 @@ class QgsWcsCapabilities : public QObject
     QVector<QgsWcsCoverageSummary> mCoveragesSupported;
 
     /**
-     * extents per layer (in WCS CRS:84 datum)
-     */
-    //QMap<QString, QgsRectangle> extentForLayer;
-
-    /**
-     * available CRSs per layer
-     */
-    //QMap<QString, QStringList > mCrsForLayer;
-
-    /**
-     * available formats per layer
-     */
-    //QMap<QString, QStringList > mFormatForLayer;
-
-    /**
      * The reply to the capabilities request
      */
     QNetworkReply *mCapabilitiesReply;
@@ -363,12 +308,6 @@ class QgsWcsCapabilities : public QObject
      */
     QString mErrorFormat;
 
-    //! A QgsCoordinateTransform is used for transformation of WCS layer extents
-    //QgsCoordinateTransform *mCoordinateTransform;
-
-    //! See if calculateExtents() needs to be called before extent() returns useful data
-    //bool extentDirty;
-
     int mCoverageCount;
 
     //! number of layers and parents
@@ -380,12 +319,6 @@ class QgsWcsCapabilities : public QObject
 
     //! Password for basic http authentication
     QString mPassword;
-
-    //! whether to use hrefs from GetCapabilities (default) or
-    // the given base urls for GetMap and GetFeatureInfo
-    //bool mIgnoreGetCoverageUrl;
-
-    
 };
 
 

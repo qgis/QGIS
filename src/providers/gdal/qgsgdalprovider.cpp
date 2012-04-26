@@ -110,27 +110,49 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   // The uri is either a file name or encoded parameters for WCS
   QString gdalUri = uri;
-  if ( uri.contains("url=") && uri.contains("identifier=") && !QFile::exists(uri) )
+  if ( uri.contains( "url=" ) && uri.contains( "identifier=" ) && !QFile::exists( uri ) )
   {
-    // WCS
-    // GDAL currently (4/2012) supports  WCS 1.0.0 (default) and 1.1.0
+    // - GDAL currently (4/2012) supports  WCS 1.0.0 (default) and 1.1.0
+    //   We cannot use 1.1.0 because of wrong longlat bbox send by GDAL
+    //   and impossibility to set GridOffsets.
+
+    // - WCS 1.0.0 does not work with GDAL r24316 2012-04-25 + Mapserver 6.0.2 with
+    //   geographic CRS
+    //   GDAL sends BOUNDINGBOX=min_long,min_lat,max_lon,max_lat,urn:ogc:def:crs:EPSG::4326
+    //   Mapserver works with min_lat,min_long,max_lon,max_lat
+    //   OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says:
+    //    "The number of axes included, and the order of these axes, shall be as
+    //     specified by the referenced CRS."
+    //   EPSG defines for EPSG:4326 Axes: latitude, longitude
+    //     (don't confuse with OGC:CRS84 with lon,lat order)
     //
+
     QgsDataSourceURI dsUri;
     dsUri.setEncodedUri( uri );
     gdalUri = "<WCS_GDAL>";
+    gdalUri += "<Version>1.0.0</Version>";
     // prepareUri adds ? or & if necessary, GDAL fails otherwise
-    gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param("url") ) ) + "</ServiceURL>";
-    gdalUri += "<CoverageName>" + dsUri.param("identifier") + "</CoverageName>";
-    gdalUri += "<PreferredFormat>" + dsUri.param("format") + "</PreferredFormat>";
-    
-    // TODO: There is no tag for CRS response.
-    // There is undocumented CRS tag, but it only overrides CRS param in requests 
-    // but BBOX is left unchanged and thus results in server error (usually).
-    gdalUri += "<GetCoverageExtra>&amp;RESPONSE_CRS=" + dsUri.param("crs") + "</GetCoverageExtra>";
+    gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param( "url" ) ) ) + "</ServiceURL>";
+    gdalUri += "<CoverageName>" + dsUri.param( "identifier" ) + "</CoverageName>";
+    gdalUri += "<PreferredFormat>" + dsUri.param( "format" ) + "</PreferredFormat>";
 
-    if ( dsUri.hasParam("username") && dsUri.hasParam("password") ) 
+    // - CRS : there is undocumented GDAL CRS tag, but it only overrides CRS param
+    //         in requests but the BBOX is left unchanged and thus results in server error (usually).
+    // 1.0 : RESPONSE_CRS
+    if ( dsUri.hasParam( "crs" ) )
     {
-      gdalUri += "<UserPwd>" + dsUri.param("username") + ":" + dsUri.param("password") + "</UserPwd>";
+      gdalUri += "<GetCoverageExtra>&amp;RESPONSE_CRS=" + dsUri.param( "crs" ) + "</GetCoverageExtra>";
+    }
+    // 1.1 : Required parameters are: GridBaseCRS and GridOffsets (resolution)
+    //       We dont have the GridOffsets here and it should be probably dynamic
+    //       according to requested data (zoom).
+    //       Mapserver 6.0.2 works without the GridOffsets, but other servers may not.
+    //QString crsUrn = "urn:ogc:def:crs:" + dsUri.param("crs").replace(":","::");
+    //gdalUri += "<GetCoverageExtra>&amp;GridBaseCRS=" + crsUrn + "</GetCoverageExtra>";
+
+    if ( dsUri.hasParam( "username" ) && dsUri.hasParam( "password" ) )
+    {
+      gdalUri += "<UserPwd>" + dsUri.param( "username" ) + ":" + dsUri.param( "password" ) + "</UserPwd>";
     }
     gdalUri += "</WCS_GDAL>";
     QgsDebugMsg( "WCS uri: " + gdalUri );
