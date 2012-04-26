@@ -36,7 +36,7 @@ try:
 except ImportError, e:
   valid = False
 
-  # if the plugin is shipped with QGis catch the exception and 
+  # if the plugin is shipped with QGis catch the exception and
   # display an error message
   import os.path
   qgisUserPluginPath = os.path.abspath( os.path.join( str( QgsApplication.qgisSettingsDirPath() ), "python") )
@@ -244,7 +244,7 @@ class GdalTools:
     self.overview.setStatusTip( QCoreApplication.translate( "GdalTools", "Builds or rebuilds overview images" ) )
     QObject.connect( self.overview, SIGNAL( "triggered()" ), self.doOverview )
 
-    self.tileindex = QAction( QIcon( ":icons/tileindex.png" ), QCoreApplication.translate( "GdalTools", "Tile index" ), self.iface.mainWindow() )
+    self.tileindex = QAction( QIcon( ":icons/tiles.png" ), QCoreApplication.translate( "GdalTools", "Tile index" ), self.iface.mainWindow() )
     self.tileindex.setStatusTip( QCoreApplication.translate( "GdalTools", "Build a shapefile as a raster tileindex" ) )
     QObject.connect( self.tileindex, SIGNAL( "triggered()" ), self.doTileIndex )
 
