@@ -95,7 +95,6 @@ SET(QGIS_APP_SRCS
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgsundowidget.cpp
-  qgstilescalewidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
   qgsuniquevaluedialog.cpp
@@ -232,7 +231,6 @@ SET (QGIS_APP_MOC_HDRS
   qgssnappingdialog.h
   qgssponsors.h
   qgstextannotationdialog.h
-  qgstilescalewidget.h
   qgstipgui.h
   qgstipfactory.h
   qgsundowidget.h

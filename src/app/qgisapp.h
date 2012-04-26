@@ -58,7 +58,6 @@ class QgsRasterLayer;
 class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
-class QgsTileScaleWidget;
 
 class QDomDocument;
 class QNetworkReply;
@@ -289,7 +288,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
-    QAction *actionTileScale() { return mActionTileScale; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -544,8 +542,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
-    //! Show tile scale slider
-    void showTileScale();
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
@@ -1005,7 +1001,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QDockWidget *mLegendDock;
     QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
-    QDockWidget *mpTileScaleDock;
     QDockWidget *mpGpsDock;
     QDockWidget *mLogDock;
 
@@ -1172,9 +1167,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget* mBrowserWidget;
 
     QgsSnappingDialog* mSnappingDialog;
-
-    //! Persistent tile scale slider
-    QgsTileScaleWidget * mpTileScaleWidget;
 
     QgsDecorationCopyright* mDecorationCopyright;
     QgsDecorationNorthArrow* mDecorationNorthArrow;

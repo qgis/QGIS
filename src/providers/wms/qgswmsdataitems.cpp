@@ -7,6 +7,8 @@
 
 #include "qgsnewhttpconnection.h"
 
+#include "qgstilescalewidget.h"
+
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
@@ -23,7 +25,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
   QgsWMSConnection connection( mName );
-  QgsWmsProvider *wmsProvider = connection.provider( );
+  QgsWmsProvider *wmsProvider = connection.provider();
   if ( !wmsProvider )
     return children;
 
@@ -247,6 +249,11 @@ void QgsWMSRootItem::newConnection()
 
 
 // ---------------------------------------------------------------------------
+
+QGISEXTERN void registerGui( QMainWindow *mainWindow )
+{
+  QgsTileScaleWidget::showTileScale( mainWindow );
+}
 
 QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
 {

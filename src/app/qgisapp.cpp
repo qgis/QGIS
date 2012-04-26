@@ -164,7 +164,6 @@
 #include "qgssnappingdialog.h"
 #include "qgssponsors.h"
 #include "qgstextannotationitem.h"
-#include "qgstilescalewidget.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
@@ -403,7 +402,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mSplash( splash )
     , mShowProjectionTab( false )
     , mPythonUtils( NULL )
-    , mpTileScaleWidget( NULL )
 #ifdef Q_OS_WIN
     , mSkipNextContextMenuEvent( 0 )
 #endif
@@ -651,6 +649,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
 
+  QgsProviderRegistry::instance()->registerGuis( this );
+
   // update windows
   qApp->processEvents();
 
@@ -788,12 +788,6 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
-
-  // Restore state of tile scale widget
-  if ( settings.value( "/UI/tileScaleEnabled", false ).toBool() )
-  {
-    showTileScale();
-  }
 }
 
 
@@ -899,7 +893,6 @@ void QgisApp::createActions()
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
   connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
-  connect( mActionTileScale, SIGNAL( triggered() ), this, SLOT( showTileScale() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
   connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
   connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
@@ -2071,17 +2064,6 @@ void QgisApp::saveWindowState()
 
   // store window geometry
   settings.setValue( "/UI/geometry", saveGeometry() );
-
-  // Persist state of tile scale slider
-  if ( mpTileScaleWidget )
-  {
-    settings.setValue( "/UI/tileScaleEnabled", true );
-    delete mpTileScaleWidget;
-  }
-  else
-  {
-    settings.setValue( "/UI/tileScaleEnabled", false );
-  }
 
   QgsPluginRegistry::instance()->unloadAll();
 }
@@ -4852,32 +4834,6 @@ void QgisApp::setProjectCRSFromLayer()
     myRenderer->setMapUnits( crs.mapUnits() );
   }
   mMapCanvas->refresh();
-}
-
-void QgisApp::showTileScale()
-{
-  if ( !mpTileScaleWidget )
-  {
-    mpTileScaleWidget = new QgsTileScaleWidget( mMapCanvas );
-    //create the dock widget
-    mpTileScaleDock = new QDockWidget( tr( "Tile scale" ), this );
-    mpTileScaleDock->setObjectName( "TileScale" );
-    mpTileScaleDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    addDockWidget( Qt::RightDockWidgetArea, mpTileScaleDock );
-    // add to the Panel submenu
-    mPanelMenu->addAction( mpTileScaleDock->toggleViewAction() );
-    // now add our widget to the dock - ownership of the widget is passed to the dock
-    mpTileScaleDock->setWidget( mpTileScaleWidget );
-    mpTileScaleDock->show();
-
-    connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-             mpTileScaleWidget, SLOT( layerChanged( QgsMapLayer* ) ) );
-
-  }
-  else
-  {
-    mpTileScaleDock->setVisible( mpTileScaleDock->isHidden() );
-  }
 }
 
 void QgisApp::zoomToLayerExtent()
