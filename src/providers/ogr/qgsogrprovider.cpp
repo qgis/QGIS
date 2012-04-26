@@ -1608,6 +1608,10 @@ QString createFilters( QString type )
       {
         myProtocolDrivers += "DODS/OPeNDAP,DODS;";
       }
+      else if ( driverName.startsWith( "FileGDB" ) )
+      {
+        myDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
+      }
       else if ( driverName.startsWith( "PGeo" ) )
       {
         myDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
