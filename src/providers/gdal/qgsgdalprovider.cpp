@@ -1441,16 +1441,16 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
         ++myRasterPyramidIterator )
   {
 #ifdef QGISDEBUG
-    QgsLogger::debug( "Build pyramids:: Level", ( *myRasterPyramidIterator ).level, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "x", ( *myRasterPyramidIterator ).xDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "y", ( *myRasterPyramidIterator ).yDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "exists :", ( *myRasterPyramidIterator ).exists,  1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsDebugMsg( QString( "Build pyramids:: Level %1" ).arg( myRasterPyramidIterator->level ) );
+    QgsDebugMsg( QString( "x:%1" ).arg( myRasterPyramidIterator->xDim ) );
+    QgsDebugMsg( QString( "y:%1" ).arg( myRasterPyramidIterator->yDim ) );
+    QgsDebugMsg( QString( "exists : %1" ).arg( myRasterPyramidIterator->exists ) );
 #endif
-    if (( *myRasterPyramidIterator ).build )
+    if ( myRasterPyramidIterator->build )
     {
       QgsDebugMsg( "Building....." );
       //emit drawingProgress( myCount, myTotal );
-      int myOverviewLevelsArray[1] = {( *myRasterPyramidIterator ).level };
+      int myOverviewLevelsArray[1] = { myRasterPyramidIterator->level };
       /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
        * pszResampling : one of "NEAREST", "AVERAGE" or "MODE" controlling the downsampling method applied.
        * nOverviews : number of overviews to build.
