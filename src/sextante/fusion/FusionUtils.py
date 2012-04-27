@@ -28,7 +28,7 @@ class FusionUtils():
     def createFileList(files):
         out = open(FusionUtils.tempFileListFilepath(), "w")
         for f in files:
-            out.write(f)
+            out.write(f + "\n")
         out.close()
 
     @staticmethod

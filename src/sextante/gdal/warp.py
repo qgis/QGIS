@@ -3,8 +3,7 @@ from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.outputs.OutputRaster import OutputRaster
 import os
-from sextante.gdal.GdalUtils import GdalUtils
-from sextante.parameters.ParameterString import ParameterString
+from qgis.core import *
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterCrs import ParameterCrs
 
@@ -31,11 +30,13 @@ class warp(GeoAlgorithm):
         self.addOutput(OutputRaster(warp.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
+        srs = self.getParameterValue(warp.DEST_SRS)
+        self.crs = QgsCoordinateReferenceSystem(int(srs))
         commands = ["gdalwarp"]
         commands.append("-s_srs")
         commands.append("EPSG:" + str(self.getParameterValue(warp.SOURCE_SRS)))
         commands.append("-t_srs")
-        commands.append("EPSG:" + str(self.getParameterValue(warp.DEST_SRS)))
+        commands.append("EPSG:" + str(srs))
         commands.append("-r")
         commands.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
         commands.append("-of")

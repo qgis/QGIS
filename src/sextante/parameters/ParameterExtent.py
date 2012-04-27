@@ -8,6 +8,9 @@ class ParameterExtent(Parameter):
         self.value = None #The value is a string in the form "xmin, xmax, ymin, y max"
 
     def setValue(self, text):
+        if value is None:
+            self.value = self.default
+            return True
         tokens = text.split(",")
         if len(tokens)!= 4:
             return False

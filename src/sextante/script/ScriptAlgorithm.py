@@ -15,7 +15,6 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputHTML import OutputHTML
-from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile

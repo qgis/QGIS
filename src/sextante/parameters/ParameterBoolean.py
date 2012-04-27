@@ -8,6 +8,9 @@ class ParameterBoolean(Parameter):
         self.value = None
 
     def setValue(self, value):
+        if value is None:
+            self.value = self.default
+            return True
         self.value = value
         return True
 

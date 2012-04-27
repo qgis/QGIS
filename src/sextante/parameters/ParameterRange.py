@@ -8,6 +8,9 @@ class ParameterRange(Parameter):
         self.value = None
 
     def setValue(self, text):
+        if text is None:
+            self.value = self.default
+            return True
         tokens = text.split(",")
         if len(tokens)!= 2:
             return False

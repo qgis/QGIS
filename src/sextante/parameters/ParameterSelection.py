@@ -9,6 +9,9 @@ class ParameterSelection(Parameter):
         self.default = default
 
     def setValue(self, n):
+        if value is None:
+            self.value = self.default
+            return True
         try:
             n = int(n)
             self.value = n

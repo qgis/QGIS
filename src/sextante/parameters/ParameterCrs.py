@@ -3,10 +3,17 @@ from sextante.parameters.Parameter import Parameter
 class ParameterCrs(Parameter):
 
     def __init__(self, name="", description="", default = "4326"):
-        '''The values is the EPSG code of the CRS'''
+        '''The value is the EPSG code of the CRS'''
         Parameter.__init__(self, name, description)
         self.value = None
         self.default = default
+
+    def setValue(self, value):
+        if value is None:
+            self.value = self.default
+            return True
+        self.value = str(value)
+        return True
 
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""

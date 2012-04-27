@@ -18,6 +18,9 @@ class ParameterNumber(Parameter):
         self.value = None
 
     def setValue(self, n):
+        if value is None:
+            self.value = self.default
+            return True
         try:
             if (float(n) - int(float(n)) == 0):
                 value = int(float(n))

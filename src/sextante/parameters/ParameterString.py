@@ -7,6 +7,12 @@ class ParameterString(Parameter):
         self.default = default
         self.value = None
 
+    def setValue(self, obj):
+        if obj is None:
+            self.value = self.default
+            return True
+        self.value = str(obj)
+        return True
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
 
