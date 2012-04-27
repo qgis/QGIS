@@ -18,7 +18,7 @@ from sextante.parameters.ParameterTableField import ParameterTableField
 
 class ModelerAlgorithm(GeoAlgorithm):
 
-    def __deepcopy__(self,memo):
+    def getCopy(self):
         newone = ModelerAlgorithm()
         newone.openModel(self.descriptionFile)
         newone.provider = self.provider
@@ -234,7 +234,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         iAlg = 0
         for alg in self.algs:
             try:
-                alg = copy.deepcopy(alg)
+                alg = alg.getCopy()#copy.deepcopy(alg)
                 self.prepareAlgorithm(alg, iAlg)
                 progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/" + str(len(self.algs)) +"]")
                 outputs = {}

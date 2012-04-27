@@ -114,6 +114,8 @@ class QGisLayers:
 
     @staticmethod
     def getObjectFromUri(uri, forceLoad = True):
+        if uri is None:
+            return None
         layers = QGisLayers.getRasterLayers()
         for layer in layers:
             if layer.source() == uri:

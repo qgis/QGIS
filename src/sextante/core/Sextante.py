@@ -22,6 +22,7 @@ from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 from sextante.lastools.LasToolsAlgorithmProvider import LasToolsAlgorithmProvider
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
+from sextante.fusion.FusionAlgorithmProvider import FusionAlgorithmProvider
 
 class Sextante:
 
@@ -87,6 +88,7 @@ class Sextante:
         Sextante.addProvider(GdalAlgorithmProvider())
         if SextanteUtils.isWindows():
             Sextante.addProvider(LasToolsAlgorithmProvider())
+            Sextante.addProvider(FusionAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
@@ -253,7 +255,7 @@ class Sextante:
             Sextante.alghelp(name)
             return
 
-        alg = copy.deepcopy(alg)
+        alg = alg.getCopy()#copy.deepcopy(alg)
         i = 0
         for param in alg.parameters:
             if not param.setValue(args[i]):
@@ -310,7 +312,7 @@ class Sextante:
             Sextante.alghelp(name)
             return
 
-        alg = copy.deepcopy(alg)
+        alg = alg.getCopy()#copy.deepcopy(alg)
         i = 0
         for param in alg.parameters:
             if not param.setValue(args[i]):

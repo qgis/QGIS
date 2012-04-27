@@ -1,8 +1,5 @@
 import os
-from PyQt4 import QtGui
-from sextante.parameters.ParameterString import ParameterString
 from sextante.lastools.LasToolsUtils import LasToolsUtils
-from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.outputs.OutputVector import OutputVector

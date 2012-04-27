@@ -31,7 +31,7 @@ class RAlgorithm(GeoAlgorithm):
     R_CONSOLE_OUTPUT = "R_CONSOLE_OUTPUT"
     RPLOTS = "RPLOTS"
 
-    def __deepcopy__(self,memo):
+    def getCopy(self):
         newone = RAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone

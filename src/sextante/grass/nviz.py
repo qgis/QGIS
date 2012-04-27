@@ -3,6 +3,8 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.grass.GrassUtils import GrassUtils
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from PyQt4 import QtGui
+from sextante.core.SextanteUtils import SextanteUtils
+import time
 
 class nviz(GeoAlgorithm):
 
@@ -41,13 +43,16 @@ class nviz(GeoAlgorithm):
         GrassUtils.createTempMapset();
         GrassUtils.executeGrass(commands, progress)
 
+    def getTempFilename(self):
+        filename =  "tmp" + str(time.time()).replace(".","") + str(SextanteUtils.getNumExportedLayers())
+        return filename
 
     def exportVectorLayer(self,layer):
         destFilename = self.getTempFilename()
         command = "v.in.ogr"
         command += " min_area=-1"
-        command +=" dsn=\"" + os.path.dirname(filename) + "\""
-        command +=" layer=" + os.path.basename(filename)[:-4]
+        command +=" dsn=\"" + os.path.dirname(layer) + "\""
+        command +=" layer=" + os.path.basename(layer)[:-4]
         command +=" output=" + destFilename;
         command +=" --overwrite -o"
         return destFilename

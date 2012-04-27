@@ -40,7 +40,7 @@ class SagaAlgorithm(GeoAlgorithm):
             #reconsider resampling policy now that we know the input parameters
             self.resample = self.setResamplingPolicy()
 
-    def __deepcopy__(self,memo):
+    def getCopy(self):
         newone = SagaAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone

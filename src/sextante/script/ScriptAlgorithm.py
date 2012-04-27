@@ -27,7 +27,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
 
-    def __deepcopy__(self,memo):
+    def getCopy(self):
         newone = ScriptAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone

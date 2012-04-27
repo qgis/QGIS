@@ -182,12 +182,12 @@ class ModelerDialog(QtGui.QDialog):
             fout = open(self.alg.descriptionFile, "w")
             fout.write(text)
             fout.close()
-            self.alg.provider = Providers.providers["Modeler"]
-            alg = copy.deepcopy(self.alg)
+            self.alg.provider = Providers.providers["model"]
+            alg = self.alg.getCopy()#copy.deepcopy(self.alg)
             self.alg.descriptionFile = None
             alg.descriptionFile = None
         else:
-            alg = copy.deepcopy(self.alg)
+            alg = self.alg.getCopy()#copy.deepcopy(self.alg)
         dlg = ParametersDialog(alg)
         dlg.exec_()
 
@@ -272,7 +272,7 @@ class ModelerDialog(QtGui.QDialog):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = ModelerUtils.getAlgorithm(item.alg.commandLineName())
-            alg = copy.deepcopy(alg)
+            alg = alg.getCopy()#copy.deepcopy(alg)
             dlg = alg.getCustomModelerParametersDialog(self.alg)
             if not dlg:
                 dlg = ModelerParametersDialog(alg, self.alg)

@@ -30,7 +30,7 @@ class GrassAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
 
-    def __deepcopy__(self,memo):
+    def getCopy(self):
         newone = GrassAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone

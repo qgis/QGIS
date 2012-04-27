@@ -14,7 +14,6 @@ from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionEx
 from sextante.core.SextanteLog import SextanteLog
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
-from sextante.core.SextanteUtils import SextanteUtils
 from sextante.otb.OTBUtils import OTBUtils
 
 class OTBAlgorithm(GeoAlgorithm):
@@ -25,7 +24,7 @@ class OTBAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
 
-    def __deepcopy__(self,memo):
+    def getCopy(self):
         newone = OTBAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone

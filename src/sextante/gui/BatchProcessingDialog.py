@@ -73,7 +73,7 @@ class BatchProcessingDialog(QtGui.QDialog):
     def okPressed(self):
         self.algs = []
         for row in range(self.table.rowCount()):
-            alg = copy.deepcopy(self.alg)
+            alg = self.alg.getCopy()#copy.deepcopy(self.alg)
             col = 0
             for param in alg.parameters:
                 widget = self.table.cellWidget(row, col)

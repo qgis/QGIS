@@ -24,9 +24,9 @@ class FileSelectionPanel(QtGui.QWidget):
             if folder:
                 self.text.setText(str(folder))
         else:
-            filename = QtGui.QFileDialog.getOpenFileName(self, "Open file", QtCore.QString(""), "*.*")
-            if filename:
-                self.text.setText(str(filename))
+            filenames = QtGui.QFileDialog.getOpenFileNames(self, "Open file", QtCore.QString(""), "*.*")
+            if filenames:
+                self.text.setText(str(filenames.join(";")))
 
     def getValue(self):
         s = str(self.text.text())

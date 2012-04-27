@@ -98,7 +98,7 @@ class SextanteToolbox(QtGui.QDockWidget):
             if message:
                 QtGui.QMessageBox.warning(self, "Warning", message)
                 return
-            alg = copy.deepcopy(alg)
+            alg = alg.getCopy()#copy.deepcopy(alg)
             dlg = alg.getCustomParametersDialog()
             if not dlg:
                 dlg = ParametersDialog(alg)
@@ -175,7 +175,6 @@ class SextanteToolbox(QtGui.QDockWidget):
             if len(recent) != 0:
                 recentItem = QtGui.QTreeWidgetItem()
                 recentItem.setText(0,"Recently used algorithms")
-                #providerItem.setIcon(0, Sextante.getProviderFromName(providerName).getIcon())
                 for algname in recent:
                     alg = Sextante.getAlgorithm(algname)
                     algItem = TreeAlgorithmItem(alg)

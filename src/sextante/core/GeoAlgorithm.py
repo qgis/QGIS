@@ -14,6 +14,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputHTML import OutputHTML
+import copy
 
 class GeoAlgorithm:
 
@@ -35,6 +36,12 @@ class GeoAlgorithm:
         self.canceled = False
 
         self.defineCharacteristics()
+
+    def getCopy(self):
+        newone = copy.copy(self)
+        newone.parameters = copy.deepcopy(self.parameters)
+        newone.outputs = copy.deepcopy(self.outputs)
+        return newone
 
     #methods to overwrite when creating a custom geoalgorithm
     #=========================================================

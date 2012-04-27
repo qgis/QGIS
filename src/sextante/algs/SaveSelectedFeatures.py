@@ -5,6 +5,7 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.QGisLayers import QGisLayers
+import os
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -40,6 +41,8 @@ class SaveSelectedFeatures(GeoAlgorithm):
         # we add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer with selected features"))
 
+    def getIcon(self):
+        return QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
