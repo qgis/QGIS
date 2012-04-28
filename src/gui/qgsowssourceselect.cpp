@@ -165,9 +165,12 @@ void QgsOWSSourceSelect::populateFormats()
     if ( firstVisible == -1 ) firstVisible = id;
   }
   // Set first if no one visible is checked
-  if ( mImageFormatGroup->checkedId() < 0 || ( !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() && firstVisible > -1 ) )
+  if ( mImageFormatGroup->checkedId() < 0 || !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() )
   {
-    mImageFormatGroup->button( firstVisible )->setChecked( true );
+    if ( firstVisible > -1 )
+    {
+      mImageFormatGroup->button( firstVisible )->setChecked( true );
+    }
   }
 
   mImageFormatsGroupBox->setEnabled( true );

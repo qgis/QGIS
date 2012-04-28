@@ -316,10 +316,11 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   // Assert that the DTD is what we expected (i.e. a WCS Capabilities document)
   QgsDebugMsg( "testing tagName " + docElem.tagName() );
 
+  QString tagName = stripNS( docElem.tagName() );
   if (
     // We don't support 1.0, but try WCS_Capabilities tag to get version
-    docElem.tagName() != "WCS_Capabilities" && // 1.0
-    docElem.tagName() != "Capabilities"  // 1.1
+    tagName != "WCS_Capabilities" && // 1.0
+    tagName != "Capabilities"  // 1.1, tags seen: Capabilities, wcs:Capabilities
   )
   {
     mErrorTitle = tr( "Dom Exception" );

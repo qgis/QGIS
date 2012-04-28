@@ -25,6 +25,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
@@ -116,21 +117,32 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     //   We cannot use 1.1.0 because of wrong longlat bbox send by GDAL
     //   and impossibility to set GridOffsets.
 
-    // - WCS 1.0.0 does not work with GDAL r24316 2012-04-25 + Mapserver 6.0.2 with
-    //   geographic CRS
-    //   GDAL sends BOUNDINGBOX=min_long,min_lat,max_lon,max_lat,urn:ogc:def:crs:EPSG::4326
-    //   Mapserver works with min_lat,min_long,max_lon,max_lat
-    //   OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says:
-    //    "The number of axes included, and the order of these axes, shall be as
-    //     specified by the referenced CRS."
-    //   EPSG defines for EPSG:4326 Axes: latitude, longitude
-    //     (don't confuse with OGC:CRS84 with lon,lat order)
-    //
+    // - WCS 1.0.0 does not work with GDAL r24316 2012-04-25 + Mapserver 6.0.2
+    //   1) with geographic CRS
+    //      GDAL sends BOUNDINGBOX=min_long,min_lat,max_lon,max_lat,urn:ogc:def:crs:EPSG::4326
+    //      Mapserver works with min_lat,min_long,max_lon,max_lat
+    //      OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says:
+    //        "The number of axes included, and the order of these axes, shall be as
+    //         specified by the referenced CRS."
+    //      EPSG defines for EPSG:4326 Axes: latitude, longitude
+    //      (don't confuse with OGC:CRS84 with lon,lat order)
+    //      Created a ticket: http://trac.osgeo.org/gdal/ticket/4639
+
+    //   2) Mapserver ignores RangeSubset (not implemented in mapserver)
+    //      and GDAL fails with "Returned tile does not match expected band count"
+    //      because it requested single band but recieved all bands
+    //      Created ticket: https://github.com/mapserver/mapserver/issues/4299
+
+    // Other problems:
+    // - GDAL WCS fails to open 1.1 with space in RangeSubset, there is a ticket about
+    //   it http://trac.osgeo.org/gdal/ticket/1833 without conclusion, Frank suggests
+    //   that ServiceURL should be expected to be escaped while CoverageName should not
 
     QgsDataSourceURI dsUri;
     dsUri.setEncodedUri( uri );
     gdalUri = "<WCS_GDAL>";
     gdalUri += "<Version>1.0.0</Version>";
+    //gdalUri += "<Version>1.1.0</Version>";
     // prepareUri adds ? or & if necessary, GDAL fails otherwise
     gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param( "url" ) ) ) + "</ServiceURL>";
     gdalUri += "<CoverageName>" + dsUri.param( "identifier" ) + "</CoverageName>";
@@ -158,13 +170,15 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     QgsDebugMsg( "WCS uri: " + gdalUri );
   }
 
+  CPLErrorReset();
   //mGdalBaseDataset = GDALOpen( QFile::encodeName( uri ).constData(), GA_ReadOnly );
   mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
 
-  CPLErrorReset();
   if ( mGdalBaseDataset == NULL )
   {
-    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QgsDebugMsg( msg );
+    QgsMessageLog::logMessage( msg );
     return;
   }
 
