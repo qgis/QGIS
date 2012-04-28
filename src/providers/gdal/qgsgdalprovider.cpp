@@ -2017,3 +2017,35 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   QStringList wildcards;
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
+
+QMap<QString, QString> QgsGdalProvider::supportedMimes()
+{
+  QMap<QString, QString> mimes;
+  GDALAllRegister();
+
+  QgsDebugMsg( QString( "GDAL drivers cont %1" ).arg( GDALGetDriverCount() ) );
+  for ( int i = 0; i < GDALGetDriverCount(); ++i )
+  {
+    GDALDriverH driver = GDALGetDriver( i );
+    Q_CHECK_PTR( driver );
+
+    if ( !driver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+
+    QString desc = GDALGetDescription( driver );
+
+    QString mimeType = GDALGetMetadataItem( driver, "DMD_MIMETYPE", "" );
+
+    if ( mimeType.isEmpty() ) continue;
+
+    desc = desc.isEmpty() ? mimeType : desc;
+
+    QgsDebugMsg( "add GDAL format " + mimeType + " " + desc );
+
+    mimes[mimeType] = desc;
+  }
+  return mimes;
+}

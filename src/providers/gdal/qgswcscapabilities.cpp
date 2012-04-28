@@ -118,6 +118,11 @@ QString QgsWcsCapabilities::prepareUri( QString uri )
   return uri;
 }
 
+QgsWcsCapabilitiesProperty QgsWcsCapabilities::capabilities()
+{
+  return mCapabilities;
+}
+
 bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary )
 {
   QgsDebugMsg( "Entering." );

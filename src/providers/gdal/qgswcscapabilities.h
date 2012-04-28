@@ -146,6 +146,8 @@ class QgsWcsCapabilities : public QObject
 
     void setUri( QgsDataSourceURI const &theUri );
 
+    QgsWcsCapabilitiesProperty capabilities();
+
     /**
      * \brief   Returns a list of the supported layers of the WCS server
      *

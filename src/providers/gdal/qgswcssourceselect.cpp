@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
+#include "qgsgdalprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
 #include "qgsnumericsortlistviewitem.h"
@@ -169,33 +170,14 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QgsDebugMsg( "entered" );
   QList<QgsOWSSupportedFormat> formats;
-  GDALAllRegister();
 
-  QgsDebugMsg( QString( "GDAL drivers cont %1" ).arg( GDALGetDriverCount() ) );
-  for ( int i = 0; i < GDALGetDriverCount(); ++i )
+  QMap<QString, QString> mimes = QgsGdalProvider::supportedMimes();
+  foreach( QString mime, mimes.keys() )
   {
-    GDALDriverH driver = GDALGetDriver( i );
-    Q_CHECK_PTR( driver );
+    QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
 
-    if ( !driver )
-    {
-      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
-      continue;
-    }
-
-    QString desc = GDALGetDescription( driver );
-
-    QString mimeType = GDALGetMetadataItem( driver, "DMD_MIMETYPE", "" );
-
-    if ( mimeType.isEmpty() ) continue;
-
-    desc = desc.isEmpty() ? mimeType : desc;
-
-    QgsOWSSupportedFormat format = { mimeType, desc };
-
-    QgsDebugMsg( "add GDAL format " + mimeType + " " + desc );
-
-    if ( mimeType == "image/tiff" )
+    // prefer tiff
+    if ( mime == "image/tiff" )
     {
       formats.prepend( format );
     }
