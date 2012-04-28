@@ -191,6 +191,7 @@
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWfs.png</file>
+        <file>themes/default/mIconWcs.png</file>
         <file>themes/default/mIconWms.png</file>
         <file>themes/default/mIconWmsLayer.png</file>
         <file>themes/default/mIconWarn.png</file>
@@ -368,6 +369,7 @@
         <file>themes/default/plugins/north_arrow.png</file>
         <file>themes/default/plugins/scale_bar.png</file>
         <file>themes/default/mActionAddWfsLayer.png</file>
+        <file>themes/gis/mIconWcs.png</file>
         <file>themes/gis/mIconWms.png</file>
         <file>themes/gis/mIconWfs.png</file>
         <file>themes/gis/mIconSpatialite.png</file>
