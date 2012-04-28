@@ -29,6 +29,9 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 {
   setupUi( this );
 
+  QString service = baseKey.mid( 18, 3 ).toUpper();
+  setWindowTitle( tr( "Create a new %1 connection" ).arg( service ) );
+
   // It would be obviously much better to use mBaseKey also for credentials,
   // but for some strange reason a different hardcoded key was used instead.
   // WFS and WMS credentials were mixed with the same key WMS.
@@ -65,7 +68,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     // Adjust height
     int w = width();
     adjustSize();
-    resize(w, height());
+    resize( w, height() );
+
   }
 
   on_txtName_textChanged( connName );
