@@ -246,6 +246,7 @@
         <file>themes/gis/mActionAddSpatiaLiteLayer.png</file>
         <file>themes/gis/mActionAddVertex.png</file>
         <file>themes/gis/mActionAddWfsLayer.png</file>
+        <file>themes/gis/mActionAddWcsLayer.png</file>
         <file>themes/gis/mActionAddWmsLayer.png</file>
         <file>themes/gis/mActionAlignBottom.png</file>
         <file>themes/gis/mActionAlignHCenter.png</file>
