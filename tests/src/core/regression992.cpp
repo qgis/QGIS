@@ -70,7 +70,7 @@ void Regression992::initTestCase()
   QgsApplication::showSettings();
   // QgsApplication::skipGdalDriver( "JP2ECW" );
   // QgsApplication::skipGdalDriver( "JP2MrSID" );
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
+  QgsApplication::initQgis();
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
@@ -132,4 +132,3 @@ void Regression992::regression992()
 
 QTEST_MAIN( Regression992 )
 #include "moc_regression992.cxx"
-

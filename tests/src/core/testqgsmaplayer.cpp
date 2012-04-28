@@ -52,8 +52,8 @@ void TestQgsMapLayer::initTestCase()
   //
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
@@ -71,4 +71,3 @@ void TestQgsMapLayer::isValid()
 
 QTEST_MAIN( TestQgsMapLayer )
 #include "moc_testqgsmaplayer.cxx"
-

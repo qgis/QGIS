@@ -211,7 +211,7 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
 void TestZipLayer::initTestCase()
 {
   QgsApplication::init();
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
+  QgsApplication::initQgis();
   // save data dir
   mDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
   // set zipSetting to 1 (Passthru) and save current value
@@ -357,7 +357,6 @@ void TestZipLayer::testGZipItemRasterTransparency()
   myTransparency = getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 2 );
   QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
 }
-
 
 QTEST_MAIN( TestZipLayer )
 #include "moc_testziplayer.cxx"

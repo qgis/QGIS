@@ -78,8 +78,8 @@ void TestQgsMapRenderer::initTestCase()
   // Runs once before any tests are run
   //
   QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";

@@ -58,16 +58,10 @@ class TestQgsVectorLayer: public QObject
     {
       mTestHasError = false;
       QgsApplication::init();
+      QgsApplication::initQgis();
       QgsApplication::showSettings();
-      // Instantiate the plugin directory so that providers are loaded
-      QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
       //create some objects that will be used in all tests...
-
-      std::cout << "Prefix  PATH: " << QgsApplication::prefixPath().toLocal8Bit().data() << std::endl;
-      std::cout << "Plugin  PATH: " << QgsApplication::pluginPath().toLocal8Bit().data() << std::endl;
-      std::cout << "PkgData PATH: " << QgsApplication::pkgDataPath().toLocal8Bit().data() << std::endl;
-      std::cout << "User DB PATH: " << QgsApplication::qgisUserDbFilePath().toLocal8Bit().data() << std::endl;
 
       //
       //create a non spatial layer that will be used in all tests...
@@ -649,7 +643,3 @@ class TestQgsVectorLayer: public QObject
 
 QTEST_MAIN( TestQgsVectorLayer )
 #include "moc_testqgsvectorlayer.cxx"
-
-
-
-

@@ -92,8 +92,7 @@ void TestQgsVectorFileWriter::initTestCase()
           "(the ERROR comes from OGR and is not very intuitive)\n"
           "******************\n" );
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init();
   QgsApplication::showSettings();
   //create some objects that will be used in all tests...
 

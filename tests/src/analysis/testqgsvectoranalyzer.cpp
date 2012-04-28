@@ -50,12 +50,9 @@ void  TestQgsVectorAnalyzer::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::init( INSTALL_PREFIX );
-  QgsApplication::initQgis( );
+  QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
-  // Instantiate the plugin directory so that providers are loaded
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
@@ -91,7 +88,6 @@ void  TestQgsVectorAnalyzer::cleanup()
 {
 
 }
-
 void TestQgsVectorAnalyzer::singleToMulti( )
 {
 
@@ -116,9 +112,7 @@ void TestQgsVectorAnalyzer::simplifyGeometry( )
 {
   QString myTmpDir = QDir::tempPath() + QDir::separator() ;
   QString myFileName = myTmpDir +  "simplify_layer.shp";
-  QVERIFY( mAnalyzer.simplify( mpLineLayer,
-                               myFileName,
-                               1.0 ) );
+  QVERIFY( mAnalyzer.simplify( mpLineLayer, myFileName, 1.0 ) );
 }
 
 void TestQgsVectorAnalyzer::polygonCentroids( )
@@ -137,4 +131,3 @@ void TestQgsVectorAnalyzer::layerExtent( )
 
 QTEST_MAIN( TestQgsVectorAnalyzer )
 #include "moc_testqgsvectoranalyzer.cxx"
-

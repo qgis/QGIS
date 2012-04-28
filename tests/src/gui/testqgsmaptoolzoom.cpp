@@ -40,8 +40,8 @@ class TestQgsMapToolZoom: public QObject
 
 void TestQgsMapToolZoom::initTestCase()
 {
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
 }
 

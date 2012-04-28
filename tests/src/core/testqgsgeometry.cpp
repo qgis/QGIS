@@ -185,8 +185,8 @@ void TestQgsGeometry::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
   mReport += "<h1>Geometry Tests</h1>\n";
   mReport += "<p><font color=\"green\">Green = polygonA</font></p>\n";

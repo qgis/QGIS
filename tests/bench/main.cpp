@@ -50,9 +50,7 @@ typedef SInt32 SRefCon;
 #endif
 #endif
 
-//#include "qgspluginregistry.h"
 #include "qgsbench.h"
-//#include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include <qgsconfig.h>
 #include <qgsversion.h>
