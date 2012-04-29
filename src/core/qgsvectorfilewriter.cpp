@@ -977,6 +977,13 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     glob = "*.gxt *.txt";
     ext = "gxt";
   }
+  else if ( driverName.startsWith( "FileGDB" ) )
+  {
+    longName = "ESRI FileGDB";
+    trLongName = QObject::tr( "ESRI FileGDB" );
+    glob = "*.gdb";
+    ext = "gdb";
+  }
   else
   {
     return false;
