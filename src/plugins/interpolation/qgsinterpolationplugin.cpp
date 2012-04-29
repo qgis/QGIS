@@ -43,12 +43,9 @@ void QgsInterpolationPlugin::initGui()
   if ( mIface )
   {
     mInterpolationAction = new QAction( QIcon( ":/raster-interpolate.png" ), tr( "&Interpolation" ), 0 );
-    //~ setCurrentTheme( "" );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
     mIface->addRasterToolBarIcon( mInterpolationAction );
     mIface->addPluginToRasterMenu( tr( "&Interpolation" ), mInterpolationAction );
-    // this is called when the icon theme is changed
-    connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
 }
 
@@ -64,31 +61,6 @@ void QgsInterpolationPlugin::showInterpolationDialog()
   QgsInterpolationDialog dialog( mIface->mainWindow(), mIface );
   dialog.exec();
 }
-
-//~ //! Set icons to the current theme
-//~ void QgsInterpolationPlugin::setCurrentTheme( QString theThemeName )
-//~ {
-  //~ Q_UNUSED( theThemeName );
-  //~ QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/interpolation.png";
-  //~ QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/interpolation.png";
-  //~ QString myQrcPath = ":/interpolation.png";
-  //~ if ( QFile::exists( myCurThemePath ) )
-  //~ {
-    //~ mInterpolationAction->setIcon( QIcon( myCurThemePath ) );
-  //~ }
-  //~ else if ( QFile::exists( myDefThemePath ) )
-  //~ {
-    //~ mInterpolationAction->setIcon( QIcon( myDefThemePath ) );
-  //~ }
-  //~ else if ( QFile::exists( myQrcPath ) )
-  //~ {
-    //~ mInterpolationAction->setIcon( QIcon( myQrcPath ) );
-  //~ }
-  //~ else
-  //~ {
-    //~ mInterpolationAction->setIcon( QIcon() );
-  //~ }
-//~ }
 
 QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 {
