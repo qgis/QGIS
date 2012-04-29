@@ -333,12 +333,26 @@ static QVariant fcnFeatureId( const QVariantList& , QgsFeature* f, QgsExpression
 static QVariant fcnX( const QVariantList& , QgsFeature* f, QgsExpression* )
 {
   ENSURE_GEOM_TYPE( f, g, QGis::Point );
-  return g->asPoint().x();
+  if ( g->isMultipart() )
+  {
+    return g->asMultiPoint()[ 0 ].x();
+  }
+  else
+  {
+    return g->asPoint().x();
+  }
 }
 static QVariant fcnY( const QVariantList& , QgsFeature* f, QgsExpression* )
 {
   ENSURE_GEOM_TYPE( f, g, QGis::Point );
-  return g->asPoint().y();
+  if ( g->isMultipart() )
+  {
+    return g->asMultiPoint()[ 0 ].y();
+  }
+  else
+  {
+    return g->asPoint().y();
+  }
 }
 
 static QVariant pointAt( const QVariantList& values, QgsFeature* f, QgsExpression* parent ) // helper function
