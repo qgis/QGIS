@@ -974,10 +974,13 @@ class geometryThread( QThread ):
 
   def simpleMeasure( self, inGeom, calcType, ellips, crs ):
     if inGeom.wkbType() in ( QGis.WKBPoint, QGis.WKBPoint25D ):
-      pt = QgsPoint()
       pt = inGeom.asPoint()
       attr1 = pt.x()
       attr2 = pt.y()
+    elif inGeom.wkbType() in ( QGis.WKBMultiPoint, QGis.WKBMultiPoint25D ):
+      pt = inGeom.asMultiPoint()
+      attr1 = pt[ 0 ].x()
+      attr2 = pt[ 0 ].y()
     else:
       measure = QgsDistanceArea()
 
