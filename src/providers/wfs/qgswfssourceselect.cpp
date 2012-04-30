@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgswfssourceselect.h"
-#include "qgswfsconnection.h"
+#include "qgsowsconnection.h"
+#include "qgswfscapabilities.h"
 #include "qgswfsprovider.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
@@ -38,7 +39,7 @@
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
-    , mConn( NULL )
+    , mCapabilities( NULL )
 {
   setupUi( this );
 
@@ -75,12 +76,12 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
 
   delete mProjectionSelector;
-  delete mConn;
+  delete mCapabilities;
 }
 
 void QgsWFSSourceSelect::populateConnectionList()
 {
-  QStringList keys = QgsWFSConnection::connectionList();
+  QStringList keys = QgsOWSConnection::connectionList( "WFS" );
 
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -107,16 +108,17 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 
   //set last used connection
-  QString selectedConnection = QgsWFSConnection::selectedConnection();
+  QString selectedConnection = QgsOWSConnection::selectedConnection( "WFS" );
   int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
     cmbConnections->setCurrentIndex( index );
   }
 
-  delete mConn;
-  mConn = new QgsWFSConnection( cmbConnections->currentText() );
-  connect( mConn, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+  delete mCapabilities;
+  mCapabilities = new QgsWFSCapabilities( connection.uri().encodedUri() );
+  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
 QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
@@ -155,30 +157,30 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 {
   btnConnect->setEnabled( true );
 
-  if ( !mConn )
+  if ( !mCapabilities )
     return;
-  QgsWFSConnection::ErrorCode err = mConn->errorCode();
-  if ( err != QgsWFSConnection::NoError )
+  QgsWFSCapabilities::ErrorCode err = mCapabilities->errorCode();
+  if ( err != QgsWFSCapabilities::NoError )
   {
     QString title;
     switch ( err )
     {
-      case QgsWFSConnection::NetworkError: title = tr( "Network Error" ); break;
-      case QgsWFSConnection::XmlError:     title = tr( "Capabilities document is not valid" ); break;
-      case QgsWFSConnection::ServerExceptionError: title = tr( "Server Exception" ); break;
+      case QgsWFSCapabilities::NetworkError: title = tr( "Network Error" ); break;
+      case QgsWFSCapabilities::XmlError:     title = tr( "Capabilities document is not valid" ); break;
+      case QgsWFSCapabilities::ServerExceptionError: title = tr( "Server Exception" ); break;
       default: tr( "Error" ); break;
     }
     // handle errors
-    QMessageBox::critical( 0, title, mConn->errorMessage() );
+    QMessageBox::critical( 0, title, mCapabilities->errorMessage() );
 
     btnAdd->setEnabled( false );
     return;
   }
 
-  QgsWFSConnection::GetCapabilities caps = mConn->capabilities();
+  QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  foreach( QgsWFSConnection::FeatureType featureType, caps.featureTypes )
+  foreach( QgsWFSCapabilities::FeatureType featureType, caps.featureTypes )
   {
     // insert the typenames, titles and abstracts into the tree view
     QTreeWidgetItem* newItem = new QTreeWidgetItem();
@@ -242,7 +244,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    QgsWFSConnection::deleteConnection( cmbConnections->currentText() );
+    QgsOWSConnection::deleteConnection( "WFS", cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
   }
@@ -253,9 +255,9 @@ void QgsWFSSourceSelect::connectToServer()
   btnConnect->setEnabled( false );
   treeWidget->clear();
 
-  if ( mConn )
+  if ( mCapabilities )
   {
-    mConn->requestCapabilities();
+    mCapabilities->requestCapabilities();
   }
 }
 
@@ -271,7 +273,10 @@ void QgsWFSSourceSelect::addLayer()
 
   QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
   QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
-  QgsWFSConnection conn( cmbConnections->currentText() );
+
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+  QgsWFSCapabilities conn ( connection.uri().encodedUri() );
+
   QString pCrsString( labelCoordRefSys->text() );
   QgsCoordinateReferenceSystem pCrs( pCrsString );
   //prepare canvas extent info for layers with "cache features" option not set
@@ -375,11 +380,13 @@ void QgsWFSSourceSelect::changeCRSFilter()
 void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
-  QgsWFSConnection::setSelectedConnection( cmbConnections->currentText() );
+  QgsOWSConnection::setSelectedConnection( "WFS", cmbConnections->currentText() );
 
-  delete mConn;
-  mConn = new QgsWFSConnection( cmbConnections->currentText() );
-  connect( mConn, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+
+  delete mCapabilities;
+  mCapabilities = new QgsWFSCapabilities( connection.uri().encodedUri() );
+  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
 void QgsWFSSourceSelect::on_btnSave_clicked()
@@ -409,7 +416,8 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
   {
     //get available fields for wfs layer
     QgsWFSProvider p( "" );  //bypasses most provider instantiation logic
-    QgsWFSConnection conn( cmbConnections->currentText() );
+    QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+    QgsWFSCapabilities conn ( connection.uri().encodedUri() );
     QString uri = conn.uriDescribeFeatureType( item->text( 1 ) );
 
     QgsFieldMap fields;

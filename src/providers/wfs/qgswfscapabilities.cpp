@@ -1,4 +1,4 @@
-#include "qgswfsconnection.h"
+#include "qgswfscapabilities.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
@@ -11,18 +11,25 @@
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
-QgsWFSConnection::QgsWFSConnection( QString connName, QObject *parent ) :
-    QObject( parent ),
-    mConnName( connName ),
+QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
+    //QObject( parent ),
+    //mConnName( connName ),
     mCapabilitiesReply( 0 ),
-    mErrorCode( QgsWFSConnection::NoError )
+    mErrorCode( QgsWFSCapabilities::NoError )
 {
+  mUri.setEncodedUri( theUri ),
+  QgsDebugMsg ( "theUri = " + theUri );
+  mBaseUrl = prepareUri ( mUri.param("url") );
+
+  QgsDebugMsg ( "mBaseUrl = " + mBaseUrl );
+
   //find out the server URL
+  /*
   QSettings settings;
   QString key = "/Qgis/connections-wfs/" + mConnName + "/url";
   mUri = settings.value( key ).toString();
   QgsDebugMsg( QString( "url is: %1" ).arg( mUri ) );
-
+  
   //make a GetCapabilities request
   //modify mUri to add '?' or '&' at the end if it is not already there
   if ( !( mUri.contains( "?" ) ) )
@@ -33,19 +40,34 @@ QgsWFSConnection::QgsWFSConnection( QString connName, QObject *parent ) :
   {
     mUri.append( "&" );
   }
+  */
 }
 
-QString QgsWFSConnection::uriGetCapabilities() const
+QString QgsWFSCapabilities::prepareUri( QString uri )
 {
-  return mUri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
+  if ( !uri.contains( "?" ) )
+  {
+    uri.append( "?" );
+  }
+  else if ( uri.right( 1 ) != "?" && uri.right( 1 ) != "&" )
+  {
+    uri.append( "&" );
+  }
+
+  return uri;
 }
 
-QString QgsWFSConnection::uriDescribeFeatureType( const QString& typeName ) const
+QString QgsWFSCapabilities::uriGetCapabilities() const
 {
-  return mUri + "SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=" + typeName;
+  return mBaseUrl + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
 }
 
-QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox ) const
+QString QgsWFSCapabilities::uriDescribeFeatureType( const QString& typeName ) const
+{
+  return mBaseUrl + "SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=" + typeName;
+}
+
+QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox ) const
 {
   //get CRS
   if ( !crsString.isEmpty() )
@@ -89,11 +111,7 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
                  .arg( bBox.yMaximum(), 0, 'f' );
   }
 
-  QString uri = mUri;
-  if ( !( uri.contains( "?" ) ) )
-  {
-    uri.append( "?" );
-  }
+  QString uri = mBaseUrl;
 
   //add a wfs layer to the map
   uri += "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString + filterString;
@@ -102,9 +120,9 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
 }
 
 
-void QgsWFSConnection::requestCapabilities()
+void QgsWFSCapabilities::requestCapabilities()
 {
-  mErrorCode = QgsWFSConnection::NoError;
+  mErrorCode = QgsWFSCapabilities::NoError;
   mErrorMessage.clear();
 
   QNetworkRequest request( uriGetCapabilities() );
@@ -113,12 +131,12 @@ void QgsWFSConnection::requestCapabilities()
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
-void QgsWFSConnection::capabilitiesReplyFinished()
+void QgsWFSCapabilities::capabilitiesReplyFinished()
 {
   // handle network errors
   if ( mCapabilitiesReply->error() != QNetworkReply::NoError )
   {
-    mErrorCode = QgsWFSConnection::NetworkError;
+    mErrorCode = QgsWFSCapabilities::NetworkError;
     mErrorMessage = mCapabilitiesReply->errorString();
     emit gotCapabilities();
     return;
@@ -149,7 +167,7 @@ void QgsWFSConnection::capabilitiesReplyFinished()
   QDomDocument capabilitiesDocument;
   if ( !capabilitiesDocument.setContent( buffer, true, &capabilitiesDocError ) )
   {
-    mErrorCode = QgsWFSConnection::XmlError;
+    mErrorCode = QgsWFSCapabilities::XmlError;
     mErrorMessage = capabilitiesDocError;
     emit gotCapabilities();
     return;
@@ -163,7 +181,7 @@ void QgsWFSConnection::capabilitiesReplyFinished()
     QDomNode ex = doc.firstChild();
     QString exc = ex.toElement().attribute( "exceptionCode", "Exception" );
     QDomElement ext = ex.firstChild().toElement();
-    mErrorCode = QgsWFSConnection::ServerExceptionError;
+    mErrorCode = QgsWFSCapabilities::ServerExceptionError;
     mErrorMessage = exc + ": " + ext.firstChild().nodeValue();
     emit gotCapabilities();
     return;
@@ -226,31 +244,3 @@ void QgsWFSConnection::capabilitiesReplyFinished()
   emit gotCapabilities();
 }
 
-
-
-
-QStringList QgsWFSConnection::connectionList()
-{
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-wfs" );
-  return settings.childGroups();
-}
-
-QString QgsWFSConnection::selectedConnection()
-{
-  QSettings settings;
-  return settings.value( "/Qgis/connections-wfs/selected" ).toString();
-}
-
-void QgsWFSConnection::setSelectedConnection( QString name )
-{
-  QSettings settings;
-  settings.setValue( "/Qgis/connections-wfs/selected", name );
-}
-
-void QgsWFSConnection::deleteConnection( QString name )
-{
-  QSettings settings;
-  settings.remove( "/Qgis/connections-wfs/" + name );
-  settings.remove( "/Qgis/WFS/" + name );
-}

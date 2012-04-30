@@ -2,6 +2,8 @@
 #define QGSWFSDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
+#include "qgswfscapabilities.h"
 
 class QgsWFSRootItem : public QgsDataCollectionItem
 {
@@ -45,7 +47,7 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
   private:
     QString mName;
 
-    QgsWFSConnection* mConn;
+    QgsWFSCapabilities* mCapabilities;
     bool mGotCapabilities;
 };
 
@@ -53,7 +55,7 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
 class QgsWFSLayerItem : public QgsLayerItem
 {
   public:
-    QgsWFSLayerItem( QgsDataItem* parent, QString connName, QString name, QString title );
+    QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title );
     ~QgsWFSLayerItem();
 
 };

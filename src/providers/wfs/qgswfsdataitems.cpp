@@ -1,7 +1,8 @@
 #include "qgswfsdataitems.h"
 
 #include "qgswfsprovider.h"
-#include "qgswfsconnection.h"
+#include "qgsowsconnection.h"
+#include "qgswfscapabilities.h"
 #include "qgswfssourceselect.h"
 
 #include "qgsnewhttpconnection.h"
@@ -10,10 +11,10 @@
 #include <QCoreApplication>
 
 
-QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString connName, QString name, QString title )
+QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title )
     : QgsLayerItem( parent, title, parent->path() + "/" + name, QString(), QgsLayerItem::Vector, "WFS" )
 {
-  mUri = QgsWFSConnection( connName ).uriGetFeature( name );
+  mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType );
   mPopulated = true;
 }
 
@@ -24,7 +25,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 ////
 
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path ), mName( name ), mConn( NULL )
+    : QgsDataCollectionItem( parent, name, path ), mName( name ), mCapabilities( NULL )
 {
   mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
 }
@@ -36,10 +37,15 @@ QgsWFSConnectionItem::~QgsWFSConnectionItem()
 QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
 {
   mGotCapabilities = false;
-  mConn = new QgsWFSConnection( mName, this );
-  connect( mConn, SIGNAL( gotCapabilities() ), this, SLOT( gotCapabilities() ) );
 
-  mConn->requestCapabilities();
+  QgsOWSConnection connection( "WFS", mName );
+  QgsDataSourceURI uri = connection.uri();
+  QString encodedUri = uri.encodedUri();
+
+  mCapabilities = new QgsWFSCapabilities( encodedUri );
+  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( gotCapabilities() ) );
+
+  mCapabilities->requestCapabilities();
 
   while ( !mGotCapabilities )
   {
@@ -47,12 +53,13 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   }
 
   QVector<QgsDataItem*> layers;
-  if ( mConn->errorCode() == QgsWFSConnection::NoError )
+  if ( mCapabilities->errorCode() == QgsWFSCapabilities::NoError )
   {
-    QgsWFSConnection::GetCapabilities caps = mConn->capabilities();
-    foreach( const QgsWFSConnection::FeatureType& featureType, caps.featureTypes )
+    QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
+    foreach( const QgsWFSCapabilities::FeatureType& featureType, caps.featureTypes )
     {
-      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
+      //QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, featureType.name, featureType.title );
+      QgsWFSLayerItem* layer = new QgsWFSLayerItem( this, mName, uri, featureType.name, featureType.title );
       layers.append( layer );
     }
   }
@@ -61,8 +68,8 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
     layers.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
   }
 
-  mConn->deleteLater();
-  mConn = NULL;
+  mCapabilities->deleteLater();
+  mCapabilities = NULL;
 
   return layers;
 }
@@ -101,7 +108,7 @@ void QgsWFSConnectionItem::editConnection()
 
 void QgsWFSConnectionItem::deleteConnection()
 {
-  QgsWFSConnection::deleteConnection( mName );
+  QgsOWSConnection::deleteConnection( "WFS", mName );
   // the parent should be updated
   mParent->refresh();
 }
@@ -127,7 +134,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
 
-  foreach( QString connName, QgsWFSConnection::connectionList() )
+  foreach( QString connName, QgsOWSConnection::connectionList( "WFS" ) )
   {
     QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, mPath + "/" + connName );
     connections.append( conn );
