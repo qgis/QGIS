@@ -1872,13 +1872,17 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   if ( fileName.endsWith( ".zip", Qt::CaseInsensitive ) )
   {
     if ( !fileName.startsWith( "/vsizip/" ) )
+    {
       fileName = "/vsizip/" + fileName;
+    }
     QgsDebugMsg( QString( "Trying /vsizip syntax, fileName= %1" ).arg( fileName ) );
   }
   if ( fileName.endsWith( ".gz", Qt::CaseInsensitive ) )
   {
     if ( !fileName.startsWith( "/vsigzip/" ) )
+    {
       fileName = "/vsigzip/" + fileName;
+    }
     QgsDebugMsg( QString( "Trying /vsigzip syntax, fileName= %1" ).arg( fileName ) );
   }
 

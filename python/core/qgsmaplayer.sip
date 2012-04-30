@@ -181,7 +181,7 @@ public:
     void removeCustomProperty( const QString& key );
 
     /** Read the symbology for the current layer from the Dom node supplied. 
-     * @param QDomNode node that will contain the symbology definition for this layer.
+     * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
      * @return true in case of success.
     */
@@ -244,10 +244,19 @@ public:
     /** A convenience function to capitalise the layer name */
     static QString capitaliseLayerName(const QString name);
 
-	/** Retrieve the default style for this layer if one
+    /** Retrieve the style URI for this layer
+     * (either as a .qml file on disk or as a
+     * record in the users style table in their personal qgis.db)
+     * @return a QString withe the style file name
+     * @see also loadNamedStyle () and saveNamedStyle ();
+     * @note This method was added in QGIS 1.8
+     */
+    virtual QString styleURI( );
+
+    /** Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * @return a QString with any status messages
      * @see also loadNamedStyle ();
@@ -257,12 +266,12 @@ public:
     /** Retrieve a named style for this layer if one
      * exists (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param QString theURI - the file name or other URI for the
+     * @param theURI - the file name or other URI for the
      * style file. First an attempt will be made to see if this
      * is a file and load that, if that fails the qgis.db styles
      * table will be consulted to see if there is a style who's
      * key matches the URI.
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to load the default style.
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
@@ -274,7 +283,7 @@ public:
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * @return a QString with any status messages
      * @see also loadNamedStyle () and saveNamedStyle()
@@ -284,12 +293,12 @@ public:
     /** Save the properties of this layer as a named style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @param QString theURI - the file name or other URI for the
+     * @param theURI - the file name or other URI for the
      * style file. First an attempt will be made to see if this
      * is a file and save to that, if that fails the qgis.db styles
      * table will be used to create a style entry who's
      * key matches the URI.
-     * @param a reference to a flag that will be set to false if
+     * @param theResultFlag a reference to a flag that will be set to false if
      * we did not manage to save the default style.
      * @return a QString with any status messages
      * @see also saveDefaultStyle ();
