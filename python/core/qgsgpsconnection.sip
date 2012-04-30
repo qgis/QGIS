@@ -36,7 +36,19 @@ struct QgsGPSInformation {
 class QgsGPSConnection: QObject {
 %TypeHeaderCode
 #include <qgsgpsconnection.h>
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
 %End
+
+%ConvertToSubClassCode
+  if (sipCpp->inherits("QgsGpsdConnection"))
+    sipClass = sipClass_QgsGpsdConnection;
+  else if (sipCpp->inherits("QgsNMEAConnection"))
+    sipClass = sipClass_QgsNMEAConnection;
+  else
+    sipClass = NULL;
+%End
+
 public:
 	enum Status {
 		NotConnected, Connected, DataReceived, GPSDataReceived
