@@ -155,6 +155,14 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
   bool loadDefaultStyleFlag = false ; // ???
   setDataProvider( providerKey, layers, styles, format, crs, loadDefaultStyleFlag );
 
+  // load default style if provider is gdal and if no style was given
+  // this should be an argument like in the other constructor
+  if ( mValid && providerKey == "gdal" && layers.isEmpty() && styles.isEmpty() )
+  {
+    bool defaultLoadedFlag = false;
+    loadDefaultStyle( defaultLoadedFlag );
+  }
+
   // Default for the popup menu
   // TODO: popMenu = 0;
 
@@ -2268,6 +2276,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                  tr( "Raster" ) );
     }
     return;
+  }
+
+  if ( provider == "gdal" )
+  {
+    // make sure that the /vsigzip or /vsizip is added to uri, if applicable
+    mDataSource = mDataProvider->dataSourceUri();
   }
 
   mDataProvider->addLayers( layers, styles );

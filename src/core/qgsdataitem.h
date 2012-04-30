@@ -289,6 +289,10 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
 class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 {
     Q_OBJECT
+
+  protected:
+    QStringList mZipFileList;
+
   public:
     QgsZipItem( QgsDataItem* parent, QString name, QString path );
     ~QgsZipItem();
@@ -302,6 +306,9 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
 
     static const QIcon &iconZip();
+
+    const QStringList & getZipFileList() const { return mZipFileList; }
+
 };
 
 #endif // QGSDATAITEM_H
