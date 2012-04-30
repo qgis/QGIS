@@ -75,6 +75,16 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
   if ( e->button() != Qt::LeftButton )
     return;
 
+  // We are not really dragging in this case. This is sometimes caused by
+  // a pen based computer reporting a press, move, and release, all the
+  // one point.
+  if ( mDragging && ( mZoomRect.topLeft() == mZoomRect.bottomRight() ) )
+  {
+    mDragging = false;
+    delete mRubberBand;
+    mRubberBand = 0;
+  }
+
   if ( mDragging )
   {
     mDragging = false;
