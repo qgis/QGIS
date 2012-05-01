@@ -172,6 +172,7 @@
         <file>themes/default/mIconMssql.png</file>
         <file>themes/default/mIconNext.png</file>
         <file>themes/default/mIconNoPyramid.png</file>
+        <file>themes/default/mIconOws.png</file>
         <file>themes/default/mIconPointLayer.png</file>
         <file>themes/default/mIconPolygonLayer.png</file>
         <file>themes/default/mIconPostgis.png</file>
@@ -189,6 +190,7 @@
         <file>themes/default/mIconSymbology.png</file>
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
+        <file>themes/default/mIconVectorLayer.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWfs.png</file>
         <file>themes/default/mIconWcs.png</file>
@@ -348,6 +350,7 @@
         <file>themes/gis/mIconPointLayer.png</file>
         <file>themes/gis/mIconPolygonLayer.png</file>
         <file>themes/gis/mIconTableLayer.png</file>
+        <file>themes/gis/mIconVectorLayer.png</file>
         <file>themes/gis/plugins/coordinate_capture/coordinate_capture.png</file>
         <file>themes/gis/plugins/copyright_label.png</file>
         <file>themes/gis/plugins/delimited_text.png</file>
@@ -372,6 +375,7 @@
         <file>themes/gis/mIconWcs.png</file>
         <file>themes/gis/mIconWms.png</file>
         <file>themes/gis/mIconWfs.png</file>
+        <file>themes/gis/mIconOws.png</file>
         <file>themes/gis/mIconSpatialite.png</file>
         <file>themes/gis/mIconRaster.png</file>
         <file>themes/gis/mIconPostgis.png</file>
