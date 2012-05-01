@@ -51,7 +51,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.updateUI()
         self.connect(self.inPoint, SIGNAL("currentIndexChanged(QString)"), self.updateCheck)
         self.cmbModify.addItems([self.tr("creating new selection"), self.tr("adding to current selection"), self.tr("removing from current selection")])
-        
+
     def updateCheck(self, text):
         vlayer = ftools_utils.getVectorLayerByName(text)
         if vlayer.selectedFeatureCount() > 0:
@@ -107,6 +107,8 @@ class Dialog(QDialog, Ui_Dialog):
         geom = QgsGeometry()
         selectedSet = []
         index = ftools_utils.createIndex(inputProvider)
+        inputProvider.rewind()
+        inputProvider.select(inputProvider.attributeIndexes())
         if selection:
             features = selectLayer.selectedFeatures()
             self.progressBar.setMaximum(len(features))
@@ -119,7 +121,7 @@ class Dialog(QDialog, Ui_Dialog):
                     if geom.intersects(tmpGeom):
                         selectedSet.append(infeat.id())
                 self.progressBar.setValue(self.progressBar.value()+1)
-        else:        
+        else:
             self.progressBar.setMaximum(selectProvider.featureCount())
             while selectProvider.nextFeature(feat):
                 geom = QgsGeometry(feat.geometry())
