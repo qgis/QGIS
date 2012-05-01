@@ -75,7 +75,7 @@ class TestZipLayer: public QObject
     void testZipItemAll();
     // test that styles are loaded from .qml files outside zip files
     void testZipItemVectorTransparency();
-    void testGipItemVectorTransparency();
+    void testGZipItemVectorTransparency();
     void testZipItemRasterTransparency();
     void testGZipItemRasterTransparency();
 };
@@ -199,6 +199,8 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
     myLayer = getZipLayer( myFileName, "" );
   if ( myLayer && myLayer->isValid() )
     myTransparency = myLayer->getTransparency();
+  else
+    QWARN( QString( "Could not open filename %1 using %2 provider" ).arg( myFileName ).arg( myProviderKey ).toLocal8Bit().data() );
   if ( myLayer )
     delete myLayer;
   return myTransparency;
@@ -247,6 +249,9 @@ void TestZipLayer::testPassthruVectorZip()
 
 void TestZipLayer::testPassthruVectorGzip()
 {
+#if GDAL_VERSION_NUM < 1700
+  QSKIP( "This test requires GDAL > 1.7", SkipSingle );
+#endif
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
     mSettings.setValue( "/qgis/scanZipInBrowser", i );
@@ -313,6 +318,9 @@ void TestZipLayer::testZipItemAll()
 
 void TestZipLayer::testZipItemVectorTransparency()
 {
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL > 1.8", SkipSingle );
+#endif
   int myTarget = 250;
   int myTransparency = getLayerTransparency( mDataDir + "points2.zip", "ogr", 1 );
   QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
@@ -320,8 +328,11 @@ void TestZipLayer::testZipItemVectorTransparency()
   QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
 }
 
-void TestZipLayer::testGipItemVectorTransparency()
+void TestZipLayer::testGZipItemVectorTransparency()
 {
+#if GDAL_VERSION_NUM < 1700
+  QSKIP( "This test requires GDAL > 1.7", SkipSingle );
+#endif
   int myTarget = 250;
   int myTransparency = getLayerTransparency( mDataDir + "points3.geojson.gz", "ogr", 1 );
   QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
