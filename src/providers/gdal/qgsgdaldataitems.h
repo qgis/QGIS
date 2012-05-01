@@ -30,8 +30,6 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
     virtual QList<QAction*> actions();
 
     QgsWcsCapabilities mCapabilities;
-    //QgsDataSourceURI mUri;
-    //QgsOWSConnection mConnection;
     QVector<QgsWcsCoverageSummary> mLayerProperties;
 
   public slots:

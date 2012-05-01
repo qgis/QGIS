@@ -60,11 +60,12 @@ bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconWcs.png" ) );
 }
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
 {
+  QgsDebugMsg( "Entered");
 }
 
 QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
@@ -72,16 +73,18 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
-  QgsOWSConnection connection( "WCS", mName );
+  QString encodedUri = mPath;
+  QgsDataSourceURI uri;
+  uri.setEncodedUri ( encodedUri );
+  QgsDebugMsg( "encodedUri = " + encodedUri );
 
-  QgsDataSourceURI uri = connection.uri();
-  QgsDebugMsg( "uri = " + uri.encodedUri() );
   mCapabilities.setUri( uri );
 
   // Attention: supportedLayers() gives tree leafes, not top level
   if ( !mCapabilities.lastError().isEmpty() )
   {
-    children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
+    //children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
+    // TODO: show the error without adding child
     return children;
   }
 
@@ -105,9 +108,12 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
   const QgsWCSConnectionItem *o = dynamic_cast<const QgsWCSConnectionItem *>( other );
-  //TODO
-  //return ( mPath == o->mPath && mName == o->mName && mConnInfo == o->mConnInfo );
-  return false;
+  if ( !o )   
+  {
+    return false;
+  }
+
+  return ( mPath == o->mPath && mName == o->mName );
 }
 
 QList<QAction*> QgsWCSConnectionItem::actions()
@@ -166,7 +172,8 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
 
   if ( mChildren.size() == 0 )
   {
-    mIcon = iconRaster();
+    //mIcon = iconRaster();
+    mIcon = QIcon( getThemePixmap( "mIconWcs.png" ) );
   }
   mPopulated = true;
 }
@@ -246,7 +253,11 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   foreach( QString connName, QgsOWSConnection::connectionList( "WCS" ) )
   {
-    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName );
+    //QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName );
+    QgsOWSConnection connection( "WCS", connName );
+    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, connection.uri().encodedUri() );
+
+    conn->setIcon ( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
     connections.append( conn );
   }
   return connections;
@@ -294,15 +305,23 @@ static QStringList wildcards = QStringList();
 
 QGISEXTERN int dataCapabilities()
 {
-  return  QgsDataProvider::File | QgsDataProvider::Dir;
+  return  QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
 }
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
+  QgsDebugMsg( "thePath = " + thePath ); 
   if ( thePath.isEmpty() )
   {
     // Top level WCS
     return new QgsWCSRootItem( parentItem, "WCS", "wcs:" );
+  }
+
+  if ( thePath.contains ( "url=" ) )
+  {
+    // OWS server 
+    QgsDebugMsg( "connection found in uri" ); 
+    return new QgsWCSConnectionItem( parentItem, "WCS", thePath );
   }
 
   QFileInfo info( thePath );

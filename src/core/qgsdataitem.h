@@ -52,7 +52,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
 
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
-    virtual ~QgsDataItem() {}
+    virtual ~QgsDataItem();
 
     bool hasChildren();
 
@@ -74,6 +74,10 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // remove and delete child item, signals to browser are emited
     virtual void deleteChildItem( QgsDataItem * child );
+
+    // remove child item but don't delete it, signals to browser are emited
+    // returns pointer to the removed item or null if no such item was found
+    virtual QgsDataItem * removeChildItem( QgsDataItem * child );
 
     virtual bool equal( const QgsDataItem *other );
 
@@ -113,6 +117,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     Type type() const { return mType; }
     QgsDataItem* parent() const { return mParent; }
+    void setParent( QgsDataItem* parent ) { mParent = parent; }
     QVector<QgsDataItem*> children() const { return mChildren; }
     QIcon icon() const { return mIcon; }
     QString name() const { return mName; }

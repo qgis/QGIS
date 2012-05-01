@@ -1,11 +1,10 @@
-#include "qgswfsdataitems.h"
-
-#include "qgswfsprovider.h"
+#include "qgslogger.h"
+#include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
 #include "qgswfscapabilities.h"
+#include "qgswfsdataitems.h"
+#include "qgswfsprovider.h"
 #include "qgswfssourceselect.h"
-
-#include "qgsnewhttpconnection.h"
 
 #include <QSettings>
 #include <QCoreApplication>
@@ -16,6 +15,8 @@ QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSour
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType );
   mPopulated = true;
+  //mIcon = QIcon( getThemePixmap( "mIconVectorLayer.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconWfs.png" ) );
 }
 
 QgsWFSLayerItem::~QgsWFSLayerItem()
@@ -27,7 +28,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path ), mName( name ), mCapabilities( NULL )
 {
-  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconWfs.png" ) );
 }
 
 QgsWFSConnectionItem::~QgsWFSConnectionItem()
@@ -38,9 +39,10 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
 {
   mGotCapabilities = false;
 
-  QgsOWSConnection connection( "WFS", mName );
-  QgsDataSourceURI uri = connection.uri();
-  QString encodedUri = uri.encodedUri();
+  QString encodedUri = mPath;
+  QgsDataSourceURI uri;
+  uri.setEncodedUri ( encodedUri );
+  QgsDebugMsg( "encodedUri = " + encodedUri );
 
   mCapabilities = new QgsWFSCapabilities( encodedUri );
   connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( gotCapabilities() ) );
@@ -65,7 +67,8 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   }
   else
   {
-    layers.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
+    //layers.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
+    // TODO: show the error without adding child
   }
 
   mCapabilities->deleteLater();
@@ -136,7 +139,9 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 
   foreach( QString connName, QgsOWSConnection::connectionList( "WFS" ) )
   {
-    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, mPath + "/" + connName );
+    QgsOWSConnection connection( "WF", connName );
+    QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, connection.uri().encodedUri() );
+    conn->setIcon ( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
     connections.append( conn );
   }
   return connections;
@@ -190,8 +195,12 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  Q_UNUSED( thePath );
+  QgsDebugMsg( "thePath = " + thePath );
+  if ( thePath.isEmpty() )
+  {
+    return new QgsWFSRootItem( parentItem, "WFS", "wfs:" );
+  }
 
-  return new QgsWFSRootItem( parentItem, "WFS", "wfs:" );
+  return new QgsWFSConnectionItem( parentItem, "WFS", thePath );
 }
 
