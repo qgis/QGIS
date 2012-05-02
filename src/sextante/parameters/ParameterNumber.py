@@ -18,7 +18,7 @@ class ParameterNumber(Parameter):
         self.value = None
 
     def setValue(self, n):
-        if value is None:
+        if n is None:
             self.value = self.default
             return True
         try:

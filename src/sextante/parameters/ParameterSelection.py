@@ -9,7 +9,7 @@ class ParameterSelection(Parameter):
         self.default = default
 
     def setValue(self, n):
-        if value is None:
+        if n is None:
             self.value = self.default
             return True
         try:
