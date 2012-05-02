@@ -5,7 +5,7 @@
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
     wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
     generalized          : (C) 2012 Radim Blazek, based on qgsowsconnection.h
-                           
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -115,7 +115,7 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     /**
      * List of image formats (encodings) supported by provider
      * @return list of format/label pairs
-     */ 
+     */
     virtual QList<QgsOWSSupportedFormat> providerFormats();
 
     //! List of formats supported for currently selected layer item(s)
@@ -132,7 +132,10 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     //! Populate supported formats
     void populateFormats();
 
-    //! Set supported CRSs 
+    //! Clear previously set formats
+    void clearFormats();
+
+    //! Set supported CRSs
     void populateCRS();
 
     //! Connection name
@@ -160,7 +163,7 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     /**
      * \brief Populate the layer list.
      *
-     * \retval false if the layers could not be retrieved or parsed 
+     * \retval false if the layers could not be retrieved or parsed
      */
     virtual void populateLayerList( );
 
@@ -218,8 +221,8 @@ class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
     //! Supported formats
     QList<QgsOWSSupportedFormat> mProviderFormats;
 
-    //! Map mime types to supported formats
-    QMap<QString, int> mMimeMap;
+    //! Map mime type labels to supported formats
+    QMap<QString, QString> mMimeLabelMap;
 
   private slots:
     void on_mSearchButton_clicked();

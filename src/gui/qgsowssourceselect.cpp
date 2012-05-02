@@ -120,57 +120,111 @@ QgsOWSSourceSelect::~QgsOWSSourceSelect()
   settings.setValue( "/Windows/WMSSourceSelect/geometry", saveGeometry() );
 }
 
+void QgsOWSSourceSelect::clearFormats()
+{
+  int i = 0;
+  while ( QRadioButton *btn = dynamic_cast<QRadioButton*>( mImageFormatGroup->button( i++ ) ) )
+  {
+    btn->setVisible( false );
+  }
+}
+
 void QgsOWSSourceSelect::populateFormats()
 {
   QgsDebugMsg( "entered" );
+
+  // A server may offer more similar formats, which are mapped
+  // to the same GDAL format, e.g. GeoTIFF and TIFF
+  // -> recreate always buttons for all available formats, enable supported
+
+  clearFormats();
+
+  QHBoxLayout *layout = dynamic_cast<QHBoxLayout*>( mImageFormatsGroupBox->layout() );
+  if ( !layout )
+  {
+    layout = new QHBoxLayout;
+    mImageFormatsGroupBox->setLayout( layout );
+    layout->addStretch();
+  }
+
   if ( mProviderFormats.size() == 0 )
   {
-    QHBoxLayout *layout = new QHBoxLayout;
-
     mProviderFormats = providerFormats();
-
-    // add buttons for available formats
     for ( int i = 0; i < mProviderFormats.size(); i++ )
     {
-      mMimeMap.insert( mProviderFormats[i].format, i );
-
-      QRadioButton *btn = new QRadioButton( mProviderFormats[i].label );
-      btn->setToolTip( mProviderFormats[i].format );
-      mImageFormatGroup->addButton( btn, i );
-      layout->addWidget( btn );
+      // GDAL mime types may be image/tiff, image/png, ...
+      mMimeLabelMap.insert( mProviderFormats[i].format, mProviderFormats[i].label );
     }
-
-    layout->addStretch();
-    mImageFormatsGroupBox->setLayout( layout );
   }
 
-  // Show supported by server only
-  foreach( QAbstractButton *b, mImageFormatGroup->buttons() )
-  {
-    b->setHidden( true );
-  }
+  // selectedLayersFormats may come in various forms:
+  // image/tiff, GTiff, GeoTIFF, TIFF, PNG, GTOPO30, ARCGRID, IMAGEMOSAIC ...
+  QMap<QString, QString> formatsMap;
+  formatsMap.insert( "geotiff", "tiff" );
+  formatsMap.insert( "gtiff", "tiff" );
+  formatsMap.insert( "tiff", "tiff" );
+  formatsMap.insert( "tif", "tiff" );
+  formatsMap.insert( "gif", "gif" );
+  formatsMap.insert( "jpeg", "jpeg" );
+  formatsMap.insert( "jpg", "jpeg" );
+  formatsMap.insert( "png", "png" );
 
-  int firstVisible = -1;
-  foreach( QString format, selectedLayersFormats() )
+  int prefered = -1;
+  int firstEnabled = -1;
+  QStringList layersFormats = selectedLayersFormats();
+  for ( int i = 0; i < layersFormats.size(); i++ )
   {
+    QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    int id = mMimeMap.value( format, -1 );
-    if ( id < 0 )
+    QString simpleFormat = format.toLower().replace( "image/", "" );
+    QgsDebugMsg( "server simpleFormat = " + simpleFormat );
+    QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
+    QgsDebugMsg( "server mimeFormat = " + mimeFormat );
+
+    QString label = format;
+    QString tip = tr( "Server format" ) + " " + format;
+
+    QRadioButton *btn;
+    btn = dynamic_cast<QRadioButton*>( mImageFormatGroup->button( i ) );
+    if ( !btn )
+    {
+      btn = new QRadioButton( label );
+      mImageFormatGroup->addButton( btn, i );
+      layout->insertWidget( layout->count() - 1, btn ); // before stretch
+    }
+    btn->setVisible( true );
+
+    if ( mMimeLabelMap.contains( mimeFormat ) )
+    {
+      btn->setEnabled( true );
+      if ( format != mMimeLabelMap.value( mimeFormat ) )
+      {
+        label += " / " + mMimeLabelMap.value( mimeFormat );
+      }
+      tip += " " + tr( "is supported by GDAL %1 driver." ).arg( mMimeLabelMap.value( mimeFormat ) );
+      if ( firstEnabled < 0 ) { firstEnabled = i; }
+      if ( simpleFormat.contains( "tif" ) ) // prefer *tif*
+      {
+        if ( prefered < 0 || simpleFormat.startsWith( "g" ) ) // prefere geotiff
+        {
+          prefered = i;
+        }
+      }
+    }
+    else
     {
       QgsDebugMsg( QString( "format %1 not supported." ).arg( format ) );
-      continue;
+      btn->setEnabled( false );
+      tip += " " + tr( "is not supported by GDAL" );
     }
-
-    mImageFormatGroup->button( id )->setVisible( true );
-    if ( firstVisible == -1 ) firstVisible = id;
+    btn->setText( label );
+    btn->setToolTip( tip );
   }
-  // Set first if no one visible is checked
-  if ( mImageFormatGroup->checkedId() < 0 || !mImageFormatGroup->button( mImageFormatGroup->checkedId() )->isVisible() )
+  // Set prefered
+  prefered = prefered >= 0 ? prefered : firstEnabled;
+  if ( prefered >= 0 )
   {
-    if ( firstVisible > -1 )
-    {
-      mImageFormatGroup->button( firstVisible )->setChecked( true );
-    }
+    mImageFormatGroup->button( prefered )->setChecked( true );
   }
 
   mImageFormatsGroupBox->setEnabled( true );
@@ -300,6 +354,10 @@ void QgsOWSSourceSelect::populateLayerList( )
 void QgsOWSSourceSelect::on_mConnectButton_clicked()
 {
   QgsDebugMsg( "entered" );
+
+  mLayersTreeWidget->clear();
+  clearFormats();
+
   mConnName = mConnectionsComboBox->currentText();
 
   QgsOWSConnection connection( mService, mConnectionsComboBox->currentText() );
@@ -455,7 +513,7 @@ QString QgsOWSSourceSelect::selectedFormat()
   {
     // TODO: do format in subclass (WMS)
     //return QUrl::toPercentEncoding( mProviderFormats[ id ].format );
-    return mProviderFormats[ id ].format;
+    return selectedLayersFormats().value( id );
   }
 }
 

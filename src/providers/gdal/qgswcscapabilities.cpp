@@ -645,12 +645,8 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom( QByteArray const &xml, QgsWcs
 
       if ( tagName == "formats" )
       {
-        // TODO: map other formats to GDAL mime types
-        QString format = el.text().toLower();
-        if ( format == "geotiff" || format == "gtiff" || format == "tiff" || format == "tif" )
-        {
-          coverage->supportedFormat << "image/tiff";
-        }
+        // may be GTiff, GeoTIFF, TIFF, GIF, ....
+        coverage->supportedFormat << el.text();
       }
     }
     n1 = n1.nextSibling();
@@ -724,6 +720,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const & e, QgsWcsCove
 
       if ( tagName == "SupportedFormat" )
       {
+        // image/tiff, ...
         coverageSummary.supportedFormat << el.text();
       }
       else if ( tagName == "SupportedCRS" )
@@ -848,7 +845,7 @@ void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& te
 
 QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent )
 {
-  QgsDebugMsg( "theIdentifier = " + theIdentifier );
+  //QgsDebugMsg( "theIdentifier = " + theIdentifier );
   if ( !parent )
   {
     parent = &( mCapabilities.contents );
@@ -857,7 +854,7 @@ QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theI
   //foreach( const QgsWcsCoverageSummary &c, parent->coverageSummary )
   for ( QVector<QgsWcsCoverageSummary>::iterator c = parent->coverageSummary.begin(); c != parent->coverageSummary.end(); ++c )
   {
-    QgsDebugMsg( "c->identifier = " + c->identifier );
+    //QgsDebugMsg( "c->identifier = " + c->identifier );
     if ( c->identifier == theIdentifier )
     {
       return c;
