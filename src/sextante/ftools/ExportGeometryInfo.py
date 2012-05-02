@@ -51,6 +51,10 @@ class ExportGeometryInfo(GeoAlgorithm):
           pt = inGeom.asPoint()
           attr1 = pt.x()
           attr2 = pt.y()
+        elif inGeom.wkbType() in (QGis.WKBMultiPoint, QGis.WKBMultiPoint25D):
+          pt = inGeom.asMultiPoint()
+          attr1 = pt[ 0 ].x()
+          attr2 = pt[ 0 ].y()
         else:
           measure = QgsDistanceArea()
           attr1 = measure.measure(inGeom)
