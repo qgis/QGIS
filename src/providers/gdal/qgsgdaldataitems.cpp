@@ -65,7 +65,7 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, Q
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
 {
-  QgsDebugMsg( "Entered");
+  QgsDebugMsg( "Entered" );
 }
 
 QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
@@ -75,7 +75,7 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
 
   QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri ( encodedUri );
+  uri.setEncodedUri( encodedUri );
   QgsDebugMsg( "encodedUri = " + encodedUri );
 
   mCapabilities.setUri( uri );
@@ -108,7 +108,7 @@ bool QgsWCSConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
   const QgsWCSConnectionItem *o = dynamic_cast<const QgsWCSConnectionItem *>( other );
-  if ( !o )   
+  if ( !o )
   {
     return false;
   }
@@ -190,6 +190,12 @@ QString QgsWCSLayerItem::createUri()
   // Number of styles must match number of layers
   mDataSourceUri.setParam( "identifier", mCoverageSummary.identifier );
 
+  // TODO(?): with WCS 1.0 GetCapabilities does not contain CRS and formats,
+  // to get them we would need to call QgsWcsCapabilities::describeCoverage
+  // but it is problematic to get QgsWcsCapabilities here (copy not allowed
+  // by QObject, pointer is dangerous (OWS provider is changing parent))
+  // We leave CRS and format default for now.
+
   QString format;
   // get first supported by GDAL and server
   QStringList mimes = QgsGdalProvider::supportedMimes().keys();
@@ -209,7 +215,10 @@ QString QgsWCSLayerItem::createUri()
       }
     }
   }
-  mDataSourceUri.setParam( "format", format );
+  if ( !format.isEmpty() )
+  {
+    mDataSourceUri.setParam( "format", format );
+  }
 
   QString crs;
 
@@ -229,7 +238,10 @@ QString QgsWCSLayerItem::createUri()
   {
     crs = mCoverageSummary.supportedCrs.value( 0 );
   }
-  mDataSourceUri.setParam( "crs", crs );
+  if ( !crs.isEmpty() )
+  {
+    mDataSourceUri.setParam( "crs", crs );
+  }
 
   return mDataSourceUri.encodedUri();
 }
@@ -257,7 +269,7 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
     QgsOWSConnection connection( "WCS", connName );
     QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, connection.uri().encodedUri() );
 
-    conn->setIcon ( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
+    conn->setIcon( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
     connections.append( conn );
   }
   return connections;
@@ -310,17 +322,17 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  QgsDebugMsg( "thePath = " + thePath ); 
+  QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )
   {
     // Top level WCS
     return new QgsWCSRootItem( parentItem, "WCS", "wcs:" );
   }
 
-  if ( thePath.contains ( "url=" ) )
+  if ( thePath.contains( "url=" ) )
   {
-    // OWS server 
-    QgsDebugMsg( "connection found in uri" ); 
+    // OWS server
+    QgsDebugMsg( "connection found in uri" );
     return new QgsWCSConnectionItem( parentItem, "WCS", thePath );
   }
 

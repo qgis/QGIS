@@ -109,15 +109,22 @@ void QgsWCSSourceSelect::populateLayerList( )
   }
 }
 
+QString QgsWCSSourceSelect::selectedIdentifier()
+{
+  QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
+  if ( selectionList.size() < 1 ) return QString(); // should not happen
+  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
+  QgsDebugMsg( " identifier = " + identifier );
+  return identifier;
+}
+
 void QgsWCSSourceSelect::addClicked( )
 {
   QgsDebugMsg( "entered" );
   QgsDataSourceURI uri = mUri;
 
-  QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 ) return; // should not happen
-  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg( " identifier = " + identifier );
+  QString identifier = selectedIdentifier();
+  if ( identifier.isEmpty() ) { return; }
 
   uri.setParam( "identifier", identifier );
 
@@ -138,6 +145,12 @@ void QgsWCSSourceSelect::addClicked( )
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 {
   QgsDebugMsg( "entered" );
+
+  QString identifier = selectedIdentifier();
+  if ( identifier.isEmpty() ) { return; }
+
+  mCapabilities.describeCoverage( identifier );  // 1.0 get additional info
+
   populateFormats();
 
   populateCRS();
@@ -194,27 +207,27 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
 {
   QgsDebugMsg( "entered" );
 
-  QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 ) return QStringList();
-  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg( " identifier = " + identifier );
+  QString identifier = selectedIdentifier();
+  if ( identifier.isEmpty() ) { return QStringList(); }
 
-  QgsWcsCoverageSummary c = mCapabilities.coverageSummary( identifier );
-  return c.supportedFormat;
+  QgsWcsCoverageSummary * c = mCapabilities.coverageSummary( identifier );
+  if ( !c ) { return QStringList(); }
+
+  QgsDebugMsg( "supportedFormat = " + c->supportedFormat.join( "," ) );
+  return c->supportedFormat;
 }
 
 QStringList QgsWCSSourceSelect::selectedLayersCRSs()
 {
   QgsDebugMsg( "entered" );
 
-  QList<QTreeWidgetItem *> selectionList = mLayersTreeWidget->selectedItems();
-  if ( selectionList.size() < 1 ) return QStringList();
-  QString identifier = selectionList.value( 0 )->data( 0, Qt::UserRole + 0 ).toString();
-  QgsDebugMsg( " identifier = " + identifier );
+  QString identifier = selectedIdentifier();
+  if ( identifier.isEmpty() ) { return QStringList(); }
 
-  QgsWcsCoverageSummary c = mCapabilities.coverageSummary( identifier );
+  QgsWcsCoverageSummary * c = mCapabilities.coverageSummary( identifier );
+  if ( !c ) { return QStringList(); }
 
-  return c.supportedCrs;
+  return c->supportedCrs;
 }
 
 void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )

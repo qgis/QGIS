@@ -5,7 +5,7 @@
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
     wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
     generalized          : (C) 2012 Radim Blazek, based on qgsowsconnection.h
-                           
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -48,7 +48,7 @@ class QDomElement;
  */
 class QgsWCSSourceSelect : public QgsOWSSourceSelect
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     //! Constructor
@@ -65,6 +65,8 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
 
   private:
     QgsWcsCapabilities mCapabilities;
+
+    QString selectedIdentifier();
 
     // QgsWcsCapabilities virtual methods
     void populateLayerList( );

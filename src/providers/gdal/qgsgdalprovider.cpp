@@ -146,7 +146,11 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     // prepareUri adds ? or & if necessary, GDAL fails otherwise
     gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param( "url" ) ) ) + "</ServiceURL>";
     gdalUri += "<CoverageName>" + dsUri.param( "identifier" ) + "</CoverageName>";
-    gdalUri += "<PreferredFormat>" + dsUri.param( "format" ) + "</PreferredFormat>";
+
+    if ( dsUri.hasParam( "format" ) )
+    {
+      gdalUri += "<PreferredFormat>" + dsUri.param( "format" ) + "</PreferredFormat>";
+    }
 
     // - CRS : there is undocumented GDAL CRS tag, but it only overrides CRS param
     //         in requests but the BBOX is left unchanged and thus results in server error (usually).
