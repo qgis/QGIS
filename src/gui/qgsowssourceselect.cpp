@@ -158,7 +158,8 @@ void QgsOWSSourceSelect::populateFormats()
   }
 
   // selectedLayersFormats may come in various forms:
-  // image/tiff, GTiff, GeoTIFF, TIFF, PNG, GTOPO30, ARCGRID, IMAGEMOSAIC ...
+  // image/tiff, GTiff, GeoTIFF, TIFF, geotiff_int16, geotiff_rgb,
+  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC,
   QMap<QString, QString> formatsMap;
   formatsMap.insert( "geotiff", "tiff" );
   formatsMap.insert( "gtiff", "tiff" );
@@ -176,7 +177,7 @@ void QgsOWSSourceSelect::populateFormats()
   {
     QString format = layersFormats.value( i );
     QgsDebugMsg( "server format = " + format );
-    QString simpleFormat = format.toLower().replace( "image/", "" );
+    QString simpleFormat = format.toLower().replace( "image/", "" ).replace( QRegExp( "_.*" ), "" );
     QgsDebugMsg( "server simpleFormat = " + simpleFormat );
     QString mimeFormat = "image/" + formatsMap.value( simpleFormat );
     QgsDebugMsg( "server mimeFormat = " + mimeFormat );

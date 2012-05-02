@@ -137,7 +137,10 @@ void QgsWCSSourceSelect::addClicked( )
   }
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
-  uri.setParam( "format", selectedFormat() );
+  if ( !selectedFormat().isEmpty() )
+  {
+    uri.setParam( "format", selectedFormat() );
+  }
 
   emit addRasterLayer( uri.encodedUri(), identifier, "gdal" );
 }
