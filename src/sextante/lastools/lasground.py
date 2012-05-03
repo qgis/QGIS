@@ -1,9 +1,6 @@
 import os
 from PyQt4 import QtGui
-from sextante.parameters.ParameterString import ParameterString
 from sextante.lastools.LasToolsUtils import LasToolsUtils
-from sextante.parameters.ParameterBoolean import ParameterBoolean
-from sextante.outputs.OutputRaster import OutputRaster
 from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFile import ParameterFile
@@ -31,7 +28,7 @@ class lasground(LasToolsAlgorithm):
         commands.append(self.getParameterValue(lasground.INPUT))
         commands.append("-o")
         commands.append(self.getOutputValue(lasground.OUTPUT))
-        method = lasground.METHODS[self.getParameterValue(lasground.METHOD)]
+        method = self.getParameterValue(lasground.METHOD)
         if method != 0:
             commands.append("-" + lasground.METHODS[method])
         self.addCommonParameterValuesToCommand(commands)
