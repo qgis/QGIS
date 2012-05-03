@@ -176,6 +176,21 @@ make
 sudo make install 
 ```
 
+=== Additional Dependencies: Spatialindex ===
+
+Get the libspatialindex sources:
+
+http://download.osgeo.org/libspatialindex/
+
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the
+source folder and:
+
+```
+./configure
+make 
+sudo make install 
+```
+
 === Additional Dependencies: Python ===
 
 __Leopard+ note:__ Starting with Leopard a usable Python is included
