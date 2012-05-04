@@ -1005,7 +1005,7 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, 
     layer->setLayerName( layerName( elem ) );
     if ( useCache )
     {
-      QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer );
+      QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer, mProjectPath );
     }
     else
     {

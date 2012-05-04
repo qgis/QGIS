@@ -19,7 +19,9 @@
 #define QGSMSLAYERCACHE_H
 
 #include <time.h>
+#include <QFileSystemWatcher>
 #include <QHash>
+#include <QObject>
 #include <QPair>
 #include <QString>
 
@@ -32,11 +34,12 @@ struct QgsMSLayerCacheEntry
   QString url; //datasource url
   QgsMapLayer* layerPointer;
   QList<QString> temporaryFiles; //path to the temporary files written for the layer
+  QString configFile; //path to the project file associated with the layer
 };
 
 /**A singleton class that caches layer objects for the
 QGIS mapserver*/
-class QgsMSLayerCache
+class QgsMSLayerCache: public QObject
 {
   public:
     static QgsMSLayerCache* instance();
@@ -46,7 +49,7 @@ class QgsMSLayerCache
     @param url the layer datasource
     @param layerName the layer name (to distinguish between different layers in a request using the same datasource
     @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
-    void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QList<QString>& tempFiles = QList<QString>() );
+    void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles = QList<QString>() );
     /**Searches for the layer with the given url.
      @return a pointer to the layer or 0 if no such layer*/
     QgsMapLayer* searchLayer( const QString& url, const QString& layerName );
@@ -75,8 +78,19 @@ class QgsMSLayerCache
       layer names*/
     QHash<QPair<QString, QString>, QgsMSLayerCacheEntry> mEntries;
 
+    /**Config files used in the cache (with reference counter)*/
+    QHash< QString, int > mConfigFiles;
+
+    /**Check for configuration file updates (remove layers from cache if configuration file changes)*/
+    QFileSystemWatcher mFileSystemWatcher;
+
     /**Maximum number of layers in the cache, overrides DEFAULT_MAX_N_LAYERS if larger*/
     int mProjectMaxLayers;
+
+  private slots:
+
+    /**Removes entries from a project (e.g. if a project file has changed)*/
+    void removeProjectFileLayers( const QString& project );
 };
 
 #endif

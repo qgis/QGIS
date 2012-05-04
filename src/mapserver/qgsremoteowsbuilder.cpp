@@ -115,7 +115,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
     {
       if ( allowCaching )
       {
-        QgsMSLayerCache::instance()->insertLayer( url, layerName, result );
+        QgsMSLayerCache::instance()->insertLayer( url, layerName, result, "" /*todo: add project file path*/ );
       }
       else
       {
@@ -215,7 +215,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   //insert into cache
   if ( allowCaching )
   {
-    QgsMSLayerCache::instance()->insertLayer( url, layerName, result );
+    QgsMSLayerCache::instance()->insertLayer( url, layerName, result, "" /*todo: add project file path*/ );
   }
   else
   {
@@ -414,7 +414,7 @@ QgsVectorLayer* QgsRemoteOWSBuilder::sosLayer( const QDomElement& remoteOWSElem,
   {
     if ( allowCaching )
     {
-      QgsMSLayerCache::instance()->insertLayer( providerUrl, layerName, sosLayer );
+      QgsMSLayerCache::instance()->insertLayer( providerUrl, layerName, sosLayer, "" /*todo: add project file path*/ );
     }
     else
     {

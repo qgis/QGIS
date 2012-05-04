@@ -67,7 +67,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem,
       rl = new QgsRasterLayer( uri, layerNameFromUri( uri ) );
       if ( allowCaching )
       {
-        QgsMSLayerCache::instance()->insertLayer( uri, layerName, rl );
+        QgsMSLayerCache::instance()->insertLayer( uri, layerName, rl, "" /*todo: add project file path*/ );
       }
       else
       {
