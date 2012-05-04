@@ -243,6 +243,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mUndoDock = new QDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );
 
+  mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable );
+  mItemDock->setFeatures( QDockWidget::DockWidgetMovable );
+  mUndoDock->setFeatures( QDockWidget::DockWidgetMovable );
 
 
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
