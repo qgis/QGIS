@@ -36,6 +36,7 @@ QgsMSLayerCache* QgsMSLayerCache::instance()
 
 QgsMSLayerCache::QgsMSLayerCache()
 {
+  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeProjectFileLayers( const QString& ) ) );
 }
 
 QgsMSLayerCache::~QgsMSLayerCache()
@@ -48,7 +49,7 @@ QgsMSLayerCache::~QgsMSLayerCache()
   delete mInstance;
 }
 
-void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QList<QString>& tempFiles )
+void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles )
 {
   QgsDebugMsg( "inserting layer" );
   if ( mEntries.size() > std::max( DEFAULT_MAX_N_LAYERS, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
@@ -69,8 +70,21 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   newEntry.creationTime = time( NULL );
   newEntry.lastUsedTime = time( NULL );
   newEntry.temporaryFiles = tempFiles;
+  newEntry.configFile = configFile;
 
   mEntries.insert( urlLayerPair, newEntry );
+
+  //update config file map
+  QHash< QString, int >::iterator configIt = mConfigFiles.find( configFile );
+  if ( configIt == mConfigFiles.end() )
+  {
+    mConfigFiles.insert( configFile, 1 );
+    mFileSystemWatcher.addPath( configFile );
+  }
+  else
+  {
+    mConfigFiles[configFile] = configIt.value() + 1; //increment reference counter
+  }
 }
 
 QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName )
@@ -95,6 +109,27 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
 #endif //DIAGRAMSERVER
     QgsDebugMsg( "Layer found in cache" );
     return entry.layerPointer;
+  }
+}
+
+void QgsMSLayerCache::removeProjectFileLayers( const QString& project )
+{
+  QList< QPair< QString, QString > > removeEntries;
+
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator entryIt = mEntries.begin();
+  for ( ; entryIt != mEntries.end(); ++entryIt )
+  {
+    if ( entryIt.value().configFile == project )
+    {
+      removeEntries.push_back( entryIt.key() );
+      freeEntryRessources( entryIt.value() );
+    }
+  }
+
+  QList< QPair< QString, QString > >::const_iterator removeIt = removeEntries.constBegin();
+  for ( ; removeIt != removeEntries.constEnd(); ++removeIt )
+  {
+    mEntries.remove( *removeIt );
   }
 }
 
@@ -142,7 +177,7 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
 {
   delete entry.layerPointer;
 
-  //todo: remove the temporary files of a layer
+  //remove the temporary files of a layer
   foreach( QString file, entry.temporaryFiles )
   {
     //remove the temporary file
@@ -152,5 +187,17 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
       QgsDebugMsg( "could not remove file: " + file );
       QgsDebugMsg( removeFile.errorString() );
     }
+  }
+
+  //counter
+  int configFileCount = mConfigFiles[entry.configFile];
+  if ( configFileCount < 2 )
+  {
+    mConfigFiles.remove( entry.configFile );
+    mFileSystemWatcher.removePath( entry.configFile );
+  }
+  else
+  {
+    mConfigFiles[entry.configFile] = configFileCount - 1;
   }
 }
