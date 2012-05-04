@@ -41,6 +41,7 @@ struct QgsMSLayerCacheEntry
 QGIS mapserver*/
 class QgsMSLayerCache: public QObject
 {
+    Q_OBJECT
   public:
     static QgsMSLayerCache* instance();
     ~QgsMSLayerCache();
