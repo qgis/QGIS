@@ -77,7 +77,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
-     * its projection an empty srs will be return, it will return 0
+     * its projection an empty srs will be returned
      */
     virtual QgsCoordinateReferenceSystem crs();
 
