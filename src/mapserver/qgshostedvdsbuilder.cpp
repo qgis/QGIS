@@ -75,7 +75,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
 
     if ( allowCaching )
     {
-      QgsMSLayerCache::instance()->insertLayer( uri, layerName, ml, "" /*todo: add project file path*/ );
+      QgsMSLayerCache::instance()->insertLayer( uri, layerName, ml );
     }
     else
     {

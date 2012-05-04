@@ -48,8 +48,9 @@ class QgsMSLayerCache: public QObject
     /**Inserts a new layer into the cash
     @param url the layer datasource
     @param layerName the layer name (to distinguish between different layers in a request using the same datasource
+    @param configFile path of the config file (to invalidate entries if file changes). Can be empty (e.g. layers from sld)
     @param tempFiles some layers have temporary files. The cash makes sure they are removed when removing the layer from the cash*/
-    void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile, const QList<QString>& tempFiles = QList<QString>() );
+    void insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QString& configFile = QString(), const QList<QString>& tempFiles = QList<QString>() );
     /**Searches for the layer with the given url.
      @return a pointer to the layer or 0 if no such layer*/
     QgsMapLayer* searchLayer( const QString& url, const QString& layerName );
