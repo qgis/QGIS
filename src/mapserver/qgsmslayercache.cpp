@@ -75,15 +75,18 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   mEntries.insert( urlLayerPair, newEntry );
 
   //update config file map
-  QHash< QString, int >::iterator configIt = mConfigFiles.find( configFile );
-  if ( configIt == mConfigFiles.end() )
+  if ( !configFile.isEmpty() )
   {
-    mConfigFiles.insert( configFile, 1 );
-    mFileSystemWatcher.addPath( configFile );
-  }
-  else
-  {
-    mConfigFiles[configFile] = configIt.value() + 1; //increment reference counter
+    QHash< QString, int >::iterator configIt = mConfigFiles.find( configFile );
+    if ( configIt == mConfigFiles.end() )
+    {
+      mConfigFiles.insert( configFile, 1 );
+      mFileSystemWatcher.addPath( configFile );
+    }
+    else
+    {
+      mConfigFiles[configFile] = configIt.value() + 1; //increment reference counter
+    }
   }
 }
 
@@ -190,14 +193,17 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
   }
 
   //counter
-  int configFileCount = mConfigFiles[entry.configFile];
-  if ( configFileCount < 2 )
+  if ( !entry.configFile.isEmpty() )
   {
-    mConfigFiles.remove( entry.configFile );
-    mFileSystemWatcher.removePath( entry.configFile );
-  }
-  else
-  {
-    mConfigFiles[entry.configFile] = configFileCount - 1;
+    int configFileCount = mConfigFiles[entry.configFile];
+    if ( configFileCount < 2 )
+    {
+      mConfigFiles.remove( entry.configFile );
+      mFileSystemWatcher.removePath( entry.configFile );
+    }
+    else
+    {
+      mConfigFiles[entry.configFile] = configFileCount - 1;
+    }
   }
 }
