@@ -4940,7 +4940,7 @@ bool QgsRasterImageBuffer::createNextPartImage()
   //create the QImage
   if ( mWritingEnabled )
   {
-    mCurrentImage = new QImage( xSize, ySize, QImage::Format_ARGB32 );
+    mCurrentImage = new QImage( xSize, rasterYSize, QImage::Format_ARGB32 );
     mCurrentImage->fill( qRgba( 255, 255, 255, 0 ) );
   }
   else
