@@ -2844,6 +2844,13 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
         // make sure that the "observer" has been removed from URI to avoid crashes
         mDataSource = mDataProvider->dataSourceUri();
       }
+      else if ( provider == "ogr" )
+      {
+        // make sure that the /vsigzip or /vsizip is added to uri, if applicable
+        mDataSource = mDataProvider->dataSourceUri();
+        if ( mDataSource.right( 10 ) == "|layerid=0" )
+          mDataSource.chop( 10 );
+      }
 
       // label
       mLabel = new QgsLabel( mDataProvider->fields() );

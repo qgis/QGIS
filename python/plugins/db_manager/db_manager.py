@@ -355,6 +355,8 @@ class DBManager(QMainWindow):
 		actionMenuSchema = self.menuBar.addMenu(self.menuSchema)
 		self.menuTable = QMenu("&Table", self)
 		actionMenuTable = self.menuBar.addMenu(self.menuTable)
+		self.menuHelp = None#QMenu("&Help", self)
+		#actionMenuHelp = self.menuBar.addMenu(self.menuHelp)
 
 		self.setMenuBar(self.menuBar)
 

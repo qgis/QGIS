@@ -230,6 +230,7 @@ def createIndex( provider ):
     feat = QgsFeature()
     index = QgsSpatialIndex()
     provider.rewind()
+    provider.select()
     while provider.nextFeature( feat ):
         index.insertFeature( feat )
     return index

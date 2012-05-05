@@ -270,13 +270,19 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
     if ( !mFilePath.startsWith( "/vsizip/" ) )
+    {
       mFilePath = "/vsizip/" + mFilePath;
+      setDataSourceUri( mFilePath );
+    }
     QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
   else if ( mFilePath.endsWith( ".gz", Qt::CaseInsensitive ) )
   {
     if ( !mFilePath.startsWith( "/vsigzip/" ) )
+    {
       mFilePath = "/vsigzip/" + mFilePath;
+      setDataSourceUri( mFilePath );
+    }
     QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
   }
 
@@ -1607,6 +1613,10 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( QObject::tr( "DODS" ) ) )
       {
         myProtocolDrivers += "DODS/OPeNDAP,DODS;";
+      }
+      else if ( driverName.startsWith( "FileGDB" ) )
+      {
+        myDirectoryDrivers += QObject::tr( "ESRI FileGDB" ) + ",FileGDB;";
       }
       else if ( driverName.startsWith( "PGeo" ) )
       {

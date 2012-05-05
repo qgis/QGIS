@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/" >
         <file>options.png</file>
-        <file>interpolation.png</file>
+        <file>raster-interpolate.png</file>
     </qresource>
 </RCC>

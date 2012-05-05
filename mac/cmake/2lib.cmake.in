@@ -32,6 +32,15 @@ IF ("@POSTGRES_LIBRARY@" MATCHES ".*libpq.dylib")
     ENDIF (INTLLIB)
 ENDIF ()
 
+# libspatialindex
+
+IF ("@SPATIALINDEX_LIBRARY@" MATCHES ".*libspatialindex.dylib")
+    MESSAGE (STATUS "Copying libspatialindex and updating library paths...")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@SPATIALINDEX_LIBRARY@" "${QLIBDIR}/libspatialindex.dylib")
+    GET_INSTALL_NAME ("@SPATIALINDEX_LIBRARY@" "libspatialindex" SPILIB)
+    UPDATEQGISPATHS (${SPILIB} libspatialindex.dylib)
+ENDIF ()
+
 # libfcgi (non-system)
 
 IF ("@FCGI_LIBRARY@" MATCHES ".*libfcgi.dylib" AND NOT "@FCGI_LIBRARY@" MATCHES "/usr/lib/.*")

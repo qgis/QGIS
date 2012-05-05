@@ -1,9 +1,9 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Sunday April 08, 2012
+Thursday May 03, 2012
 
 
-Last Updated: Sunday April 08, 2012
+Last Updated: Thursday May 03, 2012
 Last Change : Saturday April 07, 2012
 
 
@@ -1323,7 +1323,22 @@ source folder and:
   sudo make install 
 
 
-    5.4.3. Additional Dependencies: Python
+    5.4.3. Additional Dependencies: Spatialindex
+    ============================================
+
+Get the libspatialindex sources:
+
+http://download.osgeo.org/libspatialindex/
+
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the
+source folder and:
+
+  ./configure
+  make 
+  sudo make install 
+
+
+    5.4.4. Additional Dependencies: Python
     ======================================
 
 Leopard+ note: Starting with Leopard a usable Python is included
@@ -1340,7 +1355,7 @@ Python 3 is a major change, and may have compatibility issues, so try it at
 your own risk.
 
 
-    5.4.4. Additional Dependencies: SIP
+    5.4.5. Additional Dependencies: SIP
     ===================================
 
 Retrieve the python bindings toolkit SIP from
@@ -1399,7 +1414,7 @@ Then continue with compilation and installation:
   sudo make install 
 
 
-    5.4.5. Additional Dependencies: PyQt
+    5.4.6. Additional Dependencies: PyQt
     ====================================
 
 Retrieve the python bindings toolkit for Qt from
@@ -1454,7 +1469,7 @@ QtOpenGL/makefile and add -undefined dynamic_lookup to LFLAGS.
 Then make again.
 
 
-    5.4.6. Additional Dependencies: Qwt
+    5.4.7. Additional Dependencies: Qwt
     ===================================
 
 The GPS tracking feature uses Qwt.
@@ -1480,7 +1495,7 @@ The Qwt shared library is now installed in /usr/local/qwt-5.x.x (x.x is
 the  minor.point version).  Remember this for QGIS configuration.
 
 
-    5.4.7. Additional Dependencies: Bison
+    5.4.8. Additional Dependencies: Bison
     =====================================
 
 The version of bison available by default on Mac OS X is too old so you
@@ -1496,7 +1511,7 @@ tarball to unpack it, then cd to the source folder and:
   sudo make install 
 
 
-    5.4.8. Additional Dependencies: gpsbabel
+    5.4.9. Additional Dependencies: gpsbabel
     ========================================
 
 For integrated GPS Tools functions, a gpsbabel executable is required. You can
@@ -1508,8 +1523,8 @@ Download the GPSBabel OS X package, and copy GPSBabelFE.app from the disk image 
 /Applications.  
 
 
-    5.4.9. Optional Dependencies: libfcgi
-    =====================================
+    5.4.10. Optional Dependencies: libfcgi
+    ======================================
 
 If you want to use the QGIS Mapserver, you need libfcgi.  This is included on
 systems up through Snow Leopard, but was dropped at Lion.  So, on Lion you need
@@ -1525,7 +1540,7 @@ tarball to unpack it, then cd to the source folder and:
   sudo make install 
 
 
-    5.4.10. Optional Dependencies: OSG & osgEarth
+    5.4.11. Optional Dependencies: OSG & osgEarth
     =============================================
 
 If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
