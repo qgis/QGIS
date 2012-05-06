@@ -18,7 +18,6 @@
 #include <QStringList>
 #include <QObject>
 #include <QPainter>
-#include <QSettings>
 #include <QTime>
 #include <iostream>
 
