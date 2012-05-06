@@ -83,9 +83,12 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def calculateResamplingExtent(self):
+        '''this method calculates the resampling extent, but it might set self.resample
+        to false if, with the current layers, there is no need to resample'''
         auto = SextanteConfig.getSetting(SagaUtils.SAGA_AUTO_RESAMPLING)
         if auto:
             first = True;
+            self.inputExtentsCount = 0
             for param in self.parameters:
                 if param.value:
                     if isinstance(param, ParameterRaster):
@@ -102,6 +105,8 @@ class SagaAlgorithm(GeoAlgorithm):
                                 layer = QGisLayers.getObjectFromUri(layername)
                                 self.addToResamplingExtent(layer, first)
                                 first = False
+            if self.inputExtentsCount < 2:
+                self.resample = false
         else:
             self.xmin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
@@ -112,17 +117,25 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def addToResamplingExtent(self, layer, first):
         if first:
+            self.inputExtentsCount = 1
             self.xmin = layer.extent().xMinimum()
             self.xmax = layer.extent().xMaximum()
             self.ymin = layer.extent().yMinimum()
             self.ymax = layer.extent().yMaximum()
             self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
         else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
-            self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
+            cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
+            if self.xmin != layer.extent().xMinimum() or
+                    self.xmax != layer.extent().xMaximum() or
+                    self.ymin != layer.extent().yMinimum() or
+                    self.ymax != layer.extent().yMaximum() or
+                    self.cellsize != cellsize:
+                self.xmin = min(self.xmin, layer.extent().xMinimum())
+                self.xmax = max(self.xmax, layer.extent().xMaximum())
+                self.ymin = min(self.ymin, layer.extent().yMinimum())
+                self.ymax = max(self.ymax, layer.extent().yMaximum())
+                self.cellsize = max(self.cellsize, cellsize)
+                self.inputExtentsCount += 1
 
 
     def processAlgorithm(self, progress):

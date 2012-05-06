@@ -123,7 +123,7 @@ class SextanteToolbox(QtGui.QDockWidget):
 
     def fillTree(self):
         self.algorithmTree.clear()
-        text = str(self.searchBox.text())
+        text = unicode(self.searchBox.text())
         for providerName in Sextante.algs.keys():
             groups = {}
             provider = Sextante.algs[providerName]
