@@ -897,7 +897,6 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
 
 QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QString name )
 {
-
   QSettings settings;
   int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
   QString vsizipPath = path;

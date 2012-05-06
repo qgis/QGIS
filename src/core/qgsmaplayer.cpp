@@ -556,12 +556,12 @@ QString QgsMapLayer::styleURI( )
   // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
   if ( myURI.left( 9 ) == "/vsigzip/" )
   {
-    myURI.remove( 1, 9 );
+    myURI.remove( 0, 9 );
   }
   else if ( myURI.left( 8 ) == "/vsizip/" &&  myURI.right( 4 ) == ".zip" )
   {
     // ideally we should look for .qml file inside zip file
-    myURI.remove( 1, 8 );
+    myURI.remove( 0, 8 );
   }
 
   QFileInfo myFileInfo( myURI );
