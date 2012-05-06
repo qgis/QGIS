@@ -22,7 +22,6 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QPainter>
-#include <QSettings>
 #include <QTime>
 #include <QDesktopServices>
 
