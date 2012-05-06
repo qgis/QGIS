@@ -195,6 +195,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
 
   public slots:
     void setName( const QModelIndex& idx );
+    void populateIcons( const QModelIndex& idx );
     void setSize();
     void setAngle();
     void setOffset();
@@ -273,6 +274,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mTextureWidthSpinBox_valueChanged( double d );
     void on_mSVGLineEdit_textChanged( const QString & text );
     void setFile( const QModelIndex& item );
+    void populateIcons( const QModelIndex& item );
     void on_mChangeOutlinePushButton_clicked();
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mChangeColorButton_clicked();

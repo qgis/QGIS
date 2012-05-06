@@ -27,6 +27,8 @@
 
 #include "qgsapplication.h"
 
+#include "qgslogger.h"
+
 #include <QAbstractButton>
 #include <QColorDialog>
 #include <QDir>
@@ -519,10 +521,12 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
   mLayer = NULL;
 
   setupUi( this );
+  viewGroups->setHeaderHidden( true );
 
   populateList();
 
   connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
+  connect( viewGroups->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -539,6 +543,12 @@ class QgsSvgListModel : public QAbstractListModel
     QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
     {
       mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+    }
+
+    // Constructor to create model for icons in a specific path
+    QgsSvgListModel( QObject* parent, QString path ) : QAbstractListModel( parent )
+    {
+      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( path );
     }
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const
@@ -581,11 +591,61 @@ class QgsSvgListModel : public QAbstractListModel
     QStringList mSvgFiles;
 };
 
+class QgsSvgGroupsModel : public QStandardItemModel
+{
+  public:
+    QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
+    {
+      QStringList svgPaths = QgsApplication::svgPaths();
+      QStandardItem *parentItem = invisibleRootItem();
+
+      for ( int i = 0; i < svgPaths.size(); i++ )
+      {
+        QDir dir( svgPaths[i] );
+        QStandardItem *baseGroup = new QStandardItem( dir.dirName() );
+        baseGroup->setData( QVariant( svgPaths[i] ) );
+        baseGroup->setEditable( false );
+        baseGroup->setCheckable( false );
+        parentItem->appendRow( baseGroup );
+        createTree( baseGroup );
+        QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
+      }
+    }
+  private:
+    void createTree( QStandardItem* &parentGroup )
+    {
+      QDir parentDir( parentGroup->data().toString() );
+      foreach( QString item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+      {
+        QStandardItem* group = new QStandardItem( item );
+        group->setData( QVariant( parentDir.path() + "/" + item ) );
+        group->setEditable( false );
+        group->setCheckable( false );
+        parentGroup->appendRow( group );
+        createTree( group );
+      }
+    }
+};
+
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {
-  QgsSvgListModel* m = new QgsSvgListModel( viewImages );
+  QgsSvgGroupsModel* g = new QgsSvgGroupsModel( viewGroups );
+  viewGroups->setModel( g );
 
+  // Initally load the icons in the List view without any grouping
+  QgsSvgListModel* m = new QgsSvgListModel( viewImages );
   viewImages->setModel( m );
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::populateIcons( const QModelIndex& idx )
+{
+  QString path = idx.data( Qt::UserRole + 1 ).toString();
+
+  QgsSvgListModel* m = new QgsSvgListModel( viewImages, path );
+  viewImages->setModel( m );
+
+  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
+  emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer )
@@ -611,6 +671,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mBorderWidthSpinBox->blockSignals( true );
   mBorderWidthSpinBox->setValue( layer->outlineWidth() );
   mBorderWidthSpinBox->blockSignals( false );
+
 }
 
 
@@ -816,10 +877,12 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* 
 {
   mLayer = 0;
   setupUi( this );
+  mSvgTreeView->setHeaderHidden( true );
   insertIcons();
   updateOutlineIcon();
 
   connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
+  connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -895,8 +958,22 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
 {
+  QgsSvgGroupsModel* g = new QgsSvgGroupsModel( mSvgTreeView );
+  mSvgTreeView->setModel( g );
+
   QgsSvgListModel* m = new QgsSvgListModel( mSvgListView );
   mSvgListView->setModel( m );
+}
+
+void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex& idx )
+{
+  QString path = idx.data( Qt::UserRole + 1 ).toString();
+
+  QgsSvgListModel* m = new QgsSvgListModel( mSvgListView, path );
+  mSvgListView->setModel( m );
+
+  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
+  emit changed();
 }
 
 void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
