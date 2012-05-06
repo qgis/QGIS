@@ -1,0 +1,43 @@
+A short guide for creating and editing GRASS algorithms for SEXTANTE:
+-----------------------------------------------------------------------
+
+Each GRASS command, to be executed from a SEXTANTE element such as the toolbox or the graphical modeler, needs to be described to let SEXTANTE know the inputs required by the commands, the output it generates and the parameters that are used to configure it. Each command is described in a separate text file, although some commands might be split in several algorithms, needing thus several files and adding more than one new entry to the algorithms list of SEXTANTE.
+
+Here is an explanation of the content of these descriptions files, so you can create you own ones or edit current ones to improve them.
+
+Each file starts with three lines containing:
+
+-The name of the grass command to call to execute the algorithm (e.g. v.buffer)
+-The name of the algorithm to show to the user. This is usually the same as the grass command, but it can be different
+-The name of the group where you want the command to appear
+
+After this three lines, a variable number of lines appear, describing all inputs and ouputs. Here is a brief explanation of the format of these lines, depending on the type of parameter or output to be described. All declarations are contained in a single line, with elements separated by the symbol "|"
+
+-A raster layer
+
+ParameterRaster|[name of GRASS parameter]|[description of parameter to show]|True/False, indicating if the parameter is optional or not
+
+-A vector layer
+
+ParameterVector|[name of GRASS parameter]|[description of parameter to shown]|[A number indicating the type of geometry]|True/False, indicating if the parameter is optional or not
+
+To indicate the type of geometry, use the following values:
+
+-1: any geometry
+0: points
+1: lines
+2: polygons
+
+
+
+-A numerical value
+
+ParameterNumericalValue|[name of GRASS parameter]|[description of parameter to show]|[min value]|[max value]|[default value]
+
+"None" can be used for both min and max values to indicate that there is no lower or upper limit.
+
+If the default value is written as a real number (i.e. it contains a decimal point, even if it is an integer value like 4.0), the parameter can take any value, including decimal ones. If it is written as an integer (i.e. 4), the parameter is assumed to accept only integer values
+
+-A string
+
+ParameterString|[name of GRASS parameter]|[description of parameter to show]|[default value]
