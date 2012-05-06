@@ -108,6 +108,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
 
+    static int scanZipSetting();
+
     // members
 
     Type type() const { return mType; }

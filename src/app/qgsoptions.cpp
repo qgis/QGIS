@@ -214,7 +214,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 #ifdef HAVE_ZLIB
   cmbScanZipInBrowser->addItem( tr( "Basic scan" ) );   // 2
   cmbScanZipInBrowser->addItem( tr( "Full scan" ) );    // 3
-  cmbScanZipInBrowser->setCurrentIndex( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() );
+  cmbScanZipInBrowser->setCurrentIndex( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() );
 #else
   if ( settings.value( "/qgis/scanZipInBrowser", 1 ) == 0 )
     cmbScanZipInBrowser->setCurrentIndex( 0 );
