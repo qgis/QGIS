@@ -111,6 +111,8 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
 
+  connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( updateIconTheme( QString ) ) );
+
   QSettings s;
   if ( s.value( "/Plugin-GeoReferencer/Config/ShowDocked" ).toBool() )
   {
@@ -805,10 +807,10 @@ void QgsGeorefPluginGui::createActions()
   connect( mActionTransformSettings, SIGNAL( triggered() ), this, SLOT( getTransformSettings() ) );
 
   // Edit actions
-  mActionAddPoint->setIcon( getThemeIcon( "/mActionCapturePoint.png" ) );
+  mActionAddPoint->setIcon( getThemeIcon( "/mActionAddGCPPoint.png" ) );
   connect( mActionAddPoint, SIGNAL( triggered() ), this, SLOT( setAddPointTool() ) );
 
-  mActionDeletePoint->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
+  mActionDeletePoint->setIcon( getThemeIcon( "/mActionDeleteGCPPoint.png" ) );
   connect( mActionDeletePoint, SIGNAL( triggered() ), this, SLOT( setDeletePointTool() ) );
 
   mActionMoveGCPPoint->setIcon( getThemeIcon( "/mActionMoveGCPPoint.png" ) );
@@ -1032,7 +1034,38 @@ void QgsGeorefPluginGui::setupConnections()
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+}
 
+void QgsGeorefPluginGui::updateIconTheme( QString theme )
+{
+  // File actions
+  mActionOpenRaster->setIcon( getThemeIcon( "/mActionOpenRaster.png" ) );
+  mActionStartGeoref->setIcon( getThemeIcon( "/mActionStartGeoref.png" ) );
+  mActionGDALScript->setIcon( getThemeIcon( "/mActionGDALScript.png" ) );
+  mActionLoadGCPpoints->setIcon( getThemeIcon( "/mActionLoadGCPpoints.png" ) );
+  mActionSaveGCPpoints->setIcon( getThemeIcon( "/mActionSaveGCPpointsAs.png" ) );
+  mActionTransformSettings->setIcon( getThemeIcon( "/mActionTransformSettings.png" ) );
+
+  // Edit actions
+  mActionAddPoint->setIcon( getThemeIcon( "/mActionAddGCPPoint.png" ) );
+  mActionDeletePoint->setIcon( getThemeIcon( "/mActionDeleteGCPPoint.png" ) );
+  mActionMoveGCPPoint->setIcon( getThemeIcon( "/mActionMoveGCPPoint.png" ) );
+
+  // View actions
+  mActionPan->setIcon( getThemeIcon( "/mActionPan.png" ) );
+  mActionZoomIn->setIcon( getThemeIcon( "/mActionZoomIn.png" ) );
+  mActionZoomOut->setIcon( getThemeIcon( "/mActionZoomOut.png" ) );
+  mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
+  mActionZoomLast->setIcon( getThemeIcon( "/mActionZoomLast.png" ) );
+  mActionZoomNext->setIcon( getThemeIcon( "/mActionZoomNext.png" ) );
+  mActionLinkGeorefToQGis->setIcon( getThemeIcon( "/mActionLinkGeorefToQGis.png" ) );
+  mActionLinkQGisToGeoref->setIcon( getThemeIcon( "/mActionLinkQGisToGeoref.png" ) );
+
+  // Settings actions
+  mActionRasterProperties->setIcon( getThemeIcon( "/mActionRasterProperties.png" ) );
+  mActionGeorefConfig->setIcon( getThemeIcon( "/mActionGeorefConfig.png" ) );
+
+  mActionQuit->setIcon( getThemeIcon( "/mActionQuit.png" ) );
 }
 
 // Mapcanvas Plugin
@@ -1450,8 +1483,6 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
 
   return true;
 }
-
-
 
 bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform )
 {
@@ -1985,7 +2016,16 @@ QIcon QgsGeorefPluginGui::getThemeIcon( const QString &theName )
   }
   else
   {
-    return QIcon( ":/icons" + theName );
+    QSettings settings;
+    QString themePath = ":/icons/" + settings.value( "/Themes" ).toString() + theName;
+    if ( QFile::exists( themePath ) )
+    {
+      return QIcon( themePath );
+    }
+    else
+    {
+      return QIcon( ":/icons/default" + theName );
+    }
   }
 }
 

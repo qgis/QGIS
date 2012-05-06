@@ -64,7 +64,7 @@ static const QString sDescription = QObject::tr( "Georeferencing rasters using G
 static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/icons/mGeorefRun.png";
+static const QString sPluginIcon = ":/icons/default/mGeorefRun.png";
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -149,7 +149,7 @@ QIcon QgsGeorefPlugin::getThemeIcon( const QString &theName )
   }
   else
   {
-    return QIcon( ":/icons" + theName );
+    return QIcon( ":/icons/default" + theName );
   }
 }
 

@@ -1,24 +1,34 @@
 <RCC>
-    <qresource prefix="/">
-        <file>icons/mGeorefDescription.png</file>
-        <file>icons/mGeorefRun.png</file>
-	<file>icons/mPushButtonClipboard.png</file>
-	<file>icons/mPushButtonEditPaste.png</file>
-	<file>icons/mPushButtonFileOpen.png</file>
-        <file>icons/mPushButtonPencil.png</file>
-	<file>icons/mPushButtonTargetSRSEnabled.png</file>
-	<file>icons/mPushButtonTargetSRSDisabled.png</file>
-	<file>icons/mActionGDALScript.png</file>
-	<file>icons/mActionOpenRaster.png</file>
-	<file>icons/mActionSaveRasterAs.png</file>
-	<file>icons/mActionLinkGeorefToQGis.png</file>
-	<file>icons/mActionLinkQGisToGeoref.png</file>
-	<file>icons/mActionLoadGCPpoints.png</file>
-	<file>icons/mActionMoveGCPPoint.png</file>
-	<file>icons/mActionSaveGCPpointsAs.png</file>
-	<file>icons/mActionStartGeoref.png</file>
-	<file>icons/mActionTransformSettings.png</file>
-	<file>icons/mActionHelp.png</file>
-	<file>icons/mActionAbout.png</file>
-    </qresource>
+  <qresource prefix="/">
+    <file>icons/default/mGeorefDescription.png</file>
+    <file>icons/default/mGeorefRun.png</file>
+    <file>icons/default/mPushButtonClipboard.png</file>
+    <file>icons/default/mPushButtonEditPaste.png</file>
+    <file>icons/default/mPushButtonFileOpen.png</file>
+    <file>icons/default/mPushButtonPencil.png</file>
+    <file>icons/default/mPushButtonTargetSRSEnabled.png</file>
+    <file>icons/default/mPushButtonTargetSRSDisabled.png</file>
+    <file>icons/default/mActionGDALScript.png</file>
+    <file>icons/default/mActionOpenRaster.png</file>
+    <file>icons/default/mActionSaveRasterAs.png</file>
+    <file>icons/default/mActionLinkGeorefToQGis.png</file>
+    <file>icons/default/mActionLinkQGisToGeoref.png</file>
+    <file>icons/default/mActionLoadGCPpoints.png</file>
+    <file>icons/default/mActionAddGCPPoint.png</file>
+    <file>icons/default/mActionDeleteGCPPoint.png</file>
+    <file>icons/default/mActionMoveGCPPoint.png</file>
+    <file>icons/default/mActionSaveGCPpointsAs.png</file>
+    <file>icons/default/mActionStartGeoref.png</file>
+    <file>icons/default/mActionTransformSettings.png</file>
+    <file>icons/default/mActionHelp.png</file>
+    <file>icons/gis/mActionAddGCPPoint.png</file>
+    <file>icons/gis/mActionDeleteGCPPoint.png</file>
+    <file>icons/gis/mActionGDALScript.png</file>
+    <file>icons/gis/mActionLoadGCPpoints.png</file>
+    <file>icons/gis/mActionMoveGCPPoint.png</file>
+    <file>icons/gis/mActionOpenRaster.png</file>
+    <file>icons/gis/mActionSaveGCPpointsAs.png</file>
+    <file>icons/gis/mActionStartGeoref.png</file>
+    <file>icons/gis/mActionTransformSettings.png</file>
+  </qresource>
 </RCC>

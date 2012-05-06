@@ -28,7 +28,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, QgsPoint pixel
 
   setAttribute( Qt::WA_DeleteOnClose );
 
-  mPointFromCanvasPushButton = new QPushButton( QIcon( ":/icons/mPushButtonPencil.png" ), tr( "From map canvas" ) );
+  mPointFromCanvasPushButton = new QPushButton( QIcon( ":/icons/default/mPushButtonPencil.png" ), tr( "From map canvas" ) );
   mPointFromCanvasPushButton->setCheckable( true );
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
   adjustSize();

@@ -353,6 +353,15 @@ QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &theName )
   }
   else
   {
-    return QIcon( ":/icons" + theName );
+    QSettings settings;
+    QString themePath = ":/icons/" + settings.value( "/Themes" ).toString() + theName;
+    if ( QFile::exists( themePath ) )
+    {
+      return QIcon( themePath );
+    }
+    else
+    {
+      return QIcon( ":/icons/default" + theName );
+    }
   }
 }
