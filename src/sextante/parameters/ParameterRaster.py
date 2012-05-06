@@ -39,14 +39,14 @@ class ParameterRaster(ParameterDataObject):
             else:
                 return False
         if isinstance(obj, QgsRasterLayer):
-            self.value = str(obj.dataProvider().dataSourceUri())
+            self.value = unicode(obj.dataProvider().dataSourceUri())
             return True
         else:
-            self.value = str(obj)
+            self.value = unicode(obj)
             layers = QGisLayers.getRasterLayers()
             for layer in layers:
                 if layer.name() == self.value:
-                    self.value = str(layer.dataProvider().dataSourceUri())
+                    self.value = unicode(layer.dataProvider().dataSourceUri())
                     return True
         return True
 

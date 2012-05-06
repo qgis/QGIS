@@ -1,6 +1,5 @@
 from sextante.parameters.Parameter import Parameter
 from sextante.core.SextanteUtils import SextanteUtils
-from sextante.core.QGisLayers import QGisLayers
 
 class ParameterDataObject(Parameter):
 
@@ -9,6 +8,6 @@ class ParameterDataObject(Parameter):
             return str(None)
         else:
             if not SextanteUtils.isWindows():
-                return "\"" + str(self.value) + "\""
+                return "\"" + unicode(self.value) + "\""
             else:
-                return "\"" + str(self.value).replace("\\", "\\\\") + "\""
+                return "\"" + unicode(self.value).replace("\\", "\\\\") + "\""

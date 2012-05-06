@@ -390,6 +390,12 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         return False
 
+    def helpfile(self):
+        helpfile = self.descriptionFile + ".help"
+        if os.path.exists(helpfile):
+            return helpfile
+        else:
+            return None
 
 class AlgorithmAndParameter():
 

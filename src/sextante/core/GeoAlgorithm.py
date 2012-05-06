@@ -50,7 +50,7 @@ class GeoAlgorithm:
 
     def helpFile(self):
         '''Returns the path to the help file with the description of this algorithm.
-        It should be an HTML file'''
+        It should be an HTML file. Returns None if there is no help file available'''
         return None
 
     def processAlgorithm(self):

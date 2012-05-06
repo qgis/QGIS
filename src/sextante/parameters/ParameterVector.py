@@ -26,14 +26,14 @@ class ParameterVector(ParameterDataObject):
             else:
                 return False
         if isinstance(obj, QgsVectorLayer):
-            self.value = str(obj.source())
+            self.value = unicode(obj.source())
             return True
         else:
-            self.value = str(obj)
+            self.value = unicode(obj)
             layers = QGisLayers.getVectorLayers(self.shapetype)
             for layer in layers:
                 if layer.name() == self.value:
-                    self.value = str(layer.source())
+                    self.value = unicode(layer.source())
                     return True
             return True
 

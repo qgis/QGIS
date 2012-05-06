@@ -49,7 +49,7 @@ class ParameterMultipleInput(ParameterDataObject):
             self.value = s;
             return True
         else:
-            self.value = str(obj)
+            self.value = unicode(obj)
             return True
 
     def getSafeExportedLayers(self):
@@ -91,23 +91,23 @@ class ParameterMultipleInput(ParameterDataObject):
     def getAsString(self,value):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:
             if isinstance(value, QgsRasterLayer):
-                return str(value.dataProvider().dataSourceUri())
+                return unicode(value.dataProvider().dataSourceUri())
             else:
-                s = str(value)
+                s = unicode(value)
                 layers = QGisLayers.getRasterLayers()
                 for layer in layers:
                     if layer.name() == s:
-                        return str(layer.dataProvider().dataSourceUri())
+                        return unicode(layer.dataProvider().dataSourceUri())
                 return s
         else:
             if isinstance(value, QgsVectorLayer):
-                return str(value.source())
+                return unicode(value.source())
             else:
-                s = str(value)
+                s = unicode(value)
                 layers = QGisLayers.getVectorLayers(self.datatype)
                 for layer in layers:
                     if layer.name() == s:
-                        return str(layer.source())
+                        return unicode(layer.source())
                 return s
 
 

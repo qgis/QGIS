@@ -11,7 +11,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.ftools import ftools_utils
 from sextante.core.SextanteLog import SextanteLog
 
-class Union(GeoAlgorithm):
+class   Union(GeoAlgorithm):
 
     INPUT = "INPUT"
     INPUT2 = "INPUT2"

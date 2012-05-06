@@ -17,7 +17,7 @@ class ParameterTable(ParameterDataObject):
             else:
                 return False
         if isinstance(obj, QgsVectorLayer):
-            source = str(obj.source())
+            source = unicode(obj.source())
             if source.endswith("dbf") or source.endswith("csv"):
                 self.value = source
                 return True
@@ -27,11 +27,11 @@ class ParameterTable(ParameterDataObject):
             layers = QGisLayers.getVectorLayers()
             for layer in layers:
                 if layer.name() == self.value:
-                    source = str(layer.source())
+                    source = unicode(layer.source())
                     if source.endswith("dbf") or source.endswith("csv"):
                         self.value = source
                         return True
-            val = str(obj)
+            val = unicode(obj)
             if val.endswith("dbf") or val.endswith("csv"):
                 self.value = val
                 return True
