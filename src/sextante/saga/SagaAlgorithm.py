@@ -125,11 +125,11 @@ class SagaAlgorithm(GeoAlgorithm):
             self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
         else:
             cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
-            if self.xmin != layer.extent().xMinimum() or
-                    self.xmax != layer.extent().xMaximum() or
-                    self.ymin != layer.extent().yMinimum() or
-                    self.ymax != layer.extent().yMaximum() or
-                    self.cellsize != cellsize:
+            if self.xmin != layer.extent().xMinimum() \
+                    or self.xmax != layer.extent().xMaximum() \
+                    or self.ymin != layer.extent().yMinimum() \
+                    or self.ymax != layer.extent().yMaximum() \
+                    or self.cellsize != cellsize:
                 self.xmin = min(self.xmin, layer.extent().xMinimum())
                 self.xmax = max(self.xmax, layer.extent().xMaximum())
                 self.ymin = min(self.ymin, layer.extent().yMinimum())
