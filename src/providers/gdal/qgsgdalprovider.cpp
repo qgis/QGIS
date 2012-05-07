@@ -1843,9 +1843,8 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
   // VSIFileHandler (see qgsogrprovider.cpp)
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
-  // QSettings settings;
-  // if ( settings.value( "/qgis/scanZipInBrowser", 1 ).toInt() != 0 )
-  if ( 1 )
+  QSettings settings;
+  if ( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() != 0 )
   {
     QString glob = "*.zip";
     glob += " *.gz";

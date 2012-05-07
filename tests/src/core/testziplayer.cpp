@@ -228,9 +228,7 @@ void TestZipLayer::initTestCase()
 
   // max zipSetting value depends on zlib presence
   mMaxScanZipSetting = 1;
-#ifdef HAVE_ZLIB
   mMaxScanZipSetting = 3;
-#endif
 
 }
 
@@ -298,11 +296,6 @@ void TestZipLayer::testPassthruRasterGzip()
 void TestZipLayer::testZipItemRaster()
 {
   QSettings settings;
-
-#ifndef HAVE_ZLIB
-  QSKIP( "This test requires ZLIB", SkipSingle );
-#endif
-
   for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
   {
     settings.setValue( "/qgis/scanZipInBrowser", i );
@@ -314,11 +307,6 @@ void TestZipLayer::testZipItemRaster()
 void TestZipLayer::testZipItemVector()
 {
   QSettings settings;
-
-#ifndef HAVE_ZLIB
-  QSKIP( "This test requires ZLIB", SkipSingle );
-#endif
-
   for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
   {
     settings.setValue( "/qgis/scanZipInBrowser", i );
@@ -329,9 +317,6 @@ void TestZipLayer::testZipItemVector()
 
 void TestZipLayer::testZipItemAll()
 {
-#ifndef HAVE_ZLIB
-  QSKIP( "This test requires ZLIB", SkipSingle );
-#endif
   // test file contains invalid items (tmp1.tif, tmp1.txt and tmp1.xml)
   // test for all items inside zip, using zipSetting 3 (Full Scan) which will ignore invalid items
   // using zipSetting 2 (Basic Scan) would raise errors, because QgsZipItem would not test for valid items

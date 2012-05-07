@@ -231,7 +231,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // zip settings + info
   QSettings settings;
   int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
-  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
+  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 2 ).toInt();
   bool is_vsizip = ( thePath.startsWith( "/vsizip/" ) ||
                      thePath.endsWith( ".zip", Qt::CaseInsensitive ) );
   bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
