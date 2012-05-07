@@ -70,16 +70,6 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * paren
   setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
 }
 
-void QgsGeorefDockWidget::closeEvent( QCloseEvent * ev )
-{
-  if ( widget() && !widget()->close() )
-  {
-    ev->ignore();
-    return;
-  }
-  deleteLater();
-}
-
 QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
     , mTransformParam( QgsGeorefTransform::InvalidTransform )
@@ -145,12 +135,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
   clearGCPData();
 
-  // delete layer (and don't signal it as it's our private layer)
-  if ( mLayer )
-  {
-    QgsMapLayerRegistry::instance()->removeMapLayers(
-      ( QStringList() << mLayer->id() ), false );
-  }
+  removeOldLayer();
 
   delete mToolZoomIn;
   delete mToolZoomOut;
@@ -173,14 +158,23 @@ void QgsGeorefPluginGui::closeEvent( QCloseEvent *e )
       else
         saveGCPs();
       writeSettings();
+      clearGCPData();
+      removeOldLayer();
+      mRasterFileName = "";
       e->accept();
       return;
     case QgsGeorefPluginGui::GCPSILENTSAVE:
       if ( !mGCPpointsFileName.isEmpty() )
         saveGCPs();
+      clearGCPData();
+      removeOldLayer();
+      mRasterFileName = "";
       return;
     case QgsGeorefPluginGui::GCPDISCARD:
       writeSettings();
+      clearGCPData();
+      removeOldLayer();
+      mRasterFileName = "";
       e->accept();
       return;
     case QgsGeorefPluginGui::GCPCANCEL:
@@ -253,9 +247,7 @@ void QgsGeorefPluginGui::openRaster()
   clearGCPData();
 
   //delete any old rasterlayers
-  if ( mLayer )
-    QgsMapLayerRegistry::instance()->removeMapLayers(
-      QStringList() << mLayer->id(), false );
+  removeOldLayer();
 
   // Add raster
   addRaster( mRasterFileName );
@@ -1034,6 +1026,18 @@ void QgsGeorefPluginGui::setupConnections()
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+}
+
+void QgsGeorefPluginGui::removeOldLayer()
+{
+    // delete layer (and don't signal it as it's our private layer)
+    if ( mLayer )
+    {
+      QgsMapLayerRegistry::instance()->removeMapLayers(
+        ( QStringList() << mLayer->id() ), false );
+      mLayer = NULL;
+    }
+    mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::updateIconTheme( QString theme )
