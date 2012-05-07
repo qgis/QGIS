@@ -109,7 +109,6 @@ void QgsGeorefPlugin::initGui()
   mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
 }
 
-// Slot called when the buffer menu item is triggered
 void QgsGeorefPlugin::run()
 {
   if ( !mPluginGui )
