@@ -582,6 +582,7 @@ Advanced Installation):
 - qt4-devel
 - qwt5-devel-qt4
 - sip
+- zlib-devel (optional, for zip support)
 
 This will also select packages the above packages depend on.
 
@@ -643,6 +644,13 @@ bindings are placed into the output directory when you run the INSTALL target.
 
 Hit Configure to start the configuration and select Visual Studio 9 2008
 and keep native compilers and click Finish.
+
+Thre may be a number of libraries which are not found, in this case you have to
+manually set the relevant *_INCLUDE_DIR and *_LIBRARY entries. 
+
+For optional zip support, you have to add the following entries:
+  ZLIB_INCLUDE_DIR=c:/OSGeo4W/include
+  ZLIB_LIBRARY=c:/OSGeo4W/lib/zlib.lib
 
 The configuration should complete without any further questions and allow you to
 click Generate.

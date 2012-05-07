@@ -230,8 +230,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // zip settings + info
   QSettings settings;
-  int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
-  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
+
   bool is_vsizip = ( thePath.startsWith( "/vsizip/" ) ||
                      thePath.endsWith( ".zip", Qt::CaseInsensitive ) );
   bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
@@ -311,7 +310,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   }
 
   // if setting = 2 (Basic scan), return a /vsizip/ item without testing
-  if ( is_vsizip && scanZipSetting == 2 )
+  if ( is_vsizip && QgsDataItem::scanZipSetting() == 2 )
   {
     QStringList sublayers;
     QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
@@ -322,7 +321,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // if scan items == "Check extension", add item here without trying to open
   // unless item is /vsizip
-  if ( scanItemsSetting == 1 && !is_vsizip  && !is_vsigzip )
+  if ( settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt() == 1
+       && !is_vsizip  && !is_vsigzip )
   {
     QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
     if ( item )
