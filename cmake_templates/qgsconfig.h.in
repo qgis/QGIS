@@ -31,8 +31,6 @@
 
 #cmakedefine HAVE_SPATIALITE
 
-#cmakedefine HAVE_ZLIB
-
 #cmakedefine HAVE_MSSQL
 
 #cmakedefine HAVE_PYTHON
