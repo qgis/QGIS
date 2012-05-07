@@ -1042,6 +1042,7 @@ void QgsGeorefPluginGui::removeOldLayer()
 
 void QgsGeorefPluginGui::updateIconTheme( QString theme )
 {
+  Q_UNUSED(theme);
   // File actions
   mActionOpenRaster->setIcon( getThemeIcon( "/mActionOpenRaster.png" ) );
   mActionStartGeoref->setIcon( getThemeIcon( "/mActionStartGeoref.png" ) );
