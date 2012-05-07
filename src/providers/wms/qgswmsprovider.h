@@ -392,8 +392,8 @@ struct QgsWmtsTileLayer
   QString title, abstract;
   QStringList keywords;
   QgsWmsBoundingBoxProperty boundingBox;
-  QString format;
-  QString infoFormat;
+  QStringList formats;
+  QStringList infoFormats;
   QString defaultStyle;
   QHash<QString, QgsWmtsDimension> dimensions;
   QHash<QString, QgsWmtsStyle> styles;
@@ -771,6 +771,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private:
     void showMessageBox( const QString& title, const QString& text );
+
+    // case insensitive attribute value lookup
+    static QString nodeAttribute( const QDomElement &e, QString name, QString defValue = QString::null );
 
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server

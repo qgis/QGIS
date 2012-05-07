@@ -362,30 +362,34 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
       {
         foreach( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
-          QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
-          item->setData( Qt::UserRole + 0, l.identifier );
-          item->setData( Qt::UserRole + 1, l.format );
-          item->setData( Qt::UserRole + 2, style.identifier );
-          item->setData( Qt::UserRole + 3, setLink.tileMatrixSet );
-          item->setData( Qt::UserRole + 4, tileMatrixSets[ setLink.tileMatrixSet ].crs );
-
-          lstTilesets->setItem( row, 0, item );
-          lstTilesets->setItem( row, 1, new QTableWidgetItem( l.format ) );
-          lstTilesets->setItem( row, 2, new QTableWidgetItem( style.identifier ) );
-          QTableWidgetItem *styleItem = new QTableWidgetItem( l.title );
-          if ( !l.abstract.isEmpty() )
-            styleItem->setToolTip( "<p>" + l.abstract + "</p>" );
-          lstTilesets->setItem( row, 3, styleItem );
-          lstTilesets->setItem( row, 4, new QTableWidgetItem( setLink.tileMatrixSet ) );
-          lstTilesets->setItem( row, 5, new QTableWidgetItem( tileMatrixSets[ setLink.tileMatrixSet ].crs ) );
-
-          if ( !mMimeMap.contains( l.format ) )
+          foreach( QString format, l.formats )
           {
-            for ( int i = 0; i < lstTilesets->columnCount(); i++ )
+            QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
+            item->setData( Qt::UserRole + 0, l.identifier );
+
+            item->setData( Qt::UserRole + 1, format );
+            item->setData( Qt::UserRole + 2, style.identifier );
+            item->setData( Qt::UserRole + 3, setLink.tileMatrixSet );
+            item->setData( Qt::UserRole + 4, tileMatrixSets[ setLink.tileMatrixSet ].crs );
+
+            lstTilesets->setItem( row, 0, item );
+            lstTilesets->setItem( row, 1, new QTableWidgetItem( format ) );
+            lstTilesets->setItem( row, 2, new QTableWidgetItem( style.identifier ) );
+            QTableWidgetItem *styleItem = new QTableWidgetItem( l.title );
+            if ( !l.abstract.isEmpty() )
+              styleItem->setToolTip( "<p>" + l.abstract + "</p>" );
+            lstTilesets->setItem( row, 3, styleItem );
+            lstTilesets->setItem( row, 4, new QTableWidgetItem( setLink.tileMatrixSet ) );
+            lstTilesets->setItem( row, 5, new QTableWidgetItem( tileMatrixSets[ setLink.tileMatrixSet ].crs ) );
+
+            if ( !mMimeMap.contains( format ) )
             {
-              QTableWidgetItem *item = lstTilesets->item( row, i );
-              item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
-              item->setToolTip( tr( "encoding %1 not supported." ).arg( l.format ) );
+              for ( int i = 0; i < lstTilesets->columnCount(); i++ )
+              {
+                QTableWidgetItem *item = lstTilesets->item( row, i );
+                item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+                item->setToolTip( tr( "encoding %1 not supported." ).arg( format ) );
+              }
             }
           }
 

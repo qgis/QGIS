@@ -234,6 +234,11 @@ void QgsWmsProvider::parseUri( QString uri )
 
 QString QgsWmsProvider::prepareUri( QString uri ) const
 {
+  if ( uri.contains( "SERVICE=WMTS" ) || uri.contains( "/WMTSCapabilities.xml" ) )
+  {
+    return uri;
+  }
+
   if ( !uri.contains( "?" ) )
   {
     uri.append( "?" );
@@ -548,10 +553,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
   // Bounding box in WMS format (Warning: does not work with scientific notation)
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( viewExtent.xMinimum(), 0, 'f' )
-                 .arg( viewExtent.yMinimum(), 0, 'f' )
-                 .arg( viewExtent.xMaximum(), 0, 'f' )
-                 .arg( viewExtent.yMaximum(), 0, 'f' );
+                 .arg( viewExtent.xMinimum(), 0, 'f', 16 )
+                 .arg( viewExtent.yMinimum(), 0, 'f', 16 )
+                 .arg( viewExtent.xMaximum(), 0, 'f', 16 )
+                 .arg( viewExtent.yMaximum(), 0, 'f', 16 );
 
   mCachedImage = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   mCachedImage->fill( 0 );
@@ -702,7 +707,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double thMap = tm->tileHeight * tres;
     QgsDebugMsg( QString( "tile map size: %1,%2" ).arg( twMap, 0, 'f' ).arg( thMap, 0, 'f' ) );
 
-
     int minTileCol = 0;
     int maxTileCol = tm->matrixWidth - 1;
     int minTileRow = 0;
@@ -759,10 +763,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
             QString turl;
             turl += url.toString();
             turl += QString( changeXY ? "&BBOX=%2,%1,%4,%3" : "&BBOX=%1,%2,%3,%4" )
-                    .arg( tm->topLeft.x() +         col * twMap, 0, 'f' )
-                    .arg( tm->topLeft.y() - ( row + 1 ) * thMap, 0, 'f' )
-                    .arg( tm->topLeft.x() + ( col + 1 ) * twMap, 0, 'f' )
-                    .arg( tm->topLeft.y() -         row * thMap, 0, 'f' );
+                    .arg( tm->topLeft.x() +         col * twMap /* + twMap * 0.001 */, 0, 'f', 16 )
+                    .arg( tm->topLeft.y() - ( row + 1 ) * thMap /* - thMap * 0.001 */, 0, 'f', 16 )
+                    .arg( tm->topLeft.x() + ( col + 1 ) * twMap /* - twMap * 0.001 */, 0, 'f', 16 )
+                    .arg( tm->topLeft.y() -         row * thMap /* + thMap * 0.001 */, 0, 'f', 16 );
 
             QNetworkRequest request( turl );
             setAuthorization( request );
@@ -964,17 +968,19 @@ void QgsWmsProvider::tileReplyFinished()
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();
 
 #if QT_VERSION >= 0x40500
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) fromcache:%8 error:%9" )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) fromcache:%8 error:%9 url:%10" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
                .arg( fromCache )
                .arg( reply->errorString() )
+               .arg( reply->url().toString() )
              );
 #else
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) error:%8" )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) error:%8 url:%9" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
                .arg( reply->errorString() )
+               .arg( reply->url().toString() )
              );
 #endif
 
@@ -1202,7 +1208,12 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
   if ( mHttpCapabilitiesResponse.isNull() || forceRefresh )
   {
-    QString url = mBaseUrl + "SERVICE=WMS&REQUEST=GetCapabilities";
+    QString url = mBaseUrl;
+    if ( !url.contains( "SERVICE=WMTS" ) &&
+         !url.contains( "/WMTSCapabilities.xml" ) )
+    {
+      url += "SERVICE=WMS&REQUEST=GetCapabilities";
+    }
 
     mError = "";
 
@@ -2317,7 +2328,7 @@ void QgsWmsProvider::parseTileSetProfile( QDomElement const &e )
       }
       else if ( tagName == "Format" )
       {
-        l.format = e1.text();
+        l.formats << e1.text();
       }
       else if ( tagName == "BoundingBox" )
       {
@@ -2574,12 +2585,17 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         l.defaultStyle = s.identifier;
     }
 
-    l.format     = e0.firstChildElement( "Format" ).text();
-    l.infoFormat = e0.firstChildElement( "InfoFormat" ).text();
+    for ( QDomElement e1 = e0.firstChildElement( "Format" ); !e1.isNull(); e1 = e1.nextSiblingElement( "Format" ) )
+    {
+      l.formats << e1.text();
+    }
 
-    for ( QDomElement e1 = e0.firstChildElement( "Dimension" );
-          !e1.isNull();
-          e1 = e1.nextSiblingElement( "Dimension" ) )
+    for ( QDomElement e1 = e0.firstChildElement( "InfoFormat" ); !e1.isNull(); e1 = e1.nextSiblingElement( "InfoFormat" ) )
+    {
+      l.infoFormats << e1.text();
+    }
+
+    for ( QDomElement e1 = e0.firstChildElement( "Dimension" ); !e1.isNull(); e1 = e1.nextSiblingElement( "Dimension" ) )
     {
       QgsWmtsDimension d;
 
@@ -2603,49 +2619,49 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       l.dimensions.insert( d.identifier, d );
     }
 
-    for ( QDomElement e1 = e0.firstChildElement( "TileMatrixSetLink" ).firstChildElement( "TileMatrixSet" );
-          !e1.isNull();
-          e1 = e1.nextSiblingElement( "TileMatrixSet" ) )
+    for ( QDomElement e1 = e0.firstChildElement( "TileMatrixSetLink" ); !e1.isNull(); e1 = e1.nextSiblingElement( "TileMatrixSetLink" ) )
     {
-      QgsWmtsTileMatrixSetLink sl;
-
-      sl.tileMatrixSet = e1.text();
-      if ( !mTileMatrixSets.contains( sl.tileMatrixSet ) )
+      for ( QDomElement e2 = e1.firstChildElement( "TileMatrixSet" ); !e2.isNull(); e2 = e2.nextSiblingElement( "TileMatrixSet" ) )
       {
-        QgsDebugMsg( QString( "tileMatrixSet %1 not found." ).arg( id ) );
-        continue;
+        QgsWmtsTileMatrixSetLink sl;
+
+        sl.tileMatrixSet = e2.text();
+        if ( !mTileMatrixSets.contains( sl.tileMatrixSet ) )
+        {
+          QgsDebugMsg( QString( "tileMatrixSet %1 not found." ).arg( id ) );
+          continue;
+        }
+
+        for ( QDomElement e3 = e2.firstChildElement( "TileMatrixSetLimits" ); !e3.isNull(); e3 = e3.nextSiblingElement( "TileMatrixSetLimits" ) )
+        {
+          for ( QDomElement e4 = e3.firstChildElement( "TileMatrixLimits" ); !e4.isNull(); e4 = e4.nextSiblingElement( "TileMatrixLimits" ) )
+          {
+            QgsWmtsTileMatrixLimits limit;
+
+            QString id = e4.firstChildElement( "TileMatrix" ).text();
+
+            limit.minTileRow = e4.firstChildElement( "MinTileRow" ).text().toInt();
+            limit.maxTileRow = e4.firstChildElement( "MaxTileRow" ).text().toInt();
+            limit.minTileCol = e4.firstChildElement( "MinTileCol" ).text().toInt();
+            limit.maxTileCol = e4.firstChildElement( "MaxTileCol" ).text().toInt();
+
+            sl.limits.insert( id, limit );
+          }
+        }
+
+        l.setLinks.insert( sl.tileMatrixSet, sl );
       }
-
-      for ( QDomElement e2 = e1.firstChildElement( "TileMatrixSetLimits" ).firstChildElement( "TileMatrixLimits" );
-            !e2.isNull();
-            e2 = e2.nextSiblingElement( "TileMatrixLimits" ) )
-      {
-        QgsWmtsTileMatrixLimits limit;
-
-        QString id = e2.firstChildElement( "TileMatrix" ).text();
-
-        limit.minTileRow = e2.firstChildElement( "MinTileRow" ).text().toInt();
-        limit.maxTileRow = e2.firstChildElement( "MaxTileRow" ).text().toInt();
-        limit.minTileCol = e2.firstChildElement( "MinTileCol" ).text().toInt();
-        limit.maxTileCol = e2.firstChildElement( "MaxTileCol" ).text().toInt();
-
-        sl.limits.insert( id, limit );
-      }
-
-      l.setLinks.insert( id, sl );
     }
 
-    for ( QDomElement e1 = e0.firstChildElement( "ResourceURL" );
-          !e1.isNull();
-          e1 = e1.nextSiblingElement( "ResourceURL" ) )
+    for ( QDomElement e1 = e0.firstChildElement( "ResourceURL" ); !e1.isNull(); e1 = e1.nextSiblingElement( "ResourceURL" ) )
     {
-      QString format       = e1.attribute( "format" );
-      QString resourceType = e1.attribute( "resourceType" );
-      QString tmpl         = e1.attribute( "template" );
+      QString format       = nodeAttribute( e1, "format" );
+      QString resourceType = nodeAttribute( e1, "resourceType" );
+      QString tmpl         = nodeAttribute( e1, "template" );
 
       if ( format.isEmpty() || resourceType.isEmpty() || tmpl.isEmpty() )
       {
-        QgsDebugMsg( QString( "SKIPPING ResourcURL format=%1 resourceType=%2 template=%3" )
+        QgsDebugMsg( QString( "SKIPPING ResourceURL format=%1 resourceType=%2 template=%3" )
                      .arg( format )
                      .arg( resourceType )
                      .arg( tmpl ) ) ;
@@ -3614,10 +3630,10 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
 
   // Compose request to WMS server
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( mCachedViewExtent.xMinimum(), 0, 'f' )
-                 .arg( mCachedViewExtent.yMinimum(), 0, 'f' )
-                 .arg( mCachedViewExtent.xMaximum(), 0, 'f' )
-                 .arg( mCachedViewExtent.yMaximum(), 0, 'f' );
+                 .arg( mCachedViewExtent.xMinimum(), 0, 'f', 16 )
+                 .arg( mCachedViewExtent.yMinimum(), 0, 'f', 16 )
+                 .arg( mCachedViewExtent.xMaximum(), 0, 'f', 16 )
+                 .arg( mCachedViewExtent.yMaximum(), 0, 'f', 16 );
 
   // Test for which layers are suitable for querying with
   for ( QStringList::const_iterator
@@ -3819,7 +3835,6 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
   QVector<QgsWmsSupportedFormat> formats;
   QStringList mFormats, mLabels;
 
-
   QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
 
   if ( supportedFormats.contains( "png" ) )
@@ -3853,6 +3868,22 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
   }
 
   return formats;
+}
+
+QString QgsWmsProvider::nodeAttribute( const QDomElement &e, QString name, QString defValue )
+{
+  if ( e.hasAttribute( name ) )
+    return e.attribute( name );
+
+  QDomNamedNodeMap map( e.attributes() );
+  for ( int i = 0; i < map.size(); i++ )
+  {
+    QDomAttr attr( map.item( i ).toElement().toAttr() );
+    if ( attr.name().compare( name, Qt::CaseInsensitive ) == 0 )
+      return attr.value();
+  }
+
+  return defValue;
 }
 
 void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
@@ -3892,4 +3923,3 @@ QGISEXTERN bool isProvider()
 {
   return true;
 }
-
