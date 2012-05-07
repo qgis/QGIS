@@ -80,7 +80,6 @@ SET(QGIS_APP_SRCS
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
   qgstextannotationdialog.cpp
-  qgswmssourceselect.cpp
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
@@ -216,7 +215,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsundowidget.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
-  qgswmssourceselect.h
   qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h
