@@ -1,7 +1,6 @@
 import os
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.fusion.FusionUtils import FusionUtils
-from PyQt4 import QtGui
 import subprocess
 from sextante.outputs.OutputFile import OutputFile
 from sextante.fusion.FusionAlgorithm import FusionAlgorithm
@@ -30,8 +29,8 @@ class FilterData(FusionAlgorithm):
         commands.append("/verbose")
         self.addAdvancedModifiersToCommand(commands)
         commands.append("outlier")
-        commands.append(self.getParameterValue(self.VALUE))
-        commands.append(self.getParameterValue(self.WINDOWSIZE))
+        commands.append(str(self.getParameterValue(self.VALUE)))
+        commands.append(str(self.getParameterValue(self.WINDOWSIZE)))
         outFile = self.getOutputValue(self.OUTPUT) + ".lda"
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(";")

@@ -94,6 +94,10 @@ class GrassAlgorithm(GeoAlgorithm):
     def calculateRegion(self):
         auto = SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION)
         if auto:
+            try:
+                self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+            except Exception:
+                self.cellsize = 0;
             first = True;
             for param in self.parameters:
                 if param.value:
@@ -122,7 +126,6 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def addToRegion(self, layer, first):
         if first:
-            self.cellsize = 0
             self.xmin = layer.extent().xMinimum()
             self.xmax = layer.extent().xMaximum()
             self.ymin = layer.extent().yMinimum()

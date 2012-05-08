@@ -106,7 +106,7 @@ class SagaAlgorithm(GeoAlgorithm):
                                 self.addToResamplingExtent(layer, first)
                                 first = False
             if self.inputExtentsCount < 2:
-                self.resample = false
+                self.resample = False
         else:
             self.xmin = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMIN)
             self.xmax = SextanteConfig.getSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
