@@ -68,35 +68,4 @@ licensed under the GPL or LGPL, version 2.
 == External Source Files ==
 The following files are included in the QGIS source tree from external
 sources. The source, license, and copyright are noted for each.
-=== src/core/quazip ===
-QuaZIP is the C++ wrapper for the Gilles Vollant's ZIP/UNZIP package
-using Trolltech's Qt library. 
-Copyright (C) 2005-2011 Sergey A. Tachenov
-Added to the QGIS source tree 17 April 2012 as part of a patch from 
-Etienne Tourigny <etourigny.dev@gmail.com>
-
- * COPYING
- * ioapi.h     
- * JlCompress.h  
- * quaadler32.cpp  
- * quachecksum32.h  
- * quacrc32.h  
- * quazipfile.cpp  
- * quazipfileinfo.h  
- * quazip.h       
- * quazipnewinfo.h  
- * unzip.c  
- * zip.c
- * crypt.h  
- * JlCompress.cpp  
- * qioapi.cpp    
- * quaadler32.h    
- * quacrc32.cpp 
- * quazip.cpp  
- * quazipfile.h    
- * quazip_global.h   
- * quazipnewinfo.cpp  
- * README.txt   
- * unzip.h  
- * zip.h
 

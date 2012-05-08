@@ -553,15 +553,16 @@ QString QgsMapLayer::styleURI( )
 {
   QString myURI = publicSource();
 
-  // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
-  if ( myURI.left( 9 ) == "/vsigzip/" )
+  // if file is using the VSIFILE mechanism, remove the prefix
+  if ( myURI.startsWith( "/vsigzip/", Qt::CaseInsensitive ) )
   {
-    myURI.remove( 1, 9 );
+    myURI.remove( 0, 9 );
   }
-  else if ( myURI.left( 8 ) == "/vsizip/" &&  myURI.right( 4 ) == ".zip" )
+  else if ( myURI.startsWith( "/vsizip/", Qt::CaseInsensitive ) &&
+            myURI.endsWith( ".zip", Qt::CaseInsensitive ) )
   {
     // ideally we should look for .qml file inside zip file
-    myURI.remove( 1, 8 );
+    myURI.remove( 0, 8 );
   }
 
   QFileInfo myFileInfo( myURI );
@@ -570,12 +571,12 @@ QString QgsMapLayer::styleURI( )
   if ( myFileInfo.exists() )
   {
     // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
-    if ( myURI.right( 3 ) == ".gz" )
+    if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
     {
       myURI.chop( 3 );
       myFileInfo.setFile( myURI );
     }
-    else if ( myURI.right( 4 ) == ".zip" )
+    else if ( myURI.endsWith( ".zip", Qt::CaseInsensitive ) )
     {
       myURI.chop( 4 );
       myFileInfo.setFile( myURI );
