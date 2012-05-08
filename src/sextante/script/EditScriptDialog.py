@@ -59,6 +59,7 @@ class EditScriptDialog(QtGui.QDialog):
             filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
 
         if filename:
+            self.alg.descriptionFile = filename
             text = self.text.toPlainText()
             fout = open(filename, "w")
             fout.write(text)

@@ -5,6 +5,7 @@ from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionEx
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
+import traceback
 
 class AlgorithmExecutor:
 
@@ -18,6 +19,9 @@ class AlgorithmExecutor:
             return not alg.canceled
         except GeoAlgorithmExecutionException, e :
             QMessageBox.critical(None, "Error", e.msg)
+            return False
+        except Exception:
+            QMessageBox.critical(None, "Error", traceback.format_exc())
             return False
 
     @staticmethod

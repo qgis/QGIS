@@ -11,6 +11,7 @@ from sextante.fusion.CanopyModel import CanopyModel
 from sextante.fusion.ClipData import ClipData
 from sextante.fusion.Cover import Cover
 from sextante.fusion.FilterData import FilterData
+from sextante.fusion.GridMetrics import GridMetrics
 
 
 class FusionAlgorithmProvider(AlgorithmProvider):
@@ -18,7 +19,7 @@ class FusionAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions.append(OpenViewerAction())
-        self.algsList = [CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(), Cover(), FilterData()]
+        self.algsList = [CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(), Cover(), FilterData(), GridMetrics()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

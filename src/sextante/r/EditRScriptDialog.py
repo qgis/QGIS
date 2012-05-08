@@ -46,7 +46,9 @@ class EditRScriptDialog(QtGui.QDialog):
             filename = self.alg.descriptionFile
         else:
             filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "R-SEXTANTE scripts (*.rsx)")
+
         if filename:
+            self.alg.descriptionFile = filename
             text = self.text.toPlainText()
             fout = open(filename, "w")
             fout.write(text)

@@ -183,13 +183,15 @@ class ModelerDialog(QtGui.QDialog):
             fout.write(text)
             fout.close()
             self.alg.provider = Providers.providers["model"]
-            alg = self.alg.getCopy()#copy.deepcopy(self.alg)
+            alg = self.alg.getCopy()
+            dlg = ParametersDialog(alg)
+            dlg.exec_()
             self.alg.descriptionFile = None
             alg.descriptionFile = None
         else:
-            alg = self.alg.getCopy()#copy.deepcopy(self.alg)
-        dlg = ParametersDialog(alg)
-        dlg.exec_()
+            alg = self.alg.getCopy()
+            dlg = ParametersDialog(alg)
+            dlg.exec_()
 
     def saveModel(self):
         if str(self.textGroup.text()).strip() == "" or str(self.textName.text()).strip() == "":
@@ -205,7 +207,7 @@ class ModelerDialog(QtGui.QDialog):
             if filename:
                 if not filename.endswith(".model"):
                     filename += ".model"
-                    self.alg.descriptionFile = filename
+                self.alg.descriptionFile = filename
         if filename:
             text = self.alg.serialize()
             fout = open(filename, "w")
