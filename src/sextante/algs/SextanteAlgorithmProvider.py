@@ -4,12 +4,13 @@ from PyQt4 import QtGui
 import os
 from sextante.algs.FieldsCalculator import FieldsCalculator
 from sextante.algs.SaveSelectedFeatures import SaveSelectedFeatures
+from sextante.algs.Explode import Explode
 
 class SextanteAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures()]
+        self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), Explode()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

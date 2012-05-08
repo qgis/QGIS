@@ -20,7 +20,8 @@ class LasToolsUtils():
     def runLasTools(commands, progress):
         loglines = []
         loglines.append("LasTools execution console output")
-        proc = subprocess.Popen(commands, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=False).stdout
+        commandline = " ".join(commands)
+        proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)

@@ -290,10 +290,10 @@ class RAlgorithm(GeoAlgorithm):
             settings = QSettings()
             if settings.contains(R_INSTALLED):
                 return
-            command = ["R CMD BATCH"]
+            command = ["R --version"]
             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
             for line in iter(proc.readline, ""):
-                if "no input file" in line:
+                if "R version" in line:
                     settings.setValue(R_INSTALLED, True)
                     return
             return "It seems that R is not correctly installed in your system.\nPlease install it before running R Scripts."

@@ -5,7 +5,7 @@ def name():
 def description():
     return "SEXTANTE Geoprocessing platform for QGIS"
 def version():
-    return "Version 1.0.4"
+    return "Version 1.0.5"
 def icon():
     return "icon.png"
 def qgisMinimumVersion():

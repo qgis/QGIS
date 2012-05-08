@@ -3,7 +3,7 @@ from PyQt4.QtGui import *
 
 class ParameterNumber(Parameter):
 
-    def __init__(self, name="", description="", minValue = None, maxValue = None, default = 0):
+    def __init__(self, name="", description="", minValue = None, maxValue = None, default = 0.0):
         Parameter.__init__(self, name, description)
         '''if the passed value is an int or looks like one, then we assume that float values
         are not allowed'''

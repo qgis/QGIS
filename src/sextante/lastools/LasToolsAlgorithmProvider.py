@@ -16,14 +16,18 @@ from sextante.lastools.lasprecision import lasprecision
 from sextante.lastools.lassplit import lassplit
 from sextante.lastools.lasclassify import lasclassify
 from sextante.lastools.lasclip import lasclip
+from sextante.core.SextanteUtils import SextanteUtils
 
 
 class LasToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.algsList = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(),
+        if SextanteUtils.isWindows():
+            self.algsList = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(),
                          lasinfo(), lasheight(), lasprecision(), lassplit(), lasclassify(), lasclip()]
+        else:
+            self.algsList = [lasinfo(), lasprecision()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

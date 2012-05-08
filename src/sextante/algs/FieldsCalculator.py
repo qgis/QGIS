@@ -5,7 +5,6 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
-from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.QGisLayers import QGisLayers
 import os
 from PyQt4 import QtGui

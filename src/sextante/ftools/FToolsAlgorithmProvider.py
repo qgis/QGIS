@@ -29,6 +29,7 @@ from sextante.ftools.ExtentFromLayer import ExtentFromLayer
 from sextante.ftools.RandomSelection import RandomSelection
 from sextante.ftools.SelectByLocation import SelectByLocation
 from sextante.ftools.RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
+from sextante.ftools.MultipartToSingleparts import MultipartTosingleparts
 
 class FToolsAlgorithmProvider(AlgorithmProvider):
 
@@ -41,7 +42,8 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
                      NearestNeighbourAnalysis(), MeanCoords(), LinesIntersection(),
                      ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                      Dissolve(), Difference(), Intersection(), Union(), Clip(), ExtentFromLayer(),
-                     RandomSelection(), RandomSelectionWithinSubsets(), SelectByLocation()]
+                     RandomSelection(), RandomSelectionWithinSubsets(), SelectByLocation(),
+                     MultipartTosingleparts()]
 
     def getDescription(self):
         return "fTools (Vector analysis)"

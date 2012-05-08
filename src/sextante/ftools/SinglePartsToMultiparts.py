@@ -86,7 +86,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
           print str(err)
 
     def defineCharacteristics(self):
-        self.name = "Singleparts to multi parts"
+        self.name = "Singleparts to multipart"
         self.group = "Geometry tools"
         self.addParameter(ParameterVector(SinglePartsToMultiparts.INPUT, "Input layer"))
         self.addParameter(ParameterTableField(SinglePartsToMultiparts.FIELD,

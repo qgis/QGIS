@@ -86,8 +86,8 @@ class Sextante:
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
         Sextante.addProvider(GdalAlgorithmProvider())
+        Sextante.addProvider(LasToolsAlgorithmProvider())
         if SextanteUtils.isWindows():
-            Sextante.addProvider(LasToolsAlgorithmProvider())
             Sextante.addProvider(FusionAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())

@@ -1,10 +1,9 @@
 v.surf.idw
 v.surf.idw
 Vector (v.*)
-ParameterVector|input|input|-1|False
+ParameterVector|input|input|0|False
 ParameterNumber|npoints|npoints|None|None|12
 ParameterNumber|power|power|None|None|2.0
-ParameterNumber|layer|layer|None|None|1
 ParameterTableField|column|column|input
 ParameterBoolean|-n|-n|True
 OutputRaster|output|output
