@@ -41,7 +41,6 @@ class TestZipLayer: public QObject
   private:
 
     QString mDataDir;
-    QSettings mSettings;
     int mMaxScanZipSetting;
     int mScanZipSetting;
 
@@ -191,7 +190,11 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName = "" )
 int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, int myScanZipSetting )
 {
   int myTransparency = -1;
-  mSettings.setValue( "/qgis/scanZipInBrowser", myScanZipSetting );
+  QSettings settings;
+  settings.setValue( "/qgis/scanZipInBrowser", myScanZipSetting );
+  if ( myScanZipSetting != settings.value( "/qgis/scanZipInBrowser" ).toInt() )
+    return myTransparency;
+
   QgsMapLayer * myLayer = NULL;
   if ( myScanZipSetting == 1 )
     myLayer = getLayer( myFileName, "", myProviderKey );
@@ -214,26 +217,32 @@ void TestZipLayer::initTestCase()
   QgsApplication::initQgis();
   // save data dir
   mDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
-  // set zipSetting to 1 (Passthru) and save current value
-  mScanZipSetting = mSettings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
-  mSettings.setValue( "/qgis/scanZipInBrowser", 1 );
-  // max zipSetting value, depending on zlib presence
+  // Set up the QSettings environment
+  QCoreApplication::setOrganizationName( "QuantumGIS" );
+  QCoreApplication::setOrganizationDomain( "qgis.org" );
+  QCoreApplication::setApplicationName( "QGIS-TEST" );
+
+  // save current zipSetting value
+  QSettings settings;
+  mScanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
+
+  // max zipSetting value depends on zlib presence
   mMaxScanZipSetting = 1;
-#ifdef HAVE_ZLIB
   mMaxScanZipSetting = 3;
-#endif
 
 }
 
 void TestZipLayer::cleanupTestCase()
 {
   // restore zipSetting
-  mSettings.setValue( "/qgis/scanZipInBrowser", mScanZipSetting );
+  QSettings settings;
+  settings.setValue( "/qgis/scanZipInBrowser", mScanZipSetting );
 }
 
 
 void TestZipLayer::testPassthruVectorZip()
 {
+  QSettings settings;
   QString myFileName = mDataDir + "points2.zip";
   QgsDebugMsg( "GDAL: " + QString( GDAL_RELEASE_NAME ) );
 #if GDAL_VERSION_NUM < 1800
@@ -242,76 +251,79 @@ void TestZipLayer::testPassthruVectorZip()
   QgsDebugMsg( "FILE: " + QString( myFileName ) );
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
-    mSettings.setValue( "/qgis/scanZipInBrowser", i );
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
     QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
   }
 }
 
 void TestZipLayer::testPassthruVectorGzip()
 {
+  QSettings settings;
 #if GDAL_VERSION_NUM < 1700
   QSKIP( "This test requires GDAL > 1.7", SkipSingle );
 #endif
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
-    mSettings.setValue( "/qgis/scanZipInBrowser", i );
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
     QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
   }
 }
 
 void TestZipLayer::testPassthruRasterZip()
 {
+  QSettings settings;
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
-    mSettings.setValue( "/qgis/scanZipInBrowser", i );
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
     QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
   }
 }
 
 void TestZipLayer::testPassthruRasterGzip()
 {
+  QSettings settings;
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
-    mSettings.setValue( "/qgis/scanZipInBrowser", i );
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
     QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
   }
 }
 
 void TestZipLayer::testZipItemRaster()
 {
-#ifndef HAVE_ZLIB
-  QSKIP( "This test requires ZLIB", SkipSingle );
-#endif
-
+  QSettings settings;
   for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
   {
-    mSettings.setValue( "/qgis/scanZipInBrowser", i );
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
     QVERIFY( testZipItem( mDataDir + "testzip.zip", "landsat_b1.tif" ) );
   }
 }
 
 void TestZipLayer::testZipItemVector()
 {
-#ifndef HAVE_ZLIB
-  QSKIP( "This test requires ZLIB", SkipSingle );
-#endif
+  QSettings settings;
   for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
   {
-    mSettings.setValue( "/qgis/scanZipInBrowser", i );
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
     QVERIFY( testZipItem( mDataDir + "testzip.zip", "points.shp" ) );
   }
 }
 
 void TestZipLayer::testZipItemAll()
 {
-#ifndef HAVE_ZLIB
-  QSKIP( "This test requires ZLIB", SkipSingle );
-#endif
   // test file contains invalid items (tmp1.tif, tmp1.txt and tmp1.xml)
   // test for all items inside zip, using zipSetting 3 (Full Scan) which will ignore invalid items
   // using zipSetting 2 (Basic Scan) would raise errors, because QgsZipItem would not test for valid items
   // and return child names of the invalid items
-  mSettings.setValue( "/qgis/scanZipInBrowser", 3 );
+  QSettings settings;
+  settings.setValue( "/qgis/scanZipInBrowser", 3 );
+  QVERIFY( 3 == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
   QVERIFY( testZipItem( mDataDir + "testzip.zip", "" ) );
 }
 
