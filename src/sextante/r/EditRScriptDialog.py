@@ -12,9 +12,11 @@ class EditRScriptDialog(QtGui.QDialog):
         self.setModal(True)
         self.setupUi()
         self.update = False
+        self.help = None
 
     def setupUi(self):
         self.setWindowTitle("Edit script")
+        self.resize(600, 350)
         layout = QVBoxLayout()
         self.text = QtGui.QTextEdit()
         self.text.setObjectName("text")
@@ -48,7 +50,7 @@ class EditRScriptDialog(QtGui.QDialog):
             filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "R-SEXTANTE scripts (*.rsx)")
 
         if filename:
-            self.alg.descriptionFile = filename
+            #self.alg.descriptionFile = filename
             text = self.text.toPlainText()
             fout = open(filename, "w")
             fout.write(text)
@@ -56,12 +58,12 @@ class EditRScriptDialog(QtGui.QDialog):
             self.update = True
             #if help strings were defined before saving the model for the first time, we do it here
             if self.help:
-                f = open(self.alg.descriptionFile + ".help", "wb")
+                f = open(filename + ".help", "wb")
                 pickle.dump(self.help, f)
                 f.close()
                 self.help = None
             QtGui.QMessageBox.information(self, "Script saving", "Script was correctly saved.")
-            #self.close()
+            self.close()
 
     def cancelPressed(self):
         self.update = False

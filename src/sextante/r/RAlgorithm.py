@@ -213,7 +213,7 @@ class RAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterRaster):
                 value = param.value
                 value = value.replace("\\", "/")
-                commands.append(param.name + " = " + "readGDAL(\"" + value + "\"")
+                commands.append(param.name + " = " + "readGDAL(\"" + value + "\")")
             if isinstance(param, ParameterVector):
                 value = param.getSafeExportedLayer()
                 value = value.replace("\\", "/")

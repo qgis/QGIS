@@ -281,8 +281,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 aap = self.algParameters[i][param.name]
                 if aap == None:
                     runline += ", None"
-
-                if isinstance(param, ParameterMultipleInput):
+                elif isinstance(param, ParameterMultipleInput):
                     value = self.paramValues[aap.param]
                     tokens = value.split(";")
                     layerslist = []
