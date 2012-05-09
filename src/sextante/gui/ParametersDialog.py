@@ -95,6 +95,7 @@ class Ui_ParametersDialog(object):
             if output.hidden:
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
+            output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 

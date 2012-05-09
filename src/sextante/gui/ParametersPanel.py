@@ -24,6 +24,10 @@ from sextante.parameters.ParameterFile import ParameterFile
 from sextante.gui.FileSelectionPanel import FileSelectionPanel
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
+from sextante.outputs.OutputHTML import OutputHTML
+from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputTable import OutputTable
+from sextante.outputs.OutputVector import OutputVector
 
 class ParametersPanel(QtGui.QWidget):
 
@@ -36,6 +40,7 @@ class ParametersPanel(QtGui.QWidget):
         self.valueItems = {}
         self.labels = {}
         self.widgets = {}
+        self.checkBoxes = {}
         self.dependentItems = {}
         self.iterateButtons = {}
         self.showAdvanced = False
@@ -118,6 +123,12 @@ class ParametersPanel(QtGui.QWidget):
                 widget = OutputSelectionPanel(output,self.alg)
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
+                if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+                    check = QtGui.QCheckBox()
+                    check.setText("Open output file after running algorithm")
+                    check.setChecked(True)
+                    self.verticalLayout.addWidget(check)
+                    self.checkBoxes[output.name] = check
                 self.valueItems[output.name] = widget
 
             self.verticalLayout.addStretch(1000)

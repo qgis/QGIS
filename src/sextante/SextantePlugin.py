@@ -120,7 +120,7 @@ class SextantePlugin:
         dlg.exec_()
 
     def openHelp(self):
-        filename = os.path.dirname(__file__) + "/manual.pdf"
+        filename = os.path.dirname(__file__) + "/help/index.html"
         if os.name == "nt":
             os.startfile(filename)
         elif sys.platform == "darwin":

@@ -15,7 +15,7 @@ class SextantePostprocessing:
     def handleAlgorithmResults(alg, showResults = True):
         htmlResults = False;
         for out in alg.outputs:
-            if out.hidden:
+            if out.hidden or not out.open:
                 continue
             if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
                 try:

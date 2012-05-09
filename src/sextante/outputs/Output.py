@@ -11,6 +11,8 @@ class Output(object):
         # In the case of layers, hidden outputs are not loaded into QGIS after the algorithm is executed.
         # Other outputs not representing layers or tables should always be hidden.
         self.hidden = False
+        #this value indicates whether the output has to be opened after being produced by the algorithm or not
+        self.open = False
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +">"
