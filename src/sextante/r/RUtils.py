@@ -69,18 +69,19 @@ class RUtils:
         RUtils.consoleResults = []
         RUtils.allConsoleResults = []
         add = False
-        lines = open(RUtils.getConsoleOutputFilename())
-        for line in lines:
-            line = line.strip("\n").strip(" ")
-            if line.startswith(">"):
-                line = line[1:].strip(" ")
-                if line in RUtils.verboseCommands:
-                    add = True
-                else:
-                    add = False
-            elif add:
-                RUtils.consoleResults.append("<p>" + line + "</p>\n");
-            RUtils.allConsoleResults.append(line);
+        if os.path.exists(RUtils.getConsoleOutputFilename()):
+            lines = open(RUtils.getConsoleOutputFilename())
+            for line in lines:
+                line = line.strip("\n").strip(" ")
+                if line.startswith(">"):
+                    line = line[1:].strip(" ")
+                    if line in RUtils.verboseCommands:
+                        add = True
+                    else:
+                        add = False
+                elif add:
+                    RUtils.consoleResults.append("<p>" + line + "</p>\n");
+                RUtils.allConsoleResults.append(line);
 
 
     @staticmethod

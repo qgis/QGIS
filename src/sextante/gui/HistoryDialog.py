@@ -32,12 +32,16 @@ class HistoryDialog(QtGui.QDialog):
         self.text.setReadOnly(True)
         self.closeButton = QtGui.QPushButton()
         self.closeButton.setText("Close")
+        self.clearButton = QtGui.QPushButton()
+        self.clearButton.setText("Clear history")
         self.horizontalLayout= QtGui.QHBoxLayout()
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.horizontalLayout.addStretch(1000)
+        self.horizontalLayout.addWidget(self.clearButton)
         self.horizontalLayout.addWidget(self.closeButton)
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.closeWindow)
+        QObject.connect(self.clearButton, QtCore.SIGNAL("clicked()"), self.clearLog)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.setWindowTitle("History")
         self.setLayout(self.verticalLayout)
@@ -47,8 +51,12 @@ class HistoryDialog(QtGui.QDialog):
     def closeWindow(self):
         self.close()
 
+    def clearLog(self):
+        SextanteLog.clearLog()
+        self.fillTree()
 
     def fillTree(self):
+        self.tree.clear()
         elements = SextanteLog.getLogEntries()
         for category in elements.keys():
             groupItem = QtGui.QTreeWidgetItem()

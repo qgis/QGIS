@@ -2,12 +2,6 @@ from sextante.outputs.Output import Output
 
 class OutputRaster(Output):
 
-    def __init__(self, name="", description="", hidden=False):
-        self.name = name
-        self.description = description
-        self.value = None
-        self.hidden = hidden
-
     def getFileFilter(self, alg):
         exts = alg.provider.getSupportedOutputRasterLayerExtensions()
         for i in range(len(exts)):

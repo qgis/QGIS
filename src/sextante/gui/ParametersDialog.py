@@ -95,7 +95,8 @@ class Ui_ParametersDialog(object):
             if output.hidden:
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
-            output.open = self.paramTable.checkBoxes[output.name].isChecked()
+            if not SextanteConfig.getSetting(SextanteConfig.TABLE_LIKE_PARAM_PANEL):
+                output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 

@@ -2,7 +2,7 @@ from sextante.core.SextanteUtils import SextanteUtils
 
 class Output(object):
 
-    def __init__(self, name="", description=""):
+    def __init__(self, name="", description="", hidden=False):
         self.name = name
         self.description = description
         self.value = None
@@ -10,9 +10,9 @@ class Output(object):
         # Use this to generate outputs that are modified version of inputs (like a selection in a vector layer)
         # In the case of layers, hidden outputs are not loaded into QGIS after the algorithm is executed.
         # Other outputs not representing layers or tables should always be hidden.
-        self.hidden = False
+        self.hidden = hidden
         #this value indicates whether the output has to be opened after being produced by the algorithm or not
-        self.open = False
+        self.open = True
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +">"

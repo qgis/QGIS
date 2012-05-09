@@ -81,6 +81,11 @@ class SextanteLog():
         return SextanteLog.recentAlgs
 
 
+    @staticmethod
+    def clearLog():
+        os.unlink(SextanteLog.logFilename())
+        SextanteLog.startLogging()
+
 
 
 class LogEntry():
