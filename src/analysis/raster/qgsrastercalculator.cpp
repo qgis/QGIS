@@ -297,6 +297,9 @@ void QgsRasterCalculator::readRasterPart( double* targetGeotransform, int xOffse
     return;
   }
 
+  int sourceBandXSize = GDALGetRasterBandXSize( sourceBand );
+  int sourceBandYSize = GDALGetRasterBandYSize( sourceBand );
+
   //pixel calculation needed because of different raster position / resolution
   int nodataSuccess;
   double nodataValue = GDALGetRasterNoDataValue( sourceBand, &nodataSuccess );
@@ -320,15 +323,34 @@ void QgsRasterCalculator::readRasterPart( double* targetGeotransform, int xOffse
   //do raster io in source resolution
   int sourcePixelOffsetXMin = floor(( intersection.xMinimum() - sourceTransform[0] ) / sourceTransform[1] );
   int sourcePixelOffsetXMax = ceil(( intersection.xMaximum() - sourceTransform[0] ) / sourceTransform[1] );
+  if ( sourcePixelOffsetXMax > sourceBandXSize )
+  {
+    sourcePixelOffsetXMax = sourceBandXSize;
+  }
   int nSourcePixelsX = sourcePixelOffsetXMax - sourcePixelOffsetXMin;
+
   int sourcePixelOffsetYMax = floor(( intersection.yMaximum() - sourceTransform[3] ) / sourceTransform[5] );
   int sourcePixelOffsetYMin = ceil(( intersection.yMinimum() - sourceTransform[3] ) / sourceTransform[5] );
+  if ( sourcePixelOffsetYMin > sourceBandYSize )
+  {
+    sourcePixelOffsetYMin = sourceBandYSize;
+  }
   int nSourcePixelsY = sourcePixelOffsetYMin - sourcePixelOffsetYMax;
   float* sourceRaster = ( float * ) CPLMalloc( sizeof( float ) * nSourcePixelsX * nSourcePixelsY );
   double sourceRasterXMin = sourceRect.xMinimum() + sourcePixelOffsetXMin * sourceTransform[1];
   double sourceRasterYMax = sourceRect.yMaximum() + sourcePixelOffsetYMax * sourceTransform[5];
-  GDALRasterIO( sourceBand, GF_Read, sourcePixelOffsetXMin, sourcePixelOffsetYMax, nSourcePixelsX, nSourcePixelsY,
-                sourceRaster, nSourcePixelsX, nSourcePixelsY, GDT_Float32, 0, 0 );
+  if ( GDALRasterIO( sourceBand, GF_Read, sourcePixelOffsetXMin, sourcePixelOffsetYMax, nSourcePixelsX, nSourcePixelsY,
+                     sourceRaster, nSourcePixelsX, nSourcePixelsY, GDT_Float32, 0, 0 ) != CE_None )
+  {
+    //IO error, fill array with nodata values
+    CPLFree( sourceRaster );
+    int npixels = nRows * nCols;
+    for ( int i = 0; i < npixels; ++i )
+    {
+      rasterBuffer[i] = nodataValue;
+    }
+    return;
+  }
 
 
   double targetPixelX;
