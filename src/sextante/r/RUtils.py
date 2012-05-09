@@ -51,12 +51,14 @@ class RUtils:
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
-            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
+            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe", "CMD", "BATCH", "--vanilla",
+                       RUtils.getRScriptFilename(), RUtils.getConsoleOutputFilename()]
         else:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-            command = ["R", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename()]
+            command = ["R", "CMD", "BATCH", "--vanilla", RUtils.getRScriptFilename(), RUtils.getConsoleOutputFilename()]
 
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True)
+        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT,
+                                universal_newlines=True)
         proc.wait()
         RUtils.createConsoleOutput()
         loglines = []
