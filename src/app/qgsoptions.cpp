@@ -417,15 +417,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   foreach( QString l, myI18nList )
   {
 #if QT_VERSION >= 0x040800
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName() );
+    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
 #else
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), l );
+    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), l, l );
 #endif
   }
-  if ( myI18nList.contains( myUserLocale ) )
-  {
-    cboLocale->setCurrentIndex( myI18nList.indexOf( myUserLocale ) );
-  }
+  cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
   bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
   grpLocale->setChecked( myLocaleOverrideFlag );
 
@@ -909,7 +906,7 @@ void QgsOptions::saveOptions()
   //
   // Locale settings
   //
-  settings.setValue( "locale/userLocale", cboLocale->currentText() );
+  settings.setValue( "locale/userLocale", cboLocale->itemData( cboLocale->currentIndex() ).toString() );
   settings.setValue( "locale/overrideFlag", grpLocale->isChecked() );
 
 
