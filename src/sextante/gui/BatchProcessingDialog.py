@@ -13,6 +13,9 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 import copy
 from sextante.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
+from sextante.outputs.OutputHTML import OutputHTML
+from sextante.core.SextanteResults import SextanteResults
+from sextante.gui.ResultsDialog import ResultsDialog
 
 class BatchProcessingDialog(QtGui.QDialog):
     def __init__(self, alg):
@@ -101,6 +104,7 @@ class BatchProcessingDialog(QtGui.QDialog):
         for alg in self.algs:
             if AlgorithmExecutor.runalg(alg, SilentProgress()):
                 self.progress.setValue(i)
+                self.loadHTMLResults(alg, i)
                 i+=1
             else:
                 QApplication.restoreOverrideCursor()
@@ -109,6 +113,12 @@ class BatchProcessingDialog(QtGui.QDialog):
         QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
         self.close()
 
+    def loadHTMLResults(self, alg, i):
+        for out in alg.outputs:
+            if out.hidden or not out.open:
+                continue
+            if isinstance(out, OutputHTML):
+                SextanteResults.addResult(out.description + "[" + str(i) + "]", out.value)
 
     def cancelPressed(self):
         self.algs = None
