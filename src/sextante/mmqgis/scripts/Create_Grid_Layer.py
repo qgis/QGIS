@@ -6,9 +6,9 @@
 ##originy=number 0
 ##grid=output vector
 ##gridtype=selection Rectangle (line);Rectangle (polygon);Diamond (polygon);Hexagon (polygon)
-from sextante.mmqgis import mmqgis_library as mmqgis
+from sextante.mmqgis import sextante_mmqgis_library as sxt_mmqgis
 from sextante.mmqgis.DummyInterface import DummyInterface
 type_strings = ["Rectangle (line)","Rectangle (polygon)","Diamond (polygon)","Hexagon (polygon)"]
 out_type = type_strings[gridtype]
-mmqgis.mmqgis_grid(DummyInterface(), grid, hspacing, vspacing, width, height, originx, originy, out_type)
+sxt_mmqgis.mmqgis_grid(DummyInterface(), grid, hspacing, vspacing, width, height, originx, originy, out_type)
 
