@@ -13,6 +13,8 @@ from sextante.fusion.Cover import Cover
 from sextante.fusion.FilterData import FilterData
 from sextante.fusion.GridMetrics import GridMetrics
 from sextante.fusion.GroundFilter import GroundFilter
+from sextante.fusion.GridSurfaceCreate import GridSurfaceCreate
+from sextante.fusion.MergeData import MergeData
 
 
 class FusionAlgorithmProvider(AlgorithmProvider):
@@ -20,11 +22,13 @@ class FusionAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions.append(OpenViewerAction())
-        self.algsList = [CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(), Cover(), FilterData(), GridMetrics(), GroundFilter()]
+        self.algsList = [CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(), Cover(), FilterData(),
+                         GridMetrics(), GroundFilter(), GridSurfaceCreate(), MergeData()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        SextanteConfig.addSetting(Setting(self.getDescription(), FusionUtils.FUSION_FOLDER, "Fusion folder", FusionUtils.FusionPath()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), FusionUtils.FUSION_FOLDER, "Fusion folder",
+                                          FusionUtils.FusionPath()))
 
     def getName(self):
         return "fusion"
