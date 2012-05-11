@@ -59,7 +59,7 @@ ELSE(WIN32)
           ENDIF (NOT GDAL_VERSION)
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
           STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
-          IF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
+          IF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION EQUAL 1 AND GDAL_VERSION_MINOR LESS 4))
             MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 1.4.0 or higher.")
           ENDIF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
         ENDIF (GDAL_LIBRARY)
@@ -95,7 +95,7 @@ ELSE(WIN32)
         # check for gdal version
         # version 1.2.5 is known NOT to be supported (missing CPL_STDCALL macro)
         # According to INSTALL, 1.4.0+ is required
-        IF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
+        IF (GDAL_VERSION_MAJOR LESS 1 OR (GDAL_VERSION_MAJOR EQUAL 1 AND GDAL_VERSION_MINOR LESS 4))
           MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 1.4.0 or higher.")
         ENDIF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
 
