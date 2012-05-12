@@ -162,10 +162,18 @@ class Dialog( QDialog, Ui_Dialog ):
 def geomVertexCount( geometry ):
   geomType = geometry.type()
   if geomType == 1: # line
-    points = geometry.asPolyline()
+    if geometry.isMultipart():
+      pointsList = geometry.asMultiPolyline()
+      points=sum(pointsList, [])
+    else:
+      points = geometry.asPolyline()
     return len( points )
   elif geomType == 2: # polygon
-    polylines = geometry.asPolygon()
+    if geometry.isMultipart():
+      polylinesList = geometry.asMultiPolygon()
+      polylines=sum(polylinesList, [])
+    else:
+      polylines = geometry.asPolygon()
     points = []
     for l in polylines:
       points.extend( l )
