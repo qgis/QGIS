@@ -672,6 +672,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   mFetched++;
 
   feature.setValid( true );
+  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
   return true;
 }
 
@@ -877,6 +878,7 @@ bool QgsPostgresProvider::featureAtId( QgsFeatureId featureId, QgsFeature& featu
   mConnectionRO->closeCursor( cursorName );
 
   feature.setValid( gotit );
+  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
 
 #if 0
   if ( gotit )

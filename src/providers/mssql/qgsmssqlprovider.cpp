@@ -537,6 +537,7 @@ bool QgsMssqlProvider::nextFeature( QgsFeature& feature )
     }
 
     feature.setValid( true );
+    feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
     return true;
   }
   return false;

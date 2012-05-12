@@ -172,6 +172,7 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   //id and valid
   feature.setValid( true );
   feature.setFeatureId( f->id() );
+  feature.setFieldMap( &mFields ); // allow name-based attribute lookups
 }
 
 bool QgsWFSProvider::featureAtId( QgsFeatureId featureId,

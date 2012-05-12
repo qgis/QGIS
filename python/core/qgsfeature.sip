@@ -39,9 +39,32 @@ class QgsFeature
   }
 %End
 
+    SIP_PYOBJECT __getitem__(const QString& name);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+  {
+    QVariant* v = new QVariant( sipCpp->attributeMap().value(fieldIdx) );
+    sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
+  }
+%End
+
     void __setitem__(int key, QVariant value);
 %MethodCode
   sipCpp->addAttribute(a0, *a1);
+%End
+
+    void __setitem__(const QString& key, QVariant value);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+  {
+    sipCpp->addAttribute(fieldIdx, *a1);
+  }
 %End
 
     void __delitem__(int key);
@@ -50,6 +73,15 @@ class QgsFeature
     sipCpp->deleteAttribute(a0);
   else
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+%End
+
+    void __delitem__(const QString& name);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+    sipCpp->deleteAttribute(fieldIdx);
 %End
 
     //! Constructor
@@ -162,5 +194,46 @@ class QgsFeature
      */
     void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
 
+    /** Assign a field map with the feature to allow attribute access by attribute name
+     *  @note added in 2.0
+     */
+    void setFieldMap( const QgsFieldMap* fields );
+
+    /** Get associated field map. may be NULL
+     *  @note added in 2.0
+     */
+    const QgsFieldMap* fieldMap() const;
+
+    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool addAttribute( const QString& name, QVariant value );
+
+    /** Change a value of an attribute. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool changeAttribute( const QString& name, QVariant value );
+
+    /** Remove an attribute value. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool deleteAttribute( const QString& name );
+
+    /** Lookup attribute value from attribute name. Returns invalid variant if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    QVariant attribute( const QString& name ) const;
+
+    /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    int fieldNameIndex( const QString& fieldName ) const;
+
+    
 }; // class QgsFeature
 

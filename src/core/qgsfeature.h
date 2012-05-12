@@ -94,6 +94,8 @@ typedef int QgsFeatureId;
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
 
+class QgsField;
+typedef QMap<int, QgsField> QgsFieldMap;
 
 /** \ingroup core
  * The feature class encapsulates a single feature including its id,
@@ -216,6 +218,46 @@ class CORE_EXPORT QgsFeature
      */
     void setGeometryAndOwnership( unsigned char * geom, size_t length );
 
+    /** Assign a field map with the feature to allow attribute access by attribute name
+     *  @note added in 2.0
+     */
+    void setFieldMap( const QgsFieldMap* fields ) { mFields = fields; }
+
+    /** Get associated field map. may be NULL
+     *  @note added in 2.0
+     */
+    const QgsFieldMap* fieldMap() const { return mFields; }
+
+    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool addAttribute( const QString& name, QVariant value );
+
+    /** Change a value of an attribute. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool changeAttribute( const QString& name, QVariant value );
+
+    /** Remove an attribute value. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool deleteAttribute( const QString& name );
+
+    /** Lookup attribute value from attribute name. Returns invalid variant if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    QVariant attribute( const QString& name ) const;
+
+    /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    int fieldNameIndex( const QString& fieldName ) const;
+
   private:
 
     //! feature id
@@ -246,6 +288,8 @@ class CORE_EXPORT QgsFeature
     /// feature type name
     QString mTypeName;
 
+    //! Optional field map for name-based attribute lookups
+    const QgsFieldMap* mFields;
 
 }; // class QgsFeature
 

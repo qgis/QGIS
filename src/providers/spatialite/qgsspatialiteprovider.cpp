@@ -705,6 +705,7 @@ bool QgsSpatiaLiteProvider::featureAtId( QgsFeatureId featureId, QgsFeature & fe
 
   sqlite3_finalize( stmt );
 
+  feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
   feature.setValid( true );
   return true;
 }
@@ -731,6 +732,7 @@ bool QgsSpatiaLiteProvider::nextFeature( QgsFeature & feature )
     return false;
   }
 
+  feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
   feature.setValid( true );
   return true;
 }

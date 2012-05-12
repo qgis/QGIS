@@ -157,6 +157,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           feature.setGeometryAndOwnership(( unsigned char * )geo, sizeof( wkbPoint ) );
         }
         feature.setValid( true );
+        feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
 
         // add attributes if they are wanted
         for ( iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter )
@@ -248,6 +249,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           feature.setFeatureId( rte->id );
           result = true;
           feature.setValid( true );
+          feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
 
           // add attributes if they are wanted
           for ( iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter )
@@ -364,6 +366,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
           result = true;
 
           feature.setValid( true );
+          feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
 
           // add attributes if they are wanted
           for ( iter = mAttributesToFetch.begin(); iter != mAttributesToFetch.end(); ++iter )

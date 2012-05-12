@@ -287,6 +287,7 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
     feature = mSelectIterator.value();
     mSelectIterator++;
     feature.setValid( true );
+    feature.setFieldMap( &mFields ); // allow name-based attribute lookups
   }
 
   return hasFeature;
@@ -308,6 +309,7 @@ bool QgsMemoryProvider::featureAtId( QgsFeatureId featureId,
 
   feature = *it;
   feature.setValid( true );
+  feature.setFieldMap( &mFields ); // allow name-based attribute lookups
   return true;
 }
 

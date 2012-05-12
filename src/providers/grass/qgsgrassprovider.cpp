@@ -343,6 +343,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
 
   feature.setFeatureId( id );
   feature.clearAttributeMap();
+  feature.setFieldMap( &fields() ); // allow name-based attribute lookups
 
   // TODO int may be 64 bits (memcpy)
   if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) ) /* points or lines */

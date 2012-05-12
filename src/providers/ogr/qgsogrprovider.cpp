@@ -639,6 +639,7 @@ bool QgsOgrProvider::featureAtId( QgsFeatureId featureId,
   if ( !fet )
     return false;
 
+  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
   feature.setFeatureId( OGR_F_GetFID( fet ) );
   feature.clearAttributeMap();
   // skip features without geometry
@@ -714,6 +715,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
     feature.setFeatureId( OGR_F_GetFID( fet ) );
     feature.clearAttributeMap();
     feature.setTypeName( featureTypeName );
+    feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
 
     /* fetch geometry */
     if ( mFetchGeom || mUseIntersect )

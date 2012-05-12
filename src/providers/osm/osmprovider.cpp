@@ -651,6 +651,7 @@ bool QgsOSMDataProvider::fetchNode( QgsFeature& feature, sqlite3_stmt* stmt, boo
 
   feature.setFeatureId( selId );
   feature.setValid( true );
+  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
   return true;
 }
 
@@ -762,6 +763,7 @@ bool QgsOSMDataProvider::fetchWay( QgsFeature& feature, sqlite3_stmt* stmt, bool
   }
   feature.setFeatureId( selId );
   feature.setValid( true );
+  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
   return true;
 }
 

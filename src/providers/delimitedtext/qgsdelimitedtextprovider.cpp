@@ -545,7 +545,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     // At this point the current feature values are valid
 
     feature.setValid( true );
-
+    feature.setFieldMap( &attributeFields ); // allow name-based attribute lookups
     feature.setFeatureId( mFid );
 
     if ( geom )

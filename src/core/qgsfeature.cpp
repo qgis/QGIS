@@ -14,6 +14,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
@@ -28,6 +29,7 @@ QgsFeature::QgsFeature( QgsFeatureId id, QString typeName )
     , mValid( false )
     , mDirty( 0 )
     , mTypeName( typeName )
+    , mFields( 0 )
 {
   // NOOP
 }
@@ -40,6 +42,7 @@ QgsFeature::QgsFeature( QgsFeature const & rhs )
     , mValid( rhs.mValid )
     , mDirty( rhs.mDirty )
     , mTypeName( rhs.mTypeName )
+    , mFields( rhs.mFields )
 {
 
   // copy embedded geometry
@@ -60,6 +63,7 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
   mAttributes =  rhs.mAttributes;
   mValid =  rhs.mValid;
   mTypeName = rhs.mTypeName;
+  mFields = rhs.mFields;
 
   // make sure to delete the old geometry (if exists)
   if ( mGeometry && mOwnsGeometry )
@@ -217,4 +221,54 @@ bool QgsFeature::isDirty() const
 void QgsFeature::clean()
 {
   mDirty = false;
+}
+
+
+bool QgsFeature::addAttribute( const QString& name, QVariant value )
+{
+  int fieldIdx = fieldNameIndex( name );
+  if ( fieldIdx == -1 )
+    return false;
+
+  mAttributes.insert( fieldIdx, value );
+  return true;
+}
+
+bool QgsFeature::changeAttribute( const QString& name, QVariant value )
+{
+  return addAttribute( name, value );
+}
+
+bool QgsFeature::deleteAttribute( const QString& name )
+{
+  int fieldIdx = fieldNameIndex( name );
+  if ( fieldIdx == -1 )
+    return false;
+
+  mAttributes.remove( fieldIdx );
+  return true;
+}
+
+QVariant QgsFeature::attribute( const QString& name ) const
+{
+  int fieldIdx = fieldNameIndex( name );
+  if ( fieldIdx == -1 )
+    return QVariant();
+
+  return mAttributes.value( fieldIdx );
+}
+
+int QgsFeature::fieldNameIndex( const QString& fieldName ) const
+{
+  if ( !mFields )
+    return -1;
+
+  for ( QgsFieldMap::const_iterator it = mFields->constBegin(); it != mFields->constEnd(); ++it )
+  {
+    if ( QString::compare( it->name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    {
+      return it.key();
+    }
+  }
+  return -1;
 }
