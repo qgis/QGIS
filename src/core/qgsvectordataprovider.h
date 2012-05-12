@@ -31,6 +31,8 @@ class QTextCodec;
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+class QgsFeatureRequest;
+
 /** \ingroup core
  * This is the base class for vector data providers.
  *
@@ -113,6 +115,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
                          QgsRectangle rect = QgsRectangle(),
                          bool fetchGeometry = true,
                          bool useIntersect = false ) = 0;
+
+    /** Select features based on criteria specified in the request
+     * @note added in 2.0
+     */
+    virtual void select( const QgsFeatureRequest& request );
 
     /**
      * This function does nothing useful, it's kept only for compatibility.

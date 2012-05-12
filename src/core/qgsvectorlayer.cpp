@@ -46,6 +46,7 @@
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
+#include "qgsfeaturerequest.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslabel.h"
@@ -1742,6 +1743,22 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
     mDataProvider->select( QgsAttributeList(), rect, fetchGeometries, useIntersect );
   }
 }
+
+
+void QgsVectorLayer::select( const QgsFeatureRequest& request )
+{
+  QgsAttributeList attrs;
+  if ( !( request.flags() & QgsFeatureRequest::NoAttributes ) )
+  {
+    attrs = request.attributes();
+    if ( attrs.isEmpty() ) // empty list = fetch all attributes
+      attrs = pendingAllAttributesList();
+  }
+  bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
+  bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
+  select( attrs, request.extent(), fetchGeom, exactIntersect );
+}
+
 
 bool QgsVectorLayer::nextFeature( QgsFeature &f )
 {

@@ -34,6 +34,7 @@ class QImage;
 
 class QgsAttributeAction;
 class QgsCoordinateTransform;
+class QgsFeatureRequest;
 class QgsGeometry;
 class QgsGeometryVertexIndex;
 class QgsMapToPixel;
@@ -354,6 +355,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                  QgsRectangle rect = QgsRectangle(),
                  bool fetchGeometry = true,
                  bool useIntersect = false );
+
+    /** Select features based on criteria specified in the request
+     * @note added in 2.0
+     */
+    void select( const QgsFeatureRequest& request );
 
     /**
      * fetch a feature (after select)

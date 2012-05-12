@@ -26,6 +26,7 @@
 %Include qgsdistancearea.sip
 %Include qgsexpression.sip
 %Include qgsfeature.sip
+%Include qgsfeaturerequest.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip

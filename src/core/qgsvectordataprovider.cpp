@@ -21,6 +21,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
+#include "qgsfeaturerequest.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -43,6 +44,22 @@ QString QgsVectorDataProvider::storageType() const
 {
   return "Generic vector file";
 }
+
+
+void QgsVectorDataProvider::select( const QgsFeatureRequest& request )
+{
+  QgsAttributeList attrs;
+  if ( !( request.flags() & QgsFeatureRequest::NoAttributes ) )
+  {
+    attrs = request.attributes();
+    if ( attrs.isEmpty() ) // empty list = fetch all attributes
+      attrs = attributeIndexes();
+  }
+  bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
+  bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
+  select( attrs, request.extent(), fetchGeom, exactIntersect );
+}
+
 
 long QgsVectorDataProvider::updateFeatureCount()
 {
