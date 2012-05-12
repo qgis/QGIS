@@ -194,17 +194,23 @@ def densify( polyline, pointsNumber ):
   return output
 
 def densifyGeometry( geometry, pointsNumber, isPolygon ):
+  output = []
   if isPolygon:
     rings = geometry.asPolygon()
-    output = []
     for ring in rings:
       ring = densify( ring, pointsNumber )
       output.append( ring )
     return QgsGeometry.fromPolygon( output )
   else:
-    points = geometry.asPolyline()
-    output = densify( points, pointsNumber )
-    return QgsGeometry.fromPolyline( output )
+    if geometry.isMultipart():
+      lines = geometry.asMultiPolyline()
+      for points in lines:
+        output.append( densify( points, pointsNumber ) )
+      return QgsGeometry.fromMultiPolyline( output )
+    else:
+      points = geometry.asPolyline()
+      output = densify( points, pointsNumber )
+      return QgsGeometry.fromPolyline( output )
 
 class GeomThread( QThread ):
   def __init__( self, function, inputLayer, useSelection, tolerance, writeShape, shapePath, shapeEncoding ):
