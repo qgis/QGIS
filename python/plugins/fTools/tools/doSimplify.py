@@ -196,11 +196,19 @@ def densify( polyline, pointsNumber ):
 def densifyGeometry( geometry, pointsNumber, isPolygon ):
   output = []
   if isPolygon:
-    rings = geometry.asPolygon()
-    for ring in rings:
-      ring = densify( ring, pointsNumber )
-      output.append( ring )
-    return QgsGeometry.fromPolygon( output )
+    if geometry.isMultipart():
+      polygons = geometry.asMultiPolygon()
+      for poly in polygons:
+        p = []
+        for ring in poly:
+          p.append( densify( ring, pointsNumber ) )
+        output.append( p )
+      return QgsGeometry.fromMultiPolygon( output )
+    else:
+      rings = geometry.asPolygon()
+      for ring in rings:
+        output.append( densify( ring, pointsNumber ) )
+      return QgsGeometry.fromPolygon( output )
   else:
     if geometry.isMultipart():
       lines = geometry.asMultiPolyline()
