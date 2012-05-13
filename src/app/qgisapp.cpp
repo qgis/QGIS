@@ -117,6 +117,7 @@
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
+#include "qgsdecorationgrid.h"
 #include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
@@ -1609,6 +1610,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDecorationCopyright->setIcon( getThemeIcon( "/plugins/copyright_label.png" ) );
   mActionDecorationNorthArrow->setIcon( getThemeIcon( "/plugins/north_arrow.png" ) );
   mActionDecorationScaleBar->setIcon( getThemeIcon( "/plugins/scale_bar.png" ) );
+  mActionDecorationGrid->setIcon( getThemeIcon( "/transformed.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -2016,6 +2018,12 @@ void QgisApp::createDecorations()
   connect( mActionDecorationScaleBar, SIGNAL( triggered() ), mDecorationScaleBar, SLOT( run() ) );
   connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationScaleBar, SLOT( renderScaleBar( QPainter * ) ) );
   connect( this, SIGNAL( projectRead() ), mDecorationScaleBar, SLOT( projectRead() ) );
+
+  // TODO draw the decorations in a particular order - perhaps use a vector or decoration objects?
+  mDecorationGrid = new QgsDecorationGrid( this );
+  connect( mActionDecorationGrid, SIGNAL( triggered() ), mDecorationGrid, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationGrid, SLOT( renderGrid( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationGrid, SLOT( projectRead() ) );
 }
 
 // Update file menu with the current list of recently accessed projects

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>28</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -106,6 +106,7 @@
      <addaction name="mActionDecorationCopyright"/>
      <addaction name="mActionDecorationNorthArrow"/>
      <addaction name="mActionDecorationScaleBar"/>
+     <addaction name="mActionDecorationGrid"/>
     </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
@@ -1679,6 +1680,21 @@
    </property>
    <property name="text">
     <string>Add WCS Layer...</string>
+   </property>
+  </action>
+  <action name="mActionDecorationGrid">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/transformed.png</normaloff>:/images/themes/default/transformed.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a scale bar that is displayed on the map canvas</string>
    </property>
   </action>
  </widget>
