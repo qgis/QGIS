@@ -161,17 +161,17 @@ class Dialog( QDialog, Ui_Dialog ):
 
 def geomVertexCount( geometry ):
   geomType = geometry.type()
-  if geomType == 1: # line
+  if geomType == QGis.Line:
     if geometry.isMultipart():
       pointsList = geometry.asMultiPolyline()
-      points=sum(pointsList, [])
+      points = sum( pointsList, [] )
     else:
       points = geometry.asPolyline()
     return len( points )
-  elif geomType == 2: # polygon
+  elif geomType == QGis.Polygon:
     if geometry.isMultipart():
       polylinesList = geometry.asMultiPolygon()
-      polylines=sum(polylinesList, [])
+      polylines = sum( polylinesList, [] )
     else:
       polylines = geometry.asPolygon()
     points = []
