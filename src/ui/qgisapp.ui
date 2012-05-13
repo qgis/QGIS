@@ -103,10 +103,10 @@
      <property name="title">
       <string>&amp;Decorations</string>
      </property>
-     <addaction name="mActionDecorationCopyright"/>
-     <addaction name="mActionDecorationNorthArrow"/>
-     <addaction name="mActionDecorationScaleBar"/>
      <addaction name="mActionDecorationGrid"/>
+     <addaction name="mActionDecorationScaleBar"/>
+     <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationCopyright"/>
     </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>

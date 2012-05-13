@@ -51,7 +51,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboPlacement->addItems( mDeco.mPlacementLabels );
   cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
 
-  chkEnable->setChecked( mDeco.mEnabled );
+  chkEnable->setChecked( mDeco.enabled() );
 
   cboStyle->clear();
   cboStyle->addItems( mDeco.mStyleLabels );
@@ -77,7 +77,7 @@ void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
   mDeco.mPlacementIndex = cboPlacement->currentIndex();
   mDeco.mPreferredSize = spnSize->value();
   mDeco.mSnapping = chkSnapping->isChecked();
-  mDeco.mEnabled = chkEnable->isChecked();
+  mDeco.setEnabled( chkEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
 

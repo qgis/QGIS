@@ -19,6 +19,7 @@ SET(QGIS_APP_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
+  qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
   qgsdecorationnortharrow.cpp
@@ -169,6 +170,7 @@ SET (QGIS_APP_MOC_HDRS
   qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
+  qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
   qgsdecorationnortharrow.h

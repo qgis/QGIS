@@ -69,10 +69,7 @@ class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
-class QgsDecorationCopyright;
-class QgsDecorationNorthArrow;
-class QgsDecorationScaleBar;
-class QgsDecorationGrid;
+class QgsDecorationItem;
 
 class QgsMessageLogViewer;
 
@@ -380,6 +377,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void completeInitialization();
 
     void emitCustomSrsValidation( QgsCoordinateReferenceSystem *crs );
+
+    QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
+    void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
 
   public slots:
     //! Zoom to full extent
@@ -869,6 +869,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates label property tool
     void changeLabelProperties();
 
+    void renderDecorationItems( QPainter *p );
+    void projectReadDecorationItems( );
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1185,10 +1188,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsSnappingDialog* mSnappingDialog;
 
-    QgsDecorationCopyright* mDecorationCopyright;
-    QgsDecorationNorthArrow* mDecorationNorthArrow;
-    QgsDecorationScaleBar* mDecorationScaleBar;
-    QgsDecorationGrid* mDecorationGrid;
+    //! Persistent tile scale slider
+    QgsTileScaleWidget * mpTileScaleWidget;
+
+    QList<QgsDecorationItem*> mDecorationItems;
 
     int mLastComposerId;
 
@@ -1214,6 +1217,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 #endif
+
 };
 
 #ifdef ANDROID

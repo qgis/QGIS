@@ -2004,26 +2004,41 @@ void QgisApp::createMapTips()
 
 void QgisApp::createDecorations()
 {
-  mDecorationCopyright = new QgsDecorationCopyright( this );
+  QgsDecorationCopyright* mDecorationCopyright = new QgsDecorationCopyright( this );
   connect( mActionDecorationCopyright, SIGNAL( triggered() ), mDecorationCopyright, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationCopyright, SLOT( renderLabel( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationCopyright, SLOT( projectRead() ) );
 
-  mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
+  QgsDecorationNorthArrow* mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
   connect( mActionDecorationNorthArrow, SIGNAL( triggered() ), mDecorationNorthArrow, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationNorthArrow, SLOT( renderNorthArrow( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationNorthArrow, SLOT( projectRead() ) );
 
-  mDecorationScaleBar = new QgsDecorationScaleBar( this );
+  QgsDecorationScaleBar* mDecorationScaleBar = new QgsDecorationScaleBar( this );
   connect( mActionDecorationScaleBar, SIGNAL( triggered() ), mDecorationScaleBar, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationScaleBar, SLOT( renderScaleBar( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationScaleBar, SLOT( projectRead() ) );
 
-  // TODO draw the decorations in a particular order - perhaps use a vector or decoration objects?
-  mDecorationGrid = new QgsDecorationGrid( this );
+  QgsDecorationGrid* mDecorationGrid = new QgsDecorationGrid( this );
   connect( mActionDecorationGrid, SIGNAL( triggered() ), mDecorationGrid, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationGrid, SLOT( renderGrid( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationGrid, SLOT( projectRead() ) );
+
+  // add the decorations in a particular order so they are rendered in that order
+  addDecorationItem( mDecorationGrid );
+  addDecorationItem( mDecorationCopyright );
+  addDecorationItem( mDecorationNorthArrow );
+  addDecorationItem( mDecorationScaleBar );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderDecorationItems( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), this, SLOT( projectReadDecorationItems() ) );
+}
+
+void QgisApp::renderDecorationItems( QPainter *p )
+{
+  foreach( QgsDecorationItem* item, mDecorationItems )
+  {
+    item->render( p );
+  }
+}
+
+void QgisApp::projectReadDecorationItems()
+{
+  foreach( QgsDecorationItem* item, mDecorationItems )
+  {
+    item->projectRead( );
+  }
 }
 
 // Update file menu with the current list of recently accessed projects

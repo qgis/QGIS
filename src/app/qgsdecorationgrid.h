@@ -18,14 +18,15 @@
 #ifndef QGSDECORATIONGRID_H
 #define QGSDECORATIONGRID_H
 
+#include "qgsdecorationitem.h"
+
 class QPainter;
 
 #include <QColor>
-#include <QObject>
 #include <QPen>
 #include <QFont>
 
-class QgsDecorationGrid: public QObject
+class QgsDecorationGrid: public QgsDecorationItem
 {
     Q_OBJECT
   public:
@@ -53,11 +54,6 @@ class QgsDecorationGrid: public QObject
       HorizontalAndVertical,
       BoundaryDirection
     };
-
-    /**Enables a coordinate grid that is shown on top of this composermap.
-        @note this function was added in version 1.4*/
-    void setGridEnabled( bool enabled ) {mGridEnabled = enabled;}
-    bool gridEnabled() const { return mGridEnabled; }
 
     /**Sets coordinate grid style to solid or cross
         @note this function was added in version 1.4*/
@@ -130,8 +126,6 @@ class QgsDecorationGrid: public QObject
     void setCrossLength( double l ) {mCrossLength = l;}
     double crossLength() {return mCrossLength;}
 
-    void update();
-
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead();
@@ -139,7 +133,7 @@ class QgsDecorationGrid: public QObject
     void saveToProject();
 
     //! this does the meaty bit of the work
-    void renderGrid( QPainter * );
+    void render( QPainter * );
     //! Show the dialog box
     void run();
 
@@ -154,8 +148,6 @@ class QgsDecorationGrid: public QObject
       Top
     };
 
-    /**True if coordinate grid has to be displayed*/
-    bool mGridEnabled;
     /**Solid or crosses*/
     GridStyle mGridStyle;
     /**Grid line interval in x-direction (map units)*/

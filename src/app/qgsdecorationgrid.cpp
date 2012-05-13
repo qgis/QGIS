@@ -52,8 +52,9 @@
 
 
 QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
-    : QObject( parent )
+    : QgsDecorationItem( parent )
 {
+  setName( "Grid" );
   projectRead();
 }
 
@@ -62,42 +63,40 @@ QgsDecorationGrid::~QgsDecorationGrid()
 
 }
 
-void QgsDecorationGrid::update()
-{
-  QgisApp::instance()->mapCanvas()->refresh();
-}
-
 void QgsDecorationGrid::projectRead()
 {
-  mGridEnabled = QgsProject::instance()->readBoolEntry( "Grid", "/Enabled", false );
-  mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( "Grid", "/Style", 0 );
-  mGridIntervalX = QgsProject::instance()->readDoubleEntry( "Grid", "/IntervalX", 0 );
-  mGridIntervalY = QgsProject::instance()->readDoubleEntry( "Grid", "/IntervalY", 0 );
-  mGridOffsetX = QgsProject::instance()->readDoubleEntry( "Grid", "/OffsetX", 0 );
-  mGridOffsetY = QgsProject::instance()->readDoubleEntry( "Grid", "/OffsetY", 0 );
-  mCrossLength = QgsProject::instance()->readDoubleEntry( "Grid", "/CrossLength", 0 );
-  // missing mGridPen, mGridAnnotationFont
-  mGridAnnotationPrecision = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( "Grid", "/AnnotationPrecision", 3 );
-  mShowGridAnnotation = QgsProject::instance()->readBoolEntry( "Grid", "/ShowAnnotation", false );
-  // mGridAnnotationPosition = (GridAnnotationPosition) QgsProject::instance()->readNumEntry( "Grid", "/AnnotationPosition", 0 );
-  mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( "Grid", "/AnnotationFrameDistance", 0 );
-  mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( "Grid", "/AnnotationDirection", 0 );
+  QgsDecorationItem::projectRead();
+  mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( mNameConfig, "/Style", 0 );
+  mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 0 );
+  mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalY", 0 );
+  mGridOffsetX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetX", 0 );
+  mGridOffsetY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetY", 0 );
+  // missing mGridPen, but should use styles anyway
+  mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 0 );
+  mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mNameConfig, "/ShowAnnotation", false );
+  mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPosition", 0 );
+  mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationDirection", 0 );
+  mGridAnnotationFont.fromString( QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" ) );
+  mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mNameConfig, "/AnnotationFrameDistance", 0 );
+  mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPrecision", 3 );
 }
 
 void QgsDecorationGrid::saveToProject()
 {
-  QgsProject::instance()->writeEntry( "Grid", "/Enabled", mGridEnabled );
-  QgsProject::instance()->writeEntry( "Grid", "/IntervalX", mGridIntervalX );
-  QgsProject::instance()->writeEntry( "Grid", "/IntervalY", mGridIntervalY );
-  QgsProject::instance()->writeEntry( "Grid", "/OffsetX", mGridOffsetX );
-  QgsProject::instance()->writeEntry( "Grid", "/OffsetX", mGridOffsetY );
-  QgsProject::instance()->writeEntry( "Grid", "/CrossLength", mCrossLength );
-  // missing mGridPen, mGridAnnotationFont
-  QgsProject::instance()->writeEntry( "Grid", "/AnnotationPrecision", mGridAnnotationPrecision );
-  QgsProject::instance()->writeEntry( "Grid", "/ShowAnnotation", mShowGridAnnotation );
-  // QgsProject::instance()->writeEntry( "Grid", "/AnnotationPosition", mGridAnnotationPosition );
-  QgsProject::instance()->writeEntry( "Grid", "/AnnotationFrameDistance", mAnnotationFrameDistance );
-  QgsProject::instance()->writeEntry( "Grid", "/AnnotationDirection", mGridAnnotationDirection );
+  QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, "/Style", ( int ) mGridStyle );
+  QgsProject::instance()->writeEntry( mNameConfig, "/IntervalX", mGridIntervalX );
+  QgsProject::instance()->writeEntry( mNameConfig, "/IntervalY", mGridIntervalY );
+  QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetX );
+  QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetY );
+  QgsProject::instance()->writeEntry( mNameConfig, "/CrossLength", mCrossLength );
+  // missing mGridPen, but should use styles anyway
+  QgsProject::instance()->writeEntry( mNameConfig, "/ShowAnnotation", mShowGridAnnotation );
+  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPosition", ( int ) mGridAnnotationPosition );
+  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationDirection", ( int ) mGridAnnotationDirection );
+  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFont", mGridAnnotationFont.toString() );
+  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFrameDistance", mAnnotationFrameDistance );
+  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPrecision", mGridAnnotationPrecision );
 }
 
 
@@ -107,16 +106,13 @@ void QgsDecorationGrid::run()
 
   if ( dlg.exec() )
   {
-    saveToProject();
-    QgisApp::instance()->mapCanvas()->refresh();
+    update();
   }
 }
 
-
-
-void QgsDecorationGrid::renderGrid( QPainter * p )
+void QgsDecorationGrid::render( QPainter * p )
 {
-  if ( ! mGridEnabled )
+  if ( ! mEnabled )
     return;
 
   p->setPen( mGridPen );
