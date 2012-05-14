@@ -27,6 +27,8 @@
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgssymbolv2.h" //for symbology
+#include "qgsrendercontext.h"
 
 #include <QPainter>
 #include <QAction>
@@ -39,6 +41,7 @@
 #include <QMenu>
 #include <QFile>
 #include <QLocale>
+#include <QDomDocument>
 
 //non qt includes
 #include <cmath>
@@ -55,12 +58,29 @@ QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
     : QgsDecorationItem( parent )
 {
   setName( "Grid" );
+  mLineSymbol = 0;
+  mMarkerSymbol = 0;
   projectRead();
 }
 
 QgsDecorationGrid::~QgsDecorationGrid()
 {
+  if ( mLineSymbol )
+    delete mLineSymbol;
+  if ( mMarkerSymbol )
+    delete mMarkerSymbol;
+}
 
+void QgsDecorationGrid::setLineSymbol( QgsLineSymbolV2* symbol )
+{
+  delete mLineSymbol;
+  mLineSymbol = symbol;
+}
+
+void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
+{
+  delete mMarkerSymbol;
+  mMarkerSymbol = symbol;
 }
 
 void QgsDecorationGrid::projectRead()
@@ -79,6 +99,34 @@ void QgsDecorationGrid::projectRead()
   mGridAnnotationFont.fromString( QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" ) );
   mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mNameConfig, "/AnnotationFrameDistance", 0 );
   mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPrecision", 3 );
+
+  // read symbol info from xml
+  QDomDocument doc;
+  QDomElement elem;
+  QString xml;
+  xml = QgsProject::instance()->readEntry( mNameConfig, "/LineSymbol" );
+  if ( xml != "" )
+  {
+    doc.setContent( xml );
+    elem = doc.documentElement();
+    if ( mLineSymbol )
+      delete mLineSymbol;
+    mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
+    if ( ! mLineSymbol )
+      mLineSymbol = new QgsLineSymbolV2();
+  }
+  xml = QgsProject::instance()->readEntry( mNameConfig, "/MarkerSymbol" );
+  if ( xml != "" )
+  {
+    doc.setContent( xml );
+    elem = doc.documentElement();
+    if ( mMarkerSymbol )
+      delete mMarkerSymbol;
+    mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
+    if ( ! mMarkerSymbol )
+      mMarkerSymbol = new QgsMarkerSymbolV2();
+  }
+
 }
 
 void QgsDecorationGrid::saveToProject()
@@ -97,6 +145,25 @@ void QgsDecorationGrid::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFont", mGridAnnotationFont.toString() );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFrameDistance", mAnnotationFrameDistance );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPrecision", mGridAnnotationPrecision );
+
+  // write symbol info to xml
+  QDomDocument doc;
+  QDomElement elem;
+  if ( mLineSymbol )
+  {
+    elem = QgsSymbolLayerV2Utils::saveSymbol( "line symbol", mLineSymbol, doc );
+    doc.appendChild( elem );
+    // FIXME this works, but XML will not be valid as < is replaced by &lt;
+    QgsProject::instance()->writeEntry( mNameConfig, "/LineSymbol", doc.toString() );
+  }
+  if ( mLineSymbol )
+  {
+    doc.setContent( QString( "" ) );
+    elem = QgsSymbolLayerV2Utils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
+    doc.appendChild( elem );
+    QgsProject::instance()->writeEntry( mNameConfig, "/MarkerSymbol", doc.toString() );
+  }
+
 }
 
 
@@ -115,7 +182,7 @@ void QgsDecorationGrid::render( QPainter * p )
   if ( ! mEnabled )
     return;
 
-  p->setPen( mGridPen );
+  // p->setPen( mGridPen );
 
   QList< QPair< double, QLineF > > verticalLines;
   yGridLines( verticalLines, p );
@@ -130,17 +197,34 @@ void QgsDecorationGrid::render( QPainter * p )
   //simpler approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsDecorationGrid::Solid )
   {
+    if ( ! mLineSymbol )
+      return;
+
+    QgsRenderContext context;
+    context.setPainter( p );
+    mLineSymbol->startRender( context, 0 );
+
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
-      p->drawLine( vIt->second );
+      // p->drawLine( vIt->second );
+      // need to convert QLineF to QPolygonF ...
+      QVector<QPointF> poly;
+      poly << vIt->second.p1() << vIt->second.p2();
+      mLineSymbol->renderPolyline( QPolygonF( poly ), 0, context );
     }
 
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
     {
-      p->drawLine( hIt->second );
+      // p->drawLine( hIt->second );
+      // need to convert QLineF to QPolygonF ...
+      QVector<QPointF> poly;
+      poly << hIt->second.p1() << hIt->second.p2();
+      mLineSymbol->renderPolyline( QPolygonF( poly ), 0, context );
     }
+
+    mLineSymbol->stopRender( context );
   }
-  else //cross
+  else if ( mGridStyle == QgsDecorationGrid::Cross )
   {
     QPointF intersectionPoint, crossEnd1, crossEnd2;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
@@ -186,8 +270,30 @@ void QgsDecorationGrid::render( QPainter * p )
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
       p->drawLine( hIt->second.p2(), crossEnd1 );
     }
+  }
+  else //marker
+  {
+    if ( ! mMarkerSymbol )
+      return;
 
+    QgsRenderContext context;
+    context.setPainter( p );
+    mMarkerSymbol->startRender( context, 0 );
 
+    QPointF intersectionPoint, crossEnd1, crossEnd2;
+    for ( ; vIt != verticalLines.constEnd(); ++vIt )
+    {
+      //test for intersection with every horizontal line
+      hIt = horizontalLines.constBegin();
+      for ( ; hIt != horizontalLines.constEnd(); ++hIt )
+      {
+        if ( hIt->second.intersect( vIt->second, &intersectionPoint ) == QLineF::BoundedIntersection )
+        {
+          mMarkerSymbol->renderPoint( intersectionPoint, 0, context );
+        }
+      }
+    }
+    mMarkerSymbol->stopRender( context );
   }
 
   // p->setClipRect( thisPaintRect , Qt::NoClip );

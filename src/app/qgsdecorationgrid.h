@@ -21,6 +21,8 @@
 #include "qgsdecorationitem.h"
 
 class QPainter;
+class QgsLineSymbolV2;
+class QgsMarkerSymbolV2;
 
 #include <QColor>
 #include <QPen>
@@ -38,7 +40,8 @@ class QgsDecorationGrid: public QgsDecorationItem
     enum GridStyle
     {
       Solid = 0, //solid lines
-      Cross //only draw line crossings
+      Cross = 1, //only draw line crossings
+      Marker = 2 //user-defined marker
     };
 
     enum GridAnnotationPosition
@@ -126,6 +129,14 @@ class QgsDecorationGrid: public QgsDecorationItem
     void setCrossLength( double l ) {mCrossLength = l;}
     double crossLength() {return mCrossLength;}
 
+    /**Set symbol that is used to draw grid lines. Takes ownership*/
+    void setLineSymbol( QgsLineSymbolV2* symbol );
+    const QgsLineSymbolV2* lineSymbol() const { return mLineSymbol; }
+
+    /**Set symbol that is used to draw markers. Takes ownership*/
+    void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
+    const QgsMarkerSymbolV2* markerSymbol() const { return mMarkerSymbol; }
+
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead();
@@ -174,6 +185,9 @@ class QgsDecorationGrid: public QgsDecorationItem
     GridAnnotationDirection mGridAnnotationDirection;
     /**The length of the cross sides for mGridStyle Cross*/
     double mCrossLength;
+
+    QgsLineSymbolV2* mLineSymbol;
+    QgsMarkerSymbolV2* mMarkerSymbol;
 
     /**Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter
