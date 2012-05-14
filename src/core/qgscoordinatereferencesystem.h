@@ -308,6 +308,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool geographicFlag() const;
 
+    /*! return if axis is inverted (eg. for WMS 1.3)
+     * @return  bool Whether this is crs axis is inverted
+     * @note added in 1.9.90
+     */
+    bool axisInverted() const;
+
     /*! Get the units that the projection is in
      * @return QGis::UnitType that gives the units for the coordinate system
      */
@@ -425,6 +431,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool loadFromDb( QString db, QString expression, QString value );
 
     QString mValidationHint;
+
+    //!Whether this is a coordinate system has inverted axis
+    mutable int mAxisInverted;
 
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
 };

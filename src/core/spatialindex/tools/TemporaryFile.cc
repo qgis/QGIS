@@ -20,6 +20,7 @@
 //    mhadji@gmail.com
 
 #include <stdio.h>
+#include <unistd.h>
 
 #include <Tools.h>
 

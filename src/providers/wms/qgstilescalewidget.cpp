@@ -20,7 +20,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
 #include "qgswmsprovider.h"
-#include "qgsmessagelog.h"
 #include "qgslogger.h"
 
 #include <QDockWidget>

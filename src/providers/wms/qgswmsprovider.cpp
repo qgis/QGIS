@@ -88,7 +88,6 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mTileLayer( 0 )
     , mTileMatrixSetId( QString::null )
     , mTileMatrixSet( 0 )
-    , mFeatureCount( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -367,7 +366,7 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
   if ( layers.size() != styles.size() )
   {
     QgsDebugMsg( "number of layers and styles don't match" );
-    valid = false;
+    mValid = false;
     return;
   }
 
@@ -375,7 +374,7 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
   {
     if ( layers.size() != 1 )
     {
-      QgsMessageLog::logMessage( tr( "Number of tile layers must be one" ), tr( "WMS" ) );
+      QgsDebugMsg( "Number of tile layers must be one" );
       mValid = false;
       return;
     }
@@ -383,7 +382,7 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
     mValid = retrieveServerCapabilities();
     if ( !mValid || mTileLayersSupported.size() == 0 )
     {
-      QgsMessageLog::logMessage( tr( "Tile layer not found" ), tr( "WMS" ) );
+      QgsDebugMsg( "Tile layer not found" );
       return;
     }
 
@@ -520,9 +519,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     mCacheReply = 0;
   }
 
-  // Bounding box in WMS format
-  QString bbox;
-
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
   bool changeXY = false;
   if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
@@ -628,14 +624,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     setQueryItem( fiUrl, "VERSION", mCapabilities.version );
     setQueryItem( fiUrl, "REQUEST", "GetFeatureInfo" );
     setQueryItem( fiUrl, "BBOX", bbox );
-    setQueryItem( fiUrl, crsKey, imageCrs );
+    setQueryItem( fiUrl, crsKey, mImageCrs );
     setQueryItem( fiUrl, "WIDTH", QString::number( pixelWidth ) );
     setQueryItem( fiUrl, "HEIGHT", QString::number( pixelHeight ) );
     setQueryItem( fiUrl, "LAYERS", layers );
     setQueryItem( fiUrl, "STYLES", styles );
-    setQueryItem( fiUrl, "FORMAT", imageMimeType );
+    setQueryItem( fiUrl, "FORMAT", mImageMimeType );
 
-    if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+    if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
     {
       setQueryItem( fiUrl, "TRANSPARENT", "true" );
     }
@@ -1042,17 +1038,17 @@ void QgsWmsProvider::tileReplyFinished()
       QByteArray text = reply->readAll();
       if ( contentType == "text/xml" && parseServiceExceptionReportDom( text ) )
       {
-        QgsMessageLog::logMessage( tr( "Tile request error (Title:%1; Error:%2; URL: %3)" )
+        QgsDebugMsg( QString( "Tile request error (Title:%1; Error:%2; URL: %3)" )
                                    .arg( mErrorCaption ).arg( mError )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+                                   .arg( reply->url().toString() ) );
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)" )
+        QgsDebugMsg( QString( "Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)" )
                                    .arg( status.toString() )
                                    .arg( contentType )
                                    .arg( text.size() )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+                                   .arg( reply->url().toString() ) );
 #ifdef QGISDEBUG
         QFile file( QDir::tempPath() + "/b0rken-image.png" );
         if ( file.open( QIODevice::WriteOnly ) )
@@ -1099,7 +1095,7 @@ void QgsWmsProvider::tileReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
+        QgsDebugMsg( QString( "Returned image is flawed [%1]" ).arg( reply->url().toString() ) );
       }
 
     }
@@ -1149,10 +1145,10 @@ void QgsWmsProvider::cacheReplyFinished()
     {
       QVariant phrase = mCacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
 
-      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
+      QgsDebugMsg( QString( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
                                  .arg( status.toInt() )
                                  .arg( phrase.toString() )
-                                 .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+                                 .arg( mCacheReply->url().toString() ) );
 
       mCacheReply->deleteLater();
       mCacheReply = 0;
@@ -1172,7 +1168,7 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+        QgsDebugMsg( QString( "Returned image is flawed [%1]" ).arg( mCacheReply->url().toString() ) );
       }
     }
     else
@@ -1180,16 +1176,16 @@ void QgsWmsProvider::cacheReplyFinished()
       QByteArray text = mCacheReply->readAll();
       if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
+        QgsDebugMsg( QString( "Map request error (Title:%1; Error:%2; URL: %3)" )
                                    .arg( mErrorCaption ).arg( mError )
-                                   .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+                                   .arg( mCacheReply->url().toString() ) );
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
+        QgsDebugMsg( QString( "Map request error (Status: %1; Response: %2; URL:%3)" )
                                    .arg( status.toInt() )
                                    .arg( QString::fromUtf8( text ) )
-                                   .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+                                   .arg( mCacheReply->url().toString() ) );
       }
 
       mCacheReply->deleteLater();
@@ -1324,7 +1320,7 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     mErrorFormat = "text/plain";
     mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
     QgsDebugMsg( "error: " + mError );
-    httpcapabilitiesresponse.clear();
+    mHttpCapabilitiesResponse.clear();
   }
 
 
@@ -3043,9 +3039,9 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   QString metadata;
 
   // Layer Properties section
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += layer.name;
-  myMetadataQString += "</td></tr>";
+  metadata += "<tr><td bgcolor=\"white\">";
+  metadata += layer.name;
+  metadata += "</td></tr>";
 
   // Use a nested table
   metadata += "<tr><td>";
@@ -3660,15 +3656,10 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         setQueryItem( requestUrl, "X", QString::number( point.x() ) );
         setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
 
-        if ( mFeatureCount > 0 )
-        {
-          setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mFeatureCount ) );
-        }
-
         // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
         //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
 
-        QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl ) );
+        QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
         QNetworkRequest request( requestUrl );
         setAuthorization( request );
         mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
@@ -3821,46 +3812,6 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
   }
-}
-
-QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
-{
-  QVector<QgsWmsSupportedFormat> formats;
-  QStringList mFormats, mLabels;
-
-  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-
-  if ( supportedFormats.contains( "png" ) )
-  {
-    QgsWmsSupportedFormat p1 = { "image/png", "PNG" };
-    QgsWmsSupportedFormat p2 = { "image/png; mode=24bit", "PNG24" }; // UMN mapserver
-    QgsWmsSupportedFormat p3 = { "image/png8", "PNG8" }; // used by geoserver
-    QgsWmsSupportedFormat p4 = { "png", "PNG" }; // used by french IGN geoportail
-    QgsWmsSupportedFormat p5 = { "pngt", "PNGT" }; // used by french IGN geoportail
-
-    formats << p1 << p2 << p3 << p4 << p5;
-  }
-
-  if ( supportedFormats.contains( "jpg" ) )
-  {
-    QgsWmsSupportedFormat j1 = { "image/jpeg", "JPEG" };
-    QgsWmsSupportedFormat j2 = { "jpeg", "JPEG" }; // used by french IGN geoportail
-    formats << j1 << j2;
-  }
-
-  if ( supportedFormats.contains( "gif" ) )
-  {
-    QgsWmsSupportedFormat g1 = { "image/gif", "GIF" };
-    formats << g1;
-  }
-
-  if ( supportedFormats.contains( "tiff" ) )
-  {
-    QgsWmsSupportedFormat t1 = { "image/tiff", "TIFF" };
-    formats << t1;
-  }
-
-  return formats;
 }
 
 QString QgsWmsProvider::nodeAttribute( const QDomElement &e, QString name, QString defValue )

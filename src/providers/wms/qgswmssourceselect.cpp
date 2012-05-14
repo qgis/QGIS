@@ -21,20 +21,21 @@
 
 #include "qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgisapp.h" //for getThemeIcon
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
-#include "qgsnewhttpconnection.h"
-#include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmssourceselect.h"
 #include "qgswmtsdimensions.h"
 #include "qgsnetworkaccessmanager.h"
+
+#include "../../gui/qgsgenericprojectionselector.h"
+
+#include "../../app/qgsnewhttpconnection.h"
+#include "../../app/qgsnumericsortlistviewitem.h"
+#include "../../app/qgsmanageconnectionsdialog.h"
 
 #include <QButtonGroup>
 #include <QFileDialog>
@@ -63,8 +64,8 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
 
-  mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
-  mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
+  // mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
+  // mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
 
   mAddButton->setEnabled( false );
   populateConnectionList();
@@ -525,16 +526,11 @@ void QgsWMSSourceSelect::addClicked()
 
   QStringList connArgs;
 
-  if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
-  {
-    connArgs << QString( "maxSize=%1;%2" ).arg( mTileWidth->text().toInt() ).arg( mTileHeight->text().toInt() );
-  }
-
   if ( lstTilesets->selectedItems().isEmpty() )
   {
     collectSelectedLayers( layers, styles );
     crs = mCRS;
-    format = mFormats[ mImageFormatGroup->checkedId()].format;
+    format = mFormats[ mImageFormatGroup->checkedId()];
   }
   else
   {
@@ -587,11 +583,6 @@ void QgsWMSSourceSelect::addClicked()
 
       connArgs << dimString;
     }
-  }
-
-  if ( mFeatureCount->text().toInt() > 0 )
-  {
-    connArgs << QString( "featureCount=%1" ).arg( mFeatureCount->text().toInt() );
   }
 
   if ( !connArgs.isEmpty() )

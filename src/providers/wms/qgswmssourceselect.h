@@ -21,6 +21,7 @@
 #include "ui_qgswmssourceselectbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgswmsprovider.h"
 
 #include <QStringList>
 #include <QPushButton>

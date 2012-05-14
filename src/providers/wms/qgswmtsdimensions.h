@@ -41,7 +41,7 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
     //! Destructor
     ~QgsWmtsDimensions();
 
-    void selectedDimensions( QHash<QString, QString> &dims ); 
+    void selectedDimensions( QHash<QString, QString> &dims );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
