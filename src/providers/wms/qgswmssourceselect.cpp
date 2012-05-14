@@ -348,7 +348,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     int rows = 0;
     foreach( const QgsWmtsTileLayer &l, mTileLayers )
     {
-      rows += l.styles.size() * l.setLinks.size();
+      rows += l.styles.size() * l.setLinks.size() * l.formats.size();
     }
 
     lstTilesets->clearContents();
@@ -391,9 +391,9 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
                 item->setToolTip( tr( "encoding %1 not supported." ).arg( format ) );
               }
             }
-          }
 
-          row++;
+            row++;
+          }
         }
       }
     }

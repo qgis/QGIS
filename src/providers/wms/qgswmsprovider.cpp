@@ -696,10 +696,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
                  .arg( vres, 0, 'f' )
                );
 
-    QgsDebugMsg( QString( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7" )
+    QgsDebugMsg( QString( "tile matrix %1,%2 res:%3 tilesize:%4x%5 matrixsize:%6x%7 id:%8" )
                  .arg( tm->topLeft.x() ).arg( tm->topLeft.y() ).arg( tres )
                  .arg( tm->tileWidth ).arg( tm->tileHeight )
                  .arg( tm->matrixWidth ).arg( tm->matrixHeight )
+                 .arg( tm->identifier )
                );
 
     // calculate tile coordinates
@@ -712,22 +713,25 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     int minTileRow = 0;
     int maxTileRow = tm->matrixHeight - 1;
 
-    if ( mTileLayer->setLinks.contains( tm->identifier ) &&
-         mTileLayer->setLinks[ tm->identifier ].limits.contains( mTileMatrixSet->identifier ) )
+    if ( mTileLayer->setLinks.contains( mTileMatrixSet->identifier ) &&
+         mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits.contains( tm->identifier ) )
     {
-      const QgsWmtsTileMatrixLimits &tml = mTileLayer->setLinks[ tm->identifier ].limits[ mTileMatrixSet->identifier ];
+      const QgsWmtsTileMatrixLimits &tml = mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits[ tm->identifier ];
       minTileCol = tml.minTileCol;
       maxTileCol = tml.maxTileCol;
       minTileRow = tml.minTileRow;
       maxTileRow = tml.maxTileRow;
+      QgsDebugMsg( QString( "%1 %2: TileMatrixLimits col %3-%4 row %5-%6" )
+                   .arg( mTileMatrixSet->identifier )
+                   .arg( tm->identifier )
+                   .arg( minTileCol ).arg( maxTileCol )
+                   .arg( minTileRow ).arg( maxTileRow ) );
     }
 
     int col0 = qBound( minTileCol, ( int ) floor(( viewExtent.xMinimum() - tm->topLeft.x() ) / twMap ), maxTileCol );
     int row0 = qBound( minTileRow, ( int ) floor(( tm->topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
     int col1 = qBound( minTileCol, ( int )  ceil(( viewExtent.xMaximum() - tm->topLeft.x() ) / twMap ), maxTileCol );
     int row1 = qBound( minTileRow, ( int )  ceil(( tm->topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
-
-    QgsDebugMsg( QString( "rows: %1-%2 cols: %3-%4" ).arg( row0 ).arg( row1 ).arg( col0 ).arg( col1 ) );
 
 #if QGISDEBUG
     int n = ( col1 - col0 + 1 ) * ( row1 - row0 + 1 );
@@ -2621,36 +2625,39 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
     for ( QDomElement e1 = e0.firstChildElement( "TileMatrixSetLink" ); !e1.isNull(); e1 = e1.nextSiblingElement( "TileMatrixSetLink" ) )
     {
-      for ( QDomElement e2 = e1.firstChildElement( "TileMatrixSet" ); !e2.isNull(); e2 = e2.nextSiblingElement( "TileMatrixSet" ) )
+      QgsWmtsTileMatrixSetLink sl;
+
+      sl.tileMatrixSet = e1.firstChildElement( "TileMatrixSet" ).text();
+
+      if ( !mTileMatrixSets.contains( sl.tileMatrixSet ) )
       {
-        QgsWmtsTileMatrixSetLink sl;
-
-        sl.tileMatrixSet = e2.text();
-        if ( !mTileMatrixSets.contains( sl.tileMatrixSet ) )
-        {
-          QgsDebugMsg( QString( "tileMatrixSet %1 not found." ).arg( id ) );
-          continue;
-        }
-
-        for ( QDomElement e3 = e2.firstChildElement( "TileMatrixSetLimits" ); !e3.isNull(); e3 = e3.nextSiblingElement( "TileMatrixSetLimits" ) )
-        {
-          for ( QDomElement e4 = e3.firstChildElement( "TileMatrixLimits" ); !e4.isNull(); e4 = e4.nextSiblingElement( "TileMatrixLimits" ) )
-          {
-            QgsWmtsTileMatrixLimits limit;
-
-            QString id = e4.firstChildElement( "TileMatrix" ).text();
-
-            limit.minTileRow = e4.firstChildElement( "MinTileRow" ).text().toInt();
-            limit.maxTileRow = e4.firstChildElement( "MaxTileRow" ).text().toInt();
-            limit.minTileCol = e4.firstChildElement( "MinTileCol" ).text().toInt();
-            limit.maxTileCol = e4.firstChildElement( "MaxTileCol" ).text().toInt();
-
-            sl.limits.insert( id, limit );
-          }
-        }
-
-        l.setLinks.insert( sl.tileMatrixSet, sl );
+        QgsDebugMsg( QString( "  TileMatrixSet %1 not found." ).arg( sl.tileMatrixSet ) );
+        continue;
       }
+
+      for ( QDomElement e2 = e1.firstChildElement( "TileMatrixSetLimits" ); !e2.isNull(); e2 = e2.nextSiblingElement( "TileMatrixSetLimits" ) )
+      {
+        for ( QDomElement e3 = e2.firstChildElement( "TileMatrixLimits" ); !e3.isNull(); e3 = e3.nextSiblingElement( "TileMatrixLimits" ) )
+        {
+          QgsWmtsTileMatrixLimits limit;
+
+          QString id = e3.firstChildElement( "TileMatrix" ).text();
+
+          limit.minTileRow = e3.firstChildElement( "MinTileRow" ).text().toInt();
+          limit.maxTileRow = e3.firstChildElement( "MaxTileRow" ).text().toInt();
+          limit.minTileCol = e3.firstChildElement( "MinTileCol" ).text().toInt();
+          limit.maxTileCol = e3.firstChildElement( "MaxTileCol" ).text().toInt();
+
+          QgsDebugMsg( QString( "   TileMatrix id:%1 row:%2-%3 col:%4-%5" )
+                       .arg( id )
+                       .arg( limit.minTileRow ).arg( limit.maxTileRow )
+                       .arg( limit.minTileCol ).arg( limit.maxTileCol )
+                     );
+          sl.limits.insert( id, limit );
+        }
+      }
+
+      l.setLinks.insert( sl.tileMatrixSet, sl );
     }
 
     for ( QDomElement e1 = e0.firstChildElement( "ResourceURL" ); !e1.isNull(); e1 = e1.nextSiblingElement( "ResourceURL" ) )
