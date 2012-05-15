@@ -161,11 +161,19 @@ class Dialog( QDialog, Ui_Dialog ):
 
 def geomVertexCount( geometry ):
   geomType = geometry.type()
-  if geomType == 1: # line
-    points = geometry.asPolyline()
+  if geomType == QGis.Line:
+    if geometry.isMultipart():
+      pointsList = geometry.asMultiPolyline()
+      points = sum( pointsList, [] )
+    else:
+      points = geometry.asPolyline()
     return len( points )
-  elif geomType == 2: # polygon
-    polylines = geometry.asPolygon()
+  elif geomType == QGis.Polygon:
+    if geometry.isMultipart():
+      polylinesList = geometry.asMultiPolygon()
+      polylines = sum( polylinesList, [] )
+    else:
+      polylines = geometry.asPolygon()
     points = []
     for l in polylines:
       points.extend( l )
@@ -196,11 +204,19 @@ def densify( polyline, pointsNumber ):
 def densifyGeometry( geometry, pointsNumber, isPolygon ):
   output = []
   if isPolygon:
-    rings = geometry.asPolygon()
-    for ring in rings:
-      ring = densify( ring, pointsNumber )
-      output.append( ring )
-    return QgsGeometry.fromPolygon( output )
+    if geometry.isMultipart():
+      polygons = geometry.asMultiPolygon()
+      for poly in polygons:
+        p = []
+        for ring in poly:
+          p.append( densify( ring, pointsNumber ) )
+        output.append( p )
+      return QgsGeometry.fromMultiPolygon( output )
+    else:
+      rings = geometry.asPolygon()
+      for ring in rings:
+        output.append( densify( ring, pointsNumber ) )
+      return QgsGeometry.fromPolygon( output )
   else:
     if geometry.isMultipart():
       lines = geometry.asMultiPolyline()
