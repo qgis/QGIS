@@ -106,6 +106,8 @@ class ModelerArrowItem(QtGui.QGraphicsLineItem):
         self.setLine(QtCore.QLineF(intersectPoint, myStartItem.pos()))
         line = self.line()
 
+        if line.length() == 0: #division by zero might occur if arrow has no length
+            return
         angle = math.acos(line.dx() / line.length())
         if line.dy() >= 0:
             angle = (math.pi * 2.0) - angle

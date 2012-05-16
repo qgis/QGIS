@@ -50,6 +50,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.algPos = []
         self.paramPos = []
 
+        #deactivated algorithms that should not be executed
+        self.deactivated = []
+
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
@@ -136,6 +139,97 @@ class ModelerAlgorithm(GeoAlgorithm):
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
         self.algPos.append(self.getPositionForAlgorithmItem())
+
+    def removeAlgorithm(self, index):
+        if self.hasDependencies(self.algs[index], index):
+            return False
+        for out in self.algs[index].outputs:
+            val = self.algOutputs[index][out.name]
+            if val:
+                name = self.getSafeNameForOutput(index, out)
+                self.removeOutputFromName(name)
+        del self.algs[index]
+        del self.algParameters[index]
+        del self.algOutputs[index]
+        del self.algPos[index]
+        self.updateModelerView()
+        return True
+
+    def removeParameter(self, index):
+        if self.hasDependencies(self.parameters[index], index):
+            return False
+        del self.parameters[index]
+        del self.paramPos[index]
+        self.updateModelerView()
+        return True
+
+    def hasDependencies(self, element, elementIndex):
+        '''This method returns true if some other element depends on the passed one'''
+        if isinstance(element, Parameter):
+            for alg in self.algParameters:
+                for aap in alg.values():
+                    if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
+                        if aap.param == element.name:
+                            return True
+                        elif aap.param in self.paramValues: #check for multiple inputs
+                            aap2 = self.paramValues[aap.param]
+                            if element.name in aap2:
+                                return True
+            if isinstance(element, ParameterVector):
+                for param in self.parameters:
+                    if isinstance(param, ParameterTableField):
+                        if param.parent == element.name:
+                            return True
+        else:
+            for alg in self.algParameters:
+                for aap in alg.values():
+                    if aap.alg == elementIndex:
+                        return True
+
+        return False
+
+    def deactivateAlgorithm(self, algIndex, update = False):
+        if algIndex not in self.deactivated:
+            self.deactivated.append(algIndex)
+            dependent = self.getDependentAlgorithms(algIndex)
+            for alg in dependent:
+                self.deactivateAlgorithm(alg)
+        if update:
+            self.updateModelerView()
+
+    def activateAlgorithm(self, algIndex, update = False):
+        if algIndex in self.deactivated:
+            dependsOn = self.getDependsOnAlgorithms(algIndex)
+            for alg in dependsOn:
+                if alg in self.deactivated:
+                    return False
+            self.deactivated.remove(algIndex)
+            dependent = self.getDependentAlgorithms(algIndex)
+            for alg in dependent:
+                self.activateAlgorithm(alg)
+        if update:
+            self.updateModelerView()
+        return True
+
+    def getDependsOnAlgorithms(self, algIndex):
+        '''This method returns a list with the indexes of algorithm a given one depends on'''
+        algs = []
+        for aap in self.algParameters[algIndex].values():
+            if aap.alg not in algs:
+                algs.append(aap.alg)
+        return algs
+
+    def getDependentAlgorithms(self, algIndex):
+        '''This method returns a list with the indexes of algorithm depending on a given one'''
+        dependent = []
+        index = -1
+        for alg in self.algParameters:
+            index += 1
+            for aap in alg.values():
+                if aap.alg == algIndex:
+                    dependent.append(index)
+                    break
+        return dependent
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
@@ -233,18 +327,22 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.producedOutputs = []
         iAlg = 0
         for alg in self.algs:
-            try:
-                alg = alg.getCopy()#copy.deepcopy(alg)
-                self.prepareAlgorithm(alg, iAlg)
-                progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/" + str(len(self.algs)) +"]")
-                outputs = {}
-                alg.execute(progress)
-                for out in alg.outputs:
-                    outputs[out.name] = out.value
-                self.producedOutputs.append(outputs)
+            if iAlg in self.deactivated:
                 iAlg += 1
-            except GeoAlgorithmExecutionException, e :
-                raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
+            else:
+                try:
+                    alg = alg.getCopy()#copy.deepcopy(alg)
+                    self.prepareAlgorithm(alg, iAlg)
+                    progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/"
+                                     + str(len(self.algs) - len(self.deactivated)) +"]")
+                    outputs = {}
+                    alg.execute(progress)
+                    for out in alg.outputs:
+                        outputs[out.name] = out.value
+                    self.producedOutputs.append(outputs)
+                    iAlg += 1
+                except GeoAlgorithmExecutionException, e :
+                    raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
 
 
     def getOutputType(self, i, outname):
@@ -341,53 +439,6 @@ class ModelerAlgorithm(GeoAlgorithm):
         if self.modelerdialog:
             self.modelerdialog.repaintModel()
 
-    def removeAlgorithm(self, index):
-        if self.hasDependencies(self.algs[index], index):
-            return False
-        for out in self.algs[index].outputs:
-            val = self.algOutputs[index][out.name]
-            if val:
-                name = self.getSafeNameForOutput(index, out)
-                self.removeOutputFromName(name)
-        del self.algs[index]
-        del self.algParameters[index]
-        del self.algOutputs[index]
-        del self.algPos[index]
-        self.updateModelerView()
-        return True
-
-    def removeParameter(self, index):
-        if self.hasDependencies(self.parameters[index], index):
-            return False
-        del self.parameters[index]
-        del self.paramPos[index]
-        self.updateModelerView()
-        return True
-
-    def hasDependencies(self, element, elementIndex):
-        '''returns true if some other element depends on the passed one'''
-        if isinstance(element, Parameter):
-            for alg in self.algParameters:
-                for aap in alg.values():
-                    if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
-                        if aap.param == element.name:
-                            return True
-                        elif aap.param in self.paramValues: #check for multiple inputs
-                            aap2 = self.paramValues[aap.param]
-                            if element.name in aap2:
-                                return True
-            if isinstance(element, ParameterVector):
-                for param in self.parameters:
-                    if isinstance(param, ParameterTableField):
-                        if param.parent == element.name:
-                            return True
-        else:
-            for alg in self.algParameters:
-                for aap in alg.values():
-                    if aap.alg == elementIndex:
-                        return True
-
-        return False
 
     def helpfile(self):
         helpfile = self.descriptionFile + ".help"

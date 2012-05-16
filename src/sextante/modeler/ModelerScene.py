@@ -34,7 +34,6 @@ class ModelerScene(QtGui.QGraphicsScene):
         else:
             return None
 
-
     def getItemsFromAAP(self, aap, isMultiple):
         items = []
         start = int(aap.alg)

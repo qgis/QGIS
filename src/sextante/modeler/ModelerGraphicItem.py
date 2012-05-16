@@ -1,6 +1,7 @@
 from PyQt4 import QtCore, QtGui
 from sextante.parameters.Parameter import Parameter
 import os
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 
 class ModelerGraphicItem(QtGui.QGraphicsItem):
 
@@ -36,17 +37,31 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         popupmenu = QtGui.QMenu()
         removeAction = popupmenu.addAction("Remove")
         removeAction.triggered.connect(self.removeElement)
+        if isinstance(self.element, GeoAlgorithm):
+            if self.elementIndex in self.model.deactivated:
+                removeAction = popupmenu.addAction("Activate")
+                removeAction.triggered.connect(self.activateAlgorithm)
+            else:
+                deactivateAction = popupmenu.addAction("Deactivate")
+                deactivateAction.triggered.connect(self.deactivateAlgorithm)
         popupmenu.exec_(event.screenPos())
 
+    def deactivateAlgorithm(self):
+        self.model.deactivateAlgorithm(self.elementIndex, True)
+
+    def activateAlgorithm(self):
+        if not self.model.activateAlgorithm(self.elementIndex, True):
+            QtGui.QMessageBox.warning(None, "Could not activate Algorithm",
+                                   "The selected algorithm depends on other currently non-active algorithms.\nActivate them them before trying to activate it.")
     def removeElement(self):
         if isinstance(self.element, Parameter):
             if not self.model.removeParameter(self.elementIndex):
                 QtGui.QMessageBox.warning(None, "Could not remove element",
-                                   "Other elements depend on this one.\nRemove them before trying to remove it.")
+                                   "Other elements depend on the selected one.\nRemove them before trying to remove it.")
         else:
             if not self.model.removeAlgorithm(self.elementIndex):
                 QtGui.QMessageBox.warning(None, "Could not remove element",
-                                   "Other elements depend on this one.\nRemove them before trying to remove it.")
+                                   "Other elements depend on the selected one.\nRemove them before trying to remove it.")
 
     def getAdjustedText(self, text):
         return text
@@ -66,6 +81,12 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         h = fm.height()
         pt = QtCore.QPointF(-w/2, h/2)
         painter.drawText(pt, self.text)
+        if isinstance(self.element, GeoAlgorithm):
+            if self.elementIndex in self.model.deactivated:
+                painter.setPen(QtGui.QPen(QtCore.Qt.red))
+                w = fm.width(QtCore.QString("[deactivated]"))
+                pt = QtCore.QPointF(-w/2, h+h/2)
+                painter.drawText(pt, "[deactivated]")
         painter.drawPixmap(-10 , -(ModelerGraphicItem.BOX_HEIGHT )/3,self.pixmap)
 
 
