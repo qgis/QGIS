@@ -84,7 +84,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mPainting( false )
     , mAntiAliasing( false )
 {
-  setObjectName( name );
   //disable the update that leads to the resize crash
   if ( viewport() )
   {

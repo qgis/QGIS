@@ -80,10 +80,12 @@ SET(QGIS_APP_SRCS
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
   qgstextannotationdialog.cpp
+  qgswmssourceselect.cpp
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgsundowidget.cpp
+  qgstilescalewidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
   qgsuniquevaluedialog.cpp
@@ -210,11 +212,13 @@ SET (QGIS_APP_MOC_HDRS
   qgssnappingdialog.h
   qgssponsors.h
   qgstextannotationdialog.h
+  qgstilescalewidget.h
   qgstipgui.h
   qgstipfactory.h
   qgsundowidget.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
+  qgswmssourceselect.h
   qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h
