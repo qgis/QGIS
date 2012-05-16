@@ -2936,7 +2936,7 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         ++layers, ++styles )
   {
     // Is sublayer visible?
-    if ( !mActiveSubLayerVisibility.find( *layers ).value() )
+    if ( !activeSubLayerVisibility.find( *layers ).value() )
       continue;
 
     // Is sublayer queryable?
@@ -2950,12 +2950,12 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
     setQueryItem( requestUrl, "VERSION", mCapabilities.version );
     setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
     setQueryItem( requestUrl, "BBOX", bbox );
-    setQueryItem( requestUrl, crsKey, mImageCrs );
-    setQueryItem( requestUrl, "WIDTH", QString::number( mCachedViewWidth ) );
-    setQueryItem( requestUrl, "HEIGHT", QString::number( mCachedViewHeight ) );
+    setQueryItem( requestUrl, crsKey, imageCrs );
+    setQueryItem( requestUrl, "WIDTH", QString::number( cachedViewWidth ) );
+    setQueryItem( requestUrl, "HEIGHT", QString::number( cachedViewHeight ) );
     setQueryItem( requestUrl, "LAYERS", *layers );
     setQueryItem( requestUrl, "STYLES", *styles );
-    setQueryItem( requestUrl, "FORMAT", mImageMimeType );
+    setQueryItem( requestUrl, "FORMAT", imageMimeType );
     setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
     setQueryItem( requestUrl, "INFO_FORMAT", format );
 
