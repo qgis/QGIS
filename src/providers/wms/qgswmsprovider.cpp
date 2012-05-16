@@ -1084,13 +1084,12 @@ void QgsWmsProvider::tileReplyFinished()
       QgsDebugMsg( QString( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
       QImage myLocalImage = QImage::fromData( reply->readAll() );
 
-      myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
-
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mCachedImage );
         p.drawImage( dst, myLocalImage );
 #if 0
+        myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
         p.drawRect( dst ); // show tile bounds
         p.drawText( dst, Qt::AlignCenter, QString( "(%1)\n%2,%3\n%4,%5\n%6x%7" )
                     .arg( tileNo )

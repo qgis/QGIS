@@ -155,7 +155,7 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
        theCrs.compare( "OGC:CRS27", Qt::CaseInsensitive ) == 0 )
   {
     // TODO: verify same axis orientation
-    return createFromEpsg( 4267 );
+    return createFromOgcWmsCrs( "EPSG:4267" );
   }
 
   // NAD83
@@ -163,14 +163,14 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
        theCrs.compare( "OGC:CRS83", Qt::CaseInsensitive ) == 0 )
   {
     // TODO: verify same axis orientation
-    return createFromEpsg( 4269 );
+    return createFromOgcWmsCrs( "EPSG:4269" );
   }
 
   // WGS84
   if ( theCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 ||
        theCrs.compare( "OGC:CRS84", Qt::CaseInsensitive ) == 0 )
   {
-    createFromEpsg( 4326 );
+    createFromOgcWmsCrs( "EPSG:4326" );
     mAxisInverted = 0;
     return mIsValidFlag;
   }
