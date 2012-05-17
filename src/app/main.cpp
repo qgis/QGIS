@@ -320,7 +320,6 @@ int main( int argc, char *argv[] )
     else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
     {
       configpath = argv[++i];
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
     }
     else
     {
