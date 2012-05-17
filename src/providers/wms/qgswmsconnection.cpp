@@ -62,17 +62,29 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
-  if ( ignoreGetMap || ignoreGetFeatureInfo )
+  bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
+  if ( ignoreGetMap || ignoreGetFeatureInfo || ignoreAxisOrientation )
   {
     QString connArgs = "ignoreUrl=";
+
     if ( ignoreGetMap )
     {
       connArgs += "GetMap";
-      if ( ignoreGetFeatureInfo )
-        connArgs += ";";
     }
+
     if ( ignoreGetFeatureInfo )
+    {
+      if ( !connArgs.endsWith( "=" ) )
+        connArgs += ";";
       connArgs += "GetFeatureInfo";
+    }
+
+    if ( ignoreAxisOrientation )
+    {
+      if ( !connArgs.endsWith( "=" ) )
+        connArgs += ";";
+      connArgs += "AxisOrientation";
+    }
 
     if ( mConnectionInfo.startsWith( "username=" ) )
     {

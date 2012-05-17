@@ -150,11 +150,29 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
   if ( loadFromDb( QgsApplication::srsDbFilePath(), "lower(auth_name||':'||auth_id)", theCrs.toLower() ) )
     return true;
 
+  // NAD27
+  if ( theCrs.compare( "CRS:27", Qt::CaseInsensitive ) == 0 ||
+       theCrs.compare( "OGC:CRS27", Qt::CaseInsensitive ) == 0 )
+  {
+    // TODO: verify same axis orientation
+    return createFromEpsg( 4267 );
+  }
+
+  // NAD83
+  if ( theCrs.compare( "CRS:83", Qt::CaseInsensitive ) == 0 ||
+       theCrs.compare( "OGC:CRS83", Qt::CaseInsensitive ) == 0 )
+  {
+    // TODO: verify same axis orientation
+    return createFromEpsg( 4269 );
+  }
+
+  // WGS84
   if ( theCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 ||
        theCrs.compare( "OGC:CRS84", Qt::CaseInsensitive ) == 0 )
   {
-    createFromSrsId( GEOCRS_ID );
-    return true;
+    createFromEpsg( 4326 );
+    mAxisInverted = 0;
+    return mIsValidFlag;
   }
 
   return false;

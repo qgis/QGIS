@@ -52,11 +52,13 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     {
       cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
       cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
+      cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
     }
     else
     {
       cbxIgnoreGetMapURI->setVisible( false );
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
+      cbxIgnoreAxisOrientation->setVisible( false );
     }
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
@@ -100,24 +102,28 @@ void QgsNewHttpConnection::accept()
   }
 
   QUrl url( txtUrl->text().trimmed() );
-
-  QList< QPair<QByteArray, QByteArray> > params = url.encodedQueryItems();
-  for ( int i = 0; i < params.size(); i++ )
+  const QList< QPair<QByteArray, QByteArray> > &items = url.encodedQueryItems();
+  QHash< QString, QPair<QByteArray, QByteArray> > params;
+  for ( QList< QPair<QByteArray, QByteArray> >::const_iterator it = items.constBegin(); it != items.constEnd(); ++it )
   {
-    if ( params[i].first.toUpper() == "SERVICE" ||
-         params[i].first.toUpper() == "REQUEST" ||
-         params[i].first.toUpper() == "FORMAT" )
-    {
-      params.removeAt( i-- );
-    }
+    params.insert( QString( it->first ).toUpper(), *it );
   }
-  url.setEncodedQueryItems( params );
+
+  if ( params["SERVICE"].second.toUpper() == "WMS" )
+  {
+    params.remove( "SERVICE" );
+    params.remove( "REQUEST" );
+    params.remove( "FORMAT" );
+  }
+
+  url.setEncodedQueryItems( params.values() );
 
   settings.setValue( key + "/url", url.toString() );
   if ( mBaseKey == "/Qgis/connections-wms/" )
   {
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+    settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
   }
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );

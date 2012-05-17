@@ -137,6 +137,7 @@ void QgsWmsProvider::parseUri( QString uri )
 
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
+    mIgnoreAxisOrientation = false;
 
     QString layer;
 
@@ -181,6 +182,10 @@ void QgsWmsProvider::parseUri( QString uri )
           else if ( param == "GetFeatureInfo" )
           {
             mIgnoreGetFeatureInfoUrl = true;
+          }
+          else if ( param == "AxisOrientation" )
+          {
+            mIgnoreAxisOrientation = true;
           }
         }
       }
@@ -336,13 +341,6 @@ size_t QgsWmsProvider::layerCount() const
 {
   return 1;                   // XXX properly return actual number of layers
 } // QgsWmsProvider::layerCount()
-
-#if 0
-bool QgsWmsProvider::hasTiles() const
-{
-  return mCapabilities.capability.tileSetProfiles.size() > 0;
-}
-#endif
 
 QString QgsWmsProvider::baseUrl() const
 {
@@ -534,7 +532,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
   //according to the WMS spec for 1.3, some CRS have inverted axis
   bool changeXY = false;
-  if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
+  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
   {
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;
@@ -1070,10 +1068,10 @@ void QgsWmsProvider::tileReplyFinished()
                  r.width() / cr,
                  r.height() / cr );
 
-      QgsDebugMsg( QString( "tile reply: %1" ).arg( reply->bytesAvailable() ) );
+      QgsDebugMsg( QString( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
       QImage myLocalImage = QImage::fromData( reply->readAll() );
 
-      // myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
+      myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
 
       if ( !myLocalImage.isNull() )
       {
@@ -1092,7 +1090,10 @@ void QgsWmsProvider::tileReplyFinished()
       {
         QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
       }
-
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Reply to earlier tile request received too late [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
     }
 
     mTileReplies.removeOne( reply );
@@ -1106,9 +1107,18 @@ void QgsWmsProvider::tileReplyFinished()
   }
   else
   {
+    mErrors++;
+    if ( mErrors < 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Tile request failed [error:%1 url:%2]" ).arg( reply->errorString() ).arg( reply->url().toString() ), tr( "WMS" ) );
+    }
+    else if ( mErrors == 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+    }
+
     mTileReplies.removeOne( reply );
     reply->deleteLater();
-    mErrors++;
   }
 
 #ifdef QGISDEBUG
@@ -1200,9 +1210,18 @@ void QgsWmsProvider::cacheReplyFinished()
   }
   else
   {
+    mErrors++;
+    if ( mErrors < 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString() ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+    }
+    else if ( mErrors == 100 )
+    {
+      QgsMessageLog::logMessage( tr( "Not logging more than 100 request errors." ), tr( "WMS" ) );
+    }
+
     mCacheReply->deleteLater();
     mCacheReply = 0;
-    mErrors++;
   }
 }
 
@@ -2446,8 +2465,10 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
     s.abstract   = n0.firstChildElement( "ows:Abstract" ).text();
     parseKeywords( n0, s.keywords );
 
+    QString supportedCRS = n0.firstChildElement( "ows:SupportedCRS" ).text();
+
     QgsCoordinateReferenceSystem crs;
-    crs.createFromOgcWmsCrs( n0.firstChildElement( "ows:SupportedCRS" ).text() );
+    crs.createFromOgcWmsCrs( supportedCRS );
 
     s.wkScaleSet = n0.firstChildElement( "WellKnownScaleSet" ).text();
 
@@ -2476,7 +2497,13 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
     s.crs = crs.authid();
 
-    QgsDebugMsg( QString( "tilematrix set: %1 (crs:%2; metersPerUnit:%3)" ).arg( s.identifier ).arg( s.crs ).arg( metersPerUnit, 0, 'f' ) );
+    QgsDebugMsg( QString( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" )
+                 .arg( s.identifier )
+                 .arg( supportedCRS )
+                 .arg( s.crs )
+                 .arg( metersPerUnit, 0, 'f' )
+                 .arg( !mIgnoreAxisOrientation && crs.axisInverted() ? "yes" : "no" )
+               );
 
     for ( QDomNode n1 = n0.firstChildElement( "TileMatrix" );
           !n1.isNull();
@@ -2494,7 +2521,14 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       QStringList topLeft = n1.firstChildElement( "TopLeftCorner" ).text().split( " " );
       if ( topLeft.size() == 2 )
       {
-        m.topLeft.set( topLeft[1].toDouble(), topLeft[0].toDouble() );
+        if ( !mIgnoreAxisOrientation && crs.axisInverted() )
+        {
+          m.topLeft.set( topLeft[1].toDouble(), topLeft[0].toDouble() );
+        }
+        else
+        {
+          m.topLeft.set( topLeft[0].toDouble(), topLeft[1].toDouble() );
+        }
       }
       else
       {
@@ -2509,11 +2543,13 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
       double res = m.scaleDenom * 0.00028 / metersPerUnit;
 
-      QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7" )
+      QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
                    .arg( m.identifier )
                    .arg( m.scaleDenom ).arg( res )
                    .arg( m.tileWidth ).arg( m.tileHeight )
-                   .arg( m.matrixWidth ).arg( m.matrixHeight ) );
+                   .arg( m.matrixWidth ).arg( m.matrixHeight )
+                   .arg( m.topLeft.toString() )
+                 );
 
       s.tileMatrices.insert( res, m );
     }
@@ -2635,6 +2671,8 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         continue;
       }
 
+      const QgsWmtsTileMatrixSet &tms = mTileMatrixSets[ sl.tileMatrixSet ];
+
       for ( QDomElement e2 = e1.firstChildElement( "TileMatrixSetLimits" ); !e2.isNull(); e2 = e2.nextSiblingElement( "TileMatrixSetLimits" ) )
       {
         for ( QDomElement e3 = e2.firstChildElement( "TileMatrixLimits" ); !e3.isNull(); e3 = e3.nextSiblingElement( "TileMatrixLimits" ) )
@@ -2643,17 +2681,56 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
           QString id = e3.firstChildElement( "TileMatrix" ).text();
 
-          limit.minTileRow = e3.firstChildElement( "MinTileRow" ).text().toInt();
-          limit.maxTileRow = e3.firstChildElement( "MaxTileRow" ).text().toInt();
-          limit.minTileCol = e3.firstChildElement( "MinTileCol" ).text().toInt();
-          limit.maxTileCol = e3.firstChildElement( "MaxTileCol" ).text().toInt();
+          bool isValid = false;
+          int matrixWidth = -1, matrixHeight = -1;
+          foreach( const QgsWmtsTileMatrix &m, tms.tileMatrices )
+          {
+            isValid = m.identifier == id;
+            if ( isValid )
+            {
+              matrixWidth = m.matrixWidth;
+              matrixHeight = m.matrixHeight;
+              break;
+            }
+          }
 
-          QgsDebugMsg( QString( "   TileMatrix id:%1 row:%2-%3 col:%4-%5" )
+          if ( isValid )
+          {
+            limit.minTileRow = e3.firstChildElement( "MinTileRow" ).text().toInt();
+            limit.maxTileRow = e3.firstChildElement( "MaxTileRow" ).text().toInt();
+            limit.minTileCol = e3.firstChildElement( "MinTileCol" ).text().toInt();
+            limit.maxTileCol = e3.firstChildElement( "MaxTileCol" ).text().toInt();
+
+            isValid =
+              limit.minTileCol >= 0 && limit.minTileCol < matrixWidth &&
+              limit.maxTileCol >= 0 && limit.maxTileCol < matrixWidth &&
+              limit.minTileCol <= limit.maxTileCol &&
+              limit.minTileRow >= 0 && limit.minTileRow < matrixHeight &&
+              limit.maxTileRow >= 0 && limit.maxTileRow < matrixHeight &&
+              limit.minTileRow <= limit.maxTileRow;
+          }
+          else
+          {
+            QgsDebugMsg( QString( "   TileMatrix id:%1 not found." ).arg( id ) );
+          }
+
+          QgsDebugMsg( QString( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5  %6" )
                        .arg( id )
                        .arg( limit.minTileRow ).arg( limit.maxTileRow )
                        .arg( limit.minTileCol ).arg( limit.maxTileCol )
+                       .arg( isValid ? "valid" : "INVALID" )
                      );
-          sl.limits.insert( id, limit );
+
+          if ( isValid )
+          {
+            sl.limits.insert( id, limit );
+          }
+          else
+          {
+            QgsDebugMsg( QString( "Limit of tileset %1 of matrix set %2 of layer %3 is invalid - ignored" )
+                         .arg( id ).arg( sl.tileMatrixSet ).arg( l.identifier )
+                       );
+          }
         }
       }
 
@@ -3618,7 +3695,7 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
 
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
   bool changeXY = false;
-  if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
+  if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
   {
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;

@@ -128,17 +128,24 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
         <property name="text">
          <string>Ignore GetFeatureInfo URI reported in capabilities</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
         <property name="text">
          <string>Ignore GetMap URI reported in capabilities</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <widget class="QCheckBox" name="cbxIgnoreAxisOrientation">
+        <property name="text">
+         <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
         </property>
        </widget>
       </item>
