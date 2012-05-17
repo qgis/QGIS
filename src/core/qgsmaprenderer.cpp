@@ -997,6 +997,16 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   }
   setMapUnits( units );
 
+  // set projections flag
+  QDomNode projNode = theNode.namedItem( "projections" );
+  element = projNode.toElement();
+  setProjectionsEnabled( element.text().toInt() );
+
+  // set destination CRS
+  QgsCoordinateReferenceSystem srs;
+  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
+  srs.readXML( srsNode );
+  setDestinationCrs( srs );
 
   // set extent
   QgsRectangle aoi;
@@ -1024,18 +1034,6 @@ bool QgsMapRenderer::readXML( QDomNode & theNode )
   aoi.setYMaximum( ymax );
 
   setExtent( aoi );
-
-  // set projections flag
-  QDomNode projNode = theNode.namedItem( "projections" );
-  element = projNode.toElement();
-  setProjectionsEnabled( element.text().toInt() );
-
-  // set destination CRS
-  QgsCoordinateReferenceSystem srs;
-  QDomNode srsNode = theNode.namedItem( "destinationsrs" );
-  srs.readXML( srsNode );
-  setDestinationCrs( srs );
-
   return true;
 }
 
