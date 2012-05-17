@@ -728,8 +728,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     int col0 = qBound( minTileCol, ( int ) floor(( viewExtent.xMinimum() - tm->topLeft.x() ) / twMap ), maxTileCol );
     int row0 = qBound( minTileRow, ( int ) floor(( tm->topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
-    int col1 = qBound( minTileCol, ( int )  ceil(( viewExtent.xMaximum() - tm->topLeft.x() ) / twMap ), maxTileCol );
-    int row1 = qBound( minTileRow, ( int )  ceil(( tm->topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
+    int col1 = qBound( minTileCol, ( int ) floor(( viewExtent.xMaximum() - tm->topLeft.x() ) / twMap ), maxTileCol );
+    int row1 = qBound( minTileRow, ( int ) floor(( tm->topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
 
 #if QGISDEBUG
     int n = ( col1 - col0 + 1 ) * ( row1 - row0 + 1 );
@@ -965,6 +965,19 @@ void QgsWmsProvider::tileReplyFinished()
                       .arg( QString::fromUtf8( pair.second ) ), 3 );
   }
 #endif
+
+  QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
+
+  QNetworkCacheMetaData::RawHeaderList hl;
+  foreach( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+  {
+    if( h.first != "Cache-Control" )
+      hl.append( h );
+  }
+  cmd.setRawHeaders( hl );
+
+  QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
+
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();
@@ -1093,7 +1106,7 @@ void QgsWmsProvider::tileReplyFinished()
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Reply to earlier tile request received too late [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
+      QgsDebugMsg( QString( "Reply too late [%1]" ).arg( reply->url().toString() ) );
     }
 
     mTileReplies.removeOne( reply );
