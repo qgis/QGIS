@@ -23,6 +23,7 @@ from sextante.lastools.LasToolsAlgorithmProvider import LasToolsAlgorithmProvide
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
 from sextante.fusion.FusionAlgorithmProvider import FusionAlgorithmProvider
+from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
 
 class Sextante:
 
@@ -86,6 +87,7 @@ class Sextante:
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
         Sextante.addProvider(GdalAlgorithmProvider())
+        Sextante.addProvider(PymorphAlgorithmProvider())
         Sextante.addProvider(LasToolsAlgorithmProvider())
         if SextanteUtils.isWindows():
             Sextante.addProvider(FusionAlgorithmProvider())

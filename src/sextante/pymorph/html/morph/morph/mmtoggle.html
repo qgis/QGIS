@@ -1,0 +1,272 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmtoggle</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmneg.html"><tt>mmneg</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmaddm.html"><tt>mmaddm</tt></a>]
+              </td>
+        <td class="title">Operations</td>
+      </tr>
+    </table>
+    <h1>mmtoggle
+      <br>
+      <span class="subtitle">Image contrast enhancement or classification by the toggle operator.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmtoggle</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">f1</span>, 
+          <span class="par">f2</span>, 
+          <span class="par">OPTION</span> = "GRAY"
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f1</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f2</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">OPTION</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Values: 'BINARY' or 'GRAY'.</p><p>Default: 
+                      <code>"GRAY"</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span><p>binary image if option is 'BINARY' or same type as 
+                      <code>f</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmtoggle</span> creates the image 
+          <code>y</code> that is an enhancement or classification of the image 
+          <code>f</code> by the toggle operator, with parameters 
+          <code>f1</code> and 
+          <code>f2</code>. If the OPTION is 'GRAY', it performs an enhancement and, if the OPTION is 'BINARY', it performs a binary classification. In the enhancement, a pixel takes the value of the corresponding pixel in 
+          <code>f1</code> or 
+          <code>f2</code>, according to a minimum distance criterion from 
+          <code>f</code> to 
+          <code>f1</code> or 
+          <code>f</code> to 
+          <code>f2</code>. In the classification, the pixels in 
+          <code>f</code> nearest to 
+          <code>f1</code> receive the value 0 , while the ones nearest to 
+          <code>f2</code> receive the value 1.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Gray-scale option:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f = uint8([0,1,2,3,4,5,6])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f</pre>
+              <pre class="computer">[0 1 2 3 4 5 6]</pre>
+              <pre class="user">&gt;&gt;&gt; f1 = uint8([0,0,0,0,0,0,0])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f1</pre>
+              <pre class="computer">[0 0 0 0 0 0 0]</pre>
+              <pre class="user">&gt;&gt;&gt; f2 = uint8([6,6,6,6,6,6,6])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f2</pre>
+              <pre class="computer">[6 6 6 6 6 6 6]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmtoggle(f,f1,f2)</pre>
+              <pre class="computer">[0 0 0 6 6 6 6]</pre>
+            </div>
+          </div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a = mmreadgray('angiogr.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; b = mmero(a,mmsedisk(2))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; c = mmdil(a,mmsedisk(2))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; d = mmtoggle(a,b,c)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(a)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(d)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmtoggle_001.jpg"></td>
+                  <td><img width="256" src="../images/img_mmtoggle_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmtoggle_001.jpg">a</a></td>
+                  <td><a href="../images/img_mmtoggle_002.jpg">d</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Binary option:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; e = mmreadgray('lenina.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f = mmero(e,mmsedisk(2))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g = mmdil(e,mmsedisk(2))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; h = mmtoggle(e,f,g,'BINARY')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(e)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(h)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmtoggle_003.jpg"></td>
+                  <td><img width="256" src="../images/img_mmtoggle_004.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmtoggle_003.jpg">e</a></td>
+                  <td><a href="../images/img_mmtoggle_004.jpg">h</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Gray-scale option</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmtoggle001.png">
+          </div>
+          <div class="bridge">Binary option</div>
+          <div class="eqfig">
+            <img src="../images/eq_mmtoggle002.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Limitations</H2>
+      <div class="H2">
+        <p>
+          <code>f1</code> must be less or equal 
+          <code>f</code> and 
+          <code>f</code> must be less or equal 
+          <code>f2</code>.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmtoggle(f, f1, f2, OPTION="GRAY"):
+    from string import upper
+    y=mmbinary(mmsubm(f,f1),mmsubm(f2,f))
+    if upper(OPTION) == 'GRAY':
+        t=mmgray(y)
+        y=mmunion(mmintersec(mmneg(t),f1),mmintersec(t,f2))
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmthreshad.html">mmthreshad</a></td>
+              <td class="def">Threshold (adaptive)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmneg.html"><tt>mmneg</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmaddm.html"><tt>mmaddm</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

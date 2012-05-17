@@ -1,0 +1,246 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdcornea</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdcookies.html"><tt>mmdcookies</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdfabric.html"><tt>mmdfabric</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdcornea
+      <br>
+      <span class="subtitle">Cornea cells marking.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      This procedure creates a maker for each cell in a very poor quality microscopic image of a cornea. The composition of an opening with the regional maximum is used to create the markers.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading and topographic view</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The gray-scale image of the cornea is read and displayed. A topographic model is also displayed. We can notice that the cells are formed by small hills in the topographic model. We can also notice that the image is very noisy.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('corneacells.tif');</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; b = mmsurf(a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="318" src="../images/img_mmdcornea_001.jpg"></td>
+                      <td><img width="318" src="../images/img_mmdcornea_002.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdcornea_001.jpg">a</a></td>
+                      <td><a href="../images/img_mmdcornea_002.jpg">b</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Filtering and cell detection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The image is filtered by an alternating sequential filtering with size 2. This filter is composed by openings and closings, removing small peaks and valleys. Next, the regional maxima are detected. For illustrative purpose, they are displayed overlayed on the topographic image view. These regional maxima are the markers for each cell. If anything goes wrong in this step, the error will be propagated throughout the process.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c = mmasf(a,'oc',mmsecross(),2);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; d = mmregmax( c);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmsurf(c));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmsurf(c), d);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="318" src="../images/img_mmdcornea_003.jpg"></td>
+                      <td><img width="318" src="../images/img_mmdcornea_004.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdcornea_003.jpg">mmsurf(c)</a></td>
+                      <td><a href="../images/img_mmdcornea_004.jpg">mmsurf(c), d</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Find the background marker</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Following the paradigm of segmentation by watershed, the background marker is detected by applying the constrained watershed on the negation of the cells image using the markers detected in the last step. These watershed lines partition the image in regions of influence of each cell. For illustrative display, the negative of the cell image is displayed overlayed by the markers on the left, and also overlayed by the watershed lines on the right.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; e = mmneg(a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; f = mmcwatershed(e, d, mmsebox());</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e,d);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(e,f,d);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="318" src="../images/img_mmdcornea_005.jpg"></td>
+                      <td><img width="318" src="../images/img_mmdcornea_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdcornea_005.jpg">e,d</a></td>
+                      <td><a href="../images/img_mmdcornea_006.jpg">e,f,d</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Labeling the markers and gradient</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        As the internal and external markers can be touching, we combine the external marker with value 1 with the labeling of the internal markers added by 1. The labeled marker image is shown on the left. The final watershed will be applied on the gradient  of the original image, which is shown on the right.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; g = mmgray(f, 'uint16', 1);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; h1 = mmaddm(mmlabel(d), uint16(1));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; h = mmintersec(mmgray(d,'uint16'), h1);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; i = mmunion( g, h);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(i);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; j = mmgradm( a);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(j);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="318" src="../images/img_mmdcornea_007.jpg"></td>
+                      <td><img width="318" src="../images/img_mmdcornea_008.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdcornea_007.jpg">i</a></td>
+                      <td><a href="../images/img_mmdcornea_008.jpg">j</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Constrained watershed of the gradient from markers</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Apply the constrained watershed on the gradient from the labeled internal and external markers. Show the watershed lines on the left and the results overlayed on the original image, on the right.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; k = mmcwatershed(j, i);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow( k);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a, k, k);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="318" src="../images/img_mmdcornea_009.jpg"></td>
+                      <td><img width="318" src="../images/img_mmdcornea_010.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdcornea_009.jpg">k</a></td>
+                      <td><a href="../images/img_mmdcornea_010.jpg">a, k, k</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdcookies.html"><tt>mmdcookies</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdfabric.html"><tt>mmdfabric</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

@@ -57,10 +57,11 @@ class GdalUtils():
 
     @staticmethod
     def getSupportedRasterExtensions():
-        allexts = []
+        allexts = ["tif"]
         for exts in GdalUtils.getSupportedRasters().values():
             for ext in exts:
-                allexts.append(ext)
+                if ext not in allexts:
+                    allexts.append(ext)
         return allexts
 
     @staticmethod

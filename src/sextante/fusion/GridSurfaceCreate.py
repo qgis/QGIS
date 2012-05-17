@@ -2,9 +2,9 @@ import os
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.fusion.FusionUtils import FusionUtils
 from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.fusion.FusionAlgorithm import FusionAlgorithm
+from sextante.outputs.OutputFile import OutputFile
 
 class GridSurfaceCreate(FusionAlgorithm):
 
@@ -22,7 +22,7 @@ class GridSurfaceCreate(FusionAlgorithm):
         self.addParameter(ParameterNumber(self.CELLSIZE, "Cellsize", 0, None, 10.0))
         self.addParameter(ParameterSelection(self.XYUNITS, "XY Units", self.UNITS))
         self.addParameter(ParameterSelection(self.ZUNITS, "Z Units", self.UNITS))
-        self.addOutput(OutputRaster(self.OUTPUT, "PLANS DTM surface"))
+        self.addOutput(OutputFile(self.OUTPUT, "PLANS DTM surface"))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):

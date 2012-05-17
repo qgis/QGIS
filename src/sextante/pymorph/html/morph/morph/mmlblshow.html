@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmlblshow</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmdtshow.html"><tt>mmdtshow</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmshow.html"><tt>mmshow</tt></a>]
+              </td>
+        <td class="title">Visualization</td>
+      </tr>
+    </table>
+    <h1>mmlblshow
+      <br>
+      <span class="subtitle">Display a labeled image assigning a random color for each label.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmlblshow</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">option</span> = 'noborder'
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                          <p>Labeled image.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">option</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>BORDER or NOBORDER: includes or not a white border around each labeled region</p><p>Default: 
+                      <code>'noborder'</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                          <p>Optionally return RGB uint8 image</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Displays the labeled image 
+          <code>f</code> (uint8 or uint16) with a pseudo color where each label appears with a random color. The image is displayed in the MATLAB figure only if no output parameter is given.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('blob3.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f1=mmlabel(f,mmsebox())</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmlblshow(f1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmlblshow(f1,'border')</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="128" src="../images/img_mmlblshow_001.jpg"></td>
+                  <td><img width="128" src="../images/img_mmlblshow_002.jpg"></td>
+                  <td><img width="128" src="../images/img_mmlblshow_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmlblshow_001.jpg">f1</a></td>
+                  <td><a href="../images/img_mmlblshow_002.jpg">f1</a></td>
+                  <td><a href="../images/img_mmlblshow_003.jpg">f1,'border'</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmlblshow(f, option='noborder'):
+    import string
+    import adpil
+    if (mmisbinary(f)) or (len(f.shape) != 2):
+      print 'Error, mmlblshow: works only for grayscale labeled image'
+      return
+    option = string.upper(option);
+    if option == 'NOBORDER':
+      border = 0.0;
+    elif option == 'BORDER':
+      border = 1.0;
+    else:
+      print 'Error: option must be BORDER or NOBORDER'
+    y=mmglblshow(f, border);
+    adpil.adshow(y)
+    return
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmlabel.html">mmlabel</a></td>
+              <td class="def">Label a binary image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmlblshow.html">mmlblshow</a></td>
+              <td class="def">Display a labeled image assigning a random color for each label.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmshow.html">mmshow</a></td>
+              <td class="def">Display binary or gray-scale images and optionally overlay it with binary images.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmdtshow.html"><tt>mmdtshow</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmshow.html"><tt>mmshow</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

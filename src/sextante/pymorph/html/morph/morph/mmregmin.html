@@ -1,0 +1,297 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmregmin</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmregmax.html"><tt>mmregmax</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmsuprec.html"><tt>mmsuprec</tt></a>]
+              </td>
+        <td class="title">Connected Operators</td>
+      </tr>
+    </table>
+    <h1>mmregmin
+      <br>
+      <span class="subtitle">Regional Minimum (with generalized dynamics).
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmregmin</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">Bc</span> = None, 
+          <span class="par">option</span> = "binary"
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Bc</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>(connectivity).</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">option</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Choose one of: BINARY: output a binary image; VALUE: output a grayscale image with points at the regional minimum with the pixel values of the input image; DYNAMICS: output a grayscale image with points at the regional minimum with its dynamics; AREA-DYN: int32 image with the area-dynamics; VOLUME-DYN: int32 image with the volume-dynamics.</p><p>Default: 
+                      <code>"binary"</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmregmin</span> creates a binary image 
+          <code>f</code> by computing the regional minima of 
+          <code>f</code>, according to the connectivity defined by the structuring element 
+          <code>Bc</code>. A regional minimum is a flat zone not surrounded by flat zones of lower gray values. A flat zone is a maximal connected component of a gray-scale image with same pixel values. There are three output options: binary image; valued image; and generalized dynamics. The dynamics of a regional minima is the minimum height a pixel has to climb in a walk to reach another regional minima with a higher dynamics. The area-dyn is the minimum area a catchment basin has to raise to reach another regional minima with higher area-dynamics. The volume-dyn is the minimum volume a catchment basin has to raise to reach another regional minima with a higher volume dynamics.
+
+          <br>The dynamics concept was first introduced in Grimaud:92 and it is the basic notion for the hierarchical or multiscale watershed transform.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a = uint8([
+    [10,  10,  10,  10,  10,  10,  10],
+    [10,   9,   6,  18,   6,   5,  10],
+    [10,   9,   6,  18,   6,   5,  10],
+    [10,   9,   9,  15,   4,   9,  10],
+    [10,   9,   9,  15,  12,  10,  10],
+    [10,  10,  10,  10,  10,  10,  10]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmregmin(a)</pre>
+              <pre class="computer">[[0 0 0 0 0 0 0]
+ [0 0 1 0 0 1 0]
+ [0 0 1 0 0 1 0]
+ [0 0 0 0 1 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmregmin(a,mmsecross(),'value')</pre>
+              <pre class="computer">[[0 0 0 0 0 0 0]
+ [0 0 6 0 0 5 0]
+ [0 0 6 0 0 5 0]
+ [0 0 0 0 4 0 0]
+ [0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmregmin(a,mmsecross(),'dynamics')</pre>
+              <pre class="computer">[[ 0  0  0  0  0  0  0]
+ [ 0  0  4  0  0  1  0]
+ [ 0  0  4  0  0  1  0]
+ [ 0  0  0  0 14  0  0]
+ [ 0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0]]</pre>
+            </div>
+          </div>
+          <div class="bridge">Image example, filtering the regional minima:</div>
+          <br>Typically, the regional minima is very numerous in a real image. To filter the regional minima, one can use the 
+          <span class="fun">mmhmin</span>, 
+          <span class="fun">mmclose</span>, 
+          <span class="fun">mmareaclose</span>, or other functions that simplifies basins.
+
+          <br>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f1=mmreadgray('bloodcells.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; m1=mmregmin(f1,mmsebox())</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f1,m1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f2=mmhmin(f1,70)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f2)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; m2=mmregmin(f2,mmsebox())</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f2,m2)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmregmin_001.jpg"></td>
+                  <td><img width="256" src="../images/img_mmregmin_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmregmin_001.jpg">f1,m1</a></td>
+                  <td><a href="../images/img_mmregmin_002.jpg">f2</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmregmin_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmregmin_003.jpg">f2,m2</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Multiscale watershed</div>
+          <br>To build a pyramid of nested segmentations, use the marker for the watershed only the minima above a given dynamic. Two levels of this pyramid are build below, one with dynamic above 20 and the other, above 40.
+
+          <br>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('cameraman.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmgradm(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mh=mmregmin(g,mmsecross(),'dynamics')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; ws1=mmcwatershed(g, mmbinary(mh, 20))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; ws2=mmcwatershed(g, mmbinary(mh, 40))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(ws1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(ws2)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmregmin_004.jpg"></td>
+                  <td><img width="256" src="../images/img_mmregmin_005.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmregmin_004.jpg">ws1</a></td>
+                  <td><a href="../images/img_mmregmin_005.jpg">ws2</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmregmin001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmregmin(f, Bc=None, option="binary"):
+    if Bc is None: Bc = mmsecross()
+    fplus = mmaddm(f,1)
+    g = mmsubm(mmsuprec(fplus,f,Bc),f)
+    y = mmunion(mmthreshad(g,1),mmthreshad(f,0,0))
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmregmax.html">mmregmax</a></td>
+              <td class="def">Regional Maximum.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+              <td class="def">Create a box structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhmin.html">mmhmin</a></td>
+              <td class="def">Remove basins with contrast less than h.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmareaclose.html">mmareaclose</a></td>
+              <td class="def">Area closing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmregmax.html"><tt>mmregmax</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmsuprec.html"><tt>mmsuprec</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

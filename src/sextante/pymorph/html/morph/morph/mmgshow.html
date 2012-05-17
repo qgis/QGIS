@@ -1,0 +1,196 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmgshow</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmglblshow.html"><tt>mmglblshow</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmdtshow.html"><tt>mmdtshow</tt></a>]
+              </td>
+        <td class="title">Visualization</td>
+      </tr>
+    </table>
+    <h1>mmgshow
+      <br>
+      <span class="subtitle">Apply binary overlays as color layers on a binary or gray-scale image
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">Y = 
+          <span class="fun">mmgshow</span>(
+                  
+          <span class="par">X</span>, 
+          <span class="par">X1</span> = None, 
+          <span class="par">X2</span> = None, 
+          <span class="par">X3</span> = None, 
+          <span class="par">X4</span> = None, 
+          <span class="par">X5</span> = None, 
+          <span class="par">X6</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">X</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">X1</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>Red overlay.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">X2</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>Green overlay.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">X3</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>Blue overlay.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">X4</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>Magenta overlay.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">X5</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>Yellow overlay.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">X6</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>Cyan overlay.</p><p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">Y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmgshow(X, X1=None, X2=None, X3=None, X4=None, X5=None, X6=None):
+    if mmisbinary(X): X = mmgray(X,'uint8')
+    r = X
+    g = X
+    b = X
+    if X1 is not None: # red 1 0 0
+      assert mmisbinary(X1),'X1 must be binary overlay'
+      x1 = mmgray(X1,'uint8')
+      r = mmunion(r,x1)
+      g = mmintersec(g,mmneg(x1))
+      b = mmintersec(b,mmneg(x1))
+    if X2 is not None: # green 0 1 0
+      assert mmisbinary(X2),'X2 must be binary overlay'
+      x2 = mmgray(X2,'uint8')
+      r = mmintersec(r,mmneg(x2))
+      g = mmunion(g,x2)
+      b = mmintersec(b,mmneg(x2))
+    if X3 is not None: # blue 0 0 1
+      assert mmisbinary(X3),'X3 must be binary overlay'
+      x3 = mmgray(X3,'uint8')
+      r = mmintersec(r,mmneg(x3))
+      g = mmintersec(g,mmneg(x3))
+      b = mmunion(b,x3)
+    if X4 is not None: # magenta 1 0 1
+      assert mmisbinary(X4),'X4 must be binary overlay'
+      x4 = mmgray(X4,'uint8')
+      r = mmunion(r,x4)
+      g = mmintersec(g,mmneg(x4))
+      b = mmunion(b,x4)
+    if X5 is not None: # yellow 1 1 0
+      assert mmisbinary(X5),'X5 must be binary overlay'
+      x5 = mmgray(X5,'uint8')
+      r = mmunion(r,x5)
+      g = mmunion(g,x5)
+      b = mmintersec(b,mmneg(x5))
+    if X6 is not None: # cyan 0 1 1
+      assert mmisbinary(X6),'X6 must be binary overlay'
+      x6 = mmgray(X6,'uint8')
+      r = mmintersec(r,mmneg(x6))
+      g = mmunion(g,x6)
+      b = mmunion(b,x6)
+    return mmconcat('d',r,g,b)
+    return Y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmshow.html">mmshow</a></td>
+              <td class="def">Display binary or gray-scale images and optionally overlay it with binary images.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmglblshow.html"><tt>mmglblshow</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmdtshow.html"><tt>mmdtshow</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

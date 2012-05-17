@@ -1,0 +1,216 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmvmax</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmhmin.html"><tt>mmhmin</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmhmax.html"><tt>mmhmax</tt></a>]
+              </td>
+        <td class="title">Connected Operators</td>
+      </tr>
+    </table>
+    <h1>mmvmax
+      <br>
+      <span class="subtitle">Remove domes with volume less than v.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmvmax</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">v</span> = 1, 
+          <span class="par">Bc</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">v</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Volume parameter.</p><p>Default: 
+                      <code>1</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">Bc</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Structuring element (connectivity).</p><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmvmax</span> This operator removes connected domes with volume less than 
+          <code>v</code>. This function is very similar to 
+          <span class="fun">mmhmax</span>, but instead of using a gray scale criterion (contrast) for the dome, it uses a volume criterion.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; a = uint8([
+    [4,  3,  6,  1,  3,  5,  2],
+    [2,  9,  6,  1,  6,  7,  3],
+    [8,  9,  3,  2,  4,  9,  4],
+    [3,  1,  2,  1,  2,  4,  2]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print mmvmax(a,10,mmsebox())</pre>
+              <pre class="computer">[[4 3 6 1 3 5 2]
+ [2 6 6 1 5 5 3]
+ [6 6 3 2 4 5 4]
+ [3 1 2 1 2 4 2]]</pre>
+            </div>
+          </div>
+          <div class="bridge">Signal example:</div>
+          <div class="bridge">Image example:</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f = mmreadgray('astablet.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fb = mmvmax(f,80000)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(fb)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmregmax(fb))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="251" src="../images/img_mmvmax_001.jpg"></td>
+                  <td><img width="251" src="../images/img_mmvmax_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmvmax_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmvmax_002.jpg">fb</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="251" src="../images/img_mmvmax_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmvmax_003.jpg">mmregmax(fb)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmvmax(f, v=1, Bc=None):
+    if Bc is None: Bc = mmsecross()
+    print 'Not implemented yet'
+    return None
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmsebox.html">mmsebox</a></td>
+              <td class="def">Create a box structuring element.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsecross.html">mmsecross</a></td>
+              <td class="def">Diamond structuring element and elementary 3x3 cross.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhmin.html">mmhmin</a></td>
+              <td class="def">Remove basins with contrast less than h.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmareaopen.html">mmareaopen</a></td>
+              <td class="def">Area opening</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmhmin.html"><tt>mmhmin</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmhmax.html"><tt>mmhmax</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

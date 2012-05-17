@@ -53,6 +53,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         if not self.model.activateAlgorithm(self.elementIndex, True):
             QtGui.QMessageBox.warning(None, "Could not activate Algorithm",
                                    "The selected algorithm depends on other currently non-active algorithms.\nActivate them them before trying to activate it.")
+
     def removeElement(self):
         if isinstance(self.element, Parameter):
             if not self.model.removeParameter(self.elementIndex):
