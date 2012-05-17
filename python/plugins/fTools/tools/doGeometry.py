@@ -232,6 +232,14 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       self.shapefileName = None
       self.encoding = None
 
+      res = QMessageBox.warning( self, self.tr( "Geometry"),
+                                 self.tr( "Currently QGIS doesn't allow simultaneous access from \
+                                 different threads to the same datasource. Make sure your layer's \
+                                 attribute tables are closed. Continue?"),
+                                 QMessageBox.Yes | QMessageBox.No )
+      if res == QMessageBox.No:
+        return
+
     self.buttonOk.setEnabled( False )
     self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction,
                                       vlayer, myParam, myField, self.shapefileName, self.encoding,

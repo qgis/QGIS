@@ -2936,51 +2936,57 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         ++layers, ++styles )
   {
     // Is sublayer visible?
-    if ( activeSubLayerVisibility.find( *layers ).value() )
+    if ( !activeSubLayerVisibility.find( *layers ).value() )
+      continue;
+
+    // Is sublayer queryable?
+    if ( !mQueryableForLayer.find( *layers ).value() )
+      continue;
+
+    QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
+
+    QUrl requestUrl( mGetFeatureInfoUrlBase );
+    setQueryItem( requestUrl, "SERVICE", "WMS" );
+    setQueryItem( requestUrl, "VERSION", mCapabilities.version );
+    setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
+    setQueryItem( requestUrl, "BBOX", bbox );
+    setQueryItem( requestUrl, crsKey, imageCrs );
+    setQueryItem( requestUrl, "WIDTH", QString::number( cachedViewWidth ) );
+    setQueryItem( requestUrl, "HEIGHT", QString::number( cachedViewHeight ) );
+    setQueryItem( requestUrl, "LAYERS", *layers );
+    setQueryItem( requestUrl, "STYLES", *styles );
+    setQueryItem( requestUrl, "FORMAT", imageMimeType );
+    setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
+    setQueryItem( requestUrl, "INFO_FORMAT", format );
+
+    if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
     {
-      // Is sublayer queryable?
-      if ( mQueryableForLayer.find( *layers ).value() )
-      {
-        QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
-
-        QUrl requestUrl( mGetFeatureInfoUrlBase );
-        setQueryItem( requestUrl, "SERVICE", "WMS" );
-        setQueryItem( requestUrl, "VERSION", mCapabilities.version );
-        setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
-        setQueryItem( requestUrl, "BBOX", bbox );
-        setQueryItem( requestUrl, crsKey, imageCrs );
-        setQueryItem( requestUrl, "WIDTH", QString::number( cachedViewWidth ) );
-        setQueryItem( requestUrl, "HEIGHT", QString::number( cachedViewHeight ) );
-        setQueryItem( requestUrl, "LAYERS", *layers );
-        setQueryItem( requestUrl, "STYLES", *styles );
-        setQueryItem( requestUrl, "FORMAT", imageMimeType );
-        setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
-        setQueryItem( requestUrl, "INFO_FORMAT", format );
-        setQueryItem( requestUrl, "X", QString::number( point.x() ) );
-        setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
-
-        if ( mFeatureCount > 0 )
-        {
-          setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mFeatureCount ) );
-        }
-
-        // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
-        //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
-
-        QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
-        QNetworkRequest request( requestUrl );
-        setAuthorization( request );
-        mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
-        connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
-
-        while ( mIdentifyReply )
-        {
-          QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
-        }
-
-        results << mIdentifyResult;
-      }
+      setQueryItem( requestUrl, "I", QString::number( point.x() ) );
+      setQueryItem( requestUrl, "J", QString::number( point.y() ) );
     }
+    else
+    {
+      setQueryItem( requestUrl, "X", QString::number( point.x() ) );
+      setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
+    }
+
+    if ( mFeatureCount > 0 )
+    {
+      setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mFeatureCount ) );
+    }
+
+    QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
+    QNetworkRequest request( requestUrl );
+    setAuthorization( request );
+    mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
+    connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
+
+    while ( mIdentifyReply )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
+    }
+
+    results << mIdentifyResult;
   }
 
   QgsDebugMsg( "Exiting with: " + results.join( "\n------\n" ) );
