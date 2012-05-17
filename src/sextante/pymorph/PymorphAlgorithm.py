@@ -9,6 +9,7 @@ class PymorphAlgorithm(ScriptAlgorithm):
 
     LOAD_LAYER_SCRIPT = "from sextante.gdal.GdalUtils import GdalUtils\n" \
                         +"from sextante.pymorph.mmorph import datatype\n" \
+                        + "import numpy\n" \
                         +"gdal_datatypes={'binary':'Byte','uint8':'Byte','uint16':'UInt16','int32':'Int32'}\n" \
                         + "try:\n" \
                         + "\tfrom osgeo import gdal\n" \
@@ -16,13 +17,16 @@ class PymorphAlgorithm(ScriptAlgorithm):
                         + "\timport gdal\n" \
                         + "gdal.AllRegister()\n" \
                         + "img = gdal.Open(input_filename)\n"\
-                        + "input_array = img.ReadAsArray()\n"
+                        + "input_array = img.ReadAsArray()\n" \
+                        + "if isinstance(input_array[0][0], (numpy.float32, numpy.float64)):\n" \
+                        + "\tinput_array = input_array.astype(numpy.int32)\n"
 
     SAVE_LAYER_SCRIPT = "\ndrv = gdal.GetDriverByName(GdalUtils.getFormatShortNameFromFilename(output_filename))\n" \
-                        + "out = drv.Create(output_filename, img.RasterXSize, img.RasterYSize, 1, gdal.GetDataTypeByName(gdal_datatypes[datatype(output_array)]))\n"\
+                        + "out = drv.Create(output_filename, img.RasterXSize, img.RasterYSize, 1, gdal.GetDataTypeByName('UInt16'))\n"\
                         + "out.SetGeoTransform( img.GetGeoTransform())\n"\
                         + "out.SetProjection( img.GetProjectionRef())\n"\
                         + "out.GetRasterBand(1).WriteArray(output_array)"
+                        #gdal_datatypes[datatype(output_array)]
 
     def getCopy(self):
         newone = PymorphAlgorithm(self.descriptionFile)
