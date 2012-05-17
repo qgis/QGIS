@@ -1237,6 +1237,16 @@ Cela peut provoquer des effets inattendus.</translation>
         <translation>Sommets à ajouter</translation>
     </message>
     <message>
+        <source>Warning</source>
+        <translation type="unfinished">Attention</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
@@ -4411,6 +4421,12 @@ Veulliez essayer un autre champ...</translation>
     <message>
         <source>Unable to delete existing shapefile.</source>
         <translation>Impossible d&apos;effacer le fichier shapefile existant.</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
@@ -37373,6 +37389,7 @@ p, li { white-space: pre-wrap; }
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -40581,6 +40598,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <comment>not added features count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -42618,17 +42636,17 @@ Il s&apos;agit peut-être d&apos;une erreur de configuration du serveur. Voulez-
         <translation>WMS Version</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3059"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3065"/>
         <source>Map getfeatureinfo error %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3069"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3075"/>
         <source>ERROR: GetFeatureInfo failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3070"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3076"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -42946,7 +42964,7 @@ La réponse est :
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2208"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2288"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2291"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3070"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3076"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
@@ -43078,17 +43096,17 @@ La réponse est :
         <translation>Erreurs</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2993"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2999"/>
         <source>Layer cannot be queried in plain text.</source>
         <translation>La couche ne peut pas être interrogée en texte simple.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2999"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3005"/>
         <source>Layer cannot be queried.</source>
         <translation>La couche ne peut pas être interrogée.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3043"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3049"/>
         <source>identify request redirected.</source>
         <translation>requête d&apos;identification redirigée.</translation>
     </message>
