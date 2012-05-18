@@ -1,3 +1,19 @@
+/***************************************************************************
+                              qgswfsserver.cpp
+                              -------------------
+  begin                : February 27, 2012
+  copyright            : (C) 2012 by René-Luc D'Hont & Marco Hugentobler
+  email                : rldhont at 3liz dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgswfsserver.h"
 #include "qgsconfigparser.h"
 #include "qgscrscache.h"
@@ -101,9 +117,52 @@ QDomDocument QgsWFSServer::getCapabilities()
   QString requestUrl = getenv( "REQUEST_URI" );
   QUrl mapUrl( requestUrl );
   mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
-  mapUrl.removeQueryItem( "REQUEST" );
-  mapUrl.removeQueryItem( "VERSION" );
-  mapUrl.removeQueryItem( "SERVICE" );
+
+  //Add non-default ports to url
+  QString portString = getenv( "SERVER_PORT" );
+  if ( !portString.isEmpty() )
+  {
+    bool portOk;
+    int portNumber = portString.toInt( &portOk );
+    if ( portOk )
+    {
+      if ( portNumber != 80 )
+      {
+        mapUrl.setPort( portNumber );
+      }
+    }
+  }
+
+  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  {
+    mapUrl.setScheme( "https" );
+  }
+  else
+  {
+    mapUrl.setScheme( "http" );
+  }
+
+  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
+  {
+    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+  }
   hrefString = mapUrl.toString();
 
   //only Get supported for the moment
