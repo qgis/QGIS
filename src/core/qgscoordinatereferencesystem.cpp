@@ -1051,27 +1051,38 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
   {
     bool initialized = false;
 
-    QDomNode myNode = srsNode.namedItem( "authid" );
-    if ( !myNode.isNull() )
-    {
-      operator=( QgsCRSCache::instance()->crsByAuthId( myNode.toElement().text() ) );
-      if ( isValid() )
-      {
-        initialized = true;
-      }
-    }
+    long srsid = srsNode.namedItem( "srsid" ).toElement().text().toLong();
 
-    if ( !initialized )
+    QDomNode myNode;
+
+    if ( srsid < USER_CRS_START_ID )
     {
-      myNode = srsNode.namedItem( "epsg" );
+      myNode = srsNode.namedItem( "authid" );
       if ( !myNode.isNull() )
       {
-        operator=( QgsCRSCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
+        operator=( QgsCRSCache::instance()->crsByAuthId( myNode.toElement().text() ) );
         if ( isValid() )
         {
           initialized = true;
         }
       }
+
+      if ( !initialized )
+      {
+        myNode = srsNode.namedItem( "epsg" );
+        if ( !myNode.isNull() )
+        {
+          operator=( QgsCRSCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
+          if ( isValid() )
+          {
+            initialized = true;
+          }
+        }
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "Ignoring authid/epsg for user crs." );
     }
 
     if ( initialized )
