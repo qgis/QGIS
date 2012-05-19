@@ -283,7 +283,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
 
   QString mySql = "select srs_id,description,projection_acronym,"
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
-                  "from tbl_srs where " + expression + "=" + quotedValue( value );
+                  "from tbl_srs where " + expression + "=" + quotedValue( value ) + " order by deprecated";
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(),
                               mySql.toUtf8().length(),
                               &myPreparedStatement, &myTail );
@@ -471,7 +471,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
    * - if the above does not match perform a whole text search on proj4 string (if not null)
    */
   // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
-  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4String.trimmed() ) );
+  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4String.trimmed() ) + " order by deprecated" );
   if ( myRecord.empty() )
   {
     // Ticket #722 - aaronr
@@ -506,7 +506,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       myStart2 = myLat2RegExp.indexIn( theProj4String, myStart2 );
       theProj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
       QgsDebugMsg( "trying proj4string match with swapped lat_1,lat_2" );
-      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4StringModified.trimmed() ) );
+      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4StringModified.trimmed() ) + " order by deprecated" );
     }
   }
 
@@ -540,13 +540,13 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
 
     if ( !datum.isEmpty() )
     {
-      myRecord = getRecord( sql + delim + datum );
+      myRecord = getRecord( sql + delim + datum + " order by deprecated" );
     }
 
     if ( myRecord.empty() )
     {
       // datum might have disappeared in definition - retry without it
-      myRecord = getRecord( sql );
+      myRecord = getRecord( sql + " order by deprecated" );
     }
   }
 
@@ -586,7 +586,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     if ( mIsValidFlag )
     {
       // but the proj.4 parsed string might already be in our database
-      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) );
+      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) + " order by deprecated" );
       if ( myRecord.empty() )
       {
         // It's not, so try to add it
@@ -596,7 +596,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
         if ( mIsValidFlag )
         {
           // but validate that it's there afterwards
-          myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) );
+          myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) + " order by deprecated" );
         }
       }
 
@@ -956,7 +956,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   // Set up the query to retrieve the projection information
   // needed to populate the list
   QString mySql = QString( "select srs_id,parameters from tbl_srs where "
-                           "projection_acronym=%1 and ellipsoid_acronym=%2" )
+                           "projection_acronym=%1 and ellipsoid_acronym=%2 order by deprecated" )
                   .arg( quotedValue( mProjectionAcronym ) )
                   .arg( quotedValue( mEllipsoidAcronym ) );
   // Get the full path name to the sqlite3 spatial reference database.
@@ -1240,7 +1240,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
 
   QString myDatabaseFileName;
   QString myProjString;
-  QString mySql = QString( "select parameters from tbl_srs where srs_id = %1" ).arg( theSrsId );
+  QString mySql = QString( "select parameters from tbl_srs where srs_id = %1 order by deprecated" ).arg( theSrsId );
 
   QgsDebugMsg( "mySrsId = " + QString::number( theSrsId ) );
   QgsDebugMsg( "USER_CRS_START_ID = " + QString::number( USER_CRS_START_ID ) );
@@ -1479,7 +1479,7 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   const char *tail;
   sqlite3_stmt *select;
-  QString sql = "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name IS NOT NULL AND auth_id IS NOT NULL";
+  QString sql = "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name IS NOT NULL AND auth_id IS NOT NULL order by deprecated";
   if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) != SQLITE_OK )
   {
     qCritical( "Could not prepare: %s [%s]\n", sql.toAscii().constData(), sqlite3_errmsg( database ) );
