@@ -774,15 +774,17 @@ QgsZipItem::~QgsZipItem()
 }
 
 // internal function to scan a vsidir (zip or tar file) recursively
-// hopefully this will make it to GDAL
+// GDAL trunk has this since r24423 (05/16/12) - VSIReadDirRecursive()
+// use a copy of the function internally for now
 char **VSIReadDirRecursive1( const char *pszPath )
 {
-  char **papszFiles = NULL;
+  CPLStringList oFiles = NULL;
   char **papszFiles1 = NULL;
   char **papszFiles2 = NULL;
   VSIStatBufL psStatBuf;
-  char szTemp1[1096];
-  char szTemp2[1096];
+  CPLString osTemp1, osTemp2;
+  int i, j;
+  int nCount1, nCount2;
 
   // get listing
   papszFiles1 = VSIReadDir( pszPath );
@@ -790,35 +792,42 @@ char **VSIReadDirRecursive1( const char *pszPath )
     return NULL;
 
   // get files and directories inside listing
-  for ( int i = 0; i < CSLCount( papszFiles1 ); i++ )
+  nCount1 = CSLCount( papszFiles1 );
+  for ( i = 0; i < nCount1; i++ )
   {
     // build complete file name for stat
-    strcpy( szTemp1, pszPath );
-    strcat( szTemp1, ( char* )"/" ); // this might not be ok on windows
-    strcat( szTemp1, papszFiles1[i] );
+    osTemp1.clear();
+    osTemp1.append( pszPath );
+    osTemp1.append( "/" );
+    osTemp1.append( papszFiles1[i] );
+
     // if is file, add it
-    if ( VSIStatL( szTemp1, &psStatBuf ) == 0 &&
+    if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
          VSI_ISREG( psStatBuf.st_mode ) )
     {
-      papszFiles = CSLAddString( papszFiles, papszFiles1[i] );
+      oFiles.AddString( papszFiles1[i] );
     }
-    else if ( VSIStatL( szTemp1, &psStatBuf ) == 0 &&
+    else if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
               VSI_ISDIR( psStatBuf.st_mode ) )
     {
       // add directory entry
-      strcpy( szTemp2, papszFiles1[i] );
-      strcat( szTemp2, ( char* )"/" ); // this might not be ok on windows
-      papszFiles = CSLAddString( papszFiles, szTemp2 );
+      osTemp2.clear();
+      osTemp2.append( papszFiles1[i] );
+      osTemp2.append( "/" );
+      oFiles.AddString( osTemp2.c_str() );
+
       // recursively add files inside directory
-      papszFiles2 = VSIReadDirRecursive1( szTemp1 );
+      papszFiles2 = VSIReadDirRecursive1( osTemp1.c_str() );
       if ( papszFiles2 )
       {
-        for ( int j = 0; j < CSLCount( papszFiles2 ); j++ )
+        nCount2 = CSLCount( papszFiles2 );
+        for ( j = 0; j < nCount2; j++ )
         {
-          strcpy( szTemp2, papszFiles1[i] );
-          strcat( szTemp2, ( char* )"/" ); // this might not be ok on windows
-          strcat( szTemp2, papszFiles2[j] );
-          papszFiles = CSLAddString( papszFiles, szTemp2 );
+          osTemp2.clear();
+          osTemp2.append( papszFiles1[i] );
+          osTemp2.append( "/" );
+          osTemp2.append( papszFiles2[j] );
+          oFiles.AddString( osTemp2.c_str() );
         }
         CSLDestroy( papszFiles2 );
       }
@@ -826,7 +835,7 @@ char **VSIReadDirRecursive1( const char *pszPath )
   }
   CSLDestroy( papszFiles1 );
 
-  return papszFiles;
+  return oFiles.StealList();
 }
 
 QVector<QgsDataItem*> QgsZipItem::createChildren( )
