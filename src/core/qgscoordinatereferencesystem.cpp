@@ -396,12 +396,13 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   // +proj=lcc +lat_1=46.8 +lat_0=46.8 +lon_0=2.337229166666664 +k_0=0.99987742
   // +x_0=600000 +y_0=2200000 +a=6378249.2 +b=6356515.000000472 +units=m +no_defs
   //
-  QgsDebugMsg( "proj4: " + theProj4String );
+  QString myProj4String = theProj4String.trimmed();
+  QgsDebugMsg( "proj4: " + myProj4String );
   mIsValidFlag = false;
   mWkt.clear();
 
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
-  int myStart = myProjRegExp.indexIn( theProj4String );
+  int myStart = myProjRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
     QgsDebugMsg( "proj string supplied has no +proj argument" );
@@ -411,7 +412,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   mProjectionAcronym = myProjRegExp.cap( 1 );
 
   QRegExp myEllipseRegExp( "\\+ellps=(\\S+)" );
-  myStart = myEllipseRegExp.indexIn( theProj4String );
+  myStart = myEllipseRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
     QgsDebugMsg( "proj string supplied has no +ellps argument" );
@@ -423,7 +424,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   }
 
   QRegExp myAxisRegExp( "\\+a=(\\S+)" );
-  myStart = myAxisRegExp.indexIn( theProj4String );
+  myStart = myAxisRegExp.indexIn( myProj4String );
   if ( myStart == -1 )
   {
     QgsDebugMsg( "proj string supplied has no +a argument" );
@@ -444,7 +445,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
    * - if the above does not match perform a whole text search on proj4 string (if not null)
    */
   // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
-  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4String.trimmed() ) + " order by deprecated" );
+  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( myProj4String ) + " order by deprecated" );
   if ( myRecord.empty() )
   {
     // Ticket #722 - aaronr
@@ -458,20 +459,20 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     int myLength2 = 0;
     QString lat1Str = "";
     QString lat2Str = "";
-    myStart1 = myLat1RegExp.indexIn( theProj4String, myStart1 );
-    myStart2 = myLat2RegExp.indexIn( theProj4String, myStart2 );
+    myStart1 = myLat1RegExp.indexIn( myProj4String, myStart1 );
+    myStart2 = myLat2RegExp.indexIn( myProj4String, myStart2 );
     if ( myStart1 != -1 && myStart2 != -1 )
     {
       myLength1 = myLat1RegExp.matchedLength();
       myLength2 = myLat2RegExp.matchedLength();
-      lat1Str = theProj4String.mid( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN );
-      lat2Str = theProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
+      lat1Str = myProj4String.mid( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN );
+      lat2Str = myProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
     }
     // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
     if ( lat1Str != "" && lat2Str != "" )
     {
       // Make our new string to check...
-      QString theProj4StringModified = theProj4String;
+      QString theProj4StringModified = myProj4String;
       // First just swap in the lat_2 value for lat_1 value
       theProj4StringModified.replace( myStart1 + LAT_PREFIX_LEN, myLength1 - LAT_PREFIX_LEN, lat2Str );
       // Now we have to find the lat_2 location again since it has potentially moved...
@@ -497,7 +498,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     // split on spaces followed by a plus sign (+) to deal
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
-    foreach( QString param, theProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
+    foreach( QString param, myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param.trimmed() ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -536,7 +537,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   {
     // Last ditch attempt to piece together what we know of the projection to find a match...
     QgsDebugMsg( "globbing search for srsid from this proj string" );
-    setProj4String( theProj4String );
+    setProj4String( myProj4String );
     mySrsId = findMatchingProj();
     QgsDebugMsg( "globbing search for srsid returned srsid: " + QString::number( mySrsId ) );
     if ( mySrsId > 0 )
@@ -553,7 +554,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   if ( !mIsValidFlag )
   {
     QgsDebugMsg( "Projection is not found in databases." );
-    setProj4String( theProj4String );
+    setProj4String( myProj4String );
 
     // Is the SRS is valid now, we know it's a decent +proj string that can be entered into the srs.db
     if ( mIsValidFlag )
@@ -815,7 +816,7 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
   mIsValidFlag =
-    OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() )
+    OSRImportFromProj4( mCRS, theProj4String.trimmed().toLatin1().constData() )
     == OGRERR_NONE;
   mWkt.clear();
   setMapUnits();
@@ -1516,6 +1517,7 @@ int QgsCoordinateReferenceSystem::syncDb()
           if ( proj4.startsWith( input ) )
           {
             proj4 = proj4.mid( input.size() );
+            proj4 = proj4.trimmed();
           }
         }
         else
