@@ -64,7 +64,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       EstimatedMinimumMaximum = 1 << 3,
       BuildPyramids =           1 << 4,
       Histogram =               1 << 5,
-      Size =                    1 << 6  // has fixed source type
+      Size =                    1 << 6,  // has fixed source type
+      Create =                  1 << 7, //create new datasets
+      Remove =                  1 << 8 //delete datasets
     };
 
     // This is modified copy of GDALColorInterp
@@ -432,6 +434,24 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
+
+    /** Creates a new dataset with mDataSourceURI
+        @return true in case of success*/
+    virtual bool create( const QString& format, int nBands,
+                         QgsRasterDataProvider::DataType type, int width, int height, double* geoTransform,
+                         const QgsCoordinateReferenceSystem& crs /*e.v. color table*/ )
+    {
+      Q_UNUSED( format );
+      Q_UNUSED( nBands );
+      Q_UNUSED( type );
+      Q_UNUSED( width );
+      Q_UNUSED( height );
+      Q_UNUSED( geoTransform );
+      Q_UNUSED( crs ); return false;
+    }
+
+    /** Remove dataset*/
+    virtual bool remove() { return false; }
 
   signals:
     /** Emit a signal to notify of the progress event.
