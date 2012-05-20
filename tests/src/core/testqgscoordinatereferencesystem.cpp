@@ -40,6 +40,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void createFromOgcWmsCrs();
     void createFromSrid();
     void createFromWkt();
+    void createFromESRIWkt();
     void createFromSrsId();
     void createFromProj4();
     void isValid();
@@ -72,7 +73,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   QgsApplication::showSettings();
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
-  qDebug() << "GDAL version (runtime): " << GDALVersionInfo("RELEASE_NAME");
+  qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
   qDebug() << "PROJ.4 version:         " << PJ_VERSION;
 }
 
@@ -134,6 +135,26 @@ void TestQgsCoordinateReferenceSystem::createFromWkt()
   myCrs.createFromWkt( GEOWKT );
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
+}
+void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
+{
+  QgsCoordinateReferenceSystem myCrs;
+  // this example file taken from bug #5598
+  QString myWKTString = "PROJCS[\"Indian_1960_UTM_Zone_48N\",GEOGCS[\"GCS_Indian_1960\",DATUM[\"D_Indian_1960\",SPHEROID[\"Everest_Adjustment_1937\",6377276.345,300.8017]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",105.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]";
+#if GDAL_VERSION_NUM >= 1800
+  QString myProj4String = "+proj=utm +zone=48 +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +units=m +no_defs";
+#else
+  // for GDAL <1.8 towgs84 is absent but we'll have to live with that...
+  QString myProj4String = "+proj=utm +zone=48 +a=6377276.345 +b=6356075.41314024 +units=m +no_defs";
+#endif
+  QString myAuthId = "EPSG:3148";
+
+  // use createFromUserInput and add the ESRI:: prefix to force morphFromESRI
+  myCrs.createFromUserInput( "ESRI::" + myWKTString );
+  debugPrint( myCrs );
+  QVERIFY( myCrs.isValid() );
+  QVERIFY( myCrs.toProj4() == myProj4String );
+  QVERIFY( myCrs.authid() ==  myAuthId );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrsId()
 {
@@ -239,10 +260,10 @@ void TestQgsCoordinateReferenceSystem::toWkt()
 #else
   // for GDAL <1.8
   QString myStrippedWkt( "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID"
-                            "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
-                            "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
-                            "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
-                            "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
+                         "[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+                         "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY"
+                         "[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.01745329251994328,AUTHORITY"
+                         "[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]" );
 #endif
   qDebug() << "wkt:      " << myWkt;
   qDebug() << "stripped: " << myStrippedWkt;

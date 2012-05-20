@@ -171,6 +171,21 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool createFromString( const QString theDefinition );
 
+    /*! Set up this srs from a various text formats.
+     *
+     * Valid formats: WKT string, "EPSG:n", "EPSGA:n", "AUTO:proj_id,unit_id,lon0,lat0",
+     * "urn:ogc:def:crs:EPSG::n", PROJ.4 string, filename (with WKT, XML or PROJ.4 string),
+     * well known name (such as NAD27, NAD83, WGS84 or WGS72),
+     * ESRI::[WKT string] (directly or in a file), "IGNF:xxx"
+     *
+     * For more details on supported formats see OGRSpatialReference::SetFromUserInput()
+     * ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
+     * @note this function generates a WKT string using OSRSetFromUserInput() and
+     * passes it to createFromWkt() function.
+     * @param theDefinition A String containing a coordinate reference system definition.
+     */
+    bool createFromUserInput( const QString theDefinition );
+
     /*! Find out whether this CRS is correctly initialised and usable */
     bool isValid() const;
 
