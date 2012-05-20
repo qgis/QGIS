@@ -131,6 +131,25 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition
   return result;
 }
 
+bool QgsCoordinateReferenceSystem::createFromUserInput( const QString theDefinition )
+{
+  QString theWkt;
+  char *wkt = NULL;
+  OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
+
+  if ( OSRSetFromUserInput( crs, theDefinition.toLocal8Bit().constData() ) == OGRERR_NONE )
+  {
+    if ( OSRExportToWkt( crs, &wkt ) == OGRERR_NONE )
+    {
+      theWkt = wkt;
+      OGRFree( wkt );
+    }
+    OSRDestroySpatialReference( crs );
+  }
+  QgsDebugMsg( "theDefinition: " + theDefinition + " theWkt = " + theWkt );
+  return createFromWkt( theWkt );
+}
+
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
 {
   QRegExp re( "(user|custom|qgis):(\\d+)", Qt::CaseInsensitive );
