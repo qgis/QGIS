@@ -2,13 +2,11 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-import copy
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
-from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
 from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.modeler.Providers import Providers
@@ -24,6 +22,7 @@ from sextante.core.SextanteUtils import SextanteUtils
 from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
 from sextante.fusion.FusionAlgorithmProvider import FusionAlgorithmProvider
 from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
+from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
 
 class Sextante:
 
@@ -83,7 +82,7 @@ class Sextante:
     def initialize():
         #add the basic providers
         Sextante.addProvider(SextanteAlgorithmProvider())
-        Sextante.addProvider(MMQGISAlgorithmProvider())
+        Sextante.addProvider(MMQGISXAlgorithmProvider())
         Sextante.addProvider(FToolsAlgorithmProvider())
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
         Sextante.addProvider(GdalAlgorithmProvider())

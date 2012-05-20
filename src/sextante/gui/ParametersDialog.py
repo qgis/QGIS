@@ -150,6 +150,9 @@ class Ui_ParametersDialog(object):
                     if button.isChecked():
                         iterateParam = buttons.keys()[i]
                         break
+
+
+                self.progress.setMaximum(0)
                 self.progressLabel.setText("Processing algorithm...")
                 if iterateParam:
                     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -192,6 +195,8 @@ class Ui_ParametersDialog(object):
         self.dialog.close()
 
     def setPercentage(self, i):
+        if self.progress.maximum() == 0:
+            self.progress.setMaximum(100)
         self.progress.setValue(i)
 
     def setText(self, text):
