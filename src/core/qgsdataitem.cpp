@@ -775,10 +775,12 @@ QgsZipItem::~QgsZipItem()
 
 // internal function to scan a vsidir (zip or tar file) recursively
 // GDAL trunk has this since r24423 (05/16/12) - VSIReadDirRecursive()
-// use a copy of the function internally for now
+// use a copy of the function internally for now,
+// but use char ** and CSLAddString, because CPLStringList was added in gdal-1.9
 char **VSIReadDirRecursive1( const char *pszPath )
 {
-  CPLStringList oFiles = NULL;
+  // CPLStringList oFiles = NULL;
+  char **papszOFiles = NULL;
   char **papszFiles1 = NULL;
   char **papszFiles2 = NULL;
   VSIStatBufL psStatBuf;
@@ -805,7 +807,8 @@ char **VSIReadDirRecursive1( const char *pszPath )
     if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
          VSI_ISREG( psStatBuf.st_mode ) )
     {
-      oFiles.AddString( papszFiles1[i] );
+      // oFiles.AddString( papszFiles1[i] );
+      papszOFiles = CSLAddString( papszOFiles, papszFiles1[i] );
     }
     else if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
               VSI_ISDIR( psStatBuf.st_mode ) )
@@ -814,7 +817,8 @@ char **VSIReadDirRecursive1( const char *pszPath )
       osTemp2.clear();
       osTemp2.append( papszFiles1[i] );
       osTemp2.append( "/" );
-      oFiles.AddString( osTemp2.c_str() );
+      // oFiles.AddString( osTemp2.c_str() );
+      papszOFiles = CSLAddString( papszOFiles, osTemp2.c_str() );
 
       // recursively add files inside directory
       papszFiles2 = VSIReadDirRecursive1( osTemp1.c_str() );
@@ -827,7 +831,8 @@ char **VSIReadDirRecursive1( const char *pszPath )
           osTemp2.append( papszFiles1[i] );
           osTemp2.append( "/" );
           osTemp2.append( papszFiles2[j] );
-          oFiles.AddString( osTemp2.c_str() );
+          // oFiles.AddString( osTemp2.c_str() );
+          papszOFiles = CSLAddString( papszOFiles, osTemp2.c_str() );
         }
         CSLDestroy( papszFiles2 );
       }
@@ -835,7 +840,8 @@ char **VSIReadDirRecursive1( const char *pszPath )
   }
   CSLDestroy( papszFiles1 );
 
-  return oFiles.StealList();
+  // return oFiles.StealList();
+  return papszOFiles;
 }
 
 QVector<QgsDataItem*> QgsZipItem::createChildren( )
