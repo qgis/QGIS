@@ -1145,24 +1145,22 @@ class geoprocessingThread( QThread ):
               if int_geom.wkbType() == 0:
                 # intersection produced different geometry types
                 temp_list = int_geom.asGeometryCollection()
-                int_geom = []
                 for i in temp_list:
                   if i.type() == geom.type():
-                    int_geom.append( QgsGeometry( i ) )
-                  if len(int_geom) > 1:
-                    for j in int_geom:
+                      int_geom = QgsGeometry( i )
                       try:
-                        outFeat.setGeometry( j )
+                        outFeat.setGeometry( int_geom )
                         outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
                         writer.addFeature( outFeat )
                       except Exception, err:
                         FEATURE_EXCEPT = False
-              try:
-                outFeat.setGeometry( int_geom )
-                outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                writer.addFeature( outFeat )
-              except Exception, err:
-                FEATURE_EXCEPT = False
+              else:
+                try:
+                  outFeat.setGeometry( int_geom )
+                  outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                  writer.addFeature( outFeat )
+                except Exception, err:
+                  FEATURE_EXCEPT = False
             else:
               # this only happends if the bounding box
               # intersects, but the geometry doesn't
