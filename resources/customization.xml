@@ -14,6 +14,22 @@
     <widget class="QPushButton" label="OK" objectName="okButton"/>
   </widget>
   <widget class="QWidget" label="" objectName="QgsComposerTableWidgetBase"/>
+  <widget class="QDialog" label="" objectName="QgsBrowserLayerPropertiesBase">
+    <widget class="QLabel" label="Display Name" objectName="label"/>
+    <widget class="QLabel" label="Layer Source" objectName="label_2"/>
+    <widget class="QLineEdit" label="" objectName="leName"/>
+    <widget class="QLineEdit" label="" objectName="leSource"/>
+    <widget class="QLabel" label="Provider" objectName="label_4"/>
+    <widget class="QLineEdit" label="" objectName="leProvider"/>
+    <widget class="QLabel" label="Metadata" objectName="label_3"/>
+    <widget class="QTextBrowser" label="" objectName="txtbMetadata">
+      <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+      <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+      <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+    </widget>
+    <widget class="QLabel" label="" objectName="lblNotice"/>
+    <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
+  </widget>
   <widget class="QDialog" label="" objectName="QgsHelpViewerBase">
     <widget class="QTextBrowser" label="" objectName="textBrowser">
       <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
@@ -55,7 +71,6 @@
   </widget>
   <widget class="QDialog" label="" objectName="QgsRendererV2PropsDialogBase">
     <widget class="QComboBox" label="" objectName="cboRenderers"/>
-    <widget class="QPushButton" label="Symbol levels" objectName="btnSymbolLevels"/>
     <widget class="QPushButton" label="Old symbology" objectName="btnOldSymbology"/>
     <widget class="QStackedWidget" label="" objectName="stackedWidget">
       <widget class="QWidget" label="" objectName="pageNoWidget">
@@ -192,25 +207,48 @@
     <widget class="QCheckBox" label="" objectName="cbx"/>
     <widget class="QWidget" label="" objectName="widget"/>
     <widget class="QLabel" label="Detail label" objectName="lblDetail"/>
+    <widget class="QLabel" label="Category label" objectName="lblCategory"/>
+  </widget>
+  <widget class="QWidget" label="" objectName="QgsPointDisplacementRendererWidgetBase">
+    <widget class="QLabel" label="Center symbol:" objectName="mCenterSymbolLabel"/>
+    <widget class="QPushButton" label="" objectName="mCenterSymbolPushButton"/>
+    <widget class="QLabel" label="Renderer:" objectName="mRendererLabel"/>
+    <widget class="QComboBox" label="" objectName="mRendererComboBox"/>
+    <widget class="QPushButton" label="Renderer settings..." objectName="mRendererSettingsButton"/>
+    <widget class="QGroupBox" label="" objectName="mDisplacementCirclesGroupBox">
+      <widget class="QLabel" label="Circle pen width:" objectName="mCircleWidthLabel"/>
+      <widget class="QLabel" label="Circle color:" objectName="mCircleColorLabel"/>
+      <widget class="QLabel" label="Circle radius modification:" objectName="mCircleRadiusLabel"/>
+      <widget class="QLabel" label="Point distance tolerance:" objectName="mDistanceToleranceLabel"/>
+    </widget>
+    <widget class="QGroupBox" label="" objectName="mLabellingGroupBox">
+      <widget class="QLabel" label="Label attribute:" objectName="mLabelAttributeLabel"/>
+      <widget class="QComboBox" label="" objectName="mLabelFieldComboBox"/>
+      <widget class="QPushButton" label="Label font..." objectName="mLabelFontButton"/>
+      <widget class="QLabel" label="Label color:" objectName="mLabelColorLabel"/>
+      <widget class="QCheckBox" label="Use scale dependent labelling" objectName="mScaleDependentLabelsCheckBox"/>
+      <widget class="QLabel" label="max scale denominator:" objectName="mMaxScaleLabel"/>
+      <widget class="QLineEdit" label="" objectName="mMaxScaleDenominatorEdit"/>
+    </widget>
   </widget>
   <widget class="QDialog" label="" objectName="QgsNewOgrConnectionBase">
     <widget class="QGroupBox" label="" objectName="GroupBox1">
+      <widget class="QLabel" label="Type" objectName="label"/>
+      <widget class="QComboBox" label="" objectName="cmbDatabaseTypes"/>
+      <widget class="QLabel" label="Name" objectName="TextLabel1_2"/>
+      <widget class="QLineEdit" label="" objectName="txtName"/>
+      <widget class="QLabel" label="Host" objectName="TextLabel1"/>
+      <widget class="QLineEdit" label="" objectName="txtHost"/>
+      <widget class="QLabel" label="Database" objectName="TextLabel2"/>
+      <widget class="QLineEdit" label="" objectName="txtDatabase"/>
+      <widget class="QLabel" label="Port" objectName="TextLabel2_2"/>
+      <widget class="QLineEdit" label="" objectName="txtPort"/>
+      <widget class="QLabel" label="Username" objectName="TextLabel3"/>
+      <widget class="QLineEdit" label="" objectName="txtUsername"/>
+      <widget class="QLabel" label="Password" objectName="TextLabel3_2"/>
+      <widget class="QLineEdit" label="" objectName="txtPassword"/>
       <widget class="QCheckBox" label="Save Password" objectName="chkStorePassword"/>
       <widget class="QPushButton" label="&amp;Test Connect" objectName="btnConnect"/>
-      <widget class="QLabel" label="&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt; &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt; p, li { white-space: pre-wrap; } &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt; &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" objectName="label"/>
-      <widget class="QLabel" label="Name" objectName="TextLabel1_2"/>
-      <widget class="QLabel" label="Host" objectName="TextLabel1"/>
-      <widget class="QLabel" label="Database" objectName="TextLabel2"/>
-      <widget class="QLabel" label="Port" objectName="TextLabel2_2"/>
-      <widget class="QLabel" label="Username" objectName="TextLabel3"/>
-      <widget class="QLabel" label="Password" objectName="TextLabel3_2"/>
-      <widget class="QComboBox" label="" objectName="cmbDatabaseTypes"/>
-      <widget class="QLineEdit" label="" objectName="txtName"/>
-      <widget class="QLineEdit" label="" objectName="txtHost"/>
-      <widget class="QLineEdit" label="" objectName="txtDatabase"/>
-      <widget class="QLineEdit" label="" objectName="txtPort"/>
-      <widget class="QLineEdit" label="" objectName="txtUsername"/>
-      <widget class="QLineEdit" label="" objectName="txtPassword"/>
     </widget>
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
@@ -262,10 +300,16 @@
                 <widget class="QLabel" label="Background color" objectName="label"/>
               </widget>
               <widget class="QGroupBox" label="" objectName="groupBox">
+                <widget class="QLabel" label="Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;" objectName="label_18"/>
+                <widget class="QComboBox" label="" objectName="cmbStyle"/>
                 <widget class="QLabel" label="Icon theme" objectName="textLabel1_4"/>
                 <widget class="QComboBox" label="" objectName="cmbTheme"/>
                 <widget class="QLabel" label="Icon size" objectName="textLabel1_5"/>
-                <widget class="QComboBox" label="" objectName="cmbSize"/>
+                <widget class="QComboBox" label="" objectName="cmbIconSize"/>
+                <widget class="QLabel" label="Menu size" objectName="label_20"/>
+                <widget class="QSpinBox" label="4" objectName="spinFontSize">
+                  <widget class="QLineEdit" label="4" objectName="qt_spinbox_lineedit"/>
+                </widget>
                 <widget class="QLabel" label="Double click action in legend" objectName="label_15"/>
                 <widget class="QComboBox" label="" objectName="cmbLegendDoubleClickAction"/>
                 <widget class="QCheckBox" label="Capitalise layer names in legend" objectName="capitaliseCheckBox"/>
@@ -277,21 +321,39 @@
                 <widget class="QCheckBox" label="Open snapping options  in a dock window (QGIS restart required)" objectName="cbxSnappingOptionsDocked"/>
                 <widget class="QCheckBox" label="Open attribute table in a dock window (QGIS restart required)" objectName="cbxAttributeTableDocked"/>
                 <widget class="QCheckBox" label="Add PostGIS layers with double click and select in extended mode" objectName="cbxAddPostgisDC"/>
-                <widget class="QCheckBox" label="Add new layers to selected group" objectName="cbxAddNewLayersToCurrentGroup"/>
+                <widget class="QCheckBox" label="Add new layers to selected or current group" objectName="cbxAddNewLayersToCurrentGroup"/>
+                <widget class="QCheckBox" label="Copy geometry in WKT representation from attribute table" objectName="cbxCopyWKTGeomFromTable"/>
                 <widget class="QLabel" label="Attribute table behaviour" objectName="textLabel1_7"/>
                 <widget class="QComboBox" label="" objectName="cmbAttrTableBehaviour"/>
+                <widget class="QLabel" label="Attribute table row cache" objectName="textLabel1_12"/>
+                <widget class="QSpinBox" label="10000" objectName="spinBoxAttrTableRowCache">
+                  <widget class="QLineEdit" label="10000" objectName="qt_spinbox_lineedit"/>
+                </widget>
                 <widget class="QLabel" label="Representation for NULL values" objectName="label_14"/>
                 <widget class="QLineEdit" label="" objectName="leNullValue"/>
-                <widget class="QGroupBox" label="" objectName="groupBox_4">
-                  <widget class="QLabel" label="Path(s) to search for additional C++ plugins libraries" objectName="mSVGLabel_2"/>
-                  <widget class="QPushButton" label="Add" objectName="mBtnAddPluginPath"/>
-                  <widget class="QPushButton" label="Remove" objectName="mBtnRemovePluginPath"/>
-                </widget>
+                <widget class="QLabel" label="Prompt for raster sublayers" objectName="textLabel1_13"/>
+                <widget class="QComboBox" label="" objectName="cmbPromptRasterSublayers"/>
+                <widget class="QLabel" label="Scan for valid items in the browser dock" objectName="label_30"/>
+                <widget class="QComboBox" label="" objectName="cmbScanItemsInBrowser"/>
+                <widget class="QLabel" label="Scan for contents of compressed files (.zip) in browser dock" objectName="label_29"/>
+                <widget class="QComboBox" label="" objectName="cmbScanZipInBrowser"/>
               </widget>
             </widget>
           </widget>
           <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+        </widget>
+      </widget>
+      <widget class="QWidget" label="GDAL" objectName="tab">
+        <widget class="QGroupBox" label="" objectName="groupBox_13">
+          <widget class="QLabel" label="In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use." objectName="label_17"/>
+        </widget>
+      </widget>
+      <widget class="QWidget" label="Plugins" objectName="tab_2">
+        <widget class="QGroupBox" label="" objectName="groupBox_4">
+          <widget class="QLabel" label="Path(s) to search for additional C++ plugins libraries" objectName="mSVGLabel_2"/>
+          <widget class="QPushButton" label="Add" objectName="mBtnAddPluginPath"/>
+          <widget class="QPushButton" label="Remove" objectName="mBtnRemovePluginPath"/>
         </widget>
       </widget>
       <widget class="QWidget" label="Rendering" objectName="tabWidgetPage2">
@@ -300,12 +362,12 @@
             <widget class="QWidget" label="" objectName="scrollAreaWidgetContents_4">
               <widget class="QGroupBox" label="" objectName="groupBox_5">
                 <widget class="QCheckBox" label="By default new la&amp;yers added to the map should be displayed" objectName="chkAddedVisibility"/>
+                <widget class="QLabel" label="&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered" objectName="textLabel3"/>
+                <widget class="QCheckBox" label="Use render caching where possible to speed up redraws" objectName="chkUseRenderCaching"/>
                 <widget class="QLabel" label="Number of features to draw before updating the display" objectName="textLabel1_6"/>
                 <widget class="QSpinBox" label="1000" objectName="spinBoxUpdateThreshold">
                   <widget class="QLineEdit" label="1000" objectName="qt_spinbox_lineedit"/>
                 </widget>
-                <widget class="QLabel" label="&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered" objectName="textLabel3"/>
-                <widget class="QCheckBox" label="Use render caching where possible to speed up redraws" objectName="chkUseRenderCaching"/>
               </widget>
               <widget class="QGroupBox" label="" objectName="groupBox_8">
                 <widget class="QCheckBox" label="Make lines appear less jagged at the expense of some drawing performance" objectName="chkAntiAliasing"/>
@@ -318,6 +380,24 @@
                 <widget class="QLabel" label="Path(s) to search for Scalable Vector Graphic (SVG) symbols" objectName="mSVGLabel"/>
                 <widget class="QPushButton" label="Add" objectName="mBtnAddSVGPath"/>
                 <widget class="QPushButton" label="Remove" objectName="mBtnRemoveSVGPath"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="groupBox_14">
+                <widget class="QLabel" label="RGB band selection" objectName="label_21"/>
+                <widget class="QLabel" label="Red band" objectName="label_22"/>
+                <widget class="QSpinBox" label="" objectName="spnRed">
+                  <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+                </widget>
+                <widget class="QLabel" label="Green band" objectName="label_23"/>
+                <widget class="QSpinBox" label="" objectName="spnGreen">
+                  <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+                </widget>
+                <widget class="QLabel" label="Blue band" objectName="label_24"/>
+                <widget class="QSpinBox" label="" objectName="spnBlue">
+                  <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+                </widget>
+                <widget class="QCheckBox" label="Use standard deviation" objectName="chkUseStandardDeviation"/>
+                <widget class="QLabel" label="Contrast enhancement" objectName="label_25"/>
+                <widget class="QComboBox" label="" objectName="cboxContrastEnhancementAlgorithm"/>
               </widget>
             </widget>
           </widget>
@@ -408,8 +488,17 @@
                 <widget class="QLabel" label="Marker size" objectName="label_6"/>
               </widget>
               <widget class="QGroupBox" label="" objectName="mEnterAttributeValuesGroupBox">
-                <widget class="QCheckBox" label="Reuse last entered attribute values" objectName="chkReuseLastValues"/>
                 <widget class="QCheckBox" label="Suppress attributes pop-up windows after each created feature" objectName="chkDisableAttributeValuesDlg"/>
+                <widget class="QCheckBox" label="Reuse last entered attribute values" objectName="chkReuseLastValues"/>
+                <widget class="QLabel" label="Validate geometries" objectName="label_19"/>
+                <widget class="QComboBox" label="" objectName="mValidateGeometries"/>
+                <widget class="QLabel" label="Join style for curve offset" objectName="label_26"/>
+                <widget class="QComboBox" label="" objectName="mOffsetJoinStyleComboBox"/>
+                <widget class="QLabel" label="Quadrantsegments for curve offset" objectName="label_27"/>
+                <widget class="QSpinBox" label="" objectName="mOffsetQuadSegSpinBox">
+                  <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+                </widget>
+                <widget class="QLabel" label="Miter limit for curve offset" objectName="label_28"/>
               </widget>
             </widget>
           </widget>
@@ -503,6 +592,22 @@
       </widget>
     </widget>
   </widget>
+  <widget class="QDialog" label="" objectName="QgsWFSSourceSelectBase">
+    <widget class="QGroupBox" label="" objectName="GroupBox1">
+      <widget class="QComboBox" label="" objectName="cmbConnections"/>
+      <widget class="QPushButton" label="C&amp;onnect" objectName="btnConnect"/>
+      <widget class="QPushButton" label="&amp;New" objectName="btnNew"/>
+      <widget class="QPushButton" label="Edit" objectName="btnEdit"/>
+      <widget class="QPushButton" label="Delete" objectName="btnDelete"/>
+      <widget class="QPushButton" label="Load" objectName="btnLoad"/>
+      <widget class="QPushButton" label="Save" objectName="btnSave"/>
+    </widget>
+    <widget class="QGroupBox" label="" objectName="gbCRS">
+      <widget class="QLabel" label="" objectName="labelCoordRefSys"/>
+      <widget class="QPushButton" label="Change ..." objectName="btnChangeSpatialRefSys"/>
+    </widget>
+    <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
+  </widget>
   <widget class="QDialog" label="" objectName="QgsOpenVectorLayerDialogBase">
     <widget class="QGroupBox" label="" objectName="srcGroupBox_2">
       <widget class="QRadioButton" label="File" objectName="radioSrcFile"/>
@@ -568,42 +673,59 @@
         <widget class="QCheckBox" label="Enable 'on the fly' CRS transformation" objectName="cbxProjectionEnabled"/>
       </widget>
       <widget class="QWidget" label="Identifiable layers" objectName="tab3"/>
-      <widget class="QWidget" label="WMS Server" objectName="tab">
-        <widget class="QGroupBox" label="" objectName="grpWMSServiceCapabilities">
-          <widget class="QLabel" label="Title" objectName="label_6"/>
-          <widget class="QLineEdit" label="" objectName="mWMSTitle"/>
-          <widget class="QLabel" label="Person" objectName="label_7"/>
-          <widget class="QLineEdit" label="" objectName="mWMSContactPerson"/>
-          <widget class="QLabel" label="Phone" objectName="label_8"/>
-          <widget class="QLineEdit" label="" objectName="mWMSContactPhone"/>
-          <widget class="QTextEdit" label="" objectName="mWMSAbstract">
-            <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
-            <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
-            <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+      <widget class="QWidget" label="OWS Server" objectName="tab4">
+        <widget class="QScrollArea" label="" objectName="scrollArea">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents">
+              <widget class="QGroupBox" label="" objectName="grpOWSServiceCapabilities">
+                <widget class="QLabel" label="Title" objectName="label_6"/>
+                <widget class="QLineEdit" label="" objectName="mWMSTitle"/>
+                <widget class="QLabel" label="Person" objectName="label_7"/>
+                <widget class="QLineEdit" label="" objectName="mWMSContactPerson"/>
+                <widget class="QLabel" label="Phone" objectName="label_8"/>
+                <widget class="QLineEdit" label="" objectName="mWMSContactPhone"/>
+                <widget class="QTextEdit" label="" objectName="mWMSAbstract">
+                  <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+                  <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+                  <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+                </widget>
+                <widget class="QLabel" label="Abstract" objectName="label_5"/>
+                <widget class="QLabel" label="E-Mail" objectName="label_13"/>
+                <widget class="QLineEdit" label="" objectName="mWMSContactMail"/>
+                <widget class="QLabel" label="Organization" objectName="label_4"/>
+                <widget class="QLineEdit" label="" objectName="mWMSContactOrganization"/>
+                <widget class="QLineEdit" label="" objectName="mWMSOnlineResourceLineEdit"/>
+                <widget class="QLabel" label="Online resource" objectName="mWMSOnlineResourceLabel"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="grpWMSCapabilities">
+                <widget class="QGroupBox" label="" objectName="grpWMSExt">
+                  <widget class="QLabel" label="Min. X" objectName="label_11"/>
+                  <widget class="QLineEdit" label="" objectName="mWMSExtMinX"/>
+                  <widget class="QLabel" label="Min. Y" objectName="label_12"/>
+                  <widget class="QLineEdit" label="" objectName="mWMSExtMinY"/>
+                  <widget class="QLabel" label="Max. X" objectName="label_9"/>
+                  <widget class="QLineEdit" label="" objectName="mWMSExtMaxX"/>
+                  <widget class="QLabel" label="Max. Y" objectName="label_10"/>
+                  <widget class="QLineEdit" label="" objectName="mWMSExtMaxY"/>
+                  <widget class="QPushButton" label="Use Current Canvas Extent" objectName="pbnWMSExtCanvas"/>
+                </widget>
+                <widget class="QGroupBox" label="" objectName="grpWMSList">
+                  <widget class="QPushButton" label="Add" objectName="pbnWMSAddSRS"/>
+                  <widget class="QPushButton" label="Remove" objectName="pbnWMSRemoveSRS"/>
+                  <widget class="QPushButton" label="Used" objectName="pbnWMSSetUsedSRS"/>
+                </widget>
+                <widget class="QCheckBox" label="Add WKT geometry to feature info response" objectName="mAddWktGeometryCheckBox"/>
+              </widget>
+              <widget class="QLabel" label="Maximum width" objectName="mMaxWidthLabel"/>
+              <widget class="QLineEdit" label="" objectName="mMaxWidthLineEdit"/>
+              <widget class="QLabel" label="Maximum height" objectName="mMaxHeightLabel"/>
+              <widget class="QLineEdit" label="" objectName="mMaxHeightLineEdit"/>
+              <widget class="QGroupBox" label="" objectName="grpWFSCapabilities"/>
+            </widget>
           </widget>
-          <widget class="QLabel" label="Abstract" objectName="label_5"/>
-          <widget class="QLabel" label="E-Mail" objectName="label_13"/>
-          <widget class="QLineEdit" label="" objectName="mWMSContactMail"/>
-          <widget class="QLabel" label="Organization" objectName="label_4"/>
-          <widget class="QLineEdit" label="" objectName="mWMSContactOrganization"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
-        <widget class="QGroupBox" label="" objectName="grpWMSExt">
-          <widget class="QLabel" label="Min. X" objectName="label_11"/>
-          <widget class="QLineEdit" label="" objectName="mWMSExtMinX"/>
-          <widget class="QLabel" label="Min. Y" objectName="label_12"/>
-          <widget class="QLineEdit" label="" objectName="mWMSExtMinY"/>
-          <widget class="QLabel" label="Max. X" objectName="label_9"/>
-          <widget class="QLineEdit" label="" objectName="mWMSExtMaxX"/>
-          <widget class="QLabel" label="Max. Y" objectName="label_10"/>
-          <widget class="QLineEdit" label="" objectName="mWMSExtMaxY"/>
-          <widget class="QPushButton" label="Use Current Canvas Extent" objectName="pbnWMSExtCanvas"/>
-        </widget>
-        <widget class="QGroupBox" label="" objectName="grpWMSList">
-          <widget class="QPushButton" label="Add" objectName="pbnWMSAddSRS"/>
-          <widget class="QPushButton" label="Remove" objectName="pbnWMSRemoveSRS"/>
-          <widget class="QPushButton" label="Used" objectName="pbnWMSSetUsedSRS"/>
-        </widget>
-        <widget class="QCheckBox" label="Add WKT geometry to feature info response" objectName="mAddWktGeometryCheckBox"/>
       </widget>
     </widget>
   </widget>
@@ -754,6 +876,13 @@
     </widget>
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
+  <widget class="QWidget" label="" objectName="QgsRuleBasedRendererV2Widget">
+    <widget class="QPushButton" label="Add" objectName="btnAddRule"/>
+    <widget class="QPushButton" label="Edit" objectName="btnEditRule"/>
+    <widget class="QPushButton" label="Remove" objectName="btnRemoveRule"/>
+    <widget class="QPushButton" label="Refine current rules" objectName="btnRefineRule"/>
+    <widget class="QPushButton" label="Rendering order..." objectName="btnRenderingOrder"/>
+  </widget>
   <widget class="QDialog" label="" objectName="DlgSymbolV2Properties">
     <widget class="QLabel" label="Symbol layers" objectName="label_3"/>
     <widget class="QLabel" label="Symbol layer type" objectName="label_2"/>
@@ -799,58 +928,8 @@
     </widget>
     <widget class="QGroupBox" label="" objectName="groupBox_2"/>
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
-    <widget class="QLabel" label="CRS ID" objectName="label_3"/>
-    <widget class="QLineEdit" label="" objectName="leSpatialRefSys"/>
     <widget class="QPushButton" label="Specify CRS" objectName="pbnChangeSpatialRefSys"/>
-  </widget>
-  <widget class="QDialog" label="" objectName="QgsFieldCalculatorBase">
-    <widget class="QCheckBox" label="Only update selected features" objectName="mOnlyUpdateSelectedCheckBox"/>
-    <widget class="QCheckBox" label="Update existing field" objectName="mUpdateExistingFieldCheckBox"/>
-    <widget class="QComboBox" label="" objectName="mExistingFieldComboBox"/>
-    <widget class="QGroupBox" label="" objectName="mNewFieldGroupBox">
-      <widget class="QLabel" label="Output field name" objectName="mFieldNameLabel"/>
-      <widget class="QLineEdit" label="" objectName="mOutputFieldNameLineEdit"/>
-      <widget class="QLabel" label="Output field type" objectName="mOutputFieldTypeLabel"/>
-      <widget class="QComboBox" label="" objectName="mOutputFieldTypeComboBox"/>
-      <widget class="QLabel" label="Output field width" objectName="mOutputFieldWidthLabel"/>
-      <widget class="QSpinBox" label="5" objectName="mOuputFieldWidthSpinBox">
-        <widget class="QLineEdit" label="5" objectName="qt_spinbox_lineedit"/>
-      </widget>
-      <widget class="QLabel" label="Precision" objectName="mOutputFieldPrecisionLabel"/>
-      <widget class="QSpinBox" label="2" objectName="mOutputFieldPrecisionSpinBox">
-        <widget class="QLineEdit" label="2" objectName="qt_spinbox_lineedit"/>
-      </widget>
-    </widget>
-    <widget class="QGroupBox" label="" objectName="mOperatorsGroupBox">
-      <widget class="QPushButton" label="+" objectName="mPlusPushButton"/>
-      <widget class="QPushButton" label="*" objectName="mMultiplyPushButton"/>
-      <widget class="QPushButton" label="sqrt" objectName="mSqrtButton"/>
-      <widget class="QPushButton" label="sin" objectName="mSinButton"/>
-      <widget class="QPushButton" label="tan" objectName="mTanButton"/>
-      <widget class="QPushButton" label="acos" objectName="mACosButton"/>
-      <widget class="QPushButton" label="(" objectName="mOpenBracketPushButton"/>
-      <widget class="QPushButton" label="-" objectName="mMinusPushButton"/>
-      <widget class="QPushButton" label="/" objectName="mDividePushButton"/>
-      <widget class="QPushButton" label="^" objectName="mExpButton"/>
-      <widget class="QPushButton" label="cos" objectName="mCosButton"/>
-      <widget class="QPushButton" label="asin" objectName="mASinButton"/>
-      <widget class="QPushButton" label="atan" objectName="mATanButton"/>
-      <widget class="QPushButton" label=")" objectName="mCloseBracketPushButton"/>
-      <widget class="QPushButton" label="to real" objectName="mToRealButton"/>
-      <widget class="QPushButton" label="to int" objectName="mToIntButton"/>
-      <widget class="QPushButton" label="to string" objectName="mToStringButton"/>
-      <widget class="QPushButton" label="length" objectName="mLengthButton"/>
-      <widget class="QPushButton" label="area" objectName="mAreaButton"/>
-      <widget class="QPushButton" label="rownum" objectName="mRowNumButton"/>
-      <widget class="QPushButton" label="||" objectName="mConcatButton"/>
-    </widget>
-    <widget class="QLabel" label="Field calculator expression" objectName="mFieldCalculatorExpressionLabel"/>
-    <widget class="QTextEdit" label="" objectName="mExpressionTextEdit">
-      <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
-      <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
-      <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
-    </widget>
-    <widget class="QDialogButtonBox" label="" objectName="mButtonBox"/>
+    <widget class="QLineEdit" label="" objectName="leSpatialRefSys"/>
   </widget>
   <widget class="QDialog" label="" objectName="QgsSponsorsBase">
     <widget class="QLabel" label="TextLabel" objectName="qgisIcon"/>
@@ -873,18 +952,23 @@
         <widget class="QPushButton" label="Delete" objectName="btnDelete"/>
         <widget class="QPushButton" label="Add default servers" objectName="btnAddDefault"/>
         <widget class="QGroupBox" label="" objectName="btnGrpImageEncoding"/>
+        <widget class="QPushButton" label="Save" objectName="btnSave"/>
+        <widget class="QPushButton" label="Load" objectName="btnLoad"/>
         <widget class="QGroupBox" label="" objectName="gbCRS">
           <widget class="QLabel" label="Layer name" objectName="label"/>
           <widget class="QLineEdit" label="" objectName="leLayerName"/>
           <widget class="QLabel" label="Coordinate Reference System" objectName="labelCoordRefSys"/>
           <widget class="QPushButton" label="Change ..." objectName="btnChangeSpatialRefSys"/>
+          <widget class="QLineEdit" label="" objectName="mTileWidth"/>
+          <widget class="QLabel" label="Tile size" objectName="label_2"/>
+          <widget class="QLineEdit" label="" objectName="mTileHeight"/>
+          <widget class="QLabel" label="Feature limit for GetFeatureInfo" objectName="label_3"/>
+          <widget class="QLineEdit" label="" objectName="mFeatureCount"/>
         </widget>
-        <widget class="QPushButton" label="Save" objectName="btnSave"/>
-        <widget class="QPushButton" label="Load" objectName="btnLoad"/>
       </widget>
       <widget class="QWidget" label="Layer Order" objectName="tabLayerOrder">
-        <widget class="QPushButton" label="" objectName="mLayerUpButton"/>
-        <widget class="QPushButton" label="" objectName="mLayerDownButton"/>
+        <widget class="QPushButton" label="Up" objectName="mLayerUpButton"/>
+        <widget class="QPushButton" label="Down" objectName="mLayerDownButton"/>
       </widget>
       <widget class="QWidget" label="Tilesets" objectName="tabTilesets"/>
       <widget class="QWidget" label="Server Search" objectName="tabServerSearch">
@@ -966,7 +1050,6 @@
   </widget>
   <widget class="QDialog" label="" objectName="QgsVectorLayerSaveAsDialogBase">
     <widget class="QLineEdit" label="" objectName="leFilename"/>
-    <widget class="QLabel" label="CRS" objectName="label_3"/>
     <widget class="QLineEdit" label="" objectName="leCRS"/>
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
     <widget class="QLabel" label="Save as" objectName="label"/>
@@ -990,7 +1073,10 @@
       <widget class="QLabel" label="Data source" objectName="label_5"/>
       <widget class="QLabel" label="Layer" objectName="label_6"/>
       <widget class="QCheckBox" label="Skip attribute creation" objectName="mSkipAttributeCreation"/>
+      <widget class="QCheckBox" label="Add saved file to map" objectName="mAddToCanvas"/>
     </widget>
+    <widget class="QComboBox" label="" objectName="mCRSSelection"/>
+    <widget class="QLabel" label="CRS" objectName="label_3"/>
   </widget>
   <widget class="QMainWindow" label="" objectName="MainWindow">
     <widget class="QWidget" label="" objectName="centralwidget"/>
@@ -1021,6 +1107,20 @@
     <widget class="QWidget" label="" objectName="centralwidget">
       <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
     </widget>
+  </widget>
+  <widget class="QDialog" label="" objectName="QgsDecorationScaleBarDialog">
+    <widget class="QLabel" label="Placement" objectName="textLabel1_2"/>
+    <widget class="QComboBox" label="" objectName="cboPlacement"/>
+    <widget class="QLabel" label="Scale bar style" objectName="textLabel1"/>
+    <widget class="QComboBox" label="" objectName="cboStyle"/>
+    <widget class="QLabel" label="Color of bar" objectName="textLabel1_3_2"/>
+    <widget class="QLabel" label="Size of bar" objectName="textLabel1_3"/>
+    <widget class="QSpinBox" label="" objectName="spnSize">
+      <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+    </widget>
+    <widget class="QCheckBox" label="Enable scale bar" objectName="chkEnable"/>
+    <widget class="QCheckBox" label="Automatically snap to round number on resize" objectName="chkSnapping"/>
+    <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
   <widget class="QDialog" label="" objectName="QgsPluginManagerBase">
     <widget class="QLabel" label="To enable / disable a plugin, click its checkbox or description" objectName="textLabel1_2"/>
@@ -1068,6 +1168,14 @@
     <widget class="QPushButton" label="Set Position" objectName="mSetPositionButton"/>
     <widget class="QPushButton" label="Close" objectName="mCloseButton"/>
   </widget>
+  <widget class="QDialog" label="" objectName="QgsEmbedLayerDialogBase">
+    <widget class="QLabel" label="Project file" objectName="mProjectFileLabel"/>
+    <widget class="QLineEdit" label="" objectName="mProjectFileLineEdit"/>
+    <widget class="QDialogButtonBox" label="" objectName="mButtonBox"/>
+  </widget>
+  <widget class="QDialog" label="" objectName="QgsMessageLogViewer">
+    <widget class="QTabWidget" label="" objectName="tabWidget"/>
+  </widget>
   <widget class="QDialog" label="" objectName="QgsSpatialiteSridsDialogBase">
     <widget class="QLabel" label="Search" objectName="label"/>
     <widget class="QLineEdit" label="" objectName="leSearch"/>
@@ -1099,10 +1207,7 @@
         <widget class="QComboBox" label="" objectName="legendtypecombobox"/>
         <widget class="QLabel" label="Transparency" objectName="lblTransparencyPercent"/>
         <widget class="QSlider" label="" objectName="sliderTransparency"/>
-        <widget class="QStackedWidget" label="" objectName="widgetStackRenderers">
-          <widget class="QWidget" label="" objectName="page_2"/>
-          <widget class="QWidget" label="" objectName="page"/>
-        </widget>
+        <widget class="QStackedWidget" label="" objectName="widgetStackRenderers"/>
         <widget class="QPushButton" label="New symbology" objectName="btnUseNewSymbology"/>
       </widget>
       <widget class="QWidget" label="Labels" objectName="tabWidgetPage2">
@@ -1116,14 +1221,15 @@
               <widget class="QGroupBox" label="" objectName="indexGroupBox">
                 <widget class="QLabel" label="Display name" objectName="textLabel3"/>
                 <widget class="QLineEdit" label="" objectName="txtDisplayName"/>
-                <widget class="QLabel" label="Display field" objectName="textLabel2"/>
                 <widget class="QComboBox" label="" objectName="displayFieldComboBox"/>
                 <widget class="QLabel" label="Edit UI" objectName="label"/>
                 <widget class="QLineEdit" label="" objectName="leEditForm"/>
                 <widget class="QPushButton" label="Create Spatial Index" objectName="pbnIndex"/>
                 <widget class="QLineEdit" label="" objectName="leSpatialRefSys"/>
-                <widget class="QLineEdit" label="" objectName="leEditFormInit"/>
                 <widget class="QPushButton" label="Specify CRS" objectName="pbnChangeSpatialRefSys"/>
+                <widget class="QLabel" label="Display field" objectName="textLabel2"/>
+                <widget class="QPushButton" label="Update Extents" objectName="pbnUpdateExtents"/>
+                <widget class="QLineEdit" label="" objectName="leEditFormInit"/>
                 <widget class="QLabel" label="Init function" objectName="label_3"/>
               </widget>
               <widget class="QGroupBox" label="" objectName="chkUseScaleDependentRendering">
@@ -1140,6 +1246,10 @@
                 </widget>
                 <widget class="QPushButton" label="Query Builder" objectName="pbnQueryBuilder"/>
               </widget>
+              <widget class="QGroupBox" label="" objectName="grpProviderOptions">
+                <widget class="QLabel" label="Encoding" objectName="label_2"/>
+                <widget class="QComboBox" label="" objectName="cboProviderEncoding"/>
+              </widget>
             </widget>
           </widget>
           <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
@@ -1147,66 +1257,98 @@
         </widget>
       </widget>
       <widget class="QWidget" label="Metadata" objectName="tabWidgetPage5">
-        <widget class="QTextEdit" label="" objectName="teMetadata">
-          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+        <widget class="QScrollArea" label="" objectName="scrollArea">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents">
+              <widget class="QLabel" label="Title" objectName="mLayerTitleLabel"/>
+              <widget class="QLineEdit" label="" objectName="mLayerTitleLineEdit"/>
+              <widget class="QLabel" label="Abstract" objectName="mLayerAbstractLabel"/>
+              <widget class="QTextEdit" label="" objectName="mLayerAbstractTextEdit">
+                <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+              </widget>
+              <widget class="QTextEdit" label="" objectName="teMetadata">
+                <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+              </widget>
+            </widget>
+          </widget>
           <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
       </widget>
       <widget class="QWidget" label="Actions" objectName="tabWidgetPage6"/>
       <widget class="QWidget" label="Joins" objectName="mJoinPage">
-        <widget class="QPushButton" label="" objectName="mButtonAddJoin"/>
-        <widget class="QPushButton" label="" objectName="mButtonRemoveJoin"/>
+        <widget class="QScrollArea" label="" objectName="scrollArea_3">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents_3">
+              <widget class="QPushButton" label="" objectName="mButtonAddJoin"/>
+              <widget class="QPushButton" label="" objectName="mButtonRemoveJoin"/>
+            </widget>
+          </widget>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+        </widget>
       </widget>
       <widget class="QWidget" label="Diagrams" objectName="mDiagramPage">
-        <widget class="QCheckBox" label="Display diagrams" objectName="mDisplayDiagramsCheckBox"/>
-        <widget class="QLabel" label="Diagram type" objectName="mTypeLabel"/>
-        <widget class="QComboBox" label="" objectName="mDiagramTypeComboBox"/>
-        <widget class="QLabel" label="Priority:" objectName="mPriorityLabel"/>
-        <widget class="QLabel" label="Low" objectName="mPriorityLowLabel"/>
-        <widget class="QSlider" label="" objectName="mPrioritySlider"/>
-        <widget class="QLabel" label="High" objectName="mPriorityHighLabel"/>
-        <widget class="QGroupBox" label="" objectName="mAppearanceGroupBox">
-          <widget class="QLabel" label="Pen width" objectName="mPenWidthLabel"/>
-          <widget class="QCheckBox" label="Scale dependent visibility" objectName="mScaleDependentDiagramVisibilityCheckBox"/>
-          <widget class="QLabel" label="Minimum" objectName="mMinimumDiagramScaleLabel"/>
-          <widget class="QLineEdit" label="" objectName="mMinimumDiagramScaleLineEdit"/>
-          <widget class="QLabel" label="Maximum" objectName="mMaximumDiagramScaleLabel"/>
-          <widget class="QLineEdit" label="" objectName="mMaximumDiagramScaleLineEdit"/>
-          <widget class="QLabel" label="Background color" objectName="mBackgroundColorLabel"/>
-          <widget class="QPushButton" label="Font..." objectName="mDiagramFontButton"/>
-          <widget class="QLabel" label="Pen color" objectName="mPenColorLabel"/>
-        </widget>
-        <widget class="QGroupBox" label="" objectName="mSizeGroupBox">
-          <widget class="QCheckBox" label="Fixed size" objectName="mFixedSizeCheckBox"/>
-          <widget class="QLabel" label="Scale linearly between 0 and the following attribute value / diagram size:" objectName="mLinearlyScalingLabel"/>
-          <widget class="QLabel" label="Attribute" objectName="mSizeAttributeLabel"/>
-          <widget class="QComboBox" label="" objectName="mSizeAttributeComboBox"/>
-          <widget class="QPushButton" label="Find maximum value" objectName="mFindMaximumValueButton"/>
-          <widget class="QLineEdit" label="" objectName="mValueLineEdit"/>
-          <widget class="QLabel" label="Size" objectName="mSizeLabel"/>
-          <widget class="QSpinBox" label="" objectName="mSizeSpinBox">
-            <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+        <widget class="QScrollArea" label="" objectName="scrollArea_4">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents_4">
+              <widget class="QCheckBox" label="Display diagrams" objectName="mDisplayDiagramsCheckBox"/>
+              <widget class="QLabel" label="Diagram type" objectName="mTypeLabel"/>
+              <widget class="QComboBox" label="" objectName="mDiagramTypeComboBox"/>
+              <widget class="QLabel" label="Priority:" objectName="mPriorityLabel"/>
+              <widget class="QLabel" label="Low" objectName="mPriorityLowLabel"/>
+              <widget class="QSlider" label="" objectName="mPrioritySlider"/>
+              <widget class="QLabel" label="High" objectName="mPriorityHighLabel"/>
+              <widget class="QGroupBox" label="" objectName="mAppearanceGroupBox">
+                <widget class="QLabel" label="Pen color" objectName="mPenColorLabel"/>
+                <widget class="QLabel" label="Pen width" objectName="mPenWidthLabel"/>
+                <widget class="QCheckBox" label="Scale dependent visibility" objectName="mScaleDependentDiagramVisibilityCheckBox"/>
+                <widget class="QLabel" label="Minimum" objectName="mMinimumDiagramScaleLabel"/>
+                <widget class="QLineEdit" label="" objectName="mMinimumDiagramScaleLineEdit"/>
+                <widget class="QLabel" label="Maximum" objectName="mMaximumDiagramScaleLabel"/>
+                <widget class="QLineEdit" label="" objectName="mMaximumDiagramScaleLineEdit"/>
+                <widget class="QLabel" label="Background color" objectName="mBackgroundColorLabel"/>
+                <widget class="QPushButton" label="Font..." objectName="mDiagramFontButton"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="mSizeGroupBox">
+                <widget class="QCheckBox" label="Fixed size" objectName="mFixedSizeCheckBox"/>
+                <widget class="QLabel" label="Scale linearly between 0 and the following attribute value / diagram size:" objectName="mLinearlyScalingLabel"/>
+                <widget class="QLabel" label="Attribute" objectName="mSizeAttributeLabel"/>
+                <widget class="QComboBox" label="" objectName="mSizeAttributeComboBox"/>
+                <widget class="QPushButton" label="Find maximum value" objectName="mFindMaximumValueButton"/>
+                <widget class="QLineEdit" label="" objectName="mValueLineEdit"/>
+                <widget class="QLabel" label="Size" objectName="mSizeLabel"/>
+                <widget class="QSpinBox" label="" objectName="mSizeSpinBox">
+                  <widget class="QLineEdit" label="" objectName="qt_spinbox_lineedit"/>
+                </widget>
+                <widget class="QLabel" label="Size units" objectName="mDiagramUnitsLabel"/>
+                <widget class="QComboBox" label="" objectName="mDiagramUnitComboBox"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="mPlacementGroupBox">
+                <widget class="QLabel" label="Placement" objectName="mPlacementLabel"/>
+                <widget class="QComboBox" label="" objectName="mPlacementComboBox"/>
+                <widget class="QLabel" label="Line Options" objectName="mLineOptionsLabel"/>
+                <widget class="QComboBox" label="" objectName="mLineOptionsComboBox"/>
+                <widget class="QLabel" label="Distance" objectName="mDiagramDistanceLabel"/>
+                <widget class="QLabel" label="Data defined position" objectName="mDataDefinedPositionLabel"/>
+                <widget class="QLabel" label="x" objectName="mXPosColLabel"/>
+                <widget class="QComboBox" label="" objectName="mDataDefinedXComboBox"/>
+                <widget class="QLabel" label="y" objectName="mYPosColLabel"/>
+                <widget class="QComboBox" label="" objectName="mDataDefinedYComboBox"/>
+              </widget>
+              <widget class="QLabel" label="Attributes" objectName="mAttributesLabel"/>
+              <widget class="QComboBox" label="" objectName="mDiagramAttributesComboBox"/>
+              <widget class="QPushButton" label="" objectName="mRemoveCategoryPushButton"/>
+              <widget class="QPushButton" label="" objectName="mAddCategoryPushButton"/>
+            </widget>
           </widget>
-          <widget class="QLabel" label="Size units" objectName="mDiagramUnitsLabel"/>
-          <widget class="QComboBox" label="" objectName="mDiagramUnitComboBox"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
-        <widget class="QGroupBox" label="" objectName="mPlacementGroupBox">
-          <widget class="QLabel" label="Placement" objectName="mPlacementLabel"/>
-          <widget class="QComboBox" label="" objectName="mPlacementComboBox"/>
-          <widget class="QLabel" label="Line Options" objectName="mLineOptionsLabel"/>
-          <widget class="QComboBox" label="" objectName="mLineOptionsComboBox"/>
-          <widget class="QLabel" label="Distance" objectName="mDiagramDistanceLabel"/>
-          <widget class="QLabel" label="Data defined position" objectName="mDataDefinedPositionLabel"/>
-          <widget class="QLabel" label="x" objectName="mXPosColLabel"/>
-          <widget class="QComboBox" label="" objectName="mDataDefinedXComboBox"/>
-          <widget class="QLabel" label="y" objectName="mYPosColLabel"/>
-          <widget class="QComboBox" label="" objectName="mDataDefinedYComboBox"/>
-        </widget>
-        <widget class="QLabel" label="Attributes" objectName="mAttributesLabel"/>
-        <widget class="QComboBox" label="" objectName="mDiagramAttributesComboBox"/>
-        <widget class="QPushButton" label="" objectName="mRemoveCategoryPushButton"/>
-        <widget class="QPushButton" label="" objectName="mAddCategoryPushButton"/>
       </widget>
     </widget>
   </widget>
@@ -1216,14 +1358,18 @@
       <widget class="QWidget" label="About" objectName="Widget2">
         <widget class="QLabel" label="" objectName="qgisIcon"/>
         <widget class="QLabel" label="&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt; p, li { white-space: pre-wrap; } &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt; &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;" objectName="TextLabel4"/>
-        <widget class="QLabel" label="Version" objectName="lblVersion"/>
         <widget class="QLabel" label="Quantum GIS is licensed under the GNU General Public License" objectName="label"/>
         <widget class="QLabel" label="http://www.gnu.org/licenses" objectName="label_2"/>
         <widget class="QPushButton" label="QGIS Home Page" objectName="btnQgisHome"/>
         <widget class="QPushButton" label="Join our user mailing list" objectName="btnQgisUser"/>
+        <widget class="QTextEdit" label="" objectName="txtVersion">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+        </widget>
       </widget>
       <widget class="QWidget" label="What's New" objectName="Widget3">
-        <widget class="QTextEdit" label="" objectName="txtWhatsNew">
+        <widget class="QTextBrowser" label="" objectName="txtWhatsNew">
           <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
@@ -1236,15 +1382,11 @@
           <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
       </widget>
-      <widget class="QWidget" label="Developers" objectName="tab"/>
-      <widget class="QWidget" label="Contributors" objectName="tab_5"/>
-      <widget class="QWidget" label="Translators" objectName="tab_3">
-        <widget class="QTextBrowser" label="" objectName="txtTranslators">
-          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
-          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
-          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
-        </widget>
+      <widget class="QWidget" label="Developers" objectName="tab">
+        <widget class="QLabel" label="" objectName="label_3"/>
       </widget>
+      <widget class="QWidget" label="Contributors" objectName="tab_5"/>
+      <widget class="QWidget" label="Translators" objectName="tab_3"/>
       <widget class="QWidget" label="Donors" objectName="tab_4">
         <widget class="QTextBrowser" label="" objectName="txtDonors">
           <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
@@ -1394,22 +1536,24 @@
   </widget>
   <widget class="QWidget" label="" objectName="QgsAttributeActionDialogBase">
     <widget class="QGroupBox" label="" objectName="groupBox_2">
-      <widget class="QPushButton" label="Insert action" objectName="insertButton"/>
-      <widget class="QPushButton" label="Update action" objectName="updateButton"/>
+      <widget class="QPushButton" label="Remove action" objectName="removeButton"/>
       <widget class="QPushButton" label="Move up" objectName="moveUpButton"/>
       <widget class="QPushButton" label="Move down" objectName="moveDownButton"/>
-      <widget class="QPushButton" label="Remove" objectName="removeButton"/>
+      <widget class="QPushButton" label="Add default actions" objectName="addDefaultActionsButton"/>
     </widget>
     <widget class="QGroupBox" label="" objectName="groupBox">
+      <widget class="QLabel" label="Type" objectName="label"/>
+      <widget class="QComboBox" label="" objectName="actionType"/>
+      <widget class="QCheckBox" label="Capture output" objectName="captureCB"/>
       <widget class="QLabel" label="Name" objectName="textLabel1"/>
       <widget class="QLineEdit" label="" objectName="actionName"/>
       <widget class="QLabel" label="Action" objectName="textLabel2"/>
-      <widget class="QLineEdit" label="" objectName="actionAction"/>
-      <widget class="QCheckBox" label="Capture output" objectName="captureCB"/>
+      <widget class="QPushButton" label="Insert expression..." objectName="insertExpressionButton"/>
       <widget class="QComboBox" label="" objectName="fieldComboBox"/>
       <widget class="QPushButton" label="Insert field" objectName="insertFieldButton"/>
-      <widget class="QComboBox" label="" objectName="actionType"/>
-      <widget class="QLabel" label="Type" objectName="label"/>
+      <widget class="QPushButton" label="Add to action list" objectName="insertButton"/>
+      <widget class="QPushButton" label="Update selected action" objectName="updateButton"/>
+      <widget class="QLabel" label="Type" objectName="label_1"/>
     </widget>
   </widget>
   <widget class="QDialog" label="" objectName="QgsQueryBuilderBase">
@@ -1462,6 +1606,31 @@
       <widget class="QDialogButtonBox" label="" objectName="mButtonBox"/>
     </widget>
   </widget>
+  <widget class="QDialog" label="" objectName="QgsMssqlNewConnectionBase">
+    <widget class="QGroupBox" label="" objectName="GroupBox1">
+      <widget class="QLabel" label="Name" objectName="TextLabel1_2"/>
+      <widget class="QLabel" label="Provider/DSN" objectName="label"/>
+      <widget class="QLabel" label="Host" objectName="TextLabel1"/>
+      <widget class="QLabel" label="Database" objectName="TextLabel2"/>
+      <widget class="QLabel" label="" objectName="label_2"/>
+      <widget class="QLabel" label="Username" objectName="TextLabel3"/>
+      <widget class="QLabel" label="Password" objectName="TextLabel3_2"/>
+      <widget class="QLineEdit" label="" objectName="txtName"/>
+      <widget class="QLineEdit" label="" objectName="txtService"/>
+      <widget class="QLineEdit" label="" objectName="txtHost"/>
+      <widget class="QLineEdit" label="" objectName="txtDatabase"/>
+      <widget class="QCheckBox" label="Trusted Connection" objectName="cb_trustedConnection"/>
+      <widget class="QLineEdit" label="" objectName="txtUsername"/>
+      <widget class="QLineEdit" label="" objectName="txtPassword"/>
+      <widget class="QCheckBox" label="Save Username" objectName="chkStoreUsername"/>
+      <widget class="QPushButton" label="&amp;Test Connect" objectName="btnConnect"/>
+      <widget class="QCheckBox" label="Save Password" objectName="chkStorePassword"/>
+      <widget class="QCheckBox" label="Only look in the geometry_columns metadata table" objectName="cb_geometryColumns"/>
+      <widget class="QCheckBox" label="Also list tables with no geometry" objectName="cb_allowGeometrylessTables"/>
+      <widget class="QCheckBox" label="Use estimated table parameters" objectName="cb_useEstimatedMetadata"/>
+    </widget>
+    <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
+  </widget>
   <widget class="QDialog" label="" objectName="QgsEngineConfigDialog">
     <widget class="QLabel" label="Search method" objectName="label"/>
     <widget class="QComboBox" label="" objectName="cboSearchMethod"/>
@@ -1484,21 +1653,29 @@
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
   <widget class="QWidget" label="" objectName="QgsProjectionSelectorBase">
+    <widget class="QLabel" label="Filter" objectName="label_5"/>
+    <widget class="QLineEdit" label="" objectName="leSearch"/>
+    <widget class="QLabel" label="Recently used coordinate references systems" objectName="label_3"/>
     <widget class="QTextEdit" label="" objectName="teProjection">
       <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
       <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
       <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
     </widget>
-    <widget class="QGroupBox" label="" objectName="groupBox">
-      <widget class="QLabel" label="Authority" objectName="label"/>
-      <widget class="QComboBox" label="" objectName="cbxAuthority"/>
-      <widget class="QLabel" label="Search for" objectName="label_2"/>
-      <widget class="QComboBox" label="" objectName="cbxMode"/>
-      <widget class="QCheckBox" label="Hide deprecated CRSs" objectName="cbxHideDeprecated"/>
-      <widget class="QLineEdit" label="" objectName="leSearch"/>
-      <widget class="QPushButton" label="Find" objectName="pbnFind"/>
+  </widget>
+  <widget class="QDialog" label="" objectName="QgsDecorationCopyrightDialog">
+    <widget class="QCheckBox" label="Enable copyright label" objectName="cboxEnabled"/>
+    <widget class="QLabel" label="&amp;Enter your copyright label here:" objectName="label_2"/>
+    <widget class="QTextEdit" label="" objectName="txtCopyrightText">
+      <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+      <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+      <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
     </widget>
-    <widget class="QLabel" label="Recently used coordinate references systems" objectName="label_3"/>
+    <widget class="QLabel" label="&amp;Placement" objectName="textLabel16"/>
+    <widget class="QComboBox" label="" objectName="cboPlacement"/>
+    <widget class="QLabel" label="&amp;Orientation" objectName="textLabel15"/>
+    <widget class="QComboBox" label="" objectName="cboOrientation"/>
+    <widget class="QLabel" label="&amp;Color" objectName="label"/>
+    <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
   <widget class="QWidget" label="" objectName="QgsComposerVectorLegendBase">
     <widget class="QComboBox" label="" objectName="mPreviewModeComboBox"/>
@@ -1514,6 +1691,20 @@
   <widget class="QDialog" label="" objectName="QgsAttributeTypeDialog">
     <widget class="QComboBox" label="" objectName="selectionComboBox"/>
     <widget class="QStackedWidget" label="" objectName="stackedWidget">
+      <widget class="QWidget" label="" objectName="uuidGenPage">
+        <widget class="QLabel" label="Read-only field that generates a UUID if empty." objectName="label_9"/>
+      </widget>
+      <widget class="QWidget" label="" objectName="valueRelationPage">
+        <widget class="QLabel" label="Layer" objectName="label_5"/>
+        <widget class="QComboBox" label="" objectName="valueRelationLayer"/>
+        <widget class="QLabel" label="Key column" objectName="label_6"/>
+        <widget class="QComboBox" label="" objectName="valueRelationKeyColumn"/>
+        <widget class="QLabel" label="Value column" objectName="label_7"/>
+        <widget class="QComboBox" label="" objectName="valueRelationValueColumn"/>
+        <widget class="QLabel" label="Select layer, key column and value column" objectName="label_8"/>
+        <widget class="QCheckBox" label="Allow null value" objectName="valueRelationAllowNull"/>
+        <widget class="QCheckBox" label="Order by value" objectName="valueRelationOrderByValue"/>
+      </widget>
       <widget class="QWidget" label="" objectName="calendarPage">
         <widget class="QLabel" label="A calendar widget to enter a date." objectName="label_4"/>
       </widget>
@@ -1550,7 +1741,7 @@
         <widget class="QCheckBox" label="Editable" objectName="editableUniqueValues"/>
       </widget>
       <widget class="QWidget" label="" objectName="rangePage">
-        <widget class="QLabel" label="Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box." objectName="rangeLabel"/>
+        <widget class="QLabel" label="Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box." objectName="rangeLabel"/>
         <widget class="QComboBox" label="" objectName="rangeWidget"/>
         <widget class="QLabel" label="Minimum" objectName="minimumLabel"/>
         <widget class="QLabel" label="Maximum" objectName="maximumLabel"/>
@@ -1610,7 +1801,6 @@
           <widget class="QGroupBox" label="" objectName="groupBox">
             <widget class="QLabel" label="Size" objectName="textLabel3"/>
             <widget class="QComboBox" label="" objectName="mPaperSizeComboBox"/>
-            <widget class="QLabel" label="Units" objectName="textLabel5"/>
             <widget class="QComboBox" label="" objectName="mPaperUnitsComboBox"/>
             <widget class="QLabel" label="Orientation" objectName="textLabel7"/>
             <widget class="QComboBox" label="" objectName="mPaperOrientationComboBox"/>
@@ -1651,23 +1841,19 @@
   </widget>
   <widget class="QWidget" label="" objectName="QgsComposerMapWidgetBase"/>
   <widget class="QWidget" label="" objectName="QgsGPSInformationWidgetBase">
-    <widget class="QPushButton" label="Connect" objectName="mConnectButton"/>
+    <widget class="QPushButton" label="&amp;Add feature" objectName="mBtnCloseFeature"/>
+    <widget class="QLabel" label="" objectName="mLblStatusIndicator"/>
+    <widget class="QPushButton" label="Add track point" objectName="mBtnAddVertex"/>
+    <widget class="QPushButton" label="&amp;Connect" objectName="mConnectButton"/>
     <widget class="QStackedWidget" label="" objectName="mStackedWidget">
-      <widget class="QWidget" label="" objectName="stackedWidgetPage5">
-        <widget class="QTextEdit" label="" objectName="mGPSTextEdit">
-          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
-          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
-          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
-        </widget>
-      </widget>
+      <widget class="QWidget" label="" objectName="stackedWidgetPage5"/>
       <widget class="QWidget" label="" objectName="stackedWidgetPage4">
         <widget class="QScrollArea" label="" objectName="scrollArea">
           <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
             <widget class="QWidget" label="" objectName="scrollAreaWidgetContents">
               <widget class="QGroupBox" label="" objectName="mDeviceGroupBox">
                 <widget class="QRadioButton" label="Autodetect" objectName="mRadAutodetect"/>
-                <widget class="QRadioButton" label="Use path / port below" objectName="mRadUserPath"/>
-                <widget class="QLabel" label="Path to serial device" objectName="mPathLabel"/>
+                <widget class="QRadioButton" label="Serial device" objectName="mRadUserPath"/>
                 <widget class="QComboBox" label="" objectName="mCboDevices"/>
                 <widget class="QLabel" label="Port" objectName="label_4"/>
                 <widget class="QLabel" label="Host" objectName="label_3"/>
@@ -1675,26 +1861,35 @@
                 <widget class="QLineEdit" label="" objectName="mGpsdDevice"/>
                 <widget class="QLineEdit" label="" objectName="mGpsdHost"/>
                 <widget class="QLineEdit" label="" objectName="mGpsdPort"/>
-                <widget class="QRadioButton" label="Connection to gpsd" objectName="mRadGpsd"/>
+                <widget class="QRadioButton" label="gpsd" objectName="mRadGpsd"/>
+                <widget class="QRadioButton" label="Internal" objectName="mRadInternal"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="groupBox_2">
+                <widget class="QGroupBox" label="" objectName="groupBox_3">
+                  <widget class="QCheckBox" label="Automatically add points" objectName="mCbxAutoAddVertices"/>
+                  <widget class="QSpinBox" label="0 width" objectName="mSpinTrackWidth">
+                    <widget class="QLineEdit" label="0 width" objectName="qt_spinbox_lineedit"/>
+                  </widget>
+                  <widget class="QPushButton" label="Color" objectName="mBtnTrackColor"/>
+                </widget>
+                <widget class="QCheckBox" label="Automatically save added feature" objectName="mCbxAutoCommit"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="mLogFileGroupBox">
+                <widget class="QLineEdit" label="" objectName="mTxtLogFile"/>
+                <widget class="QPushButton" label="..." objectName="mBtnLogFile"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="groupBox">
+                <widget class="QRadioButton" label="when leaving" objectName="radRecenterWhenNeeded"/>
+                <widget class="QSpinBox" label="50% of map extent" objectName="mSpinMapExtentMultiplier">
+                  <widget class="QLineEdit" label="50% of map extent" objectName="qt_spinbox_lineedit"/>
+                </widget>
+                <widget class="QRadioButton" label="never" objectName="radNeverRecenter"/>
+                <widget class="QRadioButton" label="always" objectName="radRecenterMap"/>
               </widget>
               <widget class="QGroupBox" label="" objectName="mGroupShowMarker">
                 <widget class="QSlider" label="" objectName="mSliderMarkerSize"/>
                 <widget class="QLabel" label="Small" objectName="label"/>
                 <widget class="QLabel" label="Large" objectName="label_2"/>
-              </widget>
-              <widget class="QGroupBox" label="" objectName="groupBox_2">
-                <widget class="QCheckBox" label="Auto-add vertices" objectName="mCbxAutoAddVertices"/>
-              </widget>
-              <widget class="QGroupBox" label="" objectName="groupBox">
-                <widget class="QRadioButton" label="when leaving extents" objectName="radRecenterWhenNeeded"/>
-                <widget class="QRadioButton" label="never" objectName="radNeverRecenter"/>
-                <widget class="QRadioButton" label="always" objectName="radRecenterMap"/>
-              </widget>
-              <widget class="QGroupBox" label="" objectName="groupBox_3">
-                <widget class="QPushButton" label="Color" objectName="mBtnTrackColour"/>
-                <widget class="QSpinBox" label="0 width" objectName="mSpinTrackWidth">
-                  <widget class="QLineEdit" label="0 width" objectName="qt_spinbox_lineedit"/>
-                </widget>
               </widget>
             </widget>
           </widget>
@@ -1705,13 +1900,46 @@
       <widget class="QWidget" label="" objectName="stackedWidgetPage3"/>
       <widget class="QWidget" label="" objectName="stackedWidgetPage2"/>
       <widget class="QWidget" label="" objectName="stackedWidgetPage1">
-        <widget class="QDateTimeEdit" label="1/1/00 12:00 AM" objectName="mDateTime">
-          <widget class="QLineEdit" label="1/1/00 12:00 AM" objectName="qt_spinbox_lineedit"/>
+        <widget class="QScrollArea" label="" objectName="scrollArea_2">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents_2">
+              <widget class="QLineEdit" label="" objectName="mTxtLatitude"/>
+              <widget class="QLabel" label="Longitude" objectName="mLblLongitude"/>
+              <widget class="QLineEdit" label="" objectName="mTxtLongitude"/>
+              <widget class="QLineEdit" label="" objectName="mTxtAltitude"/>
+              <widget class="QLabel" label="Altitude" objectName="mLblAltitude"/>
+              <widget class="QLabel" label="Latitude" objectName="mLblLatitude"/>
+              <widget class="QLabel" label="Time of fix" objectName="mLblUtcTime"/>
+              <widget class="QLineEdit" label="" objectName="mTxtDateTime"/>
+              <widget class="QLineEdit" label="" objectName="mTxtSpeed"/>
+              <widget class="QLabel" label="Speed" objectName="mLblSpeed"/>
+              <widget class="QLineEdit" label="" objectName="mTxtDirection"/>
+              <widget class="QLabel" label="Direction" objectName="mLblDirection"/>
+              <widget class="QLineEdit" label="" objectName="mTxtHdop"/>
+              <widget class="QLabel" label="HDOP" objectName="mLblHdop"/>
+              <widget class="QLineEdit" label="" objectName="mTxtVdop"/>
+              <widget class="QLabel" label="VDOP" objectName="mLblVdop"/>
+              <widget class="QLineEdit" label="" objectName="mTxtPdop"/>
+              <widget class="QLabel" label="PDOP" objectName="mLblPdop"/>
+              <widget class="QLineEdit" label="" objectName="mTxtFixMode"/>
+              <widget class="QLabel" label="Mode" objectName="mLblFixMode"/>
+              <widget class="QLineEdit" label="" objectName="mTxtFixType"/>
+              <widget class="QLabel" label="Dimensions" objectName="mLblFixType"/>
+              <widget class="QLineEdit" label="" objectName="mTxtQuality"/>
+              <widget class="QLabel" label="Quality" objectName="mLblQuality"/>
+              <widget class="QLineEdit" label="" objectName="mTxtStatus"/>
+              <widget class="QLabel" label="Status" objectName="mLblStatus"/>
+              <widget class="QLineEdit" label="" objectName="mTxtSatellitesUsed"/>
+              <widget class="QLabel" label="Satellites" objectName="mLblSatellitesUsed"/>
+              <widget class="QLineEdit" label="" objectName="mTxtHacc"/>
+              <widget class="QLineEdit" label="" objectName="mTxtVacc"/>
+              <widget class="QLabel" label="H accurancy" objectName="mLblHacc"/>
+              <widget class="QLabel" label="V accurancy" objectName="mLblVacc"/>
+            </widget>
+          </widget>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
-        <widget class="QProgressBar" label="Vertical Accuracy" objectName="mVerticalAccuracy"/>
-        <widget class="QProgressBar" label="Horizontal Accuracy" objectName="mHorizontalAccuracy"/>
-        <widget class="QPushButton" label="Add vertex" objectName="mBtnAddVertex"/>
-        <widget class="QPushButton" label="Add feature" objectName="mBtnCloseFeature"/>
       </widget>
     </widget>
   </widget>
@@ -1750,40 +1978,49 @@
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
   <widget class="QWidget" label="" objectName="QgsComposerItemWidgetBase">
+    <widget class="QLabel" label="Opacity" objectName="mOpacityLabel"/>
+    <widget class="QLabel" label="Outline width" objectName="mOutlineWidthLabel"/>
+    <widget class="QLabel" label="Item ID" objectName="mIdLabel"/>
     <widget class="QPushButton" label="Frame color..." objectName="mFrameColorButton"/>
     <widget class="QPushButton" label="Background color..." objectName="mBackgroundColorButton"/>
-    <widget class="QLabel" label="Opacity" objectName="mOpacityLabel"/>
     <widget class="QSlider" label="" objectName="mOpacitySlider"/>
-    <widget class="QLabel" label="Outline width" objectName="mOutlineWidthLabel"/>
     <widget class="QPushButton" label="Position and size..." objectName="mPositionButton"/>
+    <widget class="QLineEdit" label="" objectName="mItemIdLineEdit"/>
     <widget class="QCheckBox" label="Show frame" objectName="mFrameCheckBox"/>
   </widget>
   <widget class="QDialog" label="" objectName="QgsNewSpatialiteLayerDialogBase">
-    <widget class="QLabel" label="Database" objectName="mFileFormatLabel"/>
-    <widget class="QComboBox" label="" objectName="mDatabaseComboBox"/>
-    <widget class="QLabel" label="Layer name" objectName="label"/>
-    <widget class="QLineEdit" label="" objectName="leLayerName"/>
-    <widget class="QLabel" label="Geometry column" objectName="label_2"/>
-    <widget class="QLineEdit" label="geometry" objectName="leGeometryColumn"/>
-    <widget class="QGroupBox" label="" objectName="buttonGroup1">
-      <widget class="QRadioButton" label="Point" objectName="mPointRadioButton"/>
-      <widget class="QRadioButton" label="Line" objectName="mLineRadioButton"/>
-      <widget class="QRadioButton" label="Polygon" objectName="mPolygonRadioButton"/>
-      <widget class="QRadioButton" label="MultiPoint" objectName="mMultipointRadioButton"/>
-      <widget class="QRadioButton" label="Multiline" objectName="mMultilineRadioButton"/>
-      <widget class="QRadioButton" label="Multipolygon" objectName="mMultipolygonRadioButton"/>
+    <widget class="QScrollArea" label="" objectName="scrollArea">
+      <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+        <widget class="QWidget" label="" objectName="scrollAreaWidgetContents">
+          <widget class="QLabel" label="Database" objectName="mFileFormatLabel"/>
+          <widget class="QComboBox" label="" objectName="mDatabaseComboBox"/>
+          <widget class="QLabel" label="Layer name" objectName="label"/>
+          <widget class="QLineEdit" label="" objectName="leLayerName"/>
+          <widget class="QLabel" label="Geometry column" objectName="label_2"/>
+          <widget class="QLineEdit" label="geometry" objectName="leGeometryColumn"/>
+          <widget class="QGroupBox" label="" objectName="buttonGroup1">
+            <widget class="QRadioButton" label="Point" objectName="mPointRadioButton"/>
+            <widget class="QRadioButton" label="Line" objectName="mLineRadioButton"/>
+            <widget class="QRadioButton" label="Polygon" objectName="mPolygonRadioButton"/>
+            <widget class="QRadioButton" label="MultiPoint" objectName="mMultipointRadioButton"/>
+            <widget class="QRadioButton" label="Multiline" objectName="mMultilineRadioButton"/>
+            <widget class="QRadioButton" label="Multipolygon" objectName="mMultipolygonRadioButton"/>
+          </widget>
+          <widget class="QLineEdit" label="" objectName="leSRID"/>
+          <widget class="QPushButton" label="Specify CRS" objectName="pbnFindSRID"/>
+          <widget class="QCheckBox" label="Create an autoincrementing primary key" objectName="checkBoxPrimaryKey"/>
+          <widget class="QGroupBox" label="" objectName="groupBox">
+            <widget class="QLabel" label="Name" objectName="textLabel1"/>
+            <widget class="QLineEdit" label="" objectName="mNameEdit"/>
+            <widget class="QLabel" label="Type" objectName="textLabel2"/>
+            <widget class="QComboBox" label="" objectName="mTypeBox"/>
+          </widget>
+          <widget class="QGroupBox" label="" objectName="groupBox_2"/>
+        </widget>
+      </widget>
+      <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+      <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
     </widget>
-    <widget class="QLabel" label="EPSG SRID" objectName="label_3"/>
-    <widget class="QLineEdit" label="" objectName="leSRID"/>
-    <widget class="QPushButton" label="Find SRID" objectName="pbnFindSRID"/>
-    <widget class="QCheckBox" label="Create an autoincrementing primary key" objectName="checkBoxPrimaryKey"/>
-    <widget class="QGroupBox" label="" objectName="groupBox">
-      <widget class="QLabel" label="Name" objectName="textLabel1"/>
-      <widget class="QLineEdit" label="" objectName="mNameEdit"/>
-      <widget class="QLabel" label="Type" objectName="textLabel2"/>
-      <widget class="QComboBox" label="" objectName="mTypeBox"/>
-    </widget>
-    <widget class="QGroupBox" label="" objectName="groupBox_2"/>
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
   </widget>
   <widget class="QDialog" label="" objectName="QgsSnappingDialogBase">
@@ -1854,6 +2091,9 @@
       <widget class="QCheckBox" label="Ignore GetMap URI reported in capabilities" objectName="cbxIgnoreGetMapURI"/>
     </widget>
   </widget>
+  <widget class="QDialog" label="" objectName="QgsDecorationNorthArrowDialog">
+    <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
+  </widget>
   <widget class="QDialog" label="" objectName="QgsStyleV2ExportImportDialogBase">
     <widget class="QLabel" label="Select symbols to export" objectName="label"/>
     <widget class="QListView" label="" objectName="listItems">
@@ -1866,81 +2106,72 @@
   <widget class="QDialog" label="" objectName="QgsRasterLayerPropertiesBase">
     <widget class="QTabWidget" label="" objectName="tabBar">
       <widget class="QWidget" label="Style" objectName="tabPageSymbology">
-        <widget class="QGroupBox" label="" objectName="groupBox_3">
-          <widget class="QRadioButton" label="Single band gray" objectName="rbtnSingleBand"/>
-          <widget class="QRadioButton" label="Three band color" objectName="rbtnThreeBand"/>
-          <widget class="QCheckBox" label="Invert color map" objectName="cboxInvertColorMap"/>
-        </widget>
-        <widget class="QStackedWidget" label="" objectName="stackedWidget">
-          <widget class="QWidget" label="" objectName="gray">
-            <widget class="QGroupBox" label="" objectName="groupBox_5">
-              <widget class="QLabel" label="Gray band" objectName="label"/>
-              <widget class="QComboBox" label="" objectName="cboGray"/>
-              <widget class="QLabel" label="Color map" objectName="label_5"/>
-              <widget class="QComboBox" label="" objectName="cboxColorMap"/>
-              <widget class="QRadioButton" label="Custom min / max values" objectName="rbtnSingleBandMinMax"/>
-              <widget class="QLabel" label="Min" objectName="lblGrayMin"/>
-              <widget class="QLineEdit" label="" objectName="leGrayMin"/>
-              <widget class="QLabel" label="Max" objectName="lblGrayMax"/>
-              <widget class="QLineEdit" label="" objectName="leGrayMax"/>
-              <widget class="QRadioButton" label="Use standard deviation" objectName="rbtnSingleBandStdDev"/>
+        <widget class="QScrollArea" label="" objectName="scrollArea_3">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents_6">
+              <widget class="QGroupBox" label="" objectName="groupBox_3">
+                <widget class="QRadioButton" label="Single band gray" objectName="rbtnSingleBand"/>
+                <widget class="QRadioButton" label="Three band color" objectName="rbtnThreeBand"/>
+                <widget class="QCheckBox" label="Invert color map" objectName="cboxInvertColorMap"/>
+              </widget>
+              <widget class="QStackedWidget" label="" objectName="stackedWidget">
+                <widget class="QWidget" label="" objectName="gray">
+                  <widget class="QGroupBox" label="" objectName="groupBox_5">
+                    <widget class="QLabel" label="Gray band" objectName="label"/>
+                    <widget class="QComboBox" label="" objectName="cboGray"/>
+                    <widget class="QLabel" label="Color map" objectName="label_5"/>
+                    <widget class="QComboBox" label="" objectName="cboxColorMap"/>
+                    <widget class="QRadioButton" label="Custom min / max values" objectName="rbtnSingleBandMinMax"/>
+                    <widget class="QLabel" label="Min" objectName="lblGrayMin"/>
+                    <widget class="QLineEdit" label="" objectName="leGrayMin"/>
+                    <widget class="QLabel" label="Max" objectName="lblGrayMax"/>
+                    <widget class="QLineEdit" label="" objectName="leGrayMax"/>
+                    <widget class="QRadioButton" label="Use standard deviation" objectName="rbtnSingleBandStdDev"/>
+                  </widget>
+                </widget>
+                <widget class="QWidget" label="" objectName="rgb">
+                  <widget class="QGroupBox" label="" objectName="grpRgbBands">
+                    <widget class="QLabel" label="Red band" objectName="lblRed"/>
+                    <widget class="QComboBox" label="" objectName="cboRed"/>
+                    <widget class="QLabel" label="Green band" objectName="lblGreen"/>
+                    <widget class="QComboBox" label="" objectName="cboGreen"/>
+                    <widget class="QLabel" label="Blue band" objectName="lblBlue"/>
+                    <widget class="QComboBox" label="" objectName="cboBlue"/>
+                    <widget class="QRadioButton" label="Custom min / max values" objectName="rbtnThreeBandMinMax"/>
+                    <widget class="QLabel" label="Default R:1 G:2 B:3" objectName="labelDefaultBandCombination"/>
+                    <widget class="QLabel" label="Red min" objectName="lblRedMin"/>
+                    <widget class="QLineEdit" label="" objectName="leRedMin"/>
+                    <widget class="QLabel" label="Red max" objectName="lblRedMax"/>
+                    <widget class="QLineEdit" label="" objectName="leRedMax"/>
+                    <widget class="QLabel" label="Green min" objectName="lblGreenMin"/>
+                    <widget class="QLineEdit" label="" objectName="leGreenMin"/>
+                    <widget class="QLabel" label="Green max" objectName="lblGreenMax"/>
+                    <widget class="QLineEdit" label="" objectName="leGreenMax"/>
+                    <widget class="QLabel" label="Blue min" objectName="lblBlueMin"/>
+                    <widget class="QLineEdit" label="" objectName="leBlueMin"/>
+                    <widget class="QLabel" label="Blue max" objectName="lblBlueMax"/>
+                    <widget class="QLineEdit" label="" objectName="leBlueMax"/>
+                    <widget class="QRadioButton" label="Use standard deviation" objectName="rbtnThreeBandStdDev"/>
+                  </widget>
+                </widget>
+              </widget>
+              <widget class="QLabel" label="Note" objectName="lblMinMaxEstimateWarning"/>
+              <widget class="QGroupBox" label="" objectName="groupBox_2">
+                <widget class="QRadioButton" label="Estimate (faster)" objectName="rbtnEstimateMinMax"/>
+                <widget class="QRadioButton" label="Actual (slower)" objectName="rbtnActualMinMax"/>
+                <widget class="QRadioButton" label="Current extent" objectName="rbtnExtentMinMax"/>
+                <widget class="QPushButton" label="Load" objectName="pbtnLoadMinMax"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="groupBox_8">
+                <widget class="QLabel" label="Current" objectName="labelContrastEnhancement"/>
+                <widget class="QComboBox" label="" objectName="cboxContrastEnhancementAlgorithm"/>
+                <widget class="QLabel" label="Default" objectName="label_4"/>
+                <widget class="QLabel" label="TextLabel" objectName="labelDefaultContrastEnhancementAlgorithm"/>
+              </widget>
             </widget>
           </widget>
-          <widget class="QWidget" label="" objectName="rgb">
-            <widget class="QGroupBox" label="" objectName="grpRgbBands">
-              <widget class="QLabel" label="Red band" objectName="lblRed"/>
-              <widget class="QComboBox" label="" objectName="cboRed"/>
-              <widget class="QLabel" label="Green band" objectName="lblGreen"/>
-              <widget class="QComboBox" label="" objectName="cboGreen"/>
-              <widget class="QLabel" label="Blue band" objectName="lblBlue"/>
-              <widget class="QComboBox" label="" objectName="cboBlue"/>
-              <widget class="QLabel" label="Default R:1 G:2 B:3" objectName="labelDefaultBandCombination"/>
-              <widget class="QRadioButton" label="Custom min / max values" objectName="rbtnThreeBandMinMax"/>
-              <widget class="QLabel" label="Red min" objectName="lblRedMin"/>
-              <widget class="QLineEdit" label="" objectName="leRedMin"/>
-              <widget class="QLabel" label="Red max" objectName="lblRedMax"/>
-              <widget class="QLineEdit" label="" objectName="leRedMax"/>
-              <widget class="QLabel" label="Green min" objectName="lblGreenMin"/>
-              <widget class="QLineEdit" label="" objectName="leGreenMin"/>
-              <widget class="QLabel" label="Green max" objectName="lblGreenMax"/>
-              <widget class="QLineEdit" label="" objectName="leGreenMax"/>
-              <widget class="QLabel" label="Blue min" objectName="lblBlueMin"/>
-              <widget class="QLineEdit" label="" objectName="leBlueMin"/>
-              <widget class="QLabel" label="Blue max" objectName="lblBlueMax"/>
-              <widget class="QLineEdit" label="" objectName="leBlueMax"/>
-              <widget class="QRadioButton" label="Use standard deviation" objectName="rbtnThreeBandStdDev"/>
-            </widget>
-          </widget>
-        </widget>
-        <widget class="QLabel" label="Note" objectName="lblMinMaxEstimateWarning"/>
-        <widget class="QGroupBox" label="" objectName="groupBox_2">
-          <widget class="QRadioButton" label="Estimate (faster)" objectName="rbtnEstimateMinMax"/>
-          <widget class="QRadioButton" label="Actual (slower)" objectName="rbtnActualMinMax"/>
-          <widget class="QRadioButton" label="Current extent" objectName="rbtnExtentMinMax"/>
-          <widget class="QPushButton" label="Load" objectName="pbtnLoadMinMax"/>
-        </widget>
-        <widget class="QGroupBox" label="" objectName="groupBox_8">
-          <widget class="QLabel" label="Current" objectName="labelContrastEnhancement"/>
-          <widget class="QComboBox" label="" objectName="cboxContrastEnhancementAlgorithm"/>
-          <widget class="QPushButton" label="" objectName="pbtnMakeContrastEnhancementAlgorithmDefault"/>
-          <widget class="QLabel" label="Default" objectName="label_4"/>
-          <widget class="QLabel" label="TextLabel" objectName="labelDefaultContrastEnhancementAlgorithm"/>
-        </widget>
-      </widget>
-      <widget class="QWidget" label="Transparency" objectName="tabBarPage2">
-        <widget class="QGroupBox" label="" objectName="groupBox_4">
-          <widget class="QSlider" label="" objectName="sliderTransparency"/>
-          <widget class="QLabel" label="None" objectName="textLabel3"/>
-          <widget class="QLabel" label=" 00%" objectName="lblTransparencyPercent"/>
-          <widget class="QLabel" label="&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;" objectName="textLabel4"/>
-        </widget>
-        <widget class="QGroupBox" label="" objectName="gboxCustomTransparency">
-          <widget class="QLabel" label="Transparency band" objectName="lblTransparent"/>
-          <widget class="QComboBox" label="" objectName="cboxTransparencyBand"/>
-          <widget class="QLabel" label="Transparent pixel list" objectName="label_2"/>
-        </widget>
-        <widget class="QGroupBox" label="" objectName="gboxNoDataValue">
-          <widget class="QLineEdit" label="" objectName="leNoDataValue"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
       </widget>
       <widget class="QWidget" label="Colormap" objectName="tabPageColormap">
@@ -1960,6 +2191,30 @@
           <widget class="QPushButton" label="Delete entry" objectName="mDeleteEntryButton"/>
           <widget class="QPushButton" label="Sort" objectName="pbtnSortColorMap"/>
           <widget class="QComboBox" label="" objectName="cboxColorMapBand"/>
+        </widget>
+      </widget>
+      <widget class="QWidget" label="Transparency" objectName="tabBarPage2">
+        <widget class="QScrollArea" label="" objectName="scrollArea_2">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents_2">
+              <widget class="QGroupBox" label="" objectName="groupBox_4">
+                <widget class="QSlider" label="" objectName="sliderTransparency"/>
+                <widget class="QLabel" label="None" objectName="textLabel3"/>
+                <widget class="QLabel" label=" 00%" objectName="lblTransparencyPercent"/>
+                <widget class="QLabel" label="&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;" objectName="textLabel4"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="gboxNoDataValue">
+                <widget class="QLineEdit" label="" objectName="leNoDataValue"/>
+              </widget>
+              <widget class="QGroupBox" label="" objectName="gboxCustomTransparency">
+                <widget class="QLabel" label="Transparency band" objectName="lblTransparent"/>
+                <widget class="QComboBox" label="" objectName="cboxTransparencyBand"/>
+                <widget class="QLabel" label="Transparent pixel list" objectName="label_2"/>
+              </widget>
+            </widget>
+          </widget>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+          <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
       </widget>
       <widget class="QWidget" label="General" objectName="tabBarPage4">
@@ -1991,25 +2246,41 @@
         </widget>
       </widget>
       <widget class="QWidget" label="Metadata" objectName="tabPageMetadata">
-        <widget class="QTextBrowser" label="" objectName="txtbMetadata">
-          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+        <widget class="QScrollArea" label="" objectName="scrollArea">
+          <widget class="QWidget" label="" objectName="qt_scrollarea_viewport">
+            <widget class="QWidget" label="" objectName="scrollAreaWidgetContents">
+              <widget class="QLabel" label="Title" objectName="mLayerTitleLabel"/>
+              <widget class="QLineEdit" label="" objectName="mLayerTitleLineEdit"/>
+              <widget class="QLabel" label="Abstract" objectName="mLayerAbstractLabel"/>
+              <widget class="QTextEdit" label="" objectName="mLayerAbstractTextEdit">
+                <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+              </widget>
+              <widget class="QTextBrowser" label="" objectName="txtbMetadata">
+                <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+                <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+              </widget>
+            </widget>
+          </widget>
           <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
       </widget>
       <widget class="QWidget" label="Pyramids" objectName="tabPagePyramids">
-        <widget class="QLabel" label="Notes" objectName="label_3"/>
         <widget class="QLabel" label="Pyramid resolutions" objectName="textLabel5"/>
         <widget class="QTextEdit" label="" objectName="tePyramidDescription">
           <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
           <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
         </widget>
-        <widget class="QCheckBox" label="Build pyramids internally if possible" objectName="cbxInternalPyramids"/>
         <widget class="QLabel" label="Resampling method" objectName="textLabel4_2"/>
+        <widget class="QLabel" label="Notes" objectName="label_3"/>
+        <widget class="QCheckBox" label="Build pyramids internally if possible" objectName="cbxInternalPyramids"/>
+        <widget class="QPushButton" label="Build pyramids" objectName="buttonBuildPyramids"/>
         <widget class="QComboBox" label="" objectName="cboResamplingMethod"/>
         <widget class="QProgressBar" label="0%" objectName="mPyramidProgress"/>
-        <widget class="QPushButton" label="Build pyramids" objectName="buttonBuildPyramids"/>
       </widget>
       <widget class="QWidget" label="Histogram" objectName="tabPageHistogram">
         <widget class="QProgressBar" label="0%" objectName="mHistogramProgress"/>
@@ -2020,5 +2291,41 @@
     <widget class="QPushButton" label="Load Style ..." objectName="pbnLoadStyle"/>
     <widget class="QPushButton" label="Save Style ..." objectName="pbnSaveStyleAs"/>
     <widget class="QDialogButtonBox" label="" objectName="buttonBox"/>
+  </widget>
+  <widget class="QWidget" label="" objectName="QgsExpressionBuilderWidgetBase">
+    <widget class="QGroupBox" label="" objectName="moperationListGroup">
+      <widget class="QLabel" label="Search" objectName="label"/>
+      <widget class="QLineEdit" label="" objectName="txtSearchEdit"/>
+    </widget>
+    <widget class="QGroupBox" label="" objectName="mFunctionHelGroup">
+      <widget class="QTextEdit" label="" objectName="txtHelpText">
+        <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+        <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+        <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+      </widget>
+    </widget>
+    <widget class="QGroupBox" label="" objectName="mValueGroupBox"/>
+    <widget class="QGroupBox" label="" objectName="mOperatorsGroupBox">
+      <widget class="QPushButton" label="=" objectName="btnEqualPushButton"/>
+      <widget class="QPushButton" label="+" objectName="btnPlusPushButton"/>
+      <widget class="QPushButton" label="-" objectName="btnMinusPushButton"/>
+      <widget class="QPushButton" label="/" objectName="btnDividePushButton"/>
+      <widget class="QPushButton" label="*" objectName="btnMultiplyPushButton"/>
+      <widget class="QPushButton" label="^" objectName="btnExpButton"/>
+      <widget class="QPushButton" label="||" objectName="btnConcatButton"/>
+      <widget class="QPushButton" label="(" objectName="btnOpenBracketPushButton"/>
+      <widget class="QPushButton" label=")" objectName="btnCloseBracketPushButton"/>
+    </widget>
+    <widget class="QLabel" label="Output preview:   " objectName="label_2"/>
+    <widget class="QLabel" label="" objectName="lblPreview"/>
+    <widget class="QGroupBox" label="" objectName="groupBox">
+      <widget class="QTextEdit" label="" objectName="txtExpressionString">
+        <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
+        <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>
+        <widget class="QWidget" label="" objectName="qt_scrollarea_vcontainer"/>
+      </widget>
+      <widget class="QPushButton" label="" objectName="btnSave"/>
+      <widget class="QPushButton" label="" objectName="btnOpen"/>
+    </widget>
   </widget>
 </qgiswidgets>

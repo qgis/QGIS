@@ -1143,12 +1143,12 @@ class geoprocessingThread( QThread ):
                   diff_geom = QgsGeometry(diff_geom)
 
               if int_geom.wkbType() == 0:
-                # intersection produced different geomety types
+                # intersection produced different geometry types
                 temp_list = int_geom.asGeometryCollection()
                 int_geom = []
                 for i in temp_list:
                   if i.type() == geom.type():
-                      int_geom.append( QgsGeometry( i ) )
+                    int_geom.append( QgsGeometry( i ) )
                   if len(int_geom) > 1:
                     for j in int_geom:
                       try:
