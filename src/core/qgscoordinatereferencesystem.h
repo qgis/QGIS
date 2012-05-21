@@ -186,6 +186,17 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool createFromUserInput( const QString theDefinition );
 
+    /*! Make sure that ESRI WKT import is done properly.
+     * This is required for proper shapefile CRS import when using gdal>= 1.9.
+     * @note This function is called by createFromUserInput() and QgsOgrProvider::crs(), there is usually
+     * no need to call it from elsewhere.
+     * @note This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
+     * unless it has been set by the user through the commandline or an environment variable.
+     * For more details refer to OGRSpatialReference::morphFromESRI() .
+     * @note added in 1.8
+     */
+    static void setupESRIWktFix();
+
     /*! Find out whether this CRS is correctly initialised and usable */
     bool isValid() const;
 
