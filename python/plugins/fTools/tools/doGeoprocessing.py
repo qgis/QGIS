@@ -944,7 +944,7 @@ class geoprocessingThread( QThread ):
                 if geom.intersects( tmpGeom ):
                   atMapB = inFeatB.attributeMap()
                   int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                  if int_geom.wkbType() == 7:
+                  if int_geom.wkbType() == 0:
                     int_com = geom.combine( tmpGeom )
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -973,7 +973,7 @@ class geoprocessingThread( QThread ):
               if geom.intersects( tmpGeom ):
                 atMapB = inFeatB.attributeMap()
                 int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                if int_geom.wkbType() == 7:
+                if int_geom.wkbType() == 0:
                   int_com = geom.combine( tmpGeom )
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -1010,7 +1010,7 @@ class geoprocessingThread( QThread ):
                 if geom.intersects( tmpGeom ):
                   atMapB = inFeatB.attributeMap()
                   int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                  if int_geom.wkbType() == 7:
+                  if int_geom.wkbType() == 0:
                     int_com = geom.combine( tmpGeom )
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -1039,7 +1039,7 @@ class geoprocessingThread( QThread ):
               if geom.intersects( tmpGeom ):
                 atMapB = inFeatB.attributeMap()
                 int_geom = QgsGeometry( geom.intersection( tmpGeom ) )
-                if int_geom.wkbType() == 7:
+                if int_geom.wkbType() == 0:
                   int_com = geom.combine( tmpGeom )
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -1143,11 +1143,16 @@ class geoprocessingThread( QThread ):
                   diff_geom = QgsGeometry(diff_geom)
 
               if int_geom.wkbType() == 0:
-                # intersection produced different geomety types
+                # intersection produced different geometry types
                 temp_list = int_geom.asGeometryCollection()
                 for i in temp_list:
                   if i.type() == geom.type():
-                      int_geom = QgsGeometry( i )
+                    try:
+                      outFeat.setGeometry( j )
+                      outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                      writer.addFeature( outFeat )
+                    except Exception, err:
+                      FEATURE_EXCEPT = False
               try:
                 outFeat.setGeometry( int_geom )
                 outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
@@ -1390,7 +1395,7 @@ class geoprocessingThread( QThread ):
             try:
               cur_geom = QgsGeometry( outFeat.geometry() )
               new_geom = QgsGeometry( geom.intersection( cur_geom ) )
-              if new_geom.wkbType() == 7:
+              if new_geom.wkbType() == 0:
                 int_com = QgsGeometry( geom.combine( cur_geom ) )
                 int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                 new_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -1434,7 +1439,7 @@ class geoprocessingThread( QThread ):
             try:
               cur_geom = QgsGeometry( outFeat.geometry() )
               new_geom = QgsGeometry( geom.intersection( cur_geom ) )
-              if new_geom.wkbType() == 7:
+              if new_geom.wkbType() == 0:
                 int_com = QgsGeometry( geom.combine( cur_geom ) )
                 int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                 new_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -1485,7 +1490,7 @@ class geoprocessingThread( QThread ):
             try:
               cur_geom = QgsGeometry( outFeat.geometry() )
               new_geom = QgsGeometry( geom.intersection( cur_geom ) )
-              if new_geom.wkbType() == 7:
+              if new_geom.wkbType() == 0:
                 int_com = QgsGeometry( geom.combine( cur_geom ) )
                 int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                 new_geom = QgsGeometry( int_com.difference( int_sym ) )
@@ -1530,7 +1535,7 @@ class geoprocessingThread( QThread ):
               try:
                 cur_geom = QgsGeometry( outFeat.geometry() )
                 new_geom = QgsGeometry( geom.intersection( cur_geom ) )
-                if new_geom.wkbType() == 7:
+                if new_geom.wkbType() == 0:
                   int_com = QgsGeometry( geom.combine( cur_geom ) )
                   int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                   new_geom = QgsGeometry( int_com.difference( int_sym ) )
