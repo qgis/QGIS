@@ -447,8 +447,12 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( width );
       Q_UNUSED( height );
       Q_UNUSED( geoTransform );
-      Q_UNUSED( crs ); return false;
+      Q_UNUSED( crs );
+      return false;
     }
+
+    /**Returns the formats supported by create()*/
+    virtual QStringList createFormats() const { return QStringList(); }
 
     /** Remove dataset*/
     virtual bool remove() { return false; }
