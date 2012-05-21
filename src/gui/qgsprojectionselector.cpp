@@ -332,7 +332,7 @@ QString QgsProjectionSelector::selectedProj4String()
   QgsDebugMsg( "db = " + databaseFileName );
 
   sqlite3 *database;
-  int rc = sqlite3_open( databaseFileName.toUtf8().data(), &database );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
@@ -401,7 +401,7 @@ QString QgsProjectionSelector::getSelectedExpression( QString expression )
   // assuming that it will never be used anywhere else. Given the low overhead,
   // opening it each time seems to be a reasonable approach at this time.
   sqlite3 *database;
-  int rc = sqlite3_open( databaseFileName.toUtf8().data(), &database );
+  int rc = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( rc )
   {
     showDBMissingWarning( databaseFileName );
@@ -520,7 +520,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   const char   *tail;
   sqlite3_stmt *stmt;
   //check the db is available
-  int result = sqlite3_open( databaseFileName.toUtf8().constData(), &database );
+  int result = sqlite3_open_v2( databaseFileName.toUtf8().constData(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( result )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -599,7 +599,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 
   // open the database containing the spatial reference data
   sqlite3 *database;
-  int rc = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &database );
+  int rc = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( rc )
   {
     // XXX This will likely never happen since on open, sqlite creates the
@@ -873,7 +873,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
   QString databaseFileName = QgsApplication::qgisUserDbFilePath();
   if ( QFileInfo( databaseFileName ).exists() ) //only bother trying to open if the file exists
   {
-    result = sqlite3_open( databaseFileName.toUtf8().data(), &database );
+    result = sqlite3_open_v2( databaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
     if ( result )
     {
       // XXX This will likely never happen since on open, sqlite creates the
@@ -899,7 +899,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
   else
   {
     //only bother looking in srs.db if it wasnt found above
-    result = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &database );
+    result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
     if ( result )
     {
       QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
@@ -929,7 +929,7 @@ QStringList QgsProjectionSelector::authorities()
   const char   *tail;
   sqlite3_stmt *stmt;
 
-  int result = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &database );
+  int result = sqlite3_open_v2( mSrsDatabaseFileName.toUtf8().data(), &database, SQLITE_OPEN_READONLY, NULL );
   if ( result )
   {
     QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( database ) ) );
