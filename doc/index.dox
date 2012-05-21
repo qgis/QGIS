@@ -5,7 +5,7 @@
 /*! \mainpage Quantum GIS
 
 \section index_intro Introduction
-\htmlonly<img src="http://hub.qgis.org/projects/quantum-gis/repository/revisions/master/changes/images/icons/qgis-icon-60x60.png" alt="QGIS"
+\htmlonly<img src="http://hub.qgis.org/projects/quantum-gis/repository/revisions/master/entry/images/icons/qgis-icon-60x60.png" alt="QGIS"
 align="left"><a href="http://qgis.org">Quantum GIS</a>\endhtmlonly\latexonly
 Quantum GIS \endlatexonly  (QGIS) is a user friendly Open Source Geographic
 Information System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS
