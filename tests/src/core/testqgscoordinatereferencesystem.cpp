@@ -23,9 +23,11 @@ Email                : sherman at mrcc dot com
 //header for class being tested
 #include <qgscoordinatereferencesystem.h>
 #include <qgis.h>
+#include <qgsvectorlayer.h>
 
 #include <proj_api.h>
 #include <gdal.h>
+#include <cpl_conv.h>
 
 class TestQgsCoordinateReferenceSystem: public QObject
 {
@@ -60,6 +62,13 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void setValidationHint();
   private:
     void debugPrint( QgsCoordinateReferenceSystem &theCrs );
+    // these used by createFromESRIWkt()
+    QStringList myWktStrings;
+    QList<int> myGdalVersionOK;
+    QStringList myFiles;
+    QStringList myProj4Strings;
+    QStringList myAuthIdStrings;
+    QString testESRIWkt( int i, QgsCoordinateReferenceSystem &theCrs );
 };
 
 
@@ -70,11 +79,23 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   //
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
+
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
   qDebug() << "PROJ.4 version:         " << PJ_VERSION;
+
+  // if user set GDAL_FIX_ESRI_WKT print a warning
+#if GDAL_VERSION_NUM >= 1900
+  if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
+  {
+    qDebug() << "Warning! GDAL_FIX_ESRI_WKT =" << CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" )
+    << "this might generate errors!";
+  }
+#endif
+
 }
 
 void TestQgsCoordinateReferenceSystem::wktCtor()
@@ -136,25 +157,102 @@ void TestQgsCoordinateReferenceSystem::createFromWkt()
   debugPrint( myCrs );
   QVERIFY( myCrs.isValid() );
 }
+
+QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateReferenceSystem &myCrs )
+{
+  debugPrint( myCrs );
+
+  if ( ! myCrs.isValid() )
+    return QString( "test %1 crs is invalid" );
+  if ( myCrs.toProj4() != myProj4Strings[i] )
+    return QString( "test %1 PROJ.4 = [ %2 ] expecting [ %3 ]"
+                  ).arg( i ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
+  if ( myCrs.authid() !=  myAuthIdStrings[i] )
+    return QString( "test %1 AUTHID = [ %2 ] expecting [ %3 ]"
+                  ).arg( i ).arg( myCrs.authid() ).arg( myAuthIdStrings[i] );
+
+  return "";
+}
 void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 {
+  QString msg;
   QgsCoordinateReferenceSystem myCrs;
-  // this example file taken from bug #5598
-  QString myWKTString = "PROJCS[\"Indian_1960_UTM_Zone_48N\",GEOGCS[\"GCS_Indian_1960\",DATUM[\"D_Indian_1960\",SPHEROID[\"Everest_Adjustment_1937\",6377276.345,300.8017]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",105.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]";
-#if GDAL_VERSION_NUM >= 1800
-  QString myProj4String = "+proj=utm +zone=48 +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +units=m +no_defs";
-#else
-  // for GDAL <1.8 towgs84 is absent but we'll have to live with that...
-  QString myProj4String = "+proj=utm +zone=48 +a=6377276.345 +b=6356075.41314024 +units=m +no_defs";
-#endif
-  QString myAuthId = "EPSG:3148";
+  const char* configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
 
-  // use createFromUserInput and add the ESRI:: prefix to force morphFromESRI
-  myCrs.createFromUserInput( "ESRI::" + myWKTString );
-  debugPrint( myCrs );
-  QVERIFY( myCrs.isValid() );
-  QVERIFY( myCrs.toProj4() == myProj4String );
-  QVERIFY( myCrs.authid() ==  myAuthId );
+  // for more tests add definitions here
+
+  // this example file taken from bug #5598
+  myWktStrings << "PROJCS[\"Indian_1960_UTM_Zone_48N\",GEOGCS[\"GCS_Indian_1960\",DATUM[\"D_Indian_1960\",SPHEROID[\"Everest_Adjustment_1937\",6377276.345,300.8017]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",105.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]";
+  myGdalVersionOK << 1800;
+  myFiles << "bug5598.shp";
+  myProj4Strings << "+proj=utm +zone=48 +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +units=m +no_defs";
+  myAuthIdStrings << "EPSG:3148";
+
+  // this example file taken from bug #5598 - geographic CRS only, supported since gdal 1.9
+  myWktStrings << "GEOGCS[\"GCS_Indian_1960\",DATUM[\"D_Indian_1960\",SPHEROID[\"Everest_Adjustment_1937\",6377276.345,300.8017]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]";
+  myFiles << "";
+  myGdalVersionOK << 1900;
+  myProj4Strings << "+proj=longlat +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +no_defs";
+  myAuthIdStrings << "EPSG:4131";
+
+  // SAD69 geographic CRS, supported since gdal 1.9
+  myWktStrings << "GEOGCS[\"GCS_South_American_1969\",DATUM[\"D_South_American_1969\",SPHEROID[\"GRS_1967_Truncated\",6378160.0,298.25]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]]";
+  myFiles << "";
+  myGdalVersionOK << 1900;
+  myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +no_defs";
+  myAuthIdStrings << "EPSG:4618";
+
+  // do test with WKT definitions
+  for ( int i = 0; i < myWktStrings.size() ; i++ )
+  {
+    QgsDebugMsg( QString( "i=%1 wkt=%2" ).arg( i ).arg( myWktStrings[i] ) );
+    // use createFromUserInput and add the ESRI:: prefix to force morphFromESRI
+    CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
+    myCrs.createFromUserInput( "ESRI::" + myWktStrings[i] );
+    msg = testESRIWkt( i, myCrs );
+    if ( GDAL_VERSION_NUM <= myGdalVersionOK[i] )
+    {
+      QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2"
+                               ).arg( GDAL_VERSION_NUM ).arg( msg ).toLocal8Bit().constData(),
+                    Continue );
+    }
+    QVERIFY2( msg == "", msg.toLocal8Bit().constData() );
+
+    // do test with shapefiles
+    CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
+    if ( myFiles[i] != "" )
+    {
+      // use ogr to open file, make sure CRS is ok
+      // this probably could be in another test, but leaving it here since it deals with CRS
+      QString fileStr = QString( TEST_DATA_DIR ) + QDir::separator() + myFiles[i];
+      QgsDebugMsg( QString( "i=%1 file=%2" ).arg( i ).arg( fileStr ) );
+
+      QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, "", "ogr" );
+      if ( !myLayer || ! myLayer->isValid() )
+      {
+        QVERIFY2( false, QString( "test %1 did not get valid vector layer from %2"
+                                ).arg( i ).arg( fileStr ).toLocal8Bit().constData() );
+      }
+      else
+      {
+        myCrs = myLayer->crs();
+        msg = testESRIWkt( i, myCrs );
+        if ( GDAL_VERSION_NUM <= myGdalVersionOK[i] )
+        {
+          QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2 using layer %3"
+                                   ).arg( GDAL_VERSION_NUM ).arg( msg ).arg( fileStr ).toLocal8Bit().constData(),
+                        Continue );
+        }
+        QVERIFY2( msg == "", msg.toLocal8Bit().constData() );
+      }
+      if ( myLayer )
+        delete myLayer;
+
+    }
+
+  }
+
+  //  QVERIFY( bOK );
 }
 void TestQgsCoordinateReferenceSystem::createFromSrsId()
 {
