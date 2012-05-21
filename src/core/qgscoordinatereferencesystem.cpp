@@ -137,6 +137,14 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString theDefinit
   char *wkt = NULL;
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
 
+  // make sure towgs84 parameter is loaded if using an ESRI definition and gdal >= 1.9
+#if GDAL_VERSION_NUM >= 1900
+  if ( theDefinition.startsWith( "ESRI::" ) )
+  {
+    setupESRIWktFix();
+  }
+#endif
+
   if ( OSRSetFromUserInput( crs, theDefinition.toLocal8Bit().constData() ) == OGRERR_NONE )
   {
     if ( OSRExportToWkt( crs, &wkt ) == OGRERR_NONE )
@@ -146,8 +154,29 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString theDefinit
     }
     OSRDestroySpatialReference( crs );
   }
-  QgsDebugMsg( "theDefinition: " + theDefinition + " theWkt = " + theWkt );
+  //QgsDebugMsg( "theDefinition: " + theDefinition + " theWkt = " + theWkt );
   return createFromWkt( theWkt );
+}
+
+void QgsCoordinateReferenceSystem::setupESRIWktFix( )
+{
+  // make sure towgs84 parameter is loaded if gdal >= 1.9
+  // this requires setting GDAL_FIX_ESRI_WKT=GEOGCS (see qgis bug #5598 and gdal bug #4673)
+#if GDAL_VERSION_NUM >= 1900
+  const char* configOld = CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" );
+  const char* configNew = "GEOGCS";
+  // only set if it was not set, to let user change the value if needed
+  if ( strcmp( configOld, "" ) == 0 )
+  {
+    CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configNew );
+    if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
+      QgsLogger::warning( QString( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2"
+                                 ).arg( configNew ).arg( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) ) ;
+    QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
+  }
+  else
+    QgsDebugMsg( QString( "GDAL_FIX_ESRI_WKT was already set : %1" ).arg( configNew ) );
+#endif
 }
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
