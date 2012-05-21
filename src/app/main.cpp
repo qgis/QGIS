@@ -315,6 +315,7 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
     {
+      QSettings::setDefaultFormat( QSettings::IniFormat );
       QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
     }
     else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
@@ -417,6 +418,7 @@ int main( int argc, char *argv[] )
           break;
 
         case 'o':
+          QSettings::setDefaultFormat( QSettings::IniFormat );
           QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optarg );
           break;
 
@@ -479,6 +481,7 @@ int main( int argc, char *argv[] )
   if ( !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
+    QSettings::setDefaultFormat( QSettings::IniFormat );
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
   }
 
