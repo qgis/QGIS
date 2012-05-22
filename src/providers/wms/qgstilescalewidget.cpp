@@ -18,7 +18,6 @@
 #include "qgstilescalewidget.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
-#include "qgswmsprovider.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
@@ -46,27 +45,23 @@ QgsTileScaleWidget::~QgsTileScaleWidget()
 
 void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
 {
-  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rl )
-    return;
-
-  QgsWmsProvider *wms = qobject_cast<QgsWmsProvider *>( rl->dataProvider() );
-  if ( !wms )
-    return;
-
-  QgsWmtsTileMatrixSet *tileMatrixSet = wms->tileMatrixSet();
-  if ( !tileMatrixSet )
-    return;
-
   mSlider->setDisabled( true );
 
-  mResolutions = tileMatrixSet->tileMatrices.keys();
-  qSort( mResolutions );
+  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
+  if ( !rl || rl->providerType() != "wms" || !rl->dataProvider() )
+    return;
 
-  for ( int i = 0; i < mResolutions.size(); i++ )
+  QVariant res = rl->dataProvider()->property( "resolutions" );
+
+  mResolutions.clear();
+  foreach( QVariant r, res.toList() )
   {
-    QgsDebugMsg( QString( "found resolution %1: %2" ).arg( i ).arg( mResolutions[i] ) );
+    QgsDebugMsg( QString( "found resolution: %1" ).arg( r.toDouble() ) );
+    mResolutions << r.toDouble();
   }
+
+  if ( mResolutions.size() == 0 )
+    return;
 
   mSlider->setRange( 0, mResolutions.size() - 1 );
   mSlider->setTickInterval( 1 );

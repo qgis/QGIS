@@ -742,16 +742,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
-    /**
-      returns the current tile layer (if any)
-     */
-    QgsWmtsTileLayer *tileLayer() { return mTileLayer; }
-
-    /**
-      returns the current tile matrix set (if any)
-     */
-    QgsWmtsTileMatrixSet *tileMatrixSet() { return mTileMatrixSet; }
-
   signals:
 
     /** \brief emit a signal to notify of a progress event */

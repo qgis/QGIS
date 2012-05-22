@@ -410,14 +410,23 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
       }
     }
 
+    QList<QVariant> resolutions;
     if ( mTileMatrixSets.contains( mTileMatrixSetId ) )
     {
       mTileMatrixSet = &mTileMatrixSets[ mTileMatrixSetId ];
+      QList<double> keys = mTileMatrixSet->tileMatrices.keys();
+      qSort( keys );
+      foreach( double key, keys )
+      {
+        resolutions << key;
+      }
     }
     else
     {
       mTileMatrixSet = 0;
     }
+
+    setProperty( "resolutions", resolutions );
 
     mValid = mTileLayer != 0 && mTileMatrixSet != 0;
   }
