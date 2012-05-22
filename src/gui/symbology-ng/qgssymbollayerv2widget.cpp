@@ -536,6 +536,7 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
 #include <QTime>
 #include <QAbstractListModel>
 #include <QPixmapCache>
+#include <QStyle>
 
 class QgsSvgListModel : public QAbstractListModel
 {
@@ -602,10 +603,25 @@ class QgsSvgGroupsModel : public QStandardItemModel
       for ( int i = 0; i < svgPaths.size(); i++ )
       {
         QDir dir( svgPaths[i] );
-        QStandardItem *baseGroup = new QStandardItem( dir.dirName() );
+        QStandardItem *baseGroup;
+
+        if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
+        {
+          baseGroup = new QStandardItem( QString( "App Symbols" ) );
+        }
+        else if ( dir.path().contains( QgsApplication::qgisSettingsDirPath() ) )
+        {
+          baseGroup = new QStandardItem( QString( "User Symbols" ) );
+        }
+        else
+        {
+          baseGroup = new QStandardItem( dir.dirName() );
+        }
         baseGroup->setData( QVariant( svgPaths[i] ) );
         baseGroup->setEditable( false );
         baseGroup->setCheckable( false );
+        baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+        baseGroup->setToolTip( dir.path() );
         parentItem->appendRow( baseGroup );
         createTree( baseGroup );
         QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
@@ -621,6 +637,8 @@ class QgsSvgGroupsModel : public QStandardItemModel
         group->setData( QVariant( parentDir.path() + "/" + item ) );
         group->setEditable( false );
         group->setCheckable( false );
+        group->setToolTip( parentDir.path() + "/" + item );
+        group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
         parentGroup->appendRow( group );
         createTree( group );
       }
@@ -631,6 +649,12 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {
   QgsSvgGroupsModel* g = new QgsSvgGroupsModel( viewGroups );
   viewGroups->setModel( g );
+  // Set the tree expanded at the first level
+  int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
+  for ( int i = 0; i < rows; i++ )
+  {
+    viewGroups->setExpanded( g->indexFromItem( g->item( i ) ), true );
+  }
 
   // Initally load the icons in the List view without any grouping
   QgsSvgListModel* m = new QgsSvgListModel( viewImages );
@@ -960,6 +984,12 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
 {
   QgsSvgGroupsModel* g = new QgsSvgGroupsModel( mSvgTreeView );
   mSvgTreeView->setModel( g );
+  // Set the tree expanded at the first level
+  int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
+  for ( int i = 0; i < rows; i++ )
+  {
+    mSvgTreeView->setExpanded( g->indexFromItem( g->item( i ) ), true );
+  }
 
   QgsSvgListModel* m = new QgsSvgListModel( mSvgListView );
   mSvgListView->setModel( m );
