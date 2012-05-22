@@ -163,7 +163,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return 0;
 
   // Filter files by extension
-  if ( !extensions.contains( info.suffix().toLower() ) )
+  if ( !extensions.contains( suffix ) )
   {
     bool matches = false;
     foreach( QString wildcard, wildcards )
@@ -207,10 +207,29 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       return item;
   }
 
-  // if scan items == "Check extension", add item here without trying to open
+  // if scan items == "Check extension", add item here without trying to open (already passed extension test)
   // unless item is /vsizip
   if ( scanItemsSetting == 1 && !is_vsizip )
   {
+    // if this is a VRT file make sure it is raster VRT to avoid duplicates
+    // this test is not really robust (should load xml file), but GDAL does the same thing
+    if ( suffix == "vrt" )
+    {
+      QFile file( thePath );
+      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) &&
+           ! file.atEnd() )
+      {
+        if ( ! QString( file.readLine() ).trimmed().startsWith( "<VRTDataset" ) )
+        {
+          QgsDebugMsg( "Skipping VRT file because root is not VRTDataset" );
+          file.close();
+          return 0;
+        }
+      }
+      if ( file.isOpen() )
+        file.close();
+    }
+    // add the item
     QStringList sublayers;
     QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
