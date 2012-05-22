@@ -50,12 +50,12 @@ class Dialog(QDialog, Ui_Dialog):
 
     def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
-        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.blockSignals(True)
         self.inShape.clear()
+        self.inShape.blockSignals(False)
         self.inShape.addItems(layers)
-        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
-# If input layer is changed, update field list
+    # If input layer is changed, update field list
     def update(self, inputLayer):
         self.cmbField.clear()
         changedLayer = ftools_utils.getMapLayerByName(unicode(inputLayer))
@@ -67,6 +67,7 @@ class Dialog(QDialog, Ui_Dialog):
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
             for i in changedFields:
+              if changedFields[i].typeName() == "Integer":
                 self.cmbField.addItem(unicode(changedFields[i].name()))
         else:
             self.rdoUnstratified.setChecked(True)
