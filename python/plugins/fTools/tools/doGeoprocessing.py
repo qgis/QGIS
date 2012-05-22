@@ -1145,14 +1145,18 @@ class geoprocessingThread( QThread ):
               if int_geom.wkbType() == 0:
                 # intersection produced different geometry types
                 temp_list = int_geom.asGeometryCollection()
+                int_geom = []
                 for i in temp_list:
                   if i.type() == geom.type():
-                    try:
-                      outFeat.setGeometry( j )
-                      outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                      writer.addFeature( outFeat )
-                    except Exception, err:
-                      FEATURE_EXCEPT = False
+                    int_geom.append( QgsGeometry( i ) )
+                  if len(int_geom) > 1:
+                    for j in int_geom:
+                      try:
+                        outFeat.setGeometry( j )
+                        outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                        writer.addFeature( outFeat )
+                      except Exception, err:
+                        FEATURE_EXCEPT = False
               try:
                 outFeat.setGeometry( int_geom )
                 outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
