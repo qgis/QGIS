@@ -82,6 +82,7 @@ struct QgsWmsOperationType
 {
   QStringList                      format;
   QVector<QgsWmsDcpTypeProperty>   dcpType;
+  QStringList                      allowedEncodings;
 };
 
 /** Request Property structure */

@@ -27,16 +27,13 @@
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 #include "qgswmsconnection.h"
-
-#include <cmath>
-
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkaccessmanager.h"
-#include <qgsmessageoutput.h>
-#include <qgsmessagelog.h>
+#include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -57,11 +54,6 @@
 #include <QEventLoop>
 #include <QCoreApplication>
 #include <QTime>
-
-#ifdef _MSC_VER
-#include <float.h>
-#define isfinite(x) _finite(x)
-#endif
 
 #ifdef QGISDEBUG
 #include <QFile>
@@ -364,9 +356,16 @@ QString QgsWmsProvider::getFeatureInfoUrl() const
 
 QString QgsWmsProvider::getTileUrl() const
 {
-  return mCapabilities.capability.request.getTile.dcpType.size() == 0
-         ? QString::null
-         : prepareUri( mCapabilities.capability.request.getTile.dcpType.front().http.get.onlineResource.xlinkHref );
+  if ( mCapabilities.capability.request.getTile.dcpType.size() == 0 ||
+       ( mCapabilities.capability.request.getTile.allowedEncodings.size() > 0 &&
+         !mCapabilities.capability.request.getTile.allowedEncodings.contains( "KVP" ) ) )
+  {
+    return QString::null;
+  }
+  else
+  {
+    return prepareUri( mCapabilities.capability.request.getTile.dcpType.front().http.get.onlineResource.xlinkHref );
+  }
 }
 
 void QgsWmsProvider::addLayers( QStringList const &layers,
@@ -971,7 +970,7 @@ void QgsWmsProvider::tileReplyFinished()
   QNetworkCacheMetaData::RawHeaderList hl;
   foreach( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
   {
-    if( h.first != "Cache-Control" )
+    if ( h.first != "Cache-Control" )
       hl.append( h );
   }
   cmd.setRawHeaders( hl );
@@ -983,17 +982,17 @@ void QgsWmsProvider::tileReplyFinished()
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();
 
 #if QT_VERSION >= 0x40500
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) fromcache:%8 error:%9 url:%10" )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6,%7) fromcache:%8 error:%9 url:%10" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
-               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
+               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
                .arg( fromCache )
                .arg( reply->errorString() )
                .arg( reply->url().toString() )
              );
 #else
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) error:%8 url:%9" )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6,%7) error:%8 url:%9" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
-               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
+               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
                .arg( reply->errorString() )
                .arg( reply->url().toString() )
              );
@@ -1548,73 +1547,85 @@ void QgsWmsProvider::parseCapability( QDomElement const & e, QgsWmsCapabilityPro
 {
   QgsDebugMsg( "entering." );
 
-  QDomNode n1 = e.firstChild();
-  while ( !n1.isNull() )
+  for ( QDomNode n1 = e.firstChild(); !n1.isNull(); n1 = n1.nextSibling() )
   {
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
-    if ( !e1.isNull() )
+    if ( e1.isNull() )
+      continue;
+
+    QString tagName = e1.tagName();
+    if ( tagName.startsWith( "wms:" ) )
+      tagName = tagName.mid( 4 );
+
+    QgsDebugMsg( "  "  + e1.tagName() ); // the node really is an element.
+
+    if ( tagName == "Request" )
     {
-      QString tagName = e1.tagName();
-      if ( tagName.startsWith( "wms:" ) )
-        tagName = tagName.mid( 4 );
-
-      QgsDebugMsg( "  "  + e1.tagName() ); // the node really is an element.
-
-      if ( tagName == "Request" )
+      parseRequest( e1, capabilityProperty.request );
+    }
+    else if ( tagName == "Layer" )
+    {
+      parseLayer( e1, capabilityProperty.layer );
+    }
+    else if ( tagName == "VendorSpecificCapabilities" )
+    {
+      for ( int i = 0; i < e1.childNodes().size(); i++ )
       {
-        parseRequest( e1, capabilityProperty.request );
-      }
-      else if ( tagName == "Layer" )
-      {
-        parseLayer( e1, capabilityProperty.layer );
-      }
-      else if ( tagName == "VendorSpecificCapabilities" )
-      {
-        for ( int i = 0; i < e1.childNodes().size(); i++ )
-        {
-          QDomNode n2 = e1.childNodes().item( i );
-          QDomElement e2 = n2.toElement();
+        QDomNode n2 = e1.childNodes().item( i );
+        QDomElement e2 = n2.toElement();
 
-          QString tagName = e2.tagName();
-          if ( tagName.startsWith( "wms:" ) )
-            tagName = tagName.mid( 4 );
+        QString tagName = e2.tagName();
+        if ( tagName.startsWith( "wms:" ) )
+          tagName = tagName.mid( 4 );
 
-          if ( tagName == "TileSet" )
-          {
-            parseTileSetProfile( e2 );
-          }
-        }
-      }
-      else if ( tagName == "ows:Operation" )
-      {
-        QString name = e1.attribute( "name" );
-        QString get = n1.firstChildElement( "ows:DCP" )
-                      .firstChildElement( "ows:HTTP" )
-                      .firstChildElement( "ows:Get" )
-                      .attribute( "xlink:href" );
-
-        QgsWmsDcpTypeProperty dcp;
-        dcp.http.get.onlineResource.xlinkHref = get;
-
-        if ( get.isNull() )
+        if ( tagName == "TileSet" )
         {
-          QgsDebugMsg( QString( "http get missing from ows:Operation '%1'" ).arg( name ) );
-        }
-        else if ( name == "GetTile" )
-        {
-          capabilityProperty.request.getTile.dcpType << dcp;
-        }
-        else if ( name == "GetFeatureInfo" )
-        {
-          capabilityProperty.request.getFeatureInfo.dcpType << dcp;
-        }
-        else
-        {
-          QgsDebugMsg( QString( "ows:Operation %1 ignored" ).arg( name ) );
+          parseTileSetProfile( e2 );
         }
       }
     }
-    n1 = n1.nextSibling();
+    else if ( tagName == "ows:Operation" )
+    {
+      QString name = e1.attribute( "name" );
+      QDomElement get = n1.firstChildElement( "ows:DCP" )
+                        .firstChildElement( "ows:HTTP" )
+                        .firstChildElement( "ows:Get" );
+
+      QString href = get.attribute( "xlink:href" );
+
+      QgsWmsDcpTypeProperty dcp;
+      dcp.http.get.onlineResource.xlinkHref = href;
+
+      QgsWmsOperationType *ot = 0;
+      if ( href.isNull() )
+      {
+        QgsDebugMsg( QString( "http get missing from ows:Operation '%1'" ).arg( name ) );
+      }
+      else if ( name == "GetTile" )
+      {
+        ot = &capabilityProperty.request.getTile;
+      }
+      else if ( name == "GetFeatureInfo" )
+      {
+        ot = &capabilityProperty.request.getFeatureInfo;
+      }
+      else
+      {
+        QgsDebugMsg( QString( "ows:Operation %1 ignored" ).arg( name ) );
+      }
+
+      if ( ot )
+      {
+        ot->dcpType << dcp;
+        ot->allowedEncodings.clear();
+        for ( QDomElement e2 = get.firstChildElement( "ows:Constraint" ).firstChildElement( "ows:AllowedValues" ).firstChildElement( "ows:Value" );
+              !e2.isNull();
+              e2 = e1.nextSiblingElement( "ows:Value" ) )
+        {
+          ot->allowedEncodings << e2.text();
+        }
+      }
+    }
   }
 
   QgsDebugMsg( "exiting." );
@@ -2579,6 +2590,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         e0 = e0.nextSiblingElement( "Layer" ) )
   {
     QString id = e0.firstChildElement( "ows:Identifier" ).text();
+    QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
 
     QgsWmtsTileLayer l;
     l.tileMode   = WMTS;
@@ -2726,22 +2738,17 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
             QgsDebugMsg( QString( "   TileMatrix id:%1 not found." ).arg( id ) );
           }
 
-          QgsDebugMsg( QString( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5  %6" )
+          QgsDebugMsg( QString( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" )
                        .arg( id )
                        .arg( limit.minTileRow ).arg( limit.maxTileRow )
                        .arg( limit.minTileCol ).arg( limit.maxTileCol )
+                       .arg( matrixWidth ).arg( matrixHeight )
                        .arg( isValid ? "valid" : "INVALID" )
                      );
 
           if ( isValid )
           {
             sl.limits.insert( id, limit );
-          }
-          else
-          {
-            QgsDebugMsg( QString( "Limit of tileset %1 of matrix set %2 of layer %3 is invalid - ignored" )
-                         .arg( id ).arg( sl.tileMatrixSet ).arg( l.identifier )
-                       );
           }
         }
       }
