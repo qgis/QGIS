@@ -1351,8 +1351,8 @@ class geoprocessingThread( QThread ):
     else:
         crs_match = crsA == crsB
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
-    fields, vproviderA.geometryType(), vproviderA.crs() )
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+                                  vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
     inFeatA = QgsFeature()
@@ -1360,6 +1360,9 @@ class geoprocessingThread( QThread ):
     outFeat = QgsFeature()
     index = ftools_utils.createIndex( vproviderB )
     vproviderA.rewind()
+    vproviderA.select( allAttrsA )
+    vproviderB.rewind()
+    vproviderB.select( allAttrsB )
     nElement = 0
     # there is selection in input layer
     if self.mySelectionA:
