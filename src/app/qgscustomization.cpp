@@ -35,6 +35,7 @@
 #include <QToolButton>
 #include <QStatusBar>
 #include <QMetaObject>
+#include <QThread>
 
 #ifdef Q_OS_MACX
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent )
@@ -856,8 +857,8 @@ void QgsCustomization::removeFromLayout( QLayout *theLayout, QWidget * theWidget
 
 void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * done )
 {
-  // Crashes especially on Mac if the reciever is in another thread, see #5597
-  if ( QCoreApplication::instance()->thread() != receiver->thread() )
+  // Crashes especially on Mac if we're not in the main/UI thread, see #5597
+  if ( QCoreApplication::instance()->thread() != QThread::currentThread() )
   {
     return;
   }
