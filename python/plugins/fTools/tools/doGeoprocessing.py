@@ -599,14 +599,16 @@ class geoprocessingThread( QThread ):
     vproviderA = self.vlayerA.dataProvider()
     allAttrsA = vproviderA.attributeIndexes()
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
-    fields, vproviderA.geometryType(), vproviderA.crs() )
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+                                  vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, True, writer.errorMessage()
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     vproviderA.rewind()
+    vproviderA.select( allAttrsA )
     nElement = 0
+    attrs = None
     # there is selection in input layer
     if self.mySelectionA:
       nFeat = self.vlayerA.selectedFeatureCount()
@@ -642,8 +644,8 @@ class geoprocessingThread( QThread ):
         for item in unique:
           first = True
           add = False
-          vproviderA.select( allAttrsA )
           vproviderA.rewind()
+          vproviderA.select( allAttrsA )
           for inFeat in selectionA:
             nElement += 1
             self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
@@ -703,13 +705,14 @@ class geoprocessingThread( QThread ):
         for item in unique:
           first = True
           add = True
-          vproviderA.select( allAttrsA )
           vproviderA.rewind()
+          vproviderA.select( allAttrsA )
           while vproviderA.nextFeature( inFeat ):
             nElement += 1
             self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
             atMap = inFeat.attributeMap()
             tempItem = atMap[ self.myParam ]
+
             if tempItem.toString().trimmed() == item.toString().trimmed():
               if first:
                 QgsGeometry( inFeat.geometry() )
