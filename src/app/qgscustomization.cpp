@@ -856,6 +856,11 @@ void QgsCustomization::removeFromLayout( QLayout *theLayout, QWidget * theWidget
 
 void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * done )
 {
+  // Crashes especially on Mac if the reciever is in another thread, see #5597
+  if ( QCoreApplication::instance()->thread() != receiver->thread() )
+  {
+    return;
+  }
   if ( event->type() == QEvent::Show || event->type() == QEvent::MouseButtonPress )
   {
     QWidget *widget = qobject_cast<QWidget*>( receiver );
