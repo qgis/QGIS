@@ -77,6 +77,8 @@ class TestZipLayer: public QObject
     void testGZipItemVectorTransparency();
     void testZipItemRasterTransparency();
     void testGZipItemRasterTransparency();
+    //make sure items inside subfolders can be read
+    void testZipItemSubfolder();
 };
 
 
@@ -215,6 +217,12 @@ void TestZipLayer::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  // output test environment
+  QgsApplication::showSettings();
+  qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
+  qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
+
   // save data dir
   mDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
   // Set up the QSettings environment
@@ -370,5 +378,15 @@ void TestZipLayer::testGZipItemRasterTransparency()
   QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
 }
 
+void TestZipLayer::testZipItemSubfolder()
+{
+  QSettings settings;
+  for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
+  {
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
+    QVERIFY( testZipItem( mDataDir + "testzip.zip", "folder/folder2/landsat_b2.tif" ) );
+  }
+}
 QTEST_MAIN( TestZipLayer )
 #include "moc_testziplayer.cxx"

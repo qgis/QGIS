@@ -1315,7 +1315,7 @@ QString  QgsMssqlProvider::name() const
   return TEXT_PROVIDER_KEY;
 } // ::name()
 
-bool QgsMssqlProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
+bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
 {
   Q_UNUSED(updateFeatureCount);
   QString prevWhere = mSqlWhereClause;

@@ -219,7 +219,7 @@ int QgsHelpViewer::connectDb( const QString &helpDbPath )
   if ( QFileInfo( helpDbPath ).exists() )
   {
     int rc;
-    rc = sqlite3_open( helpDbPath.toUtf8().data(), &db );
+    rc = sqlite3_open_v2( helpDbPath.toUtf8().data(), &db, SQLITE_OPEN_READONLY, NULL );
     result = rc;
   }
   else
