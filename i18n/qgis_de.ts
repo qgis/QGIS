@@ -29245,7 +29245,7 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
-        <source>Recently used coordinate references systems</source>
+        <source>Recently used coordinate reference systems</source>
         <translation>Kürzlich benutzte Koordinatenbezugssysteme</translation>
     </message>
 </context>
