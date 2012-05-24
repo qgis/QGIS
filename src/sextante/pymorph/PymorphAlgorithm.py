@@ -41,6 +41,7 @@ class PymorphAlgorithm(ScriptAlgorithm):
         self.parameters.insert(0, ParameterRaster("input_filename", "Input image", False))
         self.outputs.append(OutputRaster("output_filename", "Output image"))
         self.script = self.LOAD_LAYER_SCRIPT + self.script + self.SAVE_LAYER_SCRIPT
+        self.cmdname = self.name
         self.name = AlgNames.getName(self.name)
 
     def helpFile(self):
@@ -49,3 +50,5 @@ class PymorphAlgorithm(ScriptAlgorithm):
         filename = os.path.dirname(__file__) + "/html/morph/morph/mm" + command + ".html"
         return filename
 
+    def commandLineName(self):
+        return "pymorph:" + ":" + self.cmdname

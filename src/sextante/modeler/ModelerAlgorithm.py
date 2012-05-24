@@ -140,6 +140,13 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.paramValues[value] = valuesMap[value]
         self.algPos.append(self.getPositionForAlgorithmItem())
 
+    def updateAlgorithm(self, algIndex, parametersMap, valuesMap, outputsMap):
+        self.algParameters[algIndex] = parametersMap
+        self.algOutputs[algIndex] = outputsMap
+        for value in valuesMap.keys():
+            self.paramValues[value] = valuesMap[value]
+
+
     def removeAlgorithm(self, index):
         if self.hasDependencies(self.algs[index], index):
             return False
@@ -168,13 +175,14 @@ class ModelerAlgorithm(GeoAlgorithm):
         if isinstance(element, Parameter):
             for alg in self.algParameters:
                 for aap in alg.values():
-                    if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
-                        if aap.param == element.name:
-                            return True
-                        elif aap.param in self.paramValues: #check for multiple inputs
-                            aap2 = self.paramValues[aap.param]
-                            if element.name in aap2:
+                    if aap:
+                        if aap.alg == AlgorithmAndParameter.PARENT_MODEL_ALGORITHM:
+                            if aap.param == element.name:
                                 return True
+                            elif aap.param in self.paramValues: #check for multiple inputs
+                                aap2 = self.paramValues[aap.param]
+                                if element.name in aap2:
+                                    return True
             if isinstance(element, ParameterVector):
                 for param in self.parameters:
                     if isinstance(param, ParameterTableField):
@@ -183,8 +191,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         else:
             for alg in self.algParameters:
                 for aap in alg.values():
-                    if aap.alg == elementIndex:
-                        return True
+                    if aap:
+                        if aap.alg == elementIndex:
+                            return True
 
         return False
 

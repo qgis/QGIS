@@ -7,11 +7,12 @@ from sextante.outputs.OutputNumber import OutputNumber
 
 class CalculatorModelerParametersDialog(QtGui.QDialog):
 
-    def __init__(self, alg, model):
+    def __init__(self, alg, model, algIndex):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.alg = alg
         self.model = model
+        self.algIndex = algIndex
         self.setupUi()
         self.params = None
 
@@ -54,11 +55,17 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
             if isinstance(param, ParameterNumber):
                 numbers.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
 
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+
         i=0
         for alg in self.model.algs:
-            for out in alg.outputs:
-                if isinstance(out, OutputNumber):
-                    numbers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputNumber):
+                        numbers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
         return numbers
 

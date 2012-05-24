@@ -2,6 +2,7 @@ from PyQt4 import QtCore, QtGui
 from sextante.parameters.Parameter import Parameter
 import os
 from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.modeler.ModelerParametersDialog import ModelerParametersDialog
 
 class ModelerGraphicItem(QtGui.QGraphicsItem):
 
@@ -33,10 +34,15 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                              ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + 2)
         return rect
 
+    def mouseDoubleClickEvent(self, event):
+        self.editElement()
+
     def contextMenuEvent(self, event):
         popupmenu = QtGui.QMenu()
         removeAction = popupmenu.addAction("Remove")
         removeAction.triggered.connect(self.removeElement)
+        editAction = popupmenu.addAction("Edit")
+        editAction.triggered.connect(self.editElement)
         if isinstance(self.element, GeoAlgorithm):
             if self.elementIndex in self.model.deactivated:
                 removeAction = popupmenu.addAction("Activate")
@@ -53,6 +59,19 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         if not self.model.activateAlgorithm(self.elementIndex, True):
             QtGui.QMessageBox.warning(None, "Could not activate Algorithm",
                                    "The selected algorithm depends on other currently non-active algorithms.\nActivate them them before trying to activate it.")
+
+    def editElement(self):
+        if isinstance(self.element, Parameter):
+            pass
+            #TODO
+        else:
+            dlg = self.element.getCustomModelerParametersDialog(self.model, self.elementIndex)
+            if not dlg:
+                dlg = ModelerParametersDialog(self.element, self.model, self.elementIndex)
+            dlg.exec_()
+            if dlg.params != None:
+                self.model.updateAlgorithm(self.elementIndex, dlg.params, dlg.values, dlg.outputs)
+                self.model.updateModelerView()
 
     def removeElement(self):
         if isinstance(self.element, Parameter):

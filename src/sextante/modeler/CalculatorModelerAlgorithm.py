@@ -35,5 +35,5 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
             raise GeoAlgorithmExecutionException("Wrong formula: " + formula)
 
 
-    def getCustomModelerParametersDialog(self, modelAlg):
-        return CalculatorModelerParametersDialog(self, modelAlg)
+    def getCustomModelerParametersDialog(self, modelAlg, algIndex = None):
+        return CalculatorModelerParametersDialog(self, modelAlg, algIndex)

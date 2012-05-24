@@ -71,7 +71,7 @@ class GeoAlgorithm:
         here, ready to be executed'''
         return None
 
-    def getCustomModelerParametersDialog(self, modelAlg):
+    def getCustomModelerParametersDialog(self, modelAlg, algIndex = None):
         '''if the algorithm has a custom parameters dialog when called from the modeler,
         it should be returned here, ready to be executed'''
         return None

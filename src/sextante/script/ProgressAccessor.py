@@ -1,0 +1,3 @@
+class ProgressAccessor():
+
+    progress = None;

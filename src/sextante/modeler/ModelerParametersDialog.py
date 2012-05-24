@@ -22,20 +22,22 @@ from sextante.gui.RangePanel import RangePanel
 from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
+from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 
 class ModelerParametersDialog(QtGui.QDialog):
 
     ENTER_NAME = "[Enter name if this is a final result]"
-
     NOT_SELECTED = "[Not selected]"
 
-    def __init__(self, alg, model):
+    def __init__(self, alg, model, algIndex = None):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.alg = alg
         self.model = model
+        self.algIndex = algIndex
         self.setupUi()
         self.params = None
+
 
     def setupUi(self):
         self.valueItems = {}
@@ -44,6 +46,10 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.showHelpButton = QtGui.QPushButton()
+        self.showHelpButton.setText("Show help")
+        self.buttonBox.addButton(self.showHelpButton, QtGui.QDialogButtonBox.ActionRole)
+        QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
@@ -65,6 +71,12 @@ class ModelerParametersDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def showHelp(self):
+        if self.alg.helpFile():
+            dlg = HTMLViewerDialog(self.alg.helpFile())
+            dlg.exec_()
+        else:
+            QMessageBox.warning(self.dialog, "No help available", "No help is available for this algorithm.")
 
     def getRasterLayers(self):
         layers = []
@@ -73,11 +85,17 @@ class ModelerParametersDialog(QtGui.QDialog):
             if isinstance(param, ParameterRaster):
                 layers.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
 
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+
         i=0
         for alg in self.model.algs:
-            for out in alg.outputs:
-                if isinstance(out, OutputRaster):
-                    layers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputRaster):
+                        layers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
 
         return layers
@@ -89,11 +107,17 @@ class ModelerParametersDialog(QtGui.QDialog):
             if isinstance(param, ParameterVector):
                 layers.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
 
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+
         i=0
         for alg in self.model.algs:
-            for out in alg.outputs:
-                if isinstance(out, OutputVector):
-                    layers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputVector):
+                        layers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
 
         return layers
@@ -105,11 +129,17 @@ class ModelerParametersDialog(QtGui.QDialog):
             if isinstance(param, ParameterTable):
                 tables.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
 
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+
         i=0
         for alg in self.model.algs:
-            for out in alg.outputs:
-                if isinstance(out, OutputTable):
-                    tables.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputTable):
+                        tables.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
 
         return tables
@@ -121,11 +151,17 @@ class ModelerParametersDialog(QtGui.QDialog):
             if isinstance(param, ParameterNumber):
                 numbers.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
 
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+
         i=0
         for alg in self.model.algs:
-            for out in alg.outputs:
-                if isinstance(out, OutputNumber):
-                    numbers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputNumber):
+                        numbers.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
         return numbers
 
@@ -136,11 +172,17 @@ class ModelerParametersDialog(QtGui.QDialog):
             if isinstance(param, ParameterFile):
                 files.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
 
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+
         i=0
         for alg in self.model.algs:
-            for out in alg.outputs:
-                if isinstance(out, OutputFile):
-                    files.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputFile):
+                        files.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
             i+=1
         return files
 

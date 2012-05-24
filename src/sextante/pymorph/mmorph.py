@@ -117,6 +117,9 @@ from __future__ import division
 from pymorph_version import __version__, __version_info__
 
 import sys, os
+from sextante.script.ProgressAccessor import ProgressAccessor
+from PyQt4.uic.Compiler.qtproxies import QtGui
+
 mydir = os.path.dirname(__file__)
 try:
     sys.imagepath += [os.path.join(mydir, 'data')]
@@ -990,6 +993,7 @@ def areaopen(f, a, Bc=None):
       k1 = f.min()
       k2 = f.max()
       for k in xrange(k1,k2+1):   # gray-scale, use thresholding decomposition
+        print float((k-k1)*100)/float(k2-k1)
         fk = threshad(f,k)
         fo = areaopen(fk,a,Bc)
         if isequal(fo,zero):

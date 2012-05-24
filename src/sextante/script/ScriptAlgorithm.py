@@ -18,6 +18,7 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
+import sys
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -134,6 +135,20 @@ class ScriptAlgorithm(GeoAlgorithm):
             script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
 
         script+=self.script
+        redirection = Redirection(progress)
+        sys.stdout = redirection
         exec(script)
+        sys.stdout = sys.__stdout__
 
 
+class Redirection():
+    def __init__(self, progress):
+        self.progress = progress
+
+    def write(self, string):
+        try:
+            n = int(string)
+            self.progress.setPercentage(n)
+        except:
+            self.progress.setText(string)
+            pass
