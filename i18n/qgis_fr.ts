@@ -29879,12 +29879,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="213"/>
         <source>Basic scan</source>
-        <translation type="unfinished"></translation>
+        <translation>Scan basique</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="214"/>
         <source>Full scan</source>
-        <translation type="unfinished"></translation>
+        <translation>Scan complet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="356"/>
@@ -33291,7 +33291,7 @@ Database error: %2</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1144"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut %1 ignoré parce que le type %2 n&apos;est pas supporté</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1418"/>
@@ -33361,7 +33361,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2850"/>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;édition et l&apos;ajout sont désactivés pour les couches ayant plus de 2 dimensions (%1; %2)</translation>
     </message>
     <message>
         <source>Connection to database failed</source>
@@ -34714,12 +34714,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2212"/>
         <source>Cannot instantiate the data provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;instancier le prestataire de données</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2272"/>
         <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Le prestataire de données est invalide (couches %1, styles %2, formats : %3)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1755"/>
@@ -36816,12 +36816,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="69"/>
         <source>Add categories to rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter les catégories aux règles</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="70"/>
         <source>Add ranges to rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter les intervalles aux règles</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="229"/>
@@ -36842,7 +36842,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="292"/>
         <source>Parent rule %1 must have a symbol for this operation.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">La règle parente %1 doit avoir un symbole pour cette opération</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="299"/>
@@ -37400,7 +37400,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="225"/>
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Validation terminée (%, erreur(s) trouvée(s))</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -39976,7 +39977,7 @@ Voulez-vous l&apos;&apos;écraser ?</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="195"/>
         <source>Quantum GIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum Gis dispose d&apos;extensions qui étendent ses fonctionalités. QGis est livré avec certaines d&apos;entre elles, disponibles depuis le menu &quot;Extensions&gt;Gestionnaire d&apos;extensions&quot;. Par ailleurs, plus de 150 extensions python, développées par la communauté peuvent être installées depuis le menu &quot;Extensions&gt;Installateur d&apos;extensions python&quot;. Ne passez pas à coté de tout ce que QGis peut vous offrir. Jetez un oeil aux extensions et voyez ce qu&apos;elles peuvent faire pour vous.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="154"/>
@@ -40608,7 +40609,8 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/core/qgsvectorlayer.cpp" line="3881"/>
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Erreur : %n entité(s) non ajoutée(s) - le prestataire de données ne supporte pas l&apos;ajout d&apos;entités.</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -40656,7 +40658,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
         <location filename="../src/core/qgsvectorlayer.cpp" line="3936"/>
         <source>
   Provider errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur du prestataire :</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3940"/>
@@ -40718,7 +40720,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="5556"/>
         <source>unknown extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent inconue</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="5569"/>
@@ -42649,17 +42651,17 @@ Il s&apos;agit peut-être d&apos;une erreur de configuration du serveur. Voulez-
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3059"/>
         <source>Map getfeatureinfo error %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de GetFeatureInfo %1 : %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3069"/>
         <source>ERROR: GetFeatureInfo failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur, la requête GetFeatureInfo a échoué</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3070"/>
         <source>Map getfeatureinfo error: %1 [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de GetFeatureInfo %1 [%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2436"/>
@@ -43045,7 +43047,7 @@ La réponse est :
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2285"/>
         <source>mismatch layers=%1, styles=%2 and crs=%3.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> </translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2291"/>
@@ -43555,7 +43557,7 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="104"/>
         <source>Settings</source>
-        <translation type="unfinished">Paramètres</translation>
+        <translation>Réglages</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="107"/>
@@ -44671,17 +44673,17 @@ Description : %3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="53"/>
         <source>Color</source>
-        <translation type="unfinished">Couleur</translation>
+        <translation>Couleur</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="67"/>
         <source>Border color</source>
-        <translation type="unfinished">Couleur de la bordure</translation>
+        <translation>Couleur de la bordure</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="81"/>
         <source>Border width</source>
-        <translation type="unfinished">Largeur de bordure</translation>
+        <translation>Largeur de la bordure</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="95"/>
