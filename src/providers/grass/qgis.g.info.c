@@ -48,7 +48,7 @@ int main( int argc, char **argv )
   info_opt->key = "info";
   info_opt->type = TYPE_STRING;
   info_opt->description = "info key";
-  info_opt->options = "proj,window,size,query,info,colors";
+  info_opt->options = "proj,window,size,query,info,colors,stats";
 
   rast_opt = G_define_standard_option( G_OPT_R_INPUT );
   rast_opt->key = "rast";
@@ -230,6 +230,98 @@ int main( int argc, char **argv )
         }
         fflush( stdout );
       }
+      G_close_cell( fd );
+    }
+    else if ( vect_opt->answer )
+    {
+      G_fatal_error( "Not yet supported" );
+    }
+  }
+  else if ( strcmp( "stats", info_opt->answer ) == 0 )
+  {
+    if ( rast_opt->answer )
+    {
+      int fd;
+      RASTER_MAP_TYPE rast_type;
+      DCELL *dcell;
+      CELL *cell;
+      int ncols, nrows;
+      int row, col;
+      void *ptr;
+      double val;
+      double sum = 0; // sum of values
+      int count = 0; // count of non null values
+      double mean = 0;
+      double squares_sum = 0; // sum of squares
+      double stdev = 0; // standard deviation
+
+      G_get_cellhd( rast_opt->answer, "", &window );
+      G_set_window( &window );
+      fd = G_open_cell_old( rast_opt->answer, "" );
+
+      ncols = G_window_cols();
+      nrows = G_window_rows();
+
+#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
+    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR > 2 ) || GRASS_VERSION_MAJOR > 6 )
+      rast_type = G_get_raster_map_type( fd );
+#else
+      rast_type = G_raster_map_type( rast_opt->answer, "" );
+#endif
+      cell = G_allocate_c_raster_buf();
+      dcell = G_allocate_d_raster_buf();
+
+      // Calc stats is very slow for large rasters -> prefer optimization for speed over
+      // code length and readability (which is not currently true)
+      for ( row = 0; row < nrows; row++ )
+      {
+        if ( rast_type == CELL_TYPE )
+        {
+          if ( G_get_c_raster_row( fd, cell, row ) < 0 )
+          {
+            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
+                          rast_opt->answer, row );
+          }
+        }
+        else
+        {
+          if ( G_get_d_raster_row( fd, dcell, row ) < 0 )
+          {
+            G_fatal_error(( "Unable to read raster map <%s> row %d" ),
+                          rast_opt->answer, row );
+          }
+        }
+
+        for ( col = 0; col < ncols; col++ )
+        {
+          if ( rast_type == CELL_TYPE )
+          {
+            val = cell[col];
+            ptr = &( cell[col] );
+          }
+          else
+          {
+            val = dcell[col];
+            ptr = &( dcell[col] );
+          }
+          if ( ! G_is_null_value( ptr, rast_type ) )
+          {
+            sum += val;
+            count++;
+            squares_sum += pow( val, 2 );
+          }
+        }
+      }
+      mean = sum / count;
+      squares_sum -= count * pow( mean, 2 );
+      stdev = sqrt( squares_sum / ( count - 1 ) );
+
+      fprintf( stdout, "SUM:%e\n", sum );
+      fprintf( stdout, "MEAN:%e\n", mean );
+      fprintf( stdout, "COUNT:%d\n", count );
+      fprintf( stdout, "STDEV:%e\n", stdev );
+      fprintf( stdout, "SQSUM:%e\n", squares_sum );
+
       G_close_cell( fd );
     }
     else if ( vect_opt->answer )

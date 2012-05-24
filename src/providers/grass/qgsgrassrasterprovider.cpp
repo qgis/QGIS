@@ -301,6 +301,39 @@ double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
   return mInfo["MAX_VALUE"].toDouble();
 }
 
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo )
+{
+  QgsRasterBandStats myRasterBandStats;
+  myRasterBandStats.bandName = generateBandName( theBandNo );
+  myRasterBandStats.bandNumber = theBandNo;
+
+  // With stats we have to be careful about timeout, empirical value,
+  // 0.001 / cell should be sufficient using 0.005 to be sure + constant (ms)
+  int timeout = 30000 + 0.005 * xSize() * ySize();
+  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, "stats", timeout );
+
+  if ( info.isEmpty() )
+  {
+    return myRasterBandStats;
+  }
+
+  myRasterBandStats.sum = info["SUM"].toDouble();
+  myRasterBandStats.elementCount = info["COUNT"].toInt();
+  myRasterBandStats.minimumValue = minimumValue( theBandNo );
+  myRasterBandStats.maximumValue = maximumValue( theBandNo );
+  myRasterBandStats.range = maximumValue( theBandNo ) - minimumValue( theBandNo );
+  myRasterBandStats.sumOfSquares = info["SQSUM"].toDouble();
+  myRasterBandStats.mean = info["MEAN"].toDouble();
+  myRasterBandStats.stdDev = info["STDEV"].toDouble();
+
+  QgsDebugMsg( QString( "sum = %1" ).arg( myRasterBandStats.sum ) );
+  QgsDebugMsg( QString( "count = %1" ).arg( myRasterBandStats.elementCount ) );
+  QgsDebugMsg( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ) );
+
+  myRasterBandStats.statsGathered = true;
+  return myRasterBandStats;
+}
+
 QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int bandNo )const
 {
   Q_UNUSED( bandNo );

@@ -190,11 +190,11 @@ class QgsGrass
     static GRASS_LIB_EXPORT QProcess *startModule( QString gisdbase, QString location, QString module, QStringList arguments, QTemporaryFile &gisrcFile );
 
     // ! Run a GRASS module in any gisdbase/location
-    static GRASS_LIB_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments );
+    static GRASS_LIB_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments, int timeOut = 30000 );
 
     // ! Get info string from qgis.g.info module
     static GRASS_LIB_EXPORT QString getInfo( QString info, QString gisdbase,
-        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0 );
+        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0, int timeOut = 30000 );
 
     // ! Get location projection
     static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
@@ -210,9 +210,9 @@ class QgsGrass
     static GRASS_LIB_EXPORT void size( QString gisdbase, QString location,
                                        QString mapset, QString map, int *cols, int *rows );
 
-    // ! Get raster info
+    // ! Get raster info, info is either 'info' or 'stats'
     static GRASS_LIB_EXPORT QHash<QString, QString> info( QString gisdbase, QString location,
-        QString mapset, QString map, MapType type );
+        QString mapset, QString map, MapType type, QString info = "info", int timeOut = 30000 );
 
     // ! List of Color
     static GRASS_LIB_EXPORT QList<QgsGrass::Color> colors( QString gisdbase, QString location,

@@ -213,6 +213,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     double minimumValue( int bandNo )const;
     double maximumValue( int bandNo )const;
 
+    QgsRasterBandStats bandStatistics( int theBandNo );
+
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
     // void buildSupportedRasterFileFilter( QString & theFileFiltersString );
