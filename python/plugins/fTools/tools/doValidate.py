@@ -122,19 +122,23 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         return
       row = curr.row() # if we clicked in the first column, we want the second
       item = self.tblUnique.item(row, 1)
-      if not item.data(Qt.UserRole) is None:
-        mc = self.iface.mapCanvas()
-        x = item.data(Qt.UserRole).toPyObject().x()
-        y = item.data(Qt.UserRole).toPyObject().y()
-        self.marker.setGeom(x, y) # Set Marker
-        mc.zoomToPreviousExtent()
-        scale = mc.scale()
-        rect = QgsRectangle(float(x)-(4.0/scale),float(y)-(4.0/scale),
-                            float(x)+(4.0/scale),float(y)+(4.0/scale))
-        # Set the extent to our new rectangle
-        mc.setExtent(rect)
-        # Refresh the map
-        mc.refresh()
+
+      e = item.data(Qt.UserRole).toPyObject()
+      if e is None:
+	return
+
+      mc = self.iface.mapCanvas()
+      x = e.x()
+      y = e.y()
+      self.marker.setGeom(x, y) # Set Marker
+      mc.zoomToPreviousExtent()
+      scale = mc.scale()
+      rect = QgsRectangle(float(x)-(4.0/scale),float(y)-(4.0/scale),
+                          float(x)+(4.0/scale),float(y)+(4.0/scale))
+      # Set the extent to our new rectangle
+      mc.setExtent(rect)
+      # Refresh the map
+      mc.refresh()
 
   def validate( self,  myLayer, mySelection ):
     vlayer = ftools_utils.getVectorLayerByName( myLayer )
@@ -176,11 +180,10 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         self.tblUnique.insertRow(count)
         fidItem = QTableWidgetItem( str(rec[0]) )
         self.tblUnique.setItem( count, 0, fidItem )
-        if err.hasWhere(): # if there is a location associated with the error
-          where = err.where()
         message = err.what()
         errItem = QTableWidgetItem( message )
-        errItem.setData(Qt.UserRole, QVariant(where))
+        if err.hasWhere(): # if there is a location associated with the error
+          errItem.setData(Qt.UserRole, QVariant(err.where()))
         self.tblUnique.setItem( count, 1, errItem )
         count += 1
     self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Feature"), self.tr("Error(s)") ] )
