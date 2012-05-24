@@ -261,7 +261,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     */
     QString name() const;
 
-
     /** return description
 
       Return a terse string describing what the provider is.

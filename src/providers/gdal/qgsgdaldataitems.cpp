@@ -25,8 +25,9 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
                                     QString name, QString path, QString uri,
-                                    QStringList *theSublayers )
-    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
+                                    QStringList *theSublayers,
+                                    QString fileName )
+    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" ), mFileName( fileName )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
@@ -128,21 +129,25 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
                       thePath.endsWith( ".gz", Qt::CaseInsensitive ) );
 
-  // get suffix, removing .gz if present
-  QString tmpPath = thePath; //path used for testing, not for layer creation
-  if ( is_vsigzip )
-    tmpPath.chop( 3 );
-  QFileInfo info( tmpPath );
-  QString suffix = info.suffix().toLower();
-  // extract basename with extension
-  info.setFile( thePath );
-  QString name = info.fileName();
-
-  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath );
-
   // allow only normal files or VSIFILE items to continue
+  QFileInfo info( thePath );
   if ( !info.isFile() && !is_vsizip && !is_vsigzip )
     return 0;
+
+  // get name / fileName and suffix
+  QString name = info.completeBaseName();
+  QString fileName = info.fileName();
+  QString suffix = info.suffix().toLower();
+  // if .gz file, change name and suffix
+  if ( is_vsigzip )
+  {
+    QString tmpPath = thePath;
+    tmpPath.chop( 3 );
+    QFileInfo info2( tmpPath );
+    name = info2.completeBaseName();
+    suffix = info2.suffix().toLower();
+  }
+  QgsDebugMsg( "thePath= " + thePath + " name= " + name + " fileName= " + fileName + " suffix= " + suffix );
 
   // get supported extensions
   if ( extensions.isEmpty() )
@@ -169,7 +174,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     foreach( QString wildcard, wildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-      if ( rx.exactMatch( info.fileName() ) )
+      if ( rx.exactMatch( fileName ) )
       {
         matches = true;
         break;
@@ -192,8 +197,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     if ( thePath != "/vsizip/" + parentItem->path() )
     {
-      name = thePath;
-      name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      fileName = thePath;
+      fileName.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      QgsDebugMsg( "name= " + name + " fileName= " + fileName );
     }
   }
 
@@ -202,7 +208,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     QStringList sublayers;
     QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers, fileName );
     if ( item )
       return item;
   }
@@ -232,7 +238,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     // add the item
     QStringList sublayers;
     QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers, fileName );
     if ( item )
       return item;
   }
@@ -258,7 +264,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QgsDebugMsg( "GdalDataset opened " + thePath );
 
   QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath,
-      &sublayers );
+      &sublayers, fileName );
 
   return item;
 }
