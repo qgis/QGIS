@@ -6708,9 +6708,7 @@ int QgsGeometry::avoidIntersections()
 
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
-  QgsGeometryValidator *gv = new QgsGeometryValidator( this, &errors );
-  gv->start();
-  delete gv;
+  QgsGeometryValidator::validateGeometry( this, errors );
 }
 
 bool QgsGeometry::isGeosValid()

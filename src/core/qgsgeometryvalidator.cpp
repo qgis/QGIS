@@ -328,8 +328,7 @@ void QgsGeometryValidator::addError( QgsGeometry::Error e )
 void QgsGeometryValidator::validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors )
 {
   QgsGeometryValidator *gv = new QgsGeometryValidator( g, &errors );
-  connect( gv, SIGNAL( "errorFound( QString, QgsPoint )" ), gv, SLOT( "addError( QString, QgsPoint )" ) );
-  connect( gv, SIGNAL( "errorFound( QString )" ), gv, SLOT( "addError( QString )" ) );
+  connect( gv, SIGNAL( errorFound( QgsGeometry::Error ) ), gv, SLOT( addError( QgsGeometry::Error ) ) );
   gv->run();
   gv->wait();
 }
