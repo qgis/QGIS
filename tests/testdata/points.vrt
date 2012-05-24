@@ -1,0 +1,5 @@
+<OGRVRTDataSource>
+    <OGRVRTLayer name="points">
+        <SrcDataSource relativeToVRT="1">points.shp</SrcDataSource>
+    </OGRVRTLayer>
+</OGRVRTDataSource>
