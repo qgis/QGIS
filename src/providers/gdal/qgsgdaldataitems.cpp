@@ -25,8 +25,9 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
                                     QString name, QString path, QString uri,
-                                    QStringList *theSublayers )
-    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
+                                    QStringList *theSublayers,
+                                    QString fileName )
+    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" ), mFileName( fileName )
 {
   mToolTip = uri;
   // save sublayers for subsequent access
@@ -128,21 +129,25 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
                       thePath.endsWith( ".gz", Qt::CaseInsensitive ) );
 
-  // get suffix, removing .gz if present
-  QString tmpPath = thePath; //path used for testing, not for layer creation
-  if ( is_vsigzip )
-    tmpPath.chop( 3 );
-  QFileInfo info( tmpPath );
-  QString suffix = info.suffix().toLower();
-  // extract basename with extension
-  info.setFile( thePath );
-  QString name = info.fileName();
-
-  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath );
-
   // allow only normal files or VSIFILE items to continue
+  QFileInfo info( thePath );
   if ( !info.isFile() && !is_vsizip && !is_vsigzip )
     return 0;
+
+  // get name / fileName and suffix
+  QString name = info.completeBaseName();
+  QString fileName = info.fileName();
+  QString suffix = info.suffix().toLower();
+  // if .gz file, change name and suffix
+  if ( is_vsigzip )
+  {
+    QString tmpPath = thePath;
+    tmpPath.chop( 3 );
+    QFileInfo info2( tmpPath );
+    name = info2.completeBaseName();
+    suffix = info2.suffix().toLower();
+  }
+  QgsDebugMsg( "thePath= " + thePath + " name= " + name + " fileName= " + fileName + " suffix= " + suffix );
 
   // get supported extensions
   if ( extensions.isEmpty() )
@@ -163,13 +168,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return 0;
 
   // Filter files by extension
-  if ( !extensions.contains( info.suffix().toLower() ) )
+  if ( !extensions.contains( suffix ) )
   {
     bool matches = false;
     foreach( QString wildcard, wildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-      if ( rx.exactMatch( info.fileName() ) )
+      if ( rx.exactMatch( fileName ) )
       {
         matches = true;
         break;
@@ -192,28 +197,36 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
     if ( thePath != "/vsizip/" + parentItem->path() )
     {
-      name = thePath;
-      name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      fileName = thePath;
+      fileName.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      QgsDebugMsg( "name= " + name + " fileName= " + fileName );
     }
   }
 
-  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
-  if ( is_vsizip && scanZipSetting == 2 )
+  // return a /vsizip/ item without testing if:
+  // zipfile and scan zip == "Basic scan"
+  // not zipfile and scan items == "Check extension"
+  if (( is_vsizip && scanZipSetting == 2 ) ||
+      ( !is_vsizip && scanItemsSetting == 1 ) )
   {
+    // if this is a VRT file make sure it is raster VRT to avoid duplicates
+    if ( suffix == "vrt" )
+    {
+      // do not print errors, but write to debug
+      CPLErrorHandler oErrorHandler = CPLSetErrorHandler( CPLQuietErrorHandler );
+      CPLErrorReset();
+      if ( ! GDALIdentifyDriver( thePath.toLocal8Bit().constData(), 0 ) )
+      {
+        QgsDebugMsg( "Skipping VRT file because root is not a GDAL VRT" );
+        CPLSetErrorHandler( oErrorHandler );
+        return 0;
+      }
+      CPLSetErrorHandler( oErrorHandler );
+    }
+    // add the item
     QStringList sublayers;
     QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
-    if ( item )
-      return item;
-  }
-
-  // if scan items == "Check extension", add item here without trying to open
-  // unless item is /vsizip
-  if ( scanItemsSetting == 1 && !is_vsizip )
-  {
-    QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers, fileName );
     if ( item )
       return item;
   }
@@ -239,7 +252,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   QgsDebugMsg( "GdalDataset opened " + thePath );
 
   QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath,
-      &sublayers );
+      &sublayers, fileName );
 
   return item;
 }

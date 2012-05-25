@@ -115,6 +115,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem*> children() const { return mChildren; }
     QIcon icon() const { return mIcon; }
     QString name() const { return mName; }
+    virtual QString fileName() const;
     QString path() const { return mPath; }
 
     void setIcon( QIcon icon ) { mIcon = icon; }

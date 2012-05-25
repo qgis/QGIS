@@ -150,7 +150,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::DisplayRole )
   {
-    return item->name();
+    return item->fileName();
   }
   else if ( role == Qt::ToolTipRole )
   {

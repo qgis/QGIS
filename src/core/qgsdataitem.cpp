@@ -293,6 +293,17 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
   return -1;
 }
 
+// This function returns the filename (with extension) if path() is an actual file
+// or name() if not, for use by the browser.
+// It would be slightly more efficient to return name() by default
+// and re-implement where needed, but this is a better default for most most cases.
+// Re-implemented in gdal and ogr providers to deal with VSIFILE files.
+QString QgsDataItem::fileName() const
+{
+  QFileInfo fileInfo( path() );
+  return fileInfo.isFile() ? fileInfo.fileName() : name();
+}
+
 void QgsDataItem::refresh()
 {
   QgsDebugMsg( "mPath = " + mPath );

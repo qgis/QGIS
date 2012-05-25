@@ -23,21 +23,29 @@ class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString fileName = "" );
     ~QgsOgrLayerItem();
 
     bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
+    QString fileName() const { return ( mFileName == "" ) ? QgsLayerItem::fileName() : mFileName; }
+
+  protected:
+    QString mFileName; // used to identify filename in browser
 };
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path, QString fileName = "" );
     ~QgsOgrDataCollectionItem();
 
     QVector<QgsDataItem*> createChildren();
+    QString fileName() const { return ( mFileName == "" ) ? QgsDataCollectionItem::fileName() : mFileName; }
+
+  protected:
+    QString mFileName; // used to identify filename in browser
 };
 
 #endif // QGSOGRDATAITEMS_H

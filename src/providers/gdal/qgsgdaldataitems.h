@@ -26,14 +26,18 @@ class QgsGdalLayerItem : public QgsLayerItem
   public:
     QgsGdalLayerItem( QgsDataItem* parent,
                       QString name, QString path, QString uri,
-                      QStringList *theSublayers = NULL );
+                      QStringList *theSublayers = NULL,
+                      QString fileName = "" );
     ~QgsGdalLayerItem();
 
     bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
+    QString fileName() const { return ( mFileName == "" ) ? QgsLayerItem::fileName() : mFileName; }
 
     QVector<QgsDataItem*> createChildren();
 
+  protected:
+    QString mFileName; // used to identify filename in browser
 };
 
 

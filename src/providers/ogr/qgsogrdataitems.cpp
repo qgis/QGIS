@@ -32,8 +32,9 @@ QGISEXTERN QStringList wildcards();
 
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
-                                  QString name, QString path, QString uri, LayerType layerType )
-    : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
+                                  QString name, QString path, QString uri, LayerType layerType,
+                                  QString fileName )
+    : QgsLayerItem( parent, name, path, uri, layerType, "ogr" ), mFileName( fileName )
 {
   mToolTip = uri;
   mPopulated = true; // children are not expected
@@ -125,7 +126,8 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 
 // -------
 
-static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
+static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name, QString path,
+    OGRDataSourceH hDataSource, int layerId, QString fileName = "" )
 {
   OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
@@ -179,13 +181,13 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
 
   QgsDebugMsg( "OGR layer uri : " + layerUri );
 
-  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType );
+  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType, fileName );
 }
 
 // ----
 
-QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
+QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path, QString fileName )
+    : QgsDataCollectionItem( parent, name, path ), mFileName( fileName )
 {
 }
 
@@ -226,8 +228,6 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( thePath.isEmpty() )
     return 0;
 
-  QgsDebugMsg( "thePath: " + thePath );
-
   // zip settings + info
   QSettings settings;
   int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
@@ -237,19 +237,25 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
                       thePath.endsWith( ".gz", Qt::CaseInsensitive ) );
 
-  // get suffix, removing .gz if present
-  QString tmpPath = thePath; //path used for testing, not for layer creation
-  if ( is_vsigzip )
-    tmpPath.chop( 3 );
-  QFileInfo info( tmpPath );
-  QString suffix = info.suffix().toLower();
-  // extract basename with extension
-  info.setFile( thePath );
-  QString name = info.fileName();
-
   // allow only normal files or VSIFILE items to continue
+  QFileInfo info( thePath );
   if ( !info.isFile() && !is_vsizip && !is_vsigzip )
     return 0;
+
+  // get name / fileName and suffix
+  QString name = info.completeBaseName();
+  QString fileName = info.fileName();
+  QString suffix = info.suffix().toLower();
+  // if .gz file, change name and suffix
+  if ( is_vsigzip )
+  {
+    QString tmpPath = thePath;
+    tmpPath.chop( 3 );
+    QFileInfo info2( tmpPath );
+    name = info2.completeBaseName();
+    suffix = info2.suffix().toLower();
+  }
+  QgsDebugMsg( "thePath= " + thePath + " name= " + name + " fileName= " + fileName + " suffix= " + suffix );
 
   QStringList myExtensions = fileExtensions();
 
@@ -268,13 +274,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
-  if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )
+  if ( myExtensions.indexOf( suffix ) < 0 )
   {
     bool matches = false;
     foreach( QString wildcard, wildcards() )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-      if ( rx.exactMatch( info.fileName() ) )
+      if ( rx.exactMatch( fileName ) )
       {
         matches = true;
         break;
@@ -285,7 +291,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   }
 
   // .dbf should probably appear if .shp is not present
-  if ( info.suffix().toLower() == "dbf" )
+  if ( suffix == "dbf" )
   {
     QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
     if ( QFileInfo( pathShp ).exists() )
@@ -302,29 +308,43 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     if ( !thePath.startsWith( "/vsizip/" ) )
       thePath = "/vsizip/" + thePath;
-    // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
+    // if this is a /vsizip/path_to_zip.zip/file_inside_zip remove the full path from the name
     if ( thePath != "/vsizip/" + parentItem->path() )
     {
-      name = thePath;
-      name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      fileName = thePath;
+      fileName.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      QgsDebugMsg( "name= " + name + " fileName= " + fileName );
     }
   }
 
-  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
-  if ( is_vsizip && scanZipSetting == 2 )
+  // return a /vsizip/ item without testing if:
+  // zipfile and scan zip == "Basic scan"
+  // not zipfile and scan items == "Check extension"
+  if (( is_vsizip && scanZipSetting == 2 ) ||
+      ( !is_vsizip && scanItemsSetting == 1 ) )
   {
-    QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
-    if ( item )
-      return item;
-  }
-
-  // if scan items == "Check extension", add item here without trying to open
-  // unless item is /vsizip
-  if ( scanItemsSetting == 1 && !is_vsizip  && !is_vsigzip )
-  {
-    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
+    // if this is a VRT file make sure it is vector VRT to avoid duplicates
+    if ( suffix == "vrt" )
+    {
+      OGRSFDriverH hDriver = OGRGetDriverByName( "VRT" );
+      if ( hDriver )
+      {
+        // do not print errors, but write to debug
+        CPLErrorHandler oErrorHandler = CPLSetErrorHandler( CPLQuietErrorHandler );
+        CPLErrorReset();
+        OGRDataSourceH hDataSource = OGR_Dr_Open( hDriver, thePath.toLocal8Bit().constData(), 0 );
+        CPLSetErrorHandler( oErrorHandler );
+        if ( ! hDataSource )
+        {
+          QgsDebugMsg( "Skipping VRT file because root is not a OGR VRT" );
+          return 0;
+        }
+        OGR_DS_Destroy( hDataSource );
+      }
+    }
+    // add the item
+    // TODO: how to handle collections?
+    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector, fileName );
     if ( item )
       return item;
   }
@@ -354,12 +374,12 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( numLayers == 1 )
   {
     QgsDebugMsg( QString( "using name = %1" ).arg( name ) );
-    item = dataItemForLayer( parentItem, name, thePath, hDataSource, 0 );
+    item = dataItemForLayer( parentItem, name, thePath, hDataSource, 0, fileName );
   }
   else if ( numLayers > 1 )
   {
     QgsDebugMsg( QString( "using name = %1" ).arg( name ) );
-    item = new QgsOgrDataCollectionItem( parentItem, name, thePath );
+    item = new QgsOgrDataCollectionItem( parentItem, name, thePath, fileName );
   }
 
   OGR_DS_Destroy( hDataSource );
