@@ -6176,10 +6176,9 @@ void QgisApp::showStatusMessage( QString theMessage )
   statusBar()->showMessage( theMessage );
 }
 
+// Show the maptip using tooltip
 void QgisApp::showMapTip()
-
 {
-  /* Show the maptip using tooltip */
   // Stop the timer while we look for a maptip
   mpMapTipsTimer->stop();
 
@@ -6189,7 +6188,6 @@ void QgisApp::showMapTip()
     QPoint myPointerPos = mMapCanvas->mouseLastXY();
 
     //  Make sure there is an active layer before proceeding
-
     QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
     if ( mypLayer )
     {
