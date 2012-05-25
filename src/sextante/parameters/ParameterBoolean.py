@@ -11,7 +11,7 @@ class ParameterBoolean(Parameter):
         if value is None:
             self.value = self.default
             return True
-        self.value = value
+        self.value = str(value) == str(True)
         return True
 
     def serialize(self):

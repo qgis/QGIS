@@ -239,6 +239,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 if aap.alg == algIndex:
                     dependent.append(index)
                     break
+
         return dependent
 
     def getPositionForAlgorithmItem(self):
@@ -484,3 +485,6 @@ class AlgorithmAndParameter():
             return self.paramName + " from algorithm " + str(self.alg) + "(" + self.algName + ")"
         else:
             return self.paramName
+
+    def __str__(self):
+        return str(self.alg) + "|" + str(self.param)

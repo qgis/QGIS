@@ -331,7 +331,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 i+=1
 
 
-    def setComboBoxValue(self, combo, value):
+    def setComboBoxValue(self, combo, value, param):
         items = [combo.itemData(i).toPyObject() for i in range(combo.count())]
         idx = 0
         for item in items:
@@ -343,7 +343,17 @@ class ModelerParametersDialog(QtGui.QDialog):
         if combo.isEditable():
             value = self.model.getValueFromAlgorithmAndParameter(value)
             if value:
-                combo.setCurrentText(str(value))
+                combo.setEditText(str(value))
+        elif isinstance(param, ParameterSelection):
+            value = self.model.getValueFromAlgorithmAndParameter(value)
+            combo.setCurrentIndex(int(value))
+        elif isinstance(param, ParameterBoolean):
+            value = self.model.getValueFromAlgorithmAndParameter(value) == str(True)
+            if value:
+                combo.setCurrentIndex(0)
+            else:
+                combo.setCurrentIndex(1)
+
 
     def setPreviousValues(self):
         if self.algIndex is not None:
@@ -352,16 +362,9 @@ class ModelerParametersDialog(QtGui.QDialog):
                 param = self.alg.getParameterFromName(name)
                 if isinstance(param, (ParameterRaster, ParameterVector,
                                       ParameterTable, ParameterTableField,
-                                      ParameterSelection)):
-                    self.setComboBoxValue(widget, value)
-                elif isinstance(param, ParameterBoolean):
-                    ret = self.model.getValueFromAlgorithmAndParameter(value)
-                    if ret is not None:
-                        if ret:
-                            widget.setCurrentIndex(0)
-                        else:
-                            widget.setCurrentIndex(1)
-                    self.setComboBoxValue(widget, value)
+                                      ParameterSelection, ParameterNumber,
+                                      ParameterString,ParameterBoolean)):
+                    self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterFixedTable):
                     pass
                 elif isinstance(param, ParameterMultipleInput):
