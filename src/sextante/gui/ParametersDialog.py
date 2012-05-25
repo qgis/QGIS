@@ -23,6 +23,10 @@ from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.outputs.OutputHTML import OutputHTML
+from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputVector import OutputVector
+from sextante.outputs.OutputTable import OutputTable
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -95,7 +99,8 @@ class Ui_ParametersDialog(object):
                 continue
             output.value = self.paramTable.valueItems[output.name].getValue()
             if not SextanteConfig.getSetting(SextanteConfig.TABLE_LIKE_PARAM_PANEL):
-                output.open = self.paramTable.checkBoxes[output.name].isChecked()
+                if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+                    output.open = self.paramTable.checkBoxes[output.name].isChecked()
 
         return True
 
