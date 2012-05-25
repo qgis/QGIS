@@ -14,11 +14,7 @@
  ***************************************************************************/
 // QGIS includes
 #include <qgsmapcanvas.h>
-#include <qgsmaplayer.h>
-#include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-#include <qgsfield.h>
-#include <qgscoordinatetransform.h>
 
 // Qt includes
 #include <QPoint>
@@ -38,7 +34,7 @@ QgsMapTip::~QgsMapTip()
 
 }
 
-void QgsMapTip::showMapTip( QgsMapLayer * thepLayer,
+void QgsMapTip::showMapTip( QgsMapLayer *thepLayer,
                             QgsPoint & theMapPosition,
                             QPoint & thePixelPosition,
                             QgsMapCanvas *thepMapCanvas )
