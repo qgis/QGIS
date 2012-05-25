@@ -1262,7 +1262,16 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   //info point could be 0 in case there is only an attribute filter
   if ( infoPoint )
   {
-    double searchRadius = ( layerRect.xMaximum() - layerRect.xMinimum() ) / 100;
+    double searchRadius = 0;
+    if ( layer->geometryType() == QGis::Polygon )
+    {
+      searchRadius = layerRect.width() / 400;
+    }
+    else
+    {
+      searchRadius = layerRect.width() / 200;
+    }
+
     searchRect.set( infoPoint->x() - searchRadius, infoPoint->y() - searchRadius,
                     infoPoint->x() + searchRadius, infoPoint->y() + searchRadius );
   }

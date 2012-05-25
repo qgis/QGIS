@@ -50,12 +50,12 @@ class Dialog(QDialog, Ui_Dialog):
 
     def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
-        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.blockSignals(True)
         self.inShape.clear()
+        self.inShape.blockSignals(False)
         self.inShape.addItems(layers)
-        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
-# If input layer is changed, update field list
+    # If input layer is changed, update field list
     def update(self, inputLayer):
         self.cmbField.clear()
         changedLayer = ftools_utils.getMapLayerByName(unicode(inputLayer))
@@ -67,6 +67,7 @@ class Dialog(QDialog, Ui_Dialog):
             changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
             changedFields = ftools_utils.getFieldList(changedLayer)
             for i in changedFields:
+              if changedFields[i].typeName() == "Integer":
                 self.cmbField.addItem(unicode(changedFields[i].name()))
         else:
             self.rdoUnstratified.setChecked(True)
@@ -78,7 +79,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.cmbField.setEnabled(False)
             self.label_4.setEnabled(False)
 
-# when 'OK' button is pressed, gather required inputs, and initiate random points generation
+    # when 'OK' button is pressed, gather required inputs, and initiate random points generation
     def accept(self):
         self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
@@ -99,7 +100,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(5)
             mLayer = ftools_utils.getMapLayerByName(unicode(inName))
             if mLayer.type() == mLayer.VectorLayer:
-                inLayer = QgsVectorLayer(unicode(mLayer.source()),  unicode(mLayer.name()),  unicode(mLayer.dataProvider().name()))
+                inLayer = ftools_utils.getVectorLayerByName(unicode(inName))
                 if self.rdoUnstratified.isChecked():
                     design = self.tr("unstratified")
                     value = self.spnUnstratified.value()
@@ -113,7 +114,7 @@ class Dialog(QDialog, Ui_Dialog):
                     design = self.tr("field")
                     value = unicode(self.cmbField.currentText())
             elif mLayer.type() == mLayer.RasterLayer:
-                inLayer = QgsRasterLayer(unicode(mLayer.source()), unicode(mLayer.name()))
+                inLayer = ftools_utils.getRasterLayerByName(unicode(inName))
                 design = self.tr("unstratified")
                 value = self.spnUnstratified.value()
             else:

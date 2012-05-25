@@ -34,6 +34,8 @@ cleanup() {
 	do
 		[ -f "$i.save" ] && mv "$i.save" "$i"
 	done
+
+	trap "" EXIT
 }
 
 trap cleanup EXIT
@@ -110,6 +112,9 @@ if [ -n "$add" ]; then
 fi
 echo Updating translations
 $LUPDATE$opts -verbose qgis_ts.pro
+
+cleanup
+
 echo Updating TRANSLATORS File
 ./scripts/tsstat.pl > doc/TRANSLATORS
 

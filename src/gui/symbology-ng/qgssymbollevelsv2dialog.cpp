@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgssymbollevelsv2dialog.cpp
+    ---------------------
+    begin                : November 2009
+    copyright            : (C) 2009 by Martin Dobias
+    email                : wonder.sk at gmail.com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #include "qgssymbollevelsv2dialog.h"
 
@@ -59,12 +73,18 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool
 
   connect( chkEnable, SIGNAL( clicked() ), this, SLOT( updateUi() ) );
 
-  int maxLayers = 0;
-  tableLevels->setRowCount( list.count() );
-  for ( int i = 0; i < list.count(); i++ )
+  if ( mList.count() > 0 && !mList[0].second )
   {
-    QgsSymbolV2* sym = list[i].second;
-    QString label = list[i].first;
+    // remove symbolless entry (probably classifier of categorized renderer)
+    mList.removeFirst();
+  }
+
+  int maxLayers = 0;
+  tableLevels->setRowCount( mList.count() );
+  for ( int i = 0; i < mList.count(); i++ )
+  {
+    QgsSymbolV2* sym = mList[i].second;
+    QString label = mList[i].first;
 
     // set icons for the rows
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( sym, QSize( 16, 16 ) );

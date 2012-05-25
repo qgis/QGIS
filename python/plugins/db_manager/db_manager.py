@@ -223,7 +223,7 @@ class DBManager(QMainWindow):
 		# get the placeholder's position to insert before it
 		pos = 0
 		for pos in range(len(menuActions)):
-			if menuActions[pos].isSeparator() and menuActions[pos].text() == "placeholder":
+			if menuActions[pos].isSeparator() and menuActions[pos].objectName().endsWith("_placeholder"):
 				menuActions[pos].setVisible(True)
 				break
 
@@ -301,7 +301,7 @@ class DBManager(QMainWindow):
 				# hide the placeholder if there're no other registered actions
 				if len(self._registeredDbActions[menuName]) <= 0:
 					for i in range(len(menuActions)):
-						if menuActions[i].isSeparator() and menuActions[i].text() == "placeholder":
+						if menuActions[i].isSeparator() and menuActions[i].objectName().endsWith("_placeholder"):
 							menuActions[i].setVisible(False)
 							break
 
@@ -369,18 +369,18 @@ class DBManager(QMainWindow):
 		# create menus' actions
 
 		# menu DATABASE
-		sep = self.menuDb.addAction("placeholder"); sep.setSeparator(True); sep.setVisible(False)
+		sep = self.menuDb.addSeparator(); sep.setObjectName("DB_Manager_DbMenu_placeholder"); sep.setVisible(False)
 		self.actionRefresh = self.menuDb.addAction( QIcon(":/db_manager/actions/refresh"), "&Refresh", self.refreshActionSlot, QKeySequence("F5") )
 		self.actionSqlWindow = self.menuDb.addAction( QIcon(":/db_manager/actions/sql_window"), "&SQL window", self.runSqlWindow, QKeySequence("F2") )
 		self.menuDb.addSeparator()
 		self.actionClose = self.menuDb.addAction( QIcon(), "&Exit", self.close, QKeySequence("CTRL+Q") )
 
 		# menu SCHEMA
-		sep = self.menuSchema.addAction("placeholder"); sep.setSeparator(True); sep.setVisible(False)
+		sep = self.menuSchema.addSeparator(); sep.setObjectName("DB_Manager_SchemaMenu_placeholder"); sep.setVisible(False)
 		actionMenuSchema.setVisible(False)
 
 		# menu TABLE
-		sep = self.menuTable.addAction("placeholder"); sep.setSeparator(True); sep.setVisible(False)
+		sep = self.menuTable.addSeparator(); sep.setObjectName("DB_Manager_TableMenu_placeholder"); sep.setVisible(False)
 		actionMenuTable.setVisible(False)
 		self.actionShowSystemTables = self.menuTable.addAction("Show system tables/views", self.showSystemTables)
 		self.actionShowSystemTables.setCheckable(True)

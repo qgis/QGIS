@@ -1423,20 +1423,39 @@ bool QgsPostgresProvider::determinePrimaryKey()
       else if ( type == "v" ) // the relation is a view
       {
         QString primaryKey = mUri.keyColumn();
-        int idx = fieldNameIndex( mUri.keyColumn() );
+        mPrimaryKeyType = pktUnknown;
 
-        if ( idx >= 0 && ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) )
+        if ( !primaryKey.isEmpty() )
         {
-          if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
+          int idx = fieldNameIndex( primaryKey );
+
+          if ( idx >= 0 )
           {
-            mPrimaryKeyType = pktInt;
-            mPrimaryKeyAttrs << idx;
+            if ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong )
+            {
+              if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
+              {
+                mPrimaryKeyType = pktInt;
+                mPrimaryKeyAttrs << idx;
+              }
+              else
+              {
+                QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
+              }
+            }
+            else
+            {
+              QgsMessageLog::logMessage( tr( "Type '%1' of primary key field '%2' for view invalid." ).arg( mAttributeFields[idx].typeName() ).arg( primaryKey ), tr( "PostGIS" ) );
+            }
+          }
+          else
+          {
+            QgsMessageLog::logMessage( tr( "Key field '%1' for view not found." ).arg( primaryKey ), tr( "PostGIS" ) );
           }
         }
         else
         {
           QgsMessageLog::logMessage( tr( "No key field for view given." ), tr( "PostGIS" ) );
-          mPrimaryKeyType = pktUnknown;
         }
       }
       else

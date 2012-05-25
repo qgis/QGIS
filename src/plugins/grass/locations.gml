@@ -341,7 +341,7 @@
  <gml:featureMember>
    <gml:name>Europe</gml:name>
      <gml:Envelope>
-      <gml:coordinates>-25.1,71.3 35,34.9</gml:coordinates>
+      <gml:coordinates>-25.1,34.9 35,71.3</gml:coordinates>
      </gml:Envelope>
  </gml:featureMember>
  <gml:featureMember>

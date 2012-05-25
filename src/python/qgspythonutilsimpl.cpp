@@ -73,14 +73,14 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   {
     pluginpaths << '"' + p + '"';
   }
-  pluginpaths << "os.path.expanduser(\"~/.qgis/python/plugins\")";
+  pluginpaths << homePluginsPath();
   pluginpaths << '"' + pluginsPath() + '"';
 
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
   QStringList newpaths;
   newpaths << '"' + pythonPath() + '"';
-  newpaths << "os.path.expanduser(\"~/.qgis/python\")";
+  newpaths << homePythonPath();
   newpaths << pluginpaths;
   runString( "sys.path = [" + newpaths.join( "," ) + "] + sys.path" );
 
@@ -447,12 +447,20 @@ QString QgsPythonUtilsImpl::pluginsPath()
 
 QString QgsPythonUtilsImpl::homePythonPath()
 {
-  return QgsApplication::qgisSettingsDirPath() + "python";
+  QString settingsDir = QgsApplication::qgisSettingsDirPath();
+  if( settingsDir == QDir::homePath() + "/.qgis/" )
+  {
+    return "os.path.expanduser(\"~/.qgis/python\")";
+  }
+  else
+  {
+    return '"' + settingsDir + "python\"";
+  }
 }
 
 QString QgsPythonUtilsImpl::homePluginsPath()
 {
-  return homePythonPath() + "/plugins";
+  return homePythonPath() + " + \"/plugins\"";
 }
 
 QStringList QgsPythonUtilsImpl::extraPluginsPaths()

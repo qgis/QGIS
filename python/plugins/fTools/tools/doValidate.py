@@ -50,14 +50,13 @@ class MarkerErrorGeometry():
     self.__marker.setIconType(gui.QgsVertexMarker.ICON_X)
     self.__marker.setPenWidth(3)
 
-  def setGeom(self, x, y):
+  def setGeom(self, p):
     if not self.__marker is None:
       self.reset()
-    point  = QgsPoint(x, y)
     if self.__marker is None:
-      self.__createMarker(point)
+      self.__createMarker(p)
     else:
-      self.__marker.setCenter(point)
+      self.__marker.setCenter(p)
 
   def reset(self):
     if not self.__marker is None:
@@ -93,6 +92,15 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.storedScale = self.iface.mapCanvas().scale()
     # create marker for error
     self.marker = MarkerErrorGeometry(self.iface.mapCanvas())
+
+    settings = QSettings()
+    self.restoreGeometry( settings.value("/fTools/ValidateDialog/geometry").toByteArray() )
+
+  def closeEvent(self, e):
+    settings = QSettings()
+    settings.setValue( "/fTools/ValidateDialog/geometry", QVariant(self.saveGeometry()) )
+    QMainWindow.closeEvent(self, e)
+    del self.marker
     
   def keyPressEvent( self, e ):
     if ( e.modifiers() == Qt.ControlModifier or \
@@ -115,34 +123,50 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     elif self.cmbField.isVisible() and self.cmbField.currentText() == "":
       QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input field" ) )
     else:
-      self.validate( self.inShape.currentText(), self.useSelected.checkState() )
+      self.vlayer = ftools_utils.getVectorLayerByName( self.inShape.currentText() )
+      self.validate( self.useSelected.checkState() )
       
   def zoomToError(self, curr, prev):
       if curr is None:
         return
       row = curr.row() # if we clicked in the first column, we want the second
       item = self.tblUnique.item(row, 1)
-      if not item.data(Qt.UserRole) is None:
-        mc = self.iface.mapCanvas()
-        x = item.data(Qt.UserRole).toPyObject().x()
-        y = item.data(Qt.UserRole).toPyObject().y()
-        self.marker.setGeom(x, y) # Set Marker
-        mc.zoomToPreviousExtent()
-        scale = mc.scale()
-        rect = QgsRectangle(float(x)-(4.0/scale),float(y)-(4.0/scale),
-                            float(x)+(4.0/scale),float(y)+(4.0/scale))
-        # Set the extent to our new rectangle
-        mc.setExtent(rect)
-        # Refresh the map
-        mc.refresh()
 
-  def validate( self,  myLayer, mySelection ):
-    vlayer = ftools_utils.getVectorLayerByName( myLayer )
+      mc = self.iface.mapCanvas()
+      mc.zoomToPreviousExtent()
+
+      e = item.data(Qt.UserRole).toPyObject()
+
+      if type(e)==QgsPoint:
+        e = mc.mapRenderer().layerToMapCoordinates( self.vlayer, e )
+
+        self.marker.setGeom(e)
+
+        rect = mc.extent()
+        rect.expand( 0.25, e )
+
+      else:
+        self.marker.reset()
+
+        ft = QgsFeature()
+        (fid,ok) = self.tblUnique.item(row, 0).text().toInt()
+        if not ok or not self.vlayer.featureAtId( fid, ft, True):
+          return
+
+        rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
+        rect.expand(1.05)
+
+      # Set the extent to our new rectangle
+      mc.setExtent(rect)
+      # Refresh the map
+      mc.refresh()
+
+  def validate( self, mySelection ):
     self.tblUnique.clearContents()
     self.tblUnique.setRowCount( 0 )
     self.lstCount.clear()
     self.buttonOk.setEnabled( False )
-    self.testThread = validateThread( self.iface.mainWindow(), self, vlayer, mySelection )
+    self.testThread = validateThread( self.iface.mainWindow(), self, self.vlayer, mySelection )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
@@ -176,11 +200,10 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         self.tblUnique.insertRow(count)
         fidItem = QTableWidgetItem( str(rec[0]) )
         self.tblUnique.setItem( count, 0, fidItem )
-        if err.hasWhere(): # if there is a location associated with the error
-          where = err.where()
         message = err.what()
         errItem = QTableWidgetItem( message )
-        errItem.setData(Qt.UserRole, QVariant(where))
+        if err.hasWhere(): # if there is a location associated with the error
+          errItem.setData(Qt.UserRole, QVariant(err.where()))
         self.tblUnique.setItem( count, 1, errItem )
         count += 1
     self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Feature"), self.tr("Error(s)") ] )
@@ -211,7 +234,6 @@ class validateThread( QThread ):
     self.running = True
     output = self.check_geometry( self.vlayer )
     self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), output )
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 100 )
 
   def stop(self):
     self.running = False
@@ -240,7 +262,7 @@ class validateThread( QThread ):
       self.emit(SIGNAL("runStatus(PyQt_PyObject)"), nElement)
       nElement += 1
       # Check Add error
-      if not (geom.isGeosEmpty() or geom.isGeosValid() ) :
+      if not geom.isGeosEmpty():
         lstErrors.append((feat.id(), list(geom.validateGeometry())))
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
     return lstErrors

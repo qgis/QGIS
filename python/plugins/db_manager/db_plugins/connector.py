@@ -60,13 +60,13 @@ class DBConnector:
 		return False
 
 
-	def execution_error_types():
+	def execution_error_types(self):
 		raise Exception("DBConnector.execution_error_types() is an abstract method")
 
-	def connection_error_types():
+	def connection_error_types(self):
 		raise Exception("DBConnector.connection_error_types() is an abstract method")
 
-	def error_types():
+	def error_types(self):
 		return self.connection_error_types() + self.execution_error_types()
 
 	def _execute(self, cursor, sql):
