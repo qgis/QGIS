@@ -70,6 +70,7 @@ class ModelerScene(QtGui.QGraphicsScene):
             item.setPos(model.paramPos[i])
             self.paramItems.append(item)
             i+=1
+        #first we add the algs
         iAlg=0
         for alg in model.algs:
             item = ModelerGraphicItem(alg, iAlg, model)
@@ -78,16 +79,19 @@ class ModelerScene(QtGui.QGraphicsScene):
             self.addItem(item)
             item.setPos(model.algPos[iAlg])
             self.algItems.append(item)
+            iAlg+=1
+        #and then the arrows
+        iAlg=0
+        for alg in model.algs:
             params = model.algParameters[iAlg]
             for key in params.keys():
                 param = params[key]
                 if param:
                     sourceItems = self.getItemsFromAAP(param, isinstance(alg.getParameterFromName(key), ParameterMultipleInput))
                     for sourceItem in sourceItems:
-                        arrow = ModelerArrowItem(sourceItem, item)
+                        arrow = ModelerArrowItem(sourceItem, self.algItems[iAlg])
                         self.addItem(arrow)
             iAlg+=1
-
 
 
     def mousePressEvent(self, mouseEvent):

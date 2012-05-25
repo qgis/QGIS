@@ -87,25 +87,27 @@ class ModelerDialog(QtGui.QDialog):
         self.canvasTabWidget.setMinimumWidth(300)
         self.view = QtGui.QGraphicsView(self.scene)
 
-        self.canvasTabWidget.addTab(self.view, "Design")
-        self.pythonText = QtGui.QTextEdit()
-        self.createScriptButton = QtGui.QPushButton()
-        self.createScriptButton.setText("Create script from model code")
-        self.createScriptButton.clicked.connect(self.createScript)
-        self.verticalLayoutPython = QtGui.QVBoxLayout()
-        self.verticalLayoutPython.setSpacing(2)
-        self.verticalLayoutPython.setMargin(0)
-        self.verticalLayoutPython.addWidget(self.pythonText)
-        self.verticalLayoutPython.addWidget(self.createScriptButton)
-        self.pythonWidget = QtGui.QWidget()
-        self.pythonWidget.setLayout(self.verticalLayoutPython)
-        self.canvasTabWidget.addTab(self.pythonWidget, "Python code")
+        #=======================================================================
+        # self.canvasTabWidget.addTab(self.view, "Design")
+        # self.pythonText = QtGui.QTextEdit()
+        # self.createScriptButton = QtGui.QPushButton()
+        # self.createScriptButton.setText("Create script from model code")
+        # self.createScriptButton.clicked.connect(self.createScript)
+        # self.verticalLayoutPython = QtGui.QVBoxLayout()
+        # self.verticalLayoutPython.setSpacing(2)
+        # self.verticalLayoutPython.setMargin(0)
+        # self.verticalLayoutPython.addWidget(self.pythonText)
+        # self.verticalLayoutPython.addWidget(self.createScriptButton)
+        # self.pythonWidget = QtGui.QWidget()
+        # self.pythonWidget.setLayout(self.verticalLayoutPython)
+        # self.canvasTabWidget.addTab(self.pythonWidget, "Python code")
+        #=======================================================================
 
         self.canvasLayout = QtGui.QVBoxLayout()
         self.canvasLayout.setSpacing(2)
         self.canvasLayout.setMargin(0)
         self.canvasLayout.addLayout(self.horizontalLayoutNames)
-        self.canvasLayout.addWidget(self.canvasTabWidget)
+        self.canvasLayout.addWidget(self.view)#canvasTabWidget)
 
         #upper part, putting the two previous parts together
         #===================================================
@@ -162,17 +164,19 @@ class ModelerDialog(QtGui.QDialog):
         if self.alg.descriptionFile is None and dlg.descriptions:
             self.help = dlg.descriptions
 
-    def createScript(self):
-        if str(self.textGroup.text()).strip() == "":
-            QMessageBox.warning(self, "Warning", "Please enter group name before saving")
-            return
-        filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
-        if filename:
-            fout = open(filename, "w")
-            fout.write(str(self.textGroup.text()) + "=group")
-            fout.write(self.alg.getAsPythonCode())
-            fout.close()
-            self.update = True
+    #===========================================================================
+    # def createScript(self):
+    #    if str(self.textGroup.text()).strip() == "":
+    #        QMessageBox.warning(self, "Warning", "Please enter group name before saving")
+    #        return
+    #    filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
+    #    if filename:
+    #        fout = open(filename, "w")
+    #        fout.write(str(self.textGroup.text()) + "=group")
+    #        fout.write(self.alg.getAsPythonCode())
+    #        fout.close()
+    #        self.update = True
+    #===========================================================================
 
     def runModel(self):
         ##TODO: enable alg cloning without saving to file
@@ -243,7 +247,7 @@ class ModelerDialog(QtGui.QDialog):
         self.scene.setSceneRect(QtCore.QRectF(0, 0, 1000, 1000))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
-        self.pythonText.setText(self.alg.getAsPythonCode())
+        #self.pythonText.setText(self.alg.getAsPythonCode())
 
 
     def addInput(self):

@@ -59,6 +59,7 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
+            dependent.append(self.algIndex)
 
         i=0
         for alg in self.model.algs:
@@ -74,7 +75,7 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         self.values = {}
         self.outputs = {}
 
-        name =  self.model.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(self.alg.FORMULA))
+        name =  self.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(self.alg.FORMULA))
         value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
         self.params[self.alg.FORMULA] = value
         formula = str(self.formulaText.text())
@@ -92,7 +93,7 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
             i += 1
         #we create a dummy harcoded value for all unused variable slots
         paramname = self.alg.NUMBER + str(i)
-        name =  self.model.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(paramname))
+        name =  self.getSafeNameForHarcodedParameter(self.alg.getParameterFromName(paramname))
         value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
         self.values[name] = 0
         for i in range(len(used), self.alg.AVAILABLE_VARIABLES):
@@ -102,7 +103,11 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
         self.outputs[self.alg.RESULT] = None
         return True
 
-
+    def getSafeNameForHarcodedParameter(self, param):
+        if self.algIndex is None:
+            return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(self.alg)
+        else:
+            return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(len(self.model.algs))
 
     def okPressed(self):
         if self.setParamValues():

@@ -145,6 +145,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.algOutputs[algIndex] = outputsMap
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
+        self.updateModelerView()
 
 
     def removeAlgorithm(self, index):
@@ -224,7 +225,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         '''This method returns a list with the indexes of algorithm a given one depends on'''
         algs = []
         for aap in self.algParameters[algIndex].values():
-            if aap.alg not in algs:
+            if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
                 algs.append(aap.alg)
         return algs
 
@@ -251,9 +252,6 @@ class ModelerAlgorithm(GeoAlgorithm):
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
         return QtCore.QPointF(MARGIN + BOX_WIDTH / 2 + len(self.paramPos) * (BOX_WIDTH + MARGIN), MARGIN + BOX_HEIGHT / 2)
-
-    def getSafeNameForHarcodedParameter(self, param):
-        return "HARDCODEDPARAMVALUE_" + param.name + "_" + str(len(self.algs))
 
     def serialize(self):
         s="NAME:" + str(self.name) + "\n"
@@ -333,26 +331,34 @@ class ModelerAlgorithm(GeoAlgorithm):
             return self.producedOutputs[int(aap.alg)][aap.param]
 
     def processAlgorithm(self, progress):
-        self.producedOutputs = []
-        iAlg = 0
-        for alg in self.algs:
-            if iAlg in self.deactivated:
-                iAlg += 1
-            else:
-                try:
-                    alg = alg.getCopy()#copy.deepcopy(alg)
-                    self.prepareAlgorithm(alg, iAlg)
-                    progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/"
-                                     + str(len(self.algs) - len(self.deactivated)) +"]")
-                    outputs = {}
-                    alg.execute(progress)
-                    for out in alg.outputs:
-                        outputs[out.name] = out.value
-                    self.producedOutputs.append(outputs)
-                    iAlg += 1
-                except GeoAlgorithmExecutionException, e :
-                    raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
+        self.producedOutputs = {}
+        executed = []
+        while len(executed) < len(self.algs) - len(self.deactivated):
+            iAlg = 0
+            for alg in self.algs:
+                if iAlg not in self.deactivated and iAlg not in executed:
+                    canExecute = True
+                    required = self.getDependsOnAlgorithms(iAlg)
+                    for requiredAlg in required:
+                        if requiredAlg not in executed:
+                            canExecute = False
+                            break
+                    if canExecute:
+                        try:
+                            alg = alg.getCopy()
+                            self.prepareAlgorithm(alg, iAlg)
+                            progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/"
+                                             + str(len(self.algs) - len(self.deactivated)) +"]")
+                            outputs = {}
+                            alg.execute(progress)
+                            for out in alg.outputs:
+                                outputs[out.name] = out.value
+                            self.producedOutputs[iAlg] = outputs
+                            executed.append(iAlg)
 
+                        except GeoAlgorithmExecutionException, e :
+                            raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
+                iAlg += 1
 
     def getOutputType(self, i, outname):
         for out in self.algs[i].outputs:
