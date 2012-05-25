@@ -203,37 +203,25 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
   }
 
-  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
-  if ( is_vsizip && scanZipSetting == 2 )
-  {
-    QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers, fileName );
-    if ( item )
-      return item;
-  }
-
-  // if scan items == "Check extension", add item here without trying to open (already passed extension test)
-  // unless item is /vsizip
-  if ( scanItemsSetting == 1 && !is_vsizip )
+  // return a /vsizip/ item without testing if:
+  // zipfile and scan zip == "Basic scan"
+  // not zipfile and scan items == "Check extension"
+  if (( is_vsizip && scanZipSetting == 2 ) ||
+      ( !is_vsizip && scanItemsSetting == 1 ) )
   {
     // if this is a VRT file make sure it is raster VRT to avoid duplicates
-    // this test is not really robust (should load xml file), but GDAL does the same thing
     if ( suffix == "vrt" )
     {
-      QFile file( thePath );
-      if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) &&
-           ! file.atEnd() )
+      // do not print errors, but write to debug
+      CPLErrorHandler oErrorHandler = CPLSetErrorHandler( CPLQuietErrorHandler );
+      CPLErrorReset();
+      if ( ! GDALIdentifyDriver( thePath.toLocal8Bit().constData(), 0 ) )
       {
-        if ( ! QString( file.readLine() ).trimmed().startsWith( "<VRTDataset" ) )
-        {
-          QgsDebugMsg( "Skipping VRT file because root is not VRTDataset" );
-          file.close();
-          return 0;
-        }
+        QgsDebugMsg( "Skipping VRT file because root is not a GDAL VRT" );
+        CPLSetErrorHandler( oErrorHandler );
+        return 0;
       }
-      if ( file.isOpen() )
-        file.close();
+      CPLSetErrorHandler( oErrorHandler );
     }
     // add the item
     QStringList sublayers;
