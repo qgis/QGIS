@@ -52,6 +52,7 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
   private slots:
     void closeTab( int index );
     void buttonToggled( bool checked );
+    void buttonDestroyed();
 };
 
 #endif
