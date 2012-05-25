@@ -65,6 +65,7 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWhatsThis>
+#include <QThread>
 
 #include <qgsnetworkaccessmanager.h>
 
@@ -318,7 +319,10 @@ static void setTitleBarText_( QWidget & qgisApp )
 */
 static QgsMessageOutput *messageOutputViewer_()
 {
-  return new QgsMessageViewer( QgisApp::instance() );
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+    return new QgsMessageViewer( QgisApp::instance() );
+  else
+    return new QgsMessageOutputConsole();
 }
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )

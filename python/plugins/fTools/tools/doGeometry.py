@@ -620,11 +620,11 @@ class geometryThread( QThread ):
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
       inGeom = inFeat.geometry()
       atMap = inFeat.attributeMap()
-      outGeom = QgsGeometry( inGeom.centroid() )
+      outGeom = inGeom.centroid()
       if outGeom is None:
         return "math_error"
       outFeat.setAttributeMap( atMap )
-      outFeat.setGeometry( outGeom )
+      outFeat.setGeometry( QgsGeometry( outGeom ) )
       writer.addFeature( outFeat )
     del writer
     return True

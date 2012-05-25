@@ -144,7 +144,7 @@ install: build
 	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
 
 	# remove unwanted files
-	rm debian/tmp/usr/share/qgis/doc/api/installdox
+	! [ -f debian/tmp/usr/share/qgis/doc/api/installdox ] || rm debian/tmp/usr/share/qgis/doc/api/installdox
 	! [ -f debian/tmp/usr/share/qgis/doc/api/jquery.js ] || rm debian/tmp/usr/share/qgis/doc/api/jquery.js
 
 	# Install menu pixmap
