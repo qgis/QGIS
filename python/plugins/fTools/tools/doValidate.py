@@ -138,6 +138,8 @@ class ValidateDialog( QDialog, Ui_Dialog ):
 
       if mc.mapRenderer().hasCrsTransformEnabled():
         ct = QgsCoordinateTransform( self.vlayer.crs(), mc.mapRenderer().destinationCrs() )
+      else:
+        ct = None
 
       e = item.data(Qt.UserRole).toPyObject()
 
