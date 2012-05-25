@@ -1317,7 +1317,6 @@ QString  QgsMssqlProvider::name() const
 
 bool QgsMssqlProvider::setSubsetString( QString theSQL, bool )
 {
-  Q_UNUSED(updateFeatureCount);
   QString prevWhere = mSqlWhereClause;
 
   mSqlWhereClause = theSQL.trimmed();
