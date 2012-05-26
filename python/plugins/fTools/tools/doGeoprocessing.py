@@ -970,9 +970,15 @@ class geoprocessingThread( QThread ):
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
                   try:
-                    outFeat.setGeometry( int_geom )
-                    outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                    writer.addFeature( outFeat )
+                    # Geometry list: prevents writing error 
+                    # in geometries of different types
+                    # produced by the intersection 
+                    # fix #3549
+                    gList = ftools_utils.getGeomType( geom.wkbType() )
+                    if int_geom.wkbType() in gList:
+                      outFeat.setGeometry( int_geom )
+                      outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                      writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
                     continue
@@ -999,9 +1005,11 @@ class geoprocessingThread( QThread ):
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
                 try:
-                  outFeat.setGeometry( int_geom )
-                  outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                  writer.addFeature( outFeat )
+                  gList = ftools_utils.getGeomType( geom.wkbType() )
+                  if int_geom.wkbType() in gList:
+                    outFeat.setGeometry( int_geom )
+                    outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                    writer.addFeature( outFeat )
                 except:
                   EATURE_EXCEPT = False
                   continue
@@ -1037,9 +1045,11 @@ class geoprocessingThread( QThread ):
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
                   try:
-                    outFeat.setGeometry( int_geom )
-                    outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                    writer.addFeature( outFeat )
+                    gList = ftools_utils.getGeomType( geom.wkbType() )
+                    if int_geom.wkbType() in gList:
+                      outFeat.setGeometry( int_geom )
+                      outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                      writer.addFeature( outFeat )
                   except:
                     FEATURE_EXCEPT = False
                     continue
@@ -1066,9 +1076,11 @@ class geoprocessingThread( QThread ):
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
                 try:
-                  outFeat.setGeometry( int_geom )
-                  outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                  writer.addFeature( outFeat )
+                  gList = ftools_utils.getGeomType( geom.wkbType() )
+                  if int_geom.wkbType() in gList:
+                    outFeat.setGeometry( int_geom )
+                    outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                    writer.addFeature( outFeat )
                 except:
                   FEATURE_EXCEPT = False
                   continue
@@ -1180,12 +1192,18 @@ class geoprocessingThread( QThread ):
                     except Exception, err:
                       FEATURE_EXCEPT = False
               else:
-                try:
-                  outFeat.setGeometry( int_geom )
-                  outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                  writer.addFeature( outFeat )
-                except Exception, err:
-                  FEATURE_EXCEPT = False
+                # Geometry list: prevents writing error 
+                # in geometries of different types
+                # produced by the intersection
+                # fix #3549
+                gList = ftools_utils.getGeomType(  geom.wkbType() )
+                if int_geom.wkbType() in gList:
+                  try:
+                    outFeat.setGeometry( int_geom )
+                    outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                    writer.addFeature( outFeat )
+                  except Exception, err:
+                    FEATURE_EXCEPT = False
             else:
               # this only happends if the bounding box
               # intersects, but the geometry doesn't

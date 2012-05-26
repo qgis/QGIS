@@ -344,6 +344,14 @@ def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
                 count += 1
     return count
 
+def getGeomType(gT):
+  if gT == 3 or gT == 6:
+    gTypeListPoly = [ QGis.WKBPolygon, QGis.WKBMultiPolygon ]
+    return gTypeListPoly
+  elif gT == 2 or gT == 5:
+    gTypeListLine = [ QGis.WKBLineString, QGis.WKBMultiLineString ]
+    return gTypeListLine
+
 def getShapesByGeometryType( baseDir, inShapes, geomType ):
   outShapes = QStringList()
   for fileName in inShapes:
