@@ -6,8 +6,6 @@ SET (sqlanywhere_SRCS
      sasourceselect.cpp
      sanewconnection.cpp
      sadbtablemodel.cpp
-     sadbfilterproxymodel.cpp
-     saquerybuilder.cpp
 )
 
 SET (sqlanywhere_UIS 
@@ -21,7 +19,6 @@ SET (sqlanywhere_MOC_HDRS
      sanewconnection.h
      salayer.h
      sadbtablemodel.h
-     saquerybuilder.h
 )
 
 SET (sqlanywhere_RCCS  sqlanywhere.qrc)
