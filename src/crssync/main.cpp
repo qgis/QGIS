@@ -40,7 +40,8 @@ int main( int argc, char ** argv )
 {
   QgsApplication a( argc, argv, false );
 
-  a.setPrefixPath( CMAKE_INSTALL_PREFIX, true );
+  if ( !QgsApplication::isRunningFromBuildDir() )
+    a.setPrefixPath( CMAKE_INSTALL_PREFIX, true );
 
   std::cout << "Synchronizing CRS database with PROJ definitions." << std::endl;
 
