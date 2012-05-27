@@ -181,26 +181,23 @@ void QgsQueryBuilder::test()
 
 void QgsQueryBuilder::accept()
 {
-  // if user hits Ok and there is no query, skip the validation
-  if ( !txtSQL->toPlainText().trimmed().isEmpty() )
+  if ( !mLayer->setSubsetString( txtSQL->toPlainText() ) )
   {
-    if ( !mLayer->setSubsetString( txtSQL->toPlainText() ) )
+    //error in query - show the problem
+    if ( mLayer->dataProvider()->hasErrors() )
     {
-      //error in query - show the problem
-      if ( mLayer->dataProvider()->hasErrors() )
-      {
-        QMessageBox::warning( this,
-                              tr( "Query Failed" ),
-                              tr( "An error occurred when executing the query." )
-                              + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( "\n" ) ) );
-        mLayer->dataProvider()->clearErrors();
-      }
-      else
-      {
-        QMessageBox::warning( this, tr( "Error in Query" ), tr( "The subset string could not be set" ) );
-      }
-      return;
+      QMessageBox::warning( this,
+                            tr( "Query Failed" ),
+                            tr( "An error occurred when executing the query." )
+                            + tr( "\nThe data provider said:\n%1" ).arg( mLayer->dataProvider()->errors().join( "\n" ) ) );
+      mLayer->dataProvider()->clearErrors();
     }
+    else
+    {
+      QMessageBox::warning( this, tr( "Error in Query" ), tr( "The subset string could not be set" ) );
+    }
+
+    return;
   }
 
   QDialog::accept();

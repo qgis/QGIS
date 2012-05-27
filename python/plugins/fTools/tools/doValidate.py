@@ -50,14 +50,13 @@ class MarkerErrorGeometry():
     self.__marker.setIconType(gui.QgsVertexMarker.ICON_X)
     self.__marker.setPenWidth(3)
 
-  def setGeom(self, x, y):
+  def setGeom(self, p):
     if not self.__marker is None:
       self.reset()
-    point  = QgsPoint(x, y)
     if self.__marker is None:
-      self.__createMarker(point)
+      self.__createMarker(p)
     else:
-      self.__marker.setCenter(point)
+      self.__marker.setCenter(p)
 
   def reset(self):
     if not self.__marker is None:
@@ -136,18 +135,12 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       mc = self.iface.mapCanvas()
       mc.zoomToPreviousExtent()
 
-      if mc.mapRenderer().hasCrsTransformEnabled():
-        ct = QgsCoordinateTransform( self.vlayer.crs(), mc.mapRenderer().destinationCrs() )
-      else:
-        ct = None
-
       e = item.data(Qt.UserRole).toPyObject()
 
       if type(e)==QgsPoint:
-        if not ct is None:
-          e = ct.transform( e )
+        e = mc.mapRenderer().layerToMapCoordinates( self.vlayer, e )
 
-        self.marker.setGeom(e.x(), e.y())
+        self.marker.setGeom(e)
 
         rect = mc.extent()
         rect.expand( 0.25, e )
@@ -160,9 +153,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         if not ok or not self.vlayer.featureAtId( fid, ft, True):
           return
 
-	rect = ft.geometry().boundingBox()
-	if not ct is None:
-          rect = ct.transformBoundingBox( rect )
+        rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
         rect.expand(1.05)
 
       # Set the extent to our new rectangle

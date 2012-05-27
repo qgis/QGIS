@@ -28,7 +28,7 @@
 #define SASOURCESELECT_H
 
 #include "ui_sasourceselectbase.h"
-#include "sadbfilterproxymodel.h"
+#include "qgsdbfilterproxymodel.h"
 #include "sadbtablemodel.h"
 #include "sqlanyconnection.h"
 #include "sqlanystatement.h"
@@ -181,7 +181,7 @@ class SaSourceSelect : public QDialog, private Ui::SaSourceSelectBase
 
     //! Model that acts as datasource for mTableTreeWidget
     SaDbTableModel mTableModel;
-    SaDbFilterProxyModel mProxyModel;
+    QgsDbFilterProxyModel mProxyModel;
 
     // button for building queries
     QPushButton *mBuildQueryButton;
