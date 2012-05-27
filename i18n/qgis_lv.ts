@@ -1191,32 +1191,22 @@ were reduced to %2 vertices after simplification</source>
         <source>Unable to compute extents aligned on selected raster layer</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Brīdinājums</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DlgAbout</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogs</translation>
-    </message>
-    <message>
-        <source>$PLUGIN_NAME$</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>$PLUGIN_DESCRIPTION$</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$ is being developed by Giuseppe Sucameli (&lt;/span&gt;&lt;a href=&quot;mailto:brush.tyler@gmail.com?subject=$MAIL_SUBJECT$&amp;amp;body=$MAIL_BODY$&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;brush.tyler@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;) with the supervision of Martin Dobias and the support of Google for its Summer of Code initiative. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$&apos;s aim is to merge some of QGIS DB plugins, e.g. PGManager, SLManager, RT_Sql_Layer. At the moment it works with both PostgreSQL and SQLite databases. It displays list of tables, info about the selected table. In addition, allows the user to rename/delete tables through its GUI and run query on the selected database, hence replaces SLManager. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$ can import Vector Layer feature by drag&apos;n&apos;drop a layer from the QGIS browser (or even $PLUGIN_NAME$) to a database in the $PLUGIN_NAME$ GUI. The Import Vector Layer feature allows user to import/copy any vector layer in QGIS from different datasources (i.e. PostGIS/SpatiaLite databases and OGR files). It&apos;s available through the QgsVectorLayerImport class and it has just been merged in master branch. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;Faunalia is committed to support the development of this tool, and other DB plugins. Developers are welcome to join and merge their works, to reduce confusion for users.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;For support, contact us at &lt;/span&gt;&lt;a href=&quot;mailto:info@faunalia.com?subject=$MAIL_SUBJECT$&amp;amp;body=$MAIL_BODY$&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;info@faunalia.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Dialogs</translation>
     </message>
 </context>
 <context>
@@ -1929,11 +1919,11 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation>Par GdalTools</translation>
+        <translation type="obsolete">Par GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation>Parāda informāciju par GdalTools</translation>
+        <translation type="obsolete">Parāda informāciju par GdalTools</translation>
     </message>
     <message>
         <source>Tile index</source>
@@ -2079,31 +2069,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation>
+        <translation type="obsolete">
 (lieto GDAL v. %1)</translation>
-    </message>
-    <message>
-        <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
-
-The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
-Icons by Robert Szczepanek.
-Sponsorship by Silvio Grosso was much appreciated.
-
-Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
-
-DEVELOPERS:
-  Faunalia
-    Paolo Cavallini
-    Giuseppe Sucameli
-    Lorenzo Masini
-  GIS-lab
-    Maxim Dubinin
-    Alexander Bruy
-icons by Robert Szepanek
-
-HOMEPAGE:
-http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3557,6 +3524,12 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <source>Layer &apos;%1&apos; updated</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
@@ -4781,6 +4754,14 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Offset Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste style</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6525,7 +6506,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     </message>
     <message>
         <source>ring %1 with less than three points</source>
-        <translation>caurums %1 ar mazāk kā trīs punktiem</translation>
+        <translation type="obsolete">caurums %1 ar mazāk kā trīs punktiem</translation>
     </message>
     <message>
         <source>ring %1 not closed</source>
@@ -7411,6 +7392,42 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Loading of the MSSQL provider failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exception: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ring %1 with less than four points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOS error:could not produce geometry for GEOS (check log window)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI FileGDB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL/OGR VSIFileHandler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating the data source %1 failed: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of OGR data source %1 failed: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9186,10 +9203,6 @@ Always ignore these errors?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>GDAL/OGR Version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>GEOS Version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9287,6 +9300,26 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>Cannot get MSSQL select dialog from provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compiled against GDAL/OGR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running against GDAL/OGR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot copy style: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot parse style: %1:%2:%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read style: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16360,18 +16393,26 @@ Lūdzu izvēlēties derīgu.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt; {3C?} {4.0/?} {3.?} {40/?} {1&quot;?} {10p?} {400;?} {12p?} {12p?} {0p?} {0p?} {0;?} {0p?} {0p or 12p?} {0p or 12p?} {0p or 12p?} {0p or 12p?} {0p or 12p?} {0p or 12p?}</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsGeorefPlugin</name>
     <message>
         <source>&amp;About</source>
-        <translation>&amp;Par</translation>
+        <translation type="obsolete">&amp;Par</translation>
     </message>
     <message>
         <source>&amp;Georeferencer</source>
@@ -20454,6 +20495,14 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
         <source>&amp;Update Drawing Order</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Copy Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -23169,6 +23218,10 @@ p, li { white-space: pre-wrap; }
         <source>Shapefiles without attribute are considered read-only.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Data source is invalid, no layer found (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOpenRasterDialog</name>
@@ -23469,6 +23522,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Clip To MinMax</source>
         <translation type="unfinished">Apcirst līdz MinMaks</translation>
+    </message>
+    <message>
+        <source>Check file contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Nē</translation>
+    </message>
+    <message>
+        <source>Passthru</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic scan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full scan</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24112,6 +24189,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Contrast enhancement</source>
         <translation type="unfinished">Kontrasta uzlabošana</translation>
+    </message>
+    <message>
+        <source>Scan for valid items in the browser dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scan for contents of compressed files (.zip) in browser dock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26148,6 +26233,18 @@ Database error: %2</source>
         <source>No key field for query given.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Primary key field &apos;%1&apos; for view not unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key field &apos;%1&apos; for view not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
@@ -26617,7 +26714,7 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Recently used coordinate references systems</source>
-        <translation>Nesen lietotās koordinātu sistēmas</translation>
+        <translation type="obsolete">Nesen lietotās koordinātu sistēmas</translation>
     </message>
     <message>
         <source>Filter</source>
@@ -26625,6 +26722,10 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Coordinate reference systems of the world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recently used coordinate reference systems</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -27281,6 +27382,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot instantiate the data provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -34000,7 +34105,7 @@ Reason phrase: %2</source>
     <name>RoadGraphPlugin</name>
     <message>
         <source>Road graph settings</source>
-        <translation>Ceļu grafa parametri</translation>
+        <translation type="obsolete">Ceļu grafa parametri</translation>
     </message>
     <message>
         <source>Show road&apos;s direction</source>
@@ -34008,7 +34113,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>About</source>
-        <translation>Par</translation>
+        <translation type="obsolete">Par</translation>
     </message>
     <message>
         <source>Road graph plugin settings</source>
@@ -34020,7 +34125,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>About Road graph plugin</source>
-        <translation>Par ceļu grafa spraudni</translation>
+        <translation type="obsolete">Par ceļu grafa spraudni</translation>
     </message>
     <message>
         <source>Road graph</source>
@@ -34028,23 +34133,27 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>About RoadGraph</source>
-        <translation>Par ceļu grafu</translation>
+        <translation type="obsolete">Par ceļu grafu</translation>
     </message>
     <message>
         <source>Find shortest path on road&apos;s graph</source>
-        <translation>Atrast īsāko ceļu uz ceļu grafa</translation>
+        <translation type="obsolete">Atrast īsāko ceļu uz ceļu grafa</translation>
     </message>
     <message>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Izstrādātāji:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Izstrādātāji:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Homepage:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Mājaslapa:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Mājaslapa:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Aizvērt</translation>
+        <translation type="obsolete">Aizvērt</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">Parametri</translation>
     </message>
 </context>
 <context>
@@ -34234,36 +34343,32 @@ Apraksts: %2</translation>
     <name>SaQueryBuilder</name>
     <message>
         <source>&amp;Test</source>
-        <translation>&amp;Testēt</translation>
+        <translation type="obsolete">&amp;Testēt</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation>&amp;Attīrīt</translation>
+        <translation type="obsolete">&amp;Attīrīt</translation>
     </message>
     <message>
         <source>Invalid Query</source>
-        <translation>Nederīgs vaicājums</translation>
-    </message>
-    <message>
-        <source>Setting the query failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Nederīgs vaicājums</translation>
     </message>
     <message>
         <source>No Query</source>
-        <translation>Nav vaicājuma</translation>
+        <translation type="obsolete">Nav vaicājuma</translation>
     </message>
     <message>
         <source>You must create a query before you can test it</source>
-        <translation>Pirms pārbaudi, izveido vaicājumu</translation>
+        <translation type="obsolete">Pirms pārbaudi, izveido vaicājumu</translation>
     </message>
     <message>
         <source>Query Result</source>
-        <translation>Pieprasīt rezultātu</translation>
+        <translation type="obsolete">Pieprasīt rezultātu</translation>
     </message>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
+        <translation type="obsolete">
             <numerusform>WHERE klauzula deva %n rindu.
         </numerusform>
             <numerusform></numerusform>
@@ -34272,19 +34377,19 @@ Apraksts: %2</translation>
     </message>
     <message>
         <source>Query Failed</source>
-        <translation>Pieprasījums neveiksmīgs</translation>
+        <translation type="obsolete">Pieprasījums neveiksmīgs</translation>
     </message>
     <message>
         <source>An error occurred when executing the query</source>
-        <translation>Kļūda izpildot vaicājumu</translation>
+        <translation type="obsolete">Kļūda izpildot vaicājumu</translation>
     </message>
     <message>
         <source>Error in Query</source>
-        <translation>Kļūda vaicājumā</translation>
+        <translation type="obsolete">Kļūda vaicājumā</translation>
     </message>
     <message>
         <source>The subset string could not be set</source>
-        <translation>Nebija iespējams iestatīt apakškopas vaicājumu</translation>
+        <translation type="obsolete">Nebija iespējams iestatīt apakškopas vaicājumu</translation>
     </message>
 </context>
 <context>

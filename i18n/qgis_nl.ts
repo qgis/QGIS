@@ -1231,32 +1231,22 @@ Weet u zeker dat u door wilt?</translation>
         <source>Unable to compute extents aligned on selected raster layer</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Waarschuwing</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DlgAbout</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Dialoog</translation>
-    </message>
-    <message>
-        <source>$PLUGIN_NAME$</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>$PLUGIN_DESCRIPTION$</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$ is being developed by Giuseppe Sucameli (&lt;/span&gt;&lt;a href=&quot;mailto:brush.tyler@gmail.com?subject=$MAIL_SUBJECT$&amp;amp;body=$MAIL_BODY$&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;brush.tyler@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;) with the supervision of Martin Dobias and the support of Google for its Summer of Code initiative. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$&apos;s aim is to merge some of QGIS DB plugins, e.g. PGManager, SLManager, RT_Sql_Layer. At the moment it works with both PostgreSQL and SQLite databases. It displays list of tables, info about the selected table. In addition, allows the user to rename/delete tables through its GUI and run query on the selected database, hence replaces SLManager. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$ can import Vector Layer feature by drag&apos;n&apos;drop a layer from the QGIS browser (or even $PLUGIN_NAME$) to a database in the $PLUGIN_NAME$ GUI. The Import Vector Layer feature allows user to import/copy any vector layer in QGIS from different datasources (i.e. PostGIS/SpatiaLite databases and OGR files). It&apos;s available through the QgsVectorLayerImport class and it has just been merged in master branch. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;Faunalia is committed to support the development of this tool, and other DB plugins. Developers are welcome to join and merge their works, to reduce confusion for users.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;For support, contact us at &lt;/span&gt;&lt;a href=&quot;mailto:info@faunalia.com?subject=$MAIL_SUBJECT$&amp;amp;body=$MAIL_BODY$&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;info@faunalia.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Dialoog</translation>
     </message>
 </context>
 <context>
@@ -1973,11 +1963,11 @@ De plugin wordt niet geactiveerd.</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation>Info over GdalTools</translation>
+        <translation type="obsolete">Info over GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation>Informatie tonen over Gdal Tools</translation>
+        <translation type="obsolete">Informatie tonen over Gdal Tools</translation>
     </message>
     <message>
         <source>&amp;Input directory</source>
@@ -2087,7 +2077,7 @@ Install it and try again.</source>
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation>(gebruikt GDAL v. %1)</translation>
+        <translation type="obsolete">(gebruikt GDAL v. %1)</translation>
     </message>
     <message>
         <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
@@ -2110,7 +2100,7 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation>GDAL Tools (AKA Raster Tools) is een plugin voor QuantumGIS om het leven van gebruikers van &apos;GDAL Utilities&apos; wat eenvoudiger te maken, door een vereenvoudigende grafische interface te geven voor de meest gebruikte (gdal) commando&apos;s.
+        <translation type="obsolete">GDAL Tools (AKA Raster Tools) is een plugin voor QuantumGIS om het leven van gebruikers van &apos;GDAL Utilities&apos; wat eenvoudiger te maken, door een vereenvoudigende grafische interface te geven voor de meest gebruikte (gdal) commando&apos;s.
 
 De plugin is ontwikkeld door by Faunalia (http://faunalia.it) met hulp van GIS-lab (http://gis-lab.info).
 Iconen van Robert Szczepanek.
@@ -3619,6 +3609,12 @@ Kies a.u.b. een ander veld...</translation>
         <source>Layer &apos;%1&apos; updated</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
@@ -4839,6 +4835,14 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>Offset Curve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste style</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6588,7 +6592,7 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>ring %1 with less than three points</source>
-        <translation>ring %1 heeft minder dan 3 punten</translation>
+        <translation type="obsolete">ring %1 heeft minder dan 3 punten</translation>
     </message>
     <message>
         <source>ring %1 not closed</source>
@@ -7474,6 +7478,42 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Loading of the MSSQL provider failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exception: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ring %1 with less than four points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOS error:could not produce geometry for GEOS (check log window)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Console</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ESRI FileGDB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL/OGR VSIFileHandler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating the data source %1 failed: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation of OGR data source %1 failed: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9577,10 +9617,6 @@ QWT Version: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>GDAL/OGR Version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>GEOS Version</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9710,6 +9746,26 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Cannot get MSSQL select dialog from provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compiled against GDAL/OGR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running against GDAL/OGR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot copy style: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot parse style: %1:%2:%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read style: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16736,19 +16792,23 @@ Selecteer alstublieft een geldig bestand.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGeorefPlugin</name>
-    <message>
-        <source>&amp;About</source>
-        <translation></translation>
-    </message>
     <message>
         <source>&amp;Georeferencer</source>
         <translation>&amp;Georeferencer</translation>
@@ -20719,6 +20779,14 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <source>&amp;Update Drawing Order</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Copy Style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Style</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -23473,6 +23541,10 @@ p, li { white-space: pre-wrap; }
         <source>Shapefiles without attribute are considered read-only.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Data source is invalid, no layer found (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOpenRasterDialog</name>
@@ -23773,6 +23845,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Clip To MinMax</source>
         <translation type="unfinished">Clip naar MinMax</translation>
+    </message>
+    <message>
+        <source>Check file contents</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check extension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Nee</translation>
+    </message>
+    <message>
+        <source>Passthru</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic scan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full scan</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24416,6 +24512,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Contrast enhancement</source>
         <translation type="unfinished">Contrastverhoging</translation>
+    </message>
+    <message>
+        <source>Scan for valid items in the browser dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scan for contents of compressed files (.zip) in browser dock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26560,6 +26664,18 @@ Database error: %2</source>
         <source>No key field for query given.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Primary key field &apos;%1&apos; for view not unique.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key field &apos;%1&apos; for view not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPostgresProvider::Conn</name>
@@ -27039,7 +27155,7 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     </message>
     <message>
         <source>Recently used coordinate references systems</source>
-        <translation>Recent gebruikte ruimtelijke referentie systemen</translation>
+        <translation type="obsolete">Recent gebruikte ruimtelijke referentie systemen</translation>
     </message>
     <message>
         <source>ID</source>
@@ -27051,6 +27167,10 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
     </message>
     <message>
         <source>Coordinate reference systems of the world</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recently used coordinate reference systems</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -27717,6 +27837,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot instantiate the data provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -34653,7 +34777,7 @@ Omschrijving: %2</translation>
     <name>RoadGraphPlugin</name>
     <message>
         <source>Road graph settings</source>
-        <translation>Instellingen voor &apos;Road graph&apos;</translation>
+        <translation type="obsolete">Instellingen voor &apos;Road graph&apos;</translation>
     </message>
     <message>
         <source>Show road&apos;s direction</source>
@@ -34661,7 +34785,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Info</translation>
+        <translation type="obsolete">Info</translation>
     </message>
     <message>
         <source>Road graph plugin settings</source>
@@ -34673,7 +34797,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>About Road graph plugin</source>
-        <translation>Info over Road graph plugin</translation>
+        <translation type="obsolete">Info over Road graph plugin</translation>
     </message>
     <message>
         <source>Road graph</source>
@@ -34681,23 +34805,27 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>About RoadGraph</source>
-        <translation>Info over Road graph</translation>
+        <translation type="obsolete">Info over Road graph</translation>
     </message>
     <message>
         <source>Find shortest path on road&apos;s graph</source>
-        <translation>Zoek kortste route in weg-netwerk</translation>
+        <translation type="obsolete">Zoek kortste route in weg-netwerk</translation>
     </message>
     <message>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Ontwikkelaars:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Ontwikkelaars:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Homepage:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Startpagina:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Startpagina:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Sluiten</translation>
+        <translation type="obsolete">Sluiten</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">Extra</translation>
     </message>
 </context>
 <context>
@@ -34887,55 +35015,55 @@ Omschrijving: %2</translation>
     <name>SaQueryBuilder</name>
     <message>
         <source>&amp;Test</source>
-        <translation>&amp;Test</translation>
+        <translation type="obsolete">&amp;Test</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation>&amp;Leegmaken</translation>
+        <translation type="obsolete">&amp;Leegmaken</translation>
     </message>
     <message>
         <source>Invalid Query</source>
-        <translation>Ongeldige Query</translation>
+        <translation type="obsolete">Ongeldige Query</translation>
     </message>
     <message>
         <source>Setting the query failed</source>
-        <translation>Aanmaken van query mislukt</translation>
+        <translation type="obsolete">Aanmaken van query mislukt</translation>
     </message>
     <message>
         <source>No Query</source>
-        <translation>Geen Query</translation>
+        <translation type="obsolete">Geen Query</translation>
     </message>
     <message>
         <source>You must create a query before you can test it</source>
-        <translation>U moet een query aanmaken voor u die kunt testen</translation>
+        <translation type="obsolete">U moet een query aanmaken voor u die kunt testen</translation>
     </message>
     <message>
         <source>Query Result</source>
-        <translation>Query Resultaten</translation>
+        <translation type="obsolete">Query Resultaten</translation>
     </message>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Het &apos;where&apos;-filter levert %n rij op.</numerusform>
             <numerusform>Het &apos;where&apos;-filter levert %n rijen op.</numerusform>
         </translation>
     </message>
     <message>
         <source>Query Failed</source>
-        <translation>Query Mislukt</translation>
+        <translation type="obsolete">Query Mislukt</translation>
     </message>
     <message>
         <source>An error occurred when executing the query</source>
-        <translation>Er is een fout opgetreden bij het uitvoeren van de query</translation>
+        <translation type="obsolete">Er is een fout opgetreden bij het uitvoeren van de query</translation>
     </message>
     <message>
         <source>Error in Query</source>
-        <translation>Fout in Query</translation>
+        <translation type="obsolete">Fout in Query</translation>
     </message>
     <message>
         <source>The subset string could not be set</source>
-        <translation>Het &apos;subset&apos;-deel kan niet worden gebruikt</translation>
+        <translation type="obsolete">Het &apos;subset&apos;-deel kan niet worden gebruikt</translation>
     </message>
 </context>
 <context>
