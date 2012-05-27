@@ -163,7 +163,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return 0;
 
   // Filter files by extension
-  if ( !extensions.contains( info.suffix().toLower() ) )
+  if ( !extensions.contains( suffix ) )
   {
     bool matches = false;
     foreach( QString wildcard, wildcards )
@@ -197,20 +197,27 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
   }
 
-  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
-  if ( is_vsizip && scanZipSetting == 2 )
+  // return a /vsizip/ item without testing if:
+  // zipfile and scan zip == "Basic scan"
+  // not zipfile and scan items == "Check extension"
+  if (( is_vsizip && scanZipSetting == 2 ) ||
+      ( !is_vsizip && scanItemsSetting == 1 ) )
   {
-    QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
-    if ( item )
-      return item;
-  }
-
-  // if scan items == "Check extension", add item here without trying to open
-  // unless item is /vsizip
-  if ( scanItemsSetting == 1 && !is_vsizip )
-  {
+    // if this is a VRT file make sure it is raster VRT to avoid duplicates
+    if ( suffix == "vrt" )
+    {
+      // do not print errors, but write to debug
+      CPLPushErrorHandler( CPLQuietErrorHandler );
+      CPLErrorReset();
+      if ( ! GDALIdentifyDriver( thePath.toLocal8Bit().constData(), 0 ) )
+      {
+        QgsDebugMsg( "Skipping VRT file because root is not a GDAL VRT" );
+        CPLPopErrorHandler();
+        return 0;
+      }
+      CPLPopErrorHandler();
+    }
+    // add the item
     QStringList sublayers;
     QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
@@ -221,10 +228,10 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // test that file is valid with GDAL
   GDALAllRegister();
   // do not print errors, but write to debug
-  CPLErrorHandler oErrorHandler = CPLSetErrorHandler( CPLQuietErrorHandler );
+  CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
   GDALDatasetH hDS = GDALOpen( TO8F( thePath ), GA_ReadOnly );
-  CPLSetErrorHandler( oErrorHandler );
+  CPLPopErrorHandler();
 
   if ( ! hDS )
   {
