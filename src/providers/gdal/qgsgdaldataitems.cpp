@@ -103,6 +103,15 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren( )
   return children;
 }
 
+QString QgsGdalLayerItem::layerName() const
+{
+  QFileInfo info( name() );
+  if ( info.suffix() == "gz" )
+    return info.baseName();
+  else
+    return info.completeBaseName();
+}
+
 // ---------------------------------------------------------------------------
 
 static QString filterString;

@@ -92,7 +92,6 @@ void TestQgsDataItem::testValid()
 void TestQgsDataItem::testDirItemChildren()
 {
   QSettings settings;
-  // test scanItems setting=1 to test .vrt and .gz files are not loaded by gdal and ogr
   for ( int iSetting = 0 ; iSetting <= 1 ; iSetting++ )
   {
     settings.setValue( "/qgis/scanItemsInBrowser", iSetting );
@@ -106,13 +105,15 @@ void TestQgsDataItem::testDirItemChildren()
       QgsLayerItem* layerItem = dynamic_cast<QgsLayerItem*>( dataItem );
       if ( ! layerItem )
         continue;
+
+      // test .vrt and .gz files are not loaded by gdal and ogr
       QFileInfo info( layerItem->path() );
       QString lFile = info.fileName();
       QString lProvider = layerItem->providerKey();
       QString errStr = QString( "layer #%1 - %2 provider = %3 iSetting = %4" ).arg( i ).arg( lFile ).arg( lProvider ).arg( iSetting );
       const char* err = errStr.toLocal8Bit().constData();
 
-      QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ) );
+      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ) );
 
       if ( lFile == "landsat.tif" )
       {
@@ -134,6 +135,29 @@ void TestQgsDataItem::testDirItemChildren()
       {
         QVERIFY2( lProvider == "ogr", err );
       }
+
+      // test layerName() does not include extension for gdal and ogr items (bug #5621)
+      QString lName = layerItem->layerName();
+      errStr = QString( "layer #%1 - %2 lName = %3 iSetting = %4" ).arg( i ).arg( lFile ).arg( lName ).arg( iSetting );
+      err = errStr.toLocal8Bit().constData();
+
+      if ( lFile == "landsat.tif" )
+      {
+        QVERIFY2( lName == "landsat", err );
+      }
+      else if ( lFile == "points.shp" )
+      {
+        QVERIFY2( lName == "points", err );
+      }
+      else if ( lFile == "landsat_b1.tif.gz" )
+      {
+        QVERIFY2( lName == "landsat_b1", err );
+      }
+      else if ( lFile == "points3.geojson.gz" )
+      {
+        QVERIFY2( lName == "points3", err );
+      }
+
     }
     if ( dirItem )
       delete dirItem;

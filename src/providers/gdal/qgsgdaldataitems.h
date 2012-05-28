@@ -34,6 +34,7 @@ class QgsGdalLayerItem : public QgsLayerItem
 
     QVector<QgsDataItem*> createChildren();
 
+    QString layerName() const;
 };
 
 

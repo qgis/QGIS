@@ -28,6 +28,7 @@ class QgsOgrLayerItem : public QgsLayerItem
 
     bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
+    QString layerName() const;
 };
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem

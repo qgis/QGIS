@@ -78,7 +78,8 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   // we are able to assign CRS only to shapefiles :-(
   if ( driverName == "ESRI Shapefile" )
   {
-    QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
+    // QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
+    QString lyrName = layerName();
     QString wkt = crs.toWkt();
 
     // save ordinary .prj file
@@ -86,7 +87,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
     OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
     char* pszOutWkt = NULL;
     OSRExportToWkt( hSRS, &pszOutWkt );
-    QFile prjFile( layerName + ".prj" );
+    QFile prjFile( lyrName + ".prj" );
     if ( prjFile.open( QIODevice::WriteOnly ) )
     {
       QTextStream prjStream( &prjFile );
@@ -95,14 +96,14 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
+      QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( lyrName ), tr( "OGR" ) );
       return false;
     }
     OSRDestroySpatialReference( hSRS );
     CPLFree( pszOutWkt );
 
     // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
-    QFile qpjFile( layerName + ".qpj" );
+    QFile qpjFile( lyrName + ".qpj" );
     if ( qpjFile.open( QIODevice::WriteOnly ) )
     {
       QTextStream qpjStream( &qpjFile );
@@ -111,7 +112,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
     }
     else
     {
-      QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
+      QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( lyrName ), tr( "OGR" ) );
       return false;
     }
 
@@ -121,6 +122,15 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   // It it is impossible to assign a crs to an existing layer
   // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
   return false;
+}
+
+QString QgsOgrLayerItem::layerName() const
+{
+  QFileInfo info( name() );
+  if ( info.suffix() == "gz" )
+    return info.baseName();
+  else
+    return info.completeBaseName();
 }
 
 // -------
