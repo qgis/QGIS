@@ -47,6 +47,7 @@ class Sextante:
         #Should think of a different solution
         provider.initializeSettings()
         Sextante.providers.append(provider)
+        SextanteConfig.loadSettings()
         Sextante.updateAlgsList()
 
     @staticmethod
@@ -56,6 +57,7 @@ class Sextante:
         try:
             provider.unload()
             Sextante.providers.remove(provider)
+            SextanteConfig.loadSettings()
             Sextante.updateAlgsList()
         except:
             pass #This try catch block is here to avoid problems if the plugin with a provider is unloaded
