@@ -449,6 +449,9 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     const QVariant& attrValue = feature.attributeMap()[ fldIt.key()];
     int ogrField = mAttrIdxToOgrIdx[ fldIt.key()];
 
+    if ( attrValue.isNull() )
+      continue;
+
     switch ( attrValue.type() )
     {
       case QVariant::Int:
