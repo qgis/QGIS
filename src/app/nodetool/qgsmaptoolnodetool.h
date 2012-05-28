@@ -132,7 +132,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QgsFeatureId mAnother;
 
     /** stored position of last press down action to count how much vertexes should be moved */
-    QgsPoint* mLastCoordinates;
+    QPoint mPressCoordinates;
 
     /** closest vertex to click */
     QgsPoint mClosestVertex;
@@ -141,13 +141,16 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QgsPoint mPosMapCoordBackup;
 
     /** active rubberband for selecting vertexes */
-    QRubberBand *mRubberBand;
+    QRubberBand *mSelectionRubberBand;
 
     /** rectangle defining area for selecting vertexes */
     QRect* mRect;
 
     /** flag to tell if edition points */
     bool mIsPoint;
+
+    /** vertex to deselect on release */
+    int mDeselectOnRelease;
 };
 
 #endif

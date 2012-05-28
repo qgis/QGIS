@@ -82,10 +82,9 @@ class QgsSelectedFeature: public QObject
 
     /**
      * Moves selected vertex
-     * @param changeX change in X coordinate
-     * @param changeY change in Y coordinate
+     * @param v translation vector
      */
-    void moveSelectedVertexes( double changeX, double changeY );
+    void moveSelectedVertexes( const QgsVector &v );
 
     /**
      * Inverts selection of vertex with number

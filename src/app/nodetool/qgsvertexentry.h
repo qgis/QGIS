@@ -53,7 +53,6 @@ class QgsVertexEntry
     bool isInRubberBand() const { return mInRubberBand; }
 
     void setCenter( QgsPoint p );
-    void moveCenter( double x, double y );
 
     void setEqual( int index ) { mEquals = index; }
     void setSelected( bool selected = true );
