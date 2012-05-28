@@ -227,10 +227,22 @@ void QgsSelectedFeature::validationFinished()
 
 void QgsSelectedFeature::deleteSelectedVertexes()
 {
+  int nSelected = 0;
+  foreach( QgsVertexEntry *entry, mVertexMap )
+  {
+    if ( entry->isSelected() )
+      nSelected++;
+  }
+
+  if ( nSelected == 0 )
+    return;
+
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
   mVlayer->beginEditCommand( QObject::tr( "Deleted vertices" ) );
+
+  beginGeometryChange();
 
   int count = 0;
   for ( int i = mVertexMap.size() - 1; i > -1; i-- )
@@ -249,6 +261,11 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         currentResultList.clear();
         mVlayer->snapWithContext( mVertexMap[i]->point(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
       }
+
+      // only last update should trigger the geometry update
+      // as vertex selection gets lost on the update
+      if ( --nSelected == 0 )
+        endGeometryChange();
 
       if ( !mVlayer->deleteVertex( mFeatureId, i ) )
       {
