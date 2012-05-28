@@ -184,6 +184,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Has the User Projection List been populated?
     bool mUserProjListDone;
 
+    bool mSkipFirstRecent;
+
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone;
 

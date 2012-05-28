@@ -32,6 +32,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
     , mSearchColumn( NONE )
+    , mSkipFirstRecent( true )
 {
   Q_UNUSED( name );
   setupUi( this );
@@ -548,6 +549,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
       // newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 2 ) ) );
       // display the qgis srs_id (field 1) in the third column of the list view
       newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ) );
+      newItem->setText( AUTHID_COLUMN, QString( "USER:%1" ).arg( QString::fromUtf8(( char * )sqlite3_column_text( stmt, 1 ) ).toInt() ) );
     }
   }
   // close the sqlite3 statement
@@ -738,6 +740,7 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
     {
       QgsDebugMsg( QString( "srs %1 not recent" ).arg( current->text( QGIS_CRS_ID_COLUMN ) ) );
       lstRecent->clearSelection();
+      lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
   }
   else
@@ -752,6 +755,12 @@ void QgsProjectionSelector::on_lstCoordinateSystems_currentItemChanged( QTreeWid
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   QgsDebugMsg( "Entered." );
+
+  if ( mSkipFirstRecent )
+  {
+    mSkipFirstRecent = true;
+    return;
+  }
 
   if ( !current )
   {
