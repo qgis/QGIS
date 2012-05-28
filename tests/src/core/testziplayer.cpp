@@ -50,7 +50,7 @@ class TestZipLayer: public QObject
     // get map layer using QgsZipItem (only 1 child)
     QgsMapLayer * getZipLayer( QString myPath, QString myName );
     // test item(s) in zip item (supply name or test all)
-    bool testZipItem( QString myFileName, QString myChildName );
+    bool testZipItem( QString myFileName, QString myChildName = "", QString myDriverName = "" );
     // get layer transparency to test for .qml loading
     int getLayerTransparency( QString myFileName, QString myProviderKey, int myScanZipSetting = 1 );
 
@@ -79,6 +79,8 @@ class TestZipLayer: public QObject
     void testGZipItemRasterTransparency();
     //make sure items inside subfolders can be read
     void testZipItemSubfolder();
+    //make sure .vrt items are loaded by proper provider (gdal/ogr)
+    void testZipItemVRT();
 };
 
 
@@ -128,13 +130,15 @@ bool TestZipLayer::testZipItemPassthru( QString myFileName, QString myProviderKe
   return ok;
 }
 
-bool TestZipLayer::testZipItem( QString myFileName, QString myChildName = "" )
+bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString myProviderName )
 {
-  QgsDebugMsg( QString( "\n=======================================\nfile = %1 name = %2" ).arg( myFileName ).arg( myChildName ) );
+  QgsDebugMsg( QString( "\n=======================================\nfile = %1 name = %2 provider = %3"
+                      ).arg( myFileName ).arg( myChildName ).arg( myProviderName ) );
   QFileInfo myFileInfo( myFileName );
   QgsZipItem *myZipItem = new QgsZipItem( NULL, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
   bool ok = false;
+  QString driverName;
   QVector<QgsDataItem*> myChildren = myZipItem->children();
 
   if ( myChildren.size() > 0 )
@@ -168,6 +172,16 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName = "" )
             }
             else
             {
+              //verify correct provider was used
+              if ( myProviderName != "" )
+              {
+                ok = ( myProviderName == layerItem->providerKey() );
+                if ( ! ok )
+                {
+                  QWARN( QString( "Layer %1 opened by provider %2, expecting %3"
+                                ).arg( layerItem->path() ).arg( layerItem->providerKey() ).arg( myProviderName ).toLocal8Bit().data() );
+                }
+              }
               break;
             }
           }
@@ -388,5 +402,19 @@ void TestZipLayer::testZipItemSubfolder()
     QVERIFY( testZipItem( mDataDir + "testzip.zip", "folder/folder2/landsat_b2.tif" ) );
   }
 }
+
+
+void TestZipLayer::testZipItemVRT()
+{
+  QSettings settings;
+  for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
+  {
+    settings.setValue( "/qgis/scanZipInBrowser", i );
+    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
+    QVERIFY( testZipItem( mDataDir + "testzip.zip", "landsat.vrt", "gdal" ) );
+    QVERIFY( testZipItem( mDataDir + "testzip.zip", "points.vrt", "ogr" ) );
+  }
+}
+
 QTEST_MAIN( TestZipLayer )
 #include "moc_testziplayer.cxx"

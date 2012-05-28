@@ -20,7 +20,7 @@
 static const char* QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
 QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
-    : providerKey( layerItem->providerKey() ), name( layerItem->name() ), uri( layerItem->uri() )
+    : providerKey( layerItem->providerKey() ), name( layerItem->layerName() ), uri( layerItem->uri() )
 {
   switch ( layerItem->mapLayerType() )
   {

@@ -303,7 +303,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   QgsDebugMsg( providerKey + " : " + uri );
   if ( type == QgsMapLayer::VectorLayer )
   {
-    QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
+    QgisApp::instance()->addVectorLayer( uri, layerItem->layerName(), providerKey );
   }
   if ( type == QgsMapLayer::RasterLayer )
   {
@@ -333,7 +333,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
     QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
     QgsDebugMsg( "layers = " + layers.join( " " ) );
 
-    QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
+    QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->layerName(), providerKey, layers, styles, format, crs );
   }
 }
 
