@@ -2157,7 +2157,8 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
     }
   }
 
-  CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", "TOWGS84" ); // add towgs84 parameter
+  // add towgs84 parameter
+  QgsCoordinateReferenceSystem::setupESRIWktFix();
 
   OGRSpatialReferenceH mySpatialRefSys = OGR_L_GetSpatialRef( ogrLayer );
   if ( mySpatialRefSys )
