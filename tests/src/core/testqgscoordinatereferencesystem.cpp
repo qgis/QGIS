@@ -210,13 +210,15 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
     myCrs.createFromUserInput( "ESRI::" + myWktStrings[i] );
     msg = testESRIWkt( i, myCrs );
-    if ( GDAL_VERSION_NUM <= myGdalVersionOK[i] )
+    if ( GDAL_VERSION_NUM < myGdalVersionOK[i] )
     {
       QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2"
                                ).arg( GDAL_VERSION_NUM ).arg( msg ).toLocal8Bit().constData(),
                     Continue );
     }
-    QVERIFY2( msg == "", msg.toLocal8Bit().constData() );
+
+    if ( !msg.isEmpty() )
+      QVERIFY2( false, msg.toLocal8Bit().constData() );
 
     // do test with shapefiles
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
@@ -230,20 +232,21 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
       QgsVectorLayer *myLayer = new QgsVectorLayer( fileStr, "", "ogr" );
       if ( !myLayer || ! myLayer->isValid() )
       {
-        QVERIFY2( false, QString( "test %1 did not get valid vector layer from %2"
-                                ).arg( i ).arg( fileStr ).toLocal8Bit().constData() );
+        qWarning() << QString( "test %1 did not get valid vector layer from %2" ).arg( i ).arg( fileStr );
+        QVERIFY2( false, "no valid vector layer" );
       }
       else
       {
         myCrs = myLayer->crs();
         msg = testESRIWkt( i, myCrs );
-        if ( GDAL_VERSION_NUM <= myGdalVersionOK[i] )
+        if ( GDAL_VERSION_NUM < myGdalVersionOK[i] )
         {
           QEXPECT_FAIL( "", QString( "expected failure with GDAL %1 : %2 using layer %3"
                                    ).arg( GDAL_VERSION_NUM ).arg( msg ).arg( fileStr ).toLocal8Bit().constData(),
                         Continue );
         }
-        QVERIFY2( msg == "", msg.toLocal8Bit().constData() );
+        if ( !msg.isEmpty() )
+          QVERIFY2( false, msg.toLocal8Bit().constData() );
       }
       if ( myLayer )
         delete myLayer;
