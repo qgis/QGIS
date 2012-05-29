@@ -758,7 +758,7 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
 
   if ( mSkipFirstRecent )
   {
-    mSkipFirstRecent = true;
+    mSkipFirstRecent = false;
     return;
   }
 
