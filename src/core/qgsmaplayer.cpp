@@ -498,7 +498,7 @@ void QgsMapLayer::setSubLayerVisibility( QString name, bool vis )
   // NOOP
 }
 
-const QgsCoordinateReferenceSystem& QgsMapLayer::crs()
+const QgsCoordinateReferenceSystem& QgsMapLayer::crs() const
 {
   return *mCRS;
 }

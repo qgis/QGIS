@@ -186,6 +186,9 @@ const double MINIMUM_POINT_SIZE = 0.1;
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
+/** default snapping tolerance for segments (@note added in 1.8) */
+const double DEFAULT_SEGMENT_EPSILON = 1e-8;
+
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32

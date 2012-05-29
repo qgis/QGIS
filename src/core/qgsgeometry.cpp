@@ -2409,7 +2409,8 @@ double QgsGeometry::closestSegmentWithContext(
   const QgsPoint& point,
   QgsPoint& minDistPoint,
   int& afterVertex,
-  double* leftOf )
+  double* leftOf,
+  double epsilon )
 {
   QgsDebugMsg( "Entering." );
   QgsPoint distPoint;
@@ -2470,7 +2471,7 @@ double QgsGeometry::closestSegmentWithContext(
 
         if ( index > 0 )
         {
-          if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+          if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
           {
             closestSegmentIndex = index;
             sqrDist = testdist;
@@ -2518,7 +2519,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
           if ( prevx && prevy )
           {
-            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
             {
               closestSegmentIndex = pointindex;
               sqrDist = testdist;
@@ -2564,7 +2565,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
           if ( prevx && prevy )
           {
-            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
             {
               closestSegmentIndex = index;
               sqrDist = testdist;
@@ -2616,7 +2617,7 @@ double QgsGeometry::closestSegmentWithContext(
             }
             if ( prevx && prevy )
             {
-              if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+              if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
               {
                 closestSegmentIndex = pointindex;
                 sqrDist = testdist;

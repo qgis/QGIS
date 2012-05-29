@@ -249,6 +249,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
         }
       }
       createMovingRubberBands();
+
       QList<QgsSnappingResult> snapResults;
       QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
       mPosMapCoordBackup = posMapCoord;
@@ -257,26 +258,29 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
     {
       // move rubberband
       QList<QgsSnappingResult> snapResults;
-      QgsPoint firstCoords = toMapCoordinates( mPressCoordinates );
-      QList<QgsPoint> excludePoints;
-      excludePoints.append( mClosestVertex );
-      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, excludePoints );
+      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
 
       // get correct coordinates to move to
       QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
+
+      QgsPoint pressMapCoords;
       if ( snapResults.size() > 0 )
       {
-        firstCoords = toMapCoordinates( vlayer, mClosestVertex );
+        pressMapCoords = mClosestMapVertex;
       }
+      else
+      {
+        pressMapCoords = toMapCoordinates( mPressCoordinates );
+      }
+
+      QgsVector offset = posMapCoord - pressMapCoords;
 
       // handle points
       if ( mIsPoint )
       {
-        double offsetX = posMapCoord.x() - firstCoords.x();
-        double offsetY = posMapCoord.y() - firstCoords.y();
         for ( int i = 0; i < mRubberBands.size(); i++ )
         {
-          mRubberBands[i]->setTranslationOffset( offsetX, offsetY );
+          mRubberBands[i]->setTranslationOffset( offset.x(), offset.y() );
         }
         return;
       }
@@ -285,25 +289,21 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
       QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
       for ( int i = 0; i < vertexMap.size(); i++ )
       {
+        if ( !vertexMap[i]->isSelected() )
+          continue;
 
-        if ( vertexMap[i]->isSelected() )
+        QgsPoint p = toMapCoordinates( vlayer, vertexMap[i]->point() ) + offset;
+
+        mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( vertexMap[i]->rubberBandIndex(), p );
+
+        if ( vertexMap[i]->rubberBandIndex() == 0 )
         {
-          QgsPoint mapCoords = toMapCoordinates( vlayer, vertexMap[i]->point() );
-          double x = mapCoords.x() + posMapCoord.x() - firstCoords.x();
-          double y = mapCoords.y() + posMapCoord.y() - firstCoords.y();
-
-          mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( vertexMap[i]->rubberBandIndex(), QgsPoint( x, y ) );
-
-          if ( vertexMap[i]->rubberBandIndex() == 0 )
-          {
-            mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( 0, QgsPoint( x, y ) );
-          }
+          mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( 0, p );
         }
       }
 
       // topological editing
-      double offsetX = posMapCoord.x() - mPosMapCoordBackup.x();
-      double offsetY = posMapCoord.y() - mPosMapCoordBackup.y();
+      offset = posMapCoord - mPosMapCoordBackup;
       for ( int i = 0; i < mTopologyRubberBand.size(); i++ )
       {
         for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices() - 1; pointIndex++ )
@@ -315,10 +315,10 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
             {
               break;
             }
-            mTopologyRubberBand[i]->movePoint( pointIndex, QgsPoint( point->x() + offsetX, point->y() + offsetY ) );
+            mTopologyRubberBand[i]->movePoint( pointIndex, *point + offset );
             if ( pointIndex == 0 )
             {
-              mTopologyRubberBand[i]->movePoint( pointIndex , QgsPoint( point->x() + offsetX, point->y() + offsetY ) );
+              mTopologyRubberBand[i]->movePoint( pointIndex, *point + offset );
             }
           }
         }
@@ -370,13 +370,14 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   else
   {
     // some feature already selected
-    QgsPoint mapCoordPoint = toMapCoordinates( e->pos() );
+    QgsPoint layerCoordPoint = toLayerCoordinates( vlayer, e->pos() );
+
     double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapRenderer() );
 
     // get geometry and find if snapping is near it
     int atVertex, beforeVertex, afterVertex;
     double dist;
-    mSelectedFeature->geometry()->closestVertex( toLayerCoordinates( vlayer, mapCoordPoint ), atVertex, beforeVertex, afterVertex, dist );
+    QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( layerCoordPoint, atVertex, beforeVertex, afterVertex, dist );
     dist = sqrt( dist );
 
     mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex, tol );
@@ -384,8 +385,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     {
       // some vertex selected
       mMoving = true;
-      QgsPoint point = toMapCoordinates( e->pos() );
-      mClosestVertex = closestVertex( toLayerCoordinates( vlayer, point ) );
+      mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
       if ( mMoving )
       {
         if ( mSelectedFeature->isSelected( atVertex ) )
@@ -437,8 +437,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
         if ( !mSelectAnother )
         {
           mMoving = true;
-          QgsPoint point = toMapCoordinates( e->pos() );
-          mClosestVertex = closestVertex( toLayerCoordinates( vlayer, point ) );
+          mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
 
           if ( mIsPoint )
           {
@@ -519,14 +518,14 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       mMoving = false;
 
       QList<QgsSnappingResult> snapResults;
-      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestVertex );
+      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
 
-      QgsPoint releaseCoords = snapPointFromResults( snapResults, e->pos() );
-      QgsPoint pressCoords;
+      QgsPoint releaseLayerCoords = toLayerCoordinates( vlayer, snapPointFromResults( snapResults, e->pos() ) );
 
+      QgsPoint pressLayerCoords;
       if ( snapResults.size() > 0 )
       {
-        pressCoords = toLayerCoordinates( vlayer, mClosestVertex );
+        pressLayerCoords = toLayerCoordinates( vlayer, mClosestMapVertex );
 
         int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
         if ( topologicalEditing )
@@ -536,10 +535,10 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       }
       else
       {
-        pressCoords = toLayerCoordinates( vlayer, mPressCoordinates );
+        pressLayerCoords = toLayerCoordinates( vlayer, mPressCoordinates );
       }
 
-      mSelectedFeature->moveSelectedVertexes( releaseCoords - pressCoords );
+      mSelectedFeature->moveSelectedVertexes( releaseLayerCoords - pressLayerCoords );
       mCanvas->refresh();
     }
     else // selecting vertexes by rubberband
@@ -645,8 +644,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
     return;
 
   // some segment selected
-  QgsPoint coords = snapResults.first().snappedVertex;
-  QgsPoint layerCoords = toLayerCoordinates( vlayer, coords );
+  QgsPoint layerCoords = toLayerCoordinates( vlayer, snapResults.first().snappedVertex );
   if ( topologicalEditing )
   {
     // snap from adding position to this vertex when topological editing is enabled
@@ -675,15 +673,6 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 
   // make sure that new node gets its vertex marker
   mCanvas->refresh();
-}
-
-QgsPoint QgsMapToolNodeTool::closestVertex( QgsPoint point )
-{
-  int at;
-  int before;
-  int after;
-  double dist;
-  return mSelectedFeature->geometry()->closestVertex( point, at, before, after, dist );
 }
 
 void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
