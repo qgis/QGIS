@@ -67,6 +67,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     QList<int> myGdalVersionOK;
     QStringList myFiles;
     QStringList myProj4Strings;
+    QStringList myTOWGS84Strings;
     QStringList myAuthIdStrings;
     QString testESRIWkt( int i, QgsCoordinateReferenceSystem &theCrs );
 };
@@ -164,11 +165,16 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
 
   if ( ! myCrs.isValid() )
     return QString( "test %1 crs is invalid" );
+#if 0
   if ( myCrs.toProj4() != myProj4Strings[i] )
     return QString( "test %1 PROJ.4 = [ %2 ] expecting [ %3 ]"
                   ).arg( i ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
+#endif
+  if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
+    return QString( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
+                  ).arg( i ).arg( myTOWGS84Strings[i] ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
   if ( myCrs.authid() !=  myAuthIdStrings[i] )
-    return QString( "test %1 AUTHID = [ %2 ] expecting [ %3 ]"
+    return QString( "test %1 AUTHID = [%2] expecting [%3]"
                   ).arg( i ).arg( myCrs.authid() ).arg( myAuthIdStrings[i] );
 
   return "";
@@ -186,6 +192,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myGdalVersionOK << 1800;
   myFiles << "bug5598.shp";
   myProj4Strings << "+proj=utm +zone=48 +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +units=m +no_defs";
+  myTOWGS84Strings << "+towgs84=198,881,317,0,0,0,0";
   myAuthIdStrings << "EPSG:3148";
 
   // this example file taken from bug #5598 - geographic CRS only, supported since gdal 1.9
@@ -193,6 +200,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myFiles << "";
   myGdalVersionOK << 1900;
   myProj4Strings << "+proj=longlat +a=6377276.345 +b=6356075.41314024 +towgs84=198,881,317,0,0,0,0 +no_defs";
+  myTOWGS84Strings << "+towgs84=198,881,317,0,0,0,0";
   myAuthIdStrings << "EPSG:4131";
 
   // SAD69 geographic CRS, supported since gdal 1.9
@@ -200,6 +208,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myFiles << "";
   myGdalVersionOK << 1900;
   myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-57,1,-41,0,0,0,0 +no_defs";
+  myTOWGS84Strings << "+towgs84=-57,1,-41,0,0,0,0";
   myAuthIdStrings << "EPSG:4618";
 
   // do test with WKT definitions
