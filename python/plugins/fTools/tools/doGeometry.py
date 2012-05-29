@@ -552,17 +552,15 @@ class geometryThread( QThread ):
     nElement = 0
 
     vprovider = self.vlayer.dataProvider()
-
+    allAttrs = vprovider.attributeIndexes()
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
     self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, vprovider.featureCount() ) )
 
     if self.writeShape:
-      allAttrs = vprovider.attributeIndexes()
-      vprovider.select( allAttrs )
       ( fields, index1, index2 ) = self.checkGeometryFields( self.vlayer )
       writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
                                     vprovider.geometryType(), vprovider.crs() )
-
+      vprovider.select( allAttrs )
       while vprovider.nextFeature(inFeat):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
         nElement += 1
@@ -582,10 +580,9 @@ class geometryThread( QThread ):
       del writer
       return True
     else: # update existing file
-      newFields = []
-      geomType = self.vlayer.geometryType()
-      ( index1, index2 ) = self.findOrCreateFields()
+      ( index1, index2 ) = self.findOrCreateFields( self.vlayer )
 
+      vprovider.select( allAttrs )
       while vprovider.nextFeature(inFeat):
         self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
         nElement += 1
@@ -1030,85 +1027,155 @@ class geometryThread( QThread ):
     nameList = []
     fieldList = vprovider.fields()
     geomType = vlayer.geometryType()
-    for i in fieldList.keys():
+    fieldKeys = fieldList.keys()
+
+    for i in fieldKeys:
       nameList.append( fieldList[ i ].name().toLower() )
     if geomType == QGis.Polygon:
-      ( found, index1 ) = self.checkForField( nameList, "AREA" )
+      if len( fieldKeys ) == max( fieldKeys ): # if equal, then the field geometry is not at the end of the fields list 
+        ( found, index ) = self.checkForField( nameList, "AREA" )
+        index1 = index + 1
+      else:
+        ( found, index1 ) = self.checkForField( nameList, "AREA" )
       if not found:
-        field = QgsField( "AREA", QVariant.Double, "double", 21, 6, self.tr( "Polygon area" ) )
-        index1 = len( fieldList.keys() )
+        field = QgsField( "AREA", QVariant.Double, "double precision", 21, 6, self.tr( "Polygon area" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index1 = len( fieldList ) + 1
+        else:
+          index1 = len( fieldList )
         fieldList[ index1 ] = field
-
-      ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "PERIMETER" )
+        index2 = index + 1
+      else:
+        ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
       if not found:
-        field = QgsField( "PERIMETER", QVariant.Double, "double", 21, 6, self.tr( "Polygon perimeter" ) )
-        index2 = len( fieldList.keys() )
+        field = QgsField( "PERIMETER", QVariant.Double, "double precision", 21, 6, self.tr( "Polygon perimeter" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index2 = len( fieldList ) + 1
+        else:
+          index2 = len( fieldList )
         fieldList[ index2 ] = field
     elif geomType == QGis.Line:
-      ( found, index1 ) = self.checkForField( nameList, "LENGTH" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "LENGTH" )
+        index1 = index + 1
+      else:
+        ( found, index1 ) = self.checkForField( nameList, "LENGTH" )
       if not found:
-        field = QgsField( "LENGTH", QVariant.Double, "double", 21, 6, self.tr( "Line length" ) )
-        index1 = len( fieldList.keys() )
+        field = QgsField( "LENGTH", QVariant.Double, "double precision", 21, 6, self.tr( "Line length" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index1 = len( fieldList ) + 1
+        else:
+          index1 = len( fieldList )
         fieldList[ index1 ] = field
       index2 = index1
     else:
-      ( found, index1 ) = self.checkForField( nameList, "XCOORD" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "XCOORD" )
+        index1 = index + 1
+      else:
+        ( found, index1 ) = self.checkForField( nameList, "XCOORD" )
       if not found:
-        field = QgsField( "XCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point x coordinate" ) )
-        index1 = len( fieldList.keys() )
+        field = QgsField( "XCOORD", QVariant.Double, "double precision", 21, 6, self.tr( "Point x coordinate" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index1 = len( fieldList ) + 1
+        else:
+          index1 = len( fieldList )
         fieldList[ index1 ] = field
 
-      ( found, index2 ) = self.checkForField( nameList, "YCOORD" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "YCOORD" )
+        index2 = index + 1
+      else:
+        ( found, index2 ) = self.checkForField( nameList, "YCOORD" )
       if not found:
-        field = QgsField( "YCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point y coordinate" ) )
-        index2 = len( fieldList.keys() )
+        field = QgsField( "YCOORD", QVariant.Double, "double precision", 21, 6, self.tr( "Point y coordinate" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index2 = len( fieldList ) + 2
+        else:
+          index2 = len( fieldList )
         fieldList[ index2 ] = field
     return ( fieldList, index1, index2 )
 
-  def findOrCreateFields( self ):
-    vprovider = self.vlayer.dataProvider()
+  def findOrCreateFields( self, vlayer ):
+    vprovider = vlayer.dataProvider()
     fieldList = vprovider.fields()
-    geomType = self.vlayer.geometryType()
+    geomType = vlayer.geometryType()
     newFields = []
     nameList = []
+    fieldKeys = fieldList.keys()
 
-    for i in fieldList.keys():
+    for i in fieldKeys:
       nameList.append( fieldList[ i ].name().toLower() )
 
     if geomType == QGis.Polygon:
-      ( found, index1 ) = self.checkForField( nameList, "AREA" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "AREA" )
+        index1 = index + 1
+      else:
+        ( found, index1 ) = self.checkForField( nameList, "AREA" )
       if not found:
-        field = QgsField( "AREA", QVariant.Double, "double", 21, 6, self.tr( "Polygon area" ) )
-        index1 = len( fieldList.keys() )
+        field = QgsField( "AREA", QVariant.Double, "double precision", 21, 6, self.tr( "Polygon area" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index1 = len( fieldKeys ) + 1
+        else:
+          index1 = len( fieldKeys )
         newFields.append( field )
-
-      ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "PERIMETER" )
+        index1 = index + 1
+      else:
+        ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
       if not found:
-        field = QgsField( "PERIMETER", QVariant.Double, "double", 21, 6, self.tr( "Polygon perimeter" ) )
-        index2 = len( fieldList.keys() ) + 1
+        field = QgsField( "PERIMETER", QVariant.Double, "double precision", 21, 6, self.tr( "Polygon perimeter" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index2 = len( fieldKeys ) + 2
+        else:
+          index2 = len( fieldKeys ) + 1
         newFields.append( field )
     elif geomType == QGis.Line:
-      ( found, index1 ) = self.checkForField( nameList, "LENGTH" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "LENGTH" )
+        index1 = index + 1
+      else:
+        ( found, index1 ) = self.checkForField( nameList, "LENGTH" )
       if not found:
-        field = QgsField( "LENGTH", QVariant.Double, "double", 21, 6, self.tr( "Line length" ) )
-        index1 = len( fieldList.keys() )
+        field = QgsField( "LENGTH", QVariant.Double, "double precision", 21, 6, self.tr( "Line length" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index1 = len( fieldKeys ) + 1
+        else:
+          index1 = len( fieldKeys )
         newFields.append( field )
       index2 = index1
     else:
-      ( found, index1 ) = self.checkForField( nameList, "XCOORD" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "XCOORD" )
+        index1 = index + 1
+      else:
+        ( found, index1 ) = self.checkForField( nameList, "XCOORD" )
       if not found:
-        field = QgsField( "XCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point x coordinate" ) )
-        index1 = len( fieldList.keys() )
+        field = QgsField( "XCOORD", QVariant.Double, "double precision", 21, 6, self.tr( "Point x coordinate" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index = len( fieldKeys ) + 1
+        else:
+          index1 = len( fieldKeys )
         newFields.append( field )
 
-      ( found, index2 ) = self.checkForField( nameList, "YCOORD" )
+      if len( fieldKeys ) == max( fieldKeys ):
+        ( found, index ) = self.checkForField( nameList, "YCOORD" )
+        index2 = index + 1
+      else:
+        ( found, index2 ) = self.checkForField( nameList, "YCOORD" )
       if not found:
-        field = QgsField( "YCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point y coordinate" ) )
-        index2 = len( fieldList.keys() ) + 1
+        field = QgsField( "YCOORD", QVariant.Double, "double precision", 21, 6, self.tr( "Point y coordinate" ) )
+        if len( fieldKeys ) == max( fieldKeys ):
+          index2 = len( fieldKeys ) + 2
+        else:
+          index2 = len( fieldKeys ) + 1
         newFields.append( field )
-
     vprovider.addAttributes( newFields )
-    self.vlayer.updateFieldMap()
+    vlayer.updateFieldMap()
     return ( index1, index2 )
 
   def extractAsLine( self, geom ):
