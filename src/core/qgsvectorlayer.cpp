@@ -1828,6 +1828,11 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
     {
       updateFeatureAttributes( f ); //check joined attributes / changed attributes
     }
+    if ( mEditable && mFetchGeometry )
+    {
+      updateFeatureGeometry( f );
+    }
+
     return true;
   }
 
