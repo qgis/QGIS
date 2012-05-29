@@ -21,6 +21,7 @@ import time
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
+from sextante.core.WrongHelpFileException import WrongHelpFileException
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -40,10 +41,13 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def helpFile(self):
         folder = GrassUtils.grassHelpPath()
-        if str(folder).strip() != "":
-            helpfile = str(folder) + os.sep + self.grassName + ".html"
+        #if str(folder).strip() != "":
+        helpfile = str(folder) + os.sep + self.grassName + ".html"
+        if os.path.exists(helpfile):
             return helpfile
-        return None
+        else:
+            raise WrongHelpFileException("Grass help folder is not correctly configured.\nPlease configure it")
+        #return None
 
     def getParameterDescriptions(self):
         descs = {}

@@ -23,6 +23,7 @@ from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
 from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
+from sextante.core.WrongHelpFileException import WrongHelpFileException
 
 class ModelerParametersDialog(QtGui.QDialog):
 
@@ -73,11 +74,14 @@ class ModelerParametersDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def showHelp(self):
-        if self.alg.helpFile():
-            dlg = HTMLViewerDialog(self.alg.helpFile())
-            dlg.exec_()
-        else:
-            QMessageBox.warning(self.dialog, "No help available", "No help is available for this algorithm.")
+        try:
+            if self.alg.helpFile():
+                dlg = HTMLViewerDialog(self.alg.helpFile())
+                dlg.exec_()
+            else:
+                    QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
+        except WrongHelpFileException, e:
+            QMessageBox.warning(self.dialog, "Help", e.msg)
 
     def getRasterLayers(self):
         layers = []

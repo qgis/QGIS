@@ -27,6 +27,7 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
+from sextante.core.WrongHelpFileException import WrongHelpFileException
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -79,11 +80,14 @@ class Ui_ParametersDialog(object):
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
     def showHelp(self):
-        if self.alg.helpFile():
-            dlg = HTMLViewerDialog(self.alg.helpFile())
-            dlg.exec_()
-        else:
-            QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
+        try:
+            if self.alg.helpFile():
+                dlg = HTMLViewerDialog(self.alg.helpFile())
+                dlg.exec_()
+            else:
+                    QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
+        except WrongHelpFileException, e:
+            QMessageBox.warning(self.dialog, "Help", e.msg)
 
 
     def setParamValues(self):
