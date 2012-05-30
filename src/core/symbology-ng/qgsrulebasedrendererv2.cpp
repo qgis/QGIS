@@ -621,12 +621,14 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVe
   mRootRule->startRender( context, vlayer );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
+  QList<int> symbolZLevels = symbolZLevelsSet.toList();
+  qSort( symbolZLevels );
 
   // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]
   // and prepare rendering queue
   QMap<int, int> zLevelsToNormLevels;
   int maxNormLevel = -1;
-  foreach( int zLevel, symbolZLevelsSet.toList() )
+  foreach( int zLevel, symbolZLevels )
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
