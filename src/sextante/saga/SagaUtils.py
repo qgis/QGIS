@@ -75,7 +75,8 @@ class SagaUtils:
                 s = "".join([x for x in line if x.isdigit()])
                 progress.setPercentage(int(s))
             else:
-                loglines.append(line)
+                if line!="/" and line!="-" and line !="\\":
+                    loglines.append(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 

@@ -2,8 +2,10 @@ v.buffer
 v.buffer.distance
 Vector (v.*)
 ParameterVector|input|input|-1|False
-ParameterString|distance|distance|
-ParameterString|tolerance|tolerance|0.01
+ParameterNumber|distance|distance|0|None|1
+ParameterNumber|tolerance|tolerance|0|None|0.01
+ParameterNumber|minordistance|minordistance|0|None|0.0
+ParameterNumber|angle|angle|0|None|0.0
 ParameterBoolean|-s|-s|True
 ParameterBoolean|-c|-c|True
 OutputVector|output|output

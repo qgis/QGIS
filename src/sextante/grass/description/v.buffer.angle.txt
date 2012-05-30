@@ -1,9 +1,0 @@
-v.buffer
-v.buffer.angle
-Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterNumber|angle|angle|None|None|0
-ParameterString|tolerance|tolerance|0.01
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-c|-c|True
-OutputVector|output|output

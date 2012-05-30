@@ -4,6 +4,7 @@ from PyQt4 import QtCore, QtGui
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.gui.ExternalAppsConfigurer import ExternalAppsConfigurer
 
 
 class ConfigDialog(QtGui.QDialog):
@@ -44,6 +45,7 @@ class ConfigDialog(QtGui.QDialog):
             self.externalAppsButton = QtGui.QPushButton()
             self.externalAppsButton.setText("Configure external apps")
             self.horizontalLayout.addWidget(self.externalAppsButton)
+            QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("clicked()"), self.configureExternalApps)
         self.horizontalLayout.addSpacing(100)
         self.horizontalLayout.addWidget(self.buttonBox)
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -52,6 +54,9 @@ class ConfigDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+    def configureExternalApps(self):
+        ExternalAppsConfigurer.configure()
+        #TODO find a way to automate
 
     def fillTree(self):
         self.items = {}

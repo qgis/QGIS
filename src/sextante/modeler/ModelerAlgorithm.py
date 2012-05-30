@@ -225,8 +225,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         '''This method returns a list with the indexes of algorithm a given one depends on'''
         algs = []
         for aap in self.algParameters[algIndex].values():
-            if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
-                algs.append(aap.alg)
+            if aap is not None:
+                if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
+                    algs.append(aap.alg)
         return algs
 
     def getDependentAlgorithms(self, algIndex):
@@ -236,9 +237,10 @@ class ModelerAlgorithm(GeoAlgorithm):
         for alg in self.algParameters:
             index += 1
             for aap in alg.values():
-                if aap.alg == algIndex:
-                    dependent.append(index)
-                    break
+                if aap is not None:
+                    if aap.alg == algIndex:
+                        dependent.append(index)
+                        break
 
         return dependent
 
