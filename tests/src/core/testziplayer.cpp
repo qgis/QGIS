@@ -283,7 +283,7 @@ void TestZipLayer::testPassthruVectorGzip()
 {
   QSettings settings;
 #if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL > 1.7", SkipSingle );
+  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
   for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
   {
@@ -406,6 +406,9 @@ void TestZipLayer::testZipItemSubfolder()
 
 void TestZipLayer::testZipItemVRT()
 {
+#if GDAL_VERSION_NUM < 1700
+  QSKIP( "This test requires GDAL > 1.7", SkipSingle );
+#endif
   QSettings settings;
   for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
   {
