@@ -5572,8 +5572,11 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
   {
     //make sure there are at least two intersection between line and reshape geometry
     GEOSGeometry* intersectGeom = GEOSIntersection( line, reshapeLineGeos );
-    atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
-    GEOSGeom_destroy( intersectGeom );
+    if ( intersectGeom )
+    {
+      atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
+      GEOSGeom_destroy( intersectGeom );
+    }
   }
   catch ( GEOSException &e )
   {
