@@ -161,6 +161,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgsscalecombobox.h"
@@ -898,7 +899,7 @@ void QgisApp::createActions()
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
-  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsVectorFile() ) );
+  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
@@ -3761,8 +3762,30 @@ void QgisApp::attributeTable()
   // the dialog will be deleted by itself on close
 }
 
-void QgisApp::saveAsVectorFile()
+void QgisApp::saveAsRasterFile()
 {
+  QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
+  if ( !rasterLayer )
+  {
+    return;
+  }
+
+  QgsRasterLayerSaveAsDialog d;
+  d.exec();
+}
+
+void QgisApp::saveAsFile()
+{
+  QgsMapLayer* layer = activeLayer();
+  if ( layer )
+  {
+    QgsMapLayer::LayerType layerType = layer->type();
+    if ( layerType == QgsMapLayer::RasterLayer )
+    {
+      saveAsRasterFile();
+    }
+    return;
+  }
   saveAsVectorFileGeneral( false );
 }
 
@@ -6827,7 +6850,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionSaveEdits->setEnabled( false );
-    mActionLayerSaveAs->setEnabled( false );
+    mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
