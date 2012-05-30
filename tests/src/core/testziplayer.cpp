@@ -353,7 +353,7 @@ void TestZipLayer::testZipItemAll()
 void TestZipLayer::testZipItemVectorTransparency()
 {
 #if GDAL_VERSION_NUM < 1800
-  QSKIP( "This test requires GDAL > 1.8", SkipSingle );
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
   int myTarget = 250;
   int myTransparency = getLayerTransparency( mDataDir + "points2.zip", "ogr", 1 );
@@ -365,7 +365,7 @@ void TestZipLayer::testZipItemVectorTransparency()
 void TestZipLayer::testGZipItemVectorTransparency()
 {
 #if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL > 1.7", SkipSingle );
+  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
   int myTarget = 250;
   int myTransparency = getLayerTransparency( mDataDir + "points3.geojson.gz", "ogr", 1 );
@@ -407,7 +407,7 @@ void TestZipLayer::testZipItemSubfolder()
 void TestZipLayer::testZipItemVRT()
 {
 #if GDAL_VERSION_NUM < 1700
-  QSKIP( "This test requires GDAL > 1.7", SkipSingle );
+  QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
   QSettings settings;
   for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
