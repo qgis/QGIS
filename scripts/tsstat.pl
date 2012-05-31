@@ -145,10 +145,11 @@ if ($ARGV[0] eq "site") {
 	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		printf "\n<tr>"
 			. '<td><img src="qrc:/images/flags/%s.png"></td><td>%s</td>'
-			. '<td><div class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
+			. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 			. '<td>%s</td>'
 			. '</tr>',
 			$l->{code}, $l->{name},
+			$l->{finished}, $l->{unfinished}, $l->{untranslated},
 			$l->{percentage}, $l->{percentage},
 			$translators->{$l->{code}};
 	}

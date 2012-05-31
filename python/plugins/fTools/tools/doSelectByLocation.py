@@ -41,7 +41,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.iface = iface
         # Set up the user interface from Designer.
         self.setupUi(self)
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
