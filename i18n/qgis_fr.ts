@@ -34175,7 +34175,7 @@ De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
         <source>Recently used coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Systèmes de coordonnées de références récemment utilisés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="96"/>
@@ -34192,7 +34192,7 @@ De ce fait le sélecteur de projection ne fonctionnera pas...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="129"/>
         <source>Coordinate reference systems of the world</source>
-        <translation>Systèmes de Coordonnées de Référence pour le monde</translation>
+        <translation>Liste des Systèmes de Coordonnées de Référence</translation>
     </message>
     <message>
         <source>Authority</source>
@@ -39578,7 +39578,7 @@ Voulez-vous l&apos;&apos;écraser ?</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
         <source>Style Manager</source>
-        <translation>Gestionnaire de style :</translation>
+        <translation>Gestionnaire de style</translation>
     </message>
     <message>
         <source>Style item type</source>
