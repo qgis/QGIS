@@ -32,8 +32,10 @@ class DefineGrassRegionAction(ToolboxAction):
         SextanteConfig.setSettingValue(GrassUtils.GRASS_REGION_YMIN, r.yMinimum())
         SextanteConfig.setSettingValue(GrassUtils.GRASS_REGION_XMAX, r.xMaximum())
         SextanteConfig.setSettingValue(GrassUtils.GRASS_REGION_YMAX, r.yMaximum())
+        SextanteConfig.setSettingValue(GrassUtils.GRASS_AUTO_REGION, False)
         s = str(r.xMinimum()) + "," + str(r.xMaximum()) + "," + str(r.yMinimum()) + "," + str(r.yMaximum())
         self.tool.reset()
         canvas = QGisLayers.iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
-        QtGui.QMessageBox.information(None, "GRASS Region", "GRASS region set to:\n" + s)
+        QtGui.QMessageBox.information(None, "GRASS Region", "GRASS region set to:\n" + s + \
+                                      "\nTo set the cellsize or set back the autoregion option,\ngo to the SEXTANTE configuration.")

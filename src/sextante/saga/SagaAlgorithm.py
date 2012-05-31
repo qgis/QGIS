@@ -25,6 +25,7 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
 import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
+from PyQt4 import QtGui
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -192,7 +193,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         layer = QGisLayers.getObjectFromUri(layerfile, False)
                         if layer:
                             filename = LayerExporter.exportVectorLayer(layer)
-                            self.exportedLayers[param.value]=filename
+                            self.exportedLayers[layerfile]=filename
                         elif (not value.endswith("shp")):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
@@ -227,9 +228,6 @@ class SagaAlgorithm(GeoAlgorithm):
                 command+=(" -" + param.name + " " + str(param.value));
             else:
                 command+=(" -" + param.name + " \"" + str(param.value) + "\"");
-
-
-
 
         for out in self.outputs:
             if isinstance(out, OutputRaster):

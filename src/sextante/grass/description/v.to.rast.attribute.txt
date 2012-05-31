@@ -1,0 +1,7 @@
+v.to.rast
+v.to.rast.attribute
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterSelection|use|use|attr
+ParameterTableField|column|column|input
+OutputRaster|output|output

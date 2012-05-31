@@ -41,11 +41,13 @@ class ConfigDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        if SextanteUtils.isWindows():
-            self.externalAppsButton = QtGui.QPushButton()
-            self.externalAppsButton.setText("Configure external apps")
-            self.horizontalLayout.addWidget(self.externalAppsButton)
-            QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("clicked()"), self.configureExternalApps)
+        #=======================================================================
+        # if SextanteUtils.isWindows():
+        #    self.externalAppsButton = QtGui.QPushButton()
+        #    self.externalAppsButton.setText("Configure external apps")
+        #    self.horizontalLayout.addWidget(self.externalAppsButton)
+        #    QtCore.QObject.connect(self.externalAppsButton, QtCore.SIGNAL("clicked()"), self.configureExternalApps)
+        #=======================================================================
         self.horizontalLayout.addSpacing(100)
         self.horizontalLayout.addWidget(self.buttonBox)
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -55,8 +57,9 @@ class ConfigDialog(QtGui.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def configureExternalApps(self):
-        ExternalAppsConfigurer.configure()
-        #TODO find a way to automate
+        configurer = ExternalAppsConfigurer()
+        configurer.configure()
+
 
     def fillTree(self):
         self.items = {}

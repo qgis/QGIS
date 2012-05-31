@@ -1,0 +1,7 @@
+v.to.rast
+v.to.rast.value
+Vector (v.*)
+ParameterVector|input|input|-1|False
+ParameterSelection|use|use|val
+ParameterNumber|value|value|None|None|1
+OutputRaster|output|output
