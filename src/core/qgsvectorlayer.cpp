@@ -362,7 +362,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       while ( nextFeature( fet ) )
       {
         if (( mRenderer && mRenderer->willRenderFeature( &fet ) )
-            || ( mRendererV2 && mRendererV2->symbolForFeature( fet ) != NULL ) )
+            || ( mRendererV2 && mRendererV2->willRenderFeature( fet ) ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
           mLabel->renderLabel( rendererContext, fet, sel, 0 );
