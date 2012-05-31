@@ -1,11 +1,11 @@
 v.random
-v.random
+Random 2D/3D vector points
 Vector (v.*)
-ParameterNumber|n|n|None|None|0.0
-ParameterNumber|zmin|zmin|None|None|0.0
-ParameterNumber|zmax|zmax|None|None|0.0
-ParameterTableField|column|column|z
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-b|-b|True
-OutputVector|output|output
+ParameterNumber|n|Number of points to be created|None|None|0
+ParameterNumber|zmin|Minimum z height for 3D output|None|None|0.0
+ParameterNumber|zmax|Maximum z height for 3D output|None|None|0.0
+ParameterTableField|column|Column for Z values|z
+ParameterBoolean|-z|Create 3D output|False
+ParameterBoolean|-d|Use drand48() function instead of rand()|False
+OutputVector|output|Name for output vector map
+

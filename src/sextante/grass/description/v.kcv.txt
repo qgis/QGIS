@@ -1,9 +1,9 @@
 v.kcv
-v.kcv
+Randomly partition points into test/train sets
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterNumber|k|k|2.0|None|10
-ParameterString|column|column|part
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-q|-q|True
-OutputVector|output|output
+ParameterVector|input|Name of input vector map|-1|False
+ParameterNumber|k|Number of partitions|2.0|32767|10
+ParameterString|column|Name for new column to which partition number is written|part
+ParameterBoolean|-d|Use drand48()|False
+OutputVector|Name for output vector map|output
+

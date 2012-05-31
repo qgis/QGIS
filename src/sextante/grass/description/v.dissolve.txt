@@ -1,6 +1,7 @@
 v.dissolve
-v.dissolve
+Dissolve boundaries
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterTableField|column|column|input
-OutputVector|output|output
+ParameterVector|input|Name of input vector map|-1|False
+ParameterTableField|column|Name of column used to dissolve common boundaries|input
+OutputVector|output|Name for output vector map
+

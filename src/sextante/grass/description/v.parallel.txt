@@ -1,12 +1,13 @@
 v.parallel
-v.parallel
+Parallel lines
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterNumber|distance|distance|None|None|1
-ParameterNumber|minordistance|minordistance|None|None|1
-ParameterNumber|angle|angle|None|None|0
-ParameterSelection|side|side|left;right;both
-ParameterNumber|tolerance|tolerance|None|None|1
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-b|-b|True
-OutputVector|output|output
+ParameterVector|input|Name of input vector map|-1|False
+ParameterNumber|distance|Offset along major axis in map units|None|None|1
+ParameterNumber|minordistance|Offset along minor axis in map units|None|None|1
+ParameterNumber|angle|Angle of major axis in degrees|None|None|0
+ParameterSelection|side|Side|left;right;both
+ParameterNumber|tolerance|Tolerance of arc polylines in map units|None|None|1
+ParameterBoolean|-r|Make outside corners round|False
+ParameterBoolean|-b|Create buffer-like parallel lines|False
+OutputVector|output|Name for output vector map
+

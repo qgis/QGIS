@@ -1,9 +1,9 @@
 v.out.pov
-v.out.pov
+Export to POV-Ray
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|type|type|point,line,area,face
-ParameterString|output|output|/file
-ParameterString|size|size|10
-ParameterString|zmod|zmod|
-ParameterString|objmod|objmod|
+ParameterVector|input|Name of input vector map|-1|False
+ParameterString|type|Feature type|point,line,area,face
+ParameterFile|output|Output file|False
+ParameterString|size|Radius of sphere for points and tube for lines|10
+ParameterString|zmod|Modifier for z coordinates, this string is appended to each z coordinate|
+ParameterString|objmod|Object modifier (OBJECT_MODIFIER in POV-Ray documentation)|

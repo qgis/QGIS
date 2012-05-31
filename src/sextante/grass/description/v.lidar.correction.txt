@@ -1,12 +1,13 @@
 v.lidar.correction
-v.lidar.correction
+LiDAR: Correction of the v.lidar.growing output
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|sce|sce|25
-ParameterString|scn|scn|25
-ParameterString|lambda_c|lambda_c|1
-ParameterString|tch|tch|2
-ParameterString|tcl|tcl|1
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputVector|terrain|terrain
+ParameterVector|input|Input observation vector map name (v.lidar.growing output)|-1|False
+ParameterString|sce|Interpolation spline step value in east direction|25
+ParameterString|scn|Interpolation spline step value in north direction|25
+ParameterString|lambda_c|Regularization weight in reclassification evaluation|1
+ParameterString|tch|High threshold for object to terrain reclassification|2
+ParameterString|tcl|Low threshold for object to terrain reclassification|1
+ParameterBoolean|-e|Estimate point density and distance|False
+OutputVector|output|Output classified vector map name
+OutputVector|terrain|Only 'terrain' points output vector map
+

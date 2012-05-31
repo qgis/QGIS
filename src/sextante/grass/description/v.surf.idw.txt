@@ -1,9 +1,10 @@
 v.surf.idw
-v.surf.idw
+Surface interpolation with IDW
 Vector (v.*)
-ParameterVector|input|input|0|False
-ParameterNumber|npoints|npoints|None|None|12
-ParameterNumber|power|power|None|None|2.0
-ParameterTableField|column|column|input
-ParameterBoolean|-n|-n|True
-OutputRaster|output|output
+ParameterVector|input|Name of input vector map|0|False
+ParameterNumber|npoints|Number of interpolation points|None|None|12
+ParameterNumber|power|Power parameter; greater values assign greater influence to closer points|None|None|2.0
+ParameterTableField|column|Attribute table column with values to interpolate|input
+ParameterBoolean|-n|Don't index points by raster cell|False
+OutputRaster|output|Name for output raster map
+

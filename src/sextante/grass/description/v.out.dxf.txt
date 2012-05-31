@@ -1,5 +1,6 @@
 v.out.dxf
-v.out.dxf
+Export to DXF
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|output|output|/file
+ParameterVector|input|Name of input vector map|-1|False
+ParameterFile|output|Name of DXF output file|False
+

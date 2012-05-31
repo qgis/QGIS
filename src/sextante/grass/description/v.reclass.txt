@@ -1,9 +1,9 @@
 v.reclass
-v.reclass
+Reclassify by attributes
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|type|type|point,line,boundary,centroid
-ParameterString|layer|layer|1
-ParameterString|column|column|
-ParameterString|rules|rules|/file
-OutputVector|output|output
+ParameterVector|input|Name of input vector map|-1|False
+ParameterString|type|Feature type|point,line,boundary,centroid
+ParameterTableField|column|The name of the column whose values are to be used as new categories|input
+ParameterFile|rules|Full path to the reclass rule file|
+OutputVector|output|Name for output vector map
+

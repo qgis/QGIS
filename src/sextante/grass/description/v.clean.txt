@@ -1,9 +1,9 @@
 v.clean
-v.clean
+Topological cleaning
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterSelection|tool|tool|break;snap;rmdangle;chdangle;rmbridge;chbridge;rmdupl;rmdac;bpol;prune;rmarea;rmline;rmsa
-ParameterNumber|thresh|thresh|None|None|0
-ParameterBoolean|-b|-b|True
-OutputVector|output|output
-OutputVector|error|error
+ParameterVector|input|Name of input vector map|-1|False
+ParameterSelection|tool|Cleaning tool|break;snap;rmdangle;chdangle;rmbridge;chbridge;rmdupl;rmdac;bpol;prune;rmarea;rmline;rmsa
+ParameterNumber|thresh|Threshold|None|None|0
+OutputVector|output|Name for output vector map
+OutputVector|error|Name for output map where errors are written
+

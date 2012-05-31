@@ -1,9 +1,9 @@
 i.zc
-i.zc
+Zero-crossing "edge detection"
 Imagery (i.*)
-ParameterRaster|input|input|False
-ParameterRaster|green|green|False
-ParameterNumber|width|width|1|None|9
-ParameterNumber|threshold|threshold|0|None|10.0
-ParameterNumber|orientations|orientations|0|None|1
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|width|x-y extent of the Gaussian filter|1|None|9
+ParameterNumber|threshold|Sensitivity of Gaussian filter|0|None|10.0
+ParameterNumber|orientations|Number of azimuth directions categorized|0|None|1
+OutputRaster|output|Zero crossing raster map
+

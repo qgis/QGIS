@@ -1,9 +1,10 @@
 i.his.rgb
-i.his.rgb
+HIS to RGB transform
 Imagery (i.*)
-ParameterRaster|hue_input|hue_input|False
-ParameterRaster|intensity_input|intensity_input|False
-ParameterRaster|saturation_input|saturation_input|False
-OutputRaster|red_output|red_output
-OutputRaster|green_output|green_output
-OutputRaster|blue_output|blue_output
+ParameterRaster|hue_input|Name of input raster map (hue)|False
+ParameterRaster|intensity_input|Name of input raster map (intensity)|False
+ParameterRaster|saturation_input|Name of input raster map (saturation)|False
+OutputRaster|red_output|Name for output raster map (red)
+OutputRaster|green_output|Name for output raster map (green)
+OutputRaster|blue_output|Name for output raster map (blue)
+

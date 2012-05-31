@@ -1,8 +1,9 @@
 v.report
-v.report
+Report geometry statistics for vectors
 Vector (v.*)
-ParameterVector|map|map|-1|False
-ParameterSelection|option|option|area;length;coor
-ParameterSelection|units|units|mi;miles;f;feet;me;meters;k;kilometers;a;acres;h;hectares;p;percent
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-s|-s|True
+ParameterVector|map|Name of input vector map|-1|False
+ParameterSelection|option|Value to calculate|area;length;coor
+ParameterSelection|units|units|miles;feet;meters;kilometers;acres;hectares;percent
+ParameterBoolean|-r|Reverse sort the result|False
+ParameterBoolean|-s|Sort the result|False
+

@@ -1,7 +1,8 @@
 v.qcount
-v.qcount
+Indices for quadrat counts of points
 Vector (v.*)
-ParameterVector|input|input|0|False
-ParameterNumber|n|n|0.0|None|4
-ParameterNumber|r|r|0.0|None|10
-OutputVector|output|output
+ParameterVector|input|Vector of points defining sample points|0|False
+ParameterNumber|n|Number of quadrats|0|None|4
+ParameterNumber|r|Quadrat radius|0.0|None|10
+OutputVector|output|Output quadrant centres, number of points is written as category
+

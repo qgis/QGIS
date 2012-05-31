@@ -1,10 +1,11 @@
 v.buffer
-v.buffer.column
+Buffer with attribute as distance
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterTableField|bufcolumn|bufcolumn|input
-ParameterNumber|scale|scale|None|None|1.0
-ParameterNumber|tolerance|tolerance|0|None|0.01
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-c|-c|True
-OutputVector|output|output
+ParameterVector|input|Name of input vector map|-1|False
+ParameterTableField|bufcolumn|Name of column to use for buffer distances|input
+ParameterNumber|scale|Scaling factor for attribute column values|None|None|1.0
+ParameterString|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|0.01
+ParameterBoolean|-s|Make outside corners straight|False
+ParameterBoolean|-c|Don't make caps at the ends of polylines|False
+OutputVector|output|Name for output vector map
+

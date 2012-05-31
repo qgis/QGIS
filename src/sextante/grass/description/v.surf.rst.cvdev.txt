@@ -1,5 +1,5 @@
 v.surf.rst
-v.surf.rst.cvdev
+Cross validation for surface interpolation with RST
 Vector (v.*)
 ParameterVector|input|input|0|False
 ParameterString|where|where|

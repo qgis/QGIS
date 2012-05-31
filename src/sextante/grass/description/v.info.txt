@@ -1,9 +1,8 @@
 v.info
-v.info
+Vector metadata
 Vector (v.*)
-ParameterVector|map|map|-1|False
-ParameterBoolean|-h|-h|True
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-g|-g|True
-ParameterBoolean|-m|-m|True
-ParameterBoolean|-t|-t|True
+ParameterVector|map|Name of input vector map|-1|False
+ParameterBoolean|-c|Print types/names of table columns for specified layer instead of info|False
+ParameterBoolean|-g|Print map region only|False
+ParameterBoolean|-t|Print topology information only|False
+

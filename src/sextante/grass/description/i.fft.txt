@@ -1,6 +1,7 @@
 i.fft
-i.fft
+Fast Fourier Transform (FFT)
 Imagery (i.*)
-ParameterRaster|input_image|input_image|False
-OutputRaster|real_image|real_image
-OutputRaster|imaginary_image|imaginary_image
+ParameterRaster|input_image|Name of input raster map|False
+OutputRaster|real_image|Name for output real part arrays stored as raster map
+OutputRaster|imaginary_image|Name for output imaginary part arrays stored as raster map
+

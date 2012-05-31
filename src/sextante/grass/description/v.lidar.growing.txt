@@ -1,8 +1,9 @@
 v.lidar.growing
-v.lidar.growing
+LiDAR: region growing
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterVector|first|first|-1|False
-ParameterNumber|tj|tj|None|None|0.2
-ParameterNumber|td|td|None|None|0.6
-OutputVector|output|output
+ParameterVector|input|Input vector (v.lidar.edgedetection output|-1|False
+ParameterVector|first|Name of the first pulse vector map|-1|False
+ParameterNumber|tj|Threshold for cell object frequency in region growing|None|None|0.2
+ParameterNumber|td|Threshold for double pulse in region growing|None|None|0.6
+OutputVector|output|Name for output vector map
+

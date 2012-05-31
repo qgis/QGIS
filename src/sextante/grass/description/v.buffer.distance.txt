@@ -1,11 +1,10 @@
 v.buffer
-v.buffer.distance
+Buffer with fixed distance
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterNumber|distance|distance|0|None|1
-ParameterNumber|tolerance|tolerance|0|None|0.01
-ParameterNumber|minordistance|minordistance|0|None|0.0
-ParameterNumber|angle|angle|0|None|0.0
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-c|-c|True
-OutputVector|output|output
+ParameterVector|input|Name for input vector map|-1|False
+ParameterString|distance|Buffer distance in map units|
+ParameterString|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|0.01
+ParameterBoolean|-s|Make outside corners straight|False
+ParameterBoolean|-c|Don't make caps at the ends of polylines|False
+OutputVector|output|Name for output vector map
+

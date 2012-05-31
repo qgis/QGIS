@@ -1,10 +1,10 @@
 v.perturb
-v.perturb
+Random location perturbations of points
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterSelection|distribution|distribution|uniform;normal
-ParameterString|parameters|parameters|
-ParameterNumber|minimum|minimum|None|None|0.0
-ParameterNumber|seed|seed|None|None|0
-ParameterBoolean|-q|-q|True
-OutputVector|output|output
+ParameterVector|input|Vector points to be spatially perturbed|-1|False
+ParameterSelection|distribution|Distribution of perturbation|uniform;normal
+ParameterString|parameters|Parameter(s) of distribution (uniform: maximum; normal: mean and stddev)|
+ParameterNumber|minimum|Minimum deviation in map units|None|None|0.0
+ParameterNumber|seed|Seed for random number generation|None|None|0
+OutputVector|output|Name for output vector map
+

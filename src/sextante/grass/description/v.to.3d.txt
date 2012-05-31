@@ -1,11 +1,10 @@
 v.to.3d
-v.to.3d
+2D to 3D  vector feature transformation
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|type|type|point,line,boundary,centroid
-ParameterString|height|height|
-ParameterString|layer|layer|1
-ParameterString|column|column|
-ParameterBoolean|-r|-r|True
-ParameterBoolean|-t|-t|True
-OutputVector|output|output
+ParameterVector|input|Name of input 2D vector map|-1|False
+ParameterString|type|Feature type|point,line,boundary,centroid
+ParameterNumber|height|Fixed height for 3D vector features|None|None|0.0
+ParameterTableField|column|Name of attribute column used for height|input
+ParameterBoolean|-r|Reverse transformation; 3D vector features to 2D|False
+OutputVector|output|Name for output 3D vector map
+

@@ -1,7 +1,8 @@
 v.extract
-v.extract
+Feature extraction
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterString|where|where|
-ParameterBoolean|-d|-d|True
-OutputVector|output|output
+ParameterVector|input|Name of input vector map|-1|False
+ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
+ParameterBoolean|-d|Dissolve common boundaries|True
+OutputVector|Name for output vector map|output
+

@@ -1,11 +1,12 @@
 v.outlier
-v.outlier
+Outlier detection
 Vector (v.*)
-ParameterVector|input|input|-1|False
-ParameterNumber|soe|soe|None|None|10
-ParameterNumber|son|son|None|None|10
-ParameterNumber|lambda_i|lambda_i|None|None|0.1
-ParameterNumber|thres_o|thres_o|None|None|50
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputVector|outlier|outlier
+ParameterVector|input|Name of input vector map|-1|False
+ParameterNumber|soe|Interpolation spline step value in east direction|None|None|10
+ParameterNumber|son|Interpolation spline step value in north direction|None|None|10
+ParameterNumber|lambda_i|Tykhonov regularization weight|None|None|0.1
+ParameterNumber|thres_o|Threshold for the outliers|None|None|50
+ParameterBoolean|-e|Estimate point density and distance|False
+OutputVector|output|Name for output vector map
+OutputVector|outlier|Name for output outlier vector map
+

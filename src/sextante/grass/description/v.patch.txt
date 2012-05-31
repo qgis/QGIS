@@ -1,8 +1,8 @@
 v.patch
-v.patch
+Patch vector maps
 Vector (v.*)
-ParameterMultipleInput|input|input|-1.0|False
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-e|-e|True
-OutputVector|output|output
-OutputVector|bbox|bbox
+ParameterMultipleInput|input|Name of input vector maps|-1.0|False
+ParameterBoolean|-e|Copy also attribute table|True
+OutputVector|output|Name for output vector map
+OutputVector|bbox|Name for output vector map where bounding boxes of input vector maps are written to
+
