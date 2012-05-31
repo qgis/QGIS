@@ -31,7 +31,7 @@ class VariableDistanceBuffer(GeoAlgorithm):
         field = self.getParameterValue(VariableDistanceBuffer.FIELD)
         segments = int(self.getParameterValue(VariableDistanceBuffer.SEGMENTS))
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(VariableDistanceBuffer.INPUT))
-        buff.buffering(progress, output, 0, field, useSelection, False, layer, dissolve, segments)
+        buff.buffering(progress, output, 0, field, useSelection, True, layer, dissolve, segments)
 
     def defineCharacteristics(self):
         self.name = "Variable distance buffer"

@@ -13,6 +13,8 @@ def buffering(progress, output, distance, field, useSelection, useField, layer, 
     allAttrs = vproviderA.attributeIndexes()
     vproviderA.select( allAttrs )
     fields = vproviderA.fields()
+    if useField:
+        field = vproviderA.fieldNameIndex(field)
     writer = QgsVectorFileWriter(output, systemEncoding,  fields, QGis.WKBPolygon, vproviderA.crs() )
     # check if writer was created properly, if not, return with error
     if writer.hasError():
