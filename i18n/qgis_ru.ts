@@ -1107,13 +1107,16 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Внимание</translation>
+        <translation>Внимание</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS не поддерживает одновременный доступ
+к одному источнику данных из нескольких потоков.
+Убедитесь, что таблица атрибутов вашего слоя закрыта.
+Вы уверены, что хотите продолжить?</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1273,42 +1276,42 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="48"/>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>Точка</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="53"/>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="58"/>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>Полигон</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="63"/>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультиточка</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="68"/>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультилиния</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="73"/>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультиполигон</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="78"/>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>Коллекция</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="86"/>
         <source>Dimensions</source>
-        <translation type="unfinished">Мерность</translation>
+        <translation>Размерность</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="119"/>
@@ -1413,37 +1416,37 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="129"/>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>Точка</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="134"/>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>Линия</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="139"/>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>Полигон</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="144"/>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультиточка</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="149"/>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультилиния</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="154"/>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>Мультиполигон</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="159"/>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>Коллекция</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="177"/>
@@ -1453,7 +1456,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="184"/>
         <source>Dimensions</source>
-        <translation type="unfinished">Мерность</translation>
+        <translation>Размерность</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="217"/>
@@ -1524,7 +1527,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="73"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Размер</translation>
     </message>
 </context>
 <context>
@@ -1798,7 +1801,7 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="95"/>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished">Ограничения</translation>
+        <translation>Первичный ключ, внешний ключ, проверочные и другие ограничения: </translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="111"/>
@@ -3862,7 +3865,10 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS не поддерживает одновременный доступ
+к одному источнику данных из нескольких потоков.
+Убедитесь, что таблица атрибутов вашего слоя закрыта.
+Вы уверены, что хотите продолжить?</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
@@ -4448,7 +4454,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="411"/>
         <source>Database</source>
-        <translation type="unfinished">База данных</translation>
+        <translation>База данных</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="422"/>
@@ -7669,7 +7675,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="87"/>
         <source>ring %1 with less than four points</source>
-        <translation type="unfinished"></translation>
+        <translation>кольцо %1 имеет менее четырёх вершин</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="96"/>
@@ -7704,7 +7710,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="206"/>
         <source>GEOS error:could not produce geometry for GEOS (check log window)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка GEOS: не удалось создать геометрию для GEOS (см. отладочные сообщения)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="223"/>
@@ -8703,7 +8709,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/core/qgsgeometry.cpp" line="6734"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6757"/>
         <source>Exception: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometry.cpp" line="40"/>
@@ -8729,12 +8735,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/core/qgsgeometry.cpp" line="6734"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6757"/>
         <source>GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsmessageoutput.cpp" line="72"/>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Консоль</translation>
     </message>
 </context>
 <context>
@@ -9384,17 +9390,17 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1856"/>
         <location filename="../src/app/qgisapp.cpp" line="1859"/>
         <source>Control rendering order</source>
-        <translation type="unfinished"></translation>
+        <translation>Порядок отрисовки</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1879"/>
         <source>Map layer list that displays all layers in drawing order.</source>
-        <translation type="unfinished"></translation>
+        <translation>Список слоёв в порядке отображения на карте.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1880"/>
         <source>Layer order</source>
-        <translation type="unfinished"></translation>
+        <translation>Порядок отрисовки</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1920"/>
@@ -13130,7 +13136,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="113"/>
         <source>Item wrapping changed</source>
-        <translation type="unfinished">Изменение максимальной длины строк</translation>
+        <translation>Изменение максимальной длины строк</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="125"/>
@@ -13330,7 +13336,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="205"/>
         <source>Wrap text on</source>
-        <translation type="unfinished">Максимальная длина строки</translation>
+        <translation>Максимальная длина строк</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="356"/>
@@ -18614,7 +18620,7 @@ Please reselect a valid file.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -27280,12 +27286,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="211"/>
         <source>No</source>
-        <translation>Не сканировать</translation>
+        <translation>Пропускать</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="212"/>
         <source>Passthru</source>
-        <translation type="unfinished"></translation>
+        <translation>Сканировать при открытии</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="213"/>
@@ -27722,12 +27728,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="610"/>
         <source>Scan for valid items in the browser dock</source>
-        <translation type="unfinished">Сканировать каталоги в панели обозревателя</translation>
+        <translation>Искать источники данных в панели обозревателя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="637"/>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
-        <translation type="unfinished">Сканировать содержимое архивов (.zip) в панели обозревателя</translation>
+        <translation>Сканировать содержимое архивов (.zip) в панели обозревателя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="674"/>
@@ -30522,17 +30528,17 @@ SQL: %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1443"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished"></translation>
+        <translation>Первичный ключ поля «%1» для вида не уникален.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1448"/>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недействительный тип данных «%1» для первичного ключа «%2».</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1453"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключевое поле «%1» не найдено.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1458"/>
@@ -31091,7 +31097,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
         <source>Recently used coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Недавно использованные системы координат</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="96"/>
@@ -33023,7 +33029,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="57"/>
         <source>Z factor</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштабирование по Z</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="67"/>
