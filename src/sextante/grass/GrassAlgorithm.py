@@ -41,7 +41,6 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def helpFile(self):
         folder = GrassUtils.grassHelpPath()
-        #if str(folder).strip() != "":
         helpfile = str(folder) + os.sep + self.grassName + ".html"
         if os.path.exists(helpfile):
             return helpfile
@@ -51,7 +50,10 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def getParameterDescriptions(self):
         descs = {}
-        helpfile = self.helpFile()
+        try:
+            helpfile = self.helpFile()
+        except WrongHelpFileException:
+            return descs
         if helpfile:
             try:
                 infile = open(helpfile)

@@ -15,6 +15,7 @@ from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.Parameter import Parameter
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.gui.Help2Html import Help2Html
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -457,11 +458,11 @@ class ModelerAlgorithm(GeoAlgorithm):
         if self.modelerdialog:
             self.modelerdialog.repaintModel()
 
-
-    def helpfile(self):
+    def helpFile(self):
         helpfile = self.descriptionFile + ".help"
         if os.path.exists(helpfile):
-            return helpfile
+            h2h = Help2Html()
+            return h2h.getHtmlFile(self, helpfile)
         else:
             return None
 

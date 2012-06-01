@@ -1,6 +1,6 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, QtWebKit
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -47,10 +47,6 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.showHelpButton = QtGui.QPushButton()
-        self.showHelpButton.setText("Show help")
-        self.buttonBox.addButton(self.showHelpButton, QtGui.QDialogButtonBox.ActionRole)
-        QtCore.QObject.connect(self.showHelpButton, QtCore.SIGNAL("clicked()"), self.showHelp)
         self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
@@ -66,22 +62,34 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
-        self.verticalLayout.addWidget(self.tableWidget)
+        self.tabWidget = QtGui.QTabWidget()
+        self.tabWidget.setMinimumWidth(300)
+        self.tabWidget.addTab(self.tableWidget, "Parameters")
+        self.webView = QtWebKit.QWebView()
+        html = None
+        try:
+            if self.alg.helpFile():
+                helpFile = self.alg.helpFile()
+            else:
+                html = "<h2>Sorry, no help is available for this algorithm.</h2>"
+        except WrongHelpFileException, e:
+            html = e.msg
+            self.webView.setHtml("<h2>Could not open help file :-( </h2>")
+        try:
+            if html:
+                self.webView.setHtml(html)
+            else:
+                url = QtCore.QUrl(helpFile)
+                self.webView.load(url)
+        except:
+            self.webView.setHtml("<h2>Could not open help file :-( </h2>")
+        self.tabWidget.addTab(self.webView, "Help")
+        self.verticalLayout.addWidget(self.tabWidget)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
-
-    def showHelp(self):
-        try:
-            if self.alg.helpFile():
-                dlg = HTMLViewerDialog(self.alg.helpFile())
-                dlg.exec_()
-            else:
-                    QMessageBox.warning(self.dialog, "No help available", "No help is available for the current algorithm.")
-        except WrongHelpFileException, e:
-            QMessageBox.warning(self.dialog, "Help", e.msg)
 
     def getRasterLayers(self):
         layers = []

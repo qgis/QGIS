@@ -19,6 +19,7 @@ from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
 import sys
+from sextante.gui.Help2Html import Help2Html
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -140,6 +141,13 @@ class ScriptAlgorithm(GeoAlgorithm):
         exec(script)
         sys.stdout = sys.__stdout__
 
+    def helpFile(self):
+        helpfile = self.descriptionFile + ".help"
+        if os.path.exists(helpfile):
+            h2h = Help2Html()
+            return h2h.getHtmlFile(self, helpfile)
+        else:
+            return None
 
 class Redirection():
     def __init__(self, progress):

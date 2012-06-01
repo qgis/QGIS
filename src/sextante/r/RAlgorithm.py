@@ -25,6 +25,7 @@ import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
+from sextante.gui.Help2Html import Help2Html
 
 class RAlgorithm(GeoAlgorithm):
 
@@ -279,6 +280,13 @@ class RAlgorithm(GeoAlgorithm):
     def getRCommands(self):
         return self.commands
 
+    def helpFile(self):
+        helpfile = self.descriptionFile + ".help"
+        if os.path.exists(helpfile):
+            h2h = Help2Html()
+            return h2h.getHtmlFile(self, helpfile)
+        else:
+            return None
 
     def checkBeforeOpeningParametersDialog(self):
         if SextanteUtils.isWindows():
