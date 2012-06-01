@@ -30,9 +30,10 @@ class SextanteUtils:
 
     @staticmethod
     def setTempOutput(out, alg):
-        seconds = str(time.time())
         ext = out.getDefaultFileExtension(alg)
-        filename = SextanteUtils.tempFolder() + os.sep + seconds + str(SextanteUtils.NUM_EXPORTED) + "." + ext
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        safeCmdName = ''.join(c for c in alg.commandLineName() if c in validChars)
+        filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + str(SextanteUtils.NUM_EXPORTED) + "." + ext
         out.value = filename
         SextanteUtils.NUM_EXPORTED += 1
 
