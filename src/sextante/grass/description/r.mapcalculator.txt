@@ -7,5 +7,5 @@ ParameterRaster|cmap|cmap|False
 ParameterRaster|dmap|dmap|False
 ParameterRaster|emap|emap|False
 ParameterRaster|fmap|fmap|False
-ParameterString|formula|formula|
-OutputRaster|outfile|outfile
+ParameterString|formula|Formula (e.g. A-B or A*C+B|
+OutputRaster|outfile|Name for output raster map

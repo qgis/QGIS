@@ -1,6 +1,6 @@
 r.reclass
 r.reclass
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|rules|rules|/file
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterString|rules|File containing reclass rules|/file
+OutputRaster|output|Name for output raster map

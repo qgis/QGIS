@@ -1,4 +1,4 @@
 r.sum
 r.sum
 Raster (r.*)
-ParameterRaster|rast|rast|False
+ParameterRaster|rast|Name of incidence or density file|False

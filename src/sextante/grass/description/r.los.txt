@@ -1,10 +1,10 @@
 r.los
 r.los
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|coordinate|coordinate|0,0
-ParameterRaster|patt_map|patt_map|False
-ParameterString|obs_elev|obs_elev|1.75
-ParameterString|max_dist|max_dist|10000
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output
+ParameterRaster|input|Name of elevation raster map|False
+ParameterString|coordinate|Coordinate identifying the viewing position|0,0
+ParameterRaster|patt_map|Binary (1/0) raster map to use as a mask|False
+ParameterString|obs_elev|Viewing position height above the ground|1.75
+ParameterString|max_dist|Maximum distance from the viewing point (meters)|10000
+ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
+OutputRaster|output|Name for output raster map

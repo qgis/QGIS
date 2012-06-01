@@ -1,9 +1,8 @@
 r.buffer
 r.buffer
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|distances|distances|100,200,300
-ParameterSelection|units|units|meters;kilometers;feet;miles;nautmiles
-ParameterBoolean|-z|-z|True
-ParameterBoolean|-q|-q|True
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterString|distances|Distance zone(s) (e.g. 100,200,300)|
+ParameterSelection|units|Units of distance|meters;kilometers;feet;miles;nautmiles
+ParameterBoolean|-z|Ignore zero (0) data cells instead of NULL cells|False
+OutputRaster|output|Name for output raster map

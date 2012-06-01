@@ -1,11 +1,11 @@
 r.profile
 r.profile
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|/file
-ParameterString|profile|profile|
-ParameterString|res|res|
-ParameterString|null|null|*
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-g|-g|True
-ParameterBoolean|-c|-c|True
+ParameterRaster|input|Name of input raster map|False
+ParameterString|profile|Profile coordinate pairs|
+ParameterString|res|Resolution along profile (default = current region resolution)|
+ParameterString|null|Character to represent no data cell|*
+ParameterBoolean|-i|Interactively select End-Points|False
+ParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
+ParameterBoolean|-c|Output RRR:GGG:BBB color values for each profile point|False
+OutputFile|output|Name of file for output (use output=- for stdout)

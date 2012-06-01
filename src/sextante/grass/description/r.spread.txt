@@ -16,6 +16,6 @@ ParameterRaster|backdrop|backdrop|False
 ParameterBoolean|-v|-v|True
 ParameterBoolean|-d|-d|True
 ParameterBoolean|-s|-s|True
-OutputRaster|output|output
+OutputRaster|output|Name for output raster map
 OutputRaster|x_output|x_output
 OutputRaster|y_output|y_output

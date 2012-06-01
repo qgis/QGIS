@@ -1,7 +1,6 @@
 r.out.ppm
 r.out.ppm
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|/file
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-G|-G|True
+ParameterRaster|input|Name of input raster map|False
+ParameterBoolean|-G|Output greyscale instead of color|True
+OutputFile|output|Name for new PPM file (use '-' for stdout)

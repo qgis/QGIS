@@ -1,7 +1,7 @@
 r.grow.distance
 r.grow.distance
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterSelection|metric|metric|euclidean;squared;maximum;manhattan
-OutputRaster|distance|distance
-OutputRaster|value|value
+ParameterRaster|input|Name of input raster map|False
+ParameterSelection|metric|Metric|euclidean;squared;maximum;manhattan
+OutputRaster|distance|Name for distance output map
+OutputRaster|value|Name for value output map

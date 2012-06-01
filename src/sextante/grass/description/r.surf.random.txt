@@ -1,7 +1,7 @@
 r.surf.random
 r.surf.random
 Raster (r.*)
-ParameterNumber|min|min|None|None|0
-ParameterNumber|max|max|None|None|100
-ParameterBoolean|-i|-i|True
-OutputRaster|output|output
+ParameterNumber|min|Minimum random value|None|None|0
+ParameterNumber|max|Maximum random value|None|None|100
+ParameterBoolean|-i|Create an integer raster map|False
+OutputRaster|output|Name for output raster map

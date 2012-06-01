@@ -1,10 +1,10 @@
 r.plane
 r.plane
 Raster (r.*)
-ParameterNumber|dip|dip|None|None|0.0
-ParameterNumber|azimuth|azimuth|None|None|0.0
-ParameterNumber|easting|easting|None|None|0.0
-ParameterNumber|northing|northing|None|None|0.0
-ParameterNumber|elevation|elevation|None|None|0.0
-ParameterSelection|type|type|int;float;double
-OutputRaster|name|name
+ParameterNumber|dip|Dip of plane. Value must be between -90 and 90 degrees|None|None|0.0
+ParameterNumber|azimuth|Azimuth of the plane. Value must be between 0 and 360 degrees|None|None|0.0
+ParameterNumber|easting|Easting coordinate of a point on the plane|None|None|0.0
+ParameterNumber|northing|Northing coordinate of a point on the plane|None|None|0.0
+ParameterNumber|elevation|Name of elevation raster map|None|None|0.0
+ParameterSelection|type|Type of the raster map to be created|int;float;double
+OutputRaster|name|Name of raster plane to be created

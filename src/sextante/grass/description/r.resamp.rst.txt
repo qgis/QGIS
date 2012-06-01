@@ -1,8 +1,9 @@
 r.resamp.rst
 r.resamp.rst
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|ew_res|ew_res|0.0|None|1
-ParameterBoolean|-t|-t|True
-ParameterBoolean|-d|-d|True
-OutputRaster|elev|elev
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|ew_res|Desired east-west resolution|0.0|None|
+ParameterNumber|ns_res|Desired north-south resolution|0.0|None|
+ParameterBoolean|-t|Use dnorm independent tension|False
+ParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False
+OutputRaster|elev|Output z-file (elevation) map

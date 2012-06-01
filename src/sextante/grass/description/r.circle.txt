@@ -1,9 +1,9 @@
 r.circle
 r.circle
 Raster (r.*)
-ParameterString|coordinate|coordinate|0,0
-ParameterNumber|min|min|None|None|10
-ParameterNumber|max|max|None|None|20
-ParameterString|mult|mult|1
-ParameterBoolean|-b|-b|True
-OutputRaster|output|output
+ParameterString|coordinate|The coordinate of the center (east,north)|0,0
+ParameterNumber|min|Minimum radius for ring/circle map (in meters)|None|None|10
+ParameterNumber|max|Maximum radius for ring/circle map (in meters)|None|None|20
+ParameterString|mult|Data value multiplier|1
+ParameterBoolean|-b|Generate binary raster map|False
+OutputRaster|output|Name for output raster map

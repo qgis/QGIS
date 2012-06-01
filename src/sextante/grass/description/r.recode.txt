@@ -1,9 +1,9 @@
 r.recode
 r.recode
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|rules|rules|/file
-ParameterString|title|title|
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-d|-d|True
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterString|rules|File containing recode rules|/file
+ParameterString|title|Title for output raster map|
+ParameterBoolean|-a|Align the current region to the input raster map|False
+ParameterBoolean|-d|Force output to 'double' raster map type (DCELL)|False
+OutputRaster|output|Name for output raster map

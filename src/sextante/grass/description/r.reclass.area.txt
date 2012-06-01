@@ -1,6 +1,7 @@
 r.reclass.area
 r.reclass.area
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|greater|greater|None|None|0.0
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|lesser|Lesser value option that sets the <= area size limit [hectares]|None|None|0.0
+ParameterNumber|greater|Greater value option that sets the >= area size limit [hectares]|None|None|0.0
+OutputRaster|output|Name for output raster map

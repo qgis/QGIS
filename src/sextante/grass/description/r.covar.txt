@@ -1,5 +1,5 @@
 r.covar
 r.covar
 Raster (r.*)
-ParameterMultipleInput|map|map|3.0|False
-ParameterBoolean|-r|-r|True
+ParameterMultipleInput|map|Name of input raster map(s)|3.0|False
+ParameterBoolean|-r|Print correlation matrix|True

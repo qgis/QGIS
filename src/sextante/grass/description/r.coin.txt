@@ -1,7 +1,7 @@
 r.coin
 r.coin
 Raster (r.*)
-ParameterRaster|map1|map1|False
-ParameterRaster|map2|map2|False
-ParameterSelection|units|units|c;p;x;y;a;h;k;m
-ParameterBoolean|-w|-w|True
+ParameterRaster|map1|Name of first raster map|False
+ParameterRaster|map2|Name of second raster map|False
+ParameterSelection|units|Unit of measure|c;p;x;y;a;h;k;m
+ParameterBoolean|-w|Wide report, 132 columns (default: 80)|False

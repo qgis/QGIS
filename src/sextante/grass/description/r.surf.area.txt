@@ -1,5 +1,5 @@
 r.surf.area
 r.surf.area
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|vscale|vscale|None|None|0.0
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|vscale|Vertical scale|None|None|0.0

@@ -1,12 +1,11 @@
 r.contour
 r.contour
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|levels|levels|
-ParameterString|minlevel|minlevel|
-ParameterString|maxlevel|maxlevel|
-ParameterString|step|step|
-ParameterString|cut|cut|0
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-n|-n|True
-OutputVector|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterString|levels|List of contour levels|
+ParameterString|minlevel|Minimum contour level|
+ParameterString|maxlevel|Maximum contour level|
+ParameterString|step|Increment between contour levels|
+ParameterString|cut|Minimum number of points for a contour line (0 -> no limit)|0
+ParameterBoolean|-n|Suppress single crossing error messages|False
+OutputVector|output|Name of output vector map

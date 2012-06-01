@@ -1,6 +1,5 @@
 r.out.gridatb
 r.out.gridatb
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|
-ParameterBoolean|-o|-o|True
+ParameterRaster|input|Name of input raster map|False
+OutputFile|output|GRIDATB i/o map file

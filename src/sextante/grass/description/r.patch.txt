@@ -1,7 +1,6 @@
 r.patch
 r.patch
 Raster (r.*)
-ParameterMultipleInput|input|input|1.0|False
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-z|-z|True
-OutputRaster|output|output
+ParameterMultipleInput|input|Name of raster maps to be patched together|1.0|False
+ParameterBoolean|-z|Use zero (0) for transparency instead of NULL|False
+OutputRaster|output|Name for resultant raster map

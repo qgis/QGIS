@@ -1,9 +1,9 @@
 r.fill.dir
 r.fill.dir
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|type|type|grass
-ParameterBoolean|-f|-f|True
-OutputRaster|elevation|elevation
-OutputRaster|direction|direction
-OutputRaster|areas|areas
+ParameterRaster|input|Name of existing raster map containing elevation surface|False
+ParameterSelection|type|Output aspect direction format|grass;agnps;answers
+ParameterBoolean|-f|Find unresolved areas only|False
+OutputRaster|elevation|Output elevation raster map after filling
+OutputRaster|direction|Output direction raster map
+OutputRaster|areas|Output raster map of problem areas

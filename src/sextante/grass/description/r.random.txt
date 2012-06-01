@@ -1,8 +1,8 @@
 r.random
 r.random
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterRaster|cover|cover|False
-ParameterNumber|n|n|None|None|10
-OutputRaster|raster_output|raster_output
-OutputVector|vector_output|vector_output
+ParameterRaster|input|Name of input raster map|False
+ParameterRaster|cover|Name of cover raster map|False
+ParameterNumber|n|The number of points to allocate|None|None|10
+OutputRaster|raster_output|Name for output raster map
+OutputVector|vector_output|Name for output vector map

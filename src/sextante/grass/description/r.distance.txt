@@ -1,8 +1,7 @@
 r.distance
 r.distance
 Raster (r.*)
-ParameterRaster|maps|maps|False
-ParameterString|fs|fs|:
-ParameterBoolean|-l|-l|True
-ParameterBoolean|-o|-o|True
-ParameterBoolean|-q|-q|True
+ParameterRaster|maps|Maps for computing inter-class distances|False
+ParameterString|fs|Output field separator|:
+ParameterBoolean|-l|Include category labels in the output|False
+ParameterBoolean|-o|Report zero distance if rasters are overlapping|False

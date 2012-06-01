@@ -1,6 +1,6 @@
 r.transect
 r.transect
 Raster (r.*)
-ParameterRaster|map|map|False
-ParameterString|line|line|0,0,0,100
-ParameterNumber|width|width|None|None|1
+ParameterRaster|map|Raster map to be queried|False
+ParameterString|line|Transect definition|0,0,0,100
+ParameterNumber|width|Char string to represent no data cell|None|None|1

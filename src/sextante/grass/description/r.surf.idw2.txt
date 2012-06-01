@@ -1,6 +1,6 @@
 r.surf.idw2
 r.surf.idw2
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterNumber|npoints|npoints|1.0|None|12
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|npoints|Number of interpolation points|1.0|None|12
+OutputRaster|output|Name for output raster map

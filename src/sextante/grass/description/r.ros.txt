@@ -10,7 +10,7 @@ ParameterRaster|velocity|velocity|False
 ParameterRaster|direction|direction|False
 ParameterRaster|slope|slope|False
 ParameterRaster|aspect|aspect|False
-ParameterRaster|elevation|elevation|False
+ParameterRaster|elevation|Name of elevation raster map|False
 ParameterBoolean|-v|-v|True
 ParameterBoolean|-s|-s|True
-OutputRaster|output|output
+OutputRaster|output|Name for output raster map

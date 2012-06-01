@@ -1,8 +1,8 @@
 r.out.arc
 r.out.arc
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|/file
-ParameterNumber|dp|dp|None|None|8.0
-ParameterBoolean|-h|-h|True
-ParameterBoolean|-1|-1|True
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|dp|Number of decimal places|None|None|8.0
+ParameterBoolean|-h|Suppress printing of header information|False
+ParameterBoolean|-1|List one entry per line instead of full row|False
+OutputFile|output|Name of an output ARC-GRID map (use out=- for stdout)

@@ -1,7 +1,7 @@
 r.average
 r.average
 Raster (r.*)
-ParameterRaster|base|base|False
-ParameterRaster|cover|cover|False
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output
+ParameterRaster|base|Name of base raster map|False
+ParameterRaster|cover|Name of cover raster map|False
+ParameterBoolean|-c|Cover values extracted from the category labels of the cover map|False
+OutputRaster|output|Name for output raster map

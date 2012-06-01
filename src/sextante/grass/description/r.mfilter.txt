@@ -1,10 +1,9 @@
 r.mfilter
 r.mfilter
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|filter|filter|/file
-ParameterNumber|repeat|repeat|1.0|100.0|1
-ParameterString|title|title|
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-z|-z|True
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterString|filter|Filter file|/file
+ParameterNumber|repeat|Number of times to repeat the filter|None|None|1
+ParameterString|title|Output raster map title|
+ParameterBoolean|-z|Apply filter only to zero data values|False
+OutputRaster|output|Name for output raster map

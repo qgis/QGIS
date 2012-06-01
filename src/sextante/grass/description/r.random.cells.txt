@@ -1,6 +1,6 @@
 r.random.cells
 r.random.cells
 Raster (r.*)
-ParameterNumber|distance|distance|None|None|0.0
-ParameterNumber|seed|seed|None|None|0.0
-OutputRaster|output|output
+ParameterNumber|distance|Maximum distance of spatial correlation (value(s) >= 0.0)|None|None|0.0
+ParameterNumber|seed|Random seed (SEED_MIN >= value >= SEED_MAX) (default [random])|None|None|0.0
+OutputRaster|output|Name for output raster map

@@ -1,6 +1,6 @@
 r.surf.gauss
 r.surf.gauss
 Raster (r.*)
-ParameterString|mean|mean|0.0
-ParameterString|sigma|sigma|1.0
-OutputRaster|output|output
+ParameterString|mean|Distribution mean|0.0
+ParameterString|sigma|Standard deviation|1.0
+OutputRaster|output|Name for output raster map

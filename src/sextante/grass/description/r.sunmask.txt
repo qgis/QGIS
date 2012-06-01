@@ -17,4 +17,4 @@ ParameterBoolean|-z|-z|True
 ParameterBoolean|-v|-v|True
 ParameterBoolean|-s|-s|True
 ParameterBoolean|-g|-g|True
-OutputRaster|output|output
+OutputRaster|output|Name for output raster map

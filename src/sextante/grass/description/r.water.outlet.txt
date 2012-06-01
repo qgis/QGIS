@@ -1,7 +1,7 @@
 r.water.outlet
 r.water.outlet
 Raster (r.*)
-ParameterRaster|drainage|drainage|False
-ParameterNumber|easting|easting|None|None|0
-ParameterNumber|northing|northing|None|None|0
-OutputRaster|basin|basin
+ParameterRaster|drainage|Name of input raster map|False
+ParameterNumber|easting|The map E grid coordinates|None|None|0
+ParameterNumber|northing|The map N grid coordinates|None|None|0
+OutputRaster|basin|Name of raster map to contain results

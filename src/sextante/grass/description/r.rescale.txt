@@ -1,7 +1,7 @@
 r.rescale
 r.rescale
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|from|from|0,100
-ParameterString|to|to|0,1
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterRange|from|The input data range to be rescaled (default: full range of input map)|
+ParameterRange|to|The output data range|a,d
+OutputRaster|output|Name for output raster map

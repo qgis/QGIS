@@ -1,16 +1,13 @@
 r.composite
 r.composite
 Raster (r.*)
-ParameterRaster|red|red|False
-ParameterRaster|green|green|False
-ParameterRaster|blue|blue|False
-ParameterNumber|levels|levels|1.0|256.0|32
-ParameterNumber|lev_red|lev_red|1.0|256.0|32
-ParameterNumber|lev_green|lev_green|1.0|256.0|32
-ParameterNumber|lev_blue|lev_blue|1.0|256.0|32
-ParameterString|lev_red|lev_red|
-ParameterString|lev_green|lev_green|
-ParameterString|lev_blue|lev_blue|
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output
+ParameterRaster|red|Name of raster map to be used for <red>|False
+ParameterRaster|green|Name of raster map to be used for <green>|False
+ParameterRaster|blue|Name of raster map to be used for <blue>|False
+ParameterNumber|levels|Number of levels to be used for each component|1.0|256.0|32
+ParameterNumber|lev_red|Number of levels to be used for <red>|1.0|256.0|32
+ParameterNumber|lev_green|Number of levels to be used for <green>|1.0|256.0|32
+ParameterNumber|lev_blue|Number of levels to be used for <blue>|1.0|256.0|32
+ParameterBoolean|-d|Dither|False
+ParameterBoolean|-c|Use closest color|False
+OutputRaster|output|Name for output raster map

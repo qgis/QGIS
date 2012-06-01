@@ -1,5 +1,5 @@
 r.topidx
 r.topidx
 Raster (r.*)
-ParameterRaster|input|input|False
-OutputRaster|output|output
+ParameterRaster|input|Input elevation map|False
+OutputRaster|Output topographic index map|output

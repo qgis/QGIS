@@ -1,6 +1,7 @@
 r.univar
 r.univar
 Raster (r.*)
-ParameterMultipleInput|map|map|3.0|False
-ParameterNumber|percentile|percentile|0.0|100.0|90
-ParameterBoolean|-e|-e|True
+ParameterMultipleInput|map|Name of input raster map(s)|3.0|False
+ParameterRaster|zones|Raster map used for zoning, must be of type CELL|False
+ParameterNumber|percentile|Percentile to calculate (requires extended statistics flag)|0.0|100.0|90
+ParameterBoolean|-e|Calculate extended statistics|False

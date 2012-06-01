@@ -1,8 +1,8 @@
 r.neighbors
 r.neighbors
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterSelection|method|method|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
-ParameterNumber|size|size|1.0|None|3
-ParameterBoolean|-c|-c|True
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterSelection|method|Neighborhood operation|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
+ParameterNumber|size|Neighborhood size|1.0|None|3
+ParameterBoolean|-c|Use circular neighborhood|False
+OutputRaster|output|Name for output raster map

@@ -1,7 +1,7 @@
 r.out.vrml
 r.out.vrml
 Raster (r.*)
-ParameterRaster|elev|elev|False
-ParameterRaster|color|color|False
-ParameterNumber|exag|exag|None|None|1.0
-ParameterString|output|output|/file
+ParameterRaster|elev|Name of elevation map|False
+ParameterRaster|color|Name of color file|False
+ParameterNumber|exag|Vertical exaggeration|None|None|1.0
+OutputFile|output|Name for new VRML file

@@ -1,5 +1,8 @@
 nviz
 nviz
 Visualization(NVIZ)
-ParameterMultipleInput|elevation|elevation|3|False
-ParameterMultipleInput|vector|vector|-1|False
+ParameterMultipleInput|elevation|Name of elevation raster map|3|False
+ParameterMultipleInput|color|Name of raster map(s) for Color|-1|False
+ParameterMultipleInput|vector|Name of vector lines/areas overlay map(s)|-1|False
+ParameterMultipleInput|point|Name of vector points overlay file(s)|-1|False
+ParameterMultipleInput|volume|Name of existing 3d raster map|-1|False

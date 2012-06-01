@@ -1,22 +1,22 @@
 r.texture
 r.texture
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|size|size|3
-ParameterString|distance|distance|1
-ParameterBoolean|-q|-q|True
-ParameterBoolean|-a|-a|True
-ParameterBoolean|-c|-c|True
-ParameterBoolean|-k|-k|True
-ParameterBoolean|-v|-v|True
-ParameterBoolean|-i|-i|True
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-w|-w|True
-ParameterBoolean|-x|-x|True
-ParameterBoolean|-e|-e|True
-ParameterBoolean|-d|-d|True
-ParameterBoolean|-p|-p|True
-ParameterBoolean|-m|-m|True
-ParameterBoolean|-n|-n|True
-ParameterBoolean|-o|-o|True
-OutputRaster|prefix|prefix
+ParameterRaster|input|Name of input raster map|False
+ParameterString|size|The size of sliding window (odd and >= 3)|3
+ParameterString|distance|The distance between two samples (>= 1)|1
+ParameterBoolean|-q|Quiet|True
+ParameterBoolean|-a|Angular Second Moment|False
+ParameterBoolean|-c|Contrast|False
+ParameterBoolean|-k|Correlation|False
+ParameterBoolean|-v|Variance|False
+ParameterBoolean|-i|Inverse Diff Moment|False
+ParameterBoolean|-s|Sum Average|False
+ParameterBoolean|-w|Sum Variance|False
+ParameterBoolean|-x|Sum Entropy|False
+ParameterBoolean|-e|Entropy|False
+ParameterBoolean|-d|Difference Variance|False
+ParameterBoolean|-p|Difference Entropy|False
+ParameterBoolean|-m|Measure of Correlation-1|False
+ParameterBoolean|-n|Measure of Correlation-2|False
+ParameterBoolean|-o|Max Correlation Coeff|False
+OutputRaster|prefix|Prefix for output raster map(s)

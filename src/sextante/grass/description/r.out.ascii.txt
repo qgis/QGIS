@@ -1,12 +1,12 @@
 r.out.ascii
 r.out.ascii
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterString|output|output|/file
-ParameterNumber|dp|dp|None|None|0.0
-ParameterNumber|width|width|None|None|0.0
-ParameterString|null|null|*
-ParameterBoolean|-h|-h|True
-ParameterBoolean|-s|-s|True
-ParameterBoolean|-m|-m|True
-ParameterBoolean|-i|-i|True
+ParameterRaster|input|Name of input raster map|False
+ParameterNumber|dp|Number of significant digits (floating point only)|None|None|0.0
+ParameterNumber|width|Number of values printed before wrapping a line (only SURFER or MODFLOW format)|None|None|0.0
+ParameterString|null|String to represent null cell (GRASS grid only)|*
+ParameterBoolean|-h|Suppress printing of header information|False
+ParameterBoolean|-s|Write SURFER (Golden Software) ASCII grid|False
+ParameterBoolean|-m|Write MODFLOW (USGS) ASCII array|False
+ParameterBoolean|-i|Force output of integer values|False
+OutputFile|output|Name for output ASCII grid map (use out=- for stdout)

@@ -1,8 +1,7 @@
 r.rescale.eq
 r.rescale.eq
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterRange|from|from
-ParameterRange|to|to
-ParameterBoolean|-q|-q|True
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterRange|from|The input data range to be rescaled (default: full range of input map)
+ParameterRange|to|The output data range
+OutputRaster|output|Name for output raster map

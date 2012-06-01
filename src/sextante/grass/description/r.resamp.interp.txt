@@ -1,6 +1,6 @@
 r.resamp.interp
 r.resamp.interp
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterSelection|method|method|nearest;bilinear;bicubic
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+ParameterSelection|method|Interpolation method|nearest;bilinear;bicubic
+OutputRaster|output|Name for output raster map

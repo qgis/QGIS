@@ -1,6 +1,5 @@
 r.surf.contour
 r.surf.contour
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterBoolean|-f|-f|True
-OutputRaster|output|output
+ParameterRaster|input|Name of input raster map|False
+OutputRaster|output|Name for output raster map

@@ -1,9 +1,9 @@
 r.cost
 r.cost
 Raster (r.*)
-ParameterRaster|input|input|False
-ParameterVector|start_points|start_points|0|False
-ParameterVector|stop_points|stop_points|0|False
-ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|True
-ParameterBoolean|-n|-n|True
-OutputRaster|output|output
+ParameterRaster|input|Name of raster map containing grid cell cost information|False
+ParameterVector|start_points|Name of starting vector points map|0|False
+ParameterVector|stop_points|Name of stop vector points map|0|False
+ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
+ParameterBoolean|-n|Keep null values in output raster map|False
+OutputRaster|output|Name for output raster map
