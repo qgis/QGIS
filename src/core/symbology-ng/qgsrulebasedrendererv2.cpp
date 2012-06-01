@@ -803,7 +803,9 @@ void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule*
 {
   foreach( const QgsRendererCategoryV2& cat, r->categories() )
   {
-    QString filter = QString( "%1 = '%2'" ).arg( r->classAttribute() ).arg( cat.value().toString() );
+    // replace simple "double quotes" by double "double quotes" in field name
+    QString escapedId = r->classAttribute().replace(QString("\""), QString("\"\""));
+    QString filter = QString( "\"%1\" = '%2'" ).arg( escapedId ).arg( cat.value().toString() );
     QString label = filter;
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
   }
@@ -813,7 +815,9 @@ void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* ini
 {
   foreach( const QgsRendererRangeV2& rng, r->ranges() )
   {
-    QString filter = QString( "%1 >= '%2' AND %1 <= '%3'" ).arg( r->classAttribute() ).arg( rng.lowerValue() ).arg( rng.upperValue() );
+    // replace simple "double quotes" by double "double quotes" in field name
+    QString escapedId = r->classAttribute().replace(QString("\""), QString("\"\""));
+    QString filter = QString( "\"%1\" >= '%2' AND \"%1\" <= '%3'" ).arg( escapedId ).arg( rng.lowerValue() ).arg( rng.upperValue() );
     QString label = filter;
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
