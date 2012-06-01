@@ -22,6 +22,7 @@ from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
 from sextante.core.WrongHelpFileException import WrongHelpFileException
+from sextante.outputs.OutputFile import OutputFile
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -221,6 +222,12 @@ class GrassAlgorithm(GeoAlgorithm):
                 command+=(" " + param.name + "=" + str(param.value));
 
         for out in self.outputs:
+            if isinstance(out, OutputFile):
+                command+=(" " + out.name + "=\"" + out.value + "\"");
+            else:
+                command+=(" " + out.name + "=" + out.name);
+
+
             command+=(" " + out.name + "=" + out.name);
 
         command += " --overwrite"
