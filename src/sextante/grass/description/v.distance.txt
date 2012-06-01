@@ -1,5 +1,5 @@
 v.distance
-Nearest feature
+v.distance - Finds the nearest element in vector map 'to' for elements in vector map 'from'.
 Vector (v.*)
 ParameterVector|from|Name of existing vector map (from)|0|False
 ParameterVector|to|Name of existing vector map (to)|-1|False

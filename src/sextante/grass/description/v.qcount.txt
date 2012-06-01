@@ -1,5 +1,5 @@
 v.qcount
-Indices for quadrat counts of points
+v.qcount - Indices for quadrat counts of sites lists.
 Vector (v.*)
 ParameterVector|input|Vector of points defining sample points|0|False
 ParameterNumber|n|Number of quadrats|0|None|4

@@ -1,5 +1,5 @@
-v.buffer
-Buffer with fixed distance
+v.buffer.distance
+v.buffer.distance - Creates a buffer around features of given type.
 Vector (v.*)
 ParameterVector|input|Name for input vector map|-1|False
 ParameterString|distance|Buffer distance in map units|

@@ -1,5 +1,5 @@
 r.mfilter.fp
-r.mfilter.fp
+r.mfilter.fp - Raster map matrix filter.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|filter|Filter file|/file

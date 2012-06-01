@@ -1,5 +1,5 @@
 r.walk
-r.walk
+r.walk - Outputs a raster map layer showing the anisotropic cumulative cost of moving based on friction cost.
 Raster (r.*)
 ParameterRaster|elevation|Name of elevation input raster map|False
 ParameterRaster|friction|Name of input raster map containing friction costs|False

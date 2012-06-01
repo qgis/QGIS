@@ -1,5 +1,5 @@
 v.surf.bspline
-Surface interpolation with bicubic or bilinear splines
+v.surf.bspline - Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterVector|sparse|Name of input vector map of sparse points|-1|False

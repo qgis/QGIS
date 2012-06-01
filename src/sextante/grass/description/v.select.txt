@@ -1,5 +1,5 @@
 v.select
-Select features from map A by map B
+v.select - Selects features from vector map (A) by features from other vector map (B).
 Vector (v.*)
 ParameterVector|ainput|Name of input vector map (A)|-1|False
 ParameterVector|binput|Name of input vector map (B)|-1|False

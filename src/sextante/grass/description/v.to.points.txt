@@ -1,5 +1,5 @@
 v.to.points
-Create points along input lines in new vector with 2 layers
+v.to.points - Create points along input lines in new vector with 2 layers.
 Vector (v.*)
 ParameterVector|input|Input vector map containing lines|-1|False
 ParameterString|dmax|Maximum distance between points in map units|100

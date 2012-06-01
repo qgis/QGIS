@@ -1,5 +1,5 @@
 r.regression.line
-r.regression.line
+r.regression.line - Calculates linear regression from two raster maps: y = a + b*x.
 Raster (r.*)
 ParameterRaster|map1|Map for x coefficient|False
 ParameterRaster|map2|Map for y coefficient|False

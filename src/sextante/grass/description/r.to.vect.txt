@@ -1,5 +1,5 @@
 r.to.vect
-r.to.vect
+r.to.vect - Converts a raster map into a vector map layer.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterSelection|feature|Feature type|line;point;area

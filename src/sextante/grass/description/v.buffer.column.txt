@@ -1,5 +1,5 @@
-v.buffer
-Buffer with attribute as distance
+v.buffer.column
+v.buffer.column - Creates a buffer around features of given type.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterTableField|bufcolumn|Name of column to use for buffer distances|input

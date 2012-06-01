@@ -1,5 +1,5 @@
 r.contour
-r.contour
+r.contour - Produces a vector map of specified contours from a raster map.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|levels|List of contour levels|

@@ -1,5 +1,5 @@
 v.split
-Split lines to shorter segments
+v.split - Split lines to shorter segments.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterNumber|length|Maximum segment length|None|None|10.0

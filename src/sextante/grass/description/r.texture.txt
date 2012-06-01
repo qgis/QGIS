@@ -1,5 +1,5 @@
 r.texture
-r.texture
+r.texture - Generate images with textural features from a raster map.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|size|The size of sliding window (odd and >= 3)|3

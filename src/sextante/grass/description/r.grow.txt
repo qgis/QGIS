@@ -1,5 +1,5 @@
 r.grow
-r.grow
+r.grow - Generates a raster map layer with contiguous areas grown by one cell.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterNumber|radius|Radius of buffer in raster cells|None|None|1.01

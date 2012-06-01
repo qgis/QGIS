@@ -1,5 +1,5 @@
 v.extrude
-Extrude flat vector object to 3D
+v.extrude - Extrudes flat vector object to 3D with defined height.
 Vector (v.*)
 ParameterVector|input|Name of input 2D vector map|-1|False
 ParameterNumber|zshift|Shifting value for z coordinates|None|None|0

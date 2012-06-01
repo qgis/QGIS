@@ -1,5 +1,5 @@
 v.transform
-2D coordinate transformation
+v.transform - Performs an affine transformation (shift, scale and rotate, or GPCs) on vector map.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterNumber|xshift|X shift|None|None|0.0

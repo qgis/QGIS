@@ -1,5 +1,5 @@
 v.sample
-Sample a raster map at vector point locations
+v.sample - Samples a raster map at vector point locations.
 Vector (v.*)
 ParameterVector|input|Vector map defining sample points|-1|False
 ParameterTableField|column|Vector map attribute column to use for comparison|input

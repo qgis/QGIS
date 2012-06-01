@@ -1,5 +1,5 @@
 v.outlier
-Outlier detection
+v.outlier - Removes outliers from vector point data.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterNumber|soe|Interpolation spline step value in east direction|None|None|10

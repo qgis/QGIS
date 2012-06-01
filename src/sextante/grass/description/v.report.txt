@@ -1,5 +1,5 @@
 v.report
-Report geometry statistics for vectors
+v.report - Reports geometry statistics for vectors.
 Vector (v.*)
 ParameterVector|map|Name of input vector map|-1|False
 ParameterSelection|option|Value to calculate|area;length;coor

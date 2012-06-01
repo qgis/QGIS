@@ -1,5 +1,5 @@
 r.composite
-r.composite
+r.composite - Combines red, green and blue raster maps into a single composite raster map.
 Raster (r.*)
 ParameterRaster|red|Name of raster map to be used for <red>|False
 ParameterRaster|green|Name of raster map to be used for <green>|False

@@ -1,8 +1,8 @@
 r.recode
-r.recode
+r.recode - Recodes categorical raster maps.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
-ParameterString|rules|File containing recode rules|/file
+ParameterFile|rules|File containing recode rules|False
 ParameterString|title|Title for output raster map|
 ParameterBoolean|-a|Align the current region to the input raster map|False
 ParameterBoolean|-d|Force output to 'double' raster map type (DCELL)|False

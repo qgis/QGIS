@@ -1,5 +1,5 @@
 r.out.vrml
-r.out.vrml
+r.out.vrml - Export a raster map to the Virtual Reality Modeling Language (VRML)
 Raster (r.*)
 ParameterRaster|elev|Name of elevation map|False
 ParameterRaster|color|Name of color file|False

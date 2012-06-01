@@ -1,5 +1,5 @@
 r.slope.aspect
-r.slope.aspect
+r.slope.aspect - Generates raster maps of slope, aspect, curvatures and partial derivatives from a elevation raster map.
 Raster (r.*)
 ParameterRaster|elevation|Name of elevation raster map|False
 ParameterSelection|format|Format for reporting the slope|degrees;percent

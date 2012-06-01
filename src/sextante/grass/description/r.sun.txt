@@ -1,5 +1,5 @@
 r.sun
-r.sun
+r.sun - Solar irradiance and irradiation model.
 Raster (r.*)
 ParameterRaster|elevin|Name of the input elevation raster map [meters]|False
 ParameterRaster|aspin|Name of the input aspect map (terrain aspect or azimuth of the solar panel) [decimal degrees]|False

@@ -1,5 +1,5 @@
 r.volume
-r.volume
+r.volume - Calculates the volume of data "clumps".
 Raster (r.*)
 ParameterRaster|data|Existing raster map representing data that will be summed within clumps|False
 ParameterRaster|clump|Existing raster map, preferably the output of r.clump|False

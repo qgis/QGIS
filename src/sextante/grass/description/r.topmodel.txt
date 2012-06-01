@@ -1,5 +1,5 @@
 r.topmodel
-r.topmodel
+r.topmodel - Simulates TOPMODEL which is a physically based hydrologic model.
 Raster (r.*)
 ParameterRaster|basin|Basin map created by r.water.outlet (MASK)|False
 ParameterRaster|elevation|Elevation map|False

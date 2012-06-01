@@ -1,5 +1,5 @@
 r.out.ascii
-r.out.ascii
+r.out.ascii - Converts a raster map layer into an ASCII text file.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterNumber|dp|Number of significant digits (floating point only)|None|None|0.0

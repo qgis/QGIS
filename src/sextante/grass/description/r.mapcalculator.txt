@@ -1,5 +1,5 @@
 r.mapcalculator
-r.mapcalculator
+r.mapcalculator - Calculate new raster map from a r.mapcalc expression.
 Raster (r.*)
 ParameterRaster|amap|amap|False
 ParameterRaster|bmap|bmap|False

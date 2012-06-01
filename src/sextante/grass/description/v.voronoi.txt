@@ -1,5 +1,5 @@
 v.voronoi
-Voronoi diagram
+v.voronoi - Creates a Voronoi diagram from an input vector map containing points or centroids.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|0|False
 ParameterBoolean|-l|Output tessellation as a graph (lines), not areas|False

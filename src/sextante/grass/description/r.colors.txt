@@ -1,5 +1,5 @@
 r.colors
-r.colors
+r.colors - Creates/modifies the color table associated with a raster map layer.
 Raster (r.*)
 ParameterRaster|map|Name of input raster map|False
 ParameterSelection|color|Type of color table|aspect;aspectcolr;bcyr;bgyr;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;gdd;grey;grey1.0;grey255;gyr;haxby;ndvi;population;precipitation;rainbow;ramp;rstcurv;ryb;ryg;sepia;slope;srtm;terrain;wave;random;grey.eq;grey.log;rules

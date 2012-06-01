@@ -1,5 +1,5 @@
 v.generalize
-Line simplification/smoothing
+v.generalize - Vector based generalization.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterSelection|method|method|douglas;douglas_reduction;lang;reduction;reumann;remove_small;boyle;sliding_averaging;distance_weighting;chaiken;hermite;snakes;network;displacement

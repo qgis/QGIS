@@ -1,5 +1,5 @@
 v.overlay
-Overlay two vector maps.
+v.overlay - Overlays two vector maps.
 Vector (v.*)
 ParameterVector|ainput|Name of input vector map (A)|2|False
 ParameterVector|binput|Name of input vector map (B)|2|False

@@ -1,5 +1,5 @@
 r.report
-r.report
+r.report - Reports statistics for raster map layers.
 Raster (r.*)
 ParameterMultipleInput|map|Raster map(s) to report on|3.0|False
 ParameterSelection|units|Units|mi;me;k;a;h;c;p

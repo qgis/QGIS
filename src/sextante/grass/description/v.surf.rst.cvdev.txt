@@ -1,5 +1,5 @@
-v.surf.rst
-Cross validation for surface interpolation with RST
+v.surf.rst.cvdev
+v.surf.rst.cvdev - Spatial approximation and topographic analysis using regularized spline with tension.
 Vector (v.*)
 ParameterVector|input|input|0|False
 ParameterString|where|where|

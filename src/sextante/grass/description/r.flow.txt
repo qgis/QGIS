@@ -1,5 +1,5 @@
 r.flow
-r.flow
+r.flow - Construction of slope curves (flowlines), flowpath lengths, and flowline densities (upslope areas) from a raster digital elevation model (DEM).
 Raster (r.*)
 ParameterRaster|elevin|Input elevation raster map|False
 ParameterRaster|aspin|Input aspect raster map|False

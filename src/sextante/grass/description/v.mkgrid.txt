@@ -1,5 +1,5 @@
 v.mkgrid
-Create grid
+v.mkgrid - Creates a GRASS vector map of a user-defined grid.
 Vector (v.*)
 ParameterString|grid|Number of rows and columns in grid|10,10
 ParameterSelection|position|Where to place the grid|region;coor

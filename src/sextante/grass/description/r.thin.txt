@@ -1,5 +1,5 @@
 r.thin
-r.thin
+r.thin - Thins non-zero cells that denote linear features in a raster map.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|iterations|Maximal number of iterations|200

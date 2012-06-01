@@ -1,5 +1,5 @@
 v.vol.rst
-Interpolates point data to a 3D raster map using RST
+v.vol.rst - Interpolates point data to a 3D raster map using regularized spline with tension (RST) algorithm.
 Vector (v.*)
 ParameterVector|input|Name of the vector map with input x,y,z,w|-1|False
 ParameterRaster|cellinp|Name of the surface raster map for cross-section|False

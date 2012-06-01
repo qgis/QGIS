@@ -1,5 +1,5 @@
 r.reclass
-r.reclass
+r.reclass - Creates a new map layer whose category values are based upon a reclassification of the categories in an existing raster map layer.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|rules|File containing reclass rules|/file
