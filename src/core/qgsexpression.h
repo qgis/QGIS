@@ -209,6 +209,8 @@ class CORE_EXPORT QgsExpression
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }
+    //! return quoted string (in single quotes)
+    static QString quotedString( QString text ) { return QString( "'%1'" ).arg( text.replace( "'", "''" ) ); }
 
     //////
 

@@ -122,6 +122,8 @@ public:
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name );
+    //! return quoted string (in single quotes)
+    static QString quotedString( QString text );
 
     //////
 

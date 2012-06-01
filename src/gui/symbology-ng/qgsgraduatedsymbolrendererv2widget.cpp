@@ -325,8 +325,8 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
   QgsLUDialog dialog( this );
 
   const QgsRendererRangeV2& range = mRenderer->ranges()[rangeIdx];
-  dialog.setLowerValue( QString( "%1" ).arg( range.lowerValue() ) );
-  dialog.setUpperValue( QString( "%1" ).arg( range.upperValue() ) );
+  dialog.setLowerValue( QString::number( range.lowerValue(), 'f', 4 ) );
+  dialog.setUpperValue( QString::number( range.upperValue(), 'f', 4 ) );
 
   if ( dialog.exec() == QDialog::Accepted )
   {
