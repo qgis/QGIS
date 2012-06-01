@@ -1,4 +1,4 @@
-v.buffer.column
+v.buffer
 v.buffer.column - Creates a buffer around features of given type.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
