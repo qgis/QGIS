@@ -1111,7 +1111,7 @@ Esto puede ocasionar resultados inesperados.</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation>campo de cuenta de puntos</translation>
+        <translation type="obsolete">campo de cuenta de puntos</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -1310,17 +1310,19 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Missing or invalid CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta el SRC o no es válido</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualmente QGIS no permite el acceso simultáneo desde 
+                                distintos hilos a la misma fuente de datos. Asegúrese de que las 
+                                tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
     </message>
 </context>
 <context>
@@ -1334,363 +1336,366 @@ Are you sure you want to proceed?</source>
     <name>DlgAddGeometryColumn</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>geom</source>
-        <translation type="unfinished"></translation>
+        <translation>geometría</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>PUNTO</translation>
     </message>
     <message>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>CADENADELINEAS</translation>
     </message>
     <message>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>POLÍGONO</translation>
     </message>
     <message>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPUNTO</translation>
     </message>
     <message>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTICADENADELINEAS</translation>
     </message>
     <message>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOLIGONO</translation>
     </message>
     <message>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>COLECCIONDEGEOMETRIAS</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensiones</translation>
+        <translation>Dimensiones</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>-1</source>
-        <translation type="unfinished"></translation>
+        <translation>-1</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateConstraint</name>
     <message>
         <source>Add constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir restricción</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Único</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateIndex</name>
     <message>
         <source>Create index</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear índice</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateTable</name>
     <message>
         <source>Create Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear tabla</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Add field</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir campo</translation>
     </message>
     <message>
         <source>Delete field</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar campo</translation>
     </message>
     <message>
         <source>Up</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>Create geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear columna de geometría</translation>
     </message>
     <message>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>PUNTO</translation>
     </message>
     <message>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>CADENADELINEAS</translation>
     </message>
     <message>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>POLÍGONO</translation>
     </message>
     <message>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPUNTO</translation>
     </message>
     <message>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTICADENADELINEAS</translation>
     </message>
     <message>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOLIGONO</translation>
     </message>
     <message>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>COLECCIONDEGEOMETRIAS</translation>
     </message>
     <message>
         <source>geom</source>
-        <translation type="unfinished"></translation>
+        <translation>geometría</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensiones</translation>
+        <translation>Dimensiones</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>-1</source>
-        <translation type="unfinished"></translation>
+        <translation>-1</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation type="unfinished">Crear índice espacial</translation>
+        <translation>Crear índice espacial</translation>
     </message>
 </context>
 <context>
     <name>DlgDbError</name>
     <message>
         <source>Database Error</source>
-        <translation type="unfinished">Error de la base de datos</translation>
+        <translation>Error de la base de datos</translation>
     </message>
     <message>
         <source>An error occured:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocurrió un error:</translation>
     </message>
     <message>
         <source>An error occured when executing a query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocurrió un error al ejecutar la consulta:</translation>
     </message>
     <message>
         <source>Query:</source>
-        <translation type="unfinished">Consulta:</translation>
+        <translation>Consulta:</translation>
     </message>
 </context>
 <context>
     <name>DlgFieldProperties</name>
     <message>
         <source>Field properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades del campo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Can be NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Puede ser NULO</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor predeterminado</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitud</translation>
     </message>
 </context>
 <context>
     <name>DlgImportVector</name>
     <message>
         <source>Import vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar capa vectorial</translation>
     </message>
     <message>
         <source>Schema:</source>
-        <translation type="unfinished">Esquema:</translation>
+        <translation>Esquema:</translation>
     </message>
     <message>
         <source>Table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabla:</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">Acción</translation>
+        <translation>Acción</translation>
     </message>
     <message>
         <source>Create new table</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva tabla</translation>
     </message>
     <message>
         <source>Drop existing one</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitar una existente</translation>
     </message>
     <message>
         <source>Append data into table</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir datos a la tabla</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Opciones</translation>
+        <translation>Opciones</translation>
     </message>
     <message>
         <source>Primary key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria:</translation>
     </message>
     <message>
         <source>Geometry column:</source>
-        <translation type="unfinished">Columna de la geometría:</translation>
+        <translation>Columna de geometría:</translation>
     </message>
     <message>
         <source>Source SRID:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID de origen:</translation>
     </message>
     <message>
         <source>Target SRID:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID de destino:</translation>
     </message>
     <message>
         <source>Encoding:</source>
-        <translation type="unfinished">Codificación:</translation>
+        <translation>Codificación:</translation>
     </message>
     <message>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear geometrías de partes sencillas en vez de multiparte</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation type="unfinished">Crear índice espacial</translation>
+        <translation>Crear índice espacial</translation>
     </message>
 </context>
 <context>
     <name>DlgSqlWindow</name>
     <message>
         <source>SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventana SQL</translation>
     </message>
     <message>
         <source>SQL query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Consulta SQL:</translation>
     </message>
     <message>
         <source>&amp;Execute (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ejecutar (F5)</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Limpiar</translation>
+        <translation>&amp;Limpiar</translation>
     </message>
     <message>
         <source>Result:</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultado:</translation>
     </message>
     <message>
         <source>Load as new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar como capa nueva</translation>
     </message>
     <message>
         <source>Column with unique 
 integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Columna con valores 
+enteros únicos</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Columna de geometría</translation>
+        <translation>Columna de geometría</translation>
     </message>
     <message>
         <source>Retrieve 
 columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtener 
+columnas</translation>
     </message>
     <message>
         <source>Layer name (prefix)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la capa (prefijo)</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Ráster</translation>
+        <translation>Ráster</translation>
     </message>
     <message>
         <source>Load now!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Cargar ahora!</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Lo siento</translation>
+        <translation>Lo siento</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Debe rellenar los campos requeridos: 
+columna de geometría - columna con valores enteros únicos</translation>
     </message>
 </context>
 <context>
@@ -1744,98 +1749,98 @@ geometry column - column with unique integer values</source>
     <name>DlgTableProperties</name>
     <message>
         <source>Table properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de la tabla</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Columnas</translation>
+        <translation>Columnas</translation>
     </message>
     <message>
         <source>Table columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Columnas de la tabla:</translation>
     </message>
     <message>
         <source>Add column</source>
-        <translation type="unfinished">Añadir columna</translation>
+        <translation>Añadir columna</translation>
     </message>
     <message>
         <source>Add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir columna de geometría</translation>
     </message>
     <message>
         <source>Edit column</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar columna</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished">Borrar columna</translation>
+        <translation>Borrar columna</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Restricciones</translation>
     </message>
     <message>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Primaria, claves externas, única y comprobar restricciones:</translation>
     </message>
     <message>
         <source>Add primary key / unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir clave primaria / única</translation>
     </message>
     <message>
         <source>Delete constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar restricción</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Índices</translation>
     </message>
     <message>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Índices definidos para esta tabla:</translation>
     </message>
     <message>
         <source>Add index</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir índice</translation>
     </message>
     <message>
         <source>Add spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir índice espacial</translation>
     </message>
     <message>
         <source>Delete index</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar índice</translation>
     </message>
 </context>
 <context>
     <name>DlgVersioning</name>
     <message>
         <source>Add versioning support to a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir soporte para control de versiones a una tabla</translation>
     </message>
     <message>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se espera que la tabla esté vacía, con una clave primaria.</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tabla</translation>
+        <translation>Tabla</translation>
     </message>
     <message>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation type="unfinished"></translation>
+        <translation>crear una vista con el contenido actual (&lt;TABLE&gt;_current)</translation>
     </message>
     <message>
         <source>New columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Columnas nuevas</translation>
     </message>
     <message>
         <source>Prim. key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>id_hist</source>
@@ -1843,23 +1848,23 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Start time</source>
-        <translation type="unfinished"></translation>
+        <translation>Hora de inicio</translation>
     </message>
     <message>
         <source>time_start</source>
-        <translation type="unfinished"></translation>
+        <translation>hora_inicio</translation>
     </message>
     <message>
         <source>End time</source>
-        <translation type="unfinished"></translation>
+        <translation>Hora de finalización</translation>
     </message>
     <message>
         <source>time_end</source>
-        <translation type="unfinished"></translation>
+        <translation>hora_finalización</translation>
     </message>
     <message>
         <source>SQL to be executed:</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL a ejecutar:</translation>
     </message>
 </context>
 <context>
@@ -2144,13 +2149,15 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de complemento</translation>
     </message>
     <message>
         <source>Unable to load %1 plugin. 
 The required &quot;%2&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede cargar el complemento %1. 
+Falta el módulo requerido &quot;%2&quot;. 
+Instálelo y pruebe otra vez.</translation>
     </message>
 </context>
 <context>
@@ -3897,7 +3904,9 @@ Would you like to add the new layer to the TOC?</source>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualmente QGIS no permite el acceso simultáneo desde 
+                                distintos hilos a la misma fuente de datos. Asegúrese de que las 
+                                tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
     </message>
 </context>
 <context>
@@ -4963,15 +4972,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">Base de datos</translation>
+        <translation>Base de datos</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished">Web</translation>
+        <translation>Web</translation>
     </message>
     <message>
         <source>Add feature</source>
@@ -5147,15 +5156,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Touch zoom and pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Tocar zum y desplazar</translation>
     </message>
     <message>
         <source>Copy style</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar estilo</translation>
     </message>
     <message>
         <source>Paste style</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegar estilo</translation>
     </message>
 </context>
 <context>
@@ -6046,6 +6055,13 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     <message>
         <source>Setting proxy failed.</source>
         <translation>Fallo al establecer el proxy.</translation>
+    </message>
+</context>
+<context>
+    <name>PointsInPolygonThread</name>
+    <message>
+        <source>point count field</source>
+        <translation type="unfinished">campo de cuenta de puntos</translation>
     </message>
 </context>
 <context>
@@ -7589,15 +7605,15 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Capas</translation>
+        <translation>Capas</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Ráster</translation>
+        <translation>Ráster</translation>
     </message>
     <message>
         <source>Globe</source>
@@ -7791,15 +7807,15 @@ Error(%2): %3</translation>
     </message>
     <message utf8="true">
         <source> m²</source>
-        <translation type="unfinished"></translation>
+        <translation> m²</translation>
     </message>
     <message utf8="true">
         <source> km²</source>
-        <translation type="unfinished"></translation>
+        <translation> km²</translation>
     </message>
     <message>
         <source> acres</source>
-        <translation type="unfinished"></translation>
+        <translation> acres</translation>
     </message>
     <message>
         <source>Creation error for features from #%1 to #%2. Provider errors was: 
