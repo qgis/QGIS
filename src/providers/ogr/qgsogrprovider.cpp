@@ -456,18 +456,22 @@ QString QgsOgrProvider::subsetString()
 
 QStringList QgsOgrProvider::subLayers() const
 {
-  QStringList theList = QStringList();
   if ( !valid )
   {
-    return theList;
+    return QStringList();
   }
+
+  if ( !mSubLayerList.isEmpty() )
+    return mSubLayerList;
 
   for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
-    QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
-    OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) );
+    OGRLayerH layer = OGR_DS_GetLayer( ogrDataSource, i );
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
+    QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
+    OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
-    int theLayerFeatureCount = OGR_L_GetFeatureCount( OGR_DS_GetLayer( ogrDataSource, i ), 1 ) ;
+    int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
 
     QString geom;
     switch ( layerGeomType )
@@ -486,11 +490,13 @@ QStringList QgsOgrProvider::subLayers() const
       case wkbMultiPoint25D:      geom = "MultiPoint25D"; break;
       case wkbMultiLineString25D: geom = "MultiLineString25D"; break;
       case wkbMultiPolygon25D:    geom = "MultiPolygon25D"; break;
-      default: geom="Unknown WKB: " + QString::number( layerGeomType );
+      default:                    geom = QString( "Unknown WKB: %1" ).arg( layerGeomType );
     }
-    theList.append( QString::number( i ) + ":" + theLayerName + ":" + QString::number( theLayerFeatureCount ) + ":" + geom );
+
+    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount ).arg( geom );
   }
-  return theList;
+
+  return mSubLayerList;
 }
 
 void QgsOgrProvider::setEncoding( const QString& e )

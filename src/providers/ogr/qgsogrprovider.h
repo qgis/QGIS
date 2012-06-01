@@ -338,6 +338,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int geomType;
     long featuresCounted;
 
+    mutable QStringList mSubLayerList;
+
     /** Flag whether OGR will return fields required by nextFeature() calls.
         The relevant fields are first set in select(), however the setting may be
         interferred by some other calls. This flag ensures they are set again
