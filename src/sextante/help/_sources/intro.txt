@@ -14,11 +14,11 @@ Basic elements of the SEXTANTE GUI
 ----------------------------------
 
 There are four basic elements in the SEXTANTE GUI, which are used to run
-SEXTANTE algorithms for different purposes. Chosing one tool or another
+SEXTANTE algorithms for different purposes. Choosing one tool or another
 will depend on the kind of analysis that is to be performed and the
 particular characteristics of each user and project. All of them (except
 for the batch processing interface, which is called from the toolbox, as
-we will see) can be accesed from the *SEXTANTE* menu item (you will see
+we will see) can be accessed from the *SEXTANTE* menu item (you will see
 more than four entries. The remaining ones are not used to execute
 algorithms and will be explained later in this chapter).
 

@@ -62,7 +62,7 @@ A note on vector layer selections
 By default, when an external algorithm takes a vector layer, it will use
 all its features, even if a selection exist in QGIS. You can make an
 external algorithm aware of that selection by checking the *Use selected
-features in eternal applications* item in the *General* settings group.
+features in external applications* item in the *General* settings group.
 When you do so, each time you execute an external algorithm that uses a
 vector layer, the selected features of that layer will be exported to a
 new layer, and the algorithm will work with that new layer instead.
@@ -100,7 +100,7 @@ parameter values, SEXTANTE will show an error message. This is because
 the algorithm descriptions (needed to create the parameters dialog and
 give SEXTANTE the information it needs about the algorithm) are not
 included with SAGA, but with SEXTANTE instead. That is, they are part of
-SEXTANTE, so you have them in yur installation even if you have not
+SEXTANTE, so you have them in your installation even if you have not
 installed SEXTANTE. Running the algorithm, however, needs SAGA binaries
 installed in your system.
 
@@ -111,7 +111,7 @@ Most of SAGA algorithms that require several input raster layers,
 require them to have the same grid system. That is, to cover the same
 geographic area and have the same cellsize, so their corresponding grids
 match. When calling SAGA algorithms from SEXTANTE, you can use any
-layer, regarless of its cellsize and extent. When multiple raster layers
+layer, regardless of its cellsize and extent. When multiple raster layers
 are used as input for a SAGA algorithm, SEXTANTE resamples them to a
 common grid system and then passes them to SAGA (unless the SAGA
 algorithm can operate with layers from different grid systems).
@@ -235,7 +235,7 @@ Knowing that, we can now understand the first line of our example script
     pts=spsample(polyg,numpoints,type="random")
 
 The variable ``polygon`` already contains a ``SpatialPolygonsDataFrame``
-object, so it can be usedto call the ``spsample`` method, just like the
+object, so it can be used to call the ``spsample`` method, just like the
 ``numpoints`` one, which indicates the number of points to add to the
 created sample grid.
 
@@ -269,7 +269,7 @@ layer:
     >lillie.test(layer[[field]])    
 
 The output ot the last line is printed, but the output of the first is
-not (and neither are the otputs from other command lines added
+not (and neither are the outputs from other command lines added
 automatically by SEXTANTE).
 
 If your algorithm creates any kind of graphics (using the ``plot()``

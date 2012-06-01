@@ -128,7 +128,7 @@ algorithms: ``runalg``. Its syntax is as follows:
     > runalg{name_of_the_algorithm, param1, param2, ..., paramN, 
              Output1, Output2, ..., OutputN)
 
-The list of parameters and ouputs to add depends on the algorithm you
+The list of parameters and outputs to add depends on the algorithm you
 want to run, and is exactly the list that the ``describealg`` method
 gives you, in the same order as shown.
 
@@ -190,7 +190,7 @@ For output data objects, type the filepath to be used to save it, just
 as it is done from the toolbox. If you want to save the result to a
 temporary file, use ``None``. The extension of the file determines the
 file format. If you enter a file extension not included in the ones
-supportede by the algorithm, the default file format for that output
+supported by the algorithm, the default file format for that output
 type will be used, and its corresponding extension appended to the given
 filepath.
 
@@ -289,7 +289,7 @@ SEXTANTE supports in its scripts, their syntax and some examples.
 
 The parameter name is the name that will be shown to the user when
 executing the algorithm, and also the variable name to use in the script
-code. The value entered by the user for that parameter will be asigned
+code. The value entered by the user for that parameter will be assigned
 to a variable with that name.
 
 Layers and tables values are strings containing the filepath of the
@@ -310,7 +310,7 @@ Outputs are defined in a similar manner, using the following tags:
 
 -  ``output file``
 
-The value asigned to the output variables is always a string with a
+The value assigned to the output variables is always a string with a
 filepath. It will correspond to a temporary filepath in case the user
 has not entered any output filename.
 
@@ -320,7 +320,7 @@ method does not load the layers it produces, the final TWI layer will be
 loaded, since it is saved to the file entered by the user, which is the
 value of the corresponding output.
 
-Do not use the ``load()`` method in your scripta algorithms, but just
+Do not use the ``load()`` method in your script algorithms, but just
 when working with the console line. If a layer is created as output of
 an algorithm, it should be declared as such. Otherwise, you will not be
 able to properly use the algorithm in the modeler, since its syntax (as
