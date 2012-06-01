@@ -3,7 +3,7 @@ r.colors - Creates/modifies the color table associated with a raster map layer.
 Raster (r.*)
 ParameterRaster|map|Name of input raster map|False
 ParameterSelection|color|Type of color table|aspect;aspectcolr;bcyr;bgyr;byg;byr;celsius;corine;curvature;differences;elevation;etopo2;evi;gdd;grey;grey1.0;grey255;gyr;haxby;ndvi;population;precipitation;rainbow;ramp;rstcurv;ryb;ryg;sepia;slope;srtm;terrain;wave;random;grey.eq;grey.log;rules
-ParameterString|rules|Path to rules file ("-" to read rules from stdin)|/file
+ParameterFile|rules|Path to rules file ("-" to read rules from stdin)|False
 ParameterBoolean|-l|List available rules then exit|False
 ParameterBoolean|-n|Invert colors|False
 ParameterBoolean|-g|Logarithmic scaling|False

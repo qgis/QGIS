@@ -4,6 +4,6 @@ Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 ParameterString|type|Feature type|point,line,boundary,centroid
 ParameterTableField|column|The name of the column whose values are to be used as new categories|input
-ParameterFile|rules|Full path to the reclass rule file|
+ParameterFile|rules|Full path to the reclass rule file|False
 OutputVector|output|Name for output vector map
 
