@@ -62,7 +62,7 @@ the modeler window:
 -  Boolean value
 
 Double-clicking on any of them, a dialog is shown to define its
-caracteristics. Depending on the parameter itself, the dialog will
+characteristics. Depending on the parameter itself, the dialog will
 contain just one basic element (the description, which is what the user
 will see when executing the model) or more of them. For instance, when
 adding a numerical value, as it can be seen in the next figure, apart
@@ -97,7 +97,7 @@ To add an algorithm, double-click on its name. An execution dialog will
 appear, with a content similar to the one found in the execution panel
 that SEXTANTE shows when executing the algorithm from the toolbox. the
 one shown next correspond to the SAGA convergence index algorithm, the
-same one we saw in the section dedicated to the SEXTANTe toolbox.
+same one we saw in the section dedicated to the SEXTANTE toolbox.
 
 .. figure:: models_parameters4.png
    :align: center
@@ -114,7 +114,7 @@ you supply will be the description for the output, which will be the one
 the user will see when executing the model.
 
 Selecting the value of each parameter is also a bit different, since
-there are importante differences between the context of the modeler and
+there are important differences between the context of the modeler and
 the toolbox one. Let's see how to introduce the values for each type of
 parameter.
 
@@ -154,7 +154,8 @@ Elements can be dragged to a different position within the canvas, to
 change the way the module structure is displayed and make it more clear
 and intuitive. Links between elements are update automatically.
 
-You can run your algorithm anytime clicking on the *Run* button. However, in order to use it from the toolbox, it has to be saved and the modeler dialog closed, to allow the toolbox to refresh its contents.
+You can run your algorithm anytime clicking on the *Run* button. However, 
+in order to use it from the toolbox, it has to be saved and the modeler dialog closed, to allow the toolbox to refresh its contents.
 
 Saving and loading models
 -------------------------
@@ -217,7 +218,7 @@ if the number of output layers cannot be know in advance), then it is
 not possible to use it within a model, and thus does not appear in the
 list of them that you can find in the modeler dialog.
 
-Additionaly, you will see some algorithms in the modeler that are not
+Additionally, you will see some algorithms in the modeler that are not
 found in the toolbox. This algorithms are meant to be used exclusively
 as part of a model, and they are of no interest in a different context.
 The *Calculator* algorithm is an example of that. It is just a simple
