@@ -227,9 +227,6 @@ class GrassAlgorithm(GeoAlgorithm):
             else:
                 command+=(" " + out.name + "=" + out.name);
 
-
-            command+=(" " + out.name + "=" + out.name);
-
         command += " --overwrite"
         commands.append(command)
 
