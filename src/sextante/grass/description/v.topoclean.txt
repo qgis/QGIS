@@ -1,8 +1,0 @@
-v.in.ogr
-v.topoclean - Cleans up topological errors in polygon vectors.
-Vector (v.*)
-ParameterVector|input|Name of vector to be cleaned|2|False
-ParameterNumber|snap|Snapping threshold for boundaries (-1 for no snap)|None|None|-1|False
-ParameterNumber|min_area|Minimum size of area to be imported (square units)|None|None|0.0001|False
-OutputVector|output|Name for output vector map
-
