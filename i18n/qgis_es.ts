@@ -1110,10 +1110,6 @@ Esto puede ocasionar resultados inesperados.</translation>
         <translation>Por favor, especifique el campo de cuenta de salida</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">campo de cuenta de puntos</translation>
-    </message>
-    <message>
         <source>Simplify results</source>
         <translation>Resultados de la simplificación</translation>
     </message>
@@ -6061,7 +6057,7 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">campo de cuenta de puntos</translation>
+        <translation>campo de cuenta de puntos</translation>
     </message>
 </context>
 <context>

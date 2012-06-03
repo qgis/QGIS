@@ -1001,10 +1001,6 @@ Dit een onverwacht resultaat opleveren.</translation>
         <translation>Selecteer veld voor de uitkomst van de telling</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">puntenaantal veld</translation>
-    </message>
-    <message>
         <source>Create Point Distance Matrix</source>
         <translation>Punt-afstand Matrix Aanmaken</translation>
     </message>
@@ -5744,7 +5740,7 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">puntenaantal veld</translation>
+        <translation>puntenaantal veld</translation>
     </message>
 </context>
 <context>

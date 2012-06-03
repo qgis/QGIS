@@ -28550,44 +28550,6 @@ SQL: %3</translation>
         <translation>Kleine Ganzzahl (16bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="146"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="324"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="343"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="380"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="403"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="505"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="623"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="638"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="642"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="756"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1051"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1261"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1370"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1376"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1387"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1494"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1500"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1726"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1938"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2113"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3027"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3041"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3865"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3912"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4174"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4208"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4213"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4249"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4261"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4281"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4287"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4292"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4298"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="4303"/>
-        <source></source>
-        <translation>Verbindung zur Datenbank schlug fehl. Import der Layer abgebrochen.</translation>
-    </message>
-    <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="125"/>
         <source>invalid PostgreSQL layer</source>
         <translation>Ungültiger PostgreSQL-Layer</translation>

@@ -32323,10 +32323,6 @@ SQL: %1</translation>
         <source>SQLite error getting feature: %1</source>
         <translation>Ошибка SQLite при получении объекта: %1</translation>
     </message>
-    <message>
-        <source></source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>QgsSpatiaLiteSourceSelect</name>

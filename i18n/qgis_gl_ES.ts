@@ -868,10 +868,6 @@ This may cause unexpected results.</source>
 Isto pode causar resultados inesperados.</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">Campo de conta de puntos</translation>
-    </message>
-    <message>
         <source>Split vector layer</source>
         <translation>Dividir capa vectorial</translation>
     </message>
@@ -6389,7 +6385,7 @@ Remedie esta situación primeiro, porque o Plugin OSM non sabe que capa será o 
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">Campo de conta de puntos</translation>
+        <translation>Campo de conta de puntos</translation>
     </message>
 </context>
 <context>

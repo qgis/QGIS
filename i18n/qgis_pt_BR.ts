@@ -1341,10 +1341,6 @@ Todos aqueles que relataram bugs / correções / sugestões / comentários / etc
         <translation>Especifique o campo de contagem de saída</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">campo de ponto de contagem</translation>
-    </message>
-    <message>
         <source>Please select a raster layer</source>
         <translation>Selecione uma camada raster</translation>
     </message>
@@ -7050,7 +7046,7 @@ Corrija esta situação primeiro, porque o complemento OSM não sabe qual camada
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">campo de ponto de contagem</translation>
+        <translation>campo de ponto de contagem</translation>
     </message>
 </context>
 <context>

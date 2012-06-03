@@ -908,10 +908,6 @@ To může způsobit neočekávané výsledky.</translation>
         <translation>Určete prosím výstupní pole součtu</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">pole počtu bodů</translation>
-    </message>
-    <message>
         <source>Please select a raster layer</source>
         <translation>Prosím zvokte rastrovou vrstvu</translation>
     </message>
@@ -7049,7 +7045,7 @@ Změňte prosím nejdříve tuto situaci, protože zásuvný modul OSM neví, ja
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">pole počtu bodů</translation>
+        <translation>pole počtu bodů</translation>
     </message>
 </context>
 <context>

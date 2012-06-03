@@ -34892,10 +34892,6 @@ Lỗi là:
 <context>
     <name>QgsSpatiaLiteProvider</name>
     <message>
-        <source></source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="487"/>
         <source>Text</source>
         <translation>Chữ</translation>

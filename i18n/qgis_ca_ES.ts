@@ -9520,12 +9520,6 @@ Errors: %2
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1049"/>
-        <source></source>
-        <comment>Tile scale slider</comment>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2290"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation type="unfinished"></translation>

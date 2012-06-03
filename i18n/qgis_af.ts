@@ -1136,7 +1136,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">punttellingveld</translation>
+        <translation>punttellingveld</translation>
     </message>
     <message>
         <source>Warning</source>

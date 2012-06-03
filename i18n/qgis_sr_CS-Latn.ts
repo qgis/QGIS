@@ -11545,13 +11545,6 @@ sačuvate tekući projekat?</translation>
         <translation>Upozori me pri otvaranju projektne datoteke sačuvane starijom verzijom QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="971"/>
-        <source></source>
-        <comment>Live GPS tracking</comment>
-        <translatorcomment>GPS praćenje</translatorcomment>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="59"/>
         <source>&amp;Raster</source>
         <translation type="unfinished">&amp;Raster</translation>

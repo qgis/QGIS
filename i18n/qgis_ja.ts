@@ -1222,10 +1222,6 @@ This may cause unexpected results.</source>
         <translation>出力カウントフィールドを指定して下さい</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">ポイントカウントフィールド</translation>
-    </message>
-    <message>
         <source>Please select a raster layer</source>
         <translation>ラスタレイヤを選択して下さい</translation>
     </message>
@@ -7071,7 +7067,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">ポイントカウントフィールド</translation>
+        <translation>ポイントカウントフィールド</translation>
     </message>
 </context>
 <context>

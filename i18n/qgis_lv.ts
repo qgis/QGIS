@@ -989,10 +989,6 @@ Vai tiešām vēlaties turpināt?</translation>
         <translation>Lūdzu norādiet izvades skaita lauku</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">punktu skaita lauks</translation>
-    </message>
-    <message>
         <source>Create Point Distance Matrix</source>
         <translation>Izveidot punktu distanču matricu</translation>
     </message>
@@ -5660,7 +5656,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">punktu skaita lauks</translation>
+        <translation>punktu skaita lauks</translation>
     </message>
 </context>
 <context>
@@ -8988,11 +8984,6 @@ This copy of QGIS has been built without PostgreSQL support.</source>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation type="obsolete">Šī QGIS versija raksta atkļūdošanas izvadi.</translation>
-    </message>
-    <message>
-        <source></source>
-        <comment>Tile scale slider</comment>
-        <translation></translation>
     </message>
     <message>
         <source>%1 doesn&apos;t have any layers</source>

@@ -1280,10 +1280,6 @@ Biztos, hogy folytatod?</translation>
         <translation>add meg az output darabszám mezőt</translation>
     </message>
     <message>
-        <source>point count field</source>
-        <translation type="obsolete">Pont darabszám mező</translation>
-    </message>
-    <message>
         <source>Please select a raster layer</source>
         <translation>Válassz egy raszter réteget</translation>
     </message>
@@ -6954,7 +6950,7 @@ Az OSM modul nem tudja melyik réteg az import célja.</translation>
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">Pont darabszám mező</translation>
+        <translation>Pont darabszám mező</translation>
     </message>
 </context>
 <context>
@@ -36930,10 +36926,6 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="841"/>
         <source>SQLite error getting feature: %1</source>
         <translation>SQLite hiba %1 elem beszerzésében</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
 </context>
 <context>

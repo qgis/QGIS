@@ -96,14 +96,19 @@ for my $i (<i18n/qgis_*.ts>) {
 	close F;
 
 	my $n = $translations+$untranslated;
-	$maxn = $n unless defined $maxn && $maxn>$n;
+	$maxn = $n unless defined $maxn;
+
+	if( $n>$maxn ) {
+		print STDERR "$i: more translation than others. ($n>$maxn)\n";
+		$maxn = $n;
+	}
 
 	push @lang, { code=>$langcode, name=>$name, n=>$n, translations=>$translations, finished=>$finished, unfinished=>$unfinished, untranslated=>$untranslated, };
 }
 
 foreach my $l (@lang) {
 	$l->{diff}       = $l->{n}-$maxn;
-	$l->{percentage} = ($l->{finished}+$l->{unfinished})/$maxn*100;
+	$l->{percentage} = ($l->{finished}+$l->{unfinished}/2)/$maxn*100;
 }
 
 if ($ARGV[0] eq "site") {
