@@ -1002,7 +1002,7 @@ Dit een onverwacht resultaat opleveren.</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation>puntenaantal veld</translation>
+        <translation type="obsolete">puntenaantal veld</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -5741,6 +5741,13 @@ Pas dat eerst aan, want de OSM-plugin weet niet naar welke kaartlaag moet worden
     </message>
 </context>
 <context>
+    <name>PointsInPolygonThread</name>
+    <message>
+        <source>point count field</source>
+        <translation type="unfinished">puntenaantal veld</translation>
+    </message>
+</context>
+<context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -6607,10 +6614,13 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>line %1 with less than two points</source>
         <translation>lijn %1 heeft minder dan twee punten</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation>lijn %1 bevat %n dubbele hoekpunten bij %2
+        <translation type="unfinished">
+            <numerusform>lijn %1 bevat %n dubbele hoekpunten bij %2
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -9082,10 +9092,13 @@ Fouten:  %2
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Laag %1 is geen geldige laag en kan niet worden toegevoegd</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation>%n features geselecteerd in laag %1.
+        <translation type="unfinished">
+            <numerusform>%n features geselecteerd in laag %1.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -9124,10 +9137,13 @@ Fouten negeren?</translation>
         <source>Delete features</source>
         <translation>Kaartobjecten verwijderen</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation>%n kaartobjecten verwijderen?
+        <translation type="unfinished">
+            <numerusform>%n kaartobjecten verwijderen?
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -9266,10 +9282,13 @@ This copy of QGIS writes debugging output.</source>
 Always ignore these errors?</source>
         <translation>Deze fouten altijd negeren?</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation>%n SSL-fouten vonden plaats
+        <translation type="unfinished">
+            <numerusform>%n SSL-fouten vonden plaats
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -10463,22 +10482,31 @@ User DB Path:	%8</translation>
         <source>Error during search</source>
         <translation>Fout tijdens zoekactie</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation>Attribuuttabel - %1 (%n Objecten)
+        <translation type="unfinished">
+            <numerusform>Attribuuttabel - %1 (%n Objecten)
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation>Attribuuttabel - %1 :: %n / %2 objecten geselecteerd
+        <translation type="unfinished">
+            <numerusform>Attribuuttabel - %1 :: %n / %2 objecten geselecteerd
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation>Attribuuttabel - %1 (%n gevonden objecten)
+        <translation type="unfinished">
+            <numerusform>Attribuuttabel - %1 (%n gevonden objecten)
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -11108,10 +11136,13 @@ Database:%2</source>
 Driver: %1
 Database: %2</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation>Weet u zeker dat u %n favorieten wilt verwijderen?
+        <translation type="unfinished">
+            <numerusform>Weet u zeker dat u %n favorieten wilt verwijderen?
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -13094,6 +13125,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Rotation </source>
         <comment>Rotation</comment>
+        <extracomment>Rotation</extracomment>
         <translation>Rotatie</translation>
     </message>
 </context>
@@ -14139,7 +14171,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Collapse All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alles inklappen</translation>
     </message>
     <message>
         <source>Select All</source>
@@ -14351,7 +14383,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verticaal</translation>
     </message>
     <message>
         <source>&amp;Color</source>
@@ -15043,7 +15075,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGis files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS bestanden</translation>
     </message>
 </context>
 <context>
@@ -16139,7 +16171,7 @@ gray = no data
     </message>
     <message>
         <source>Dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dimensies</translation>
     </message>
     <message>
         <source>quality of the position fix: Differential, Non-differential or No position</source>
@@ -17503,7 +17535,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Symbol levels...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Symboollagen...</translation>
     </message>
 </context>
 <context>
@@ -17638,10 +17670,13 @@ p, li { white-space: pre-wrap; }
         <source>Question</source>
         <translation>Vraag</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?
+        <translation type="unfinished">
+            <numerusform>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -19587,10 +19622,13 @@ in regel %2 kolom %3</translation>
         <source>Unhandled layer will be lost.</source>
         <translation>Niet verwerkte bestanden gaan verloren.</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.
+        <translation type="unfinished">
+            <numerusform>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -19759,12 +19797,15 @@ in regel %2 kolom %3</translation>
         <source>Closing down connection</source>
         <translation>Verbinding wordt afgesloten</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
+        <translation type="unfinished">
+            <numerusform>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
 Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -22472,7 +22513,7 @@ eigenschappen
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geometriekolom</translation>
     </message>
     <message>
         <source>Primary key column</source>
@@ -22550,7 +22591,7 @@ eigenschappen
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geometriekolom</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -23436,7 +23477,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OGR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OGR</translation>
     </message>
     <message>
         <source>Couldn&apos;t open file %1.qpj</source>
@@ -23463,11 +23504,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OGR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OGR</translation>
     </message>
     <message>
         <source>OGR[%1] error %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">OGR[%1] fout %2: %3</translation>
     </message>
     <message>
         <source>Read attempt on an invalid OGR data source</source>
@@ -23804,7 +23845,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GEOS</translation>
     </message>
     <message>
         <source>Always</source>
@@ -24580,7 +24621,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPGConnectionItem</name>
     <message>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Problemen bij het ophalen van de lagen</translation>
     </message>
     <message>
         <source>Edit...</source>
@@ -25214,7 +25255,7 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Geometriekolom</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -26164,7 +26205,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPostgresConn</name>
     <message>
         <source>Connection to database failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verbinding met database mislukt</translation>
     </message>
     <message>
         <source>PostGIS</source>
@@ -27200,10 +27241,13 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>Het &apos;where&apos;-filter levert %n rijen op.
+        <translation type="unfinished">
+            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -28940,10 +28984,13 @@ p, li { white-space: pre-wrap; }
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation>Filter levert %n objecten
+        <translation type="unfinished">
+            <numerusform>Filter levert %n objecten
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -29741,10 +29788,13 @@ p, li { white-space: pre-wrap; }
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
         <translation>Er is geen attribuut &apos;%1&apos; in de huidige vectorlaag. Selecteer een aanwezig attribuut</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation>%n passende objecten gevonden.
+        <translation type="unfinished">
+            <numerusform>%n passende objecten gevonden.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -29794,10 +29844,13 @@ p, li { white-space: pre-wrap; }
         <source>single point</source>
         <translation>enkele punt</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
-        <translation>Validatie klaar (%n fouten gevonden).
+        <translation type="unfinished">
+            <numerusform>Validatie klaar (%n fouten gevonden).
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -30264,10 +30317,13 @@ SQL: %1</source>
         <source>Insufficient number of layers</source>
         <translation type="obsolete">Onvoldoende kaartlagen</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation>%n geselecteerde geometrieën
+        <translation type="unfinished">
+            <numerusform>%n geselecteerde geometrieën
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -32286,76 +32342,112 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>no renderer</source>
         <translation>geen &apos;renderer&apos;</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation>GESLAAGD: %n attributen verwijderd.
+        <translation type="unfinished">
+            <numerusform>GESLAAGD: %n attributen verwijderd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation>FOUT: %n attributen niet verwijderd.
+        <translation type="unfinished">
+            <numerusform>FOUT: %n attributen niet verwijderd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation>GESLAAGD: %n attributen toegevoegd.
+        <translation type="unfinished">
+            <numerusform>GESLAAGD: %n attributen toegevoegd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation>FOUT: %n nieuwe attributen niet toegevoegd
+        <translation type="unfinished">
+            <numerusform>FOUT: %n nieuwe attributen niet toegevoegd
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation>GESLAAGD: %n attribuutwaarden aangepast.
+        <translation type="unfinished">
+            <numerusform>GESLAAGD: %n attribuutwaarden aangepast.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation>FOUT: %n attribuutwaarden zijn niet aangepast.
+        <translation type="unfinished">
+            <numerusform>FOUT: %n attribuutwaarden zijn niet aangepast.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation>GESLAAGD: %n objecten toegevoegd.
+        <translation type="unfinished">
+            <numerusform>GESLAAGD: %n objecten toegevoegd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation>FOUT: %n objecten niet toegevoegd.
+        <translation type="unfinished">
+            <numerusform>FOUT: %n objecten niet toegevoegd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation>GESLAAGD: %n geometrieën zijn aangepast.
+        <translation type="unfinished">
+            <numerusform>GESLAAGD: %n geometrieën zijn aangepast.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation>FOUT: %n geometrieën niet aangepast.
+        <translation type="unfinished">
+            <numerusform>FOUT: %n geometrieën niet aangepast.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation>GESLAAGD: %n objecten verwijderd.
+        <translation type="unfinished">
+            <numerusform>GESLAAGD: %n objecten verwijderd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation>FOUT: %n objecten niet verwijderd.
+        <translation type="unfinished">
+            <numerusform>FOUT: %n objecten niet verwijderd.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -32446,10 +32538,13 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>Comment</source>
         <translation>Opmerking</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation>FOUT: %n objecten niet toegevoegd - de provider ondersteund het toevoegen niet.
+        <translation type="unfinished">
+            <numerusform>FOUT: %n objecten niet toegevoegd - de provider ondersteund het toevoegen niet.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -32832,11 +32927,11 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Value relation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Waarde-relatie</translation>
     </message>
     <message>
         <source>UUID generator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">UUID-generator</translation>
     </message>
     <message>
         <source>Load layer properties from style file</source>
@@ -33540,7 +33635,7 @@ Features</source>
     <name>QgsWMSConnectionItem</name>
     <message>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Problemen bij het ophalen van de lagen</translation>
     </message>
     <message>
         <source>Edit...</source>
@@ -33648,10 +33743,13 @@ verschilt van de GetCapabilities URL
 
 Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation>Ruimtelijke Referentie Systemen (%n beschikbaar)
+        <translation type="unfinished">
+            <numerusform>Ruimtelijke Referentie Systemen (%n beschikbaar)
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -33678,10 +33776,13 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>No image encoding selected</source>
         <translation>Geen image-encoding geselecteerd</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation>%n Lagen geselecteerd
+        <translation type="unfinished">
+            <numerusform>%n Lagen geselecteerd
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -33737,10 +33838,13 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>XML files (*.xml *XML)</source>
         <translation>XML bestanden (*.xml *.XML)</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation>Opties (%n ruimtelijke referentie systemen beschikbaar)
+        <translation type="unfinished">
+            <numerusform>Opties (%n ruimtelijke referentie systemen beschikbaar)
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -34189,10 +34293,13 @@ Antwoord was:
         <source>Dom Exception</source>
         <translation>DOM-fout</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation>%n tile-aanvragen op de achtergrond
+        <translation type="unfinished">
+            <numerusform>%n tile-aanvragen op de achtergrond
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -34203,22 +34310,31 @@ Antwoord was:
         <source>Getting tiles via WMS.</source>
         <translation>Tiles via WMS ophalen.</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation>, %n cache hits
+        <translation type="unfinished">
+            <numerusform>, %n cache hits
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation>, %n cache misses.
+        <translation type="unfinished">
+            <numerusform>, %n cache misses.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation>, %n fouten.
+        <translation type="unfinished">
+            <numerusform>, %n fouten.
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -34278,10 +34394,13 @@ Tried URL: %1</source>
         <source>(Unknown error code)</source>
         <translation>(Onbekende foutcode)</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation>(en %n meer)
+        <translation type="unfinished">
+            <numerusform>(en %n meer)
+        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
