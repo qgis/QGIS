@@ -63,28 +63,38 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
   bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
-  if ( ignoreGetMap || ignoreGetFeatureInfo || ignoreAxisOrientation )
+  bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
+
+  QString connArgs, delim;
+
+
+  if ( ignoreGetMap )
   {
-    QString connArgs = "ignoreUrl=";
+    connArgs += delim + "GetMap";
+    delim = ";";
+  }
 
-    if ( ignoreGetMap )
-    {
-      connArgs += "GetMap";
-    }
+  if ( ignoreGetFeatureInfo )
+  {
+    connArgs += delim + "GetFeatureInfo";
+    delim = ";";
+  }
 
-    if ( ignoreGetFeatureInfo )
-    {
-      if ( !connArgs.endsWith( "=" ) )
-        connArgs += ";";
-      connArgs += "GetFeatureInfo";
-    }
+  if ( ignoreAxisOrientation )
+  {
+    connArgs += delim + "AxisOrientation";
+    delim = ";";
+  }
 
-    if ( ignoreAxisOrientation )
-    {
-      if ( !connArgs.endsWith( "=" ) )
-        connArgs += ";";
-      connArgs += "AxisOrientation";
-    }
+  if ( invertAxisOrientation )
+  {
+    connArgs += delim + "InvertAxisOrientation";
+    delim = ";";
+  }
+
+  if( !connArgs.isEmpty() )
+  {
+    connArgs.prepend( "ignoreUrl=" );
 
     if ( mConnectionInfo.startsWith( "username=" ) )
     {

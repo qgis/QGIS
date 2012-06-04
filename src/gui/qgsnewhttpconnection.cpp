@@ -53,12 +53,14 @@ QgsNewHttpConnection::QgsNewHttpConnection(
       cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
       cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
       cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
+      cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
     }
     else
     {
       cbxIgnoreGetMapURI->setVisible( false );
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
       cbxIgnoreAxisOrientation->setVisible( false );
+      cbxInvertAxisOrientation->setVisible( false );
     }
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
@@ -124,6 +126,7 @@ void QgsNewHttpConnection::accept()
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
     settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
   }
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );

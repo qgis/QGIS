@@ -130,6 +130,7 @@ void QgsWmsProvider::parseUri( QString uri )
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mIgnoreAxisOrientation = false;
+    mInvertAxisOrientation = false;
 
     QString layer;
 
@@ -178,6 +179,10 @@ void QgsWmsProvider::parseUri( QString uri )
           else if ( param == "AxisOrientation" )
           {
             mIgnoreAxisOrientation = true;
+          }
+          else if ( param == "InvertAxisOrientation" )
+          {
+            mInvertAxisOrientation = true;
           }
         }
       }
@@ -549,6 +554,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
       changeXY = true;
     }
   }
+
+  if ( mInvertAxisOrientation )
+    changeXY = !changeXY;
 
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
@@ -2529,12 +2537,16 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
     s.crs = crs.authid();
 
+    bool invert = !mIgnoreAxisOrientation && crs.axisInverted();
+    if ( mInvertAxisOrientation )
+      invert = !invert;
+
     QgsDebugMsg( QString( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" )
                  .arg( s.identifier )
                  .arg( supportedCRS )
                  .arg( s.crs )
                  .arg( metersPerUnit, 0, 'f' )
-                 .arg( !mIgnoreAxisOrientation && crs.axisInverted() ? "yes" : "no" )
+                 .arg( invert ? "yes" : "no" )
                );
 
     for ( QDomNode n1 = n0.firstChildElement( "TileMatrix" );
@@ -2553,7 +2565,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       QStringList topLeft = n1.firstChildElement( "TopLeftCorner" ).text().split( " " );
       if ( topLeft.size() == 2 )
       {
-        if ( !mIgnoreAxisOrientation && crs.axisInverted() )
+        if ( invert )
         {
           m.topLeft.set( topLeft[1].toDouble(), topLeft[0].toDouble() );
         }
@@ -3732,6 +3744,9 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
       changeXY = true;
     }
   }
+
+  if ( mInvertAxisOrientation )
+    changeXY = !changeXY;
 
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
