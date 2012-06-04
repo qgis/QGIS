@@ -1690,9 +1690,9 @@ QString createFilters( QString type )
         myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), "*.itf *.xml *.ili" );
         myExtensions << "itf" << "xml" << "ili";
       }
-      else if ( driverName.startsWith( "INGRES" ) )
+      else if ( driverName.startsWith( "Ingres" ) )
       {
-        myDatabaseDrivers += QObject::tr( "INGRES" ) + ",INGRES;";
+        myDatabaseDrivers += QObject::tr( "Ingres" ) + ",Ingres;";
       }
       else if ( driverName.startsWith( "KML" ) )
       {
