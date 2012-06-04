@@ -8,7 +8,7 @@
 [general]
 name=SEXTANTE
 description=SEXTANTE for QGIS
-version=1.0.5
+version=1.0.7
 qgisMinimumVersion=1.0
 class_name=SextantePlugin
 website=www.sextantegis.com

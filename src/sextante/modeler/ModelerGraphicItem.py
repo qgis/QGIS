@@ -83,6 +83,17 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                                    "Other elements depend on the selected one.\nRemove them before trying to remove it.")
 
     def getAdjustedText(self, text):
+        font = QtGui.QFont("Verdana", 8)
+        fm = QtGui.QFontMetricsF(font)
+        w = fm.width(text)
+        if w < self.BOX_WIDTH:
+            return text
+
+        text = text[0:-3] + "..."
+        w = fm.width(text)
+        while(w > self.BOX_WIDTH):
+            text = text[0:-4] + "..."
+            w = fm.width(text)
         return text
 
 
@@ -96,10 +107,11 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         painter.setFont(font)
         painter.setPen(QtGui.QPen(QtCore.Qt.black))
         fm = QtGui.QFontMetricsF(font)
-        w = fm.width(QtCore.QString(self.getAdjustedText(self.text)))
+        text = self.getAdjustedText(self.text)
+        w = fm.width(QtCore.QString(text))
         h = fm.height()
         pt = QtCore.QPointF(-w/2, h/2)
-        painter.drawText(pt, self.text)
+        painter.drawText(pt, text)
         if isinstance(self.element, GeoAlgorithm):
             if self.elementIndex in self.model.deactivated:
                 painter.setPen(QtGui.QPen(QtCore.Qt.red))
