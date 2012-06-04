@@ -82,9 +82,9 @@ void QgsGeometryValidator::validatePolyline( int i, QgsPolyline line, bool ring 
 {
   if ( ring )
   {
-    if ( line.size() < 3 )
+    if ( line.size() < 4 )
     {
-      QString msg = QObject::tr( "ring %1 with less than three points" ).arg( i );
+      QString msg = QObject::tr( "ring %1 with less than four points" ).arg( i );
       QgsDebugMsg( msg );
       emit errorFound( QgsGeometry::Error( msg ) );
       mErrorCount++;
@@ -193,8 +193,6 @@ void QgsGeometryValidator::validatePolygon( int idx, const QgsPolygon &polygon )
 
 void QgsGeometryValidator::run()
 {
-  QgsDebugMsg( "validation thread started." );
-
   mErrorCount = 0;
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ( (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=3) || GEOS_VERSION_MAJOR>3)
@@ -202,37 +200,47 @@ void QgsGeometryValidator::run()
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 2 )
   {
     char *r = 0;
-    GEOSGeometry *g = 0;
-    if ( GEOSisValidDetail( mG.asGeos(), GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g ) != 1 )
+    GEOSGeometry *g0 = mG.asGeos();
+    if ( !g0 )
     {
-      if ( g )
+      emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:could not produce geometry for GEOS (check log window)" ) ) );
+    }
+    else
+    {
+      GEOSGeometry *g1 = 0;
+      if ( GEOSisValidDetail( g0, GEOSVALID_ALLOW_SELFTOUCHING_RING_FORMING_HOLE, &r, &g1 ) != 1 )
       {
-        const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( g );
-
-        unsigned int n;
-        if ( GEOSCoordSeq_getSize( cs, &n ) && n == 1 )
+        if ( g1 )
         {
-          double x, y;
-          GEOSCoordSeq_getX( cs, 0, &x );
-          GEOSCoordSeq_getY( cs, 0, &y );
-          emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ), QgsPoint( x, y ) ) );
+          const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq( g1 );
+
+          unsigned int n;
+          if ( GEOSCoordSeq_getSize( cs, &n ) && n == 1 )
+          {
+            double x, y;
+            GEOSCoordSeq_getX( cs, 0, &x );
+            GEOSCoordSeq_getY( cs, 0, &y );
+            emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ), QgsPoint( x, y ) ) );
+            mErrorCount++;
+          }
+
+          GEOSGeom_destroy( g1 );
+        }
+        else
+        {
+          emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ) ) );
           mErrorCount++;
         }
 
-        GEOSGeom_destroy( g );
+        GEOSFree( r );
       }
-      else
-      {
-        emit errorFound( QgsGeometry::Error( QObject::tr( "GEOS error:%1" ).arg( r ) ) );
-        mErrorCount++;
-      }
-
-      GEOSFree( r );
     }
 
     return;
   }
 #endif
+
+  QgsDebugMsg( "validation thread started." );
 
   switch ( mG.wkbType() )
   {
@@ -309,14 +317,16 @@ void QgsGeometryValidator::run()
   {
     emit errorFound( QObject::tr( "Geometry validation was aborted." ) );
   }
-  else if ( mErrorCount == 0 )
-  {
-    emit errorFound( QObject::tr( "Geometry is valid." ) );
-  }
-  else
+  else if ( mErrorCount > 0 )
   {
     emit errorFound( QObject::tr( "Geometry has %1 errors." ).arg( mErrorCount ) );
   }
+#if 0
+  else
+  {
+    emit errorFound( QObject::tr( "Geometry is valid." ) );
+  }
+#endif
 }
 
 void QgsGeometryValidator::addError( QgsGeometry::Error e )
@@ -328,8 +338,7 @@ void QgsGeometryValidator::addError( QgsGeometry::Error e )
 void QgsGeometryValidator::validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors )
 {
   QgsGeometryValidator *gv = new QgsGeometryValidator( g, &errors );
-  connect( gv, SIGNAL( "errorFound( QString, QgsPoint )" ), gv, SLOT( "addError( QString, QgsPoint )" ) );
-  connect( gv, SIGNAL( "errorFound( QString )" ), gv, SLOT( "addError( QString )" ) );
+  connect( gv, SIGNAL( errorFound( QgsGeometry::Error ) ), gv, SLOT( addError( QgsGeometry::Error ) ) );
   gv->run();
   gv->wait();
 }

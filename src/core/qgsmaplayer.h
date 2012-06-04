@@ -221,7 +221,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Returns layer's spatial reference system
     @note This was introduced in QGIS 1.4
     */
-    const QgsCoordinateReferenceSystem& crs();
+    const QgsCoordinateReferenceSystem& crs() const;
 
     /** Returns layer's spatial reference system
     @note This method is here for API compatibility

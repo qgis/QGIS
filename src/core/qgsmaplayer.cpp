@@ -498,7 +498,7 @@ void QgsMapLayer::setSubLayerVisibility( QString name, bool vis )
   // NOOP
 }
 
-const QgsCoordinateReferenceSystem& QgsMapLayer::crs()
+const QgsCoordinateReferenceSystem& QgsMapLayer::crs() const
 {
   return *mCRS;
 }
@@ -614,7 +614,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
   if ( !QFile( db ).exists() )
     return false;
 
-  myResult = sqlite3_open( db.toUtf8().data(), &myDatabase );
+  myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult != SQLITE_OK )
   {
     return false;

@@ -15,6 +15,9 @@
 
 #include "qgsmessageoutput.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+
+#include <QRegExp>
 
 static QgsMessageOutput* messageOutputConsole_()
 {
@@ -47,9 +50,10 @@ QgsMessageOutputConsole::QgsMessageOutputConsole()
 {
 }
 
-void QgsMessageOutputConsole::setMessage( const QString& message, MessageType )
+void QgsMessageOutputConsole::setMessage( const QString& message, MessageType msgType )
 {
   mMessage = message;
+  mMsgType = msgType;
 }
 
 void QgsMessageOutputConsole::appendMessage( const QString& message )
@@ -59,14 +63,13 @@ void QgsMessageOutputConsole::appendMessage( const QString& message )
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
-  // show title if provided
-  if ( !mTitle.isNull() )
+  if ( mMsgType == MessageHtml )
   {
-    QgsDebugMsg( QString( "%1:" ).arg( mTitle ) );
+    mMessage.replace( "<br>", "\n" );
+    mMessage.replace( "&nbsp;", " " );
+    mMessage.replace( QRegExp("</?[^>]+>"), "" );
   }
-
-  // show the message
-  QgsDebugMsg( mMessage );
+  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
   emit destroyed();
   delete this;
 }

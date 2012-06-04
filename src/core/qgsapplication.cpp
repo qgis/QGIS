@@ -200,7 +200,9 @@ bool QgsApplication::event( QEvent * event )
 bool QgsApplication::notify( QObject * receiver, QEvent * event )
 {
   bool done = false;
-  emit preNotify( receiver, event, &done );
+  // Crashes  in customization (especially on Mac), if we're not in the main/UI thread, see #5597
+  if ( thread() == receiver->thread() )
+    emit preNotify( receiver, event, &done );
 
   if ( done )
     return true;

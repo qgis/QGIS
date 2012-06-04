@@ -65,6 +65,7 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWhatsThis>
+#include <QThread>
 
 #include <qgsnetworkaccessmanager.h>
 
@@ -317,7 +318,10 @@ static void setTitleBarText_( QWidget & qgisApp )
 */
 static QgsMessageOutput *messageOutputViewer_()
 {
-  return new QgsMessageViewer( QgisApp::instance() );
+  if ( QThread::currentThread() == QApplication::instance()->thread() )
+    return new QgsMessageViewer( QgisApp::instance() );
+  else
+    return new QgsMessageOutputConsole();
 }
 
 static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
@@ -6128,10 +6132,9 @@ void QgisApp::showStatusMessage( QString theMessage )
   statusBar()->showMessage( theMessage );
 }
 
+// Show the maptip using tooltip
 void QgisApp::showMapTip()
-
 {
-  /* Show the maptip using tooltip */
   // Stop the timer while we look for a maptip
   mpMapTipsTimer->stop();
 
@@ -6141,7 +6144,6 @@ void QgisApp::showMapTip()
     QPoint myPointerPos = mMapCanvas->mouseLastXY();
 
     //  Make sure there is an active layer before proceeding
-
     QgsMapLayer* mypLayer = mMapCanvas->currentLayer();
     if ( mypLayer )
     {
@@ -6872,8 +6874,8 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
       QFileInfo myFileInfo( *myIterator );
       // get the directory the .adf file was in
       QString myDirNameQString = myFileInfo.path();
-      //extract basename with extension
-      QString myBaseNameQString = myFileInfo.completeBaseName() + "." + myFileInfo.suffix();
+      //extract basename
+      QString myBaseNameQString = myFileInfo.completeBaseName();
       //only allow one copy of a ai grid file to be loaded at a
       //time to prevent the user selecting all adfs in 1 dir which
       //actually represent 1 coverage,

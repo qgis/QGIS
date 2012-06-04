@@ -134,6 +134,36 @@ class QgsMssqlProvider : public QgsVectorDataProvider
                          bool useIntersect = false );
 
     /**
+     * Returns the minimum value of an attribute
+     * @param index the index of the attribute
+     *
+     * Default implementation walks all numeric attributes and caches minimal
+     * and maximal values. If provider has facilities to retrieve minimal
+     * value directly, override this function.
+     */
+    virtual QVariant minimumValue( int index );
+
+    /**
+     * Returns the maximum value of an attribute
+     * @param index the index of the attribute
+     *
+     * Default implementation walks all numeric attributes and caches minimal
+     * and maximal values. If provider has facilities to retrieve maximal
+     * value directly, override this function.
+     */
+    virtual QVariant maximumValue( int index );
+
+    /**
+     * Return unique values of an attribute
+     * @param index the index of the attribute
+     * @param uniqueValues values reference to the list to fill
+     * @param limit maxmum number of the values to return (added in 1.4)
+     *
+     * Default implementation simply iterates the features
+     */
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
+
+    /**
      * Get the next feature resulting from a select operation.
      * @param feature feature which will receive data from the provider
      * @return true when there was a feature to fetch, false when end was hit

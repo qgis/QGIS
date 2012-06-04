@@ -593,7 +593,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     QStringList::Iterator it2  = mActiveSubStyles.begin();
 
-    for ( QStringList::Iterator it  = mActiveSubLayers.begin();
+    for ( QStringList::Iterator it = mActiveSubLayers.begin();
           it != mActiveSubLayers.end();
           ++it )
     {
@@ -3137,7 +3137,7 @@ int QgsWmsProvider::capabilities() const
   QgsDebugMsg( "entering." );
 
   // Test for the ability to use the Identify map tool
-  for ( QStringList::const_iterator it  = mActiveSubLayers.begin();
+  for ( QStringList::const_iterator it = mActiveSubLayers.begin();
         it != mActiveSubLayers.end();
         ++it )
   {

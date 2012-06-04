@@ -184,12 +184,15 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Has the User Projection List been populated?
     bool mUserProjListDone;
 
+
     //! Has the Recent Projection List been populated?
     bool mRecentProjListDone;
 
     enum columns { NAME_COLUMN, AUTHID_COLUMN, QGIS_CRS_ID_COLUMN, NONE };
     int mSearchColumn;
     QString mSearchValue;
+
+    bool mSkipFirstRecent;
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;

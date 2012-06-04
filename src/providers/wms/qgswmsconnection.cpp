@@ -1,8 +1,11 @@
 /***************************************************************************
     qgswmsconnection.cpp  -  selector for WMS servers, etc.
                              -------------------
-    begin                : May 2011
-    original             : (C) 2011 by Martin Dobias
+    begin                : 3 April 2005
+    copyright            :
+    original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
+    wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
+    wms-c support        : (C) 2010 Juergen E. Fischer < jef at norbit dot de >, norBIT GmbH
 
  ***************************************************************************/
 

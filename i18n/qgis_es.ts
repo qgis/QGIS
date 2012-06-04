@@ -1111,7 +1111,7 @@ Esto puede ocasionar resultados inesperados.</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation>campo de cuenta de puntos</translation>
+        <translation type="obsolete">campo de cuenta de puntos</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -1310,397 +1310,392 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Missing or invalid CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Falta el SRC o no es válido</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Advertencia</translation>
+    </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation>Actualmente QGIS no permite el acceso simultáneo desde 
+                                distintos hilos a la misma fuente de datos. Asegúrese de que las 
+                                tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
     </message>
 </context>
 <context>
     <name>DlgAbout</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
-    </message>
-    <message>
-        <source>$PLUGIN_NAME$</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>$PLUGIN_DESCRIPTION$</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$ is being developed by Giuseppe Sucameli (&lt;/span&gt;&lt;a href=&quot;mailto:brush.tyler@gmail.com?subject=$MAIL_SUBJECT$&amp;amp;body=$MAIL_BODY$&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;brush.tyler@gmail.com&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;) with the supervision of Martin Dobias and the support of Google for its Summer of Code initiative. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$&apos;s aim is to merge some of QGIS DB plugins, e.g. PGManager, SLManager, RT_Sql_Layer. At the moment it works with both PostgreSQL and SQLite databases. It displays list of tables, info about the selected table. In addition, allows the user to rename/delete tables through its GUI and run query on the selected database, hence replaces SLManager. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;$PLUGIN_NAME$ can import Vector Layer feature by drag&apos;n&apos;drop a layer from the QGIS browser (or even $PLUGIN_NAME$) to a database in the $PLUGIN_NAME$ GUI. The Import Vector Layer feature allows user to import/copy any vector layer in QGIS from different datasources (i.e. PostGIS/SpatiaLite databases and OGR files). It&apos;s available through the QgsVectorLayerImport class and it has just been merged in master branch. &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;Faunalia is committed to support the development of this tool, and other DB plugins. Developers are welcome to join and merge their works, to reduce confusion for users.&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;For support, contact us at &lt;/span&gt;&lt;a href=&quot;mailto:info@faunalia.com?subject=$MAIL_SUBJECT$&amp;amp;body=$MAIL_BODY$&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;info@faunalia.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Diálogo</translation>
     </message>
 </context>
 <context>
     <name>DlgAddGeometryColumn</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished">Diálogo</translation>
+        <translation>Diálogo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>geom</source>
-        <translation type="unfinished"></translation>
+        <translation>geometría</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>PUNTO</translation>
     </message>
     <message>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>CADENADELINEAS</translation>
     </message>
     <message>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>POLÍGONO</translation>
     </message>
     <message>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPUNTO</translation>
     </message>
     <message>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTICADENADELINEAS</translation>
     </message>
     <message>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOLIGONO</translation>
     </message>
     <message>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>COLECCIONDEGEOMETRIAS</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensiones</translation>
+        <translation>Dimensiones</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>-1</source>
-        <translation type="unfinished"></translation>
+        <translation>-1</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateConstraint</name>
     <message>
         <source>Add constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir restricción</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Único</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateIndex</name>
     <message>
         <source>Create index</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear índice</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateTable</name>
     <message>
         <source>Create Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear tabla</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Add field</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir campo</translation>
     </message>
     <message>
         <source>Delete field</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar campo</translation>
     </message>
     <message>
         <source>Up</source>
-        <translation type="unfinished">Arriba</translation>
+        <translation>Arriba</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished">Abajo</translation>
+        <translation>Abajo</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>Create geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear columna de geometría</translation>
     </message>
     <message>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>PUNTO</translation>
     </message>
     <message>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>CADENADELINEAS</translation>
     </message>
     <message>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>POLÍGONO</translation>
     </message>
     <message>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPUNTO</translation>
     </message>
     <message>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTICADENADELINEAS</translation>
     </message>
     <message>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOLIGONO</translation>
     </message>
     <message>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>COLECCIONDEGEOMETRIAS</translation>
     </message>
     <message>
         <source>geom</source>
-        <translation type="unfinished"></translation>
+        <translation>geometría</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensiones</translation>
+        <translation>Dimensiones</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>-1</source>
-        <translation type="unfinished"></translation>
+        <translation>-1</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation type="unfinished">Crear índice espacial</translation>
+        <translation>Crear índice espacial</translation>
     </message>
 </context>
 <context>
     <name>DlgDbError</name>
     <message>
         <source>Database Error</source>
-        <translation type="unfinished">Error de la base de datos</translation>
+        <translation>Error de la base de datos</translation>
     </message>
     <message>
         <source>An error occured:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocurrió un error:</translation>
     </message>
     <message>
         <source>An error occured when executing a query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocurrió un error al ejecutar la consulta:</translation>
     </message>
     <message>
         <source>Query:</source>
-        <translation type="unfinished">Consulta:</translation>
+        <translation>Consulta:</translation>
     </message>
 </context>
 <context>
     <name>DlgFieldProperties</name>
     <message>
         <source>Field properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades del campo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Can be NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Puede ser NULO</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor predeterminado</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitud</translation>
     </message>
 </context>
 <context>
     <name>DlgImportVector</name>
     <message>
         <source>Import vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar capa vectorial</translation>
     </message>
     <message>
         <source>Schema:</source>
-        <translation type="unfinished">Esquema:</translation>
+        <translation>Esquema:</translation>
     </message>
     <message>
         <source>Table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabla:</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">Acción</translation>
+        <translation>Acción</translation>
     </message>
     <message>
         <source>Create new table</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear nueva tabla</translation>
     </message>
     <message>
         <source>Drop existing one</source>
-        <translation type="unfinished"></translation>
+        <translation>Quitar una existente</translation>
     </message>
     <message>
         <source>Append data into table</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir datos a la tabla</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished">Opciones</translation>
+        <translation>Opciones</translation>
     </message>
     <message>
         <source>Primary key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria:</translation>
     </message>
     <message>
         <source>Geometry column:</source>
-        <translation type="unfinished">Columna de la geometría:</translation>
+        <translation>Columna de geometría:</translation>
     </message>
     <message>
         <source>Source SRID:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID de origen:</translation>
     </message>
     <message>
         <source>Target SRID:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID de destino:</translation>
     </message>
     <message>
         <source>Encoding:</source>
-        <translation type="unfinished">Codificación:</translation>
+        <translation>Codificación:</translation>
     </message>
     <message>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear geometrías de partes sencillas en vez de multiparte</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation type="unfinished">Crear índice espacial</translation>
+        <translation>Crear índice espacial</translation>
     </message>
 </context>
 <context>
     <name>DlgSqlWindow</name>
     <message>
         <source>SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventana SQL</translation>
     </message>
     <message>
         <source>SQL query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Consulta SQL:</translation>
     </message>
     <message>
         <source>&amp;Execute (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ejecutar (F5)</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Limpiar</translation>
+        <translation>&amp;Limpiar</translation>
     </message>
     <message>
         <source>Result:</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultado:</translation>
     </message>
     <message>
         <source>Load as new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar como capa nueva</translation>
     </message>
     <message>
         <source>Column with unique 
 integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Columna con valores 
+enteros únicos</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation type="unfinished">Columna de geometría</translation>
+        <translation>Columna de geometría</translation>
     </message>
     <message>
         <source>Retrieve 
 columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Obtener 
+columnas</translation>
     </message>
     <message>
         <source>Layer name (prefix)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de la capa (prefijo)</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Ráster</translation>
+        <translation>Ráster</translation>
     </message>
     <message>
         <source>Load now!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Cargar ahora!</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Lo siento</translation>
+        <translation>Lo siento</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Debe rellenar los campos requeridos: 
+columna de geometría - columna con valores enteros únicos</translation>
     </message>
 </context>
 <context>
@@ -1754,98 +1749,98 @@ geometry column - column with unique integer values</source>
     <name>DlgTableProperties</name>
     <message>
         <source>Table properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades de la tabla</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Columnas</translation>
+        <translation>Columnas</translation>
     </message>
     <message>
         <source>Table columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Columnas de la tabla:</translation>
     </message>
     <message>
         <source>Add column</source>
-        <translation type="unfinished">Añadir columna</translation>
+        <translation>Añadir columna</translation>
     </message>
     <message>
         <source>Add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir columna de geometría</translation>
     </message>
     <message>
         <source>Edit column</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar columna</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation type="unfinished">Borrar columna</translation>
+        <translation>Borrar columna</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Restricciones</translation>
     </message>
     <message>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Primaria, claves externas, única y comprobar restricciones:</translation>
     </message>
     <message>
         <source>Add primary key / unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir clave primaria / única</translation>
     </message>
     <message>
         <source>Delete constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar restricción</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Índices</translation>
     </message>
     <message>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Índices definidos para esta tabla:</translation>
     </message>
     <message>
         <source>Add index</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir índice</translation>
     </message>
     <message>
         <source>Add spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir índice espacial</translation>
     </message>
     <message>
         <source>Delete index</source>
-        <translation type="unfinished"></translation>
+        <translation>Borrar índice</translation>
     </message>
 </context>
 <context>
     <name>DlgVersioning</name>
     <message>
         <source>Add versioning support to a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir soporte para control de versiones a una tabla</translation>
     </message>
     <message>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se espera que la tabla esté vacía, con una clave primaria.</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tabla</translation>
+        <translation>Tabla</translation>
     </message>
     <message>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation type="unfinished"></translation>
+        <translation>crear una vista con el contenido actual (&lt;TABLE&gt;_current)</translation>
     </message>
     <message>
         <source>New columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Columnas nuevas</translation>
     </message>
     <message>
         <source>Prim. key</source>
-        <translation type="unfinished"></translation>
+        <translation>Clave primaria</translation>
     </message>
     <message>
         <source>id_hist</source>
@@ -1853,23 +1848,23 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Start time</source>
-        <translation type="unfinished"></translation>
+        <translation>Hora de inicio</translation>
     </message>
     <message>
         <source>time_start</source>
-        <translation type="unfinished"></translation>
+        <translation>hora_inicio</translation>
     </message>
     <message>
         <source>End time</source>
-        <translation type="unfinished"></translation>
+        <translation>Hora de finalización</translation>
     </message>
     <message>
         <source>time_end</source>
-        <translation type="unfinished"></translation>
+        <translation>hora_finalización</translation>
     </message>
     <message>
         <source>SQL to be executed:</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL a ejecutar:</translation>
     </message>
 </context>
 <context>
@@ -2102,11 +2097,11 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation>Acerca de GdalTools</translation>
+        <translation type="obsolete">Acerca de GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation>Muestra información sobre Gdal Tools</translation>
+        <translation type="obsolete">Muestra información sobre Gdal Tools</translation>
     </message>
     <message>
         <source>&amp;Input directory</source>
@@ -2154,13 +2149,15 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de complemento</translation>
     </message>
     <message>
         <source>Unable to load %1 plugin. 
 The required &quot;%2&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede cargar el complemento %1. 
+Falta el módulo requerido &quot;%2&quot;. 
+Instálelo y pruebe otra vez.</translation>
     </message>
 </context>
 <context>
@@ -2200,7 +2197,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation>
+        <translation type="obsolete">
 (usando GDAL v. %1)</translation>
     </message>
     <message>
@@ -2224,7 +2221,7 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation>GDAL Tools (también conocido como Herramientas Ráster) es un complemento para Quantum GIS que pretende hacer más fácil la vida de los usuarios de las utilidades de GDAL, proporcionando una interfaz gráfica simplificada para los programas más comunmente usados.
+        <translation type="obsolete">GDAL Tools (también conocido como Herramientas Ráster) es un complemento para Quantum GIS que pretende hacer más fácil la vida de los usuarios de las utilidades de GDAL, proporcionando una interfaz gráfica simplificada para los programas más comunmente usados.
 
 El complemento está siendo desarrollado por Faunalia (http://faunalia.it) con ayuda de GIS-lab (http://gis-lab.info).
 Iconos por Robert Szczepanek.
@@ -3903,6 +3900,14 @@ Would you like to add the new layer to the TOC?</source>
         <source>Layer &apos;%1&apos; updated</source>
         <translation>Capa &apos;%1&apos; actualizada</translation>
     </message>
+    <message>
+        <source>Currently QGIS doesn&apos;t allow simultaneous access from 
+                                 different threads to the same datasource. Make sure your layer&apos;s 
+                                 attribute tables are closed. Continue?</source>
+        <translation>Actualmente QGIS no permite el acceso simultáneo desde 
+                                distintos hilos a la misma fuente de datos. Asegúrese de que las 
+                                tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
+    </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
@@ -4967,15 +4972,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">Base de datos</translation>
+        <translation>Base de datos</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished">Web</translation>
+        <translation>Web</translation>
     </message>
     <message>
         <source>Add feature</source>
@@ -5151,7 +5156,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Touch zoom and pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Tocar zum y desplazar</translation>
+    </message>
+    <message>
+        <source>Copy style</source>
+        <translation>Copiar estilo</translation>
+    </message>
+    <message>
+        <source>Paste style</source>
+        <translation>Pegar estilo</translation>
     </message>
 </context>
 <context>
@@ -6042,6 +6055,13 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     <message>
         <source>Setting proxy failed.</source>
         <translation>Fallo al establecer el proxy.</translation>
+    </message>
+</context>
+<context>
+    <name>PointsInPolygonThread</name>
+    <message>
+        <source>point count field</source>
+        <translation>campo de cuenta de puntos</translation>
     </message>
 </context>
 <context>
@@ -6943,7 +6963,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>ring %1 with less than three points</source>
-        <translation>anillo %1 con menos de tres puntos</translation>
+        <translation type="obsolete">anillo %1 con menos de tres puntos</translation>
     </message>
     <message>
         <source>ring %1 not closed</source>
@@ -7585,15 +7605,15 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Layers</source>
-        <translation type="unfinished">Capas</translation>
+        <translation>Capas</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Ráster</translation>
+        <translation>Ráster</translation>
     </message>
     <message>
         <source>Globe</source>
@@ -7787,29 +7807,67 @@ Error(%2): %3</translation>
     </message>
     <message utf8="true">
         <source> m²</source>
-        <translation type="unfinished"></translation>
+        <translation> m²</translation>
     </message>
     <message utf8="true">
         <source> km²</source>
-        <translation type="unfinished"></translation>
+        <translation> km²</translation>
     </message>
     <message>
         <source> acres</source>
-        <translation type="unfinished"></translation>
+        <translation> acres</translation>
     </message>
     <message>
         <source>Creation error for features from #%1 to #%2. Provider errors was: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al crear los objetos espaciales del %1 al %2. El error del proveedor fue: 
+%3</translation>
     </message>
     <message>
         <source>Unable to delete layer %1: 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede borrar la capa %1:
+%2</translation>
     </message>
     <message>
         <source>Loading of the MSSQL provider failed</source>
+        <translation>Falló la carga del proveedor de MSSQL</translation>
+    </message>
+    <message>
+        <source>Exception: %1</source>
+        <translation>Excepción: %1</translation>
+    </message>
+    <message>
+        <source>GEOS</source>
+        <translation>GEOS</translation>
+    </message>
+    <message>
+        <source>ring %1 with less than four points</source>
+        <translation>anillo %1 con menos de cuatro puntos</translation>
+    </message>
+    <message>
+        <source>GEOS error:could not produce geometry for GEOS (check log window)</source>
+        <translation>Error de GEOS: no se pudo producir la geometría para GEOS (compruebe la ventana de registro)</translation>
+    </message>
+    <message>
+        <source>Console</source>
+        <translation>Consola</translation>
+    </message>
+    <message>
+        <source>ESRI FileGDB</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL/OGR VSIFileHandler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating the data source %1 failed: %2</source>
+        <translation>Falló la creación de la fuente de datos %1: %2</translation>
+    </message>
+    <message>
+        <source>Creation of OGR data source %1 failed: %2</source>
+        <translation>Falló la creación de la fuente de datos OGR %1: %2</translation>
     </message>
 </context>
 <context>
@@ -10388,11 +10446,11 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Vect&amp;or</source>
-        <translation type="unfinished">Vect&amp;orial</translation>
+        <translation>Vect&amp;orial</translation>
     </message>
     <message>
         <source>&amp;Web</source>
-        <translation type="unfinished">&amp;Web</translation>
+        <translation>&amp;Web</translation>
     </message>
     <message>
         <source>Control rendering order</source>
@@ -10428,7 +10486,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>GDAL/OGR Version</source>
-        <translation>Versión de GDAL/OGR</translation>
+        <translation type="obsolete">Versión de GDAL/OGR</translation>
     </message>
     <message>
         <source>GEOS Version</source>
@@ -10536,7 +10594,27 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Cannot get MSSQL select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede obtener el diálogo de selección de MS SQL del proveedor.</translation>
+    </message>
+    <message>
+        <source>Compiled against GDAL/OGR</source>
+        <translation>Compilado contra GDAL/OGR</translation>
+    </message>
+    <message>
+        <source>Running against GDAL/OGR</source>
+        <translation>Ejecutándose contra GDAL/OGR</translation>
+    </message>
+    <message>
+        <source>Cannot copy style: %1</source>
+        <translation>No se puede copiar el estilo: %1</translation>
+    </message>
+    <message>
+        <source>Cannot parse style: %1:%2:%3</source>
+        <translation>No se puede procesar el estilo: %1:%2:%3</translation>
+    </message>
+    <message>
+        <source>Cannot read style: %1</source>
+        <translation>No se puede leer el estilo: %1</translation>
     </message>
 </context>
 <context>
@@ -10675,7 +10753,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>about:blank</source>
-        <translation type="unfinished">about:blank</translation>
+        <translation>acerca de:vacío</translation>
     </message>
 </context>
 <context>
@@ -11517,7 +11595,7 @@ Ruta de BD de usuario:		%8
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Cerrar</translation>
+        <translation>Cerrar</translation>
     </message>
 </context>
 <context>
@@ -12401,11 +12479,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Composition</source>
-        <translation type="unfinished">Diseño</translation>
+        <translation>Diseño</translation>
     </message>
     <message>
         <source>Item Properties</source>
-        <translation type="unfinished">Propiedades de elemento</translation>
+        <translation>Propiedades de elemento</translation>
     </message>
 </context>
 <context>
@@ -12766,19 +12844,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation type="unfinished">Barra de herramientas</translation>
+        <translation>Barra de herramientas</translation>
     </message>
     <message>
         <source>Add Rectangle</source>
-        <translation type="unfinished">Añadir rectángulo</translation>
+        <translation>Añadir rectángulo</translation>
     </message>
     <message>
         <source>Add Triangle</source>
-        <translation type="unfinished">Añdir triángulo</translation>
+        <translation>Añadir triángulo</translation>
     </message>
     <message>
         <source>Add Ellipse</source>
-        <translation type="unfinished">Añadir elipse</translation>
+        <translation>Añadir elipse</translation>
     </message>
     <message>
         <source>Add Legend</source>
@@ -12953,11 +13031,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Margin </source>
-        <translation type="unfinished">Margen </translation>
+        <translation>Margen </translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
 </context>
 <context>
@@ -13065,11 +13143,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legend group space</source>
-        <translation type="unfinished">Espacio del grupo de la leyenda</translation>
+        <translation>Espacio del grupo de la leyenda</translation>
     </message>
     <message>
         <source>Item wrapping changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiada la envoltura del elemento</translation>
     </message>
 </context>
 <context>
@@ -13172,11 +13250,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Group Space </source>
-        <translation type="unfinished">Espacio del grupo </translation>
+        <translation>Espacio del grupo </translation>
     </message>
     <message>
         <source>Wrap text on</source>
-        <translation type="unfinished"></translation>
+        <translation>Envolver texto</translation>
     </message>
 </context>
 <context>
@@ -13495,7 +13573,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"> grados</translation>
+        <translation> grados</translation>
     </message>
 </context>
 <context>
@@ -13605,11 +13683,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Preloaded images</source>
-        <translation type="unfinished">Imágenes precargadas</translation>
+        <translation>Imágenes precargadas</translation>
     </message>
     <message>
         <source>Load another</source>
-        <translation type="unfinished">Cargar otra</translation>
+        <translation>Cargar otra</translation>
     </message>
 </context>
 <context>
@@ -14110,43 +14188,43 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Label added</source>
-        <translation type="unfinished">Añadida etiqueta</translation>
+        <translation>Añadida etiqueta</translation>
     </message>
     <message>
         <source>Map added</source>
-        <translation type="unfinished">Mapa añadido</translation>
+        <translation>Mapa añadido</translation>
     </message>
     <message>
         <source>Arrow added</source>
-        <translation type="unfinished">Añadida flecha</translation>
+        <translation>Añadida flecha</translation>
     </message>
     <message>
         <source>Scale bar added</source>
-        <translation type="unfinished">Barra de escala añadida</translation>
+        <translation>Barra de escala añadida</translation>
     </message>
     <message>
         <source>Shape added</source>
-        <translation type="unfinished">Forma añadida</translation>
+        <translation>Forma añadida</translation>
     </message>
     <message>
         <source>Picture added</source>
-        <translation type="unfinished">Imagen añadida</translation>
+        <translation>Imagen añadida</translation>
     </message>
     <message>
         <source>Legend added</source>
-        <translation type="unfinished">Leyenda añadida</translation>
+        <translation>Leyenda añadida</translation>
     </message>
     <message>
         <source>Table added</source>
-        <translation type="unfinished">Tabla añadida</translation>
+        <translation>Tabla añadida</translation>
     </message>
     <message>
         <source>Remove item group</source>
-        <translation type="unfinished">Eliminar grupo de elementos</translation>
+        <translation>Eliminar grupo de elementos</translation>
     </message>
     <message>
         <source>Item deleted</source>
-        <translation type="unfinished">Elemento borrado</translation>
+        <translation>Elemento borrado</translation>
     </message>
 </context>
 <context>
@@ -15646,7 +15724,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Category label</source>
-        <translation type="unfinished">Etiqueta de categoría</translation>
+        <translation>Etiqueta de categoría</translation>
     </message>
 </context>
 <context>
@@ -17197,7 +17275,7 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
     </message>
     <message>
         <source>&amp;GPS</source>
-        <translation type="unfinished">&amp;GPS</translation>
+        <translation>&amp;GPS</translation>
     </message>
     <message>
         <source>GPS eXchange file</source>
@@ -17616,18 +17694,30 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
     <name>QgsGeorefPlugin</name>
     <message>
         <source>&amp;About</source>
-        <translation>&amp;Acerca de</translation>
+        <translation type="obsolete">&amp;Acerca de</translation>
     </message>
     <message>
         <source>&amp;Georeferencer</source>
@@ -20024,7 +20114,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Complementos</translation>
+        <translation>Complementos</translation>
     </message>
 </context>
 <context>
@@ -21631,6 +21721,14 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>&amp;Update Drawing Order</source>
         <translation>Act&amp;ualizar orden de dibujado</translation>
     </message>
+    <message>
+        <source>Copy Style</source>
+        <translation>Copiar estilo</translation>
+    </message>
+    <message>
+        <source>Paste Style</source>
+        <translation>Pegar estilo</translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -23197,7 +23295,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Create a New MSSQL connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear una nueva conexión MSSQL</translation>
     </message>
 </context>
 <context>
@@ -23373,7 +23471,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Add MSSQL Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir tabla(s) MSSQL</translation>
     </message>
 </context>
 <context>
@@ -24397,6 +24495,10 @@ p, li { white-space: pre-wrap; }
         <source>OGR error deleting feature %1: %2</source>
         <translation>Error de OGR al borrar el objeto %1: %2</translation>
     </message>
+    <message>
+        <source>Data source is invalid, no layer found (%1)</source>
+        <translation>El origen de datos no es válido, no se encontró ninguna capa (%1)</translation>
+    </message>
 </context>
 <context>
     <name>QgsOpenRasterDialog</name>
@@ -24684,19 +24786,43 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No Stretch</source>
-        <translation type="unfinished">Sin estiramiento</translation>
+        <translation>Sin estiramiento</translation>
     </message>
     <message>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished">Estirar a MinMax</translation>
+        <translation>Estirar a MinMax</translation>
     </message>
     <message>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished">Estirar y unir a MinMax</translation>
+        <translation>Estirar y cortar a MinMax</translation>
     </message>
     <message>
         <source>Clip To MinMax</source>
-        <translation type="unfinished">Unir a MinMax</translation>
+        <translation>Cortar a MinMax</translation>
+    </message>
+    <message>
+        <source>Check file contents</source>
+        <translation>Comprobar contenido de archivo</translation>
+    </message>
+    <message>
+        <source>Check extension</source>
+        <translation>Comprobar extensión</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>No</translation>
+    </message>
+    <message>
+        <source>Passthru</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Basic scan</source>
+        <translation>Escaneo básico</translation>
+    </message>
+    <message>
+        <source>Full scan</source>
+        <translation>Escaneo completo</translation>
     </message>
 </context>
 <context>
@@ -25315,31 +25441,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Rasters</source>
-        <translation type="unfinished">Rásters</translation>
+        <translation>Rásters</translation>
     </message>
     <message>
         <source>RGB band selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selección de banda RGB</translation>
     </message>
     <message>
         <source>Red band</source>
-        <translation type="unfinished">Banda roja</translation>
+        <translation>Banda roja</translation>
     </message>
     <message>
         <source>Green band</source>
-        <translation type="unfinished">Banda verde</translation>
+        <translation>Banda verde</translation>
     </message>
     <message>
         <source>Blue band</source>
-        <translation type="unfinished">Banda azul</translation>
+        <translation>Banda azul</translation>
     </message>
     <message>
         <source>Use standard deviation</source>
-        <translation type="unfinished">Usar desviación estándar</translation>
+        <translation>Usar desviación estándar</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation type="unfinished">Mejora de contraste</translation>
+        <translation>Mejora de contraste</translation>
+    </message>
+    <message>
+        <source>Scan for valid items in the browser dock</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scan for contents of compressed files (.zip) in browser dock</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25435,11 +25569,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="unfinished">Borrar capa</translation>
+        <translation>Borrar capa</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
-        <translation type="unfinished">Capa borrada con éxito</translation>
+        <translation>Capa borrada con éxito</translation>
     </message>
 </context>
 <context>
@@ -26887,11 +27021,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Complementos</translation>
+        <translation>Complementos</translation>
     </message>
     <message>
         <source>Installed in %1 menu/toolbar</source>
-        <translation type="unfinished">Instalado en el menú/barra de herramientas %1</translation>
+        <translation>Instalado en el menú/barra de herramientas %1</translation>
     </message>
 </context>
 <context>
@@ -27575,6 +27709,18 @@ Error de la base de datos: %2</translation>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation>Edición y adición desabilitados para la capa 2D+ (%1; %2)</translation>
     </message>
+    <message>
+        <source>Primary key field &apos;%1&apos; for view not unique.</source>
+        <translation>El campo de clave primaria &apos;%1&apos; para la vista no es único.</translation>
+    </message>
+    <message>
+        <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
+        <translation>El tipo &apos;%1 de campo de clave primara &apos;%2&apos; para la vista no es válido.</translation>
+    </message>
+    <message>
+        <source>Key field &apos;%1&apos; for view not found.</source>
+        <translation>No se ha encontrado el campo de clave &apos;%1&apos; para la vista.</translation>
+    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -27927,11 +28073,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Maximum width</source>
-        <translation type="unfinished"></translation>
+        <translation>Anchura máxima</translation>
     </message>
     <message>
         <source>Maximum height</source>
-        <translation type="unfinished"></translation>
+        <translation>Altura máxima</translation>
     </message>
 </context>
 <context>
@@ -28017,7 +28163,7 @@ Debido a esto no funcionará el selector de proyecciones...</translation>
     </message>
     <message>
         <source>Recently used coordinate references systems</source>
-        <translation>Sistemas de referencia de coordenadas usados recientemente</translation>
+        <translation type="obsolete">Sistemas de referencia de coordenadas usados recientemente</translation>
     </message>
     <message>
         <source>Filter</source>
@@ -28026,6 +28172,10 @@ Debido a esto no funcionará el selector de proyecciones...</translation>
     <message>
         <source>Coordinate reference systems of the world</source>
         <translation>Sistemas de referencia de coordenadas del mundo</translation>
+    </message>
+    <message>
+        <source>Recently used coordinate reference systems</source>
+        <translation>Sistemas de referencia de coordenadas usados recientemente</translation>
     </message>
 </context>
 <context>
@@ -28695,7 +28845,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
-        <translation type="obsolete">El proveedor de datos no es válido (capas: %1, estilos: %2, formatos: %3)</translation>
+        <translation>El proveedor de datos no es válido (capas: %1, estilos: %2, formatos: %3)</translation>
     </message>
 </context>
 <context>
@@ -29567,6 +29717,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translatorcomment>No encuentro nada que traducir</translatorcomment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -31974,7 +32125,30 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Trabajamos realmente duro para hacer este buen software para usted. ¿Ve todas las grandes características que ofrece? ¿Tiene un agradable sentimiento confuso cuando lo usa? Quantum GIS es una labor de amor de un dedicado equipo de desarrolladores. Queremos que lo copie y lo comparta y lo ponga en manos de toda la gente posible. Si QGIS le está ahorrando dinero o le gusta nuestro trabajo y tiene la capacidad financiera para ayudar, por favor considere patrocinar el desarrollo de Quantum GIS. Usamos el dinero de nuestros patrocinadores para pagar viajes y costes relacionados con nuestro encuentro semestral de desarrollo y para apoyar de forma general los objetivos de nuestro proyecto. Por favor, vea la &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;página web de patrocinio de QGIS&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt; para más detalles. En la lista de abajo puede ver la buena gente y empresas que nos están ayudando financieramente - ¡un enorme &quot;Gracias&quot; a todos ellosl!&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Patrocinadores 2011&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;PATROCINADORES DE PLATA&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.vorarlberg.at&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;State of Vorarlberg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Austria (11.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.agi.so.ch&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Kanton Solothurn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Suiza (4.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;PATROCINADORES DE BRONCE&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://gis.uster.ch/&quot;&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;City of Uster&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; color:#0000ff;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; font-size:10pt; color:#000000;&quot;&gt;, Suiza&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Helvetica,Arial,sans-serif&apos;; color:#000000;&quot;&gt; (11.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600;&quot;&gt;Patrocinadores 2010&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;PATROCINADORES DE BRONCE&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -33741,7 +33915,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
 </context>
 <context>
@@ -34052,7 +34226,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Update Extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizar extensión</translation>
     </message>
 </context>
 <context>
@@ -35341,7 +35515,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>&amp;Zonal statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Estadísticas de &amp;zona</translation>
     </message>
 </context>
 <context>
@@ -35625,7 +35799,7 @@ URL probada: %1</translation>
     <name>RoadGraphPlugin</name>
     <message>
         <source>Road graph settings</source>
-        <translation>Configuración de grafos de rutas</translation>
+        <translation type="obsolete">Configuración de grafos de rutas</translation>
     </message>
     <message>
         <source>Show road&apos;s direction</source>
@@ -35633,7 +35807,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Acerca de</translation>
+        <translation type="obsolete">Acerca de</translation>
     </message>
     <message>
         <source>Road graph plugin settings</source>
@@ -35645,7 +35819,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>About Road graph plugin</source>
-        <translation>Acerca del complemento de grafos de rutas</translation>
+        <translation type="obsolete">Acerca del complemento de grafos de rutas</translation>
     </message>
     <message>
         <source>Road graph</source>
@@ -35653,23 +35827,27 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>About RoadGraph</source>
-        <translation>Acerca de Grafos de rutas</translation>
+        <translation type="obsolete">Acerca de Grafos de rutas</translation>
     </message>
     <message>
         <source>Find shortest path on road&apos;s graph</source>
-        <translation>Encontrar la ruta más corta en grafos de rutas</translation>
+        <translation type="obsolete">Encontrar la ruta más corta en grafos de rutas</translation>
     </message>
     <message>
         <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Desarrolladores:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Desarrolladores:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Homepage:&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Página web:&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Página web:&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Cerrar</translation>
+        <translation type="obsolete">Cerrar</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Configuración</translation>
     </message>
 </context>
 <context>
@@ -35859,55 +36037,55 @@ Descripción: %2</translation>
     <name>SaQueryBuilder</name>
     <message>
         <source>&amp;Test</source>
-        <translation>&amp;Probar</translation>
+        <translation type="obsolete">&amp;Probar</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation>&amp;Limpiar</translation>
+        <translation type="obsolete">&amp;Limpiar</translation>
     </message>
     <message>
         <source>Invalid Query</source>
-        <translation>Consulta no válida</translation>
+        <translation type="obsolete">Consulta no válida</translation>
     </message>
     <message>
         <source>Setting the query failed</source>
-        <translation>Fallo al establecer la consulta</translation>
+        <translation type="obsolete">Fallo al establecer la consulta</translation>
     </message>
     <message>
         <source>No Query</source>
-        <translation>Ninguna consulta</translation>
+        <translation type="obsolete">Ninguna consulta</translation>
     </message>
     <message>
         <source>You must create a query before you can test it</source>
-        <translation>Debe crear una consulta antes de probar</translation>
+        <translation type="obsolete">Debe crear una consulta antes de probar</translation>
     </message>
     <message>
         <source>Query Result</source>
-        <translation>Resultado de la consulta</translation>
+        <translation type="obsolete">Resultado de la consulta</translation>
     </message>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>La cláusula donde devolvió 1 fila.</numerusform>
             <numerusform>La cláusula donde devolvió %n filas.</numerusform>
         </translation>
     </message>
     <message>
         <source>Query Failed</source>
-        <translation>Ha fallado la consulta</translation>
+        <translation type="obsolete">Ha fallado la consulta</translation>
     </message>
     <message>
         <source>An error occurred when executing the query</source>
-        <translation>Ocurrió un error al ejecutar la consulta</translation>
+        <translation type="obsolete">Ocurrió un error al ejecutar la consulta</translation>
     </message>
     <message>
         <source>Error in Query</source>
-        <translation>Error en la consulta</translation>
+        <translation type="obsolete">Error en la consulta</translation>
     </message>
     <message>
         <source>The subset string could not be set</source>
-        <translation>No se pudo establecer la cadena del subconjunto</translation>
+        <translation type="obsolete">No se pudo establecer la cadena del subconjunto</translation>
     </message>
 </context>
 <context>
@@ -39598,11 +39776,11 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Extrudes flat vector object to 3D with fixed height</source>
-        <translation type="unfinished"></translation>
+        <translation>Extruye objetos vectoriales planos a 3D con altura fija</translation>
     </message>
     <message>
         <source>Extrudes flat vector object to 3D with height based on attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Extruye objetos vectoriales planos a 3D con altura basada en atributo</translation>
     </message>
     <message>
         <source>Generates area statistics for rasters</source>

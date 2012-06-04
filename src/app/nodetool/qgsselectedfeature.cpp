@@ -227,10 +227,22 @@ void QgsSelectedFeature::validationFinished()
 
 void QgsSelectedFeature::deleteSelectedVertexes()
 {
+  int nSelected = 0;
+  foreach( QgsVertexEntry *entry, mVertexMap )
+  {
+    if ( entry->isSelected() )
+      nSelected++;
+  }
+
+  if ( nSelected == 0 )
+    return;
+
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
   mVlayer->beginEditCommand( QObject::tr( "Deleted vertices" ) );
+
+  beginGeometryChange();
 
   int count = 0;
   for ( int i = mVertexMap.size() - 1; i > -1; i-- )
@@ -249,6 +261,11 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         currentResultList.clear();
         mVlayer->snapWithContext( mVertexMap[i]->point(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
       }
+
+      // only last update should trigger the geometry update
+      // as vertex selection gets lost on the update
+      if ( --nSelected == 0 )
+        endGeometryChange();
 
       if ( !mVlayer->deleteVertex( mFeatureId, i ) )
       {
@@ -283,48 +300,55 @@ void QgsSelectedFeature::deleteSelectedVertexes()
   }
 }
 
-void QgsSelectedFeature::moveSelectedVertexes( double changeX, double changeY )
+void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
 {
+  int nUpdates = 0;
+  foreach( QgsVertexEntry *entry, mVertexMap )
+  {
+    if ( entry->isSelected() )
+      nUpdates++;
+  }
+
+  if ( nUpdates == 0 )
+    return;
+
   mVlayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+
+  beginGeometryChange();
+
   QMultiMap<double, QgsSnappingResult> currentResultList;
-  for ( int i = mVertexMap.size() - 1; i > -1; i-- )
+  for ( int i = mVertexMap.size() - 1; i > -1 && nUpdates > 0; i-- )
   {
-    if ( mVertexMap[i]->isSelected() )
+    QgsVertexEntry *entry = mVertexMap.value( i, 0 );
+    if ( !entry || !entry->isSelected() )
+      continue;
+
+    if ( topologicalEditing )
     {
-      if ( topologicalEditing )
+      // snap from current vertex
+      currentResultList.clear();
+      mVlayer->snapWithContext( entry->point(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
+    }
+
+    // only last update should trigger the geometry update
+    // as vertex selection gets lost on the update
+    if ( --nUpdates == 0 )
+      endGeometryChange();
+
+    QgsPoint p = entry->point() + v;
+    mVlayer->moveVertex( p.x(), p.y(), mFeatureId, i );
+
+    if ( topologicalEditing )
+    {
+      QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
+
+      for ( ; resultIt != currentResultList.end(); ++resultIt )
       {
-        // snap from current vertex
-        currentResultList.clear();
-        mVlayer->snapWithContext( mVertexMap[i]->point(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
-      }
-
-      mVlayer->moveVertex( mVertexMap[i]->point().x() + changeX, mVertexMap[i]->point().y() + changeY, mFeatureId, i );
-
-      mVertexMap[i]->moveCenter( changeX, changeY );
-
-      if ( topologicalEditing )
-      {
-        QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
-
-        for ( ; resultIt != currentResultList.end(); ++resultIt )
-        {
-          // move all other
-          if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
-            mVlayer->moveVertex( mVertexMap[i]->point().x(), mVertexMap[i]->point().y(),
-                                 resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
-        }
-      }
-
-      QgsVertexEntry *entry = mVertexMap[i];
-      entry->setCenter( entry->point() );
-      entry->update();
-
-      if ( entry->equals() != -1 && !mVertexMap[ entry->equals()]->isSelected() )
-      {
-        mVertexMap[ entry->equals()]->moveCenter( changeX, changeY );
-        mVertexMap[ entry->equals()]->update();
-        // for polygon delete both
+        // move all other
+        if ( mFeatureId !=  resultIt.value().snappedAtGeometry )
+          mVlayer->moveVertex( p.x(), p.y(),
+                               resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
       }
     }
   }

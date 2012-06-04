@@ -450,6 +450,7 @@ class fToolsPlugin:
 
   def dopointsPoly(self):
     d = doPointsInPolygon.Dialog(self.iface)
+    d.show()
     d.exec_()
 
   def dorandSel(self):

@@ -21,6 +21,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
 
@@ -448,6 +449,9 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     const QVariant& attrValue = feature.attributeMap()[ fldIt.key()];
     int ogrField = mAttrIdxToOgrIdx[ fldIt.key()];
 
+    if ( attrValue.isNull() )
+      continue;
+
     switch ( attrValue.type() )
     {
       case QVariant::Int:
@@ -468,7 +472,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
                         .arg( ogrField )
                         .arg( QMetaType::typeName( attrValue.type() ) )
                         .arg( attrValue.toString() );
-        QgsDebugMsg( mErrorMessage );
+        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         mError = ErrFeatureWriteFailed;
         return false;
     }
@@ -493,10 +497,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 
       if ( !mGeom2 )
       {
-        QgsDebugMsg( QString( "Failed to create empty geometry for type %1 (OGR error: %2)" ).arg( geom->wkbType() ).arg( CPLGetLastErrorMsg() ) );
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
                         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
         mError = ErrFeatureWriteFailed;
+        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
         return false;
       }
@@ -504,10 +508,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       OGRErr err = OGR_G_ImportFromWkb( mGeom2, geom->asWkb(), geom->wkbSize() );
       if ( err != OGRERR_NONE )
       {
-        QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
                         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
         mError = ErrFeatureWriteFailed;
+        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
         return false;
       }
@@ -520,10 +524,10 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       OGRErr err = OGR_G_ImportFromWkb( mGeom, geom->asWkb(), geom->wkbSize() );
       if ( err != OGRERR_NONE )
       {
-        QgsDebugMsg( QString( "Failed to import geometry from WKB: %1 (OGR error: %2)" ).arg( err ).arg( CPLGetLastErrorMsg() ) );
         mErrorMessage = QObject::tr( "Feature geometry not imported (OGR error: %1)" )
                         .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
         mError = ErrFeatureWriteFailed;
+        QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         OGR_F_Destroy( poFeature );
         return false;
       }
@@ -539,7 +543,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
     mErrorMessage = QObject::tr( "Feature creation error (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrFeatureWriteFailed;
 
-    QgsDebugMsg( mErrorMessage );
+    QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
+
     OGR_F_Destroy( poFeature );
     return false;
   }

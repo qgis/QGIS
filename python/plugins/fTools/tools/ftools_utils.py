@@ -206,6 +206,16 @@ def getVectorLayerByName( myName ):
             else:
                 return None
 
+# Return QgsRasterLayer from a layer name ( as string )
+def getRasterLayerByName( myName ):
+    layermap = QgsMapLayerRegistry.instance().mapLayers()
+    for name, layer in layermap.iteritems():
+        if layer.type() == QgsMapLayer.RasterLayer and layer.name() == myName:
+            if layer.isValid():
+                return layer
+            else:
+                return None
+
 # Return QgsMapLayer from a layer name ( as string )
 def getMapLayerByName( myName ):
     layermap = QgsMapLayerRegistry.instance().mapLayers()
@@ -333,6 +343,14 @@ def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
                 values.append( feat.attributeMap()[ fieldIndex ].toString() )
                 count += 1
     return count
+
+def getGeomType(gT):
+  if gT == 3 or gT == 6:
+    gTypeListPoly = [ QGis.WKBPolygon, QGis.WKBMultiPolygon ]
+    return gTypeListPoly
+  elif gT == 2 or gT == 5:
+    gTypeListLine = [ QGis.WKBLineString, QGis.WKBMultiLineString ]
+    return gTypeListLine
 
 def getShapesByGeometryType( baseDir, inShapes, geomType ):
   outShapes = QStringList()

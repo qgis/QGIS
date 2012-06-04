@@ -107,6 +107,7 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
     //! stores current title
     QString mTitle;
 
+    MessageType mMsgType;
 };
 
 #endif

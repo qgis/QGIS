@@ -18,6 +18,8 @@
 #ifndef QGSPOINT_H
 #define QGSPOINT_H
 
+#include <qgis.h>
+
 #include <iostream>
 #include <QString>
 #include <QPoint>
@@ -146,7 +148,7 @@ class CORE_EXPORT QgsPoint
 
     /**Returns the minimum distance between this point and a segment
     @note added in QGIS 1.5*/
-    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint ) const;
+    double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /**Calculates azimut between this point and other one (clockwise in degree, starting from north)
       @note: this function has been added in version 1.7*/

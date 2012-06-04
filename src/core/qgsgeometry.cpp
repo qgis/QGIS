@@ -22,6 +22,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsgeometry.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
@@ -36,8 +37,7 @@ email                : morb at ozemail dot com dot au
 #define CATCH_GEOS(r) \
   catch (GEOSException &e) \
   { \
-    Q_UNUSED(e); \
-    QgsDebugMsg("GEOS: " + QString( e.what() ) ); \
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr("GEOS") ); \
     return r; \
   }
 
@@ -90,7 +90,7 @@ static void throwGEOSException( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS exception encountered: %1" ).arg( buffer ) );
+  QgsDebugMsg( QString( "GEOS exception: %1" ).arg( buffer ) );
 
   throw GEOSException( QString::fromUtf8( buffer ) );
 }
@@ -166,7 +166,7 @@ static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
     }
     catch ( GEOSException &e )
     {
-      Q_UNUSED( e );
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
       for ( int i = 0; i < geoms.count(); i++ )
         GEOSGeom_destroy( geoms[i] );
 
@@ -261,7 +261,7 @@ static GEOSCoordSequence *createGeosCoordSequence( const QgsPolyline& points )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     /*if ( coord )
       GEOSCoordSeq_destroy( coord );*/
     throw;
@@ -285,7 +285,7 @@ static GEOSGeometry *createGeosCollection( int typeId, QVector<GEOSGeometry*> ge
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
   }
 
   delete [] geomarr;
@@ -304,7 +304,7 @@ static GEOSGeometry *createGeosLineString( const QgsPolyline& polyline )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     //MH: for strange reasons, geos3 crashes when removing the coordinate sequence
     //if ( coord )
     //GEOSCoordSeq_destroy( coord );
@@ -337,7 +337,7 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     /* as MH has noticed ^, this crashes geos
     if ( coord )
       GEOSCoordSeq_destroy( coord );*/
@@ -389,7 +389,7 @@ static GEOSGeometry *createGeosPolygon( const QgsPolygon& polygon )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     for ( int i = 0; i < geoms.count(); i++ )
       GEOSGeom_destroy( geoms[i] );
     return 0;
@@ -421,7 +421,7 @@ QgsGeometry* QgsGeometry::fromWkt( QString wkt )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return 0;
   }
 }
@@ -456,7 +456,8 @@ QgsGeometry* QgsGeometry::fromMultiPoint( const QgsMultiPoint& multipoint )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
     for ( int i = 0; i < geoms.size(); ++i )
       GEOSGeom_destroy( geoms[i] );
 
@@ -477,7 +478,8 @@ QgsGeometry* QgsGeometry::fromMultiPolyline( const QgsMultiPolyline& multiline )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
     for ( int i = 0; i < geoms.count(); i++ )
       GEOSGeom_destroy( geoms[i] );
 
@@ -501,7 +503,8 @@ QgsGeometry* QgsGeometry::fromMultiPolygon( const QgsMultiPolygon& multipoly )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
     for ( int i = 0; i < geoms.count(); i++ )
       GEOSGeom_destroy( geoms[i] );
 
@@ -2394,7 +2397,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return -1;
   }
 
@@ -2406,7 +2409,8 @@ double QgsGeometry::closestSegmentWithContext(
   const QgsPoint& point,
   QgsPoint& minDistPoint,
   int& afterVertex,
-  double* leftOf )
+  double* leftOf,
+  double epsilon )
 {
   QgsDebugMsg( "Entering." );
   QgsPoint distPoint;
@@ -2467,7 +2471,7 @@ double QgsGeometry::closestSegmentWithContext(
 
         if ( index > 0 )
         {
-          if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+          if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
           {
             closestSegmentIndex = index;
             sqrDist = testdist;
@@ -2515,7 +2519,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
           if ( prevx && prevy )
           {
-            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
             {
               closestSegmentIndex = pointindex;
               sqrDist = testdist;
@@ -2561,7 +2565,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
           if ( prevx && prevy )
           {
-            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
             {
               closestSegmentIndex = index;
               sqrDist = testdist;
@@ -2613,7 +2617,7 @@ double QgsGeometry::closestSegmentWithContext(
             }
             if ( prevx && prevy )
             {
-              if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
+              if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint, epsilon ) ) < sqrDist )
               {
                 closestSegmentIndex = pointindex;
                 sqrDist = testdist;
@@ -2706,7 +2710,8 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
     if ( newRingPolygon )
       GEOSGeom_destroy( newRingPolygon );
     else if ( newRing )
@@ -2739,7 +2744,8 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
     }
     catch ( GEOSException &e )
     {
-      Q_UNUSED( e );
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
       if ( shell )
         GEOSGeom_destroy( shell );
       else if ( shellRing )
@@ -2776,7 +2782,8 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
       }
       catch ( GEOSException &e )
       {
-        Q_UNUSED( e );
+        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
         if ( hole )
           GEOSGeom_destroy( hole );
         else if ( holeRing )
@@ -2924,7 +2931,8 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
       }
       catch ( GEOSException &e )
       {
-        Q_UNUSED( e );
+        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+
         if ( newRing )
           GEOSGeom_destroy( newRing );
 
@@ -2947,7 +2955,7 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
 
     if ( newPart )
       GEOSGeom_destroy( newPart );
@@ -3839,7 +3847,7 @@ bool QgsGeometry::contains( QgsPoint* p )
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     returnval = false;
   }
 
@@ -5458,7 +5466,7 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     nIntersections = 0;
   }
 
@@ -5564,12 +5572,15 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
   {
     //make sure there are at least two intersection between line and reshape geometry
     GEOSGeometry* intersectGeom = GEOSIntersection( line, reshapeLineGeos );
-    atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
-    GEOSGeom_destroy( intersectGeom );
+    if ( intersectGeom )
+    {
+      atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
+      GEOSGeom_destroy( intersectGeom );
+    }
   }
   catch ( GEOSException &e )
   {
-    Q_UNUSED( e );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     atLeastTwoIntersections = false;
   }
 
@@ -6708,9 +6719,7 @@ int QgsGeometry::avoidIntersections()
 
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
-  QgsGeometryValidator *gv = new QgsGeometryValidator( this, &errors );
-  gv->start();
-  delete gv;
+  QgsGeometryValidator::validateGeometry( this, errors );
 }
 
 bool QgsGeometry::isGeosValid()
@@ -6726,9 +6735,7 @@ bool QgsGeometry::isGeosValid()
   }
   catch ( GEOSException &e )
   {
-    // looks like geometry is fubar
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "GEOS exception caught: %1" ).arg( e.what() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
 }
@@ -6751,9 +6758,7 @@ bool QgsGeometry::isGeosEmpty()
   }
   catch ( GEOSException &e )
   {
-    // looks like geometry is fubar
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "GEOS exception caught: %1" ).arg( e.what() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return false;
   }
 }

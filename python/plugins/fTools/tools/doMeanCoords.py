@@ -50,10 +50,10 @@ class Dialog(QDialog, Ui_Dialog):
 
     def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
-        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.blockSignals(True)
         self.inShape.clear()
+        self.inShape.blockSignals(False)
         self.inShape.addItems(layers)
-        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
     def updateUi(self):
         if self.function == 1:

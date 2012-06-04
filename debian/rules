@@ -43,6 +43,8 @@ CMAKE_OPTS := \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-D WITH_APIDOC=TRUE
 
+MAKEFLAGS += VERBOSE=YES
+
 ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
@@ -57,18 +59,27 @@ else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid"))
+CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
+CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
+LDFLAGS  := $(shell dpkg-buildflags --get LDFLAGS)
+endif
+
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
+	CXXFLAGS += -O0
 else
 	CFLAGS += -O2
+	CXXFLAGS += -O2
 endif
+
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 	INSTALL_PROGRAM += -s
 endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TESTS=TRUE
-	MAKEFLAGS += VERBOSE=YES
 endif
 
 ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
@@ -99,7 +110,7 @@ debian/build/CMakeCache.txt: $(TEMPLATES) CMakeLists.txt
 	# Add here commands to configure the package.
 	[ -d debian/build ] || mkdir debian/build
 	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
-	cd debian/build; cmake $(CMAKE_OPTS) ../..
+	cd debian/build; CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" LDFLAGS="$(LDFLAGS)" cmake $(CMAKE_OPTS) ../..
 
 build: build-stamp
 
@@ -144,7 +155,7 @@ install: build
 	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
 
 	# remove unwanted files
-	rm debian/tmp/usr/share/qgis/doc/api/installdox
+	! [ -f debian/tmp/usr/share/qgis/doc/api/installdox ] || rm debian/tmp/usr/share/qgis/doc/api/installdox
 	! [ -f debian/tmp/usr/share/qgis/doc/api/jquery.js ] || rm debian/tmp/usr/share/qgis/doc/api/jquery.js
 
 	# Install menu pixmap

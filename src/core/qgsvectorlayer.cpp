@@ -362,7 +362,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       while ( nextFeature( fet ) )
       {
         if (( mRenderer && mRenderer->willRenderFeature( &fet ) )
-            || ( mRendererV2 && mRendererV2->symbolForFeature( fet ) != NULL ) )
+            || ( mRendererV2 && mRendererV2->willRenderFeature( fet ) ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
           mLabel->renderLabel( rendererContext, fet, sel, 0 );
@@ -1828,6 +1828,11 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
     {
       updateFeatureAttributes( f ); //check joined attributes / changed attributes
     }
+    if ( mEditable && mFetchGeometry )
+    {
+      updateFeatureGeometry( f );
+    }
+
     return true;
   }
 
@@ -2403,7 +2408,23 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
         newGeometry = newGeometries.at( i );
         QgsFeature newFeature;
         newFeature.setGeometry( newGeometry );
-        newFeature.setAttributeMap( select_it->attributeMap() );
+
+        //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
+        QgsAttributeMap newAttributes = select_it->attributeMap();
+        QVariant defaultValue;
+        for ( int j = 0; j < newAttributes.size(); ++j )
+        {
+          if ( mDataProvider )
+          {
+            defaultValue = mDataProvider->defaultValue( j );
+            if ( !defaultValue.isNull() )
+            {
+              newAttributes.insert( j, defaultValue );
+            }
+          }
+        }
+
+        newFeature.setAttributeMap( newAttributes );
         newFeatures.append( newFeature );
       }
 
@@ -4264,7 +4285,7 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
   {
     if ( geometryType() != QGis::Point ) // cannot snap to segment for points/multipoints
     {
-      sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex );
+      sqrDistSegmentSnap = geom->closestSegmentWithContext( startPoint, snappedPoint, afterVertex, NULL, crs().geographicFlag() ? 1e-12 : 1e-8 );
 
       if ( sqrDistSegmentSnap < sqrSnappingTolerance )
       {
@@ -4280,7 +4301,6 @@ void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
       }
     }
   }
-
 }
 
 int QgsVectorLayer::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults )

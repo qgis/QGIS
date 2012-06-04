@@ -123,6 +123,15 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   return false;
 }
 
+QString QgsOgrLayerItem::layerName() const
+{
+  QFileInfo info( name() );
+  if ( info.suffix() == "gz" )
+    return info.baseName();
+  else
+    return info.completeBaseName();
+}
+
 // -------
 
 static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
@@ -268,7 +277,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
   // because OGR drive can open also .dbf, .shx.
-  if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )
+  if ( myExtensions.indexOf( suffix ) < 0 )
   {
     bool matches = false;
     foreach( QString wildcard, wildcards() )
@@ -285,7 +294,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   }
 
   // .dbf should probably appear if .shp is not present
-  if ( info.suffix().toLower() == "dbf" )
+  if ( suffix == "dbf" )
   {
     QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
     if ( QFileInfo( pathShp ).exists() )
@@ -310,20 +319,33 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
   }
 
-  // if setting = 2 (Basic scan), return a /vsizip/ item without testing
-  if ( is_vsizip && scanZipSetting == 2 )
+  // return a /vsizip/ item without testing if:
+  // zipfile and scan zip == "Basic scan"
+  // not zipfile and scan items == "Check extension"
+  if (( is_vsizip && scanZipSetting == 2 ) ||
+      ( !is_vsizip && scanItemsSetting == 1 ) )
   {
-    QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
-    QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
-    if ( item )
-      return item;
-  }
-
-  // if scan items == "Check extension", add item here without trying to open
-  // unless item is /vsizip
-  if ( scanItemsSetting == 1 && !is_vsizip  && !is_vsigzip )
-  {
+    // if this is a VRT file make sure it is vector VRT to avoid duplicates
+    if ( suffix == "vrt" )
+    {
+      OGRSFDriverH hDriver = OGRGetDriverByName( "VRT" );
+      if ( hDriver )
+      {
+        // do not print errors, but write to debug
+        CPLPushErrorHandler( CPLQuietErrorHandler );
+        CPLErrorReset();
+        OGRDataSourceH hDataSource = OGR_Dr_Open( hDriver, thePath.toLocal8Bit().constData(), 0 );
+        CPLPopErrorHandler();
+        if ( ! hDataSource )
+        {
+          QgsDebugMsg( "Skipping VRT file because root is not a OGR VRT" );
+          return 0;
+        }
+        OGR_DS_Destroy( hDataSource );
+      }
+    }
+    // add the item
+    // TODO: how to handle collections?
     QgsLayerItem * item = new QgsOgrLayerItem( parentItem, name, thePath, thePath, QgsLayerItem::Vector );
     if ( item )
       return item;
@@ -333,10 +355,10 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   OGRRegisterAll();
   OGRSFDriverH hDriver;
   // do not print errors, but write to debug
-  CPLErrorHandler oErrorHandler = CPLSetErrorHandler( CPLQuietErrorHandler );
+  CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
   OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
-  CPLSetErrorHandler( oErrorHandler );
+  CPLPopErrorHandler();
 
   if ( ! hDataSource )
   {

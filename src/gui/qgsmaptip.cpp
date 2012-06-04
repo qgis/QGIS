@@ -14,10 +14,7 @@
  ***************************************************************************/
 // QGIS includes
 #include <qgsmapcanvas.h>
-#include <qgsmaplayer.h>
-#include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-#include <qgsfield.h>
 
 // Qt includes
 #include <QPoint>
@@ -37,7 +34,7 @@ QgsMapTip::~QgsMapTip()
 
 }
 
-void QgsMapTip::showMapTip( QgsMapLayer * thepLayer,
+void QgsMapTip::showMapTip( QgsMapLayer *thepLayer,
                             QgsPoint & theMapPosition,
                             QPoint & thePixelPosition,
                             QgsMapCanvas *thepMapCanvas )
@@ -52,79 +49,57 @@ void QgsMapTip::showMapTip( QgsMapLayer * thepLayer,
 
   // Show the maptip on the canvas
   QString myTipText = fetchFeature( thepLayer, theMapPosition, thepMapCanvas );
-  if ( myTipText.length() > 0 )
+  mMapTipVisible = !myTipText.isEmpty();
+
+  if ( mMapTipVisible )
   {
-    mMapTipVisible = true;
     QToolTip::showText( thepMapCanvas->mapToGlobal( thePixelPosition ), myTipText, thepMapCanvas );
     // store the point so we can use it to clear the maptip later
     mLastPosition = thePixelPosition;
   }
-  else
-  {
-    mMapTipVisible = false;
-  }
-
 }
 
 void QgsMapTip::clear( QgsMapCanvas *mpMapCanvas )
 {
-  if ( mMapTipVisible )
-  {
-    // set the maptip to blank
-    QToolTip::showText( mpMapCanvas->mapToGlobal( mLastPosition ), "", mpMapCanvas );
-    // reset the visible flag
-    mMapTipVisible = false;
-  }
+  if ( !mMapTipVisible )
+    return;
+
+  // set the maptip to blank
+  QToolTip::showText( mpMapCanvas->mapToGlobal( mLastPosition ), "", mpMapCanvas );
+  // reset the visible flag
+  mMapTipVisible = false;
 }
 
-QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint & mapPosition, QgsMapCanvas *mpMapCanvas )
+QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsMapCanvas *mpMapCanvas )
 {
-  // Default return value
-  QString maptipText = "";
-  // Protection just in case we get passed a null layer
-  if ( layer )
-  {
-    // Get the setting for the search radius from user preferences, if it exists
-    QSettings settings;
-    double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return "";
 
-    // create the search rectangle
-    double searchRadius = mpMapCanvas->extent().width() * ( identifyValue / 100.0 );
-    QgsRectangle r;
-    r.setXMinimum( mapPosition.x() - searchRadius );
-    r.setXMaximum( mapPosition.x() + searchRadius );
-    r.setYMinimum( mapPosition.y() - searchRadius );
-    r.setYMaximum( mapPosition.y() + searchRadius );
+  // Get the setting for the search radius from user preferences, if it exists
+  QSettings settings;
+  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
 
-    // Get the data provider
-    QgsVectorDataProvider* dataProvider = qobject_cast<QgsVectorLayer *>( layer )->dataProvider();
-    // Fetch the attribute list for the layer
-    QgsAttributeList allAttributes = dataProvider->attributeIndexes();
-    // Select all attributes within the search radius
-    dataProvider->select( allAttributes, r, true, true );
-    // Feature to hold the results of the fetch
-    QgsFeature feature;
-    // Get the field list for the layer
-    const QgsFieldMap& fields = dataProvider->fields();
-    // Get the label (display) field for the layer
-    QString fieldIndex = qobject_cast<QgsVectorLayer *>( layer )->displayField();
-    if ( dataProvider->nextFeature( feature ) )
-    {
-      // if we get a feature, pull out the display field and set the maptip text to its value
-      QgsAttributeMap attributes = feature.attributeMap();
-      for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-      {
+  // create the search rectangle
+  double searchRadius = mpMapCanvas->extent().width() * ( identifyValue / 100.0 );
 
-        if ( fields[it.key()].name() == fieldIndex )
-        {
-          maptipText = it->toString();
+  QgsRectangle r;
+  r.setXMinimum( mapPosition.x() - searchRadius );
+  r.setYMinimum( mapPosition.y() - searchRadius );
+  r.setXMaximum( mapPosition.x() + searchRadius );
+  r.setYMaximum( mapPosition.y() + searchRadius );
 
-        }
+  r = mpMapCanvas->mapRenderer()->mapToLayerCoordinates( layer, r );
 
-      }
-    }
-  }
-  // return the map tip
-  return  maptipText;
+  int idx = vlayer->fieldNameIndex( vlayer->displayField() );
+  if ( idx < 0 )
+    return "";
+
+  QgsFeature feature;
+
+  vlayer->select( QgsAttributeList() << idx, r, true, true );
+  if ( !vlayer->nextFeature( feature ) )
+    return "";
+
+  return feature.attributeMap().value( idx, "" ).toString();
 }
-

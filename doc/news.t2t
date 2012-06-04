@@ -38,6 +38,60 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= Whats new in Version 1.8.0 'Lisboa'? =
+
+This is a new feature release. Building on the foundation of
+QGIS 1.7.x releases, Lisboa introduces many new features,
+improvements and bug fixes. Here is a summary of some of the
+key new features.
+
+- QGIS Browser - a stand alone app and a new panel in QGIS. The browser lets you easily navigate your file system and connection based (PostGIS, WFS etc.) datasets, preview them and drag and drop items into the canvas.
+- DB Manager - the DB manager is now officially part of QGIS core. You can drag layers from the QGIS Browser into DB Manager and it will import your layer into your spatial database. Drag and drop tables between spatial databases and they will get imported. You can use the DB Manager to execute SQL queries against your spatial database and then view the spatial output for queries by adding the results to QGIS as a query layer.
+- Action Tool - now there is a tool on the map tools toolbar that will allow you to click on a vector feature and execute an action.
+- MSSQL Spatial Support - you can now connect to your Microsoft SQL Server spatial databases using QGIS.
+- Customization - allows setting up simplified QGIS interface by hiding various components of main window and widgets in dialogs.
+- New symbol layer types - Line Pattern Fill, Point Pattern fill
+- Composers - have multiple lines on legend items using a specified character
+- Expression based labelling
+- Heatmap tool - a new core plugin has been added for generating raster heatmaps from point data. You may need to activate this plugin using the plugin manager.
+- GPS Tracking - The GPS live tracking user interface was overhauled and many fixes and improvements were added to it.
+- Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
+- Offset Curves - a new digitising tool for creating offset curves was added.
+- Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking coloured relief maps.
+- Ellipse renderer — symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows to set all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
+- New scale selector with predefined scales
+- Option to add layers to selected or active group
+- Pan To Selected tool
+- New tools in Vector menu - densify geoemtries, Build spatial index
+- Export/add geometry column tool can export info using layer CRS, project CRS or ellipsoidal measurements
+- Model/view based tree for rules in rule-based renderer
+- Updated CRS selector dialog
+- Improvements in Spatial Bookmarks
+- Plugin metadata in metadata.txt
+- New plugin repository
+- Refactored postgres data provider: support for arbitrary key (including non-numeric and multi column), support for requesting a certain geometry type and/or srid in QgsDataSourceURI
+added gdal_fillnodata to GDALTools plugin
+- Support for PostGIS TopoGeometry datatype
+- Python bindings for vector field symbollayer and general updates to the python bindings.
+- New message log window
+- Benchmark program
+- Row cache for attribute table
+- Legend independent drawing order
+- UUID generation widget for attribute table
+- Added support of editable views in SpatiaLite databases
+- Expression based widget in field calculator
+- Creation of event layers in analysis lib using linear referencing
+- Group selected layers option added to the TOC context menu
+- load/save layer style (new symbology) from/to SLD document
+- WFS support in QGIS Server
+- Option to skip WKT geometry when copying from attribute table
+- upport for zipped and gzipped layers
+- Test suite now passes all tests on major platforms and nightly tests
+- Copy and paste styles between layers
+- Set tile size for WMS layers
+- Support for nesting projects within other projects
+-
+
 = Whats new in Version 1.7.2 'Wroclaw'? =
 
 This is a bugfix release over version 1.7.1. The following changes
