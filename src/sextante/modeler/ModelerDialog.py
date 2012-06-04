@@ -81,7 +81,7 @@ class ModelerDialog(QtGui.QDialog):
         self.horizontalLayoutNames.addWidget(self.textGroup)
 
         self.scene = ModelerScene(self)
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, 5000, 5000))
+        self.scene.setSceneRect(QtCore.QRectF(0, 0, 4000, 4000))
 
         self.canvasTabWidget = QtGui.QTabWidget()
         self.canvasTabWidget.setMinimumWidth(300)
@@ -244,7 +244,7 @@ class ModelerDialog(QtGui.QDialog):
 
     def repaintModel(self):
         self.scene = ModelerScene()
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, 1000, 1000))
+        self.scene.setSceneRect(QtCore.QRectF(0, 0, 4000, 4000))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
         #self.pythonText.setText(self.alg.getAsPythonCode())
