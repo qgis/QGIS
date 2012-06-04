@@ -81,7 +81,7 @@ class ModelerDialog(QtGui.QDialog):
         self.horizontalLayoutNames.addWidget(self.textGroup)
 
         self.scene = ModelerScene(self)
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, 2000, 2000))
+        self.scene.setSceneRect(QtCore.QRectF(0, 0, 5000, 5000))
 
         self.canvasTabWidget = QtGui.QTabWidget()
         self.canvasTabWidget.setMinimumWidth(300)
