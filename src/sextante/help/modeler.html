@@ -205,6 +205,30 @@ renders all the algorithms in that provider unusable by the modeler,
 which might cause problems when loading models. Keep that in mind when
 you have trouble loading or executing models.</p>
 </div>
+<div class="section" id="editing-a-model">
+<h2>Editing a model<a class="headerlink" href="#editing-a-model" title="Permalink to this headline">¶</a></h2>
+<p>You can edit the model you are currently creating, redefining the workflow and the relationships between the algorithms and inputs that define the model itself.</p>
+<p>If you right-click on an algorithm in the canvas representing the model, you will see a context menu like the one shown next:</p>
+<div class="figure align-center">
+<img alt="_images/modeler_right_click.png" src="_images/modeler_right_click.png" />
+</div>
+<p>Selecting the <em>Remove</em> option will cause the selected algorithm to be removed. An algorithm can be removed only if there are no other algorithms dependind on it. That is, if no output from the algorithm is used in a different one as input. If you try to remove an algorithm that has others depending on it, SEXTANTE will show you a warning message like the one you can see below:</p>
+<div class="figure align-center">
+<img alt="_images/cannot_delete_alg.png" src="_images/cannot_delete_alg.png" />
+</div>
+<p>Selecting the <em>Edit</em> option or simply double-clicking on the algorithm icon will show the parameters dialog of the algorithm, so you can change the inputs and parameter values. Not all input elements available in the model will appear in this case as available inputs. Layers or values generated at a more advanced step in the workflow defined by the model will not be available if they cause circular dependencies.</p>
+<p>Select the new values and then click on the <em>OK</em> button as usual. The connections between the model elements will change accordingly in the modeler canvas.</p>
+</div>
+<div class="section" id="activating-and-deactivating-algorithms">
+<h2>Activating and deactivating algorithms<a class="headerlink" href="#activating-and-deactivating-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>Algorithms can be deactivated in the modeler, so they will not be executed once the model is run. This can be used to test just a given part of the model, or when you do not need all the outputs it generates.</p>
+<p>To deactivate an algorithm, right&#8211;click on its icon in the model canvas and select the <em>Deactivate</em> option. You will see that the algorithm is represented now with a red label under its name indicating that is not active.</p>
+<div class="figure align-center">
+<img alt="_images/deactivated.png" src="_images/deactivated.png" />
+</div>
+<p>All algorithms depending (directly or undirectly) on that algorithm will also appear as inactive, since they cannot be executed now.</p>
+<p>To activate an algorithm, just right&#8211;click on its icon and select the <em>Activate</em> option.</p>
+</div>
 <div class="section" id="editing-model-help-files-and-meta-information">
 <h2>Editing model help files and meta-information<a class="headerlink" href="#editing-model-help-files-and-meta-information" title="Permalink to this headline">¶</a></h2>
 <p>You can document your models from SEXTANTE. Just click on the <em>Edit model help</em> button and a dialog like the one shown next will appear.</p>
@@ -235,6 +259,7 @@ make too much sense.</p>
 </div>
 <div class="section" id="sextante-models-as-python-code">
 <h2>SEXTANTE models as Python code<a class="headerlink" href="#sextante-models-as-python-code" title="Permalink to this headline">¶</a></h2>
+<p><em>[This feature is temporarily unavailable]</em></p>
 <p>Along with the tab that contains the graphical design of the model, you
 will find another one containing a Python script which performs the same
 task as the model itself. Using that code, you can create a console
@@ -264,6 +289,8 @@ having to copy and paste it in the SEXTANTE script editor.</p>
 <li><a class="reference internal" href="#definition-of-inputs">Definition of inputs</a></li>
 <li><a class="reference internal" href="#definition-of-the-workflow">Definition of the workflow</a></li>
 <li><a class="reference internal" href="#saving-and-loading-models">Saving and loading models</a></li>
+<li><a class="reference internal" href="#editing-a-model">Editing a model</a></li>
+<li><a class="reference internal" href="#activating-and-deactivating-algorithms">Activating and deactivating algorithms</a></li>
 <li><a class="reference internal" href="#editing-model-help-files-and-meta-information">Editing model help files and meta-information</a></li>
 <li><a class="reference internal" href="#about-available-algorithms">About available algorithms</a></li>
 <li><a class="reference internal" href="#sextante-models-as-python-code">SEXTANTE models as Python code</a></li>

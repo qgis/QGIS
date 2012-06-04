@@ -62,7 +62,7 @@ the modeler window:
 -  Boolean value
 
 Double-clicking on any of them, a dialog is shown to define its
-characteristics. Depending on the parameter itself, the dialog will
+caracteristics. Depending on the parameter itself, the dialog will
 contain just one basic element (the description, which is what the user
 will see when executing the model) or more of them. For instance, when
 adding a numerical value, as it can be seen in the next figure, apart
@@ -97,7 +97,7 @@ To add an algorithm, double-click on its name. An execution dialog will
 appear, with a content similar to the one found in the execution panel
 that SEXTANTE shows when executing the algorithm from the toolbox. the
 one shown next correspond to the SAGA convergence index algorithm, the
-same one we saw in the section dedicated to the SEXTANTE toolbox.
+same one we saw in the section dedicated to the SEXTANTe toolbox.
 
 .. figure:: models_parameters4.png
    :align: center
@@ -114,7 +114,7 @@ you supply will be the description for the output, which will be the one
 the user will see when executing the model.
 
 Selecting the value of each parameter is also a bit different, since
-there are important differences between the context of the modeler and
+there are importante differences between the context of the modeler and
 the toolbox one. Let's see how to introduce the values for each type of
 parameter.
 
@@ -154,8 +154,7 @@ Elements can be dragged to a different position within the canvas, to
 change the way the module structure is displayed and make it more clear
 and intuitive. Links between elements are update automatically.
 
-You can run your algorithm anytime clicking on the *Run* button. However, 
-in order to use it from the toolbox, it has to be saved and the modeler dialog closed, to allow the toolbox to refresh its contents.
+You can run your algorithm anytime clicking on the *Run* button. However, in order to use it from the toolbox, it has to be saved and the modeler dialog closed, to allow the toolbox to refresh its contents.
 
 Saving and loading models
 -------------------------
@@ -193,6 +192,41 @@ renders all the algorithms in that provider unusable by the modeler,
 which might cause problems when loading models. Keep that in mind when
 you have trouble loading or executing models.
 
+Editing a model
+---------------
+
+You can edit the model you are currently creating, redefining the workflow and the relationships between the algorithms and inputs that define the model itself.
+
+If you right-click on an algorithm in the canvas representing the model, you will see a context menu like the one shown next:
+
+.. figure:: modeler_right_click.png
+   :align: center
+
+
+Selecting the *Remove* option will cause the selected algorithm to be removed. An algorithm can be removed only if there are no other algorithms dependind on it. That is, if no output from the algorithm is used in a different one as input. If you try to remove an algorithm that has others depending on it, SEXTANTE will show you a warning message like the one you can see below:
+
+.. figure:: cannot_delete_alg.png
+   :align: center
+   
+Selecting the *Edit* option or simply double-clicking on the algorithm icon will show the parameters dialog of the algorithm, so you can change the inputs and parameter values. Not all input elements available in the model will appear in this case as available inputs. Layers or values generated at a more advanced step in the workflow defined by the model will not be available if they cause circular dependencies.
+
+Select the new values and then click on the *OK* button as usual. The connections between the model elements will change accordingly in the modeler canvas.
+
+Activating and deactivating algorithms
+--------------------------------------
+
+Algorithms can be deactivated in the modeler, so they will not be executed once the model is run. This can be used to test just a given part of the model, or when you do not need all the outputs it generates.
+
+To deactivate an algorithm, right--click on its icon in the model canvas and select the *Deactivate* option. You will see that the algorithm is represented now with a red label under its name indicating that is not active.
+
+.. figure:: deactivated.png
+   :align: center
+
+All algorithms depending (directly or undirectly) on that algorithm will also appear as inactive, since they cannot be executed now.
+
+To activate an algorithm, just right--click on its icon and select the *Activate* option.
+
+
 Editing model help files and meta-information
 ---------------------------------------------
 
@@ -218,7 +252,7 @@ if the number of output layers cannot be know in advance), then it is
 not possible to use it within a model, and thus does not appear in the
 list of them that you can find in the modeler dialog.
 
-Additionally, you will see some algorithms in the modeler that are not
+Additionaly, you will see some algorithms in the modeler that are not
 found in the toolbox. This algorithms are meant to be used exclusively
 as part of a model, and they are of no interest in a different context.
 The *Calculator* algorithm is an example of that. It is just a simple
@@ -229,6 +263,8 @@ make too much sense.
 
 SEXTANTE models as Python code
 ------------------------------
+
+*[This feature is temporarily unavailable]*
 
 Along with the tab that contains the graphical design of the model, you
 will find another one containing a Python script which performs the same
