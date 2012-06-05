@@ -27,13 +27,13 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
     paramTypes = [PARAMETER_BOOLEAN,PARAMETER_NUMBER, PARAMETER_RASTER,
                   PARAMETER_STRING, PARAMETER_VECTOR, PARAMETER_TABLE, PARAMETER_TABLE_FIELD]
 
-    def __init__(self, alg, paramType):
+    def __init__(self, alg, paramType = None, param = None):
         self.alg = alg;
         self.paramType = paramType
+        self.param = param
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.setupUi()
-        self.param = None
 
     def setupUi(self):
         self.setWindowTitle("Parameter definition")
@@ -58,14 +58,16 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         self.horizontalLayout3.setSpacing(2)
         self.horizontalLayout3.setMargin(0)
 
-        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN:
+        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or \
+                    isinstance(self.param, ParameterBoolean):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Default value"))
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
             self.yesNoCombo.addItem("No")
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD:
+        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
+                    or isinstance(self.param, ParameterTableField):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Parent layer"))
             self.parentCombo = QtGui.QComboBox()
             for param in self.alg.parameters:
@@ -73,21 +75,24 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                     self.parentCombo.addItem(param.description, param.name)
             self.horizontalLayout2.addWidget(self.parentCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER \
+                    or isinstance(self.param, ParameterRaster):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Mandatory"))
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
             self.yesNoCombo.addItem("No")
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE \
+                    or isinstance(self.param, ParameterTable):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Mandatory"))
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
             self.yesNoCombo.addItem("No")
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR \
+                    or isinstance(self.param, ParameterVector):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Mandatory"))
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
@@ -102,7 +107,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout3.addWidget(self.shapetypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE \
+                    or isinstance(self.param, ParameterMultipleInput):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Mandatory"))
             self.yesNoCombo = QtGui.QComboBox()
             self.yesNoCombo.addItem("Yes")
@@ -119,7 +125,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.horizontalLayout3.addWidget(self.datatypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER \
+                    or isinstance(self.param, ParameterNumber):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Min/Max values"))
             self.minTextBox = QtGui.QLineEdit()
             self.maxTextBox = QtGui.QLineEdit()
@@ -131,7 +138,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.defaultTextBox.setText("0")
             self.horizontalLayout3.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout3)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING \
+                    or isinstance(self.param, ParameterString):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Default value"))
             self.defaultTextBox = QtGui.QLineEdit()
             self.horizontalLayout2.addWidget(self.defaultTextBox)
@@ -153,24 +161,27 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         if description.strip() == "":
             QMessageBox.critical(self, "Unable to define parameter", "Invalid parameter name")
             return
-        name = self.paramType.upper().replace(" ","") + "_" + description.upper().replace(" ","")
-        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN:
+        if self.param is None:
+            name = self.paramType.upper().replace(" ","") + "_" + description.upper().replace(" ","")
+        else:
+            name = self.param.name
+        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or isinstance(self.param, ParameterBoolean):
             self.param = ParameterBoolean(name, description, self.yesNoCombo.currentIndex() == 0)
-        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or isinstance(self.param, ParameterTableField):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.critical(self, "Unable to define parameter", "Wrong or missing parameter values")
                 return
             parent = self.parentCombo.itemData(self.parentCombo.currentIndex()).toPyObject()
             self.param = ParameterTableField(name, description, parent)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or isinstance(self.param, ParameterRaster):
             self.param = ParameterRaster(name, description, self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE or isinstance(self.param, ParameterTable):
             self.param = ParameterTable(name, description, self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or isinstance(self.param, ParameterVector):
             self.param = ParameterVector(name, description, self.shapetypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or isinstance(self.param, ParameterMultipleInput):
             self.param = ParameterMultipleInput(name, description, self.datatypeCombo.currentIndex()-1, self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or isinstance(self.param, ParameterNumber):
             try:
                 vmin = str(self.minTextBox.text()).strip()
                 if vmin == "":
@@ -186,7 +197,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             except:
                QMessageBox.critical(self, "Unable to define parameter", "Wrong or missing parameter values")
                return
-        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING:
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description, str(self.defaultTextBox.text()))
 
         self.close()

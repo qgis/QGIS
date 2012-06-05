@@ -133,6 +133,10 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.parameters.append(param)
         self.paramPos.append(self.getPositionForParameterItem())
 
+    def updateParameter(self, paramIndex, param):
+        self.parameters[paramIndex] = param
+        #self.updateModelerView()
+
     def addAlgorithm(self, alg, parametersMap, valuesMap, outputsMap):
         self.algs.append(alg)
         self.algParameters.append(parametersMap)

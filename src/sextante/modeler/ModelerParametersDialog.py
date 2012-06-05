@@ -347,7 +347,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         items = [combo.itemData(i).toPyObject() for i in range(combo.count())]
         idx = 0
         for item in items:
-            if item:
+            if item and value:
                 if item.alg == value.alg and item.param == value.param:
                     combo.setCurrentIndex(idx)
                     return

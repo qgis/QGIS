@@ -11,11 +11,9 @@ from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.parameters.ParameterRange import ParameterRange
-from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 from sextante.parameters.ParameterNumber import ParameterNumber
 
 from sextante.gui.ParametersPanel import ParametersPanel
@@ -52,7 +50,10 @@ class Ui_ParametersDialog(object):
         dialog.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Ok)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+
         self.paramTable = ParametersPanel(self.alg, self.dialog)
         self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.paramTable)
@@ -93,8 +94,9 @@ class Ui_ParametersDialog(object):
         self.verticalLayout.addWidget(self.progress)
         self.verticalLayout.addWidget(self.buttonBox)
         dialog.setLayout(self.verticalLayout)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.dialog.close)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
 
@@ -148,67 +150,76 @@ class Ui_ParametersDialog(object):
         else:
             return param.setValue(str(widget.text()))
 
-
+    @pyqtSlot()
     def accept(self):
-        try:
-            keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-            if self.setParamValues():
-                msg = self.alg.checkParameterValuesBeforeExecuting()
-                if msg:
-                    QMessageBox.critical(self.dialog, "Unable to execute algorithm", msg)
-                    return
-                keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
-                buttons = self.paramTable.iterateButtons
-                iterateParam = None
-                for i in range(len(buttons.values())):
-                    button = buttons.values()[i]
-                    if button.isChecked():
-                        iterateParam = buttons.keys()[i]
-                        break
-
-
-                self.progress.setMaximum(0)
-                self.progressLabel.setText("Processing algorithm...")
-                if iterateParam:
-                    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                    AlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
-                    QApplication.restoreOverrideCursor()
-                else:
-                    QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                    command = self.alg.getAsCommand()
-                    if command:
-                        SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
-                    ret = AlgorithmExecutor.runalg(self.alg, self)
-                    QApplication.restoreOverrideCursor()
-                    if ret:
-                        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
-
-                self.dialog.executed = True
-                if not keepOpen:
-                    self.dialog.close()
-                else:
-                    self.progressLabel.setText("")
-                    self.progress.setValue(0)
-                    self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-
-            else:
-                QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
+        #~ try:
+        if self.setParamValues():
+            msg = self.alg.checkParameterValuesBeforeExecuting()
+            if msg:
+                QMessageBox.critical(self.dialog, "Unable to execute algorithm", msg)
                 return
-        except GeoAlgorithmExecutionException, e :
-            QApplication.restoreOverrideCursor()
-            QMessageBox.critical(self, "Error",e.msg)
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
-            if not keepOpen:
-                self.dialog.close()
+            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+            buttons = self.paramTable.iterateButtons
+            iterateParam = None
+
+            for i in range(len(buttons.values())):
+                button = buttons.values()[i]
+                if button.isChecked():
+                    iterateParam = buttons.keys()[i]
+                    break
+
+            self.progress.setMaximum(0)
+            self.progressLabel.setText("Processing algorithm...")
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            if iterateParam:
+                self.algEx = AlgorithmExecutor(self.alg, iterateParam)
             else:
-                self.progressLabel.setText("")
-                self.progress.setValue(0)
-                self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+                command = self.alg.getAsCommand()
+                if command:
+                    SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
+                self.algEx = AlgorithmExecutor(self.alg)
+            self.algEx.finished.connect(self.finish)
+            self.algEx.percentageChanged.connect(self.setPercentage)
+            self.algEx.textChanged.connect(self.setText)
+            self.algEx.start()
+            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
+        else:
+            QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
 
+    @pyqtSlot()
+    def finish(self):
+        self.dialog.executed = True
+        QApplication.restoreOverrideCursor()
 
-    def reject(self):
-        self.dialog.close()
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
+
+        if not keepOpen:
+            self.dialog.close()
+        else:
+            self.progressLabel.setText("")
+            self.progress.setValue(0)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
+
+        #~ except GeoAlgorithmExecutionException, e :
+            #~ QApplication.restoreOverrideCursor()
+            #~ QMessageBox.critical(self, "Error",e.msg)
+            #~ SextanteLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
+            #~ if not keepOpen:
+                #~ self.dialog.close()
+            #~ else:
+                #~ self.progressLabel.setText("")
+                #~ self.progress.setValue(0)
+                #~ self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+
+    @pyqtSlot()
+    def cancel(self):
+        try:
+            self.algEx.finished.disconnect()
+            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+        except:
+            pass
 
     def setPercentage(self, i):
         if self.progress.maximum() == 0:
@@ -217,5 +228,3 @@ class Ui_ParametersDialog(object):
 
     def setText(self, text):
         self.progressLabel.setText(text)
-
-

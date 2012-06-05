@@ -3,6 +3,7 @@ from sextante.parameters.Parameter import Parameter
 import os
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.modeler.ModelerParametersDialog import ModelerParametersDialog
+from sextante.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 
 class ModelerGraphicItem(QtGui.QGraphicsItem):
 
@@ -62,8 +63,10 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
     def editElement(self):
         if isinstance(self.element, Parameter):
-            pass
-            #TODO
+            dlg = ModelerParameterDefinitionDialog(self.model, param = self.element)
+            dlg.exec_()
+            if dlg.param != None:
+                self.model.updateParameter(self.elementIndex, dlg.param)
         else:
             dlg = self.element.getCustomModelerParametersDialog(self.model, self.elementIndex)
             if not dlg:

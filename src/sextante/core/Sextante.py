@@ -3,7 +3,7 @@ from PyQt4.QtGui import *
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.core.QGisLayers import QGisLayers
-from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
+from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
@@ -281,7 +281,8 @@ class Sextante:
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        AlgorithmExecutor.runalg(alg, SilentProgress())
+        algEx = AlgorithmExecutor(alg)
+        algEx.start()
         QApplication.restoreOverrideCursor()
         return alg.getOutputValuesAsDictionary()
 
@@ -336,7 +337,9 @@ class Sextante:
             return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        ret = AlgorithmExecutor.runalg(alg, SilentProgress())
+        #~ ret = AlgorithmExecutor.runalg(alg, SilentProgress())
+        algex = AlgorithmExecutor(alg, SilentProgress())
+        algex.start()
         QApplication.restoreOverrideCursor()
         if ret:
             SextantePostprocessing.handleAlgorithmResults(alg)

@@ -7,71 +7,76 @@ from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 import traceback
 
-class AlgorithmExecutor:
+class AlgorithmExecutor(QThread):
+    percentageChanged = pyqtSignal(int)
+    textChanged = pyqtSignal(QString)
+    cancelled = pyqtSignal()
+    error = pyqtSignal()
+    iterated = pyqtSignal(int)
+    #started & finished inherited from QThread
 
-    @staticmethod
-    def runalg(alg, progress):
-        '''executes a given algorithm, showing its progress in the progress object passed along.
-        Return true if everything went OK, false if the algorithm was canceled or there was
-        any problem and could not be completed'''
+    def __init__(self, alg, iterParam = None, parent = None):
+        QThread.__init__(self, parent)
+        self.algorithm = alg
+        self.parameterToIterate = iterParam
+                
+        class Progress:
+            def __init__(self, algex):
+                self.algorithmExecutor = algex
+            def setText(self, text):
+                self.algorithmExecutor.textChanged.emit(text)
+            def setPercentage(self, p):
+                self.algorithmExecutor.percentageChanged.emit(p)
+        self.progress = Progress(self)
+        if self.parameterToIterate:
+            self.run = self.runalgIterating
+
+            #generate all single-feature layers
+            settings = QSettings()
+            systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+            layerfile = alg.getParameterValue(self.parameterToIterate)
+            layer = QGisLayers.getObjectFromUri(layerfile, False)
+            provider = layer.dataProvider()
+            allAttrs = provider.attributeIndexes()
+            provider.select( allAttrs )
+            feat = QgsFeature()
+            self.filelist = []
+            while provider.nextFeature(feat):
+                output = SextanteUtils.getTempFilename("shp")
+                self.filelist.append(output)
+                writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+                writer.addFeature(feat)
+                del writer
+        else:
+            self.run = self.runalg
+
+    def runalg(self):
         try:
-            alg.execute(progress)
-            return not alg.canceled
+            self.algorithm.execute(self.progress)
+            if self.algorithm.canceled:
+                self.canceled.emit()
         except GeoAlgorithmExecutionException, e :
-            QMessageBox.critical(None, "Error", e.msg)
-            return False
-        except Exception:
-            QMessageBox.critical(None, "Error", traceback.format_exc())
-            return False
+            self.error.emit()
+        except:
+            self.error.emit()
 
-    @staticmethod
-    def runalgIterating(alg,paramToIter,progress):
-        #generate all single-feature layers
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        layerfile = alg.getParameterValue(paramToIter)
-        layer = QGisLayers.getObjectFromUri(layerfile, False)
-        provider = layer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select( allAttrs )
-        feat = QgsFeature()
-        filelist = []
+    def runalgIterating(self):
         outputs = {}
-        while provider.nextFeature(feat):
-            output = SextanteUtils.getTempFilename("shp")
-            filelist.append(output)
-            writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
-            writer.addFeature(feat)
-            del writer
-
         #store output values to use them later as basenames for all outputs
-        for out in alg.outputs:
+        for out in self.algorithm.outputs:
             outputs[out.name] = out.value
-
-        #now run all the algorithms
         i = 1
-        for f in filelist:
-            alg.setParameterValue(paramToIter, f)
-            for out in alg.outputs:
+        for f in self.filelist:
+            self.algorithm.setParameterValue(self.parameterToIterate, f)
+            for out in self.algorithm.outputs:
                 filename = outputs[out.name]
                 if filename:
                     filename = filename[:filename.rfind(".")] + "_" + str(i) + filename[filename.rfind("."):]
                 out.value = filename
-            progress.setText("Executing iteration " + str(i) + "/" + str(len(filelist)) + "...")
-            progress.setPercentage((i * 100) / len(filelist))
-            if AlgorithmExecutor.runalg(alg, SilentProgress()):
-                SextantePostprocessing.handleAlgorithmResults(alg, False)
-                i+=1
-            else:
-                return False;
-
-        return True
-
-
-class SilentProgress():
-
-    def setText(self, text):
-        pass
-
-    def setPercentage(self, i):
-        pass
+            self.progress.setText("Executing iteration " + str(i) + "/" + str(len(self.filelist)) + "...")
+            self.progress.setPercentage((i * 100) / len(self.filelist))
+            self.runalg()
+            if self.algorithm.canceled:
+                return
+            self.iterated.emit(i)
+            i += 1

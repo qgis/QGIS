@@ -12,7 +12,7 @@ from sextante.gui.FixedTablePanel import FixedTablePanel
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 import copy
 from sextante.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
-from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
+from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.core.SextanteResults import SextanteResults
 from sextante.gui.ResultsDialog import ResultsDialog
@@ -99,16 +99,11 @@ class BatchProcessingDialog(QtGui.QDialog):
             self.algs.append(alg)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        i=1
         self.progress.setMaximum(len(self.algs))
         for alg in self.algs:
-            if AlgorithmExecutor.runalg(alg, SilentProgress()):
-                self.progress.setValue(i)
-                self.loadHTMLResults(alg, i)
-                i+=1
-            else:
-                QApplication.restoreOverrideCursor()
-                return
+            algEx = AlgorithmExecutor(alg);
+            algEx.start()
+
         QApplication.restoreOverrideCursor()
         QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
         self.close()
