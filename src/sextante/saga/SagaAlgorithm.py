@@ -26,6 +26,7 @@ from sextante.core.LayerExporter import LayerExporter
 import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtGui
+from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -220,6 +221,16 @@ class SagaAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command+=(" -" + param.name);
+            elif isinstance(param, ParameterFixedTable):
+                tempTableFile  = SextanteUtils.getTempFilename("txt")
+                f = open(tempTableFile, "w")
+                f.write('\t'.join([col for col in param.cols]) + "\n")
+                values = param.value.split(",")
+                for i in range(0, len(values), 3):
+                    s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
+                    f.write(s)
+                f.close()
+                command+=( " -" + param.name + " " + tempTableFile)
             elif isinstance(param, ParameterExtent):
                 values = param.value.split(",")
                 for i in range(4):

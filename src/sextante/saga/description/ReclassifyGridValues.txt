@@ -9,7 +9,7 @@ ParameterNumber|MIN|minimum value (for range)|None|None|0
 ParameterNumber|MAX|maximum value (for range)|None|None|1
 ParameterNumber|RNEW|new value(for range)|None|None|2
 ParameterSelection|ROPERATOR|operator (for range)|[0] <=;[1] <
-ParameterFixedTable|RETAB|Lookup Table|3| minimum; maximum; new|False
+ParameterFixedTable|RETAB|Lookup Table|3|minimum;maximum;new|False
 ParameterSelection|TOPERATOR|operator (for table)|[0] min <= value < max;[1] min <= value <= max;[2] min < value <= max;[3] min < value < max
 ParameterBoolean|NODATAOPT      |replace no data values|True
 ParameterNumber|NODATA|new value for no data values|None|None|0
