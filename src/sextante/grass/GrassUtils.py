@@ -239,6 +239,7 @@ class GrassUtils:
         else:
             gisrc =  SextanteUtils.userFolder() + os.sep + "sextante.gisrc"
             os.putenv("GISRC", gisrc)
+            os.putenv("GRASS_MESSAGE_FORMAT", "gui")
             os.putenv("GRASS_BATCH_JOB", GrassUtils.grassBatchJobFilename())
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
