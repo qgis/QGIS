@@ -153,6 +153,7 @@ qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
 qgsquickprint.h
+qgsrasterlayersaveasdialog.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h

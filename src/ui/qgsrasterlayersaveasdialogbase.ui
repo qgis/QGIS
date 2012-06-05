@@ -40,14 +40,14 @@
    <item row="1" column="1">
     <widget class="QLineEdit" name="mSaveAsLineEdit">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QPushButton" name="mBrowseButton">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="text">
       <string>Browse...</string>
@@ -115,7 +115,7 @@
     </widget>
    </item>
    <item row="4" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -129,7 +129,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsRasterLayerSaveAsDialogBase</receiver>
    <slot>accept()</slot>
@@ -145,7 +145,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsRasterLayerSaveAsDialogBase</receiver>
    <slot>reject()</slot>

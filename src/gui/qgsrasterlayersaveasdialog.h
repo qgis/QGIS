@@ -7,6 +7,7 @@ class QgsRasterDataProvider;
 
 class QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {
+    Q_OBJECT
   public:
     QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, QWidget* parent = 0, Qt::WindowFlags f = 0 );
     ~QgsRasterLayerSaveAsDialog();
@@ -18,6 +19,10 @@ class QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSave
     bool tileMode() const;
     QString outputFileName() const;
     QString outputFormat() const;
+
+  private slots:
+    void on_mBrowseButton_clicked();
+    void on_mSaveAsLineEdit_textChanged( const QString& text );
 
   private:
     QgsRasterDataProvider* mDataProvider;

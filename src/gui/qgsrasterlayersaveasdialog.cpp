@@ -1,5 +1,6 @@
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterdataprovider.h"
+#include <QFileDialog>
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider,
     QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ),
@@ -30,6 +31,12 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
       mMaximumSizeYLineEdit->setText( QString::number( 2000 ) );
     }
   }
+
+  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  if ( okButton )
+  {
+    okButton->setEnabled( false );
+  }
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -42,6 +49,35 @@ void QgsRasterLayerSaveAsDialog::setValidators()
 
 QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
 {
+}
+
+void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
+{
+  QString fileName;
+  if ( mTileModeCheckBox->isChecked() )
+  {
+    fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ) );
+  }
+  else
+  {
+    fileName = QFileDialog::getOpenFileName( this, tr( "Select output file" ) );
+  }
+
+  if ( !fileName.isEmpty() )
+  {
+    mSaveAsLineEdit->setText( fileName );
+  }
+}
+
+void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& text )
+{
+  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  if ( !okButton )
+  {
+    return;
+  }
+
+  okButton->setEnabled( QFile::exists( text ) );
 }
 
 int QgsRasterLayerSaveAsDialog::nColumns() const

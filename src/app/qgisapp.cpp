@@ -158,6 +158,7 @@
 #include "qgspythonrunner.h"
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterrenderer.h"
@@ -3771,7 +3772,17 @@ void QgisApp::saveAsRasterFile()
   }
 
   QgsRasterLayerSaveAsDialog d( rasterLayer->dataProvider() );
-  d.exec();
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsRasterFileWriter fileWriter( d.outputFileName() );
+    if ( d.tileMode() )
+    {
+      fileWriter.setTiledMode( true );
+      fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
+      fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
+    }
+    fileWriter.writeRaster( rasterLayer->dataProvider(), d.nColumns() );
+  }
 }
 
 void QgisApp::saveAsFile()
