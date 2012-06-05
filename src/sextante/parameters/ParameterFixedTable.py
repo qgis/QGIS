@@ -17,10 +17,13 @@ class ParameterFixedTable(Parameter):
             self.value = ParameterFixedTable.tableToString(obj)
         return True
 
+    def getValueAsCommandLineParameter(self):
+        return "\"" + str(self.value) + "\""
+
     @staticmethod
     def tableToString(table):
         tablestring = ""
-        for i in range(len[table]):
+        for i in range(len(table)):
             for j in range(len(table[0])):
                 tablestring = tablestring + table[i][j] + ","
         tablestring = tablestring[:-1]

@@ -13,6 +13,7 @@ class ParameterString(Parameter):
             return True
         self.value = str(obj)
         return True
+
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
 
