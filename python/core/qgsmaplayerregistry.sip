@@ -39,7 +39,7 @@ public:
     Not emitting signal is useful when you want to use registry for layers
     on a different canvas and don't want them added to the main canvas automatically.
  */
- QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
+ QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers /Transfer/,
                                     bool theEmitSignal = true );
 
 
@@ -53,7 +53,7 @@ public:
     Not emitting signal is useful when you want to use registry also for layers
     which won't be used in main map canvas but will be used in a special one
  */
- QgsMapLayer *  addMapLayer(QgsMapLayer * theMapLayer /Transfer/, bool theEmitSignal = TRUE) /Deprecated/;
+ QgsMapLayer *addMapLayer(QgsMapLayer * theMapLayer /Transfer/, bool theEmitSignal = TRUE) /Deprecated/;
 
  /** Remove a set of layers from qgis
     @note As a side-effect QgsProject is made dirty.
