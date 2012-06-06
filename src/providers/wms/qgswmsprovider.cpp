@@ -385,73 +385,22 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
     return;
   }
 
-  if ( mTiled )
+  // TODO: Make mActiveSubLayers a std::map in order to avoid duplicates
+  mActiveSubLayers += layers;
+  mActiveSubStyles += styles;
+
+  // Set the visibility of these new layers on by default
+  foreach( const QString &layer, layers )
   {
-    if ( layers.size() != 1 )
-    {
-      QgsMessageLog::logMessage( tr( "Number of tile layers must be one" ), tr( "WMS" ) );
-      mValid = false;
-      return;
-    }
-
-    mValid = retrieveServerCapabilities();
-    if ( !mValid || mTileLayersSupported.size() == 0 )
-    {
-      QgsMessageLog::logMessage( tr( "Tile layer not found" ), tr( "WMS" ) );
-      return;
-    }
-
-    for ( int i = 0; i < mTileLayersSupported.size(); i++ )
-    {
-      if ( mTileLayersSupported[i].identifier == layers[0] )
-      {
-        mTileLayer = &mTileLayersSupported[i];
-        if ( mTileMatrixSetId.isEmpty() && mTileLayer->setLinks.size() == 1 )
-        {
-          // fill in generate matrix for WMS-C
-          mTileMatrixSetId = mTileLayer->setLinks.keys()[0];
-        }
-        break;
-      }
-    }
-
-    QList<QVariant> resolutions;
-    if ( mTileMatrixSets.contains( mTileMatrixSetId ) )
-    {
-      mTileMatrixSet = &mTileMatrixSets[ mTileMatrixSetId ];
-      QList<double> keys = mTileMatrixSet->tileMatrices.keys();
-      qSort( keys );
-      foreach( double key, keys )
-      {
-        resolutions << key;
-      }
-    }
-    else
-    {
-      mTileMatrixSet = 0;
-    }
-
-    setProperty( "resolutions", resolutions );
-
-    mValid = mTileLayer != 0 && mTileMatrixSet != 0;
-  }
-
-  if ( mValid )
-  {
-    // TODO: Make mActiveSubLayers a std::map in order to avoid duplicates
-    mActiveSubLayers += layers;
-    mActiveSubStyles += styles;
-
-    // Set the visibility of these new layers on by default
-    foreach( const QString &layer, layers )
-    {
-      mActiveSubLayerVisibility[ layer ] = true;
-      QgsDebugMsg( "set visibility of layer '" + layer + "' to true." );
-    }
+    mActiveSubLayerVisibility[ layer ] = true;
+    QgsDebugMsg( "set visibility of layer '" + layer + "' to true." );
   }
 
   // now that the layers have changed, the extent will as well.
   mExtentDirty = true;
+
+  if ( mTiled )
+    mTileLayer = 0;
 
   QgsDebugMsg( "Exiting." );
 }
@@ -506,6 +455,75 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
     mExtentDirty = true;
 
     mImageCrs = crs;
+  }
+
+  if ( mTiled )
+  {
+    if ( mActiveSubLayers.size() != 1 )
+    {
+      QgsDebugMsg( "Number of tile layers must be one" );
+      mValid = false;
+      return;
+    }
+
+    mValid = retrieveServerCapabilities();
+    if ( !mValid || mTileLayersSupported.size() == 0 )
+    {
+      QgsDebugMsg( "Tile layer not found" );
+      return;
+    }
+
+    for ( int i = 0; i < mTileLayersSupported.size(); i++ )
+    {
+      QgsWmtsTileLayer *tl = &mTileLayersSupported[i];
+
+      if ( tl->identifier != mActiveSubLayers[0] )
+        continue;
+
+      if ( mTileMatrixSetId.isEmpty() && tl->setLinks.size() == 1 )
+      {
+        QString tms = tl->setLinks.keys()[0];
+
+        if ( !mTileMatrixSets.contains( tms ) )
+        {
+          QgsDebugMsg( QString( "tile matrix set '%1' not found." ).arg( tms ) );
+          continue;
+        }
+
+        if ( mTileMatrixSets[ tms ].crs != mImageCrs )
+        {
+          QgsDebugMsg( QString( "tile matrix set '%1' has crs %2 instead of %3." ).arg( tms ).arg( mTileMatrixSets[ tms ].crs ).arg( mImageCrs ) );
+          continue;
+        }
+
+        // fill in generate matrix for WMS-C
+        mTileMatrixSetId = tms;
+      }
+
+      mTileLayer = tl;
+      break;
+    }
+
+    QList<QVariant> resolutions;
+    if ( mTileMatrixSets.contains( mTileMatrixSetId ) )
+    {
+      mTileMatrixSet = &mTileMatrixSets[ mTileMatrixSetId ];
+      QList<double> keys = mTileMatrixSet->tileMatrices.keys();
+      qSort( keys );
+      foreach( double key, keys )
+      {
+        resolutions << key;
+      }
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Expected tile matrix set '%1' not found." ).arg( mTileMatrixSetId ) );
+      mTileMatrixSet = 0;
+    }
+
+    setProperty( "resolutions", resolutions );
+
+    mValid = mTileLayer != 0 && mTileMatrixSet != 0;
   }
 }
 
@@ -771,6 +789,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         setQueryItem( url, "LAYERS", mActiveSubLayers.join( "," ) );
         setQueryItem( url, "STYLES", mActiveSubStyles.join( "," ) );
         setQueryItem( url, "FORMAT", mImageMimeType );
+        setQueryItem( url, crsKey, mImageCrs );
         setQueryItem( url, "TILED", "true" );
 
         int i = 0;
@@ -3043,7 +3062,16 @@ bool QgsWmsProvider::calculateExtent()
     QgsCoordinateReferenceSystem qgisSrsSource;
     QgsCoordinateReferenceSystem qgisSrsDest;
 
-    qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
+    if ( mTiled && mTileLayer )
+    {
+      QgsDebugMsg( QString( "Tile layer's extent: %1 %2" ).arg( mTileLayer->boundingBox.box.toString() ).arg( mTileLayer->boundingBox.crs ) );
+      qgisSrsSource.createFromOgcWmsCrs( mTileLayer->boundingBox.crs );
+    }
+    else
+    {
+      qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
+    }
+
     qgisSrsDest.createFromOgcWmsCrs( mImageCrs );
 
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
@@ -3070,6 +3098,8 @@ bool QgsWmsProvider::calculateExtent()
         Q_UNUSED( cse );
       }
     }
+
+    QgsDebugMsg( "no extent returned" );
 
     return false;
   }
