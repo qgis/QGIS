@@ -12312,7 +12312,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Item wrapping changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Omloop van onderdeel aangepast</translation>
     </message>
     <message>
         <source>Legend group space</source>
@@ -14123,19 +14123,19 @@ p, li { white-space: pre-wrap; }
     <name>QgsCustomizationDialogBase</name>
     <message>
         <source>Customization</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanpassingen</translation>
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="unfinished">Werkbalk</translation>
+        <translation>Werkbalk</translation>
     </message>
     <message>
         <source>Catch</source>
-        <translation type="unfinished"></translation>
+        <translation>Pak</translation>
     </message>
     <message>
         <source>Switch to catching widgets in main application</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel naar widgets in de hoofdapplicatie</translation>
     </message>
     <message>
         <source>Save</source>
@@ -14155,7 +14155,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Expand All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles uitklappen</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -14163,7 +14163,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alles selecteren</translation>
     </message>
 </context>
 <context>
@@ -14339,7 +14339,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&amp;Placement</source>
@@ -15339,21 +15343,21 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Evaluation error</source>
-        <translation type="unfinished"></translation>
+        <translation>Evaluatie fout</translation>
     </message>
     <message>
         <source>An error occured while evaluating the calculation string:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Er is een fout opgetreden bij het evalueren van de berekenings-opdracht: %1</translation>
     </message>
     <message>
         <source>Please enter a field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef een geldige veldnaam a.u.b</translation>
     </message>
     <message>
         <source>
  The expression is invalid see (more info) for details</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressie is niet geldig zie (meer info) voor details</translation>
     </message>
 </context>
 <context>
@@ -15832,19 +15836,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No fix</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen &apos;fix&apos;</translation>
     </message>
     <message>
         <source>Differential</source>
-        <translation type="unfinished"></translation>
+        <translation>Differentiaal</translation>
     </message>
     <message>
         <source>Non-differential</source>
-        <translation type="unfinished"></translation>
+        <translation>Non-differentiaal</translation>
     </message>
     <message>
         <source>No position</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen positie</translation>
     </message>
     <message>
         <source>Valid</source>
@@ -16039,7 +16043,13 @@ red = no fix or bad fix
 gray = no data
 
 2D/3D depends on this information being available</source>
-        <translation type="unfinished"></translation>
+        <translation>Beknopte status indicator
+groen = goed of 3D fix
+geel = goed 2D fix
+rood = geen fix of slechte fix
+grijs = geen data
+
+2D/3D hangt af van de beschikbare informatie</translation>
     </message>
     <message>
         <source>Add track point</source>
@@ -16075,7 +16085,8 @@ gray = no data
     </message>
     <message>
         <source>latitude of position fix (degrees)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>latitude van de positie fix (graden)</translatorcomment>
+        <translation>latitude van de positie &apos;fix&apos; (graden)</translation>
     </message>
     <message>
         <source>Longitude</source>
@@ -16083,11 +16094,11 @@ gray = no data
     </message>
     <message>
         <source>longitude of position fix (degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>longitude van de positie fix (graden)</translation>
     </message>
     <message>
         <source>antenna altitude with respect to geoid (mean sea level)</source>
-        <translation type="unfinished"></translation>
+        <translation>antenne hoogte ten opzichte van geoide (gemiddeld zee niveau)</translation>
     </message>
     <message>
         <source>Altitude</source>
@@ -16099,15 +16110,15 @@ gray = no data
     </message>
     <message>
         <source>Time of fix</source>
-        <translation type="unfinished"></translation>
+        <translation>Tijd van fix</translation>
     </message>
     <message>
         <source>date/time of position fix (UTC)</source>
-        <translation type="unfinished"></translation>
+        <translation>datum/tijd van positie fix (UTC)</translation>
     </message>
     <message>
         <source>speed over ground</source>
-        <translation type="unfinished"></translation>
+        <translation>speed over ground (SOG)</translation>
     </message>
     <message>
         <source>Speed</source>
@@ -16123,15 +16134,15 @@ gray = no data
     </message>
     <message>
         <source>Horizontal Dilution of Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale &apos;Dilution of Precision&apos;</translation>
     </message>
     <message>
         <source>HDOP</source>
-        <translation type="unfinished">HDOP</translation>
+        <translation>HDOP</translation>
     </message>
     <message>
         <source>Vertical Dilution of Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Verticale &apos;Dilution of Precision&apos;</translation>
     </message>
     <message>
         <source>VDOP</source>
@@ -16139,7 +16150,7 @@ gray = no data
     </message>
     <message>
         <source>Position Dilution of Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Positie van &apos;Dilution of Precision&apos;</translation>
     </message>
     <message>
         <source>PDOP</source>
@@ -16155,7 +16166,7 @@ gray = no data
     </message>
     <message>
         <source>position fix dimensions: 2D, 3D or No fix</source>
-        <translation type="unfinished"></translation>
+        <translation>positie fix dimensies: 2D, 3D of Geen Fix</translation>
     </message>
     <message>
         <source>Dimensions</source>
@@ -16163,7 +16174,7 @@ gray = no data
     </message>
     <message>
         <source>quality of the position fix: Differential, Non-differential or No position</source>
-        <translation type="unfinished"></translation>
+        <translation>kwaliteit van de positie fix: Differentieel, Niet-differentieel of Geen positie</translation>
     </message>
     <message>
         <source>Quality</source>
@@ -16171,7 +16182,7 @@ gray = no data
     </message>
     <message>
         <source>position fix status: Valid or Invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>positiie fix status: Geldig of Ongeldig</translation>
     </message>
     <message>
         <source>Status</source>
@@ -16179,7 +16190,7 @@ gray = no data
     </message>
     <message>
         <source>number of satellites used in the position fix</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal sattelieten gebruikt bij de positie fix</translation>
     </message>
     <message>
         <source>Satellites</source>
@@ -16203,7 +16214,7 @@ gray = no data
     </message>
     <message>
         <source>gpsd</source>
-        <translation type="unfinished"></translation>
+        <translation>gpsd</translation>
     </message>
     <message>
         <source>Digitizing</source>
@@ -16243,11 +16254,11 @@ gray = no data
     </message>
     <message>
         <source>when leaving</source>
-        <translation type="unfinished"></translation>
+        <translation>wanneer buiten</translation>
     </message>
     <message>
         <source>% of map extent</source>
-        <translation type="unfinished"></translation>
+        <translation>% van kaartextent</translation>
     </message>
     <message>
         <source>Cursor</source>
@@ -16255,11 +16266,11 @@ gray = no data
     </message>
     <message>
         <source>H accurancy</source>
-        <translation type="unfinished"></translation>
+        <translation>H-nauwkeurigheid</translation>
     </message>
     <message>
         <source>V accurancy</source>
-        <translation type="unfinished"></translation>
+        <translation>V-nauwkeurigheid</translation>
     </message>
     <message>
         <source>Internal</source>
@@ -17306,7 +17317,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Worldwind</source>
-        <translation type="unfinished"></translation>
+        <translation>Worldwind</translation>
     </message>
     <message>
         <source>URL/File</source>
@@ -17370,15 +17381,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split stereo horizontal separation (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdeel &apos;stereo horizontal separation&apos; (px)</translation>
     </message>
     <message>
         <source>Split stereo vertical separation (px)</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdeel &apos;stereo vertical separation&apos; (px)</translation>
     </message>
     <message>
         <source>Split stereo vertical eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdeel &apos;stereo vertical eye mapping&apos;</translation>
     </message>
     <message>
         <source>Screen height (m)</source>
@@ -17386,7 +17397,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Eye separation (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Eye separation&apos; (m)</translation>
     </message>
     <message>
         <source>Reset to defaults</source>
@@ -17394,7 +17405,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Split stereo horizontal eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdeel &apos;stereo horizontal eye mapping&apos;</translation>
     </message>
 </context>
 <context>
@@ -17523,7 +17534,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Renderer creation has failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken van hertekenen is mislukt.</translation>
     </message>
     <message>
         <source>Symbol levels...</source>
@@ -20729,11 +20740,11 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Wrap label on character</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak label op rond teken</translation>
     </message>
     <message>
         <source>Line orientation dependent position</source>
-        <translation type="unfinished"></translation>
+        <translation>Positieafhankelijke orientatie van lijn</translation>
     </message>
 </context>
 <context>
@@ -20784,7 +20795,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>&amp;Make to Toplevel Item</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Maak hier een &apos;top level&apos; item van</translation>
     </message>
     <message>
         <source>Zoom to Group</source>
@@ -22233,7 +22244,7 @@ eigenschappen
     <message>
         <source>Level</source>
         <translatorcomment>Level</translatorcomment>
-        <translation type="unfinished"></translation>
+        <translation>Level</translation>
     </message>
 </context>
 <context>
@@ -22291,7 +22302,7 @@ eigenschappen
     <message>
         <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 </source>
-        <translation type="unfinished">WAARSCHUWING: U hebt gekozen om uw wachtwoord op te slaan. Het zal als kale tekst in uw projectbestanden en in uw &apos;home folder&apos; worden opgeslagen in UNIX systemen of in uw gebruikersprofiel in Windows. Als u dit niet wilt, drukt u dan a.u.b. op de knop &quot;Annuleren&quot;.</translation>
+        <translation>WAARSCHUWING: U hebt gekozen om uw wachtwoord op te slaan. Het zal als kale tekst in uw projectbestanden en in uw &apos;home folder&apos; worden opgeslagen in UNIX systemen of in uw gebruikersprofiel in Windows. Als u dit niet wilt, drukt u dan a.u.b. op de knop &quot;Annuleren&quot;.</translation>
     </message>
     <message>
         <source>Save connection</source>
@@ -22616,7 +22627,7 @@ eigenschappen
     </message>
     <message>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel &apos;Snelle toegang tot objecten naar ID&apos; mogelijkheid uit om de attributentabel in het geugen te houden (b.v. in het geval van &apos;expensive views&apos;).</translation>
     </message>
     <message>
         <source>Enter...</source>
@@ -24509,11 +24520,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy geometry in WKT representation from attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopiër geometrie in WKT representatie van attributentabel</translation>
     </message>
     <message>
         <source>Prompt for raster sublayers</source>
-        <translation type="unfinished"></translation>
+        <translation>Suggereer raster sublagen</translation>
     </message>
     <message>
         <source>Join style for curve offset</source>
@@ -25264,7 +25275,7 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>Select at id</source>
-        <translation type="unfinished">Selecteer op id</translation>
+        <translation>Selecteer op id</translation>
     </message>
     <message>
         <source>Sql</source>
@@ -25280,7 +25291,7 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation>Schakel &apos;Snelle toegang tot objecten naar ID&apos; mogelijkheid uit om de attributentabel in het geugen te houden (b.v. in het geval van &apos;expensive views&apos;).</translation>
     </message>
     <message>
         <source>Enter...</source>
@@ -26206,30 +26217,34 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>error in setting encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Fout bij instellen encodering</translation>
     </message>
     <message>
         <source>undefined return value from encoding setting</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongedefinieerde &apos;return value&apos; vanuit encoderingsinstelling</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Uw database ondersteunt/bevat geen PostGIS-ondersteuning.
+</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uw PostGIS installatie biedt geen GEOS ondersteuning. Selecteren en identificeren van objecten zal niet werken. Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>SQL:%1
 result:%2
 error:%3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>SQL:%1
+resultaat:%2
+fout:%3
+</translation>
     </message>
     <message>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
@@ -26239,43 +26254,50 @@ error:%3
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Databaseverbinding is gelukt, maar er zijn geen voor u toegankelijke tabellen gevonden. De foutmelding van de database was:
+%1
+</translation>
     </message>
     <message>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Databaseverbinding is gelukt, maar er zijn geen voor u toegankelijke tabellen gevonden.
+De foutmelding van de database was:
+%1
+</translation>
     </message>
     <message>
         <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Databaseverbinding is gelukt, maar er zijn geen voor u toegankelijke tabellen gevonden. Verifieer dat u SELECT-rechten heeft op een tabel met PostGIS geometrische objecten.</translation>
     </message>
     <message>
         <source>Unable to get list of spatially enabled tables from the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan geen lijst van tabellen met ruimtelijke eigenschappen verkrijgen uit de database</translation>
     </message>
     <message>
         <source>Retrieval of postgis version failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Opvragen postgisversie mislukt</translation>
     </message>
     <message>
         <source>Could not parse postgis version string &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Postgisversie tekenreeks &apos;%1&apos; kan niet worden geparseerd</translation>
     </message>
     <message>
         <source>Query failed: %1
 Error: no result buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Query mislukt: %1
+Fout: geen &apos;result buffer&apos;</translation>
     </message>
     <message>
         <source>Not logged query failed: %1
 Error: no result buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Niet gelogde query mislukt: %1
+Fout: geen &apos;result buffer&apos;</translation>
     </message>
     <message>
         <source>Query: %1 returned %2 [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Query: %1 gaf %2 [%3]</translation>
     </message>
     <message>
         <source>%1 cursor states lost.
@@ -26287,23 +26309,23 @@ Resultaat: %3 (%4)</translation>
     </message>
     <message>
         <source>resetting bad connection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset van slechte verbinding.</translation>
     </message>
     <message>
         <source>retry after reset succeeded.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe poging na reset geslaagd.</translation>
     </message>
     <message>
         <source>retry after reset failed again.</source>
-        <translation type="unfinished"></translation>
+        <translation>nieuwe poging na reset opnieuw mislukt.</translation>
     </message>
     <message>
         <source>connection still bad after reset.</source>
-        <translation type="unfinished"></translation>
+        <translation>verbinding na reset nog steeds slecht.</translation>
     </message>
     <message>
         <source>bad connection, not retrying.</source>
-        <translation type="unfinished"></translation>
+        <translation>slechte verbinding, geen nieuwe poging.</translation>
     </message>
     <message>
         <source>Point</source>
@@ -26319,7 +26341,7 @@ Resultaat: %3 (%4)</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="unfinished">Geen Geometrie</translation>
+        <translation>Geen Geometrie</translation>
     </message>
     <message>
         <source>Multipoint</source>
@@ -26335,15 +26357,15 @@ Resultaat: %3 (%4)</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="unfinished">Onbekemde Geometrie</translation>
+        <translation>Onbekende Geometrie</translation>
     </message>
     <message>
         <source>Connection error: %1 returned %2 [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindingsfout: %1 gaf %2 [%3]</translation>
     </message>
     <message>
         <source>Erroneous query: %1 returned %2 [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Onjuiste query: %1 gaf %2 [%3]</translation>
     </message>
 </context>
 <context>
@@ -26607,116 +26629,118 @@ Schrijfakties zullen niet worden toegestaan.</translation>
     </message>
     <message>
         <source>invalid PostgreSQL layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ongeldige PostgreSQL laag</translation>
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>Couldn&apos;t get the feature geometry in binary form</source>
-        <translation type="unfinished"></translation>
+        <translation>Kon het geometrieobject niet in binaire vorm verkrijgen</translation>
     </message>
     <message>
         <source>Read attempt on an invalid postgresql data source</source>
-        <translation type="unfinished"></translation>
+        <translation>Leespoging op een ongeldige postgresql databron</translation>
     </message>
     <message>
         <source>nextFeature() without select()</source>
-        <translation type="unfinished"></translation>
+        <translation>nextFeature() without select()</translation>
     </message>
     <message>
         <source>Fetching from cursor %1 failed
 Database error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ophalen vanaf cursor %1 mislukt
+Databasefout: %2</translation>
     </message>
     <message>
         <source>feature %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>object %1 niet gevonden</translation>
     </message>
     <message>
         <source>found %1 features instead of just one.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 objecten gevonden i.p.v. slechts één.</translation>
     </message>
     <message>
         <source>unexpected formatted field type &apos;%1&apos; for field %2</source>
-        <translation type="unfinished"></translation>
+        <translation>onverwacht geformateerd veldtype &apos;%1&apos; voor veld %2</translation>
     </message>
     <message>
         <source>The custom query is not a select query.</source>
-        <translation type="unfinished"></translation>
+        <translation>De aangemaakte query is geen &apos;select query&apos;.</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>De tabel heeft geen geen kolom die gebruikt kan worden als sleutel. Quantum GIS vereist een primaire sleutel, een PostreSQL oid-kolom of een ctid voor tabellen..</translation>
     </message>
     <message>
         <source>Unexpected relation type &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Onverwacht relatietype &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>PostGIS error while adding features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS fout bij het toevoegen van objecten: %1</translation>
     </message>
     <message>
         <source>PostGIS error while deleting features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS fout bij het verwijderen van objecten: %1</translation>
     </message>
     <message>
         <source>PostGIS error while adding attributes: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS fout bij het toevoegen van objecten: %1</translation>
     </message>
     <message>
         <source>PostGIS error while deleting attributes: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS fout bij het verwijderen van attributen: %1</translation>
     </message>
     <message>
         <source>PostGIS error while changing attributes: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS fout bij het bewerken van objecten: %1</translation>
     </message>
     <message>
         <source>PostGIS error while changing geometry values: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS fout bij het bewerken van geometriewaarden: %1</translation>
     </message>
     <message>
         <source>result of extents query invalid: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaat van de extents-query ongeldig: %1</translation>
     </message>
     <message>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometrietype en srid voor lege kolom %1 van %2 niet gedifinieerd.</translation>
     </message>
     <message>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecttype of srid voor %1 of %2 kon niet worden bepaald of werd niet gevraagd.</translation>
     </message>
     <message>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Bewerken en toevoegen uitgeschakeld voor 2D+ laag</translatorcomment>
+        <translation>Editing and adding disabled for 2D+ layer (%1; %2)</translation>
     </message>
     <message>
         <source>Field %1 ignored, because of unsupported type %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Veld %1 genegeerd, vanwege een niet ondersteund type %2</translation>
     </message>
     <message>
         <source>No key field for view given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen sleutelveld voor de gegeven &apos;view&apos;.</translation>
     </message>
     <message>
         <source>No key field for query given.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen sleutelveld opgegeven voor de query.</translation>
     </message>
     <message>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaire sleutelveld &apos;%1&apos; voor de &apos;view&apos; niet uniek.</translation>
     </message>
     <message>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Type &apos;%1&apos; van het primaire sleutelveld &apos;%2&apos; voor de view ongeldig.</translation>
     </message>
     <message>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleutelveld &apos;%1&apos; voor &apos;view&apos; niet gevonden.</translation>
     </message>
 </context>
 <context>
@@ -27851,7 +27875,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de &apos;view extent&apos; %1 niet herprojecteren</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -27859,7 +27883,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not reproject layer extent: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de &apos;layer extent&apos; %1 niet herprojecteren</translation>
     </message>
     <message>
         <source>Failed to load provider %1 (Reason: %2)</source>
@@ -27867,7 +27891,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot resolve the classFactory function</source>
-        <translation type="unfinished"></translation>
+        <translation>Kan de classFactory functie niet oplossen</translation>
     </message>
     <message>
         <source>&lt;maplayer&gt; not found.</source>
@@ -27879,7 +27903,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot instantiate the data provider</source>
-        <translation type="unfinished"></translation>
+        <translation>KAn de dataprovider niet instantiëren</translation>
     </message>
     <message>
         <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
@@ -28205,7 +28229,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
-        <translation type="unfinished"></translation>
+        <translation>Het bestand kon niet worden weggeschreven. Sommige formaten ondersteunen geen pyramideoverzichten. Raadpleeg de GDAL-documentatie als u twijfelt.</translation>
     </message>
     <message>
         <source>Textfile</source>
@@ -29138,7 +29162,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Change output unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Verander uitvoerunit</translation>
     </message>
     <message>
         <source>Change width</source>
@@ -29158,7 +29182,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select symbol unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer symboolunit</translation>
     </message>
     <message>
         <source>Millimeter</source>
@@ -30102,7 +30126,8 @@ De foutmelding was:
     <message>
         <source>SQLite error: %2
 SQL: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite fout: %2
+SQL: %1</translation>
     </message>
     <message>
         <source>SpatiaLite</source>
@@ -30110,11 +30135,11 @@ SQL: %1</source>
     </message>
     <message>
         <source>unknown cause</source>
-        <translation type="unfinished"></translation>
+        <translation>onbekende oorzaak</translation>
     </message>
     <message>
         <source>SQLite error getting feature: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite fout bij ophalen van object: %1</translation>
     </message>
 </context>
 <context>
@@ -30225,21 +30250,23 @@ SQL: %1</source>
     </message>
     <message>
         <source>Database does not exist: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Database bestaat niet: %1</translation>
     </message>
     <message>
         <source>SpatiaLite Error</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite Fout</translation>
     </message>
     <message>
         <source>Unexpected error when working with: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Onverwachte fout bij het werken met: %1
+
+%2</translation>
     </message>
     <message>
         <source>SpatiaLite DB</source>
-        <translation type="unfinished">SpatiaLite DB</translation>
+        <translation>SpatiaLite DB</translation>
     </message>
     <message>
         <source>All files</source>
@@ -31191,7 +31218,25 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;We werken erg hard om deze software te maken. Ziet u alle prachtige dingen die het kan? Krijgt u een warm gevoel wanneer u het gebruikt? Quantum GIS is het produkt van een groep toegewijde ontwikkelaars. We willen dat u het kopieert &amp;amp; doorgeeft aan zoveel mogelijk mensen om te gebruiken. Als QGIS u werk bespaart, of u ons werk waardeert en de mogelijkheid heeft ons financieel te ondersteunen, denk dan eens aan het sponsoren van Quantum GIS. We gebruiken het geld voor reis- en verblijfskosten van onze tweejaarlijkse bijeenkomsten, en om het project in zijn algemeen bekend te maken. Vind meer details op de  &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsor webpagina&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;. In de lijst hieronder vind u personen en bedrijven die ons financieel ondersteunen - heel hartelijk bedankt allemaal!&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsoren&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -32255,23 +32300,23 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <name>QgsVectorFieldSymbolLayerWidget</name>
     <message>
         <source>X attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>X attribuut</translation>
     </message>
     <message>
         <source>Y attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Y attribuut</translation>
     </message>
     <message>
         <source>Length attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Lengte-attribuut</translation>
     </message>
     <message>
         <source>Angle attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoek-attribuut</translation>
     </message>
     <message>
         <source>Height attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoogte-attribuut</translation>
     </message>
 </context>
 <context>
@@ -32942,27 +32987,27 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Load layer properties from style file</source>
-        <translation type="unfinished">Laad kaartlaageigenschappen in vanuit een stijlbestand</translation>
+        <translation>Laad kaartlaageigenschappen in vanuit een stijlbestand</translation>
     </message>
     <message>
         <source>QGIS Layer Style File</source>
-        <translation type="unfinished">QGIS Laagstijlbestand</translation>
+        <translation>QGIS Laagstijlbestand</translation>
     </message>
     <message>
         <source>SLD File</source>
-        <translation type="unfinished"></translation>
+        <translation>SLD Bestand</translation>
     </message>
     <message>
         <source>Load Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stijl laden</translation>
     </message>
     <message>
         <source>Save layer properties as style file</source>
-        <translation type="unfinished">Sla kaartlaageigenschappen op als stijlbestand</translation>
+        <translation>Sla laageigenschappen op als stijlbestand</translation>
     </message>
     <message>
         <source>UI file</source>
-        <translation type="unfinished"></translation>
+        <translation>UI-bestand</translation>
     </message>
     <message>
         <source>mm</source>
@@ -33261,7 +33306,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Provider-specific options</source>
-        <translation type="unfinished"></translation>
+        <translation>Provider specifieke opties</translation>
     </message>
     <message>
         <source>Encoding</source>
@@ -33277,7 +33322,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Update Extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Update Extents</translation>
     </message>
 </context>
 <context>
@@ -33308,7 +33353,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Selected CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Geselecteerd CRS</translation>
     </message>
 </context>
 <context>
@@ -33359,11 +33404,11 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit maakt het mogelijk om de aanmaak van bepaalde attributen te voorkomen, met bepaald OGR drivers (bv DGN, DXF) die dit niet ondersteunen.</translation>
     </message>
     <message>
         <source>Add saved file to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg opgeslagen bestand toe aan kaart</translation>
     </message>
 </context>
 <context>
@@ -34531,22 +34576,22 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>Raster layer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterlaag:</translation>
     </message>
     <message>
         <source>Polygon layer containing the zones:</source>
-        <translation type="unfinished"></translation>
+        <translation>Polygoonlaag met de zones:</translation>
     </message>
     <message>
         <source>Output column prefix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Prefix uivoerkolom:</translation>
     </message>
 </context>
 <context>
     <name>QgsZonalStatisticsPlugin</name>
     <message>
         <source>Calculating zonal statistics...</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebiedsstatistieken worden berekend...</translation>
     </message>
     <message>
         <source>Abort...</source>
@@ -34554,7 +34599,7 @@ Omschrijving: %2</translation>
     </message>
     <message>
         <source>&amp;Zonal statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gebiedsstatistieken</translation>
     </message>
 </context>
 <context>
@@ -35563,7 +35608,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Symboolbreedte</translation>
     </message>
     <message>
         <source>Outline width</source>
@@ -35571,7 +35616,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Symbol height</source>
-        <translation type="unfinished"></translation>
+        <translation>Symboolhoogte</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -35583,7 +35628,7 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijnkleur</translation>
     </message>
     <message>
         <source>Shape</source>
@@ -35746,19 +35791,19 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Horizontal distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale afstand</translation>
     </message>
     <message>
         <source>Vertical distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Verticale afstand</translation>
     </message>
     <message>
         <source>Horizontal displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale verplaatsing</translation>
     </message>
     <message>
         <source>Vertical displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale verplaatsing</translation>
     </message>
 </context>
 <context>
@@ -35956,11 +36001,11 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>X attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>X-attribuut</translation>
     </message>
     <message>
         <source>Y attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Y-attribuut</translation>
     </message>
     <message>
         <source>Scale</source>
@@ -35968,23 +36013,23 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Vector field type</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector veldtype</translation>
     </message>
     <message>
         <source>Cartesian</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartesiaans</translation>
     </message>
     <message>
         <source>Polar</source>
-        <translation type="unfinished"></translation>
+        <translation>Polair</translation>
     </message>
     <message>
         <source>Height only</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen de hoogte</translation>
     </message>
     <message>
         <source>Angle units</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoekunits</translation>
     </message>
     <message>
         <source>Degrees</source>
@@ -35996,23 +36041,23 @@ Omschrijving: %3</translation>
     </message>
     <message>
         <source>Angle orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoekoriëntatie</translation>
     </message>
     <message>
         <source>Counterclockwise from east</source>
-        <translation type="unfinished"></translation>
+        <translation>Tegen de klok in vanaf het ooten</translation>
     </message>
     <message>
         <source>Clockwise from north</source>
-        <translation type="unfinished"></translation>
+        <translation>Met de klok mee vanf het noorden</translation>
     </message>
     <message>
         <source>LineStyle</source>
-        <translation type="unfinished"></translation>
+        <translation>LijnStijl</translation>
     </message>
     <message>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>aanpassen</translation>
     </message>
 </context>
 <context>
