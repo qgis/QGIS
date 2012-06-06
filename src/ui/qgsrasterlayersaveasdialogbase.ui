@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>415</width>
-    <height>248</height>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Save raster layer as...</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
     <widget class="QLabel" name="mFormatLabel">
      <property name="text">
@@ -79,6 +79,90 @@
     </layout>
    </item>
    <item row="3" column="0" colspan="3">
+    <widget class="QGroupBox" name="mExtentGroupBox">
+     <property name="title">
+      <string>Extent</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="mCurrentExtentButton">
+          <property name="text">
+           <string>Current Extent</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mProviderExtentButton">
+          <property name="text">
+           <string>Provider extent</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mXMinLabel">
+        <property name="text">
+         <string>X min</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mXMinLineEdit"/>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="mXMaxLabel">
+        <property name="text">
+         <string>X max</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="mXMaxLineEdit"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mYMinLabel">
+        <property name="text">
+         <string>Y min</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="mYMinLineEdit"/>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="mYMaxLabel">
+        <property name="text">
+         <string>Y max</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QLineEdit" name="mYMaxLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
     <widget class="QGroupBox" name="mTilesGroupBox">
      <property name="title">
       <string>Tiles</string>
@@ -107,14 +191,14 @@
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mTileModeCheckBox">
         <property name="text">
-         <string>One output file per tile</string>
+         <string>Create VRT</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

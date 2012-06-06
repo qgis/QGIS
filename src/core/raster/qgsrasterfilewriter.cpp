@@ -260,7 +260,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
       {
         break;
       }
-
     }
 
     //fill into red/green/blue/alpha channels

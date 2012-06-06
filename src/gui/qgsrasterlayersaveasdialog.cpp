@@ -2,9 +2,9 @@
 #include "qgsrasterdataprovider.h"
 #include <QFileDialog>
 
-QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider,
+QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
     QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ),
-    mDataProvider( sourceProvider )
+    mDataProvider( sourceProvider ), mCurrentExtent( currentExtent )
 
 {
   setupUi( this );
@@ -30,6 +30,9 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
       mMaximumSizeXLineEdit->setText( QString::number( 2000 ) );
       mMaximumSizeYLineEdit->setText( QString::number( 2000 ) );
     }
+
+    //extent
+    setOutputExtent( mCurrentExtent );
   }
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
@@ -45,6 +48,10 @@ void QgsRasterLayerSaveAsDialog::setValidators()
   mRowsLineEdit->setValidator( new QIntValidator( this ) );
   mMaximumSizeXLineEdit->setValidator( new QIntValidator( this ) );
   mMaximumSizeYLineEdit->setValidator( new QIntValidator( this ) );
+  mXMinLineEdit->setValidator( new QDoubleValidator( this ) );
+  mXMaxLineEdit->setValidator( new QDoubleValidator( this ) );
+  mYMinLineEdit->setValidator( new QDoubleValidator( this ) );
+  mYMaxLineEdit->setValidator( new QDoubleValidator( this ) );
 }
 
 QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
@@ -80,6 +87,19 @@ void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& 
   okButton->setEnabled( QFileInfo( text ).absoluteDir().exists() );
 }
 
+void QgsRasterLayerSaveAsDialog::on_mCurrentExtentButton_clicked()
+{
+  setOutputExtent( mCurrentExtent );
+}
+
+void QgsRasterLayerSaveAsDialog::on_mProviderExtentButton_clicked()
+{
+  if ( mDataProvider )
+  {
+    setOutputExtent( mDataProvider->extent() );
+  }
+}
+
 int QgsRasterLayerSaveAsDialog::nColumns() const
 {
   return mColumnsLineEdit->text().toInt();
@@ -113,4 +133,17 @@ QString QgsRasterLayerSaveAsDialog::outputFileName() const
 QString QgsRasterLayerSaveAsDialog::outputFormat() const
 {
   return ""; //soon...
+}
+
+QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
+{
+  return QgsRectangle( mXMinLineEdit->text().toDouble(), mYMinLineEdit->text().toDouble(), mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
+}
+
+void QgsRasterLayerSaveAsDialog::setOutputExtent( const QgsRectangle& r )
+{
+  mXMinLineEdit->setText( QString::number( r.xMinimum() ) );
+  mXMaxLineEdit->setText( QString::number( r.xMaximum() ) );
+  mYMinLineEdit->setText( QString::number( r.yMinimum() ) );
+  mYMaxLineEdit->setText( QString::number( r.yMaximum() ) );
 }
