@@ -116,7 +116,7 @@
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="69"/>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="90"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="165"/>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="105"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="100"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="203"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="136"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="223"/>
@@ -216,7 +216,7 @@
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="89"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="187"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="120"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="207"/>
@@ -336,28 +336,28 @@
         <translation>Väljund kauguse maatriksist</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="14"/>
         <source>Count Points In Polygons</source>
         <translation>Loenda punktide arv polügonis</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="22"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
         <translation>Vali pinnaga vektorkiht</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="36"/>
         <source>Input point vector layer</source>
         <translation>Vali punkt vektorkiht</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="50"/>
         <source>Output count field name</source>
         <translation>Määra loendi välja nimi</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
+        <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="57"/>
         <source>PNTCNT</source>
         <translation>P_ARV</translation>
     </message>
@@ -1003,13 +1003,15 @@ Kas soovid jätkata?</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Hoiatus</translation>
+        <translation>Hoiatus</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Praegune QGIS ei luba kohest juurdepääsu 
+                                 erinevate lõikudena samale andmeallikale. Ole kindel et kihi 
+                                 atribuuttabelid on suletud. Jätkan?</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -1081,7 +1083,7 @@ Kas soovid jätkata?</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation> punkti loenduse väli</translation>
+        <translation type="obsolete"> punkti loenduse väli</translation>
     </message>
     <message>
         <source>Densify geometries</source>
@@ -1251,72 +1253,72 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished">Nimi</translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="30"/>
         <source>geom</source>
-        <translation type="unfinished"></translation>
+        <translation>geom</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="37"/>
         <source>Type</source>
-        <translation type="unfinished">Tüüp</translation>
+        <translation>Tüüp</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="48"/>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>POINT</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="53"/>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>LINESTRING</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="58"/>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>POLYGON</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="63"/>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOINT</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="68"/>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTILINESTRING</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="73"/>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOLYGON</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="78"/>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOMETRYCOLLECTION</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="86"/>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensioonid</translation>
+        <translation>Dimensioonid</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="119"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="129"/>
         <source>-1</source>
-        <translation type="unfinished"></translation>
+        <translation>-1</translation>
     </message>
 </context>
 <context>
@@ -1324,22 +1326,22 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="14"/>
         <source>Add constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa piirang</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">Veerg</translation>
+        <translation>Veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="37"/>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaarvõti</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="47"/>
         <source>Unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikaalne</translation>
     </message>
 </context>
 <context>
@@ -1347,17 +1349,17 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="14"/>
         <source>Create index</source>
-        <translation type="unfinished"></translation>
+        <translation>Loo indeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">Veerg</translation>
+        <translation>Veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="30"/>
         <source>Name</source>
-        <translation type="unfinished">Nimi</translation>
+        <translation>Nimi</translation>
     </message>
 </context>
 <context>
@@ -1365,108 +1367,108 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="14"/>
         <source>Create Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Loo tabel</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="22"/>
         <source>Schema</source>
-        <translation type="unfinished">Skeem</translation>
+        <translation>Skeem</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="35"/>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="167"/>
         <source>Name</source>
-        <translation type="unfinished">Nimi</translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="52"/>
         <source>Add field</source>
-        <translation type="unfinished"></translation>
+        <translation>Leia väli</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="59"/>
         <source>Delete field</source>
-        <translation type="unfinished"></translation>
+        <translation>Kustuta väli</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="79"/>
         <source>Up</source>
-        <translation type="unfinished">Üles</translation>
+        <translation>Üles</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="86"/>
         <source>Down</source>
-        <translation type="unfinished">Alla</translation>
+        <translation>Alla</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="100"/>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaarvõti</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="121"/>
         <source>Create geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Loo geomeetriaväli</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="129"/>
         <source>POINT</source>
-        <translation type="unfinished"></translation>
+        <translation>POINT</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="134"/>
         <source>LINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>LINESTRING</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="139"/>
         <source>POLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>POLYGON</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="144"/>
         <source>MULTIPOINT</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOINT</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="149"/>
         <source>MULTILINESTRING</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTILINESTRING</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="154"/>
         <source>MULTIPOLYGON</source>
-        <translation type="unfinished"></translation>
+        <translation>MULTIPOLYGON</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="159"/>
         <source>GEOMETRYCOLLECTION</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOMETRYCOLLECTION</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="177"/>
         <source>geom</source>
-        <translation type="unfinished"></translation>
+        <translation>geom</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="184"/>
         <source>Dimensions</source>
-        <translation type="unfinished">Dimensioonid</translation>
+        <translation>Dimensioonid</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="217"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="227"/>
         <source>-1</source>
-        <translation type="unfinished"></translation>
+        <translation>-1</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="234"/>
         <source>Create spatial index</source>
-        <translation type="unfinished">Loo ruumiindeks</translation>
+        <translation>Loo ruumiindeks</translation>
     </message>
 </context>
 <context>
@@ -1474,22 +1476,22 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="14"/>
         <source>Database Error</source>
-        <translation type="unfinished">Andmebaasi viga</translation>
+        <translation>Andmebaasi viga</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="30"/>
         <source>An error occured:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilmnes viga:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="54"/>
         <source>An error occured when executing a query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Päringu käivitamisel ilmnes viga:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="71"/>
         <source>Query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Päring:</translation>
     </message>
 </context>
 <context>
@@ -1497,32 +1499,32 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="14"/>
         <source>Field properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Välja tunnused</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="22"/>
         <source>Name</source>
-        <translation type="unfinished">Nimi</translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="32"/>
         <source>Type</source>
-        <translation type="unfinished">Tüüp</translation>
+        <translation>Tüüp</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="46"/>
         <source>Can be NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Võib olla NULL</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="63"/>
         <source>Default value</source>
-        <translation type="unfinished"></translation>
+        <translation>Algväärtused</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="73"/>
         <source>Length</source>
-        <translation type="unfinished">Pikkus</translation>
+        <translation>Pikkus</translation>
     </message>
 </context>
 <context>
@@ -1530,77 +1532,77 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="14"/>
         <source>Import vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Impordi vektorkiht</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="22"/>
         <source>Schema:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skeem:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="32"/>
         <source>Table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="48"/>
         <source>Action</source>
-        <translation type="unfinished">Tegevus</translation>
+        <translation>Tegevus</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="54"/>
         <source>Create new table</source>
-        <translation type="unfinished"></translation>
+        <translation>Loo uus tabel</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="82"/>
         <source>Drop existing one</source>
-        <translation type="unfinished"></translation>
+        <translation>Kustuta olemasolev</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="94"/>
         <source>Append data into table</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa andmed tabelisse</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="104"/>
         <source>Options</source>
-        <translation type="unfinished">Valikud</translation>
+        <translation>Valikud</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="110"/>
         <source>Primary key:</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaarvõti:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="120"/>
         <source>Geometry column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Geomeetria veerg:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="132"/>
         <source>Source SRID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Allika SRID:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="142"/>
         <source>Target SRID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Siht SRID:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="154"/>
         <source>Encoding:</source>
-        <translation type="unfinished">Kodeerimine:</translation>
+        <translation>Kodeerimine:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="171"/>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished"></translation>
+        <translation>Loo üheosaline geomeetria hulkosalise asemel</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="178"/>
         <source>Create spatial index</source>
-        <translation type="unfinished">Loo ruumiindeks</translation>
+        <translation>Loo ruumiindeks</translation>
     </message>
 </context>
 <context>
@@ -1608,88 +1610,91 @@ Kas soovid jätkata?</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="14"/>
         <source>SQL window</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL aken</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="27"/>
         <source>SQL query:</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL päring:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="46"/>
         <source>&amp;Execute (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Käivita (F5)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="49"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="76"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Puhasta</translation>
+        <translation>&amp;Puhasta</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="89"/>
         <source>Result:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulemus:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="119"/>
         <source>Load as new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lae uue kihina</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="139"/>
         <source>Column with unique 
 integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Veerg unikaalsete 
+täisarvuliste väärtustega</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="160"/>
         <source>Geometry column</source>
-        <translation type="unfinished">Geomeetria veerg</translation>
+        <translation>Geomeetria veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="199"/>
         <source>Retrieve 
 columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Võta tagasi 
+veerge</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="211"/>
         <source>Layer name (prefix)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kihi nimi (eesliide)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="234"/>
         <source>Type</source>
-        <translation type="unfinished">Tüüp</translation>
+        <translation>Tüüp</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="244"/>
         <source>Vector</source>
-        <translation type="unfinished">Vektor</translation>
+        <translation>Vektor</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="254"/>
         <source>Raster</source>
-        <translation type="unfinished">Raster</translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="280"/>
         <source>Load now!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lae nüüd!</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished">Kahjuks</translation>
+        <translation>Kahjuks</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="unfinished"></translation>
+        <translation>Pead täitma nõutud väljad: 
+geomeetria väli - veerg unikaalsete täisarvuliste väärtustega</translation>
     </message>
 </context>
 <context>
@@ -1755,82 +1760,82 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="13"/>
         <source>Table properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabeli tunnused</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="23"/>
         <source>Columns</source>
-        <translation type="unfinished">Veerud</translation>
+        <translation>Veerud</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="29"/>
         <source>Table columns:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabeli veerud:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="45"/>
         <source>Add column</source>
-        <translation type="unfinished">Lisa veerg</translation>
+        <translation>Lisa veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="52"/>
         <source>Add geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa geomeetria veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="59"/>
         <source>Edit column</source>
-        <translation type="unfinished"></translation>
+        <translation>Redigeeri veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="79"/>
         <source>Delete column</source>
-        <translation type="unfinished">Kustuta veerg</translation>
+        <translation>Kustuta veerg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="89"/>
         <source>Constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Piirangud</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="95"/>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaar-, vöörvõti, unikaal- ja kontrollpiirangud:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="111"/>
         <source>Add primary key / unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa primaarvõti / unikaal</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="131"/>
         <source>Delete constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Kustuta piirang</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="141"/>
         <source>Indexes</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeksid</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="147"/>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished"></translation>
+        <translation>Selle tabeli indeksid:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="163"/>
         <source>Add index</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa indeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="170"/>
         <source>Add spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa ruumiindeks</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="190"/>
         <source>Delete index</source>
-        <translation type="unfinished"></translation>
+        <translation>Kustuta indeks</translation>
     </message>
 </context>
 <context>
@@ -1838,67 +1843,67 @@ geometry column - column with unique integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="14"/>
         <source>Add versioning support to a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa versioonimise toetus tabelile</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="22"/>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel on eeldatavasti tühi, primaarvõtmega.</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="31"/>
         <source>Schema</source>
-        <translation type="unfinished">Skeem</translation>
+        <translation>Skeem</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="44"/>
         <source>Table</source>
-        <translation type="unfinished">Tabel</translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="75"/>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation type="unfinished"></translation>
+        <translation>loo vaade sellest sisust (&lt;TABLE&gt;_current)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="85"/>
         <source>New columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Uued veerud</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="91"/>
         <source>Prim. key</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaarvõti</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="101"/>
         <source>id_hist</source>
-        <translation type="unfinished"></translation>
+        <translation>id_hist</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="108"/>
         <source>Start time</source>
-        <translation type="unfinished"></translation>
+        <translation>Algusaeg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="118"/>
         <source>time_start</source>
-        <translation type="unfinished"></translation>
+        <translation>time_start</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="125"/>
         <source>End time</source>
-        <translation type="unfinished"></translation>
+        <translation>Lõpu aeg</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="135"/>
         <source>time_end</source>
-        <translation type="unfinished"></translation>
+        <translation>time_end</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="160"/>
         <source>SQL to be executed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Käivitatav SQL:</translation>
     </message>
 </context>
 <context>
@@ -2055,13 +2060,15 @@ Plugin ei toimi.</translation>
     </message>
     <message>
         <source>Plugin error</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugina viga</translation>
     </message>
     <message>
         <source>Unable to load %1 plugin. 
 The required &quot;%2&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa laadida %1 pluginat. 
+Vajalik &quot;%2&quot; moodul on puudulik. 
+Installeeri see ja proovi uuesti.</translation>
     </message>
     <message>
         <source>Projections</source>
@@ -3867,7 +3874,9 @@ Kasulik kasutada välundites JPEG, JPEG2000, MrSID, ECW draiverite puhul, mis ei
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Praegune QGIS ei luba kohest juurdepääsu 
+                                 erinevate lõikudena samale andmeallikale. Ole kindel et kihi 
+                                 atribuuttabelid on suletud. Jätkan?</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -4612,12 +4621,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1664"/>
         <source>Copy style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopeeri stiil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1673"/>
         <source>Paste style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleebi stiil</translation>
     </message>
     <message>
         <source>Composer manager...</source>
@@ -6364,6 +6373,13 @@ Need on vajalikud, kuna OSM plugin ei tea milline kiht on imporditav.</translati
     </message>
 </context>
 <context>
+    <name>PointsInPolygonThread</name>
+    <message>
+        <source>point count field</source>
+        <translation type="unfinished"> punkti loenduse väli</translation>
+    </message>
+</context>
+<context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -6487,12 +6503,12 @@ See teade on eeldatavasti seetõttu, et ei ole DISPLAY keskkonas muutujad seadis
         </translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="233"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="243"/>
         <source>Deleted vertices</source>
         <translation>Kustutatud käänupunkte</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="288"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="315"/>
         <source>Moved vertices</source>
         <translation>Nihutatud käänupunkte</translation>
     </message>
@@ -6622,26 +6638,26 @@ See teade on eeldatavasti seetõttu, et ei ole DISPLAY keskkonas muutujad seadis
         <translation type="obsolete">Ei saanud avada CRS andmebaasi %1&lt;br&gt;Vga(%2): %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1286"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1335"/>
         <source>Could not open CRS database %1
 Error(%2): %3</source>
         <translation>Ei saanud avada CRS andmebaasi %1
 Viga(%2): %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1289"/>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1392"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1338"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1441"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1349"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1398"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>Loodud CRS </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1392"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1441"/>
         <source>Saved user CRS [%1]</source>
         <translation>Kasutaja CRS [%1] salvestatud</translation>
     </message>
@@ -6678,12 +6694,12 @@ Viga(%2): %3</translation>
         <location filename="../src/core/qgsdistancearea.cpp" line="764"/>
         <location filename="../src/core/qgsdistancearea.cpp" line="778"/>
         <source> m²</source>
-        <translation type="unfinished"></translation>
+        <translation> m²</translation>
     </message>
     <message utf8="true">
         <location filename="../src/core/qgsdistancearea.cpp" line="768"/>
         <source> km²</source>
-        <translation type="unfinished"></translation>
+        <translation> km²</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="773"/>
@@ -6719,7 +6735,7 @@ Viga(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="819"/>
         <source> acres</source>
-        <translation type="unfinished"></translation>
+        <translation> aakrit</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="825"/>
@@ -6782,7 +6798,7 @@ Viga(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="87"/>
         <source>ring %1 with less than four points</source>
-        <translation type="unfinished"></translation>
+        <translation>ringil %1 on vähem kui neli punkti</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="96"/>
@@ -6816,7 +6832,7 @@ Viga(%2): %3</translation>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="206"/>
         <source>GEOS error:could not produce geometry for GEOS (check log window)</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS viga: ei saanud luua geomeetriat GEOS-ele (vaata logi)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="223"/>
@@ -7033,171 +7049,171 @@ Viga(%2): %3</translation>
         <translation>Loodud välja %1 ei leitud (OGR viga: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="467"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="470"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Vigane välja tüüpvariant %1[%2]: saadud %3 tüübina %4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="497"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="508"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="524"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="500"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="511"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="527"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
         <translation>Nähtuse geomeetriat ei imporditud (OGR viga: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="540"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="543"/>
         <source>Feature creation error (OGR error: %1)</source>
         <translation>Nähtuse loomise viga (OGR viga: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="675"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="678"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="297"/>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Ebaõnnestus punkti transformeerimine kui joonestati nähtust tüübiga &apos;%1&apos;. Kirjutamine peatatud. (Teade: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="695"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="698"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="265"/>
         <source>Feature write errors:</source>
         <translation>Nähtuse loomine vigane:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="705"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="708"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="275"/>
         <source>Stopping after %1 errors</source>
         <translation>Teatatud peale %1 viga</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="724"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="727"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>Ainult %1 - %2-st nähtusest loodud.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="845"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1600"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="848"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1606"/>
         <source>Arc/Info ASCII Coverage</source>
         <translation>Arc/Info ASCII katvus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="852"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1605"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="855"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1611"/>
         <source>Atlas BNA</source>
         <translation>Atlas BNA</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="859"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1610"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="862"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1616"/>
         <source>Comma Separated Value</source>
         <translation>Comma Separated Value (CSV)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="866"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="869"/>
         <source>ESRI Shapefile</source>
         <translation>ESRI Shapefail</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="873"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1638"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1640"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="876"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1644"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1646"/>
         <source>FMEObjects Gateway</source>
         <translation>FMEObjects Gateway</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="880"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1646"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="883"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1652"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="887"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1651"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="890"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1657"/>
         <source>GeoRSS</source>
         <translation>GeoRSS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="894"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1656"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="897"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1662"/>
         <source>Geography Markup Language [GML]</source>
         <translation>Geography Markup Language [GML]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="901"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1661"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="904"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1667"/>
         <source>Generic Mapping Tools [GMT]</source>
         <translation>Generic Mapping Tools [GMT]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="908"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1666"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="911"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1672"/>
         <source>GPS eXchange Format [GPX]</source>
         <translation>GPS eXchange Format [GPX]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="915"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1679"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="918"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1685"/>
         <source>INTERLIS 1</source>
         <translation>INTERLIS 1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="922"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1684"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="925"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1690"/>
         <source>INTERLIS 2</source>
         <translation>INTERLIS 2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="929"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1693"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="932"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1699"/>
         <source>Keyhole Markup Language [KML]</source>
         <translation>Keyhole Markup Language [KML]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="936"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1698"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="939"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1704"/>
         <source>Mapinfo File</source>
         <translation>Mapinfo fail</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="943"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1703"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="946"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1709"/>
         <source>Microstation DGN</source>
         <translation>Microstation DGN</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="950"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1732"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="953"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1738"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base fail</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="957"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1738"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="960"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1744"/>
         <source>Spatial Data Transfer Standard [SDTS]</source>
         <translation>Spatial Data Transfer Standard [SDTS]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="964"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1744"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="967"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1750"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="971"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1774"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="974"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1780"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="978"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1769"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="981"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1775"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="985"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1619"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="988"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1625"/>
         <source>ESRI FileGDB</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI FailGDB</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="30"/>
@@ -8030,9 +8046,9 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1851"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1797"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1803"/>
         <source>GDAL/OGR VSIFileHandler</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL/OGR VSIFailiToimetaja</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1904"/>
@@ -8211,19 +8227,19 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>OGR[%1] viga %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="472"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="500"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="511"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="527"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="543"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="475"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="503"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="514"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="530"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="546"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="64"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1588"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1967"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1984"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2032"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2042"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2102"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2120"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1594"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1973"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1990"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2038"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2048"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2108"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2126"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -8233,133 +8249,137 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Ei saanud luua andmeallikat. %1 on olemas ja üle kirjutamine ei ole lubatud.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1588"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1594"/>
         <source>Unable to get driver %1</source>
         <translation>Draiveri %1 saamine ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1596"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1602"/>
         <source>Arc/Info Binary Coverage</source>
         <translation>Arc/Info kahendsüsteemis</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1613"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1619"/>
         <source>DODS</source>
         <translation>DODS</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1623"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1625"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1629"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1631"/>
         <source>ESRI Personal GeoDatabase</source>
         <translation>ESRI Personal GeoDatabase</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1631"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1637"/>
         <source>ESRI ArcSDE</source>
         <translation>ESRI ArcSDE</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1635"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1641"/>
         <source>ESRI Shapefiles</source>
         <translation>ESRI Shapefail</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1671"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1677"/>
         <source>Grass Vector</source>
         <translation>Grass vektor</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1675"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1681"/>
         <source>Informix DataBlade</source>
         <translation>Informix DataBlade</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1689"/>
         <source>INGRES</source>
-        <translation>INGRES</translation>
+        <translation type="obsolete">INGRES</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1708"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
+        <source>Ingres</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
         <source>MySQL</source>
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1712"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1718"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1716"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1722"/>
         <source>Oracle Spatial</source>
         <translation>Oracle Spatial</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1720"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1726"/>
         <source>ODBC</source>
         <translation>ODBC</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1724"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1730"/>
         <source>OGDI Vectors</source>
         <translation>OGDI Vectors</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1728"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1734"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1749"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1755"/>
         <source>UK. NTF2</source>
         <translation>UK. NTF2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1753"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1759"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>U.S. Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1757"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1763"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - Virtual Datasource</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1763"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1769"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1804"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1810"/>
         <source>All files</source>
         <translation>Kõik failid</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1967"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1973"/>
         <source>Duplicate field (10 significant characters): %1</source>
         <translation>Topelt väli (10 iseloomulikku tähemärki): %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1984"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1990"/>
         <source>Creating the data source %1 failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Andmeallika %1 loomine ebaõnnestus: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2032"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2038"/>
         <source>Unknown vector type of %1</source>
         <translation>Tundmatu vektortüüp %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2042"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2048"/>
         <source>Creation of OGR data source %1 failed: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR andmeallika %1 loomine ebaõnnestus: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2102"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2108"/>
         <source>creation of field %1 failed</source>
         <translation>Välja %1 loomine ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2120"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2126"/>
         <source>Couldn&apos;t create file %1.qpj</source>
         <translation>Faili %1.qpj loomine ebaõnnestus</translation>
     </message>
@@ -8532,7 +8552,8 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="159"/>
         <source>Creation error for features from #%1 to #%2. Provider errors was: 
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Nähtuste loomine #%1-st #%2-ks ebaõnnestus. Pakkuja veateade on: 
+%3</translation>
     </message>
     <message>
         <source>Creation error for features from #%1 to #%2</source>
@@ -8573,25 +8594,26 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3333"/>
         <source>Unable to delete layer %1: 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa kustutada kihti %1: 
+%2</translation>
     </message>
     <message>
         <source>Loading of the mssql provider failed</source>
         <translation type="obsolete">Laadimine mssql pakkujalt ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1691"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1817"/>
         <source>Loading of the MSSQL provider failed</source>
-        <translation type="unfinished"></translation>
+        <translation>MSSQL-i pakkuja laadimine ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1725"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1851"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3143"/>
         <source>Unsupported type for field %1</source>
         <translation>Tundmatu väljatüüp %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1739"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1865"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3163"/>
         <source>Creation of fields failed</source>
         <translation>Väljade loomine ebaõnnestus</translation>
@@ -8684,18 +8706,18 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/core/qgsgeometry.cpp" line="481"/>
         <location filename="../src/core/qgsgeometry.cpp" line="506"/>
         <location filename="../src/core/qgsgeometry.cpp" line="2400"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2712"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2746"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2784"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2933"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2957"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3849"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5468"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5579"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6734"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6757"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2713"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2747"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2785"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2934"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2958"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3850"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5469"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5583"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6738"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6761"/>
         <source>Exception: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erand: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometry.cpp" line="40"/>
@@ -8710,23 +8732,23 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/core/qgsgeometry.cpp" line="481"/>
         <location filename="../src/core/qgsgeometry.cpp" line="506"/>
         <location filename="../src/core/qgsgeometry.cpp" line="2400"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2712"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2746"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2784"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2933"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2957"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3849"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5468"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5579"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6734"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6757"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2713"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2747"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2785"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2934"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2958"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3850"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5469"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5583"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6738"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6761"/>
         <source>GEOS</source>
-        <translation type="unfinished">GEOS</translation>
+        <translation>GEOS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmessageoutput.cpp" line="72"/>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsool</translation>
     </message>
 </context>
 <context>
@@ -9851,17 +9873,17 @@ Veateade: %1</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4395"/>
         <source>Cannot copy style: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa kopeerida stiili: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4421"/>
         <source>Cannot parse style: %1:%2:%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa sõeluda stiili: %1:%2:%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4433"/>
         <source>Cannot read style: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa lugeda stiili: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4512"/>
@@ -9913,17 +9935,17 @@ Veateade: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2150"/>
         <source>Compiled against GDAL/OGR</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompileeritud GDAL/OGR-le</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2151"/>
         <source>Running against GDAL/OGR</source>
-        <translation type="unfinished"></translation>
+        <translation>Töötab  GDAL/OGR-s</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2614"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa MSSQL select dialoogi pakkujalt.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2885"/>
@@ -10298,7 +10320,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="234"/>
         <source>about:blank</source>
-        <translation type="unfinished">ülevaade:tühi</translation>
+        <translation>ülevaade:tühi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="243"/>
@@ -11302,7 +11324,7 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="36"/>
         <source>Unique values</source>
-        <translation>Unikaalsed väärtused</translation>
+        <translation>Kasutatud väärtuste loend</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="41"/>
@@ -11312,7 +11334,7 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="46"/>
         <source>Value map</source>
-        <translation>Väärtuskaart</translation>
+        <translation>Loend määratud väärtustest</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="51"/>
@@ -11337,7 +11359,7 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
         <source>Text edit</source>
-        <translation>Kirje redigeerimine</translation>
+        <translation>Pika teksti väli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="76"/>
@@ -12145,22 +12167,22 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="150"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="152"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="155"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="157"/>
         <source>File</source>
         <translation>Fail</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="169"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="171"/>
         <source>View</source>
         <translation>Vaade</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="176"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="178"/>
         <source>Layout</source>
         <translation>Trükivaade</translation>
     </message>
@@ -12169,38 +12191,38 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         <translation type="obsolete">Kaart 1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="243"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="245"/>
         <source>Command history</source>
         <translation>Käskluste ajalugu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="564"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="785"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="566"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="787"/>
         <source>Choose a file name to save the map as</source>
         <translation>Anna failile nimi mille kaardina salvestad</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="566"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="568"/>
         <source>PDF Format</source>
         <translation>PDF formaat</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="654"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="656"/>
         <source>Image too large</source>
         <translation>Pilt on liialt suur</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="657"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
         <translation>Pildi %1x%2 pikslina loomine ebaõnnestus. Proovi uuesti ilma &apos;Prindi rasterina&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="702"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="704"/>
         <source>Big image</source>
         <translation>Suur pilt</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="703"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="705"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation>Et luua pilt %1x%2 vajab umbes %3 MB mälu. Kas jätkan?</translation>
     </message>
@@ -12209,68 +12231,68 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         <translation type="obsolete">%1 formaat (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="239"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="241"/>
         <source>Composition</source>
         <translation>Kujundus</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="241"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="243"/>
         <source>Item Properties</source>
         <translation>Objekti omadused</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="712"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="714"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Anna failile nimi mille kaardipildi salvestad</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="724"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="726"/>
         <source>Image too big</source>
         <translation>Pilt on liiga suur</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="725"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="727"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
         <translation>Pildi loomine %1x%2 piksliga ebaõnnestus. Eksport katkestatud.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="762"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="764"/>
         <source>SVG warning</source>
         <translation>SVG hoiatus</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="763"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1485"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="765"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1487"/>
         <source>Don&apos;t show this message again</source>
         <translation>Pole vaja enam näidata seda teadet</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="767"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="769"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;  SVG ekspordifunktsioon QGIS-is sisaldab mitut probleemi nagu vead ja puudused</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="769"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="771"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4 svg koodis. Täpsemalt on probleeme kihtidega, mis ei ole lõigatud kaardi nähtavusaknasse.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="772"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="774"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Kui vajad vektoripõhist väljundit QGIS-ist, siis on soovitav printida PostScripti kui SVG ei ole sobiv.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="787"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="789"/>
         <source>SVG Format</source>
         <translation>SVG formaat</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="920"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="922"/>
         <source>Save template</source>
         <translation>Salvesta templiit</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="922"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="924"/>
         <source>Composer templates</source>
         <translation>Komposeri templiidid</translation>
     </message>
@@ -12279,48 +12301,48 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         <translation type="obsolete">salvesta templiit</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="948"/>
         <source>Save error</source>
         <translation>Salvesta viga</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="946"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="948"/>
         <source>Error, could not save file</source>
         <translation>Viga, ei saanud faili salvestada</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="954"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="956"/>
         <source>Load template</source>
         <translation>Lae templiit</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="967"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="976"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="969"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <source>Read error</source>
         <translation>Viga lugemisel</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="967"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="969"/>
         <source>Error, could not read file</source>
         <translation>Viga, ei saanud faili lugeda</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="976"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <source>Content of template file is not valid</source>
         <translation>Templiidi faili sisu ei ole kehtiv</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1252"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1254"/>
         <source>Composer</source>
         <translation>Composer</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1483"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1485"/>
         <source>Project contains WMS layers</source>
         <translation>Projekt sisaldab WMS kihte</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1484"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1486"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Osa WMS servereid (nagu UMN mapserver) kasutab piirangut WIDTH ja HEIGHT parameetrites. Printides kihte sellistelt serveritelt võidakse seda piirangut ületada. Piirangu ületamisel WMS kihti ei prindita</translation>
     </message>
@@ -18637,7 +18659,11 @@ Palun vali uuesti.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -23650,12 +23676,12 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="705"/>
         <source>Copy Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopeeri stiil</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="708"/>
         <source>Paste Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleebi stiil</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="712"/>
@@ -24690,7 +24716,7 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
         <translation type="obsolete">Nähtus kustutati alt.</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="666"/>
+        <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="655"/>
         <source>Inserted vertex</source>
         <translation>Verteks sisestatud</translation>
     </message>
@@ -25458,7 +25484,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="20"/>
         <source>Create a New MSSQL connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Loo Uus MSSQL ühendus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="38"/>
@@ -25639,7 +25665,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="128"/>
         <source>Add MSSQL Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisa MSSQL tabel(id)</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="135"/>
@@ -26844,16 +26870,16 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="336"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="341"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="687"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1059"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1494"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="693"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1065"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1500"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="336"/>
         <source>Data source is invalid, no layer found (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Andmeallikas on vigane, kiht leidmata (%1)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="346"/>
@@ -26876,75 +26902,75 @@ p, li { white-space: pre-wrap; }
         <translation>OGR[%1] viga %2: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="687"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="693"/>
         <source>Read attempt on an invalid OGR data source</source>
         <translation>Katse lugeda vigast OGR andmeallikat</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1010"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1016"/>
         <source>OGR error creating wkb for feature %1: %2</source>
         <translation>OGR viga, nähtusele %1 wkb loomisel: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1059"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1065"/>
         <source>type %1 for attribute %2 not found</source>
         <translation>tüüp %1 atribuudile %2 leidmata</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1067"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1073"/>
         <source>OGR error creating feature %1: %2</source>
         <translation>OGR viga nähtuse %1 loomisel: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1135"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1141"/>
         <source>OGR error creating field %1: %2</source>
         <translation>OGR viga välja %1 loomisel: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1155"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1161"/>
         <source>OGR error deleting field %1: %2</source>
         <translation>OGR viga välja %1 loomisel: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1163"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1169"/>
         <source>Deleting fields is not supported prior to GDAL 1.9.0</source>
         <translation>Väljade kustutamine ei ole varasema kui GDAL 1.9.0 poolt toetatud</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1184"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1257"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1380"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1190"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1263"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1386"/>
         <source>OGR error on feature %1: id too large</source>
         <translation>OGR viga nähtusele %1: id liialt suur</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1238"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1298"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1244"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1304"/>
         <source>OGR error setting feature %1: %2</source>
         <translation>OGR viga nähtuse %1 määramisel: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1264"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1270"/>
         <source>OGR error changing geometry: feature %1 not found</source>
         <translation>OGR viga geomeetria muutmisel: nähtus %1 leidmata</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1274"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1280"/>
         <source>OGR error creating geometry for feature %1: %2</source>
         <translation>OGR viga geomeetria loomisel nähtusele %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1282"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1288"/>
         <source>OGR error in feature %1: geometry is null</source>
         <translation>OGR viga, nähtuse %1 geomeetria on null</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1289"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1295"/>
         <source>OGR error setting geometry of feature %1: %2</source>
         <translation>OGR viga geomeetria määramisel nähtusele %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1386"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1392"/>
         <source>OGR error deleting feature %1: %2</source>
         <translation>OGR viga nähtuse %1 kustutamisel: %2</translation>
     </message>
@@ -26953,7 +26979,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nähtuse %1 kirjutamine ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1124"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1130"/>
         <source>type %1 for field %2 not found</source>
         <translation>tüüp %1 väljale %2 leidmata</translation>
     </message>
@@ -26970,17 +26996,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nähtuse id %1 on OGR-ile liialt suur</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1192"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1198"/>
         <source>Feature %1 for attribute update not found.</source>
         <translation>Atribuudi värskendus nähtusele %1 leidmata.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1205"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1211"/>
         <source>Field %1 of feature %2 doesn&apos;t exist.</source>
         <translation>Välja %1 nähtusel %2 ei ole olemas.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1230"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1236"/>
         <source>Type %1 of attribute %2 of feature %3 unknown.</source>
         <translation>Tüüp %1 atribuudi %2 nähtusel %3 on tundmatu.</translation>
     </message>
@@ -27013,7 +27039,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">id %1 on liialt suur OGR-i jaoks</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1494"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1500"/>
         <source>Shapefiles without attribute are considered read-only.</source>
         <translation>Shapefailid ilma atribuutideta on arvestatud kui ainult vaatamiseks.</translation>
     </message>
@@ -27273,60 +27299,60 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="205"/>
         <source>Check file contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolli faili sisu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="206"/>
         <source>Check extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolli laiendit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="211"/>
         <source>No</source>
-        <translation type="unfinished">Ei</translation>
+        <translation>Ei</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="212"/>
         <source>Passthru</source>
-        <translation type="unfinished"></translation>
+        <translation>Läbi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="213"/>
         <source>Basic scan</source>
-        <translation type="unfinished"></translation>
+        <translation>Tavapärane skänn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="214"/>
         <source>Full scan</source>
-        <translation type="unfinished"></translation>
+        <translation>Täisskänn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="356"/>
         <location filename="../src/app/qgsoptions.cpp" line="364"/>
         <location filename="../src/app/qgsoptions.cpp" line="760"/>
         <source>No Stretch</source>
-        <translation type="unfinished">Venitamata</translation>
+        <translation>Venitamata</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="357"/>
         <location filename="../src/app/qgsoptions.cpp" line="368"/>
         <location filename="../src/app/qgsoptions.cpp" line="764"/>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished">Venita MinMax-ini</translation>
+        <translation>Venita MinMax-ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="358"/>
         <location filename="../src/app/qgsoptions.cpp" line="372"/>
         <location filename="../src/app/qgsoptions.cpp" line="768"/>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished">Venita ja lõika MinMax-ini</translation>
+        <translation>Venita ja lõika MinMax-ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="359"/>
         <location filename="../src/app/qgsoptions.cpp" line="376"/>
         <location filename="../src/app/qgsoptions.cpp" line="772"/>
         <source>Clip To MinMax</source>
-        <translation type="unfinished">Lõika MinMax järgi</translation>
+        <translation>Lõika MinMax järgi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="414"/>
@@ -27682,12 +27708,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="610"/>
         <source>Scan for valid items in the browser dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Skänneeri sobivaid objekte vaateaknas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="637"/>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Skänneeri pakitud failide (.zip) sisu vaateaknas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="674"/>
@@ -27752,37 +27778,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="936"/>
         <source>Rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="942"/>
         <source>RGB band selection</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB lõimede valimine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="949"/>
         <source>Red band</source>
-        <translation type="unfinished">Punase lõim</translation>
+        <translation>Punane lõim</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="959"/>
         <source>Green band</source>
-        <translation type="unfinished">Rohelise lõim</translation>
+        <translation>Roheline lõim</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="969"/>
         <source>Blue band</source>
-        <translation type="unfinished">Sinise lõim</translation>
+        <translation>Sinine lõim</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="979"/>
         <source>Use standard deviation</source>
-        <translation type="unfinished">Kasuta standarddeviatsiooni</translation>
+        <translation>Kasuta standarddeviatsiooni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="986"/>
         <source>Contrast enhancement</source>
-        <translation type="unfinished">Kontrastiparandus</translation>
+        <translation>Kontrastiparandus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1018"/>
@@ -28315,12 +28341,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="273"/>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="277"/>
         <source>Delete layer</source>
-        <translation type="unfinished">Kustuta kiht</translation>
+        <translation>Kustuta kiht</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="277"/>
         <source>Layer deleted successfully.</source>
-        <translation type="unfinished">Kiht edukalt kustutatud.</translation>
+        <translation>Kiht edukalt kustutatud.</translation>
     </message>
 </context>
 <context>
@@ -30336,17 +30362,17 @@ Andmebaasi veateade: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1443"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaarvõti väljal &apos;%1&apos; vaates ei ole unikaalne.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1448"/>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Primaarvõtme väljal &apos;%2&apos; tüüp  &apos;%1&apos; on vaates vigane.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1453"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Võtme väli  &apos;%1&apos; vaatele on leidmata.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1458"/>
@@ -31095,12 +31121,12 @@ Kas jätkan?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="649"/>
         <source>Maximum width</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimaalne laius</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="659"/>
         <source>Maximum height</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimaalne kõrgus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="671"/>
@@ -31224,17 +31250,17 @@ Kas jätkan?</translation>
         <translation type="obsolete">Kõik</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="497"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="498"/>
         <source>User Defined Coordinate Systems</source>
         <translation>Kasutajamääratud koordinaatsüsteemid</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="572"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="574"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Geograafilised koordinaatsüsteemid</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="581"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="583"/>
         <source>Projected Coordinate Systems</source>
         <translation>Ristkoordinaatide koordinaatsüsteemid</translation>
     </message>
@@ -31247,12 +31273,12 @@ Kas jätkan?</translation>
         <translation type="obsolete">Sobivat projektsiooni ei leitud.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="982"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="991"/>
         <source>Resource Location Error</source>
         <translation>Allika asukoha määramise viga</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="983"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="992"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -31276,7 +31302,7 @@ Selle tõttu projektsiooni valija ka ei toimi...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
         <source>Recently used coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimati kasutatud koodinaatide referentssüsteemid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="96"/>
@@ -32040,7 +32066,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2272"/>
         <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
-        <translation type="unfinished">Andmete pakkuja on vigane (kihte: %1, stiile: %2, formaadid: %3)</translation>
+        <translation>Andmete pakkujal on vigu (kihte: %1, stiile: %2, formaadid: %3)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="666"/>
@@ -33063,7 +33089,32 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1851"/>
@@ -34577,32 +34628,32 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="380"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="404"/>
         <source>ring %1, vertex %2</source>
         <translation>ring %1, verteks %2</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="400"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="424"/>
         <source>polygon %1, ring %2, vertex %3</source>
         <translation>pind %1, ring %2, verteks %3</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="424"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="448"/>
         <source>polyline %1, vertex %2</source>
         <translation>joon %1, verteks %2</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="434"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="458"/>
         <source>vertex %1</source>
         <translation>verteks %1</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="449"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="473"/>
         <source>point %1</source>
         <translation>punkt %1</translation>
     </message>
     <message>
-        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="455"/>
+        <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="479"/>
         <source>single point</source>
         <translation>üksikpunkt</translation>
     </message>
@@ -37520,42 +37571,42 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2986"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2991"/>
         <source>Unknown renderer</source>
         <translation>Tundmatu renderdus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2992"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2997"/>
         <source>No renderer object</source>
         <translation>Renderdavad objektid puuduvad</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2998"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3003"/>
         <source>Classification field not found</source>
         <translation>Klassifitseerimise väli leidmata</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3237"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3242"/>
         <source>renderer failed to save</source>
         <translation>renderdaja ei suutnud salvestada</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3244"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3249"/>
         <source>no renderer</source>
         <translation>renderdus puudub</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3657"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3662"/>
         <source>ERROR: no provider</source>
         <translation>VIGA: puudub pakkuja</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3663"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3668"/>
         <source>ERROR: layer not editable</source>
         <translation>VIGA: kiht ei ole redigeeritav</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3677"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3682"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
@@ -37564,7 +37615,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3686"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3691"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
@@ -37573,7 +37624,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3705"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3710"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
@@ -37582,7 +37633,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3714"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3719"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation>
@@ -37591,17 +37642,17 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3755"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3760"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>ÕNNESTUS: lisati atribuut %1.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3762"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3767"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>VIGA: atribuuti %1 ei lisatud</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3824"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3829"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation>
@@ -37610,7 +37661,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3832"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3837"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation>
@@ -37619,7 +37670,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3873"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3878"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation>
@@ -37628,7 +37679,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3891"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3896"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation>
@@ -37637,7 +37688,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3897"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3902"/>
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
         <translation>
@@ -37646,7 +37697,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3910"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3915"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation>
@@ -37655,7 +37706,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3918"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3923"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation>
@@ -37664,7 +37715,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3930"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3935"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation>
@@ -37673,7 +37724,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3943"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3948"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation>
@@ -37682,14 +37733,14 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3952"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3957"/>
         <source>
   Provider errors:</source>
         <translation>
   Halduri vead:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3956"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3961"/>
         <source>Commit errors:
   %1</source>
         <translation>Käskluse vead:
@@ -37700,109 +37751,109 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
         <translation type="obsolete">Täpsusta CRS kihile %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5463"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5467"/>
         <source>General:</source>
         <translation>Üldine:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5470"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5474"/>
         <source>Layer comment: %1</source>
         <translation>Kihi märkus: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5476"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5480"/>
         <source>Storage type of this layer: %1</source>
         <translation>Kihi salvestamise tüüp: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5481"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5485"/>
         <source>Source for this layer: %1</source>
         <translation>Selle kihi allikas: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5497"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5501"/>
         <source>Geometry type of the features in this layer: %1</source>
         <translation>Sellel kihil oleva nähtuse geomeetriatüüp: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5504"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5508"/>
         <source>The number of features in this layer: %1</source>
         <translation>Sellel kihil olevate nähtuste arv: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5508"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5512"/>
         <source>Editing capabilities of this layer: %1</source>
         <translation>Kihi redigeerimisvõimekus kihile: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5515"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5519"/>
         <source>Extents:</source>
         <translation>Ulatused:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5518"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5522"/>
         <source>In layer spatial reference system units : </source>
         <translation>Kihi ruumilise referentssüsteemi ühikud : </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5567"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5586"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5571"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5590"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5572"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5576"/>
         <source>unknown extent</source>
         <translation>tundmatus ulatuses</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5585"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5623"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5589"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5627"/>
         <source>In project spatial reference system units : </source>
         <translation>Projektis ruumilise referentssüsteemi ühikud : </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5598"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5602"/>
         <source>Layer Spatial Reference System:</source>
         <translation>Kihi Ruumiline referentssüsteem:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5610"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5614"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation>Projekti (Väljundi) Ruumiline referentssüsteem:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5624"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5628"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Vigane kihi ulatuse transformeerimine)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5634"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5638"/>
         <source>Attribute field info:</source>
         <translation>Atribuutvälja info:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5641"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5645"/>
         <source>Field</source>
         <translation>Väli</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5644"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5648"/>
         <source>Type</source>
         <translation>Tüüp</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5647"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5651"/>
         <source>Length</source>
         <translation>Pikkus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5650"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5654"/>
         <source>Precision</source>
         <translation>Täpsus</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="5653"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="5657"/>
         <source>Comment</source>
         <translation>Märkus</translation>
     </message>
@@ -38142,7 +38193,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1411"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1425"/>
@@ -40319,7 +40370,7 @@ Vastus oli:
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="104"/>
         <source>Settings</source>
-        <translation type="unfinished">Seaded</translation>
+        <translation>Seaded</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="107"/>
