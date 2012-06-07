@@ -7527,7 +7527,7 @@ Fout(%2): %3</translation>
     </message>
     <message>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
 </context>
 <context>
@@ -24528,23 +24528,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join style for curve offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbindingsstijl voor de curve offset</translation>
     </message>
     <message>
         <source>Quadrantsegments for curve offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kwadrantsegmenten voor curve offset</translation>
     </message>
     <message>
         <source>Miter limit for curve offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoeklimiet voor curve offset</translation>
     </message>
     <message>
         <source>Scan for valid items in the browser dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek naar geldige items in het browser-dock</translation>
     </message>
     <message>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek naar de inhoud van gecomprimeerde (zip) bestanden in het browser-dock</translation>
     </message>
     <message>
         <source>Rasters</source>
@@ -25609,7 +25609,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>U staat op het punt enkele plugin-repositories toe te voegen die niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
+        <translation type="obsolete">U staat op het punt enkele plugin-repositories toe te voegen die niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
     </message>
     <message>
         <source>installed</source>
@@ -25732,11 +25732,11 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
-        <translation>Voeg derdepartij pluginrepositories toe aan de lijst</translation>
+        <translation type="obsolete">Voeg derdepartij pluginrepositories toe aan de lijst</translation>
     </message>
     <message>
         <source>Add 3rd party repositories</source>
-        <translation>Toevoegen 3de partijrepositories</translation>
+        <translation type="obsolete">Toevoegen 3de partijrepositories</translation>
     </message>
     <message>
         <source>Add a new plugin repository</source>
@@ -37167,11 +37167,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Cats</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Cats&apos;</translation>
     </message>
     <message>
         <source>Cats (select from the map or using their id)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Cats&apos; (selecteer van de kaart of gebruik het id)</translation>
     </message>
     <message>
         <source>Change category values and labels</source>
@@ -37455,7 +37455,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak raster bestanden aan van tekstobjecten van het raster (eerste serie van indices)</translation>
     </message>
     <message>
         <source>Create raster of distance to features in input layer</source>
@@ -37463,11 +37463,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak raster bestanden aan van &apos;gaussian deviates with user-defined mean and standard deviation&apos;</translation>
     </message>
     <message>
         <source>Create raster of uniform random deviates with user-defined range</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak raster bestanden aan van &apos;uniform random deviates with user-defined range&apos;</translation>
     </message>
     <message>
         <source>Create raster with contiguous areas grown by one cell</source>
@@ -37475,7 +37475,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create raster with textural features from raster (second serie of indices)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak raster bestanden aan van tekstobjecten van het raster (tweede serie van indices)</translation>
     </message>
     <message>
         <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
@@ -37483,7 +37483,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create shaded map</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken &apos;shaded map&apos;</translation>
     </message>
     <message>
         <source>Create slope raster from DEM (digital elevation model)</source>
@@ -37503,15 +37503,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create vector contour from raster at specified steps</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken van een vector contour op basis van raster in specifieke stappen</translation>
     </message>
     <message>
         <source>Create watershed basin</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken &apos;watershed basin&apos;</translation>
     </message>
     <message>
         <source>Create watershed subbasins raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanmaken &apos;watershed subbasins raster&apos;</translation>
     </message>
     <message>
         <source>Cut network by cost isolines</source>
@@ -37559,11 +37559,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Develop images and group</source>
-        <translation type="unfinished"></translation>
+        <translation>Develop images and group</translation>
     </message>
     <message>
         <source>Develop map</source>
-        <translation type="unfinished"></translation>
+        <translation>Develop map</translation>
     </message>
     <message>
         <source>Directory of rasters to be linked</source>
@@ -37575,11 +37575,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Display general DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon algemene DB-verbinding</translation>
     </message>
     <message>
         <source>Display list of category values found in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon lijst van categoriewaarden uit het raster</translation>
     </message>
     <message>
         <source>Display projection information from PROJ.4 projection description file</source>
@@ -37655,11 +37655,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Export 3 GRASS rasters (R,G,B) naar PPM afbeelding in de resolutie van de huidige region</translation>
     </message>
     <message>
         <source>Export from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Export uit GRASS</translation>
     </message>
     <message>
         <source>Export raster</source>
@@ -37735,23 +37735,23 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een raster aan van de cumulatieve kosten van beweging tussen locaties gebaseerd op een kosteninvoerraster en startpunt(en)-coördinaten</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een raster aan van de cumulatieve kosten van beweging tussen locaties gebaseerd op een kosteninvoerraster en startpunt(en) raster</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een raster aan van de cumulatieve kosten van beweging tussen locaties gebaseerd op een kosteninvoerraster en startpunt(en) vector</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een raster aan van de cumulatieve kosten van beweging tussen locaties gebaseerd op hoogte en frictie invoerraster en startpuntcoördinaten</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een raster aan van de cumulatieve kosten van beweging tussen locaties gebaseerd op hoogte en frictie invoerraster en startpunt vector</translation>
     </message>
     <message>
         <source>Export vector table</source>
@@ -37847,7 +37847,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter en maak een &apos;depressionless elevation map and flow direction map&apos; van een hoogteraster</translation>
     </message>
     <message>
         <source>Filter image</source>
@@ -37875,7 +37875,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Gaussian kernel density</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Gaussian kernel density&apos;</translation>
     </message>
     <message>
         <source>Generalization</source>
@@ -37895,11 +37895,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
-        <translation type="unfinished"></translation>
+        <translation>Georefereer, rectificeer, en importeer Terra ASTER afbeelding en DEM m.b.v. gdalwarp</translation>
     </message>
     <message>
         <source>Graphical raster map calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafische rasterberekeningen</translation>
     </message>
     <message>
         <source>Help</source>
@@ -37907,15 +37907,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
-        <translation type="unfinished"></translation>
+        <translation>Hue Intensiteit Verzadiging (HIS) naar Rood Groen Blauw (RGB) rasterkleuromzetting</translation>
     </message>
     <message>
         <source>Hydrologic modelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Hydrologische modellering</translation>
     </message>
     <message>
         <source>Imagery</source>
-        <translation type="unfinished"></translation>
+        <translation>Afbeeldingen</translation>
     </message>
     <message>
         <source>Import</source>
@@ -38087,99 +38087,99 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Inverse distance squared weighting raster interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverse distance squared weighting raster interpolatie</translation>
     </message>
     <message>
         <source>Inverse distance squared weighting raster interpolation based on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverse distance squared weighting raster interpolatie op basis van vectorpunten</translation>
     </message>
     <message>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverse fast fourier transformatie voor image processing</translation>
     </message>
     <message>
         <source>Join table to existing vector table</source>
-        <translation type="unfinished"></translation>
+        <translation>Link tabel aan bestaande vectortabel</translation>
     </message>
     <message>
         <source>Layers categories management</source>
-        <translation type="unfinished"></translation>
+        <translation>Manage laagcategoriën</translation>
     </message>
     <message>
         <source>Line-of-sight raster analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Zichtlijn rasteranalyse</translation>
     </message>
     <message>
         <source>Locate the closest points between objects in two raster maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaald de dichtstbijzijnde punten tussen twee objecten in twee rasterkaarten</translation>
     </message>
     <message>
         <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak elke uitvoercel-functie van de waarden op basis van de corresponderende cellen in de invoerrasters</translation>
     </message>
     <message>
         <source>Manage features</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecten beheren</translation>
     </message>
     <message>
         <source>Manage image colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterkleuren beheren</translation>
     </message>
     <message>
         <source>Manage map colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaartkleuren beheren</translation>
     </message>
     <message>
         <source>Manage raster cells value</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastercelwaarden beheren</translation>
     </message>
     <message>
         <source>Manage training dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Trainingsset beheren</translation>
     </message>
     <message>
         <source>Map algebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Kaart algebra</translation>
     </message>
     <message>
         <source>Map type conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Maptype omzetting</translation>
     </message>
     <message>
         <source>MapGen or MatLab vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>MapGen of MatLab vectorlaag</translation>
     </message>
     <message>
         <source>Mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Masker</translation>
     </message>
     <message>
         <source>Metadata support</source>
-        <translation type="unfinished"></translation>
+        <translation>Metadata onderstuening</translation>
     </message>
     <message>
         <source>Mosaic up to 4 images</source>
-        <translation type="unfinished"></translation>
+        <translation>Mozaïk tot 4 afbeeldingen</translation>
     </message>
     <message>
         <source>Name for new raster file (specify file extension)</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam voor nieuwe rasterbestand (incl bestandextentie)</translation>
     </message>
     <message>
         <source>Name for new vector file (specify file extension)</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam voor nieuwe vectorbestand (incl bestandextentie)</translation>
     </message>
     <message>
         <source>Name for output vector map (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam voor uitvoervectorbestand (optioneel)</translation>
     </message>
     <message>
         <source>Name for the output raster map (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Naam voor uitvoerrasterbestand (optioneel)</translation>
     </message>
     <message>
         <source>Neighborhood analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Neighborhood&apos; analyse</translation>
     </message>
     <message>
         <source>Network analysis</source>
@@ -38187,11 +38187,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Network maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Netwerkonderhoud</translation>
     </message>
     <message>
         <source>Number of rows to be skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Welk aantal rijen overslaan</translation>
     </message>
     <message>
         <source>OGR file</source>
@@ -38207,7 +38207,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Output GML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer GML bestand</translation>
     </message>
     <message>
         <source>Output Shapefile</source>
@@ -38215,11 +38215,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Output layer name (used in GML file)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerlaagnaam (gebruikt in het GML-bestand)</translation>
     </message>
     <message>
         <source>Output raster values along user-defined transect line(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerrasterwaarden langs de door de gebruiker gemaakte transectlijn(en)</translation>
     </message>
     <message>
         <source>Overlay</source>
@@ -38227,23 +38227,23 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Overlay maps</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Overlay&apos;-kaarten</translation>
     </message>
     <message>
         <source>Path to GRASS database of input location (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pad naar GRASS database van invoerlokatie (optioneel)</translation>
     </message>
     <message>
         <source>Path to the OGR data source</source>
-        <translation type="unfinished"></translation>
+        <translation>Pad naar de OGR-databronnen</translation>
     </message>
     <message>
         <source>Percentage of first layer (0-99)</source>
-        <translation type="unfinished"></translation>
+        <translation>Percentage van de eerste laag (0-99)</translation>
     </message>
     <message>
         <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Affine transformatie uitvoeren (schuif, schaal en roteer, of GCPs) op vector</translation>
     </message>
     <message>
         <source>Print projection information from a georeferenced file</source>
@@ -38259,7 +38259,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Projection conversion of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Projectieconversie van vector</translation>
     </message>
     <message>
         <source>Projection management</source>
@@ -38267,19 +38267,19 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Put geometry variables in database</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet de geometrie-variabelen in de database</translation>
     </message>
     <message>
         <source>Query rasters on their category values and labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Doorzoek raster naar hun categorie waarden en labels</translation>
     </message>
     <message>
         <source>Random location perturbations of vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Willekeurige locatieafwijkingen van vectorpunten</translation>
     </message>
     <message>
         <source>Randomly partition points into test/train sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Partitioneer punten willekeurig in test-/trainingssets</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -38291,71 +38291,71 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Raster file matrix filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterbestand matrixfilter</translation>
     </message>
     <message>
         <source>Raster neighbours analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster &apos;neighbours&apos; analyse</translation>
     </message>
     <message>
         <source>Raster support</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterondersteuning</translation>
     </message>
     <message>
         <source>Re-project raster from a location to the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer raster vanuit een locatie naar de huidige locatie</translation>
     </message>
     <message>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Herbouw de topologie van alle vectoren in een mapset</translation>
     </message>
     <message>
         <source>Recategorize contiguous cells to unique categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Hetcategoriseer continue cellen to unieke categorieën</translation>
     </message>
     <message>
         <source>Reclass category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer categoriewaarden</translation>
     </message>
     <message>
         <source>Reclass category values using a column attribute (integer positive)</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer categoriewaarden o.b.v een attribuutkolom (positieve integer)</translation>
     </message>
     <message>
         <source>Reclass category values using a rules file</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer categoriewaarden o.b.v een regelbestand</translation>
     </message>
     <message>
         <source>Reclass raster using reclassification rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer raster o.b.v. herklassificeringsregels</translation>
     </message>
     <message>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer raster met &apos;patches&apos; groter dan het door de gebruiker bepaalde oppervlakte (in hectaren)</translation>
     </message>
     <message>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer raster met &apos;patches&apos; kleiner dan het door de gebruiker bepaalde oppervlakte (in hectaren)</translation>
     </message>
     <message>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
-        <translation type="unfinished"></translation>
+        <translation>Herklasseer raster groter of kleiner dan het door de gebruiker bepaalde oppervlakte (in hectaren)</translation>
     </message>
     <message>
         <source>Recode categorical raster using reclassification rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Hercodeer categorieraster o.b.v. herklassificeringsregels</translation>
     </message>
     <message>
         <source>Recode raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Hercodeer raster</translation>
     </message>
     <message>
         <source>Reconnect vector to a new database</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbind vector aan nieuwe database</translation>
     </message>
     <message>
         <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
-        <translation type="unfinished"></translation>
+        <translation>Rood Groen Blauw (RGB) naar Hue Intensiteit Verzadiging (HIS) rasterkleuromzetting</translation>
     </message>
     <message>
         <source>Region</source>
@@ -38363,187 +38363,187 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Region settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Regio instellingen</translation>
     </message>
     <message>
         <source>Register external data sources in GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Registreer een externe databron in GRASS</translation>
     </message>
     <message>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Regularized spline with tension raster interpolation op basis van vectorpunten</translation>
     </message>
     <message>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Herinterpoleer en voer een topografische analyse uit gebruikmaken van &apos;regularized spline with tension and smoothing&apos;</translation>
     </message>
     <message>
         <source>Remove all lines or boundaries of zero length</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder alle lijnen en grenzen met een lengte van 0</translation>
     </message>
     <message>
         <source>Remove bridges connecting area and island or 2 islands</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder alle verbindingen tussen oppervlak en eiland of twee eilanden</translation>
     </message>
     <message>
         <source>Remove dangles</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder uitschieters (dangles)</translation>
     </message>
     <message>
         <source>Remove duplicate area centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder oppervlakte centroide doublures</translation>
     </message>
     <message>
         <source>Remove duplicate lines (pay attention to categories!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder dubbele lijnen (let wel op categorieën!)</translation>
     </message>
     <message>
         <source>Remove existing attribute table of vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder een bestaande attribuuttabel van een vector</translation>
     </message>
     <message>
         <source>Remove outliers from vector point data</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder uitschieters van puntdata</translation>
     </message>
     <message>
         <source>Remove small angles between lines at nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder kleine hoeken tussen de lijnpunten</translation>
     </message>
     <message>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder kleine oppervlakten, de langste grens met gezamelijk oppervlak wordt verwijderd</translation>
     </message>
     <message>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder hoekpunten uit lijnen en grenzen op basis van een grenswaarde, de grens wordt alleen verwijderd als de topologie behouden blijft (nieuwe doorsnijding, veranderde middelpunt), eerste en laatste segment van een grens wordt nooit veranderd</translation>
     </message>
     <message>
         <source>Rename column in attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Hernoem kolom in attribuuttabel</translation>
     </message>
     <message>
         <source>Reports</source>
-        <translation type="unfinished"></translation>
+        <translation>Rapporten</translation>
     </message>
     <message>
         <source>Reports and statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Rapporten en statistieken</translation>
     </message>
     <message>
         <source>Reproject raster from another Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer raster van een andere locatie</translation>
     </message>
     <message>
         <source>Reproject vector from another Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer vector uit een andere locatie</translation>
     </message>
     <message>
         <source>Resample raster using aggregation</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Resample&apos; raster d.m.v. aggregatie</translation>
     </message>
     <message>
         <source>Resample raster using interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Resample&apos; raster d.m.v. interpolatie</translation>
     </message>
     <message>
         <source>Resample raster. Set new resolution first</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Resample&apos; raster. Eerst nieuw resolutie bepalen</translation>
     </message>
     <message>
         <source>Rescale the range of category values in raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Herschaal de categoriegrenzen van de waarden in een raster</translation>
     </message>
     <message>
         <source>Sample raster at site locations</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Sample&apos; raster op zoekplaatslocaties</translation>
     </message>
     <message>
         <source>Save the current region as a named region</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla de huidige regio op met een naam</translation>
     </message>
     <message>
         <source>Select features by attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer objecten d.m.v. attributen</translation>
     </message>
     <message>
         <source>Select features overlapped by features in another map</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteer objecten overlappend met objecten in een andere kaart</translation>
     </message>
     <message>
         <source>Separator (| , 	 etc.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Scheidingsteken (| ,  etc.)</translation>
     </message>
     <message>
         <source>Set PostgreSQL DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL Verbindingen instellen</translation>
     </message>
     <message>
         <source>Set boundary definitions by edge (n-s-e-w)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal grensdefinitie o.b.v. randen (n-s-e-w)</translation>
     </message>
     <message>
         <source>Set boundary definitions for raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal grensdefinitie voor raster</translation>
     </message>
     <message>
         <source>Set boundary definitions from raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal grensdefinitie van raster</translation>
     </message>
     <message>
         <source>Set boundary definitions from vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal grensdefinitie van vector</translation>
     </message>
     <message>
         <source>Set boundary definitions to current or default region</source>
-        <translation type="unfinished"></translation>
+        <translation>Stel grensdefinitie vast op huidige of standaard regio</translation>
     </message>
     <message>
         <source>Set color rules based on stddev from a map&apos;s mean value</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal de kleurregels op basis van de stddev van de gemiddelde waarde van de kaart</translation>
     </message>
     <message>
         <source>Set general DB connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene DB-verbinding instellen</translation>
     </message>
     <message>
         <source>Set general DB connection with a schema (PostgreSQL only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Algemene DB-verbinding instellen met een schema (alleen PostgreSQL)</translation>
     </message>
     <message>
         <source>Set raster color table</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterkleurtabel instellen</translation>
     </message>
     <message>
         <source>Set raster color table from existing raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterkleur instellen o.b.v. een bestaand raster</translation>
     </message>
     <message>
         <source>Set raster color table from setted tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een rasterkleurtabel van de &apos;setted&apos; tabellen</translation>
     </message>
     <message>
         <source>Set raster color table from user-defined rules</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een rasterkleurtabel o.b.v. gebruikersregels</translation>
     </message>
     <message>
         <source>Set region to align to raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal de regio op basis van het raster</translation>
     </message>
     <message>
         <source>Set the region to match multiple rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal de regio op basis van meerdere rasters</translation>
     </message>
     <message>
         <source>Set the region to match multiple vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal de regio op basis van meerdere vectoren</translation>
     </message>
     <message>
         <source>Set user/password for driver/database</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruikersnaam/wachtwoord voor driver/database instellen</translation>
     </message>
     <message>
         <source>Sets the boundary definitions for a raster map</source>
-        <translation type="unfinished"></translation>
+        <translation>Bepaal de grenzen voor een rasterkaart</translation>
     </message>
     <message>
         <source>Show database connection for vector</source>
@@ -38551,23 +38551,23 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Shrink current region until it meets non-NULL data from raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Krimp de huidige regio in tot aan de niet-NULL waarden van het raster</translation>
     </message>
     <message>
         <source>Simple map algebra</source>
-        <translation type="unfinished"></translation>
+        <translation>Eenvoudige kaart-algebra</translation>
     </message>
     <message>
         <source>Simplify vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Versimpel vector</translation>
     </message>
     <message>
         <source>Snap lines to vertex in threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijnen &apos;snappen&apos; naar hoeken met drempelwaarde</translation>
     </message>
     <message>
         <source>Solar and irradiation model</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Solar and irradiation model&apos;</translation>
     </message>
     <message>
         <source>Spatial analysis</source>
@@ -38579,55 +38579,55 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Split lines to shorter segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Lijnen opdelen in kortere segmenten</translation>
     </message>
     <message>
         <source>Statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistieken</translation>
     </message>
     <message>
         <source>Sum raster cell values</source>
-        <translation type="unfinished"></translation>
+        <translation>Sommeer rastercelwaarden</translation>
     </message>
     <message>
         <source>Surface management</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Surface management&apos;</translation>
     </message>
     <message>
         <source>Tables management</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel-beheer</translation>
     </message>
     <message>
         <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een tabel van gelijktijdig voorkomen (toeval) van categorieën van twee rasters</translation>
     </message>
     <message>
         <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Neem vector stroomdata, transformeer het naar raster, en trek de diepte af van een uitvoerDEM</translation>
     </message>
     <message>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap (Kauth Thomas) transformatie for LANDSAT-TM 4 raster</translation>
     </message>
     <message>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap (Kauth Thomas) transformatie for LANDSAT-TM 5 raster</translation>
     </message>
     <message>
         <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasseled Cap (Kauth Thomas) transformatie for LANDSAT-TM 7 raster</translation>
     </message>
     <message>
         <source>Tassled cap vegetation index</source>
-        <translation type="unfinished"></translation>
+        <translation>Tassled cap vegetatie index</translation>
     </message>
     <message>
         <source>Terrain analysis</source>
-        <translation type="unfinished">&apos;Terrain analysis&apos;</translation>
+        <translation>&apos;Terrain analysis&apos;</translation>
     </message>
     <message>
         <source>Tests of normality on vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Normaliteitstest van vectorpunten</translation>
     </message>
     <message>
         <source>Text file</source>
@@ -38635,11 +38635,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Thin no-zero cells that denote line features</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdun niet-nulcellen die lijnobjecten voorstellen</translation>
     </message>
     <message>
         <source>Toolset for cleaning topology of vector map</source>
-        <translation type="unfinished"></translation>
+        <translation>Gereedschap om topologie op te schonen van een vectorkaart</translation>
     </message>
     <message>
         <source>Topology management</source>
@@ -38647,7 +38647,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Trace a flow through an elevation model</source>
-        <translation type="unfinished"></translation>
+        <translation>Traceer een stroom in een hoogtemodel</translation>
     </message>
     <message>
         <source>Transform cells with value in null cells</source>
@@ -38663,11 +38663,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Transform null cells in value cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer nulcellen in waardecellen</translation>
     </message>
     <message>
         <source>Transform value cells in null cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer waardecellen in nulcellen</translation>
     </message>
     <message>
         <source>Type in map names separated by a comma</source>
@@ -38683,11 +38683,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Upload raster values at positions of vector points to the table</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet de rasterwaarden op de posities van de vectorpunten naar de tabel</translation>
     </message>
     <message>
         <source>Upload vector values at positions of vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet de vectorwaarden op de posities van de vectorpunten naar de tabel</translation>
     </message>
     <message>
         <source>Vector</source>
@@ -38699,7 +38699,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Vector geometry analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector geometrieanalyse</translation>
     </message>
     <message>
         <source>Vector intersection</source>
@@ -38707,11 +38707,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Vector non-intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector niet-doorsnijdingen</translation>
     </message>
     <message>
         <source>Vector subtraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector aftrekken</translation>
     </message>
     <message>
         <source>Vector union</source>
@@ -38719,11 +38719,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Vector update by other maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector updaten o.b.v. andere kaarten</translation>
     </message>
     <message>
         <source>Visibility graph construction</source>
-        <translation type="unfinished"></translation>
+        <translation>Zichtbaarheidsgrafiek constructie</translation>
     </message>
     <message>
         <source>Voronoi diagram (area)</source>
@@ -38739,15 +38739,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Which column for the X coordinate? The first is 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Welke kolom voor de X-coördinaat? De eerste is 1</translation>
     </message>
     <message>
         <source>Which column for the Y coordinate?</source>
-        <translation type="unfinished"></translation>
+        <translation>Welke kolom voor de Y-coördinaat?</translation>
     </message>
     <message>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Welke kolom voor de Z-coördinaat? Indien 0 wordt de  Z-coördinaat niet gebruikt</translation>
     </message>
     <message>
         <source>Work with vector points</source>
@@ -38755,31 +38755,31 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Write only features link to a record</source>
-        <translation type="unfinished"></translation>
+        <translation>Alleen object-linken naar het record schrijven</translation>
     </message>
     <message>
         <source>Zero-crossing edge detection raster function for image processing</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Zero-crossing edge detection raster function&apos; voor image verwerking</translation>
     </message>
     <message>
         <source>Minimum size for each basin (number of cells)</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimale grootte voor elk &apos;basin&apos; (aantal cellen)</translation>
     </message>
     <message>
         <source>Link GDAL supported raster as GRASS raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Link een GDAL-ondersteund raster als GRASS-raster</translation>
     </message>
     <message>
         <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Link een GDAL-ondersteund, in QGIS geladen, raster als GRASS raster</translation>
     </message>
     <message>
         <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Link alle GDAL-ondersteunde rasters in een map als GRASS rasters</translation>
     </message>
     <message>
         <source>(Optional) column to read labels</source>
-        <translation type="unfinished"></translation>
+        <translation>(Optioneel) kolom voor labels</translation>
     </message>
     <message>
         <source>Attribute field to (over)write</source>
@@ -38787,39 +38787,39 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Feature type (for polygons, choose Boundary)</source>
-        <translation type="unfinished"></translation>
+        <translation>Objecttype (voor polygone, kies Grenzen)</translation>
     </message>
     <message>
         <source>Maximal tolerance value (higher value=more simplification)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximale tolerantiewaarde (hogere waarde=meer simplificatie)</translation>
     </message>
     <message>
         <source>Rebuild topology of a vector in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Herbouw de topologie van een vector in een mapset</translation>
     </message>
     <message>
         <source>Elevation raster for height extraction (optional)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Elevation raster&apos; voor hoogteextractie (optioneel)</translation>
     </message>
     <message>
         <source>Extrudes flat vector object to 3D with fixed height</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet een vlak vectorobject om naar een 3D-object met vaste hoogte</translation>
     </message>
     <message>
         <source>Extrudes flat vector object to 3D with height based on attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet een vlak vectorobject om naar een 3D-object met een attribuutgebaseerde hoogte</translation>
     </message>
     <message>
         <source>Generates area statistics for rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Genereer oppervlaktestatistieken voor rasters</translation>
     </message>
     <message>
         <source>Import OGR vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer OGR-vector en maak een passende locatie</translation>
     </message>
     <message>
         <source>Loaded layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Geladen laag</translation>
     </message>
 </context>
 <context>
