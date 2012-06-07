@@ -31,7 +31,7 @@ class EditScriptDialog(QtGui.QDialog):
         if self.alg != None:
             self.text.setText(self.alg.script)
         self.editHelpButton = QtGui.QPushButton()
-        self.editHelpButton.setText("Edit model help")
+        self.editHelpButton.setText("Edit script help")
         self.buttonBox.addButton(self.editHelpButton, QtGui.QDialogButtonBox.ActionRole)
         QObject.connect(self.editHelpButton, QtCore.SIGNAL("clicked()"), self.editHelp)
         self.saveButton = QtGui.QPushButton()

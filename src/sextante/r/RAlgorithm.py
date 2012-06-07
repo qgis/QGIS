@@ -37,13 +37,29 @@ class RAlgorithm(GeoAlgorithm):
         newone.provider = self.provider
         return newone
 
-    def __init__(self, descriptionfile):
+    def __init__(self, descriptionFile, script=None):
         GeoAlgorithm.__init__(self)
-        self.descriptionFile = descriptionfile
-        self.defineCharacteristicsFromFile()
+        self.script = script
+        self.descriptionFile = descriptionFile
+        if script is not None:
+            self.defineCharacteristicsFromScript()
+        if descriptionFile is not None:
+            self.defineCharacteristicsFromFile()
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
+
+    def defineCharacteristicsFromScript(self):
+        lines = self.script.split("\n")
+        self.silentOutputs = []
+        self.name = "[Unnamed algorithm]"
+        self.group = "User R scripts"
+        for line in lines:
+            if line.startswith("##"):
+                try:
+                    self.processParameterLine(line.strip("\n"))
+                except:
+                    pass
 
     def defineCharacteristicsFromFile(self):
         self.script = ""
