@@ -302,4 +302,5 @@ class GrassAlgorithm(GeoAlgorithm):
         filename =  "tmp" + str(time.time()).replace(".","") + str(SextanteUtils.getNumExportedLayers())
         return filename
 
-
+    def commandLineName(self):
+        return "grass:" + self.name[:self.name.find(" ")]

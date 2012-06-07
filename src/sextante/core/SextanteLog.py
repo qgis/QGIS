@@ -1,6 +1,7 @@
 import datetime
 import os
 from sextante.core.SextanteUtils import SextanteUtils
+import codecs
 class SextanteLog():
 
     LOG_ERROR = "ERROR"
@@ -32,16 +33,16 @@ class SextanteLog():
                 text+=msg[i].strip("\n") + "|"
             text = text[:-1]
         else:
-            text = str(msg).replace("\n", "|")
+            text = unicode(msg).replace("\n", "|")
         line = msgtype + "|" + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "|" + text + "\n"
-        logfile = open(SextanteLog.logFilename(), "a")
+        logfile = codecs.open(SextanteLog.logFilename(), "a", encoding='utf-8')
         logfile.write(line)
         logfile.close()
         if msgtype==SextanteLog.LOG_ALGORITHM:
-            algname = text[len("Sextante.runalg(\""):]
-            algname = algname[:algname.index("\"")]
-            if algname not in SextanteLog.recentAlgs:
-                SextanteLog.recentAlgs.append(algname)
+           algname = text[len("Sextante.runalg(\""):]
+           algname = algname[:algname.index("\"")]
+           if algname not in SextanteLog.recentAlgs:
+               SextanteLog.recentAlgs.append(algname)
 
 
     @staticmethod
@@ -51,7 +52,7 @@ class SextanteLog():
         algorithms=[]
         warnings=[]
         info=[]
-        lines = open(SextanteLog.logFilename())
+        lines = codecs.open(SextanteLog.logFilename(), encoding='utf-8')
         line = lines.readline()
         while line != "":
             line = line.strip("\n").strip()
