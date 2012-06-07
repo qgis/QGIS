@@ -31,7 +31,7 @@ class SextanteLog():
             text=""
             for i in range(0, len(msg)):
                 text+=msg[i].strip("\n") + "|"
-            text = text[:-1]
+            text = unicode(text[:-1])
         else:
             text = unicode(msg).replace("\n", "|")
         line = msgtype + "|" + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "|" + text + "\n"

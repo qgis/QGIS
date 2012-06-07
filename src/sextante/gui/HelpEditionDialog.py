@@ -15,7 +15,7 @@ class HelpEditionDialog(QtGui.QDialog):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.descriptions =  {}
-        if self.alg.descriptionFile:
+        if self.alg.descriptionFile is not None:
             helpfile = alg.descriptionFile + ".help"
             if os.path.exists(helpfile):
                 f = open(helpfile, "rb")
@@ -88,7 +88,7 @@ class HelpEditionDialog(QtGui.QDialog):
 
     def saveHelp(self):
         self.descriptions[self.currentName] = str(self.text.toPlainText())
-        if self.alg.descriptionFile:
+        if self.alg.descriptionFile is not None:
             f = open(self.alg.descriptionFile + ".help", "wb")
             pickle.dump(self.descriptions, f)
             f.close()

@@ -23,10 +23,16 @@ from sextante.gui.Help2Html import Help2Html
 
 class ScriptAlgorithm(GeoAlgorithm):
 
-    def __init__(self, descriptionfile):
+    def __init__(self, descriptionFile, script=None):
+        '''The script parameter can be used to directly pass the code of the script without a file.
+        This is to be used from the script edition dialog, but should not be used in other cases'''
         GeoAlgorithm.__init__(self)
-        self.descriptionFile = descriptionfile
-        self.defineCharacteristicsFromFile()
+        self.script = script
+        self.descriptionFile = descriptionFile
+        if script is not None:
+            self.defineCharacteristicsFromScript()
+        if descriptionFile is not None:
+            self.defineCharacteristicsFromFile()
 
     def getCopy(self):
         newone = ScriptAlgorithm(self.descriptionFile)
@@ -35,7 +41,6 @@ class ScriptAlgorithm(GeoAlgorithm):
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/script.png")
-
 
     def defineCharacteristicsFromFile(self):
         self.script=""
@@ -54,6 +59,19 @@ class ScriptAlgorithm(GeoAlgorithm):
             self.script += line
             line = lines.readline()
         lines.close()
+
+
+    def defineCharacteristicsFromScript(self):
+        lines = self.script.split("\n")
+        self.silentOutputs = []
+        self.name = "[Unnamed algorithm]"
+        self.group = "User scripts"
+        for line in lines:
+            if line.startswith("##"):
+                try:
+                    self.processParameterLine(line.strip("\n"))
+                except:
+                    pass
 
     def createDescriptiveName(self, s):
         return s.replace("_", " ")
