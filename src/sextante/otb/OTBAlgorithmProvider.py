@@ -29,14 +29,15 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = []
         folder = OTBUtils.otbDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            try:
-                alg = OTBAlgorithm(os.path.join(folder, descriptionFile))
-                if alg.name.strip() != "":
-                    self.preloadedAlgs.append(alg)
-                else:
+            if descriptionFile.endswith("rsx"):
+                try:
+                    alg = OTBAlgorithm(os.path.join(folder, descriptionFile))
+                    if alg.name.strip() != "":
+                        self.preloadedAlgs.append(alg)
+                    else:
+                        SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open OTB algorithm: " + descriptionFile)
+                except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open OTB algorithm: " + descriptionFile)
-            except Exception,e:
-                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open OTB algorithm: " + descriptionFile)
 
 
     def initializeSettings(self):
