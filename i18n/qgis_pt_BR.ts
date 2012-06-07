@@ -2310,7 +2310,7 @@ Complemento não será habilitado.</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation>Fixa projeção</translation>
+        <translation>Fixar projeção</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
@@ -2438,7 +2438,7 @@ Instale-o e tente novamente.</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation>Micelânia</translation>
+        <translation>Miscelânia</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
@@ -2628,7 +2628,7 @@ Você de terminá-lo mesmo assim?</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="29"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation>&amp;Carregar na tela quando concluído</translation>
+        <translation>&amp;Carregar na tela ao concluir</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="63"/>
@@ -2764,7 +2764,7 @@ Você de terminá-lo mesmo assim?</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation>Selecione o arquivo de entrada para Traduzir</translation>
+        <translation>Selecione o arquivo de entrada para converter</translation>
     </message>
     <message>
         <source>Select the cutline file</source>
@@ -2772,11 +2772,11 @@ Você de terminá-lo mesmo assim?</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation>Selecione a pastas de entrada com os arquivos para Traduzir</translation>
+        <translation>Selecione a pastas de entrada com os arquivos para converter</translation>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation>Traduzir - srcwin</translation>
+        <translation>Converter - srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
@@ -3871,7 +3871,7 @@ adequado para uso direto com Imagine, ArcGIS, GDAL.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="59"/>
         <source>Desired SRS</source>
-        <translation>SRS desejado</translation>
+        <translation>SRC desejado</translation>
     </message>
     <message>
         <source>Desired SRS:</source>
@@ -4127,7 +4127,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) habilita a expandir um regist
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="72"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="83"/>
         <source>&amp;Target SRS</source>
-        <translation>&amp;SRS alvo</translation>
+        <translation>&amp;SRC alvo</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="109"/>
@@ -4262,7 +4262,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) habilita a expandir um regist
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="55"/>
         <source>&amp;Source SRS</source>
-        <translation>&amp;SRS fonte</translation>
+        <translation>&amp;SRC fonte</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="111"/>
@@ -4296,7 +4296,7 @@ O valor &apos;cinza&apos; (a partir do GDAL 1.7.0) habilita a expandir um regist
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="260"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
-        <translation>Use execução de ajuste m&amp;ultithreaded</translation>
+        <translation>Usar execução de ajuste m&amp;ultithreaded</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="14"/>
@@ -4898,7 +4898,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="161"/>
         <source>Cell Size X</source>
-        <translation>Tamanho da célula X</translation>
+        <translation>Tam. da célula X</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="171"/>
@@ -4908,17 +4908,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="181"/>
         <source>Cell Size Y</source>
-        <translation>Tamanho da célula Y</translation>
+        <translation>Tam. da célula Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="215"/>
         <source>Use Radius from field</source>
-        <translation>Usar raio de um campo</translation>
+        <translation>Usar raio por campo</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="246"/>
         <source>Use Weight from field</source>
-        <translation>Usar peso de um campo</translation>
+        <translation>Usar peso por campo</translation>
     </message>
 </context>
 <context>
@@ -8985,9 +8985,13 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
         <translation>Informix DataBlade</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>INGRES</source>
-        <translation>INGRES</translation>
+        <translation type="obsolete">INGRES</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
+        <source>Ingres</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -9299,18 +9303,18 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1691"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1817"/>
         <source>Loading of the MSSQL provider failed</source>
         <translation>Carregar do provedor MSSQLfalhou</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1725"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1851"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3143"/>
         <source>Unsupported type for field %1</source>
         <translation>Tipo não suportado para o campo %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1739"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1865"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3163"/>
         <source>Creation of fields failed</source>
         <translation>Criação dos campos falhou</translation>
@@ -11971,7 +11975,7 @@ This copy of QGIS has been built with QWT %1.</source>
     </message>
     <message>
         <source>Added &apos;style manager...&apos; button to symbol selector so that users will find the style manager more easily.</source>
-        <translation type="obsolete">Adicionado &apos;gerenciador de estilo ... &quot;botão para selecção de símbolos para que os usuários encontrem o gerenciador de estilo mais facilmente.</translation>
+        <translation type="obsolete">Adicionado &apos;gerenciador de estilo ... &quot;botão para seleção de símbolos para que os usuários encontrem o gerenciador de estilo mais facilmente.</translation>
     </message>
     <message>
         <source>Map Composer</source>
@@ -14216,7 +14220,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp</source>
-        <translation>Cor da inclinação</translation>
+        <translation>Cor de degradê</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="122"/>
@@ -14321,7 +14325,7 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="765"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1487"/>
         <source>Don&apos;t show this message again</source>
-        <translation>Não mostra esta mensagem novamente</translation>
+        <translation>Não mostrar esta mensagem novamente</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="789"/>
@@ -20609,7 +20613,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1475"/>
         <source>Average Magphase</source>
-        <translation type="unfinished">Magphase média</translation>
+        <translation>Magphase média</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="1480"/>
@@ -20771,7 +20775,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="14"/>
         <source>Configure Georeferencer</source>
-        <translation>Configurar georreferenciador</translation>
+        <translation>Configurar o georreferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="20"/>
@@ -21152,7 +21156,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1834"/>
         <source>Please set transformation type</source>
-        <translation>Marque o tipo de transformação</translation>
+        <translation>Defina o tipo de transformação</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1844"/>
@@ -21344,7 +21348,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="270"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="273"/>
         <source>Generate GDAL script</source>
-        <translation>Gera script GDAL</translation>
+        <translation>Gerar script GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="276"/>
@@ -21355,13 +21359,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="284"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="287"/>
         <source>Link Georeferencer to QGis</source>
-        <translation>Conexta Georreferenciador ao QGIS</translation>
+        <translation>Conectar georreferenciador ao QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="295"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="298"/>
         <source>Link QGis to Georeferencer</source>
-        <translation>Conecta QGIS ao Georreferenciador</translation>
+        <translation>Conectar QGIS ao Georreferenciador</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="303"/>
@@ -21404,7 +21408,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="338"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="341"/>
         <source>Move GCP point</source>
-        <translation>Move ponto GCP</translation>
+        <translation>Mover ponto GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="346"/>
@@ -21497,7 +21501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="78"/>
         <source>Worldwind</source>
-        <translation type="unfinished">Worldwind</translation>
+        <translation>Worldwind</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="93"/>
@@ -21578,17 +21582,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="434"/>
         <source>Split stereo horizontal separation (px)</source>
-        <translation type="unfinished">Dividir separação horizontal estéreo (px)</translation>
+        <translation>Dividir separação horizontal estéreo (px)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="441"/>
         <source>Split stereo vertical separation (px)</source>
-        <translation type="unfinished">Dividir separação vertical estéreo (px)</translation>
+        <translation>Dividir separação vertical estéreo (px)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="448"/>
         <source>Split stereo vertical eye mapping</source>
-        <translation type="unfinished">Dividir mapa de visão vertical estéreo (px)</translation>
+        <translation>Dividir mapa de visão vertical estéreo (px)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="485"/>
@@ -21608,7 +21612,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="574"/>
         <source>Split stereo horizontal eye mapping</source>
-        <translation type="unfinished">Dividir separação horizontal estéreo (px)</translation>
+        <translation>Dividir separação horizontal estéreo (px)</translation>
     </message>
 </context>
 <context>
@@ -25028,7 +25032,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="285"/>
         <source>Set to current extent</source>
-        <translation>Define extensão atual</translation>
+        <translation>Definir pela extensão atual</translation>
     </message>
 </context>
 <context>
@@ -26529,7 +26533,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/core/qgsmaprenderer.cpp" line="784"/>
         <source>Transform error caught: %1</source>
-        <translation type="unfinished">Erro de transformação: %1</translation>
+        <translation>Erro de transformação: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaprenderer.cpp" line="784"/>
@@ -27315,7 +27319,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="51"/>
         <source>Don&apos;t show this message again</source>
-        <translation>Não mostra esta mensagem novamente</translation>
+        <translation>Não mostrar esta mensagem novamente</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="55"/>
@@ -27765,7 +27769,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsmessageviewer.ui" line="49"/>
         <source>Don&apos;t show this message again</source>
-        <translation>Não mostra esta mensagem novamente</translation>
+        <translation>Não mostrar esta mensagem novamente</translation>
     </message>
 </context>
 <context>
@@ -27997,12 +28001,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="154"/>
         <source>Text, limited variable length (varchar)</source>
-        <translation type="unfinished">Texto, de tamanho variável limitado (varchar)</translation>
+        <translation>Texto, de tamanho variável limitado (varchar)</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="155"/>
         <source>Text, fixed length unicode (nchar)</source>
-        <translation type="unfinished">Texto, de comprimento fixo unicode (nchar)</translation>
+        <translation>Texto, de comprimento fixo unicode (nchar)</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="156"/>
@@ -29211,7 +29215,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="14"/>
         <source>Create offline project</source>
-        <translation>Cria um projeto offline</translation>
+        <translation>Criar um projeto offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="27"/>
@@ -29790,17 +29794,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="514"/>
         <source>Popmusic tabu chain (slow)</source>
-        <translation type="unfinished">Popmusic tabu chain (lento)</translation>
+        <translation>Popmusic tabu chain (lento)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="515"/>
         <source>Popmusic tabu (slow)</source>
-        <translation type="unfinished">Popmusic tabu (lento)</translation>
+        <translation>Popmusic tabu (lento)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="516"/>
         <source>Popmusic chain (very slow)</source>
-        <translation type="unfinished">Popmusic chain (muito lento)</translation>
+        <translation>Popmusic chain (muito lento)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="79"/>
@@ -30980,7 +30984,7 @@ Geoprocessar funções estão disponíveis apenas para camadas PostgreSQL/PostGI
     <message>
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="35"/>
         <source>require</source>
-        <translation>necessita</translation>
+        <translation>requer</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="99"/>
@@ -33078,19 +33082,19 @@ SQL: %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="599"/>
         <source>Read attempt on an invalid postgresql data source</source>
-        <translation type="unfinished">Tentativa de leitura em uma fonte de dados postgresql inválida</translation>
+        <translation>Tentativa de leitura em uma fonte de dados postgresql inválida</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="605"/>
         <source>nextFeature() without select()</source>
-        <translation type="unfinished">próximafeição() sem selecionar()</translation>
+        <translation>próximafeição() sem selecionar()</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="617"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="629"/>
         <source>Fetching from cursor %1 failed
 Database error: %2</source>
-        <translation type="unfinished">Atrair do cursos %1 falhou
+        <translation>Atrair do cursor %1 falhou
 Erro na base de dados: %2</translation>
     </message>
     <message>
@@ -33118,22 +33122,22 @@ Erro na base de dados: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1312"/>
         <source>The custom query is not a select query.</source>
-        <translation type="unfinished">A consulta personalizada não é uma consulta selecionada.</translation>
+        <translation>A consulta personalizada não é uma consulta selecionada.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1418"/>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation type="unfinished">A tabela não possui coluna adequada para ser usada como uma chave. O QGIS necessita de uma chave primária, uma coluna oid PostgreSQL ou uma ctid para tabelas.</translation>
+        <translation>A tabela não possui coluna adequada para ser usada como uma chave. O QGIS necessita de uma chave primária, uma coluna oid PostgreSQL ou uma ctid para tabelas.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1443"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished">Campo de chave primária &apos;%1&apos; para visão não é único.</translation>
+        <translation>Campo de chave primária &apos;%1&apos; para visão não é único.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1448"/>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation type="unfinished">Tipo &apos;%1&apos;de campo de chave primária &apos;%2&apos; para visão inválida.</translation>
+        <translation>Tipo &apos;%1&apos;de campo de chave primária &apos;%2&apos; para visão inválida.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1453"/>
@@ -33143,7 +33147,7 @@ Erro na base de dados: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1458"/>
         <source>No key field for view given.</source>
-        <translation type="unfinished">Sem campo chave para visão fornecido.</translation>
+        <translation>Sem campo chave para visão fornecido.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1463"/>
@@ -33603,7 +33607,7 @@ Continuar?</translation>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="637"/>
         <source>Add WKT geometry to feature info response</source>
         <translatorcomment>tá horrível</translatorcomment>
-        <translation type="unfinished">Adicionar geometria WKT à resposta de informação da feição</translation>
+        <translation>Adicionar geometria WKT à resposta de informação da feição</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="649"/>
@@ -33745,7 +33749,7 @@ Devido ao seletor de projeção não estar em funcionamento...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="129"/>
         <source>Coordinate reference systems of the world</source>
-        <translation type="unfinished">Sistema de referência de coordenadas do &apos;world&apos;</translation>
+        <translation>Sistema de referência de coordenadas do &apos;world&apos;</translation>
     </message>
     <message>
         <source>Authority</source>
@@ -34000,7 +34004,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="250"/>
         <source>SQL where clause</source>
-        <translation type="unfinished">Cláusula onde SQL</translation>
+        <translation>Cláusula onde SQL</translation>
     </message>
 </context>
 <context>
@@ -34309,7 +34313,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="666"/>
         <source>Could not reproject view extent: %1</source>
-        <translation type="unfinished">Impossível reprojetar a extensão de visão: %1</translation>
+        <translation>Impossível reprojetar a extensão de visão: %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="666"/>
@@ -34437,7 +34441,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2212"/>
         <source>Cannot instantiate the data provider</source>
-        <translation type="unfinished">Impossível instanciar o provedor de dados</translation>
+        <translation>Impossível instanciar o provedor de dados</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2272"/>
@@ -35888,7 +35892,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="20"/>
         <source>Elevation layer</source>
-        <translation>Camada de elevação</translation>
+        <translation>Camada com as elevações</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="30"/>
@@ -38950,7 +38954,7 @@ O Quantum GIS requer que a relação tenha uma coluna de número inteiro menor q
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2077"/>
         <source>Error loading SRS definition</source>
-        <translation>Erro ao carregar definição SRS</translation>
+        <translation>Erro ao carregar definição SRC</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2122"/>
@@ -38965,7 +38969,7 @@ O Quantum GIS requer que a relação tenha uma coluna de número inteiro menor q
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2147"/>
         <source>Limited Support of Round Earth SRS</source>
-        <translation>Suporte Limitado do SRS &quot;Round Earth&quot;</translation>
+        <translation>Suporte Limitado do SRC &quot;Round Earth&quot;</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2148"/>
@@ -39146,7 +39150,7 @@ Substituir?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="306"/>
         <source>Color ramp type</source>
-        <translation>Tipo da cor da inclinação</translation>
+        <translation>Tipo da cor de degradê</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="307"/>
@@ -39208,7 +39212,7 @@ Substituir?</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="91"/>
         <source>Color ramp</source>
-        <translation>Cor da inclinação</translation>
+        <translation>Cor do degradê</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="132"/>
@@ -39936,7 +39940,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
         <source>Target SRS:</source>
-        <translation>SRS de destino:</translation>
+        <translation>SRC de destino:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
@@ -39976,7 +39980,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="260"/>
         <source>Load in QGIS when done</source>
-        <translation>Carregar no GQIS quando concluído</translation>
+        <translation>Carregar no QGIS ao concluir</translation>
     </message>
 </context>
 <context>
@@ -42301,7 +42305,7 @@ Isso pode ser um erro de configuração do servidor. Deveria a URL ser usada?</t
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2152"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>Requisição contém um SRS não oferecido pelo servidor para uma ou mais camadas.</translation>
+        <translation>Requisição contém um SRC não oferecido pelo servidor para uma ou mais camadas.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2156"/>

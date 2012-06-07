@@ -34182,7 +34182,7 @@ Sovrascrivere?</translation>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="107"/>
         <source>Select font color</source>
-        <translation>Scegli il colore di riempimento</translation>
+        <translation>Scegli il colore del carattere</translation>
     </message>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="160"/>

@@ -44,7 +44,7 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 
 - expat
 - fcgi
-- gdal17
+- gdal
 - grass
 - gsl-devel
 - iconv
@@ -52,6 +52,8 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - qt4-devel
 - qwt5-devel-qt4
 - sip
+- spatialite
+- libspatialindex-devel
 -
 
 This will also select packages the above packages depend on.
