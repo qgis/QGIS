@@ -22199,6 +22199,14 @@ eigenschappen
         <source>Sum</source>
         <translation>Som</translation>
     </message>
+    <message>
+        <source>Skip attribute</source>
+        <translation>Attribuut overslaan</translation>
+    </message>
+    <message>
+        <source>Skipped</source>
+        <translation>Overgeslagen</translation>
+    </message>
 </context>
 <context>
     <name>QgsMergeAttributesDialogBase</name>
