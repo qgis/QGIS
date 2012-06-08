@@ -264,26 +264,18 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  if ( mFilePath.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+  if ( vsiPrefix != "" )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
-    if ( !mFilePath.startsWith( "/vsizip/" ) )
+    if ( !mFilePath.startsWith( vsiPrefix ) )
     {
-      mFilePath = "/vsizip/" + mFilePath;
+      mFilePath = vsiPrefix + mFilePath;
       setDataSourceUri( mFilePath );
     }
-    QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
-  }
-  else if ( mFilePath.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !mFilePath.startsWith( "/vsigzip/" ) )
-    {
-      mFilePath = "/vsigzip/" + mFilePath;
-      setDataSourceUri( mFilePath );
-    }
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix ).arg( mFilePath ) );
   }
 
   QgsDebugMsg( "mFilePath: " + mFilePath );
@@ -1792,16 +1784,14 @@ QString createFilters( QString type )
     // VSIFileHandler (.zip and .gz files)
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
-    // For .zip this works only if there is one file (or dataset) in the root of the zip.
-    // Only tested with tiff, shape (zip) and spatialite (zip and gz).
     // This does not work for some file types, see VSIFileHandler doc.
-    // Ideally we should also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
     if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
     {
-      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz" );
-      myExtensions << "zip" << "gz";
+      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
+      myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
+
     }
 #endif
 
