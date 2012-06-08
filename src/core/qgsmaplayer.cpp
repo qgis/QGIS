@@ -642,6 +642,14 @@ QString QgsMapLayer::styleURI( )
     // ideally we should look for .qml file inside zip file
     myURI.remove( 0, 8 );
   }
+  else if ( myURI.startsWith( "/vsitar/", Qt::CaseInsensitive ) &&
+            ( myURI.endsWith( ".tar", Qt::CaseInsensitive ) ||
+              myURI.endsWith( ".tar.gz", Qt::CaseInsensitive ) ||
+              myURI.endsWith( ".tgz", Qt::CaseInsensitive ) ) )
+  {
+    // ideally we should look for .qml file inside tar file
+    myURI.remove( 0, 8 );
+  }
 
   QFileInfo myFileInfo( myURI );
   QString key;
@@ -650,15 +658,18 @@ QString QgsMapLayer::styleURI( )
   {
     // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
     if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
-    {
       myURI.chop( 3 );
-      myFileInfo.setFile( myURI );
-    }
     else if ( myURI.endsWith( ".zip", Qt::CaseInsensitive ) )
-    {
       myURI.chop( 4 );
-      myFileInfo.setFile( myURI );
-    }
+    else if ( myURI.endsWith( ".tar", Qt::CaseInsensitive ) )
+      myURI.chop( 4 );
+    else if ( myURI.endsWith( ".tar.gz", Qt::CaseInsensitive ) )
+      myURI.chop( 7 );
+    else if ( myURI.endsWith( ".tgz", Qt::CaseInsensitive ) )
+      myURI.chop( 4 );
+    else if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
+      myURI.chop( 3 );
+    myFileInfo.setFile( myURI );
     // get the file name for our .qml style file
     key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
   }

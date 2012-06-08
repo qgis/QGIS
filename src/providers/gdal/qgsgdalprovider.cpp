@@ -111,19 +111,12 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   mGdalDataset = NULL;
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
-  // TODO suppress error messages and report in debug, like in OGR provider
-  // TODO use the file name of the file inside the zip, needs unzip.h
-  if ( uri.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+  if ( vsiPrefix != "" )
   {
-    if ( !uri.startsWith( "/vsizip/" ) )
-      setDataSourceUri( "/vsizip/" + uri );
-    QgsDebugMsg( QString( "Trying /vsizip syntax, uri= %1" ).arg( dataSourceUri() ) );
-  }
-  else if ( uri.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !uri.startsWith( "/vsigzip/" ) )
-      setDataSourceUri( "/vsigzip/" + uri );
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, uri= %1" ).arg( dataSourceUri() ) );
+    if ( !uri.startsWith( vsiPrefix ) )
+      setDataSourceUri( vsiPrefix + uri );
+    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
 
   // The uri is either a file name or encoded parameters for WCS
@@ -1920,8 +1913,9 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   {
     QString glob = "*.zip";
     glob += " *.gz";
+    glob += " *.tar *.tar.gz *.tgz";
     theFileFiltersString += ";;[GDAL] " + QObject::tr( "GDAL/OGR VSIFileHandler" ) + " (" + glob.toLower() + " " + glob.toUpper() + ")";
-    theExtensions << "zip" << "gz";
+    theExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
   }
 #endif
 
@@ -1940,21 +1934,12 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
-  if ( fileName.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
+  if ( vsiPrefix != "" )
   {
-    if ( !fileName.startsWith( "/vsizip/" ) )
-    {
-      fileName = "/vsizip/" + fileName;
-    }
-    QgsDebugMsg( QString( "Trying /vsizip syntax, fileName= %1" ).arg( fileName ) );
-  }
-  if ( fileName.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !fileName.startsWith( "/vsigzip/" ) )
-    {
-      fileName = "/vsigzip/" + fileName;
-    }
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, fileName= %1" ).arg( fileName ) );
+    if ( !fileName.startsWith( vsiPrefix ) )
+      fileName = vsiPrefix + fileName;
+    QgsDebugMsg( QString( "Trying %1 syntax, fileName= %2" ).arg( vsiPrefix ).arg( fileName ) );
   }
 
   //open the file using gdal making sure we have handled locale properly
