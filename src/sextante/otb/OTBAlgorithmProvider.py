@@ -29,7 +29,7 @@ class OTBAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = []
         folder = OTBUtils.otbDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith("rsx"):
+            if descriptionFile.endswith("txt"):
                 try:
                     alg = OTBAlgorithm(os.path.join(folder, descriptionFile))
                     if alg.name.strip() != "":

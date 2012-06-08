@@ -1,6 +1,7 @@
-#Thu May 31 18:14:09 CEST 2012
+#Thu Jun 07 09:09:17 CEST 2012
 eclipse.preferences.version=1
 encoding//src/sextante/ftools/ftools_utils.py=utf-8
+encoding//src/sextante/gui/ParametersDialog.py=latin1
 encoding//src/sextante/gui/ui_ParametersDialog.py=utf-8
 encoding//src/sextante/gui/ui_SextanteToolbox.py=utf-8
 encoding//src/sextante/resources.py=utf-8
