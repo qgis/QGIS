@@ -46,6 +46,16 @@ QStringList QgsOGRSublayersDialog::getSelection()
   return list;
 }
 
+QList<int> QgsOGRSublayersDialog::getSelectionIndexes()
+{
+  QList<int> list;
+  for ( int i = 0; i < layersTable->selectedItems().size(); i++ )
+  {
+    list << layersTable->selectedItems().at( i )->text( 0 ).toInt();
+  }
+  return list;
+}
+
 void QgsOGRSublayersDialog::populateLayerTable( QStringList theList, QString delim )
 {
   foreach( QString item, theList )
