@@ -19,6 +19,8 @@
 #include <QMap>
 #include <QString>
 
+#include <sqlite3.h>
+
 #include "qgssymbollayerv2utils.h" // QgsStringMap
 
 class QgsSymbolV2;
@@ -29,6 +31,15 @@ class QDomDocument;
 class QDomElement;
 
 typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
+typedef QMap<int, QString> QgsSymbolGroupMap;
+
+// Enumeraters representing sqlite DB  columns
+enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
+enum SymgroupTable { SymgroupId, SymgroupName, SymgroupParent };
+enum TagTable { TagId, TagName };
+enum TagmapTable { TagmapTagId, TagmapSymbolId };
+enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML };
+
 
 class CORE_EXPORT QgsStyleV2
 {
@@ -64,6 +75,13 @@ class CORE_EXPORT QgsStyleV2
 
     //! return a list of names of symbols
     QStringList symbolNames();
+
+    //! return a map of all groupid and names for the given parent
+    //! Returns the First order groups when empty QString is passed
+    QgsSymbolGroupMap groupNames( QString parent = "" );
+
+    //! returns the symbolnames of a given groupid
+    QStringList symbolsOfGroup( int groupid );
 
 
     //! add color ramp to style. takes ramp's ownership
@@ -110,6 +128,9 @@ class CORE_EXPORT QgsStyleV2
     QString mFileName;
 
     static QgsStyleV2* mDefaultStyle;
+
+    //! Convinence function to open the DB and return a sqlite3 object
+    sqlite3* openDB( QString filename );
 };
 
 

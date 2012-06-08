@@ -73,6 +73,17 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   populateTypes();
 
+  QStandardItemModel* groupModel = new QStandardItemModel( groupTree );
+  groupTree->setModel( groupModel );
+  groupTree->setHeaderHidden( true );
+  populateGroups();
+  int rows = groupModel->rowCount( groupModel->indexFromItem( groupModel->invisibleRootItem() ) );
+  for ( int i = 0; i < rows; i++ )
+  {
+    groupTree->setExpanded( groupModel->indexFromItem( groupModel->item( i )), true );
+  }
+  connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( groupChanged( const QModelIndex& ) ) );
+
   connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
 
   populateList();
@@ -554,3 +565,75 @@ void QgsStyleV2ManagerDialog::importItems()
   dlg.exec();
   populateList();
 }
+
+void QgsStyleV2ManagerDialog::populateGroups()
+{
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  model->clear();
+  // Add the groups
+  // 1. recently used
+  // 2. project
+  // 3. all symbol
+  // 4. group
+  //QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
+
+  QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
+  buildGroupTree( group );
+  group->setText( "Groups" );//set title later
+  model->appendRow( group );
+
+  QStandardItem *tag = new QStandardItem( "Tags" );
+  buildTagTree( tag );
+  model->appendRow( tag );
+
+}
+
+void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
+{
+  QgsSymbolGroupMap groups = mStyle->groupNames( parent->text() );
+  QgsSymbolGroupMap::const_iterator i = groups.constBegin();
+  while ( i != groups.constEnd() )
+  {
+    QStandardItem *item = new QStandardItem( i.value() );
+    item->setData( QVariant( i.key() ) );
+    parent->appendRow( item );
+    QgsDebugMsg( "Added Group: " + i.value() );
+    buildGroupTree( item );
+    ++i;
+  }
+
+}
+void QgsStyleV2ManagerDialog::buildTagTree( QStandardItem* &parent )
+{
+  Q_UNUSED( parent );
+  // FIXME
+
+}
+
+void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
+{
+  int groupId = index.data( Qt::UserRole + 1 ).toInt();
+
+  int type = currentItemType();
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
+  model->clear();
+
+  QStringList symbolNames = mStyle->symbolsOfGroup( groupId );
+
+  for ( int i = 0; i < symbolNames.count(); ++i )
+  {
+    QString name = symbolNames[i];
+    QgsSymbolV2* symbol = mStyle->symbol( name );
+    if ( symbol->type() == type )
+    {
+      QStandardItem* item = new QStandardItem( name );
+      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
+      item->setIcon( icon );
+      item->setData( name ); // used to find out original name when user edited the name
+      // add to model
+      model->appendRow( item );
+    }
+    delete symbol;
+  }
+}
+

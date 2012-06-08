@@ -50,10 +50,19 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     void itemChanged( QStandardItem* item );
 
+    void groupChanged( const QModelIndex& );
+
   protected:
 
     //! populate combo box with known style items (symbols, color ramps)
     void populateTypes();
+
+    //! populate the groups
+    void populateGroups();
+    //! build the groups tree
+    void buildGroupTree( QStandardItem* &parent );
+    //! build the tag tree
+    void buildTagTree( QStandardItem* &parent );
 
     //! populate list view with symbols of specified type
     void populateSymbols( int type );

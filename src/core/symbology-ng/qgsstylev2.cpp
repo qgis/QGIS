@@ -27,6 +27,9 @@
 #include <QDomElement>
 #include <QFile>
 #include <QTextStream>
+#include <QByteArray>
+
+#include <sqlite3.h>
 
 #define STYLE_CURRENT_VERSION  "0"
 
@@ -167,69 +170,71 @@ QStringList QgsStyleV2::colorRampNames()
   return mColorRamps.keys();
 }
 
+sqlite3* QgsStyleV2::openDB( QString filename )
+{
+  sqlite3 *db;
+  int rc;
+
+  QByteArray namearray = filename.toUtf8();
+  rc = sqlite3_open( namearray.constData(), &db );
+  if ( rc )
+  {
+    mErrorString = "Couldn't open the style DB: " + QString( sqlite3_errmsg( db ) );
+    sqlite3_close( db );
+    return NULL;
+  }
+
+  return db;
+}
 
 bool QgsStyleV2::load( QString filename )
 {
   mErrorString = QString();
 
-  // import xml file
-  QDomDocument doc( "style" );
-  QFile f( filename );
-  if ( !f.open( QFile::ReadOnly ) )
-  {
-    mErrorString = "Couldn't open the style file: " + filename;
+  // Open the sqlite DB
+  sqlite3* db = openDB( filename );
+  if ( db == NULL )
     return false;
-  }
-
-  // parse the document
-  if ( !doc.setContent( &f ) )
+  // First create all the Main symbols
+  sqlite3_stmt *ppStmt;
+  const char *query = "SELECT * FROM symbol;";
+  int nError = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
-    mErrorString = "Couldn't parse the style file: " + filename;
-    f.close();
-    return false;
-  }
-  f.close();
-
-  QDomElement docElem = doc.documentElement();
-  if ( docElem.tagName() != "qgis_style" )
-  {
-    mErrorString = "Incorrect root tag in style: " + docElem.tagName();
-    return false;
-  }
-
-  // check for style version
-  QString version = docElem.attribute( "version" );
-  if ( version != STYLE_CURRENT_VERSION )
-  {
-    mErrorString = "Unknown style file version: " + version;
-    return false;
-  }
-
-  // load symbols
-  QDomElement symbolsElement = docElem.firstChildElement( "symbols" );
-  if ( !symbolsElement.isNull() )
-  {
-    mSymbols = QgsSymbolLayerV2Utils::loadSymbols( symbolsElement );
-  }
-
-  // load color ramps
-  QDomElement rampsElement = docElem.firstChildElement( "colorramps" );
-  QDomElement e = rampsElement.firstChildElement();
-  while ( !e.isNull() )
-  {
-    if ( e.tagName() == "colorramp" )
+    QDomDocument doc;
+    QString symbol_name = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, SymbolName ) ) );
+    QString xmlstring = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, SymbolXML ) ) );
+    if( !doc.setContent( xmlstring ) )
     {
-      QgsVectorColorRampV2* ramp = QgsSymbolLayerV2Utils::loadColorRamp( e );
-      if ( ramp != NULL )
-        addColorRamp( e.attribute( "name" ), ramp );
+      QgsDebugMsg( "Cannot open symbol" + symbol_name );
+      continue;
     }
-    else
+    QDomElement symElement = doc.documentElement();
+    QgsSymbolV2 *symbol = QgsSymbolLayerV2Utils::loadSymbol( symElement );
+    if ( symbol != NULL )
+      mSymbols.insert( symbol_name, symbol );
+  }
+  sqlite3_finalize( ppStmt );
+
+  const char *rquery = "SELECT * FROM colorramp;";
+  nError = sqlite3_prepare_v2( db, rquery, -1, &ppStmt, NULL );
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QDomDocument doc;
+    QString ramp_name = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, ColorrampName ) ) );
+    QString xmlstring = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, ColorrampXML ) ) );
+    if( !doc.setContent( xmlstring ) )
     {
-      QgsDebugMsg( "unknown tag: " + e.tagName() );
+      QgsDebugMsg( "Cannot open symbol" + ramp_name );
+      continue;
     }
-    e = e.nextSiblingElement();
+    QDomElement rampElement = doc.documentElement();
+    QgsVectorColorRampV2* ramp = QgsSymbolLayerV2Utils::loadColorRamp( rampElement );
+    if ( ramp != NULL )
+      addColorRamp( ramp_name, ramp );
   }
 
+  sqlite3_close( db );
   mFileName = filename;
   return true;
 }
@@ -242,6 +247,9 @@ bool QgsStyleV2::save( QString filename )
   if ( filename.isEmpty() )
     filename = mFileName;
 
+  // TODO evaluate the requirement of this function and change implementation accordingly
+
+  /*
   QDomDocument doc( "qgis_style" );
   QDomElement root = doc.createElement( "qgis_style" );
   root.setAttribute( "version", STYLE_CURRENT_VERSION );
@@ -271,6 +279,7 @@ bool QgsStyleV2::save( QString filename )
   QTextStream ts( &f );
   doc.save( ts, 2 );
   f.close();
+  */
 
   mFileName = filename;
   return true;
@@ -292,4 +301,69 @@ bool QgsStyleV2::renameColorRamp( QString oldName, QString newName )
 
   mColorRamps.insert( newName, mColorRamps.take( oldName ) );
   return true;
+}
+
+QgsSymbolGroupMap QgsStyleV2::groupNames( QString parent )
+{
+  QgsDebugMsg( "Request for groupNames for parent " + parent );
+  // get the name list from the sqlite db and return as a QStringList
+  sqlite3* db = openDB( mFileName );
+  if( db == NULL )
+  {
+    QgsDebugMsg( "Cannot open database for listing groups" );
+    return QgsSymbolGroupMap();
+  }
+  sqlite3_stmt *ppStmt;
+  int nError;
+  char *query;
+
+  if ( parent == "" || parent == QString() )
+  {
+    query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent IS NULL;" );
+  }
+  else
+  {
+    QByteArray parentArray = parent.toUtf8();
+    char *subquery = sqlite3_mprintf( "SELECT * FROM symgroup WHERE name='%q';", parentArray.constData() );
+    nError = sqlite3_prepare_v2( db, subquery, -1, &ppStmt, NULL );
+    if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+    {
+      query = sqlite3_mprintf( "SELECT * FROM symgroup WHERE parent=%d;", sqlite3_column_int( ppStmt, SymgroupId ) );
+    }
+    sqlite3_finalize( ppStmt );
+  }
+
+  QgsSymbolGroupMap groupNames;
+
+  nError = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QString group = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, SymgroupName ) ) );
+    groupNames.insert( sqlite3_column_int( ppStmt, SymgroupId ), group );
+  }
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
+  return groupNames;
+}
+
+QStringList QgsStyleV2::symbolsOfGroup( int groupid )
+{
+  sqlite3 *db = openDB( mFileName );
+  if( db == NULL )
+  {
+    QgsDebugMsg( "Cannot Open Db for getting group symbols of groupid: " + groupid );
+    return QStringList();
+  }
+
+  QStringList symbols;
+  sqlite3_stmt *ppStmt;
+  char *query = sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d;", groupid );
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QString symbol = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+    symbols.append( symbol );
+  }
+
+  return symbols;
 }

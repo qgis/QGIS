@@ -13,151 +13,27 @@
   <property name="windowTitle">
    <string>Style Manager</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
-    <widget class="QTabWidget" name="tabItemType">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QTreeView" name="groupTree">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <property name="iconSize">
+     <property name="maximumSize">
       <size>
-       <width>22</width>
-       <height>22</height>
+       <width>16777215</width>
+       <height>16777215</height>
       </size>
-     </property>
-     <widget class="QWidget" name="tabMarker">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/styleicons/style-point.png</normaloff>:/images/themes/default/styleicons/style-point.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Marker</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="tabLine">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/styleicons/style-line.png</normaloff>:/images/themes/default/styleicons/style-line.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Line</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="tabFill">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/styleicons/style-polygon.png</normaloff>:/images/themes/default/styleicons/style-polygon.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Fill</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="tabColorRamp">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/styleicons/color.png</normaloff>:/images/themes/default/styleicons/color.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Color ramp</string>
-      </attribute>
-     </widget>
-    </widget>
-   </item>
-   <item>
-    <widget class="QListView" name="listItems">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>3</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>48</width>
-       <height>48</height>
-      </size>
-     </property>
-     <property name="movement">
-      <enum>QListView::Static</enum>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="spacing">
-      <number>5</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::IconMode</enum>
      </property>
     </widget>
    </item>
-   <item>
-    <layout class="QHBoxLayout">
-     <item>
-      <widget class="QPushButton" name="btnAddItem">
-       <property name="toolTip">
-        <string>Add item</string>
-       </property>
-       <property name="text">
-        <string>Add</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnEditItem">
-       <property name="toolTip">
-        <string>Edit item</string>
-       </property>
-       <property name="text">
-        <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnRemoveItem">
-       <property name="toolTip">
-        <string>Remove item</string>
-       </property>
-       <property name="text">
-        <string>Remove</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
+   <item row="0" column="1">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -169,23 +45,174 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="btnExportItems">
-       <property name="text">
-        <string>Export...</string>
+     <item row="2" column="0" colspan="2">
+      <widget class="QListView" name="listItems">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>3</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>48</width>
+         <height>48</height>
+        </size>
+       </property>
+       <property name="movement">
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
        </property>
       </widget>
      </item>
-     <item>
-      <widget class="QPushButton" name="btnImportItems">
+     <item row="1" column="0" colspan="2">
+      <widget class="QTabWidget" name="tabItemType">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <widget class="QWidget" name="tabMarker">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <attribute name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/styleicons/style-point.png</normaloff>:/images/themes/default/styleicons/style-point.png</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Marker</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabLine">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <attribute name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/styleicons/style-line.png</normaloff>:/images/themes/default/styleicons/style-line.png</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Line</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabFill">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <attribute name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/styleicons/style-polygon.png</normaloff>:/images/themes/default/styleicons/style-polygon.png</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Fill</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabColorRamp">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <attribute name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/styleicons/color.png</normaloff>:/images/themes/default/styleicons/color.png</iconset>
+        </attribute>
+        <attribute name="title">
+         <string>Color ramp</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="searchBox">
        <property name="text">
-        <string>Import...</string>
+        <string/>
        </property>
       </widget>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QPushButton" name="btnAddItem">
+         <property name="toolTip">
+          <string>Add item</string>
+         </property>
+         <property name="text">
+          <string>Add</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnEditItem">
+         <property name="toolTip">
+          <string>Edit item</string>
+         </property>
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnRemoveItem">
+         <property name="toolTip">
+          <string>Remove item</string>
+         </property>
+         <property name="text">
+          <string>Remove</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnExportItems">
+         <property name="text">
+          <string>Export...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnImportItems">
+         <property name="text">
+          <string>Import...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
