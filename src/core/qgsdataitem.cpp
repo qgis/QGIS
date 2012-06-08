@@ -477,7 +477,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
   QVector<QgsDataItem*> children;
   QDir dir( mPath );
   QSettings settings;
-  bool scanZip = ( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() != 0 );
+  bool scanZip = ( settings.value( "/qgis/scanZipInBrowser", QVariant( "basic" ) ).toString() != "no" );
 
   QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
   foreach( QString subdir, entries )
@@ -881,25 +881,25 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   QString childPath;
 
   QSettings settings;
-  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 2 ).toInt();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
 
   mZipFileList.clear();
 
   QgsDebugMsg( QString( "path = %1 name= %2 scanZipSetting= %3" ).arg( path() ).arg( name() ).arg( scanZipSetting ) );
 
-  // if scanZipBrowser == 0 (No): skip to the next file
-  if ( scanZipSetting == 0 )
+  // if scanZipBrowser == no: skip to the next file
+  if ( scanZipSetting == "no" )
   {
     return children;
   }
 
-  // if scanZipBrowser == 1 (Passthru): do not scan zip and allow to open directly with /vsizip/
-  if ( scanZipSetting == 1 )
-  {
-    mPath = "/vsizip/" + path(); // should check for extension
-    QgsDebugMsg( "set path to " + path() );
-    return children;
-  }
+  // if scanZipBrowser == passthru: do not scan zip and allow to open directly with /vsizip/
+  // if ( scanZipSetting == 1 )
+  // {
+  //   mPath = "/vsizip/" + path(); // should check for extension
+  //   QgsDebugMsg( "set path to " + path() );
+  //   return children;
+  // }
 
   // get list of files inside zip file
   QgsDebugMsg( QString( "Open file %1 with gdal vsi" ).arg( path() ) );
@@ -981,7 +981,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
 QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QString name )
 {
   QSettings settings;
-  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 2 ).toInt();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
   QString vsizipPath = path;
   int zipFileCount = 0;
   QFileInfo fileInfo( path );
@@ -989,17 +989,17 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
 
   QgsDebugMsg( QString( "path = %1 name= %2 scanZipSetting= %3" ).arg( path ).arg( name ).arg( scanZipSetting ) );
 
-  // if scanZipBrowser == 0 (No): skip to the next file
-  if ( scanZipSetting == 0 )
+  // if scanZipBrowser == no: skip to the next file
+  if ( scanZipSetting == "no" )
   {
     return 0;
   }
-  // if scanZipBrowser == 1 (Passthru): do not scan zip and allow to open directly with /vsizip/
-  else if ( scanZipSetting == 1 )
-  {
-    vsizipPath = "/vsizip/" + path;
-    zipItem = 0;
-  }
+  // if scanZipBrowser == passthru: do not scan zip and allow to open directly with /vsizip/
+  // else if ( scanZipSetting == 1 )
+  // {
+  //   vsizipPath = "/vsizip/" + path;
+  //   zipItem = 0;
+  // }
   else
   {
     zipItem = new QgsZipItem( parent, name, path );
@@ -1041,8 +1041,8 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
         // try first with normal path (Passthru)
         // this is to simplify .qml handling, and without this some tests will fail
         // (e.g. testZipItemVectorTransparency(), second test)
-        if (( scanZipSetting == 1 ) ||
-            ( mProviderNames[i] == "ogr" ) ||
+        // if (( scanZipSetting == 1 ) ||
+        if (( mProviderNames[i] == "ogr" ) ||
             ( mProviderNames[i] == "gdal" && zipFileCount == 1 ) )
           item = dataItem( path, parent );
         // try with /vsizip/
