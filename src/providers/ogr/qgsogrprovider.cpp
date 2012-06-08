@@ -1798,7 +1798,7 @@ QString createFilters( QString type )
     // Ideally we should also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
-    if ( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() != 0 )
+    if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
     {
       myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz" );
       myExtensions << "zip" << "gz";

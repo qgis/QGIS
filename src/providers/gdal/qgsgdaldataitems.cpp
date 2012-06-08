@@ -398,8 +398,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // zip settings + info
   QSettings settings;
-  int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
-  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 2 ).toInt();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
   bool is_vsizip = ( thePath.startsWith( "/vsizip/" ) ||
                      thePath.endsWith( ".zip", Qt::CaseInsensitive ) );
   bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
@@ -415,7 +414,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   info.setFile( thePath );
   QString name = info.fileName();
 
-  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath );
+  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name + " suffix= " + suffix );
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && !is_vsizip && !is_vsigzip )
@@ -477,8 +476,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // return a /vsizip/ item without testing if:
   // zipfile and scan zip == "Basic scan"
   // not zipfile and scan items == "Check extension"
-  if (( is_vsizip && scanZipSetting == 2 ) ||
-      ( !is_vsizip && scanItemsSetting == 1 ) )
+  if (( is_vsizip && scanZipSetting == "basic" ) ||
+      ( !is_vsizip && ( settings.value( "/qgis/scanItemsInBrowser",
+                                        "extension" ).toString() == "extension" ) ) )
   {
     // if this is a VRT file make sure it is raster VRT to avoid duplicates
     if ( suffix == "vrt" )

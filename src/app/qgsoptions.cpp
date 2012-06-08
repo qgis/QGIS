@@ -202,17 +202,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // Scan for valid items in the browser dock
   cmbScanItemsInBrowser->clear();
-  cmbScanItemsInBrowser->addItem( tr( "Check file contents" ) ); // 0
-  cmbScanItemsInBrowser->addItem( tr( "Check extension" ) );     // 1
-  cmbScanItemsInBrowser->setCurrentIndex( settings.value( "/qgis/scanItemsInBrowser", 1 ).toInt() );
+  cmbScanItemsInBrowser->addItem( tr( "Check file contents" ), "contents" ); // 0
+  cmbScanItemsInBrowser->addItem( tr( "Check extension" ), "extension" );    // 1
+  int index = cmbScanItemsInBrowser->findData( settings.value( "/qgis/scanItemsInBrowser", "" ) );
+  if ( index == -1 ) index = 1;
+  cmbScanItemsInBrowser->setCurrentIndex( index );
 
   // Scan for contents of compressed files (.zip) in browser dock
   cmbScanZipInBrowser->clear();
-  cmbScanZipInBrowser->addItem( tr( "No" ) );           // 0
-  cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1
-  cmbScanZipInBrowser->addItem( tr( "Basic scan" ) );   // 2
-  cmbScanZipInBrowser->addItem( tr( "Full scan" ) );    // 3
-  cmbScanZipInBrowser->setCurrentIndex( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() );
+  cmbScanZipInBrowser->addItem( tr( "No" ), QVariant( "no" ) );
+  // cmbScanZipInBrowser->addItem( tr( "Passthru" ) );     // 1 - removed
+  cmbScanZipInBrowser->addItem( tr( "Basic scan" ), QVariant( "basic" ) );
+  cmbScanZipInBrowser->addItem( tr( "Full scan" ), QVariant( "full" ) );
+  index = cmbScanZipInBrowser->findData( settings.value( "/qgis/scanZipInBrowser", "" ) );
+  if ( index == -1 ) index = 1;
+  cmbScanZipInBrowser->setCurrentIndex( index );
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
@@ -442,7 +446,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
-  int index;
   if ( settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt() == QgsTolerance::MapUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
@@ -697,8 +700,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/promptForRasterSublayers", cmbPromptRasterSublayers->currentIndex() );
-  settings.setValue( "/qgis/scanItemsInBrowser", cmbScanItemsInBrowser->currentIndex() );
-  settings.setValue( "/qgis/scanZipInBrowser", cmbScanZipInBrowser->currentIndex() );
+  settings.setValue( "/qgis/scanItemsInBrowser",
+                     cmbScanItemsInBrowser->itemData( cmbScanItemsInBrowser->currentIndex() ).toString() );
+  settings.setValue( "/qgis/scanZipInBrowser",
+                     cmbScanZipInBrowser->itemData( cmbScanZipInBrowser->currentIndex() ).toString() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
