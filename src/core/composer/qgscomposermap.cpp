@@ -659,10 +659,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
-  extentElem.setAttribute( "xmin", mExtent.xMinimum() );
-  extentElem.setAttribute( "xmax", mExtent.xMaximum() );
-  extentElem.setAttribute( "ymin", mExtent.yMinimum() );
-  extentElem.setAttribute( "ymax", mExtent.yMaximum() );
+  extentElem.setAttribute( "xmin", QString::number( mExtent.xMinimum() ) );
+  extentElem.setAttribute( "xmax", QString::number( mExtent.xMaximum() ) );
+  extentElem.setAttribute( "ymin", QString::number( mExtent.yMinimum() ) );
+  extentElem.setAttribute( "ymax", QString::number( mExtent.yMaximum() ) );
   composerMapElem.appendChild( extentElem );
 
   //layer set
@@ -681,21 +681,21 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   QDomElement gridElem = doc.createElement( "Grid" );
   gridElem.setAttribute( "show", mGridEnabled );
   gridElem.setAttribute( "gridStyle", mGridStyle );
-  gridElem.setAttribute( "intervalX", mGridIntervalX );
-  gridElem.setAttribute( "intervalY", mGridIntervalY );
-  gridElem.setAttribute( "offsetX", mGridOffsetX );
-  gridElem.setAttribute( "offsetY", mGridOffsetY );
-  gridElem.setAttribute( "penWidth", mGridPen.widthF() );
+  gridElem.setAttribute( "intervalX", QString::number( mGridIntervalX ) );
+  gridElem.setAttribute( "intervalY", QString::number( mGridIntervalY ) );
+  gridElem.setAttribute( "offsetX", QString::number( mGridOffsetX ) );
+  gridElem.setAttribute( "offsetY", QString::number( mGridOffsetY ) );
+  gridElem.setAttribute( "penWidth",  QString::number( mGridPen.widthF() ) );
   gridElem.setAttribute( "penColorRed", mGridPen.color().red() );
   gridElem.setAttribute( "penColorGreen", mGridPen.color().green() );
   gridElem.setAttribute( "penColorBlue", mGridPen.color().blue() );
-  gridElem.setAttribute( "crossLength", mCrossLength );
+  gridElem.setAttribute( "crossLength",  QString::number( mCrossLength ) );
 
   //grid annotation
   QDomElement annotationElem = doc.createElement( "Annotation" );
   annotationElem.setAttribute( "show", mShowGridAnnotation );
   annotationElem.setAttribute( "position", mGridAnnotationPosition );
-  annotationElem.setAttribute( "frameDistance", mAnnotationFrameDistance );
+  annotationElem.setAttribute( "frameDistance",  QString::number( mAnnotationFrameDistance ) );
   annotationElem.setAttribute( "direction", mGridAnnotationDirection );
   annotationElem.setAttribute( "font", mGridAnnotationFont.toString() );
   annotationElem.setAttribute( "precision", mGridAnnotationPrecision );

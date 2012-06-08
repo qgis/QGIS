@@ -284,8 +284,8 @@ void QgsComposerArrow::adaptItemSceneRect()
 bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerArrowElem = doc.createElement( "ComposerArrow" );
-  composerArrowElem.setAttribute( "outlineWidth", outlineWidth() );
-  composerArrowElem.setAttribute( "arrowHeadWidth", mArrowHeadWidth );
+  composerArrowElem.setAttribute( "outlineWidth", QString::number( outlineWidth() ) );
+  composerArrowElem.setAttribute( "arrowHeadWidth", QString::number( mArrowHeadWidth ) );
   composerArrowElem.setAttribute( "markerMode", mMarkerMode );
   composerArrowElem.setAttribute( "startMarkerFile", mStartMarkerFile );
   composerArrowElem.setAttribute( "endMarkerFile", mEndMarkerFile );
@@ -300,14 +300,14 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //start point
   QDomElement startPointElem = doc.createElement( "StartPoint" );
-  startPointElem.setAttribute( "x", mStartPoint.x() );
-  startPointElem.setAttribute( "y", mStartPoint.y() );
+  startPointElem.setAttribute( "x", QString::number( mStartPoint.x() ) );
+  startPointElem.setAttribute( "y", QString::number( mStartPoint.y() ) );
   composerArrowElem.appendChild( startPointElem );
 
   //stop point
   QDomElement stopPointElem = doc.createElement( "StopPoint" );
-  stopPointElem.setAttribute( "x", mStopPoint.x() );
-  stopPointElem.setAttribute( "y", mStopPoint.y() );
+  stopPointElem.setAttribute( "x", QString::number( mStopPoint.x() ) );
+  stopPointElem.setAttribute( "y", QString::number( mStopPoint.y() ) );
   composerArrowElem.appendChild( stopPointElem );
 
   elem.appendChild( composerArrowElem );

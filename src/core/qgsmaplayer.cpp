@@ -302,8 +302,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // use scale dependent visibility flag
   maplayer.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
-  maplayer.setAttribute( "minimumScale", minimumScale() );
-  maplayer.setAttribute( "maximumScale", maximumScale() );
+  maplayer.setAttribute( "minimumScale", QString::number( minimumScale() ) );
+  maplayer.setAttribute( "maximumScale", QString::number( maximumScale() ) );
 
   // ID
   QDomElement layerId = document.createElement( "id" );
@@ -745,8 +745,8 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
 
   // use scale dependent visibility flag
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
-  myRootNode.setAttribute( "minimumScale", minimumScale() );
-  myRootNode.setAttribute( "maximumScale", maximumScale() );
+  myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
+  myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
 
   // <transparencyLevelInt>
   QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );

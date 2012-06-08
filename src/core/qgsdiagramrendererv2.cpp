@@ -37,7 +37,7 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
   diagramLayerElem.setAttribute( "linePlacementFlags", placementFlags );
   diagramLayerElem.setAttribute( "priority", priority );
   diagramLayerElem.setAttribute( "obstacle", obstacle );
-  diagramLayerElem.setAttribute( "dist", dist );
+  diagramLayerElem.setAttribute( "dist", QString::number( dist ) );
   diagramLayerElem.setAttribute( "xPosColumn", xPosColumn );
   diagramLayerElem.setAttribute( "yPosColumn", yPosColumn );
   layerElem.appendChild( diagramLayerElem );
@@ -90,12 +90,12 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   categoryElem.setAttribute( "font", font.toString() );
   categoryElem.setAttribute( "backgroundColor", backgroundColor.name() );
   categoryElem.setAttribute( "backgroundAlpha", backgroundColor.alpha() );
-  categoryElem.setAttribute( "width", size.width() );
-  categoryElem.setAttribute( "height", size.height() );
+  categoryElem.setAttribute( "width", QString::number( size.width() ) );
+  categoryElem.setAttribute( "height", QString::number( size.height() ) );
   categoryElem.setAttribute( "penColor", penColor.name() );
-  categoryElem.setAttribute( "penWidth", penWidth );
-  categoryElem.setAttribute( "minScaleDenominator", minScaleDenominator );
-  categoryElem.setAttribute( "maxScaleDenominator", maxScaleDenominator );
+  categoryElem.setAttribute( "penWidth", QString::number( penWidth ) );
+  categoryElem.setAttribute( "minScaleDenominator", QString::number( minScaleDenominator ) );
+  categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
   if ( sizeType == MM )
   {
     categoryElem.setAttribute( "sizeType", "MM" );
@@ -346,12 +346,12 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem )
 void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc ) const
 {
   QDomElement rendererElem = doc.createElement( "LinearlyInterpolatedDiagramRenderer" );
-  rendererElem.setAttribute( "lowerValue", mLowerValue );
-  rendererElem.setAttribute( "upperValue", mUpperValue );
-  rendererElem.setAttribute( "lowerWidth", mLowerSize.width() );
-  rendererElem.setAttribute( "lowerHeight", mLowerSize.height() );
-  rendererElem.setAttribute( "upperWidth", mUpperSize.width() );
-  rendererElem.setAttribute( "upperHeight", mUpperSize.height() );
+  rendererElem.setAttribute( "lowerValue", QString::number( mLowerValue ) );
+  rendererElem.setAttribute( "upperValue", QString::number( mUpperValue ) );
+  rendererElem.setAttribute( "lowerWidth", QString::number( mLowerSize.width() ) );
+  rendererElem.setAttribute( "lowerHeight", QString::number( mLowerSize.height() ) );
+  rendererElem.setAttribute( "upperWidth", QString::number( mUpperSize.width() ) );
+  rendererElem.setAttribute( "upperHeight", QString::number( mUpperSize.height() ) );
   rendererElem.setAttribute( "classificationAttribute", mClassificationAttribute );
   mSettings.writeXML( rendererElem, doc );
   _writeXML( rendererElem, doc );

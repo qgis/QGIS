@@ -923,10 +923,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   {
     QDomElement bBoxElem = result.createElement( "BoundingBox" );
     bBoxElem.setAttribute( "CRS", mMapRenderer->destinationCrs().authid() );
-    bBoxElem.setAttribute( "minx", featuresRect->xMinimum() );
-    bBoxElem.setAttribute( "maxx", featuresRect->xMaximum() );
-    bBoxElem.setAttribute( "miny", featuresRect->yMinimum() );
-    bBoxElem.setAttribute( "maxy", featuresRect->yMaximum() );
+    bBoxElem.setAttribute( "minx", QString::number( featuresRect->xMinimum() ) );
+    bBoxElem.setAttribute( "maxx", QString::number( featuresRect->xMaximum() ) );
+    bBoxElem.setAttribute( "miny", QString::number( featuresRect->yMinimum() ) );
+    bBoxElem.setAttribute( "maxy", QString::number( featuresRect->yMaximum() ) );
     getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
   }
 
@@ -1382,10 +1382,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       //append feature bounding box to feature info xml
       QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
       bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", mapRender->destinationCrs().authid() );
-      bBoxElem.setAttribute( "minx", box.xMinimum() );
-      bBoxElem.setAttribute( "maxx", box.xMaximum() );
-      bBoxElem.setAttribute( "miny", box.yMinimum() );
-      bBoxElem.setAttribute( "maxy", box.yMaximum() );
+      bBoxElem.setAttribute( "minx", QString::number( box.xMinimum() ) );
+      bBoxElem.setAttribute( "maxx", QString::number( box.xMaximum() ) );
+      bBoxElem.setAttribute( "miny", QString::number( box.yMinimum() ) );
+      bBoxElem.setAttribute( "maxy", QString::number( box.yMaximum() ) );
       featureElement.appendChild( bBoxElem );
     }
   }

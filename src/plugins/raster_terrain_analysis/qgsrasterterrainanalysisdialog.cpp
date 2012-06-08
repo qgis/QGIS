@@ -240,8 +240,8 @@ void QgsRasterTerrainAnalysisDialog::on_mExportColorsButton_clicked()
   for ( ; rColorsIt != rColors.constEnd(); ++rColorsIt )
   {
     QDomElement classElem = doc.createElement( "ReliefColor" );
-    classElem.setAttribute( "MinElevation", rColorsIt->minElevation );
-    classElem.setAttribute( "MaxElevation", rColorsIt->maxElevation );
+    classElem.setAttribute( "MinElevation", QString::number( rColorsIt->minElevation ) );
+    classElem.setAttribute( "MaxElevation", QString::number( rColorsIt->maxElevation ) );
     classElem.setAttribute( "red", QString::number( rColorsIt->color.red() ) );
     classElem.setAttribute( "green", QString::number( rColorsIt->color.green() ) );
     classElem.setAttribute( "blue", QString::number( rColorsIt->color.blue() ) );
