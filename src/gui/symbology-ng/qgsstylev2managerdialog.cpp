@@ -148,7 +148,7 @@ void QgsStyleV2ManagerDialog::populateList()
 
   if ( itemType < 3 )
   {
-    populateSymbols( itemType );
+    groupChanged( groupTree->selectionModel()->currentIndex() );
   }
   else if ( itemType == 3 )
   {
@@ -159,6 +159,10 @@ void QgsStyleV2ManagerDialog::populateList()
     Q_ASSERT( 0 && "not implemented" );
   }
 }
+
+/* 
+ *  Replaced with groupChanged() multiuse function
+ *
 
 void QgsStyleV2ManagerDialog::populateSymbols( int type )
 {
@@ -184,6 +188,8 @@ void QgsStyleV2ManagerDialog::populateSymbols( int type )
   }
 
 }
+
+*/
 
 void QgsStyleV2ManagerDialog::populateColorRamps()
 {
@@ -570,19 +576,27 @@ void QgsStyleV2ManagerDialog::populateGroups()
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
   model->clear();
-  // Add the groups
-  // 1. recently used
-  // 2. project
-  // 3. all symbol
-  // 4. group
-  //QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
+
+  QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
+  allSymbols->setData( QVariant( "all" ) );
+  model->appendRow( allSymbols );
+
+  QStandardItem *projectSymbols = new QStandardItem( "Project Symbols" );
+  projectSymbols->setData( "project" );
+  model->appendRow( projectSymbols );
+
+  QStandardItem *recent = new QStandardItem( "Recently Used" );
+  recent->setData( QVariant( "recent" ) );
+  model->appendRow( recent );
 
   QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
+  group->setData( QVariant( "groups" ) );
   buildGroupTree( group );
   group->setText( "Groups" );//set title later
   model->appendRow( group );
 
-  QStandardItem *tag = new QStandardItem( "Tags" );
+  QStandardItem *tag = new QStandardItem( "Smart Groups" );
+  tag->setData( QVariant( "tags" ) );
   buildTagTree( tag );
   model->appendRow( tag );
 
@@ -597,28 +611,62 @@ void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
     QStandardItem *item = new QStandardItem( i.value() );
     item->setData( QVariant( i.key() ) );
     parent->appendRow( item );
-    QgsDebugMsg( "Added Group: " + i.value() );
     buildGroupTree( item );
     ++i;
   }
-
 }
+
 void QgsStyleV2ManagerDialog::buildTagTree( QStandardItem* &parent )
 {
-  Q_UNUSED( parent );
-  // FIXME
-
+  QgsSymbolTagMap tags;
+  QgsSymbolTagMap::const_iterator i = tags.constBegin();
+  while ( i != tags.constEnd() )
+  {
+    QStandardItem *item = new QStandardItem( i.value() );
+    item->setData( QVariant( i.key() ) );
+    parent->appendRow( item );
+    ++i;
+  }
 }
 
 void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
 {
-  int groupId = index.data( Qt::UserRole + 1 ).toInt();
+  QStringList symbolNames;
 
+  QString category = index.data( Qt::UserRole + 1 ).toString();
+  if ( category == "all" || category == "groups" || category == "tags" )
+  {
+    symbolNames = mStyle->symbolNames();
+  }
+  else if (  category == "recent" )
+  {
+    // TODO add session symbols
+    symbolNames = QStringList();
+  }
+  else if ( category == "project" )
+  {
+    // TODO add project symbols
+    symbolNames = QStringList();
+  }
+  else
+  {
+    //determine groups and tags
+    if ( index.parent().data( Qt::UserRole + 1 ) == "tags" )
+    {
+      int tagId = index.data( Qt::UserRole + 1 ).toInt();
+      symbolNames = mStyle->symbolsWithTag( tagId );
+    }
+    else // then it must be a group
+    {
+      int groupId = index.data( Qt::UserRole + 1 ).toInt();
+      symbolNames = mStyle->symbolsOfGroup( groupId );
+    }
+  }
+
+  // Populate the symbols based upon the generated symbolNames List
   int type = currentItemType();
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
-
-  QStringList symbolNames = mStyle->symbolsOfGroup( groupId );
 
   for ( int i = 0; i < symbolNames.count(); ++i )
   {

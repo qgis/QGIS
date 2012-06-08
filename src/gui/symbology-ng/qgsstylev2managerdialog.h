@@ -65,7 +65,8 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void buildTagTree( QStandardItem* &parent );
 
     //! populate list view with symbols of specified type
-    void populateSymbols( int type );
+    //! @note: functionality replace with groupChanged() slot
+    //void populateSymbols( int type );
     //! populate list view with color ramps
     void populateColorRamps();
 

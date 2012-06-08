@@ -313,9 +313,9 @@ QgsSymbolGroupMap QgsStyleV2::groupNames( QString parent )
     QgsDebugMsg( "Cannot open database for listing groups" );
     return QgsSymbolGroupMap();
   }
-  sqlite3_stmt *ppStmt;
-  int nError;
   char *query;
+  int nError;
+  sqlite3_stmt *ppStmt;
 
   if ( parent == "" || parent == QString() )
   {
@@ -364,6 +364,59 @@ QStringList QgsStyleV2::symbolsOfGroup( int groupid )
     QString symbol = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
     symbols.append( symbol );
   }
+
+  return symbols;
+}
+
+QgsSymbolTagMap QgsStyleV2::symbolTags()
+{
+  QgsSymbolTagMap tags;
+  sqlite3* db = openDB( mFileName );
+  if ( db == NULL )
+  {
+    QgsDebugMsg( "Cannot open DB to get the tags" );
+    return QgsSymbolTagMap();
+  }
+  sqlite3_stmt *ppStmt;
+  char *query = sqlite3_mprintf( "SELECT * FROM tag;" );
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QString tag = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, TagName ) ) );
+    tags.insert( sqlite3_column_int( ppStmt, TagId ), tag );
+  }
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
+  return tags;
+}
+
+QStringList QgsStyleV2::symbolsWithTag( int tagid )
+{
+  QStringList symbols;
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+  {
+    QgsDebugMsg( "Cannot open DB to get symbols of tagid " + tagid );
+    return QStringList();
+  }
+  char *subquery = sqlite3_mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id=%d;", tagid );
+  sqlite3_stmt *ppStmt;
+  int nErr = sqlite3_prepare_v2( db, subquery, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    int symbolId = sqlite3_column_int( ppStmt, 0 );
+    sqlite3_stmt *ppStmt2;
+    char *query = sqlite3_mprintf( "SELECT name FROM symbol WHERE id=%d;", symbolId );
+    int sErr = sqlite3_prepare_v2( db, query, -1, &ppStmt2, NULL );
+    while ( sErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
+    {
+      QString symbolName = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt2, 0 ) ) );
+      symbols.append( symbolName );
+    }
+    sqlite3_finalize( ppStmt2 );
+  }
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
 
   return symbols;
 }

@@ -32,6 +32,7 @@ class QDomElement;
 
 typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
 typedef QMap<int, QString> QgsSymbolGroupMap;
+typedef QMap<int, QString> QgsSymbolTagMap;
 
 // Enumeraters representing sqlite DB  columns
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
@@ -82,6 +83,12 @@ class CORE_EXPORT QgsStyleV2
 
     //! returns the symbolnames of a given groupid
     QStringList symbolsOfGroup( int groupid );
+
+    //! returns the tags in the DB
+    QgsSymbolTagMap symbolTags();
+
+    //! returns the symbol names with which have the given tag
+    QStringList symbolsWithTag( int tagid );
 
 
     //! add color ramp to style. takes ramp's ownership
