@@ -93,11 +93,23 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren( )
     for ( int i = 0; i < sublayers.count(); i++ )
     {
       QString name = sublayers[i];
-      // replace full path with basename+extension
-      name.replace( mPath, mName );
-      // use subdataset name only - perhaps only if name is long
-      if ( name.length() > 50 )
-        name = name.split( mName )[1].mid( 2 );
+      // if netcdf/hdf use all text after filename
+      // for hdf4 it would be best to get description, because the subdataset_index is not very practical
+      if ( name.startsWith( "netcdf", Qt::CaseInsensitive ) ||
+           name.startsWith( "hdf", Qt::CaseInsensitive ) )
+        name = name.mid( name.indexOf( mPath ) + mPath.length() + 1 );
+      else
+      {
+        // remove driver name and file name
+        name.replace( name.split( ":" )[0], "" );
+        name.replace( mPath, "" );
+      }
+      // remove any : or " left over
+      if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
+      if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
+      if ( name.endsWith( ":" ) ) name.chop( 1 );
+      if ( name.endsWith( "\"" ) ) name.chop( 1 );
+
       childItem = new QgsGdalLayerItem( this, name, sublayers[i], sublayers[i] );
       if ( childItem )
         this->addChildItem( childItem );
