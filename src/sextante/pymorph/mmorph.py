@@ -117,7 +117,6 @@ from __future__ import division
 from pymorph_version import __version__, __version_info__
 
 import sys, os
-from sextante.script.ProgressAccessor import ProgressAccessor
 from PyQt4.uic.Compiler.qtproxies import QtGui
 
 mydir = os.path.dirname(__file__)

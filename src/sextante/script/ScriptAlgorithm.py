@@ -100,7 +100,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith("selection"):
             options = tokens[1].strip()[len("selection"):].split(";")
             param = ParameterSelection(tokens[0],  desc, options);
-        elif tokens[1].lower().strip() == "boolean":
+        elif tokens[1].lower().strip().startswith("boolean"):
             default = tokens[1].strip()[len("boolean")+1:]
             param = ParameterBoolean(tokens[0],  desc, default)
         elif tokens[1].lower().strip() == "extent":
