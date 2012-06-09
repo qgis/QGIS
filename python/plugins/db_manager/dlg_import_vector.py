@@ -206,7 +206,7 @@ class DlgImportVector(QDialog, Ui_DlgImportVector):
 			QMessageBox.warning(self, "Import to database", u"Error %d\n%s" % (ret, errMsg) )
 			return
 
-		if self.chkGeomColumn.isChecked() and self.chkSpatialIndex.isChecked():
+		if self.chkSpatialIndex.isChecked():
 			self.db.connector.createSpatialIndex( (schema, table), geom )
 
 		QMessageBox.information(self, "Import to database", "Import was successful.")
