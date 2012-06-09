@@ -549,7 +549,8 @@ class Table(DbItemObject):
 		uri = self.database().uri()
 		schema = self.schemaName() if self.schemaName() else ''
 		geomCol = self.geomColumn if self.type in [Table.VectorType, Table.RasterType] else QString()
-		uri.setDataSource(schema, self.name, geomCol if geomCol else QString())
+		uniqueCol = self.getValidQGisUniqueFields(True) if self.isView else None
+		uri.setDataSource(schema, self.name, geomCol if geomCol else QString(), QString(), uniqueCol.name if uniqueCol else QString() )
 		return uri
 
 	def mimeUri(self):
@@ -567,7 +568,7 @@ class Table(DbItemObject):
 	def getValidQGisUniqueFields(self, onlyOne=False):
 		""" list of fields valid to load the table as layer in QGis canvas.
 			QGis automatically search for a valid unique field, so it's 
-			needed only for queries (e.g. SELECT * FROM table LIMIT 1)"""
+			needed only for queries and views """
 
 		ret = []
 
@@ -575,14 +576,19 @@ class Table(DbItemObject):
 		pkcols = filter(lambda x: x.primaryKey, self.fields())
 		if len(pkcols) == 1: ret.append( pkcols[0] )
 
-		# add both serial and int4 fields with an unique index
+		# then add both oid, serial and int fields with an unique index
 		indexes = self.indexes()
 		if indexes != None:
 			for idx in indexes:
 				if idx.isUnique and len(idx.columns) == 1:
 					fld = idx.fields()[ idx.columns[0] ]
-					if fld and fld not in ret and fld.dataType in ["oid", "serial", "int4"]:
+					if fld.dataType in ["oid", "serial", "int4", "int8"] and fld not in ret:
 						ret.append( fld )
+
+		# and finally append the other suitable fields
+		for fld in self.fields():
+			if fld.dataType in ["oid", "serial", "int4", "int8"] and fld not in ret:
+					ret.append( fld )
 
 		if onlyOne:
 			return ret[0] if len(ret) > 0 else None
