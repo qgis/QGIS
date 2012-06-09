@@ -51,6 +51,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void itemChanged( QStandardItem* item );
 
     void groupChanged( const QModelIndex& );
+    void groupRenamed( QStandardItem * );
+    void addGroup();
+    void removeGroup();
 
   protected:
 

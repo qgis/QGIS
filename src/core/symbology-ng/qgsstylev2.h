@@ -41,6 +41,8 @@ enum TagTable { TagId, TagName };
 enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML };
 
+// Enums for types
+enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity };
 
 class CORE_EXPORT QgsStyleV2
 {
@@ -80,16 +82,21 @@ class CORE_EXPORT QgsStyleV2
     //! return a map of all groupid and names for the given parent
     //! Returns the First order groups when empty QString is passed
     QgsSymbolGroupMap groupNames( QString parent = "" );
-
     //! returns the symbolnames of a given groupid
     QStringList symbolsOfGroup( int groupid );
-
     //! returns the tags in the DB
     QgsSymbolTagMap symbolTags();
-
     //! returns the symbol names with which have the given tag
     QStringList symbolsWithTag( int tagid );
+    //! adds a new group and returns the group's id
+    int addGroup( QString groupName, int parent = 0 );
+    //! adds a new tag and returns the tag's id
+    int addTag( QString tagName );
 
+    //! rename the given entity with the specified id
+    void rename( StyleEntity type, int id, QString newName );
+    //! remove the specified entity from the db
+    void remove( StyleEntity type, int id );
 
     //! add color ramp to style. takes ramp's ownership
     bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp );
@@ -138,6 +145,11 @@ class CORE_EXPORT QgsStyleV2
 
     //! Convinence function to open the DB and return a sqlite3 object
     sqlite3* openDB( QString filename );
+    //! Convinence function that would run queries which donot generate return values
+    //! it returns sucess result
+    bool runEmptyQuery( char* query );
+    //! prepares the complex query for removing a group,so that the children are not abandoned
+    char* getGroupRemoveQuery( int id );
 };
 
 

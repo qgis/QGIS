@@ -420,3 +420,130 @@ QStringList QgsStyleV2::symbolsWithTag( int tagid )
 
   return symbols;
 }
+
+int QgsStyleV2::addGroup( QString groupName, int parentid )
+{
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+    return 0;
+  sqlite3_stmt *ppStmt;
+
+  char *query;
+  QByteArray groupArray = groupName.toUtf8();
+  if ( parentid == 0 )
+  {
+    query = sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', NULL);", groupArray.constData() );
+  }
+  else
+  {
+    query = sqlite3_mprintf( "INSERT INTO symgroup VALUES (NULL, '%q', %d);", groupArray.constData(), parentid );
+  }
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  if ( nErr == SQLITE_OK )
+    sqlite3_step( ppStmt );
+  sqlite3_finalize( ppStmt );
+
+  int groupid = (int)sqlite3_last_insert_rowid( db );
+  sqlite3_close( db );
+  return groupid;
+}
+
+int QgsStyleV2::addTag( QString tagname )
+{
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+    return 0;
+  sqlite3_stmt *ppStmt;
+
+  QByteArray tagArray = tagname.toUtf8();
+  char *query = sqlite3_mprintf( "INSERT INTO tag VALUES (NULL, '%q');", tagArray.constData() );
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  if ( nErr == SQLITE_OK )
+    sqlite3_step( ppStmt );
+  sqlite3_finalize( ppStmt );
+
+  int tagid = (int)sqlite3_last_insert_rowid( db );
+  sqlite3_close( db );
+  return tagid;
+}
+
+void QgsStyleV2::rename( StyleEntity type, int id, QString newName )
+{
+  QByteArray nameArray = newName.toUtf8();
+  char *query;
+  switch ( type )
+  {
+    case SymbolEntity : query = sqlite3_mprintf( "UPDATE symbol SET name='%q' WHERE id=%d;", nameArray.constData(), id );
+                        break;
+    case GroupEntity  : query = sqlite3_mprintf( "UPDATE symgroup SET name='%q' WHERE id=%d;", nameArray.constData(), id );
+                        break;
+    case TagEntity    : query = sqlite3_mprintf( "UPDATE tag SET name='%q' WHERE id=%d;", nameArray.constData(), id );
+                        break;
+    case ColorrampEntity  : query = sqlite3_mprintf( "UPDATE colorramp SET name='%q' WHERE id=%d;", nameArray.constData(), id );
+                        break;
+    default           : QgsDebugMsg( "Invalid Style Entity indicated" );
+                        return;
+  }
+  if ( !runEmptyQuery( query ) )
+    mErrorString = "Could not rename!";
+}
+
+char* QgsStyleV2::getGroupRemoveQuery( int id )
+{
+  int parentid;
+  sqlite3 * db = openDB( mFileName );
+  char *query = sqlite3_mprintf( "SELECT parent FROM symgroup WHERE id=%d;", id );
+  sqlite3_stmt *ppStmt;
+  int err = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  if ( err == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+    parentid = sqlite3_column_int( ppStmt, 0 );
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
+  if ( parentid )
+  {
+    query = sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE groupid=%d;"
+        "UPDATE symgroup SET parent=%d WHERE parent=%d;"
+        "DELETE FROM symgroup WHERE id=%d;", parentid, id, parentid, id, id );
+  }
+  else
+  {
+    query = sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE groupid=%d;"
+         "UPDATE symgroup SET parent=NULL WHERE parent=%d;"
+         "DELETE FROM symgroup WHERE id=%d;", id, id, id );
+  }
+  return query;
+}
+
+void QgsStyleV2::remove( StyleEntity type, int id )
+{
+  char *query;
+  switch ( type )
+  {
+    case SymbolEntity : query = sqlite3_mprintf( "DELETE FROM symbol WHERE id=%d; DELETE FROM tagmap WHERE symbol_id=%d;", id, id );
+                        break;
+    case GroupEntity  : query = getGroupRemoveQuery( id );
+                        break;
+    case TagEntity    : query = sqlite3_mprintf( "DELETE FROM tag WHERE id=%d; DELETE FROM tagmap WHERE tag_id=%d;", id, id );
+                        break;
+    case ColorrampEntity  : query = sqlite3_mprintf( "DELETE FROM colorramp WHERE id=%d;", id );
+                        break;
+    default           : QgsDebugMsg( "Invalid Style Entity indicated" );
+                        return;
+  }
+  if ( !runEmptyQuery( query ) )
+    mErrorString = "Could not delete entity!";
+
+}
+
+bool QgsStyleV2::runEmptyQuery( char *query )
+{
+  sqlite3 *db = openDB( mFileName );
+  char *zErr = 0;
+  if ( db == NULL )
+    return false;
+  int nErr = sqlite3_exec( db, query, NULL, NULL, &zErr );
+  if ( nErr )
+    return false;
+  sqlite3_close( db );
+  return true;
+}

@@ -82,7 +82,12 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   {
     groupTree->setExpanded( groupModel->indexFromItem( groupModel->item( i )), true );
   }
-  connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( groupChanged( const QModelIndex& ) ) );
+  connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
+      this, SLOT( groupChanged( const QModelIndex& ) ) );
+  connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( groupRenamed( QStandardItem* ) ) );
+
+  connect( btnAddGroup, SIGNAL( clicked() ), this, SLOT( addGroup() ) );
+  connect( btnRemoveGroup, SIGNAL( clicked() ), this, SLOT( removeGroup() ) );
 
   connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
 
@@ -578,25 +583,30 @@ void QgsStyleV2ManagerDialog::populateGroups()
   model->clear();
 
   QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
-  allSymbols->setData( QVariant( "all" ) );
+  allSymbols->setData( "all" );
+  allSymbols->setEditable( false );
   model->appendRow( allSymbols );
 
   QStandardItem *projectSymbols = new QStandardItem( "Project Symbols" );
   projectSymbols->setData( "project" );
+  projectSymbols->setEditable( false );
   model->appendRow( projectSymbols );
 
   QStandardItem *recent = new QStandardItem( "Recently Used" );
-  recent->setData( QVariant( "recent" ) );
+  recent->setData( "recent" );
+  recent->setEditable( false );
   model->appendRow( recent );
 
   QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
-  group->setData( QVariant( "groups" ) );
+  group->setData( "groups" );
+  group->setEditable( false );
   buildGroupTree( group );
   group->setText( "Groups" );//set title later
   model->appendRow( group );
 
   QStandardItem *tag = new QStandardItem( "Smart Groups" );
-  tag->setData( QVariant( "tags" ) );
+  tag->setData( "tags" );
+  tag->setEditable( false );
   buildTagTree( tag );
   model->appendRow( tag );
 
@@ -609,7 +619,7 @@ void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
   while ( i != groups.constEnd() )
   {
     QStandardItem *item = new QStandardItem( i.value() );
-    item->setData( QVariant( i.key() ) );
+    item->setData( i.key() );
     parent->appendRow( item );
     buildGroupTree( item );
     ++i;
@@ -618,12 +628,12 @@ void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
 
 void QgsStyleV2ManagerDialog::buildTagTree( QStandardItem* &parent )
 {
-  QgsSymbolTagMap tags;
+  QgsSymbolTagMap tags = mStyle->symbolTags();
   QgsSymbolTagMap::const_iterator i = tags.constBegin();
   while ( i != tags.constEnd() )
   {
     QStandardItem *item = new QStandardItem( i.value() );
-    item->setData( QVariant( i.key() ) );
+    item->setData( i.key() );
     parent->appendRow( item );
     ++i;
   }
@@ -685,3 +695,123 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
   }
 }
 
+void QgsStyleV2ManagerDialog::addGroup()
+{
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QModelIndex parentIndex = groupTree->currentIndex();
+
+  // Violation 1: Creating sub-groups of system defined groups
+  QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
+  if ( parentData == "all" || parentData == "recent" || parentData == "project" )
+  {
+    int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
+        tr( "The parent group you have selected is not user editable.\n"
+            "Kindly select a Group or Smart Group."));
+    if ( err )
+      return;
+  }
+
+  // Violation 2: Creating a nested tag
+  if ( parentIndex.parent().data( Qt::UserRole + 1 ).toString() == "tags" )
+  {
+    int err = QMessageBox::critical( this, tr( "Operation Not Allowed" ),
+        tr( "Creation of nested Smart Groups are not allowed\n"
+          "Select the 'Smart Group' to create a new group." ) );
+    if ( err )
+      return;
+  }
+
+  // No violation
+  QStandardItem *parentItem = model->itemFromIndex( parentIndex );
+  QStandardItem *childItem = new QStandardItem( "New Group" );
+  childItem->setData( QVariant( "newgroup" ) );
+  parentItem->appendRow( childItem );
+
+  groupTree->setCurrentIndex( childItem->index() );
+  groupTree->edit( childItem->index() );
+}
+
+void QgsStyleV2ManagerDialog::removeGroup()
+{
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QModelIndex index = groupTree->currentIndex();
+
+  // Violation: removing system groups
+  QString data = index.data( Qt::UserRole + 1 ).toString();
+  if ( data == "all" || data == "recent" || data == "project" || data == "groups" || data == "tags" )
+  {
+    int err = QMessageBox::critical( this, tr( "Invalid slection" ),
+        tr( "Cannot delete system defined categories.\n"
+            "Kindly select a group or smart group you might want to delete."));
+    if ( err )
+      return;
+  }
+
+  QStandardItem *parentItem = model->itemFromIndex( index.parent() );
+  if ( parentItem->data( Qt::UserRole + 1 ).toString() == "tags" )
+  {
+    mStyle->remove( TagEntity, index.data( Qt::UserRole + 1 ).toInt() );
+  }
+  else
+  {
+    mStyle->remove( GroupEntity, index.data( Qt::UserRole + 1 ).toInt() );
+    QStandardItem *item = model->itemFromIndex( index );
+    if ( item->hasChildren() )
+    {
+      QStandardItem *parent = item->parent();
+      for( int i = 0; i < item->rowCount(); i++ )
+      {
+        parent->appendRow( item->takeChild( i ) );
+      }
+    }
+  }
+  parentItem->removeRow( index.row() );
+}
+
+void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
+{
+  QString data = item->data( Qt::UserRole + 1 ).toString();
+  QgsDebugMsg( "Symbol group edited: data=" + data + " text=" + item->text() );
+  if ( data == "newgroup" )
+  {
+    int id;
+    if ( item->parent()->data( Qt::UserRole + 1 ).toString() == "tags" )
+    {
+      id = mStyle->addTag( item->text() );
+    }
+    else if ( item->parent()->data( Qt::UserRole + 1 ).toString() == "groups" )
+    {
+      id = mStyle->addGroup( item->text() );
+    }
+    else
+    {
+      int parentid = item->parent()->data( Qt::UserRole + 1 ).toInt();
+      id = mStyle->addGroup( item->text(), parentid );
+    }
+    if ( !id )
+    {
+      QMessageBox::critical( this, tr( "Error!" ),
+          tr( "New group could not be created.\n"
+          "There was a problem with your symbol database." ) );
+      item->parent()->removeRow( item->row() );
+      return;
+    }
+    else
+    {
+      item->setData( id );
+    }
+  }
+  else
+  {
+    int id = item->data( Qt::UserRole + 1 ).toInt();
+    QString name = item->text();
+    if ( item->parent()->data( Qt::UserRole + 1 ) == "tags" )
+    {
+      mStyle->rename( TagEntity, id, name );
+    }
+    else
+    {
+      mStyle->rename( GroupEntity, id, name );
+    }
+  }
+}
