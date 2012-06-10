@@ -928,6 +928,12 @@ void QgisApp::createActions()
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
 #ifdef Q_WS_MAC
+  // copy of Options action that gets moved to app Preferences...
+  mActionOptionsMac = new QAction( mActionOptions->text(), this );
+  mActionOptionsMac->setMenuRole( QAction::NoRole );
+  mActionOptionsMac->setIcon( mActionOptions->icon() );
+  connect( mActionOptionsMac, SIGNAL( triggered() ), this, SLOT( options() ) );
+
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
@@ -1158,6 +1164,9 @@ void QgisApp::createMenus()
   }
 
 #ifdef Q_WS_MAC
+  // copy back the Options action after assigned to app Preferences...
+  mSettingsMenu->addAction( mActionOptionsMac );
+
   // Window Menu
 
   mWindowMenu = menuBar()->addMenu( tr( "&Window" ) );
