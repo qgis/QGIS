@@ -98,6 +98,9 @@ class CORE_EXPORT QgsStyleV2
     //! remove the specified entity from the db
     void remove( StyleEntity type, int id );
 
+    //! add the symbol to the DB with the tags
+    bool saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QStringList tags );
+
     //! add color ramp to style. takes ramp's ownership
     bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp );
 

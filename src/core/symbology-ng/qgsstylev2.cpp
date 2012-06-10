@@ -80,11 +80,39 @@ bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol )
   if ( !symbol || name.count() == 0 )
     return false;
 
-  // delete previous symbol (if any)
   if ( mSymbols.contains( name ) )
     delete mSymbols.value( name );
 
   mSymbols.insert( name, symbol );
+  return true;
+}
+
+bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QStringList tags )
+{
+  // TODO add support for tags and groups
+  Q_UNUSED( groupid );
+  Q_UNUSED( tags );
+
+  QDomDocument doc( "dummy" );
+  QDomElement symEl = QgsSymbolLayerV2Utils::saveSymbol( name, symbol, doc );
+  if ( symEl.isNull() )
+  {
+    QgsDebugMsg( "Couldnot convert symbol to valid XML!" );
+    return false;
+  }
+
+  QByteArray *xmlArray = new QByteArray();
+  QTextStream stream( xmlArray );
+  symEl.save( stream, 4 );
+  QByteArray nameArray = name.toUtf8();
+  char *query = sqlite3_mprintf( "INSERT INTO symbol VALUES (NULL, '%q', '%q', NULL);",
+      nameArray.constData(), xmlArray->constData() );
+
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( "Couldnot insert symbol into the Database!" );
+    return false;
+  }
   return true;
 }
 
@@ -543,7 +571,10 @@ bool QgsStyleV2::runEmptyQuery( char *query )
     return false;
   int nErr = sqlite3_exec( db, query, NULL, NULL, &zErr );
   if ( nErr )
+  {
+    QgsDebugMsg( zErr );
     return false;
+  }
   sqlite3_close( db );
   return true;
 }
