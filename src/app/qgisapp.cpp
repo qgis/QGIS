@@ -928,6 +928,12 @@ void QgisApp::createActions()
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
 #ifdef Q_WS_MAC
+  // copy of Options action that gets moved to app Preferences...
+  mActionOptionsMac = new QAction( mActionOptions->text(), this );
+  mActionOptionsMac->setMenuRole( QAction::NoRole );
+  mActionOptionsMac->setIcon( mActionOptions->icon() );
+  connect( mActionOptionsMac, SIGNAL( triggered() ), this, SLOT( options() ) );
+
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
@@ -1158,9 +1164,12 @@ void QgisApp::createMenus()
   }
 
 #ifdef Q_WS_MAC
+  // copy back the Options action after assigned to app Preferences...
+  mSettingsMenu->addAction( mActionOptionsMac );
+
   // Window Menu
 
-  mWindowMenu = menuBar()->addMenu( tr( "&Window" ) );
+  mWindowMenu = new QMenu( tr( "Window" ), this );
 
   mWindowMenu->addAction( mActionWindowMinimize );
   mWindowMenu->addAction( mActionWindowZoom );
@@ -1168,6 +1177,9 @@ void QgisApp::createMenus()
 
   mWindowMenu->addAction( mActionWindowAllToFront );
   mWindowMenu->addSeparator();
+
+  // insert before Help menu, as per Mac OS convention
+  menuBar()->insertMenu( mHelpMenu->menuAction(), mWindowMenu );
 #endif
 
   // Database Menu
@@ -5784,7 +5796,7 @@ void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
       before = actions.at( i );
       break;
     }
-    else if ( actions.at( i )->menu() == mHelpMenu )
+    else if ( actions.at( i )->menu() == firstRightStandardMenu() )
     {
       before = actions.at( i );
       break;
@@ -5846,7 +5858,7 @@ void QgisApp::addPluginToWebMenu( QString name, QAction* action )
   {
     if ( actions.at( i )->menu() == mWebMenu )
       return;
-    if ( actions.at( i )->menu() == mHelpMenu )
+    if ( actions.at( i )->menu() == firstRightStandardMenu() )
     {
       before = actions.at( i );
       break;
