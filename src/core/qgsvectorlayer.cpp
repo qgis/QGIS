@@ -3219,8 +3219,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     {
       // use scale dependent visibility flag
       mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
-      mapLayerNode.setAttribute( "minLabelScale", mLabel->minScale() );
-      mapLayerNode.setAttribute( "maxLabelScale", mLabel->maxScale() );
+      mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
+      mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
 
       //classification field(s)
       QgsAttributeList attributes = mRenderer->classificationAttributes();

@@ -1655,7 +1655,7 @@
   <widget class="QWidget" label="" objectName="QgsProjectionSelectorBase">
     <widget class="QLabel" label="Filter" objectName="label_5"/>
     <widget class="QLineEdit" label="" objectName="leSearch"/>
-    <widget class="QLabel" label="Recently used coordinate references systems" objectName="label_3"/>
+    <widget class="QLabel" label="Recently used coordinate reference systems" objectName="label_3"/>
     <widget class="QTextEdit" label="" objectName="teProjection">
       <widget class="QWidget" label="" objectName="qt_scrollarea_viewport"/>
       <widget class="QWidget" label="" objectName="qt_scrollarea_hcontainer"/>

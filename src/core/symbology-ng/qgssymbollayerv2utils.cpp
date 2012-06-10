@@ -713,7 +713,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
   symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
-  symEl.setAttribute( "alpha", symbol->alpha() );
+  symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {

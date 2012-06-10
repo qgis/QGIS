@@ -110,12 +110,12 @@ make install
 /!\ You can delete the directories with unpacked SIP and PyQt4 sources after a
 successfull install, they're not needed anymore.
 
-=== Subversion ===
+=== git ===
 
-In order to check out QGIS sources from the repository, you need Subversion
-client. This installer should work fine:
+In order to check out QGIS sources from the repository, you need a git client.
+This installer should work fine:
 
-http://www.sliksvn.com/pub/Slik-Subversion-1.6.13-win32.msi
+http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe
 
 === CMake ===
 
@@ -133,16 +133,10 @@ md c:\dev\cpp
 cd c:\dev\cpp 
 ```
    
-Check out sources from SVN:
+Check out sources from GIT:
 
-For svn trunk:
-``` 
-svn co https://svn.osgeo.org/qgis/trunk/qgis 
 ```
-
-For svn 1.5 branch
-```
-svn co https://svn.osgeo.org/qgis/branches/Release-1_5_0 qgis1.5.0
+git clone git://github.com/qgis/Quantum-GIS.git
 ```
 
 === Compiling ===

@@ -347,16 +347,16 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   }
 
   QDomElement composerScaleBarElem = doc.createElement( "ComposerScaleBar" );
-  composerScaleBarElem.setAttribute( "height", mHeight );
-  composerScaleBarElem.setAttribute( "labelBarSpace", mLabelBarSpace );
-  composerScaleBarElem.setAttribute( "boxContentSpace", mBoxContentSpace );
+  composerScaleBarElem.setAttribute( "height", QString::number( mHeight ) );
+  composerScaleBarElem.setAttribute( "labelBarSpace", QString::number( mLabelBarSpace ) );
+  composerScaleBarElem.setAttribute( "boxContentSpace", QString::number( mBoxContentSpace ) );
   composerScaleBarElem.setAttribute( "numSegments", mNumSegments );
   composerScaleBarElem.setAttribute( "numSegmentsLeft", mNumSegmentsLeft );
-  composerScaleBarElem.setAttribute( "numUnitsPerSegment", mNumUnitsPerSegment );
-  composerScaleBarElem.setAttribute( "segmentMillimeters", mSegmentMillimeters );
-  composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", mNumMapUnitsPerScaleBarUnit );
+  composerScaleBarElem.setAttribute( "numUnitsPerSegment", QString::number( mNumUnitsPerSegment ) );
+  composerScaleBarElem.setAttribute( "segmentMillimeters", QString::number( mSegmentMillimeters ) );
+  composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", QString::number( mNumMapUnitsPerScaleBarUnit ) );
   composerScaleBarElem.setAttribute( "font", mFont.toString() );
-  composerScaleBarElem.setAttribute( "outlineWidth", mPen.widthF() );
+  composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
 
   //style

@@ -189,8 +189,8 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   QDomElement compositionElem = doc.createElement( "Composition" );
   if ( mPaperItem )
   {
-    compositionElem.setAttribute( "paperWidth", mPaperItem->rect().width() );
-    compositionElem.setAttribute( "paperHeight", mPaperItem->rect().height() );
+    compositionElem.setAttribute( "paperWidth", QString::number( mPaperItem->rect().width() ) );
+    compositionElem.setAttribute( "paperHeight", QString::number( mPaperItem->rect().height() ) );
   }
 
   //snapping
@@ -202,9 +202,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   {
     compositionElem.setAttribute( "snapping", "0" );
   }
-  compositionElem.setAttribute( "snapGridResolution", mSnapGridResolution );
-  compositionElem.setAttribute( "snapGridOffsetX", mSnapGridOffsetX );
-  compositionElem.setAttribute( "snapGridOffsetY", mSnapGridOffsetY );
+  compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
+  compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
+  compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );

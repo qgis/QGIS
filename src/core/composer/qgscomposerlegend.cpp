@@ -681,8 +681,8 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "layerSpace", QString::number( mLayerSpace ) );
   composerLegendElem.setAttribute( "symbolSpace", QString::number( mSymbolSpace ) );
   composerLegendElem.setAttribute( "iconLabelSpace", QString::number( mIconLabelSpace ) );
-  composerLegendElem.setAttribute( "symbolWidth", mSymbolWidth );
-  composerLegendElem.setAttribute( "symbolHeight", mSymbolHeight );
+  composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
+  composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
   composerLegendElem.setAttribute( "wrapChar", mWrapChar );
 
   if ( mComposerMap )

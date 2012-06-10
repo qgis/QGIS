@@ -252,6 +252,9 @@ void QgsProjectionSelector::applySelection( int column, QString value )
     // invoked deferred selection
     column = mSearchColumn;
     value  = mSearchValue;
+
+    mSearchColumn = NONE;
+    mSearchValue.clear();
   }
 
   if ( column == NONE )

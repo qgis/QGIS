@@ -95,6 +95,18 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     return;
   }
 
+  //Failed to detect feature type from describeFeatureType -> get first feature from layer to detect type
+  if ( mWKBType == QGis::WKBUnknown )
+  {
+    QString bkUri = dataSourceUri();
+    QUrl typeDetectionUri( uri );
+    typeDetectionUri.removeQueryItem( "BBOX" );
+    typeDetectionUri.addQueryItem( "MAXFEATURES", "1" );
+    setDataSourceUri( typeDetectionUri.toString() );
+    reloadData();
+    setDataSourceUri( bkUri );
+  }
+
   if ( ! uri.contains( "BBOX" ) )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();

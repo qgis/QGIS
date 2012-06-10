@@ -1077,7 +1077,7 @@ void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 
   // size and units
   QDomElement size = document.createElement( "size" );
-  size.setAttribute( "value", mLabelAttributes->size() );
+  size.setAttribute( "value", QString::number( mLabelAttributes->size() ) );
   if ( mLabelAttributes->sizeIsSet() )
   {
     if ( mLabelFieldIdx[Size] != -1 )
@@ -1244,9 +1244,9 @@ void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
   {
     QDomElement offset = document.createElement( "offset" );
     offset.setAttribute( "units", QgsLabelAttributes::unitsName( mLabelAttributes->offsetType() ) );
-    offset.setAttribute( "x", mLabelAttributes->xOffset() );
+    offset.setAttribute( "x", QString::number( mLabelAttributes->xOffset() ) );
     offset.setAttribute( "xfieldname", labelField( XOffset ) );
-    offset.setAttribute( "y", mLabelAttributes->yOffset() );
+    offset.setAttribute( "y", QString::number( mLabelAttributes->yOffset() ) );
     offset.setAttribute( "yfieldname", labelField( YOffset ) );
     labelattributes.appendChild( offset );
   }
@@ -1255,7 +1255,7 @@ void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
   QDomElement angle = document.createElement( "angle" );
   if ( mLabelAttributes->angleIsSet() )
   {
-    angle.setAttribute( "value", mLabelAttributes->angle() );
+    angle.setAttribute( "value", QString::number( mLabelAttributes->angle() ) );
     if ( mLabelFieldIdx[Angle] != -1 )
     {
       angle.setAttribute( "fieldname", labelField( Angle ) );
@@ -1311,7 +1311,7 @@ void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
   QDomElement buffersize = document.createElement( "buffersize" );
   if ( mLabelAttributes->bufferSizeIsSet() )
   {
-    buffersize.setAttribute( "value", mLabelAttributes->bufferSize() );
+    buffersize.setAttribute( "value", QString::number( mLabelAttributes->bufferSize() ) );
     buffersize.setAttribute( "units", QgsLabelAttributes::unitsName( mLabelAttributes->bufferSizeType() ) );
     if ( mLabelFieldIdx[BufferSize] != -1 )
     {
