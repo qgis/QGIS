@@ -978,6 +978,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     // actions for menus and toolbars -----------------
 
 #ifdef Q_WS_MAC
+    QAction *mActionOptionsMac;
     QAction *mActionWindowMinimize;
     QAction *mActionWindowZoom;
     QAction *mActionWindowSeparator1;
