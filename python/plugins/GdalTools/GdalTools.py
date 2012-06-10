@@ -264,11 +264,6 @@ class GdalTools:
     QObject.connect( self.settings, SIGNAL( "triggered()" ), self.doSettings )
     self.menu.addAction( self.settings )
 
-    menu_bar = self.iface.mainWindow().menuBar()
-    actions = menu_bar.actions()
-    lastAction = actions[ len( actions ) - 1 ]
-    menu_bar.insertMenu( lastAction, self.menu )
-
   def unload( self ):
     if not valid: return
     pass

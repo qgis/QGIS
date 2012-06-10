@@ -217,9 +217,9 @@
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
    <addaction name="mLayerMenu"/>
+   <addaction name="mRasterMenu"/>
    <addaction name="mSettingsMenu"/>
    <addaction name="mPluginMenu"/>
-   <addaction name="mRasterMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
