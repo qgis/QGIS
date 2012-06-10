@@ -113,12 +113,10 @@ void QgsNewHttpConnection::accept()
 
   if ( params["SERVICE"].second.toUpper() == "WMS" )
   {
-    params.remove( "SERVICE" );
-    params.remove( "REQUEST" );
-    params.remove( "FORMAT" );
+    url.removeEncodedQueryItem( params["SERVICE"].first );
+    url.removeEncodedQueryItem( params["REQUEST"].first );
+    url.removeEncodedQueryItem( params["FORMAT"].first );
   }
-
-  url.setEncodedQueryItems( params.values() );
 
   settings.setValue( key + "/url", url.toString() );
   if ( mBaseKey == "/Qgis/connections-wms/" )
