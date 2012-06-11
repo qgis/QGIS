@@ -3989,7 +3989,9 @@ możliwym do bezpośredniego użycia w Imagine, ArcGIS, GDAL.</translation>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aby udostępnić dane z obrazu 1 kanałowego z tabelą kolorów jako dane z 3 (RGB) lub 4 (RGBA) kanałami. 
+Przydatne dla sterowników takich jak JPEG, JPEG2000, MrSID oraz ECW, które nie obsługują kolorów indeksowanych. 
+Wartość &apos;gray&apos; (z GDAL 1.7.0) umożliwia rozszerzenie danych z tabelą kolorów, które pierwotnie zawierają poziomy szarości do indeksowanej tabeli szarości.</translation>
     </message>
     <message>
         <source>Expand:</source>
@@ -5965,11 +5967,11 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     </message>
     <message>
         <source>for grouping boundaries and marking enclaves / exclaves</source>
-        <translation type="unfinished"></translation>
+        <translation>do grupowania granic i zaznaczania enklaw</translation>
     </message>
     <message>
         <source>to put holes into areas (might have to be renamed, see article)</source>
-        <translation type="unfinished"></translation>
+        <translation>aby umieścić pierścień w poligonie</translation>
     </message>
     <message>
         <source>any kind of turn restriction</source>
@@ -6909,7 +6911,7 @@ Spróbuj to zmienić, bo wtyczka OSM naprawdę nie wie, do której warstwy ma na
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">liczba punktów w poligonie</translation>
+        <translation>liczba punktów w poligonie</translation>
     </message>
 </context>
 <context>
@@ -8894,7 +8896,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -9801,7 +9803,7 @@ Widzisz ten komunikat, bo prawdopodobnie nie ustawiłaś(eś) zmiennej środowis
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Okno</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1190"/>
@@ -12883,7 +12885,7 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="38"/>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Add to action list button. Actions can be edited here by double clicking on the item.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lista zawiera wszystkie akcje zdefiniowane dla aktualnej warstwy. Dodaj akcje wpisując poniżesz ich szczegóły, a następnie wybierając przycisk Dodaj. Akcje mogą być edytowane w tym miejscu poprzez dwuklik.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="51"/>
@@ -12910,7 +12912,7 @@ Nazwa motywu:	%4
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="250"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters within [% and %] will be evaluated as expression and replaced by its result. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation type="unfinished"></translation>
+        <translation>Wprowadź tutaj akcję. Może to być dowolny program, skrypt lub komenda dostępna w systemie. Gdy akcja jest wywoływana, zestaw znaków w [% i %] zostanie przetworzony jako wyrażenie i zamieniony na jego wynik. Znak cudzysłowu grupuje tekst jako jeden argument dla programu, skryptu lub komendy. Cudzysłów poprzedzony ukośnikiem będzie ignorowany.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="257"/>
@@ -27900,12 +27902,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="266"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="566"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomiń atrybut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="268"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Pominięty</translation>
     </message>
 </context>
 <context>
@@ -28033,7 +28035,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="85"/>
         <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>OSTRZEŻENIE: Wybrano zapisanie hasła. Zostanie ono zapisane jako zwykły tekst w pliku projektu. Masz jeszcze szansę anulować tę operację.</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlnewconnection.cpp" line="96"/>
@@ -28450,12 +28452,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="114"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyłącz opcję &apos;szybki dostęp do obiektów po ID&apos; aby wymusić przechowywanie atrybutów w pamięci (np. w przypadku kosztownych widoków).</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="251"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter...</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqltablemodel.cpp" line="464"/>
@@ -30528,17 +30530,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1706"/>
         <source>Join style for curve offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Styl złączenia dla przesunięcia krzywej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1716"/>
         <source>Quadrantsegments for curve offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kwadranty dla przesunięcia krzywej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1726"/>
         <source>Miter limit for curve offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Kąt graniczny dla przesunięcia krzywej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1794"/>
@@ -31213,7 +31215,8 @@ Funkcje geoprocesingu są dostępne wyłącznie dla warstw PostgreSQL/PostGIS</t
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="100"/>
         <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>OSTRZEŻENIE: Wybrano zapisanie hasła. Zostanie ono zapisane jako zwykły tekst w pliku projektu. Masz jeszcze szansę anulować tę operację.
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgnewconnection.cpp" line="111"/>
@@ -31664,12 +31667,12 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="120"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyłącz opcję &apos;szybki dostęp do obiektów po ID&apos; aby wymusić przechowywanie atrybutów w pamięci (np. w przypadku kosztownych widoków).</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="257"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter...</translation>
     </message>
 </context>
 <context>
@@ -39076,12 +39079,12 @@ Quantum GIS wymaga, aby relacja posiadała pole typu liczba całkowita o wielko�
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2122"/>
         <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponieważ Quantum GIS obsługuje jedynie dane płaskie, sterownik SQL Anywhere dokona transformacji danych do zgodnego układu płaskiego (SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2139"/>
         <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponieważ Quantum GIS obsługuje jedynie dane płaskie a nie znaleziono zgodnego układu współrzędnych, sterownik SQL Anywhere dokona transformacji danych do układu WGS 84 (SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2147"/>
@@ -39093,7 +39096,9 @@ Quantum GIS wymaga, aby relacja posiadała pole typu liczba całkowita o wielko�
         <source>Column %1 (%2) contains geometries belonging to a round earth spatial reference system (SRID=%3). %4
 
 Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumna %1 (%2) zawiera geometrie należące do sferycznych ukłądów współrzędnych (SRID=%3). %4
+
+Aktualizacje geometrii moga być niedostępne, a wydajność zapytań mizerna z powodu niemożliwości użycia indeksów przestrzennych. Aby zwiększyć wydajność, stwórz indeks przestrzenny w nowym nowej (przeliczonej) kolumnie zawierającej współrzędne układu płaskiego. Więcej informacji znajdziesz w dokumentacji SQL Anywhere, przy opisach metod ST_SRID(INT) oraz ST_Transform(INT).</translation>
     </message>
 </context>
 <context>
@@ -39825,7 +39830,7 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="189"/>
         <source>Quantum GIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage Plugins menu. In addition there are over 150 Python plugins contributed by the user community that can be installed from the Plugins-&gt;Fetch Python Plugins menu. Don&apos;t miss out on all QGIS has to offer---check out the plugins and see what they can do for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS udostępnia system wtyczek, które rozszerzają liczbę jego funkcji. Standardowo z instalacją dostarczane są wtyczki dostępne w menu Wtyczki-&gt;Zarządzaj wtyczkami. Dodatkowo dostępnych jest ponad 200 wtyczek udostępnianych przez społeczność QGIS. Są one dostępne w menu Wtyczki-&gt;Pobierz więcej wtyczek. </translation>
     </message>
 </context>
 <context>
@@ -39927,7 +39932,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="42"/>
         <source>Projective</source>
-        <translation type="unfinished">Odwzorowane</translation>
+        <translation>Odwzorowane (rzutowe)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="38"/>
