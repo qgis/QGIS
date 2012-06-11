@@ -9787,7 +9787,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Venster</translation>
     </message>
 </context>
 <context>
