@@ -10,7 +10,7 @@ import traceback
 class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
     textChanged = pyqtSignal(QString)
-    cancelled = pyqtSignal()
+    #~ cancelled = pyqtSignal()
     error = pyqtSignal()
     iterated = pyqtSignal(int)
     #started & finished inherited from QThread
@@ -57,10 +57,10 @@ class AlgorithmExecutor(QThread):
             # if self.algorithm.canceled:
             #    self.canceled.emit()
             #===================================================================
-        except GeoAlgorithmExecutionException, e :
-            self.error.emit()
-        except:
-            self.error.emit()
+        except GeoAlgorithmExecutionException as e :
+            self.error.emit(e.msg)
+        except BaseException as e:
+            self.error.emit(str(e))
 
     def runalgIterating(self):
         outputs = {}

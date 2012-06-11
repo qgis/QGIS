@@ -181,6 +181,7 @@ class Ui_ParametersDialog(object):
                     SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                 self.algEx = AlgorithmExecutor(self.alg)
             self.algEx.finished.connect(self.finish)
+            self.algEx.error.connect(self.error)
             self.algEx.percentageChanged.connect(self.setPercentage)
             self.algEx.textChanged.connect(self.setText)
             self.algEx.start()
@@ -204,16 +205,18 @@ class Ui_ParametersDialog(object):
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
 
-        #~ except GeoAlgorithmExecutionException, e :
-            #~ QApplication.restoreOverrideCursor()
-            #~ QMessageBox.critical(self, "Error",e.msg)
-            #~ SextanteLog.addToLog(SextanteLog.LOG_ERROR, e.msg)
-            #~ if not keepOpen:
-                #~ self.dialog.close()
-            #~ else:
-                #~ self.progressLabel.setText("")
-                #~ self.progress.setValue(0)
-                #~ self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+    @pyqtSlot()
+    def error(self, msg):
+        self.algEx.finished.disconnect()
+        QApplication.restoreOverrideCursor()
+        QMessageBox.critical(self, "Error", msg)
+        SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+        if not keepOpen:
+            self.dialog.close()
+        else:
+            self.progressLabel.setText("")
+            self.progress.setValue(0)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
     @pyqtSlot()
     def cancel(self):

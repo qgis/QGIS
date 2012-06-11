@@ -341,6 +341,11 @@ class Sextante:
         def finish():
             SextantePostprocessing.handleAlgorithmResults(alg)
             QApplication.restoreOverrideCursor()
+        def error(msg):
+            QApplication.restoreOverrideCursor()
+            QMessageBox.critical(self, "Error", msg)
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+        algEx.error.connect(error)
         algEx.finished.connect(finish)
         algEx.start()
         

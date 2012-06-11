@@ -95,7 +95,6 @@ class BatchProcessingDialog(QtGui.QDialog):
                     QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
                     self.algs = None
                     return
-            #~ row+=1     ??? - why?
             self.algs.append(alg)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -126,8 +125,16 @@ class BatchProcessingDialog(QtGui.QDialog):
         else:
             self.nextAlg(i)
 
+    @pyqtSlot()
+    def error(self, msg):
+        QApplication.restoreOverrideCursor()
+        QMessageBox.critical(self, "Error", msg)
+        SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+        self.close()
+            
     def nextAlg(self, i):
         self.algEx = AlgorithmExecutor(self.algs[i]);
+        self.algEx.error.connect(self.error)
         self.algEx.finished.connect(lambda: self.finish(i))
         self.algEx.start()
     
