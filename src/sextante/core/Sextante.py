@@ -337,18 +337,13 @@ class Sextante:
             return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        #~ ret = AlgorithmExecutor.runalg(alg, SilentProgress())
-        algex = AlgorithmExecutor(alg, SilentProgress())
-        algex.start()
-        QApplication.restoreOverrideCursor()
-        if ret:
+        algEx = AlgorithmExecutor(alg)
+        def finish():
             SextantePostprocessing.handleAlgorithmResults(alg)
-
-
-
-
-
-
-
+            QApplication.restoreOverrideCursor()
+        algEx.finished.connect(finish)
+        algEx.start()
+        
+        
 
 
