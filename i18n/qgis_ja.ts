@@ -9058,7 +9058,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -10357,7 +10357,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Window</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1190"/>
@@ -12631,7 +12631,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="170"/>
         <source>Providers</source>
-        <translation>提供者</translation>
+        <translation>プロバイダ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="180"/>
@@ -28061,12 +28061,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="266"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="566"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>属性をスキップする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="268"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>スキップした</translation>
     </message>
 </context>
 <context>
