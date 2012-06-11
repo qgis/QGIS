@@ -8991,7 +8991,7 @@ Você está vendo esta mensagem provavelmente porque você não tem MOSTRADA nen
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -12044,7 +12044,7 @@ This copy of QGIS has been built with QWT %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Janela</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1190"/>
@@ -27710,12 +27710,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="266"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="566"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorar atributo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="268"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorado</translation>
     </message>
 </context>
 <context>
