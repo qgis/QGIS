@@ -1189,7 +1189,7 @@ were reduced to %2 vertices after simplification</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Brīdinājums</translation>
+        <translation>Brīdinājums</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
@@ -1261,7 +1261,7 @@ were reduced to %2 vertices after simplification</source>
     </message>
     <message>
         <source>-1</source>
-        <translation type="unfinished">-1</translation>
+        <translation>-1</translation>
     </message>
 </context>
 <context>
@@ -4654,7 +4654,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Pan Map to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārcentrēt līdz izvēlei</translation>
     </message>
     <message>
         <source>Composer Manager...</source>
@@ -4742,15 +4742,15 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Embed Layers and Groups...</source>
-        <translation type="unfinished"></translation>
+        <translation>Iegult slāņus un grupas...</translation>
     </message>
     <message>
         <source>Run Feature Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Startēt objekta darbību</translation>
     </message>
     <message>
         <source>Touch zoom and pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Skāriena tuvināšana un pārcentrēšana</translation>
     </message>
     <message>
         <source>Offset Curve</source>
@@ -4758,11 +4758,11 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Copy style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopēt stilu</translation>
     </message>
     <message>
         <source>Paste style</source>
-        <translation type="unfinished"></translation>
+        <translation>Ielīmēt stilu</translation>
     </message>
 </context>
 <context>
@@ -6526,11 +6526,10 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     <message numerus="yes">
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation type="unfinished">
-            <numerusform>līnija %1 satur %n dublētu mezglu %2
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>līnija %1 satur %n dublētu mezglu %2        </numerusform>
+            <numerusform>līnija %1 satur %n dublētus mezglus %2       </numerusform>
+            <numerusform>līnija %1 satur %n dublētu mezglu %2       </numerusform>
         </translation>
     </message>
     <message>
@@ -7377,15 +7376,15 @@ Error(%2): %3</source>
     </message>
     <message utf8="true">
         <source> m²</source>
-        <translation type="unfinished"></translation>
+        <translation> m²</translation>
     </message>
     <message utf8="true">
         <source> km²</source>
-        <translation type="unfinished"></translation>
+        <translation> km²</translation>
     </message>
     <message>
         <source> acres</source>
-        <translation type="unfinished"></translation>
+        <translation>akri</translation>
     </message>
     <message>
         <source>Creation error for features from #%1 to #%2. Provider errors was: 
@@ -7407,7 +7406,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GEOS</translation>
     </message>
     <message>
         <source>ring %1 with less than four points</source>
@@ -8885,11 +8884,10 @@ Kļūdas:  %2
     <message numerus="yes">
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation type="unfinished">
-            <numerusform>%1 slānī ir izvēlēts %n objektu.
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1 slānī ir izvēlēts %n objekts.      </numerusform>
+            <numerusform>%1 slānī ir izvēlēti %n objekti. </numerusform>
+            <numerusform>%1 slānī ir izvēlēts %n objektu. </numerusform>
         </translation>
     </message>
     <message>
@@ -8927,11 +8925,10 @@ Ignorēt kļūdas?</translation>
     <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform>Dzēst %n objektu?
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Dzēst %n objektu?       </numerusform>
+            <numerusform>Dzēst %n objektus? </numerusform>
+            <numerusform>Dzēst %n objektu? </numerusform>
         </translation>
     </message>
     <message>
@@ -9108,7 +9105,7 @@ This copy of QGIS has been built with QWT %1.</source>
     </message>
     <message>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Datubāze</translation>
     </message>
     <message>
         <source>Toggle extents and mouse position display</source>
@@ -9166,7 +9163,7 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>QGIS starting...</source>
-        <translation type="unfinished"></translation>
+        <translation>Startējas QGIS...</translation>
     </message>
     <message>
         <source>Vect&amp;or</source>
@@ -9174,11 +9171,11 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>&amp;Web</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tīmeklis</translation>
     </message>
     <message>
         <source>Control rendering order</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontrolēt zīmēšanas secību</translation>
     </message>
     <message>
         <source>Map layer list that displays all layers in drawing order.</source>
@@ -9186,7 +9183,7 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>Layer order</source>
-        <translation type="unfinished"></translation>
+        <translation>Slāņu secība</translation>
     </message>
     <message>
         <source>[ERROR] Can not make qgis.db private copy</source>
@@ -9194,7 +9191,7 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS versija</translation>
     </message>
     <message>
         <source>QGIS code revision</source>
@@ -9330,7 +9327,7 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Logs</translation>
     </message>
 </context>
 <context>
@@ -9473,7 +9470,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>about:blank</source>
-        <translation type="unfinished">about:blank</translation>
+        <translation>about:blank</translation>
     </message>
 </context>
 <context>
@@ -9895,7 +9892,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>(no selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>(nav izvēles)</translation>
     </message>
 </context>
 <context>
@@ -10014,21 +10011,19 @@ User DB Path:	%8
     <message numerus="yes">
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform>Atribūtu tabula - %1 (%n objektu)
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Atribūtu tabula - %1 (%n objekts)      </numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n objekti)</numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n objektu)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation type="unfinished">
-            <numerusform>Atribūtu tabula - %1 (%n atbilstošu objektu)
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Atribūtu tabula - %1 (%n atbilstošs objekts)       </numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n atbilstoši objekti)</numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n atbilstošu objektu)</numerusform>
         </translation>
     </message>
     <message>
@@ -10174,11 +10169,10 @@ User DB Path:	%8
     <message numerus="yes">
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform>Atribūtu tabula - %1 :: %n / %2 objektu ir izvēlēts
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Atribūtu tabula - %1 :: %n / %2 objekts ir izvēlēts       </numerusform>
+            <numerusform>Atribūtu tabula - %1 :: %n / %2 objekti ir izvēlēti</numerusform>
+            <numerusform>Atribūtu tabula - %1 :: %n / %2 objektu ir izvēlēts</numerusform>
         </translation>
     </message>
     <message>
@@ -10259,7 +10253,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>Save Edits (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt labojumus (Ctrl+S)</translation>
     </message>
     <message>
         <source>Parsing error</source>
@@ -10690,7 +10684,7 @@ Database:%2</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <source>Cannot set layer CRS</source>
@@ -11157,7 +11151,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Item Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Vienuma īpašības</translation>
     </message>
     <message>
         <source>Save template</source>
@@ -14290,7 +14284,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Well Known Text files</source>
-        <translation type="unfinished"></translation>
+        <translation>Well Known Text faili</translation>
     </message>
     <message>
         <source>All files</source>
@@ -20582,11 +20576,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>&amp;Zoom to Layer Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tuvināt līdz slāņa kopskatam</translation>
     </message>
     <message>
         <source>&amp;Zoom to Best Scale (100%)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tuvināt līdz labākajam skatam (100%)</translation>
     </message>
     <message>
         <source>&amp;Stretch Using Current Extent</source>
@@ -20594,31 +20588,31 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>&amp;Show in Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rādīt pārskatā</translation>
     </message>
     <message>
         <source>&amp;Set Layer CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Iestatīt slāņa koordinātu sistemu</translation>
     </message>
     <message>
         <source>Set &amp;Project CRS from Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Iestatīt &amp;projekta koordinātu sistēmu no slāņa</translation>
     </message>
     <message>
         <source>&amp;Open Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Atvērt atribūtu tabulu</translation>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished">Saglabāt kā...</translation>
+        <translation>Saglabāt kā...</translation>
     </message>
     <message>
         <source>Save Selection As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt izvēli kā...</translation>
     </message>
     <message>
         <source>Show Feature Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Rādīt objektu skaitu</translation>
     </message>
 </context>
 <context>
@@ -20908,7 +20902,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Unable to open file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav iespējams atvērt failu %1</translation>
     </message>
 </context>
 <context>
@@ -23487,35 +23481,35 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished"></translation>
+        <translation>Izslēgts</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>GEOS</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS</translation>
     </message>
     <message>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Vienmēr</translation>
     </message>
     <message>
         <source>If needed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ja nepieciešams</translation>
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>Nekad</translation>
     </message>
     <message>
         <source>Load all</source>
-        <translation type="unfinished"></translation>
+        <translation>Ielādēt visu</translation>
     </message>
     <message>
         <source>Round</source>
-        <translation type="unfinished"></translation>
+        <translation>Noapaļot</translation>
     </message>
     <message>
         <source>Mitre</source>
@@ -23551,7 +23545,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nē</translation>
+        <translation>Nē</translation>
     </message>
     <message>
         <source>Passthru</source>
@@ -24271,7 +24265,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPGConnectionItem</name>
     <message>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neizdevās saņemt slāņus</translation>
     </message>
     <message>
         <source>Edit...</source>
@@ -26736,15 +26730,15 @@ Because of this the projection selector will not work...</source>
     </message>
     <message>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtrēt</translation>
     </message>
     <message>
         <source>Coordinate reference systems of the world</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasaulē lietotās koordinātu sistēmas</translation>
     </message>
     <message>
         <source>Recently used coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Nesen lietotās koordinātu sistēmas</translation>
     </message>
 </context>
 <context>
@@ -26776,11 +26770,10 @@ Because of this the projection selector will not work...</source>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>WHERE klauzula deva %n rindu.
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>WHERE klauzula deva %n rindu.       </numerusform>
+            <numerusform>WHERE klauzula deva %n rindas.</numerusform>
+            <numerusform>WHERE klauzula deva %n rindu.</numerusform>
         </translation>
     </message>
     <message>
@@ -27376,7 +27369,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Rastrs</translation>
+        <translation>Rastrs</translation>
     </message>
     <message>
         <source>Could not reproject layer extent: %1</source>
@@ -32303,7 +32296,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
 </context>
 <context>
@@ -32633,15 +32626,15 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>Layer CRS</source>
-        <translation type="unfinished">Slāņa koordinātu sistēma</translation>
+        <translation>Slāņa koordinātu sistēma</translation>
     </message>
     <message>
         <source>Project CRS</source>
-        <translation type="unfinished">Projekta koordinātu sistēma</translation>
+        <translation>Projekta koordinātu sistēma</translation>
     </message>
     <message>
         <source>Selected CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlētā koordinātu sistēma</translation>
     </message>
 </context>
 <context>
@@ -32734,7 +32727,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <name>QgsWFSConnectionItem</name>
     <message>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neizdevās saņemt slāņus</translation>
     </message>
     <message>
         <source>Edit...</source>
@@ -32971,7 +32964,7 @@ Features</source>
     <name>QgsWMSConnectionItem</name>
     <message>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Neizdevās saņemt slāņus</translation>
     </message>
     <message>
         <source>Edit...</source>
@@ -32986,7 +32979,7 @@ Features</source>
     <name>QgsWMSRootItem</name>
     <message>
         <source>New Connection...</source>
-        <translation type="unfinished">Jauns savienojums...</translation>
+        <translation>Jauns savienojums...</translation>
     </message>
 </context>
 <context>
@@ -33046,10 +33039,10 @@ Features</source>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Koordinātu atskaites sistēma (%n pieejama)</numerusform>
             <numerusform>Koordinātu atskaites sistēma (%n pieejamas)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Koordinātu atskaites sistēma (%n pieejamu)</numerusform>
         </translation>
     </message>
     <message>
@@ -33079,11 +33072,10 @@ Features</source>
     <message numerus="yes">
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation type="unfinished">
-            <numerusform>izvēlēti %n slāņi
-        </numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>izvēlēts %n slānis       </numerusform>
+            <numerusform>izvēlēti %n slāņi</numerusform>
+            <numerusform>izvēlēts %n slāņu</numerusform>
         </translation>
     </message>
     <message>
@@ -33138,10 +33130,10 @@ Features</source>
     <message numerus="yes">
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Opcijas (pieejama %n koordinātu atskaites sistēma)</numerusform>
+            <numerusform>Opcijas (pieejamas %n koordinātu atskaites sistēmas)</numerusform>
+            <numerusform>Opcijas (pieejams %n koordinātu atskaites sistēmu)</numerusform>
         </translation>
     </message>
 </context>
@@ -33309,7 +33301,7 @@ Features</source>
     </message>
     <message>
         <source>Up</source>
-        <translation type="unfinished">Uz augšu</translation>
+        <translation>Uz augšu</translation>
     </message>
     <message>
         <source>Move selected layer DOWN</source>
@@ -33317,11 +33309,11 @@ Features</source>
     </message>
     <message>
         <source>Down</source>
-        <translation type="unfinished">Uz leju</translation>
+        <translation>Uz leju</translation>
     </message>
     <message>
         <source>Feature limit for GetFeatureInfo</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektu skaita ierobežojums priekš GetFeatureInfo </translation>
     </message>
 </context>
 <context>
