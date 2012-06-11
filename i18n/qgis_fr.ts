@@ -7017,7 +7017,7 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">Champ de décompte des points</translation>
+        <translation>Champ de décompte des points</translation>
     </message>
 </context>
 <context>
@@ -8993,7 +8993,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -9955,7 +9955,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenêtre</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1190"/>
@@ -26307,7 +26307,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="421"/>
         <source>&amp;Stretch Using Current Extent</source>
-        <translation>Étirer jsur l&apos;empri&amp;se actuelle</translation>
+        <translation>Étirer sur l&apos;empri&amp;se actuelle</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="426"/>
@@ -27928,12 +27928,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="266"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="566"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer l&apos;attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="268"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoré</translation>
     </message>
 </context>
 <context>
