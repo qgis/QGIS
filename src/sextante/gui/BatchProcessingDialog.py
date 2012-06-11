@@ -95,19 +95,16 @@ class BatchProcessingDialog(QtGui.QDialog):
                     QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
                     self.algs = None
                     return
-            row+=1
+            #~ row+=1     ??? - why?
             self.algs.append(alg)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.progress.setMaximum(len(self.algs))
-        for alg in self.algs:
-            algEx = AlgorithmExecutor(alg);
-            algEx.start()
-
-        QApplication.restoreOverrideCursor()
-        QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
-        self.close()
-
+        self.progress.setValue(0)
+        self.nextAlg(0)
+            
+        self.table.setEnabled(False)
+        
     def loadHTMLResults(self, alg, i):
         for out in alg.outputs:
             if out.hidden or not out.open:
@@ -117,6 +114,31 @@ class BatchProcessingDialog(QtGui.QDialog):
 
     def cancelPressed(self):
         self.algs = None
+        self.close()
+
+    @pyqtSlot()
+    def finish(self, i):
+        i += 1
+        self.progress.setValue(i)
+        if len(self.algs) == i:
+            self.finishAll()
+            self.algEx = None
+        else:
+            self.nextAlg(i)
+
+    def nextAlg(self, i):
+        self.algEx = AlgorithmExecutor(self.algs[i]);
+        self.algEx.finished.connect(lambda: self.finish(i))
+        self.algEx.start()
+    
+    def finishAll(self):
+        i = 0
+        for alg in self.algs:
+            self.loadHTMLResults(alg, i)
+            i = i + 1
+        QApplication.restoreOverrideCursor()
+        self.table.setEnabled(True)
+        QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
         self.close()
 
     def setParameterValueFromWidget(self, param, widget):
