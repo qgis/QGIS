@@ -33,7 +33,10 @@ class GeoAlgorithm:
         #true if the algorithm has been canceled while it was being executed
         #default value is false, so it should be changed in processAlgorithm only if the algorithm
         #gets canceled
-        self.canceled = False
+        #self.canceled = False
+
+        #to be set by the provider when it loads the algorithm
+        self.provider = None
 
         self.defineCharacteristics()
 
@@ -105,15 +108,12 @@ class GeoAlgorithm:
         Although the body of the algorithm is in processAlgorithm(),
         it should be called using this method, since it performs
         some additional operations.
-        The return value indicates whether the algorithm was canceled (false)
-        or successfully run (true).
         Raises a GeoAlgorithmExecutionException in case anything goes wrong.'''
         self.setOutputCRSFromInputLayers()
         self.resolveTemporaryOutputs()
         self.checkOutputFileExtensions()
         try:
             self.processAlgorithm(progress)
-            return not self.canceled
         except GeoAlgorithmExecutionException, gaee:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, gaee.msg)
             raise gaee

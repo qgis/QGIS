@@ -19,7 +19,7 @@ class AlgorithmExecutor(QThread):
         QThread.__init__(self, parent)
         self.algorithm = alg
         self.parameterToIterate = iterParam
-                
+
         class Progress:
             def __init__(self, algex):
                 self.algorithmExecutor = algex
@@ -53,8 +53,10 @@ class AlgorithmExecutor(QThread):
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
-            if self.algorithm.canceled:
-                self.canceled.emit()
+            #===================================================================
+            # if self.algorithm.canceled:
+            #    self.canceled.emit()
+            #===================================================================
         except GeoAlgorithmExecutionException, e :
             self.error.emit()
         except:
@@ -76,7 +78,9 @@ class AlgorithmExecutor(QThread):
             self.progress.setText("Executing iteration " + str(i) + "/" + str(len(self.filelist)) + "...")
             self.progress.setPercentage((i * 100) / len(self.filelist))
             self.runalg()
-            if self.algorithm.canceled:
-                return
+            #===================================================================
+            # if self.algorithm.canceled:
+            #    return
+            #===================================================================
             self.iterated.emit(i)
             i += 1

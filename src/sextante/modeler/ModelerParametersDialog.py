@@ -440,6 +440,23 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
         return True
 
+    def setParamTableFieldValue(self, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            name =  self.getSafeNameForHarcodedParameter(param)
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            self.params[param.name] = value
+            value = str(widget.currentText()).strip()
+            if value == "":
+                return False
+            else:
+                self.values[name] = str(widget.currentText())
+                return True
+        else:
+            value = widget.itemData(widget.currentIndex()).toPyObject()
+            self.params[param.name] = value
+        return True
+
     def setParamStringValue(self, param, widget):
         idx = widget.findText(widget.currentText())
         if idx < 0:
@@ -516,11 +533,14 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.values[name] = ParameterFixedTable.tableToString(widget.table)
             return True
         if isinstance(param, ParameterTableField):
-            name =  self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = str(widget.text())
-            return True
+            return self.setParamTableFieldValue(param, widget)
+            #===================================================================
+            # name =  self.getSafeNameForHarcodedParameter(param)
+            # value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            # self.params[param.name] = value
+            # self.values[name] = str(widget.text())
+            # return True
+            #===================================================================
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = self.getVectorLayers()

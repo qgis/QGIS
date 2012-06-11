@@ -193,6 +193,8 @@ class ModelerDialog(QtGui.QDialog):
             self.alg.descriptionFile = None
             alg.descriptionFile = None
         else:
+            if self.alg.provider is None: # might happen if model is opened from modeler dialog
+                self.alg.provider = Providers.providers["model"]
             alg = self.alg.getCopy()
             dlg = ParametersDialog(alg)
             dlg.exec_()
