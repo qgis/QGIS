@@ -6882,7 +6882,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>INGRES</source>
-        <translation>INGRES</translation>
+        <translation type="obsolete">INGRES</translation>
     </message>
     <message>
         <source>MySQL</source>
@@ -7435,6 +7435,10 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Creation of OGR data source %1 failed: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ingres</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8451,7 +8455,7 @@ Lūgums kontaktēties ar izstrādātājiem.
     </message>
     <message>
         <source>&amp;Window</source>
-        <translation>&amp;Logs</translation>
+        <translation type="obsolete">&amp;Logs</translation>
     </message>
     <message>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
@@ -9322,6 +9326,10 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>Cannot read style: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -21854,6 +21862,14 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <source>Sum</source>
         <translation type="unfinished">Summa</translation>
     </message>
+    <message>
+        <source>Skip attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipped</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMergeAttributesDialogBase</name>
@@ -25203,7 +25219,7 @@ Jums ir nepieciešams pārstartēt Quantum GIS, lai varētu sākt izmantot šo s
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>Jūs plānojat pievienot spraudņu repozitoriju, kuru neatbalsta un nav autorizējuši Quantum GIS izstrādātāji. Parasti spraudņu autori cenšas veidot savus spraudņus drošus un noderīgus, taču Quantum GIS izstrādātāji nevar uzņemties atbildību par to.</translation>
+        <translation type="obsolete">Jūs plānojat pievienot spraudņu repozitoriju, kuru neatbalsta un nav autorizējuši Quantum GIS izstrādātāji. Parasti spraudņu autori cenšas veidot savus spraudņus drošus un noderīgus, taču Quantum GIS izstrādātāji nevar uzņemties atbildību par to.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
@@ -25318,11 +25334,11 @@ Jums ir nepieciešams pārstartēt Quantum GIS, lai varētu sākt izmantot šo s
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
-        <translation>Pievienot sarakstam citu izstrādātāju spraudņu krātuves</translation>
+        <translation type="obsolete">Pievienot sarakstam citu izstrādātāju spraudņu krātuves</translation>
     </message>
     <message>
         <source>Add 3rd party repositories</source>
-        <translation>Pievienot citu izstrādātāju spraudņu krātuves</translation>
+        <translation type="obsolete">Pievienot citu izstrādātāju spraudņu krātuves</translation>
     </message>
     <message>
         <source>Add a new plugin repository</source>

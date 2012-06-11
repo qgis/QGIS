@@ -7365,7 +7365,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>INGRES</source>
-        <translation>INGRES</translation>
+        <translation type="obsolete">INGRES</translation>
     </message>
     <message>
         <source>MySQL</source>
@@ -7868,6 +7868,10 @@ Error(%2): %3</translation>
     <message>
         <source>Creation of OGR data source %1 failed: %2</source>
         <translation>Falló la creación de la fuente de datos OGR %1: %2</translation>
+    </message>
+    <message>
+        <source>Ingres</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9762,7 +9766,7 @@ Por favor, contacte con los desarrolladores.</translation>
     </message>
     <message>
         <source>&amp;Window</source>
-        <translation>&amp;Ventana</translation>
+        <translation type="obsolete">&amp;Ventana</translation>
     </message>
     <message>
         <source>
@@ -10615,6 +10619,10 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     <message>
         <source>Cannot read style: %1</source>
         <translation>No se puede leer el estilo: %1</translation>
+    </message>
+    <message>
+        <source>Window</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23089,6 +23097,14 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Sum</source>
         <translation>Suma</translation>
     </message>
+    <message>
+        <source>Skip attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipped</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMergeAttributesDialogBase</name>
@@ -26559,7 +26575,7 @@ Tiene que reiniciar Quantum GIS para recargarlo.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>Está a punto de añadir varios repositorios de complementos que no están autorizados ni mantenidos por el equipo de Quantum GIS. Los autores de complementos normalmente hacen esfuerzos para asegurar que su trabajo es útil y seguro, sin embargo, no podemos asumir ninguna responsabilidad por ellos.</translation>
+        <translation type="obsolete">Está a punto de añadir varios repositorios de complementos que no están autorizados ni mantenidos por el equipo de Quantum GIS. Los autores de complementos normalmente hacen esfuerzos para asegurar que su trabajo es útil y seguro, sin embargo, no podemos asumir ninguna responsabilidad por ellos.</translation>
     </message>
 </context>
 <context>
@@ -26674,11 +26690,11 @@ Tiene que reiniciar Quantum GIS para recargarlo.</translation>
     </message>
     <message>
         <source>Add third party plugin repositories to the list</source>
-        <translation>Añadir repositorios de terceros a la lista</translation>
+        <translation type="obsolete">Añadir repositorios de terceros a la lista</translation>
     </message>
     <message>
         <source>Add 3rd party repositories</source>
-        <translation>Añadir repositorios de terceros</translation>
+        <translation type="obsolete">Añadir repositorios de terceros</translation>
     </message>
     <message>
         <source>Add a new plugin repository</source>
