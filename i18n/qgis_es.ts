@@ -10622,7 +10622,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Ventana</translation>
     </message>
 </context>
 <context>
@@ -14624,11 +14624,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>inverse transform</source>
-        <translation type="unfinished"></translation>
+        <translation>transformación inversa</translation>
     </message>
     <message>
         <source>forward transform</source>
-        <translation type="unfinished"></translation>
+        <translation>transformación hacia adelante</translation>
     </message>
     <message>
         <source>%1 of
@@ -23099,11 +23099,11 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Omitir atributo</translation>
     </message>
     <message>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Omitido</translation>
     </message>
 </context>
 <context>
@@ -33532,7 +33532,8 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Commit errors:
   %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errores al acometer:
+  %1</translation>
     </message>
 </context>
 <context>
