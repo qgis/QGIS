@@ -8539,7 +8539,7 @@ Neem alstublieft contact op met de ontwikkelaars.
     </message>
     <message>
         <source>&amp;Window</source>
-        <translation>&amp;Venster</translation>
+        <translation type="obsolete">&amp;Venster</translation>
     </message>
     <message>
         <source>Toggle extents and mouse position display</source>
@@ -9784,6 +9784,10 @@ QWT Version: %1.</source>
     <message>
         <source>Cannot read style: %1</source>
         <translation>Kan stijl niet inlezen: %1</translation>
+    </message>
+    <message>
+        <source>Window</source>
+        <translation>Venster</translation>
     </message>
 </context>
 <context>

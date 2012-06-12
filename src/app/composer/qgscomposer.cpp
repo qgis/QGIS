@@ -240,14 +240,14 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
   mGeneralDock = new QDockWidget( tr( "Composition" ), this );
   mGeneralDock->setObjectName( "CompositionDock" );
-  mItemDock = new QDockWidget( tr( "Item Properties" ) );
+  mItemDock = new QDockWidget( tr( "Item Properties"), this );
   mItemDock->setObjectName( "ItemDock" );
   mUndoDock = new QDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );
 
-  mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable );
-  mItemDock->setFeatures( QDockWidget::DockWidgetMovable );
-  mUndoDock->setFeatures( QDockWidget::DockWidgetMovable );
+  mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  mUndoDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
 
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
@@ -264,9 +264,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   mItemDock->show();
   mGeneralDock->show();
-  mUndoDock->hide();
+  mUndoDock->show();
 
   tabifyDockWidget( mGeneralDock, mUndoDock );
+  tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
 
   mGeneralDock->raise();
