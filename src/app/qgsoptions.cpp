@@ -57,6 +57,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     QDialog( parent, fl )
 {
   setupUi( this );
+
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -408,6 +409,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
+  cbxNewProjectTemplate->setChecked( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() );
+  leNewProjectTemplate->setText( settings.value( "/qgis/newProjectTemplateFile", "" ).toString() );
 
   cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 2 ).toInt() );
   spinZoomFactor->setValue( settings.value( "/qgis/zoom_factor", 2 ).toDouble() );
@@ -555,6 +558,31 @@ QgsOptions::~QgsOptions()
   QSettings settings;
   settings.setValue( "/Windows/Options/geometry", saveGeometry() );
   settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
+}
+
+void QgsOptions::on_cbxNewProjectTemplate_toggled( bool checked )
+{
+  pbtnNewProjectTemplate->setEnabled( checked );
+  leNewProjectTemplate->setEnabled( checked );
+}
+
+void QgsOptions::on_pbtnNewProjectTemplate_pressed( )
+{
+  QString lastUsedDir = QFileInfo( leNewProjectTemplate->text() ).canonicalFilePath();
+  if ( lastUsedDir == "" )
+  {
+    QSettings settings;
+    lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
+  }
+
+  QString fullPath = QFileDialog::getOpenFileName( this,
+                     tr( "Choose a QGIS project file to open" ),
+                     lastUsedDir,
+                     tr( "QGis files" ) + " (*.qgs *.QGS)" );
+  if ( ! fullPath.isNull() )
+  {
+    leNewProjectTemplate->setText( fullPath );
+  }
 }
 
 void QgsOptions::on_pbnSelectionColor_clicked()
@@ -721,6 +749,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
+  settings.setValue( "/qgis/newProjectTemplate", cbxNewProjectTemplate->isChecked() );
+  settings.setValue( "/qgis/newProjectTemplateFile", leNewProjectTemplate->text().trimmed() );
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
 

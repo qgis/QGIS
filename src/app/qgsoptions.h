@@ -50,6 +50,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QString theme();
 
   public slots:
+    void on_cbxNewProjectTemplate_toggled( bool );
+    void on_pbtnNewProjectTemplate_pressed();
     //! Slot called when user chooses to change the project wide projection.
     void on_pbnSelectProjection_clicked();
     //! Slot called when user chooses to change the default 'on the fly' projection.

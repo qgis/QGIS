@@ -453,6 +453,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+  // set canvas color right away
+  int myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
+  int myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
+  int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
+  mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
   setCentralWidget( mMapCanvas );
   //set the focus to the map canvas
   mMapCanvas->setFocus();
@@ -542,7 +547,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // set graphical credential requester
   new QgsCredentialDialog( this );
 
-  fileNew(); // prepare empty project
   qApp->processEvents();
 
   // load providers
@@ -663,6 +667,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // update windows
   qApp->processEvents();
+
+  fileNew(); // prepare empty project
 
 } // QgisApp ctor
 
@@ -2898,6 +2904,21 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
     }
   }
 
+  // load template instead of loading defaults - or should this be done *after* loading defaults?
+  QSettings settings;
+  QString projectTemplate = settings.value( "/qgis/newProjectTemplateFile", "" ).toString();
+  if ( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() &&
+       ! projectTemplate.isEmpty() )
+  {
+    QgsDebugMsg( QString( "tryingload template: %1 - %2" ).arg( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() ).arg( projectTemplate ) );
+    if ( addProject( projectTemplate ) )
+    {
+      // set null filename so we don't override the template
+      QgsProject::instance()->setFileName( QString() );
+      return;
+    }
+  }
+
   deletePrintComposers();
   removeAnnotationItems();
 
@@ -2909,8 +2930,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   prj->title( QString::null );
   prj->setFileName( QString::null );
   prj->clearProperties(); // why carry over properties from previous projects?
-
-  QSettings settings;
 
   //set the color for selections
   //the default can be set in qgisoptions
@@ -2976,6 +2995,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   mMapCanvas->setMapTool( mMapTools.mTouch );
   mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
 #endif
+
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
 
 
