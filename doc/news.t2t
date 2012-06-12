@@ -58,7 +58,7 @@ key new features.
 - Menu Re-organisation - The menus were re-organised a little - we now have separate menus for Vector and Raster and many plugins were updated to place their menus in the new Vector and Raster top level menus.
 - Offset Curves - a new digitising tool for creating offset curves was added.
 - Terrain Analysis Plugin - a new core plugin was added for doing terrain analysis - and it can make really good looking coloured relief maps.
-- Ellipse renderer — symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows to set all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
+- Ellipse renderer - symbollayer to render ellipse shapes (and also rectangles, triangles, crosses by specifying width and height). Moreover, the symbol layer allows to set all parameters (width, height, colors, rotation, outline with) from data fields, in mm or map units
 - New scale selector with predefined scales
 - Option to add layers to selected or active group
 - Pan To Selected tool
@@ -205,8 +205,8 @@ http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 
 =Whats new in Version 1.7.0 'Wroclaw'?=
 
-This release is named after the town of Wrocław in Poland. The Department of
-Climatology and Atmosphere Protection, University of Wrocław kindly hosted our
+This release is named after the town of Wroclaw in Poland. The Department of
+Climatology and Atmosphere Protection, University of Wroclaw kindly hosted our
 developer meeting in November 2010. Please note that this is a release in
 our 'cutting edge' release series. As such it contains new features and extends
 the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any
