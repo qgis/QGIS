@@ -6376,7 +6376,7 @@ Need on vajalikud, kuna OSM plugin ei tea milline kiht on imporditav.</translati
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished"> punkti loenduse väli</translation>
+        <translation>punktide loenduse väli</translation>
     </message>
 </context>
 <context>
@@ -8296,7 +8296,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -8927,64 +8927,64 @@ Palun kontakteeru arendajatega.
         <translation>QGIS Valmis!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="939"/>
+        <location filename="../src/app/qgisapp.cpp" line="933"/>
         <source>Minimize</source>
         <translation>Vähenda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="940"/>
+        <location filename="../src/app/qgisapp.cpp" line="934"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="941"/>
+        <location filename="../src/app/qgisapp.cpp" line="935"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Vähendab aktiivse akna ikooniks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="944"/>
+        <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Zoom</source>
         <translation>Suurendus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="945"/>
+        <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Vahetab eelnevalt määratud ja kasutaja seatud akna suuruste vahel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="948"/>
+        <location filename="../src/app/qgisapp.cpp" line="942"/>
         <source>Bring All to Front</source>
         <translation>Tõsta kõik esile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="949"/>
+        <location filename="../src/app/qgisapp.cpp" line="943"/>
         <source>Bring forward all open windows</source>
         <translation>Too ettepoole kõik avatud aknad</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1035"/>
-        <location filename="../src/app/qgisapp.cpp" line="4406"/>
-        <location filename="../src/app/qgisapp.cpp" line="4432"/>
-        <location filename="../src/app/qgisapp.cpp" line="4444"/>
-        <location filename="../src/app/qgisapp.cpp" line="4523"/>
-        <location filename="../src/app/qgisapp.cpp" line="4617"/>
-        <location filename="../src/app/qgisapp.cpp" line="4633"/>
+        <location filename="../src/app/qgisapp.cpp" line="1029"/>
+        <location filename="../src/app/qgisapp.cpp" line="4403"/>
+        <location filename="../src/app/qgisapp.cpp" line="4429"/>
+        <location filename="../src/app/qgisapp.cpp" line="4441"/>
+        <location filename="../src/app/qgisapp.cpp" line="4520"/>
+        <location filename="../src/app/qgisapp.cpp" line="4614"/>
+        <location filename="../src/app/qgisapp.cpp" line="4630"/>
         <source>Error</source>
         <translation>Viga</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1035"/>
+        <location filename="../src/app/qgisapp.cpp" line="1029"/>
         <source>Failed to open Python console:</source>
         <translation>Python Console avamine ebaõnnestus:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1124"/>
+        <location filename="../src/app/qgisapp.cpp" line="1118"/>
         <source>Panels</source>
         <translation>Paneelid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1126"/>
+        <location filename="../src/app/qgisapp.cpp" line="1120"/>
         <source>Toolbars</source>
         <translation>Tööriistariba</translation>
     </message>
@@ -8993,182 +8993,182 @@ Palun kontakteeru arendajatega.
         <translation type="obsolete">&amp;Aken</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1187"/>
+        <location filename="../src/app/qgisapp.cpp" line="1184"/>
         <source>&amp;Database</source>
         <translation>&amp;Andmebaas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1190"/>
+        <location filename="../src/app/qgisapp.cpp" line="1187"/>
         <source>Vect&amp;or</source>
         <translation>Vekt&amp;or</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1193"/>
+        <location filename="../src/app/qgisapp.cpp" line="1190"/>
         <source>&amp;Web</source>
         <translation>&amp;Veeb</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1330"/>
+        <location filename="../src/app/qgisapp.cpp" line="1327"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Edenemise riba, mis näitab kihtide renderdamise ja teiste ajakulukate operatsioonide olekut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1345"/>
+        <location filename="../src/app/qgisapp.cpp" line="1342"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Klikka äärejoone ja hiire asukoha näitamiseks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1359"/>
-        <location filename="../src/app/qgisapp.cpp" line="6097"/>
+        <location filename="../src/app/qgisapp.cpp" line="1356"/>
+        <location filename="../src/app/qgisapp.cpp" line="6094"/>
         <source>Coordinate:</source>
         <translation>Koordinaat:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1360"/>
+        <location filename="../src/app/qgisapp.cpp" line="1357"/>
         <source>Current map coordinate</source>
         <translation>Selle kaardi koordinaat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1375"/>
+        <location filename="../src/app/qgisapp.cpp" line="1372"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation>Näitab kaardi koordinaate kursori asukohas. Väärtused muutuvad koheselt vastavalt hiire nihutamisele. Samuti lubab määrata kaardiakna keskpunkti antud asukohta.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1379"/>
+        <location filename="../src/app/qgisapp.cpp" line="1376"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>Selle kaardi koordinaadid (formaadina x,y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1392"/>
+        <location filename="../src/app/qgisapp.cpp" line="1389"/>
         <source>Scale </source>
         <translation>Skaala </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1393"/>
+        <location filename="../src/app/qgisapp.cpp" line="1390"/>
         <source>Current map scale</source>
         <translation>Selle kaardi skaala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1410"/>
+        <location filename="../src/app/qgisapp.cpp" line="1407"/>
         <source>Displays the current map scale</source>
         <translation>Näitab selle kaardi skaalat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1411"/>
+        <location filename="../src/app/qgisapp.cpp" line="1408"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Selle kaardi skaala (formaadina x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1423"/>
+        <location filename="../src/app/qgisapp.cpp" line="1420"/>
         <source>Stop map rendering</source>
         <translation>Lõpeta kaardi renderdamine</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1426"/>
+        <location filename="../src/app/qgisapp.cpp" line="1423"/>
         <source>Render</source>
         <translation>Renderda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1430"/>
+        <location filename="../src/app/qgisapp.cpp" line="1427"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Kui valitud, siis kaardikihid renderdatakse kaardi navigeerimisel ja teistel juhtudel. Kui ei ole valitud siis ei renderdata. See võimaldab lisada suurel hulgal kihte ja kujundada neid enne renderdamist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1434"/>
+        <location filename="../src/app/qgisapp.cpp" line="1431"/>
         <source>Toggle map rendering</source>
         <translation>Kaardi renderdamise lüliti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1457"/>
+        <location filename="../src/app/qgisapp.cpp" line="1454"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>See ikoon näitab, kas koordinaatide referentssüsteemi transformeerimine lennult on sees või mitte. Klikka ikoonile et teha projekti seadete dialoogi kaudu sellele käitumisele muudatus.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1461"/>
+        <location filename="../src/app/qgisapp.cpp" line="1458"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS olek - Kliki et avada koordinaatide referentssüsteemi dialoog</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1466"/>
+        <location filename="../src/app/qgisapp.cpp" line="1463"/>
         <source>Ready</source>
         <translation>Valmis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1793"/>
+        <location filename="../src/app/qgisapp.cpp" line="1790"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Kaardi ülevaateaken. See aken on nähtava kaardiakna asukoha näitamiseks kogu kaardi ulatuses. Nähtava kaardi ulatus on näidatud punase nelinurgana. Kõiki kihte kaardil saab lisada ka ülevaateaknasse.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1802"/>
+        <location filename="../src/app/qgisapp.cpp" line="1799"/>
         <source>Overview</source>
         <translation>Ülevaade</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1863"/>
+        <location filename="../src/app/qgisapp.cpp" line="1860"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Kaardilegend kus näidatakse kõiki kihte mis kaardiaknas kasutusel on. Kliki valikukastile et kihti sisse või välja lülitada. Kaardilegendis topeltklikk kihil avab kujunduse ja teiste seadete määramise valiku.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1864"/>
+        <location filename="../src/app/qgisapp.cpp" line="1861"/>
         <source>Layers</source>
         <translation>Kihid</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="1865"/>
         <location filename="../src/app/qgisapp.cpp" line="1868"/>
-        <location filename="../src/app/qgisapp.cpp" line="1871"/>
         <source>Control rendering order</source>
         <translation>Juhi renderdamise järjekorda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1891"/>
+        <location filename="../src/app/qgisapp.cpp" line="1888"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>Kaardista kihtide nimekiri mis näitab kõiki kihte joonestamise järjekorras.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1892"/>
+        <location filename="../src/app/qgisapp.cpp" line="1889"/>
         <source>Layer order</source>
         <translation>Kihi järjekord</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1932"/>
+        <location filename="../src/app/qgisapp.cpp" line="1929"/>
         <source>[ERROR] Can not make qgis.db private copy</source>
         <translation>[VIGA] Ei saa luua qgis.db eraldi koopiat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1942"/>
-        <location filename="../src/app/qgisapp.cpp" line="1984"/>
+        <location filename="../src/app/qgisapp.cpp" line="1939"/>
+        <location filename="../src/app/qgisapp.cpp" line="1981"/>
         <source>Private qgis.db</source>
         <translation>Isiklik qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1942"/>
+        <location filename="../src/app/qgisapp.cpp" line="1939"/>
         <source>Could not open qgis.db</source>
         <translation>Ei saanud avada qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1984"/>
+        <location filename="../src/app/qgisapp.cpp" line="1981"/>
         <source>Migration of private qgis.db failed.
 %1</source>
         <translation>Isikliku qgis.db üleviimine ebaõnnestus.
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2152"/>
+        <location filename="../src/app/qgisapp.cpp" line="2149"/>
         <source>QGIS version</source>
         <translation>QGIS versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2153"/>
+        <location filename="../src/app/qgisapp.cpp" line="2150"/>
         <source>QGIS code revision</source>
         <translation>QGIS koodi revisjon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2157"/>
+        <location filename="../src/app/qgisapp.cpp" line="2154"/>
         <source>Compiled against Qt</source>
         <translation>Kompileeritud Qt-le</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2158"/>
+        <location filename="../src/app/qgisapp.cpp" line="2155"/>
         <source>Running against Qt</source>
         <translation>Töötab Qt-s</translation>
     </message>
@@ -9177,33 +9177,33 @@ Palun kontakteeru arendajatega.
         <translation type="obsolete">GDAL/OGR versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2167"/>
+        <location filename="../src/app/qgisapp.cpp" line="2164"/>
         <source>GEOS Version</source>
         <translation>GEOS versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2168"/>
+        <location filename="../src/app/qgisapp.cpp" line="2165"/>
         <source>PostgreSQL Client Version</source>
         <translation>PostgreSQL kliendi versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2172"/>
-        <location filename="../src/app/qgisapp.cpp" line="2182"/>
+        <location filename="../src/app/qgisapp.cpp" line="2169"/>
+        <location filename="../src/app/qgisapp.cpp" line="2179"/>
         <source>No support.</source>
         <translation>Toetuseta.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2178"/>
+        <location filename="../src/app/qgisapp.cpp" line="2175"/>
         <source>SpatiaLite Version</source>
         <translation>SpatiaLite versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2187"/>
+        <location filename="../src/app/qgisapp.cpp" line="2184"/>
         <source>QWT Version</source>
         <translation>QWT versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2190"/>
+        <location filename="../src/app/qgisapp.cpp" line="2187"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>See koopia QGIS-ist kirjutab silumise väljundi.</translation>
     </message>
@@ -9500,74 +9500,74 @@ Palun kontakteeru arendajatega.
         <translation type="obsolete">Tagasi/Edasi liikumine print composer`is</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2302"/>
+        <location filename="../src/app/qgisapp.cpp" line="2299"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1 kihid puuduvad</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2303"/>
-        <location filename="../src/app/qgisapp.cpp" line="2310"/>
-        <location filename="../src/app/qgisapp.cpp" line="6789"/>
+        <location filename="../src/app/qgisapp.cpp" line="2300"/>
+        <location filename="../src/app/qgisapp.cpp" line="2307"/>
+        <location filename="../src/app/qgisapp.cpp" line="6786"/>
         <source>Invalid Data Source</source>
         <translation>Vigane andmeallikas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2309"/>
+        <location filename="../src/app/qgisapp.cpp" line="2306"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ei ole toimiv või arusaadav andmeallikas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2364"/>
+        <location filename="../src/app/qgisapp.cpp" line="2361"/>
         <source>Select raster layers to add...</source>
         <translation>Vali lisamiseks rasterkiht...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2369"/>
+        <location filename="../src/app/qgisapp.cpp" line="2366"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2447"/>
+        <location filename="../src/app/qgisapp.cpp" line="2444"/>
         <source>Select vector layers to add...</source>
         <translation>Vali lisamiseks vektorkiht...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2510"/>
+        <location filename="../src/app/qgisapp.cpp" line="2507"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2510"/>
+        <location filename="../src/app/qgisapp.cpp" line="2507"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>Ei saa PostgreSQL-ist select dialoogi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2566"/>
+        <location filename="../src/app/qgisapp.cpp" line="2563"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 on vigane kiht - ei laadita</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2567"/>
+        <location filename="../src/app/qgisapp.cpp" line="2564"/>
         <source>Invalid Layer</source>
         <translation>Vigane kiht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2567"/>
+        <location filename="../src/app/qgisapp.cpp" line="2564"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 on kiht vigane ja seda ei saa laadida.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2601"/>
+        <location filename="../src/app/qgisapp.cpp" line="2598"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2601"/>
+        <location filename="../src/app/qgisapp.cpp" line="2598"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>Ei saa SpatiaLite-ist select dialoogi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2626"/>
+        <location filename="../src/app/qgisapp.cpp" line="2623"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
@@ -9576,37 +9576,37 @@ Palun kontakteeru arendajatega.
         <translation type="obsolete">Ei saa MS SQL select dialoogi pakkujalt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2650"/>
+        <location filename="../src/app/qgisapp.cpp" line="2647"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2650"/>
+        <location filename="../src/app/qgisapp.cpp" line="2647"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>Ei saa WMS pakkujalt select dialoogi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2679"/>
+        <location filename="../src/app/qgisapp.cpp" line="2676"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2679"/>
+        <location filename="../src/app/qgisapp.cpp" line="2676"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>Ei saa WFS pakkujalt select dialoogi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2869"/>
+        <location filename="../src/app/qgisapp.cpp" line="2866"/>
         <source>Calculating...</source>
         <translation>Teen arvutusi...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2869"/>
+        <location filename="../src/app/qgisapp.cpp" line="2866"/>
         <source>Abort...</source>
         <translation>Nurja...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2895"/>
+        <location filename="../src/app/qgisapp.cpp" line="2892"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Vali avamiseks QGIS projekti fail</translation>
     </message>
@@ -9615,135 +9615,135 @@ Palun kontakteeru arendajatega.
         <translation type="obsolete">QGIS failid (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2922"/>
+        <location filename="../src/app/qgisapp.cpp" line="2919"/>
         <source>QGIS Project Read Error</source>
         <translation>Viga QGIS projekti lugemisel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2963"/>
+        <location filename="../src/app/qgisapp.cpp" line="2960"/>
         <source>Unable to open project</source>
         <translation>Ei saa avada projektifaili</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3038"/>
+        <location filename="../src/app/qgisapp.cpp" line="3035"/>
         <source>Choose a QGIS project file</source>
         <translation>Vali QGIS projekti fail</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3059"/>
-        <location filename="../src/app/qgisapp.cpp" line="3111"/>
+        <location filename="../src/app/qgisapp.cpp" line="3056"/>
+        <location filename="../src/app/qgisapp.cpp" line="3108"/>
         <source>Saved project to: %1</source>
         <translation>Projekt salvestatud: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3071"/>
-        <location filename="../src/app/qgisapp.cpp" line="3118"/>
+        <location filename="../src/app/qgisapp.cpp" line="3068"/>
+        <location filename="../src/app/qgisapp.cpp" line="3115"/>
         <source>Unable to save project %1</source>
         <translation>Ei saa salvestada projekti %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3090"/>
+        <location filename="../src/app/qgisapp.cpp" line="3087"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Vali salvestatavale QGIS projekti failile nimi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3202"/>
+        <location filename="../src/app/qgisapp.cpp" line="3199"/>
         <source>Unable to load %1</source>
         <translation>Ei saa laadida %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3245"/>
+        <location filename="../src/app/qgisapp.cpp" line="3242"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Vali salvestatavale kaardipildile nimi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3250"/>
+        <location filename="../src/app/qgisapp.cpp" line="3247"/>
         <source>Saved map image to %1</source>
         <translation>Salvestatud kaardipilt kohta %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3559"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
         <source>Labeling</source>
         <translation>Märgistamine</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3559"/>
+        <location filename="../src/app/qgisapp.cpp" line="3556"/>
         <source>Please select a vector layer first.</source>
         <translation>Palun vali enne vektorkiht välja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3675"/>
+        <location filename="../src/app/qgisapp.cpp" line="3672"/>
         <source>Saving done</source>
         <translation>Salvestatud</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3675"/>
+        <location filename="../src/app/qgisapp.cpp" line="3672"/>
         <source>Export to vector file has been completed</source>
         <translation>Vektorfaili eksport on teostatud</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3680"/>
+        <location filename="../src/app/qgisapp.cpp" line="3677"/>
         <source>Save error</source>
         <translation>Viga salvestamisel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3681"/>
+        <location filename="../src/app/qgisapp.cpp" line="3678"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Eksport vektorfaili ebaõnnestus.
 Veateade: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3713"/>
-        <location filename="../src/app/qgisapp.cpp" line="5153"/>
-        <location filename="../src/app/qgisapp.cpp" line="5200"/>
+        <location filename="../src/app/qgisapp.cpp" line="3710"/>
+        <location filename="../src/app/qgisapp.cpp" line="5150"/>
+        <location filename="../src/app/qgisapp.cpp" line="5197"/>
         <source>No Layer Selected</source>
         <translation>Kiht valimata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3714"/>
+        <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Nähtuse kustutamiseks tuleb eelnevalt valida legendist tema vektorkiht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3722"/>
+        <location filename="../src/app/qgisapp.cpp" line="3719"/>
         <source>No Vector Layer Selected</source>
         <translation>Vektorkiht valimata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3723"/>
+        <location filename="../src/app/qgisapp.cpp" line="3720"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Nähtuste kustutamine toimib ainult vektorkihtidel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3729"/>
+        <location filename="../src/app/qgisapp.cpp" line="3726"/>
         <source>Provider does not support deletion</source>
         <translation>Pakkuja ei luba kustutada</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3730"/>
+        <location filename="../src/app/qgisapp.cpp" line="3727"/>
         <source>Data provider does not support deleting features</source>
         <translation>Andmehaldur ei luba nähtusi kustutada</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3736"/>
-        <location filename="../src/app/qgisapp.cpp" line="4030"/>
-        <location filename="../src/app/qgisapp.cpp" line="4089"/>
+        <location filename="../src/app/qgisapp.cpp" line="3733"/>
+        <location filename="../src/app/qgisapp.cpp" line="4027"/>
+        <location filename="../src/app/qgisapp.cpp" line="4086"/>
         <source>Layer not editable</source>
         <translation>Kiht ei ole redigeeritav</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3737"/>
+        <location filename="../src/app/qgisapp.cpp" line="3734"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>See kiht ei ole redigeeritav. Vali digimise tööribalt &apos;Alusta redigeerimist &apos;.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3743"/>
+        <location filename="../src/app/qgisapp.cpp" line="3740"/>
         <source>Delete features</source>
         <translation>Kustuta nähtuseid</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3743"/>
+        <location filename="../src/app/qgisapp.cpp" line="3740"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -9752,141 +9752,141 @@ Veateade: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3748"/>
+        <location filename="../src/app/qgisapp.cpp" line="3745"/>
         <source>Features deleted</source>
         <translation>Nähtus kustutatud</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3751"/>
+        <location filename="../src/app/qgisapp.cpp" line="3748"/>
         <source>Problem deleting features</source>
         <translation>Probleem nähtuse kustutamisega</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3752"/>
+        <location filename="../src/app/qgisapp.cpp" line="3749"/>
         <source>A problem occured during deletion of features</source>
         <translation>Ilmnes viga nähtuse kustutamisel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3798"/>
+        <location filename="../src/app/qgisapp.cpp" line="3795"/>
         <source>Merging features...</source>
         <translation>Nähtuste liitmine...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3798"/>
+        <location filename="../src/app/qgisapp.cpp" line="3795"/>
         <source>Abort</source>
         <translation>Nurja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3851"/>
-        <location filename="../src/app/qgisapp.cpp" line="3886"/>
+        <location filename="../src/app/qgisapp.cpp" line="3848"/>
+        <location filename="../src/app/qgisapp.cpp" line="3883"/>
         <source>Composer %1</source>
         <translation>Composer %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4017"/>
-        <location filename="../src/app/qgisapp.cpp" line="4078"/>
+        <location filename="../src/app/qgisapp.cpp" line="4014"/>
+        <location filename="../src/app/qgisapp.cpp" line="4075"/>
         <source>No active layer</source>
         <translation>Aktiivsete kihtideta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4017"/>
-        <location filename="../src/app/qgisapp.cpp" line="4078"/>
+        <location filename="../src/app/qgisapp.cpp" line="4014"/>
+        <location filename="../src/app/qgisapp.cpp" line="4075"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Ei leidnud aktiivseid kihte. Palun vali kiht kihtide nimekirjast</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4024"/>
-        <location filename="../src/app/qgisapp.cpp" line="4084"/>
+        <location filename="../src/app/qgisapp.cpp" line="4021"/>
+        <location filename="../src/app/qgisapp.cpp" line="4081"/>
         <source>Active layer is not vector</source>
         <translation>Aktiivne kiht ei ole vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4024"/>
-        <location filename="../src/app/qgisapp.cpp" line="4084"/>
+        <location filename="../src/app/qgisapp.cpp" line="4021"/>
+        <location filename="../src/app/qgisapp.cpp" line="4081"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Kokkuliitmise vahendid toimivad ainult vektorkihtidel. Palun vali vektorkiht kihtide nimekirjast</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4030"/>
-        <location filename="../src/app/qgisapp.cpp" line="4089"/>
+        <location filename="../src/app/qgisapp.cpp" line="4027"/>
+        <location filename="../src/app/qgisapp.cpp" line="4086"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Kokkuliitmise vahendid töötavad vaid redigeerimisreziimis. Et kokkuliitmine toimiks mine Kiht -&gt; Redigeerimisrežiimi lüliti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4038"/>
-        <location filename="../src/app/qgisapp.cpp" line="4104"/>
-        <location filename="../src/app/qgisapp.cpp" line="4141"/>
+        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4101"/>
+        <location filename="../src/app/qgisapp.cpp" line="4138"/>
         <source>Not enough features selected</source>
         <translation>Ei ole piisavalt nähtusi valitud</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4038"/>
-        <location filename="../src/app/qgisapp.cpp" line="4104"/>
-        <location filename="../src/app/qgisapp.cpp" line="4141"/>
+        <location filename="../src/app/qgisapp.cpp" line="4035"/>
+        <location filename="../src/app/qgisapp.cpp" line="4101"/>
+        <location filename="../src/app/qgisapp.cpp" line="4138"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Kokkuliitmise töövahend vajab vähemalt kahte valitud nähtust</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4052"/>
+        <location filename="../src/app/qgisapp.cpp" line="4049"/>
         <source>Merged feature attributes</source>
         <translation>Liidetud nähtuse atribuudid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4116"/>
-        <location filename="../src/app/qgisapp.cpp" line="4156"/>
+        <location filename="../src/app/qgisapp.cpp" line="4113"/>
+        <location filename="../src/app/qgisapp.cpp" line="4153"/>
         <source>Merge failed</source>
         <translation>Kokkuliitmine ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4116"/>
-        <location filename="../src/app/qgisapp.cpp" line="4156"/>
+        <location filename="../src/app/qgisapp.cpp" line="4113"/>
+        <location filename="../src/app/qgisapp.cpp" line="4153"/>
         <source>An error occured during the merge operation</source>
         <translation>Ilmnes viga kokkuliitmisel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4124"/>
+        <location filename="../src/app/qgisapp.cpp" line="4121"/>
         <source>Union operation canceled</source>
         <translation>Ühendamise operatsioon katkestati</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4124"/>
-        <location filename="../src/app/qgisapp.cpp" line="4163"/>
+        <location filename="../src/app/qgisapp.cpp" line="4121"/>
+        <location filename="../src/app/qgisapp.cpp" line="4160"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Ühendamise operatsioon tekitab geomeetria, mis ei ole sobiv sellele kihile ja seetõttu katkestati</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4169"/>
+        <location filename="../src/app/qgisapp.cpp" line="4166"/>
         <source>Merged features</source>
         <translation>Liidetud nähtused</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4311"/>
+        <location filename="../src/app/qgisapp.cpp" line="4308"/>
         <source>Features cut</source>
         <translation>Nähtused lõigatud</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4343"/>
+        <location filename="../src/app/qgisapp.cpp" line="4340"/>
         <source>Features pasted</source>
         <translation>Nähtused kleebitud</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4407"/>
+        <location filename="../src/app/qgisapp.cpp" line="4404"/>
         <source>Cannot copy style: %1</source>
         <translation>Ei saa kopeerida stiili: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4433"/>
+        <location filename="../src/app/qgisapp.cpp" line="4430"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>Ei saa sõeluda stiili: %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4445"/>
+        <location filename="../src/app/qgisapp.cpp" line="4442"/>
         <source>Cannot read style: %1</source>
         <translation>Ei saa lugeda stiili: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4524"/>
-        <location filename="../src/app/qgisapp.cpp" line="4618"/>
+        <location filename="../src/app/qgisapp.cpp" line="4521"/>
+        <location filename="../src/app/qgisapp.cpp" line="4615"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -9897,32 +9897,32 @@ Veateade: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4581"/>
+        <location filename="../src/app/qgisapp.cpp" line="4578"/>
         <source>Start editing failed</source>
         <translation>Redigeerimise alustamine ebaõnnestus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4581"/>
+        <location filename="../src/app/qgisapp.cpp" line="4578"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Pakkuja ei saa olla avatud redigeerimiseks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4605"/>
+        <location filename="../src/app/qgisapp.cpp" line="4602"/>
         <source>Stop editing</source>
         <translation>Lõpeta redigeerimine</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4606"/>
+        <location filename="../src/app/qgisapp.cpp" line="4603"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Kas soovid salvestada muudatused kihil %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4633"/>
+        <location filename="../src/app/qgisapp.cpp" line="4630"/>
         <source>Problems during roll back</source>
         <translation>Probleemid tagasivõtmisel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4707"/>
+        <location filename="../src/app/qgisapp.cpp" line="4704"/>
         <source>Invalid scale</source>
         <translation>Vigane skaala</translation>
     </message>
@@ -9932,97 +9932,97 @@ Veateade: %2
         <translation>GPS informatsioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1172"/>
+        <location filename="../src/app/qgisapp.cpp" line="1169"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Aken</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2162"/>
+        <location filename="../src/app/qgisapp.cpp" line="2159"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>Kompileeritud GDAL/OGR-le</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2163"/>
+        <location filename="../src/app/qgisapp.cpp" line="2160"/>
         <source>Running against GDAL/OGR</source>
         <translation>Töötab  GDAL/OGR-s</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2626"/>
+        <location filename="../src/app/qgisapp.cpp" line="2623"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>Ei saa MSSQL select dialoogi pakkujalt.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2897"/>
-        <location filename="../src/app/qgisapp.cpp" line="3040"/>
-        <location filename="../src/app/qgisapp.cpp" line="3092"/>
+        <location filename="../src/app/qgisapp.cpp" line="2894"/>
+        <location filename="../src/app/qgisapp.cpp" line="3037"/>
+        <location filename="../src/app/qgisapp.cpp" line="3089"/>
         <source>QGis files</source>
         <translation>QGis failid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4879"/>
+        <location filename="../src/app/qgisapp.cpp" line="4876"/>
         <source>Tile scale</source>
         <translation>Tüki skaala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4968"/>
+        <location filename="../src/app/qgisapp.cpp" line="4965"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Ei saanud laadida Python toe kogu: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4979"/>
+        <location filename="../src/app/qgisapp.cpp" line="4976"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Ei suutnud lahendada python toe kogu instance() sümbolit.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4994"/>
+        <location filename="../src/app/qgisapp.cpp" line="4991"/>
         <source>Python support ENABLED :-) </source>
         <translation>Python tugi SEES :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5042"/>
+        <location filename="../src/app/qgisapp.cpp" line="5039"/>
         <source>There is a new version of QGIS available</source>
         <translation>On uuem QGIS versioon saadaval</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5046"/>
+        <location filename="../src/app/qgisapp.cpp" line="5043"/>
         <source>You are running a development version of QGIS</source>
         <translation>Praegune töötav QGIS versioon on arendusjärgus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5050"/>
+        <location filename="../src/app/qgisapp.cpp" line="5047"/>
         <source>You are running the current version of QGIS</source>
         <translation>Praegune töötav QGIS versioon on praegune</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5055"/>
+        <location filename="../src/app/qgisapp.cpp" line="5052"/>
         <source>Would you like more information?</source>
         <translation>Kas soovid rohkem informatsiooni?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5058"/>
-        <location filename="../src/app/qgisapp.cpp" line="5071"/>
-        <location filename="../src/app/qgisapp.cpp" line="5076"/>
-        <location filename="../src/app/qgisapp.cpp" line="5097"/>
+        <location filename="../src/app/qgisapp.cpp" line="5055"/>
+        <location filename="../src/app/qgisapp.cpp" line="5068"/>
+        <location filename="../src/app/qgisapp.cpp" line="5073"/>
+        <location filename="../src/app/qgisapp.cpp" line="5094"/>
         <source>QGIS Version Information</source>
         <translation>QGIS versiooniinformatsioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5064"/>
+        <location filename="../src/app/qgisapp.cpp" line="5061"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - Muudatused peale viimast väljalaset </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5076"/>
+        <location filename="../src/app/qgisapp.cpp" line="5073"/>
         <source>Unable to get current version information from server</source>
         <translation>Ei saa serverilt informatsiooni olemasoleva versiooni kohta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5086"/>
+        <location filename="../src/app/qgisapp.cpp" line="5083"/>
         <source>Connection refused - server may be down</source>
         <translation>Ühendust ei ole - server võib olla maas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5089"/>
+        <location filename="../src/app/qgisapp.cpp" line="5086"/>
         <source>QGIS server was not found</source>
         <translation>QGIS serverit ei leitud</translation>
     </message>
@@ -10035,102 +10035,102 @@ Veateade: %2
         <translation type="obsolete">Tundmatu võrgu ühenduse viga</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5097"/>
+        <location filename="../src/app/qgisapp.cpp" line="5094"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Ei saa kommunikeerida QGIS versiooni serveriga
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5154"/>
-        <location filename="../src/app/qgisapp.cpp" line="5163"/>
+        <location filename="../src/app/qgisapp.cpp" line="5151"/>
+        <location filename="../src/app/qgisapp.cpp" line="5160"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Et saaks histogrammi maksimaalselt venitada, on vaja rasterkiht eelnevalt välja valida.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5162"/>
-        <location filename="../src/app/qgisapp.cpp" line="5209"/>
+        <location filename="../src/app/qgisapp.cpp" line="5159"/>
+        <location filename="../src/app/qgisapp.cpp" line="5206"/>
         <source>No Raster Layer Selected</source>
         <translation>Rasterkiht on valimata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5185"/>
-        <location filename="../src/app/qgisapp.cpp" line="5228"/>
+        <location filename="../src/app/qgisapp.cpp" line="5182"/>
+        <location filename="../src/app/qgisapp.cpp" line="5225"/>
         <source>No Valid Raster Layer Selected</source>
         <translation>Sobiv rasterkiht valimata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5186"/>
-        <location filename="../src/app/qgisapp.cpp" line="5229"/>
+        <location filename="../src/app/qgisapp.cpp" line="5183"/>
+        <location filename="../src/app/qgisapp.cpp" line="5226"/>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
         <translation>Et saaks teha lokaalse histogrammi venituse, on vaja halltoone või multilõimes (multilõimes üksik kiht, ühelõimelisena halltoonid või multilõimes värvusena) rasterkiht valitud.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5201"/>
-        <location filename="../src/app/qgisapp.cpp" line="5210"/>
+        <location filename="../src/app/qgisapp.cpp" line="5198"/>
+        <location filename="../src/app/qgisapp.cpp" line="5207"/>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
         <translation>Et teha lokaalne histogrammi venitus, on vaja rasterkiht eelnevalt välja valida.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5344"/>
-        <location filename="../src/app/qgisapp.cpp" line="5388"/>
-        <location filename="../src/app/qgisapp.cpp" line="6878"/>
+        <location filename="../src/app/qgisapp.cpp" line="5341"/>
+        <location filename="../src/app/qgisapp.cpp" line="5385"/>
+        <location filename="../src/app/qgisapp.cpp" line="6875"/>
         <source>Layer is not valid</source>
         <translation>Kiht ei ole kehtiv</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5345"/>
+        <location filename="../src/app/qgisapp.cpp" line="5342"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Kiht %1 ei ole kehtiv ja seda ei saa lisada kaardile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5389"/>
-        <location filename="../src/app/qgisapp.cpp" line="6879"/>
+        <location filename="../src/app/qgisapp.cpp" line="5386"/>
+        <location filename="../src/app/qgisapp.cpp" line="6876"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Kiht ei ole kehtiv ja seda ei saa kaardile lisada</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5467"/>
+        <location filename="../src/app/qgisapp.cpp" line="5464"/>
         <source>Save?</source>
         <translation>Salvestan?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5468"/>
+        <location filename="../src/app/qgisapp.cpp" line="5465"/>
         <source>Do you want to save the current project?</source>
         <translation>Kas soovid seda projekti salvestada?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6027"/>
+        <location filename="../src/app/qgisapp.cpp" line="6024"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>Olemasolev CRS: %1 (OTFR sees)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6034"/>
+        <location filename="../src/app/qgisapp.cpp" line="6031"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>Olemasolev CRS: %1 (OTFR väljas)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6087"/>
+        <location filename="../src/app/qgisapp.cpp" line="6084"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Kaardikoordinaadid olemasoleva vaate ulatuseks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6095"/>
+        <location filename="../src/app/qgisapp.cpp" line="6092"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Kaardikoordinaadid hiirekursori asukohal</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6147"/>
+        <location filename="../src/app/qgisapp.cpp" line="6144"/>
         <source>Extents:</source>
         <translation>Ulatused:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6219"/>
+        <location filename="../src/app/qgisapp.cpp" line="6216"/>
         <source>Maptips require an active layer</source>
         <translation>Kaardivihjed tulevad aktiivselt kihilt</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6304"/>
+        <location filename="../src/app/qgisapp.cpp" line="6301"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -10139,22 +10139,22 @@ Veateade: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6690"/>
+        <location filename="../src/app/qgisapp.cpp" line="6687"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Ava GDAL-i toetatud rasterformaadid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6788"/>
+        <location filename="../src/app/qgisapp.cpp" line="6785"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 ei ole lubatud või arusaadav rasterformaat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6972"/>
+        <location filename="../src/app/qgisapp.cpp" line="6969"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 ei ole toetatud rasterformaat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6977"/>
+        <location filename="../src/app/qgisapp.cpp" line="6974"/>
         <source>Unsupported Data Source</source>
         <translation>Formaat ei ole toetatud</translation>
     </message>
@@ -10171,63 +10171,63 @@ Veateade: %2
         <translation type="obsolete">Ei saa luua bookmarki. Sinu kasutaja andmebaas võib olla puudu või vigane</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7110"/>
+        <location filename="../src/app/qgisapp.cpp" line="7107"/>
         <source>Project file is older</source>
         <translation>Projektifail on vanem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7092"/>
+        <location filename="../src/app/qgisapp.cpp" line="7089"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;See projektifail on salvestatud käesolevast QGIS versioonist vanemaga. Kui see projektifail salvestada, siis QGIS salvestab ta viimasesse versiooni ning võib juhtuda et vanematele versioonidele kasutuks muutvalt.&lt;p&gt;Sellegipoolest QGIS arendajad püüavad säilitada seal sisalduvat seadistust, võib osa andmestikku minna kaotsi. Et tõsta QGIS-i kvaliteeti, olema tänulikud kui saadad vearaporti kohta %3. Kindlasti lisa vana projektifail ja QGIS-i versioon kus viga ilmnes.&lt;p&gt;Et hoiatus eemaldada vanema projektifaili avamisel, tuleb võtta ära linnukene  &apos;%5&apos; menüüs %4.&lt;p&gt;Projektifaili versioon: %1&lt;p&gt;Kasutusel QGIS-i versioon:%2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5092"/>
+        <location filename="../src/app/qgisapp.cpp" line="5089"/>
         <source>Unknown network socket error: %1</source>
         <translation>Tundmatu võrgupesa viga: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7108"/>
+        <location filename="../src/app/qgisapp.cpp" line="7105"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Seaded:Valikud:Üldine&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7109"/>
+        <location filename="../src/app/qgisapp.cpp" line="7106"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Hoiata mind kui avan vanema projektifaili kui praegune QGIS versioon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7114"/>
+        <location filename="../src/app/qgisapp.cpp" line="7111"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>See projektifail salvestati QGIS-i vanema versioonina</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7291"/>
+        <location filename="../src/app/qgisapp.cpp" line="7288"/>
         <source>Warning</source>
         <translation>Hoiatus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7291"/>
+        <location filename="../src/app/qgisapp.cpp" line="7288"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Sellel kihil ei ole omaduste dialoogi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7322"/>
+        <location filename="../src/app/qgisapp.cpp" line="7319"/>
         <source>Authentication required</source>
         <translation>Autoriseerimine vajalik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7338"/>
+        <location filename="../src/app/qgisapp.cpp" line="7335"/>
         <source>Proxy authentication required</source>
         <translation>Proxy autoriseerimine vajalik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7349"/>
+        <location filename="../src/app/qgisapp.cpp" line="7346"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL vead ilmnesid kui URL-ilt %1 siseneti:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7362"/>
+        <location filename="../src/app/qgisapp.cpp" line="7359"/>
         <source>
 
 Always ignore these errors?</source>
@@ -10236,7 +10236,7 @@ Always ignore these errors?</source>
 Alati ignoreeri neid veateateid?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="7366"/>
+        <location filename="../src/app/qgisapp.cpp" line="7363"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -25313,12 +25313,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="266"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="566"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Jäta atribuut vahele</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="268"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Vahele jäetud</translation>
     </message>
 </context>
 <context>
