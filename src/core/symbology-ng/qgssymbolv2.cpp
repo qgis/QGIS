@@ -24,6 +24,9 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
+#include "qgsproject.h"
+#include "qgsstylev2.h"
+
 #include <QColor>
 #include <QImage>
 #include <QPainter>
@@ -60,19 +63,47 @@ QgsSymbolV2::~QgsSymbolV2()
 
 QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
 {
-  QgsSymbolV2* s;
+  QgsSymbolV2* s = 0;
+
+  // override global default if project has a default for this type
+  QString defaultSymbol;
   switch ( geomType )
   {
-    case QGis::Point: s = new QgsMarkerSymbolV2(); break;
-    case QGis::Line:  s = new QgsLineSymbolV2(); break;
-    case QGis::Polygon: s = new QgsFillSymbolV2(); break;
-    default: QgsDebugMsg( "unknown layer's geometry type" ); return NULL;
+    case QGis::Point :
+      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
+      break;
+    case QGis::Line :
+      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
+      break;
+    case QGis::Polygon :
+      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
+      break;
+    default: defaultSymbol = ""; break;
+  }
+  if ( defaultSymbol != "" )
+    s = QgsStyleV2::defaultStyle()->symbol( defaultSymbol );
+
+  // if no default found for this type, get global default (as previously)
+  if ( ! s )
+  {
+    switch ( geomType )
+    {
+      case QGis::Point: s = new QgsMarkerSymbolV2(); break;
+      case QGis::Line:  s = new QgsLineSymbolV2(); break;
+      case QGis::Polygon: s = new QgsFillSymbolV2(); break;
+      default: QgsDebugMsg( "unknown layer's geometry type" ); return NULL;
+    }
   }
 
-  s->setColor( QColor::fromHsv( rand() % 360, 64 + rand() % 192, 128 + rand() % 128 ) );
+  // set random color, it project prefs allow
+  if ( defaultSymbol == "" ||
+       QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) )
+  {
+    s->setColor( QColor::fromHsv( rand() % 360, 64 + rand() % 192, 128 + rand() % 128 ) );
+  }
+
   return s;
 }
-
 
 QgsSymbolLayerV2* QgsSymbolV2::symbolLayer( int layer )
 {

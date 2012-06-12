@@ -31,6 +31,11 @@
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
+#include "qgsstylev2managerdialog.h"
+#include "qgsvectorcolorrampv2.h"
+#include "qgssymbolv2propertiesdialog.h"
 
 //qt includes
 #include <QColorDialog>
@@ -276,6 +281,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   twWFSLayers->setRowCount( j );
   twWFSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
+  // Default Styles
+  mStyle = QgsStyleV2::defaultStyle();
+  populateStyles();
+
   restoreState();
 }
 
@@ -506,6 +515,13 @@ void QgsProjectProperties::apply()
   }
   QgsProject::instance()->writeEntry( "WFSLayers", "/", wfsLayerList );
 
+  // Default Styles
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/Marker", cboStyleMarker->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/Line", cboStyleLine->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/Fill", cboStyleFill->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
+
   //todo XXX set canvas color
   emit refresh();
 }
@@ -677,3 +693,136 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
 }
+
+void QgsProjectProperties::populateStyles()
+{
+  // Styles - taken from qgsstylev2managerdialog
+
+  // use QComboBox and QString lists for shorter code
+  QStringList prefList;
+  QList<QComboBox*> cboList;
+  cboList << cboStyleMarker;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
+  cboList << cboStyleLine;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
+  cboList << cboStyleFill;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
+  cboList << cboStyleColorRamp;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
+  for ( int i = 0; i < cboList.count(); i++ )
+  {
+    cboList[i]->clear();
+    cboList[i]->addItem( "" );
+  }
+
+  // populate symbols
+  QStringList symbolNames = mStyle->symbolNames();
+  for ( int i = 0; i < symbolNames.count(); ++i )
+  {
+    QString name = symbolNames[i];
+    QgsSymbolV2* symbol = mStyle->symbol( name );
+    QComboBox* cbo = 0;
+    switch ( symbol->type() )
+    {
+      case QgsSymbolV2::Marker :
+        cbo = cboStyleMarker;
+        break;
+      case QgsSymbolV2::Line :
+        cbo = cboStyleLine;
+        break;
+      case QgsSymbolV2::Fill :
+        cbo = cboStyleFill;
+        break;
+    }
+    if ( cbo )
+    {
+      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, cbo->iconSize() );
+      cbo->addItem( icon, name );
+    }
+    delete symbol;
+  }
+
+  // populate color ramps
+  QStringList colorRamps = mStyle->colorRampNames();
+  for ( int i = 0; i < colorRamps.count(); ++i )
+  {
+    QString name = colorRamps[i];
+    QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
+    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, cboStyleColorRamp->iconSize() );
+    cboStyleColorRamp->addItem( icon, name );
+    delete ramp;
+  }
+
+  // set current index if found
+  for ( int i = 0; i < cboList.count(); i++ )
+  {
+    int index = cboList[i]->findText( prefList[i], Qt::MatchCaseSensitive );
+    if ( index >= 0 )
+      cboList[i]->setCurrentIndex( index );
+  }
+
+  // random colors?
+  cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) );
+
+}
+
+void QgsProjectProperties::on_pbtnStyleManager_clicked()
+{
+  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  dlg.exec();
+  populateStyles();
+}
+
+void QgsProjectProperties::on_pbtnStyleMarker_clicked()
+{
+  editSymbol( cboStyleMarker );
+}
+
+void QgsProjectProperties::on_pbtnStyleLine_clicked()
+{
+  editSymbol( cboStyleLine );
+}
+
+void QgsProjectProperties::on_pbtnStyleFill_clicked()
+{
+  editSymbol( cboStyleFill );
+}
+
+void QgsProjectProperties::editSymbol( QComboBox* cbo )
+{
+  QString symbolName = cbo->currentText();
+  if ( symbolName == "" )
+  {
+    QMessageBox::information( this, "", tr( "Select a valid symbol" ) );
+    return;
+  }
+  QgsSymbolV2* symbol = mStyle->symbol( symbolName );
+  if ( ! symbol )
+  {
+    QMessageBox::warning( this, "", tr( "Invalid symbol : " ) + symbolName );
+    return;
+  }
+
+  // let the user edit the symbol and update list when done
+  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
+  if ( dlg.exec() == 0 )
+  {
+    delete symbol;
+    return;
+  }
+
+  // by adding symbol to style with the same name the old effectively gets overwritten
+  mStyle->addSymbol( symbolName, symbol );
+
+  // update icon
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, cbo->iconSize() );
+  cbo->setItemIcon( cbo->currentIndex(), icon );
+}
+
+void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
+{
+  // TODO for now just open style manager
+  // code in QgsStyleV2ManagerDialog::editColorRamp()
+  on_pbtnStyleManager_clicked();
+}
+

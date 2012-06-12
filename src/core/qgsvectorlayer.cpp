@@ -70,6 +70,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgsstylev2.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
