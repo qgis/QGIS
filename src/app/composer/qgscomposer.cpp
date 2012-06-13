@@ -767,7 +767,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
     m->setCheckBoxQSettingsLabel( settingsLabel );
-    m->setMessageAsHtml( tr( "<p>The SVG export function in Qgis has several "
+    m->setMessageAsHtml( tr( "<p>The SVG export function in QGIS has several "
                              "problems due to bugs and deficiencies in the " )
                          + tr( "Qt4 svg code. In particular, there are problems "
                                "with layers not being clipped to the map "

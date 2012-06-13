@@ -591,7 +591,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     mShowInvalidLines = false;
     QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Error" ) );
-    output->setMessage( tr( "Note: the following lines were not loaded because Qgis was "
+    output->setMessage( tr( "Note: the following lines were not loaded because QGIS was "
                             "unable to determine values for the x and y coordinates:\n" ),
                         QgsMessageOutput::MessageText );
 
