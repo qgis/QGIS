@@ -680,16 +680,6 @@
           <string>GDAL Drivers</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_24">
-          <item row="1" column="0">
-           <widget class="QListWidget" name="lstGdalDrivers">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>141</height>
-             </size>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_17">
             <property name="text">
@@ -698,6 +688,36 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTreeWidget" name="lstGdalDrivers">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>141</height>
+             </size>
+            </property>
+            <column>
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>ext</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Flags</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Description</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>

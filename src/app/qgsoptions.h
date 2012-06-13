@@ -126,6 +126,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
 
+    /** Auto slot executed when the active page in the main widget stack is changed
+     * @note added in 2.0
+     */
+    void on_tabWidget_currentChanged( int theTab );
+
     /* Load the list of drivers available in GDAL
      * @note added in 2.0
      */
@@ -147,6 +152,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QStringList i18nList();
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
+    bool mLoadedGdalDriverList;
 };
 
 #endif // #ifndef QGSOPTIONS_H

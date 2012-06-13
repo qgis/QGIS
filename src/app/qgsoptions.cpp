@@ -45,6 +45,7 @@
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
 #include <geos_c.h>
+#include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
 
@@ -541,10 +542,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   } //default is central point
 
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
+
+  // load gdal driver list only when gdal tab is first opened
+  mLoadedGdalDriverList = false;
+
   tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
-
-  loadGdalDriverList();
-
 }
 
 //! Destructor
@@ -916,7 +918,8 @@ void QgsOptions::saveOptions()
 
 
   // Gdal skip driver list
-  saveGdalDriverList();
+  if ( mLoadedGdalDriverList )
+    saveGdalDriverList();
 }
 
 
@@ -1184,6 +1187,16 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
+void QgsOptions::on_tabWidget_currentChanged( int theTab )
+{
+  // load gdal driver list when gdal tab is first opened
+  if ( theTab == 1 && ! mLoadedGdalDriverList )
+  {
+    loadGdalDriverList();
+  }
+}
+
+#if 0
 void QgsOptions::loadGdalDriverList()
 {
   QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
@@ -1228,19 +1241,120 @@ void QgsOptions::loadGdalDriverList()
     lstGdalDrivers->addItem( mypItem );
   }
 }
+#endif
 
-void QgsOptions::saveGdalDriverList()
+void QgsOptions::loadGdalDriverList()
 {
-  for ( int i = 0; i < lstGdalDrivers->count(); i++ )
+  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
+  GDALDriverH myGdalDriver; // current driver
+  QString myGdalDriverDescription;
+  QStringList myDrivers;
+  QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
+
+  // make sure we save list when accept()
+  mLoadedGdalDriverList = true;
+
+  // allow to retrieve metadata from all drivers, they will be skipped again when saving
+  CPLSetConfigOption( "GDAL_SKIP",  "" );
+  GDALAllRegister();
+
+  int myGdalDriverCount = GDALGetDriverCount();
+  for ( int i = 0; i < myGdalDriverCount; ++i )
   {
-    QListWidgetItem * mypItem = lstGdalDrivers->item( i );
-    if ( mypItem->checkState() == Qt::Unchecked )
+    myGdalDriver = GDALGetDriver( i );
+
+    Q_CHECK_PTR( myGdalDriver );
+
+    if ( !myGdalDriver )
     {
-      QgsApplication::skipGdalDriver( mypItem->text() );
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
+    myDrivers << myGdalDriverDescription;
+
+    QgsDebugMsg( QString( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
+
+    // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
+    const char *pszRWFlag, *pszVirtualIO;
+    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, NULL ) )
+      pszRWFlag = "rw+";
+    else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
+                                   NULL ) )
+      pszRWFlag = "rw";
+    else
+      pszRWFlag = "ro";
+    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, NULL ) )
+      pszVirtualIO = "v";
+    else
+      pszVirtualIO = "";
+    myDriversFlags[myGdalDriverDescription] = QString( "%1%2" ).arg( pszRWFlag ).arg( pszVirtualIO );
+
+    // get driver extensions and long name
+    // the gdal provider can override/add extensions but there is no interface to query this
+    // aside from parsing QgsRasterLayer::buildSupportedRasterFileFilter()
+    myDriversExt[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_EXTENSION", "" ) ).toLower();
+    myDriversLongName[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_LONGNAME", "" ) );
+
+  }
+  // restore GDAL_SKIP just in case
+  CPLSetConfigOption( "GDAL_SKIP", mySkippedDrivers.join( " " ).toUtf8() );
+
+  myDrivers.removeDuplicates();
+  // myDrivers.sort();
+  // sort list case insensitive - no existing function for this!
+  QMap<QString, QString> strMap;
+  foreach( QString str, myDrivers )
+  {
+    strMap.insert( str.toLower(), str );
+  }
+  myDrivers = strMap.values();
+
+  QStringListIterator myIterator( myDrivers );
+
+  while ( myIterator.hasNext() )
+  {
+    QString myName = myIterator.next();
+
+    // QListWidgetItem * mypItem = new QListWidgetItem( myName );
+    QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
+    if ( mySkippedDrivers.contains( myName ) )
+    {
+      mypItem->setCheckState( 0, Qt::Unchecked );
     }
     else
     {
-      QgsApplication::restoreGdalDriver( mypItem->text() );
+      mypItem->setCheckState( 0, Qt::Checked );
+    }
+
+    // add driver metadata
+    mypItem->setText( 1, myDriversExt[myName] );
+    mypItem->setText( 2, myDriversFlags[myName] );
+    mypItem->setText( 3, myDriversLongName[myName] );
+
+    lstGdalDrivers->addTopLevelItem( mypItem );
+  }
+  // adjust column width
+  for ( int i = 0; i < 4; i++ )
+  {
+    lstGdalDrivers->resizeColumnToContents( i );
+    lstGdalDrivers->setColumnWidth( i, lstGdalDrivers->columnWidth( i ) + 5 );
+  }
+}
+
+void QgsOptions::saveGdalDriverList()
+{
+  for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
+  {
+    // QListWidgetItem * mypItem = lstGdalDrivers->item( i );
+    QTreeWidgetItem * mypItem = lstGdalDrivers->topLevelItem( i );
+    if ( mypItem->checkState( 0 ) == Qt::Unchecked )
+    {
+      QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
+    }
+    else
+    {
+      QgsApplication::restoreGdalDriver( mypItem->text( 0 ) );
     }
   }
   QSettings mySettings;
