@@ -26,6 +26,7 @@
 #include <QString>
 #include <QStringList>
 #include <QDomElement>
+#include <QHash>
 #include <QMap>
 #include <QVector>
 #include <QUrl>
