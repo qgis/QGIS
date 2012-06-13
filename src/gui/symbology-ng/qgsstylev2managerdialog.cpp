@@ -32,6 +32,9 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QStandardItemModel>
+#include <QAction>
+#include <QMenu>
+
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -66,6 +69,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnExportItems, SIGNAL( clicked() ), this, SLOT( exportItems() ) );
   connect( btnImportItems, SIGNAL( clicked() ), this, SLOT( importItems() ) );
 
+  // Set editing mode off by default
+  mGrouppingMode = false;
+
   QStandardItemModel* model = new QStandardItemModel( listItems );
   listItems->setModel( model );
 
@@ -86,11 +92,17 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
       this, SLOT( groupChanged( const QModelIndex& ) ) );
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( groupRenamed( QStandardItem* ) ) );
 
+  QMenu *groupMenu = new QMenu( "Group Actions" );
+  QAction *groupSymbols = groupMenu->addAction( "Group Symbols" );
+  QAction *tagSymbols = groupMenu->addAction( "Tag Symbols" );
+  btnManageGroups->setMenu( groupMenu );
+  connect( groupSymbols, SIGNAL( triggered() ), this, SLOT( groupSymbolsAction() ) );
+  connect( tagSymbols, SIGNAL( triggered() ), this, SLOT( tagSymbolsAction() ) );
+
   connect( btnAddGroup, SIGNAL( clicked() ), this, SLOT( addGroup() ) );
   connect( btnRemoveGroup, SIGNAL( clicked() ), this, SLOT( removeGroup() ) );
 
   connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
-
   populateList();
 
 }
@@ -165,16 +177,13 @@ void QgsStyleV2ManagerDialog::populateList()
   }
 }
 
-/* 
- *  Replaced with groupChanged() multiuse function
- *
-
-void QgsStyleV2ManagerDialog::populateSymbols( int type )
+void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool check )
 {
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
 
-  QStringList symbolNames = mStyle->symbolNames();
+  // QStringList symbolNames = mStyle->symbolNames();
+  int type = currentItemType();
 
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
@@ -186,15 +195,14 @@ void QgsStyleV2ManagerDialog::populateSymbols( int type )
       QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
+      item->setCheckable( check );
       // add to model
       model->appendRow( item );
     }
     delete symbol;
   }
-
 }
 
-*/
 
 void QgsStyleV2ManagerDialog::populateColorRamps()
 {
@@ -314,6 +322,8 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 
   // add new symbol to style and re-populate the list
   mStyle->addSymbol( name, symbol );
+  // TODO groups and tags
+  mStyle->saveSymbol( name, symbol, 0, QStringList() );
   mModified = true;
   return true;
 }
@@ -555,6 +565,7 @@ void QgsStyleV2ManagerDialog::itemChanged( QStandardItem* item )
     populateList();
     mModified = true;
   }
+
 }
 
 void QgsStyleV2ManagerDialog::exportItems()
@@ -602,6 +613,9 @@ void QgsStyleV2ManagerDialog::populateGroups()
   group->setEditable( false );
   buildGroupTree( group );
   group->setText( "Groups" );//set title later
+  QStandardItem *ungrouped = new QStandardItem( "Ungrouped" );
+  ungrouped->setData( 0 );
+  group->appendRow( ungrouped );
   model->appendRow( group );
 
   QStandardItem *tag = new QStandardItem( "Smart Groups" );
@@ -642,6 +656,7 @@ void QgsStyleV2ManagerDialog::buildTagTree( QStandardItem* &parent )
 void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
 {
   QStringList symbolNames;
+  QStringList groupSymbols;
 
   QString category = index.data( Qt::UserRole + 1 ).toString();
   if ( category == "all" || category == "groups" || category == "tags" )
@@ -670,29 +685,17 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
     {
       int groupId = index.data( Qt::UserRole + 1 ).toInt();
       symbolNames = mStyle->symbolsOfGroup( groupId );
+      if ( mGrouppingMode && groupId )
+      {
+        groupSymbols = symbolNames;
+        symbolNames += mStyle->symbolsOfGroup( 0 );
+      }
     }
   }
 
-  // Populate the symbols based upon the generated symbolNames List
-  int type = currentItemType();
-  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
-  model->clear();
-
-  for ( int i = 0; i < symbolNames.count(); ++i )
-  {
-    QString name = symbolNames[i];
-    QgsSymbolV2* symbol = mStyle->symbol( name );
-    if ( symbol->type() == type )
-    {
-      QStandardItem* item = new QStandardItem( name );
-      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
-      item->setIcon( icon );
-      item->setData( name ); // used to find out original name when user edited the name
-      // add to model
-      model->appendRow( item );
-    }
-    delete symbol;
-  }
+  populateSymbols( symbolNames, mGrouppingMode );
+  if( mGrouppingMode )
+    setSymbolsChecked( groupSymbols );
 }
 
 void QgsStyleV2ManagerDialog::addGroup()
@@ -702,11 +705,11 @@ void QgsStyleV2ManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || parentData == "recent" || parentData == "project" )
+  if ( parentData == "all" || parentData == "recent" || parentData == "project" || parentIndex.data() == "Ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
         tr( "The parent group you have selected is not user editable.\n"
-            "Kindly select a Group or Smart Group."));
+            "Kindly select a user defined Group."));
     if ( err )
       return;
   }
@@ -738,7 +741,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
 
   // Violation: removing system groups
   QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == "all" || data == "recent" || data == "project" || data == "groups" || data == "tags" )
+  if ( data == "all" || data == "recent" || data == "project" || data == "groups" || data == "tags" || index.data() == "Ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid slection" ),
         tr( "Cannot delete system defined categories.\n"
@@ -815,3 +818,140 @@ void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
     }
   }
 }
+
+void QgsStyleV2ManagerDialog::groupSymbolsAction()
+{
+
+  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
+  QAction *senderAction = qobject_cast<QAction*>( sender() );
+
+  if ( mGrouppingMode )
+  {
+    mGrouppingMode = false;
+    senderAction->setText( "Group Symbols" );
+    // disconnect slot which handles regrouping
+    disconnect( model, SIGNAL( itemChanged( QStandardItem* )),
+        this, SLOT( regrouped( QStandardItem* ) ) );
+    // Re-enable the buttons
+    // NOTE: if you ever change the layout name in the .ui file edit here too
+    for ( int i = 0; i < symbolBtnsLayout->count(); i++ )
+    {
+      symbolBtnsLayout->itemAt( i )->widget()->setEnabled( true );
+    }
+    btnAddGroup->setEnabled( true );
+    btnRemoveGroup->setEnabled( true );
+    // disabel all items except groups in groupTree
+    for( int i = 0; i < treeModel->rowCount(); i++ )
+    {
+      if( treeModel->item( i )->text() == "Smart Groups" )
+      {
+        for( int j = 0; j < treeModel->item( i )->rowCount(); j++ )
+        {
+          treeModel->item( i )->child( j )->setEnabled( true );
+        }
+      }
+      if ( treeModel->item( i )->text() != "Groups" )
+      {
+        treeModel->item( i )->setEnabled( true );
+      }
+    }
+    groupChanged( groupTree->currentIndex() );
+    // Finally: Reconnect all Symbol editing functionalities
+    connect( treeModel, SIGNAL( itemChanged( QStandardItem* ) ),
+        this, SLOT( groupRenamed( QStandardItem* ) ) );
+    connect( model, SIGNAL( itemChanged( QStandardItem* ) ),
+        this, SLOT( itemChanged( QStandardItem* ) ) );
+  }
+  else
+  {
+    mGrouppingMode = true;
+    bool validGroup = false;
+    // determine whether it is a valid group
+    QModelIndex present = groupTree->currentIndex();
+    while( present.parent().isValid() )
+    {
+      if ( present.parent().data() == "Groups" )
+      {
+        validGroup = true;
+        break;
+      }
+      else
+        present = present.parent();
+    }
+    if ( !validGroup )
+      return;
+    // Change the text menu
+    senderAction->setText( "Finish Grouping" );
+
+    // Remove all Symbol editing functionalities
+    disconnect( treeModel, SIGNAL( itemChanged( QStandardItem* ) ),
+        this, SLOT( groupRenamed( QStandardItem* ) ) );
+    disconnect( model, SIGNAL( itemChanged( QStandardItem* ) ),
+        this, SLOT( itemChanged( QStandardItem* ) ) );
+    // Disable the buttons
+    // NOTE: if you ever change the layout name in the .ui file edit here too
+    for ( int i = 0; i < symbolBtnsLayout->count(); i++ )
+    {
+      symbolBtnsLayout->itemAt( i )->widget()->setEnabled( false );
+    }
+    // Disable tree editing
+    btnAddGroup->setEnabled( false );
+    btnRemoveGroup->setEnabled( false );
+    // disabel all items except groups in groupTree
+    for( int i = 0; i < treeModel->rowCount(); i++ )
+    {
+      if( treeModel->item( i )->text() == "Smart Groups" )
+      {
+        for( int j = 0; j < treeModel->item( i )->rowCount(); j++ )
+        {
+          treeModel->item( i )->child( j )->setEnabled( false );
+        }
+      }
+      if ( treeModel->item( i )->text() != "Groups" )
+      {
+        treeModel->item( i )->setEnabled( false );
+      }
+    }
+    groupChanged( groupTree->currentIndex() );
+
+    // Connect to slot which handles regrouping
+    connect( model, SIGNAL( itemChanged( QStandardItem* )),
+        this, SLOT( regrouped( QStandardItem* ) ) );
+  }
+}
+
+void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
+{
+  int groupid = groupTree->currentIndex().data( Qt::UserRole + 1 ).toInt();
+  QString symbolName = item->text();
+  bool regrouped;
+  if ( item->checkState() == Qt::Checked )
+    regrouped = mStyle->regroup( symbolName, groupid );
+  else
+    regrouped = mStyle->regroup( symbolName, 0 );
+  if ( !regrouped )
+  {
+    int er = QMessageBox::critical( this, tr( "Database Error"), tr( "There was a problem with the Symbols database while regrouping." ) );
+    // call the slot again to get back to normal
+    if ( er )
+      groupSymbolsAction();
+  }
+}
+
+void QgsStyleV2ManagerDialog::setSymbolsChecked( QStringList symbols )
+{
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( listItems->model() );
+  foreach( const QString symbol, symbols )
+  {
+    QList<QStandardItem*> items = model->findItems( symbol );
+    foreach( QStandardItem* item, items )
+      item->setCheckState( Qt::Checked );
+  }
+}
+
+void QgsStyleV2ManagerDialog::tagSymbolsAction()
+{
+  QgsDebugMsg( "tagging symbols now" );
+}
+

@@ -18,6 +18,8 @@
 
 #include <QDialog>
 #include <QStandardItem>
+#include <QAction>
+#include <QMenu>
 
 #include "ui_qgsstylev2managerdialogbase.h"
 #include "qgscontexthelp.h"
@@ -54,6 +56,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void groupRenamed( QStandardItem * );
     void addGroup();
     void removeGroup();
+    void groupSymbolsAction();
+    void tagSymbolsAction();
+    void regrouped( QStandardItem* );
 
   protected:
 
@@ -66,10 +71,12 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void buildGroupTree( QStandardItem* &parent );
     //! build the tag tree
     void buildTagTree( QStandardItem* &parent );
+    //! to set symbols checked when in editing mode
+    void setSymbolsChecked( QStringList );
 
-    //! populate list view with symbols of specified type
-    //! @note: functionality replace with groupChanged() slot
-    //void populateSymbols( int type );
+    //! populate list view with symbols of the current type with the given names
+    void populateSymbols( QStringList symbolNames, bool checkable = false );
+
     //! populate list view with color ramps
     void populateColorRamps();
 
@@ -92,6 +99,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     QString mStyleFilename;
 
     bool mModified;
+
+    //! Mode to display the symbol list
+    bool mGrouppingMode;
 };
 
 #endif

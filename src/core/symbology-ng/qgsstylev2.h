@@ -93,6 +93,9 @@ class CORE_EXPORT QgsStyleV2
     //! adds a new tag and returns the tag's id
     int addTag( QString tagName );
 
+    //! regroup the symbol to specifed group
+    bool regroup( QString symbolName, int groupid );
+
     //! rename the given entity with the specified id
     void rename( StyleEntity type, int id, QString newName );
     //! remove the specified entity from the db

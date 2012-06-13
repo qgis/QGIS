@@ -385,13 +385,17 @@ QStringList QgsStyleV2::symbolsOfGroup( int groupid )
 
   QStringList symbols;
   sqlite3_stmt *ppStmt;
-  char *query = sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d;", groupid );
+  char *query;
+  query = groupid ? sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid=%d;", groupid ) :
+          sqlite3_mprintf( "SELECT name FROM symbol WHERE groupid IS NULL;");
   int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     QString symbol = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
     symbols.append( symbol );
   }
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
 
   return symbols;
 }
@@ -577,4 +581,13 @@ bool QgsStyleV2::runEmptyQuery( char *query )
   }
   sqlite3_close( db );
   return true;
+}
+
+bool QgsStyleV2::regroup( QString symbolName, int groupid )
+{
+  QByteArray array = symbolName.toUtf8();
+  char *query;
+  query = groupid ? sqlite3_mprintf( "UPDATE symbol SET groupid=%d WHERE name='%q';", groupid, array.constData() )
+                  : sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE name='%q';", array.constData() );
+  return runEmptyQuery( query );
 }
