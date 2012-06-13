@@ -33983,7 +33983,7 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
     </message>
     <message>
         <source>Tilesets</source>
-        <translation>Tilesetss</translation>
+        <translation>Tilesets</translation>
     </message>
     <message>
         <source>Styles</source>
