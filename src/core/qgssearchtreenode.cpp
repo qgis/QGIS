@@ -717,7 +717,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
 
           if ( idx < 0 || idx >= p.size() )
           {
-            return QgsSearchTreeValue( 2, QObject::tr( "Index %1 out of range [0;%2[" ).arg( idx ).arg( p.size() ) );
+            return QgsSearchTreeValue( 2, QObject::tr( "Index %1 out of range [0;%2]" ).arg( idx ).arg( p.size() ) );
           }
 
           return QgsSearchTreeValue( mOp == opXAT ? p[idx].x() : p[idx].y() );
