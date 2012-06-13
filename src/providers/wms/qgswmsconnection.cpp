@@ -20,28 +20,13 @@
 
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-//#include "qgisapp.h" //for getThemeIcon
-//#include "qgscontexthelp.h"
-//#include "qgscoordinatereferencesystem.h"
-//#include "qgsgenericprojectionselector.h"
-//#include "qgslogger.h"
-//#include "qgsmanageconnectionsdialog.h"
-//#include "qgsmessageviewer.h"
 #include "qgsnewhttpconnection.h"
-//#include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
 #include "qgsnetworkaccessmanager.h"
 
-//#include <QButtonGroup>
-//#include <QFileDialog>
-//#include <QRadioButton>
-//#include <QDomDocument>
-//#include <QHeaderView>
-//#include <QImageReader>
 #include <QInputDialog>
-//#include <QMap>
 #include <QMessageBox>
 #include <QPicture>
 #include <QSettings>
@@ -80,17 +65,39 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
-  if ( ignoreGetMap || ignoreGetFeatureInfo )
+  bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
+  bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
+
+  QString connArgs, delim;
+
+
+  if ( ignoreGetMap )
   {
-    QString connArgs = "ignoreUrl=";
-    if ( ignoreGetMap )
-    {
-      connArgs += "GetMap";
-      if ( ignoreGetFeatureInfo )
-        connArgs += ";";
-    }
-    if ( ignoreGetFeatureInfo )
-      connArgs += "GetFeatureInfo";
+    connArgs += delim + "GetMap";
+    delim = ";";
+  }
+
+  if ( ignoreGetFeatureInfo )
+  {
+    connArgs += delim + "GetFeatureInfo";
+    delim = ";";
+  }
+
+  if ( ignoreAxisOrientation )
+  {
+    connArgs += delim + "AxisOrientation";
+    delim = ";";
+  }
+
+  if ( invertAxisOrientation )
+  {
+    connArgs += delim + "InvertAxisOrientation";
+    delim = ";";
+  }
+
+  if( !connArgs.isEmpty() )
+  {
+    connArgs.prepend( "ignoreUrl=" );
 
     if ( mConnectionInfo.startsWith( "username=" ) )
     {
@@ -110,12 +117,12 @@ QgsWMSConnection::~QgsWMSConnection()
 
 }
 
-QString QgsWMSConnection::connectionInfo( )
+QString QgsWMSConnection::connectionInfo()
 {
   return mConnectionInfo;
 }
 
-QgsWmsProvider * QgsWMSConnection::provider( )
+QgsWmsProvider *QgsWMSConnection::provider()
 {
   // TODO: Create and bind to data provider
 

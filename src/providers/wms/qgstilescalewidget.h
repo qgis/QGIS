@@ -22,13 +22,14 @@
 
 class QgsMapCanvas;
 class QgsMapLayer;
-class QwtSlider;
+class QMainWindow;
 
 class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
 {
     Q_OBJECT
+
   public:
-    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    static void showTileScale( QMainWindow *mainWindow );
 
   public slots:
     void layerChanged( QgsMapLayer *layer );
@@ -36,6 +37,9 @@ class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
     void on_mSlider_valueChanged( int );
 
   private:
+    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    ~QgsTileScaleWidget();
+
     QgsMapCanvas *mMapCanvas;
     QList<double> mResolutions;
 };

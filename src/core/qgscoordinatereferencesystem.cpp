@@ -181,19 +181,46 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix( )
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
 {
-  QRegExp re( "(user|custom|qgis):(\\d+)", Qt::CaseInsensitive );
-  if ( re.exactMatch( theCrs ) && createFromSrsId( re.cap( 2 ).toInt() ) )
+  QRegExp re( "urn:ogc:def:crs:([^:]+).+([^:]+)", Qt::CaseInsensitive );
+  if ( re.exactMatch( theCrs ) )
   {
-    return true;
+    theCrs = re.cap( 1 ) + ":" + re.cap( 2 );
+  }
+  else
+  {
+    re.setPattern( "(user|custom|qgis):(\\d+)" );
+    if ( re.exactMatch( theCrs ) && createFromSrsId( re.cap( 2 ).toInt() ) )
+    {
+      return true;
+    }
   }
 
   if ( loadFromDb( QgsApplication::srsDbFilePath(), "lower(auth_name||':'||auth_id)", theCrs.toLower() ) )
     return true;
 
-  if ( theCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
+  // NAD27
+  if ( theCrs.compare( "CRS:27", Qt::CaseInsensitive ) == 0 ||
+       theCrs.compare( "OGC:CRS27", Qt::CaseInsensitive ) == 0 )
   {
-    createFromSrsId( GEOCRS_ID );
-    return true;
+    // TODO: verify same axis orientation
+    return createFromOgcWmsCrs( "EPSG:4267" );
+  }
+
+  // NAD83
+  if ( theCrs.compare( "CRS:83", Qt::CaseInsensitive ) == 0 ||
+       theCrs.compare( "OGC:CRS83", Qt::CaseInsensitive ) == 0 )
+  {
+    // TODO: verify same axis orientation
+    return createFromOgcWmsCrs( "EPSG:4269" );
+  }
+
+  // WGS84
+  if ( theCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 ||
+       theCrs.compare( "OGC:CRS84", Qt::CaseInsensitive ) == 0 )
+  {
+    createFromOgcWmsCrs( "EPSG:4326" );
+    mAxisInverted = 0;
+    return mIsValidFlag;
   }
 
   return false;

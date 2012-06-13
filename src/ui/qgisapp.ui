@@ -128,7 +128,6 @@
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
-    <addaction name="mActionTileScale"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -1249,11 +1248,6 @@
   <action name="mActionSetProjectCRSFromLayer">
    <property name="text">
     <string>Set Project CRS from Layer</string>
-   </property>
-  </action>
-  <action name="mActionTileScale">
-   <property name="text">
-    <string>Tile scale slider</string>
    </property>
   </action>
   <action name="mActionLayerProperties">
