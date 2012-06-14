@@ -1,8 +1,8 @@
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 import os
 from PyQt4 import QtGui
-from sextante.fusion.FusionUtils import FusionUtils
 from sextante.parameters.ParameterString import ParameterString
+from sextante.lidar.fusion.FusionUtils import FusionUtils
 
 class FusionAlgorithm(GeoAlgorithm):
 

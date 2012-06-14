@@ -40,7 +40,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             lastools = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(),
                          lasinfo(), lasheight(), lasprecision(), lassplit(), lasclassify(), lasclip()]
         else:
-            self.lastools = [lasinfo(), lasprecision()]
+            lastools = [lasinfo(), lasprecision()]
         for alg in lastools:
             alg.group = "LASTools"
         self.algsList.extend(lastools)

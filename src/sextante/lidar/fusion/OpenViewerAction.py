@@ -1,17 +1,17 @@
 from sextante.gui.ToolboxAction import ToolboxAction
 import os
 from PyQt4 import QtGui
-from sextante.fusion.FusionUtils import FusionUtils
 import subprocess
+from sextante.lidar.fusion.FusionUtils import FusionUtils
 
 class OpenViewerAction(ToolboxAction):
 
     def __init__(self):
-        self.name="Open LAS viewer"
+        self.name="Open Fusion LAS viewer"
         self.group="Visualization"
 
     def getIcon(self):
-       return QtGui.QIcon(os.path.dirname(__file__) + "/../images/tool.png")
+        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/tool.png")
 
     def execute(self):
         f = os.path.join(FusionUtils.FusionPath(), "pdq.exe")

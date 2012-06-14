@@ -1,8 +1,8 @@
-from sextante.lastools.LasToolsUtils import LasToolsUtils
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 import os
 from PyQt4 import QtGui
+from sextante.lidar.lastools.LasToolsUtils import LasToolsUtils
 
 class LasToolsAlgorithm(GeoAlgorithm):
 
