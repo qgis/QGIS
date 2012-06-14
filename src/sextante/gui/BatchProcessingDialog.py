@@ -16,6 +16,7 @@ from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.core.SextanteResults import SextanteResults
 from sextante.gui.ResultsDialog import ResultsDialog
+from sextante.core.SextanteLog import SextanteLog
 
 class BatchProcessingDialog(QtGui.QDialog):
     def __init__(self, alg):
@@ -101,9 +102,9 @@ class BatchProcessingDialog(QtGui.QDialog):
         self.progress.setMaximum(len(self.algs))
         self.progress.setValue(0)
         self.nextAlg(0)
-            
+
         self.table.setEnabled(False)
-        
+
     def loadHTMLResults(self, alg, i):
         for out in alg.outputs:
             if out.hidden or not out.open:
@@ -131,13 +132,13 @@ class BatchProcessingDialog(QtGui.QDialog):
         QMessageBox.critical(self, "Error", msg)
         SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
         self.close()
-            
+
     def nextAlg(self, i):
         self.algEx = AlgorithmExecutor(self.algs[i]);
         self.algEx.error.connect(self.error)
         self.algEx.finished.connect(lambda: self.finish(i))
         self.algEx.start()
-    
+
     def finishAll(self):
         i = 0
         for alg in self.algs:

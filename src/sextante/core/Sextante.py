@@ -23,6 +23,7 @@ from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
 from sextante.fusion.FusionAlgorithmProvider import FusionAlgorithmProvider
 from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
 from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
+from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
 
 class Sextante:
 
@@ -89,9 +90,7 @@ class Sextante:
         Sextante.addProvider(ModelerOnlyAlgorithmProvider())
         Sextante.addProvider(GdalAlgorithmProvider())
         Sextante.addProvider(PymorphAlgorithmProvider())
-        Sextante.addProvider(LasToolsAlgorithmProvider())
-        if SextanteUtils.isWindows():
-            Sextante.addProvider(FusionAlgorithmProvider())
+        Sextante.addProvider(LidarToolsAlgorithmProvider())
         Sextante.addProvider(OTBAlgorithmProvider())
         Sextante.addProvider(RAlgorithmProvider())
         Sextante.addProvider(SagaAlgorithmProvider())
@@ -316,7 +315,7 @@ class Sextante:
             Sextante.alghelp(name)
             return
 
-        alg = alg.getCopy()#copy.deepcopy(alg)
+        alg = alg.getCopy()
         i = 0
         for param in alg.parameters:
             if not param.setValue(args[i]):
@@ -343,12 +342,12 @@ class Sextante:
             QApplication.restoreOverrideCursor()
         def error(msg):
             QApplication.restoreOverrideCursor()
-            QMessageBox.critical(self, "Error", msg)
+            QMessageBox.critical(None, "Error", msg)
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
         algEx.error.connect(error)
         algEx.finished.connect(finish)
         algEx.start()
-        
-        
+
+
 
 

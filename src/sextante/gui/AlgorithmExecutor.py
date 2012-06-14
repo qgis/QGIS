@@ -57,9 +57,9 @@ class AlgorithmExecutor(QThread):
             # if self.algorithm.canceled:
             #    self.canceled.emit()
             #===================================================================
-        except GeoAlgorithmExecutionException as e :
+        except GeoAlgorithmExecutionException,e :
             self.error.emit(e.msg)
-        except BaseException as e:
+        except BaseException,e:
             self.error.emit(str(e))
 
     def runalgIterating(self):

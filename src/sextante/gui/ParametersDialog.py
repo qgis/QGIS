@@ -161,6 +161,7 @@ class Ui_ParametersDialog(object):
                 QMessageBox.critical(self.dialog, "Unable to execute algorithm", msg)
                 return
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(False)
             buttons = self.paramTable.iterateButtons
             iterateParam = None
 
@@ -193,15 +194,14 @@ class Ui_ParametersDialog(object):
     def finish(self):
         self.dialog.executed = True
         QApplication.restoreOverrideCursor()
-
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-
         if not keepOpen:
             self.dialog.close()
         else:
             self.progressLabel.setText("")
             self.progress.setValue(0)
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
 
@@ -211,6 +211,7 @@ class Ui_ParametersDialog(object):
         QApplication.restoreOverrideCursor()
         QMessageBox.critical(self, "Error", msg)
         SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
             self.dialog.close()
         else:
