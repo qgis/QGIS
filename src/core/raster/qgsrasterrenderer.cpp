@@ -105,7 +105,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
 
   int totalMemoryUsage = pInfo.nCols * oversamplingX * pInfo.nRows * oversamplingY * mProvider->dataTypeSize( bandNumber );
   int parts = totalMemoryUsage / 100000000 + 1;
-  int nPartsPerDimension = sqrt( parts );
+  int nPartsPerDimension = sqrt(( double ) parts );
   pInfo.nColsPerPart = pInfo.nCols / nPartsPerDimension;
   pInfo.nRowsPerPart = pInfo.nRows / nPartsPerDimension;
   pInfo.currentCol = 0;
@@ -246,7 +246,7 @@ void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, con
   }
 
   //get QgsRasterProjector
-  QgsRasterProjector* prj;
+  QgsRasterProjector* prj = 0;
   QMap<int, RasterPartInfo>::const_iterator partInfoIt = mRasterPartInfos.constBegin();
   if ( partInfoIt != mRasterPartInfos.constEnd() )
   {
@@ -326,9 +326,9 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
   }
 
   rasterRendererElem.setAttribute( "type", mType );
-  rasterRendererElem.setAttribute( "opacity", mOpacity );
+  rasterRendererElem.setAttribute( "opacity", QString::number( mOpacity ) );
   rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
-  rasterRendererElem.setAttribute( "maxOversampling", mMaxOversampling );
+  rasterRendererElem.setAttribute( "maxOversampling", QString::number( mMaxOversampling ) );
   rasterRendererElem.setAttribute( "invertColor", mInvertColor );
   if ( mZoomedInResampler )
   {

@@ -2548,6 +2548,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         metersPerUnit = 111319.49079327358;
         break;
 
+      default:
       case QGis::UnknownUnit:
         QgsDebugMsg( "Unknown CRS units - assuming meters" );
         metersPerUnit = 1.0;

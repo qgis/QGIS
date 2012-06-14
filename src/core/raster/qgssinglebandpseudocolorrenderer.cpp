@@ -89,7 +89,7 @@ void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* vie
   int topLeftCol = 0;
   int topLeftRow = 0;
   void* rasterData;
-  void* transparencyData;
+  void* transparencyData = 0;
   double currentOpacity = mOpacity;
   QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBand );
   int red, green, blue;

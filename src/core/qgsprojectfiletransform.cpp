@@ -498,7 +498,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
   if ( !transparencyElem.isNull() )
   {
     double transparency = transparencyElem.text().toInt();
-    rasterRendererElem.setAttribute( "opacity", transparency / 255.0 );
+    rasterRendererElem.setAttribute( "opacity", QString::number( transparency / 255.0 ) );
   }
 
   //alphaBand was not saved until now (bug)

@@ -42,8 +42,8 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
   }
 
   int bandNumber = elem.attribute( "band", "-1" ).toInt();
-  int nColors;
-  QColor* colors;
+  int nColors = 0;
+  QColor* colors = 0;
 
   QDomElement paletteElem = elem.firstChildElement( "colorPalette" );
   if ( !paletteElem.isNull() )
@@ -118,7 +118,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
-  void* transparencyData;
+  void* transparencyData = 0;
 
   while ( readNextRasterPart( mBandNumber, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
                               &rasterData, topLeftCol, topLeftRow ) )

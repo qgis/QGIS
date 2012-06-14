@@ -21,7 +21,7 @@
 #include "qgsrasterresampler.h"
 #include <QColor>
 
-class QgsCubicRasterResampler: public QgsRasterResampler
+class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
 {
   public:
     QgsCubicRasterResampler();

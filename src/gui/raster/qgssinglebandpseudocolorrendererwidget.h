@@ -22,7 +22,7 @@
 #include "qgscolorrampshader.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
 
-class QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
+class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
       private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
     Q_OBJECT

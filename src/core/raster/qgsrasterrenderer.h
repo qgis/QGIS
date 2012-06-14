@@ -26,11 +26,11 @@ class QgsMapToPixel;
 class QgsRasterResampler;
 class QgsRasterProjector;
 class QgsRasterTransparency;
-class QgsRasterViewPort;
+struct QgsRasterViewPort;
 
 class QDomElement;
 
-class QgsRasterRenderer
+class CORE_EXPORT QgsRasterRenderer
 {
   public:
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates

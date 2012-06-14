@@ -147,7 +147,7 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
     {
       QDomElement itemElem = doc.createElement( "item" );
       itemElem.setAttribute( "label", itemIt->label );
-      itemElem.setAttribute( "value", itemIt->value );
+      itemElem.setAttribute( "value", QString::number( itemIt->value ) );
       itemElem.setAttribute( "color", itemIt->color.name() );
       colorRampShaderElem.appendChild( itemElem );
     }

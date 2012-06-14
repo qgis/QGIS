@@ -23,7 +23,7 @@
 class QgsContrastEnhancement;
 class QDomElement;
 
-class QgsSingleBandGrayRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 {
   public:
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
