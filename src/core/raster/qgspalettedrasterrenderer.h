@@ -23,7 +23,7 @@
 class QColor;
 class QDomElement;
 
-class QgsPalettedRasterRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
     /**Renderer owns color array*/

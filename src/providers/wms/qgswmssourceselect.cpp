@@ -22,6 +22,7 @@
 #include "qgis.h" // GEO_EPSG_CRS_ID
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -419,6 +420,7 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   QgsWMSConnection connection( cmbConnections->currentText() );
   QgsWmsProvider *wmsProvider = connection.provider();
   mConnectionInfo = connection.connectionInfo();
+  mUri = connection.uri();
 
   if ( wmsProvider )
   {
@@ -454,13 +456,13 @@ void QgsWMSSourceSelect::addClicked()
   QStringList styles;
   QString format;
   QString crs;
-  QString connInfo = connectionInfo();
 
-  QStringList connArgs;
+  QgsDataSourceURI uri = mUri;
 
   if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
   {
-    connArgs << QString( "maxSize=%1;%2" ).arg( mTileWidth->text().toInt() ).arg( mTileHeight->text().toInt() );
+    uri.setParam( "maxWidth", mTileWidth->text() );
+    uri.setParam( "maxHeight", mTileHeight->text() );
   }
 
   if ( lstTilesets->selectedItems().isEmpty() )
@@ -478,7 +480,7 @@ void QgsWMSSourceSelect::addClicked()
     styles = QStringList( item->data( Qt::UserRole + 2 ).toString() );
     crs    = item->data( Qt::UserRole + 4 ).toString();
 
-    connArgs << QString( "tileMatrixSet=%1" ).arg( item->data( Qt::UserRole + 3 ).toStringList().join( ";" ) );
+    uri.setParam( "tileMatrixSet", item->data( Qt::UserRole + 3 ).toStringList() );
 
     const QgsWmtsTileLayer *layer = 0;
 
@@ -505,7 +507,7 @@ void QgsWMSSourceSelect::addClicked()
       QHash<QString, QString> dims;
       dlg->selectedDimensions( dims );
 
-      QString dimString = "tileDimensions=";
+      QString dimString;
       QString delim;
 
       for ( QHash<QString, QString>::const_iterator it = dims.constBegin();
@@ -518,32 +520,27 @@ void QgsWMSSourceSelect::addClicked()
 
       delete dlg;
 
-      connArgs << dimString;
+      uri.setParam( "tileDimensions", dimString );
     }
   }
+
+  uri.setParam( "layers", layers );
+  uri.setParam( "styles", styles );
+  uri.setParam( "format", format );
+  uri.setParam( "crs", crs );
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
-    connArgs << QString( "featureCount=%1" ).arg( mFeatureCount->text().toInt() );
+    uri.setParam( "featureCount", mFeatureCount->text() );
   }
 
-  if ( !connArgs.isEmpty() )
-  {
-    if ( !connInfo.startsWith( "username=" ) && !connInfo.startsWith( "ignoreUrl=" ) )
-    {
-      connInfo.prepend( "url=" );
-    }
+  QgsDebugMsg( QString( "crs=%2 " ).arg( crs ) );
 
-    connArgs << connInfo;
-
-    connInfo = connArgs.join( "," );
-  }
-
-  QgsDebugMsg( QString( "connInfo=%1 crs=%2 " ).arg( connInfo ).arg( crs ) );
-
-  emit addRasterLayer( connInfo,
+  QgsDebugMsg( "uri = " + uri.encodedUri() );
+  emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
-                       "wms", layers, styles, format, crs );
+                       "wms" );
+
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )

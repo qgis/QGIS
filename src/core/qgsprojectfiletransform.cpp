@@ -49,7 +49,8 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 1, 4, 0 ), PFV( 1, 5, 0 ), &QgsProjectFileTransform::transform1400to1500},
   {PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &QgsProjectFileTransform::transformNull},
-  {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &QgsProjectFileTransform::transform1700to1800}
+  {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 1, 8, 0 ), PFV( 1, 9, 0 ), &QgsProjectFileTransform::transform1800to1900}
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -454,7 +455,7 @@ void QgsProjectFileTransform::transform1400to1500()
   }
 }
 
-void QgsProjectFileTransform::transform1700to1800()
+void QgsProjectFileTransform::transform1800to1900()
 {
   if ( mDom.isNull() )
   {
@@ -468,7 +469,8 @@ void QgsProjectFileTransform::transform1700to1800()
     QDomNode layerNode = rasterPropertiesElem.parentNode();
     QDomElement dataSourceElem = layerNode.firstChildElement( "datasource" );
     QDomElement layerNameElem = layerNode.firstChildElement( "layername" );
-    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text() );
+    QDomElement layerProviderElem = layerNode.firstChildElement( "provider" );
+    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text(), layerProviderElem.isNull() ? "gdal" : layerProviderElem.text() );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
   QgsDebugMsg( mDom.toString() );
@@ -497,7 +499,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
   if ( !transparencyElem.isNull() )
   {
     double transparency = transparencyElem.text().toInt();
-    rasterRendererElem.setAttribute( "opacity", transparency / 255.0 );
+    rasterRendererElem.setAttribute( "opacity", QString::number( transparency / 255.0 ) );
   }
 
   //alphaBand was not saved until now (bug)

@@ -115,17 +115,17 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
                     && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
                     && !mInvertColor );
 
-  QgsRasterDataProvider::DataType redType;
+  QgsRasterDataProvider::DataType redType = QgsRasterDataProvider::UnknownDataType;
   if ( mRedBand > 0 )
   {
     redType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mRedBand );
   }
-  QgsRasterDataProvider::DataType greenType;
+  QgsRasterDataProvider::DataType greenType = QgsRasterDataProvider::UnknownDataType;
   if ( mGreenBand > 0 )
   {
     greenType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGreenBand );
   }
-  QgsRasterDataProvider::DataType blueType;
+  QgsRasterDataProvider::DataType blueType = QgsRasterDataProvider::UnknownDataType;
   if ( mBlueBand > 0 )
   {
     blueType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBlueBand );
@@ -136,7 +136,7 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
   }
 
-  double oversamplingX, oversamplingY;
+  double oversamplingX = 1.0, oversamplingY = 1.0;
   QSet<int> bands;
   if ( mRedBand > 0 )
   {

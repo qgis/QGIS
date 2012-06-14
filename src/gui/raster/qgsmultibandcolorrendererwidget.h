@@ -27,7 +27,7 @@ class QgsRasterDataProvider;
 class QgsRasterLayer;
 class QLineEdit;
 
-class QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
+class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
 {
     Q_OBJECT
 

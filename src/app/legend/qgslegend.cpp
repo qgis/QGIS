@@ -2541,7 +2541,7 @@ void QgsLegend::groupSelectedLayers()
   //avoid multiple refreshes of map canvas because of itemChanged signal
   blockSignals( true );
 
-  QTreeWidgetItem * parent;
+  QTreeWidgetItem * parent = 0;
   foreach( QTreeWidgetItem* item, selectedItems() )
   {
     parent = item->parent();

@@ -171,6 +171,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
+    /**  \brief Constructor. Provider is not set. */
+    QgsRasterLayer();
+
     /** \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
@@ -187,20 +190,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString & path = QString::null,
+    QgsRasterLayer( const QString & path,
                     const QString &  baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
     /**  \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( int dummy,
-                    const QString & baseName = QString(),
-                    const QString & path = QString(),
-                    const QString & providerLib = QString(),
-                    const QStringList & layers = QStringList(),
-                    const QStringList & styles = QStringList(),
-                    const QString & format = QString(),
-                    const QString & crs = QString() );
-
+    QgsRasterLayer( const QString & uri,
+                    const QString & baseName,
+                    const QString & providerKey,
+                    bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
     ~QgsRasterLayer();
@@ -290,19 +288,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Initialize default values */
     void init();
 
-    // For backward compatibility (Python) get rid of it once python is updated
-    void setDataProvider( const QString & provider,
-                          const QStringList & layers,
-                          const QStringList & styles,
-                          const QString & format,
-                          const QString & crs );
     /**  [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider,
-                          const QStringList & layers,
-                          const QStringList & styles,
-                          const QString & format,
-                          const QString & crs,
-                          bool loadDefaultStyleFlag );
+    void setDataProvider( const QString & provider );
 
     static QLibrary* loadProviderLibrary( QString theProviderKey );
     static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );
@@ -930,13 +917,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
-
-    /** WMS parameters */
-    /* TODO: put everything to URI */
-    QStringList mLayers;
-    QStringList mStyles;
-    QString mFormat;
-    QString mCrs;
 
     QgsRasterRenderer* mRenderer;
 };

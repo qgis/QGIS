@@ -20,6 +20,7 @@
 
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
+#include "qgsdatasourceuri.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
@@ -48,6 +49,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
+  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -61,6 +63,8 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
       password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), "Password", QLineEdit::Password );
     }
     mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
+    mUri.setParam( "username", username );
+    mUri.setParam( "password", password );
   }
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
@@ -75,24 +79,28 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   {
     connArgs += delim + "GetMap";
     delim = ";";
+    mUri.setParam( "IgnoreGetMapUrl", "1" );
   }
 
   if ( ignoreGetFeatureInfo )
   {
     connArgs += delim + "GetFeatureInfo";
     delim = ";";
+    mUri.setParam( "IgnoreGetFeatureInfoUrl", "1" );
   }
 
   if ( ignoreAxisOrientation )
   {
     connArgs += delim + "AxisOrientation";
     delim = ";";
+    mUri.setParam( "IgnoreAxisOrientation", "1" );
   }
 
   if ( invertAxisOrientation )
   {
     connArgs += delim + "InvertAxisOrientation";
     delim = ";";
+    mUri.setParam( "InvertAxisOrientation", "1" );
   }
 
   if( !connArgs.isEmpty() )
@@ -122,7 +130,12 @@ QString QgsWMSConnection::connectionInfo()
   return mConnectionInfo;
 }
 
-QgsWmsProvider *QgsWMSConnection::provider()
+QgsDataSourceURI QgsWMSConnection::uri()
+{
+  return mUri;
+}
+
+QgsWmsProvider * QgsWMSConnection::provider( )
 {
   // TODO: Create and bind to data provider
 
@@ -130,7 +143,7 @@ QgsWmsProvider *QgsWMSConnection::provider()
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
   QgsWmsProvider *wmsProvider =
-    ( QgsWmsProvider* ) pReg->provider( "wms", mConnectionInfo );
+    ( QgsWmsProvider* ) pReg->provider( "wms", mUri.encodedUri() );
 
   return wmsProvider;
 }

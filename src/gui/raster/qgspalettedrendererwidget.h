@@ -23,7 +23,7 @@
 
 class QgsRasterLayer;
 
-class QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
+class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
 {
     Q_OBJECT
 

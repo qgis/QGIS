@@ -18,6 +18,7 @@
 #ifndef QGSWMSSOURCESELECT_H
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
+#include "qgsdatasourceuri.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
@@ -172,6 +173,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! URI for selected connection
     QString mConnectionInfo;
+    QgsDataSourceURI mUri;
 
     //! layer name derived from latest layer selection (updated as long it's not edited manually)
     QString mLastLayerName;
@@ -201,11 +203,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
   signals:
     void addRasterLayer( QString const & rasterLayerPath,
                          QString const & baseName,
-                         QString const & providerKey,
-                         QStringList const & layers,
-                         QStringList const & styles,
-                         QString const & format,
-                         QString const & crs );
+                         QString const & providerKey );
     void connectionsChanged();
   private slots:
     void on_btnSearch_clicked();

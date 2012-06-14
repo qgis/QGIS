@@ -21,7 +21,7 @@
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
 
-class QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
+class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {
     Q_OBJECT
   public:

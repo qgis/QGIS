@@ -90,7 +90,7 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     alphaType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
   }
   void* rasterData;
-  void* alphaData;
+  void* alphaData = 0;
   double currentAlpha = mOpacity;
   int grayVal;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );

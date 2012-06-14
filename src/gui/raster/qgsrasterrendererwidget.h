@@ -23,7 +23,7 @@
 class QgsRasterLayer;
 class QgsRasterRenderer;
 
-class QgsRasterRendererWidget: public QWidget
+class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 {
   public:
     QgsRasterRendererWidget( QgsRasterLayer* layer ) { mRasterLayer = layer; }

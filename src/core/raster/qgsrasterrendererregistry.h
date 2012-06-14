@@ -30,7 +30,7 @@ class QgsRasterRendererWidget;
 typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterDataProvider* provider );
 typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer* );
 
-struct QgsRasterRendererRegistryEntry
+struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
   QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName, QgsRasterRendererCreateFunc rendererFunction,
                                   QgsRasterRendererWidgetCreateFunc widgetFunction );
@@ -41,7 +41,7 @@ struct QgsRasterRendererRegistryEntry
   QgsRasterRendererWidgetCreateFunc widgetCreateFunction; //pointer to create function for renderer widget
 };
 
-class QgsRasterRendererRegistry
+class CORE_EXPORT QgsRasterRendererRegistry
 {
   public:
     static QgsRasterRendererRegistry* instance();
