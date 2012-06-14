@@ -50,6 +50,7 @@ class QgsMapToPixel;
 class QgsRectangle;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
+class QgsRasterRenderer;
 class QImage;
 class QPixmap;
 class QSlider;
@@ -228,9 +229,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       PalettedSingleBandGray,        // a "Palette" layer drawn in gray scale
       PalettedSingleBandPseudoColor, // a "Palette" layerdrawn using a pseudocolor algorithm
       PalettedMultiBandColor,         // currently not supported
-      MultiBandSingleGandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
-      //added in 1.6 to fix naming glitch
-      MultiBandSingleBandGray = MultiBandSingleGandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      MultiBandSingleBandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
       MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
       MultiBandColor,                  //a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
       SingleBandColorDataStyle         // ARGB values rendered directly
@@ -371,7 +370,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
 
     /** \brief Mutator for drawing style */
-    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; }
+    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
+    /**Sets corresponding renderer for style*/
+    void setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle );
 
     /** \brief Mutator for mGrayMinimumMaximumEstimated */
     void setGrayMinimumMaximumEstimated( bool theBool ) { mGrayMinimumMaximumEstimated = theBool; }
@@ -390,6 +391,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
     void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
+
+    /**Set raster renderer. Takes ownership of the renderer object*/
+    void setRenderer( QgsRasterRenderer* renderer );
+    const QgsRasterRenderer* renderer() const { return mRenderer; }
+    QgsRasterRenderer* renderer() { return mRenderer; }
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
@@ -561,6 +567,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
+    const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
+
     /** \brief Read color table from GDAL raster band */
     // Keep this for QgsRasterLayerProperties
     bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
@@ -685,6 +693,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );
+
+    /** \brief Overload the setTransparency method from QgsMapLayer */
+    void setTransparency( unsigned int theInt );
 
   signals:
     /** \brief Signal for notifying listeners of long running processes */
@@ -926,64 +937,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QStringList mStyles;
     QString mFormat;
     QString mCrs;
-};
 
-/*#include <QColor>
-
-typedef void* GDALRasterBandH;
-class QgsMapToPixel;
-struct QgsRasterViewPort;
-class QImage;
-class QPainter;*/
-
-/**A class encapsulates reading from a raster band and drawing the pixels to a painter.
-   The class allows sequential reading of the scan lines and setting the image scan line pixels. It automatically decides
-   on how much of the band / image should stay in virtual memory at a time*/
-class CORE_EXPORT QgsRasterImageBuffer
-{
-  public:
-    QgsRasterImageBuffer( QgsRasterDataProvider *dataProvider, int bandNo, QPainter* p,
-                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform );
-    ~QgsRasterImageBuffer();
-    void reset( int maxPixelsInVirtualMemory = 5000000 );
-    /**Returns a pointer to the next scan line (or 0 if end)*/
-    bool nextScanLine( QRgb** imageScanLine, void** rasterScanLine );
-
-    void setWritingEnabled( bool enabled ) { mWritingEnabled = enabled; }
-
-  private:
-    QgsRasterImageBuffer(); //forbidden
-    /**Creates next part image. Returns false if at end*/
-    bool createNextPartImage();
-
-    /**Peter's fix for zoomed in rasters*/
-    void drawPixelRectangle();
-
-    QgsRasterDataProvider* mDataProvider;
-    int mBandNo;
-    QPainter* mPainter;
-    QgsRasterViewPort* mViewPort;
-    const QgsMapToPixel* mMapToPixel;
-    double* mGeoTransform;
-
-    bool mValid;
-    /**True (default), if values are written to an image. If false, the class only reads the values, but does not create an image*/
-    bool mWritingEnabled;
-    /**Draws the raster pixels as rectangles. This is only used if the map units per pixel is very, very small*/
-    bool mDrawPixelRect;
-    int mCurrentRow;
-    int mNumPartImages; //number of part images
-    int mNumRasterRowsPerPart; //number of (raster source) rows per part
-    int mCurrentPartRasterMin; //minimum (raster source) row of current image
-    int mCurrentPartRasterMax; //maximum (raster source) row of current image
-    int mCurrentPartImageRow; //current image row
-    int mNumCurrentImageRows; //number of image rows for the current part
-
-    int mCurrentPart;
-
-    //current memory image and gdal scan data
-    QImage* mCurrentImage;
-    void* mCurrentGDALData;
+    QgsRasterRenderer* mRenderer;
 };
 
 #endif

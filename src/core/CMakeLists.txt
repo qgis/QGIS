@@ -164,6 +164,16 @@ SET(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
 
+  raster/qgsrasterrendererregistry.cpp
+  raster/qgsrasterrenderer.cpp
+  raster/qgsbilinearrasterresampler.cpp
+  raster/qgscubicrasterresampler.cpp
+  raster/qgspalettedrasterrenderer.cpp
+  raster/qgsmultibandcolorrenderer.cpp
+  raster/qgssinglebandcolordatarenderer.cpp
+  raster/qgssinglebandgrayrenderer.cpp
+  raster/qgssinglebandpseudocolorrenderer.cpp
+
   renderer/qgscontinuouscolorrenderer.cpp
   renderer/qgsgraduatedsymbolrenderer.cpp
   renderer/qgsrenderer.cpp

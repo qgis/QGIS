@@ -19,12 +19,14 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsprojectversion.h"
 #include "qgslogger.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QTextStream>
 #include <QDomDocument>
 #include <QPrinter> //to find out screen resolution
 #include <cstdlib>
+#include "qgsproject.h"
 #include "qgsprojectproperty.h"
 
 typedef QgsProjectVersion PFV;
@@ -47,6 +49,7 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 1, 4, 0 ), PFV( 1, 5, 0 ), &QgsProjectFileTransform::transform1400to1500},
   {PFV( 1, 5, 0 ), PFV( 1, 6, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 6, 0 ), PFV( 1, 7, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 1, 7, 0 ), PFV( 1, 8, 0 ), &QgsProjectFileTransform::transform1700to1800}
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -449,5 +452,310 @@ void QgsProjectFileTransform::transform1400to1500()
       currentLayerItemElem.replaceChild( classificationElement, currentTextItem );
     }
   }
+}
+
+void QgsProjectFileTransform::transform1700to1800()
+{
+  if ( mDom.isNull() )
+  {
+    return;
+  }
+
+  QDomNodeList layerItemList = mDom.elementsByTagName( "rasterproperties" );
+  for ( int i = 0; i < layerItemList.size(); ++i )
+  {
+    QDomElement rasterPropertiesElem = layerItemList.at( i ).toElement();
+    QDomNode layerNode = rasterPropertiesElem.parentNode();
+    QDomElement dataSourceElem = layerNode.firstChildElement( "datasource" );
+    QDomElement layerNameElem = layerNode.firstChildElement( "layername" );
+    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text() );
+    convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
+  }
+  QgsDebugMsg( mDom.toString() );
+}
+
+void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNode& parentNode,
+    QDomElement& rasterPropertiesElem, QgsRasterLayer* rlayer )
+{
+  QDomElement rasterRendererElem = doc.createElement( "rasterrenderer" );
+  //convert general properties
+
+  //invert color
+  rasterRendererElem.setAttribute( "invertColor", "0" );
+  QDomElement  invertColorElem = rasterPropertiesElem.firstChildElement( "mInvertColor" );
+  if ( !invertColorElem.isNull() )
+  {
+    if ( invertColorElem.text() == "true" )
+    {
+      rasterRendererElem.setAttribute( "invertColor", "1" );
+    }
+  }
+
+  //opacity
+  rasterRendererElem.setAttribute( "opacity", "1" );
+  QDomElement transparencyElem = parentNode.firstChildElement( "transparencyLevelInt" );
+  if ( !transparencyElem.isNull() )
+  {
+    double transparency = transparencyElem.text().toInt();
+    rasterRendererElem.setAttribute( "opacity", transparency / 255.0 );
+  }
+
+  //alphaBand was not saved until now (bug)
+  rasterRendererElem.setAttribute( "alphaBand", -1 );
+
+  //gray band is used for several renderers
+  int grayBand = rasterBandNumber( rasterPropertiesElem, "mGrayBandName", rlayer );
+
+  //convert renderer specific properties
+  QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
+  if ( drawingStyle == "SingleBandGray" )
+  {
+    rasterRendererElem.setAttribute( "type", "singlebandgray" );
+    rasterRendererElem.setAttribute( "grayBand", grayBand );
+    transformContrastEnhancement( doc, rasterPropertiesElem, rasterRendererElem );
+  }
+  else if ( drawingStyle == "SingleBandPseudoColor" )
+  {
+    rasterRendererElem.setAttribute( "type", "singlebandpseudocolor" );
+    rasterRendererElem.setAttribute( "band", grayBand );
+    QDomElement newRasterShaderElem = doc.createElement( "rastershader" );
+    QDomElement newColorRampShaderElem = doc.createElement( "colorrampshader" );
+    newRasterShaderElem.appendChild( newColorRampShaderElem );
+    rasterRendererElem.appendChild( newRasterShaderElem );
+
+    //switch depending on mColorShadingAlgorithm
+    QString colorShadingAlgorithm = rasterPropertiesElem.firstChildElement( "mColorShadingAlgorithm" ).text();
+    if ( colorShadingAlgorithm == "PseudoColorShader" || colorShadingAlgorithm == "FreakOutShader" )
+    {
+      newColorRampShaderElem.setAttribute( "colorRampType", "INTERPOLATED" );
+
+      //get minmax from rasterlayer
+      QgsRasterBandStats rasterBandStats = rlayer->bandStatistics( grayBand );
+      double minValue = rasterBandStats.minimumValue;
+      double maxValue = rasterBandStats.maximumValue;
+      double breakSize = ( maxValue - minValue ) / 3;
+
+      QStringList colorList;
+      if ( colorShadingAlgorithm == "FreakOutShader" )
+      {
+        colorList << "#ff00ff" << "#00ffff" << "#ff0000" << "#00ff00";
+      }
+      else //pseudocolor
+      {
+        colorList << "#0000ff" << "#00ffff" << "#ffff00" << "#ff0000";
+      }
+      QStringList::const_iterator colorIt = colorList.constBegin();
+      double boundValue = minValue;
+      for ( ; colorIt != colorList.constEnd(); ++colorIt )
+      {
+        QDomElement newItemElem = doc.createElement( "item" );
+        newItemElem.setAttribute( "value", QString::number( boundValue ) );
+        newItemElem.setAttribute( "label", QString::number( boundValue ) );
+        newItemElem.setAttribute( "color", *colorIt );
+        newColorRampShaderElem.appendChild( newItemElem );
+        boundValue += breakSize;
+      }
+    }
+    else if ( colorShadingAlgorithm == "ColorRampShader" )
+    {
+      QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+      QString type = customColorRampElem.firstChildElement( "colorRampType" ).text();
+      newColorRampShaderElem.setAttribute( "colorRampType", type );
+      QDomNodeList colorNodeList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+
+      QString value, label;
+      QColor newColor;
+      int red, green, blue;
+      QDomElement currentItemElem;
+      for ( int i = 0; i < colorNodeList.size(); ++i )
+      {
+        currentItemElem = colorNodeList.at( i ).toElement();
+        value = currentItemElem.attribute( "value" );
+        label = currentItemElem.attribute( "label" );
+        red = currentItemElem.attribute( "red" ).toInt();
+        green = currentItemElem.attribute( "green" ).toInt();
+        blue = currentItemElem.attribute( "blue" ).toInt();
+        newColor = QColor( red, green, blue );
+        QDomElement newItemElem = doc.createElement( "item" );
+        newItemElem.setAttribute( "value", value );
+        newItemElem.setAttribute( "label", label );
+        newItemElem.setAttribute( "color", newColor.name() );
+        newColorRampShaderElem.appendChild( newItemElem );
+      }
+    }
+  }
+  else if ( drawingStyle == "PalettedColor" )
+  {
+    rasterRendererElem.setAttribute( "type", "paletted" );
+    rasterRendererElem.setAttribute( "band", grayBand );
+    QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+    QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+    QDomElement newColorPaletteElem = doc.createElement( "colorPalette" );
+
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    int value = 0;
+    QDomElement colorRampEntryElem;
+    for ( int i = 0; i < colorRampEntryList.size(); ++i )
+    {
+      colorRampEntryElem = colorRampEntryList.at( i ).toElement();
+      QDomElement newPaletteElem = doc.createElement( "paletteEntry" );
+      value = ( int )( colorRampEntryElem.attribute( "value" ).toDouble() );
+      newPaletteElem.setAttribute( "value", value );
+      red = colorRampEntryElem.attribute( "red" ).toInt();
+      green = colorRampEntryElem.attribute( "green" ).toInt();
+      blue = colorRampEntryElem.attribute( "blue" ).toInt();
+      newPaletteElem.setAttribute( "color", QColor( red, green, blue ).name() );
+      newColorPaletteElem.appendChild( newPaletteElem );
+    }
+    rasterRendererElem.appendChild( newColorPaletteElem );
+  }
+  else if ( drawingStyle == "MultiBandColor" )
+  {
+    rasterRendererElem.setAttribute( "type", "multibandcolor" );
+
+    //red band, green band, blue band
+    int redBand = rasterBandNumber( rasterPropertiesElem, "mRedBandName", rlayer );
+    int greenBand = rasterBandNumber( rasterPropertiesElem, "mGreenBandName", rlayer );
+    int blueBand = rasterBandNumber( rasterPropertiesElem, "mBlueBandName", rlayer );
+    rasterRendererElem.setAttribute( "redBand", redBand );
+    rasterRendererElem.setAttribute( "greenBand", greenBand );
+    rasterRendererElem.setAttribute( "blueBand", blueBand );
+
+    transformContrastEnhancement( doc, rasterPropertiesElem, rasterRendererElem );
+  }
+  else
+  {
+    return;
+  }
+
+  //replace rasterproperties element with rasterrenderer element
+  if ( !parentNode.isNull() )
+  {
+    parentNode.replaceChild( rasterRendererElem, rasterPropertiesElem );
+  }
+}
+
+int QgsProjectFileTransform::rasterBandNumber( const QDomElement& rasterPropertiesElem, const QString bandName,
+    QgsRasterLayer* rlayer )
+{
+  if ( !rlayer )
+  {
+    return -1;
+  }
+
+  int band = -1;
+  QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
+  if ( !rasterBandElem.isNull() )
+  {
+    band = rlayer->bandNumber( rasterBandElem.text() );
+    if ( band == 0 )
+    {
+      band = -1;
+    }
+  }
+  return band;
+}
+
+void QgsProjectFileTransform::transformContrastEnhancement( QDomDocument& doc, const QDomElement& rasterproperties, QDomElement& rendererElem )
+{
+  if ( rasterproperties.isNull() || rendererElem.isNull() )
+  {
+    return;
+  }
+
+  double minimumValue = 0;
+  double maximumValue = 0;
+  QDomElement contrastMinMaxElem = rasterproperties.firstChildElement( "contrastEnhancementMinMaxValues" );
+  if ( contrastMinMaxElem.isNull() )
+  {
+    return;
+  }
+
+  QDomElement contrastEnhancementAlgorithmElem = rasterproperties.firstChildElement( "mContrastEnhancementAlgorithm" );
+  if ( contrastEnhancementAlgorithmElem.isNull() )
+  {
+    return;
+  }
+
+  //convert enhancement name to enumeration
+  int algorithmEnum = 0;
+  QString algorithmString = contrastEnhancementAlgorithmElem.text();
+  if ( algorithmString == "StretchToMinimumMaximum" )
+  {
+    algorithmEnum = 1;
+  }
+  else if ( algorithmString == "StretchAndClipToMinimumMaximum" )
+  {
+    algorithmEnum = 2;
+  }
+  else if ( algorithmString == "ClipToMinimumMaximum" )
+  {
+    algorithmEnum = 3;
+  }
+  else if ( algorithmString == "UserDefinedEnhancement" )
+  {
+    algorithmEnum = 4;
+  }
+
+  QDomNodeList minMaxEntryList = contrastMinMaxElem.elementsByTagName( "minMaxEntry" );
+  QStringList enhancementNameList;
+  if ( minMaxEntryList.size() == 1 )
+  {
+    enhancementNameList << "contrastEnhancement";
+  }
+  if ( minMaxEntryList.size() ==  3 )
+  {
+    enhancementNameList << "redContrastEnhancement" << "greenContrastEnhancement" << "blueContrastEnhancement";
+  }
+  if ( minMaxEntryList.size() > enhancementNameList.size() )
+  {
+    return;
+  }
+
+  QDomElement minMaxEntryElem;
+  for ( int i = 0; i < minMaxEntryList.size(); ++i )
+  {
+    minMaxEntryElem = minMaxEntryList.at( i ).toElement();
+    QDomElement minElem = minMaxEntryElem.firstChildElement( "min" );
+    if ( minElem.isNull() )
+    {
+      return;
+    }
+    minimumValue = minElem.text().toDouble();
+
+    QDomElement maxElem = minMaxEntryElem.firstChildElement( "max" );
+    if ( maxElem.isNull() )
+    {
+      return;
+    }
+    maximumValue = maxElem.text().toDouble();
+
+    QDomElement newContrastEnhancementElem = doc.createElement( enhancementNameList.at( i ) );
+    QDomElement newMinValElem = doc.createElement( "minValue" );
+    QDomText minText = doc.createTextNode( QString::number( minimumValue ) );
+    newMinValElem.appendChild( minText );
+    newContrastEnhancementElem.appendChild( newMinValElem );
+    QDomElement newMaxValElem = doc.createElement( "maxValue" );
+    QDomText maxText = doc.createTextNode( QString::number( maximumValue ) );
+    newMaxValElem.appendChild( maxText );
+    newContrastEnhancementElem.appendChild( newMaxValElem );
+
+    QDomElement newAlgorithmElem = doc.createElement( "algorithm" );
+    QDomText newAlgorithmText = doc.createTextNode( QString::number( algorithmEnum ) );
+    newAlgorithmElem.appendChild( newAlgorithmText );
+    newContrastEnhancementElem.appendChild( newAlgorithmElem );
+
+    rendererElem.appendChild( newContrastEnhancementElem );
+  }
+}
+
+void QgsProjectFileTransform::transformRasterTransparency( QDomDocument& doc, const QDomElement& orig, QDomElement& rendererElem )
+{
+  //soon...
+  Q_UNUSED( doc );
+  Q_UNUSED( orig );
+  Q_UNUSED( rendererElem );
 }
 

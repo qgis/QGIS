@@ -124,7 +124,7 @@ void Regression992::regression992()
   myChecker.setControlName( "expected_rgbwcmyk01_YeGeo.jp2" );
   myChecker.setMapRenderer( mpMapRenderer );
   // allow up to 300 mismatched pixels
-  bool myResultFlag = myChecker.runTest( "regression992", 300 );
+  bool myResultFlag = myChecker.runTest( "regression992", 400 );
   mReport += "\n\n\n" + myChecker.report();
   QVERIFY( myResultFlag );
 }

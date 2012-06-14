@@ -29,6 +29,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapToolEmitPoint;
+class QgsRasterRendererWidget;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -74,59 +75,15 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
     void on_pbnRemoveSelectedRow_clicked();
     /** \brief slot executed when the single band radio button is pressed. */
-    void on_rbtnSingleBand_toggled( bool );
-    /** \brief slot executed when the single band min max radio button is pressed. */
-    void on_rbtnSingleBandMinMax_toggled( bool );
-    /** \brief slot executed when the single band standard deviation radio button is pressed. */
-    void on_rbtnSingleBandStdDev_toggled( bool );
-    /** \brief slot executed when the three band radio button is pressed. */
-    void on_rbtnThreeBand_toggled( bool );
-    /** \brief slot executed when the three band min max radio button is pressed. */
-    void on_rbtnThreeBandMinMax_toggled( bool );
-    /** \brief slot executed when the three band standard deviation radio button is pressed. */
-    void on_rbtnThreeBandStdDev_toggled( bool );
     /** \brief slot executed when the reset null value to file default icon is selected */
     void on_btnResetNull_clicked( );
 
     void pixelSelected( const QgsPoint& );
-    /** \brief this slot clears min max values from gui */
-    void sboxSingleBandStdDev_valueChanged( double );
-    /** \brief this slot clears min max values from gui */
-    void sboxThreeBandStdDev_valueChanged( double );
     /** \brief slot executed when the transparency level changes. */
     void sliderTransparency_valueChanged( int );
-    /** \brief this slot sets StdDev switch box to 0.00 when user enters min max values */
-    void userDefinedMinMax_textEdited( QString );
 
   private slots:
-    /** This slow handles necessary interface modifications (i.e. loading min max values) */
-    void on_cboBlue_currentIndexChanged( const QString& );
-    /** This slow handles necessary interface modifications (i.e. loading min max values) */
-    void on_cboGray_currentIndexChanged( const QString& );
-    /** This slow handles necessary interface modifications (i.e. loading min max values) */
-    void on_cboGreen_currentIndexChanged( const QString& );
-    /** This slow handles necessary interface modifications (i.e. loading min max values) */
-    void on_cboRed_currentIndexChanged( const QString& );
-    /** This slot handles necessary interface modifications based when color map selected changes */
-    void on_cboxColorMap_currentIndexChanged( const QString& );
-    /** This slot calculates classification values and colors for the tree widget on the colormap tab */
-    void on_mClassifyButton_clicked();
-    /** This slot deletes the current class from the tree widget on the colormap tab */
-    void on_mDeleteEntryButton_clicked();
-    /** Callback for double clicks on the colormap entry widget */
-    void handleColormapTreeWidgetDoubleClick( QTreeWidgetItem* item, int column );
-    /** This slot adds a new row to the color map table */
-    void on_pbtnAddColorMapEntry_clicked();
-    /** This slots saves the current color map to a file */
-    void on_pbtnExportColorMapToFile_clicked();
-    /** This slots loads the current color map from a band */
-    void on_pbtnLoadColorMapFromBand_clicked();
-    /** This slots loads the current color map from a file */
-    void on_pbtnLoadColorMapFromFile_clicked();
-    /** This slot loads the minimum and maximum values from the raster band and updates the gui */
-    void on_pbtnLoadMinMax_clicked();
-    /** This slot will sort the color map in ascending order */
-    void on_pbtnSortColorMap_clicked();
+    void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** Load the default style when appropriate button is pressed. */
     void on_pbnLoadDefaultStyle_clicked();
     /** Save the default style when appropriate button is pressed. */
@@ -161,9 +118,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     int mDefaultGreenBand;
     int mDefaultBlueBand;
 
-    /** \brief Internal flag used to short circuit signal loop between min max field and stdDev spin box */
-    bool ignoreSpinBoxEvent;
-
     /** \brief Flag to indicate if Gray minimum maximum values are actual minimum maximum values */
     bool mGrayMinimumMaximumEstimated;
 
@@ -180,20 +134,12 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
      */
     //bool mRasterLayerIsInternal;
 
-    /** \brief Clear current color map table and population with values from new list */
-    void populateColorMapTable( const QList<QgsColorRampShader::ColorRampItem>& );
+    QgsRasterRendererWidget* mRendererWidget;
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
     void populateTransparencyTable();
 
-    /** \brief Set the message indicating if any min max values are estimates */
-    void setMinimumMaximumEstimateWarning();
-
-    /**Restores the state of the colormap tab*/
-    void syncColormapTab();
-
-    /** \brief Verify values in custom min max line edits */
-    bool validUserDefinedMinMax();
+    void setRendererWidget( const QString& rendererName );
 
     //@TODO we should move these gradient generators somewhere more generic
     //so they can be used generically throughut the app

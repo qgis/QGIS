@@ -25,6 +25,8 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include "qgslinearminmaxenhancement.h"
 #include "qgslinearminmaxenhancementwithclip.h"
 #include "qgscliptominmaxenhancement.h"
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
 {
@@ -351,5 +353,45 @@ void QgsContrastEnhancement::setMinimumValue( double theValue, bool generateTabl
   if ( generateTable )
   {
     generateLookupTable();
+  }
+}
+
+void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  //minimum value
+  QDomElement minElem = doc.createElement( "minValue" );
+  QDomText minText = doc.createTextNode( QString::number( mMinimumValue ) );
+  minElem.appendChild( minText );
+  parentElem.appendChild( minElem );
+
+  //maximum value
+  QDomElement maxElem = doc.createElement( "maxValue" );
+  QDomText maxText = doc.createTextNode( QString::number( mMaximumValue ) );
+  maxElem.appendChild( maxText );
+  parentElem.appendChild( maxElem );
+
+  //algorithm
+  QDomElement algorithmElem = doc.createElement( "algorithm" );
+  QDomText algorithmText = doc.createTextNode( QString::number( mContrastEnhancementAlgorithm ) );
+  algorithmElem.appendChild( algorithmText );
+  parentElem.appendChild( algorithmElem );
+}
+
+void QgsContrastEnhancement::readXML( const QDomElement& elem )
+{
+  QDomElement minValueElem = elem.firstChildElement( "minValue" );
+  if ( !minValueElem.isNull() )
+  {
+    mMinimumValue = minValueElem.text().toDouble();
+  }
+  QDomElement maxValueElem = elem.firstChildElement( "maxValue" );
+  if ( !maxValueElem.isNull() )
+  {
+    mMaximumValue = maxValueElem.text().toDouble();
+  }
+  QDomElement algorithmElem = elem.firstChildElement( "algorithm" );
+  if ( !algorithmElem.isNull() )
+  {
+    setContrastEnhancementAlgorithm(( ContrastEnhancementAlgorithm )( algorithmElem.text().toInt() ) );
   }
 }

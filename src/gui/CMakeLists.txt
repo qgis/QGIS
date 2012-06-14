@@ -1,6 +1,11 @@
 
 SET(QGIS_GUI_SRCS
 
+raster/qgsmultibandcolorrendererwidget.cpp
+raster/qgspalettedrendererwidget.cpp
+raster/qgssinglebandgrayrendererwidget.cpp
+raster/qgssinglebandpseudocolorrendererwidget.cpp
+
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
 symbology-ng/qgsdashspacedialog.cpp
@@ -88,6 +93,11 @@ IF (WITH_TOUCH)
 ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
+
+raster/qgspalettedrendererwidget.h
+raster/qgsmultibandcolorrendererwidget.h
+raster/qgssinglebandgrayrendererwidget.h
+raster/qgssinglebandpseudocolorrendererwidget.h
 
 symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
@@ -245,6 +255,7 @@ ELSE (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${GDAL_INCLUDE_DIR})
 
 IF (WIN32)
   IF (MSVC)

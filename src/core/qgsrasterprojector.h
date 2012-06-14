@@ -125,6 +125,9 @@ class QgsRasterProjector
     /** get mCPMatrix as string */
     QString cpToString();
 
+    int dstRows() const { return mDestRows; }
+    int dstCols() const { return mDestCols; }
+
   private:
     /** Source CRS */
     QgsCoordinateReferenceSystem mSrcCRS;
