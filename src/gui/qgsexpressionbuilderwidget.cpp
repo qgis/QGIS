@@ -87,7 +87,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     if ( func.mParams >= 1 )
       name += "(";
     registerItem( func.mGroup, func.mName, " " + name + " " );
-  };
+  }
+
+#if QT_VERSION >= 0x040700
+  txtSearchEdit->setPlaceHolderText( tr( "Search" ) );
+#endif
 }
 
 
@@ -114,9 +118,9 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     mValueListWidget->clear();
   }
 
-  btnLoadAll->setVisible(item->getItemType() == QgsExpressionItem::Field);
-  btnLoadSample->setVisible(item->getItemType() == QgsExpressionItem::Field);
-  mValueGroupBox->setVisible(item->getItemType() == QgsExpressionItem::Field);
+  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field );
+  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field );
+  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
