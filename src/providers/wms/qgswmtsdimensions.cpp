@@ -31,7 +31,7 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
 
   mDimensions->setRowCount( dims.size() );
 
-  for( int i = 0; i < mDimensions->rowCount(); i++ )
+  for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
     const QgsWmtsDimension &d = layer.dimensions[ dims[i] ];
 
@@ -65,7 +65,7 @@ void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )
 {
   selected.clear();
 
-  for( int i = 0; i<mDimensions->rowCount(); i++ )
+  for ( int i = 0; i < mDimensions->rowCount(); i++ )
   {
     QComboBox *cb = qobject_cast< QComboBox * >( mDimensions->cellWidget( i, 4 ) );
     Q_ASSERT( cb );

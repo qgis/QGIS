@@ -47,6 +47,7 @@ class QgsOWSConnection : public QObject
     /**
      * Constructor
      * @param theService service name: WMS,WFS,WCS
+     * @param theConnName connection name
      */
     QgsOWSConnection( const QString & theService, const QString & theConnName );
     //! Destructor

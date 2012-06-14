@@ -219,7 +219,7 @@ static QStringList wildcards = QStringList();
 
 QGISEXTERN int dataCapabilities()
 {
-  return  QgsDataProvider::Net;
+  return QgsDataProvider::Net;
 }
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
@@ -228,12 +228,13 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   {
     return new QgsOWSRootItem( parentItem, "OWS", "ows:" );
   }
-
+  return 0;
 }
 
 //QGISEXTERN QgsOWSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
 QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WFlags fl )
 {
+  Q_UNUSED( parent );
   //return new QgsOWSSourceSelect( parent, fl );
   return 0;
 }

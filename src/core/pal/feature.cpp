@@ -913,7 +913,7 @@ namespace pal
           tmp = tmp->getNextPart();
         }
 
-        double angle_diff_avg = f->labelInfo->char_num > 1 ? (angle_diff / ( f->labelInfo->char_num - 1 )) : 0; // <0, pi> but pi/8 is much already
+        double angle_diff_avg = f->labelInfo->char_num > 1 ? ( angle_diff / ( f->labelInfo->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
         double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
         if ( cost < 0.0001 ) cost = 0.0001;
 

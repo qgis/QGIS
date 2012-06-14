@@ -530,7 +530,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
   if ( mInvertAxisOrientation )
     changeXY = !changeXY;
-  
+
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
   if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
@@ -1044,7 +1044,7 @@ void QgsWmsProvider::tileReplyFinished()
                                    .arg( status.toString() )
                                    .arg( contentType )
                                    .arg( text.size() )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );  
+                                   .arg( reply->url().toString() ), tr( "WMS" ) );
 #ifdef QGISDEBUG
         QFile file( QDir::tempPath() + "/broken-image.png" );
         if ( file.open( QIODevice::WriteOnly ) )

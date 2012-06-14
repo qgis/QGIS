@@ -55,7 +55,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
 
   QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri ( encodedUri );
+  uri.setEncodedUri( encodedUri );
   QgsDebugMsg( "encodedUri = " + encodedUri );
 
   mCapabilities = new QgsWFSCapabilities( encodedUri );
@@ -155,7 +155,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
   {
     QgsOWSConnection connection( "WF", connName );
     QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, connection.uri().encodedUri() );
-    conn->setIcon ( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
+    conn->setIcon( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
     connections.append( conn );
   }
   return connections;

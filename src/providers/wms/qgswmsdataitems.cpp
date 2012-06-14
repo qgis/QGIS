@@ -42,12 +42,12 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
   QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri ( encodedUri );
-/*
-  if ( mPath.contains ( "url=" ) )
+  uri.setEncodedUri( encodedUri );
+#if 0
+  if ( mPath.contains( "url=" ) )
   {
     encodedUri = mPath;
-    uri.setEncodedUri ( encodedUri );
+    uri.setEncodedUri( encodedUri );
   }
   else
   {
@@ -55,10 +55,10 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     uri = connection.uri();
     encodedUri = uri.encodedUri();
   }
-*/
+#endif
   QgsDebugMsg( "encodedUri = " + encodedUri );
 
-  QgsWmsProvider *wmsProvider = new QgsWmsProvider ( encodedUri );
+  QgsWmsProvider *wmsProvider = new QgsWmsProvider( encodedUri );
   if ( !wmsProvider ) return children;
 
   // Attention: supportedLayers() gives tree leafes, not top level
@@ -100,7 +100,7 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   {
     return false;
   }
- 
+
   return ( mPath == o->mPath && mName == o->mName );
 }
 
@@ -240,7 +240,7 @@ QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
     QgsWMSConnection connection( connName );
     QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, connection.uri().encodedUri() );
 
-    conn->setIcon ( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
+    conn->setIcon( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
     connections.append( conn );
   }
   return connections;

@@ -828,8 +828,8 @@ void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* ini
     // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
     QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
     QString filter = QString( "%1 >= %2 AND %1 <= %3" ).arg( attr )
-            .arg( QString::number( rng.lowerValue(), 'f', 4 ) )
-            .arg( QString::number( rng.upperValue(), 'f', 4 ) );
+                     .arg( QString::number( rng.lowerValue(), 'f', 4 ) )
+                     .arg( QString::number( rng.upperValue(), 'f', 4 ) );
     QString label = filter;
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }

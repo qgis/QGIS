@@ -501,6 +501,7 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const & e, QgsWcsCove
 
 void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const & e, QgsWcsCoverageSummary &coverageSummary, QgsWcsCoverageSummary *parent )
 {
+  Q_UNUSED( parent );
   QgsDebugMsg( "Entered" );
   coverageSummary.orderId = ++mCoverageCount;
 

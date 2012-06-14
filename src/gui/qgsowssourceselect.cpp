@@ -379,7 +379,7 @@ void QgsOWSSourceSelect::addClicked()
   QgsDebugMsg( "entered" );
 }
 
-void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
+void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 {
 }
 

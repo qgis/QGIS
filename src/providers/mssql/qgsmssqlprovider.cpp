@@ -605,9 +605,9 @@ void QgsMssqlProvider::select( QgsAttributeList fetchAttributes,
   if ( !mSqlWhereClause.isEmpty() )
   {
     if ( rect.isEmpty() )
-        mStatement += " where (" + mSqlWhereClause + ")";
+      mStatement += " where (" + mSqlWhereClause + ")";
     else
-        mStatement += " and (" + mSqlWhereClause + ")";
+      mStatement += " and (" + mSqlWhereClause + ")";
   }
 
   mFetchGeom = fetchGeometry;
@@ -638,7 +638,7 @@ QVariant QgsMssqlProvider::minimumValue( int index )
                 .arg( fld.name() );
 
   if ( !mSchemaName.isEmpty() )
-  sql += "[" + mSchemaName + "].";
+    sql += "[" + mSchemaName + "].";
 
   sql += "[" + mTableName + "]";
 
@@ -676,7 +676,7 @@ QVariant QgsMssqlProvider::maximumValue( int index )
                 .arg( fld.name() );
 
   if ( !mSchemaName.isEmpty() )
-  sql += "[" + mSchemaName + "].";
+    sql += "[" + mSchemaName + "].";
 
   sql += "[" + mTableName + "]";
 
@@ -712,18 +712,18 @@ void QgsMssqlProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, i
 
   // get the field name
   QgsField fld = mAttributeFields[ index ];
-  QString sql = QString( "select distinct ");
-  
-  if (limit > 0)
+  QString sql = QString( "select distinct " );
+
+  if ( limit > 0 )
   {
     sql += QString( " top %1 " ).arg( limit );
   }
 
   sql += QString( "[%1] from " )
-                .arg( fld.name() );
+         .arg( fld.name() );
 
   if ( !mSchemaName.isEmpty() )
-  sql += "[" + mSchemaName + "].";
+    sql += "[" + mSchemaName + "].";
 
   sql += "[" + mTableName + "]";
 

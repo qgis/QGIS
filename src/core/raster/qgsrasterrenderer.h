@@ -89,26 +89,42 @@ class CORE_EXPORT QgsRasterRenderer
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
     /**Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
-      @param bandNumer number of raster band to read
+      @param bandNumber number of raster band to read
       @param viewPort describes raster position on screen
+      @param mapToPixel transform map to pixel
       @param oversamplingX out: oversampling rate in x-direction
       @param oversamplingY out: oversampling rate in y-direction*/
     void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY );
     /**Fetches next part of raster data
+       @param bandNumber number of raster band to read
+       @param oversamplingX oversampling rate in x-direction
+       @param oversamplingY oversampling rate in y-direction
+       @param viewPort view port
        @param nCols number of columns on output device
        @param nRows number of rows on output device
        @param nColsRaster number of raster columns (different to nCols if oversamplingX != 1.0)
-       @param nRowsRaster number of raster rows (different to nRows if oversamplingY != 0)*/
+       @param nRowsRaster number of raster rows (different to nRows if oversamplingY != 0)
+       @param rasterData raster data
+       @param topLeftCol Left position relative to left border of viewport
+       @param topLeftRow Top position relative to top border of viewport*/
     bool readNextRasterPart( int bandNumber, double oversamplingX, double oversamplingY, QgsRasterViewPort* viewPort, int& nCols, int& nRows,
                              int& nColsRaster, int& nRowsRaster, void** rasterData, int& topLeftCol, int& topLeftRow );
     /**Draws raster part
+      @param p the painter
+      @param viewPort view port
+      @param img image
       @param topLeftCol Left position relative to left border of viewport
-      @param topLeftRow Top position relative to top border of viewport*/
+      @param topLeftRow Top position relative to top border of viewport
+      @param nCols number of columns
+      @param nRows number of rows
+      @param oversamplingX oversampling rate in x-direction
+      @param oversamplingY oversampling rate in y-direction
+      */
     void drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,
                     int nCols, int nRows, double oversamplingX, double oversamplingY ) const;
     void stopRasterRead( int bandNumber );
 
-    /**Write upper class info into <rasterrenderer> element (called by writeXML method of subclasses)*/
+    /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
 

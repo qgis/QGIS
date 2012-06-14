@@ -240,7 +240,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
   mGeneralDock = new QDockWidget( tr( "Composition" ), this );
   mGeneralDock->setObjectName( "CompositionDock" );
-  mItemDock = new QDockWidget( tr( "Item Properties"), this );
+  mItemDock = new QDockWidget( tr( "Item Properties" ), this );
   mItemDock->setObjectName( "ItemDock" );
   mUndoDock = new QDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );

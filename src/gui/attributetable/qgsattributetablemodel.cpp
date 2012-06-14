@@ -168,7 +168,7 @@ void QgsAttributeTableModel::attributeDeleted( int idx )
   {
     QgsFeatureId fid = rowToId( row );
 
-    if( !mFeatureMap.contains( fid ) )
+    if ( !mFeatureMap.contains( fid ) )
       continue;
 
     mFeatureMap[ fid ].deleteAttribute( idx );

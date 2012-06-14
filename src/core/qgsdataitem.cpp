@@ -150,14 +150,14 @@ const QIcon &QgsZipItem::iconZip()
 
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
-    // Do not pass parent to QObject, Qt would delete this when parent is deleted
+// Do not pass parent to QObject, Qt would delete this when parent is deleted
     : QObject(), mType( type ), mParent( parent ), mPopulated( false ), mName( name ), mPath( path )
 {
 }
 
-QgsDataItem::~QgsDataItem() 
+QgsDataItem::~QgsDataItem()
 {
-  QgsDebugMsg( "mName = " + mName + " mPath = " + mPath);
+  QgsDebugMsg( "mName = " + mName + " mPath = " + mPath );
 }
 
 // TODO: This is copy from QgisApp, bad
@@ -297,14 +297,14 @@ QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
   mChildren.remove( i );
   emit endRemoveItems();
   disconnect( child, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
-           this, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
+              this, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
   disconnect( child, SIGNAL( endInsertItems() ),
-           this, SLOT( emitEndInsertItems() ) );
+              this, SLOT( emitEndInsertItems() ) );
   disconnect( child, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
-           this, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
+              this, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
   disconnect( child, SIGNAL( endRemoveItems() ),
-           this, SLOT( emitEndRemoveItems() ) );
-  child->setParent(0);
+              this, SLOT( emitEndRemoveItems() ) );
+  child->setParent( 0 );
   return child;
 }
 
@@ -414,10 +414,10 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name,
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
 {
-  QgsDebugMsg( "Entered");
+  QgsDebugMsg( "Entered" );
   foreach( QgsDataItem* i, mChildren )
   {
-    QgsDebugMsg( QString("delete child = 0x%0").arg((qlonglong)i,8,16,QLatin1Char('0'))  );
+    QgsDebugMsg( QString( "delete child = 0x%0" ).arg(( qlonglong )i, 8, 16, QLatin1Char( '0' ) ) );
     delete i;
   }
 }

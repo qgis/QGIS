@@ -233,7 +233,7 @@ QStringList QgsWCSSourceSelect::selectedLayersCRSs()
   return c->supportedCrs;
 }
 
-void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
+void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 {
   // TODO: I am not convinced to disable layers according to selected CRS
 }

@@ -370,7 +370,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void drawGrid( QPainter* p );
     /**Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter
-    @param hLines horizontal coordinate lines in item coordinates
+        @param hLines horizontal coordinate lines in item coordinates
         @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
     void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString );

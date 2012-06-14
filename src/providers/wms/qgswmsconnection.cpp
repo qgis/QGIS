@@ -103,7 +103,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     mUri.setParam( "InvertAxisOrientation", "1" );
   }
 
-  if( !connArgs.isEmpty() )
+  if ( !connArgs.isEmpty() )
   {
     connArgs.prepend( "ignoreUrl=" );
 

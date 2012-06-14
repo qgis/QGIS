@@ -2872,7 +2872,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
   }
 
-  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::qgisFeatureTypes[ geometryType() ] ) );
+  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::qgisFeatureTypes[ geometryType()] ) );
   QgsDebugMsg( QString( "Geometry is geography %1" ).arg( mIsGeography ) );
 
   return mValid;
