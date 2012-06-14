@@ -21,7 +21,7 @@ class QgsRasterResampler
     virtual QString type() const = 0;
 };
 
-class QgsBilinearRasterResampler: public QgsRasterResampler
+class QgsBilinearRasterResampler: QgsRasterResampler
 {
 %TypeHeaderCode
     #include "qgsbilinearrasterresampler.h"
@@ -34,7 +34,7 @@ class QgsBilinearRasterResampler: public QgsRasterResampler
     QString type() const;
 };
 
-class QgsCubicRasterResampler: public QgsRasterResampler
+class QgsCubicRasterResampler: QgsRasterResampler
 {
 %TypeHeaderCode
     #include "qgscubicrasterresampler.h"

@@ -65,7 +65,7 @@ class QgsRasterRenderer
     void readXML( const QDomElement& rendererElem );
  };
 
-class QgsPalettedRasterRenderer: public QgsRasterRenderer
+class QgsPalettedRasterRenderer: QgsRasterRenderer
 {
 %TypeHeaderCode
     #include "qgspalettedrasterrenderer.h"
@@ -88,7 +88,7 @@ class QgsPalettedRasterRenderer: public QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
  };
 
-class QgsMultiBandColorRenderer: public QgsRasterRenderer
+class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
 %TypeHeaderCode
     #include "qgsmultibandcolorrenderer.h"
@@ -125,7 +125,7 @@ class QgsMultiBandColorRenderer: public QgsRasterRenderer
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 };
 
-class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
+class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 {
 %TypeHeaderCode
     #include "qgssinglebandpseudocolorrenderer.h"
@@ -148,7 +148,7 @@ class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 };
 
-class QgsSingleBandGrayRenderer: public QgsRasterRenderer
+class QgsSingleBandGrayRenderer: QgsRasterRenderer
 {
 %TypeHeaderCode
     #include "qgssinglebandgrayrenderer.h"
@@ -172,7 +172,7 @@ class QgsSingleBandGrayRenderer: public QgsRasterRenderer
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 };
 
-class QgsSingleBandColorDataRenderer: public QgsRasterRenderer
+class QgsSingleBandColorDataRenderer: QgsRasterRenderer
 {
 %TypeHeaderCode
     #include "qgssinglebandcolordatarenderer.h"
