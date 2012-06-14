@@ -421,8 +421,7 @@ void QgsGrassPlugin::addRaster()
     name.replace( '/', ' ' );
 
     //qGisInterface->addRasterLayer( uri, sel->map );
-    qGisInterface->addRasterLayer( uri, sel->map, "grassraster", QStringList(), QStringList(),
-                                   QString(), QString() );
+    qGisInterface->addRasterLayer( uri, sel->map, "grassraster" );
   }
 }
 

@@ -28,6 +28,7 @@
 #include "qgswmsprovider.h"
 #include "qgswmsconnection.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdatasourceuri.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -105,133 +106,86 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
 
-  mBaseUrl = prepareUri( mHttpUri );
 
   mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml";
-
-  QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
 
   QgsDebugMsg( "exiting constructor." );
 }
 
-void QgsWmsProvider::parseUri( QString uri )
+void QgsWmsProvider::parseUri( QString uriString )
 {
-  // Strip off and store the user name and password (if they exist)
-  if ( !uri.startsWith( " http:" ) )
+
+  QgsDebugMsg( "uriString = " + uriString );
+  QgsDataSourceURI uri;
+  uri.setEncodedUri( uriString );
+
+  mTiled = false;
+  mTileMatrixSet = 0;
+  mTileLayer = 0;
+  mTileDimensionValues.clear();
+
+  mMaxWidth = 0;
+  mMaxHeight = 0;
+
+  mHttpUri = uri.param( "url" );
+  mBaseUrl = prepareUri( mHttpUri ); // must set here, setImageCrs is using that
+  QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
+
+  mIgnoreGetMapUrl = uri.hasParam( "IgnoreGetMapUrl" );
+  mIgnoreGetFeatureInfoUrl = uri.hasParam( "IgnoreGetFeatureInfoUrl" );
+  mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
+  mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
+
+  mUserName = uri.param( "username" );
+  QgsDebugMsg( "set username to " + mUserName );
+
+  mPassword = uri.param( "password" );
+  QgsDebugMsg( "set password to " + mPassword );
+
+  addLayers( uri.params( "layers" ), uri.params( "styles" ) );
+  setImageEncoding( uri.param( "format" ) );
+
+  if ( uri.hasParam( "maxWidth" ) && uri.hasParam( "maxHeight" ) )
   {
-    mTiled = false;
-    mTileMatrixSet = 0;
-    mTileLayer = 0;
-    mTileDimensionValues.clear();
+    mMaxWidth = uri.param( "maxWidth" ).toInt();
+    mMaxHeight = uri.param( "maxHeight" ).toInt();
+  }
 
-    mMaxWidth = 0;
-    mMaxHeight = 0;
+  if ( uri.hasParam( "tileMatrixSet" ) )
+  {
+    mTiled = true;
+    // tileMatrixSet may be empty if URI was converted from < 1.9 project file URI
+    // in that case it means that the source is WMS-C
+    mTileMatrixSetId = uri.param( "tileMatrixSet" );
+  }
 
-    mIgnoreGetMapUrl = false;
-    mIgnoreGetFeatureInfoUrl = false;
-    mIgnoreAxisOrientation = false;
-    mInvertAxisOrientation = false;
-
-    QString layer;
-
-    // uri potentially contains username and password
-    foreach( const QString &item, uri.split( "," ) )
+  if ( uri.hasParam( "tileDimensions" ) )
+  {
+    mTiled = true;
+    foreach( QString param, uri.params( "tileDimensions" ) )
     {
-      QgsDebugMsg( "testing for creds: " + item );
-      if ( item.startsWith( "username=" ) )
+      QStringList kv = param.split( "=" );
+      if ( kv.size() == 1 )
       {
-        mUserName = item.mid( 9 );
-        QgsDebugMsg( "set username to " + mUserName );
+        mTileDimensionValues.insert( kv[0], QString::null );
       }
-      else if ( item.startsWith( "password=" ) )
+      else if ( kv.size() == 2 )
       {
-        mPassword = item.mid( 9 );
-        QgsDebugMsg( "set password to " + mPassword );
-      }
-      else if ( item.startsWith( "maxSize=" ) )
-      {
-        QStringList params = item.mid( 8 ).split( ";" );
-        mMaxWidth  = params[0].toInt();
-        mMaxHeight = params[1].toInt();
-      }
-      else if ( item.startsWith( "featureCount=" ) )
-      {
-        mFeatureCount = item.mid( 13 ).toInt();
-      }
-      else if ( item.startsWith( "url=" ) )
-      {
-        // strip the authentication information from the front of the uri
-        mHttpUri = item.mid( 4 );
-        QgsDebugMsg( "set httpuri to " + mHttpUri );
-      }
-      else if ( item.startsWith( "ignoreUrl=" ) )
-      {
-        foreach( const QString &param, item.mid( 10 ).split( ";" ) )
-        {
-          if ( param == "GetMap" )
-          {
-            mIgnoreGetMapUrl = true;
-          }
-          else if ( param == "GetFeatureInfo" )
-          {
-            mIgnoreGetFeatureInfoUrl = true;
-          }
-          else if ( param == "AxisOrientation" )
-          {
-            mIgnoreAxisOrientation = true;
-          }
-          else if ( param == "InvertAxisOrientation" )
-          {
-            mInvertAxisOrientation = true;
-          }
-        }
-      }
-      else if ( item.startsWith( "tileMatrixSet=" ) )
-      {
-        mTiled = true;
-        mTileMatrixSetId = item.mid( 14 );
-      }
-      else if ( item.startsWith( "tileDimensions=" ) )
-      {
-        mTiled = true;
-
-        foreach( const QString &param, item.mid( 15 ).split( ";" ) )
-        {
-          QStringList kv = param.split( "=" );
-          if ( kv.size() == 1 )
-          {
-            mTileDimensionValues.insert( kv[0], QString::null );
-          }
-          else if ( kv.size() == 2 )
-          {
-            mTileDimensionValues.insert( kv[0], kv[1] );
-          }
-          else
-          {
-            QgsDebugMsg( QString( "skipped dimension %1" ).arg( param ) );
-          }
-        }
-      }
-      else if ( item.startsWith( "tiled=" ) )
-      {
-        // old WMS-C or request limit notation
-        QStringList params = item.mid( 6 ).split( ";" );
-        if ( params.size() > 2 )
-        {
-          mTiled = true;
-        }
-        else
-        {
-          mMaxWidth  = params[0].toInt();
-          mMaxHeight = params[1].toInt();
-        }
+        mTileDimensionValues.insert( kv[0], kv[1] );
       }
       else
       {
-        QgsDebugMsg( QString( "ignoring item: %1" ).arg( item ) );
+        QgsDebugMsg( QString( "skipped dimension %1" ).arg( param ) );
       }
     }
   }
+
+  // setImageCrs is using mTiled !!!
+  setImageCrs( uri.param( "crs" ) );
+  mCrs.createFromOgcWmsCrs( uri.param( "crs" ) );
+
+  mFeatureCount = uri.param( "featureCount" ).toInt(); // default to 0
+
 }
 
 QString QgsWmsProvider::prepareUri( QString uri ) const
@@ -467,6 +421,7 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
     }
 
     mValid = retrieveServerCapabilities();
+    QgsDebugMsg( QString( "mValid = %1 mTileLayersSupported.size() = %2" ).arg( mValid ).arg( mTileLayersSupported.size() ) );
     if ( !mValid || mTileLayersSupported.size() == 0 )
     {
       QgsDebugMsg( "Tile layer not found" );
@@ -575,7 +530,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
   if ( mInvertAxisOrientation )
     changeXY = !changeXY;
-
+  
   // compose the URL query string for the WMS server.
   QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
   if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
@@ -1089,9 +1044,9 @@ void QgsWmsProvider::tileReplyFinished()
                                    .arg( status.toString() )
                                    .arg( contentType )
                                    .arg( text.size() )
-                                   .arg( reply->url().toString() ), tr( "WMS" ) );
+                                   .arg( reply->url().toString() ), tr( "WMS" ) );  
 #ifdef QGISDEBUG
-        QFile file( QDir::tempPath() + "/b0rken-image.png" );
+        QFile file( QDir::tempPath() + "/broken-image.png" );
         if ( file.open( QIODevice::WriteOnly ) )
         {
           file.write( text );
@@ -1117,6 +1072,7 @@ void QgsWmsProvider::tileReplyFinished()
                  r.height() / cr );
 
       QgsDebugMsg( QString( "tile reply: length %1" ).arg( reply->bytesAvailable() ) );
+
       QImage myLocalImage = QImage::fromData( reply->readAll() );
 
       if ( !myLocalImage.isNull() )
@@ -1279,6 +1235,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
   if ( mHttpCapabilitiesResponse.isNull() || forceRefresh )
   {
     QString url = mBaseUrl;
+    QgsDebugMsg( "url = " + url );
     if ( !url.contains( "SERVICE=WMTS" ) &&
          !url.contains( "/WMTSCapabilities.xml" ) )
     {
@@ -1310,6 +1267,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
         mErrorFormat = "text/plain";
         mError = tr( "empty capabilities document" );
       }
+      QgsDebugMsg( "response is empty" );
       return false;
     }
 
@@ -1318,6 +1276,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
     {
       mErrorFormat = "text/html";
       mError = mHttpCapabilitiesResponse;
+      QgsDebugMsg( "starts with <html>" );
       return false;
     }
 
@@ -1347,8 +1306,10 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
 void QgsWmsProvider::capabilitiesReplyFinished()
 {
+  QgsDebugMsg( "entering." );
   if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
   {
+    QgsDebugMsg( "reply ok" );
     QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
     if ( !redirect.isNull() )
     {
@@ -2829,6 +2790,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       }
     }
 
+    QgsDebugMsg( QString( "add layer %1" ).arg( id ) );
     mTileLayersSupported << l;
   }
 
@@ -3948,8 +3910,7 @@ void QgsWmsProvider::identifyReplyFinished()
 
 QgsCoordinateReferenceSystem QgsWmsProvider::crs()
 {
-  // TODO: implement
-  return QgsCoordinateReferenceSystem();
+  return mCrs;
 }
 
 QString QgsWmsProvider::lastErrorTitle()

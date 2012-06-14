@@ -1103,6 +1103,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
+
+    QgsCoordinateReferenceSystem mCrs;
 };
 
 

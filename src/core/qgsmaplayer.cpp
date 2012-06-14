@@ -165,6 +165,7 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
   mne = mnl.toElement();
   mDataSource = mne.text();
 
+  // TODO: this should go to providers
   if ( provider == "spatialite" )
   {
     QgsDataSourceURI uri( mDataSource );
@@ -191,6 +192,82 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
+  }
+  else if ( provider == "wms" )
+  {
+    // >>> BACKWARD COMPATIBILITY < 1.9
+    // For project file backward compatibility we must support old format:
+    // 1. mode: <url>
+    //    example: http://example.org/wms?
+    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>...,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
+    //    example: tiled=256;256;0.703;0.351,url=http://example.org/tilecache?
+    //    example: featureCount=10,http://example.org/wms?
+    //    example: ignoreUrl=GetMap;GetFeatureInfo,username=cimrman,password=jara,url=http://example.org/wms?
+    // This is modified version of old QgsWmsProvider::parseUri
+    // The new format has always params crs,format,layers,styles and that params
+    // should not appear in old format url -> use them to identify version
+    if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
+    {
+      QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
+      QgsDataSourceURI uri;
+      if ( !mDataSource.startsWith( "http:" ) )
+      {
+        QStringList parts = mDataSource.split( "," );
+        QStringListIterator iter( parts );
+        while ( iter.hasNext() )
+        {
+          QString item = iter.next();
+          if ( item.startsWith( "username=" ) )
+          {
+            uri.setParam( "username", item.mid( 9 ) );
+          }
+          else if ( item.startsWith( "password=" ) )
+          {
+            uri.setParam( "password", item.mid( 9 ) );
+          }
+          else if ( item.startsWith( "tiled=" ) )
+          {
+            // in < 1.9 tiled= may apper in to variants:
+            // tiled=width;height - non tiled mode, specifies max width and max height
+            // tiled=width;height;resolutions-1;resolution2;... - tile mode
+
+            QStringList params = item.mid( 6 ).split( ";" );
+
+            if ( params.size() == 2 ) // non tiled mode
+            {
+              uri.setParam( "maxWidth", params.takeFirst() );
+              uri.setParam( "maxHeight", params.takeFirst() );
+            }
+            else if ( params.size() > 2 ) // tiled mode
+            {
+              // resolutions are no more needed and size limit is not used for tiles
+              // we have to tell to the provider however that it is tiled
+              uri.setParam( "tileMatrixSet", "" );
+            }
+          }
+          else if ( item.startsWith( "featureCount=" ) )
+          {
+            uri.setParam( "featureCount", item.mid( 13 ) );
+          }
+          else if ( item.startsWith( "url=" ) )
+          {
+            uri.setParam( "url", item.mid( 4 ) );
+          }
+          else if ( item.startsWith( "ignoreUrl=" ) )
+          {
+            uri.setParam( "ignoreUrl", item.mid( 10 ).split( ";" ) );
+          }
+        }
+      }
+      else
+      {
+        uri.setParam( "url", mDataSource );
+      }
+      mDataSource = uri.encodedUri();
+      // At this point, the URI is obviously incomplete, we add additional params
+      // in QgsRasterLayer::readXml
+    }
+    // <<< BACKWARD COMPATIBILITY < 1.9
   }
   else
   {
@@ -318,6 +395,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QString src = source();
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+  // TODO: what about postgres, mysql and others, they should not go through writePath()
   if ( vlayer && vlayer->providerType() == "spatialite" )
   {
     QgsDataSourceURI uri( src );
