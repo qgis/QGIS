@@ -62,6 +62,29 @@ class Parameter:
         self.parameter = params.Get_Parameter(i)
         self.name = self.parameter.Get_Name()
         self.description = self.parameter.Get_Description()
+        self.typeName = self.parameter.Get_Type_Name()
+        if self.parameter.is_Output():
+            self.typeName = "Output " + self.typeName
+        if self.parameter.is_Input():
+            self.typeName = "Input " + self.typeName
+        typ = self.parameter.Get_Type()
+        self.minimum = None
+        self.maximum = None
+        if  (typ == saga.PARAMETER_TYPE_Int)    or \
+            (typ == saga.PARAMETER_TYPE_Double) or \
+            (typ == saga.PARAMETER_TYPE_Degree) or \
+            (typ == saga.PARAMETER_TYPE_Range):
+                parameterValue = self.parameter.asValue()
+                if parameterValue.has_Minimum():
+                    self.minimum = parameterValue.Get_Minimum()
+                if parameterValue.has_Maximum():
+                    self.maximum = parameterValue.Get_Maximum()
+        self.choices = None
+        if typ == saga.PARAMETER_TYPE_Choice:     
+            parameterChoice = self.parameter.asChoice()
+            self.choices = [parameterChoice.Get_Item(i) for i in
+                range(parameterChoice.Get_Count())]
+        
         
 def getLibraryPaths(userPath = None):
     try:
@@ -98,13 +121,21 @@ def writeHTML(path, mod):
     docs += "<div class='author'>%s</div>\n" % mod.author
     docs += "<div class='description'>%s</div>\n" % mod.description.replace('\n', '<br/>\n')
     if mod.parameters():
-        docs += "<h2>Parameters:</h2>\n<dl class='parameters'>\n"
+        docs += "<h2>Parameters</h2>\n<dl class='parameters'>\n"
         for p in mod.parameters():
-            docs += "\t<dt>%s</dt>" % p.name
-            docs += "<dd>%s</dd>\n" % p.description
+            constraints = list()
+            if p.minimum:
+                constraints.append("Minimum: " + str(p.minimum))
+            if p.maximum:
+                constraints.append("Maximum: " + str(p.maximum))
+            if p.choices:
+                constraints.append("Available choices: " + ', '.join(p.choices))
+            
+            docs += "\t<dt>%s <div class='type'>%s</div></dt>" % (p.name, p.typeName)
+            docs += "<dd>%s <div class='constraints'>%s</div></dd>\n" % (p.description, '; '.join(constraints))
         docs += "</dl>"
     out = open(path, 'w')
-    out.write('<html><body>\n')
+    out.write('<html>\n<head><link rel="stylesheet" type="text/css" href="help.css" /></head>\n<body>\n')
     out.write(docs.encode('utf-8'))
     out.write('\n</body></html>\n')
     out.close()
