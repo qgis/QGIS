@@ -39,8 +39,6 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas * mapCanvas, QWidget * pare
 
 QgsTileScaleWidget::~QgsTileScaleWidget()
 {
-  QSettings settings;
-  settings.setValue( "/UI/tileScaleEnabled", isVisible() );
 }
 
 void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
@@ -158,8 +156,16 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
     QgsDebugMsg( "panel menu not found" );
   }
 
-  panelMenu->addAction( dock->toggleViewAction() );
-
   dock->setWidget( tws );
-  dock->show();
+
+  connect( dock->toggleViewAction(), SIGNAL( triggered( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
+
+  QSettings settings;
+  dock->setVisible( settings.value( "/UI/tileScaleEnabled", false ).toBool() );
+}
+
+void QgsTileScaleWidget::scaleEnabled( bool enabled )
+{
+  QSettings settings;
+  settings.setValue( "/UI/tileScaleEnabled", enabled );
 }
