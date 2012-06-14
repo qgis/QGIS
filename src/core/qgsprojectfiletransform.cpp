@@ -469,8 +469,10 @@ void QgsProjectFileTransform::transform1800to1900()
     QDomNode layerNode = rasterPropertiesElem.parentNode();
     QDomElement dataSourceElem = layerNode.firstChildElement( "datasource" );
     QDomElement layerNameElem = layerNode.firstChildElement( "layername" );
-    QDomElement layerProviderElem = layerNode.firstChildElement( "provider" );
-    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text(), layerProviderElem.isNull() ? "gdal" : layerProviderElem.text() );
+    QgsRasterLayer rasterLayer;
+    // TODO: We have to use more data from project file to read the layer it correctly,
+    // OTOH, we should not read it until it was converted
+    rasterLayer.readXML( layerNode );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
   QgsDebugMsg( mDom.toString() );
