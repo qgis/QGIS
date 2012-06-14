@@ -469,7 +469,8 @@ void QgsProjectFileTransform::transform1800to1900()
     QDomNode layerNode = rasterPropertiesElem.parentNode();
     QDomElement dataSourceElem = layerNode.firstChildElement( "datasource" );
     QDomElement layerNameElem = layerNode.firstChildElement( "layername" );
-    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text() );
+    QDomElement layerProviderElem = layerNode.firstChildElement( "provider" );
+    QgsRasterLayer rasterLayer( QgsProject::instance()->readPath( dataSourceElem.text() ), layerNameElem.text(), layerProviderElem.isNull() ? "gdal" : layerProviderElem.text() );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
   QgsDebugMsg( mDom.toString() );

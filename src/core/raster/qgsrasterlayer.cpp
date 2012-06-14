@@ -92,6 +92,14 @@ typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QStrin
 
 QgsRasterLayer::QgsRasterLayer()
     : QgsMapLayer( RasterLayer )
+    , QSTRING_NOT_SET( "Not Set" )
+    , TRSTRING_NOT_SET( tr( "Not Set" ) )
+    , mStandardDeviations( 0 )
+    , mDataProvider( 0 )
+    , mWidth( std::numeric_limits<int>::max() )
+    , mHeight( std::numeric_limits<int>::max() )
+    , mInvertColor( false )
+    , mRenderer( 0 )
 {
   init();
   mValid = false;
