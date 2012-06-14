@@ -41,6 +41,7 @@ class QgsAnnotationItem;
 class QgsClipboard;
 class QgsComposer;
 class QgsComposerView;
+class QgsContrastEnhancement;
 class QgsGeometry;
 class QgsFeature;
 
@@ -970,6 +971,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void createMapTips();
     void updateCRSStatusBar();
     void createDecorations();
+
+    /**Do histogram stretch for singleband gray / multiband color rasters*/
+    void histogramStretch( bool visibleAreaOnly = false );
+    /**Create raster enhancement object for a raster band*/
+    QgsContrastEnhancement* rasterContrastEnhancement( QgsRasterLayer* rlayer, int band,
+        bool visibleAreaOnly = false ) const;
 
     // actions for menus and toolbars -----------------
 

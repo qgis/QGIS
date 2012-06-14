@@ -17,8 +17,10 @@ email                : ersts@amnh.org
  ***************************************************************************/
 
 #include "qgslogger.h"
-
+#include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsRasterShader::QgsRasterShader( double theMinimumValue, double theMaximumValue )
 {
@@ -122,5 +124,63 @@ void QgsRasterShader::setMinimumValue( double theValue )
   if ( 0 != mRasterShaderFunction )
   {
     mRasterShaderFunction->setMinimumValue( theValue );
+  }
+}
+
+void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
+{
+  if ( parent.isNull() || !mRasterShaderFunction )
+  {
+    return;
+  }
+
+  QDomElement rasterShaderElem = doc.createElement( "rastershader" );
+  QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( mRasterShaderFunction );
+  if ( colorRampShader )
+  {
+    QDomElement colorRampShaderElem = doc.createElement( "colorrampshader" );
+    colorRampShaderElem.setAttribute( "colorRampType", colorRampShader->colorRampTypeAsQString() );
+    //items
+    QList<QgsColorRampShader::ColorRampItem> itemList = colorRampShader->colorRampItemList();
+    QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
+    for ( ; itemIt != itemList.constEnd(); ++itemIt )
+    {
+      QDomElement itemElem = doc.createElement( "item" );
+      itemElem.setAttribute( "label", itemIt->label );
+      itemElem.setAttribute( "value", itemIt->value );
+      itemElem.setAttribute( "color", itemIt->color.name() );
+      colorRampShaderElem.appendChild( itemElem );
+    }
+    rasterShaderElem.appendChild( colorRampShaderElem );
+  }
+  parent.appendChild( rasterShaderElem );
+}
+
+void QgsRasterShader::readXML( const QDomElement& elem )
+{
+  //only colorrampshader
+  QDomElement colorRampShaderElem = elem.firstChildElement( "colorrampshader" );
+  if ( !colorRampShaderElem.isNull() )
+  {
+    QgsColorRampShader* colorRampShader = new QgsColorRampShader();
+    colorRampShader->setColorRampType( colorRampShaderElem.attribute( "colorRampType", "INTERPOLATED" ) );
+
+    QList<QgsColorRampShader::ColorRampItem> itemList;
+    QDomElement itemElem;
+    QString itemLabel;
+    double itemValue;
+    QColor itemColor;
+
+    QDomNodeList itemNodeList = colorRampShaderElem.elementsByTagName( "item" );
+    for ( int i = 0; i < itemNodeList.size(); ++i )
+    {
+      itemElem = itemNodeList.at( i ).toElement();
+      itemValue = itemElem.attribute( "value" ).toDouble();
+      itemLabel = itemElem.attribute( "label" );
+      itemColor.setNamedColor( itemElem.attribute( "color" ) );
+      itemList.push_back( QgsColorRampShader::ColorRampItem( itemValue, itemColor, itemLabel ) );
+    }
+    colorRampShader->setColorRampItemList( itemList );
+    setRasterShaderFunction( colorRampShader );
   }
 }

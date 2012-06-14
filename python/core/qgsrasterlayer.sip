@@ -222,6 +222,10 @@ public:
     /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
     void setUserDefinedRGBMinimumMaximum( bool theBool );
 
+    /**Set raster renderer. Takes ownership of the renderer object*/
+    void setRenderer( QgsRasterRenderer* renderer );
+    QgsRasterRenderer* renderer();
+
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const;
 

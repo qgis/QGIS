@@ -18,6 +18,10 @@ email                : ersts@amnh.org
 #ifndef QGSRASTERTRANSPARENCY_H
 #define QGSRASTERTRANSPARENCY_H
 
+#include <QList>
+class QDomDocument;
+class QDomElement;
+
 /** \ingroup core
  * Defines the list of pixel values to be considered as transparent or semi
  * transparent when rendering rasters.
@@ -71,6 +75,13 @@ class CORE_EXPORT QgsRasterTransparency
 
     /** \brief Return the transparency value for a RGB Pixel */
     int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
+
+    /**True if there are no entries in the pixel lists except the nodata value*/
+    bool isEmpty( double nodataValue ) const;
+
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+
+    void readXML( const QDomElement& elem );
 
   private:
     /** \brief The list to hold transparency values for RGB layers */

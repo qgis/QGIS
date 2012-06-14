@@ -15,9 +15,12 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QList>
 
 #include "qgsrastertransparency.h"
+#include "qgis.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsRasterTransparency::QgsRasterTransparency()
 {
@@ -167,4 +170,91 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   }
 
   return theGlobalTransparency;
+}
+
+bool QgsRasterTransparency::isEmpty( double nodataValue ) const
+{
+  return (
+           ( mTransparentSingleValuePixelList.isEmpty() ||
+             ( mTransparentSingleValuePixelList.size() == 1 && doubleNear( mTransparentSingleValuePixelList.at( 0 ).pixelValue, nodataValue ) ) )
+           &&
+           ( mTransparentThreeValuePixelList.isEmpty() ||
+             ( mTransparentThreeValuePixelList.size() < 4 && doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
+               doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) && doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
+}
+
+void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
+{
+  QDomElement rasterTransparencyElem = doc.createElement( "rasterTransparency" );
+  if ( mTransparentSingleValuePixelList.count() > 0 )
+  {
+    QDomElement singleValuePixelListElement = doc.createElement( "singleValuePixelList" );
+    QList<QgsRasterTransparency::TransparentSingleValuePixel>::const_iterator it = mTransparentSingleValuePixelList.constBegin();
+    for ( ; it != mTransparentSingleValuePixelList.constEnd(); ++it )
+    {
+      QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
+      pixelListElement.setAttribute( "pixelValue", QString::number( it->pixelValue, 'f' ) );
+      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
+      singleValuePixelListElement.appendChild( pixelListElement );
+    }
+    rasterTransparencyElem.appendChild( singleValuePixelListElement );
+
+  }
+  if ( mTransparentThreeValuePixelList.count() > 0 )
+  {
+    QDomElement threeValuePixelListElement = doc.createElement( "threeValuePixelList" );
+    QList<QgsRasterTransparency::TransparentThreeValuePixel>::const_iterator it = mTransparentThreeValuePixelList.constBegin();
+    for ( ; it != mTransparentThreeValuePixelList.constEnd(); ++it )
+    {
+      QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
+      pixelListElement.setAttribute( "red", QString::number( it->red, 'f' ) );
+      pixelListElement.setAttribute( "green", QString::number( it->green, 'f' ) );
+      pixelListElement.setAttribute( "blue", QString::number( it->blue, 'f' ) );
+      pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );
+      threeValuePixelListElement.appendChild( pixelListElement );
+    }
+    rasterTransparencyElem.appendChild( threeValuePixelListElement );
+  }
+  parentElem.appendChild( rasterTransparencyElem );
+}
+
+void QgsRasterTransparency::readXML( const QDomElement& elem )
+{
+  if ( elem.isNull() )
+  {
+    return;
+  }
+
+  mTransparentSingleValuePixelList.clear();
+  mTransparentThreeValuePixelList.clear();
+  QDomElement currentEntryElem;
+
+  QDomElement singlePixelListElem = elem.firstChildElement( "singleValuePixelList" );
+  if ( !singlePixelListElem.isNull() )
+  {
+    QDomNodeList entryList = singlePixelListElem.elementsByTagName( "pixelListEntry" );
+    TransparentSingleValuePixel sp;
+    for ( int i = 0; i < entryList.size(); ++i )
+    {
+      currentEntryElem = entryList.at( i ).toElement();
+      sp.percentTransparent = currentEntryElem.attribute( "percentTransparent" ).toDouble();
+      sp.pixelValue = currentEntryElem.attribute( "pixelValue" ).toDouble();
+      mTransparentSingleValuePixelList.append( sp );
+    }
+  }
+  QDomElement threeValuePixelListElem = elem.firstChildElement( "threeValuePixelList" );
+  if ( !threeValuePixelListElem.isNull() )
+  {
+    QDomNodeList entryList = threeValuePixelListElem.elementsByTagName( "pixelListEntry" );
+    TransparentThreeValuePixel tp;
+    for ( int i = 0; i < entryList.size(); ++i )
+    {
+      currentEntryElem = entryList.at( i ).toElement();
+      tp.red = currentEntryElem.attribute( "red" ).toDouble();
+      tp.green = currentEntryElem.attribute( "green" ).toDouble();
+      tp.blue = currentEntryElem.attribute( "blue" ).toDouble();
+      tp.percentTransparent = currentEntryElem.attribute( "percentTransparent" ).toDouble();
+      mTransparentThreeValuePixelList.append( tp );
+    }
+  }
 }
