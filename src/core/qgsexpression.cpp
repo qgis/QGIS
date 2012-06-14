@@ -1551,7 +1551,7 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFiel
       return true;
     }
   }
-  parent->mEvalErrorString = QObject::tr( "Column '%1'' not found" ).arg( mName );
+  parent->mEvalErrorString = QObject::tr( "Column '%1' not found" ).arg( mName );
   mIndex = -1;
   return false;
 }

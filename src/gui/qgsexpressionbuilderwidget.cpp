@@ -30,9 +30,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   setupUi( this );
 
   mValueGroupBox->hide();
-  // The open and save button are for future.
-  btnOpen->hide();
-  btnSave->hide();
   highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel( );
@@ -45,6 +42,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   connect( expressionTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
            this, SLOT( currentChanged( const QModelIndex &, const QModelIndex & ) ) );
+
+  connect( btnLoadAll, SIGNAL( pressed() ), this, SLOT( loadAllValues() ) );
+  connect( btnLoadSample, SIGNAL( pressed() ), this, SLOT( loadSampleValues() ) );
 
   foreach( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
@@ -87,7 +87,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     if ( func.mParams >= 1 )
       name += "(";
     registerItem( func.mGroup, func.mName, " " + name + " " );
-  };
+  }
+
+#if QT_VERSION >= 0x040700
+  txtSearchEdit->setPlaceHolderText( tr( "Search" ) );
+#endif
 }
 
 
@@ -109,14 +113,15 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( item == 0 )
     return;
 
-  // Loading field values are handled with a
-  // right click so we just show the help.
   if ( item->getItemType() != QgsExpressionItem::Field )
   {
-
-    mValueGroupBox->hide();
     mValueListWidget->clear();
   }
+
+  btnLoadAll->setVisible( item->getItemType() == QgsExpressionItem::Field );
+  btnLoadSample->setVisible( item->getItemType() == QgsExpressionItem::Field );
+  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field );
+
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
