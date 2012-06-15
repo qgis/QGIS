@@ -891,6 +891,7 @@ void QgisApp::createActions()
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddMssqlLayer, SIGNAL( triggered() ), this, SLOT( addMssqlLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
+  connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
@@ -1595,6 +1596,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionNewBookmark->setIcon( getThemeIcon( "/mActionNewBookmark.png" ) );
   mActionCustomProjection->setIcon( getThemeIcon( "/mActionCustomProjection.png" ) );
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
+  mActionAddWcsLayer->setIcon( getThemeIcon( "/mActionAddWcsLayer.png" ) );
   mActionAddWfsLayer->setIcon( getThemeIcon( "/mActionAddWfsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( getThemeIcon( "/mActionAnnotation.png" ) );
@@ -2636,6 +2638,27 @@ void QgisApp::addWmsLayer()
            this , SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
   wmss->exec();
   delete wmss;
+}
+
+void QgisApp::addWcsLayer()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+  QgsDebugMsg( "about to addWcsLayer" );
+
+  // TODO: QDialog for now, switch to QWidget in future
+  QDialog *wcss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "gdal" ), this ) );
+  if ( !wcss )
+  {
+    QMessageBox::warning( this, tr( "WCS" ), tr( "Cannot get WCS select dialog from provider." ) );
+    return;
+  }
+  connect( wcss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+           this , SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  wcss->exec();
+  delete wcss;
 }
 
 void QgisApp::addWfsLayer()

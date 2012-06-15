@@ -100,7 +100,7 @@ void QgsManageConnectionsDialog::doExportImport()
     switch ( mConnectionType )
     {
       case WMS:
-        doc = saveWMSConnections( items );
+        doc = saveOWSConnections( items, "WMS" );
         break;
       case WFS:
         doc = saveWFSConnections( items );
@@ -110,6 +110,9 @@ void QgsManageConnectionsDialog::doExportImport()
         break;
       case MSSQL:
         doc = saveMssqlConnections( items );
+        break;
+      case WCS:
+        doc = saveOWSConnections( items, "WCS" );
         break;
     }
 
@@ -156,7 +159,7 @@ void QgsManageConnectionsDialog::doExportImport()
     switch ( mConnectionType )
     {
       case WMS:
-        loadWMSConnections( doc, items );
+        loadOWSConnections( doc, items, "WMS" );
         break;
       case WFS:
         loadWFSConnections( doc, items );
@@ -166,6 +169,9 @@ void QgsManageConnectionsDialog::doExportImport()
         break;
       case MSSQL:
         loadMssqlConnections( doc, items );
+        break;
+      case WCS:
+        loadOWSConnections( doc, items, "WCS" );
         break;
     }
     // clear connections list and close window
@@ -189,6 +195,9 @@ bool QgsManageConnectionsDialog::populateConnections()
         break;
       case WFS:
         settings.beginGroup( "/Qgis/connections-wfs" );
+        break;
+      case WCS:
+        settings.beginGroup( "/Qgis/connections-wcs" );
         break;
       case PostGIS:
         settings.beginGroup( "/PostgreSQL/connections" );
@@ -257,6 +266,15 @@ bool QgsManageConnectionsDialog::populateConnections()
         }
         break;
 
+      case WCS:
+        if ( root.tagName() != "qgsWCSConnections" )
+        {
+          QMessageBox::information( this, tr( "Loading connections" ),
+                                    tr( "The file is not an WCS connections exchange file." ) );
+          return false;
+        }
+        break;
+
       case PostGIS:
         if ( root.tagName() != "qgsPgConnections" )
         {
@@ -288,10 +306,10 @@ bool QgsManageConnectionsDialog::populateConnections()
   return true;
 }
 
-QDomDocument QgsManageConnectionsDialog::saveWMSConnections( const QStringList &connections )
+QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &connections, const QString & service )
 {
   QDomDocument doc( "connections" );
-  QDomElement root = doc.createElement( "qgsWMSConnections" );
+  QDomElement root = doc.createElement( "qgs" + service.toUpper() + "Connections" );
   root.setAttribute( "version", "1.0" );
   doc.appendChild( root );
 
@@ -299,16 +317,20 @@ QDomDocument QgsManageConnectionsDialog::saveWMSConnections( const QStringList &
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Qgis/connections-wms/";
-    QDomElement el = doc.createElement( "wms" );
+    path = "/Qgis/connections-" + service.toLower() + "/";
+    QDomElement el = doc.createElement( service.toLower() );
     el.setAttribute( "name", connections[ i ] );
     el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
-    el.setAttribute( "ignoreGetMapURI", settings.value( path + connections[i] + "/ignoreGetMapURI", false ).toBool() ? "true" : "false" );
-    el.setAttribute( "ignoreGetFeatureInfoURI", settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
-    el.setAttribute( "ignoreAxisOrientation", settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
-    el.setAttribute( "invertAxisOrientation", settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
 
-    path = "/Qgis/WMS/";
+    if ( service == "WMS" )
+    {
+      el.setAttribute( "ignoreGetMapURI", settings.value( path + connections[i] + "/ignoreGetMapURI", false ).toBool() ? "true" : "false" );
+      el.setAttribute( "ignoreGetFeatureInfoURI", settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
+      el.setAttribute( "ignoreAxisOrientation", settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
+      el.setAttribute( "invertAxisOrientation", settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
+    }
+
+    path = "/Qgis/" + service.toUpper() + "/";
     el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
     el.setAttribute( "password", settings.value( path + connections[ i ] + "/password", "" ).toString() );
     root.appendChild( el );
@@ -424,19 +446,19 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   return doc;
 }
 
-void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, const QStringList &items )
+void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, const QStringList &items, const QString &service )
 {
   QDomElement root = doc.documentElement();
-  if ( root.tagName() != "qgsWMSConnections" )
+  if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
   {
     QMessageBox::information( this, tr( "Loading connections" ),
-                              tr( "The file is not an WMS connections exchange file." ) );
+                              tr( "The file is not an %1 connections exchange file." ).arg( service ) );
     return;
   }
 
   QString connectionName;
   QSettings settings;
-  settings.beginGroup( "/Qgis/connections-wms" );
+  settings.beginGroup( "/Qgis/connections-" + service.toLower() );
   QStringList keys = settings.childGroups();
   settings.endGroup();
   QDomElement child = root.firstChildElement();
@@ -489,7 +511,7 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
     }
 
     // no dups detected or overwrite is allowed
-    settings.beginGroup( "/Qgis/connections-wms" );
+    settings.beginGroup( "/Qgis/connections-" + service.toLower() );
     settings.setValue( QString( "/" + connectionName + "/url" ) , child.attribute( "url" ) );
     settings.setValue( QString( "/" + connectionName + "/ignoreGetMapURI" ), child.attribute( "ignoreGetMapURI" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
@@ -499,7 +521,7 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
 
     if ( !child.attribute( "username" ).isEmpty() )
     {
-      settings.beginGroup( "/Qgis/WMS/" + connectionName );
+      settings.beginGroup( "/Qgis/" + service.toUpper() + "/" + connectionName );
       settings.setValue( "/username", child.attribute( "username" ) );
       settings.setValue( "/password", child.attribute( "password" ) );
       settings.endGroup();

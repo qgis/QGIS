@@ -149,6 +149,7 @@
     <addaction name="mActionAddMssqlLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
+    <addaction name="mActionAddWcsLayer"/>
     <addaction name="mActionAddWfsLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
@@ -255,6 +256,7 @@
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
    <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
@@ -1668,6 +1670,15 @@
    </property>
    <property name="text">
     <string>Paste style</string>
+   </property>
+  </action>
+  <action name="mActionAddWcsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.png</normaloff>:/images/themes/default/mActionAddWcsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add WCS Layer...</string>
    </property>
   </action>
  </widget>

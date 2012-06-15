@@ -4,7 +4,7 @@
 
 SET(WFS_SRCS
   qgswfsprovider.cpp
-  qgswfsconnection.cpp
+  qgswfscapabilities.cpp
   qgswfsdataitems.cpp
   qgswfsdata.cpp
   qgswfssourceselect.cpp
@@ -13,7 +13,7 @@ SET(WFS_SRCS
 
 SET (WFS_MOC_HDRS
      qgswfsdata.h
-     qgswfsconnection.h
+     qgswfscapabilities.h
      qgswfsdataitems.h
      qgswfsprovider.h
      qgswfssourceselect.h

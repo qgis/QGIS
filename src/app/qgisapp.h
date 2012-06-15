@@ -280,6 +280,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
+    QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
@@ -771,6 +772,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileExit();
     //! Add a WMS layer to the map
     void addWmsLayer();
+    //! Add a WCS layer to the map
+    void addWcsLayer();
     //! Add a WFS layer to the map
     void addWfsLayer();
     //! Set map tool to Zoom out

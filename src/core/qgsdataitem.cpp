@@ -150,8 +150,14 @@ const QIcon &QgsZipItem::iconZip()
 
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
-    : QObject( parent ), mType( type ), mParent( parent ), mPopulated( false ), mName( name ), mPath( path )
+    // Do not pass parent to QObject, Qt would delete this when parent is deleted
+    : QObject(), mType( type ), mParent( parent ), mPopulated( false ), mName( name ), mPath( path )
 {
+}
+
+QgsDataItem::~QgsDataItem() 
+{
+  QgsDebugMsg( "mName = " + mName + " mPath = " + mPath);
 }
 
 // TODO: This is copy from QgisApp, bad
@@ -282,6 +288,26 @@ void QgsDataItem::deleteChildItem( QgsDataItem * child )
   emit endRemoveItems();
 }
 
+QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
+{
+  QgsDebugMsg( "mName = " + child->mName );
+  int i = mChildren.indexOf( child );
+  Q_ASSERT( i >= 0 );
+  emit beginRemoveItems( this, i, i );
+  mChildren.remove( i );
+  emit endRemoveItems();
+  disconnect( child, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
+           this, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
+  disconnect( child, SIGNAL( endInsertItems() ),
+           this, SLOT( emitEndInsertItems() ) );
+  disconnect( child, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
+           this, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
+  disconnect( child, SIGNAL( endRemoveItems() ),
+           this, SLOT( emitEndRemoveItems() ) );
+  child->setParent(0);
+  return child;
+}
+
 int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
 {
   for ( int i = 0; i < items.size(); i++ )
@@ -388,8 +414,12 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name,
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
 {
+  QgsDebugMsg( "Entered");
   foreach( QgsDataItem* i, mChildren )
-  delete i;
+  {
+    QgsDebugMsg( QString("delete child = 0x%0").arg((qlonglong)i,8,16,QLatin1Char('0'))  );
+    delete i;
+  }
 }
 
 //-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgswfsconnection.h
+    qgswfscapabilities.h
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
@@ -12,30 +12,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSWFSCONNECTION_H
-#define QGSWFSCONNECTION_H
+#ifndef QGSWFSCAPABILITIES_H
+#define QGSWFSCAPABILITIES_H
 
 #include <QObject>
 
 #include "qgsrectangle.h"
+#include "qgsdatasourceuri.h"
 
 class QNetworkReply;
 
-class QgsWFSConnection : public QObject
+class QgsWFSCapabilities : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWFSConnection( QString connName, QObject *parent = 0 );
+    //explicit QgsWFSCapabilities( QString connName, QObject *parent = 0 );
+    QgsWFSCapabilities( QString theUri );
 
-    static QStringList connectionList();
-
-    static void deleteConnection( QString name );
-
-    static QString selectedConnection();
-    static void setSelectedConnection( QString name );
+    //! Append ? or & if necessary
+    QString prepareUri( QString uri );
 
     //! base service URI
-    QString uri() const { return mUri; }
+    QString uri() const { return mBaseUrl; }
     //! URI to get capabilities
     QString uriGetCapabilities() const;
     //! URI to get schema of wfs layer
@@ -81,8 +79,12 @@ class QgsWFSConnection : public QObject
     void capabilitiesReplyFinished();
 
   protected:
-    QString mConnName;
-    QString mUri;
+    //QString mConnName;
+    //QString mUri;
+
+    QgsDataSourceURI mUri;
+
+    QString mBaseUrl;
 
     QNetworkReply *mCapabilitiesReply;
     GetCapabilities mCaps;
@@ -90,4 +92,4 @@ class QgsWFSConnection : public QObject
     QString mErrorMessage;
 };
 
-#endif // QGSWFSCONNECTION_H
+#endif // QGSWFSCAPABILITIES_H

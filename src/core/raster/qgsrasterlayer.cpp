@@ -2312,6 +2312,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     return;
   }
+  if ( !mDataProvider->isValid() )
+  {
+    return;
+  }
 
   if ( provider == "gdal" )
   {

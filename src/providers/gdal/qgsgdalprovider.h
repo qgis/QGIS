@@ -260,6 +260,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
 
+    static QMap<QString, QString> supportedMimes();
+
   signals:
     void statusChanged( QString );
 

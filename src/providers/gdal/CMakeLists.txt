@@ -1,9 +1,21 @@
-SET(GDAL_SRCS qgsgdalprovider.cpp qgsgdaldataitems.cpp)
-SET(GDAL_MOC_HDRS  qgsgdalprovider.h)
+SET(GDAL_SRCS 
+  qgsgdalprovider.cpp 
+  qgsgdaldataitems.cpp 
+  qgswcscapabilities.cpp 
+  qgswcssourceselect.cpp
+)
+SET(GDAL_MOC_HDRS  
+  qgsgdalprovider.h 
+  qgsgdaldataitems.h
+  qgswcscapabilities.h 
+  qgswcssourceselect.h
+)
 
 INCLUDE_DIRECTORIES (
   ../../core
   ../../core/raster
+  ../../gui
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}
 #  ${PROJ_INCLUDE_DIR}
 #  ${GEOS_INCLUDE_DIR}
@@ -14,6 +26,7 @@ ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} ${GDAL_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (gdalprovider
   qgis_core
+  qgis_gui
 )
 
 INSTALL(TARGETS gdalprovider
