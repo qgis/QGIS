@@ -307,7 +307,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   }
   if ( type == QgsMapLayer::RasterLayer )
   {
-    QgisApp::instance()->addRasterLayer( uri, layerItem->name(), providerKey );
+    QgisApp::instance()->addRasterLayer( uri, layerItem->layerName(), providerKey );
   }
 }
 
