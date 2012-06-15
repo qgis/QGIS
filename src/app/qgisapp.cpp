@@ -5814,22 +5814,31 @@ void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
   {
     if ( actions.at( i )->menu() == mDatabaseMenu )
       return;
+
+    // goes before Web menu, if present
     if ( actions.at( i )->menu() == mWebMenu )
     {
       before = actions.at( i );
       break;
     }
-    else if ( actions.at( i )->menu() == firstRightStandardMenu() )
+  }
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    // defaults to after Raster menu, which is already in qgisapp.ui
+    if ( actions.at( i )->menu() == mRasterMenu )
     {
-      before = actions.at( i );
-      break;
+      if ( !before )
+      {
+        before = actions.at( i += 1 );
+        break;
+      }
     }
   }
-
   if ( before )
     menuBar()->insertMenu( before, mDatabaseMenu );
   else
-    menuBar()->addMenu( mDatabaseMenu );
+    // fallback insert
+    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mDatabaseMenu );
 }
 
 void QgisApp::addPluginToRasterMenu( QString name, QAction* action )
@@ -5853,6 +5862,8 @@ void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
   {
     if ( actions.at( i )->menu() == mVectorMenu )
       return;
+
+    // goes before Raster menu, which is already in qgisapp.ui
     if ( actions.at( i )->menu() == mRasterMenu )
     {
       before = actions.at( i );
@@ -5863,7 +5874,8 @@ void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
   if ( before )
     menuBar()->insertMenu( before, mVectorMenu );
   else
-    menuBar()->addMenu( mVectorMenu );
+    // fallback insert
+    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mVectorMenu );
 }
 
 void QgisApp::addPluginToWebMenu( QString name, QAction* action )
@@ -5879,19 +5891,34 @@ void QgisApp::addPluginToWebMenu( QString name, QAction* action )
   QList<QAction*> actions = menuBar()->actions();
   for ( int i = 0; i < actions.count(); i++ )
   {
+    // goes after Database menu, if present
+    if ( actions.at( i )->menu() == mDatabaseMenu )
+    {
+      before = actions.at( i += 1 );
+      // don't break here
+    }
+
     if ( actions.at( i )->menu() == mWebMenu )
       return;
-    if ( actions.at( i )->menu() == firstRightStandardMenu() )
+  }
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    // defaults to after Raster menu, which is already in qgisapp.ui
+    if ( actions.at( i )->menu() == mRasterMenu )
     {
-      before = actions.at( i );
-      break;
+      if ( !before )
+      {
+        before = actions.at( i += 1 );
+        break;
+      }
     }
   }
 
   if ( before )
     menuBar()->insertMenu( before, mWebMenu );
   else
-    menuBar()->addMenu( mWebMenu );
+    // fallback insert
+    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mWebMenu );
 }
 
 void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
