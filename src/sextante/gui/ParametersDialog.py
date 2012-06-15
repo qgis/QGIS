@@ -28,6 +28,7 @@ from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
 from sextante.core.WrongHelpFileException import WrongHelpFileException
+import os
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -74,6 +75,8 @@ class Ui_ParametersDialog(object):
         self.tabWidget.addTab(self.scrollArea, "Parameters")
         self.verticalLayout.addWidget(self.tabWidget)
         self.webView = QtWebKit.QWebView()
+        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))
+        self.webView.settings().setUserStyleSheetUrl(cssUrl)
         html = None
         try:
             if self.alg.helpFile():
