@@ -17,10 +17,7 @@ from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 from sextante.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider
 from sextante.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from sextante.lastools.LasToolsAlgorithmProvider import LasToolsAlgorithmProvider
-from sextante.core.SextanteUtils import SextanteUtils
 from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
-from sextante.fusion.FusionAlgorithmProvider import FusionAlgorithmProvider
 from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
 from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
 from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider

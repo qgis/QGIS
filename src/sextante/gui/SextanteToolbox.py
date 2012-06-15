@@ -9,6 +9,9 @@ from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
+import os
+import sys
+import subprocess
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -37,6 +40,10 @@ class SextanteToolbox(QtGui.QDockWidget):
         self.verticalLayout = QtGui.QVBoxLayout(self.contents)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
+        self.externalAppsButton = QtGui.QPushButton()
+        self.externalAppsButton.setText("Click here to configure additional algorithm providers")
+        QObject.connect(self.externalAppsButton, QtCore.SIGNAL("clicked()"), self.configureProviders)
+        self.verticalLayout.addWidget(self.externalAppsButton)
         self.searchBox = QtGui.QLineEdit(self.contents)
         self.searchBox.textChanged.connect(self.fillTree)
         self.verticalLayout.addWidget(self.searchBox)
@@ -51,6 +58,15 @@ class SextanteToolbox(QtGui.QDockWidget):
         self.setWidget(self.contents)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self)
         QtCore.QMetaObject.connectSlotsByName(self)
+
+    def configureProviders(self):
+        filename = os.path.join(os.path.dirname(__file__), "..", "help", "3rdParty.html")
+        if os.name == "nt":
+            os.startfile(filename)
+        elif sys.platform == "darwin":
+            subprocess.Popen(('open', filename))
+        else:
+            subprocess.call(('xdg-open', filename))
 
     def showPopupMenu(self,point):
         item = self.algorithmTree.itemAt(point)
@@ -141,18 +157,20 @@ class SextanteToolbox(QtGui.QDockWidget):
                         groups[alg.group] = groupItem
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
-            #add actions
-            actions = Sextante.actions[providerName]
-            for action in actions:
-                if text =="" or text.lower() in action.name.lower():
-                    if action.group in groups:
-                        groupItem = groups[action.group]
-                    else:
-                        groupItem = QtGui.QTreeWidgetItem()
-                        groupItem.setText(0,action.group)
-                        groups[action.group] = groupItem
-                    algItem = TreeActionItem(action)
-                    groupItem.addChild(algItem)
+
+            #add actions only if there are algorithms in this provider
+            if len(groups)>0:
+                actions = Sextante.actions[providerName]
+                for action in actions:
+                    if text =="" or text.lower() in action.name.lower():
+                        if action.group in groups:
+                            groupItem = groups[action.group]
+                        else:
+                            groupItem = QtGui.QTreeWidgetItem()
+                            groupItem.setText(0,action.group)
+                            groups[action.group] = groupItem
+                        algItem = TreeActionItem(action)
+                        groupItem.addChild(algItem)
 
             if len(groups)>0:
                 providerItem = QtGui.QTreeWidgetItem()

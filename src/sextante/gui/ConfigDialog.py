@@ -2,9 +2,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
 from sextante.core.SextanteConfig import SextanteConfig
-from sextante.core.Sextante import Sextante
-from sextante.core.SextanteUtils import SextanteUtils
-from sextante.gui.ExternalAppsConfigurer import ExternalAppsConfigurer
 
 
 class ConfigDialog(QtGui.QDialog):
@@ -41,13 +38,6 @@ class ConfigDialog(QtGui.QDialog):
         self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        #=======================================================================
-        # if SextanteUtils.isWindows():
-        #    self.externalAppsButton = QtGui.QPushButton()
-        #    self.externalAppsButton.setText("Configure external apps")
-        #    self.horizontalLayout.addWidget(self.externalAppsButton)
-        #    QtCore.QObject.connect(self.externalAppsButton, QtCore.SIGNAL("clicked()"), self.configureExternalApps)
-        #=======================================================================
         self.horizontalLayout.addSpacing(100)
         self.horizontalLayout.addWidget(self.buttonBox)
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -55,10 +45,6 @@ class ConfigDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
-
-    def configureExternalApps(self):
-        configurer = ExternalAppsConfigurer()
-        configurer.configure()
 
 
     def fillTree(self):

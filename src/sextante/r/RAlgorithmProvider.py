@@ -15,7 +15,8 @@ from sextante.core.SextanteUtils import SextanteUtils
 class RAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
-        self.actions = []
+        AlgorithmProvider.__init__(self)
+        self.activate = False
         self.actions.append(CreateNewRScriptAction())
         self.contextMenuActions = [EditRScriptAction()]
 

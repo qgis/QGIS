@@ -252,8 +252,8 @@ that can be run from any of its components, like the toolbox or the
 graphical modeler.
 
 These lines start with a double Python comment symbol and have the
-following structure: *[parameter\_name]=[parameter\_type]
-[optional\_values]*. Here is a list of all the parameter types that
+following structure: *[parameter_name]=[parameter_type]
+[optional_values]*. Here is a list of all the parameter types that
 SEXTANTE supports in its scripts, their syntax and some examples.
 
 -  ``raster``. A raster layer
@@ -262,7 +262,7 @@ SEXTANTE supports in its scripts, their syntax and some examples.
 
 -  ``table``. A table
 
--  ``raster``. A numerical value. A default value must be provided. For
+-  ``number``. A numerical value. A default value must be provided. For
    instance, ``depth=number 2.4``
 
 -  ``string``. A text string. As in the case of numerical values, a
@@ -275,9 +275,7 @@ SEXTANTE supports in its scripts, their syntax and some examples.
 
 -  ``multiple vector``. A set of input vector layers.
 
--  ``multiple table``. A set of input tables.
-
--  ``field``. A field in the attributes table of a vector layer. the
+-  ``field``. A field in the attributes table of a vector layer. The
    name of the layer has to be added after the ``field`` tag. For
    instance, if you have declared a vector input with
    ``mylayer=vector``, you could use ``myfield=field mylayer`` to add a
@@ -291,6 +289,8 @@ The parameter name is the name that will be shown to the user when
 executing the algorithm, and also the variable name to use in the script
 code. The value entered by the user for that parameter will be assigned
 to a variable with that name.
+
+When showing the name of the parameter to the user, SEXTANTE will edit it to improve its appearance, replacing low hyphens with blankspaces. So, for instance, if you want the user to see a parameter named ``A numerical value``, you can use the variable name ``A_numerical_value``
 
 Layers and tables values are strings containing the filepath of the
 corresponding object. To turn them into a QGIS object, you can use the
@@ -333,5 +333,12 @@ tag.
 
 Several examples are provided with SEXTANTE. Please, check them to see
 real examples of how to create algorithms using this feature of
-SEXTANTE. You can right–click on any script algorithm and select *Edit
+SEXTANTE. You can right-click on any script algorithm and select *Edit
 script* to edit its code or just to see it.
+
+Communicating with the user
+----------------------------
+
+You can send messages to the user to inform about the progress of the algorithm. To do so, just print whatever information you want to show in the textbox above the progress bar in the algorithm dialog, using the ``print`` command. For instance, just use ``print "Processing polygon layer"`` and the text will be redirected to that textbox.
+
+If the text you print is just a number between 0 and 100, it will be understood as the percentage of the process that has been already finished, and instead of redirecting the text to the textbox, the progress bar will be update to that percentage of completion.

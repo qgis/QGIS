@@ -273,7 +273,7 @@ SEXTANTE supports in its scripts, their syntax and some examples.</p>
 <li><tt class="docutils literal"><span class="pre">raster</span></tt>. A raster layer</li>
 <li><tt class="docutils literal"><span class="pre">vector</span></tt>. A vector layer</li>
 <li><tt class="docutils literal"><span class="pre">table</span></tt>. A table</li>
-<li><tt class="docutils literal"><span class="pre">raster</span></tt>. A numerical value. A default value must be provided. For
+<li><tt class="docutils literal"><span class="pre">number</span></tt>. A numerical value. A default value must be provided. For
 instance, <tt class="docutils literal"><span class="pre">depth=number</span> <span class="pre">2.4</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">string</span></tt>. A text string. As in the case of numerical values, a
 default value must be added. For instance, <tt class="docutils literal"><span class="pre">name=string</span> <span class="pre">Victor</span></tt></li>
@@ -281,8 +281,7 @@ default value must be added. For instance, <tt class="docutils literal"><span cl
 set the default value. For example, <tt class="docutils literal"><span class="pre">verbose=boolean</span> <span class="pre">True</span></tt></li>
 <li><tt class="docutils literal"><span class="pre">multiple</span> <span class="pre">raster</span></tt>. A set of input raster layers.</li>
 <li><tt class="docutils literal"><span class="pre">multiple</span> <span class="pre">vector</span></tt>. A set of input vector layers.</li>
-<li><tt class="docutils literal"><span class="pre">multiple</span> <span class="pre">table</span></tt>. A set of input tables.</li>
-<li><tt class="docutils literal"><span class="pre">field</span></tt>. A field in the attributes table of a vector layer. the
+<li><tt class="docutils literal"><span class="pre">field</span></tt>. A field in the attributes table of a vector layer. The
 name of the layer has to be added after the <tt class="docutils literal"><span class="pre">field</span></tt> tag. For
 instance, if you have declared a vector input with
 <tt class="docutils literal"><span class="pre">mylayer=vector</span></tt>, you could use <tt class="docutils literal"><span class="pre">myfield=field</span> <span class="pre">mylayer</span></tt> to add a
@@ -294,6 +293,7 @@ field from that layer as parameter.</li>
 executing the algorithm, and also the variable name to use in the script
 code. The value entered by the user for that parameter will be assigned
 to a variable with that name.</p>
+<p>When showing the name of the parameter to the user, SEXTANTE will edit it to improve its appearance, replacing low hyphens with blankspaces. So, for instance, if you want the user to see a parameter named <tt class="docutils literal"><span class="pre">A</span> <span class="pre">numerical</span> <span class="pre">value</span></tt>, you can use the variable name <tt class="docutils literal"><span class="pre">A_numerical_value</span></tt></p>
 <p>Layers and tables values are strings containing the filepath of the
 corresponding object. To turn them into a QGIS object, you can use the
 <tt class="docutils literal"><span class="pre">getObject()</span></tt> method in the <tt class="docutils literal"><span class="pre">Sextante</span></tt> class. Multiple inputs also
@@ -326,8 +326,13 @@ the group under which the algorithm will be shown, using the <tt class="docutils
 tag.</p>
 <p>Several examples are provided with SEXTANTE. Please, check them to see
 real examples of how to create algorithms using this feature of
-SEXTANTE. You can right–click on any script algorithm and select <em>Edit
+SEXTANTE. You can right-click on any script algorithm and select <em>Edit
 script</em> to edit its code or just to see it.</p>
+</div>
+<div class="section" id="communicating-with-the-user">
+<h2>Communicating with the user<a class="headerlink" href="#communicating-with-the-user" title="Permalink to this headline">¶</a></h2>
+<p>You can send messages to the user to inform about the progress of the algorithm. To do so, just print whatever information you want to show in the textbox above the progress bar in the algorithm dialog, using the <tt class="docutils literal"><span class="pre">print</span></tt> command. For instance, just use <tt class="docutils literal"><span class="pre">print</span> <span class="pre">&quot;Processing</span> <span class="pre">polygon</span> <span class="pre">layer&quot;</span></tt> and the text will be redirected to that textbox.</p>
+<p>If the text you print is just a number between 0 and 100, it will be understood as the percentage of the process that has been already finished, and instead of redirecting the text to the textbox, the progress bar will be update to that percentage of completion.</p>
 </div>
 </div>
 
@@ -343,6 +348,7 @@ script</em> to edit its code or just to see it.</p>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#calling-sextante-from-the-python-console">Calling SEXTANTE from the Python console</a></li>
 <li><a class="reference internal" href="#creating-scripts-and-running-them-from-the-toolbox">Creating scripts and running them from the toolbox</a></li>
+<li><a class="reference internal" href="#communicating-with-the-user">Communicating with the user</a></li>
 </ul>
 </li>
 </ul>

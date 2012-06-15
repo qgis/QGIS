@@ -35,6 +35,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
+        self.activate = False
         self.algsList = []
         if SextanteUtils.isWindows():
             lastools = [las2shp(), lasboundary(), las2dem(), las2iso(), lasgrid(), lasground(),

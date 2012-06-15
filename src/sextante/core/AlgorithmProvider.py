@@ -9,8 +9,14 @@ class AlgorithmProvider():
     '''
 
     def __init__(self):
+        #indicates if the provider should be active by default.
+        #For provider relying on an external software, this should be
+        #false, so the user should activate them manually and install
+        #the required software in advance.
+        self.activate = True
         self.actions = []
         self.contextMenuActions = []
+
 
     def loadAlgorithms(self):
         self.algs = []
@@ -36,7 +42,7 @@ class AlgorithmProvider():
         By default it just adds a setting to activate or deactivate algorithms from the provider'''
         SextanteConfig.settingIcons[self.getDescription()] = self.getIcon()
         name = "ACTIVATE_" + self.getName().upper().replace(" ", "_")
-        SextanteConfig.addSetting(Setting(self.getDescription(), name, "Activate", True))
+        SextanteConfig.addSetting(Setting(self.getDescription(), name, "Activate", self.activate))
 
     def unload(self):
         '''Do here anything that you want to be done when the provider is removed from the list of available ones.

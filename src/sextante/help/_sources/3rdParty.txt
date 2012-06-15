@@ -5,17 +5,25 @@ Introduction
 ------------
 
 SEXTANTE can be extended using additional applications, calling them
-from within SEXTANTE. Currently, SAGA, GRASS, OTB(Orfeo Toolbox) and R are supported, along 
-with some other command-line applications that provide spatial data 
-analysis functionalities. 
+from within SEXTANTE. 
+
+By default, algorithms coming from external applications are not activated unless SEXTANTE has checked that the corresponding applications are installed in your system and can be executed. That means that there are probably many more algorithms available than those that you can see in the toolbox, but some extra configuration is needed to have them fully operational.
+
 This chapter will show you how to configure SEXTANTE to include these
 additional applications. Once you have correctly configured the system,
 you will be able to execute external algorithms from any SEXTANTE
 component like the toolbox or the graphical modeler, just like you do
 with any other SEXTANTE geoalgorithm.
 
+At the time of writing this manual, SEXTANTE has two external providers activated by default: GRASS and GDAL. This providers are activated because QGIS includes both the GRASS binaries and the GDAL library files, so there is no need for further configuration (QGIS developers have done that in advance for you). This might change in other versions, but for now it means that you need to manually install and configure those external programs. Do not worry, this is very easy to do. If you are running Linux, you just have to install the software yourself and then activate the corresponding algorithm provider. If you are running Windows, you should also tell SEXTANTE the path to the software.
+
+For each algorithm provider there is a group entry in the SEXTANTE configuration dialog, which contains at least an "Activate" item. Other parameters might appear if they are needed to configure the provider (mostly paths to executales and additional files). In the following sections, we will see how to set those parameters for the main providers currently available for SEXTANTE. But first, a couple of quick notes with important information about using algorithms based on external applications.
+
+
 A note on file formats
 ~~~~~~~~~~~~~~~~~~~~~~
+
+Algorithms provided by external applications have some differences when compared to "native" SEXTANTE algorithm. The main one of them is related to the file formats supported both for input and for output.
 
 When using an external software, opening a file in QGIS does not mean
 that it can be opened and processed as well on that other software. In
@@ -76,7 +84,7 @@ SAGA
 
 SAGA algorithms can be run from SEXTANTE if you have SAGA installed in
 your system and you configure SEXTANTE properly so it can find SAGA
-executables. In particular, the SAGA command–line executable is needed
+executables. In particular, the SAGA command-line executable is needed
 to run SAGA algorithms. SAGA binaries are not included with SEXTANTE, so
 you have to download and install the software yourself. Please check the
 SAGA website at for more information. SAGA 2.0.8 is needed.
@@ -160,7 +168,7 @@ the syntax to use to call those R commands from SEXTANTE and how to use
 SEXTANTE objects (layers, tables) in them.
 
 The first thing you have to do, as we saw in the case of SAGA, is to
-tell SEXTANTE where you R binaries are located. You can do so using the
+tell SEXTANTE where your R binaries are located. You can do so using the
 *R folder* entry in the SEXTANTE configuration dialog. Once you have set
 that parameter, you can start creating your own R scripts and executing
 them.

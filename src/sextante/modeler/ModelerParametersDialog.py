@@ -22,7 +22,6 @@ from sextante.gui.RangePanel import RangePanel
 from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
-from sextante.gui.HTMLViewerDialog import HTMLViewerDialog
 from sextante.core.WrongHelpFileException import WrongHelpFileException
 
 class ModelerParametersDialog(QtGui.QDialog):
