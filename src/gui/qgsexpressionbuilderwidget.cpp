@@ -30,6 +30,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   setupUi( this );
 
   mValueGroupBox->hide();
+  btnLoadAll->hide();
+  btnLoadSample->hide();
   highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel( );
