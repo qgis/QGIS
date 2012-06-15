@@ -93,11 +93,23 @@ QVector<QgsDataItem*> QgsGdalLayerItem::createChildren( )
     for ( int i = 0; i < sublayers.count(); i++ )
     {
       QString name = sublayers[i];
-      // replace full path with basename+extension
-      name.replace( mPath, mName );
-      // use subdataset name only - perhaps only if name is long
-      if ( name.length() > 50 )
-        name = name.split( mName )[1].mid( 2 );
+      // if netcdf/hdf use all text after filename
+      // for hdf4 it would be best to get description, because the subdataset_index is not very practical
+      if ( name.startsWith( "netcdf", Qt::CaseInsensitive ) ||
+           name.startsWith( "hdf", Qt::CaseInsensitive ) )
+        name = name.mid( name.indexOf( mPath ) + mPath.length() + 1 );
+      else
+      {
+        // remove driver name and file name
+        name.replace( name.split( ":" )[0], "" );
+        name.replace( mPath, "" );
+      }
+      // remove any : or " left over
+      if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
+      if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
+      if ( name.endsWith( ":" ) ) name.chop( 1 );
+      if ( name.endsWith( "\"" ) ) name.chop( 1 );
+
       childItem = new QgsGdalLayerItem( this, name, sublayers[i], sublayers[i] );
       if ( childItem )
         this->addChildItem( childItem );
@@ -398,12 +410,11 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   // zip settings + info
   QSettings settings;
-  int scanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
-  int scanZipSetting = settings.value( "/qgis/scanZipInBrowser", 2 ).toInt();
-  bool is_vsizip = ( thePath.startsWith( "/vsizip/" ) ||
-                     thePath.endsWith( ".zip", Qt::CaseInsensitive ) );
-  bool is_vsigzip = ( thePath.startsWith( "/vsigzip/" ) ||
-                      thePath.endsWith( ".gz", Qt::CaseInsensitive ) );
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString vsiPrefix = QgsZipItem::vsiPrefix( thePath );
+  bool is_vsizip = ( vsiPrefix == "/vsizip/" );
+  bool is_vsigzip = ( vsiPrefix == "/vsigzip/" );
+  bool is_vsitar = ( vsiPrefix == "/vsitar/" );
 
   // get suffix, removing .gz if present
   QString tmpPath = thePath; //path used for testing, not for layer creation
@@ -415,10 +426,11 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   info.setFile( thePath );
   QString name = info.fileName();
 
-  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath );
+  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name
+               + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix );
 
   // allow only normal files or VSIFILE items to continue
-  if ( !info.isFile() && !is_vsizip && !is_vsigzip )
+  if ( !info.isFile() && vsiPrefix == "" )
     return 0;
 
   // get supported extensions
@@ -433,10 +445,6 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // unless that extension is in the list (*.xml might be though)
   if ( thePath.endsWith( ".aux.xml", Qt::CaseInsensitive ) &&
        !extensions.contains( "aux.xml" ) )
-    return 0;
-
-  // skip .tar.gz files
-  if ( thePath.endsWith( ".tar.gz", Qt::CaseInsensitive ) )
     return 0;
 
   // Filter files by extension
@@ -456,29 +464,27 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       return 0;
   }
 
-  // add /vsizip/ or /vsigzip/ to path if file extension is .zip or .gz
-  if ( is_vsigzip )
+  // fix vsifile path and name
+  if ( vsiPrefix != "" )
   {
-    if ( !thePath.startsWith( "/vsigzip/" ) )
-      thePath = "/vsigzip/" + thePath;
-  }
-  else if ( is_vsizip )
-  {
-    if ( !thePath.startsWith( "/vsizip/" ) )
-      thePath = "/vsizip/" + thePath;
+    // add vsiPrefix to path if needed
+    if ( !thePath.startsWith( vsiPrefix ) )
+      thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
-    if ( thePath != "/vsizip/" + parentItem->path() )
+    if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
-      name = name.replace( "/vsizip/" + parentItem->path() + "/", "" );
+      name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
     }
   }
 
   // return a /vsizip/ item without testing if:
   // zipfile and scan zip == "Basic scan"
   // not zipfile and scan items == "Check extension"
-  if (( is_vsizip && scanZipSetting == 2 ) ||
-      ( !is_vsizip && scanItemsSetting == 1 ) )
+  if ((( is_vsizip || is_vsitar ) && scanZipSetting == "basic" ) ||
+      ( !is_vsizip && !is_vsitar &&
+        ( settings.value( "/qgis/scanItemsInBrowser",
+                          "extension" ).toString() == "extension" ) ) )
   {
     // if this is a VRT file make sure it is raster VRT to avoid duplicates
     if ( suffix == "vrt" )

@@ -77,6 +77,8 @@ class QgsMessageLogViewer;
 
 class QgsScaleComboBox;
 
+class QgsDataItem;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -909,11 +911,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void customSrsValidation( QgsCoordinateReferenceSystem *crs );
 
   private:
-    /** This method will open a dialog so the user can select the sublayers to load
-    */
-    bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
-    void askUserForOGRSublayers( QgsVectorLayer *layer );
+    /** This method will open a dialog so the user can select GDAL sublayers to load
+     * @returns true if any items were loaded
+     * @note added in version 1.9
+     */
+    bool askUserForZipItemLayers( QString path );
+    /** This method will open a dialog so the user can select GDAL sublayers to load
+     * @note added in version 1.8
+     */
     void askUserForGDALSublayers( QgsRasterLayer *layer );
+    /** This method will verify if a GDAL layer contains sublayers
+     * @note added in version 1.8
+     */
+    bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
+    /** This method will open a dialog so the user can select OGR sublayers to load
+    */
+    void askUserForOGRSublayers( QgsVectorLayer *layer );
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.
      */

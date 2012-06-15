@@ -175,6 +175,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsmessagelogviewer.h"
+#include "qgsdataitem.h"
 
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -2225,6 +2226,15 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
     {
       QFileInfo fi( src );
       base = fi.completeBaseName();
+
+      // if needed prompt for zipitem layers
+      QString vsiPrefix = QgsZipItem::vsiPrefix( src );
+      if ( ! src.startsWith( "/vsi", Qt::CaseInsensitive ) &&
+           ( vsiPrefix == "/vsizip/" || vsiPrefix == "/vsitar/" ) )
+      {
+        if ( askUserForZipItemLayers( src ) )
+          continue;
+      }
     }
     else if ( dataSourceType == "database" )
     {
@@ -2322,6 +2332,102 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
   return true;
 } // QgisApp::addVectorLayer()
 
+// present a dialog to choose zipitem layers
+bool QgisApp::askUserForZipItemLayers( QString path )
+{
+  bool ok = false;
+  QVector<QgsDataItem*> childItems;
+  QgsZipItem *zipItem = 0;
+  QSettings settings;
+  int promptLayers = settings.value( "/qgis/promptForRasterSublayers", 1 ).toInt();
+
+  QgsDebugMsg( "askUserForZipItemLayers( " + path + ")" );
+
+  // if scanZipBrowser == no: skip to the next file
+  if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() == "no" )
+  {
+    return false;
+  }
+
+  zipItem = new QgsZipItem( 0, path, path );
+  if ( ! zipItem )
+    return false;
+
+  zipItem->populate();
+  QgsDebugMsg( QString( "Got zipitem with %1 children" ).arg( zipItem->rowCount() ) );
+
+  // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
+  if ( zipItem->rowCount() <= 1 )
+  {
+    delete zipItem;
+    return false;
+  }
+
+  // if promptLayers=Load all, load all layers without prompting
+  if ( promptLayers == 3 )
+  {
+    childItems = zipItem->children();
+  }
+  // exit if promptLayers=Never
+  else if ( promptLayers == 2 )
+  {
+    delete zipItem;
+    return false;
+  }
+  else
+  {
+    // We initialize a selection dialog and display it.
+    QgsOGRSublayersDialog chooseSublayersDialog( this );
+    chooseSublayersDialog.setWindowTitle( tr( "Select zip layers to add..." ) );
+
+    QStringList layers;
+    for ( int i = 0; i < zipItem->children().size(); i++ )
+    {
+      QgsDataItem *item = zipItem->children()[i];
+      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
+      QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+      if ( layerItem && layerItem->providerKey() == "gdal" )
+      {
+        layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
+      }
+      else if ( layerItem && layerItem->providerKey() == "ogr" )
+      {
+        layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( tr( "Vector" ) );
+      }
+    }
+
+    chooseSublayersDialog.populateLayerTable( layers, "|" );
+
+    if ( chooseSublayersDialog.exec() )
+    {
+      foreach( int i, chooseSublayersDialog.getSelectionIndexes() )
+      {
+        childItems << zipItem->children()[i];
+      }
+    }
+  }
+
+  // add childItems
+  foreach( QgsDataItem* item, childItems )
+  {
+    QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
+    QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+    if ( layerItem && layerItem->providerKey() == "gdal" )
+    {
+      if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
+        ok = true;
+    }
+    else if ( layerItem && layerItem->providerKey() == "ogr" )
+    {
+      if ( addVectorLayers( QStringList( item->path() ), "System", "file" ) )
+        ok = true;
+    }
+  }
+
+  delete zipItem;
+  return ok;
+}
+
 // present a dialog to choose GDAL raster sublayers
 void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 {
@@ -2347,20 +2453,41 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   chooseSublayersDialog.setWindowTitle( tr( "Select raster layers to add..." ) );
 
   QStringList layers;
+  QStringList names;
   for ( int i = 0; i < sublayers.size(); i++ )
   {
-    layers << QString( "%1|%2|1|%3" ).arg( i ).arg( sublayers[i] ).arg( tr( "Raster" ) );
+    // simplify raster sublayer name - should add a function in gdal provider for this?
+    // code is copied from QgsGdalLayerItem::createChildren
+    QString name = sublayers[i];
+    QString path = layer->source();
+    // if netcdf/hdf use all text after filename
+    // for hdf4 it would be best to get description, because the subdataset_index is not very practical
+    if ( name.startsWith( "netcdf", Qt::CaseInsensitive ) ||
+         name.startsWith( "hdf", Qt::CaseInsensitive ) )
+      name = name.mid( name.indexOf( path ) + path.length() + 1 );
+    else
+    {
+      // remove driver name and file name
+      name.replace( name.split( ":" )[0], "" );
+      name.replace( path, "" );
+    }
+    // remove any : or " left over
+    if ( name.startsWith( ":" ) ) name.remove( 0, 1 );
+    if ( name.startsWith( "\"" ) ) name.remove( 0, 1 );
+    if ( name.endsWith( ":" ) ) name.chop( 1 );
+    if ( name.endsWith( "\"" ) ) name.chop( 1 );
+
+    names << name;
+    layers << QString( "%1|%2|1|%3" ).arg( i ).arg( name ).arg( tr( "Raster" ) );
   }
 
   chooseSublayersDialog.populateLayerTable( layers, "|" );
 
   if ( chooseSublayersDialog.exec() )
   {
-    foreach( QString path, chooseSublayersDialog.getSelection() )
+    foreach( int i, chooseSublayersDialog.getSelectionIndexes() )
     {
-      QString name = path;
-      name.replace( layer->source(), QFileInfo( layer->source() ).completeBaseName() );
-      QgsRasterLayer *rlayer = new QgsRasterLayer( path, name );
+      QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], names[i] );
       if ( rlayer && rlayer->isValid() )
       {
         addRasterLayer( rlayer );
@@ -3176,10 +3303,22 @@ void QgisApp::openProject( const QString & fileName )
 bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
 {
   QFileInfo fileInfo( fileName );
+  bool ok( false );
+
+  CPLPushErrorHandler( CPLQuietErrorHandler );
+
+  // if needed prompt for zipitem layers
+  QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
+  if ( vsiPrefix == "/vsizip/" || vsiPrefix == "/vsitar/" )
+  {
+    if ( askUserForZipItemLayers( fileName ) )
+    {
+      CPLPopErrorHandler();
+      return true;
+    }
+  }
 
   // try to load it as raster
-  bool ok( false );
-  CPLPushErrorHandler( CPLQuietErrorHandler );
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
     ok  = addRasterLayer( fileName, fileInfo.completeBaseName() );
@@ -6917,6 +7056,15 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
   {
     QString errMsg;
 
+    // if needed prompt for zipitem layers
+    QString vsiPrefix = QgsZipItem::vsiPrefix( *myIterator );
+    if ( ! myIterator->startsWith( "/vsi", Qt::CaseInsensitive ) &&
+         ( vsiPrefix == "/vsizip/" || vsiPrefix == "/vsitar/" ) )
+    {
+      if ( askUserForZipItemLayers( *myIterator ) )
+        continue;
+    }
+
     if ( QgsRasterLayer::isValidRasterFileName( *myIterator, errMsg ) )
     {
       QFileInfo myFileInfo( *myIterator );
@@ -6952,7 +7100,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
           break;
         }
       }
-    }
+    } // valid raster filename
     else
     {
       // Issue message box warning unless we are loading from cmd line since

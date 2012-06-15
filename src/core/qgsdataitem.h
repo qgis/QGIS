@@ -298,6 +298,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     Q_OBJECT
 
   protected:
+    QString mVsiPrefix;
     QStringList mZipFileList;
 
   public:
@@ -305,16 +306,16 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren();
-    QStringList getFiles();
+    const QStringList & getZipFileList();
 
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
 
+    static QString vsiPrefix( QString uri );
+
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
 
     static const QIcon &iconZip();
-
-    const QStringList & getZipFileList() const { return mZipFileList; }
 
 };
 
