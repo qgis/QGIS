@@ -37,7 +37,7 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     int nBands = provider->bandCount();
     for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
     {
-      mGrayBandComboBox->addItem( provider->colorInterpretationName( i ), i );
+      mGrayBandComboBox->addItem( displayBandName( i ), i );
     }
 
     //contrast enhancement algorithms

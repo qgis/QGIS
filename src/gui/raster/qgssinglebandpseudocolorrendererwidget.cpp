@@ -44,7 +44,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   int nBands = provider->bandCount();
   for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
   {
-    mBandComboBox->addItem( provider->colorInterpretationName( i ), i );
+    mBandComboBox->addItem( displayBandName( i ), i );
   }
 
   mColorInterpolationComboBox->addItem( tr( "Discrete" ), 0 );

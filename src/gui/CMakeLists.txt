@@ -1,6 +1,7 @@
 
 SET(QGIS_GUI_SRCS
 
+raster/qgsrasterrendererwidget.cpp
 raster/qgsmultibandcolorrendererwidget.cpp
 raster/qgspalettedrendererwidget.cpp
 raster/qgssinglebandgrayrendererwidget.cpp

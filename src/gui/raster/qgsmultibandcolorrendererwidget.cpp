@@ -46,9 +46,10 @@ QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer
     int nBands = provider->bandCount();
     for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
     {
-      mRedBandComboBox->addItem( provider->colorInterpretationName( i ), i );
-      mGreenBandComboBox->addItem( provider->colorInterpretationName( i ), i );
-      mBlueBandComboBox->addItem( provider->colorInterpretationName( i ), i );
+      QString bandName = displayBandName( i );
+      mRedBandComboBox->addItem( bandName, i );
+      mGreenBandComboBox->addItem( bandName, i );
+      mBlueBandComboBox->addItem( bandName, i );
     }
 
     setFromRenderer( mRasterLayer->renderer() );

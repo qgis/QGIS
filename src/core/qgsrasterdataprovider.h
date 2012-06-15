@@ -376,7 +376,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     virtual QgsRasterBandStats bandStatistics( int theBandNo );
 
     /** \brief helper function to create zero padded band names */
-    QString  generateBandName( int theBandNumber )
+    QString  generateBandName( int theBandNumber ) const
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
     }
