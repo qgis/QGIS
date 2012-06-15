@@ -31,11 +31,11 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
     mCapabilitiesReply( 0 ),
     mErrorCode( QgsWFSCapabilities::NoError )
 {
-  mUri.setEncodedUri( theUri ),
-  QgsDebugMsg ( "theUri = " + theUri );
-  mBaseUrl = prepareUri ( mUri.param("url") );
+  mUri.setEncodedUri( theUri );
+  QgsDebugMsg( "theUri = " + theUri );
+  mBaseUrl = prepareUri( mUri.param( "url" ) );
 
-  QgsDebugMsg ( "mBaseUrl = " + mBaseUrl );
+  QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
 
   //find out the server URL
   /*
@@ -43,7 +43,7 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
   QString key = "/Qgis/connections-wfs/" + mConnName + "/url";
   mUri = settings.value( key ).toString();
   QgsDebugMsg( QString( "url is: %1" ).arg( mUri ) );
-  
+
   //make a GetCapabilities request
   //modify mUri to add '?' or '&' at the end if it is not already there
   if ( !( mUri.contains( "?" ) ) )
