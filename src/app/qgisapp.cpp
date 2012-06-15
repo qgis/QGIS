@@ -1090,7 +1090,6 @@ void QgisApp::setFontSize( int fontSize )
 
 void QgisApp::createMenus()
 {
-
   /*
    * The User Interface Guidelines for each platform specify different locations
    * for the following items.
@@ -1130,9 +1129,9 @@ void QgisApp::createMenus()
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
     QAction* before = mActionNewPrintComposer;
+    mSettingsMenu->removeAction( mActionProjectProperties );
     mFileMenu->insertAction( before, mActionProjectProperties );
     mFileMenu->insertSeparator( before );
-    mSettingsMenu->removeAction( mActionProjectProperties );
   }
 
   // View Menu
