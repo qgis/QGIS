@@ -1,0 +1,32 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Channel Network</h1>
+<div class='author'>(c) 2001 by O.Conrad</div>
+<div class='description'>This module derives a channel network based on gridded digital elevation data.<br/>
+Use the initiation options to determine under which conditions channels shall start.<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Elevation <div class='type'>Input Grid</div></dt><dd>A grid that contains elevation data. <div class='constraints'></div></dd>
+	<dt>Flow Direction <div class='type'>Input Grid</div></dt><dd>An optional grid that provides information about flow directions. 
+Values between 1 to 8 force the flow of a cell to be given to one its adjacent neighbor cells (1->NE, 2->E, 3->SE, 4->S, 5->SW, 6->W, 7->NW, 8->N). In case of other values the algorithm will use its own routing scheme. 
+This option is in particular useful to supply the algorithm with routes that lead the flow through closed depression.  <div class='constraints'></div></dd>
+	<dt>Channel Network <div class='type'>Output Grid</div></dt><dd>If a cell is part of a channel its value equals the channel order. Otherwise the cell is marked as no-data. <div class='constraints'></div></dd>
+	<dt>Channel Direction <div class='type'>Output Grid</div></dt><dd>If a cell is part of a channel then its value shows the flow direction of the channel (1->NE, 2->E, 3->SE, 4->S, 5->SW, 6->W, 7->NW, 8->N). Otherwise the cell is marked as no-data. <div class='constraints'></div></dd>
+	<dt>Channel Network <div class='type'>Output Shapes</div></dt><dd>This shapes layer will contain the resulting channel network in vector format (lines). <div class='constraints'></div></dd>
+	<dt>Initiation Grid <div class='type'>Input Grid</div></dt><dd>Dependent on the chosen 'Initiation Type' and 'Initiation Threshold' the values of this grid control where a channel is initiated. <div class='constraints'></div></dd>
+	<dt>Initiation Type <div class='type'>Choice</div></dt><dd>Options:
+ - Less than
+ - Equals
+ - Greater than
+Controls under which condition a channel is initiated. <div class='constraints'>Available choices: Less than, Equals, Greater than</div></dd>
+	<dt>Initiation Threshold <div class='type'>Floating point</div></dt><dd>Dependent on the chosen 'Initiation Grid' and 'Initiation Type' this value controls under which condition a channel is initiated. <div class='constraints'></div></dd>
+	<dt>Divergence <div class='type'>Input Grid</div></dt><dd>Tracing: Convergence <div class='constraints'></div></dd>
+	<dt>Tracing: Max. Divergence <div class='type'>Integer</div></dt><dd>Tracing: Stop after x cells with divergent flow <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Tracing: Weight <div class='type'>Input Grid</div></dt><dd>Tracing: Weight <div class='constraints'></div></dd>
+	<dt>Min. Segment Length <div class='type'>Integer</div></dt><dd>Minimum Segment Length (Cells) <div class='constraints'></div></dd>
+</dl>
+</body></html>

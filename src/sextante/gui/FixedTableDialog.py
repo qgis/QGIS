@@ -67,7 +67,7 @@ class FixedTableDialog(QtGui.QDialog):
         self.close()
 
     def removeRow(self):
-        if self.table.rowCount() > 2:
+        if self.table.rowCount() > 1:
             self.table.setRowCount(self.table.rowCount()-1)
 
     def addRow(self):

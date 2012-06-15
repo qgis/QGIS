@@ -329,3 +329,5 @@ class SagaAlgorithm(GeoAlgorithm):
                     return
             return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
 
+    def helpFile(self):
+        return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")

@@ -199,6 +199,7 @@ class Ui_ParametersDialog(object):
             self.dialog.close()
         else:
             self.progressLabel.setText("")
+            self.progress.setMaximum(100)
             self.progress.setValue(0)
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)

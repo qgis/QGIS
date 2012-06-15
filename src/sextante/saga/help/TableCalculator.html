@@ -1,0 +1,44 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Table Calculator</h1>
+<div class='author'>V.Olaya (c) 2004, O.Conrad (c) 2011</div>
+<div class='description'>The table calculator calculates a new attribute from existing attributes based on a mathematical formula. Attributes are addressed by the character 'f' (for 'field') followed by the field number (i.e.: f1, f2, ..., fn) or by the field name in square brackets (e.g.: [Field Name]).<br/>
+Examples:<br/>
+sin(f1) * f2 + f3<br/>
+[Population] / [Area]<br/>
+<br/>
+The following operators are available for the formula definition:<br/>
++ Addition<br/>
+- Subtraction<br/>
+* Multiplication<br/>
+/ Division<br/>
+^ power<br/>
+abs(x)          - absolute value<br/>
+sqrt(x)         - square root<br/>
+ln(x)           - natural logarithm<br/>
+log(x)          - base 10 logarithm<br/>
+exp(x)          - exponential<br/>
+sin(x)          - sine<br/>
+cos(x)          - cosine<br/>
+tan(x)          - tangent<br/>
+asin(x)         - arcsine<br/>
+acos(x)         - arccosine<br/>
+atan(x)         - arctangent<br/>
+atan2(x, y)     - arctangent of x/y<br/>
+gt(x, y)        - if x&gt;y the result is 1.0, else 0.0<br/>
+lt(x, y)        - if x&lt;y the result is 1.0, else 0.0<br/>
+eq(x, y)        - if x=y the result is 1.0, else 0.0<br/>
+mod(x, y)       - returns the floating point remainder of x/y<br/>
+ifelse(c, x, y) - if c=1 the result is x, else y<br/>
+int(x)          - integer part of floating point value x<br/>
+pi()            - returns the value of Pi<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Formula <div class='type'>Text</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Field Name <div class='type'>Text</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Table <div class='type'>Input Table</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Result <div class='type'>Output Table</div></dt><dd> <div class='constraints'></div></dd>
+</dl>
+</body></html>
