@@ -111,8 +111,6 @@ cmake -G "Visual Studio 9 2008" ^
 	-D QT_PNG_LIBRARY=%O4W_ROOT%/lib/libpng13.lib ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
-	-D ZLIB_INCLUDE_DIR=%O4W_ROOT%/include ^
-	-D ZLIB_LIBRARY=%O4W_ROOT%/lib/zlib.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /Od /D NDEBUG" ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
