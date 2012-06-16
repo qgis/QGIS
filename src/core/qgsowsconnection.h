@@ -39,7 +39,7 @@ class QDomElement;
 /*!
  * \brief   Connections management
  */
-class QgsOWSConnection : public QObject
+class CORE_EXPORT QgsOWSConnection : public QObject
 {
 //    Q_OBJECT
 

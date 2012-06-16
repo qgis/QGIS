@@ -22,7 +22,7 @@
 
 class QDomElement;
 
-class QgsSingleBandColorDataRenderer: public QgsRasterRenderer
+class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {
   public:
     QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );

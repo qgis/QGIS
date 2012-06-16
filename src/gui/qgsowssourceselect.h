@@ -52,7 +52,7 @@ struct QgsOWSSupportedFormat
  * The user can then connect and add
  * layers from the WMS server to the map canvas.
  */
-class QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
+class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSelectBase
 {
     Q_OBJECT
 
