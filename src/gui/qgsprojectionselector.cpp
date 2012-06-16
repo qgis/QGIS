@@ -802,14 +802,18 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 
 void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
 {
+  QString filterTxt = theFilterTxt;
+  filterTxt.replace( QRegExp( "\\s+" ), ".*" );
+  QRegExp re( filterTxt, Qt::CaseInsensitive );
+
   // filter recent crs's
   QTreeWidgetItemIterator itr( lstRecent );
   while ( *itr )
   {
     if (( *itr )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *itr )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-          || ( *itr )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+      if (( *itr )->text( NAME_COLUMN ).contains( re )
+          || ( *itr )->text( AUTHID_COLUMN ).contains( re )
          )
       {
         ( *itr )->setHidden( false );
@@ -839,8 +843,8 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
   {
     if (( *it )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *it )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-          || ( *it )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+      if (( *it )->text( NAME_COLUMN ).contains( re )
+          || ( *it )->text( AUTHID_COLUMN ).contains( re )
          )
       {
         ( *it )->setHidden( false );
