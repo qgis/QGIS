@@ -186,7 +186,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
-  int myHistogramTab = 6;
+  int myHistogramTab = 5;
   if ( tabBar->currentIndex() == myHistogramTab )
   {
     refreshHistogram();
@@ -1111,7 +1111,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 {
-  int myHistogramTab = 6;
+  int myHistogramTab = 5;
   if ( theTab == myHistogramTab )
   {
     refreshHistogram();
