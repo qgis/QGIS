@@ -227,6 +227,7 @@ class Ui_ParametersDialog(object):
     def cancel(self):
         try:
             self.algEx.finished.disconnect()
+            self.algEx.terminate()
             QApplication.restoreOverrideCursor()
             self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         except:

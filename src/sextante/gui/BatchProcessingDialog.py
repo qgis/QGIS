@@ -114,6 +114,8 @@ class BatchProcessingDialog(QtGui.QDialog):
 
     def cancelPressed(self):
         self.algs = None
+        if self.algEx:
+            self.algEx.terminate()
         self.close()
 
     @pyqtSlot()

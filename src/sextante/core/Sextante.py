@@ -277,8 +277,7 @@ class Sextante:
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        algEx = AlgorithmExecutor(alg)
-        algEx.start()
+        alg.execute()
         QApplication.restoreOverrideCursor()
         return alg.getOutputValuesAsDictionary()
 
