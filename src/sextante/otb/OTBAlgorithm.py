@@ -12,14 +12,19 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
+#~ from sextante.core.Sextante import Sextante
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.otb.OTBUtils import OTBUtils
+from sextante.parameters.ParameterExtent import ParameterExtent
 
 class OTBAlgorithm(GeoAlgorithm):
 
+    REGION_OF_INTEREST = "ROI"
+
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
+        self.roiFile = None
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
@@ -60,8 +65,11 @@ class OTBAlgorithm(GeoAlgorithm):
                         param.default = OTBUtils.otbSRTMPath()
                     if param.name == "-elev.dem.geoid":
                         param.default = OTBUtils.otbGeoidPath()
-
                     self.addParameter(param)
+                elif line.startswith("Extent"):
+                    self.extentParamNames = line[6:].strip().split(" ")
+                    self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
+                    self.roiFile = SextanteUtils.getTempFilename()
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
@@ -83,9 +91,16 @@ class OTBAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value == None or param.value == "":
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector)):
+            if isinstance(param, ParameterVector):
                 commands.append(param.name)
                 commands.append(param.value)
+            if isinstance(param, ParameterRaster):
+                commands.append(param.name)
+                if self.roiFile:
+                    commands.append(self.roiFile)
+                    self.roiInput = param.name
+                else:
+                    commands.append(param.value)
             elif isinstance(param, ParameterMultipleInput):
                 commands.append(param.name)
                 commands.append(str(param.value.replace(";"," ")))
@@ -97,14 +112,24 @@ class OTBAlgorithm(GeoAlgorithm):
                 if param.value:
                     commands.append(param.name)
                     commands.append(str(param.value).lower())
+            elif isinstance(param, ParameterExtent):
+                self.roiValues = param.value.split(",")
             else:
                 commands.append(param.name)
                 commands.append(str(param.value))
 
         for out in self.outputs:
             commands.append(out.name)
-            commands.append(out.value);
+            commands.append(out.value)
 
+        if self.roiFile:
+            args = {"in":       self.roiInput,
+                    "out":      self.roiFile,
+                    "startx":   self.roiValues[0],
+                    "starty":   self.roiValues[1],
+                    "sizex":    self.roiValues[2],
+                    "sizey":    self.roiValues[3]}
+            Sextante.runalg("ExtractROI", *args)
 
         loglines = []
         loglines.append("OTB execution command")
