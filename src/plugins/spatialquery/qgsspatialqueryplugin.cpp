@@ -79,7 +79,7 @@ void QgsSpatialQueryPlugin::initGui()
   mSpatialQueryAction = new QAction( QIcon(), tr( "&Spatial Query" ), this );
 
   // Connect the action to the spatialQuery slot
-  connect( mSpatialQueryAction, SIGNAL( activated() ), this, SLOT( run() ) );
+  connect( mSpatialQueryAction, SIGNAL( triggered() ), this, SLOT( run() ) );
 
   setCurrentTheme( "" );
   // this is called when the icon theme is changed
