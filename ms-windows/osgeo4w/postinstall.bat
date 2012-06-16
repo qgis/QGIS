@@ -12,6 +12,7 @@ set OSGEO4W_ROOT=%OSGEO4W_ROOT:\=\\%
 textreplace -std -t "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
 "%WINDIR%\regedit" /s "%O4W_ROOT%\apps\@package@\bin\qgis.reg"
 
+set OSGEO4W_ROOT=%O4W_ROOT%
 path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin
 call "%OSGEO4W_ROOT%"\bin\o4w_env.bat
 start "CRS synchronization" /wait %OSGEO4W_ROOT%\apps\@package@\crssync
