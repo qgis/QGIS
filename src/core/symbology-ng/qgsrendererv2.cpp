@@ -77,7 +77,7 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   const QgsMapToPixel& mtp = context.mapToPixel();
 
   //apply clipping for large lines to achieve a better rendering performance
-  if ( nPoints > 100 )
+  if ( nPoints > 1 )
   {
     const QgsRectangle& e = context.extent();
     double cw = e.width() / 10; double ch = e.height() / 10;
