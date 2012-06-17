@@ -18,6 +18,7 @@
 #include <QFile>
 #include <QStandardItem>
 #include <QKeyEvent>
+#include <QMessageBox>
 
 #include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2registry.h"
@@ -33,6 +34,8 @@
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
+// Hybrid iitem which may represent a symbol or a layer
+// Check using item->isLayer()
 class SymbolLayerItem : public QStandardItem
 {
   public:
@@ -41,24 +44,69 @@ class SymbolLayerItem : public QStandardItem
       setLayer( layer );
     }
 
+    SymbolLayerItem( QgsSymbolV2* symbol )
+    {
+      setSymbol( symbol );
+    }
+
     void setLayer( QgsSymbolLayerV2* layer )
     {
       mLayer = layer;
+      mIsLayer = true;
+      mSymbol = NULL;
+      updatePreview();
+    }
+
+    void setSymbol( QgsSymbolV2* symbol )
+    {
+      mSymbol = symbol;
+      mIsLayer = false;
+      mLayer = NULL;
       updatePreview();
     }
 
     void updatePreview()
     {
-      QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QgsSymbolV2::MM, QSize( 16, 16 ) ); //todo: make unit a parameter
+      QIcon icon;
+      if ( mIsLayer )
+        icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QgsSymbolV2::MM, QSize( 16, 16 ) ); //todo: make unit a parameter
+      else
+        icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, QSize( 16, 16 ) );
       setIcon( icon );
+
+      if ( parent() )
+        static_cast<SymbolLayerItem*>( parent() )->updatePreview();
     }
 
     int type() const { return SymbolLayerItemType; }
+    bool isLayer() { return mIsLayer; }
+
+    // returns the symbol pointer; helpful in determining a layer's parent symbol
+    QgsSymbolV2* symbol()
+    {
+      if ( mIsLayer )
+        return NULL;
+
+      return mSymbol;
+    }
 
     QVariant data( int role ) const
     {
       if ( role == Qt::DisplayRole )
-        return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+      {
+        if ( mIsLayer )
+          return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+        else
+        {
+          switch( mSymbol->type() )
+          {
+            case QgsSymbolV2::Marker : return "Marker Symbol";
+            case QgsSymbolV2::Fill   : return "Fill Symbol";
+            case QgsSymbolV2::Line   : return "Line Symbol";
+            default: return "Symbol";
+          }
+        }
+      }
       if ( role == Qt::SizeHintRole )
         return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
@@ -68,6 +116,8 @@ class SymbolLayerItem : public QStandardItem
 
   protected:
     QgsSymbolLayerV2* mLayer;
+    QgsSymbolV2* mSymbol;
+    bool mIsLayer;
 };
 
 //////////
@@ -140,7 +190,16 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, c
   // (should be probably moved somewhere else)
   _initWidgetFunctions();
 
-  loadSymbol();
+  // Set the symbol
+  QStandardItemModel* model = new QStandardItemModel( this );
+  layersTree->setModel( model );
+  layersTree->setHeaderHidden( true );
+
+  QItemSelectionModel* selModel = layersTree->selectionModel();
+  connect( selModel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( layerChanged() ) );
+
+  loadSymbol( symbol, static_cast<SymbolLayerItem*>( model->invisibleRootItem() ) );
+  updatePreview();
 
   connect( btnUp, SIGNAL( clicked() ), this, SLOT( moveLayerUp() ) );
   connect( btnDown, SIGNAL( clicked() ), this, SLOT( moveLayerDown() ) );
@@ -156,26 +215,36 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, c
   updateUi();
 
   // set first layer as active
-  QModelIndex newIndex = listLayers->model()->index( 0, 0 );
-  listLayers->setCurrentIndex( newIndex );
+  QModelIndex newIndex = layersTree->model()->index( 0, 0 );
+  layersTree->setCurrentIndex( newIndex );
+}
+
+
+void QgsSymbolV2PropertiesDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
+{
+  SymbolLayerItem* symbolItem = new SymbolLayerItem( symbol );
+  parent->appendRow( symbolItem );
+
+  int count = symbol->symbolLayerCount();
+  for ( int i = count - 1; i >= 0; i-- )
+  {
+    SymbolLayerItem *layerItem = new SymbolLayerItem( symbol->symbolLayer( i ) );
+    layerItem->setEditable( false );
+    symbolItem->appendRow( layerItem );
+    if ( symbol->symbolLayer( i )->subSymbol() )
+    {
+      loadSymbol( symbol->symbolLayer( i )->subSymbol(), layerItem );
+    }
+  }
+  layersTree->setExpanded( symbolItem->index(), true);
 }
 
 
 void QgsSymbolV2PropertiesDialog::loadSymbol()
 {
-  QStandardItemModel* model = new QStandardItemModel( this );
-  listLayers->setModel( model );
-
-  QItemSelectionModel* selModel = listLayers->selectionModel();
-  connect( selModel, SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( layerChanged() ) );
-
-  int count = mSymbol->symbolLayerCount();
-  for ( int i = count - 1; i >= 0; i-- )
-  {
-    model->appendRow( new SymbolLayerItem( mSymbol->symbolLayer( i ) ) );
-  }
-
-  updatePreview();
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
+  model->clear();
+  loadSymbol( mSymbol, static_cast<SymbolLayerItem*>( model->invisibleRootItem() ) );
 }
 
 
@@ -202,11 +271,28 @@ void QgsSymbolV2PropertiesDialog::populateLayerTypes()
 
 void QgsSymbolV2PropertiesDialog::updateUi()
 {
-  int row = currentRowIndex();
-  int count = listLayers->model()->rowCount();
-  btnUp->setEnabled( row > 0 );
-  btnDown->setEnabled( row < count - 1 && row != -1 );
-  btnRemoveLayer->setEnabled( count > 1 && row != -1 );
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
+  QModelIndex currentIdx =  layersTree->currentIndex();
+  if ( !currentIdx.isValid() )
+    return;
+
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( currentIdx ) );
+  if ( !item->isLayer() )
+  {
+    btnUp->setEnabled( false );
+    btnDown->setEnabled( false );
+    btnRemoveLayer->setEnabled( false );
+    btnLock->setEnabled( false );
+    return;
+  }
+
+  int rowCount = item->parent()->rowCount();
+  int currentRow = item->row();
+
+  btnUp->setEnabled( currentRow > 0 );
+  btnDown->setEnabled( currentRow < rowCount - 1 );
+  btnRemoveLayer->setEnabled( rowCount > 1 );
+  btnLock->setEnabled( true );
 }
 
 void QgsSymbolV2PropertiesDialog::updatePreview()
@@ -278,7 +364,7 @@ void QgsSymbolV2PropertiesDialog::loadPropertyWidgets()
 
 int QgsSymbolV2PropertiesDialog::currentRowIndex()
 {
-  QModelIndex idx = listLayers->selectionModel()->currentIndex();
+  QModelIndex idx = layersTree->selectionModel()->currentIndex();
   if ( !idx.isValid() )
     return -1;
   return idx.row();
@@ -286,7 +372,7 @@ int QgsSymbolV2PropertiesDialog::currentRowIndex()
 
 int QgsSymbolV2PropertiesDialog::currentLayerIndex()
 {
-  return listLayers->model()->rowCount() - currentRowIndex() - 1;
+  return layersTree->model()->rowCount() - currentRowIndex() - 1;
 }
 
 SymbolLayerItem* QgsSymbolV2PropertiesDialog::currentLayerItem()
@@ -295,7 +381,7 @@ SymbolLayerItem* QgsSymbolV2PropertiesDialog::currentLayerItem()
   if ( index < 0 )
     return NULL;
 
-  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listLayers->model() );
+  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( layersTree->model() );
   if ( model == NULL )
     return NULL;
   QStandardItem* item = model->item( index );
@@ -368,6 +454,12 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
   // update symbol layer item
   SymbolLayerItem* item = currentLayerItem();
   item->setLayer( newLayer );
+  // When it is a marker symbol
+  if ( newLayer->subSymbol() )
+  {
+    SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
+    item->appendRow( subsymbol );
+  }
   item->updatePreview();
 
   updatePreview();
@@ -376,34 +468,55 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
 
 void QgsSymbolV2PropertiesDialog::addLayer()
 {
-  QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( mSymbol->type() );
+  QModelIndex idx = layersTree->currentIndex();
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
 
-  mSymbol->appendSymbolLayer( newLayer );
+  if ( !idx.isValid() )
+    return;
 
-  loadSymbol();
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
+  if ( item->isLayer() )
+  {
+    QMessageBox::critical( this, tr( "Invalid Selection!" ), tr( "Kindly select a symbol to add layer.") );
+    return;
+  }
 
-  QModelIndex newIndex = listLayers->model()->index( 0, 0 );
-  listLayers->setCurrentIndex( newIndex );
+  QgsSymbolV2* parentSymbol = item->symbol();
+  QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( parentSymbol->type() );
+  parentSymbol->appendSymbolLayer( newLayer );
+  // XXX Insane behaviour of the appendSymbolLayer, it actually "pushes" into the list
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
+  item->insertRow( 0, newLayerItem );
+  item->updatePreview();
 
+  layersTree->setCurrentIndex( model->indexFromItem( newLayerItem ) );
   updateUi();
 }
 
 
 void QgsSymbolV2PropertiesDialog::removeLayer()
 {
-  int idx = currentLayerIndex();
-  if ( idx < 0 )
-    return;
-  int row = currentRowIndex();
-  mSymbol->deleteSymbolLayer( idx );
+  QModelIndex idx = layersTree->currentIndex();
+  int row = idx.row();
 
-  loadSymbol();
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
+
+  SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( item->parent() );
+  int layerIdx = parent->rowCount() - row - 1; // IMPORTANT
+
+  QgsSymbolV2* parentSymbol = parent->symbol();
+  QgsSymbolLayerV2 *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+
+  parent->removeRow( row );
+  parent->updatePreview();
+
+  QModelIndex newIdx = parent->child( 0 )->index();
+  layersTree->setCurrentIndex( newIdx );
 
   updateUi();
-
-  // set previous layer as active
-  QModelIndex newIndex = listLayers->model()->index( qMin( row, mSymbol->symbolLayerCount() - 1 ), 0 );
-  listLayers->setCurrentIndex( newIndex );
+  //finally delete the removed layer pointer
+  delete tmpLayer;
 }
 
 
@@ -419,17 +532,31 @@ void QgsSymbolV2PropertiesDialog::moveLayerUp()
 
 void QgsSymbolV2PropertiesDialog::moveLayerByOffset( int offset )
 {
-  int rowIdx = currentRowIndex();
-  int layerIdx = currentLayerIndex();
 
+  QModelIndex idx = layersTree->currentIndex();
+  int row = idx.row();
+
+  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
+
+  if( !item->isLayer() )
+    return;
+
+  SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( item->parent() );
+
+  QgsSymbolV2* parentSymbol = parent->symbol();
+
+  int layerIdx = parent->rowCount() - row - 1;
   // switch layers
-  QgsSymbolLayerV2* tmpLayer = mSymbol->takeSymbolLayer( layerIdx );
-  mSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
+  QgsSymbolLayerV2* tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
+  parentSymbol->insertSymbolLayer( layerIdx - offset, tmpLayer );
 
-  loadSymbol();
+  QList<QStandardItem*> rowItems = parent->takeRow( row );
+  parent->insertRows( row + offset, rowItems );
+  parent->updatePreview();
 
-  QModelIndex newIndex = listLayers->model()->index( rowIdx + offset, 0 );
-  listLayers->setCurrentIndex( newIndex );
+  QModelIndex newIdx = rowItems[ 0 ]->index();
+  layersTree->setCurrentIndex( newIdx );
 
   updateUi();
 }

@@ -57,6 +57,7 @@ class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSy
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );
 
+    void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
     void loadSymbol();
 
     void populateLayerTypes();
