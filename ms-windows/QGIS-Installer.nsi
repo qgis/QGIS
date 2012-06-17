@@ -433,13 +433,20 @@ RebootNecessary:
 	SetRebootFlag true
 
 NoRebootNecessary:
-
-        Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        Delete "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 
         Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk"
-        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Desktop (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}.bat"' \
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+        Delete "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$DESKTOP\Quantum GIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
+        "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+
+        Delete "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Browser (${VERSION_NUMBER}).lnk"
+        CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Browser (${VERSION_NUMBER}).lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\${SHORTNAME}-browser.bat"' \
         "$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
 !else
         CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
