@@ -391,12 +391,14 @@ QgsMarkerSymbolV2::QgsMarkerSymbolV2( QgsSymbolLayerV2List layers )
     mLayers.append( new QgsSimpleMarkerSymbolLayerV2() );
 }
 
-void QgsMarkerSymbolV2::setAngle( double angle )
+void QgsMarkerSymbolV2::setAngle( double ang )
 {
+  double origAngle = angle();
+  double angleDiff = ang - origAngle;
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
-    layer->setAngle( angle );
+    layer->setAngle( layer->angle() + angleDiff );
   }
 }
 
