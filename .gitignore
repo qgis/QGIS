@@ -25,6 +25,7 @@ qtcreator-build/
 ms-windows/nsis/
 ms-windows/osgeo4w/addons/
 ms-windows/packages/
+ms-windows/osgeo4w/binary-*
 ms-windows/progs/
 ms-windows/untgz/
 scripts/astyle.exe
