@@ -2,10 +2,10 @@ import os
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputTable import OutputTable
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.fusion.FusionUtils import FusionUtils
+from sextante.lidar.fusion.FusionUtils import FusionUtils
 from PyQt4 import QtGui
 from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.fusion.FusionAlgorithm import FusionAlgorithm
+from sextante.lidar.fusion.FusionAlgorithm import FusionAlgorithm
 
 class CanopyMaxima(FusionAlgorithm):
 

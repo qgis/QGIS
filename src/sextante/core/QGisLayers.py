@@ -30,7 +30,7 @@ class QGisLayers:
         for layer in layers:
             if layer.type() == layer.VectorLayer:
                 if shapetype == QGisLayers.ALL_TYPES or layer.geometryType() == shapetype:
-                    uri = str(layer.source())
+                    uri = unicode(layer.source())
                     if not uri.endswith("csv") and not uri.endswith("dbf"):
                         vector.append(layer)
         return vector
@@ -48,7 +48,7 @@ class QGisLayers:
         tables = list()
         for layer in layers:
             if layer.type() == layer.VectorLayer :
-                uri = str(layer.source())
+                uri = unicode(layer.source())
                 if uri.endswith("csv") or uri.endswith("dbf"):
                     tables.append(layer)
         return tables
@@ -100,7 +100,7 @@ class QGisLayers:
             else:
                 if prjSetting:
                     settings.setValue("/Projections/defaultBehaviour", prjSetting)
-                raise RuntimeError("Could not load layer: " + str(layer)
+                raise RuntimeError("Could not load layer: " + unicode(layer)
                                        +"\nCheck the SEXTANTE log to look for errors in algorithm execution")
         if prjSetting:
             settings.setValue("/Projections/defaultBehaviour", prjSetting)

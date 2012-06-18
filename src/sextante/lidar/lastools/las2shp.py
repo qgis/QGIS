@@ -1,7 +1,7 @@
 import os
 from sextante.outputs.OutputVector import OutputVector
-from sextante.lastools.LasToolsUtils import LasToolsUtils
-from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
+from sextante.lidar.lastools.LasToolsUtils import LasToolsUtils
+from sextante.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterFile import ParameterFile
 
 class las2shp(LasToolsAlgorithm):

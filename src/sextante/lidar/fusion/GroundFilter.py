@@ -1,9 +1,9 @@
 import os
 from sextante.parameters.ParameterFile import ParameterFile
-from sextante.fusion.FusionUtils import FusionUtils
+from sextante.lidar.fusion.FusionUtils import FusionUtils
 import subprocess
 from sextante.outputs.OutputFile import OutputFile
-from sextante.fusion.FusionAlgorithm import FusionAlgorithm
+from sextante.lidar.fusion.FusionAlgorithm import FusionAlgorithm
 from sextante.parameters.ParameterNumber import ParameterNumber
 
 class GroundFilter(FusionAlgorithm):

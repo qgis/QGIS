@@ -3,10 +3,10 @@ from PyQt4 import QtGui
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterString import ParameterString
 from sextante.outputs.OutputVector import OutputVector
-from sextante.lastools.LasToolsUtils import LasToolsUtils
+from sextante.lidar.lastools.LasToolsUtils import LasToolsUtils
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
+from sextante.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterFile import ParameterFile
 
 class lasboundary(LasToolsAlgorithm):

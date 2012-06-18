@@ -1,6 +1,6 @@
 import os
-from sextante.lastools.LasToolsUtils import LasToolsUtils
-from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
+from sextante.lidar.lastools.LasToolsUtils import LasToolsUtils
+from sextante.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.outputs.OutputVector import OutputVector
 from sextante.parameters.ParameterFile import ParameterFile

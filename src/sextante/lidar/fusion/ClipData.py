@@ -1,12 +1,12 @@
 import os
 from sextante.parameters.ParameterFile import ParameterFile
-from sextante.fusion.FusionUtils import FusionUtils
+from sextante.lidar.fusion.FusionUtils import FusionUtils
 from PyQt4 import QtGui
 import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.outputs.OutputFile import OutputFile
 from sextante.parameters.ParameterSelection import ParameterSelection
-from sextante.fusion.FusionAlgorithm import FusionAlgorithm
+from sextante.lidar.fusion.FusionAlgorithm import FusionAlgorithm
 
 class ClipData(FusionAlgorithm):
 

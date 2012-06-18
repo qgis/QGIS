@@ -1,10 +1,10 @@
 import os
 from PyQt4 import QtGui
 from sextante.parameters.ParameterString import ParameterString
-from sextante.lastools.LasToolsUtils import LasToolsUtils
+from sextante.lidar.lastools.LasToolsUtils import LasToolsUtils
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.outputs.OutputRaster import OutputRaster
-from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
+from sextante.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFile import ParameterFile
 

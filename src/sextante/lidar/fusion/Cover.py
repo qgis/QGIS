@@ -1,13 +1,13 @@
 import os
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.fusion.FusionUtils import FusionUtils
+from sextante.lidar.fusion.FusionUtils import FusionUtils
 from PyQt4 import QtGui
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterSelection import ParameterSelection
 import subprocess
-from sextante.fusion.FusionAlgorithm import FusionAlgorithm
+from sextante.lidar.fusion.FusionAlgorithm import FusionAlgorithm
 
 class Cover(FusionAlgorithm):
 

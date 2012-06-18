@@ -1,7 +1,7 @@
 import os
 from PyQt4 import QtGui
-from sextante.lastools.LasToolsUtils import LasToolsUtils
-from sextante.lastools.LasToolsAlgorithm import LasToolsAlgorithm
+from sextante.lidar.lastools.LasToolsUtils import LasToolsUtils
+from sextante.lidar.lastools.LasToolsAlgorithm import LasToolsAlgorithm
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputHTML import OutputHTML
 
