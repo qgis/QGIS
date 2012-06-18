@@ -127,14 +127,22 @@ void QgsApplication::init( QString customConfigPath )
   }
   else
   {
+    char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    if ( !prefixPath )
+    {
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
-    setPrefixPath( applicationDirPath(), true );
+      setPrefixPath( applicationDirPath(), true );
 #else
-    QDir myDir( applicationDirPath() );
-    myDir.cdUp();
-    QString myPrefix = myDir.absolutePath();
-    setPrefixPath( myPrefix, true );
+      QDir myDir( applicationDirPath() );
+      myDir.cdUp();
+      QString myPrefix = myDir.absolutePath();
+      setPrefixPath( myPrefix, true );
 #endif
+    }
+    else
+    {
+      setPrefixPath( prefixPath, true );
+    }
   }
 
   if ( !customConfigPath.isEmpty() )
