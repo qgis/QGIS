@@ -71,6 +71,7 @@
 #include <qwt_plot_marker.h>
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
+#include <qwt_plot_zoomer.h>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
@@ -299,6 +300,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   // histogram
   mHistoPicker = NULL;
+  mHistoZoomer = NULL;
   mHistoMarkerMin = NULL;
   mHistoMarkerMax = NULL;
   if ( tabPageHistogram->isEnabled() )
@@ -1392,10 +1394,21 @@ void QgsRasterLayerProperties::refreshHistogram()
     connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelected( const QwtDoublePoint & ) ) );
   }
 
+  // plot zoomer
+  if ( ! mHistoZoomer )
+  {
+    mHistoZoomer = new QwtPlotZoomer( mpPlot->canvas() );
+    mHistoZoomer->setSelectionFlags( QwtPicker::RectSelection | QwtPicker::DragSelection );
+    mHistoZoomer->setTrackerMode( QwtPicker::AlwaysOff );
+    mHistoZoomer->setEnabled( true );
+  }
+
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   // mHistogramProgress->hide();
   stackedWidget2->setCurrentIndex( 0 );
-  mpPlot->canvas()->setCursor( Qt::ArrowCursor );
+  // mpPlot->canvas()->setCursor( Qt::ArrowCursor );
+  // icon from http://findicons.com/icon/169577/14_zoom?id=171427
+  mpPlot->canvas()->setCursor( QCursor( QgisApp::getThemePixmap( "/mIconZoom.png" ) ) );
   on_cboHistoBand_currentIndexChanged( -1 );
   QApplication::restoreOverrideCursor();
 }
@@ -1777,6 +1790,8 @@ void QgsRasterLayerProperties::on_cboHistoBand_currentIndexChanged( int index )
     mHistoPicker->setEnabled( false );
     mHistoPicker->setRubberBandPen( QPen( mHistoColors.at( index + 1 ) ) );
   }
+  if ( mHistoZoomer != NULL )
+    mHistoZoomer->setEnabled( true );
   btnHistoMin->setEnabled( true );
   btnHistoMax->setEnabled( true );
 
@@ -1989,6 +2004,8 @@ void QgsRasterLayerProperties::on_btnHistoMin_toggled()
       btnHistoMax->setChecked( false );
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
+    if ( mHistoZoomer != NULL )
+      mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
     mHistoPicker->setEnabled( btnHistoMin->isChecked() );
   }
 }
@@ -2004,6 +2021,8 @@ void QgsRasterLayerProperties::on_btnHistoMax_toggled()
       btnHistoMin->setChecked( false );
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
+    if ( mHistoZoomer != NULL )
+      mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
     mHistoPicker->setEnabled( btnHistoMax->isChecked() );
   }
 }

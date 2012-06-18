@@ -33,6 +33,7 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QwtPlotPicker;
 class QwtPlotMarker;
+class QwtPlotZoomer;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -176,6 +177,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     // histogram
     QwtPlotPicker* mHistoPicker;
+    QwtPlotZoomer* mHistoZoomer;
     QwtPlotMarker* mHistoMarkerMin;
     QwtPlotMarker* mHistoMarkerMax;
     double mHistoMin;
