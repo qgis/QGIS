@@ -25,6 +25,7 @@ class BatchProcessingDialog(QtGui.QDialog):
         self.alg = alg
         self.algs = None
         self.setupUi()
+        self.algEx = None
 
     def setupUi(self):
         self.resize(800, 500)
