@@ -34,6 +34,7 @@
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
 #include <qgsmaplayerregistry.h>
+#include "qgssinglebandpseudocolorrenderer.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -128,12 +129,33 @@ void TestQgsRasterLayer::isValid()
 
 void TestQgsRasterLayer::pseudoColor()
 {
-  mpRasterLayer->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
-  mpRasterLayer->setColorShadingAlgorithm( QgsRasterLayer::PseudoColorShader );
-  mpRasterLayer->setContrastEnhancementAlgorithm(
-    QgsContrastEnhancement::StretchToMinimumMaximum, false );
-  mpRasterLayer->setMinimumValue( mpRasterLayer->grayBandName(), 0.0, false );
-  mpRasterLayer->setMaximumValue( mpRasterLayer->grayBandName(), 10.0 );
+  QgsRasterShader* rasterShader = new QgsRasterShader();
+  QgsColorRampShader* colorRampShader = new QgsColorRampShader();
+  colorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
+
+  //items to imitate old pseudo color renderer
+  QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+  QgsColorRampShader::ColorRampItem firstItem;
+  firstItem.value = 0.0;
+  firstItem.color = QColor( "#0000ff" );
+  colorRampItems.append( firstItem );
+  QgsColorRampShader::ColorRampItem secondItem;
+  secondItem.value = 3.0;
+  secondItem.color = QColor( "#00ffff" );
+  colorRampItems.append( secondItem );
+  QgsColorRampShader::ColorRampItem thirdItem;
+  thirdItem.value = 6.0;
+  thirdItem.color = QColor( "#ffff00" );
+  colorRampItems.append( thirdItem );
+  QgsColorRampShader::ColorRampItem fourthItem;
+  fourthItem.value = 9.0;
+  fourthItem.color = QColor( "#ff0000" );
+  colorRampItems.append( fourthItem );
+
+  colorRampShader->setColorRampItemList( colorRampItems );
+  rasterShader->setRasterShaderFunction( colorRampShader );
+  QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( mpRasterLayer->dataProvider(), 1, rasterShader );
+  mpRasterLayer->setRenderer( r );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster_pseudo" ) );
 }
