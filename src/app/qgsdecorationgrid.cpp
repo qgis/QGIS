@@ -86,13 +86,13 @@ void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
 void QgsDecorationGrid::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( mNameConfig, "/Style", 0 );
-  mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 0 );
-  mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalY", 0 );
+  mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
+               QgsDecorationGrid::Solid );
+  mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
+  mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalY", 10 );
   mGridOffsetX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetX", 0 );
   mGridOffsetY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetY", 0 );
-  // missing mGridPen, but should use styles anyway
-  mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 0 );
+  mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 3 );
   mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mNameConfig, "/ShowAnnotation", false );
   mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPosition", 0 );
   mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationDirection", 0 );
@@ -104,6 +104,7 @@ void QgsDecorationGrid::projectRead()
   QDomDocument doc;
   QDomElement elem;
   QString xml;
+
   xml = QgsProject::instance()->readEntry( mNameConfig, "/LineSymbol" );
   if ( xml != "" )
   {
@@ -112,9 +113,10 @@ void QgsDecorationGrid::projectRead()
     if ( mLineSymbol )
       delete mLineSymbol;
     mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
-    if ( ! mLineSymbol )
-      mLineSymbol = new QgsLineSymbolV2();
   }
+  if ( ! mLineSymbol )
+    mLineSymbol = new QgsLineSymbolV2();
+
   xml = QgsProject::instance()->readEntry( mNameConfig, "/MarkerSymbol" );
   if ( xml != "" )
   {
@@ -123,10 +125,9 @@ void QgsDecorationGrid::projectRead()
     if ( mMarkerSymbol )
       delete mMarkerSymbol;
     mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
-    if ( ! mMarkerSymbol )
-      mMarkerSymbol = new QgsMarkerSymbolV2();
   }
-
+  if ( ! mMarkerSymbol )
+    mMarkerSymbol = new QgsMarkerSymbolV2();
 }
 
 void QgsDecorationGrid::saveToProject()

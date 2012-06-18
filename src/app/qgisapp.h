@@ -76,6 +76,7 @@ class QgsMessageLogViewer;
 class QgsScaleComboBox;
 
 class QgsDataItem;
+class QgsTileScaleWidget;
 
 #include <QMainWindow>
 #include <QToolBar>
