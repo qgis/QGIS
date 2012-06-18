@@ -118,6 +118,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void histoActionTriggered( QAction* );
     /** Draw the min/max markers on the histogram plot. */
     void updateHistoMarkers();
+    /** Button to compute the histogram, appears when no cached histogram is available. */
+    void on_btnHistoCompute_clicked();
 
   signals:
     /** emitted when changes to layer were saved to update legend */
@@ -181,6 +183,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QwtPlotMarker* mHistoMarkerMax;
     double mHistoMin;
     double mHistoMax;
-    QVector<QColor> mHistoColors;
+    QVector<QColor> mHistoColors; 
+
+    /** \brief Compute the histogram on demand. */
+    bool computeHistogram( bool forceComputeFlag );
 };
 #endif
