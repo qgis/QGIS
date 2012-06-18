@@ -37,6 +37,36 @@ QgsRasterProjector::QgsRasterProjector(
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
 
+  calc();
+}
+
+QgsRasterProjector::QgsRasterProjector(
+  QgsCoordinateReferenceSystem theSrcCRS,
+  QgsCoordinateReferenceSystem theDestCRS,
+  double theMaxSrcXRes, double theMaxSrcYRes,
+  QgsRectangle theExtent )
+    : mSrcCRS( theSrcCRS )
+    , mDestCRS( theDestCRS )
+    , mCoordinateTransform( theDestCRS, theSrcCRS )
+    , mExtent( theExtent )
+    , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+{
+  QgsDebugMsg( "Entered" );
+}
+
+QgsRasterProjector::~QgsRasterProjector()
+{
+  //delete mCoordinateTransform;
+  //delete pHelperTop;
+  //delete pHelperBottom;
+}
+
+void QgsRasterProjector::calc()
+{
+  mCPMatrix.clear();
+  //delete pHelperTop;
+  //delete pHelperBottom;
+
   mDestXRes = mDestExtent.width() / ( mDestCols );
   mDestYRes = mDestExtent.height() / ( mDestRows );
 
@@ -108,11 +138,6 @@ QgsRasterProjector::QgsRasterProjector(
   calcHelper( 0, pHelperTop );
   calcHelper( 1, pHelperBottom );
   mHelperTopRow = 0;
-}
-
-QgsRasterProjector::~QgsRasterProjector()
-{
-  //delete mCoordinateTransform;
 }
 
 void QgsRasterProjector::calcSrcExtent()
@@ -507,4 +532,63 @@ bool QgsRasterProjector::checkRows()
     }
   }
   return true;
+}
+
+void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+{
+  QgsDebugMsg( "Entered" );
+  if ( !mInput ) return 0;
+
+  int bandNumber = 0;
+  if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
+  {
+    return mInput->readBlock( bandNumber, extent, width, height );
+  }
+
+  mDestExtent = extent;
+  mDestRows = height;
+  mDestCols = width;
+  calc();
+
+  QgsDebugMsg( QString( "srcExtent:\n%1" ).arg( srcExtent().toString() ) );
+  QgsDebugMsg( QString( "srcCols = %1 srcRows = %1" ).arg( srcCols() ).arg( srcRows() ) );
+
+  // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
+  if ( srcRows() <= 0 || srcCols() <= 0 )
+  {
+    return 0;
+  }
+
+  void * inputData = mInput->readBlock( bandNumber, srcExtent(), srcCols(), srcRows() );
+
+  if ( !inputData ) return 0;
+
+  // ARGB32 only for now
+  int pixelSize = 4;
+
+  int inputSize = pixelSize * srcCols() * srcRows();
+
+  int outputSize = width * height * pixelSize;
+  void * outputData = malloc( outputSize );
+
+  // TODO: fill by transparent
+
+  int srcRow, srcCol;
+  for ( int i = 0; i < height; ++i )
+  {
+    for ( int j = 0; j < width; ++j )
+    {
+      srcRowCol( i, j, &srcRow, &srcCol );
+      int srcIndex = pixelSize * ( srcRow * mSrcCols + srcCol );
+      int destIndex = pixelSize * ( i * width + j );
+
+      if ( srcIndex >= inputSize || destIndex >= outputSize ) continue; // should not happen
+
+      memcpy(( char* )outputData + destIndex, ( char* )inputData + srcIndex, pixelSize );
+    }
+  }
+
+  free( inputData );
+
+  return outputData;
 }

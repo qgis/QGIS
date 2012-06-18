@@ -30,6 +30,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsrasterface.h"
 
 #include <cmath>
 
@@ -37,7 +38,7 @@
 class QgsPoint;
 
 //class CORE_EXPORT QgsRasterProjector
-class QgsRasterProjector
+class QgsRasterProjector : public QgsRasterFace
 {
 //    Q_OBJECT
   public:
@@ -53,10 +54,15 @@ class QgsRasterProjector
       double theMaxSrcXRes, double theMaxSrcYRes,
       QgsRectangle theExtent
     );
+    QgsRasterProjector(
+      QgsCoordinateReferenceSystem theSrcCRS,
+      QgsCoordinateReferenceSystem theDestCRS,
+      double theMaxSrcXRes, double theMaxSrcYRes,
+      QgsRectangle theExtent
+    );
 
     /** \brief The destructor */
     ~QgsRasterProjector();
-
 
     /** \brief get destination point for _current_ destination position */
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
@@ -76,6 +82,9 @@ class QgsRasterProjector
 
     /** \brief Get source row and column indexes for current source extent and resolution */
     void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
+
+    /** \brief Calculate matrix */
+    void calc();
 
     /** \brief insert rows to matrix */
     void insertRows();
@@ -127,6 +136,8 @@ class QgsRasterProjector
 
     int dstRows() const { return mDestRows; }
     int dstCols() const { return mDestCols; }
+
+    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
   private:
     /** Source CRS */

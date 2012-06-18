@@ -40,11 +40,13 @@ email                : tim at linfiniti.com
 #include "qgscolorrampshader.h"
 
 //renderers
-//#include "qgspalettedrasterrenderer.h"
-//#include "qgsmultibandcolorrenderer.h"
-//#include "qgssinglebandcolordatarenderer.h"
-//#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgssinglebandcolordatarenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
+
+#include "qgsrasterprojector.h"
 
 #include <cstdio>
 #include <cmath>
@@ -825,17 +827,24 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
   if ( mRenderer )
   {
-    //mRenderer->draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-    //if ( mResampleFilter )
-    //{
-    QgsRasterDrawer drawer( mResampleFilter );
+    //QgsRasterDrawer drawer( mRenderer );
+    //QgsRasterDrawer drawer( mResampleFilter );
+
+    double maxSrcXRes = 0;
+    double maxSrcYRes = 0;
+
+    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
+    {
+      maxSrcXRes = mDataProvider->extent().width() / mDataProvider->xSize();
+      maxSrcYRes = mDataProvider->extent().height() / mDataProvider->ySize();
+    }
+
+    QgsRasterProjector projector( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, maxSrcXRes, maxSrcYRes, mDataProvider->extent() );
+
+    projector.setInput( mResampleFilter );
+
+    QgsRasterDrawer drawer( &projector );
     drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-    //}
-    //else
-    //{
-    //  QgsRasterDrawer drawer( mRenderer );
-    //  drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-    //}
   }
 
   QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );
