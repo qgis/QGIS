@@ -2613,13 +2613,72 @@ void QgsRasterLayer::setColorShadingAlgorithm( QString theShaderAlgorithm )
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
 {
-  QList<QgsContrastEnhancement>::iterator myIterator = mContrastEnhancementList.begin();
-  while ( myIterator !=  mContrastEnhancementList.end() )
+  if ( !mRenderer || !mDataProvider )
   {
-    ( *myIterator ).setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
-    ++myIterator;
+    return;
   }
-  mContrastEnhancementAlgorithm = theAlgorithm;
+
+  QString rendererType  = mRenderer->type();
+  if ( rendererType == "singlebandgray" )
+  {
+    QgsSingleBandGrayRenderer* gr = dynamic_cast<QgsSingleBandGrayRenderer*>( mRenderer );
+    if ( gr )
+    {
+      int grayBand = gr->grayBand();
+      if ( grayBand == -1 )
+      {
+        return;
+      }
+      QgsRasterDataProvider::DataType dataType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( grayBand );
+      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )dataType );
+      ce->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
+      ce->setMinimumValue( mDataProvider->minimumValue( grayBand ) );
+      ce->setMaximumValue( mDataProvider->maximumValue( grayBand ) );
+      gr->setContrastEnhancement( ce );
+    }
+  }
+  else if ( rendererType == "multibandcolor" )
+  {
+    QgsMultiBandColorRenderer* cr = dynamic_cast<QgsMultiBandColorRenderer*>( mRenderer );
+    if ( cr )
+    {
+      //red enhancement
+      int redBand = cr->redBand();
+      if ( redBand != -1 )
+      {
+        QgsRasterDataProvider::DataType redType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( redBand );
+        QgsContrastEnhancement* redEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )redType );
+        redEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
+        redEnhancement->setMinimumValue( mDataProvider->minimumValue( redBand ) );
+        redEnhancement->setMaximumValue( mDataProvider->maximumValue( redBand ) );
+        cr->setRedContrastEnhancement( redEnhancement );
+      }
+
+      //green enhancement
+      int greenBand = cr->greenBand();
+      if ( greenBand != -1 )
+      {
+        QgsRasterDataProvider::DataType greenType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( cr->greenBand() );
+        QgsContrastEnhancement* greenEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )greenType );
+        greenEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
+        greenEnhancement->setMinimumValue( mDataProvider->minimumValue( greenBand ) );
+        greenEnhancement->setMaximumValue( mDataProvider->maximumValue( greenBand ) );
+        cr->setGreenContrastEnhancement( greenEnhancement );
+      }
+
+      //blue enhancement
+      int blueBand = cr->blueBand();
+      if ( blueBand != -1 )
+      {
+        QgsRasterDataProvider::DataType blueType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( cr->blueBand() );
+        QgsContrastEnhancement* blueEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )blueType );
+        blueEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
+        blueEnhancement->setMinimumValue( mDataProvider->minimumValue( blueBand ) );
+        blueEnhancement->setMaximumValue( mDataProvider->maximumValue( blueBand ) );
+        cr->setBlueContrastEnhancement( blueEnhancement );
+      }
+    }
+  }
 }
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QString theAlgorithm, bool theGenerateLookupTableFlag )

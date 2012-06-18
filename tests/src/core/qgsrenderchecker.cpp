@@ -140,6 +140,8 @@ bool QgsRenderChecker::runTest( QString theTestName,
   QImage myImage( myExpectedImage.width(),
                   myExpectedImage.height(),
                   QImage::Format_RGB32 );
+  myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
+  myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
   myImage.fill( qRgb( 152, 219, 249 ) );
   QPainter myPainter( &myImage );
   myPainter.setRenderHint( QPainter::Antialiasing );
