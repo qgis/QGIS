@@ -63,51 +63,32 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
 //void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
-  //if ( !mInput || !viewPort || !theQgsMapToPixel )
   if ( !mInput )
   {
     return 0;
   }
 
-  //double oversamplingX, oversamplingY;
-  //startRasterRead( mGrayBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  //if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
-  //{
-  //startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  //}
-
-  //number of cols/rows in output pixels
-  //int nCols = 0;
-  //int nRows = 0;
-  ////number of raster cols/rows with oversampling
-  //int nRasterCols = 0;
-  //int nRasterRows = 0;
-  ////shift to top left point for the raster part
-  //int topLeftCol = 0;
-  //int topLeftRow = 0;
-
   QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mGrayBand );
-  //QgsRasterFace::DataType alphaType = QgsRasterFace::UnknownDataType;
-  //if ( mAlphaBand > 0 )
-  //{
-  //alphaType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
-  //}
+  QgsRasterFace::DataType alphaType = QgsRasterFace::UnknownDataType;
+  if ( mAlphaBand > 0 )
+  {
+    alphaType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+  }
 
   void* rasterData = mInput->readBlock( mGrayBand, extent, width, height );
-  //void* alphaData;
+  void* alphaData;
   double currentAlpha = mOpacity;
-  int grayVal;
+  int grayVal, grayValOrig;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
-  //if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
-  //{
-  //readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
-  //&alphaData, topLeftCol, topLeftRow );
-  //}
-  //else if ( mAlphaBand > 0 )
-  //{
-  //alphaData = rasterData;
-  //}
+  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+  {
+    alphaData = mInput->readBlock( mAlphaBand, extent, width, height );
+  }
+  else if ( mAlphaBand > 0 )
+  {
+    alphaData = rasterData;
+  }
 
   //create image
   QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
@@ -119,7 +100,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     imageScanLine = ( QRgb* )( img.scanLine( i ) );
     for ( int j = 0; j < width; ++j )
     {
-      grayVal = readValue( rasterData, rasterType, currentRasterPos );
+      grayValOrig = grayVal = readValue( rasterData, rasterType, currentRasterPos );
 
       //alpha
       currentAlpha = mOpacity;

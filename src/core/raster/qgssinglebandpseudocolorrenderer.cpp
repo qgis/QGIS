@@ -66,28 +66,13 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
     return 0;
   }
 
-  //double oversamplingX, oversamplingY;
-  //QgsRasterFace::DataType transparencyType = QgsRasterFace::UnknownDataType;
-  //if ( mAlphaBand > 0 )
-  //{
-  //transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
-  //}
-  //startRasterRead( mBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  ////Read alpha band if necessary
-  //if ( mAlphaBand > 0 && mAlphaBand != mBand )
-  //{
-  //startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  //}
+  QgsRasterFace::DataType transparencyType = QgsRasterFace::UnknownDataType;
+  if ( mAlphaBand > 0 )
+  {
+    transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+  }
 
-  //number of cols/rows in output pixels
-  int nCols = 0;
-  int nRows = 0;
-  //number of raster cols/rows with oversampling
-  int nRasterCols = 0;
-  int nRasterRows = 0;
-  //shift to top left point for the raster part
-  int topLeftCol = 0;
-  int topLeftRow = 0;
+  void* transparencyData;
   void* transparencyData = 0;
   double currentOpacity = mOpacity;
   QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBand );
@@ -101,15 +86,14 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
   //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
   bool hasTransparency = false;
 
-  //if ( mAlphaBand > 0 && mAlphaBand != mBand )
-  //{
-  //readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
-  //&transparencyData, topLeftCol, topLeftRow );
-  //}
-  //else if ( mAlphaBand == mBand )
-  //{
-  //transparencyData = rasterData;
-  //}
+  if ( mAlphaBand > 0 && mAlphaBand != mBand )
+  {
+    transparencyData = mInput->readBlock( mAlphaBand, extent, width, height );
+  }
+  else if ( mAlphaBand == mBand )
+  {
+    transparencyData = rasterData;
+  }
 
   //create image
   QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
@@ -142,10 +126,10 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
         {
           currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
         }
-        //if ( mAlphaBand > 0 )
-        //{
-        //currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
-        //}
+        if ( mAlphaBand > 0 )
+        {
+          currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
+        }
 
         imageScanLine[j] = qRgba( currentOpacity * red, currentOpacity * green, currentOpacity * blue, currentOpacity * 255 );
       }

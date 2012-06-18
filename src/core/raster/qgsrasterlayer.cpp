@@ -117,6 +117,7 @@ QgsRasterLayer::QgsRasterLayer(
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
     , mRenderer( 0 )
+    , mResampleFilter( 0 )
 {
   QgsDebugMsg( "Entered" );
 
@@ -189,6 +190,7 @@ QgsRasterLayer::~QgsRasterLayer()
   mValid = false;
   delete mDataProvider;
   delete mRenderer;
+  delete mResampleFilter;
 }
 
 //////////////////////////////////////////////////////////
@@ -824,8 +826,16 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   if ( mRenderer )
   {
     //mRenderer->draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-    QgsRasterDrawer drawer( mRenderer );
+    //if ( mResampleFilter )
+    //{
+    QgsRasterDrawer drawer( mResampleFilter );
     drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    //}
+    //else
+    //{
+    //  QgsRasterDrawer drawer( mRenderer );
+    //  drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    //}
   }
 
   QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );
@@ -2062,8 +2072,27 @@ void QgsRasterLayer::setTransparentBandName( QString const & )
 
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
 {
+  QgsDebugMsg( "Entered" );
   delete mRenderer;
   mRenderer = renderer;
+
+  if ( !mResampleFilter )
+  {
+    mResampleFilter = new QgsRasterResampleFilter( mRenderer );
+  }
+  else
+  {
+    mResampleFilter->setInput( mRenderer );
+  }
+}
+
+// not sure if we want it
+void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
+{
+  QgsDebugMsg( "Entered" );
+  delete mResampleFilter;
+  mResampleFilter = resampleFilter;
+  mResampleFilter->setInput( mRenderer );
 }
 
 void QgsRasterLayer::showProgress( int theValue )
@@ -2233,6 +2262,60 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
       }
     }
   }
+
+  //resampler
+  delete mResampleFilter;
+  mResampleFilter = new QgsRasterResampleFilter( mRenderer );
+
+  //max oversampling
+  QDomElement resampleElem = layer_node.firstChildElement( "rasterresampler" );
+  if ( !resampleElem.isNull() )
+  {
+    mResampleFilter->readXML( resampleElem );
+  }
+  /*
+    if ( mResampleFilter )
+    {
+      QDomElement maxOversamplingElem = mnl.firstChildElement( "maxOversampling" );
+      if ( !maxOversamplingElem.isNull() )
+      {
+        bool conversion;
+        double maxOversampling = maxOversamplingElem.text().toDouble( &conversion );
+        if ( conversion )
+        {
+          mResampleFilter->setMaxOversampling( maxOversampling );
+        }
+      }
+    }
+
+    QDomElement zoomedInResamplerElem = mnl.firstChildElement( "zoomedInResampler" );
+    if ( mResampleFilter && !zoomedInResamplerElem.isNull() )
+    {
+      QgsRasterResampler* zoomedInResampler = 0;
+      QString zoomedInResamplerType = zoomedInResamplerElem.text();
+      if ( zoomedInResamplerType == "bilinear" )
+      {
+        zoomedInResampler = new QgsBilinearRasterResampler();
+      }
+      else if ( zoomedInResamplerType == "cubic" )
+      {
+        zoomedInResampler = new QgsCubicRasterResampler();
+      }
+      mResampleFilter->setZoomedInResampler( zoomedInResampler );
+    }
+    QDomElement zoomedOutResamplerElem = mnl.firstChildElement( "zoomedOutResampler" );
+    if ( mResampleFilter && !zoomedOutResamplerElem.isNull() )
+    {
+      QgsRasterResampler* zoomedOutResampler = 0;
+      QString zoomedOutResamplerType = zoomedOutResamplerElem.text();
+      if ( zoomedOutResamplerType == "bilinear" )
+      {
+        zoomedOutResampler = new QgsBilinearRasterResampler();
+      }
+      mResampleFilter->setZoomedOutResampler( zoomedOutResampler );
+    }
+  */
+
   return true;
 } //readSymbology
 
@@ -2365,9 +2448,16 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 {
   Q_UNUSED( errorMessage );
   QDomElement layerElem = layer_node.toElement();
+
   if ( mRenderer )
   {
     mRenderer->writeXML( document, layerElem );
+  }
+
+  if ( mResampleFilter )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    mResampleFilter->writeXML( document, layerElem );
   }
 
   return true;

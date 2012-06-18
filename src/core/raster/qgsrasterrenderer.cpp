@@ -40,28 +40,6 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterFace* input, const QString& type 
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
-  //remove remaining memory in partinfos
-  //QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.begin();
-  //for ( ; partIt != mRasterPartInfos.end(); ++partIt )
-  //{
-  //CPLFree( partIt.value().data );
-  //}
-
-  delete mZoomedInResampler;
-  delete mZoomedOutResampler;
-  delete mRasterTransparency;
-}
-
-void QgsRasterRenderer::setZoomedInResampler( QgsRasterResampler* r )
-{
-  delete mZoomedInResampler;
-  mZoomedInResampler = r;
-}
-
-void QgsRasterRenderer::setZoomedOutResampler( QgsRasterResampler* r )
-{
-  delete mZoomedOutResampler;
-  mZoomedOutResampler = r;
 }
 
 /*
@@ -335,16 +313,7 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
   rasterRendererElem.setAttribute( "type", mType );
   rasterRendererElem.setAttribute( "opacity", QString::number( mOpacity ) );
   rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
-  rasterRendererElem.setAttribute( "maxOversampling", QString::number( mMaxOversampling ) );
   rasterRendererElem.setAttribute( "invertColor", mInvertColor );
-  if ( mZoomedInResampler )
-  {
-    rasterRendererElem.setAttribute( "zoomedInResampler", mZoomedInResampler->type() );
-  }
-  if ( mZoomedOutResampler )
-  {
-    rasterRendererElem.setAttribute( "zoomedOutResampler", mZoomedOutResampler->type() );
-  }
 
   if ( mRasterTransparency )
   {
@@ -362,24 +331,7 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
   mType = rendererElem.attribute( "type" );
   mOpacity = rendererElem.attribute( "opacity", "1.0" ).toDouble();
   mAlphaBand = rendererElem.attribute( "alphaBand", "-1" ).toInt();
-  mMaxOversampling = rendererElem.attribute( "maxOversampling", "2.0" ).toDouble();
   mInvertColor = rendererElem.attribute( "invertColor", "0" ).toInt();
-
-  QString zoomedInResamplerType = rendererElem.attribute( "zoomedInResampler" );
-  if ( zoomedInResamplerType == "bilinear" )
-  {
-    mZoomedInResampler = new QgsBilinearRasterResampler();
-  }
-  else if ( zoomedInResamplerType == "cubic" )
-  {
-    mZoomedInResampler = new QgsCubicRasterResampler();
-  }
-
-  QString zoomedOutResamplerType = rendererElem.attribute( "zoomedOutResampler" );
-  if ( zoomedOutResamplerType == "bilinear" )
-  {
-    mZoomedOutResampler = new QgsBilinearRasterResampler();
-  }
 
   //todo: read mRasterTransparency
   QDomElement rasterTransparencyElem = rendererElem.firstChildElement( "rasterTransparency" );

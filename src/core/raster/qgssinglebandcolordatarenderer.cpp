@@ -51,25 +51,12 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
     return 0;
   }
 
-  double oversamplingX, oversamplingY;
-  //startRasterRead( mBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-
-  //number of cols/rows in output pixels
-  int nCols = 0;
-  int nRows = 0;
-  //number of raster cols/rows with oversampling
-  int nRasterCols = 0;
-  int nRasterRows = 0;
-  //shift to top left point for the raster part
-  int topLeftCol = 0;
-  int topLeftRow = 0;
   int currentRasterPos;
 
   //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
   bool hasTransparency = false;
 
   QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBand );
-
 
   void* rasterData = mInput->readBlock( bandNo, extent, width, height );
 
@@ -81,8 +68,8 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
     scanLine = img.scanLine( i );
     if ( !hasTransparency )
     {
-      memcpy( scanLine, &((( uint* )rasterData )[currentRasterPos] ), nCols * 4 );
-      currentRasterPos += nRasterCols;
+      memcpy( scanLine, &((( uint* )rasterData )[currentRasterPos] ), width * 4 );
+      currentRasterPos += width;
     }
     else
     {

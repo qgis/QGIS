@@ -101,7 +101,6 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   return r;
 }
 
-//void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   if ( !mInput )
@@ -171,31 +170,16 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
     bandData.insert( *bandIt, defaultPointer );
-    //startRasterRead( *bandIt, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
   }
 
   void* redData = 0;
   void* greenData = 0;
   void* blueData = 0;
   void* alphaData = 0;
-  //number of cols/rows in output pixels
-  int nCols = 0;
-  int nRows = 0;
-  //number of raster cols/rows with oversampling
-  int nRasterCols = 0;
-  int nRasterRows = 0;
-  //shift to top left point for the raster part
-  int topLeftCol = 0;
-  int topLeftRow = 0;
 
-  bool readSuccess = true;
-
-  //QSet<int>::const_iterator bandIt = bands.constBegin();
   bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    //readSuccess = readSuccess && readNextRasterPart( *bandIt, oversamplingX, oversamplingY, viewPort, nCols, nRows,
-    //              nRasterCols, nRasterRows, &bandData[*bandIt], topLeftCol, topLeftRow );
     bandData[*bandIt] =  mInput->readBlock( *bandIt, extent, width, height );
     if ( !bandData[*bandIt] ) return 0;
   }
