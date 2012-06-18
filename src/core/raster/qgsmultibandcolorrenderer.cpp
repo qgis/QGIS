@@ -118,18 +118,18 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
                     && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
                     && !mInvertColor );
   */
-  QgsRasterDataProvider::DataType redType = QgsRasterDataProvider::UnknownDataType;
+  QgsRasterFace::DataType redType = QgsRasterFace::UnknownDataType;
 
   if ( mRedBand > 0 )
   {
     redType = ( QgsRasterFace::DataType )mInput->dataType( mRedBand );
   }
-  QgsRasterDataProvider::DataType greenType = QgsRasterDataProvider::UnknownDataType;
+  QgsRasterFace::DataType greenType = QgsRasterFace::UnknownDataType;
   if ( mGreenBand > 0 )
   {
     greenType = ( QgsRasterFace::DataType )mInput->dataType( mGreenBand );
   }
-  QgsRasterDataProvider::DataType blueType = QgsRasterDataProvider::UnknownDataType;
+  QgsRasterFace::DataType blueType = QgsRasterFace::UnknownDataType;
   if ( mBlueBand > 0 )
   {
     blueType = ( QgsRasterFace::DataType )mInput->dataType( mBlueBand );

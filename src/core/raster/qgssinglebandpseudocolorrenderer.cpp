@@ -72,7 +72,6 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
     transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
   }
 
-  void* transparencyData;
   void* transparencyData = 0;
   double currentOpacity = mOpacity;
   QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBand );

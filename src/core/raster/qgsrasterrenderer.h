@@ -60,6 +60,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterFace
     void setInvertColor( bool invert ) { mInvertColor = invert; }
     bool invertColor() const { return mInvertColor; }
 
+    /**Get symbology items if provided by renderer*/
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
+
     virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const = 0;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/

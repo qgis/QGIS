@@ -29,7 +29,7 @@ class QgsRasterRenderer
     virtual ~QgsRasterRenderer();
 
     virtual QString type() const;
-    virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
+    virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     bool usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const;
 
@@ -44,17 +44,6 @@ class QgsRasterRenderer
 
     void setInvertColor( bool invert );
     bool invertColor() const;
-
-    /**Set resampler for zoomed in scales. Takes ownership of the object*/
-    void setZoomedInResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedInResampler();
-
-    /**Set resampler for zoomed out scales. Takes ownership of the object*/
-    void setZoomedOutResampler( QgsRasterResampler* r );
-    const QgsRasterResampler* zoomedOutResampler() const;
-
-    void setMaxOversampling( double os );
-    double maxOversampling() const;
 
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
@@ -76,7 +65,7 @@ class QgsPalettedRasterRenderer: QgsRasterRenderer
     ~QgsPalettedRasterRenderer();
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     /**Returns number of colors*/
     int nColors() const;
@@ -101,7 +90,7 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     int redBand() const;
     void setRedBand( int band );
@@ -137,7 +126,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
-    virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
@@ -159,7 +148,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
-    virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     int grayBand() const;
     void setGrayBand( int band );
@@ -183,7 +172,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
-    virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+    void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 };
