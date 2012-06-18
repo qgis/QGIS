@@ -330,8 +330,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     QMenu* menu = new QMenu( this );
     menu->setSeparatorsCollapsible( false );
     btnHistoActions->setMenu( menu );
+    QActionGroup* group;
 
-    QActionGroup* group = new QActionGroup( this );
+    group = new QActionGroup( this );
     group->setExclusive( false );
     connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
     QAction* action;
@@ -364,6 +365,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     action->setData( QVariant( "Load apply all" ) );
     action->setCheckable( true );
     action->setChecked( true );
+    menu->addAction( action );
+
+    menu->addSeparator( );
+    group = new QActionGroup( this );
+    connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
+    action = new QAction( tr( "Compute Histogram" ), group );
+    action->setData( QVariant( "Compute Histogram" ) );
     menu->addAction( action );
   }
 
@@ -1194,16 +1202,85 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
   }
 }
 
-void QgsRasterLayerProperties::refreshHistogram()
+void QgsRasterLayerProperties::on_btnHistoCompute_clicked()
 {
-#if !defined(QWT_VERSION) || QWT_VERSION<0x060000
-  mpPlot->clear();
-#endif
-  // mHistogramProgress->show();
+// Histogram computation can be called either by clicking the "Compute Histogram" button
+// which is only visible if there is no cached histogram or by calling the
+// "Compute Histogram" action. Due to limitations in the gdal api, it is not possible
+// to re-calculate the histogramif it has already been calculated
+  QgsDebugMsg( "Entered" );
+  computeHistogram( true );
+  refreshHistogram();
+}
+
+bool QgsRasterLayerProperties::computeHistogram( bool forceComputeFlag )
+{
+  const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
+  bool myIgnoreOutOfRangeFlag = true;
+  bool myThoroughBandScanFlag = false;
+  int myBandCountInt = mRasterLayer->bandCount();
+
+  // if forceComputeFlag = false make sure raster has cached histogram, else return false
+  if ( ! forceComputeFlag )
+  {
+    for ( int myIteratorInt = 1;
+          myIteratorInt <= myBandCountInt;
+          ++myIteratorInt )
+    {
+      if ( ! mRasterLayer->hasCachedHistogram( myIteratorInt, BINCOUNT ) )
+      {
+        QgsDebugMsg( QString( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
+        return false;
+      }
+    }
+  }
+
+  // compute histogram
   stackedWidget2->setCurrentIndex( 1 );
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  for ( int myIteratorInt = 1;
+        myIteratorInt <= myBandCountInt;
+        ++myIteratorInt )
+  {
+    mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+  }
+
+  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
+  // mHistogramProgress->hide();
+  stackedWidget2->setCurrentIndex( 0 );
+  QApplication::restoreOverrideCursor();
+
+  return true;
+}
+
+void QgsRasterLayerProperties::refreshHistogram()
+{
+  // Explanation:
+  // We use the gdal histogram creation routine is called for each selected
+  // layer. Currently the hist is hardcoded to create 256 bins. Each bin stores
+  // the total number of cells that fit into the range defined by that bin.
+  //
+  // The graph routine below determines the greatest number of pixels in any given
+  // bin in all selected layers, and the min. It then draws a scaled line between min
+  // and max - scaled to image height. 1 line drawn per selected band
+  //
+  const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
+  int myBandCountInt = mRasterLayer->bandCount();
+
   QgsDebugMsg( "entered." );
+
+  if ( ! computeHistogram( false ) )
+  {
+    QgsDebugMsg( QString( "raster does not have cached histo" ) );
+    stackedWidget2->setCurrentIndex( 2 );
+    return;
+  }
+
+#if !defined(QWT_VERSION) || QWT_VERSION<0x060000
+  mpPlot->clear();
+#endif
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
   mpPlot->setTitle( QObject::tr( "Raster Histogram" ) );
@@ -1216,20 +1293,6 @@ void QgsRasterLayerProperties::refreshHistogram()
   // add a grid
   QwtPlotGrid * myGrid = new QwtPlotGrid();
   myGrid->attach( mpPlot );
-  // Explanation:
-  // We use the gdal histogram creation routine is called for each selected
-  // layer. Currently the hist is hardcoded
-  // to create 256 bins. Each bin stores the total number of cells that
-  // fit into the range defined by that bin.
-  //
-  // The graph routine below determines the greatest number of pixels in any given
-  // bin in all selected layers, and the min. It then draws a scaled line between min
-  // and max - scaled to image height. 1 line drawn per selected band
-  //
-  const int BINCOUNT = 256;
-  bool myIgnoreOutOfRangeFlag = true;
-  bool myThoroughBandScanFlag = false;
-  int myBandCountInt = mRasterLayer->bandCount();
 
   // make colors list
   mHistoColors.clear();
@@ -1327,7 +1390,7 @@ void QgsRasterLayerProperties::refreshHistogram()
         ++myIteratorInt )
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
-    mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
     mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
@@ -1937,6 +2000,10 @@ void QgsRasterLayerProperties::histoActionTriggered( QAction* action )
       leHistoMax->blockSignals( false );
       updateHistoMarkers();
     }
+  }
+  else if ( actionName == "Compute Histogram" )
+  {
+    on_btnHistoCompute_clicked();
   }
   else
   {

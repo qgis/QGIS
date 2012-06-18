@@ -1424,6 +1424,15 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
 /*
  * @param theBandNoInt - which band to compute the histogram for
  * @param theBinCountInt - how many 'bins' to categorise the data into
+ */
+bool QgsRasterLayer::hasCachedHistogram( int theBandNo, int theBinCount )
+{
+  return mDataProvider->hasCachedHistogram( theBandNo, theBinCount );
+}
+
+/*
+ * @param theBandNoInt - which band to compute the histogram for
+ * @param theBinCountInt - how many 'bins' to categorise the data into
  * @param theIgnoreOutOfRangeFlag - whether to ignore values that are out of range (default=true)
  * @param theThoroughBandScanFlag - whether to visit each cell when computing the histogram (default=false)
  */

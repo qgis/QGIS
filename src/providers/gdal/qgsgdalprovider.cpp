@@ -49,7 +49,6 @@
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
 #include "cpl_conv.h"
-#include "cpl_string.h"
 
 
 static QString PROVIDER_KEY = "gdal";
@@ -1421,7 +1420,33 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
   return subLayers;
 }
 
-void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
+bool QgsGdalProvider::hasCachedHistogram( int theBandNo, int theBinCount )
+{
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+  if ( ! myGdalBand )
+    return false;
+
+  // get default histo
+  double myMinVal, myMaxVal;
+  QgsRasterBandStats theBandStats = bandStatistics( theBandNo );
+  double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
+  myMinVal = theBandStats.minimumValue - 0.1*myerval;
+  myMaxVal = theBandStats.maximumValue + 0.1*myerval;
+  int *myHistogramArray=0;
+  CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal, 
+                                            &theBinCount, &myHistogramArray, false,
+                                            NULL, NULL );
+  if( myHistogramArray )
+    VSIFree( myHistogramArray );
+
+  // if there was any error/warning assume the histogram is not valid or non-existent
+  if ( myError != CE_None )
+    return false;
+  return true;
+
+}
+
+void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
@@ -1457,10 +1482,11 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
     myProg.type = ProgressHistogram;
     myProg.provider = this;
     double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
+
     GDALGetRasterHistogram( myGdalBand, theBandStats.minimumValue - 0.1*myerval,
                             theBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
                             theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
-                            &myProg ); //this is the arg for our custome gdal progress callback
+                            &myProg ); //this is the arg for our custom gdal progress callback
 
     for ( int myBin = 0; myBin < theBinCount; myBin++ )
     {
