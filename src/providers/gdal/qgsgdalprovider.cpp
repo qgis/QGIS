@@ -1467,12 +1467,12 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
       if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
       {
         theBandStats.histogramVector->push_back( 0 );
-        QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
+        // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
       }
       else
       {
         theBandStats.histogramVector->push_back( myHistogramArray[myBin] );
-        QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
+        // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
       }
     }
 

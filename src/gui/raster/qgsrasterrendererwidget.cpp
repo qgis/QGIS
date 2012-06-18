@@ -41,3 +41,64 @@ QString QgsRasterRendererWidget::displayBandName( int band ) const
   }
   return name;
 }
+
+bool QgsRasterRendererWidget::bandMinMax( LoadMinMaxAlgo loadAlgo, int band, double* minMaxValues )
+{
+  if ( !mRasterLayer )
+  {
+    return false;
+  }
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  if ( !provider )
+  {
+    return false;
+  }
+  if ( band < 0 )
+  {
+    return false;
+  }
+
+  if ( loadAlgo == Estimate )
+  {
+    minMaxValues[0] = provider->minimumValue( band );
+    minMaxValues[1] = provider->maximumValue( band );
+  }
+  else if ( loadAlgo == Actual )
+  {
+    QgsRasterBandStats rasterBandStats = mRasterLayer->bandStatistics( band );
+    minMaxValues[0] = rasterBandStats.minimumValue;
+    minMaxValues[1] = rasterBandStats.maximumValue;
+  }
+  else if ( loadAlgo == CurrentExtent )
+  {
+    mRasterLayer->computeMinimumMaximumFromLastExtent( band, minMaxValues );
+  }
+  else
+  {
+    return false;
+  }
+  return true;
+}
+
+bool QgsRasterRendererWidget::bandMinMaxFromStdDev( double stdDev, int band, double* minMaxValues )
+{
+  if ( !mRasterLayer )
+  {
+    return false;
+  }
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
+  if ( !provider )
+  {
+    return false;
+  }
+  if ( band < 0 )
+  {
+    return false;
+  }
+
+  QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( band );
+  minMaxValues[0] = myRasterBandStats.mean - ( stdDev * myRasterBandStats.stdDev );
+  minMaxValues[1] = myRasterBandStats.mean + ( stdDev * myRasterBandStats.stdDev );
+
+  return true;
+}

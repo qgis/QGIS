@@ -34,6 +34,12 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
+    QString min( int index = 0 ) { Q_UNUSED( index ); return mMinLineEdit->text(); }
+    QString max( int index = 0 ) { Q_UNUSED( index ); return mMaxLineEdit->text(); }
+    void setMin( QString value, int index = 0 ) { Q_UNUSED( index ); mMinLineEdit->setText( value ); }
+    void setMax( QString value, int index = 0 ) { Q_UNUSED( index ); mMaxLineEdit->setText( value ); }
+    int selectedBand( int index = 0 ) { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
+
   private slots:
     void on_mLoadPushButton_clicked();
 };

@@ -82,36 +82,27 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
 
 void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
 {
-  if ( !mRasterLayer )
-  {
-    return;
-  }
-  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
-  if ( !provider )
-  {
-    return;
-  }
-
   int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
-  double minVal = 0;
-  double maxVal = 0;
+  double minMaxValues[2];
+  bool ok = false;
+
   if ( mEstimateRadioButton->isChecked() )
   {
-    minVal = provider->minimumValue( band );
-    maxVal = provider->maximumValue( band );
+    ok = bandMinMax( Estimate, band, minMaxValues );
   }
   else if ( mActualRadioButton->isChecked() )
   {
-    QgsRasterBandStats rasterBandStats = mRasterLayer->bandStatistics( band );
-    minVal = rasterBandStats.minimumValue;
-    maxVal = rasterBandStats.maximumValue;
+    ok = bandMinMax( Actual, band, minMaxValues );
   }
   else if ( mCurrentExtentRadioButton->isChecked() )
   {
-    double minMax[2];
-    mRasterLayer->computeMinimumMaximumFromLastExtent( band, minMax );
-    minVal = minMax[0];
-    maxVal = minMax[1];
+    ok = bandMinMax( CurrentExtent, band, minMaxValues );
+  }
+
+  if ( ok )
+  {
+    mMinLineEdit->setText( QString::number( minMaxValues[0] ) );
+    mMaxLineEdit->setText( QString::number( minMaxValues[1] ) );
   }
   else if ( mUseStdDevRadioButton->isChecked() )
   {
@@ -122,11 +113,9 @@ void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
   }
   else
   {
-    return;
+    mMinLineEdit->clear();
+    mMaxLineEdit->clear();
   }
-
-  mMinLineEdit->setText( QString::number( minVal ) );
-  mMaxLineEdit->setText( QString::number( maxVal ) );
 }
 
 void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* r )

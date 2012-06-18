@@ -31,6 +31,8 @@ class QgsRasterLayer;
 class QgsMapToolEmitPoint;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
+class QwtPlotPicker;
+class QwtPlotMarker;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -100,6 +102,23 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
+    // histogram
+
+    /** Used when the histogram band selector changes, or when tab is loaded. */
+    void on_cboHistoBand_currentIndexChanged( int );
+    /** Applies the selected min/max values to the renderer widget. */
+    void applyHistoMin( );
+    void applyHistoMax( );
+    /** Button to activate picking of the min/max value on the graph. */
+    void on_btnHistoMin_toggled();
+    void on_btnHistoMax_toggled();
+    /** Called when a selection has been made using the plot picker. */
+    void histoPickerSelected( const QwtDoublePoint & );
+    /** Various actions that are stored in btnHistoActions. */
+    void histoActionTriggered( QAction* );
+    /** Draw the min/max markers on the histogram plot. */
+    void updateHistoMarkers();
+
   signals:
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
@@ -154,5 +173,13 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;
+
+    // histogram
+    QwtPlotPicker* mHistoPicker;
+    QwtPlotMarker* mHistoMarkerMin;
+    QwtPlotMarker* mHistoMarkerMax;
+    double mHistoMin;
+    double mHistoMax;
+    QVector<QColor> mHistoColors;
 };
 #endif
