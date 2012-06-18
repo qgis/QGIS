@@ -743,7 +743,7 @@ void QgsIdentifyResults::featureDeleted( QgsFeatureId fid )
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
-    if ( featItem && featItem->data( 0, Qt::UserRole ).toString() == FID_TO_STRING( fid ) )
+    if ( featItem && STRING_TO_FID( featItem->data( 0, Qt::UserRole ) ) == fid )
     {
       delete mHighlights.take( featItem );
       delete featItem;
@@ -774,7 +774,7 @@ void QgsIdentifyResults::attributeValueChanged( QgsFeatureId fid, int idx, const
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
-    if ( featItem && featItem->data( 0, Qt::UserRole ).toString() == FID_TO_STRING( fid ) )
+    if ( featItem && STRING_TO_FID( featItem->data( 0, Qt::UserRole ) ) == fid )
     {
       if ( featItem->data( 0, Qt::DisplayRole ).toString() == vlayer->displayField() )
         featItem->setData( 1, Qt::DisplayRole, val );
@@ -808,7 +808,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  QgsFeatureId fid = featItem->data( 0, Qt::UserRole ).toInt();
+  QgsFeatureId fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
 
   QgsFeature feat;
   if ( !layer->featureAtId( fid, feat, true, false ) )
@@ -843,7 +843,7 @@ void QgsIdentifyResults::zoomToFeature()
   if ( !featItem )
     return;
 
-  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
 
   QgsFeature feat;
   if ( ! layer->featureAtId( fid, feat, true, false ) )
@@ -881,7 +881,7 @@ void QgsIdentifyResults::featureForm()
   if ( !featItem )
     return;
 
-  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
   int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;
