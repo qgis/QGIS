@@ -29,10 +29,26 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     QgsRasterRendererWidget( QgsRasterLayer* layer ) { mRasterLayer = layer; }
     virtual ~QgsRasterRendererWidget() {}
 
+    enum LoadMinMaxAlgo
+    {
+      Estimate,
+      Actual,
+      CurrentExtent
+    };
+
     virtual QgsRasterRenderer* renderer() = 0;
 
     void setRasterLayer( QgsRasterLayer* layer ) { mRasterLayer = layer; }
     const QgsRasterLayer* rasterLayer() const { return mRasterLayer; }
+
+    virtual QString min( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
+    virtual QString max( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
+    virtual void setMin( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
+    virtual void setMax( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
+    virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
+
+    bool bandMinMax( LoadMinMaxAlgo loadAlgo, int band, double *values );
+    bool bandMinMaxFromStdDev( double stdDev, int band, double *values );
 
   protected:
     QgsRasterLayer* mRasterLayer;
