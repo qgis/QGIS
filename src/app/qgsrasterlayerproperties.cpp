@@ -374,13 +374,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   // set current tab after everything has been initialized
   tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
-  // show histogram tab
-  int myHistogramTab = 5;
-  if ( tabBar->currentIndex() == myHistogramTab )
-  {
-    refreshHistogram();
-  }
-
 } // QgsRasterLayerProperties ctor
 
 
@@ -1444,7 +1437,7 @@ void QgsRasterLayerProperties::refreshHistogram()
   // subtract -0.5 to prevent rounding errors
   // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
   mpPlot->setAxisScale( QwtPlot::xBottom,
-                        mHistoMin - 0.5, 
+                        mHistoMin - 0.5,
                         mHistoMax + 0.5 );
 
   mpPlot->replot();
