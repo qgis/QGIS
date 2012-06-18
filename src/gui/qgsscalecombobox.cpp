@@ -36,6 +36,7 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent )
   addItem( "1:500" );
 
   setInsertPolicy( QComboBox::NoInsert );
+  setCompleter( 0 );
 }
 
 QgsScaleComboBox::~QgsScaleComboBox()
