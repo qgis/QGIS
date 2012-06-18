@@ -203,6 +203,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
+    //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
+
     double noDataValue() const;
     void computeMinMax( int bandNo );
     double minimumValue( int bandNo ) const;

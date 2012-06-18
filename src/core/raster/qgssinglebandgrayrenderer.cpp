@@ -22,8 +22,8 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand ):
-    QgsRasterRenderer( provider, "singlebandgray" ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
+QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterFace* input, int grayBand ):
+    QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
 {
 }
 
@@ -32,7 +32,7 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
-QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
+QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterFace* input )
 {
   if ( elem.isNull() )
   {
@@ -40,14 +40,14 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   }
 
   int grayBand = elem.attribute( "grayBand", "-1" ).toInt();
-  QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( provider, grayBand );
+  QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( input, grayBand );
   r->readXML( elem );
 
   QDomElement contrastEnhancementElem = elem.firstChildElement( "contrastEnhancement" );
   if ( !contrastEnhancementElem.isNull() )
   {
     QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
-          provider->dataType( grayBand ) ) ) ;
+          input->dataType( grayBand ) ) ) ;
     ce->readXML( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }
@@ -60,115 +60,113 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
   mContrastEnhancement = ce;
 }
 
-void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+//void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
-  if ( !p || !mProvider || !viewPort || !theQgsMapToPixel )
+  //if ( !mInput || !viewPort || !theQgsMapToPixel )
+  if ( !mInput )
   {
-    return;
+    return 0;
   }
 
-  double oversamplingX, oversamplingY;
-  startRasterRead( mGrayBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
-  {
-    startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  }
+  //double oversamplingX, oversamplingY;
+  //startRasterRead( mGrayBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
+  //if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+  //{
+  //startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
+  //}
 
   //number of cols/rows in output pixels
-  int nCols = 0;
-  int nRows = 0;
-  //number of raster cols/rows with oversampling
-  int nRasterCols = 0;
-  int nRasterRows = 0;
-  //shift to top left point for the raster part
-  int topLeftCol = 0;
-  int topLeftRow = 0;
-  QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGrayBand );
-  QgsRasterDataProvider::DataType alphaType = QgsRasterDataProvider::UnknownDataType;
-  if ( mAlphaBand > 0 )
-  {
-    alphaType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
-  }
-  void* rasterData;
-  void* alphaData = 0;
+  //int nCols = 0;
+  //int nRows = 0;
+  ////number of raster cols/rows with oversampling
+  //int nRasterCols = 0;
+  //int nRasterRows = 0;
+  ////shift to top left point for the raster part
+  //int topLeftCol = 0;
+  //int topLeftRow = 0;
+
+  QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mGrayBand );
+  //QgsRasterFace::DataType alphaType = QgsRasterFace::UnknownDataType;
+  //if ( mAlphaBand > 0 )
+  //{
+  //alphaType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+  //}
+
+  void* rasterData = mInput->readBlock( mGrayBand, extent, width, height );
+  //void* alphaData;
   double currentAlpha = mOpacity;
   int grayVal;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
+  //if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+  //{
+  //readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
+  //&alphaData, topLeftCol, topLeftRow );
+  //}
+  //else if ( mAlphaBand > 0 )
+  //{
+  //alphaData = rasterData;
+  //}
 
-  while ( readNextRasterPart( mGrayBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
-                              &rasterData, topLeftCol, topLeftRow ) )
+  //create image
+  QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  QRgb* imageScanLine = 0;
+  int currentRasterPos = 0;
+
+  for ( int i = 0; i < height; ++i )
   {
-    if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+    imageScanLine = ( QRgb* )( img.scanLine( i ) );
+    for ( int j = 0; j < width; ++j )
     {
-      readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
-                          &alphaData, topLeftCol, topLeftRow );
-    }
-    else if ( mAlphaBand > 0 )
-    {
-      alphaData = rasterData;
-    }
+      grayVal = readValue( rasterData, rasterType, currentRasterPos );
 
-
-    //create image
-    QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
-    QRgb* imageScanLine = 0;
-    int currentRasterPos = 0;
-
-    for ( int i = 0; i < nRasterRows; ++i )
-    {
-      imageScanLine = ( QRgb* )( img.scanLine( i ) );
-      for ( int j = 0; j < nRasterCols; ++j )
+      //alpha
+      currentAlpha = mOpacity;
+      if ( mRasterTransparency )
       {
-        grayVal = readValue( rasterData, rasterType, currentRasterPos );
-
-        //alpha
-        currentAlpha = mOpacity;
-        if ( mRasterTransparency )
-        {
-          currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
-        }
-        if ( mAlphaBand > 0 )
-        {
-          currentAlpha *= ( readValue( alphaData, alphaType, currentRasterPos ) / 255.0 );
-        }
-
-        if ( mContrastEnhancement )
-        {
-          if ( !mContrastEnhancement->isValueInDisplayableRange( grayVal ) )
-          {
-            imageScanLine[ j ] = myDefaultColor;
-            ++currentRasterPos;
-            continue;
-          }
-          grayVal = mContrastEnhancement->enhanceContrast( grayVal );
-        }
-
-        if ( mInvertColor )
-        {
-          grayVal = 255 - grayVal;
-        }
-
-        if ( doubleNear( currentAlpha, 1.0 ) )
-        {
-          imageScanLine[j] = qRgba( grayVal, grayVal, grayVal, 255 );
-        }
-        else
-        {
-          imageScanLine[j] = qRgba( currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * 255 );
-        }
-        ++currentRasterPos;
+        currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
       }
+      if ( mAlphaBand > 0 )
+      {
+        currentAlpha *= ( readValue( alphaData, alphaType, currentRasterPos ) / 255.0 );
+      }
+
+      if ( mContrastEnhancement )
+      {
+        if ( !mContrastEnhancement->isValueInDisplayableRange( grayVal ) )
+        {
+          imageScanLine[ j ] = myDefaultColor;
+          ++currentRasterPos;
+          continue;
+        }
+        grayVal = mContrastEnhancement->enhanceContrast( grayVal );
+      }
+
+      if ( mInvertColor )
+      {
+        grayVal = 255 - grayVal;
+      }
+
+      if ( doubleNear( currentAlpha, 1.0 ) )
+      {
+        imageScanLine[j] = qRgba( grayVal, grayVal, grayVal, 255 );
+      }
+      else
+      {
+        imageScanLine[j] = qRgba( currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * 255 );
+      }
+      ++currentRasterPos;
     }
-
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow, nCols, nRows, oversamplingX, oversamplingY );
   }
 
-  stopRasterRead( mGrayBand );
-  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
-  {
-    stopRasterRead( mAlphaBand );
-  }
+  VSIFree( rasterData );
+
+  // TODO: howto get image data without memcpy?
+  // TODO: byteCount() added in 4.6, QGIS requirement is Qt >= 4.4.0
+  void * data = VSIMalloc( img.byteCount() );
+
+  return memcpy( data, img.bits(), img.byteCount() );
 }
 
 void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const

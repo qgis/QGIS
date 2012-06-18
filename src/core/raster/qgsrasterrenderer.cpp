@@ -31,7 +31,8 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, const QString& type ): mProvider( provider ),
+//QgsRasterRenderer::QgsRasterRenderer( QgsRasterFace* input, const QString& type ): mInput( input ),
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterFace* input, const QString& type ): QgsRasterFace( input ),
     mType( type ), mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ), mOpacity( 1.0 ), mRasterTransparency( 0 ),
     mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
 {
@@ -40,11 +41,11 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, const QSt
 QgsRasterRenderer::~QgsRasterRenderer()
 {
   //remove remaining memory in partinfos
-  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.begin();
-  for ( ; partIt != mRasterPartInfos.end(); ++partIt )
-  {
-    CPLFree( partIt.value().data );
-  }
+  //QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.begin();
+  //for ( ; partIt != mRasterPartInfos.end(); ++partIt )
+  //{
+  //CPLFree( partIt.value().data );
+  //}
 
   delete mZoomedInResampler;
   delete mZoomedOutResampler;
@@ -63,9 +64,10 @@ void QgsRasterRenderer::setZoomedOutResampler( QgsRasterResampler* r )
   mZoomedOutResampler = r;
 }
 
+/*
 void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY )
 {
-  if ( !viewPort || !mapToPixel || !mProvider )
+  if ( !viewPort || !mapToPixel || !mInput )
   {
     return;
   }
@@ -78,13 +80,13 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    QgsRectangle providerExtent = mProvider->extent();
+    QgsRectangle providerExtent = mInput->extent();
     if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
     {
       QgsCoordinateTransform t( viewPort->mSrcCRS, viewPort->mDestCRS );
       providerExtent = t.transformBoundingBox( providerExtent );
     }
-    double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
+    double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mInput->xSize() );
     oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
   }
 
@@ -103,7 +105,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   oversamplingX = (( double )pInfo.nCols * oversampling ) / viewPort->drawableAreaXDim;
   oversamplingY = (( double )pInfo.nRows * oversampling ) / viewPort->drawableAreaYDim;
 
-  int totalMemoryUsage = pInfo.nCols * oversamplingX * pInfo.nRows * oversamplingY * mProvider->dataTypeSize( bandNumber );
+  int totalMemoryUsage = pInfo.nCols * oversamplingX * pInfo.nRows * oversamplingY * mInput->dataTypeSize( bandNumber );
   int parts = totalMemoryUsage / 100000000 + 1;
   int nPartsPerDimension = sqrt(( double ) parts );
   pInfo.nColsPerPart = pInfo.nCols / nPartsPerDimension;
@@ -147,7 +149,7 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX
   //read data block
   nCols = qMin( pInfo.nColsPerPart, pInfo.nCols - pInfo.currentCol );
   nRows = qMin( pInfo.nRowsPerPart, pInfo.nRows - pInfo.currentRow );
-  int typeSize = mProvider->dataTypeSize( bandNumber ) / 8;
+  int typeSize = mInput->dataTypeSize( bandNumber ) / 8;
 
   //get subrectangle
   QgsRectangle viewPortExtent = viewPort->mDrawnExtent;
@@ -160,7 +162,7 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX
   if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
   {
     pInfo.prj = new QgsRasterProjector( viewPort->mSrcCRS,
-                                        viewPort->mDestCRS, blockRect, nRows, nCols, 0, 0, mProvider->extent() );
+                                        viewPort->mDestCRS, blockRect, nRows, nCols, 0, 0, mInput->extent() );
 
     // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
     if ( pInfo.prj->srcRows() <= 0 || pInfo.prj->srcCols() <= 0 )
@@ -183,8 +185,10 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX
     nColsRaster = nCols * oversamplingX;
     nRowsRaster = nRows * oversamplingY;
   }
-  pInfo.data = VSIMalloc( typeSize * nColsRaster *  nRowsRaster );
-  mProvider->readBlock( bandNumber, blockRect, nColsRaster, nRowsRaster, pInfo.data );
+  //pInfo.data = VSIMalloc( typeSize * nColsRaster *  nRowsRaster );
+  //mInput->readBlock( bandNumber, blockRect, nColsRaster, nRowsRaster, pInfo.data );
+  pInfo.data = mInput->readBlock( bandNumber, blockRect, nColsRaster, nRowsRaster );
+
   *rasterData = pInfo.data;
   topLeftCol = pInfo.currentCol;
   topLeftRow = pInfo.currentRow;
@@ -219,16 +223,17 @@ void QgsRasterRenderer::removePartInfo( int bandNumber )
     mRasterPartInfos.remove( bandNumber );
   }
 }
+*/
 
 bool QgsRasterRenderer::usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const
 {
   //transparency is always used if on-the-fly reprojection is enabled
   bool reprojectionEnabled = ( srcSRS.isValid() && dstSRS.isValid() && srcSRS != dstSRS );
-  if ( !mProvider || reprojectionEnabled )
+  if ( !mInput || reprojectionEnabled )
   {
     return true;
   }
-  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mProvider->noDataValue() ) ) || !doubleNear( mOpacity, 1.0 ) );
+  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mInput->noDataValue() ) ) || !doubleNear( mOpacity, 1.0 ) );
 }
 
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
@@ -237,6 +242,7 @@ void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )
   mRasterTransparency = t;
 }
 
+/*
 void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,
                                    int nCols, int nRows, double oversamplingX, double oversamplingY ) const
 {
@@ -317,6 +323,7 @@ void QgsRasterRenderer::projectImage( const QImage& srcImg, QImage& dstImage, Qg
     }
   }
 }
+*/
 
 void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const
 {

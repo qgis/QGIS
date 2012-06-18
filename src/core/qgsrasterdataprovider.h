@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsdataprovider.h"
+#include "qgsrasterface.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
 #include "qgscoordinatereferencesystem.h"
@@ -47,7 +48,7 @@ class QByteArray;
  *         QgsVectorDataProvider, and does not yet make
  *         sense for Raster layers.
  */
-class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
+class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRasterFace
 {
 
     Q_OBJECT
@@ -327,6 +328,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** read block of data using give extent and size */
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
+
+    /** Read block of data using given extent and size. */
+    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );

@@ -41,6 +41,8 @@
 #include "qgsrastershader.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershaderfunction.h"
+#include "qgsrasterface.h"
+#include "qgsrasterdrawer.h"
 #include "qgsrasterdataprovider.h"
 
 //

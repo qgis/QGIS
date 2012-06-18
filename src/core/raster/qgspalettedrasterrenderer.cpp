@@ -23,9 +23,9 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber,
+QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterFace* input, int bandNumber,
     QColor* colorArray, int nColors ):
-    QgsRasterRenderer( provider, "paletted" ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
+    QgsRasterRenderer( input, "paletted" ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
 {
 }
 
@@ -34,7 +34,7 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
   delete[] mColors;
 }
 
-QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, QgsRasterDataProvider* provider )
+QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, QgsRasterFace* input )
 {
   if ( elem.isNull() )
   {
@@ -62,7 +62,7 @@ QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, Q
       colors[value] = QColor( entryElem.attribute( "color", "#000000" ) );
     }
   }
-  QgsRasterRenderer* r = new QgsPalettedRasterRenderer( provider, bandNumber, colors, nColors );
+  QgsRasterRenderer* r = new QgsPalettedRasterRenderer( input, bandNumber, colors, nColors );
   r->readXML( elem );
   return r;
 }
@@ -81,109 +81,103 @@ QColor* QgsPalettedRasterRenderer::colors() const
   return colorArray;
 }
 
-void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+//void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
-  if ( !p || !mProvider || !viewPort || !theQgsMapToPixel )
+  if ( !mInput )
   {
-    return;
+    return 0;
   }
 
-  double oversamplingX, oversamplingY;
-  QgsRasterDataProvider::DataType transparencyType = QgsRasterDataProvider::UnknownDataType;
-  if ( mAlphaBand > 0 )
-  {
-    transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
-  }
-  startRasterRead( mBandNumber, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
+  //double oversamplingX, oversamplingY;
+  //QgsRasterFace::DataType transparencyType = QgsRasterFace::UnknownDataType;
+  //if ( mAlphaBand > 0 )
+  //{
+  //transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+  //}
+  //startRasterRead( mBandNumber, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
 
-  //Read alpha band if necessary
-  if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
-  {
-    startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
-  }
+  ////Read alpha band if necessary
+  //if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
+  //{
+  //startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
+  //}
 
-  //number of cols/rows in output pixels
-  int nCols = 0;
-  int nRows = 0;
-  //number of raster cols/rows with oversampling
-  int nRasterCols = 0;
-  int nRasterRows = 0;
-  //shift to top left point for the raster part
-  int topLeftCol = 0;
-  int topLeftRow = 0;
-  int currentRasterPos = 0;
-  QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBandNumber );
-  void* rasterData;
+  ////number of cols/rows in output pixels
+  //int nCols = 0;
+  //int nRows = 0;
+  ////number of raster cols/rows with oversampling
+  //int nRasterCols = 0;
+  //int nRasterRows = 0;
+  ////shift to top left point for the raster part
+  //int topLeftCol = 0;
+  //int topLeftRow = 0;
+  //int currentRasterPos = 0;
+  QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBandNumber );
+  void* rasterData = mInput->readBlock( bandNo, extent, width, height );
   double currentOpacity = mOpacity;
 
   //rendering is faster without considering user-defined transparency
-  bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
+  // TODO
+  bool hasTransparency = false;
+  //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
   void* transparencyData = 0;
 
-  while ( readNextRasterPart( mBandNumber, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
-                              &rasterData, topLeftCol, topLeftRow ) )
+  //if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
+  //{
+  //readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
+  //&transparencyData, topLeftCol, topLeftRow );
+  //}
+  //else if ( mAlphaBand == mBandNumber )
+  //{
+  //transparencyData = rasterData;
+  //}
+
+  //create image
+  QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  QRgb* imageScanLine = 0;
+  int val = 0;
+  int currentRasterPos = 0;
+
+  for ( int i = 0; i < height; ++i )
   {
-    if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
+    imageScanLine = ( QRgb* )( img.scanLine( i ) );
+    for ( int j = 0; j < width; ++j )
     {
-      readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
-                          &transparencyData, topLeftCol, topLeftRow );
-    }
-    else if ( mAlphaBand == mBandNumber )
-    {
-      transparencyData = rasterData;
-    }
-
-    //create image
-    QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
-    QRgb* imageScanLine = 0;
-    int val = 0;
-    currentRasterPos = 0;
-
-    for ( int i = 0; i < nRasterRows; ++i )
-    {
-      imageScanLine = ( QRgb* )( img.scanLine( i ) );
-      for ( int j = 0; j < nRasterCols; ++j )
+      val = readValue( rasterData, rasterType, currentRasterPos );
+      if ( !hasTransparency )
       {
-        val = readValue( rasterData, rasterType, currentRasterPos );
-        if ( !hasTransparency )
+        imageScanLine[j] = mColors[ val ].rgba();
+      }
+      else
+      {
+        currentOpacity = mOpacity;
+        if ( mRasterTransparency )
         {
-          imageScanLine[j] = mColors[ val ].rgba();
+          currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
+        }
+        //if ( mAlphaBand > 0 )
+        //{
+        //currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
+        //}
+        QColor& currentColor = mColors[val];
+
+        if ( mInvertColor )
+        {
+          imageScanLine[j] = qRgba( currentOpacity * currentColor.blue(), currentOpacity * currentColor.green(), currentOpacity * currentColor.red(), currentOpacity * 255 );
         }
         else
         {
-          currentOpacity = mOpacity;
-          if ( mRasterTransparency )
-          {
-            currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
-          }
-          if ( mAlphaBand > 0 )
-          {
-            currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
-          }
-          QColor& currentColor = mColors[val];
-
-          if ( mInvertColor )
-          {
-            imageScanLine[j] = qRgba( currentOpacity * currentColor.blue(), currentOpacity * currentColor.green(), currentOpacity * currentColor.red(), currentOpacity * 255 );
-          }
-          else
-          {
-            imageScanLine[j] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
-          }
+          imageScanLine[j] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
         }
-        ++currentRasterPos;
       }
+      ++currentRasterPos;
     }
-
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow, nCols, nRows, oversamplingX, oversamplingY );
   }
 
-  //stop raster reading
-  stopRasterRead( mBandNumber );
-  if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
-  {
-    stopRasterRead( mAlphaBand );
-  }
+  VSIFree( rasterData );
+  void * data = VSIMalloc( img.byteCount() );
+  return memcpy( data, img.bits(), img.byteCount() );
 }
 
 void QgsPalettedRasterRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const

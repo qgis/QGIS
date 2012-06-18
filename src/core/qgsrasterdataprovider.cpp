@@ -93,6 +93,16 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
   free( mySrcData );
 }
 
+void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+{
+  QgsDebugMsg( QString( "bandNo = %1 width = %2 height = %3" ).arg( bandNo ).arg( width ).arg( height ) );
+
+  // TODO: replace VSIMalloc, it is GDAL function
+  void * data = VSIMalloc( dataTypeSize( bandNo ) * width * height );
+  readBlock( bandNo, extent, width, height, data );
+
+  return data;
+}
 
 QgsRasterDataProvider::QgsRasterDataProvider(): mDpi( -1 )
 {

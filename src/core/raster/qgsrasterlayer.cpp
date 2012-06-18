@@ -40,10 +40,10 @@ email                : tim at linfiniti.com
 #include "qgscolorrampshader.h"
 
 //renderers
-#include "qgspalettedrasterrenderer.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgssinglebandcolordatarenderer.h"
-#include "qgssinglebandpseudocolorrenderer.h"
+//#include "qgspalettedrasterrenderer.h"
+//#include "qgsmultibandcolorrenderer.h"
+//#include "qgssinglebandcolordatarenderer.h"
+//#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 
 #include <cstdio>
@@ -823,7 +823,9 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
   if ( mRenderer )
   {
-    mRenderer->draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    //mRenderer->draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    QgsRasterDrawer drawer( mRenderer );
+    drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
   }
 
   QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );

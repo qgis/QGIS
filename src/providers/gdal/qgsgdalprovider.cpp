@@ -805,6 +805,11 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   return;
 }
 
+//void * QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+//{
+//  return 0;
+//}
+
 // this is old version which was using GDALWarpOperation, unfortunately
 // it may be very slow on large datasets
 #if 0
