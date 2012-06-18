@@ -453,7 +453,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
       {
         QString type = layer.type;
         QString srid = layer.srid;
-        if ( !searchGeometryColumnsOnly && !layer.geometryColName.isNull() )
+        if ( !layer.geometryColName.isNull() )
         {
           if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
           {
