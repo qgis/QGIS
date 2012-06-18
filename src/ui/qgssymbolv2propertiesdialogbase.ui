@@ -216,7 +216,11 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QTreeView" name="layersTree"/>
+    <widget class="QTreeView" name="layersTree">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

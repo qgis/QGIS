@@ -26,6 +26,7 @@ class QgsVectorLayer;
 class SymbolLayerItem;
 
 #include <QMap>
+#include <QStandardItemModel>
 
 
 class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSymbolV2Properties
@@ -60,17 +61,15 @@ class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSy
     void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
     void loadSymbol();
 
-    void populateLayerTypes();
+    void populateLayerTypes( QgsSymbolV2* symbol );
 
     void updateUi();
 
-    void loadPropertyWidgets();
+    //void loadPropertyWidgets();
 
     void updateSymbolLayerWidget( QgsSymbolLayerV2* layer );
     void updateLockButton();
 
-    int currentRowIndex();
-    int currentLayerIndex();
     SymbolLayerItem* currentLayerItem();
     QgsSymbolLayerV2* currentLayer();
 
@@ -82,6 +81,8 @@ class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSy
     QMap<QString, QgsSymbolLayerV2Widget*> mWidgets;
 
     const QgsVectorLayer* mVectorLayer;
+
+    QStandardItemModel* model;
 };
 
 #endif

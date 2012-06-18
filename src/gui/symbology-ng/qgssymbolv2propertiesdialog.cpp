@@ -34,7 +34,7 @@
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
-// Hybrid iitem which may represent a symbol or a layer
+// Hybrid item which may represent a symbol or a layer
 // Check using item->isLayer()
 class SymbolLayerItem : public QStandardItem
 {
@@ -86,8 +86,14 @@ class SymbolLayerItem : public QStandardItem
     {
       if ( mIsLayer )
         return NULL;
-
       return mSymbol;
+    }
+
+    QgsSymbolLayerV2* layer()
+    {
+      if ( mIsLayer )
+        return mLayer;
+      return NULL;
     }
 
     QVariant data( int role ) const
@@ -100,9 +106,9 @@ class SymbolLayerItem : public QStandardItem
         {
           switch( mSymbol->type() )
           {
-            case QgsSymbolV2::Marker : return "Marker Symbol";
-            case QgsSymbolV2::Fill   : return "Fill Symbol";
-            case QgsSymbolV2::Line   : return "Line Symbol";
+            case QgsSymbolV2::Marker : return "Symbol: Marker";
+            case QgsSymbolV2::Fill   : return "Symbol: Fill";
+            case QgsSymbolV2::Line   : return "Symbol: Line";
             default: return "Symbol";
           }
         }
@@ -190,8 +196,8 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, c
   // (should be probably moved somewhere else)
   _initWidgetFunctions();
 
+  model = new QStandardItemModel();
   // Set the symbol
-  QStandardItemModel* model = new QStandardItemModel( this );
   layersTree->setModel( model );
   layersTree->setHeaderHidden( true );
 
@@ -207,14 +213,9 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, c
   connect( btnRemoveLayer, SIGNAL( clicked() ), this, SLOT( removeLayer() ) );
   connect( btnLock, SIGNAL( clicked() ), this, SLOT( lockLayer() ) );
 
-  populateLayerTypes();
-  connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
-
-  loadPropertyWidgets();
-
   updateUi();
 
-  // set first layer as active
+  // set symbol as active item in the tree
   QModelIndex newIndex = layersTree->model()->index( 0, 0 );
   layersTree->setCurrentIndex( newIndex );
 }
@@ -242,15 +243,14 @@ void QgsSymbolV2PropertiesDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerIt
 
 void QgsSymbolV2PropertiesDialog::loadSymbol()
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
   model->clear();
   loadSymbol( mSymbol, static_cast<SymbolLayerItem*>( model->invisibleRootItem() ) );
 }
 
 
-void QgsSymbolV2PropertiesDialog::populateLayerTypes()
+void QgsSymbolV2PropertiesDialog::populateLayerTypes( QgsSymbolV2 *symbol )
 {
-  QStringList types = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( mSymbol->type() );
+  QStringList types = QgsSymbolLayerV2Registry::instance()->symbolLayersForType( symbol->type() );
 
   cboLayerType->clear();
   for ( int i = 0; i < types.count(); i++ )
@@ -271,7 +271,6 @@ void QgsSymbolV2PropertiesDialog::populateLayerTypes()
 
 void QgsSymbolV2PropertiesDialog::updateUi()
 {
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
   QModelIndex currentIdx =  layersTree->currentIndex();
   if ( !currentIdx.isValid() )
     return;
@@ -307,113 +306,97 @@ void QgsSymbolV2PropertiesDialog::updateLayerPreview()
   SymbolLayerItem* item = currentLayerItem();
   if ( item )
     item->updatePreview();
-
   // update also preview of the whole symbol
   updatePreview();
 }
 
 void QgsSymbolV2PropertiesDialog::updateSymbolLayerWidget( QgsSymbolLayerV2* layer )
 {
-  QString layerType = layer->layerType();
-
-  // stop updating from the original widget
   if ( stackedWidget->currentWidget() != pageDummy )
+  {
+    // stop updating from the original widget
     disconnect( stackedWidget->currentWidget(), SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
-
-  // update active properties widget
-  if ( mWidgets.contains( layerType ) )
-  {
-    stackedWidget->setCurrentWidget( mWidgets[layerType] );
-    mWidgets[layerType]->setSymbolLayer( layer );
-
-    // start recieving updates from widget
-    connect( mWidgets[layerType], SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
+    stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
-  else
-  {
-    // use dummy widget instead
-    stackedWidget->setCurrentWidget( pageDummy );
-  }
-}
 
-void QgsSymbolV2PropertiesDialog::loadPropertyWidgets()
-{
   QgsSymbolLayerV2Registry* pReg = QgsSymbolLayerV2Registry::instance();
 
-  QStringList layerTypes = pReg->symbolLayersForType( mSymbol->type() );
+  QString layerType = layer->layerType();
 
-  // also load line symbol layers for fill symbols
-  if ( mSymbol->type() == QgsSymbolV2::Fill )
-    layerTypes += pReg->symbolLayersForType( QgsSymbolV2::Line );
-
-  for ( int i = 0; i < layerTypes.count(); i++ )
+  QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( layerType );
+  if ( am )
   {
-    QString layerType = layerTypes[i];
-    QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( layerType );
-    if ( am == NULL ) // check whether the metadata is assigned
-      continue;
-
     QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget( mVectorLayer );
-    if ( w == NULL ) // check whether the function returns correct widget
-      continue;
-
-    mWidgets[layerType] = w;
-    stackedWidget->addWidget( w );
+    if ( w )
+    {
+      w->setSymbolLayer( layer );
+      stackedWidget->addWidget( w );
+      stackedWidget->setCurrentWidget( w );
+      // start recieving updates from widget
+      connect( w , SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
+      return;
+    }
   }
-}
 
-int QgsSymbolV2PropertiesDialog::currentRowIndex()
-{
-  QModelIndex idx = layersTree->selectionModel()->currentIndex();
-  if ( !idx.isValid() )
-    return -1;
-  return idx.row();
-}
-
-int QgsSymbolV2PropertiesDialog::currentLayerIndex()
-{
-  return layersTree->model()->rowCount() - currentRowIndex() - 1;
+  // When anything is not right
+  stackedWidget->setCurrentWidget( pageDummy );
 }
 
 SymbolLayerItem* QgsSymbolV2PropertiesDialog::currentLayerItem()
 {
-  int index = currentRowIndex();
-  if ( index < 0 )
+  QModelIndex idx = layersTree->currentIndex();
+  if ( !idx.isValid() )
     return NULL;
 
-  QStandardItemModel* model = qobject_cast<QStandardItemModel*>( layersTree->model() );
-  if ( model == NULL )
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
+  if ( !item->isLayer() )
     return NULL;
-  QStandardItem* item = model->item( index );
-  if ( item->type() != SymbolLayerItemType )
-    return NULL;
-  return static_cast<SymbolLayerItem*>( item );
+
+  return item;
 }
 
 QgsSymbolLayerV2* QgsSymbolV2PropertiesDialog::currentLayer()
 {
-  int idx = currentLayerIndex();
-  if ( idx < 0 )
+  QModelIndex idx = layersTree->currentIndex();
+  if ( !idx.isValid() )
     return NULL;
 
-  return mSymbol->symbolLayer( idx );
+  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
+  if ( item->isLayer() )
+    return item->layer();
+
+  return NULL;
 }
 
 
 void QgsSymbolV2PropertiesDialog::layerChanged()
 {
+  // We donot want slot to fire while we load compatible layertypes
+  disconnect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
   updateUi();
 
-  // get layer info
-  QgsSymbolLayerV2* layer = currentLayer();
-  if ( !layer )
+  SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
+  if ( currentItem == NULL )
     return;
 
+  // FIXME get the current symbol and populate the saved symbols of that type in the widget area
+  if ( !currentItem->isLayer() )
+  {
+    cboLayerType->clear();
+    stackedWidget->removeWidget( stackedWidget->currentWidget() );
+    return;
+  }
+
+  SymbolLayerItem *symbolItem = static_cast<SymbolLayerItem*>( currentItem->parent() );
+  populateLayerTypes( symbolItem->symbol() );
+
+  QgsSymbolLayerV2 *layer = currentItem->layer();
   // update layer type combo box
   int idx = cboLayerType->findData( layer->layerType() );
   cboLayerType->setCurrentIndex( idx );
 
   updateSymbolLayerWidget( layer );
+  connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
 
   updateLockButton();
 }
@@ -447,21 +430,32 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
   QgsSymbolLayerV2* newLayer = am->createSymbolLayer( QgsStringMap() );
   if ( newLayer == NULL )
     return;
-  mSymbol->changeSymbolLayer( currentLayerIndex(), newLayer );
 
-  updateSymbolLayerWidget( newLayer );
-
+  SymbolLayerItem *item = currentLayerItem();
+  // remove previos childs if any
+  if ( layer->subSymbol() )
+  {
+    item->removeRow( 0 );
+  }
   // update symbol layer item
-  SymbolLayerItem* item = currentLayerItem();
   item->setLayer( newLayer );
   // When it is a marker symbol
   if ( newLayer->subSymbol() )
   {
-    SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
+    SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol() );
+    SymbolLayerItem *sublayer = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
+    subsymbol->appendRow( sublayer );
     item->appendRow( subsymbol );
   }
-  item->updatePreview();
 
+  // Change the symbol at last to avoid deleting item's layer
+  QgsSymbolV2* symbol = static_cast<SymbolLayerItem*>( item->parent() )->symbol();
+  int layerIdx = item->parent()->rowCount() - item->row() - 1;
+  symbol->changeSymbolLayer( layerIdx, newLayer );
+
+  updateSymbolLayerWidget( newLayer );
+
+  item->updatePreview();
   updatePreview();
 }
 
@@ -469,8 +463,6 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
 void QgsSymbolV2PropertiesDialog::addLayer()
 {
   QModelIndex idx = layersTree->currentIndex();
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
-
   if ( !idx.isValid() )
     return;
 
@@ -491,20 +483,17 @@ void QgsSymbolV2PropertiesDialog::addLayer()
 
   layersTree->setCurrentIndex( model->indexFromItem( newLayerItem ) );
   updateUi();
+  updatePreview();
 }
 
 
 void QgsSymbolV2PropertiesDialog::removeLayer()
 {
-  QModelIndex idx = layersTree->currentIndex();
-  int row = idx.row();
-
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
-  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
-
+  SymbolLayerItem *item = currentLayerItem();
+  int row = item->row();
   SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( item->parent() );
-  int layerIdx = parent->rowCount() - row - 1; // IMPORTANT
 
+  int layerIdx = parent->rowCount() - row - 1; // IMPORTANT
   QgsSymbolV2* parentSymbol = parent->symbol();
   QgsSymbolLayerV2 *tmpLayer = parentSymbol->takeSymbolLayer( layerIdx );
 
@@ -515,10 +504,10 @@ void QgsSymbolV2PropertiesDialog::removeLayer()
   layersTree->setCurrentIndex( newIdx );
 
   updateUi();
+  updatePreview();
   //finally delete the removed layer pointer
   delete tmpLayer;
 }
-
 
 void QgsSymbolV2PropertiesDialog::moveLayerDown()
 {
@@ -532,18 +521,12 @@ void QgsSymbolV2PropertiesDialog::moveLayerUp()
 
 void QgsSymbolV2PropertiesDialog::moveLayerByOffset( int offset )
 {
-
-  QModelIndex idx = layersTree->currentIndex();
-  int row = idx.row();
-
-  QStandardItemModel *model = qobject_cast<QStandardItemModel*>( layersTree->model() );
-  SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
-
-  if( !item->isLayer() )
+  SymbolLayerItem *item = currentLayerItem();
+  if( item == NULL )
     return;
+  int row = item->row();
 
   SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( item->parent() );
-
   QgsSymbolV2* parentSymbol = parent->symbol();
 
   int layerIdx = parent->rowCount() - row - 1;
@@ -558,9 +541,9 @@ void QgsSymbolV2PropertiesDialog::moveLayerByOffset( int offset )
   QModelIndex newIdx = rowItems[ 0 ]->index();
   layersTree->setCurrentIndex( newIdx );
 
+  updatePreview();
   updateUi();
 }
-
 
 void QgsSymbolV2PropertiesDialog::lockLayer()
 {
@@ -569,7 +552,6 @@ void QgsSymbolV2PropertiesDialog::lockLayer()
     return;
   layer->setLocked( btnLock->isChecked() );
 }
-
 
 void QgsSymbolV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
 {
