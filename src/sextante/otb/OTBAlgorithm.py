@@ -12,7 +12,7 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
-#~ from sextante.core.Sextante import Sextante
+from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.outputs.OutputFactory import OutputFactory
 from sextante.otb.OTBUtils import OTBUtils
@@ -69,7 +69,7 @@ class OTBAlgorithm(GeoAlgorithm):
                 elif line.startswith("Extent"):
                     self.extentParamNames = line[6:].strip().split(" ")
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
-                    self.roiFile = SextanteUtils.getTempFilename()
+                    self.roiFile = SextanteUtils.getTempFilename('tif')
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
@@ -98,7 +98,7 @@ class OTBAlgorithm(GeoAlgorithm):
                 commands.append(param.name)
                 if self.roiFile:
                     commands.append(self.roiFile)
-                    self.roiInput = param.name
+                    self.roiInput = param.value
                 else:
                     commands.append(param.value)
             elif isinstance(param, ParameterMultipleInput):
@@ -121,15 +121,20 @@ class OTBAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             commands.append(out.name)
             commands.append(out.value)
-
+        
         if self.roiFile:
-            args = {"in":       self.roiInput,
-                    "out":      self.roiFile,
-                    "startx":   self.roiValues[0],
-                    "starty":   self.roiValues[1],
-                    "sizex":    self.roiValues[2],
-                    "sizey":    self.roiValues[3]}
-            Sextante.runalg("ExtractROI", *args)
+            startX, startY = float(self.roiValues[0]), float(self.roiValues[0])
+            sizeX = float(self.roiValues[2]) - startX
+            sizeY = float(self.roiValues[3]) - startY
+            helperCommands = [
+                    path + os.sep + "otbcli_ExtractROI",
+                    "-in",       self.roiInput,
+                    "-out",      self.roiFile,
+                    "-startx",   startX,
+                    "-starty",   startY,
+                    "-sizex",    sizeX,
+                    "-sizey",    sizeY]
+            OTBUtils.executeOtb(helperCommands, progress)
 
         loglines = []
         loglines.append("OTB execution command")

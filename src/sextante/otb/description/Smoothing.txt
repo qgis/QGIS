@@ -10,3 +10,4 @@ ParameterNumber|-type.mean.radius|Radius|None|None|2
 ParameterNumber|-type.gaussian.radius|Radius|None|None|2
 ParameterNumber|-type.anidif.timestep|Time Step|None|None|0.125
 ParameterNumber|-type.anidif.nbiter|Nb Iterations|None|None|10
+Extent
