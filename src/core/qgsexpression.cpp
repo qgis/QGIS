@@ -114,7 +114,7 @@ const char* QgsExpression::BinaryOgcOperatorText[] =
 {
   "Or", "And",
   "PropertyIsEqualTo", "PropertyIsNotEqualTo",
-  "PropertyIsGreaterThanOrEqualTo", "PropertyIsLessThanOrEqualTo",
+  "PropertyIsLessThanOrEqualTo", "PropertyIsGreaterThanOrEqualTo",
   "PropertyIsLessThan", "PropertyIsGreaterThan",
   "", "PropertyIsLike", "", "", "",
   "Add", "Sub", "Mul", "Div", "", "",
