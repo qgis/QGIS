@@ -240,6 +240,11 @@ public:
       @note added in 1.4 */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
+    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType, double tolerance );
+
+    bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
+                               bool& avoidIntersection /Out/ );
+
   protected:
 
     /** Set error message from read/write operation

@@ -1621,7 +1621,81 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   return false;
 }
 
+void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType, double tolerance )
+{
+  //soon...
+}
+
+bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,
+                                       bool& avoidIntersection )
+{
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  int idx = layerIdList.indexOf( layerId );
+  if ( idx == -1 )
+  {
+    return false;
+  }
+
+  //make sure all lists are long enough
+  int minListEntries = idx + 1;
+  if ( layerIdList.size() < minListEntries || enabledList.size() < minListEntries || snapTypeList.size() < minListEntries ||
+       toleranceUnitList.size() < minListEntries || toleranceList.size() < minListEntries )
+  {
+    return false;
+  }
+
+  //enabled
+  enabled = enabledList.at( idx ) == "enabled";
+
+  //snap type
+  QString snapType = snapTypeList.at( idx );
+  if ( snapType == "to_segment" )
+  {
+    type = QgsSnapper::SnapToSegment;
+  }
+  else if ( snapType == "to_vertex_and_segment" )
+  {
+    type = QgsSnapper::SnapToVertexAndSegment;
+  }
+  else //to vertex
+  {
+    type = QgsSnapper::SnapToVertex;
+  }
+
+  //units
+  if ( toleranceUnitList.at( idx ) == "1" )
+  {
+    units = QgsTolerance::Pixels;
+  }
+  else
+  {
+    units = QgsTolerance::MapUnits;
+  }
+
+  //tolerance
+  tolerance = toleranceList.at( idx ).toDouble();
+
+  //avoid intersection
+  avoidIntersection = ( avoidIntersectionList.indexOf( layerId ) != -1 );
+
+  return true;
+}
+
+void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& toleranceUnitList, QStringList& toleranceList,
+                               QStringList& avoidIntersectionList )
+{
+  layerIdList = readListEntry( "Digitizing", "/LayerSnappingList" );
+  enabledList = readListEntry( "Digitizing", "/LayerSnappingEnabledList" );
+  toleranceList = readListEntry( "Digitizing", "/LayerSnappingToleranceList" );
+  toleranceUnitList = readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList" );
+  snapTypeList = readListEntry( "Digitizing", "/LayerSnapToList" );
+  avoidIntersectionList = readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+}
+
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
 {
   // just ignore any bad layers
 }
+
+
