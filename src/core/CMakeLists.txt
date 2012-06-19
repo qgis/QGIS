@@ -402,20 +402,26 @@ SET(QGIS_CORE_HDRS
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
+  symbology-ng/qgsellipsesymbollayerv2.h
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
   symbology-ng/qgslinesymbollayerv2.h
   symbology-ng/qgsmarkersymbollayerv2.h
+  symbology-ng/qgspointdisplacementrenderer.h
   symbology-ng/qgsrendererv2.h
   symbology-ng/qgsrendererv2registry.h
+  symbology-ng/qgsrulebasedrendererv2.h
   symbology-ng/qgssinglesymbolrendererv2.h
   symbology-ng/qgsstylev2.h
+  symbology-ng/qgssvgcache.h
   symbology-ng/qgssymbollayerv2.h
   symbology-ng/qgssymbollayerv2registry.h
   symbology-ng/qgssymbollayerv2utils.h
   symbology-ng/qgssymbologyv2conversion.h
   symbology-ng/qgssymbolv2.h
   symbology-ng/qgsvectorcolorrampv2.h
+  symbology-ng/qgsvectorfieldsymbollayer.h
+
   qgsdiagramrendererv2.h
 
   qgsspatialindex.h
