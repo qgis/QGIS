@@ -49,14 +49,15 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = []
         folder = GrassUtils.grassDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            try:
-                alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
-                if alg.name.strip() != "":
-                    self.preloadedAlgs.append(alg)
-                else:
+            if descriptionFile.endswith("txt"):
+                try:
+                    alg = GrassAlgorithm(os.path.join(folder, descriptionFile))
+                    if alg.name.strip() != "":
+                        self.preloadedAlgs.append(alg)
+                    else:
+                        SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
+                except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
-            except Exception:
-                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
         #self.preloadedAlgs.append(nviz())
         #self.createDescriptionFiles()
 

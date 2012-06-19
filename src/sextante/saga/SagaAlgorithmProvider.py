@@ -42,12 +42,15 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         self.preloadedAlgs = []
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
-            try:
-                alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
-                if alg.name.strip() != "":
-                    self.preloadedAlgs.append(alg)
-            except Exception:
-                SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+            if descriptionFile.endswith("txt"):
+                try:
+                    alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
+                    if alg.name.strip() != "":
+                        self.preloadedAlgs.append(alg)
+                    else:
+                        SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+                except Exception,e:
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
