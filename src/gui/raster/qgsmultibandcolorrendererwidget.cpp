@@ -237,6 +237,13 @@ void QgsMultiBandColorRendererWidget::loadMinMaxValueForBand( int band, QLineEdi
     minVal = minMax[0];
     maxVal = minMax[1];
   }
+  else if ( mUseStdDevRadioButton->isChecked() )
+  {
+    QgsRasterBandStats rasterBandStats = mRasterLayer->bandStatistics( band );
+    double diff = mStdDevSpinBox->value() * rasterBandStats.stdDev;
+    minVal = rasterBandStats.mean - diff;
+    maxVal = rasterBandStats.mean + diff;
+  }
 
   minEdit->setText( QString::number( minVal ) );
   maxEdit->setText( QString::number( maxVal ) );

@@ -113,6 +113,13 @@ void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
     minVal = minMax[0];
     maxVal = minMax[1];
   }
+  else if ( mUseStdDevRadioButton->isChecked() )
+  {
+    QgsRasterBandStats rasterBandStats = mRasterLayer->bandStatistics( band );
+    double diff = mStdDevSpinBox->value() * rasterBandStats.stdDev;
+    minVal = rasterBandStats.mean - diff;
+    maxVal = rasterBandStats.mean + diff;
+  }
   else
   {
     return;
