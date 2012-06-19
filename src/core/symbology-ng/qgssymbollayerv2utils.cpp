@@ -2057,12 +2057,12 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
-  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
   onlineResourceElem.setAttribute( "xlink:href", path );
   element.appendChild( onlineResourceElem );
 
-  QDomElement formatElem = doc.createElement( "Format" );
+  QDomElement formatElem = doc.createElement( "se:Format" );
   formatElem.appendChild( doc.createTextNode( format ) );
   element.appendChild( formatElem );
 }

@@ -689,31 +689,38 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
   else if ( element.localName() == "PropertyIsBetween" )
   {
     // <ogc:PropertyIsBetween> encode a Range check
-    QgsExpression::Node *operand = 0, *lowerBound = 0, *upperBound = 0;
+    QgsExpression::Node *operand = 0, *lowerBound = 0;
+    QgsExpression::Node *operand2 = 0, *upperBound = 0;
 
-    QDomElement operandElem = element.firstChildElement( "LowerBoundary" );
-    if ( !operandElem.isNull() )
-      lowerBound = createFromOgcFilter( operandElem, errorMessage );
-
-    operandElem = element.firstChildElement( "UpperBoundary" );
-    if ( !operandElem.isNull() )
-      upperBound = createFromOgcFilter( operandElem, errorMessage );
-
-    // <ogc:expression>
-    operandElem = element.firstChildElement();
-    while ( !operandElem.isNull() )
+    QDomElement operandElem = element.firstChildElement();
+    while( !operandElem.isNull() )
     {
-      if ( operandElem.localName() != "LowerBoundary" &&
-           operandElem.localName() != "UpperBoundary" )
+      if ( operandElem.localName() == "LowerBoundary" )
       {
-        operand = createFromOgcFilter( operandElem, errorMessage );
-        break;
+        QDomElement lowerBoundElem = operandElem.firstChildElement();
+        lowerBound = createFromOgcFilter( lowerBoundElem, errorMessage );
       }
+      else if ( operandElem.localName() ==  "UpperBoundary" )
+      {
+        QDomElement upperBoundElem = operandElem.firstChildElement();
+        upperBound = createFromOgcFilter( upperBoundElem, errorMessage );
+      }
+      else
+      {
+        // <ogc:expression>
+        // both operand and operand2 contain the same expression,
+        // they are respectively compared to lower bound and upper bound
+        operand = createFromOgcFilter( operandElem, errorMessage );
+        operand2 = createFromOgcFilter( operandElem, errorMessage );
+      }
+
+      if ( operand && lowerBound && operand2 && upperBound )
+        break;
 
       operandElem = operandElem.nextSiblingElement();
     }
 
-    if ( !operand || !lowerBound || !upperBound )
+    if ( !operand || !lowerBound || !operand2 || !upperBound )
     {
       if ( operand )
         delete operand;
@@ -729,7 +736,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     }
 
     QgsExpression::Node *geOperator = new QgsExpression::NodeBinaryOperator( boGE, operand, lowerBound );
-    QgsExpression::Node *leOperator = new QgsExpression::NodeBinaryOperator( boLE, operand, upperBound );
+    QgsExpression::Node *leOperator = new QgsExpression::NodeBinaryOperator( boLE, operand2, upperBound );
     return new QgsExpression::NodeBinaryOperator( boAnd, geOperator, leOperator );
   }
 
