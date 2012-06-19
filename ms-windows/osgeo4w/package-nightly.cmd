@@ -47,6 +47,8 @@ set SRCDIR=%CD%
 if "%BUILDDIR:~1,1%"==":" %BUILDDIR:~0,2%
 cd %BUILDDIR%
 
+if exist repackage goto package
+
 if not exist build.log goto build
 
 REM
@@ -140,6 +142,7 @@ echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
+:package
 echo PACKAGE: %DATE% %TIME%>>%LOG% 2>&1
 
 cd ..
@@ -156,9 +159,14 @@ REM del %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py
 
 touch exclude
 
+move %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%.exe
+move %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.exe
+
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	apps/%PACKAGENAME% ^
+	bin/%PACKAGENAME%.exe ^
+	bin/%PACKAGENAME%-browser.exe ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^

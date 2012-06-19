@@ -206,8 +206,8 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-server-%VERSION%-%PACKAGE%.tar.bz2 ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
-move apps\%PACKAGENAME%\bin\qgis.exe bin\%PACKAGENAME%.exe
-move apps\%PACKAGENAME%\bin\qbrowser.exe bin\%PACKAGENAME%-browser.exe
+move %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%.exe
+move %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.exe
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
