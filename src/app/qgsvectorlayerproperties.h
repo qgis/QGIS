@@ -42,6 +42,12 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     Q_OBJECT
 
   public:
+    enum StyleType
+    {
+      QML = 0,
+      SLD,
+    };
+
     QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
     /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
@@ -138,7 +144,14 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     void toggleEditing( QgsMapLayer * );
 
+  private slots:
+
+    /** save the style based on selected format from the menu */
+      void saveStyleAsMenuTriggered( QAction * );
+
   protected:
+
+    void saveStyleAs( StyleType styleType );
 
     void updateSymbologyPage();
 
@@ -158,6 +171,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QgsVectorLayer *layer;
 
     bool mMetadataFilled;
+
+    QMenu *mSaveAsMenu;
 
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;

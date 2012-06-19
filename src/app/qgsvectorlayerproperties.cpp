@@ -117,6 +117,12 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
+  // Create the menu for the save style button to choose the output format
+  mSaveAsMenu = new QMenu( pbnSaveStyleAs );
+  mSaveAsMenu->addAction( tr( "QGIS Layer Style File" ) );
+  mSaveAsMenu->addAction( tr( "SLD File" ) );
+  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
+
   reset();
 
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
@@ -950,6 +956,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+
   QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
@@ -988,33 +995,64 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 
 void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
 {
+  saveStyleAs( QML );
+}
+
+void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
+{
+  QMenu *menu = qobject_cast<QMenu *>( sender() );
+  if ( !menu )
+    return;
+
+  int index = mSaveAsMenu->actions().indexOf( action );
+  if ( index < 0 )
+    return;
+
+  saveStyleAs( (StyleType) index );
+}
+
+void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
+{
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ), myLastUsedDir,
-                             tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
+
+  QString format, extension;
+  if ( styleType == SLD )
+  {
+    format = tr( "SLD File" ) + " (*.sld)";
+    extension = ".sld";
+  }
+  else
+  {
+    format =  tr( "QGIS Layer Style File" ) + " (*.qml)";
+    extension = ".qml";
+  }
+
+  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
+                                                           myLastUsedDir, format );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
     return;
   }
 
-  apply(); // make sure the qml to save is uptodate
+  apply(); // make sure the style to save is uptodate
 
   QString myMessage;
   bool defaultLoadedFlag = false;
 
   //ensure the user never omitted the extension from the file name
-  if ( myOutputFileName.endsWith( ".sld", Qt::CaseInsensitive ) )
+  if ( myOutputFileName.endsWith( extension, Qt::CaseInsensitive ) )
+  {
+    myOutputFileName += extension;
+  }
+
+  if ( styleType == SLD )
   {
     // convert to SLD
     myMessage = layer->saveSldStyle( myOutputFileName, defaultLoadedFlag );
   }
   else
   {
-    if ( !myOutputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
-    {
-      myOutputFileName += ".qml";
-    }
-
     myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
   }
 
@@ -1234,6 +1272,11 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
 
     connect( mRendererDialog, SIGNAL( useNewSymbology( bool ) ), this, SLOT( setUsingNewSymbology( bool ) ) );
+
+    // display the menu to choose the output format (fix #5136)
+    pbnSaveStyleAs->setText( tr( "Save Style" ) );
+    pbnSaveStyleAs->setMenu( mSaveAsMenu );
+    QObject::disconnect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
   }
   else if ( layer->renderer() )
   {
@@ -1261,6 +1304,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
     QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
                       SLOT( alterLayerDialog( const QString & ) ) );
+
+    pbnSaveStyleAs->setText( tr( "Save Style..." ) );
+    pbnSaveStyleAs->setMenu( NULL );
+    QObject::connect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
   }
   else
   {
