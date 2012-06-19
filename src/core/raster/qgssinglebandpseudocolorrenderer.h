@@ -27,10 +27,10 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
     /**Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterFace* input, int band, QgsRasterShader* shader );
+    QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterFace* input );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     //virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

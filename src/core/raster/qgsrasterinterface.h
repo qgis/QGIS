@@ -19,6 +19,7 @@
 #define QGSRASTERFACE_H
 
 #include <QObject>
+#include <QImage>
 
 #include "qgsrectangle.h"
 
@@ -26,7 +27,7 @@
  * Base class for processing modules.
  */
 // TODO: inherit from QObject? QgsRasterDataProvider inherits already from QObject
-class CORE_EXPORT QgsRasterFace //: public QObject
+class CORE_EXPORT QgsRasterInterface //: public QObject
 {
 
     //Q_OBJECT
@@ -93,9 +94,9 @@ class CORE_EXPORT QgsRasterFace //: public QObject
     }
 
 
-    QgsRasterFace( QgsRasterFace * input = 0 );
+    QgsRasterInterface( QgsRasterInterface * input = 0 );
 
-    virtual ~QgsRasterFace();
+    virtual ~QgsRasterInterface();
 
     /** Returns data type for the band specified by number */
     virtual int dataType( int bandNo ) const
@@ -116,11 +117,16 @@ class CORE_EXPORT QgsRasterFace //: public QObject
       return 0;
     }
 
-    void setInput( QgsRasterFace* input ) { mInput = input; }
+    void setInput( QgsRasterInterface* input ) { mInput = input; }
+
+    /** Create a new image with extraneous data, such data may be used 
+     *  after the image is destroyed. The memory is not initialized.
+     */
+    QImage * createImage ( int width, int height, QImage::Format format );
 
     //protected:
-    // QgsRasterFace from used as input, data are read from it
-    QgsRasterFace* mInput;
+    // QgsRasterInterface from used as input, data are read from it
+    QgsRasterInterface* mInput;
 
 
 };

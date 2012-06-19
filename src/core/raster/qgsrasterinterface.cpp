@@ -15,15 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterface.h"
+#include "qgsrasterinterface.h"
 #include "qgslogger.h"
 
 #include <QByteArray>
 
-QgsRasterFace::QgsRasterFace( QgsRasterFace * input ): mInput( input )
+QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input ): mInput( input )
 {
 }
 
-QgsRasterFace::~QgsRasterFace()
+QgsRasterInterface::~QgsRasterInterface()
 {
+}
+
+QImage * QgsRasterInterface::createImage ( int width, int height, QImage::Format format )
+{
+  // Qt has its own internal function depthForFormat(), unfortunately it is not public
+
+  QImage img( 1, 1, format );
+
+  // We ignore QImage::Format_Mono and QImage::Format_MonoLSB ( depth 1)
+  int size = width * height * img.bytesPerLine();
+  uchar * data = (uchar *) malloc ( size );
+  return new QImage( data, width, height, format );
 }

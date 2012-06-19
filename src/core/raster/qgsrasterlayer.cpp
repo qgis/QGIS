@@ -101,6 +101,7 @@ QgsRasterLayer::QgsRasterLayer()
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
     , mRenderer( 0 )
+    , mResampleFilter( 0 )
 {
   init();
   mValid = false;
@@ -157,6 +158,7 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     , mModified( false )
     , mProviderKey( providerKey )
     , mRenderer( 0 )
+    , mResampleFilter( 0 )
 {
   QgsDebugMsg( "Entered" );
   init();
@@ -2092,6 +2094,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
   else
   {
     mResampleFilter->setInput( mRenderer );
+    //mResampleFilter = new QgsRasterResampleFilter( mRenderer );
   }
 }
 

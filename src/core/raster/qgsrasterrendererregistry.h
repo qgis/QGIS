@@ -24,12 +24,12 @@
 
 class QDomElement;
 //class QgsRasterDataProvider;
-class QgsRasterFace;
+class QgsRasterInterface;
 class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
-typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterFace* input );
+typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
 typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer* );
 
 struct CORE_EXPORT QgsRasterRendererRegistryEntry

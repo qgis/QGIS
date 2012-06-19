@@ -32,7 +32,7 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterFace* input ): mInput( input )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterInterface* input ): mInput( input )
 {
 }
 

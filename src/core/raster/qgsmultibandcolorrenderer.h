@@ -27,12 +27,12 @@ class QDomElement;
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
-    QgsMultiBandColorRenderer( QgsRasterFace* input, int redBand, int greenBand, int blueBand,
+    QgsMultiBandColorRenderer( QgsRasterInterface* input, int redBand, int greenBand, int blueBand,
                                QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
                                QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterFace* input );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     //void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );

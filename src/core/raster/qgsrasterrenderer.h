@@ -18,7 +18,7 @@
 #ifndef QGSRASTERRENDERER_H
 #define QGSRASTERRENDERER_H
 
-#include "qgsrasterface.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterdataprovider.h"
 #include <QPair>
 
@@ -31,10 +31,10 @@ struct QgsRasterViewPort;
 
 class QDomElement;
 
-class CORE_EXPORT QgsRasterRenderer : public QgsRasterFace
+class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
   public:
-    QgsRasterRenderer( QgsRasterFace* input, const QString& type );
+    QgsRasterRenderer( QgsRasterInterface* input, const QString& type );
     virtual ~QgsRasterRenderer();
 
     virtual QString type() const { return mType; }
@@ -69,13 +69,13 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterFace
     void readXML( const QDomElement& rendererElem );
 
   protected:
-    inline double readValue( void *data, QgsRasterFace::DataType type, int index );
+    inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
 
     /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
 
-    QgsRasterFace* mProvider;
+    QgsRasterInterface* mProvider;
     QString mType;
     /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedInResampler;
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterFace
     void projectImage( const QImage& srcImg, QImage& dstImage, QgsRasterProjector* prj ) const;
 };
 
-inline double QgsRasterRenderer::readValue( void *data, QgsRasterFace::DataType type, int index )
+inline double QgsRasterRenderer::readValue( void *data, QgsRasterInterface::DataType type, int index )
 {
   if ( !mInput )
   {
@@ -118,25 +118,25 @@ inline double QgsRasterRenderer::readValue( void *data, QgsRasterFace::DataType 
 
   switch ( type )
   {
-    case QgsRasterFace::Byte:
+    case QgsRasterInterface::Byte:
       return ( double )(( GByte * )data )[index];
       break;
-    case QgsRasterFace::UInt16:
+    case QgsRasterInterface::UInt16:
       return ( double )(( GUInt16 * )data )[index];
       break;
-    case QgsRasterFace::Int16:
+    case QgsRasterInterface::Int16:
       return ( double )(( GInt16 * )data )[index];
       break;
-    case QgsRasterFace::UInt32:
+    case QgsRasterInterface::UInt32:
       return ( double )(( GUInt32 * )data )[index];
       break;
-    case QgsRasterFace::Int32:
+    case QgsRasterInterface::Int32:
       return ( double )(( GInt32 * )data )[index];
       break;
-    case QgsRasterFace::Float32:
+    case QgsRasterInterface::Float32:
       return ( double )(( float * )data )[index];
       break;
-    case QgsRasterFace::Float64:
+    case QgsRasterInterface::Float64:
       return ( double )(( double * )data )[index];
       break;
     default:

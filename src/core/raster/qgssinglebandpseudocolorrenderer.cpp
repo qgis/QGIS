@@ -23,7 +23,7 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterFace* input, int band, QgsRasterShader* shader ):
+QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader ):
     QgsRasterRenderer( input, "singlebandpseudocolor" ), mShader( shader ), mBand( band )
 {
 }
@@ -39,7 +39,7 @@ void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
   mShader = shader;
 }
 
-QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem, QgsRasterFace* input )
+QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
@@ -66,15 +66,15 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
     return 0;
   }
 
-  QgsRasterFace::DataType transparencyType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType transparencyType = QgsRasterInterface::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
-    transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+    transparencyType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
   }
 
   void* transparencyData = 0;
   double currentOpacity = mOpacity;
-  QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBand );
+  QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
 
   void* rasterData = mInput->readBlock( mBand, extent, width, height );
 

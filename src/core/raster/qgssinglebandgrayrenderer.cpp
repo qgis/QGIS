@@ -22,7 +22,7 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterFace* input, int grayBand ):
+QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
     QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
 {
 }
@@ -32,7 +32,7 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
-QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterFace* input )
+QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
@@ -60,7 +60,6 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
   mContrastEnhancement = ce;
 }
 
-//void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   if ( !mInput )
@@ -68,15 +67,17 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     return 0;
   }
 
-  QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mGrayBand );
-  QgsRasterFace::DataType alphaType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mGrayBand );
+  QgsRasterInterface::DataType alphaType = QgsRasterInterface::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
-    alphaType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+    alphaType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
   }
 
   void* rasterData = mInput->readBlock( mGrayBand, extent, width, height );
-  void* alphaData;
+  if ( !rasterData ) return 0;
+
+  void* alphaData = 0;
   double currentAlpha = mOpacity;
   int grayVal, grayValOrig;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
@@ -84,20 +85,25 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
     alphaData = mInput->readBlock( mAlphaBand, extent, width, height );
+    if ( !alphaData ) {
+      free ( rasterData );
+      return 0;
+    }
   }
   else if ( mAlphaBand > 0 )
   {
     alphaData = rasterData;
   }
 
-  //create image
-  QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  // To give to image preallocated memory is the only way to avoid memcpy at the end
+  //QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
+  QImage *img = createImage ( width, height, QImage::Format_ARGB32_Premultiplied );
   QRgb* imageScanLine = 0;
   int currentRasterPos = 0;
 
   for ( int i = 0; i < height; ++i )
   {
-    imageScanLine = ( QRgb* )( img.scanLine( i ) );
+    imageScanLine = ( QRgb* )( img->scanLine( i ) );
     for ( int j = 0; j < width; ++j )
     {
       grayValOrig = grayVal = readValue( rasterData, rasterType, currentRasterPos );
@@ -141,13 +147,15 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     }
   }
 
-  VSIFree( rasterData );
+  free ( rasterData );
+  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand ) 
+  {
+    free ( alphaData );
+  }
 
-  // TODO: howto get image data without memcpy?
-  // TODO: byteCount() added in 4.6, QGIS requirement is Qt >= 4.4.0
-  void * data = VSIMalloc( img.byteCount() );
-
-  return memcpy( data, img.bits(), img.byteCount() );
+  void * data = (void *)img->bits();
+  delete img;
+  return data; // OK, the image was created with extraneous data
 }
 
 void QgsSingleBandGrayRenderer::writeXML( QDomDocument& doc, QDomElement& parentElem ) const

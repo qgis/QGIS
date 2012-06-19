@@ -160,7 +160,7 @@ SET(QGIS_CORE_SRCS
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
-  raster/qgsrasterface.cpp
+  raster/qgsrasterinterface.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrastertransparency.cpp
   raster/qgsrastershader.cpp
@@ -388,7 +388,7 @@ SET(QGIS_CORE_HDRS
   raster/qgspseudocolorshader.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
-  raster/qgsrasterface.h
+  raster/qgsrasterinterface.h
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h
   raster/qgsrastershader.h

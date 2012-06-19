@@ -23,7 +23,7 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterFace* input, int bandNumber,
+QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
     QColor* colorArray, int nColors ):
     QgsRasterRenderer( input, "paletted" ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
 {
@@ -34,7 +34,7 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
   delete[] mColors;
 }
 
-QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, QgsRasterFace* input )
+QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
@@ -88,13 +88,13 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
     return 0;
   }
 
-  QgsRasterFace::DataType transparencyType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType transparencyType = QgsRasterInterface::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
-    transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+    transparencyType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
   }
 
-  QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBandNumber );
+  QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBandNumber );
   void* rasterData = mInput->readBlock( bandNo, extent, width, height );
   double currentOpacity = mOpacity;
 

@@ -25,10 +25,10 @@ class QDomElement;
 class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {
   public:
-    QgsSingleBandColorDataRenderer( QgsRasterFace* input, int band );
+    QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band );
     ~QgsSingleBandColorDataRenderer();
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterFace* input );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     //virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

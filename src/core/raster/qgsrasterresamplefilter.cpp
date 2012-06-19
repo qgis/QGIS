@@ -31,7 +31,7 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterFace* input ): QgsRasterFace( input ),
+QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input ): QgsRasterInterface( input ),
     mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ),
     mMaxOversampling( 2.0 )
 {

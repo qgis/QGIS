@@ -25,7 +25,7 @@
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsdataprovider.h"
-#include "qgsrasterface.h"
+#include "qgsrasterinterface.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
 #include "qgscoordinatereferencesystem.h"
@@ -48,7 +48,7 @@ class QByteArray;
  *         QgsVectorDataProvider, and does not yet make
  *         sense for Raster layers.
  */
-class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRasterFace
+class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRasterInterface
 {
 
     Q_OBJECT

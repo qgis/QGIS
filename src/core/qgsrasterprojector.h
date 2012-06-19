@@ -30,7 +30,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include "qgsrasterface.h"
+#include "qgsrasterinterface.h"
 
 #include <cmath>
 
@@ -38,7 +38,7 @@
 class QgsPoint;
 
 //class CORE_EXPORT QgsRasterProjector
-class QgsRasterProjector : public QgsRasterFace
+class QgsRasterProjector : public QgsRasterInterface
 {
 //    Q_OBJECT
   public:

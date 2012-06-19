@@ -24,7 +24,7 @@
 #include <QImage>
 #include <QSet>
 
-QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterFace* input, int redBand, int greenBand, int blueBand,
+QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface* input, int redBand, int greenBand, int blueBand,
     QgsContrastEnhancement* redEnhancement,
     QgsContrastEnhancement* greenEnhancement,
     QgsContrastEnhancement* blueEnhancement ):
@@ -55,7 +55,7 @@ void QgsMultiBandColorRenderer::setBlueContrastEnhancement( QgsContrastEnhanceme
   delete mBlueContrastEnhancement; mBlueContrastEnhancement = ce;
 }
 
-QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, QgsRasterFace* input )
+QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
@@ -118,26 +118,26 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
                     && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
                     && !mInvertColor );
   */
-  QgsRasterFace::DataType redType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType redType = QgsRasterInterface::UnknownDataType;
 
   if ( mRedBand > 0 )
   {
-    redType = ( QgsRasterFace::DataType )mInput->dataType( mRedBand );
+    redType = ( QgsRasterInterface::DataType )mInput->dataType( mRedBand );
   }
-  QgsRasterFace::DataType greenType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType greenType = QgsRasterInterface::UnknownDataType;
   if ( mGreenBand > 0 )
   {
-    greenType = ( QgsRasterFace::DataType )mInput->dataType( mGreenBand );
+    greenType = ( QgsRasterInterface::DataType )mInput->dataType( mGreenBand );
   }
-  QgsRasterFace::DataType blueType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType blueType = QgsRasterInterface::UnknownDataType;
   if ( mBlueBand > 0 )
   {
-    blueType = ( QgsRasterFace::DataType )mInput->dataType( mBlueBand );
+    blueType = ( QgsRasterInterface::DataType )mInput->dataType( mBlueBand );
   }
-  QgsRasterFace::DataType transparencyType = QgsRasterFace::UnknownDataType;
+  QgsRasterInterface::DataType transparencyType = QgsRasterInterface::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
-    transparencyType = ( QgsRasterFace::DataType )mInput->dataType( mAlphaBand );
+    transparencyType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
   }
 
   double oversamplingX = 1.0, oversamplingY = 1.0;

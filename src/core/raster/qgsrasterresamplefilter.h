@@ -19,7 +19,7 @@
 #define QGSRASTERRESAMPLEFILTER_H
 
 #include "qgsrasterdataprovider.h"
-#include "qgsrasterface.h"
+#include "qgsrasterinterface.h"
 
 class QPainter;
 class QgsMapToPixel;
@@ -30,10 +30,10 @@ class QgsRasterViewPort;
 
 class QDomElement;
 
-class QgsRasterResampleFilter : public QgsRasterFace
+class QgsRasterResampleFilter : public QgsRasterInterface
 {
   public:
-    QgsRasterResampleFilter( QgsRasterFace* input = 0 );
+    QgsRasterResampleFilter( QgsRasterInterface* input = 0 );
     ~QgsRasterResampleFilter();
 
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );

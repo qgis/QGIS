@@ -21,7 +21,7 @@
 #include <QDomElement>
 #include <QImage>
 
-QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterFace* input, int band ):
+QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterInterface* input, int band ):
     QgsRasterRenderer( input, "singlebandcolordata" ), mBand( band )
 {
 
@@ -31,7 +31,7 @@ QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
 }
 
-QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem, QgsRasterFace* input )
+QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )
   {
@@ -56,7 +56,7 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
   //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
   bool hasTransparency = false;
 
-  QgsRasterFace::DataType rasterType = ( QgsRasterFace::DataType )mInput->dataType( mBand );
+  QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
 
   void* rasterData = mInput->readBlock( bandNo, extent, width, height );
 
