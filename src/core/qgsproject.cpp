@@ -1621,9 +1621,60 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   return false;
 }
 
-void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType, double tolerance )
+void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection )
 {
-  //soon...
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  int idx = layerIdList.indexOf( layerId );
+  if ( idx != -1 )
+  {
+    layerIdList.removeAt( idx );
+    enabledList.removeAt( idx );
+    snapTypeList.removeAt( idx );
+    toleranceUnitList.removeAt( idx );
+    toleranceList.removeAt( idx );
+    avoidIntersectionList.removeOne( layerId );
+  }
+
+  layerIdList.append( layerId );
+
+  //enabled
+  enabledList.append( enabled ? "enabled" : "disabled" );
+
+  //snap type
+  QString typeString;
+  if ( type == QgsSnapper::SnapToSegment )
+  {
+    typeString = "to_segment";
+  }
+  else if ( type == QgsSnapper::SnapToVertexAndSegment )
+  {
+    typeString = "to_vertex_and_segment";
+  }
+  else
+  {
+    typeString = "to_vertex";
+  }
+  snapTypeList.append( typeString );
+
+  //units
+  toleranceUnitList.append( unit == QgsTolerance::Pixels ? "1" : "0" );
+
+  //tolerance
+  toleranceList.append( QString::number( tolerance ) );
+
+  //avoid intersection
+  if ( avoidIntersection )
+  {
+    avoidIntersectionList.append( layerId );
+  }
+
+  writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
+  writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
+  writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
+  writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
+  writeEntry( "Digitizing", "/LayerSnapToList", snapTypeList );
+  writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
 }
 
 bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,

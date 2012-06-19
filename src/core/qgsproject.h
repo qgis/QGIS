@@ -291,7 +291,8 @@ class CORE_EXPORT QgsProject : public QObject
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
     //convenience interface for querying / modifying the project snap settings per layer
-    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType, double tolerance );
+    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
+                                  bool avoidIntersection );
 
     bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
                                bool& avoidIntersection );
