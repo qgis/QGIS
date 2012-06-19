@@ -1041,7 +1041,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   bool defaultLoadedFlag = false;
 
   //ensure the user never omitted the extension from the file name
-  if ( myOutputFileName.endsWith( extension, Qt::CaseInsensitive ) )
+  if ( !myOutputFileName.endsWith( extension, Qt::CaseInsensitive ) )
   {
     myOutputFileName += extension;
   }
