@@ -255,19 +255,29 @@ class Sextante:
             return
 
         alg = alg.getCopy()#copy.deepcopy(alg)
-        i = 0
-        for param in alg.parameters:
-            if not param.setValue(args[i]):
-                print ("Error: Wrong parameter value: " + args[i])
+        if isinstance(args, dict):
+            # set params by name
+            for name, value in args.items():
+                if alg.getParameterFromName(name).setValue(value):
+                    continue;
+                if alg.getOutputFromName(name).setValue(value):
+                    continue;
+                print ("Error: Wrong parameter value %s for parameter %s." % (value, name))
                 return
-            i = i +1
-
-        for output in alg.outputs:
-            if not output.hidden:
-                if not output.setValue(args[i]):
-                    print ("Error: Wrong output value: " + args[i])
+        else:
+            i = 0
+            for param in alg.parameters:
+                if not param.setValue(args[i]):
+                    print ("Error: Wrong parameter value: " + args[i])
                     return
                 i = i +1
+
+            for output in alg.outputs:
+                if not output.hidden:
+                    if not output.setValue(args[i]):
+                        print ("Error: Wrong output value: " + args[i])
+                        return
+                    i = i +1
 
         msg = alg.checkParameterValuesBeforeExecuting()
         if msg:
