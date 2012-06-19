@@ -121,26 +121,27 @@ class OTBAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             commands.append(out.name)
             commands.append(out.value)
-        
+
         if self.roiFile:
-            startX, startY = float(self.roiValues[0]), float(self.roiValues[0])
+            startX, startY = float(self.roiValues[0]), float(self.roiValues[1])
             sizeX = float(self.roiValues[2]) - startX
             sizeY = float(self.roiValues[3]) - startY
             helperCommands = [
-                    path + os.sep + "otbcli_ExtractROI",
+                    "otbcli_ExtractROI",
                     "-in",       self.roiInput,
                     "-out",      self.roiFile,
-                    "-startx",   startX,
-                    "-starty",   startY,
-                    "-sizex",    sizeX,
-                    "-sizey",    sizeY]
+                    "-startx",   str(startX),
+                    "-starty",   str(startY),
+                    "-sizex",    str(sizeX),
+                    "-sizey",    str(sizeY)]
+            SextanteLog.addToLog(SextanteLog.LOG_INFO, helperCommands)
             OTBUtils.executeOtb(helperCommands, progress)
 
         loglines = []
         loglines.append("OTB execution command")
         for line in commands:
             loglines.append(line)
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+
         OTBUtils.executeOtb(commands, progress)
 
 
