@@ -68,7 +68,7 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     void closeEvent( QCloseEvent* event );
 
   private slots:
-    void reloadLayers();
+    void reload();
 
 
   private:

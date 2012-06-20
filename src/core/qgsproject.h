@@ -295,7 +295,10 @@ class CORE_EXPORT QgsProject : public QObject
                                   bool avoidIntersection );
 
     bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
-                               bool& avoidIntersection );
+                               bool& avoidIntersection ) const;
+
+    void setTopologicalEditing( bool enabled );
+    bool topologicalEditing() const;
 
   protected:
 
@@ -353,7 +356,7 @@ class CORE_EXPORT QgsProject : public QObject
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
 
     void snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& snapUnitList, QStringList& toleranceUnitList,
-                       QStringList& avoidIntersectionList );
+                       QStringList& avoidIntersectionList ) const;
 
 }; // QgsProject
 

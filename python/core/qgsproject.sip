@@ -245,6 +245,9 @@ public:
     bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
                                bool& avoidIntersection /Out/ );
 
+    void setTopologicalEditing( bool enabled );
+    bool topologicalEditing() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -262,6 +265,8 @@ public:
     
     //! emitted when project is being written
     void writeProject(QDomDocument &);
+
+    void snapSettingsChanged();
 
   private:
 

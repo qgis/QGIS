@@ -1679,7 +1679,7 @@ void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, 
 }
 
 bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,
-                                       bool& avoidIntersection )
+                                       bool& avoidIntersection ) const
 {
   QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
   snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
@@ -1735,7 +1735,7 @@ bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, Qg
 }
 
 void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& toleranceUnitList, QStringList& toleranceList,
-                               QStringList& avoidIntersectionList )
+                               QStringList& avoidIntersectionList ) const
 {
   layerIdList = readListEntry( "Digitizing", "/LayerSnappingList" );
   enabledList = readListEntry( "Digitizing", "/LayerSnappingEnabledList" );
@@ -1743,6 +1743,17 @@ void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledLis
   toleranceUnitList = readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList" );
   snapTypeList = readListEntry( "Digitizing", "/LayerSnapToList" );
   avoidIntersectionList = readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+}
+
+void QgsProject::setTopologicalEditing( bool enabled )
+{
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", ( enabled ? 1 : 0 ) );
+  emit snapSettingsChanged();
+}
+
+bool QgsProject::topologicalEditing() const
+{
+  return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
