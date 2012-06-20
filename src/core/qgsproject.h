@@ -28,6 +28,10 @@
 #include <QObject>
 #include <QPair>
 
+//for the snap settings
+#include "qgssnapper.h"
+#include "qgstolerance.h"
+
 //#include <QDomDocument>
 
 class QFileInfo;
@@ -286,6 +290,16 @@ class CORE_EXPORT QgsProject : public QObject
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
+    //convenience interface for querying / modifying the project snap settings per layer
+    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
+                                  bool avoidIntersection );
+
+    bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
+                               bool& avoidIntersection ) const;
+
+    void setTopologicalEditing( bool enabled );
+    bool topologicalEditing() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -315,6 +329,8 @@ class CORE_EXPORT QgsProject : public QObject
     // @param n number of layers
     void layerLoaded( int i, int n );
 
+    void snapSettingsChanged();
+
   private:
 
     QgsProject(); // private 'cause it's a singleton
@@ -338,6 +354,9 @@ class CORE_EXPORT QgsProject : public QObject
     value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
        If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)*/
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
+
+    void snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& snapUnitList, QStringList& toleranceUnitList,
+                       QStringList& avoidIntersectionList ) const;
 
 }; // QgsProject
 

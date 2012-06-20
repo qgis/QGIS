@@ -1621,7 +1621,144 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
   return false;
 }
 
+void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType  type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection )
+{
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  int idx = layerIdList.indexOf( layerId );
+  if ( idx != -1 )
+  {
+    layerIdList.removeAt( idx );
+    enabledList.removeAt( idx );
+    snapTypeList.removeAt( idx );
+    toleranceUnitList.removeAt( idx );
+    toleranceList.removeAt( idx );
+    avoidIntersectionList.removeOne( layerId );
+  }
+
+  layerIdList.append( layerId );
+
+  //enabled
+  enabledList.append( enabled ? "enabled" : "disabled" );
+
+  //snap type
+  QString typeString;
+  if ( type == QgsSnapper::SnapToSegment )
+  {
+    typeString = "to_segment";
+  }
+  else if ( type == QgsSnapper::SnapToVertexAndSegment )
+  {
+    typeString = "to_vertex_and_segment";
+  }
+  else
+  {
+    typeString = "to_vertex";
+  }
+  snapTypeList.append( typeString );
+
+  //units
+  toleranceUnitList.append( unit == QgsTolerance::Pixels ? "1" : "0" );
+
+  //tolerance
+  toleranceList.append( QString::number( tolerance ) );
+
+  //avoid intersection
+  if ( avoidIntersection )
+  {
+    avoidIntersectionList.append( layerId );
+  }
+
+  writeEntry( "Digitizing", "/LayerSnappingList", layerIdList );
+  writeEntry( "Digitizing", "/LayerSnappingEnabledList", enabledList );
+  writeEntry( "Digitizing", "/LayerSnappingToleranceList", toleranceList );
+  writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
+  writeEntry( "Digitizing", "/LayerSnapToList", snapTypeList );
+  writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  emit snapSettingsChanged();
+}
+
+bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,
+                                       bool& avoidIntersection ) const
+{
+  QStringList layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList;
+  snapSettings( layerIdList, enabledList, snapTypeList, toleranceUnitList, toleranceList, avoidIntersectionList );
+  int idx = layerIdList.indexOf( layerId );
+  if ( idx == -1 )
+  {
+    return false;
+  }
+
+  //make sure all lists are long enough
+  int minListEntries = idx + 1;
+  if ( layerIdList.size() < minListEntries || enabledList.size() < minListEntries || snapTypeList.size() < minListEntries ||
+       toleranceUnitList.size() < minListEntries || toleranceList.size() < minListEntries )
+  {
+    return false;
+  }
+
+  //enabled
+  enabled = enabledList.at( idx ) == "enabled";
+
+  //snap type
+  QString snapType = snapTypeList.at( idx );
+  if ( snapType == "to_segment" )
+  {
+    type = QgsSnapper::SnapToSegment;
+  }
+  else if ( snapType == "to_vertex_and_segment" )
+  {
+    type = QgsSnapper::SnapToVertexAndSegment;
+  }
+  else //to vertex
+  {
+    type = QgsSnapper::SnapToVertex;
+  }
+
+  //units
+  if ( toleranceUnitList.at( idx ) == "1" )
+  {
+    units = QgsTolerance::Pixels;
+  }
+  else
+  {
+    units = QgsTolerance::MapUnits;
+  }
+
+  //tolerance
+  tolerance = toleranceList.at( idx ).toDouble();
+
+  //avoid intersection
+  avoidIntersection = ( avoidIntersectionList.indexOf( layerId ) != -1 );
+
+  return true;
+}
+
+void QgsProject::snapSettings( QStringList& layerIdList, QStringList& enabledList, QStringList& snapTypeList, QStringList& toleranceUnitList, QStringList& toleranceList,
+                               QStringList& avoidIntersectionList ) const
+{
+  layerIdList = readListEntry( "Digitizing", "/LayerSnappingList" );
+  enabledList = readListEntry( "Digitizing", "/LayerSnappingEnabledList" );
+  toleranceList = readListEntry( "Digitizing", "/LayerSnappingToleranceList" );
+  toleranceUnitList = readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList" );
+  snapTypeList = readListEntry( "Digitizing", "/LayerSnapToList" );
+  avoidIntersectionList = readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+}
+
+void QgsProject::setTopologicalEditing( bool enabled )
+{
+  QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", ( enabled ? 1 : 0 ) );
+  emit snapSettingsChanged();
+}
+
+bool QgsProject::topologicalEditing() const
+{
+  return ( QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 ) > 0 );
+}
+
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
 {
   // just ignore any bad layers
 }
+
+

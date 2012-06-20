@@ -73,7 +73,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
   connect( cbxEnableTopologicalEditingCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( on_cbxEnableTopologicalEditingCheckBox_stateChanged( int ) ) );
 
-  mLayerTreeWidget->clear();
+  reload();
 
   QMap< QString, QgsMapLayer *> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap< QString, QgsMapLayer *>::iterator it;
@@ -90,7 +90,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   mLayerTreeWidget->resizeColumnToContents( 4 );
   mLayerTreeWidget->setSortingEnabled( true );
 
-  setTopologicalEditingState();
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), this, SLOT( reload() ) );
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
@@ -99,6 +99,20 @@ QgsSnappingDialog::QgsSnappingDialog()
 
 QgsSnappingDialog::~QgsSnappingDialog()
 {
+}
+
+void QgsSnappingDialog::reload()
+{
+  mLayerTreeWidget->clear();
+
+  QMap< QString, QgsMapLayer *> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap< QString, QgsMapLayer *>::iterator it;
+  for ( it = mapLayers.begin(); it != mapLayers.end() ; ++it )
+  {
+    addLayer( it.value() );
+  }
+
+  setTopologicalEditingState();
 }
 
 void QgsSnappingDialog::on_cbxEnableTopologicalEditingCheckBox_stateChanged( int state )
