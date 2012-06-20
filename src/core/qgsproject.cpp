@@ -1675,6 +1675,7 @@ void QgsProject::setSnapSettingsForLayer( const QString& layerId, bool enabled, 
   writeEntry( "Digitizing", "/LayerSnappingToleranceUnitList", toleranceUnitList );
   writeEntry( "Digitizing", "/LayerSnapToList", snapTypeList );
   writeEntry( "Digitizing", "/AvoidIntersectionsList", avoidIntersectionList );
+  emit snapSettingsChanged();
 }
 
 bool QgsProject::snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType &type, QgsTolerance::UnitType& units, double& tolerance,

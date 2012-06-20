@@ -326,6 +326,8 @@ class CORE_EXPORT QgsProject : public QObject
     // @param n number of layers
     void layerLoaded( int i, int n );
 
+    void snapSettingsChanged();
+
   private:
 
     QgsProject(); // private 'cause it's a singleton
