@@ -204,6 +204,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   //set combo boxes to current resampling types
   if ( renderer )
   {
+    //invert color map
+    if ( renderer->invertColor() )
+    {
+      mInvertColorMapCheckBox->setCheckState( Qt::Checked );
+    }
+
     const QgsRasterResampler* zoomedInResampler = renderer->zoomedInResampler();
     if ( zoomedInResampler )
     {
@@ -780,6 +786,9 @@ void QgsRasterLayerProperties::apply()
 
   //set global transparency
   rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
+
+  //invert color map
+  rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
 
   QgsDebugMsg( "processing general tab" );
   /*
