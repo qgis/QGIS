@@ -290,14 +290,22 @@ class CORE_EXPORT QgsProject : public QObject
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
-    //convenience interface for querying / modifying the project snap settings per layer
+    /**Convenience function to set snap settings per layer
+      @note added in version 1.9*/
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
                                   bool avoidIntersection );
 
+    /**Convenience function to query snap settings of a layer
+      @note added in version 1.9*/
     bool snapSettingsForLayer( const QString& layerId, bool& enabled, QgsSnapper::SnappingType& type, QgsTolerance::UnitType& units, double& tolerance,
                                bool& avoidIntersection ) const;
 
+    /**Convenience function to set topological editing
+        @note added in version 1.9*/
     void setTopologicalEditing( bool enabled );
+
+    /**Convenience function to query topological editing status
+        @note added in version 1.9*/
     bool topologicalEditing() const;
 
   protected:
