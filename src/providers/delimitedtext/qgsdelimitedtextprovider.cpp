@@ -139,6 +139,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWktHasZM( false )
     , mWktZMRegexp( "\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive )
     , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
+    , mFile( 0 )
+    , mStream( 0 )
     , mSkipLines( 0 )
     , mFirstDataLine( 0 )
     , mShowInvalidLines( false )
@@ -212,6 +214,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   {
     QgsDebugMsg( "Data source " + dataSourceUri() + " could not be opened" );
     delete mFile;
+    mFile = 0;
     return;
   }
 
@@ -447,7 +450,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
 {
-  mFile->close();
+  if ( mFile )
+    mFile->close();
   delete mFile;
   delete mStream;
 }
