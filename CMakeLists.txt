@@ -370,7 +370,11 @@ ELSE (WIN32)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
     # path for framework references
-    SET (CMAKE_INSTALL_NAME_DIR @executable_path/${QGIS_FW_SUBDIR})
+    IF (ENABLE_TESTS)
+      SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_BINARY_DIR}/output/lib)
+    ELSE (ENABLE_TESTS)
+      SET (CMAKE_INSTALL_NAME_DIR @executable_path/${QGIS_FW_SUBDIR})
+    ENDIF (ENABLE_TESTS)
     IF (WITH_GLOBE)
         SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
     ENDIF (WITH_GLOBE)
@@ -456,6 +460,13 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 # write a marker with source directory path into the output's bin directory
 # if run from the build directory QGIS will detect it and alter the paths
 FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/source_path.txt "${CMAKE_SOURCE_DIR}")
+
+# symlink provider plugins dir for Mac unit tests
+IF (APPLE AND ENABLE_TESTS)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
+    "${CMAKE_CURRENT_BINARY_DIR}/Plugins"
+    "${CMAKE_CURRENT_BINARY_DIR}/output/Plugins")
+ENDIF (APPLE AND ENABLE_TESTS)
 
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
