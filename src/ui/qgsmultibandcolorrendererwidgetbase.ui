@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>529</height>
+    <width>893</width>
+    <height>204</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="1">
     <widget class="QGroupBox" name="mMinMaxGroupBox">
      <property name="title">
       <string>Min/Max values</string>
@@ -299,7 +299,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="2">
     <widget class="QGroupBox" name="mLoadMinMaxValuesGroupBox">
      <property name="title">
       <string>Load min-/max values</string>
