@@ -300,11 +300,11 @@ void TestZipLayer::testPassthruVectorZip()
 
 void TestZipLayer::testPassthruVectorTar()
 {
-  QSettings settings;
-  QString myFileName = mDataDir + "points2.tar";
 #if GDAL_VERSION_NUM < 1800
   QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
+  QSettings settings;
+  QString myFileName = mDataDir + "points2.tar";
   foreach( QString s, mScanZipSettings )
   {
     settings.setValue( "/qgis/scanZipInBrowser", s );
@@ -315,10 +315,10 @@ void TestZipLayer::testPassthruVectorTar()
 
 void TestZipLayer::testPassthruVectorGzip()
 {
-  QSettings settings;
 #if GDAL_VERSION_NUM < 1700
   QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
+  QSettings settings;
   foreach( QString s, mScanZipSettings )
   {
     settings.setValue( "/qgis/scanZipInBrowser", s );
@@ -491,6 +491,9 @@ void TestZipLayer::testZipItemSubfolder()
 
 void TestZipLayer::testTarItemSubfolder()
 {
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
   QSettings settings;
   foreach( QString s, mScanZipSettings )
   {
