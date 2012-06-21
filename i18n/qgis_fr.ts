@@ -5767,7 +5767,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1266"/>
         <source>Query...</source>
-        <translation>Requête...</translation>
+        <translation>Filtrer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1275"/>
