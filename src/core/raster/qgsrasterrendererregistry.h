@@ -18,6 +18,7 @@
 #ifndef QGSRASTERRENDERERREGISTRY_H
 #define QGSRASTERRENDERERREGISTRY_H
 
+#include "qgsrasterlayer.h" //for DrawingStyle enum
 #include <QHash>
 #include <QString>
 
@@ -53,12 +54,20 @@ class CORE_EXPORT QgsRasterRendererRegistry
     QStringList renderersList() const;
     QList< QgsRasterRendererRegistryEntry > entries() const;
 
+    /**Creates a default renderer for a raster drawing style (considering user options such as default contrast enhancement).
+        Caller takes ownership*/
+    QgsRasterRenderer* defaultRendererForDrawingStyle( const QgsRasterLayer::DrawingStyle&  theDrawingStyle, QgsRasterDataProvider* provider ) const;
+
   protected:
     QgsRasterRendererRegistry();
 
   private:
     static QgsRasterRendererRegistry* mInstance;
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;
+
+    //read min/max values from
+    bool minMaxValuesForBand( int band, QgsRasterDataProvider* provider, double& minValue, double& maxValue ) const;
+    static int contrastEnhancementFromString( const QString& contrastEnhancementString );
 };
 
 #endif // QGSRASTERRENDERERREGISTRY_H

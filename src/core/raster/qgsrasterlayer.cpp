@@ -594,6 +594,8 @@ QString QgsRasterLayer::contrastEnhancementAlgorithmAsString() const
 
 void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle )
 {
+  setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( theDrawingStyle, mDataProvider ) );
+#if 0
   QgsRasterRenderer* renderer = 0;
 
   switch ( theDrawingStyle )
@@ -787,6 +789,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
   }
   renderer->setInvertColor( mInvertColor );
   setRenderer( renderer );
+#endif //0
 }
 
 /**
@@ -2387,7 +2390,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   //Try to read the default contrast enhancement from the config file
 
   QSettings myQSettings;
-  setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
+  //setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
 
   //decide what type of layer this is...
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
