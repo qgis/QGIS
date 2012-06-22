@@ -46,7 +46,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
-  //connect( viewSymbols, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
+  connect( viewSymbols, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
   connect( btnStyleManager, SIGNAL( clicked() ), SLOT( openStyleManager() ) );
   lblSymbolName->setText( "" );
@@ -270,7 +270,16 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   emit changed();
 }
 
-
+QMenu* QgsSymbolsListWidget::advancedMenu()
+{
+  if ( mAdvancedMenu == NULL )
+  {
+    mAdvancedMenu = new QMenu;
+    btnAdvanced->setMenu( mAdvancedMenu );
+    btnAdvanced->show();
+  }
+  return mAdvancedMenu;
+}
 
 
 

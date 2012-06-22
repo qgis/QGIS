@@ -71,27 +71,34 @@ class QgsSymbolV2SelectorDialog : QDialog //, private Ui::QgsSymbolV2SelectorDia
 %TypeHeaderCode
 #include <qgssymbolv2selectordialog.h>
 %End
+  public:
+    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false );
 
-public:
-  QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false);
-  
-protected:
-  void populateSymbolView();
-  void updateSymbolPreview();
-  void updateSymbolColor();
-  void updateSymbolInfo();
-  
+    QMenu* advancedMenu();
 
-public slots:
-  void changeSymbolProperties();
-  void setSymbolFromStyle(const QModelIndex & index);
-  void setSymbolColor();
-  void setMarkerAngle(double angle);
-  void setMarkerSize(double size);
-  void setLineWidth(double width);
+  protected:
+    void keyPressEvent( QKeyEvent * event );
 
-signals:
-  void symbolModified();
+    void loadSymbol();
+    void updateUi();
+    void updateLockButton();
+    QgsSymbolLayerV2* currentLayer();
+    void moveLayerByOffset( int offset );
+    void setWidget( QWidget* widget );
+
+  signals:
+    void symbolModified();
+
+  public slots:
+    void moveLayerDown();
+    void moveLayerUp();
+    void addLayer();
+    void removeLayer();
+    void lockLayer();
+    void layerTypeChanged();
+    void layerChanged();
+    void updateLayerPreview();
+    void updatePreview();
 
 };
 

@@ -22,7 +22,6 @@
 
 class QgsSymbolV2;
 class QgsStyleV2;
-class QgsVectorLayer;
 
 class QMenu;
 
@@ -57,7 +56,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::WidgetSymbol
     QgsSymbolV2* mSymbol;
     QgsStyleV2* mStyle;
     QMenu* mAdvancedMenu;
-    const QgsVectorLayer* mVectorLayer;
 
     void populateSymbolView();
     void updateSymbolColor();
