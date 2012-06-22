@@ -61,6 +61,11 @@ class AlgorithmExecutor(QThread):
             self.error.emit(e.msg)
         except BaseException,e:
             self.error.emit(str(e))
+            print str(e)
+        # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
+        # being a separate thread.
+        except:
+            print "Error executing " + str(self)
 
     def runalgIterating(self):
         outputs = {}
