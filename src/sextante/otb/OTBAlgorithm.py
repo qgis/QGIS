@@ -68,6 +68,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     self.addParameter(param)
                 elif line.startswith("Extent"):
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
+                    self.hasROI = True
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
@@ -86,16 +87,22 @@ class OTBAlgorithm(GeoAlgorithm):
         commands = []
         commands.append(path + os.sep + self.cliName)
 
+        self.roiVectors = {}
         self.roiRasters = {}
         for param in self.parameters:
             if param.value == None or param.value == "":
                 continue
             if isinstance(param, ParameterVector):
                 commands.append(param.name)
-                commands.append(param.value)
+                if self.hasROI:
+                    roiFile = SextanteUtils.getTempFilename('shp')
+                    commands.append(roiFile)
+                    self.roiVectors[param.value] = roiFile
+                else:
+                    commands.append(param.value)
             if isinstance(param, ParameterRaster):
                 commands.append(param.name)
-                if self.roiFile:
+                if self.hasROI:
                     roiFile = SextanteUtils.getTempFilename('tif')
                     commands.append(roiFile)
                     self.roiRasters[param.value] = roiFile
@@ -121,21 +128,32 @@ class OTBAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             commands.append(out.name)
             commands.append(out.value)
-
         for roiInput, roiFile in self.roiRasters.items():
             startX, startY = float(self.roiValues[0]), float(self.roiValues[1])
             sizeX = float(self.roiValues[2]) - startX
             sizeY = float(self.roiValues[3]) - startY
             helperCommands = [
                     "otbcli_ExtractROI",
-                    "-in",       self.roiInput,
-                    "-out",      self.roiFile,
+                    "-in",       roiInput,
+                    "-out",      roiFile,
                     "-startx",   str(startX),
                     "-starty",   str(startY),
                     "-sizex",    str(sizeX),
                     "-sizey",    str(sizeY)]
             SextanteLog.addToLog(SextanteLog.LOG_INFO, helperCommands)
             OTBUtils.executeOtb(helperCommands, progress)
+
+        if self.roiRasters:
+            supportRaster = self.roiRasters.itervalues().next()
+            for roiInput, roiFile in self.roiVectors.items():
+                helperCommands = [
+                        "otbcli_VectorDataExtractROIApplication",
+                        "-vd.in",           roiInput,
+                        "-io.in",           supportRaster,
+                        "-io.out",          roiFile,
+                        "-elev.dem.path",   OTBUtils.otbSRTMPath()]
+                SextanteLog.addToLog(SextanteLog.LOG_INFO, helperCommands)
+                OTBUtils.executeOtb(helperCommands, progress)
 
         loglines = []
         loglines.append("OTB execution command")
