@@ -310,12 +310,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Accessor for drawing style */
     DrawingStyle drawingStyle() { return mDrawingStyle; }
 
-    /** \brief Accessor for gray band name mapping */
-    QString grayBandName() const { return mGrayBandName; }
-
-    /** \brief Accessor for green band name mapping */
-    QString greenBandName() const { return mGreenBandName; }
-
     /** \brief Accessor for mHasPyramids (READ ONLY) */
     bool hasPyramids() { return mHasPyramids; }
 
@@ -328,47 +322,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Accessor that returns the height of the (unclipped) raster */
     int height() { return mHeight; }
 
-    /** \brief Accessor to find out whether the histogram should be inverted  */
-    bool invertHistogram() const { return mInvertColor; }
-
     /** \brief Is the NoDataValue Valid */
     bool isNoDataValueValid() const { return mValidNoDataValue; }
-
-    /** \brief Accessor for mGrayMinimumMaximumEstimated */
-    bool isGrayMinimumMaximumEstimated() const { return mGrayMinimumMaximumEstimated; }
-
-    /** \brief Accessor for mRGBMinimumMaximumEstimated */
-    bool isRGBMinimumMaximumEstimated() const { return mRGBMinimumMaximumEstimated; }
 
     /** \brief Accessor that returns the NO_DATA entry for this raster */
     double noDataValue( bool* isValid = 0 ) { if ( isValid ) { *isValid = mValidNoDataValue;} return mNoDataValue; }
 
-    /** \brief Returns a pointer to the transparency object */
-    QgsRasterTransparency* rasterTransparency() { return &mRasterTransparency; }
-
-    /** \brief Accessor for raster shader */
-    QgsRasterShader* rasterShader() { return mRasterShader; }
-
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType() { return mRasterType; }
-
-    /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red color) */
-    QString redBandName() const { return mRedBandName; }
 
 
     /** \brief Mutator for drawing style */
     void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
     /**Sets corresponding renderer for style*/
     void setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle );
-
-    /** \brief Mutator for mGrayMinimumMaximumEstimated */
-    void setGrayMinimumMaximumEstimated( bool theBool ) { mGrayMinimumMaximumEstimated = theBool; }
-
-    /** \brief Mutator to alter the state of the invert histogram flag  */
-    void setInvertHistogram( bool theFlag ) { mInvertColor = theFlag; }
-
-    /** \brief Mutator for mRGBMinimumMaximumEstimated */
-    void setRGBMinimumMaximumEstimated( bool theBool ) { mRGBMinimumMaximumEstimated = theBool; }
 
     /** \brief Mutator to alter the number of standard deviations that should be plotted */
     void setStandardDeviations( double theStandardDeviations ) { mStandardDeviations = theStandardDeviations; }
@@ -386,9 +353,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
-
-    /** \brief  Accessor for transparent band name mapping */
-    QString transparentBandName() const { return mTransparencyBandName; }
 
     /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
      * @deprecated in 2.0
@@ -848,15 +812,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
     double mGeoTransform[6];
 
-    /** \brief The band to be associated with the grayscale only output - usually 1 */
-    QString mGrayBandName;
-
-    /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
-    bool mGrayMinimumMaximumEstimated;
-
-    /** \brief The band to be associated with the color green - usually 2 */
-    QString mGreenBandName;
-
     /** \brief Whether this raster has overviews / pyramids or not */
     bool mHasPyramids;
 
@@ -865,9 +820,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief  Raster height */
     int mHeight;
-
-    /** \brief Flag indicating whether the color of pixels should be inverted or not */
-    bool mInvertColor;
 
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;
@@ -889,25 +841,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief This list holds a series of RasterPyramid structs which store information for each potential pyramid level */
     RasterPyramidList mPyramidList;
 
-    /** \brief The raster shader for the layer */
-    QgsRasterShader* mRasterShader;
-
     /** \brief A collection of stats - one for each band in the layer */
     RasterStatsList mRasterStatsList;
 
-    /** \brief The transparency container */
-    QgsRasterTransparency mRasterTransparency;
-
     LayerType mRasterType;
-
-    /** \brief The band to be associated with the color red - usually 1 */
-    QString mRedBandName;
-
-    /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
-    bool mRGBMinimumMaximumEstimated;
-
-    /** \brief The band to be associated with transparency */
-    QString mTransparencyBandName;
 
     /** \brief Flag to indicate if the user entered custom min max values */
     bool mUserDefinedGrayMinimumMaximum;

@@ -471,17 +471,18 @@ void QgsRasterLayerProperties::sync()
     sliderTransparency->setValue(( 1.0 - renderer->opacity() ) * 255 );
     //update the transparency percentage label
     sliderTransparency_valueChanged(( 1.0 - renderer->opacity() ) * 255 );
+
+    int myIndex = renderer->alphaBand();
+    if ( -1 != myIndex )
+    {
+      cboxTransparencyBand->setCurrentIndex( myIndex );
+    }
+    else
+    {
+      cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findText( TRSTRING_NOT_SET ) );
+    }
   }
 
-  int myIndex = cboxTransparencyBand->findText( mRasterLayer->transparentBandName() );
-  if ( -1 != myIndex )
-  {
-    cboxTransparencyBand->setCurrentIndex( myIndex );
-  }
-  else
-  {
-    cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findText( TRSTRING_NOT_SET ) );
-  }
   //add current NoDataValue to NoDataValue line edit
   if ( mRasterLayer->isNoDataValueValid() )
   {
@@ -543,12 +544,12 @@ void QgsRasterLayerProperties::sync()
   pixmapThumbnail->setPixmap( myQPixmap );
 
   //update the legend pixmap on this dialog
-  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
+  //pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
   pixmapLegend->setScaledContents( true );
   pixmapLegend->repaint();
 
   //set the palette pixmap
-  pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
+  //pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
   pixmapPalette->setScaledContents( true );
   pixmapPalette->repaint();
 
@@ -1361,6 +1362,7 @@ void QgsRasterLayerProperties::on_pbnRemoveSelectedRow_clicked()
 
 void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 {
+#if 0 //needs to be fixed
   //PixelSelectorTool has registered a mouse click on the canvas, so bring the dialog back to the front
   raise();
   setModal( true );
@@ -1395,7 +1397,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
       }
     }
   }
-
+#endif //0
 }
 
 void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )

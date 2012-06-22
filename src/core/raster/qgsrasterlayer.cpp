@@ -98,7 +98,6 @@ QgsRasterLayer::QgsRasterLayer()
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mInvertColor( false )
     , mRenderer( 0 )
 {
   init();
@@ -117,7 +116,6 @@ QgsRasterLayer::QgsRasterLayer(
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mInvertColor( false )
     , mRenderer( 0 )
 {
   QgsDebugMsg( "Entered" );
@@ -153,7 +151,6 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     , mEditable( false )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mInvertColor( false )
     , mModified( false )
     , mProviderKey( providerKey )
     , mRenderer( 0 )
@@ -190,7 +187,6 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
-  delete mRasterShader;
   delete mDataProvider;
   delete mRenderer;
 }
@@ -794,11 +790,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   QgsDebugMsgLevel( QString( "drawableAreaXDim = %1" ).arg( myRasterViewPort->drawableAreaXDim ), 3 );
   QgsDebugMsgLevel( QString( "drawableAreaYDim = %1" ).arg( myRasterViewPort->drawableAreaYDim ), 3 );
 
-  QgsDebugMsgLevel( "ReadXml: gray band name : " + mGrayBandName, 3 );
-  QgsDebugMsgLevel( "ReadXml: red band name : " + mRedBandName, 3 );
-  QgsDebugMsgLevel( "ReadXml: green band name : " + mGreenBandName, 3 );
-  QgsDebugMsgLevel( "ReadXml: blue band name : " + mBlueBandName, 3 );
-
   // /\/\/\ - added to handle zoomed-in rasters
 
   mLastViewPort = *myRasterViewPort;
@@ -1080,266 +1071,7 @@ QPixmap QgsRasterLayer::legendAsPixmap()
  */
 QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
 {
-  QgsDebugMsg( "called (" + drawingStyleAsString() + ")" );
-
-  QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
-  QPainter myQPainter;
-
-
-  if ( !mProviderKey.isEmpty() )
-  {
-    QgsDebugMsg( "provider Key (" + mProviderKey + ")" );
-    myLegendQPixmap = QPixmap( 3, 1 );
-    myQPainter.begin( &myLegendQPixmap );
-    //draw legend red part
-    myQPainter.setPen( QPen( QColor( 255,   0,   0 ), 0 ) );
-    myQPainter.drawPoint( 0, 0 );
-    //draw legend green part
-    myQPainter.setPen( QPen( QColor( 0, 255,   0 ), 0 ) );
-    myQPainter.drawPoint( 1, 0 );
-    //draw legend blue part
-    myQPainter.setPen( QPen( QColor( 0,   0, 255 ), 0 ) );
-    myQPainter.drawPoint( 2, 0 );
-
-  }
-  else
-  {
-    // Legacy GDAL (non-provider)
-
-    //
-    // Get the adjusted matrix stats
-    //
-    QString myColorerpretation = mDataProvider->colorInterpretationName( 1 );
-
-    //
-    // Create the legend pixmap - note it is generated on the preadjusted stats
-    //
-    if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
-    {
-
-      myLegendQPixmap = QPixmap( 100, 1 );
-      myQPainter.begin( &myLegendQPixmap );
-      int myPos = 0;
-      for ( double my = 0; my < 255; my += 2.55 )
-      {
-        if ( !mInvertColor ) //histogram is not inverted
-        {
-          //draw legend as grayscale
-          int myGray = static_cast < int >( my );
-          myQPainter.setPen( QPen( QColor( myGray, myGray, myGray ), 0 ) );
-        }
-        else                //histogram is inverted
-        {
-          //draw legend as inverted grayscale
-          int myGray = 255 - static_cast < int >( my );
-          myQPainter.setPen( QPen( QColor( myGray, myGray, myGray ), 0 ) );
-        }                   //end of invert histogram  check
-        myQPainter.drawPoint( myPos++, 0 );
-      }
-    }                           //end of gray check
-    else if ( mDrawingStyle == MultiBandSingleBandPseudoColor ||
-              mDrawingStyle == PalettedSingleBandPseudoColor || mDrawingStyle == SingleBandPseudoColor )
-    {
-
-      //set up the three class breaks for pseudocolor mapping
-      double myRangeSize = 90;  //hard coded for now
-      double myBreakSize = myRangeSize / 3;
-      double myClassBreakMin1 = 0;
-      double myClassBreakMax1 = myClassBreakMin1 + myBreakSize;
-      double myClassBreakMin2 = myClassBreakMax1;
-      double myClassBreakMax2 = myClassBreakMin2 + myBreakSize;
-      double myClassBreakMin3 = myClassBreakMax2;
-
-      //
-      // Create the legend pixmap - note it is generated on the preadjusted stats
-      //
-      myLegendQPixmap = QPixmap( 100, 1 );
-      myQPainter.begin( &myLegendQPixmap );
-      int myPos = 0;
-      for ( double my = 0; my < myRangeSize; my += myRangeSize / 100.0 )
-      {
-        //draw pseudocolor legend
-        if ( !mInvertColor )
-        {
-          //check if we are in the first class break
-          if (( my >= myClassBreakMin1 ) && ( my < myClassBreakMax1 ) )
-          {
-            int myRed = 0;
-            int myBlue = 255;
-            int myGreen = static_cast < int >((( 255 / myRangeSize ) * ( my - myClassBreakMin1 ) ) * 3 );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //check if we are in the second class break
-          else if (( my >= myClassBreakMin2 ) && ( my < myClassBreakMax2 ) )
-          {
-            int myRed = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 );
-            int myBlue = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 ) );
-            int myGreen = 255;
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myGreen = myBlue;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //otherwise we must be in the third classbreak
-          else
-          {
-            int myRed = 255;
-            int myBlue = 0;
-            int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin3 ) / 1 ) * 3 ) ) );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = myGreen;
-              myGreen = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-        }                   //end of invert !histogram false check
-        else                  //invert histogram toggle is off
-        {
-          //check if we are in the first class break
-          if (( my >= myClassBreakMin1 ) && ( my < myClassBreakMax1 ) )
-          {
-            int myRed = 255;
-            int myBlue = 0;
-            int myGreen = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin1 ) / 1 ) * 3 ) );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //check if we are in the second class break
-          else if (( my >= myClassBreakMin2 ) && ( my < myClassBreakMax2 ) )
-          {
-            int myRed = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 ) );
-            int myBlue = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 );
-            int myGreen = 255;
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myGreen = myBlue;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //otherwise we must be in the third classbreak
-          else
-          {
-            int myRed = 0;
-            int myBlue = 255;
-            int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * ( my - myClassBreakMin3 ) ) * 3 ) );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-
-        }                   //end of invert histogram check
-        myQPainter.drawPoint( myPos++, 0 );
-      }
-
-    }                           //end of pseudocolor check
-    else if ( mDrawingStyle == PalettedMultiBandColor || mDrawingStyle == MultiBandColor || mDrawingStyle == PalettedColor )
-    {
-      //
-      // Create the legend pixmap showing red green and blue band mappings
-      //
-      // TODO update this so it actually shows the mappings for paletted images
-      myLegendQPixmap = QPixmap( 3, 1 );
-      myQPainter.begin( &myLegendQPixmap );
-      //draw legend red part
-      myQPainter.setPen( QPen( QColor( 224, 103, 103 ), 0 ) );
-      myQPainter.drawPoint( 0, 0 );
-      //draw legend green part
-      myQPainter.setPen( QPen( QColor( 132, 224, 127 ), 0 ) );
-      myQPainter.drawPoint( 1, 0 );
-      //draw legend blue part
-      myQPainter.setPen( QPen( QColor( 127, 160, 224 ), 0 ) );
-      myQPainter.drawPoint( 2, 0 );
-    }
-  }
-
-  myQPainter.end();
-
-
-  // see if the caller wants the name of the layer in the pixmap (used for legend bar)
-  if ( theWithNameFlag )
-  {
-    QFont myQFont( "arial", 10, QFont::Normal );
-    QFontMetrics myQFontMetrics( myQFont );
-
-    int myHeight = ( myQFontMetrics.height() + 10 > 35 ) ? myQFontMetrics.height() + 10 : 35;
-
-    //create a matrix to
-    QMatrix myQWMatrix;
-    //scale the raster legend up a bit bigger to the legend item size
-    //note that scaling parameters are factors, not absolute values,
-    // so scale (0.25,1) scales the painter to a quarter of its size in the x direction
-    //TODO We need to decide how much to scale by later especially for rgb images which are only 3x1 pix
-    //hard coding thes values for now.
-    if ( myLegendQPixmap.width() == 3 )
-    {
-      //scale width by factor of 50 (=150px wide)
-      myQWMatrix.scale( 60, myHeight );
-    }
-    else
-    {
-      //assume 100px so scale by factor of 1.5 (=150px wide)
-      myQWMatrix.scale( 1.8, myHeight );
-    }
-    //apply the matrix
-    QPixmap myQPixmap2 = myLegendQPixmap.transformed( myQWMatrix );
-    QPainter myQPainter( &myQPixmap2 );
-
-    //load  up the pyramid icons
-    QString myThemePath = QgsApplication::activeThemePath();
-    QPixmap myPyramidPixmap( myThemePath + "/mIconPyramid.png" );
-    QPixmap myNoPyramidPixmap( myThemePath + "/mIconNoPyramid.png" );
-
-    //
-    // Overlay a pyramid icon
-    //
-    if ( mHasPyramids )
-    {
-      myQPainter.drawPixmap( 0, myHeight - myPyramidPixmap.height(), myPyramidPixmap );
-    }
-    else
-    {
-      myQPainter.drawPixmap( 0, myHeight - myNoPyramidPixmap.height(), myNoPyramidPixmap );
-    }
-    //
-    // Overlay the layer name
-    //
-    if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
-    {
-      myQPainter.setPen( Qt::white );
-    }
-    else
-    {
-      myQPainter.setPen( Qt::black );
-    }
-    myQPainter.setFont( myQFont );
-    myQPainter.drawText( 25, myHeight - 10, name() );
-    //
-    // finish up
-    //
-    myLegendQPixmap = myQPixmap2;
-    myQPainter.end();
-  }
-  //finish up
-
-  return myLegendQPixmap;
-
+  return QPixmap();
 }                               //end of legendAsPixmap function
 
 /**
@@ -1348,228 +1080,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
  */
 QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
 {
-  QgsDebugMsg( "entered." );
-  QFont myQFont( "arial", 10, QFont::Normal );
-  QFontMetrics myQFontMetrics( myQFont );
-
-  int myFontHeight = ( myQFontMetrics.height() );
-  const int myerLabelSpacing = 5;
-  int myImageHeight = (( myFontHeight + ( myerLabelSpacing * 2 ) ) * theLabelCount );
-  //these next two vars are not used anywhere so commented out for now
-  //int myLongestLabelWidth =  myQFontMetrics.width(name());
-  //const int myHorizontalLabelSpacing = 5;
-  const int myColorBarWidth = 10;
-  //
-  // Get the adjusted matrix stats
-  //
-  QString myColorerpretation = mDataProvider->colorInterpretationName( 1 );
-  QPixmap myLegendQPixmap;      //will be initialised once we know what drawing style is active
-  QPainter myQPainter;
-  //
-  // Create the legend pixmap - note it is generated on the preadjusted stats
-  //
-  if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
-  {
-
-    myLegendQPixmap = QPixmap( 1, myImageHeight );
-    const double myIncrement = static_cast<double>( myImageHeight ) / 255.0;
-    myQPainter.begin( &myLegendQPixmap );
-    int myPos = 0;
-    for ( double my = 0; my < 255; my += myIncrement )
-    {
-      if ( !mInvertColor ) //histogram is not inverted
-      {
-        //draw legend as grayscale
-        int myGray = static_cast < int >( my );
-        myQPainter.setPen( QPen( QColor( myGray, myGray, myGray ), 0 ) );
-      }
-      else                //histogram is inverted
-      {
-        //draw legend as inverted grayscale
-        int myGray = 255 - static_cast < int >( my );
-        myQPainter.setPen( QPen( QColor( myGray, myGray, myGray ), 0 ) );
-      }                   //end of invert histogram  check
-      myQPainter.drawPoint( 0, myPos++ );
-    }
-  }                           //end of gray check
-  else if ( mDrawingStyle == MultiBandSingleBandPseudoColor ||
-            mDrawingStyle == PalettedSingleBandPseudoColor || mDrawingStyle == SingleBandPseudoColor )
-  {
-
-    //set up the three class breaks for pseudocolor mapping
-    double myRangeSize = 90;  //hard coded for now
-    double myBreakSize = myRangeSize / 3;
-    double myClassBreakMin1 = 0;
-    double myClassBreakMax1 = myClassBreakMin1 + myBreakSize;
-    double myClassBreakMin2 = myClassBreakMax1;
-    double myClassBreakMax2 = myClassBreakMin2 + myBreakSize;
-    double myClassBreakMin3 = myClassBreakMax2;
-
-    //
-    // Create the legend pixmap - note it is generated on the preadjusted stats
-    //
-    myLegendQPixmap = QPixmap( 1, myImageHeight );
-    const double myIncrement = myImageHeight / myRangeSize;
-    myQPainter.begin( &myLegendQPixmap );
-    int myPos = 0;
-    for ( double my = 0; my < 255; my += myIncrement )
-      for ( double my = 0; my < myRangeSize; my += myIncrement )
-      {
-        //draw pseudocolor legend
-        if ( !mInvertColor )
-        {
-          //check if we are in the first class break
-          if (( my >= myClassBreakMin1 ) && ( my < myClassBreakMax1 ) )
-          {
-            int myRed = 0;
-            int myBlue = 255;
-            int myGreen = static_cast < int >((( 255 / myRangeSize ) * ( my - myClassBreakMin1 ) ) * 3 );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //check if we are in the second class break
-          else if (( my >= myClassBreakMin2 ) && ( my < myClassBreakMax2 ) )
-          {
-            int myRed = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 );
-            int myBlue = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 ) );
-            int myGreen = 255;
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myGreen = myBlue;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //otherwise we must be in the third classbreak
-          else
-          {
-            int myRed = 255;
-            int myBlue = 0;
-            int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin3 ) / 1 ) * 3 ) ) );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = myGreen;
-              myGreen = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-        }                   //end of invert !histogram check
-        else                  //invert histogram toggle is off
-        {
-          //check if we are in the first class break
-          if (( my >= myClassBreakMin1 ) && ( my < myClassBreakMax1 ) )
-          {
-            int myRed = 255;
-            int myBlue = 0;
-            int myGreen = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin1 ) / 1 ) * 3 ) );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //check if we are in the second class break
-          else if (( my >= myClassBreakMin2 ) && ( my < myClassBreakMax2 ) )
-          {
-            int myRed = static_cast < int >( 255 - ((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 ) );
-            int myBlue = static_cast < int >((( 255 / myRangeSize ) * (( my - myClassBreakMin2 ) / 1 ) ) * 3 );
-            int myGreen = 255;
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myGreen = myBlue;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-          //otherwise we must be in the third classbreak
-          else
-          {
-            int myRed = 0;
-            int myBlue = 255;
-            int myGreen = static_cast < int >( 255 - ((( 255 / myRangeSize ) * ( my - myClassBreakMin3 ) ) * 3 ) );
-            // testing this stuff still ...
-            if ( mColorShadingAlgorithm == FreakOutShader )
-            {
-              myRed = 255 - myGreen;
-            }
-            myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
-          }
-
-        }                   //end of invert histogram check
-        myQPainter.drawPoint( 0, myPos++ );
-      }
-
-  }                           //end of pseudocolor check
-  else if ( mDrawingStyle == PalettedMultiBandColor || mDrawingStyle == MultiBandColor )
-  {
-    //
-    // Create the legend pixmap showing red green and blue band mappings
-    //
-    // TODO update this so it actually shows the mappings for paletted images
-    myLegendQPixmap = QPixmap( 1, 3 );
-    myQPainter.begin( &myLegendQPixmap );
-    //draw legend red part
-    myQPainter.setPen( QPen( QColor( 224, 103, 103 ), 0 ) );
-    myQPainter.drawPoint( 0, 0 );
-    //draw legend green part
-    myQPainter.setPen( QPen( QColor( 132, 224, 127 ), 0 ) );
-    myQPainter.drawPoint( 0, 1 );
-    //draw legend blue part
-    myQPainter.setPen( QPen( QColor( 127, 160, 224 ), 0 ) );
-    myQPainter.drawPoint( 0, 2 );
-  }
-
-
-  myQPainter.end();
-
-
-
-  //create a matrix to
-  QMatrix myQWMatrix;
-  //scale the raster legend up a bit bigger to the legend item size
-  //note that scaling parameters are factors, not absolute values,
-  // so scale (0.25,1) scales the painter to a quarter of its size in the x direction
-  //TODO We need to decide how much to scale by later especially for rgb images which are only 3x1 pix
-  //hard coding thes values for now.
-  if ( myLegendQPixmap.height() == 3 )
-  {
-    myQWMatrix.scale( myColorBarWidth, 2 );
-  }
-  else
-  {
-    myQWMatrix.scale( myColorBarWidth, 2 );
-  }
-  //apply the matrix
-  QPixmap myQPixmap2 = myLegendQPixmap.transformed( myQWMatrix );
-  QPainter myQPainter2( &myQPixmap2 );
-  //
-  // Overlay the layer name
-  //
-  if ( mDrawingStyle == MultiBandSingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == SingleBandGray )
-  {
-    myQPainter2.setPen( Qt::white );
-  }
-  else
-  {
-    myQPainter2.setPen( Qt::black );
-  }
-  myQPainter2.setFont( myQFont );
-  myQPainter2.drawText( 25, myImageHeight - 10, name() );
-  //
-  // finish up
-  //
-  myLegendQPixmap = myQPixmap2;
-  myQPainter2.end();
-  //finish up
-
-  return myLegendQPixmap;
-
+  return QPixmap();
 }//end of getDetailedLegend
 
 /**
@@ -1990,22 +1501,7 @@ void QgsRasterLayer::init()
 
   mRasterType = QgsRasterLayer::GrayOrUndefined;
 
-  mRedBandName = TRSTRING_NOT_SET;
-  mGreenBandName = TRSTRING_NOT_SET;
-  mBlueBandName = TRSTRING_NOT_SET;
-  mGrayBandName = TRSTRING_NOT_SET;
-  mTransparencyBandName = TRSTRING_NOT_SET;
-
-
-  mUserDefinedRGBMinimumMaximum = false; //defaults needed to bypass enhanceContrast
-  mUserDefinedGrayMinimumMaximum = false;
-  mRGBMinimumMaximumEstimated = true;
-  mGrayMinimumMaximumEstimated = true;
-
   setDrawingStyle( QgsRasterLayer::UndefinedDrawingStyle );
-  mContrastEnhancementAlgorithm = QgsContrastEnhancement::NoEnhancement;
-  mColorShadingAlgorithm = QgsRasterLayer::UndefinedShader;
-  mRasterShader = new QgsRasterShader();
 
   mBandCount = 0;
   mHasPyramids = false;
@@ -2113,7 +1609,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   }
 
   mBandCount = 0;
-  mRasterShader = new QgsRasterShader();
 
   mDataProvider = QgsRasterLayer::loadProvider( mProviderKey, mDataSource );
   if ( !mDataProvider )
@@ -2155,8 +1650,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mValidNoDataValue = mDataProvider->isNoDataValueValid();
   if ( mValidNoDataValue )
   {
-    mRasterTransparency.initializeTransparentPixelList( mNoDataValue, mNoDataValue, mNoDataValue );
-    mRasterTransparency.initializeTransparentPixelList( mNoDataValue );
   }
 
   // set up the raster drawing style
@@ -2236,100 +1729,20 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     QgsDebugMsg( "Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
     setDrawingStyle( SingleBandColorDataStyle );
-    mGrayBandName = bandName( 1 );  //sensible default
   }
   else if ( mRasterType == Palette )
   {
-    mRedBandName = TRSTRING_NOT_SET; // sensible default
-    mGreenBandName = TRSTRING_NOT_SET; // sensible default
-    mBlueBandName = TRSTRING_NOT_SET;// sensible default
-    mTransparencyBandName = TRSTRING_NOT_SET; // sensible default
-    mGrayBandName = bandName( 1 );  //sensible default
-    QgsDebugMsg( mGrayBandName );
 
     setDrawingStyle( PalettedColor ); //sensible default
-
-    //Set up a new color ramp shader
-    setColorShadingAlgorithm( ColorRampShader );
-    QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
-    //TODO: Make sure the set algorithm and cast was successful,
-    //e.g., if ( 0 != myColorRampShader && myColorRampShader->shaderTypeAsString == "ColorRampShader" )
-    myColorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
-    myColorRampShader->setColorRampItemList( *colorTable( 1 ) );
   }
   else if ( mRasterType == Multiband )
   {
-    //we know we have at least 2 layers...
-    mRedBandName = bandName( myQSettings.value( "/Raster/defaultRedBand", 1 ).toInt() );  // sensible default
-    mGreenBandName = bandName( myQSettings.value( "/Raster/defaultGreenBand", 2 ).toInt() );  // sensible default
-
-    //Check to make sure preferred bands combinations are valid
-    if ( mRedBandName.isEmpty() )
-    {
-      mRedBandName = bandName( 1 );
-    }
-
-    if ( mGreenBandName.isEmpty() )
-    {
-      mGreenBandName = bandName( 2 );
-    }
-
-    //for the third band we cant be sure so..
-    if (( mDataProvider->bandCount() > 2 ) )
-    {
-      mBlueBandName = bandName( myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt() ); // sensible default
-      if ( mBlueBandName.isEmpty() )
-      {
-        mBlueBandName = bandName( 3 );
-      }
-    }
-    else
-    {
-      mBlueBandName = bandName( myQSettings.value( "/Raster/defaultBlueBand", 2 ).toInt() );  // sensible default
-      if ( mBlueBandName.isEmpty() )
-      {
-        mBlueBandName = bandName( 2 );
-      }
-    }
-
-
-    mTransparencyBandName = TRSTRING_NOT_SET;
-    mGrayBandName = TRSTRING_NOT_SET;  //sensible default
     setDrawingStyle( MultiBandColor );  //sensible default
-
-    // read standard deviations
-    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum &&
-         myQSettings.value( "/Raster/useStandardDeviation", false ).toBool() )
-    {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
-    }
   }
   else                        //GrayOrUndefined
   {
-    mRedBandName = TRSTRING_NOT_SET; //sensible default
-    mGreenBandName = TRSTRING_NOT_SET; //sensible default
-    mBlueBandName = TRSTRING_NOT_SET;  //sensible default
-    mTransparencyBandName = TRSTRING_NOT_SET;  //sensible default
-    mGrayBandName = bandName( 1 );
     setDrawingStyle( SingleBandGray );  //sensible default
-
-    // If we have min/max available (without calculation), it is better to use StretchToMinimumMaximum
-    // TODO: in GUI there is 'Contrast enhancement - Default' which is overwritten here
-    //       and that is confusing
-    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactMinimumMaximum )
-    {
-      setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
-    }
-
-    // read standard deviations
-    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum &&
-         myQSettings.value( "/Raster/useStandardDeviation", false ).toBool() )
-    {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
-    }
   }
-  // Debug
-  //mDrawingStyle = SingleBandPseudoColor;
 
   // Store timestamp
   // TODO move to provider
@@ -2356,8 +1769,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 void QgsRasterLayer::closeDataProvider()
 {
   mValid = false;
-  delete mRasterShader;
-  mRasterShader = 0;
   delete mDataProvider;
   mDataProvider = 0;
 
@@ -2370,53 +1781,12 @@ void QgsRasterLayer::closeDataProvider()
 
 void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingAlgorithm )
 {
-  QgsDebugMsg( "called with [" + QString::number( theShadingAlgorithm ) + "]" );
-  if ( mColorShadingAlgorithm != theShadingAlgorithm )
-  {
-    if ( !mRasterShader )
-    {
-      mRasterShader = new QgsRasterShader();
-    }
-
-    switch ( theShadingAlgorithm )
-    {
-      case PseudoColorShader:
-        mRasterShader->setRasterShaderFunction( new QgsPseudoColorShader() );
-        break;
-      case FreakOutShader:
-        mRasterShader->setRasterShaderFunction( new QgsFreakOutShader() );
-        break;
-      case ColorRampShader:
-        mRasterShader->setRasterShaderFunction( new QgsColorRampShader() );
-        break;
-      case UserDefinedShader:
-        //do nothing
-        break;
-      default:
-        mRasterShader->setRasterShaderFunction( new QgsRasterShaderFunction() );
-        break;
-    }
-
-    //Set the class variable after the call to setRasterShader(), so memory recovery can happen
-    mColorShadingAlgorithm = theShadingAlgorithm;
-  }
-  QgsDebugMsg( "mColorShadingAlgorithm = " + QString::number( theShadingAlgorithm ) );
+  //legacy method
 }
 
 void QgsRasterLayer::setColorShadingAlgorithm( QString theShaderAlgorithm )
 {
-  QgsDebugMsg( "called with [" + theShaderAlgorithm + "]" );
-
-  if ( theShaderAlgorithm == "PseudoColorShader" )
-    setColorShadingAlgorithm( PseudoColorShader );
-  else if ( theShaderAlgorithm == "FreakOutShader" )
-    setColorShadingAlgorithm( FreakOutShader );
-  else if ( theShaderAlgorithm == "ColorRampShader" )
-    setColorShadingAlgorithm( ColorRampShader );
-  else if ( theShaderAlgorithm == "UserDefinedShader" )
-    setColorShadingAlgorithm( UserDefinedShader );
-  else
-    setColorShadingAlgorithm( UndefinedShader );
+  //legacy method
 }
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
@@ -2590,12 +1960,12 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
 
 void QgsRasterLayer::setGrayBandName( QString const & theBandName )
 {
-  mGrayBandName = validateBandName( theBandName );
+  //legacy method
 }
 
 void QgsRasterLayer::setGreenBandName( QString const & theBandName )
 {
-  mGreenBandName = validateBandName( theBandName );
+  //legacy method
 }
 
 void QgsRasterLayer::setLayerOrder( QStringList const & layers )
@@ -2629,84 +1999,22 @@ void QgsRasterLayer::setMaximumValue( QString theBand, double theValue, bool the
 
 void QgsRasterLayer::setMinimumMaximumUsingLastExtent()
 {
-  double myMinMax[2];
-  if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
-  {
-    computeMinimumMaximumFromLastExtent( grayBandName(), myMinMax );
-    setMinimumValue( grayBandName(), myMinMax[0] );
-    setMaximumValue( grayBandName(), myMinMax[1] );
-
-    setUserDefinedGrayMinimumMaximum( true );
-  }
-  else if ( rasterType() == QgsRasterLayer::Multiband )
-  {
-    computeMinimumMaximumFromLastExtent( redBandName(), myMinMax );
-    setMinimumValue( redBandName(), myMinMax[0], false );
-    setMaximumValue( redBandName(), myMinMax[1], false );
-
-    computeMinimumMaximumFromLastExtent( greenBandName(), myMinMax );
-    setMinimumValue( greenBandName(), myMinMax[0], false );
-    setMaximumValue( greenBandName(), myMinMax[1], false );
-
-    computeMinimumMaximumFromLastExtent( blueBandName(), myMinMax );
-    setMinimumValue( blueBandName(), myMinMax[0], false );
-    setMaximumValue( blueBandName(), myMinMax[1], false );
-
-    setUserDefinedRGBMinimumMaximum( true );
-  }
+  //legacy method
 }
 
 void QgsRasterLayer::setMinimumMaximumUsingDataset()
 {
-  if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
-  {
-    QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mGrayBandName ) );
-    double myMin = myRasterBandStats.minimumValue;
-    double myMax = myRasterBandStats.maximumValue;
-    setMinimumValue( grayBandName(), myMin );
-    setMaximumValue( grayBandName(), myMax );
-    setUserDefinedGrayMinimumMaximum( false );
-  }
-  else if ( rasterType() == QgsRasterLayer::Multiband )
-  {
-    QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mRedBandName ) );
-    double myMin = myRasterBandStats.minimumValue;
-    double myMax = myRasterBandStats.maximumValue;
-    setMinimumValue( redBandName(), myMin );
-    setMaximumValue( redBandName(), myMax );
-
-    myRasterBandStats = bandStatistics( bandNumber( mGreenBandName ) );
-    myMin = myRasterBandStats.minimumValue;
-    myMax = myRasterBandStats.maximumValue;
-    setMinimumValue( greenBandName(), myMin );
-    setMaximumValue( greenBandName(), myMax );
-
-    myRasterBandStats = bandStatistics( bandNumber( mGreenBandName ) );
-    myMin = myRasterBandStats.minimumValue;
-    myMax = myRasterBandStats.maximumValue;
-    setMinimumValue( greenBandName(), myMin );
-    setMaximumValue( greenBandName(), myMax );
-
-    setUserDefinedRGBMinimumMaximum( false );
-  }
+  //legacy method
 }
 
 void QgsRasterLayer::setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag )
 {
-  QgsDebugMsg( "setMinimumValue theValue = " + QString::number( theValue ) );
-  if ( 0 < theBand && theBand <= bandCount() )
-  {
-    mContrastEnhancementList[theBand - 1].setMinimumValue( theValue, theGenerateLookupTableFlag );
-  }
+  //legacy method
 }
 
 void QgsRasterLayer::setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag )
 {
-  if ( theBand != tr( "Not Set" ) )
-  {
-    setMinimumValue( bandNumber( theBand ), theValue, theGenerateLookupTableFlag );
-  }
-
+  //legacy method
 }
 
 void QgsRasterLayer::setNoDataValue( double theNoDataValue )
@@ -2727,23 +2035,12 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
 
 void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
 {
-  if ( theFunction )
-  {
-    mRasterShader->setRasterShaderFunction( theFunction );
-    mColorShadingAlgorithm = QgsRasterLayer::UserDefinedShader;
-  }
-  else
-  {
-    //If NULL as passed in, set a default shader function to prevent segfaults
-    mRasterShader->setRasterShaderFunction( new QgsRasterShaderFunction() );
-    mColorShadingAlgorithm = QgsRasterLayer::UndefinedShader;
-  }
+  //legacy method
 }
 
 void QgsRasterLayer::setRedBandName( QString const & theBandName )
 {
-  QgsDebugMsg( "setRedBandName :  " + theBandName );
-  mRedBandName = validateBandName( theBandName );
+  //legacy method
 }
 
 void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
@@ -2759,7 +2056,7 @@ void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
 
 void QgsRasterLayer::setTransparentBandName( QString const & theBandName )
 {
-  mTransparencyBandName = validateBandName( theBandName );
+  //legacy method
 }
 
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
@@ -3034,13 +2331,9 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   // old wms settings we need to correct
   if ( res &&
        mProviderKey == "wms" &&
-       mDrawingStyle == MultiBandColor &&
-       mRedBandName == TRSTRING_NOT_SET &&
-       mGreenBandName == TRSTRING_NOT_SET &&
-       mBlueBandName == TRSTRING_NOT_SET )
+       mDrawingStyle == MultiBandColor )
   {
     mDrawingStyle = SingleBandColorDataStyle;
-    mGrayBandName = bandName( 1 );
   }
 
   // Check timestamp
