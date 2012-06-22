@@ -3,7 +3,6 @@ from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui
 from sextante.core.Sextante import Sextante
 from sextante.gui.ParametersDialog import ParametersDialog
-import copy
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 from sextante.core.SextanteLog import SextanteLog
@@ -143,6 +142,9 @@ class SextanteToolbox(QtGui.QDockWidget):
         for providerName in Sextante.algs.keys():
             groups = {}
             provider = Sextante.algs[providerName]
+            name = "ACTIVATE_" + providerName.upper().replace(" ", "_")
+            if not SextanteConfig.getSetting(name):
+                continue
             algs = provider.values()
             #add algorithms
             for alg in algs:
@@ -158,19 +160,17 @@ class SextanteToolbox(QtGui.QDockWidget):
                     algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
 
-            #add actions only if there are algorithms in this provider
-            if len(groups)>0:
-                actions = Sextante.actions[providerName]
-                for action in actions:
-                    if text =="" or text.lower() in action.name.lower():
-                        if action.group in groups:
-                            groupItem = groups[action.group]
-                        else:
-                            groupItem = QtGui.QTreeWidgetItem()
-                            groupItem.setText(0,action.group)
-                            groups[action.group] = groupItem
-                        algItem = TreeActionItem(action)
-                        groupItem.addChild(algItem)
+            actions = Sextante.actions[providerName]
+            for action in actions:
+                if text =="" or text.lower() in action.name.lower():
+                    if action.group in groups:
+                        groupItem = groups[action.group]
+                    else:
+                        groupItem = QtGui.QTreeWidgetItem()
+                        groupItem.setText(0,action.group)
+                        groups[action.group] = groupItem
+                    algItem = TreeActionItem(action)
+                    groupItem.addChild(algItem)
 
             if len(groups)>0:
                 providerItem = QtGui.QTreeWidgetItem()
@@ -191,15 +191,18 @@ class SextanteToolbox(QtGui.QDockWidget):
         if showRecent:
             recent = SextanteLog.getRecentAlgorithms()
             if len(recent) != 0:
+                found = False
                 recentItem = QtGui.QTreeWidgetItem()
                 recentItem.setText(0,"Recently used algorithms")
                 for algname in recent:
                     alg = Sextante.getAlgorithm(algname)
-                    algItem = TreeAlgorithmItem(alg)
-                    recentItem.addChild(algItem)
-                self.algorithmTree.insertTopLevelItem(0, recentItem)
-                recentItem.setExpanded(True)
-
+                    if alg is not None:
+                        algItem = TreeAlgorithmItem(alg)
+                        recentItem.addChild(algItem)
+                        found = True
+                if found:
+                    self.algorithmTree.insertTopLevelItem(0, recentItem)
+                    recentItem.setExpanded(True)
 
 
 

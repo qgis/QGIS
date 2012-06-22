@@ -383,6 +383,12 @@ class ModelerParametersDialog(QtGui.QDialog):
                 else:
                     pass
 
+            for out in self.alg.outputs:
+                if not out.hidden:
+                    value = self.model.algOutputs[self.algIndex][out.name]
+                    if value is not None:
+                        widget = self.valueItems[out.name].setText(str(value))
+
             #TODO
 
 
