@@ -67,9 +67,7 @@ class OTBAlgorithm(GeoAlgorithm):
                         param.default = OTBUtils.otbGeoidPath()
                     self.addParameter(param)
                 elif line.startswith("Extent"):
-                    self.extentParamNames = line[6:].strip().split(" ")
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
-                    self.roiFile = SextanteUtils.getTempFilename('tif')
                 else:
                     self.addOutput(OutputFactory.getFromString(line))
                 line = lines.readline().strip("\n").strip()
@@ -88,6 +86,7 @@ class OTBAlgorithm(GeoAlgorithm):
         commands = []
         commands.append(path + os.sep + self.cliName)
 
+        self.roiRasters = {}
         for param in self.parameters:
             if param.value == None or param.value == "":
                 continue
@@ -97,8 +96,9 @@ class OTBAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterRaster):
                 commands.append(param.name)
                 if self.roiFile:
-                    commands.append(self.roiFile)
-                    self.roiInput = param.value
+                    roiFile = SextanteUtils.getTempFilename('tif')
+                    commands.append(roiFile)
+                    self.roiRasters[param.value] = roiFile
                 else:
                     commands.append(param.value)
             elif isinstance(param, ParameterMultipleInput):
@@ -122,7 +122,7 @@ class OTBAlgorithm(GeoAlgorithm):
             commands.append(out.name)
             commands.append(out.value)
 
-        if self.roiFile:
+        for roiInput, roiFile in self.roiRasters.items():
             startX, startY = float(self.roiValues[0]), float(self.roiValues[1])
             sizeX = float(self.roiValues[2]) - startX
             sizeY = float(self.roiValues[3]) - startY
