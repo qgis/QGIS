@@ -270,6 +270,16 @@ static QVariant fcnToString( const QVariantList& values, QgsFeature* , QgsExpres
 {
   return QVariant( getStringValue( values.at( 0 ), parent ) );
 }
+static QVariant fcnCoalesce( const QVariantList& values, QgsFeature* , QgsExpression* )
+{
+  foreach( const QVariant &value, values )
+  {
+    if ( value.isNull() )
+      continue;
+    return value;
+  }
+  return QVariant();
+}
 static QVariant fcnLower( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -323,6 +333,15 @@ static QVariant fcnFeatureId( const QVariantList& , QgsFeature* f, QgsExpression
 {
   // TODO: handling of 64-bit feature ids?
   return f ? QVariant(( int )f->id() ) : QVariant();
+}
+static QVariant fcnConcat( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString concat;
+  foreach( const QVariant &value, values )
+  {
+    concat += getStringValue( value, parent );
+  }
+  return concat;
 }
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype)   if (!f) return QVariant(); \
@@ -431,6 +450,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
     << FunctionDef( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
+    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conversions" ) )
     // string manipulation
     << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
@@ -438,6 +458,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "replace", 3, fcnReplace, QObject::tr( "String" ) )
     << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
     << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
+    << FunctionDef( "concat", -1, fcnConcat, QObject::tr( "String" ) )
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
@@ -693,7 +714,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
     QgsExpression::Node *operand2 = 0, *upperBound = 0;
 
     QDomElement operandElem = element.firstChildElement();
-    while( !operandElem.isNull() )
+    while ( !operandElem.isNull() )
     {
       if ( operandElem.localName() == "LowerBoundary" )
       {
@@ -1340,8 +1361,8 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
     {
       QVariant v = n->eval( parent, f );
       ENSURE_NO_EVAL_ERROR;
-      if ( isNull( v ) )
-        return QVariant(); // all "normal" functions return NULL when any parameter is NULL
+      if ( isNull( v ) && fd.mFcn != fcnCoalesce )
+        return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
       argValues.append( v );
     }
   }
