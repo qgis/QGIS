@@ -41,6 +41,7 @@ class QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDia
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();
+    void on_mGridTypeComboBox_currentIndexChanged( int index );
     void on_mLineSymbolButton_clicked();
     void on_mMarkerSymbolButton_clicked();
 
@@ -49,7 +50,7 @@ class QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDia
     void on_mAnnotationFontButton_clicked();
 
   private:
-    QgsDecorationGrid& mDeco;    
+    QgsDecorationGrid& mDeco;
     QgsLineSymbolV2* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
 

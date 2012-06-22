@@ -58,40 +58,33 @@ class QgsDecorationGrid: public QgsDecorationItem
       BoundaryDirection
     };
 
-    /**Sets coordinate grid style to solid or cross
-        @note this function was added in version 1.4*/
+    /**Sets coordinate grid style.
+    @note this function (and all others) was added in version 2.0 */
     void setGridStyle( GridStyle style ) {mGridStyle = style;}
     GridStyle gridStyle() const { return mGridStyle; }
 
-    /**Sets coordinate interval in x-direction for composergrid.
-        @note this function was added in version 1.4*/
+    /**Sets coordinate interval in x-direction for composergrid. */
     void setGridIntervalX( double interval ) { mGridIntervalX = interval;}
     double gridIntervalX() const { return mGridIntervalX; }
 
-    /**Sets coordinate interval in y-direction for composergrid.
-    @note this function was added in version 1.4*/
+    /**Sets coordinate interval in y-direction for composergrid. */
     void setGridIntervalY( double interval ) { mGridIntervalY = interval;}
     double gridIntervalY() const { return mGridIntervalY; }
 
-    /**Sets x-coordinate offset for composer grid
-    @note this function was added in version 1.4*/
+    /**Sets x-coordinate offset for composer grid */
     void setGridOffsetX( double offset ) { mGridOffsetX = offset; }
     double gridOffsetX() const { return mGridOffsetX; }
 
-    /**Sets y-coordinate offset for composer grid
-    @note this function was added in version 1.4*/
+    /**Sets y-coordinate offset for composer grid */
     void setGridOffsetY( double offset ) { mGridOffsetY = offset; }
     double gridOffsetY() const { return mGridOffsetY; }
 
-    /**Sets the pen to draw composer grid
-    @note this function was added in version 1.4*/
+    /**Sets the pen to draw composer grid */
     void setGridPen( const QPen& p ) { mGridPen = p; }
     QPen gridPen() const { return mGridPen; }
-    /**Sets with of grid pen
-    @note this function was added in version 1.4*/
+    /**Sets with of grid pen */
     void setGridPenWidth( double w ) { mGridPen.setWidthF( w ); }
-    /**Sets the color of the grid pen
-    @note this function was added in version 1.4*/
+    /**Sets the color of the grid pen */
     void setGridPenColor( const QColor& c ) {  mGridPen.setColor( c ); }
 
     /**Sets font for grid annotations
@@ -217,8 +210,7 @@ class QgsDecorationGrid: public QgsDecorationItem
     void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement = Qt::AlignLeft, Qt::AlignmentFlag valignement = Qt::AlignTop ) const;
     /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
-    /**Returns the font height of a character in millimeters
-      @note this method was added in version 1.7*/
+    /**Returns the font height of a character in millimeters. */
     double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;

@@ -31,28 +31,32 @@
 #include <QSettings>
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidget* parent )
-  : QDialog( parent ), mDeco( deco ), mLineSymbol( 0 ), mMarkerSymbol( 0 )
+    : QDialog( parent ), mDeco( deco ), mLineSymbol( 0 ), mMarkerSymbol( 0 )
 {
   setupUi( this );
 
   QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
+  //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
 
   chkEnable->setChecked( mDeco.enabled() );
 
   // mXMinLineEdit->setValidator( new QDoubleValidator( mXMinLineEdit ) );
 
-  mGridTypeComboBox->insertItem( 0, tr( "Solid" ) );
-  mGridTypeComboBox->insertItem( 1, tr( "Cross" ) );
-  mGridTypeComboBox->insertItem( 2, tr( "Marker" ) );
+  mGridTypeComboBox->insertItem( QgsDecorationGrid::Solid, tr( "Lines" ) );
+  mGridTypeComboBox->insertItem( QgsDecorationGrid::Cross, tr( "Cross" ) );
+  mGridTypeComboBox->insertItem( QgsDecorationGrid::Marker, tr( "Marker" ) );
 
-  mAnnotationPositionComboBox->insertItem( 0, tr( "Inside frame" ) );
-  // mAnnotationPositionComboBox->insertItem( 1, tr( "Outside frame" ) );
+  mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::InsideMapFrame, tr( "Inside frame" ) );
+  // mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::OutsideMapFrame, tr( "Outside frame" ) );
 
-  mAnnotationDirectionComboBox->insertItem( 0, tr( "Horizontal" ) );
-  mAnnotationDirectionComboBox->insertItem( 1, tr( "Vertical" ) );
-  mAnnotationDirectionComboBox->insertItem( 2, tr( "Horizontal and Vertical" ) );
-  mAnnotationDirectionComboBox->insertItem( 2, tr( "Boundary direction" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Horizontal,
+      tr( "Horizontal" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Vertical,
+      tr( "Vertical" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::HorizontalAndVertical,
+      tr( "Horizontal and Vertical" ) );
+  mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::BoundaryDirection,
+      tr( "Boundary direction" ) );
 
   updateGuiElements();
 
@@ -71,52 +75,16 @@ void QgsDecorationGridDialog::updateGuiElements()
   mOffsetXSpinBox->setValue( mDeco.gridOffsetX() );
   mOffsetYSpinBox->setValue( mDeco.gridOffsetY() );
 
-  QgsDecorationGrid::GridStyle gridStyle = mDeco.gridStyle();
-  if ( gridStyle == QgsDecorationGrid::Cross )
-  {
-    mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Cross" ) ) );
-  }
-  else if ( gridStyle == QgsDecorationGrid::Marker )
-  {
-    mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Marker" ) ) );
-  }
-  else
-  {
-    mGridTypeComboBox->setCurrentIndex( mGridTypeComboBox->findText( tr( "Solid" ) ) );
-  }
-  
+  mGridTypeComboBox->setCurrentIndex(( int ) mDeco.gridStyle() );
+
   mCrossWidthSpinBox->setValue( mDeco.crossLength() );
 
-  QgsDecorationGrid::GridAnnotationPosition annotationPos = mDeco.gridAnnotationPosition();
-  if ( annotationPos == QgsDecorationGrid::InsideMapFrame )
-  {
-    mAnnotationPositionComboBox->setCurrentIndex( mAnnotationPositionComboBox->findText( tr( "Inside frame" ) ) );
-  }
-  else
-  {
-    mAnnotationPositionComboBox->setCurrentIndex( mAnnotationPositionComboBox->findText( tr( "Outside frame" ) ) );
-  }
-  
+  mAnnotationPositionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationPosition() );
+
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
-  
-  QgsDecorationGrid::GridAnnotationDirection dir = mDeco.gridAnnotationDirection();
-  if ( dir == QgsDecorationGrid::Horizontal )
-  {
-    mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Horizontal" ) ) );
-  }
-  else if ( dir == QgsDecorationGrid::Vertical )
-  {
-    mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Vertical" ) ) );
-    }
-  else if ( dir == QgsDecorationGrid::HorizontalAndVertical )
-  {
-    mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Horizontal and Vertical" ) ) );
-  }
-  else //BoundaryDirection
-  {
-    mAnnotationDirectionComboBox->setCurrentIndex( mAnnotationDirectionComboBox->findText( tr( "Boundary direction" ) ) );
-  }
-  
+
+  mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
+
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
 
   // QPen gridPen = mDeco.gridPen();
@@ -140,7 +108,7 @@ void QgsDecorationGridDialog::updateGuiElements()
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
     mMarkerSymbolButton->setIcon( icon );
   }
-  
+
   // blockAllSignals( false );
 }
 
@@ -196,12 +164,12 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setGridAnnotationPrecision( mCoordinatePrecisionSpinBox->value() );
   if ( mLineSymbol )
   {
-    mDeco.setLineSymbol( mLineSymbol ); 
+    mDeco.setLineSymbol( mLineSymbol );
     mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( mDeco.lineSymbol()->clone() );
   }
   if ( mMarkerSymbol )
   {
-    mDeco.setMarkerSymbol( mMarkerSymbol ); 
+    mDeco.setMarkerSymbol( mMarkerSymbol );
     mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mDeco.markerSymbol()->clone() );
   }
 }
@@ -232,7 +200,7 @@ void QgsDecorationGridDialog::apply()
 {
   updateDecoFromGui();
   mDeco.update();
-  //accept();  
+  //accept();
 }
 
 void QgsDecorationGridDialog::on_buttonBox_rejected()
@@ -243,13 +211,21 @@ void QgsDecorationGridDialog::on_buttonBox_rejected()
 
 // void QgsDecorationGridDialog::on_mLineColorButton_clicked()
 // {
-  // QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
-  // if ( newColor.isValid() )
-  // {
-  //   mLineColorButton->setColor( newColor );
-  //   mDeco.setGridPenColor( newColor );
-  // }
+// QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
+// if ( newColor.isValid() )
+// {
+//   mLineColorButton->setColor( newColor );
+//   mDeco.setGridPenColor( newColor );
 // }
+// }
+
+void QgsDecorationGridDialog::on_mGridTypeComboBox_currentIndexChanged( int index )
+{
+  mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Solid );
+  mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
+  mMarkerSymbolButton->setEnabled( index == QgsDecorationGrid::Marker );
+}
+
 
 void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
 {
