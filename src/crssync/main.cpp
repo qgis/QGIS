@@ -40,6 +40,12 @@ int main( int argc, char ** argv )
 {
   QgsApplication a( argc, argv, false );
 
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
+    char* prefixPath = getenv( "QGIS_PREFIX_PATH" );
+    QgsApplication::setPrefixPath( prefixPath ? prefixPath : CMAKE_INSTALL_PREFIX, TRUE );
+  }
+
   std::cout << "Synchronizing CRS database with PROJ definitions." << std::endl;
 
   CPLPushErrorHandler( showError );
