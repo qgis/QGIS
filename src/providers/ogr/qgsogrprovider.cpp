@@ -485,7 +485,7 @@ QStringList QgsOgrProvider::subLayers() const
       default:                    geom = QString( "Unknown WKB: %1" ).arg( layerGeomType );
     }
 
-    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount ).arg( geom );
+    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
   }
 
   return mSubLayerList;
