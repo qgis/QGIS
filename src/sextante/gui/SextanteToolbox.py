@@ -40,7 +40,7 @@ class SextanteToolbox(QtGui.QDockWidget):
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.externalAppsButton = QtGui.QPushButton()
-        self.externalAppsButton.setText("Click here to configure additional algorithm providers")
+        self.externalAppsButton.setText("Click here to configure\nadditional algorithm providers")
         QObject.connect(self.externalAppsButton, QtCore.SIGNAL("clicked()"), self.configureProviders)
         self.verticalLayout.addWidget(self.externalAppsButton)
         self.searchBox = QtGui.QLineEdit(self.contents)
