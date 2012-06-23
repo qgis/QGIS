@@ -336,6 +336,13 @@ real examples of how to create algorithms using this feature of
 SEXTANTE. You can right-click on any script algorithm and select *Edit
 script* to edit its code or just to see it.
 
+Documenting your scripts
+--------------------------
+
+As in the case of models, you can create additional documentation for your script, to explain what they do and how to use them. In the script editing dialog you will find a *Edit script help* button. Click on it and it will take you to the help editing dialog. Check the chapter about the graphical modeler to know more about this dialog and how to use it.
+
+Help files are saved in the same folder as the script itself, adding the *.help* extension to the filename. Notice that you can edit your script's help before saving it for the first time. If you later close the script editing dialog without saving the script (i.e. you discard it), the help content you wrote will be lost. If your script was already saved and is associated to a filename, saving is done automatically.
+
 Communicating with the user
 ----------------------------
 

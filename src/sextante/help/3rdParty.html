@@ -52,18 +52,16 @@
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>SEXTANTE can be extended using additional applications, calling them
-from within SEXTANTE.</p>
-<p>By default, algorithms coming from external applications are not activated unless SEXTANTE has checked that the corresponding applications are installed in your system and can be executed. That means that there are probably many more algorithms available than those that you can see in the toolbox, but some extra configuration is needed to have them fully operational.</p>
-<p>This chapter will show you how to configure SEXTANTE to include these
+from within SEXTANTE. Currently, SAGA, GRASS, OTB(Orfeo Toolbox) and R are supported, along
+with some other command-line applications that provide spatial data
+analysis functionalities.
+This chapter will show you how to configure SEXTANTE to include these
 additional applications. Once you have correctly configured the system,
 you will be able to execute external algorithms from any SEXTANTE
 component like the toolbox or the graphical modeler, just like you do
 with any other SEXTANTE geoalgorithm.</p>
-<p>At the time of writing this manual, SEXTANTE has two external providers activated by default: GRASS and GDAL. This providers are activated because QGIS includes both the GRASS binaries and the GDAL library files, so there is no need for further configuration (QGIS developers have done that in advance for you). This might change in other versions, but for now it means that you need to manually install and configure those external programs. Do not worry, this is very easy to do. If you are running Linux, you just have to install the software yourself and then activate the corresponding algorithm provider. If you are running Windows, you should also tell SEXTANTE the path to the software.</p>
-<p>For each algorithm provider there is a group entry in the SEXTANTE configuration dialog, which contains at least an &#8220;Activate&#8221; item. Other parameters might appear if they are needed to configure the provider (mostly paths to executales and additional files). In the following sections, we will see how to set those parameters for the main providers currently available for SEXTANTE. But first, a couple of quick notes with important information about using algorithms based on external applications.</p>
 <div class="section" id="a-note-on-file-formats">
 <h3>A note on file formats<a class="headerlink" href="#a-note-on-file-formats" title="Permalink to this headline">¶</a></h3>
-<p>Algorithms provided by external applications have some differences when compared to &#8220;native&#8221; SEXTANTE algorithm. The main one of them is related to the file formats supported both for input and for output.</p>
 <p>When using an external software, opening a file in QGIS does not mean
 that it can be opened and processed as well on that other software. In
 most cases, it can read what you have opened in QGIS, but in some cases,
@@ -116,7 +114,7 @@ layer.</p>
 <h2>SAGA<a class="headerlink" href="#saga" title="Permalink to this headline">¶</a></h2>
 <p>SAGA algorithms can be run from SEXTANTE if you have SAGA installed in
 your system and you configure SEXTANTE properly so it can find SAGA
-executables. In particular, the SAGA command-line executable is needed
+executables. In particular, the SAGA command–line executable is needed
 to run SAGA algorithms. SAGA binaries are not included with SEXTANTE, so
 you have to download and install the software yourself. Please check the
 SAGA website at for more information. SAGA 2.0.8 is needed.</p>
@@ -189,7 +187,7 @@ saw in the chapter dedicated to SEXTANTE scripts. This chapter shows you
 the syntax to use to call those R commands from SEXTANTE and how to use
 SEXTANTE objects (layers, tables) in them.</p>
 <p>The first thing you have to do, as we saw in the case of SAGA, is to
-tell SEXTANTE where your R binaries are located. You can do so using the
+tell SEXTANTE where you R binaries are located. You can do so using the
 <em>R folder</em> entry in the SEXTANTE configuration dialog. Once you have set
 that parameter, you can start creating your own R scripts and executing
 them.</p>
@@ -267,9 +265,8 @@ be retuned to SEXTANTE.</p>
 console instead, you have to tell SEXTANTE that you want the console to
 be shown once the execution is finished. To do so, just start the
 command lines that produce the results you want to print with the
-“<span class="math">
-\(&gt;\)</span>
-” sign. The output of all other lines will not be shown. For
+“<math xmlns="http://www.w3.org/1998/Math/MathML">
+<mrow><mo>&gt;</mo></mrow></math>” sign. The output of all other lines will not be shown. For
 instance, here is the description file of an algorithms that performs a
 normality test on a given field (column) of the attributes of a vector
 layer:</p>
