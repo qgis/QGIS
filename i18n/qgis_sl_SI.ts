@@ -470,13 +470,13 @@ Ali želite nov sloj dodati na zemljevid?</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Opozorilo</translation>
+        <translation>Opozorilo</translation>
     </message>
     <message>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenutno QGIS ne dopušča hkratnega dostopa do istih podatkov iz različnih niti. Preverite, da je podatkovna tabela sloja zaprta. Želite nadaljujevati?</translation>
     </message>
     <message>
         <source>Finished</source>
@@ -4251,7 +4251,7 @@ Ali želite sloj dodati na karto?</translation>
         <source>Currently QGIS doesn&apos;t allow simultaneous access from 
                                  different threads to the same datasource. Make sure your layer&apos;s 
                                  attribute tables are closed. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Trenutno QGIS ne dopušča hkratnega dostopa do istih podatkov iz različnih niti. Preverite, da je podatkovna tabela sloja zaprta. Želite nadaljujevati?</translation>
     </message>
     <message>
         <source>Layer &apos;%1&apos; updated</source>
@@ -6307,12 +6307,13 @@ Napaka pri geoprocesiranju: Eden ali več vhodnih elementov imajo neveljavne geo
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="211"/>
         <source>Starts process of selecting next relation member on map.</source>
-        <translation>Začne proces izbire naslednje relacije na karti</translation>
+        <translatorcomment>relacija, zveza, povezava - za poenotit! Relacija je kot kovk najslabša.</translatorcomment>
+        <translation>Začne proces izbire naslednjega člana relacije na karti.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="224"/>
         <source>Remove all selected members</source>
-        <translation>Odstrani vse izbrane člane.</translation>
+        <translation>Odstrani vse izbrane člane</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="227"/>
@@ -6507,7 +6508,7 @@ Napaka pri geoprocesiranju: Eden ali več vhodnih elementov imajo neveljavne geo
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation>Dialog &apos;Ustvari OSM relacijo&apos; je bil zaprt avtomatsko zaradi spremembe v trenutni OSM PB</translation>
+        <translation>Dialog &apos;Ustvari OSM relacijo&apos; je bil avtomatsko zaprt zaradi spremembe v trenutni OSM PB.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
@@ -6519,7 +6520,7 @@ Napaka pri geoprocesiranju: Eden ali več vhodnih elementov imajo neveljavne geo
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation>Najprej izberite relacijo za urejanje</translation>
+        <translation>Najprej izberite relacijo za urejanje.</translation>
     </message>
     <message>
         <source>Snapping ON. Hold Ctrl to disable it.</source>
@@ -6864,11 +6865,11 @@ Napaka pri geoprocesiranju: Eden ali več vhodnih elementov imajo neveljavne geo
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation>Nalaganje OSM podatkov</translation>
+        <translation>Naloži OSM podatke</translation>
     </message>
     <message>
         <source>Upload OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Nalaganje OpenStreetMap podatkov</translation>
     </message>
     <message>
         <source>Show/Hide OSM Feature Manager</source>
@@ -6893,7 +6894,8 @@ Napaka pri geoprocesiranju: Eden ali več vhodnih elementov imajo neveljavne geo
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naloženih ni nobenih podatkov OSM ali pa v oknu Sloji ni izbran noben sloj OSM. 
+Prosimo, da najprej naredite eno ali drugo, saj dodatek OSM ne more ničesar shraniti.</translation>
     </message>
     <message>
         <source>OSM Upload</source>
@@ -6902,7 +6904,8 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what to
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naloženih ni nobenih podatkov OSM ali pa v oknu Sloji ni izbran noben sloj OSM. 
+Prosimo, da najprej naredite eno ali drugo, saj dodatek OSM ne more ničesar naložiti.</translation>
     </message>
     <message>
         <source>OSM Import</source>
@@ -6911,7 +6914,8 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what to
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naloženih ni nobenih podatkov OSM ali pa v oknu Sloji ni izbran noben sloj OSM. 
+Prosimo, da najprej naredite eno ali drugo, saj dodatek OSM ne ve v kateri sloj uvoziti podatke.</translation>
     </message>
     <message>
         <source>There are currently no available vector layers.</source>
@@ -7066,55 +7070,55 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Way addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodajanje poti neuspešno.</translation>
     </message>
     <message>
         <source>Way update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Posodobitev poti neuspešno.</translation>
     </message>
     <message>
         <source>Way deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brisanje poti neuspešno.</translation>
     </message>
     <message>
         <source>Relation addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodajanje zveze neuspešno.</translation>
     </message>
     <message>
         <source>Relation update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Posodobitev zveze neuspešno.</translation>
     </message>
     <message>
         <source>Relation deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Brisanje zveze neuspešno.</translation>
     </message>
     <message>
         <source>Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Povezave s strežnikom OpenStreetMap ni mogoče vzpostaviti. Prosimo preverite nastavitve požarnega zidu in morebitnega proxy strežnike ter poskusite znova.</translation>
     </message>
     <message>
         <source>Changeset closing failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaključitev skupine sprememb je spodletela.</translation>
     </message>
     <message>
         <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prenos ni bil uspešen. OpenStreetMap strežnik odgovarja: %1 - %2.</translation>
     </message>
     <message>
         <source>Authentication failed. Please try again with correct login and password.</source>
-        <translation type="unfinished"></translation>
+        <translation>Overovitev ni uspela. Prosimo poskusite znova s pravilnim uporabniškim imenom in geslom.</translation>
     </message>
     <message>
         <source>Setting host failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspešno nastavljanje gostitelja.</translation>
     </message>
     <message>
         <source>Setting user and password failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspešno nastavljanje uporabnika in gesla.</translation>
     </message>
     <message>
         <source>Setting proxy failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspešno nastavljanje proxy strežnika.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -7186,7 +7190,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation type="unfinished">polje preštetih točk</translation>
+        <translation>polje preštetih točk</translation>
     </message>
 </context>
 <context>
@@ -8543,7 +8547,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="87"/>
         <source>ring %1 with less than four points</source>
-        <translation type="unfinished"></translation>
+        <translation>obroč %1 z manj kot štirimi točkami</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="96"/>
@@ -8555,10 +8559,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation>
+            <numerusform>linija %1 vsebuje %n podvojeno vozlišče pri %2</numerusform>
+            <numerusform>linija %1 vsebuje %n podvojeni vozlišči pri %2</numerusform>
+            <numerusform>linija %1 vsebuje %n podvojena vozlišča pri %2</numerusform>
             <numerusform>linija %1 vsebuje %n podvojenih vozlišč pri %2</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -8574,7 +8578,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="206"/>
         <source>GEOS error:could not produce geometry for GEOS (check log window)</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS napaka:stvaritev geometrije za GEOS ni uspela (poglejte okno z dnevnikom)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="223"/>
@@ -9147,7 +9151,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
@@ -9567,7 +9571,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsgeometry.cpp" line="6738"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6761"/>
         <source>Exception: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Izjema: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometry.cpp" line="40"/>
@@ -9593,12 +9597,12 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsgeometry.cpp" line="6738"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6761"/>
         <source>GEOS</source>
-        <translation type="unfinished">GEOS</translation>
+        <translation>GEOS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmessageoutput.cpp" line="72"/>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konzola</translation>
     </message>
 </context>
 <context>
@@ -10647,7 +10651,7 @@ Prosim obrnite se na razvijalce.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1330"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation>Orodje, ki prikazuje stanje prikazanih slojev in druge časovno intenzivne dejavnosti</translation>
+        <translation>Vrstica napredka, ki prikazuje stanje prikazanih slojev in druge časovno intenzivne dejavnosti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1345"/>
@@ -10764,10 +10768,10 @@ Always ignore these errors?</source>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
-            <numerusform>%n napak</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>prišlo je do %n SSL napake</numerusform>
+            <numerusform>prišlo je do %n SSL napak</numerusform>
+            <numerusform>prišlo je do %n SSL napak</numerusform>
+            <numerusform>prišlo je do %n SSL napak</numerusform>
         </translation>
     </message>
     <message>
@@ -11291,10 +11295,10 @@ Napaka: %1</translation>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
-            <numerusform>%n element(ov) označenih na sloju %1.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>%n element označen na sloju %1.</numerusform>
+            <numerusform>%n elementa označena na sloju %1.</numerusform>
+            <numerusform>%n elementi označeni na sloju %1.</numerusform>
+            <numerusform>%n elementov označenih na sloju %1.</numerusform>
         </translation>
     </message>
     <message>
@@ -11555,10 +11559,10 @@ Različica je prevedena v Qt %1, in se izvaja  Qt %2</translation>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
-            <numerusform>Izbrisano %n element(ov)?</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Izbriši %n element?</numerusform>
+            <numerusform>Izbriši %n elementa?</numerusform>
+            <numerusform>Izbriši %n elemente?</numerusform>
+            <numerusform>Izbriši %n elementov?</numerusform>
         </translation>
     </message>
     <message>
@@ -11836,7 +11840,7 @@ Napake: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1172"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Okno</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1190"/>
@@ -12101,7 +12105,7 @@ Napake: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7092"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation>&lt;p&gt; Datoteka je bila shranjena s starejšo različico QGIS. Pri shranjevanju se bo datoteka  posodobila na najnovejšo različico. Morda datoteke ne boste mogli uporabljati s prejšnjimi različicami. &lt;p&gt; Čeprav  razvijalci poskušajo ohraniti združljivost nazaj, bi lahko bili nekateri podatki izgubljeni . Da bi izboljšali kakovost programa, lahko sporočilo o napaki pošljete na% 3. &lt;p&gt;To opozorilo lahko izkjučite &apos;%5&apos; v izbiri %4.&lt;p&gt;Različica datoteke: %1&lt;br&gt;Trenutna različica programa: %2</translation>
+        <translation>&lt;p&gt; Datoteka je bila shranjena s starejšo različico QGIS. Pri shranjevanju se bo datoteka posodobila na najnovejšo različico. Morda datoteke ne boste mogli uporabljati s prejšnjimi različicami. &lt;p&gt; Čeprav razvijalci poskušajo ohraniti združljivost za nazaj, bi lahko bili nekateri podatki izgubljeni . Da bi izboljšali kakovost programa, lahko sporočilo o napaki pošljete na %3. Ne pozabite priložiti stare datoteke in napisati s katero različico je prišlo do napake. &lt;p&gt;To opozorilo lahko izkjučite, tako da odkljukate &apos;%5&apos; v meniju %4.&lt;p&gt;Različica datoteke: %1&lt;br&gt;Trenutna različica programa: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7108"/>
@@ -12965,10 +12969,10 @@ Mapa uporabniškega podatkovnega skladišča:	%8
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
         <translation>
-            <numerusform>Podatkovna tabela - %1 (%n Element(ov))</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n element)</numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n elementa)</numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n elementi)</numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n elementov)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -12976,10 +12980,10 @@ Mapa uporabniškega podatkovnega skladišča:	%8
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
         <translation>
-            <numerusform>Podatkovna tabela - %1 :: %n / %2 označenih element(ov)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Podatkovna tabela - %1 :: %n / %2 označen element</numerusform>
+            <numerusform>Podatkovna tabela - %1 :: %n / %2 označena elementa</numerusform>
+            <numerusform>Podatkovna tabela - %1 :: %n / %2 označeni elementi</numerusform>
+            <numerusform>Podatkovna tabela - %1 :: %n / %2 označenih elementov</numerusform>
         </translation>
     </message>
     <message>
@@ -12997,10 +13001,10 @@ Mapa uporabniškega podatkovnega skladišča:	%8
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
         <translation>
-            <numerusform>Podatkovna tabela - %1 (%n ustreznih element(ov))</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n ustrezen element)</numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n ustrezna elementa)</numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n ustrezni elementi)</numerusform>
+            <numerusform>Podatkovna tabela - %1 (%n ustreznih elementov)</numerusform>
         </translation>
     </message>
     <message>
@@ -13711,10 +13715,10 @@ Podatkovno skladišče:%2</translation>
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
         <translation>
+            <numerusform>Ali ste prepričani, da želite izbrisati %n zaznamek?</numerusform>
+            <numerusform>Ali ste prepričani, da želite izbrisati %n zaznamka?</numerusform>
+            <numerusform>Ali ste prepričani, da želite izbrisati %n zaznamke?</numerusform>
             <numerusform>Ali ste prepričani, da želite izbrisati %n zaznamkov?</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -18869,7 +18873,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="425"/>
         <source>(Showing English version as there was no help available in your language (%1). If you would like to create it, contact the QGIS translation team).&lt;br&gt;</source>
-        <translation>Te datoteke pomoči ni na voljo v vašem jeziku (1%). Če jo želite prevesti, se obrnite na razvojno ekipo.&lt;br&gt;</translation>
+        <translation>Te datoteke pomoči ni na voljo v vašem jeziku (%1). Če jo želite prevesti, se obrnite na razvojno ekipo.&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="427"/>
@@ -22052,9 +22056,9 @@ p, li { white-space: pre-wrap; }
         <comment>number of layers to delete</comment>
         <translation>
             <numerusform>Ali res želite izbrisati %n izbrani sloj?</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Ali res želite izbrisati %n izbran sloj?</numerusform>
+            <numerusform>Ali res želite izbrisati %n izbrane sloje?</numerusform>
+            <numerusform>Ali res želite izbrisati %n izbranih slojev?</numerusform>
         </translation>
     </message>
     <message>
@@ -23587,7 +23591,7 @@ v vrstici %2 stolpca %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="986"/>
         <source>Cannot reproject region</source>
-        <translation>Ne morem reprojecirati regije.</translation>
+        <translation>Ne morem reprojecirati regije</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1207"/>
@@ -23845,7 +23849,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2041"/>
         <source>New mapset:</source>
-        <translation>Novi nabor kart</translation>
+        <translation>Novi nabor kart:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2526"/>
@@ -24086,7 +24090,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="569"/>
         <source>New vector created but cannot be opened by data provider.</source>
-        <translation>Novi vektor je ustvarjen, vendar se ne da odpreti s strani ponudnika</translation>
+        <translation>Novi vektorski sloj je bil ustvarjen, vendar ga ponudnik ne more odpreti.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="583"/>
@@ -24610,10 +24614,10 @@ v vrstici %2 stolpca %3</translation>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
         <translation>
-            <numerusform>Še vedno so nedokončani naslednji sloji %n , zato bodo izgubljeni.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Še vedno je nedokončan %n sloj, ki bo izgubljen, če zaprete zdaj.</numerusform>
+            <numerusform>Še vedno sta nedokončana %n sloja, ki bosta izgubljena, če zaprete zdaj.</numerusform>
+            <numerusform>Še vedno so nedokončani %n sloji, ki bodo izgubljeni, če zaprete zdaj.</numerusform>
+            <numerusform>Še vedno je nedokončanih %n slojev, ki bodo izgubljeni, če zaprete zdaj.</numerusform>
         </translation>
     </message>
 </context>
@@ -24826,11 +24830,14 @@ v vrstici %2 stolpca %3</translation>
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation>
+            <numerusform>Mreža ni odgovorila po %n sekundi neaktivnosti.
+Verjetno je problem v vaši mrežni povezavi ali pa je napaka pri WMS strežniku.</numerusform>
             <numerusform>Mreža ni odgovorila po %n sekundah neaktivnosti.
 Verjetno je problem v vaši mrežni povezavi ali pa je napaka pri WMS strežniku.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Mreža ni odgovorila po %n sekundah neaktivnosti.
+Verjetno je problem v vaši mrežni povezavi ali pa je napaka pri WMS strežniku.</numerusform>
+            <numerusform>Mreža ni odgovorila po %n sekundah neaktivnosti.
+Verjetno je problem v vaši mrežni povezavi ali pa je napaka pri WMS strežniku.</numerusform>
         </translation>
     </message>
 </context>
@@ -27663,7 +27670,7 @@ Jo želite prepisati?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="116"/>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation>Predpona priložena k zemljevidu, merilo in legenda GIF datotek ustvarjena s pomočjo MapFile.</translation>
+        <translation>Predpona priložena k zemljevidu, merilo in legenda GIF datotek ustvarjena s pomočjo MapFile</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="123"/>
@@ -27733,7 +27740,7 @@ Na primer: http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="335"/>
         <source>The file name of the fonts file.</source>
-        <translation>Ime datoteke pisav</translation>
+        <translation>Ime datoteke s pisavami.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="354"/>
@@ -27743,7 +27750,7 @@ Na primer: http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="367"/>
         <source>The file name of the symbols file.</source>
-        <translation>Ime datoteke simbolov</translation>
+        <translation>Ime datoteke simbolov.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="386"/>
@@ -28028,12 +28035,12 @@ Na primer: http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="266"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="566"/>
         <source>Skip attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Preskoči atribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="268"/>
         <source>Skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Preskočen</translation>
     </message>
 </context>
 <context>
@@ -28405,13 +28412,13 @@ Na primer: http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="153"/>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="323"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Nadomestni znaki</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="154"/>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="327"/>
         <source>RegExp</source>
-        <translation>RegExp</translation>
+        <translation>Logični izraz</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="156"/>
@@ -32225,7 +32232,7 @@ z geometrijo.</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>Tale dodatek je nezdružljiv z vašo QGIS verzijo in verjetno ne bo deloval</translation>
+        <translation>Ta dodatek je nezdružljiv z vašo različico QGIS in verjetno ne bo deloval.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -32883,7 +32890,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="83"/>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation>Želite odstraniti dodatek?</translation>
+        <translation>Želite takoj odstraniti ta dodatek? Če niste prepričani, priporočamo, da ga odstranite.</translation>
     </message>
 </context>
 <context>
@@ -33760,17 +33767,17 @@ Napaka podatkovnega skladišča: %2</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1445"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished"></translation>
+        <translation>Polje primarnega ključa &apos;%1&apos; za pogled ni unikatno.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1450"/>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip &apos;%1&apos; polja primarnega ključa &apos;%2&apos; za pogled ni veljaven.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1455"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Polje ključa &apos;%1&apos; za pogled ni bilo najdeno.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1460"/>
@@ -34599,7 +34606,7 @@ Zaradi tega izbor koordinatnega sistema ne bo deloval...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
         <source>Recently used coordinate reference systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedavno uporabljeni koordinatni sistemi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="96"/>
@@ -34700,10 +34707,10 @@ Zaradi tega izbor koordinatnega sistema ne bo deloval...</translation>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation>
+            <numerusform>Pogoj je izpolnila %n vrstica.</numerusform>
+            <numerusform>Pogoj sta izpolnili %n vrstici.</numerusform>
+            <numerusform>Pogoj so izpolnile %n vrstice.</numerusform>
             <numerusform>Pogoj je izpolnilo %n vrstic.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -35363,7 +35370,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1795"/>
         <source>Could not determine raster data type.</source>
-        <translation>Ne morem ugotoviti vrsto podatkovnega tipa rasterja</translation>
+        <translation>Ne morem ugotoviti vrsto podatkovnega tipa rasterja.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1800"/>
@@ -35643,7 +35650,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="265"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
-        <translation>Prosimo, upoštevajte, da lahko z gradnjo notranjih piramid poškodujete svojo sliko, zato pred tem naredite varnostno kopijo vaših podatkov.</translation>
+        <translation>Prosimo, upoštevajte, da lahko z gradnjo notranjih piramid poškodujete svojo sliko, zato pred tem naredite varnostno kopijo vaših podatkov!</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="278"/>
@@ -37025,10 +37032,10 @@ p, li { white-space: pre-wrap; }
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
         <translation>
-            <numerusform>Najdeno %n element(ov)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Najden %n element</numerusform>
+            <numerusform>Najdena %n elementa</numerusform>
+            <numerusform>Najdeni %n elementi</numerusform>
+            <numerusform>Najdenih %n elementov</numerusform>
         </translation>
     </message>
 </context>
@@ -37787,10 +37794,10 @@ p, li { white-space: pre-wrap; }
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
         <translation>
-            <numerusform>Najdeno %n ustreznih element(ov).</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Najden %n ustrezni element.</numerusform>
+            <numerusform>Najdena %n ustrezna elementa.</numerusform>
+            <numerusform>Najdeni %n ustrezni elementi.</numerusform>
+            <numerusform>Najdenih %n ustreznih elementov.</numerusform>
         </translation>
     </message>
     <message>
@@ -37894,10 +37901,10 @@ p, li { white-space: pre-wrap; }
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
         <translation>
+            <numerusform>Preverjanje končano (%n napaka).</numerusform>
+            <numerusform>Preverjanje končano (%n napaki).</numerusform>
+            <numerusform>Preverjanje končano (%n napake).</numerusform>
             <numerusform>Preverjanje končano (%n napak).</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -38552,10 +38559,10 @@ SQL: %2</translation>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
         <translation>
+            <numerusform>%n označen geometrijski element</numerusform>
+            <numerusform>%n označena geometrijska elementa</numerusform>
+            <numerusform>%n označeni geometrijski elementi</numerusform>
             <numerusform>%n označenih geometrijskih elementov</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -38698,8 +38705,8 @@ CRS of map is %1.
 %2.</source>
         <translation>
 
-Koordinatni sistem je %1.
-%2</translation>
+Koordinatni sistem karte je %1.
+%2.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="698"/>
@@ -38714,7 +38721,7 @@ Koordinatni sistem je %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="737"/>
         <source>Select reference layer!</source>
-        <translation>Izberi primerjalni sloj</translation>
+        <translation>Izberi primerjalni sloj!</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="742"/>
@@ -40054,7 +40061,7 @@ Prepišem?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="123"/>
         <source>Change</source>
-        <translation>.barva...</translation>
+        <translation>Spremeni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="145"/>
@@ -40747,7 +40754,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="161"/>
         <source>Codec %1 not found. Falling back to system locale</source>
-        <translation>Kodek %1 ni najden. </translation>
+        <translation>Kodek %1 ni bil najden. Uporabljena bo sistemska jezikovna oznaka</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="189"/>
@@ -40941,10 +40948,10 @@ Should the existing classes be deleted before classification?</source>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
-            <numerusform>USPEŠNO: %n podatkovnih polj zbrisanih.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>USPEŠNO: %n podatkovno polje izbrisano.</numerusform>
+            <numerusform>USPEŠNO: %n podatkovni polji izbrisani.</numerusform>
+            <numerusform>USPEŠNO: %n podatkovna polja izbrisana.</numerusform>
+            <numerusform>USPEŠNO: %n podatkovnih polj izbrisanih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -40952,10 +40959,10 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
+            <numerusform>NAPAKA: %n podatkovno polje ni izbrisano.</numerusform>
+            <numerusform>NAPAKA: %n podatkovni polji nista izbrisani.</numerusform>
+            <numerusform>NAPAKA: %n podatkovna polja niso izbrisana.</numerusform>
             <numerusform>NAPAKA: %n podatkovnih polj ni izbrisanih.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -40963,10 +40970,10 @@ Should the existing classes be deleted before classification?</source>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
-            <numerusform>USPEŠNO: %n atribut(ov) dodanih.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>USPEŠNO: %n atribut dodan.</numerusform>
+            <numerusform>USPEŠNO: %n atributa dodana.</numerusform>
+            <numerusform>USPEŠNO: %n atributi dodani.</numerusform>
+            <numerusform>USPEŠNO: %n atributov dodanih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -40975,9 +40982,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>not added attributes count</comment>
         <translation>
             <numerusform>NAPAKA: %n nov atribut ni bil dodan</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>NAPAKA: %n nova atribut nista bila dodana</numerusform>
+            <numerusform>NAPAKA: %n novi atributi niso bili dodani</numerusform>
+            <numerusform>NAPAKA: %n novih atributov ni bilo dodanih</numerusform>
         </translation>
     </message>
     <message>
@@ -40996,9 +41003,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>changed attribute values count</comment>
         <translation>
             <numerusform>USPEŠNO: %n vrednost atributa je bila spremenjena.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>USPEŠNO: %n vrednosti atributa sta bili spremenjeni.</numerusform>
+            <numerusform>USPEŠNO: %n vrednosti atributa so bile spremenjene.</numerusform>
+            <numerusform>USPEŠNO: %n vrednosti atributa je bilo spremenjenih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41007,9 +41014,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>not changed attribute values count</comment>
         <translation>
             <numerusform>NAPAKA: %n sprememba vrednosti atributa ni bila izvedena.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>NAPAKA: %n spremembi vrednosti atributa nista bili izvedeni.</numerusform>
+            <numerusform>NAPAKA: %n spremembe vrednosti atributa niso bile izvedene.</numerusform>
+            <numerusform>NAPAKA: %n sprememb vrednosti atributa ni bilo izvedenih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41018,9 +41025,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>added features count</comment>
         <translation>
             <numerusform>USPEŠNO: %n element dodan.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>USPEŠNO: %n elementa dodana.</numerusform>
+            <numerusform>USPEŠNO: %n elementi dodani.</numerusform>
+            <numerusform>USPEŠNO: %n elementov dodanih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41029,9 +41036,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>not added features count</comment>
         <translation>
             <numerusform>NAPAKA: %n element ni bil dodan.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>NAPAKA: %n elementa nista bila dodana.</numerusform>
+            <numerusform>NAPAKA: %n elementi niso bili dodani.</numerusform>
+            <numerusform>NAPAKA: %n elementov ni bilo dodanih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41039,10 +41046,10 @@ Should the existing classes be deleted before classification?</source>
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
         <translation>
-            <numerusform>NAPAKA: %n  elementov ni bilo dodanih.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>NAPAKA: %n element ni bil dodan.</numerusform>
+            <numerusform>NAPAKA: %n elementa nista bila dodana.</numerusform>
+            <numerusform>NAPAKA: %n elementi niso bili dodani.</numerusform>
+            <numerusform>NAPAKA: %n elementov ni bilo dodanih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41051,9 +41058,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>changed geometries count</comment>
         <translation>
             <numerusform>USPEŠNO: %n geometrija je bila spremenjena.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>USPEŠNO: %n geometriji sta bili spremenjeni.</numerusform>
+            <numerusform>USPEŠNO: %n geometrije so bile spremenjene.</numerusform>
+            <numerusform>USPEŠNO: %n geometrij je bilo spremenjenih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41062,9 +41069,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>not changed geometries count</comment>
         <translation>
             <numerusform>NAPAKA: %n geometrija ni bila spremenjena.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>NAPAKA: %n geometriji nista bili spremenjeni.</numerusform>
+            <numerusform>NAPAKA: %n geometrije niso bile spremenjene.</numerusform>
+            <numerusform>NAPAKA: %n geometrij ni bilo spremenjenih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41073,9 +41080,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>deleted features count</comment>
         <translation>
             <numerusform>USPEŠNO: %n element izbrisan.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>USPEŠNO: %n elementa izbrisana.</numerusform>
+            <numerusform>USPEŠNO: %n elementi izbrisani.</numerusform>
+            <numerusform>USPEŠNO: %n elementov izbrisanih.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -41084,9 +41091,9 @@ Should the existing classes be deleted before classification?</source>
         <comment>not deleted features count</comment>
         <translation>
             <numerusform>NAPAKA: %n element ni bil izbrisan.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>NAPAKA: %n elementa nista bila izbrisana.</numerusform>
+            <numerusform>NAPAKA: %n elementi niso bili izbrisani.</numerusform>
+            <numerusform>NAPAKA: %n elementov ni bilo izbrisanih.</numerusform>
         </translation>
     </message>
     <message>
@@ -42606,10 +42613,10 @@ elementov</translation>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
         <translation>
-            <numerusform>Možnosti (%n koordinatni sistem)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>Možnosti (na voljo %n koordinatni sistem)</numerusform>
+            <numerusform>Možnosti (na voljo %n koordinatna sistema)</numerusform>
+            <numerusform>Možnosti (na voljo %n koordinatni sistemi)</numerusform>
+            <numerusform>Možnosti (na voljo %n koordinatnih sistemov)</numerusform>
         </translation>
     </message>
     <message>
@@ -42647,10 +42654,10 @@ elementov</translation>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
+            <numerusform>%n izbran sloj</numerusform>
+            <numerusform>%n izbrana sloja</numerusform>
+            <numerusform>%n izbrani sloji</numerusform>
             <numerusform>%n izbranih slojev</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -42690,9 +42697,9 @@ elementov</translation>
         <comment>crs count</comment>
         <translation>
             <numerusform>Koordinatni sistem (%n dostopen)</numerusform>
-            <numerusform>Koordinatni referentni sustav (%n dostupno)</numerusform>
-            <numerusform>Koordinatni referentni sustav (%n dostupno)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Koordinatni sistem (%n dostopna)</numerusform>
+            <numerusform>Koordinatni sistem (%n dostopni)</numerusform>
+            <numerusform>Koordinatni sistem (%n dostopnih)</numerusform>
         </translation>
     </message>
     <message>
@@ -43111,7 +43118,7 @@ Poskus URL: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="307"/>
         <source>number of layers and styles don&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>število slojev in stilov se ne ujema</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="307"/>
@@ -43144,9 +43151,6 @@ Poskus URL: %1</translation>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -43155,9 +43159,6 @@ Poskus URL: %1</translation>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -43168,9 +43169,6 @@ Poskus URL: %1</translation>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -43179,9 +43177,6 @@ Poskus URL: %1</translation>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -43224,12 +43219,12 @@ Poskus URL: %1</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1090"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
-        <translation>%1 of %2 bytes sposobnosti prenešeno.</translation>
+        <translation>%1 of %2 byte-ov sposobnosti prenešeno.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1097"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 of %2 byte-ov karte prenešeno.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1125"/>
@@ -43296,10 +43291,10 @@ Response was:
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation>
-            <numerusform>(in %n še)</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+            <numerusform>(in še %n)</numerusform>
+            <numerusform>(in še %n)</numerusform>
+            <numerusform>(in še %n)</numerusform>
+            <numerusform>(in še %n)</numerusform>
         </translation>
     </message>
     <message>
@@ -43522,7 +43517,7 @@ Reason phrase: %2</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2500"/>
         <source>WGS 84 Bounding Box</source>
-        <translation>WGS 84</translation>
+        <translation>WGS 84 okvir</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2531"/>
