@@ -19,6 +19,7 @@
 #define QGSDECORATIONGRID_H
 
 #include "qgsdecorationitem.h"
+#include <qgis.h>
 
 class QPainter;
 class QgsLineSymbolV2;
@@ -87,38 +88,31 @@ class QgsDecorationGrid: public QgsDecorationItem
     /**Sets the color of the grid pen */
     void setGridPenColor( const QColor& c ) {  mGridPen.setColor( c ); }
 
-    /**Sets font for grid annotations
-    @note this function was added in version 1.4*/
+    /**Sets font for grid annotations */
     void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
     QFont gridAnnotationFont() const { return mGridAnnotationFont; }
 
-    /**Sets coordinate precision for grid annotations
-    @note this function was added in version 1.4*/
+    /**Sets coordinate precision for grid annotations */
     void setGridAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
     int gridAnnotationPrecision() const {return mGridAnnotationPrecision;}
 
-    /**Sets flag if grid annotation should be shown
-    @note this function was added in version 1.4*/
+    /**Sets flag if grid annotation should be shown */
     void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
     bool showGridAnnotation() const {return mShowGridAnnotation;}
 
-    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
-    @note this function was added in version 1.4*/
+    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame */
     void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
     GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
 
-    /**Sets distance between map frame and annotations
-    @note this function was added in version 1.4*/
+    /**Sets distance between map frame and annotations */
     void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
     double annotationFrameDistance() const {return mAnnotationFrameDistance;}
 
-    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    @note this function was added in version 1.4*/
+    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical */
     void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
     GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
-    /**Sets length of the cros segments (if grid style is cross)
-    @note this function was added in version 1.4*/
+    /**Sets length of the cros segments (if grid style is cross) */
     void setCrossLength( double l ) {mCrossLength = l;}
     double crossLength() {return mCrossLength;}
 
@@ -130,6 +124,21 @@ class QgsDecorationGrid: public QgsDecorationItem
     void setMarkerSymbol( QgsMarkerSymbolV2* symbol );
     const QgsMarkerSymbolV2* markerSymbol() const { return mMarkerSymbol; }
 
+    /**Sets map unit type */
+    void setMapUnits( QGis::UnitType t ) { mMapUnits = t; }
+    QGis::UnitType mapUnits() { return mMapUnits; }
+
+    /**Set mapUnits value */
+    void setDirty( bool dirty = true );
+    bool isDirty();
+
+    /**Computes interval that is approx. 1/5 of canvas extent */
+    bool getIntervalFromExtent( double* values, bool useXAxis = true );
+    /**Computes interval from current raster layer */
+    bool getIntervalFromCurrentLayer( double* values );
+
+    double getDefaultInterval( bool useXAxis = true );
+
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
     void projectRead();
@@ -140,6 +149,9 @@ class QgsDecorationGrid: public QgsDecorationItem
     void render( QPainter * );
     //! Show the dialog box
     void run();
+
+    //! check that map units changed and disable if necessary
+    void checkMapUnitsChanged();
 
   private:
 
@@ -181,6 +193,8 @@ class QgsDecorationGrid: public QgsDecorationItem
 
     QgsLineSymbolV2* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;
+
+    QGis::UnitType mMapUnits;
 
     /**Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter

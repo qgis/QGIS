@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
+    <width>613</width>
     <height>367</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
     <enum>QLayout::SetMinimumSize</enum>
    </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0,0" columnminimumwidth="125,100,0,0">
+    <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0,0,0" columnminimumwidth="125,100,0,0,0">
      <item row="0" column="0">
       <widget class="QCheckBox" name="chkEnable">
        <property name="sizePolicy">
@@ -36,105 +36,6 @@
        <property name="checked">
         <bool>true</bool>
        </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="3" rowspan="11">
-      <widget class="QGroupBox" name="mDrawAnnotationCheckBox">
-       <property name="title">
-        <string>Draw annotation</string>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-       <layout class="QGridLayout" name="gridLayout">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetMinimumSize</enum>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="mAnnotationPositionLabel">
-          <property name="text">
-           <string>Annotation position</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="mAnnotationPositionComboBox"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="mAnnotationDirectionLabel">
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="text">
-           <string>Annotation direction</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
-        </item>
-        <item row="2" column="0" colspan="2">
-         <widget class="QPushButton" name="mAnnotationFontButton">
-          <property name="text">
-           <string>Font...</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="mDistanceToFrameLabel">
-          <property name="text">
-           <string>Distance to map frame</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="mCoordinatePrecisionLabel">
-          <property name="text">
-           <string>Coordinate precision</string>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
-        </item>
-       </layout>
       </widget>
      </item>
      <item row="1" column="0">
@@ -349,7 +250,7 @@
        </property>
        <property name="minimumSize">
         <size>
-         <width>100</width>
+         <width>125</width>
          <height>0</height>
         </size>
        </property>
@@ -380,6 +281,135 @@
        </property>
        <property name="maximum">
         <double>9999999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="3" rowspan="8" colspan="2">
+      <widget class="QGroupBox" name="mDrawAnnotationCheckBox">
+       <property name="title">
+        <string>Draw annotation</string>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="mAnnotationPositionLabel">
+          <property name="text">
+           <string>Annotation position</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="mAnnotationPositionComboBox"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="mAnnotationDirectionLabel">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Annotation direction</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
+        </item>
+        <item row="2" column="0" colspan="2">
+         <widget class="QPushButton" name="mAnnotationFontButton">
+          <property name="text">
+           <string>Font...</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="mDistanceToFrameLabel">
+          <property name="text">
+           <string>Distance to map frame</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="mCoordinatePrecisionLabel">
+          <property name="text">
+           <string>Coordinate precision</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="9" column="3" colspan="2">
+      <widget class="QLabel" name="label">
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
+       <property name="text">
+        <string>Update Interval:</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::PlainText</enum>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="4">
+      <widget class="QPushButton" name="mPbtnUpdateFromLayer">
+       <property name="text">
+        <string>From Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="3">
+      <widget class="QPushButton" name="mPbtnUpdateFromExtents">
+       <property name="text">
+        <string>From Extents</string>
        </property>
       </widget>
      </item>

@@ -44,6 +44,8 @@ class QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDia
     void on_mGridTypeComboBox_currentIndexChanged( int index );
     void on_mLineSymbolButton_clicked();
     void on_mMarkerSymbolButton_clicked();
+    void on_mPbtnUpdateFromExtents_clicked();
+    void on_mPbtnUpdateFromLayer_clicked();
 
     // from composer map
     /* void on_mLineColorButton_clicked(); */
@@ -56,6 +58,7 @@ class QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDia
 
     void updateGuiElements();
     void updateDecoFromGui();
+    void updateInterval( bool force = false );
 
 };
 

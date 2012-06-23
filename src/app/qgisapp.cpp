@@ -2022,6 +2022,7 @@ void QgisApp::createDecorations()
   addDecorationItem( mDecorationNorthArrow );
   addDecorationItem( mDecorationScaleBar );
   connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderDecorationItems( QPainter * ) ) );
+  connect( this, SIGNAL( newProject() ), this, SLOT( projectReadDecorationItems() ) );
   connect( this, SIGNAL( projectRead() ), this, SLOT( projectReadDecorationItems() ) );
 }
 
@@ -5026,11 +5027,13 @@ void QgisApp::setProjectCRSFromLayer()
 
   QgsCoordinateReferenceSystem crs = mMapLegend->currentLayer()->crs();
   QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+  mMapCanvas->freeze();
   myRenderer->setDestinationCrs( crs );
   if ( crs.mapUnits() != QGis::UnknownUnit )
   {
     myRenderer->setMapUnits( crs.mapUnits() );
   }
+  mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 }
 

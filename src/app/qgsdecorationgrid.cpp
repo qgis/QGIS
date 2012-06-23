@@ -21,14 +21,16 @@
 
 #include "qgisapp.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 #include "qgssymbolv2.h" //for symbology
 #include "qgsrendercontext.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 
 #include <QPainter>
 #include <QAction>
@@ -42,6 +44,7 @@
 #include <QFile>
 #include <QLocale>
 #include <QDomDocument>
+#include <QMessageBox>
 
 //non qt includes
 #include <cmath>
@@ -58,9 +61,13 @@ QgsDecorationGrid::QgsDecorationGrid( QObject* parent )
     : QgsDecorationItem( parent )
 {
   setName( "Grid" );
+
   mLineSymbol = 0;
   mMarkerSymbol = 0;
   projectRead();
+
+  connect( QgisApp::instance()->mapCanvas()->mapRenderer(), SIGNAL( mapUnitsChanged() ),
+           this, SLOT( checkMapUnitsChanged() ) );
 }
 
 QgsDecorationGrid::~QgsDecorationGrid()
@@ -73,19 +80,25 @@ QgsDecorationGrid::~QgsDecorationGrid()
 
 void QgsDecorationGrid::setLineSymbol( QgsLineSymbolV2* symbol )
 {
-  delete mLineSymbol;
+  if ( mLineSymbol )
+    delete mLineSymbol;
   mLineSymbol = symbol;
 }
 
 void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbolV2* symbol )
 {
-  delete mMarkerSymbol;
+  if ( mMarkerSymbol )
+    delete mMarkerSymbol;
   mMarkerSymbol = symbol;
 }
 
 void QgsDecorationGrid::projectRead()
 {
   QgsDecorationItem::projectRead();
+
+  mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
+  mMapUnits = ( QGis::UnitType ) QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
+              QGis::UnknownUnit );
   mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
                QgsDecorationGrid::Solid );
   mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
@@ -94,8 +107,10 @@ void QgsDecorationGrid::projectRead()
   mGridOffsetY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetY", 0 );
   mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 3 );
   mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mNameConfig, "/ShowAnnotation", false );
-  mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPosition", 0 );
-  mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationDirection", 0 );
+  mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig,
+                            "/AnnotationPosition", 0 );
+  mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig,
+                             "/AnnotationDirection", 0 );
   mGridAnnotationFont.fromString( QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" ) );
   mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mNameConfig, "/AnnotationFrameDistance", 0 );
   mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPrecision", 3 );
@@ -105,25 +120,25 @@ void QgsDecorationGrid::projectRead()
   QDomElement elem;
   QString xml;
 
+  if ( mLineSymbol )
+    setLineSymbol( 0 );
   xml = QgsProject::instance()->readEntry( mNameConfig, "/LineSymbol" );
   if ( xml != "" )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    if ( mLineSymbol )
-      delete mLineSymbol;
     mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
   }
   if ( ! mLineSymbol )
     mLineSymbol = new QgsLineSymbolV2();
 
+  if ( mMarkerSymbol )
+    setMarkerSymbol( 0 );
   xml = QgsProject::instance()->readEntry( mNameConfig, "/MarkerSymbol" );
   if ( xml != "" )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    if ( mMarkerSymbol )
-      delete mMarkerSymbol;
     mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
   }
   if ( ! mMarkerSymbol )
@@ -133,6 +148,8 @@ void QgsDecorationGrid::projectRead()
 void QgsDecorationGrid::saveToProject()
 {
   QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, "/MapUnits", ( int ) mMapUnits );
   QgsProject::instance()->writeEntry( mNameConfig, "/Style", ( int ) mGridStyle );
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalX", mGridIntervalX );
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalY", mGridIntervalY );
@@ -709,3 +726,159 @@ QFont QgsDecorationGrid::scaledFontPixelSize( const QFont& font ) const
   return scaledFont;
 }
 
+void QgsDecorationGrid::checkMapUnitsChanged()
+{
+  // disable grid if units changed and grid is enabled, and update the canvas
+  // this is to avoid problems when CRS changes to/from geographic and projected
+  // a better solution would be to change the grid interval, but this is a little tricky
+  // note: we could be less picky (e.g. from degrees to DMS)
+  QGis::UnitType mapUnits = QgisApp::instance()->mapCanvas()->mapRenderer()->mapUnits();
+  if ( mEnabled && ( mMapUnits != mapUnits ) )
+  {
+    mEnabled = false;
+    mMapUnits = QGis::UnknownUnit; // make sure isDirty() returns true
+    if ( ! QgisApp::instance()->mapCanvas()->isFrozen() )
+    {
+      update();
+    }
+  }
+}
+
+bool QgsDecorationGrid::isDirty()
+{
+  // checks if stored map units is undefined or different from canvas map units
+  // or if interval is 0
+  if ( mMapUnits == QGis::UnknownUnit ||
+       mMapUnits != QgisApp::instance()->mapCanvas()->mapRenderer()->mapUnits() ||
+       mGridIntervalX == 0 || mGridIntervalY == 0 )
+    return true;
+  return false;
+}
+
+void QgsDecorationGrid::setDirty( bool dirty )
+{
+  if ( dirty )
+  {
+    mMapUnits = QGis::UnknownUnit;
+  }
+  else
+  {
+    mMapUnits = QgisApp::instance()->mapCanvas()->mapRenderer()->mapUnits();
+  }
+}
+
+bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
+{
+  // get default interval from current extents
+  // calculate a default interval that is approx (extent width)/5 , adjusted so that it is a rounded number
+  // e.g. 12.7 -> 10  66556 -> 70000
+  double interval = 0;
+  QgsRectangle extent = QgisApp::instance()->mapCanvas()->extent();
+  if ( useXAxis )
+    interval = ( extent.xMaximum() - extent.xMinimum() ) / 5;
+  else
+    interval = ( extent.yMaximum() - extent.yMinimum() ) / 5;
+  QgsDebugMsg( QString( "interval: %1" ).arg( interval ) );
+  if ( interval != 0 )
+  {
+    double interval2 = 0;
+    int factor =  pow( 10, floor( log10( interval ) ) );
+    if ( factor != 0 )
+    {
+      interval2 = round( interval / factor ) * factor;
+      QgsDebugMsg( QString( "interval2: %1" ).arg( interval2 ) );
+      if ( interval2 != 0 )
+        interval = interval2;
+    }
+  }
+  values[0] = values[1] = interval;
+  values[2] = values[3] = 0;
+  return true;
+}
+
+bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
+{
+  // get current layer and make sure it is a raster layer and CRSs match
+  QgsMapLayer* layer = QgisApp::instance()->mapCanvas()->currentLayer();
+  if ( ! layer )
+  {
+    QMessageBox::warning( 0, tr( "Error" ), tr( "No active layer" ) );
+    return false;
+  }
+  if ( layer->type() != QgsMapLayer::RasterLayer )
+  {
+    QMessageBox::warning( 0, tr( "Error" ), tr( "Please select a raster layer" ) );
+    return false;
+  }
+  QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( layer );
+  if ( !rlayer )
+  {
+    QMessageBox::warning( 0, tr( "Error" ), tr( "Invalid raster layer" ) );
+    return false;
+  }
+  const QgsCoordinateReferenceSystem& layerCRS = layer->crs();
+  const QgsCoordinateReferenceSystem& mapCRS =
+    QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs();
+  // is this the best way to compare CRS? should we also make sure map has OTF enabled?
+  // TODO calculate transformed values if necessary
+  if ( layerCRS != mapCRS )
+  {
+    QMessageBox::warning( 0, tr( "Error" ), tr( "Layer CRS must be equal to project CRS" ) );
+    return false;
+  }
+
+  // TODO add a function in QgsRasterLayer to get x/y resolution from provider
+  QgsRectangle extent = rlayer->extent();
+  values[0] = fabs( extent.xMaximum() - extent.xMinimum() ) / rlayer->width();
+  values[1] = fabs( extent.yMaximum() - extent.yMinimum() ) / rlayer->height();
+  // TODO calculate offset - this is a little tricky...
+  values[2] = values[3] = 0;
+
+  QgsDebugMsg( QString( "xmax: %1 xmin: %2 width: %3 xInterval: %4" ).arg( extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ) );
+
+  return true;
+}
+
+
+// TODO preliminary code to calculate offset
+//   double diff = getClosestPixel( extent.xMaximum(), boundBox2.xMinimum(), boundBox.xMinimum(), dx, True )
+
+// // function ported from ftools doVectorGrid.py
+// double getClosestPixel( double startVal, double targetVal, double step, bool isMin )
+// {
+//   bool foundVal = false;
+//   double tmpVal = startVal;
+//   bool backOneStep;
+//   // find pixels covering the extent - slightly inneficient b/c loop on all elements before xMin
+//   if ( targetVal < startVal )
+//   {
+//     backOneStep = ! isMin;
+//     step = - step;
+//     // should make sure we don't go into an infinite loop (shouldn't happen)
+//     while ( ! foundVal )
+//     {
+//       if ( tmpVal <= targetVal )
+//       {
+//         if ( backOneStep )
+//           tmpVal -= step;
+//         return tmpVal;
+//       }
+//       tmpVal += step;
+//     }
+//   }
+//   else
+//   {
+//     backOneStep = isMin;
+//     while ( ! foundVal )
+//     {
+//       if ( tmpVal >= targetVal )
+//       {
+//         if ( backOneStep )
+//           tmpVal -= step;
+//         return tmpVal;
+//       }
+//       tmpVal += step;
+//     }
+//   }
+//   return 0;
+// }

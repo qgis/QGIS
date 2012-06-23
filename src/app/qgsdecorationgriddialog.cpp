@@ -25,6 +25,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbolv2propertiesdialog.h"
+#include "qgisapp.h"
 
 #include <QFontDialog>
 #include <QColorDialog>
@@ -54,7 +55,7 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidg
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Vertical,
       tr( "Vertical" ) );
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::HorizontalAndVertical,
-      tr( "Horizontal and Vertical" ) );
+      tr( "Horizontal and vertical" ) );
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::BoundaryDirection,
       tr( "Boundary direction" ) );
 
@@ -76,15 +77,10 @@ void QgsDecorationGridDialog::updateGuiElements()
   mOffsetYSpinBox->setValue( mDeco.gridOffsetY() );
 
   mGridTypeComboBox->setCurrentIndex(( int ) mDeco.gridStyle() );
-
   mCrossWidthSpinBox->setValue( mDeco.crossLength() );
-
   mAnnotationPositionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationPosition() );
-
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
-
   mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
-
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
 
   // QPen gridPen = mDeco.gridPen();
@@ -99,7 +95,6 @@ void QgsDecorationGridDialog::updateGuiElements()
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
     mLineSymbolButton->setIcon( icon );
   }
-
   if ( mMarkerSymbol )
     delete mMarkerSymbol;
   if ( mDeco.markerSymbol() )
@@ -109,13 +104,15 @@ void QgsDecorationGridDialog::updateGuiElements()
     mMarkerSymbolButton->setIcon( icon );
   }
 
+  updateInterval( false );
+
   // blockAllSignals( false );
 }
 
 void QgsDecorationGridDialog::updateDecoFromGui()
 {
+  mDeco.setDirty( false );
   mDeco.setEnabled( chkEnable->isChecked() );
-
   mDeco.setGridIntervalX( mIntervalXSpinBox->value() );
   mDeco.setGridIntervalY( mIntervalYSpinBox->value() );
   mDeco.setGridOffsetX( mOffsetXSpinBox->value() );
@@ -273,6 +270,23 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
   }
 }
 
+void QgsDecorationGridDialog::on_mPbtnUpdateFromExtents_clicked()
+{
+  updateInterval( true );
+}
+
+void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
+{
+  double values[4];
+  if ( mDeco.getIntervalFromCurrentLayer( values ) )
+  {
+    mIntervalXSpinBox->setValue( values[0] );
+    mIntervalYSpinBox->setValue( values[1] );
+    mOffsetXSpinBox->setValue( values[2] );
+    mOffsetYSpinBox->setValue( values[3] );
+  }
+}
+
 void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
 {
   bool ok;
@@ -285,5 +299,20 @@ void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
   if ( ok )
   {
     mDeco.setGridAnnotationFont( newFont );
+  }
+}
+
+void QgsDecorationGridDialog::updateInterval( bool force )
+{
+  if ( force || mDeco.isDirty() )
+  {
+    double values[4];
+    if ( mDeco.getIntervalFromExtent( values, true ) )
+    {
+      mIntervalXSpinBox->setValue( values[0] );
+      mIntervalYSpinBox->setValue( values[1] );
+      mOffsetXSpinBox->setValue( values[2] );
+      mOffsetYSpinBox->setValue( values[3] );
+    }
   }
 }
