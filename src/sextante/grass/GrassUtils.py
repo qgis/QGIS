@@ -46,6 +46,8 @@ class GrassUtils:
             folder = plugin_installer.__file__
             idx = folder.find('qgis')
             folder = folder[:idx] + "grass"
+            if not os.path.isdir(folder):
+                return ""
             for subfolder in os.listdir(folder):
                 if subfolder.startswith("grass"):
                     folder = folder + os.sep + subfolder
