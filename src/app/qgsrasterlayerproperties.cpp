@@ -186,7 +186,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
-  int myHistogramTab = 6;
+  int myHistogramTab = 5;
   if ( tabBar->currentIndex() == myHistogramTab )
   {
     refreshHistogram();
@@ -324,11 +324,8 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   {
     return;
   }
+
   const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
-  if ( !rasterTransparency )
-  {
-    return;
-  }
 
   //Clear existing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
@@ -349,19 +346,22 @@ void QgsRasterLayerProperties::populateTransparencyTable()
 
 
     //populate three band transparency list
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = rasterTransparency->transparentThreeValuePixelList();
-    for ( int myListRunner = 0; myListRunner < myTransparentThreeValuePixelList.count(); myListRunner++ )
+    if ( rasterTransparency )
     {
-      tableTransparency->insertRow( myListRunner );
-      QTableWidgetItem* myRedItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].red ) );
-      QTableWidgetItem* myGreenItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].green ) );
-      QTableWidgetItem* myBlueItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].blue ) );
-      QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].percentTransparent ) );
+      QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = rasterTransparency->transparentThreeValuePixelList();
+      for ( int myListRunner = 0; myListRunner < myTransparentThreeValuePixelList.count(); myListRunner++ )
+      {
+        tableTransparency->insertRow( myListRunner );
+        QTableWidgetItem* myRedItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].red ) );
+        QTableWidgetItem* myGreenItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].green ) );
+        QTableWidgetItem* myBlueItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].blue ) );
+        QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].percentTransparent ) );
 
-      tableTransparency->setItem( myListRunner, 0, myRedItem );
-      tableTransparency->setItem( myListRunner, 1, myGreenItem );
-      tableTransparency->setItem( myListRunner, 2, myBlueItem );
-      tableTransparency->setItem( myListRunner, 3, myPercentTransparentItem );
+        tableTransparency->setItem( myListRunner, 0, myRedItem );
+        tableTransparency->setItem( myListRunner, 1, myGreenItem );
+        tableTransparency->setItem( myListRunner, 2, myBlueItem );
+        tableTransparency->setItem( myListRunner, 3, myPercentTransparentItem );
+      }
     }
   }
   else if ( mRasterLayer->bandCount() == 1 )
@@ -388,15 +388,18 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
 
     //populate gray transparency list
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
-    for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
+    if ( rasterTransparency )
     {
-      tableTransparency->insertRow( myListRunner );
-      QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%g", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
-      QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].percentTransparent ) );
+      QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
+      for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
+      {
+        tableTransparency->insertRow( myListRunner );
+        QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%g", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
+        QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].percentTransparent ) );
 
-      tableTransparency->setItem( myListRunner, 0, myGrayItem );
-      tableTransparency->setItem( myListRunner, 1, myPercentTransparentItem );
+        tableTransparency->setItem( myListRunner, 0, myGrayItem );
+        tableTransparency->setItem( myListRunner, 1, myPercentTransparentItem );
+      }
     }
   }
 
@@ -1112,7 +1115,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 {
-  int myHistogramTab = 6;
+  int myHistogramTab = 5;
   if ( theTab == myHistogramTab )
   {
     refreshHistogram();
