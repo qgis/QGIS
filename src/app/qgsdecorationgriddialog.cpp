@@ -284,6 +284,10 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
     mIntervalYSpinBox->setValue( values[1] );
     mOffsetXSpinBox->setValue( values[2] );
     mOffsetYSpinBox->setValue( values[3] );
+    if ( values[0] >= 1 )
+      mCoordinatePrecisionSpinBox->setValue( 0 );
+    else
+      mCoordinatePrecisionSpinBox->setValue( 3 );
   }
 }
 
@@ -313,6 +317,13 @@ void QgsDecorationGridDialog::updateInterval( bool force )
       mIntervalYSpinBox->setValue( values[1] );
       mOffsetXSpinBox->setValue( values[2] );
       mOffsetYSpinBox->setValue( values[3] );
+      // also update coord. precision
+      // if interval >= 1, set precision=0 because we have a rounded value
+      // else set it to previous default of 3
+      if ( values[0] >= 1 )
+        mCoordinatePrecisionSpinBox->setValue( 0 );
+      else
+        mCoordinatePrecisionSpinBox->setValue( 3 );
     }
   }
 }

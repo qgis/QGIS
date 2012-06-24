@@ -111,9 +111,19 @@ void QgsDecorationGrid::projectRead()
                             "/AnnotationPosition", 0 );
   mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig,
                              "/AnnotationDirection", 0 );
-  mGridAnnotationFont.fromString( QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" ) );
+  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" );
+  if ( fontStr != "" )
+  {
+    mGridAnnotationFont.fromString( fontStr );
+  }
+  else
+  {
+    mGridAnnotationFont = QFont();
+    // TODO fix font scaling problem - put a slightly large font for now
+    mGridAnnotationFont.setPointSize( 16 );
+  }
   mAnnotationFrameDistance = QgsProject::instance()->readDoubleEntry( mNameConfig, "/AnnotationFrameDistance", 0 );
-  mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPrecision", 3 );
+  mGridAnnotationPrecision = QgsProject::instance()->readNumEntry( mNameConfig, "/AnnotationPrecision", 0 );
 
   // read symbol info from xml
   QDomDocument doc;
@@ -715,7 +725,9 @@ double QgsDecorationGrid::fontAscentMillimeters( const QFont& font ) const
 
 double QgsDecorationGrid::pixelFontSize( double pointSize ) const
 {
-  return ( pointSize * 0.3527 );
+  // return ( pointSize * 0.3527 );
+  // TODO fix font scaling problem - this seems to help, but text seems still a bit too small (about 5/6)
+  return pointSize;
 }
 
 QFont QgsDecorationGrid::scaledFontPixelSize( const QFont& font ) const
