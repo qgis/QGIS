@@ -2651,13 +2651,3 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   *theList = myColorRampItemList;
   return true;
 }
-
-
-void QgsRasterLayer::setTransparency( unsigned int theInt )
-{
-  mTransparencyLevel = theInt;
-  if ( mRenderer )
-  {
-    mRenderer->setOpacity( mTransparencyLevel / 255.0 );
-  }
-}

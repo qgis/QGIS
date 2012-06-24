@@ -645,9 +645,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );
 
-    /** \brief Overload the setTransparency method from QgsMapLayer */
-    void setTransparency( unsigned int theInt );
-
   signals:
     /** \brief Signal for notifying listeners of long running processes */
     void progressUpdate( int theValue );
