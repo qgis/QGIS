@@ -585,18 +585,6 @@ void QgsRasterLayerProperties::apply()
   //set whether the layer histogram should be inverted
   //mRasterLayer->setInvertHistogram( cboxInvertColorMap->isChecked() );
 
-  //now set the color -> band mapping combos to the correct values
-  mRasterLayer->setTransparentBandName( cboxTransparencyBand->currentText() );
-
-  QSettings myQSettings;
-  myQSettings.setValue( "/Raster/defaultRedBand", mDefaultRedBand );
-  myQSettings.setValue( "/Raster/defaultGreenBand", mDefaultGreenBand );
-  myQSettings.setValue( "/Raster/defaultBlueBand", mDefaultBlueBand );
-
-  myQSettings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", mDefaultContrastEnhancementAlgorithm );
-
-  myQSettings.setValue( "/Raster/defaultStandardDeviation", mDefaultStandardDeviation );
-
   QgsDebugMsg( "processing transparency tab" );
   /*
    * Transparent Pixel Tab
