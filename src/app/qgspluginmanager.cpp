@@ -135,6 +135,7 @@ void QgsPluginManager::setTable()
   mModelPlugins = new QStandardItemModel( 0, 1 );
   mModelProxy = new QSortFilterProxyModel( this );
   mModelProxy->setSourceModel( mModelPlugins );
+  mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   vwPlugins->setModel( mModelProxy );
   vwPlugins->setFocus();
   vwPlugins->setItemDelegateForColumn( 0, new QgsDetailedItemDelegate() );
