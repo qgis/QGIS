@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
+    <width>603</width>
     <height>335</height>
    </rect>
   </property>
@@ -123,50 +123,6 @@
        </property>
        <property name="text">
         <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>125</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="maximum">
-        <double>9999999.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="maximum">
-        <double>9999999.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -302,22 +258,6 @@
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
-      <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="maximum">
-        <double>9999999.000000000000000</double>
-       </property>
-      </widget>
-     </item>
      <item row="9" column="0">
       <widget class="QLabel" name="mOffsetYLabel">
        <property name="text">
@@ -325,22 +265,6 @@
        </property>
        <property name="wordWrap">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="maximum">
-        <double>9999999.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -366,6 +290,18 @@
         </item>
        </layout>
       </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="mIntervalXEdit"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="mIntervalYEdit"/>
+     </item>
+     <item row="8" column="1">
+      <widget class="QLineEdit" name="mOffsetXEdit"/>
+     </item>
+     <item row="9" column="1">
+      <widget class="QLineEdit" name="mOffsetYEdit"/>
      </item>
     </layout>
    </item>

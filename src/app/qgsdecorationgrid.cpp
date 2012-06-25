@@ -850,58 +850,24 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
     return false;
   }
 
-  // TODO add a function in QgsRasterLayer to get x/y resolution from provider
+  // calculate interval
+  // TODO add a function in QgsRasterLayer to get x/y resolution from provider,
+  // because this might not be 100% accurate
   QgsRectangle extent = rlayer->extent();
   values[0] = fabs( extent.xMaximum() - extent.xMinimum() ) / rlayer->width();
   values[1] = fabs( extent.yMaximum() - extent.yMinimum() ) / rlayer->height();
-  // TODO calculate offset - this is a little tricky...
-  values[2] = values[3] = 0;
 
-  QgsDebugMsg( QString( "xmax: %1 xmin: %2 width: %3 xInterval: %4" ).arg( extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ) );
+  // calculate offset - when using very high resolution rasters in geographic CRS
+  // there seems to be a small shift, but this may be due to rendering issues and depends on zoom
+  double ratio = extent.xMinimum() / values[0];
+  values[2] = ( ratio - floor( ratio ) ) * values[0];
+  ratio = extent.yMinimum() / values[1];
+  values[3] = ( ratio - floor( ratio ) ) * values[1];
+
+  QgsDebugMsg( QString( "xmax: %1 xmin: %2 width: %3 xInterval: %4 xOffset: %5" ).arg(
+                 extent.xMaximum() ).arg( extent.xMinimum() ).arg( rlayer->width() ).arg( values[0] ).arg( values[2] ) );
+  QgsDebugMsg( QString( "ymax: %1 ymin: %2 height: %3 yInterval: %4 yOffset: %5" ).arg(
+                 extent.yMaximum() ).arg( extent.yMinimum() ).arg( rlayer->height() ).arg( values[1] ).arg( values[3] ) );
 
   return true;
 }
-
-
-// TODO preliminary code to calculate offset
-//   double diff = getClosestPixel( extent.xMaximum(), boundBox2.xMinimum(), boundBox.xMinimum(), dx, True )
-
-// // function ported from ftools doVectorGrid.py
-// double getClosestPixel( double startVal, double targetVal, double step, bool isMin )
-// {
-//   bool foundVal = false;
-//   double tmpVal = startVal;
-//   bool backOneStep;
-//   // find pixels covering the extent - slightly inneficient b/c loop on all elements before xMin
-//   if ( targetVal < startVal )
-//   {
-//     backOneStep = ! isMin;
-//     step = - step;
-//     // should make sure we don't go into an infinite loop (shouldn't happen)
-//     while ( ! foundVal )
-//     {
-//       if ( tmpVal <= targetVal )
-//       {
-//         if ( backOneStep )
-//           tmpVal -= step;
-//         return tmpVal;
-//       }
-//       tmpVal += step;
-//     }
-//   }
-//   else
-//   {
-//     backOneStep = isMin;
-//     while ( ! foundVal )
-//     {
-//       if ( tmpVal >= targetVal )
-//       {
-//         if ( backOneStep )
-//           tmpVal -= step;
-//         return tmpVal;
-//       }
-//       tmpVal += step;
-//     }
-//   }
-//   return 0;
-// }

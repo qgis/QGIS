@@ -71,14 +71,12 @@ void QgsDecorationGridDialog::updateGuiElements()
 
   chkEnable->setChecked( mDeco.enabled() );
 
-  mIntervalXSpinBox->setValue( mDeco.gridIntervalX() );
-  mIntervalYSpinBox->setValue( mDeco.gridIntervalY() );
-  mOffsetXSpinBox->setValue( mDeco.gridOffsetX() );
-  mOffsetYSpinBox->setValue( mDeco.gridOffsetY() );
+  mIntervalXEdit->setText( QString::number( mDeco.gridIntervalX() ) );
+  mIntervalYEdit->setText( QString::number( mDeco.gridIntervalY() ) );
+  mOffsetXEdit->setText( QString::number( mDeco.gridOffsetX() ) );
+  mOffsetYEdit->setText( QString::number( mDeco.gridOffsetY() ) );
 
   mGridTypeComboBox->setCurrentIndex(( int ) mDeco.gridStyle() );
-  // mCrossWidthSpinBox->setValue( mDeco.crossLength() );
-  // mAnnotationPositionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationPosition() );
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
   mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
@@ -113,15 +111,11 @@ void QgsDecorationGridDialog::updateDecoFromGui()
 {
   mDeco.setDirty( false );
   mDeco.setEnabled( chkEnable->isChecked() );
-  mDeco.setGridIntervalX( mIntervalXSpinBox->value() );
-  mDeco.setGridIntervalY( mIntervalYSpinBox->value() );
-  mDeco.setGridOffsetX( mOffsetXSpinBox->value() );
-  mDeco.setGridOffsetY( mOffsetYSpinBox->value() );
-  // mDeco.setGridPenWidth( mLineWidthSpinBox->value() );
-  // if ( mGridTypeComboBox->currentText() == tr( "Cross" ) )
-  // {
-  //   mDeco.setGridStyle( QgsDecorationGrid::Cross );
-  // }
+
+  mDeco.setGridIntervalX( mIntervalXEdit->text().toDouble() );
+  mDeco.setGridIntervalY( mIntervalYEdit->text().toDouble() );
+  mDeco.setGridOffsetX( mOffsetXEdit->text().toDouble() );
+  mDeco.setGridOffsetY( mOffsetYEdit->text().toDouble() );
   if ( mGridTypeComboBox->currentText() == tr( "Marker" ) )
   {
     mDeco.setGridStyle( QgsDecorationGrid::Marker );
@@ -130,7 +124,6 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   {
     mDeco.setGridStyle( QgsDecorationGrid::Line );
   }
-  // mDeco.setCrossLength( mCrossWidthSpinBox->value() );
   mDeco.setAnnotationFrameDistance( mDistanceToMapFrameSpinBox->value() );
   // if ( mAnnotationPositionComboBox->currentText() == tr( "Inside frame" ) )
   // {
@@ -205,17 +198,6 @@ void QgsDecorationGridDialog::on_buttonBox_rejected()
   reject();
 }
 
-
-// void QgsDecorationGridDialog::on_mLineColorButton_clicked()
-// {
-// QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
-// if ( newColor.isValid() )
-// {
-//   mLineColorButton->setColor( newColor );
-//   mDeco.setGridPenColor( newColor );
-// }
-// }
-
 void QgsDecorationGridDialog::on_mGridTypeComboBox_currentIndexChanged( int index )
 {
   mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Line );
@@ -231,7 +213,6 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
 
   QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( mLineSymbol->clone() );
   QgsSymbolV2PropertiesDialog dlg( lineSymbol, 0, this );
-  // QgsSymbolV2SelectorDialog dlg( lineSymbol, 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -255,7 +236,6 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
 
   QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
   QgsSymbolV2PropertiesDialog dlg( markerSymbol, 0, this );
-  // QgsSymbolV2SelectorDialog dlg( markerSymbol, 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;
@@ -282,10 +262,10 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
   double values[4];
   if ( mDeco.getIntervalFromCurrentLayer( values ) )
   {
-    mIntervalXSpinBox->setValue( values[0] );
-    mIntervalYSpinBox->setValue( values[1] );
-    mOffsetXSpinBox->setValue( values[2] );
-    mOffsetYSpinBox->setValue( values[3] );
+    mIntervalXEdit->setText( QString::number( values[0] ) );
+    mIntervalYEdit->setText( QString::number( values[1] ) );
+    mOffsetXEdit->setText( QString::number( values[2] ) );
+    mOffsetYEdit->setText( QString::number( values[3] ) );
     if ( values[0] >= 1 )
       mCoordinatePrecisionSpinBox->setValue( 0 );
     else
@@ -315,10 +295,10 @@ void QgsDecorationGridDialog::updateInterval( bool force )
     double values[4];
     if ( mDeco.getIntervalFromExtent( values, true ) )
     {
-      mIntervalXSpinBox->setValue( values[0] );
-      mIntervalYSpinBox->setValue( values[1] );
-      mOffsetXSpinBox->setValue( values[2] );
-      mOffsetYSpinBox->setValue( values[3] );
+      mIntervalXEdit->setText( QString::number( values[0] ) );
+      mIntervalYEdit->setText( QString::number( values[1] ) );
+      mOffsetXEdit->setText( QString::number( values[2] ) );
+      mOffsetYEdit->setText( QString::number( values[3] ) );
       // also update coord. precision
       // if interval >= 1, set precision=0 because we have a rounded value
       // else set it to previous default of 3
