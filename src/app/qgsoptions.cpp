@@ -504,7 +504,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
   mOffsetJoinStyleComboBox->setCurrentIndex( settings.value( "/qgis/digitizing/offset_join_style", 0 ).toInt() );
   mOffsetQuadSegSpinBox->setValue( settings.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt() );
-  mCurveOffsetMiterLimitComboBox->setValue( settings.value( "/qgis/digitizine/offset_miter_limit", 5.0 ).toDouble() );
+  mCurveOffsetMiterLimitComboBox->setValue( settings.value( "/qgis/digitizing/offset_miter_limit", 5.0 ).toDouble() );
 
 
 #ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
@@ -906,7 +906,7 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/digitizing/offset_join_style", mOffsetJoinStyleComboBox->itemData( mOffsetJoinStyleComboBox->currentIndex() ).toInt() );
   settings.setValue( "/qgis/digitizing/offset_quad_seg", mOffsetQuadSegSpinBox->value() );
-  settings.setValue( "/qgis/digitizine/offset_miter_limit", mCurveOffsetMiterLimitComboBox->value() );
+  settings.setValue( "/qgis/digitizing/offset_miter_limit", mCurveOffsetMiterLimitComboBox->value() );
 
   //
   // Locale settings
