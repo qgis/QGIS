@@ -83,10 +83,12 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
       }
       else
       {
+        QRgb pixelColor;
         for ( int j = 0; j < nRasterCols; ++j )
         {
           QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
-          scanLine[i] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), 255 );
+          pixelColor = qRgba( qRed( c ), qGreen( c ), qBlue( c ), 255 );
+          memcpy( &( scanLine[j*4] ), &pixelColor, 4 );
           ++currentRasterPos;
         }
       }
