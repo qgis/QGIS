@@ -419,6 +419,8 @@ QgsFeatureRendererV2* QgsSLDParser::rendererFromUserStyle( const QDomElement& us
 
 bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleElement, QgsRasterLayer* r ) const
 {
+  return false;
+#if 0 //needs to be fixed
   QgsDebugMsg( "Entering" );
   if ( !r )
   {
@@ -502,6 +504,7 @@ bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleEle
 
   //set pseudo color mode
   return true;
+#endif //0
 }
 
 // ---------------labelSettingsFromUserStyle-----------------------

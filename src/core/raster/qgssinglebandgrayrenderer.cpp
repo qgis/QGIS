@@ -122,6 +122,17 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       {
         grayVal = readValue( rasterData, rasterType, currentRasterPos );
 
+        //alpha
+        currentAlpha = mOpacity;
+        if ( mRasterTransparency )
+        {
+          currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
+        }
+        if ( mAlphaBand > 0 )
+        {
+          currentAlpha *= ( readValue( alphaData, alphaType, currentRasterPos ) / 255.0 );
+        }
+
         if ( mContrastEnhancement )
         {
           if ( !mContrastEnhancement->isValueInDisplayableRange( grayVal ) )
@@ -136,17 +147,6 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
         if ( mInvertColor )
         {
           grayVal = 255 - grayVal;
-        }
-
-        //alpha
-        currentAlpha = mOpacity;
-        if ( mRasterTransparency )
-        {
-          currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
-        }
-        if ( mAlphaBand > 0 )
-        {
-          currentAlpha *= ( readValue( alphaData, alphaType, currentRasterPos ) / 255.0 );
         }
 
         if ( doubleNear( currentAlpha, 255 ) )
