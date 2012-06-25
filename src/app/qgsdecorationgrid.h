@@ -40,9 +40,9 @@ class QgsDecorationGrid: public QgsDecorationItem
 
     enum GridStyle
     {
-      Solid = 0, //solid lines
-      Cross = 1, //only draw line crossings
-      Marker = 2 //user-defined marker
+      Line = 0, //solid lines
+      //      Cross = 1, //only draw line crossings
+      Marker = 1 //user-defined marker
     };
 
     enum GridAnnotationPosition
@@ -113,8 +113,8 @@ class QgsDecorationGrid: public QgsDecorationItem
     GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
     /**Sets length of the cros segments (if grid style is cross) */
-    void setCrossLength( double l ) {mCrossLength = l;}
-    double crossLength() {return mCrossLength;}
+    /* void setCrossLength( double l ) {mCrossLength = l;} */
+    /* double crossLength() {return mCrossLength;} */
 
     /**Set symbol that is used to draw grid lines. Takes ownership*/
     void setLineSymbol( QgsLineSymbolV2* symbol );
@@ -164,7 +164,7 @@ class QgsDecorationGrid: public QgsDecorationItem
       Top
     };
 
-    /**Solid or crosses*/
+    /** Line or Symbol */
     GridStyle mGridStyle;
     /**Grid line interval in x-direction (map units)*/
     double mGridIntervalX;
@@ -189,7 +189,7 @@ class QgsDecorationGrid: public QgsDecorationItem
     /**Annotation can be horizontal / vertical or different for axes*/
     GridAnnotationDirection mGridAnnotationDirection;
     /**The length of the cross sides for mGridStyle Cross*/
-    double mCrossLength;
+    /* double mCrossLength; */
 
     QgsLineSymbolV2* mLineSymbol;
     QgsMarkerSymbolV2* mMarkerSymbol;

@@ -43,11 +43,11 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidg
 
   // mXMinLineEdit->setValidator( new QDoubleValidator( mXMinLineEdit ) );
 
-  mGridTypeComboBox->insertItem( QgsDecorationGrid::Solid, tr( "Lines" ) );
-  mGridTypeComboBox->insertItem( QgsDecorationGrid::Cross, tr( "Cross" ) );
+  mGridTypeComboBox->insertItem( QgsDecorationGrid::Line, tr( "Line" ) );
+  // mGridTypeComboBox->insertItem( QgsDecorationGrid::Cross, tr( "Cross" ) );
   mGridTypeComboBox->insertItem( QgsDecorationGrid::Marker, tr( "Marker" ) );
 
-  mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::InsideMapFrame, tr( "Inside frame" ) );
+  // mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::InsideMapFrame, tr( "Inside frame" ) );
   // mAnnotationPositionComboBox->insertItem( QgsDecorationGrid::OutsideMapFrame, tr( "Outside frame" ) );
 
   mAnnotationDirectionComboBox->insertItem( QgsDecorationGrid::Horizontal,
@@ -77,8 +77,8 @@ void QgsDecorationGridDialog::updateGuiElements()
   mOffsetYSpinBox->setValue( mDeco.gridOffsetY() );
 
   mGridTypeComboBox->setCurrentIndex(( int ) mDeco.gridStyle() );
-  mCrossWidthSpinBox->setValue( mDeco.crossLength() );
-  mAnnotationPositionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationPosition() );
+  // mCrossWidthSpinBox->setValue( mDeco.crossLength() );
+  // mAnnotationPositionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationPosition() );
   mDrawAnnotationCheckBox->setChecked( mDeco.showGridAnnotation() );
   mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
@@ -118,28 +118,28 @@ void QgsDecorationGridDialog::updateDecoFromGui()
   mDeco.setGridOffsetX( mOffsetXSpinBox->value() );
   mDeco.setGridOffsetY( mOffsetYSpinBox->value() );
   // mDeco.setGridPenWidth( mLineWidthSpinBox->value() );
-  if ( mGridTypeComboBox->currentText() == tr( "Cross" ) )
-  {
-    mDeco.setGridStyle( QgsDecorationGrid::Cross );
-  }
-  else if ( mGridTypeComboBox->currentText() == tr( "Marker" ) )
+  // if ( mGridTypeComboBox->currentText() == tr( "Cross" ) )
+  // {
+  //   mDeco.setGridStyle( QgsDecorationGrid::Cross );
+  // }
+  if ( mGridTypeComboBox->currentText() == tr( "Marker" ) )
   {
     mDeco.setGridStyle( QgsDecorationGrid::Marker );
   }
-  else
+  else if ( mGridTypeComboBox->currentText() == tr( "Line" ) )
   {
-    mDeco.setGridStyle( QgsDecorationGrid::Solid );
+    mDeco.setGridStyle( QgsDecorationGrid::Line );
   }
-  mDeco.setCrossLength( mCrossWidthSpinBox->value() );
+  // mDeco.setCrossLength( mCrossWidthSpinBox->value() );
   mDeco.setAnnotationFrameDistance( mDistanceToMapFrameSpinBox->value() );
-  if ( mAnnotationPositionComboBox->currentText() == tr( "Inside frame" ) )
-  {
-    mDeco.setGridAnnotationPosition( QgsDecorationGrid::InsideMapFrame );
-  }
-  else
-  {
-    mDeco.setGridAnnotationPosition( QgsDecorationGrid::OutsideMapFrame );
-  }
+  // if ( mAnnotationPositionComboBox->currentText() == tr( "Inside frame" ) )
+  // {
+  //   mDeco.setGridAnnotationPosition( QgsDecorationGrid::InsideMapFrame );
+  // }
+  // else
+  // {
+  //   mDeco.setGridAnnotationPosition( QgsDecorationGrid::OutsideMapFrame );
+  // }
   mDeco.setShowGridAnnotation( mDrawAnnotationCheckBox->isChecked() );
   QString text = mAnnotationDirectionComboBox->currentText();
   if ( text == tr( "Horizontal" ) )
@@ -218,8 +218,8 @@ void QgsDecorationGridDialog::on_buttonBox_rejected()
 
 void QgsDecorationGridDialog::on_mGridTypeComboBox_currentIndexChanged( int index )
 {
-  mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Solid );
-  mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
+  mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Line );
+  // mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
   mMarkerSymbolButton->setEnabled( index == QgsDecorationGrid::Marker );
 }
 
@@ -231,6 +231,7 @@ void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
 
   QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( mLineSymbol->clone() );
   QgsSymbolV2PropertiesDialog dlg( lineSymbol, 0, this );
+  // QgsSymbolV2SelectorDialog dlg( lineSymbol, 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete lineSymbol;
@@ -254,6 +255,7 @@ void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
 
   QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
   QgsSymbolV2PropertiesDialog dlg( markerSymbol, 0, this );
+  // QgsSymbolV2SelectorDialog dlg( markerSymbol, 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

@@ -28,6 +28,7 @@
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 #include "qgssymbolv2.h" //for symbology
+#include "qgsmarkersymbollayerv2.h"
 #include "qgsrendercontext.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
@@ -100,15 +101,16 @@ void QgsDecorationGrid::projectRead()
   mMapUnits = ( QGis::UnitType ) QgsProject::instance()->readNumEntry( mNameConfig, "/MapUnits",
               QGis::UnknownUnit );
   mGridStyle = ( GridStyle ) QgsProject::instance()->readNumEntry( mNameConfig, "/Style",
-               QgsDecorationGrid::Solid );
+               QgsDecorationGrid::Line );
   mGridIntervalX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalX", 10 );
   mGridIntervalY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/IntervalY", 10 );
   mGridOffsetX = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetX", 0 );
   mGridOffsetY = QgsProject::instance()->readDoubleEntry( mNameConfig, "/OffsetY", 0 );
-  mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 3 );
+  // mCrossLength = QgsProject::instance()->readDoubleEntry( mNameConfig, "/CrossLength", 3 );
   mShowGridAnnotation = QgsProject::instance()->readBoolEntry( mNameConfig, "/ShowAnnotation", false );
-  mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig,
-                            "/AnnotationPosition", 0 );
+  // mGridAnnotationPosition = ( GridAnnotationPosition ) QgsProject::instance()->readNumEntry( mNameConfig,
+  //                           "/AnnotationPosition", 0 );
+  mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
   mGridAnnotationDirection = ( GridAnnotationDirection ) QgsProject::instance()->readNumEntry( mNameConfig,
                              "/AnnotationDirection", 0 );
   QString fontStr = QgsProject::instance()->readEntry( mNameConfig, "/AnnotationFont", "" );
@@ -152,7 +154,14 @@ void QgsDecorationGrid::projectRead()
     mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
   }
   if ( ! mMarkerSymbol )
-    mMarkerSymbol = new QgsMarkerSymbolV2();
+  {
+    // set default symbol : cross with width=20
+    QgsSymbolLayerV2List symbolList;
+    symbolList << new QgsSimpleMarkerSymbolLayerV2( "cross", DEFAULT_SIMPLEMARKER_COLOR,
+        DEFAULT_SIMPLEMARKER_BORDERCOLOR, 20, 0 );
+    mMarkerSymbol = new QgsMarkerSymbolV2( symbolList );
+    // mMarkerSymbol = new QgsMarkerSymbolV2();
+  }
 }
 
 void QgsDecorationGrid::saveToProject()
@@ -165,10 +174,10 @@ void QgsDecorationGrid::saveToProject()
   QgsProject::instance()->writeEntry( mNameConfig, "/IntervalY", mGridIntervalY );
   QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetX );
   QgsProject::instance()->writeEntry( mNameConfig, "/OffsetX", mGridOffsetY );
-  QgsProject::instance()->writeEntry( mNameConfig, "/CrossLength", mCrossLength );
+  // QgsProject::instance()->writeEntry( mNameConfig, "/CrossLength", mCrossLength );
   // missing mGridPen, but should use styles anyway
   QgsProject::instance()->writeEntry( mNameConfig, "/ShowAnnotation", mShowGridAnnotation );
-  QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPosition", ( int ) mGridAnnotationPosition );
+  // QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationPosition", ( int ) mGridAnnotationPosition );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationDirection", ( int ) mGridAnnotationDirection );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFont", mGridAnnotationFont.toString() );
   QgsProject::instance()->writeEntry( mNameConfig, "/AnnotationFrameDistance", mAnnotationFrameDistance );
@@ -184,7 +193,7 @@ void QgsDecorationGrid::saveToProject()
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
     QgsProject::instance()->writeEntry( mNameConfig, "/LineSymbol", doc.toString() );
   }
-  if ( mLineSymbol )
+  if ( mMarkerSymbol )
   {
     doc.setContent( QString( "" ) );
     elem = QgsSymbolLayerV2Utils::saveSymbol( "marker symbol", mMarkerSymbol, doc );
@@ -223,7 +232,7 @@ void QgsDecorationGrid::render( QPainter * p )
   // p->setClipRect( thisPaintRect );
 
   //simpler approach: draw vertical lines first, then horizontal ones
-  if ( mGridStyle == QgsDecorationGrid::Solid )
+  if ( mGridStyle == QgsDecorationGrid::Line )
   {
     if ( ! mLineSymbol )
       return;
@@ -252,6 +261,7 @@ void QgsDecorationGrid::render( QPainter * p )
 
     mLineSymbol->stopRender( context );
   }
+#if 0
   else if ( mGridStyle == QgsDecorationGrid::Cross )
   {
     QPointF intersectionPoint, crossEnd1, crossEnd2;
@@ -299,6 +309,7 @@ void QgsDecorationGrid::render( QPainter * p )
       p->drawLine( hIt->second.p2(), crossEnd1 );
     }
   }
+#endif
   else //marker
   {
     if ( ! mMarkerSymbol )
@@ -308,7 +319,7 @@ void QgsDecorationGrid::render( QPainter * p )
     context.setPainter( p );
     mMarkerSymbol->startRender( context, 0 );
 
-    QPointF intersectionPoint, crossEnd1, crossEnd2;
+    QPointF intersectionPoint;
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
       //test for intersection with every horizontal line
