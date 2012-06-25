@@ -267,6 +267,9 @@ int main( int argc, char *argv[] )
 
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+  //make Qt and QGIS settings go to the same place
+  configpath = QDir::homePath() + QString( "/.qgis/" );
+  QgsDebugMsg( QString( "Android: configpath set to %1" ).arg(configpath) );
 #elif defined(Q_WS_WIN)
   for ( int i = 1; i < argc; i++ )
   {
