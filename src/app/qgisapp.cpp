@@ -819,6 +819,7 @@ void QgisApp::createActions()
   // File Menu Items
 
   connect( mActionNewProject, SIGNAL( triggered() ), this, SLOT( fileNew() ) );
+  connect( mActionNewBlankProject, SIGNAL( triggered() ), this, SLOT( fileNewBlank() ) );
   connect( mActionOpenProject, SIGNAL( triggered() ), this, SLOT( fileOpen() ) );
   connect( mActionSaveProject, SIGNAL( triggered() ), this, SLOT( fileSave() ) );
   connect( mActionSaveProjectAs, SIGNAL( triggered() ), this, SLOT( fileSaveAs() ) );
@@ -2881,15 +2882,20 @@ void QgisApp::fileExit()
 }
 
 
-
 void QgisApp::fileNew()
 {
   fileNew( true ); // prompts whether to save project
 } // fileNew()
 
 
+void QgisApp::fileNewBlank()
+{
+  fileNew( true, true );
+}
+
+
 //as file new but accepts flags to indicate whether we should prompt to save
-void QgisApp::fileNew( bool thePromptToSaveFlag )
+void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
@@ -2906,16 +2912,19 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
   // load template instead of loading defaults - or should this be done *after* loading defaults?
   QSettings settings;
-  QString projectTemplate = settings.value( "/qgis/newProjectTemplateFile", "" ).toString();
-  if ( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() &&
-       ! projectTemplate.isEmpty() )
+  if ( ! forceBlank )
   {
-    QgsDebugMsg( QString( "tryingload template: %1 - %2" ).arg( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() ).arg( projectTemplate ) );
-    if ( addProject( projectTemplate ) )
+    QString projectTemplate = settings.value( "/qgis/newProjectTemplateFile", "" ).toString();
+    if ( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() &&
+         ! projectTemplate.isEmpty() )
     {
-      // set null filename so we don't override the template
-      QgsProject::instance()->setFileName( QString() );
-      return;
+      QgsDebugMsg( QString( "loading template: %1 - %2" ).arg( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() ).arg( projectTemplate ) );
+      if ( addProject( projectTemplate ) )
+      {
+        // set null filename so we don't override the template
+        QgsProject::instance()->setFileName( QString() );
+        return;
+      }
     }
   }
 

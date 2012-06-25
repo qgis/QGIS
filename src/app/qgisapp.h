@@ -617,8 +617,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpen();
     //! Create a new project
     void fileNew();
-    //! As above but allows forcing without prompt
-    void fileNew( bool thePromptToSaveFlag );
+    //! Create a new blank project (no template)
+    void fileNewBlank();
+    //! As above but allows forcing without prompt and forcing blank project
+    void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
     void embedLayers();
