@@ -35,7 +35,7 @@
 #include <QMenu>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent ) : QWidget( parent )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent ) : QWidget( parent )
 {
   mSymbol = symbol;
   mStyle = style;
@@ -43,6 +43,11 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   setupUi( this );
 
   btnAdvanced->hide(); // advanced button is hidden by default
+  if ( menu ) // show it if there is a menu pointer
+  {
+    btnAdvanced->setMenu( menu );
+    btnAdvanced->show();
+  }
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
@@ -269,18 +274,4 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   updateSymbolInfo();
   emit changed();
 }
-
-QMenu* QgsSymbolsListWidget::advancedMenu()
-{
-  if ( mAdvancedMenu == NULL )
-  {
-    mAdvancedMenu = new QMenu;
-    btnAdvanced->setMenu( mAdvancedMenu );
-    btnAdvanced->show();
-  }
-  return mAdvancedMenu;
-}
-
-
-
 

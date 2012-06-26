@@ -23,7 +23,7 @@
 
 // the widgets
 #include "qgssymbolslistwidget.h"
-//#include "qgslayerpropertieswidget.h"
+#include "qgslayerpropertieswidget.h"
 #include "qgssymbollayerv2widget.h"
 #include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
@@ -185,7 +185,6 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
  // set symbol as active item in the tree
   QModelIndex newIndex = layersTree->model()->index( 0, 0 );
   layersTree->setCurrentIndex( newIndex );
-
 }
 
 void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
@@ -206,10 +205,8 @@ QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
   if ( mAdvancedMenu == NULL )
   {
     mAdvancedMenu = new QMenu;
-    //btnAdvanced->setMenu( mAdvancedMenu );
-    //btnAdvanced->show();
-    // TODO
-    // Send the menu to symbols list widget
+    // Brute force method to activate the Advanced menu
+    layerChanged();
   }
   return mAdvancedMenu;
 }
@@ -283,9 +280,6 @@ void QgsSymbolV2SelectorDialog::updateLayerPreview()
   updatePreview();
 }
 
-// A similar function would be needed to update the stacked widget
-// void QgsSymbolV2SelectorDialog::updateSymbolLayerWidget( QgsSymbolLayerV2* layer )
-
 SymbolLayerItem* QgsSymbolV2SelectorDialog::currentLayerItem()
 {
   QModelIndex idx = layersTree->currentIndex();
@@ -312,28 +306,28 @@ QgsSymbolLayerV2* QgsSymbolV2SelectorDialog::currentLayer()
   return NULL;
 }
 
-
 void QgsSymbolV2SelectorDialog::layerChanged()
 {
-  // We donot want slot to fire while we load compatible layertypes
-  // disconnect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
   updateUi();
 
   SymbolLayerItem *currentItem = static_cast<SymbolLayerItem*>( model->itemFromIndex( layersTree->currentIndex() ) );
   if ( currentItem == NULL )
     return;
 
-  // TODO Entire thing below is a TODO
   if ( currentItem->isLayer() )
   {
-    // add layerproperties widget to the stacked widget and update
-    // build the widget based on layer type and set it
+    SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( currentItem->parent() );
+    QWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer);
+    setWidget( layerProp );
+    connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
+    // This connection when layer type is changed
+    connect( layerProp, SIGNAL( changeLayer( QgsSymbolLayerV2* ) ), this, SLOT( changeLayer( QgsSymbolLayerV2* ) ) );
   }
   else
   {
     // then it must be a symbol 
     // Now populate symbols of that type using the symbols list widget:
-    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, this );
+    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu );
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
   }
@@ -381,7 +375,6 @@ void QgsSymbolV2SelectorDialog::setWidget( QWidget* widget )
   }
 }
 
-
 void QgsSymbolV2SelectorDialog::updateLockButton()
 {
   QgsSymbolLayerV2* layer = currentLayer();
@@ -389,61 +382,6 @@ void QgsSymbolV2SelectorDialog::updateLockButton()
     return;
   btnLock->setChecked( layer->isLocked() );
 }
-
-
-void QgsSymbolV2SelectorDialog::layerTypeChanged()
-{
-  QgsSymbolLayerV2* layer = currentLayer();
-  if ( !layer )
-    return;
-  // FIXME
-  /*
-  QString newLayerType = cboLayerType->itemData( cboLayerType->currentIndex() ).toString();
-  if ( layer->layerType() == newLayerType )
-    return;
-  */
-
-  QString newLayerType = "Simple Line";
-
-  // get creation function for new layer from registry
-  QgsSymbolLayerV2Registry* pReg = QgsSymbolLayerV2Registry::instance();
-  QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( newLayerType );
-  if ( am == NULL ) // check whether the metadata is assigned
-    return;
-
-  // change layer to a new (with different type)
-  QgsSymbolLayerV2* newLayer = am->createSymbolLayer( QgsStringMap() );
-  if ( newLayer == NULL )
-    return;
-
-  SymbolLayerItem *item = currentLayerItem();
-  // remove previos childs if any
-  if ( layer->subSymbol() )
-  {
-    item->removeRow( 0 );
-  }
-  // update symbol layer item
-  item->setLayer( newLayer );
-  // When it is a marker symbol
-  if ( newLayer->subSymbol() )
-  {
-    SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol() );
-    SymbolLayerItem *sublayer = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
-    subsymbol->appendRow( sublayer );
-    item->appendRow( subsymbol );
-  }
-
-  // Change the symbol at last to avoid deleting item's layer
-  QgsSymbolV2* symbol = static_cast<SymbolLayerItem*>( item->parent() )->symbol();
-  int layerIdx = item->parent()->rowCount() - item->row() - 1;
-  symbol->changeSymbolLayer( layerIdx, newLayer );
-
-  //updateSymbolLayerWidget( newLayer );
-
-  item->updatePreview();
-  updatePreview();
-}
-
 
 void QgsSymbolV2SelectorDialog::addLayer()
 {
@@ -537,3 +475,33 @@ void QgsSymbolV2SelectorDialog::lockLayer()
   layer->setLocked( btnLock->isChecked() );
 }
 
+void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )
+{
+  SymbolLayerItem *item = currentLayerItem();
+  QgsSymbolLayerV2* layer = item->layer();
+
+  if ( layer->subSymbol() )
+  {
+    item->removeRow( 0 );
+  }
+  // update symbol layer item
+  item->setLayer( newLayer );
+  // When it is a marker symbol
+  if ( newLayer->subSymbol() )
+  {
+    SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol() );
+    SymbolLayerItem *sublayer = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
+    subsymbol->appendRow( sublayer );
+    item->appendRow( subsymbol );
+  }
+
+  // Change the symbol at last to avoid deleting item's layer
+  QgsSymbolV2* symbol = static_cast<SymbolLayerItem*>( item->parent() )->symbol();
+  int layerIdx = item->parent()->rowCount() - item->row() - 1;
+  symbol->changeSymbolLayer( layerIdx, newLayer );
+
+  item->updatePreview();
+  updatePreview();
+  // Important: This lets the layer to have its own layer properties widget
+  layerChanged();
+}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>WidgetSymbolsList</class>
- <widget class="QWidget" name="WidgetSymbolsList">
+ <class>SymbolsListWidget</class>
+ <widget class="QWidget" name="SymbolsListWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

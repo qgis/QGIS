@@ -31,6 +31,7 @@ symbology-ng/qgsellipsesymbollayerv2widget.cpp
 symbology-ng/qgspointdisplacementrendererwidget.cpp
 symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
 symbology-ng/qgssymbolslistwidget.cpp
+symbology-ng/qgslayerpropertieswidget.cpp
 
 attributetable/qgsattributetablemodel.cpp
 attributetable/qgsattributetablememorymodel.cpp
@@ -126,6 +127,7 @@ symbology-ng/qgsellipsesymbollayerv2widget.h
 symbology-ng/qgspointdisplacementrendererwidget.h
 symbology-ng/qgsvectorfieldsymbollayerwidget.h
 symbology-ng/qgssymbolslistwidget.h
+symbology-ng/qgslayerpropertieswidget.h
 
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablemodel.h

@@ -53,9 +53,6 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
     void updateUi();
 
-    //void loadPropertyWidgets();
-
-    //void updateSymbolLayerWidget( QgsSymbolLayerV2* layer );
     void updateLockButton();
 
     SymbolLayerItem* currentLayerItem();
@@ -77,14 +74,16 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
     void lockLayer();
 
-    void layerTypeChanged();
-
     void layerChanged();
 
     void updateLayerPreview();
     void updatePreview();
 
+    //! Slot to update tree when a new symbol from style
     void symbolChanged();
+    //! alters tree and sets proper widget when Layer Type is changed
+    //! @note: The layer is recieved from the LayerPropertiesWidget
+    void changeLayer( QgsSymbolLayerV2* layer );
 
 
   protected: // data
@@ -95,7 +94,6 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
     QStandardItemModel* model;
     QWidget *mPresentWidget;
-
 };
 
 #endif

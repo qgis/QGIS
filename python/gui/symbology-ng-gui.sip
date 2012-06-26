@@ -95,7 +95,6 @@ class QgsSymbolV2SelectorDialog : QDialog //, private Ui::QgsSymbolV2SelectorDia
     void addLayer();
     void removeLayer();
     void lockLayer();
-    void layerTypeChanged();
     void layerChanged();
     void updateLayerPreview();
     void updatePreview();

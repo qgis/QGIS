@@ -25,17 +25,12 @@ class QgsStyleV2;
 
 class QMenu;
 
-class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::WidgetSymbolsList
+class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget
 {
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent = NULL );
-
-    // static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsVectorFieldSymbolLayerWidget( vl ); }
-
-    //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
-    QMenu* advancedMenu();
+    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent = NULL );
 
   public slots:
     void setSymbolFromStyle( const QModelIndex & index );
@@ -55,7 +50,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::WidgetSymbol
   protected:
     QgsSymbolV2* mSymbol;
     QgsStyleV2* mStyle;
-    QMenu* mAdvancedMenu;
 
     void populateSymbolView();
     void updateSymbolColor();
@@ -64,8 +58,6 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::WidgetSymbol
   private:
     /**Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
-
-
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H
