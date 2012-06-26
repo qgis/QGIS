@@ -149,7 +149,7 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
           grayVal = 255 - grayVal;
         }
 
-        if ( doubleNear( currentAlpha, 255 ) )
+        if ( doubleNear( currentAlpha, 1.0 ) )
         {
           imageScanLine[j] = qRgba( grayVal, grayVal, grayVal, 255 );
         }

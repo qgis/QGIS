@@ -295,7 +295,7 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
           currentOpacity *= ( readValue( alphaData, transparencyType, currentRasterPos ) / 255.0 );
         }
 
-        if ( doubleNear( currentOpacity, 255 ) )
+        if ( doubleNear( currentOpacity, 1.0 ) )
         {
           imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
         }
