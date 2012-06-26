@@ -401,6 +401,7 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! View menu actions
     virtual QAction *actionPan() = 0;
+    virtual QAction *actionTouch() = 0;
     virtual QAction *actionPanToSelected() = 0;
     virtual QAction *actionZoomIn() = 0;
     virtual QAction *actionZoomOut() = 0;

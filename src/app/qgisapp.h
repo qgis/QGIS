@@ -251,6 +251,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 #endif
 
     QAction *actionPan() { return mActionPan; }
+    QAction *actionTouch() { return mActionTouch; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
