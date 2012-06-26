@@ -349,6 +349,7 @@ void QgsSymbolV2SelectorDialog::symbolChanged()
     parent->removeRow( 0 );
     loadSymbol( symbol, parent );
     layersTree->setCurrentIndex( parent->child( 0 )->index() );
+    parent->updatePreview();
   }
   else
   {
