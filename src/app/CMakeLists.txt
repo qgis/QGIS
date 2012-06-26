@@ -19,12 +19,15 @@ SET(QGIS_APP_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
+  qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
   qgsdecorationnortharrow.cpp
   qgsdecorationnortharrowdialog.cpp
   qgsdecorationscalebar.cpp
   qgsdecorationscalebardialog.cpp
+  qgsdecorationgrid.cpp
+  qgsdecorationgriddialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -167,12 +170,15 @@ SET (QGIS_APP_MOC_HDRS
   qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
+  qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
   qgsdecorationnortharrow.h
   qgsdecorationnortharrowdialog.h
   qgsdecorationscalebar.h
   qgsdecorationscalebardialog.h
+  qgsdecorationgrid.h
+  qgsdecorationgriddialog.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h

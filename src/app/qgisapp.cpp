@@ -117,6 +117,7 @@
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
+#include "qgsdecorationgrid.h"
 #include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
@@ -1609,6 +1610,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDecorationCopyright->setIcon( getThemeIcon( "/plugins/copyright_label.png" ) );
   mActionDecorationNorthArrow->setIcon( getThemeIcon( "/plugins/north_arrow.png" ) );
   mActionDecorationScaleBar->setIcon( getThemeIcon( "/plugins/scale_bar.png" ) );
+  mActionDecorationGrid->setIcon( getThemeIcon( "/transformed.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -2002,20 +2004,42 @@ void QgisApp::createMapTips()
 
 void QgisApp::createDecorations()
 {
-  mDecorationCopyright = new QgsDecorationCopyright( this );
+  QgsDecorationCopyright* mDecorationCopyright = new QgsDecorationCopyright( this );
   connect( mActionDecorationCopyright, SIGNAL( triggered() ), mDecorationCopyright, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationCopyright, SLOT( renderLabel( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationCopyright, SLOT( projectRead() ) );
 
-  mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
+  QgsDecorationNorthArrow* mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
   connect( mActionDecorationNorthArrow, SIGNAL( triggered() ), mDecorationNorthArrow, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationNorthArrow, SLOT( renderNorthArrow( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationNorthArrow, SLOT( projectRead() ) );
 
-  mDecorationScaleBar = new QgsDecorationScaleBar( this );
+  QgsDecorationScaleBar* mDecorationScaleBar = new QgsDecorationScaleBar( this );
   connect( mActionDecorationScaleBar, SIGNAL( triggered() ), mDecorationScaleBar, SLOT( run() ) );
-  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationScaleBar, SLOT( renderScaleBar( QPainter * ) ) );
-  connect( this, SIGNAL( projectRead() ), mDecorationScaleBar, SLOT( projectRead() ) );
+
+  QgsDecorationGrid* mDecorationGrid = new QgsDecorationGrid( this );
+  connect( mActionDecorationGrid, SIGNAL( triggered() ), mDecorationGrid, SLOT( run() ) );
+
+  // add the decorations in a particular order so they are rendered in that order
+  addDecorationItem( mDecorationGrid );
+  addDecorationItem( mDecorationCopyright );
+  addDecorationItem( mDecorationNorthArrow );
+  addDecorationItem( mDecorationScaleBar );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderDecorationItems( QPainter * ) ) );
+  connect( this, SIGNAL( newProject() ), this, SLOT( projectReadDecorationItems() ) );
+  connect( this, SIGNAL( projectRead() ), this, SLOT( projectReadDecorationItems() ) );
+}
+
+void QgisApp::renderDecorationItems( QPainter *p )
+{
+  foreach( QgsDecorationItem* item, mDecorationItems )
+  {
+    item->render( p );
+  }
+}
+
+void QgisApp::projectReadDecorationItems()
+{
+  foreach( QgsDecorationItem* item, mDecorationItems )
+  {
+    item->projectRead( );
+  }
 }
 
 // Update file menu with the current list of recently accessed projects
@@ -5003,11 +5027,13 @@ void QgisApp::setProjectCRSFromLayer()
 
   QgsCoordinateReferenceSystem crs = mMapLegend->currentLayer()->crs();
   QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
+  mMapCanvas->freeze();
   myRenderer->setDestinationCrs( crs );
   if ( crs.mapUnits() != QGis::UnknownUnit )
   {
     myRenderer->setMapUnits( crs.mapUnits() );
   }
+  mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 }
 

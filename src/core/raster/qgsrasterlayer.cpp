@@ -910,8 +910,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
 bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   theResults.clear();
-
-  QgsDebugMsg( "identify provider : " + mProviderKey ) ;
+  // QgsDebugMsg( "identify provider : " + mProviderKey ) ;
   return ( mDataProvider->identify( thePoint, theResults ) );
 }
 

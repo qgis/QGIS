@@ -33,7 +33,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboOrientation->hide();
   textLabel15->hide();
 
-  cboxEnabled->setChecked( mDeco.mEnable );
+  cboxEnabled->setChecked( mDeco.enabled() );
   // text
   txtCopyrightText->setPlainText( mDeco.mLabelQString );
   // placement
@@ -60,7 +60,7 @@ void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
   mDeco.mLabelQColor = pbnColorChooser->color();
   mDeco.mPlacementIndex = cboPlacement->currentIndex();
-  mDeco.mEnable = cboxEnabled->isChecked();
+  mDeco.setEnabled( cboxEnabled->isChecked() );
 
   accept();
 }
