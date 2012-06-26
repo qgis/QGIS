@@ -176,6 +176,7 @@ void QgsComposerLabelWidget::setGuiElementValues()
 {
   blockAllSignals( true );
   mTextEdit->setText( mComposerLabel->text() );
+  mTextEdit->moveCursor( QTextCursor::End, QTextCursor::MoveAnchor );
   mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
   mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );

@@ -64,6 +64,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 void QgsComposerLabel::setText( const QString& text )
 {
   mText = text;
+  emit itemChanged();
 }
 
 QString QgsComposerLabel::displayText() const
