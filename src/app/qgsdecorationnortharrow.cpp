@@ -59,13 +59,14 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  * @param _qI Pointer to the QGIS interface object
  */
 QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
-    : QObject( parent )
+    : QgsDecorationItem( parent )
 {
   mRotationInt = 0;
   mAutomatic = true;
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
 
+  setName( "North Arrow" );
   projectRead();
 }
 
@@ -75,20 +76,18 @@ QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
 
 void QgsDecorationNorthArrow::projectRead()
 {
-  //default text to start with - try to fetch it from qgsproject
-
-  mRotationInt = QgsProject::instance()->readNumEntry( "NorthArrow", "/Rotation", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( "NorthArrow", "/Placement", 0 );
-  mEnable = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Enabled", false );
-  mAutomatic = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Automatic", true );
+  QgsDecorationItem::projectRead();
+  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, "/Rotation", 0 );
+  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 0 );
+  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, "/Automatic", true );
 }
 
 void QgsDecorationNorthArrow::saveToProject()
 {
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Rotation", mRotationInt );
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Placement", mPlacementIndex );
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Enabled", mEnable );
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Automatic", mAutomatic );
+  QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, "/Rotation", mRotationInt );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Automatic", mAutomatic );
 }
 
 // Slot called when the buffer menu item is activated
@@ -98,16 +97,15 @@ void QgsDecorationNorthArrow::run()
 
   if ( dlg.exec() )
   {
-    saveToProject();
-    QgisApp::instance()->mapCanvas()->refresh();
+    update();
   }
 }
 
-void QgsDecorationNorthArrow::renderNorthArrow( QPainter * theQPainter )
+void QgsDecorationNorthArrow::render( QPainter * theQPainter )
 {
 
   //Large IF statement controlled by enable check box
-  if ( mEnable )
+  if ( enabled() )
   {
     if ( theQPainter->isActive() )
     {

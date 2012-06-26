@@ -54,7 +54,7 @@ email                : sbr00pwb@users.sourceforge.net
 
 
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
-    : QObject( parent )
+    : QgsDecorationItem( parent )
 {
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
@@ -62,6 +62,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
+  setName( "Scale Bar" );
   projectRead();
 }
 
@@ -72,27 +73,29 @@ QgsDecorationScaleBar::~QgsDecorationScaleBar()
 
 void QgsDecorationScaleBar::projectRead()
 {
-  mPreferredSize = QgsProject::instance()->readNumEntry( "ScaleBar", "/PreferredSize", 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Style", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Placement", 2 );
-  mEnabled = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Enabled", false );
-  mSnapping = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Snapping", true );
-  int myRedInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorRedPart", 0 );
-  int myGreenInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorGreenPart", 0 );
-  int myBlueInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorBluePart", 0 );
+  QgsDecorationItem::projectRead();
+  mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, "/PreferredSize", 30 );
+  mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Style", 0 );
+  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 2 );
+  // mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
+  mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, "/Snapping", true );
+  int myRedInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorRedPart", 0 );
+  int myGreenInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorGreenPart", 0 );
+  int myBlueInt = QgsProject::instance()->readNumEntry( mNameConfig, "/ColorBluePart", 0 );
   mColor = QColor( myRedInt, myGreenInt, myBlueInt );
 }
 
 void QgsDecorationScaleBar::saveToProject()
 {
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Placement", mPlacementIndex );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/PreferredSize", mPreferredSize );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Snapping", mSnapping );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Enabled", mEnabled );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Style", mStyleIndex );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorRedPart", mColor.red() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorGreenPart", mColor.green() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColor.blue() );
+  QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, "/PreferredSize", mPreferredSize );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Snapping", mSnapping );
+  // QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Style", mStyleIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, "/ColorRedPart", mColor.red() );
+  QgsProject::instance()->writeEntry( mNameConfig, "/ColorGreenPart", mColor.green() );
+  QgsProject::instance()->writeEntry( mNameConfig, "/ColorBluePart", mColor.blue() );
 }
 
 
@@ -102,13 +105,12 @@ void QgsDecorationScaleBar::run()
 
   if ( dlg.exec() )
   {
-    saveToProject();
-    QgisApp::instance()->mapCanvas()->refresh();
+    update();
   }
 }
 
 
-void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
+void QgsDecorationScaleBar::render( QPainter * theQPainter )
 {
   QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
 
@@ -129,7 +131,7 @@ void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
     return;
 
   //Large if statement which determines whether to render the scale bar
-  if ( mEnabled )
+  if ( enabled() )
   {
     // Hard coded sizes
     int myMajorTickSize = 8;

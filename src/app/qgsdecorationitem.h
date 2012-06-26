@@ -1,12 +1,9 @@
 /***************************************************************************
-  plugin.cpp
-  Plugin to draw scale bar on map
-Functions:
-
--------------------
-begin                : Jun 1, 2004
-copyright            : (C) 2004 by Peter Brewer
-email                : sbr00pwb@users.sourceforge.net
+                         qgsdecorationitem.h
+                         ----------------------
+    begin                : May 10, 2012
+    copyright            : (C) 2012 by Etienne Tourigny
+    email                : etourigny.dev at gmail dot com
 
  ***************************************************************************/
 
@@ -18,51 +15,53 @@ email                : sbr00pwb@users.sourceforge.net
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSCALEBARPLUGIN
-#define QGSCALEBARPLUGIN
+#ifndef QGSDECORATIONITEM_H
+#define QGSDECORATIONITEM_H
 
-#include "qgsdecorationitem.h"
+#include <QObject>
+#include "qgslogger.h"
 
 class QPainter;
 
-#include <QColor>
-
-class QgsDecorationScaleBar: public QgsDecorationItem
+class QgsDecorationItem: public QObject
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationScaleBar( QObject* parent = NULL );
+    QgsDecorationItem( QObject* parent = NULL );
     //! Destructor
-    virtual ~ QgsDecorationScaleBar();
+    virtual ~ QgsDecorationItem();
+
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
+    bool enabled() const { return mEnabled; }
+
+    void update();
+
+  signals:
+    void toggled( bool t );
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead();
+    virtual void projectRead();
     //! save values to the project
-    void saveToProject();
+    virtual void saveToProject();
 
     //! this does the meaty bit of the work
-    void render( QPainter * );
+    virtual void render( QPainter * ) {}
     //! Show the dialog box
-    void run();
+    virtual void run() {}
 
-  private:
+    virtual void setName( const char *name );
+    virtual QString name() { return mName; }
 
-    //! Placement of the scale bar. An index and the translated text
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
-    //! The size preferred size of the scale bar
-    int mPreferredSize;
-    //! Should we snap to integer times power of 10?
-    bool mSnapping;
-    //! Style of scale bar. An index and the translated text
-    int mStyleIndex;
-    QStringList mStyleLabels;
-    //! The scale bar color
-    QColor mColor;
+  protected:
 
-    friend class QgsDecorationScaleBarDialog;
+    /**True if decoration item has to be displayed*/
+    bool mEnabled;
+
+    QString mName;
+    QString mNameConfig;
+    QString mNameTranslated;
 };
 
 #endif
