@@ -68,25 +68,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Size =                    1 << 6  // has fixed source type
     };
 
-    // This is modified copy of GDALDataType
-    enum DataType
-    {
-      /*! Unknown or unspecified type */          UnknownDataType = 0,
-      /*! Eight bit unsigned integer */           Byte = 1,
-      /*! Sixteen bit unsigned integer */         UInt16 = 2,
-      /*! Sixteen bit signed integer */           Int16 = 3,
-      /*! Thirty two bit unsigned integer */      UInt32 = 4,
-      /*! Thirty two bit signed integer */        Int32 = 5,
-      /*! Thirty two bit floating point */        Float32 = 6,
-      /*! Sixty four bit floating point */        Float64 = 7,
-      /*! Complex Int16 */                        CInt16 = 8,
-      /*! Complex Int32 */                        CInt32 = 9,
-      /*! Complex Float32 */                      CFloat32 = 10,
-      /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes */ ARGBDataType = 12,
-      TypeCount = 13          /* maximum type # + 1 */
-    };
-
     // This is modified copy of GDALColorInterp
     enum ColorInterpretation
     {
@@ -188,50 +169,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     {
       Q_UNUSED( bandNo );
       return QgsRasterDataProvider::UnknownDataType;
-    }
-
-    int typeSize( int dataType ) const
-    {
-      // modified copy from GDAL
-      switch ( dataType )
-      {
-        case Byte:
-          return 8;
-
-        case UInt16:
-        case Int16:
-          return 16;
-
-        case UInt32:
-        case Int32:
-        case Float32:
-        case CInt16:
-          return 32;
-
-        case Float64:
-        case CInt32:
-        case CFloat32:
-          return 64;
-
-        case CFloat64:
-          return 128;
-
-        case ARGBDataType:
-          return 32;
-
-        default:
-          return 0;
-      }
-    }
-    int dataTypeSize( int bandNo ) const
-    {
-      return typeSize( dataType( bandNo ) );
-    }
-
-    /** Get numbur of bands */
-    virtual int bandCount() const
-    {
-      return 1;
     }
 
     /** Returns data type for the band specified by number */

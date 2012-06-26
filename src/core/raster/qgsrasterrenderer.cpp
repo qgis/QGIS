@@ -41,11 +41,9 @@ QgsRasterRenderer::~QgsRasterRenderer()
 {
 }
 
-bool QgsRasterRenderer::usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const
+bool QgsRasterRenderer::usesTransparency( ) const
 {
-  //transparency is always used if on-the-fly reprojection is enabled
-  bool reprojectionEnabled = ( srcSRS.isValid() && dstSRS.isValid() && srcSRS != dstSRS );
-  if ( !mInput || reprojectionEnabled )
+  if ( !mInput )
   {
     return true;
   }

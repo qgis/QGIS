@@ -53,8 +53,7 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
 
   int currentRasterPos;
 
-  //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
-  bool hasTransparency = false;
+  bool hasTransparency = usesTransparency();
 
   QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
 

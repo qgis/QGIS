@@ -1358,7 +1358,7 @@ int QgsWmsProvider::dataType( int bandNo ) const
 int QgsWmsProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
-  return QgsRasterDataProvider::ARGBDataType;
+  return QgsRasterDataProvider::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const

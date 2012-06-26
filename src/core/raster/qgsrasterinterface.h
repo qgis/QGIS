@@ -51,8 +51,12 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       /*! Complex Int32 */                        CInt32 = 9,
       /*! Complex Float32 */                      CFloat32 = 10,
       /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes */ ARGBDataType = 12,
-      TypeCount = 13          /* maximum type # + 1 */
+      /*! Color, alpha, red, green, blue, 4 bytes the same as 
+          QImage::Format_ARGB32 */       ARGB32 = 12,
+      /*! Color, alpha, red, green, blue, 4 bytes  the same as 
+          QImage::Format_ARGB32_Premultiplied */ ARGB32_Premultiplied = 13,
+      
+      TypeCount = 14          /* maximum type # + 1 */
     };
 
     int typeSize( int dataType ) const
@@ -81,7 +85,8 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
         case CFloat64:
           return 128;
 
-        case ARGBDataType:
+        case ARGB32:
+        case ARGB32_Premultiplied:
           return 32;
 
         default:
@@ -93,7 +98,6 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       return typeSize( dataType( bandNo ) );
     }
 
-
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
@@ -101,7 +105,14 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
     /** Returns data type for the band specified by number */
     virtual int dataType( int bandNo ) const
     {
+      Q_UNUSED( bandNo );
       return UnknownDataType;
+    }
+
+    /** Get numbur of bands */
+    virtual int bandCount() const
+    {
+      return 1;
     }
 
     // TODO

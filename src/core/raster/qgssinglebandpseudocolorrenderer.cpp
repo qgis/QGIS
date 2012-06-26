@@ -82,8 +82,7 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   //rendering is faster without considering user-defined transparency
-  //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
-  bool hasTransparency = false;
+  bool hasTransparency = usesTransparency();
 
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {

@@ -99,9 +99,7 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
   double currentOpacity = mOpacity;
 
   //rendering is faster without considering user-defined transparency
-  // TODO
-  bool hasTransparency = false;
-  //bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
+  bool hasTransparency = usesTransparency();
   void* transparencyData = 0;
 
   if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )

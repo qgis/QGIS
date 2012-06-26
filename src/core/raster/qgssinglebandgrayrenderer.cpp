@@ -95,8 +95,6 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     alphaData = rasterData;
   }
 
-  // To give to image preallocated memory is the only way to avoid memcpy at the end
-  //QImage img( width, height, QImage::Format_ARGB32_Premultiplied );
   QImage *img = createImage ( width, height, QImage::Format_ARGB32_Premultiplied );
   QRgb* imageScanLine = 0;
   int currentRasterPos = 0;

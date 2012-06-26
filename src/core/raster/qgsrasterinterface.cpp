@@ -28,6 +28,8 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
+// To give to an image preallocated memory is the only way to avoid memcpy 
+// when we want to keep data but delete QImage
 QImage * QgsRasterInterface::createImage ( int width, int height, QImage::Format format )
 {
   // Qt has its own internal function depthForFormat(), unfortunately it is not public

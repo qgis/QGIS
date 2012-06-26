@@ -46,7 +46,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
       return 0;
     }
 
-    bool usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const;
+    bool usesTransparency() const;
 
     void setOpacity( double opacity ) { mOpacity = opacity; }
     double opacity() const { return mOpacity; }

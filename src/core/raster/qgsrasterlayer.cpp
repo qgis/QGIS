@@ -1720,7 +1720,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Multiband;
   }
-  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
+  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32 
+            ||  mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
   }

@@ -31,7 +31,7 @@ class QgsRasterRenderer
     virtual QString type() const;
     virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
-    bool usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const;
+    bool usesTransparency() const;
 
     void setOpacity( double opacity );
     double opacity() const;

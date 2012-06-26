@@ -109,15 +109,11 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
-  // TODO
-  bool fastDraw = false;
-  /*
-  bool fastDraw = (
-                    !usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS )
+  bool fastDraw = ( !usesTransparency()
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
                     && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
                     && !mInvertColor );
-  */
+
   QgsRasterInterface::DataType redType = QgsRasterInterface::UnknownDataType;
 
   if ( mRedBand > 0 )
