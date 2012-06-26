@@ -1748,15 +1748,13 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
 void QgsVectorLayer::select( const QgsFeatureRequest& request )
 {
   QgsAttributeList attrs;
-  if ( !( request.flags() & QgsFeatureRequest::NoAttributes ) )
-  {
-    attrs = request.attributes();
-    if ( attrs.isEmpty() ) // empty list = fetch all attributes
-      attrs = pendingAllAttributesList();
-  }
+  if ( !( request.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
+    attrs = request.subsetOfAttributes();
+  else
+    attrs = pendingAllAttributesList();
   bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
   bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
-  select( attrs, request.extent(), fetchGeom, exactIntersect );
+  select( attrs, request.filterRect(), fetchGeom, exactIntersect );
 }
 
 

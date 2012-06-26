@@ -49,15 +49,13 @@ QString QgsVectorDataProvider::storageType() const
 void QgsVectorDataProvider::select( const QgsFeatureRequest& request )
 {
   QgsAttributeList attrs;
-  if ( !( request.flags() & QgsFeatureRequest::NoAttributes ) )
-  {
-    attrs = request.attributes();
-    if ( attrs.isEmpty() ) // empty list = fetch all attributes
-      attrs = attributeIndexes();
-  }
+  if ( !( request.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
+    attrs = request.subsetOfAttributes();
+  else
+    attrs = attributeIndexes();
   bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
   bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
-  select( attrs, request.extent(), fetchGeom, exactIntersect );
+  select( attrs, request.filterRect(), fetchGeom, exactIntersect );
 }
 
 

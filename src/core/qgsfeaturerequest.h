@@ -3,6 +3,7 @@
 
 #include <QFlags>
 
+#include "qgsfeature.h"
 #include "qgsrectangle.h"
 
 #include <QList>
@@ -10,27 +11,64 @@ typedef QList<int> QgsAttributeList;
 
 /**
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
+ * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
+ * - no filter - all features are returned
+ * - feature id - only feature that matches given feature id is returned
+ * - rectangle - only features that intersect given rectangle should be fetched. For the sake of speed,
+ *               the intersection is often done only using feature's bounding box. There is a flag
+ *               ExactIntersect that makes sure that only intersecting features will be returned.
+ *
+ * For efficiency, it is also possible to tell provider that some data is not required:
+ * - NoGeometry flag
+ * - SubsetOfAttributes flag
  *
  * The options may be chained, e.g.:
- *   QgsFeatureRequest().setExtent(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest::ExactIntersect)
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest::ExactIntersect)
+ *
+ * Examples:
+ * - fetch all features:
+ *     QgsFeatureRequest()
+ * - fetch all features, only one attribute
+ *     QgsFeatureRequest().setSubsetOfAttributes(QStringList("myfield"), provider->fieldMap())
+ * - fetch all features, without geometries
+ *     QgsFeatureRequest().setFlags(QgsFeatureRequest::NoGeometry)
+ * - fetch only features from particular extent
+ *     QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
+ * - fetch only one feature
+ *     QgsFeatureRequest().setFilterFid(45)
+ *
  */
 class QgsFeatureRequest
 {
   public:
     enum Flag
     {
-      NoGeometry     = 0x01,  //!< Do not fetch geometry
-      NoAttributes   = 0x02,  //!< Do not fetch any attributes
-      ExactIntersect = 0x04   //!< Use exact geometry intersection (slower) instead of bounding boxes
+      NoGeometry         = 0x01,  //!< Do not fetch geometry
+      SubsetOfAttributes = 0x02,  //!< Fetch only a subset of attributes (setSubsetOfAttributes sets this flag)
+      ExactIntersect     = 0x04   //!< Use exact geometry intersection (slower) instead of bounding boxes
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+
+    enum FilterType
+    {
+        FilterNone,   //!< No filter is applied
+        FilterRect,   //!< Filter using a rectangle
+        FilterFid     //!< Filter using feature ID
+    };
 
     //! construct a default request: for all features get attributes and geometries
     QgsFeatureRequest();
 
+    FilterType filterType() const { return mFilter; }
+
     //! Set rectangle from which features will be taken. Empty rectangle removes the filter.
-    QgsFeatureRequest& setExtent( const QgsRectangle& rect ) { mRect = rect; return *this; }
-    const QgsRectangle& extent() const { return mRect; }
+    //!
+    QgsFeatureRequest& setFilterRect( const QgsRectangle& rect ) { mFilter = FilterRect; mFilterRect = rect; return *this; }
+    const QgsRectangle& filterRect() const { return mFilterRect; }
+
+    //! Set feature ID that should be fetched.
+    QgsFeatureRequest& setFilterFid( QgsFeatureId fid ) { mFilterFid = FilterFid; mFilterFid = fid; return *this; }
+    const QgsFeatureId& filterFid() const { return mFilterFid; }
 
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( Flags flags ) { mFlags = flags; return *this; }
@@ -38,17 +76,21 @@ class QgsFeatureRequest
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
-    QgsFeatureRequest& setAttributes( const QgsAttributeList& attrs ) { mAttrs = attrs; return *this; }
-    const QgsAttributeList& attributes() const { return mAttrs; }
+    QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs ) { mFlags |= SubsetOfAttributes; mAttrs = attrs; return *this; }
+    const QgsAttributeList& subsetOfAttributes() const { return mAttrs; }
 
-    // TODO: maybe set attributes as a list of strings?
+    //! Set a subset of attributes by names that will be fetched
+    QgsFeatureRequest& setSubsetOfAttributes( const QStringList& attrNames, const QgsFieldMap& fields );
 
     // TODO: in future
-    // void setExpression(const QString& expression);
+    // void setFilterExpression(const QString& expression); // using QgsExpression
+    // void setFilterNativeExpression(con QString& expr);   // using provider's SQL (if supported)
     // void setLimit(int limit);
 
   protected:
-    QgsRectangle mRect;
+    FilterType mFilter;
+    QgsRectangle mFilterRect;
+    QgsFeatureId mFilterFid;
     Flags mFlags;
     QgsAttributeList mAttrs;
 };
