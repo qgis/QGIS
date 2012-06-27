@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRASTERFACE_H
-#define QGSRASTERFACE_H
+#ifndef QGSRASTERINTERFACE_H
+#define QGSRASTERINTERFACE_H
 
 #include <QObject>
 #include <QImage>
@@ -26,7 +26,7 @@
 /** \ingroup core
  * Base class for processing modules.
  */
-// TODO: inherit from QObject? QgsRasterDataProvider inherits already from QObject
+// TODO: inherit from QObject? QgsDataProvider inherits already from QObject, multiple inheritance from QObject is not allowed
 class CORE_EXPORT QgsRasterInterface //: public QObject
 {
 
@@ -34,8 +34,17 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
 
   public:
 
-    // TODO: This is copy of QgsRasterDataProvider::DataType, the QgsRasterDataProvider
-    // should use this DataType
+    enum Role
+    {
+      UnknownRole   = 0,
+      ProviderRole  = 1,
+      RendererRole  = 2,
+      ResamplerRole = 3,
+      ProjectorRole = 4
+    };
+
+    Role role() { return mRole; }
+
     // This is modified copy of GDALDataType
     enum DataType
     {
@@ -51,11 +60,11 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       /*! Complex Int32 */                        CInt32 = 9,
       /*! Complex Float32 */                      CFloat32 = 10,
       /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as 
-          QImage::Format_ARGB32 */       ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as 
-          QImage::Format_ARGB32_Premultiplied */ ARGB32_Premultiplied = 13,
-      
+      /*! Color, alpha, red, green, blue, 4 bytes the same as
+          QImage::Format_ARGB32 */                ARGB32 = 12,
+      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+          QImage::Format_ARGB32_Premultiplied */  ARGB32_Premultiplied = 13,
+
       TypeCount = 14          /* maximum type # + 1 */
     };
 
@@ -98,7 +107,7 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       return typeSize( dataType( bandNo ) );
     }
 
-    QgsRasterInterface( QgsRasterInterface * input = 0 );
+    QgsRasterInterface( QgsRasterInterface * input = 0, Role role = UnknownRole );
 
     virtual ~QgsRasterInterface();
 
@@ -128,14 +137,19 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       return 0;
     }
 
-    void setInput( QgsRasterInterface* input ) { mInput = input; }
+    /** Set input.
+      * Returns true if set correctly, false if cannot use that input */
+    virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
-    /** Create a new image with extraneous data, such data may be used 
+    /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.
      */
-    QImage * createImage ( int width, int height, QImage::Format format );
+    QImage * createImage( int width, int height, QImage::Format format );
 
     //protected:
+
+    Role mRole;
+
     // QgsRasterInterface from used as input, data are read from it
     QgsRasterInterface* mInput;
 

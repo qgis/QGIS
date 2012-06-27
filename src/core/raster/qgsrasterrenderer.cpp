@@ -31,7 +31,8 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type ): QgsRasterInterface( input ),
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface* input, const QString& type )
+    : QgsRasterInterface( input, QgsRasterInterface::RendererRole ),
     mType( type ), mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ), mOpacity( 1.0 ), mRasterTransparency( 0 ),
     mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
 {

@@ -26,7 +26,8 @@ QgsRasterProjector::QgsRasterProjector(
   int theDestRows, int theDestCols,
   double theMaxSrcXRes, double theMaxSrcYRes,
   QgsRectangle theExtent )
-    : mSrcCRS( theSrcCRS )
+    : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
+    , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
     , mCoordinateTransform( theDestCRS, theSrcCRS )
     , mDestExtent( theDestExtent )
@@ -45,11 +46,18 @@ QgsRasterProjector::QgsRasterProjector(
   QgsCoordinateReferenceSystem theDestCRS,
   double theMaxSrcXRes, double theMaxSrcYRes,
   QgsRectangle theExtent )
-    : mSrcCRS( theSrcCRS )
+    : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
+    , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
     , mCoordinateTransform( theDestCRS, theSrcCRS )
     , mExtent( theExtent )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+{
+  QgsDebugMsg( "Entered" );
+}
+
+QgsRasterProjector::QgsRasterProjector()
+    : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
 {
   QgsDebugMsg( "Entered" );
 }
@@ -59,6 +67,14 @@ QgsRasterProjector::~QgsRasterProjector()
   //delete mCoordinateTransform;
   //delete pHelperTop;
   //delete pHelperBottom;
+}
+
+void QgsRasterProjector::setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS )
+{
+  mSrcCRS = theSrcCRS;
+  mDestCRS = theDestCRS;
+  mCoordinateTransform.setSourceCrs( theSrcCRS );
+  mCoordinateTransform.setDestCRS( theDestCRS );
 }
 
 void QgsRasterProjector::calc()

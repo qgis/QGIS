@@ -20,7 +20,9 @@
 
 #include <QByteArray>
 
-QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input ): mInput( input )
+QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input, Role role ):
+    mInput( input )
+    , mRole( role )
 {
 }
 
@@ -28,9 +30,9 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
-// To give to an image preallocated memory is the only way to avoid memcpy 
+// To give to an image preallocated memory is the only way to avoid memcpy
 // when we want to keep data but delete QImage
-QImage * QgsRasterInterface::createImage ( int width, int height, QImage::Format format )
+QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format format )
 {
   // Qt has its own internal function depthForFormat(), unfortunately it is not public
 
@@ -38,6 +40,6 @@ QImage * QgsRasterInterface::createImage ( int width, int height, QImage::Format
 
   // We ignore QImage::Format_Mono and QImage::Format_MonoLSB ( depth 1)
   int size = width * height * img.bytesPerLine();
-  uchar * data = (uchar *) malloc ( size );
+  uchar * data = ( uchar * ) malloc( size );
   return new QImage( data, width, height, format );
 }

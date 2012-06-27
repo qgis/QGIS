@@ -104,12 +104,15 @@ void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & exten
   return data;
 }
 
-QgsRasterDataProvider::QgsRasterDataProvider(): mDpi( -1 )
+QgsRasterDataProvider::QgsRasterDataProvider()
+    : QgsRasterInterface( 0, QgsRasterInterface::ProviderRole )
+    , mDpi( -1 )
 {
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
     : QgsDataProvider( uri )
+    , QgsRasterInterface( 0, QgsRasterInterface::ProviderRole )
     , mDpi( -1 )
 {
 }

@@ -51,6 +51,7 @@ email                : tim at linfiniti.com
 #include <cstdio>
 #include <cmath>
 #include <limits>
+#include <typeinfo>
 
 #include <QApplication>
 #include <QCursor>
@@ -100,8 +101,9 @@ QgsRasterLayer::QgsRasterLayer()
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mRenderer( 0 )
-    , mResampleFilter( 0 )
+    , mInvertColor( false )
+    //, mRenderer( 0 )
+    //, mResampleFilter( 0 )
 {
   init();
   mValid = false;
@@ -119,8 +121,9 @@ QgsRasterLayer::QgsRasterLayer(
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mRenderer( 0 )
-    , mResampleFilter( 0 )
+    , mInvertColor( false )
+    //, mRenderer( 0 )
+    //, mResampleFilter( 0 )
 {
   QgsDebugMsg( "Entered" );
 
@@ -134,8 +137,6 @@ QgsRasterLayer::QgsRasterLayer(
     loadDefaultStyle( defaultLoadedFlag );
   }
   return;
-
-
 } // QgsRasterLayer ctor
 
 /**
@@ -157,8 +158,8 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     , mHeight( std::numeric_limits<int>::max() )
     , mModified( false )
     , mProviderKey( providerKey )
-    , mRenderer( 0 )
-    , mResampleFilter( 0 )
+    //, mRenderer( 0 )
+    //, mResampleFilter( 0 )
 {
   QgsDebugMsg( "Entered" );
   init();
@@ -192,9 +193,10 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
-  delete mDataProvider;
-  delete mRenderer;
-  delete mResampleFilter;
+  delete mRasterShader;
+  delete mDataProvider; // delete in pipe ?
+  //delete mRenderer;
+  //delete mResampleFilter;
 }
 
 //////////////////////////////////////////////////////////
@@ -827,27 +829,50 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // procedure to use :
   //
 
-  if ( mRenderer )
+  double maxSrcXRes = 0;
+  double maxSrcYRes = 0;
+
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
   {
-    //QgsRasterDrawer drawer( mRenderer );
-    //QgsRasterDrawer drawer( mResampleFilter );
-
-    double maxSrcXRes = 0;
-    double maxSrcYRes = 0;
-
-    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
-    {
-      maxSrcXRes = mDataProvider->extent().width() / mDataProvider->xSize();
-      maxSrcYRes = mDataProvider->extent().height() / mDataProvider->ySize();
-    }
-
-    QgsRasterProjector projector( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, maxSrcXRes, maxSrcYRes, mDataProvider->extent() );
-
-    projector.setInput( mResampleFilter );
-
-    QgsRasterDrawer drawer( &projector );
-    drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    maxSrcXRes = mDataProvider->extent().width() / mDataProvider->xSize();
+    maxSrcYRes = mDataProvider->extent().height() / mDataProvider->ySize();
   }
+  /*
+    if ( mRenderer )
+    {
+      //QgsRasterDrawer drawer( mRenderer );
+      //QgsRasterDrawer drawer( mResampleFilter );
+
+
+      QgsRasterProjector projector( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, maxSrcXRes, maxSrcYRes, mDataProvider->extent() );
+
+      projector.setInput( mResampleFilter );
+
+      QgsRasterDrawer drawer( &projector );
+      drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    }
+  */
+
+  QgsRasterProjector *projector = dynamic_cast<QgsRasterProjector *>( mPipe.filter( QgsRasterInterface::ProjectorRole ) );
+  // TODO: add in init?
+  if ( !projector )
+  {
+    projector = new QgsRasterProjector;
+    mPipe.insertOrReplace( projector );
+  }
+
+  // TODO add a method to interface to get provider and get provider
+  // params in QgsRasterProjector
+  if ( projector )
+  {
+    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
+    projector->setMaxSrcRes( maxSrcXRes, maxSrcYRes );
+    projector->setSrcExtent( mDataProvider->extent() );
+  }
+
+  // Drawer to pipe?
+  QgsRasterDrawer drawer( mPipe.last() );
+  drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
   QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );
 } //end of draw method
@@ -993,9 +1018,14 @@ QString QgsRasterLayer::lastErrorTitle()
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
-  if ( mRenderer )
+  //if ( mRenderer )
+  //{
+  //  mRenderer->legendSymbologyItems( symbolList );
+  //}
+  QgsRasterRenderer *renderer = dynamic_cast<QgsRasterRenderer *>( mPipe.filter( QgsRasterInterface::RendererRole ) );
+  if ( renderer )
   {
-    mRenderer->legendSymbologyItems( symbolList );
+    renderer->legendSymbologyItems( symbolList );
   }
   return symbolList;
 
@@ -1641,6 +1671,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     return;
   }
+  mPipe.insertOrReplace( mDataProvider );
 
   if ( provider == "gdal" )
   {
@@ -1720,7 +1751,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Multiband;
   }
-  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32 
+  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32
             ||  mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
@@ -2082,12 +2113,14 @@ void QgsRasterLayer::setTransparentBandName( QString const & )
   //legacy method
 }
 
-void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
+void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsg( "Entered" );
-  delete mRenderer;
-  mRenderer = renderer;
+  //delete mRenderer;
+  //mRenderer = renderer;
+  mPipe.insertOrReplace( theRenderer );
 
+  /*
   if ( !mResampleFilter )
   {
     mResampleFilter = new QgsRasterResampleFilter( mRenderer );
@@ -2095,17 +2128,18 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
   else
   {
     mResampleFilter->setInput( mRenderer );
-    //mResampleFilter = new QgsRasterResampleFilter( mRenderer );
   }
+  */
 }
 
 // not sure if we want it
 void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
 {
   QgsDebugMsg( "Entered" );
-  delete mResampleFilter;
-  mResampleFilter = resampleFilter;
-  mResampleFilter->setInput( mRenderer );
+  //delete mResampleFilter;
+  //mResampleFilter = resampleFilter;
+  //mResampleFilter->setInput( mRenderer );
+  mPipe.insertOrReplace( resampleFilter );
 }
 
 void QgsRasterLayer::showProgress( int theValue )
@@ -2263,28 +2297,34 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   if ( !rasterRendererElem.isNull() )
   {
-    delete mRenderer;
-    mRenderer = 0;
+    //delete mRenderer;
+    //mRenderer = 0;
     if ( !rasterRendererElem.isNull() )
     {
       QString rendererType = rasterRendererElem.attribute( "type" );
       QgsRasterRendererRegistryEntry rendererEntry;
       if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
       {
-        mRenderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        //mRenderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        mPipe.insertOrReplace( renderer );
       }
     }
   }
 
   //resampler
-  delete mResampleFilter;
-  mResampleFilter = new QgsRasterResampleFilter( mRenderer );
+  //delete mResampleFilter;
+  //mResampleFilter = new QgsRasterResampleFilter( mRenderer );
+
+  QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
+  mPipe.insertOrReplace( resampleFilter );
 
   //max oversampling
   QDomElement resampleElem = layer_node.firstChildElement( "rasterresampler" );
   if ( !resampleElem.isNull() )
   {
-    mResampleFilter->readXML( resampleElem );
+    //mResampleFilter->readXML( resampleElem );
+    resampleFilter->readXML( resampleElem );
   }
   /*
     if ( mResampleFilter )
@@ -2462,15 +2502,21 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   Q_UNUSED( errorMessage );
   QDomElement layerElem = layer_node.toElement();
 
-  if ( mRenderer )
+  //if ( mRenderer )
+  //{
+  //mRenderer->writeXML( document, layerElem );
+  //}
+  QgsRasterRenderer *renderer = dynamic_cast<QgsRasterRenderer *>( mPipe.filter( QgsRasterInterface::RendererRole ) );
+  if ( renderer )
   {
-    mRenderer->writeXML( document, layerElem );
+    renderer->writeXML( document, layerElem );
   }
 
-  if ( mResampleFilter )
+  QgsRasterResampleFilter *resampleFilter = dynamic_cast<QgsRasterResampleFilter *>( mPipe.filter( QgsRasterInterface::ResamplerRole ) );
+  if ( resampleFilter )
   {
     QDomElement layerElem = layer_node.toElement();
-    mResampleFilter->writeXML( document, layerElem );
+    resampleFilter->writeXML( document, layerElem );
   }
 
   return true;
@@ -2755,3 +2801,4 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   *theList = myColorRampItemList;
   return true;
 }
+

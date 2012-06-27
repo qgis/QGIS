@@ -60,9 +60,19 @@ class QgsRasterProjector : public QgsRasterInterface
       double theMaxSrcXRes, double theMaxSrcYRes,
       QgsRectangle theExtent
     );
+    QgsRasterProjector();
 
     /** \brief The destructor */
     ~QgsRasterProjector();
+
+    /** \brief set source and destination CRS */
+    void setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS );
+
+    /** \brief set maximum source resolution */
+    void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes )
+    {
+      mMaxSrcXRes = theMaxSrcXRes; mMaxSrcYRes = theMaxSrcYRes;
+    }
 
     /** \brief get destination point for _current_ destination position */
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
@@ -124,6 +134,9 @@ class QgsRasterProjector : public QgsRasterInterface
 
     /** get source extent */
     QgsRectangle srcExtent() { return mSrcExtent; }
+
+    /** set source extent */
+    void  setSrcExtent( const QgsRectangle theExtent ) { mSrcExtent = theExtent; }
 
     /** get/set source width/height */
     int srcRows() { return mSrcRows; }
