@@ -2,6 +2,7 @@ import datetime
 import os
 from sextante.core.SextanteUtils import SextanteUtils
 import codecs
+from PyQt4 import QtGui
 class SextanteLog():
 
     LOG_ERROR = "ERROR"
@@ -28,10 +29,8 @@ class SextanteLog():
     @staticmethod
     def addToLog(msgtype, msg):
         if isinstance(msg, list):
-            text=""
-            for i in range(0, len(msg)):
-                text+=msg[i].strip("\n") + "|"
-            text = unicode(text[:-1])
+            a = "|".join(m.strip("\n")  for m in msg)
+            text = unicode(a)
         else:
             text = unicode(msg).replace("\n", "|")
         line = msgtype + "|" + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "|" + text + "\n"

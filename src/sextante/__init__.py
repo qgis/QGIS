@@ -1,9 +1,7 @@
-from sextante.SextantePlugin import SextantePlugin
-
 def name():
     return "SEXTANTE"
 def description():
-    return "SEXTANTE Geoprocessing platform for QGIS"
+    return "SEXTANTE Geoprocessing Platform for QGIS"
 def version():
     return "Version 1.0.7"
 def icon():
@@ -11,4 +9,5 @@ def icon():
 def qgisMinimumVersion():
     return "1.0"
 def classFactory(iface):
+    from sextante.SextantePlugin import SextantePlugin
     return SextantePlugin(iface)
