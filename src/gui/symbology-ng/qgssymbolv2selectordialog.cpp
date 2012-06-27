@@ -109,7 +109,7 @@ class SymbolLayerItem : public QStandardItem
 
     QVariant data( int role ) const
     {
-      if ( role == Qt::DisplayRole )
+      if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
         if ( mIsLayer )
           return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
@@ -214,6 +214,9 @@ QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
 void QgsSymbolV2SelectorDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent )
 {
   SymbolLayerItem* symbolItem = new SymbolLayerItem( symbol );
+  QFont boldFont = symbolItem->font();
+  boldFont.setBold( true );
+  symbolItem->setFont( boldFont );
   parent->appendRow( symbolItem );
 
   int count = symbol->symbolLayerCount();
@@ -490,10 +493,13 @@ void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )
   // When it is a marker symbol
   if ( newLayer->subSymbol() )
   {
+    /*
     SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol() );
     SymbolLayerItem *sublayer = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
     subsymbol->appendRow( sublayer );
     item->appendRow( subsymbol );
+    */
+    loadSymbol( newLayer->subSymbol(), item );
   }
 
   // Change the symbol at last to avoid deleting item's layer
