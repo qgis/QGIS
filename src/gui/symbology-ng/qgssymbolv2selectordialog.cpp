@@ -253,7 +253,8 @@ void QgsSymbolV2SelectorDialog::updateUi()
     btnDown->setEnabled( false );
     btnRemoveLayer->setEnabled( false );
     btnLock->setEnabled( false );
-    return;
+    btnAddLayer->setEnabled( true );
+   return;
   }
 
   int rowCount = item->parent()->rowCount();
@@ -263,6 +264,7 @@ void QgsSymbolV2SelectorDialog::updateUi()
   btnDown->setEnabled( currentRow < rowCount - 1 );
   btnRemoveLayer->setEnabled( rowCount > 1 );
   btnLock->setEnabled( true );
+  btnAddLayer->setEnabled( false );
 }
 
 void QgsSymbolV2SelectorDialog::updatePreview()
