@@ -255,6 +255,11 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   myXBlockSize = xBlockSize();
   myYBlockSize = yBlockSize();
 
+  if ( myXBlockSize == 0 || myYBlockSize == 0 )
+  {
+    return QgsRasterBandStats(); //invalid raster band stats
+  }
+
   myNXBlocks = ( xSize() + myXBlockSize - 1 ) / myXBlockSize;
   myNYBlocks = ( ySize() + myYBlockSize - 1 ) / myYBlockSize;
 
