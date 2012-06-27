@@ -4,8 +4,6 @@ from qgis.core import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
-from sextante.gui.SextantePostprocessing import SextantePostprocessing
-import traceback
 
 class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
