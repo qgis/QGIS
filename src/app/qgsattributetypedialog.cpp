@@ -43,6 +43,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
 
+ 
   valueRelationLayer->clear();
   foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
@@ -50,9 +51,18 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
     if ( vl )
       valueRelationLayer->addItem( vl->name(), vl->id() );
   }
-
-  connect( valueRelationLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateLayerColumns( int ) ) );
+  connect( valueRelationLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueRelationUpdateLayerColumns( int ) ) );
   valueRelationLayer->setCurrentIndex( -1 );
+  
+  multiAttributeLayer->clear();
+  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  {
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
+    if ( vl )
+      multiAttributeLayer->addItem( vl->name(), vl->id() );
+  }
+  connect( multiAttributeLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( multiAttributeUpdateLayerColumns( int ) ) );
+  multiAttributeLayer->setCurrentIndex( -1 );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -73,6 +83,11 @@ QgsVectorLayer::RangeData QgsAttributeTypeDialog::rangeData()
 QgsVectorLayer::ValueRelationData QgsAttributeTypeDialog::valueRelationData()
 {
   return mValueRelationData;
+}
+
+QgsVectorLayer::MultiAttributeData QgsAttributeTypeDialog::multiAttributeData()
+{
+  return mMultiAttributeData;
 }
 
 QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
@@ -283,6 +298,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::UuidGenerator:
       setPage( 13 );
       break;
+      
+    case QgsVectorLayer::MultiAttribute:
+      setPage( 14 );
+      break;
   }
 }
 
@@ -300,6 +319,12 @@ void QgsAttributeTypeDialog::setValueRelation( QgsVectorLayer::ValueRelationData
 {
   mValueRelationData = valueRelation;
 }
+
+void QgsAttributeTypeDialog::setMultiAttribute( QgsVectorLayer::MultiAttributeData multiAttribute )
+{
+  mMultiAttributeData = multiAttribute;
+}
+
 
 void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editType )
 {
@@ -432,6 +457,13 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
       valueRelationAllowNull->setChecked( mValueRelationData.mAllowNull );
       valueRelationOrderByValue->setChecked( mValueRelationData.mOrderByValue );
+      break;
+
+    case QgsVectorLayer::MultiAttribute:
+      multiAttributeLayer->setCurrentIndex( multiAttributeLayer->findData( mMultiAttributeData.mLayer ) );
+      multiAttributeKeyColumn->setCurrentIndex( multiAttributeKeyColumn->findText( mMultiAttributeData.mKey ) );
+      multiAttributeValueColumn->setCurrentIndex( multiAttributeValueColumn->findText( mMultiAttributeData.mValue ) );
+
       break;
 
     case QgsVectorLayer::LineEdit:
@@ -608,6 +640,12 @@ void QgsAttributeTypeDialog::accept()
     case 13:
       mEditType = QgsVectorLayer::UuidGenerator;
       break;
+    case 14:
+      mEditType = QgsVectorLayer::MultiAttribute;
+      mMultiAttributeData.mLayer = multiAttributeLayer->itemData( multiAttributeLayer->currentIndex() ).toString();
+      mMultiAttributeData.mKey = multiAttributeKeyColumn->currentText();
+      mMultiAttributeData.mValue = multiAttributeValueColumn->currentText();
+      break;
   }
 
   QDialog::accept();
@@ -618,7 +656,7 @@ QString QgsAttributeTypeDialog::defaultWindowTitle()
   return tr( "Attribute Edit Dialog" );
 }
 
-void QgsAttributeTypeDialog::updateLayerColumns( int idx )
+void QgsAttributeTypeDialog::valueRelationUpdateLayerColumns( int idx )
 {
   valueRelationKeyColumn->clear();
   valueRelationValueColumn->clear();
@@ -638,3 +676,25 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
   valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
   valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
 }
+
+void QgsAttributeTypeDialog::multiAttributeUpdateLayerColumns( int idx )
+{
+  multiAttributeKeyColumn->clear();
+  multiAttributeValueColumn->clear();
+
+  QString id = multiAttributeLayer->itemData( idx ).toString();
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  if ( !vl )
+    return;
+
+  foreach( const QgsField &f, vl->pendingFields() )
+  {
+    multiAttributeKeyColumn->addItem( f.name() );
+    multiAttributeValueColumn->addItem( f.name() );
+  }
+
+  multiAttributeKeyColumn->setCurrentIndex( multiAttributeKeyColumn->findText( mMultiAttributeData.mKey ) );
+  multiAttributeValueColumn->setCurrentIndex( multiAttributeValueColumn->findText( mMultiAttributeData.mValue ) );
+}
+

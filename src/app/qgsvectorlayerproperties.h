@@ -189,6 +189,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QMap<int, QMap<QString, QVariant> > mValueMaps;
     QMap<int, QgsVectorLayer::RangeData> mRanges;
     QMap<int, QgsVectorLayer::ValueRelationData> mValueRelationData;
+    QMap<int, QgsVectorLayer::MultiAttributeData> mMultiAttributeData;
     QMap<int, QPair<QString, QString> > mCheckedStates;
 
     QFont mDiagramFont;

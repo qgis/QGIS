@@ -31,6 +31,7 @@
 #include <QTextEdit>
 #include <QFileDialog>
 #include <QComboBox>
+#include <QListWidget>
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QCompleter>
@@ -110,6 +111,17 @@ QComboBox *QgsAttributeEditor::comboBox( QWidget *editor, QWidget *parent )
     cb = new QComboBox( parent );
 
   return cb;
+}
+
+QListWidget *QgsAttributeEditor::listWidget( QWidget *editor, QWidget *parent )
+{
+  QListWidget *lw = NULL;
+  if ( editor )
+    lw = qobject_cast<QListWidget *>( editor );
+  else
+    lw = new QListWidget( parent );
+
+  return lw;
 }
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
@@ -222,6 +234,58 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     }
     break;
 
+    case QgsVectorLayer::MultiAttribute:
+    {
+      QSettings settings;
+ 
+      const QgsVectorLayer::MultiAttributeData &data = vl->multiAttribute( idx );
+
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( data.mLayer ) );
+      
+      QMap< QString, QString > valueList;
+      QStringList checkList ;
+      
+      if ( layer )
+      {
+        int ki = layer->fieldNameIndex( data.mKey );
+        int vi = layer->fieldNameIndex( data.mValue );
+               
+        if ( ki >= 0 && vi >= 0 )
+        {
+          layer->select( QgsAttributeList() << ki << vi, QgsRectangle(), false );
+          QgsFeature f;
+          while ( layer->nextFeature( f ) )
+          {
+            valueList.insert( f.attributeMap()[ ki ].toString(), f.attributeMap()[ vi ].toString() );
+          }
+          
+          checkList = value.toString().remove(QChar('{')).remove(QChar('}')).split(",");
+        }
+      }
+
+      QListWidget *lw = listWidget( editor, parent );
+      if ( lw )
+      {
+        for ( QMap< QString, QString >::const_iterator it = valueList.begin(); it != valueList.end(); it++ )
+        {	
+            QListWidgetItem *item = new QListWidgetItem( it.value() );
+            item->setData(Qt::UserRole, it.key() );
+            
+            if ( checkList.contains( it.key() ) )
+            {
+              item->setCheckState(Qt::Checked);
+            }
+            else
+            {
+              item->setCheckState(Qt::Unchecked);
+            }
+            lw->addItem(item);
+        }
+		myWidget = lw;
+	  }
+    }
+    break;
+    
     case QgsVectorLayer::Classification:
     {
       QMap<QString, QString> classes;
@@ -551,6 +615,32 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     modified = true;
   }
 
+  QListWidget *lw = qobject_cast<QListWidget *>( widget );
+  if ( lw )
+  {
+    if ( editType == QgsVectorLayer::MultiAttribute )
+    {
+      text = '{';
+	  for (int i = 0; i < lw->count(); i++)
+	  {
+	    if ( lw->item(i)->checkState() == Qt::Checked )
+	    {
+		  if (i>0)
+		  {
+		    text.append( ',' );
+		  }
+	      text.append( lw->item(i)->data(Qt::UserRole).toString() );
+		}
+	  }
+      text.append( '}' );
+    }
+    else
+    {
+      text = QString::null;
+    }
+    modified = true;
+  }
+    
   QSpinBox *sb = qobject_cast<QSpinBox *>( widget );
   if ( sb )
   {
@@ -676,6 +766,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::ValueMap:
     case QgsVectorLayer::ValueRelation:
+    case QgsVectorLayer::MultiAttribute:
     {
       QVariant v = value;
       QComboBox *cb = qobject_cast<QComboBox *>( editor );

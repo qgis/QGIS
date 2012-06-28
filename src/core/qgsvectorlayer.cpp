@@ -3136,6 +3136,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         }
         break;
 
+        case MultiAttribute:
+        {
+          QString layer = editTypeElement.attribute( "layer" );
+          QString key = editTypeElement.attribute( "key" );
+          QString value = editTypeElement.attribute( "value" );
+          mMultiAttributes[ name ] = MultiAttributeData( layer, key, value );
+        }
+        break;
+
         case Classification:
         case FileName:
         case Immutable:
@@ -3354,6 +3363,16 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
             editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
           }
+          break;
+
+        case MultiAttribute:
+          if ( mMultiAttributes.contains( it.key() ) )
+          {
+            const MultiAttributeData &data = mMultiAttributes[ it.key()];
+            editTypeElement.setAttribute( "layer", data.mLayer );
+            editTypeElement.setAttribute( "key", data.mKey );
+            editTypeElement.setAttribute( "value", data.mValue );
+           }
           break;
 
         case LineEdit:
@@ -5711,4 +5730,23 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   }
 
   return mValueRelations[ fields[idx].name()];
+}
+
+
+QgsVectorLayer::MultiAttributeData &QgsVectorLayer::multiAttribute( int idx )
+{
+  const QgsFieldMap &fields = pendingFields();
+
+  // FIXME: throw an exception!?
+  if ( !fields.contains( idx ) )
+  {
+    QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
+  }
+
+  if ( !mMultiAttributes.contains( fields[idx].name() ) )
+  {
+    mMultiAttributes[ fields[idx].name()] = MultiAttributeData();
+  }
+
+  return mMultiAttributes[ fields[idx].name()];
 }
