@@ -122,14 +122,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     struct ValueRelationData
     {
       ValueRelationData() {}
-      ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue )
-          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ), mOrderByValue( orderByValue ) {}
+      ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue, bool allowMulti = false )
+          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ), mOrderByValue( orderByValue ), mAllowMulti( allowMulti ) {}
 
       QString mLayer;
       QString mKey;
       QString mValue;
       bool mAllowNull;
       bool mOrderByValue;
+      bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */
     };
 
     /** Constructor */
@@ -614,8 +615,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     ValueRelationData &valueRelation( int idx );
 
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
-    @note this method was added in version 1.1
-    */
+     @note this method was added in version 1.1
+     */
     void addOverlay( QgsVectorOverlay* overlay );
 
     /**Removes all overlays of a given type

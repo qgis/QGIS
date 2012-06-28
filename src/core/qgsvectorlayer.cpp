@@ -3132,7 +3132,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           QString value = editTypeElement.attribute( "value" );
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
-          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue );
+          bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
+          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti );
         }
         break;
 
@@ -3353,6 +3354,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "value", data.mValue );
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
             editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
+            editTypeElement.setAttribute( "allowMulti", data.mAllowMulti ? "true" : "false" );
           }
           break;
 

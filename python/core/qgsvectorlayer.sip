@@ -83,13 +83,14 @@ public:
   struct ValueRelationData
   {
     ValueRelationData();
-    ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue );
+    ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue, bool allowMulti = false );
 
     QString mLayer;
     QString mKey;
     QString mValue;
     bool mAllowNull;
     bool mOrderByValue;
+    bool mAllowMulti; /* allow selection of multiple keys @added in 1.9 */
   };
 
   /** Constructor */

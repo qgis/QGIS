@@ -31,6 +31,7 @@
 #include <QTextEdit>
 #include <QFileDialog>
 #include <QComboBox>
+#include <QListWidget>
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QCompleter>
@@ -110,6 +111,17 @@ QComboBox *QgsAttributeEditor::comboBox( QWidget *editor, QWidget *parent )
     cb = new QComboBox( parent );
 
   return cb;
+}
+
+QListWidget *QgsAttributeEditor::listWidget( QWidget *editor, QWidget *parent )
+{
+  QListWidget *lw = NULL;
+  if ( editor )
+    lw = qobject_cast<QListWidget *>( editor );
+  else
+    lw = new QListWidget( parent );
+
+  return lw;
 }
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
@@ -206,18 +218,49 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         }
       }
 
-      QComboBox *cb = comboBox( editor, parent );
-      if ( cb )
+      if ( !data.mAllowMulti )
       {
-        for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
+        QComboBox *cb = comboBox( editor, parent );
+        if ( cb )
         {
-          if ( data.mOrderByValue )
-            cb->addItem( it.key(), it.value() );
-          else
-            cb->addItem( it.value(), it.key() );
-        }
+          for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
+          {
+            if ( data.mOrderByValue )
+              cb->addItem( it.key(), it.value() );
+            else
+              cb->addItem( it.value(), it.key() );
+          }
 
-        myWidget = cb;
+          myWidget = cb;
+        }
+      }
+      else
+      {
+        QListWidget *lw = listWidget( editor, parent );
+        if ( lw )
+        {
+          QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
+
+          for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
+          {
+            QListWidgetItem *item;
+            if ( data.mOrderByValue )
+            {
+              item = new QListWidgetItem( it.key() );
+              item->setData( Qt::UserRole, it.value() );
+              item->setCheckState( checkList.contains( it.value() ) ? Qt::Checked : Qt::Unchecked );
+	    }
+            else
+            {
+              item = new QListWidgetItem( it.value() );
+              item->setData( Qt::UserRole, it.key() );
+              item->setCheckState( checkList.contains( it.key() ) ? Qt::Checked : Qt::Unchecked );
+            }
+            lw->addItem( item );
+          }
+
+          myWidget = lw;
+        }
       }
     }
     break;
@@ -547,6 +590,32 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     else
     {
       text = cb->currentText();
+    }
+    modified = true;
+  }
+
+  QListWidget *lw = qobject_cast<QListWidget *>( widget );
+  if ( lw )
+  {
+    if ( editType == QgsVectorLayer::ValueRelation )
+    {
+      text = '{';
+      for ( int i = 0; i < lw->count(); i++ )
+      {
+        if ( lw->item( i )->checkState() == Qt::Checked )
+        {
+          if ( i > 0 )
+          {
+            text.append( ',' );
+          }
+          text.append( lw->item( i )->data( Qt::UserRole ).toString() );
+        }
+      }
+      text.append( '}' );
+    }
+    else
+    {
+      text = QString::null;
     }
     modified = true;
   }
