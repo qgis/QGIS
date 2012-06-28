@@ -277,6 +277,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
   attributeTypeDialog.setValueMap( mValueMaps.value( index, layer->valueMap( index ) ) );
   attributeTypeDialog.setRange( mRanges.value( index, layer->range( index ) ) );
   attributeTypeDialog.setValueRelation( mValueRelationData.value( index, layer->valueRelation( index ) ) );
+  attributeTypeDialog.setMultiAttribute( mMultiAttributeData.value( index, layer->multiAttribute( index ) ) );
 
   QPair<QString, QString> checkStates = mCheckedStates.value( index, layer->checkedState( index ) );
   attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
@@ -306,6 +307,9 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
       break;
     case QgsVectorLayer::ValueRelation:
       mValueRelationData.insert( index, attributeTypeDialog.valueRelationData() );
+      break;
+    case QgsVectorLayer::MultiAttribute:
+      mMultiAttributeData.insert( index, attributeTypeDialog.multiAttributeData() );
       break;
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
@@ -592,6 +596,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
   editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
   editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
+  editTypeMap.insert( QgsVectorLayer::MultiAttribute, tr( "Multi attribute" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -686,6 +691,13 @@ void QgsVectorLayerProperties::apply()
         if ( mValueRelationData.contains( idx ) )
         {
           layer->valueRelation( idx ) = mValueRelationData[idx];
+        }
+        break;
+
+      case QgsVectorLayer::MultiAttribute:
+        if ( mMultiAttributeData.contains( idx ) )
+        {
+          layer->multiAttribute( idx ) = mMultiAttributeData[idx];
         }
         break;
 

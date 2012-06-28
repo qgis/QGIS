@@ -83,6 +83,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
 
     /**
+     * Setter to value relation to be displayed and edited in this dialog
+     * @param valueRelation value relation data which is to be displayed
+     */
+    void setMultiAttribute( QgsVectorLayer::MultiAttributeData multiAttributeData );
+
+    /**
      * Getter for checked state after editing
      * @return string representing the checked
      */
@@ -104,6 +110,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Getter for value relation data
      */
     QgsVectorLayer::ValueRelationData valueRelationData();
+
+    /**
+     * Getter for value relation data
+     */
+    QgsVectorLayer::MultiAttributeData multiAttributeData();
+
 
   private slots:
     /**
@@ -137,7 +149,8 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     /**
      * update columns list
      */
-    void updateLayerColumns( int idx );
+    void valueRelationUpdateLayerColumns( int idx );
+    void multiAttributeUpdateLayerColumns( int idx );
 
   private:
 
@@ -163,6 +176,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
 
     QgsVectorLayer::RangeData mRangeData;
     QgsVectorLayer::ValueRelationData mValueRelationData;
+    QgsVectorLayer::MultiAttributeData mMultiAttributeData;
     QgsVectorLayer::EditType mEditType;
 };
 

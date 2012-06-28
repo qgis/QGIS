@@ -106,6 +106,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       DialRange,     /* dial range @added in 1.5 */
       ValueRelation, /* value map from an table @added in 1.8 */
       UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
+      MultiAttribute, /* multi attribute using join table and attribute table @added in 1.9 */
     };
 
     struct RangeData
@@ -131,6 +132,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       bool mAllowNull;
       bool mOrderByValue;
     };
+
+    struct MultiAttributeData
+    {
+      MultiAttributeData() {}
+      MultiAttributeData( QString layer, QString key, QString value )
+          : mLayer( layer ), mKey( key ), mValue( value ) {}
+
+      QString mLayer;
+      QString mKey;
+      QString mValue;
+     };
 
     /** Constructor */
     QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,
@@ -613,7 +625,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     ValueRelationData &valueRelation( int idx );
 
-    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
+    /**access multi attribute
+     * @note added in 1.9
+     **/
+    MultiAttributeData &multiAttribute( int idx );
+
+   /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
     @note this method was added in version 1.1
     */
     void addOverlay( QgsVectorOverlay* overlay );
@@ -962,6 +979,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
+    QMap< QString, MultiAttributeData > mMultiAttributes;
 
     QString mEditForm, mEditFormInit;
     //annotation form for this layer
