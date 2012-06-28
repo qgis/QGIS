@@ -118,7 +118,7 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       return UnknownDataType;
     }
 
-    /** Get numbur of bands */
+    /** Get number of bands */
     virtual int bandCount() const
     {
       return 1;
@@ -128,6 +128,13 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
     virtual double noDataValue() const { return 0; }
 
     /** Read block of data using given extent and size.
+     *  Returns pointer to data.
+     *  Caller is responsible to free the memory returned.
+     */
+    void * block( int bandNo, QgsRectangle  const & extent, int width, int height );
+
+    /** Read block of data using given extent and size. 
+     *  Method to be implemented by subclasses.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
@@ -146,6 +153,14 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
      */
     QImage * createImage( int width, int height, QImage::Format format );
 
+    // Clear last rendering time
+    void clearTime() { mTime.clear(); if ( mInput ) mInput->clearTime(); }
+    
+    // Last time consumed by block()
+    // Returns total time (for all bands) if bandNo is 0
+    double time( int bandNo );
+    double avgTime();
+
     //protected:
 
     Role mRole;
@@ -153,7 +168,11 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
     // QgsRasterInterface from used as input, data are read from it
     QgsRasterInterface* mInput;
 
+    // Last rendering time
+    QVector<double> mTime;
 
+    // minimum block size to record time (to ignore thumbnails etc)
+    int mTimeMinSize;
 };
 
 #endif

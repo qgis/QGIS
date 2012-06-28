@@ -555,10 +555,10 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
   QgsDebugMsg( "Entered" );
   if ( !mInput ) return 0;
 
-  int bandNumber = 0;
+  int bandNumber = 1;
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
-    return mInput->readBlock( bandNumber, extent, width, height );
+    return mInput->block( bandNumber, extent, width, height );
   }
 
   mDestExtent = extent;
@@ -575,7 +575,7 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
     return 0;
   }
 
-  void * inputData = mInput->readBlock( bandNumber, srcExtent(), srcCols(), srcRows() );
+  void * inputData = mInput->block( bandNumber, srcExtent(), srcCols(), srcRows() );
 
   if ( !inputData ) return 0;
 

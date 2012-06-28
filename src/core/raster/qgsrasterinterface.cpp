@@ -19,10 +19,12 @@
 #include "qgslogger.h"
 
 #include <QByteArray>
+#include <QTime>
 
-QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input, Role role ):
-    mInput( input )
-    , mRole( role )
+QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input, Role role )
+  : mInput( input )
+  , mRole( role )
+  , mTimeMinSize(150)
 {
 }
 
@@ -42,4 +44,53 @@ QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format 
   int size = width * height * img.bytesPerLine();
   uchar * data = ( uchar * ) malloc( size );
   return new QImage( data, width, height, format );
+}
+
+void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int width, int height )
+{
+  QTime time;
+  time.start();
+  void * b =  readBlock( bandNo, extent, width, height );
+
+  if ( width > mTimeMinSize && height > mTimeMinSize )
+  {
+    if ( mTime.size() <= bandNo ) 
+    {
+      mTime.resize( bandNo+1 );
+    }
+    mTime[bandNo] = time.elapsed();
+    QgsDebugMsg ( QString("mRole = %1 bandNo = %2 time = %3" ).arg(mRole).arg(bandNo).arg(mTime[bandNo]) );
+  }
+  return b;
+}
+
+double QgsRasterInterface::time( int bandNo ) 
+{ 
+  double t = 0;
+  if ( bandNo == 0 ) 
+  {
+    for ( int i = 1; i < mTime.size(); i++ )
+    {
+      t += mTime[i];
+    }
+  }
+  else
+  {
+    t = mTime.value( bandNo ); 
+  }
+  QgsDebugMsg ( QString("mRole = %1 bandNo = %2 time = %3" ).arg(mRole).arg(bandNo).arg(t) );
+  return t;
+}
+
+double QgsRasterInterface::avgTime( ) 
+{
+  // Not perfect because Qtime measures ms only and we dont count rendered bands
+  double t = 0;
+  int count = 0;
+  for ( int i = 1; i < mTime.size(); i++ )
+  {
+    t += mTime[i];
+    if ( mTime[i]  > 0 ) count++;
+  }
+  return count > 0 ? t/count : 0; 
 }

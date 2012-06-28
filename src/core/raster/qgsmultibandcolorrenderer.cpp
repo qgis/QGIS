@@ -176,7 +176,7 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    bandData[*bandIt] =  mInput->readBlock( *bandIt, extent, width, height );
+    bandData[*bandIt] =  mInput->block( *bandIt, extent, width, height );
     if ( !bandData[*bandIt] ) return 0;
   }
 

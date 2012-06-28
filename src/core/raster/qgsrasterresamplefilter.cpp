@@ -100,8 +100,8 @@ void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & ext
   int resHeight = height * oversamplingY;
 
   // At moment we know that we read rendered image
-  int bandNumber = 0;
-  void *rasterData = mInput->readBlock( bandNumber, extent, resWidth, resHeight );
+  int bandNumber = 1;
+  void *rasterData = mInput->block( bandNumber, extent, resWidth, resHeight );
 
   //resample image
   if (( mZoomedInResampler || mZoomedOutResampler ) && !doubleNear( oversamplingX, 1.0 ) && !doubleNear( oversamplingY, 1.0 ) )

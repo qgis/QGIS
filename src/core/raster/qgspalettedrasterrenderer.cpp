@@ -95,7 +95,7 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
   }
 
   QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBandNumber );
-  void* rasterData = mInput->readBlock( bandNo, extent, width, height );
+  void* rasterData = mInput->block( bandNo, extent, width, height );
   double currentOpacity = mOpacity;
 
   //rendering is faster without considering user-defined transparency
@@ -104,7 +104,7 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
   {
-    transparencyData = mInput->readBlock( mAlphaBand, extent, width, height );
+    transparencyData = mInput->block( mAlphaBand, extent, width, height );
   }
   else if ( mAlphaBand == mBandNumber )
   {

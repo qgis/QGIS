@@ -74,7 +74,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     alphaType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
   }
 
-  void* rasterData = mInput->readBlock( mGrayBand, extent, width, height );
+  void* rasterData = mInput->block( mGrayBand, extent, width, height );
   if ( !rasterData ) return 0;
 
   void* alphaData = 0;
@@ -84,7 +84,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
-    alphaData = mInput->readBlock( mAlphaBand, extent, width, height );
+    alphaData = mInput->block( mAlphaBand, extent, width, height );
     if ( !alphaData ) {
       free ( rasterData );
       return 0;

@@ -76,7 +76,7 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
   double currentOpacity = mOpacity;
   QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
 
-  void* rasterData = mInput->readBlock( mBand, extent, width, height );
+  void* rasterData = mInput->block( mBand, extent, width, height );
 
   int red, green, blue;
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
@@ -86,7 +86,7 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
 
   if ( mAlphaBand > 0 && mAlphaBand != mBand )
   {
-    transparencyData = mInput->readBlock( mAlphaBand, extent, width, height );
+    transparencyData = mInput->block( mAlphaBand, extent, width, height );
   }
   else if ( mAlphaBand == mBand )
   {

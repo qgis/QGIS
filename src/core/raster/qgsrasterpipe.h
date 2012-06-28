@@ -64,6 +64,8 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
     //QgsRasterInterface * filter ( QgsRasterInterface::Role role );
     QgsRasterInterface * filter ( QgsRasterInterface::Role role ) const;
 
+    int size() { return mFilters.size(); }
+    QgsRasterInterface * at( int idx ) { return mFilters.at(idx); }
     QgsRasterInterface * last() { return mFilters.last(); }
 
     /** Delete all filters */

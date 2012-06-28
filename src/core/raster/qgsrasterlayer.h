@@ -364,6 +364,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     const QgsRasterResampleFilter* resampleFilter() const { return dynamic_cast<QgsRasterResampleFilter*>( mPipe.filter( QgsRasterInterface::ResamplerRole ) ); }
     QgsRasterResampleFilter * resampleFilter() { return dynamic_cast<QgsRasterResampleFilter*>( mPipe.filter( QgsRasterInterface::ResamplerRole ) ); }
 
+    /** Get raster pipe */
+    QgsRasterPipe * pipe() { return &mPipe; }
+
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
 

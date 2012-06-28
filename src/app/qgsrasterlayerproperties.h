@@ -151,6 +151,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     qreal mGradientHeight;
     qreal mGradientWidth;
 
+    /** Update pipe tab - filters list */
+    void updatePipeList();
+
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;
 };

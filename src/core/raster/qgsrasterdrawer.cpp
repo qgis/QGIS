@@ -57,7 +57,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   }
 
   // last pipe filter has only 1 band
-  int bandNumber = 0;
+  int bandNumber = 1;
   startRasterRead( bandNumber, viewPort, theQgsMapToPixel );
 
   //number of cols/rows in output pixels
@@ -167,7 +167,7 @@ bool QgsRasterDrawer::readNextRasterPart( int bandNumber, QgsRasterViewPort* vie
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / ( double )pInfo.nRows * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
-  pInfo.data = mInput->readBlock( bandNumber, blockRect, nCols, nRows );
+  pInfo.data = mInput->block( bandNumber, blockRect, nCols, nRows );
 
   *rasterData = pInfo.data;
   topLeftCol = pInfo.currentCol;

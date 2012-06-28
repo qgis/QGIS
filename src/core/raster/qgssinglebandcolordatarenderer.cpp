@@ -57,7 +57,7 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
 
   QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
 
-  void* rasterData = mInput->readBlock( bandNo, extent, width, height );
+  void* rasterData = mInput->block( bandNo, extent, width, height );
 
   currentRasterPos = 0;
   QImage img( width, height, QImage::Format_ARGB32 );
