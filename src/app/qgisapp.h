@@ -244,11 +244,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
-
-#ifdef HAVE_TOUCH
-    QAction *actionTouch() { return mActionTouch; }
-#endif
-
     QAction *actionPan() { return mActionPan; }
     QAction *actionTouch() { return mActionTouch; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
