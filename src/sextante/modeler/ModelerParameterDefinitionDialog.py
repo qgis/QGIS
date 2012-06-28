@@ -157,12 +157,14 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
 
 
     def okPressed(self):
-        description = str(self.nameTextBox.text())
+        description = unicode(self.nameTextBox.text())
         if description.strip() == "":
             QMessageBox.critical(self, "Unable to define parameter", "Invalid parameter name")
             return
         if self.param is None:
-            name = self.paramType.upper().replace(" ","") + "_" + description.upper().replace(" ","")
+            validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            safeName = ''.join(c for c in description if c in validChars)
+            name = self.paramType.upper().replace(" ","") + "_" + safeName.upper()
         else:
             name = self.param.name
         if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or isinstance(self.param, ParameterBoolean):

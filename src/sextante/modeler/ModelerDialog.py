@@ -14,6 +14,7 @@ from sextante.gui.HelpEditionDialog import HelpEditionDialog
 import pickle
 from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.core.SextanteUtils import SextanteUtils
+import codecs
 
 class ModelerDialog(QtGui.QDialog):
     def __init__(self, alg=None):
@@ -200,12 +201,12 @@ class ModelerDialog(QtGui.QDialog):
             dlg.exec_()
 
     def saveModel(self):
-        if str(self.textGroup.text()).strip() == "" or str(self.textName.text()).strip() == "":
+        if unicode(self.textGroup.text()).strip() == "" or unicode(self.textName.text()).strip() == "":
             QMessageBox.warning(self, "Warning", "Please enter group and model names before saving")
             return
         self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
-        self.alg.name = str(self.textName.text())
-        self.alg.group = str(self.textGroup.text())
+        self.alg.name = unicode(self.textName.text())
+        self.alg.group = unicode(self.textGroup.text())
         if self.alg.descriptionFile != None:
             filename = self.alg.descriptionFile
         else:
@@ -216,7 +217,8 @@ class ModelerDialog(QtGui.QDialog):
                 self.alg.descriptionFile = filename
         if filename:
             text = self.alg.serialize()
-            fout = open(filename, "w")
+            fout = codecs.open(filename, "a", encoding='utf-8')
+            #fout = open(filename, "w")
             fout.write(text)
             fout.close()
             self.update = True

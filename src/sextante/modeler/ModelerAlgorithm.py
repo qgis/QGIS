@@ -16,6 +16,7 @@ from sextante.parameters.Parameter import Parameter
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.gui.Help2Html import Help2Html
+import codecs
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -68,7 +69,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.paramValues = {}
 
         self.descriptionFile = filename
-        lines = open(filename)
+        lines = codecs.open(filename, "r", encoding='utf-8')
         line = lines.readline().strip("\n")
         iAlg = 0
         try:
@@ -262,8 +263,8 @@ class ModelerAlgorithm(GeoAlgorithm):
         return QtCore.QPointF(MARGIN + BOX_WIDTH / 2 + len(self.paramPos) * (BOX_WIDTH + MARGIN), MARGIN + BOX_HEIGHT / 2)
 
     def serialize(self):
-        s="NAME:" + str(self.name) + "\n"
-        s +="GROUP:" + str(self.group) + "\n"
+        s="NAME:" + unicode(self.name) + "\n"
+        s +="GROUP:" + unicode(self.group) + "\n"
 
         i = 0
         for param in self.parameters:
@@ -285,7 +286,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 else:
                     s+=str(None) + "\n"
             for out in alg.outputs:
-                s+=str(self.algOutputs[i][out.name]) + "\n"
+                s+=unicode(self.algOutputs[i][out.name]) + "\n"
         return s
 
 

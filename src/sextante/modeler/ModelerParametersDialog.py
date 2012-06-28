@@ -405,7 +405,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         for output in outputs:
             if output.hidden:
                 continue
-            name= str(self.valueItems[output.name].text())
+            name= unicode(self.valueItems[output.name].text())
             if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
                 self.outputs[output.name]=name
             else:
