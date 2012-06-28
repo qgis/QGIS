@@ -41,6 +41,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   drawBackground( painter );
+  painter->save();
   painter->setPen( QPen( QColor( mFontColor ) ) ); //draw all text black
   painter->setFont( mFont );
 
@@ -51,8 +52,13 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin,
                       rect().height() - 2 * penWidth - 2 * mMargin );
 
+  painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
+  painter->rotate( mRotation );
+  painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
   drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+
+  painter->restore();
 
   drawFrame( painter );
   if ( isSelected() )
@@ -105,13 +111,32 @@ void QgsComposerLabel::adjustSizeToText()
   double textWidth = textWidthMillimeters( mFont, displayText() );
   double fontAscent = fontAscentMillimeters( mFont );
 
-  setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1,
-                        fontAscent + 2 * mMargin + 2 * pen().widthF() + 1 ) );
+  mTextBoxWidth = textWidth + 2 * mMargin + 2 * pen().widthF() + 1;
+  mTextBoxHeight = fontAscent + 2 * mMargin + 2 * pen().widthF() + 1;
+
+  double width = mTextBoxWidth;
+  double height = mTextBoxHeight;
+
+  sizeChangedByRotation( width, height );
+
+  setSceneRect( QRectF( transform().dx(), transform().dy(), width, height ) );
 }
 
 QFont QgsComposerLabel::font() const
 {
   return mFont;
+}
+
+void QgsComposerLabel::setRotation( double r )
+{
+  double width = mTextBoxWidth;
+  double height = mTextBoxHeight;
+  sizeChangedByRotation( width, height );
+
+  double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
+  double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
+  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
+  QgsComposerItem::setRotation( r );
 }
 
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const

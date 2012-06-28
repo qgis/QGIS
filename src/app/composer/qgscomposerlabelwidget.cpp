@@ -34,6 +34,7 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidg
   {
     setGuiElementValues();
     connect( mComposerLabel, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mRotationSpinBox, SIGNAL( valueChanged( double ) ), mComposerLabel, SLOT( setRotation( double ) ) );
   }
 }
 
