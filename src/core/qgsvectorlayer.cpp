@@ -5700,7 +5700,7 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   const QgsFieldMap &fields = pendingFields();
 
   // FIXME: throw an exception!?
-  if ( fields.contains( idx ) )
+  if ( !fields.contains( idx ) )
   {
     QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
   }
