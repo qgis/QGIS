@@ -287,8 +287,18 @@ class Sextante:
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        alg.execute()
-        QApplication.restoreOverrideCursor()
+        algEx = AlgorithmExecutor(alg)
+        def finish():
+            #SextantePostprocessing.handleAlgorithmResults(alg)
+            QApplication.restoreOverrideCursor()
+        def error(msg):
+            QApplication.restoreOverrideCursor()
+            print msg
+            SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+        algEx.error.connect(error)
+        algEx.finished.connect(finish)
+        algEx.start()
+        algEx.wait()
         return alg.getOutputValuesAsDictionary()
 
 
