@@ -1388,6 +1388,8 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
       }
     }
   }
+#else
+  Q_UNUSED( canvasPoint );
 #endif //0
 }
 

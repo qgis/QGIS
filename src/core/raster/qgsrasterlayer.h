@@ -482,10 +482,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QPixmap legendAsPixmap();
 
     /** \brief  Overloaded version of above function that can print layer name onto legend */
-    QPixmap legendAsPixmap( bool );
+    Q_DECL_DEPRECATED QPixmap legendAsPixmap( bool );
 
     /** \brief Use this method when you want an annotated legend suitable for print output etc */
-    QPixmap legendAsPixmap( int theLabelCount );
+    Q_DECL_DEPRECATED QPixmap legendAsPixmap( int theLabelCount );
 
     /** \brief Accessor for maximum value user for contrast enhancement */
     double maximumValue( unsigned int theBand );
@@ -534,7 +534,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setColorShadingAlgorithm( QgsRasterLayer::ColorShadingAlgorithm theShaderAlgorithm );
 
     /** \brief Mutator for color shader algorithm */
-    void setColorShadingAlgorithm( QString theShaderAlgorithm );
+    Q_DECL_DEPRECATED void setColorShadingAlgorithm( QString theShaderAlgorithm );
 
     /** \brief Mutator for contrast enhancement algorithm */
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
@@ -550,16 +550,16 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setDrawingStyle( const QString & theDrawingStyleQString );
 
     /** \brief Mutator for gray band name mapping  */
-    void setGrayBandName( const QString & theBandName );
+    Q_DECL_DEPRECATED void setGrayBandName( const QString & theBandName );
 
     /** \brief Mutator for green band name mapping  */
-    void setGreenBandName( const QString & theBandName );
+    Q_DECL_DEPRECATED void setGreenBandName( const QString & theBandName );
 
     /** \brief Mutator for setting the maximum value for contrast enhancement */
     void setMaximumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator for setting the maximum value for contrast enhancement */
-    void setMaximumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
+    Q_DECL_DEPRECATED void setMaximumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Sets the minimum and maximum values for the band(s) currently
      * being displayed using the only pixel values from the last/current extent
@@ -571,23 +571,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setMinimumMaximumUsingDataset();
 
     /** \brief Mutator for setting the minimum value for contrast enhancement */
-    void setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
+    Q_DECL_DEPRECATED void setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator for setting the minimum value for contrast enhancement */
-    void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
+    Q_DECL_DEPRECATED void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
     void setNoDataValue( double theNoData );
 
     /** \brief Set the raster shader function to a user defined function
       \note ownership of the shader function is transfered to raster shader */
-    void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
+    Q_DECL_DEPRECATED void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
 
     /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red color) */
-    void setRedBandName( const QString & theBandName );
+    Q_DECL_DEPRECATED void setRedBandName( const QString & theBandName );
 
     /** \brief Mutator for transparent band name mapping  */
-    void setTransparentBandName( const QString & theBandName );
+    Q_DECL_DEPRECATED void setTransparentBandName( const QString & theBandName );
 
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );

@@ -1068,7 +1068,7 @@ QPixmap QgsRasterLayer::legendAsPixmap()
  * @param theWithNameFlag - boolena flag whether to overlay the legend name in the text
  * @return a pixmap representing a legend image
  */
-QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
+QPixmap QgsRasterLayer::legendAsPixmap( bool )
 {
   return QPixmap();
 }                               //end of legendAsPixmap function
@@ -1077,7 +1077,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
  * \param theLabelCount number of vertical labels to display
  * @return a pixmap representing a legend image
  */
-QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
+QPixmap QgsRasterLayer::legendAsPixmap( int )
 {
   return QPixmap();
 }//end of getDetailedLegend
@@ -1778,12 +1778,12 @@ void QgsRasterLayer::closeDataProvider()
   mPyramidList.clear();
 }
 
-void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingAlgorithm )
+void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm )
 {
   //legacy method
 }
 
-void QgsRasterLayer::setColorShadingAlgorithm( QString theShaderAlgorithm )
+void QgsRasterLayer::setColorShadingAlgorithm( QString )
 {
   //legacy method
 }
@@ -1957,12 +1957,12 @@ void QgsRasterLayer::setDrawingStyle( QString const & theDrawingStyleQString )
   }
 }
 
-void QgsRasterLayer::setGrayBandName( QString const & theBandName )
+void QgsRasterLayer::setGrayBandName( QString const & )
 {
   //legacy method
 }
 
-void QgsRasterLayer::setGreenBandName( QString const & theBandName )
+void QgsRasterLayer::setGreenBandName( QString const & )
 {
   //legacy method
 }
@@ -2006,12 +2006,12 @@ void QgsRasterLayer::setMinimumMaximumUsingDataset()
   //legacy method
 }
 
-void QgsRasterLayer::setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setMinimumValue( unsigned int, double, bool )
 {
   //legacy method
 }
 
-void QgsRasterLayer::setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setMinimumValue( QString, double, bool )
 {
   //legacy method
 }
@@ -2032,12 +2032,12 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
   }
 }
 
-void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* theFunction )
+void QgsRasterLayer::setRasterShaderFunction( QgsRasterShaderFunction* )
 {
   //legacy method
 }
 
-void QgsRasterLayer::setRedBandName( QString const & theBandName )
+void QgsRasterLayer::setRedBandName( QString const & )
 {
   //legacy method
 }
@@ -2053,7 +2053,7 @@ void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
 
 }
 
-void QgsRasterLayer::setTransparentBandName( QString const & theBandName )
+void QgsRasterLayer::setTransparentBandName( QString const & )
 {
   //legacy method
 }

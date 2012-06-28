@@ -504,6 +504,9 @@ bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleEle
 
   //set pseudo color mode
   return true;
+#else
+  Q_UNUSED( userStyleElement );
+  Q_UNUSED( r );
 #endif //0
 }
 
