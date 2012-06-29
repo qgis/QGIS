@@ -591,3 +591,29 @@ bool QgsStyleV2::regroup( QString symbolName, int groupid )
                   : sqlite3_mprintf( "UPDATE symbol SET groupid=NULL WHERE name='%q';", array.constData() );
   return runEmptyQuery( query );
 }
+
+QStringList QgsStyleV2::findSymbols( QString qword )
+{
+  QByteArray array = qword.toUtf8();
+  char *query;
+  query = sqlite3_mprintf( "SELECT name FROM symbol WHERE xml LIKE '\%%q\%'", array.constData() );
+
+  QStringList symbols;
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+  {
+    QgsDebugMsg( "Sorry! Cannot open DB to search" );
+    return QStringList();
+  }
+  sqlite3_stmt *ppStmt;
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QString symbolName = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+    symbols.append( symbolName );
+  }
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
+
+  return symbols;
+}

@@ -139,6 +139,9 @@ class CORE_EXPORT QgsStyleV2
     //! return current file name of the style
     QString fileName() { return mFileName; }
 
+    //! return the names of the symbols which have a matching 'substring' in its defintion
+    QStringList findSymbols( QString qword );
+
   protected:
 
     QgsSymbolV2Map mSymbols;
