@@ -596,7 +596,7 @@ QStringList QgsStyleV2::findSymbols( QString qword )
 {
   QByteArray array = qword.toUtf8();
   char *query;
-  query = sqlite3_mprintf( "SELECT name FROM symbol WHERE xml LIKE '\%%q\%'", array.constData() );
+  query = sqlite3_mprintf( "SELECT name FROM symbol WHERE xml LIKE '%%%q%%';", array.constData() );
 
   QStringList symbols;
   sqlite3 *db = openDB( mFileName );

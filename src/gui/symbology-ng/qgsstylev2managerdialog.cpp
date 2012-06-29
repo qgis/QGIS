@@ -44,7 +44,6 @@
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
     : QDialog( parent ), mStyle( style ), mModified( false )
 {
-
   setupUi( this );
 
   QSettings settings;
@@ -104,6 +103,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   connect( tabItemType, SIGNAL( currentChanged( int ) ), this, SLOT( populateList() ) );
   populateList();
+
+  connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
 
 }
 
@@ -955,3 +956,8 @@ void QgsStyleV2ManagerDialog::tagSymbolsAction()
   QgsDebugMsg( "tagging symbols now" );
 }
 
+void QgsStyleV2ManagerDialog::filterSymbols( QString qword )
+{
+  QStringList symbols = mStyle->findSymbols( qword );
+  populateSymbols( symbols );
+}

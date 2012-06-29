@@ -60,6 +60,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void tagSymbolsAction();
     void regrouped( QStandardItem* );
 
+    //! filter the symbols based on input search term
+    void filterSymbols( QString );
+
   protected:
 
     //! populate combo box with known style items (symbols, color ramps)
