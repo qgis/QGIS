@@ -40,7 +40,6 @@ class QByteArray;
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
-
 /** \ingroup core
  * Base class for raster data providers.
  *
@@ -105,6 +104,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     virtual ~QgsRasterDataProvider() {};
 
+    QgsRasterInterface * srcInput() { return this; }
 
     /**
      * Add the list of WMS layer names to be rendered by this server

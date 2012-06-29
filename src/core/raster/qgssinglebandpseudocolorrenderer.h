@@ -32,8 +32,6 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    //virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
-
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /**Takes ownership of the shader*/

@@ -21,12 +21,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 
-class QPainter;
-class QgsMapToPixel;
 class QgsRasterResampler;
-class QgsRasterProjector;
-class QgsRasterTransparency;
-class QgsRasterViewPort;
 
 class QDomElement;
 
@@ -55,16 +50,10 @@ class QgsRasterResampleFilter : public QgsRasterInterface
     void readXML( const QDomElement& resamplefilterElem );
 
   protected:
-
-    /**Write upper class info into <rasterresamplefilter> element (called by writeXML method of subclasses)*/
-    //void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
-
-
     /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedInResampler;
     /**Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedOutResampler;
-    //QMap<int, RasterPartInfo> mRasterPartInfos;
 
     /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
     double mMaxOversampling;

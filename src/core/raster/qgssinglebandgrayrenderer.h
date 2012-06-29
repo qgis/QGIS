@@ -29,10 +29,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
 
-    //static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
-
-    //virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 

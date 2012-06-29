@@ -34,6 +34,7 @@ QgsRasterProjector::QgsRasterProjector(
     , mExtent( theExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+    , pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
@@ -52,21 +53,22 @@ QgsRasterProjector::QgsRasterProjector(
     , mCoordinateTransform( theDestCRS, theSrcCRS )
     , mExtent( theExtent )
     , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
+    , pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );
 }
 
 QgsRasterProjector::QgsRasterProjector()
     : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
+    , pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );
 }
 
 QgsRasterProjector::~QgsRasterProjector()
 {
-  //delete mCoordinateTransform;
-  //delete pHelperTop;
-  //delete pHelperBottom;
+  delete pHelperTop;
+  delete pHelperBottom;
 }
 
 void QgsRasterProjector::setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS )
@@ -79,9 +81,12 @@ void QgsRasterProjector::setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoor
 
 void QgsRasterProjector::calc()
 {
+  QgsDebugMsg( "Entered" );
   mCPMatrix.clear();
-  //delete pHelperTop;
-  //delete pHelperBottom;
+  delete pHelperTop;
+  pHelperTop = 0;
+  delete pHelperBottom;
+  pHelperBottom = 0;
 
   mDestXRes = mDestExtent.width() / ( mDestCols );
   mDestYRes = mDestExtent.height() / ( mDestRows );
@@ -328,6 +333,7 @@ void QgsRasterProjector::calcHelper( int theMatrixRow, QgsPoint *thePoints )
 }
 void QgsRasterProjector::nextHelper()
 {
+  // We just switch pHelperTop and pHelperBottom, memory is not lost
   QgsPoint *tmp;
   tmp = pHelperTop;
   pHelperTop = pHelperBottom;
@@ -345,23 +351,33 @@ void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcR
 
 void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
-  //QgsDebugMsg( QString( "theDestRow = %1" ).arg(theDestRow) );
-  //QgsDebugMsg( QString( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg(theDestRow).arg(mDestExtent.yMaximum()).arg(mDestYRes) );
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QString( "theDestRow = %1" ).arg( theDestRow ), 5 );
+  QgsDebugMsgLevel( QString( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg( theDestRow ).arg( mDestExtent.yMaximum() ).arg( mDestYRes ), 5 );
+#endif
 
   // Get coordinate of center of destination cell
   double x = mDestExtent.xMinimum() + ( theDestCol + 0.5 ) * mDestXRes;
   double y = mDestExtent.yMaximum() - ( theDestRow + 0.5 ) * mDestYRes;
   double z = 0;
 
-  //QgsDebugMsg( QString( "x = %1 y = %2" ).arg(x).arg(y) );
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
+#endif
+
   mCoordinateTransform.transformInPlace( x, y, z );
-  //QgsDebugMsg( QString( "x = %1 y = %2" ).arg(x).arg(y) );
+
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QString( "x = %1 y = %2" ).arg( x ).arg( y ), 5 );
+#endif
 
   // Get source row col
   *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes );
   *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes );
-  //QgsDebugMsg( QString( "mSrcExtent.yMaximum() = %1 mSrcYRes = %2" ).arg(mSrcExtent.yMaximum()).arg(mSrcYRes) );
-  //QgsDebugMsg( QString( "theSrcRow = %1 theSrcCol = %2" ).arg(*theSrcRow).arg(*theSrcCol) );
+#ifdef QGISDEBUG
+  QgsDebugMsgLevel( QString( "mSrcExtent.yMaximum() = %1 mSrcYRes = %2" ).arg( mSrcExtent.yMaximum() ).arg( mSrcYRes ), 5 );
+  QgsDebugMsgLevel( QString( "theSrcRow = %1 theSrcCol = %2" ).arg( *theSrcRow ).arg( *theSrcCol ), 5 );
+#endif
 
   // With epsg 32661 (Polar Stereographic) it was happening that *theSrcCol == mSrcCols
   // For now silently correct limits to avoid crashes
@@ -555,10 +571,10 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
   QgsDebugMsg( "Entered" );
   if ( !mInput ) return 0;
 
-  int bandNumber = 1;
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
-    return mInput->block( bandNumber, extent, width, height );
+    QgsDebugMsg( "No projection necessary" );
+    return mInput->block( bandNo, extent, width, height );
   }
 
   mDestExtent = extent;
@@ -575,7 +591,7 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
     return 0;
   }
 
-  void * inputData = mInput->block( bandNumber, srcExtent(), srcCols(), srcRows() );
+  void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
 
   if ( !inputData ) return 0;
 

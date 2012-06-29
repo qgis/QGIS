@@ -30,8 +30,6 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    //virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
-
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;

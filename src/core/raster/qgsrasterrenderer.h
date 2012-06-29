@@ -38,7 +38,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual ~QgsRasterRenderer();
 
     virtual QString type() const { return mType; }
-    //virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
     virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
     {
@@ -74,14 +73,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
-
-    QgsRasterInterface* mProvider;
     QString mType;
-    /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
-    QgsRasterResampler* mZoomedInResampler;
-    /**Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
-    QgsRasterResampler* mZoomedOutResampler;
-    //QMap<int, RasterPartInfo> mRasterPartInfos;
 
     /**Global alpha value (0-1)*/
     double mOpacity;
@@ -95,11 +87,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
     double mMaxOversampling;
-
-  private:
-    /**Remove part into and release memory*/
-    void removePartInfo( int bandNumer );
-    void projectImage( const QImage& srcImg, QImage& dstImage, QgsRasterProjector* prj ) const;
 };
 
 inline double QgsRasterRenderer::readValue( void *data, QgsRasterInterface::DataType type, int index )
@@ -111,9 +98,7 @@ inline double QgsRasterRenderer::readValue( void *data, QgsRasterInterface::Data
 
   if ( !data )
   {
-    // TODO
-    //return mInput->noDataValue();
-    return 0;
+    return mInput->noDataValue();
   }
 
   switch ( type )

@@ -26,7 +26,6 @@
 #include <QVector>
 #include <QList>
 
-
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
@@ -34,13 +33,10 @@
 
 #include <cmath>
 
-//class QgsRectangle;
 class QgsPoint;
 
-//class CORE_EXPORT QgsRasterProjector
-class QgsRasterProjector : public QgsRasterInterface
+class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 {
-//    Q_OBJECT
   public:
     /** \brief QgsRasterProjector implements approximate projection support for
      * it calculates grid of points in source CRS for target CRS + extent
@@ -126,7 +122,6 @@ class QgsRasterProjector : public QgsRasterInterface
     bool checkRows();
 
     /** Calculate array of src helper points */
-    //void calcHelper ( int theMatrixRow, QList<QgsPoint> *thePoints );
     void calcHelper( int theMatrixRow, QgsPoint *thePoints );
 
     /** Calc / switch helper */

@@ -18,7 +18,6 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
-#include <QObject>
 #include <QImage>
 
 #include "qgsrectangle.h"
@@ -26,14 +25,14 @@
 /** \ingroup core
  * Base class for processing modules.
  */
-// TODO: inherit from QObject? QgsDataProvider inherits already from QObject, multiple inheritance from QObject is not allowed
-class CORE_EXPORT QgsRasterInterface //: public QObject
+// TODO: inherit from QObject? It would be probably better but QgsDataProvider inherits already from QObject and multiple inheritance from QObject is not allowed
+class CORE_EXPORT QgsRasterInterface
 {
-
-    //Q_OBJECT
-
   public:
 
+    /** Role is used to identify certain type of interface in pipe and replace
+     * it with another of the same Role for example
+     */
     enum Role
     {
       UnknownRole   = 0,
@@ -43,9 +42,9 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       ProjectorRole = 4
     };
 
-    Role role() { return mRole; }
-
-    // This is modified copy of GDALDataType
+    /** Data types.
+     *  This is modified and extended copy of GDALDataType.
+     */
     enum DataType
     {
       /*! Unknown or unspecified type */          UnknownDataType = 0,
@@ -68,9 +67,16 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       TypeCount = 14          /* maximum type # + 1 */
     };
 
+    QgsRasterInterface( QgsRasterInterface * input = 0, Role role = UnknownRole );
+
+    virtual ~QgsRasterInterface();
+
+    /** Interface role */
+    Role role() { return mRole; }
+
     int typeSize( int dataType ) const
     {
-      // modified copy from GDAL
+      // Modified and extended copy from GDAL
       switch ( dataType )
       {
         case Byte:
@@ -102,14 +108,11 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
           return 0;
       }
     }
+
     int dataTypeSize( int bandNo ) const
     {
       return typeSize( dataType( bandNo ) );
     }
-
-    QgsRasterInterface( QgsRasterInterface * input = 0, Role role = UnknownRole );
-
-    virtual ~QgsRasterInterface();
 
     /** Returns data type for the band specified by number */
     virtual int dataType( int bandNo ) const
@@ -124,7 +127,7 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       return 1;
     }
 
-    // TODO
+    /** Retruns value representing 'no data' (NULL) */
     virtual double noDataValue() const { return 0; }
 
     /** Read block of data using given extent and size.
@@ -133,7 +136,7 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
      */
     void * block( int bandNo, QgsRectangle  const & extent, int width, int height );
 
-    /** Read block of data using given extent and size. 
+    /** Read block of data using given extent and size.
      *  Method to be implemented by subclasses.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
@@ -148,30 +151,40 @@ class CORE_EXPORT QgsRasterInterface //: public QObject
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
+    /** Get source / raw input, the first in pipe, usually provider.
+     *  It may be used to get info about original data, e.g. resolution to decide
+     *  resampling etc.
+     */
+    virtual QgsRasterInterface * srcInput() { return mInput ? mInput->srcInput() : 0; }
+
     /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.
      */
     QImage * createImage( int width, int height, QImage::Format format );
 
-    // Clear last rendering time
+    /** Clear last rendering time */
     void clearTime() { mTime.clear(); if ( mInput ) mInput->clearTime(); }
-    
-    // Last time consumed by block()
-    // Returns total time (for all bands) if bandNo is 0
+
+    /** Last time consumed by call to block()
+     * Returns total time (for all bands) if bandNo is 0
+     */
     double time( int bandNo );
+
+    /** Average time for all bands consumed by last calls to block() */
     double avgTime();
 
-    //protected:
-
+  protected:
+    // Role of interface
     Role mRole;
 
-    // QgsRasterInterface from used as input, data are read from it
+    // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
 
-    // Last rendering time
+  private:
+    // Last rendering times, from index 1
     QVector<double> mTime;
 
-    // minimum block size to record time (to ignore thumbnails etc)
+    // Minimum block size to record time (to ignore thumbnails etc)
     int mTimeMinSize;
 };
 

@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsrasterresampler.h"
 #include "qgsrasterprojector.h"
@@ -40,21 +41,19 @@ QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input )
 
 QgsRasterResampleFilter::~QgsRasterResampleFilter()
 {
-  // TODO: currently we are using pointer to renderer, enable once moved here
-  //delete mZoomedInResampler;
-  //delete mZoomedOutResampler;
-  //delete mRasterTransparency;
+  delete mZoomedInResampler;
+  delete mZoomedOutResampler;
 }
 
 void QgsRasterResampleFilter::setZoomedInResampler( QgsRasterResampler* r )
 {
-  //delete mZoomedInResampler;
+  delete mZoomedInResampler;
   mZoomedInResampler = r;
 }
 
 void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
 {
-  //delete mZoomedOutResampler;
+  delete mZoomedOutResampler;
   mZoomedOutResampler = r;
 }
 
@@ -67,18 +66,16 @@ void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & ext
 
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
-    // TODO: we must get it somehow from pipe (via projector), for now
-    oversampling = 2.;
-    /*
-    QgsRectangle providerExtent = mInput->extent();
-    if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
+    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
+    // Do not oversample if data source does not have fixed resolution (WMS)
+    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
-      QgsCoordinateTransform t( viewPort->mSrcCRS, viewPort->mDestCRS );
-      providerExtent = t.transformBoundingBox( providerExtent );
+      double xRes = extent.width() / width;
+      double providerXRes = provider->extent().width() / provider->xSize();
+      double pixelRatio = xRes / providerXRes;
+      oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
+      QgsDebugMsg( QString( "xRes = %1 providerXRes = %2 pixelRatio = %3 oversampling = %4" ).arg( xRes ).arg( providerXRes ).arg( pixelRatio ).arg( oversampling ) );
     }
-    double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mInput->xSize() );
-    oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
-    */
   }
 
   //set oversampling back to 1.0 if no resampler for zoomed in / zoomed out (nearest neighbour)
