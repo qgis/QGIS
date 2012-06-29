@@ -108,7 +108,10 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         painter.drawRect(rect)
         font = QtGui.QFont("Verdana", 8)
         painter.setFont(font)
-        painter.setPen(QtGui.QPen(QtCore.Qt.black))
+        if self.isSelected():
+            painter.setPen(QtGui.QPen(QtCore.Qt.blue))
+        else:
+            painter.setPen(QtGui.QPen(QtCore.Qt.black))
         fm = QtGui.QFontMetricsF(font)
         text = self.getAdjustedText(self.text)
         w = fm.width(QtCore.QString(text))
