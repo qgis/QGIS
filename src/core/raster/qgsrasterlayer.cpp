@@ -194,7 +194,7 @@ QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
   delete mRasterShader;
-  delete mDataProvider; // delete in pipe ?
+  //delete mDataProvider; // deleted in pipe
   //delete mRenderer;
   //delete mResampleFilter;
 }
@@ -1823,7 +1823,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 void QgsRasterLayer::closeDataProvider()
 {
   mValid = false;
-  delete mDataProvider;
+  mPipe.remove( mDataProvider );
   mDataProvider = 0;
 
   mRasterStatsList.clear();

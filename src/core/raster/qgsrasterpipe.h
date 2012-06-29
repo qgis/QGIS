@@ -52,25 +52,32 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
 
     /** \brief Try to connect filters in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
-    bool connectFilters ( QVector<QgsRasterInterface*> theFilters );
+    bool connectFilters( QVector<QgsRasterInterface*> theFilters );
 
 
     /** Try to insert filter at specified index and connect
      * if connection would fail, the filter is not inserted and false is returned */
-    bool insert ( int idx, QgsRasterInterface* theFilter ); 
+    bool insert( int idx, QgsRasterInterface* theFilter );
 
     /** Try to replace filter at specified index and connect
      * if connection would fail, the filter is not inserted and false is returned */
-    bool replace ( int idx, QgsRasterInterface* theFilter ); 
+    bool replace( int idx, QgsRasterInterface* theFilter );
 
-    /** Insert a new filter in prefered place or replace similar filter if it 
+    /** Insert a new filter in prefered place or replace similar filter if it
      *  already exists */
-    bool setFilter ( QgsRasterInterface * theFilter );
+    bool setFilter( QgsRasterInterface * theFilter );
 
-    QgsRasterInterface * filter ( Role role ) const;
+    /** Get known filter by role */
+    QgsRasterInterface * filter( Role role ) const;
+
+    /** Remove and delete filter at given index if possible */
+    bool remove( int idx );
+
+    /** Remove and delete filter from pipe if possible */
+    bool remove( QgsRasterInterface * theFilter );
 
     int size() { return mFilters.size(); }
-    QgsRasterInterface * at( int idx ) { return mFilters.at(idx); }
+    QgsRasterInterface * at( int idx ) { return mFilters.at( idx ); }
     QgsRasterInterface * last() { return mFilters.last(); }
 
     // Getters for special types of interfaces
@@ -80,8 +87,8 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
     QgsRasterProjector * projector() const;
 
   private:
-    /** Get known parent type_info of interface parent */ 
-    Role filterRole ( QgsRasterInterface * filter ) const;
+    /** Get known parent type_info of interface parent */
+    Role filterRole( QgsRasterInterface * filter ) const;
 
     // Filters in pipe, the first is always provider
     QVector<QgsRasterInterface*> mFilters;
@@ -92,10 +99,13 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
     QgsRasterResampleFilter * mResampleFilter;
     QgsRasterProjector * mProjector;
 
-    QMap<Role,int> mRoleMap;
+    QMap<Role, int> mRoleMap;
 
     // Set role in mFiltersMap
-    void setRole ( QgsRasterInterface * theFilter, int idx );
+    void setRole( QgsRasterInterface * theFilter, int idx );
+
+    // Unset role in mFiltersMap
+    void unsetRole( QgsRasterInterface * theFilter );
 };
 
 #endif
