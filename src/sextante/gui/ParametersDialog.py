@@ -193,12 +193,26 @@ class Ui_ParametersDialog(object):
                 self.algEx.textChanged.connect(self.setText)
                 self.algEx.start()
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
+                self.finish()
             else:
+                keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
                 if iterateParam:
                     UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
                 else:
-                    UnthreadedAlgorithmExecutor.runalg(self.alg, self)
-                self.finish()
+                    if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
+                        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
+                self.dialog.executed = True
+                QApplication.restoreOverrideCursor()
+                if not keepOpen:
+                        self.dialog.close()
+                else:
+                    self.progressLabel.setText("")
+                    self.progress.setMaximum(100)
+                    self.progress.setValue(0)
+                    self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+                    self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
+                    self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+
 
         else:
             QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
@@ -217,7 +231,7 @@ class Ui_ParametersDialog(object):
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
-        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
+
 
     @pyqtSlot()
     def error(self, msg):
