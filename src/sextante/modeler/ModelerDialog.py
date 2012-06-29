@@ -217,7 +217,7 @@ class ModelerDialog(QtGui.QDialog):
                 self.alg.descriptionFile = filename
         if filename:
             text = self.alg.serialize()
-            fout = codecs.open(filename, "a", encoding='utf-8')
+            fout = codecs.open(filename, "w", encoding='utf-8')
             #fout = open(filename, "w")
             fout.write(text)
             fout.close()
