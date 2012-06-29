@@ -24,6 +24,7 @@
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {
+    Q_OBJECT
   public:
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
@@ -76,6 +77,8 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
         @note: this function was added in version 1.4*/
     QColor fontColor() const {return mFontColor;}
 
+    void setSceneRect( const QRectF& rectangle );
+
     /** stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc document
@@ -87,6 +90,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
        * @param doc document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+  public slots:
+    virtual void setRotation( double r );
 
   private:
     // Text
@@ -109,6 +115,11 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     /**Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
     void replaceDateText( QString& text ) const;
+
+    /**Width of the text box. This is different to rectangle().width() in case there is rotation*/
+    double mTextBoxWidth;
+    /**Height of the text box. This is different to rectangle().height() in case there is rotation*/
+    double mTextBoxHeight;
 };
 
 #endif
