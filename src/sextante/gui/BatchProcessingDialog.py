@@ -15,8 +15,10 @@ from sextante.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.core.SextanteResults import SextanteResults
-from sextante.gui.ResultsDialog import ResultsDialog
 from sextante.core.SextanteLog import SextanteLog
+from sextante.core.SextanteConfig import SextanteConfig
+from sextante.gui.UnthreadedAlgorithmExecutor import SilentProgress,\
+    UnthreadedAlgorithmExecutor
 
 class BatchProcessingDialog(QtGui.QDialog):
     def __init__(self, alg):
@@ -101,10 +103,23 @@ class BatchProcessingDialog(QtGui.QDialog):
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.progress.setMaximum(len(self.algs))
-        self.progress.setValue(0)
-        self.nextAlg(0)
-
         self.table.setEnabled(False)
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+            self.progress.setValue(0)
+            self.nextAlg(0)
+        else:
+            i=1
+            self.progress.setMaximum(len(self.algs))
+            for alg in self.algs:
+                if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
+                    self.progress.setValue(i)
+                    self.loadHTMLResults(alg, i)
+                    i+=1
+                else:
+                    QApplication.restoreOverrideCursor()
+                    return
+
+            self.finishAll()
 
     def loadHTMLResults(self, alg, i):
         for out in alg.outputs:

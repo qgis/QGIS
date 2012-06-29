@@ -21,6 +21,8 @@ from sextante.algs.SextanteAlgorithmProvider import SextanteAlgorithmProvider
 from sextante.pymorph.PymorphAlgorithmProvider import PymorphAlgorithmProvider
 from sextante.mmqgisx.MMQGISXAlgorithmProvider import MMQGISXAlgorithmProvider
 from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
+from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor,\
+    SilentProgress
 
 class Sextante:
 
@@ -287,18 +289,21 @@ class Sextante:
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        algEx = AlgorithmExecutor(alg)
-        def finish():
-            #SextantePostprocessing.handleAlgorithmResults(alg)
-            QApplication.restoreOverrideCursor()
-        def error(msg):
-            QApplication.restoreOverrideCursor()
-            print msg
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
-        algEx.error.connect(error)
-        algEx.finished.connect(finish)
-        algEx.start()
-        algEx.wait()
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+            algEx = AlgorithmExecutor(alg)
+            def finish():
+                QApplication.restoreOverrideCursor()
+            def error(msg):
+                QApplication.restoreOverrideCursor()
+                print msg
+                SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+            algEx.error.connect(error)
+            algEx.finished.connect(finish)
+            algEx.start()
+            algEx.wait()
+        else:
+            UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
+
         return alg.getOutputValuesAsDictionary()
 
 
@@ -350,19 +355,23 @@ class Sextante:
         if msg:
             QMessageBox.critical(None, "Unable to execute algorithm", msg)
             return
-
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        algEx = AlgorithmExecutor(alg)
-        def finish():
-            SextantePostprocessing.handleAlgorithmResults(alg)
-            QApplication.restoreOverrideCursor()
-        def error(msg):
-            QApplication.restoreOverrideCursor()
-            QMessageBox.critical(None, "Error", msg)
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
-        algEx.error.connect(error)
-        algEx.finished.connect(finish)
-        algEx.start()
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+            algEx = AlgorithmExecutor(alg)
+            def finish():
+                SextantePostprocessing.handleAlgorithmResults(alg)
+                QApplication.restoreOverrideCursor()
+            def error(msg):
+                QApplication.restoreOverrideCursor()
+                QMessageBox.critical(None, "Error", msg)
+                SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+            algEx.error.connect(error)
+            algEx.finished.connect(finish)
+            algEx.start()
+        else:
+            if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
+                SextantePostprocessing.handleAlgorithmResults(alg)
+
 
 
 

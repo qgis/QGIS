@@ -364,7 +364,6 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 outputs[out.name] = out.value
                             self.producedOutputs[iAlg] = outputs
                             executed.append(iAlg)
-
                         except GeoAlgorithmExecutionException, e :
                             raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
                 iAlg += 1

@@ -29,6 +29,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputTable import OutputTable
 from sextante.core.WrongHelpFileException import WrongHelpFileException
 import os
+from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -177,19 +178,28 @@ class Ui_ParametersDialog(object):
             self.progress.setMaximum(0)
             self.progressLabel.setText("Processing algorithm...")
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            if iterateParam:
-                self.algEx = AlgorithmExecutor(self.alg, iterateParam)
+            useThread = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
+            if useThread:
+                if iterateParam:
+                    self.algEx = AlgorithmExecutor(self.alg, iterateParam)
+                else:
+                    command = self.alg.getAsCommand()
+                    if command:
+                        SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
+                    self.algEx = AlgorithmExecutor(self.alg)
+                self.algEx.finished.connect(self.finish)
+                self.algEx.error.connect(self.error)
+                self.algEx.percentageChanged.connect(self.setPercentage)
+                self.algEx.textChanged.connect(self.setText)
+                self.algEx.start()
+                self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
             else:
-                command = self.alg.getAsCommand()
-                if command:
-                    SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
-                self.algEx = AlgorithmExecutor(self.alg)
-            self.algEx.finished.connect(self.finish)
-            self.algEx.error.connect(self.error)
-            self.algEx.percentageChanged.connect(self.setPercentage)
-            self.algEx.textChanged.connect(self.setText)
-            self.algEx.start()
-            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
+                if iterateParam:
+                    UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
+                else:
+                    UnthreadedAlgorithmExecutor.runalg(self.alg, self)
+                self.finish()
+
         else:
             QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
 

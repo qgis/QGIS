@@ -22,14 +22,16 @@ class ModelerDialog(QtGui.QDialog):
         self.setupUi()
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowSystemMenuHint |
                             QtCore.Qt.WindowMinMaxButtonsHint)
-        if alg:
+        if alg is not None:
             self.alg = alg
             self.textGroup.setText(alg.group)
             self.textName.setText(alg.name)
             self.repaintModel()
             last = self.scene.getLastAlgorithmItem()
-            if last:
+            if last is not None:
                 self.view.ensureVisible(last)
+            else:
+                self.view.ensureVisible(0,0,10,10)
         else:
             self.alg = ModelerAlgorithm()
         self.alg.setModelerView(self)
