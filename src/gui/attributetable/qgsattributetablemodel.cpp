@@ -388,7 +388,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     {
       return QVariant( section );
     }
-    else if ( section < mFieldCount )
+    else if ( section >= 0 && section < mFieldCount )
     {
       QString attributeName = mLayer->attributeAlias( mAttributes[section] );
       if ( attributeName.isEmpty() )

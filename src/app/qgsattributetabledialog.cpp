@@ -680,31 +680,8 @@ void QgsAttributeTableDialog::editingToggled()
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
 
-  // (probably reload data if user stopped editing - possible revert)
-  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
-
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
-}
-
-// not used now
-void QgsAttributeTableDialog::startEditing()
-{
-  mLayer->startEditing();
-}
-
-// not used now
-void QgsAttributeTableDialog::submit()
-{
-  mLayer->commitChanges();
-}
-
-// not used now
-void QgsAttributeTableDialog::revert()
-{
-  mLayer->rollBack();
-  mModel->revert();
-  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
 }
 
 void QgsAttributeTableDialog::on_mAddAttribute_clicked()
