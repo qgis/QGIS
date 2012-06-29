@@ -231,7 +231,7 @@ class ModelerDialog(QtGui.QDialog):
             QtGui.QMessageBox.information(self, "Model saving", "Model was correctly saved.")
 
     def openModel(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self, "Open Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)")
+        filename = unicode(QtGui.QFileDialog.getOpenFileName(self, "Open Model", ModelerUtils.modelsFolder(), "SEXTANTE models (*.model)"))
         if filename:
             try:
                 alg = ModelerAlgorithm()
