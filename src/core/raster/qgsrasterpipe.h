@@ -36,6 +36,16 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
     //Q_OBJECT
 
   public:
+    // Role of known filters
+    enum Role
+    {
+      UnknownRole   = 0,
+      ProviderRole  = 1,
+      RendererRole  = 2,
+      ResamplerRole = 3,
+      ProjectorRole = 4
+    };
+
     QgsRasterPipe( );
 
     virtual ~QgsRasterPipe();
@@ -44,10 +54,6 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
         Returns true if connected or false if connection failed */
     bool connectFilters ( QVector<QgsRasterInterface*> theFilters );
 
-
-    /** Add filter at the end of pipe and connect.
-        Returns true if connected or false if connection failed */
-    //bool addFilter ( QgsRasterInterface * theFilter );
 
     /** Try to insert filter at specified index and connect
      * if connection would fail, the filter is not inserted and false is returned */
@@ -59,24 +65,37 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
 
     /** Insert a new filter in prefered place or replace similar filter if it 
      *  already exists */
-    bool insertOrReplace ( QgsRasterInterface * theFilter );
+    bool setFilter ( QgsRasterInterface * theFilter );
 
-    //QgsRasterInterface * filter ( QgsRasterInterface::Role role );
-    QgsRasterInterface * filter ( QgsRasterInterface::Role role ) const;
+    QgsRasterInterface * filter ( Role role ) const;
 
     int size() { return mFilters.size(); }
     QgsRasterInterface * at( int idx ) { return mFilters.at(idx); }
     QgsRasterInterface * last() { return mFilters.last(); }
 
-    /** Delete all filters */
-    //void clear();
+    // Getters for special types of interfaces
+    QgsRasterDataProvider * provider() const;
+    QgsRasterRenderer * renderer() const;
+    QgsRasterResampleFilter * resampleFilter() const;
+    QgsRasterProjector * projector() const;
 
   private:
-    /** \brief Find index of existing filter of the given role */
-    int indexOf ( QgsRasterInterface::Role role ) const; 
+    /** Get known parent type_info of interface parent */ 
+    Role filterRole ( QgsRasterInterface * filter ) const;
 
     // Filters in pipe, the first is always provider
     QVector<QgsRasterInterface*> mFilters;
+
+    // Special types of interfaces
+    QgsRasterDataProvider * mProvider;
+    QgsRasterRenderer * mRenderer;
+    QgsRasterResampleFilter * mResampleFilter;
+    QgsRasterProjector * mProjector;
+
+    QMap<Role,int> mRoleMap;
+
+    // Set role in mFiltersMap
+    void setRole ( QgsRasterInterface * theFilter, int idx );
 };
 
 #endif

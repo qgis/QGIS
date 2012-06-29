@@ -26,7 +26,7 @@ QgsRasterProjector::QgsRasterProjector(
   int theDestRows, int theDestCols,
   double theMaxSrcXRes, double theMaxSrcYRes,
   QgsRectangle theExtent )
-    : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
+    : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
     , mCoordinateTransform( theDestCRS, theSrcCRS )
@@ -47,7 +47,7 @@ QgsRasterProjector::QgsRasterProjector(
   QgsCoordinateReferenceSystem theDestCRS,
   double theMaxSrcXRes, double theMaxSrcYRes,
   QgsRectangle theExtent )
-    : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
+    : QgsRasterInterface( 0 )
     , mSrcCRS( theSrcCRS )
     , mDestCRS( theDestCRS )
     , mCoordinateTransform( theDestCRS, theSrcCRS )
@@ -59,7 +59,7 @@ QgsRasterProjector::QgsRasterProjector(
 }
 
 QgsRasterProjector::QgsRasterProjector()
-    : QgsRasterInterface( 0, QgsRasterInterface::ProjectorRole )
+    : QgsRasterInterface( 0)
     , pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );

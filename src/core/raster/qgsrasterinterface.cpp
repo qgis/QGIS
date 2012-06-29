@@ -21,9 +21,8 @@
 #include "qgslogger.h"
 #include "qgsrasterinterface.h"
 
-QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input, Role role )
+QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
-    , mRole( role )
     , mTimeMinSize( 150 )
 {
 }
@@ -60,7 +59,7 @@ void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int 
     }
     // QTime counts only in miliseconds
     mTime[bandNo] = time.elapsed();
-    QgsDebugMsg( QString( "mRole = %1 bandNo = %2 time = %3" ).arg( mRole ).arg( bandNo ).arg( mTime[bandNo] ) );
+    QgsDebugMsg( QString( "bandNo = %2 time = %3" ).arg( bandNo ).arg( mTime[bandNo] ) );
   }
   return b;
 }
@@ -79,7 +78,7 @@ double QgsRasterInterface::time( int bandNo )
   {
     t = mTime.value( bandNo );
   }
-  QgsDebugMsg( QString( "mRole = %1 bandNo = %2 time = %3" ).arg( mRole ).arg( bandNo ).arg( t ) );
+  QgsDebugMsg( QString( "bandNo = %2 time = %3" ).arg( bandNo ).arg( t ) );
   return t;
 }
 

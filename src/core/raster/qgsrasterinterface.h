@@ -30,18 +30,6 @@ class CORE_EXPORT QgsRasterInterface
 {
   public:
 
-    /** Role is used to identify certain type of interface in pipe and replace
-     * it with another of the same Role for example
-     */
-    enum Role
-    {
-      UnknownRole   = 0,
-      ProviderRole  = 1,
-      RendererRole  = 2,
-      ResamplerRole = 3,
-      ProjectorRole = 4
-    };
-
     /** Data types.
      *  This is modified and extended copy of GDALDataType.
      */
@@ -67,12 +55,9 @@ class CORE_EXPORT QgsRasterInterface
       TypeCount = 14          /* maximum type # + 1 */
     };
 
-    QgsRasterInterface( QgsRasterInterface * input = 0, Role role = UnknownRole );
+    QgsRasterInterface( QgsRasterInterface * input = 0 );
 
     virtual ~QgsRasterInterface();
-
-    /** Interface role */
-    Role role() { return mRole; }
 
     int typeSize( int dataType ) const
     {
@@ -174,9 +159,6 @@ class CORE_EXPORT QgsRasterInterface
     double avgTime();
 
   protected:
-    // Role of interface
-    Role mRole;
-
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
 
