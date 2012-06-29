@@ -49,14 +49,16 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
   //support multiline labels
   double penWidth = pen().widthF();
-  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin,
-                      rect().height() - 2 * penWidth - 2 * mMargin );
-
+  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, mTextBoxWidth - 2 * penWidth - 2 * mMargin, mTextBoxHeight - 2 * penWidth - 2 * mMargin );
   painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
   painter->rotate( mRotation );
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
+  //debug
+  painter->setPen( QColor( Qt::red ) );
+  painter->drawRect( painterRect );
   drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
+
 
   painter->restore();
 
@@ -119,7 +121,7 @@ void QgsComposerLabel::adjustSizeToText()
 
   sizeChangedByRotation( width, height );
 
-  setSceneRect( QRectF( transform().dx(), transform().dy(), width, height ) );
+  QgsComposerItem::setSceneRect( QRectF( transform().dx(), transform().dy(), width, height ) );
 }
 
 QFont QgsComposerLabel::font() const
@@ -131,12 +133,25 @@ void QgsComposerLabel::setRotation( double r )
 {
   double width = mTextBoxWidth;
   double height = mTextBoxHeight;
+  QgsComposerItem::setRotation( r );
   sizeChangedByRotation( width, height );
 
   double x = transform().dx() + rect().width() / 2.0 - width / 2.0;
   double y = transform().dy() + rect().height() / 2.0 - height / 2.0;
   QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
-  QgsComposerItem::setRotation( r );
+}
+
+void QgsComposerLabel::setSceneRect( const QRectF& rectangle )
+{
+  if ( rectangle.width() != rect().width() || rectangle.height() != rect().height() )
+  {
+    double textBoxWidth = rectangle.width();
+    double textBoxHeight = rectangle.height();
+    imageSizeConsideringRotation( textBoxWidth, textBoxHeight );
+    mTextBoxWidth = textBoxWidth;
+    mTextBoxHeight = textBoxHeight;
+  }
+  QgsComposerItem::setSceneRect( rectangle );
 }
 
 bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
