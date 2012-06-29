@@ -55,8 +55,8 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->translate( -mTextBoxWidth / 2.0, -mTextBoxHeight / 2.0 );
 
   //debug
-  painter->setPen( QColor( Qt::red ) );
-  painter->drawRect( painterRect );
+  //painter->setPen( QColor( Qt::red ) );
+  //painter->drawRect( painterRect );
   drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
 
 
