@@ -191,7 +191,10 @@ class Ui_ParametersDialog(object):
                 self.algEx.error.connect(self.error)
                 self.algEx.percentageChanged.connect(self.setPercentage)
                 self.algEx.textChanged.connect(self.setText)
+                self.algEx.iterated.connect(self.iterate)
                 self.algEx.start()
+                SextanteLog.addToLog(SextanteLog.LOG_INFO,
+                    "Algorithm %s started" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
                 self.finish()
             else:
@@ -220,6 +223,8 @@ class Ui_ParametersDialog(object):
     @pyqtSlot()
     def finish(self):
         self.dialog.executed = True
+        SextanteLog.addToLog(SextanteLog.LOG_INFO,
+            "Algorithm %s finished correctly" % self.alg.name)
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
@@ -232,8 +237,7 @@ class Ui_ParametersDialog(object):
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 
-
-    @pyqtSlot()
+    @pyqtSlot(str)
     def error(self, msg):
         self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
@@ -247,8 +251,15 @@ class Ui_ParametersDialog(object):
             self.progress.setValue(0)
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
 
+    @pyqtSlot(int)
+    def iterate(self, i):
+        SextanteLog.addToLog(SextanteLog.LOG_INFO,
+            "Algorithm %s iteration #%i completed" % (elf.alg.name, i))
+        
     @pyqtSlot()
     def cancel(self):
+        SextanteLog.addToLog(SextanteLog.LOG_INFO,
+            "Algorithm %s canceled" % self.alg.name)
         try:
             self.algEx.finished.disconnect()
             self.algEx.terminate()
