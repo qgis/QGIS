@@ -68,7 +68,7 @@ void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & ext
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
     // Do not oversample if data source does not have fixed resolution (WMS)
-    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
+    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::ExactResolution ) )
     {
       double xRes = extent.width() / width;
       double providerXRes = provider->extent().width() / provider->xSize();
@@ -91,7 +91,6 @@ void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & ext
   double oversamplingY = (( double )height * oversampling ) / height;
 
   // TODO: we must also increase the extent to get correct result on borders of parts
-
 
   int resWidth = width * oversamplingX;
   int resHeight = height * oversamplingY;

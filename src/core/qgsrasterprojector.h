@@ -130,9 +130,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** get source extent */
     QgsRectangle srcExtent() { return mSrcExtent; }
 
-    /** set source extent */
-    void  setSrcExtent( const QgsRectangle theExtent ) { mSrcExtent = theExtent; }
-
     /** get/set source width/height */
     int srcRows() { return mSrcRows; }
     int srcCols() { return mSrcCols; }
@@ -154,7 +151,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** Destination CRS */
     QgsCoordinateReferenceSystem mDestCRS;
 
-    /** Coordinate transform */
+    /** Reverse coordinate transform (from destination to source) */
     QgsCoordinateTransform mCoordinateTransform;
 
     /** Destination extent */

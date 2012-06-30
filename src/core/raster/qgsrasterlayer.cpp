@@ -829,30 +829,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // procedure to use :
   //
 
-  double maxSrcXRes = 0;
-  double maxSrcYRes = 0;
-
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
-  {
-    maxSrcXRes = mDataProvider->extent().width() / mDataProvider->xSize();
-    maxSrcYRes = mDataProvider->extent().height() / mDataProvider->ySize();
-  }
-  /*
-    if ( mRenderer )
-    {
-      //QgsRasterDrawer drawer( mRenderer );
-      //QgsRasterDrawer drawer( mResampleFilter );
-
-
-      QgsRasterProjector projector( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS, maxSrcXRes, maxSrcYRes, mDataProvider->extent() );
-
-      projector.setInput( mResampleFilter );
-
-      QgsRasterDrawer drawer( &projector );
-      drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-    }
-  */
-
   QgsRasterProjector *projector = mPipe.projector();
   // TODO: add in init?
   if ( !projector )
@@ -866,8 +842,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   if ( projector )
   {
     projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
-    projector->setMaxSrcRes( maxSrcXRes, maxSrcYRes );
-    projector->setSrcExtent( mDataProvider->extent() );
   }
 
   // Drawer to pipe?

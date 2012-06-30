@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
@@ -59,7 +60,7 @@ QgsRasterProjector::QgsRasterProjector(
 }
 
 QgsRasterProjector::QgsRasterProjector()
-    : QgsRasterInterface( 0)
+    : QgsRasterInterface( 0 )
     , pHelperTop( 0 ), pHelperBottom( 0 )
 {
   QgsDebugMsg( "Entered" );
@@ -67,26 +68,37 @@ QgsRasterProjector::QgsRasterProjector()
 
 QgsRasterProjector::~QgsRasterProjector()
 {
-  delete pHelperTop;
-  delete pHelperBottom;
+  delete[] pHelperTop;
+  delete[] pHelperBottom;
 }
 
 void QgsRasterProjector::setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS )
 {
   mSrcCRS = theSrcCRS;
   mDestCRS = theDestCRS;
-  mCoordinateTransform.setSourceCrs( theSrcCRS );
-  mCoordinateTransform.setDestCRS( theDestCRS );
+  mCoordinateTransform.setSourceCrs( theDestCRS );
+  mCoordinateTransform.setDestCRS( theSrcCRS );
 }
 
 void QgsRasterProjector::calc()
 {
   QgsDebugMsg( "Entered" );
   mCPMatrix.clear();
-  delete pHelperTop;
+  delete[] pHelperTop;
   pHelperTop = 0;
-  delete pHelperBottom;
+  delete[] pHelperBottom;
   pHelperBottom = 0;
+
+  // Get max source resolution if possible
+  if ( mInput )
+  {
+    QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
+    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::ExactResolution ) )
+    {
+      mMaxSrcXRes = provider->extent().width() / provider->xSize();
+      mMaxSrcYRes = provider->extent().height() / provider->ySize();
+    }
+  }
 
   mDestXRes = mDestExtent.width() / ( mDestCols );
   mDestYRes = mDestExtent.height() / ( mDestRows );
@@ -139,13 +151,13 @@ void QgsRasterProjector::calc()
       mApproximate = false;
       break;
     }
-
   }
   QgsDebugMsg( QString( "CPMatrix size: mCPRows = %1 mCPCols = %2" ).arg( mCPRows ).arg( mCPCols ) );
   mDestRowsPerMatrixRow = ( float )mDestRows / ( mCPRows - 1 );
   mDestColsPerMatrixCol = ( float )mDestCols / ( mCPCols - 1 );
 
-  //QgsDebugMsg( "CPMatrix:\n" + cpToString() );
+  QgsDebugMsgLevel( "CPMatrix:", 5 );
+  QgsDebugMsgLevel( cpToString(), 5 );
 
   // Calculate source dimensions
   calcSrcExtent();
@@ -568,7 +580,8 @@ bool QgsRasterProjector::checkRows()
 
 void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( QString( "extent:\n%1" ).arg( extent.toString() ) );
+  QgsDebugMsg( QString( "width = %1 height = %1" ).arg( width ).arg( height ) );
   if ( !mInput ) return 0;
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
