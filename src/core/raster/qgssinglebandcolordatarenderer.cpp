@@ -76,7 +76,7 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
       {
         QRgb pixelColor;
         double alpha = 255.0;
-        for ( int j = 0; j < nRasterCols; ++j )
+        for ( int j = 0; j < width; ++j )
         {
           QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
           alpha = qAlpha( c );

@@ -1605,24 +1605,24 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 
 void QgsRasterLayerProperties::updatePipeList()
 {
-  QgsDebugMsg("Entered");
+  QgsDebugMsg( "Entered" );
 
   mPipeTreeWidget->setColumnCount( 3 );
   //mPipeTreeWidget->header()->setResizeMode(0, QHeaderView::Stretch);
   mPipeTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
 
   QStringList labels;
-  labels << tr( "Filter" ) << tr("Bands") << tr( "Tot time" ) << tr( "Avg time" ); 
+  labels << tr( "Filter" ) << tr( "Bands" ) << tr( "Tot time" ) << tr( "Avg time" );
   mPipeTreeWidget->setHeaderLabels( labels );
 
   QgsRasterPipe *pipe = mRasterLayer->pipe();
-  for ( int i = 0; i < pipe->size(); i++ ) 
+  for ( int i = 0; i < pipe->size(); i++ )
   {
-    QgsRasterInterface * filter = pipe->at(i);
+    QgsRasterInterface * filter = pipe->at( i );
     QStringList texts;
     QString name;
     // Unfortunately at this moment not all filters inherits from QObject
-    QObject *o = dynamic_cast<QObject*>( filter);
+    QObject *o = dynamic_cast<QObject*>( filter );
     if ( o )
     {
       //name = o->objectName(); // gives empty with provider
@@ -1630,13 +1630,13 @@ void QgsRasterLayerProperties::updatePipeList()
     }
     else
     {
-      name = QString(typeid(*filter).name()).replace ( QRegExp(".*Qgs"), "Qgs" );
+      name = QString( typeid( *filter ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" );
     }
 
-    texts <<  name << QString("%1").arg( filter->bandCount() );
-    texts << QString("%1 ms").arg( filter->time(0) ) << QString("%1 ms").arg( filter->avgTime(), 0, 'd' );
-    QTreeWidgetItem *item = new QTreeWidgetItem( texts );  
+    texts <<  name << QString( "%1" ).arg( filter->bandCount() );
+    texts << QString( "%1 ms" ).arg( filter->time( 0 ) ) << QString( "%1 ms" ).arg( filter->avgTime(), 0, 'd', 0 );
+    QTreeWidgetItem *item = new QTreeWidgetItem( texts );
 
-    mPipeTreeWidget->addTopLevelItem ( item );
+    mPipeTreeWidget->addTopLevelItem( item );
   }
 }

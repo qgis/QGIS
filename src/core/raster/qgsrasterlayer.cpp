@@ -101,9 +101,6 @@ QgsRasterLayer::QgsRasterLayer()
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mInvertColor( false )
-    //, mRenderer( 0 )
-    //, mResampleFilter( 0 )
 {
   init();
   mValid = false;
@@ -121,9 +118,6 @@ QgsRasterLayer::QgsRasterLayer(
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mInvertColor( false )
-    //, mRenderer( 0 )
-    //, mResampleFilter( 0 )
 {
   QgsDebugMsg( "Entered" );
 
@@ -158,8 +152,6 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     , mHeight( std::numeric_limits<int>::max() )
     , mModified( false )
     , mProviderKey( providerKey )
-    //, mRenderer( 0 )
-    //, mResampleFilter( 0 )
 {
   QgsDebugMsg( "Entered" );
   init();
@@ -193,10 +185,6 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
-  delete mRasterShader;
-  //delete mDataProvider; // deleted in pipe
-  //delete mRenderer;
-  //delete mResampleFilter;
 }
 
 //////////////////////////////////////////////////////////
@@ -992,9 +980,9 @@ QString QgsRasterLayer::lastErrorTitle()
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
-  //if ( mRenderer )
+  //if ( mPipe.renderer() )
   //{
-  //  mRenderer->legendSymbologyItems( symbolList );
+  //  mPipe.renderer()->legendSymbologyItems( symbolList );
   //}
   QgsRasterRenderer *renderer = mPipe.renderer();
   if ( renderer )
@@ -1819,15 +1807,15 @@ void QgsRasterLayer::setColorShadingAlgorithm( QString )
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
 {
-  if ( !mRenderer || !mDataProvider )
+  if ( !mPipe.renderer() || !mDataProvider )
   {
     return;
   }
 
-  QString rendererType  = mRenderer->type();
+  QString rendererType  = mPipe.renderer()->type();
   if ( rendererType == "singlebandgray" )
   {
-    QgsSingleBandGrayRenderer* gr = dynamic_cast<QgsSingleBandGrayRenderer*>( mRenderer );
+    QgsSingleBandGrayRenderer* gr = dynamic_cast<QgsSingleBandGrayRenderer*>( mPipe.renderer() );
     if ( gr )
     {
       int grayBand = gr->grayBand();
@@ -1845,7 +1833,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   }
   else if ( rendererType == "multibandcolor" )
   {
-    QgsMultiBandColorRenderer* cr = dynamic_cast<QgsMultiBandColorRenderer*>( mRenderer );
+    QgsMultiBandColorRenderer* cr = dynamic_cast<QgsMultiBandColorRenderer*>( mPipe.renderer() );
     if ( cr )
     {
       //red enhancement
@@ -2090,6 +2078,7 @@ void QgsRasterLayer::setTransparentBandName( QString const & )
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsg( "Entered" );
+  if ( !theRenderer ) { return; }
   mPipe.set( theRenderer );
 }
 
@@ -2097,6 +2086,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
 {
   QgsDebugMsg( "Entered" );
+  if ( !resampleFilter ) { return; }
   mPipe.set( resampleFilter );
 }
 
@@ -2255,15 +2245,12 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   if ( !rasterRendererElem.isNull() )
   {
-    //delete mRenderer;
-    //mRenderer = 0;
     if ( !rasterRendererElem.isNull() )
     {
       QString rendererType = rasterRendererElem.attribute( "type" );
       QgsRasterRendererRegistryEntry rendererEntry;
       if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
       {
-        //mRenderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
         QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
         mPipe.set( renderer );
       }
@@ -2271,9 +2258,6 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   }
 
   //resampler
-  //delete mResampleFilter;
-  //mResampleFilter = new QgsRasterResampleFilter( mRenderer );
-
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
 
@@ -2281,51 +2265,8 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   QDomElement resampleElem = layer_node.firstChildElement( "rasterresampler" );
   if ( !resampleElem.isNull() )
   {
-    //mResampleFilter->readXML( resampleElem );
     resampleFilter->readXML( resampleElem );
   }
-  /*
-    if ( mResampleFilter )
-    {
-      QDomElement maxOversamplingElem = mnl.firstChildElement( "maxOversampling" );
-      if ( !maxOversamplingElem.isNull() )
-      {
-        bool conversion;
-        double maxOversampling = maxOversamplingElem.text().toDouble( &conversion );
-        if ( conversion )
-        {
-          mResampleFilter->setMaxOversampling( maxOversampling );
-        }
-      }
-    }
-
-    QDomElement zoomedInResamplerElem = mnl.firstChildElement( "zoomedInResampler" );
-    if ( mResampleFilter && !zoomedInResamplerElem.isNull() )
-    {
-      QgsRasterResampler* zoomedInResampler = 0;
-      QString zoomedInResamplerType = zoomedInResamplerElem.text();
-      if ( zoomedInResamplerType == "bilinear" )
-      {
-        zoomedInResampler = new QgsBilinearRasterResampler();
-      }
-      else if ( zoomedInResamplerType == "cubic" )
-      {
-        zoomedInResampler = new QgsCubicRasterResampler();
-      }
-      mResampleFilter->setZoomedInResampler( zoomedInResampler );
-    }
-    QDomElement zoomedOutResamplerElem = mnl.firstChildElement( "zoomedOutResampler" );
-    if ( mResampleFilter && !zoomedOutResamplerElem.isNull() )
-    {
-      QgsRasterResampler* zoomedOutResampler = 0;
-      QString zoomedOutResamplerType = zoomedOutResamplerElem.text();
-      if ( zoomedOutResamplerType == "bilinear" )
-      {
-        zoomedOutResampler = new QgsBilinearRasterResampler();
-      }
-      mResampleFilter->setZoomedOutResampler( zoomedOutResampler );
-    }
-  */
 
   return true;
 } //readSymbology
@@ -2460,10 +2401,6 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   Q_UNUSED( errorMessage );
   QDomElement layerElem = layer_node.toElement();
 
-  //if ( mRenderer )
-  //{
-  //mRenderer->writeXML( document, layerElem );
-  //}
   QgsRasterRenderer *renderer = mPipe.renderer();
   if ( renderer )
   {
