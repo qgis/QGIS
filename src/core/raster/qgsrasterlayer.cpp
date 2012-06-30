@@ -833,10 +833,21 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   }
 
   // Drawer to pipe?
+  mPipe.clearTime();
   QgsRasterDrawer drawer( mPipe.last() );
   drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
-  QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );
+  // Print time stats
+#ifdef QGISDEBUG
+  QgsDebugMsg( QString( "interface                  bands  time" ) );
+  for ( int i = 0; i < mPipe.size(); i++ )
+  {
+    QgsRasterInterface * interface = mPipe.at( i );
+    QString name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" ).left( 30 );
+    QgsDebugMsg( QString( "%1 %2 %3" ).arg( name, -30 ).arg( interface->bandCount() ).arg( interface->time(), 5 ) );
+  }
+  QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
+#endif
 } //end of draw method
 
 QString QgsRasterLayer::drawingStyleAsString() const

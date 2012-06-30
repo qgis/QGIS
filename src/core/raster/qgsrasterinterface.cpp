@@ -23,7 +23,7 @@
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
-    , mTimeMinSize( 150 )
+    , mTimeMinSize( 300 ) // dont forget resampling!
 {
 }
 
@@ -64,33 +64,18 @@ void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int 
   return b;
 }
 
-double QgsRasterInterface::time( int bandNo )
+double QgsRasterInterface::time( )
 {
+  // We can only count give total time, because we have to subtract time of previous
+  // interface(s) and we dont know how to assign bands to each other
   double t = 0;
-  if ( bandNo == 0 )
-  {
-    for ( int i = 1; i < mTime.size(); i++ )
-    {
-      t += mTime[i];
-    }
-  }
-  else
-  {
-    t = mTime.value( bandNo );
-  }
-  QgsDebugMsg( QString( "bandNo = %2 time = %3" ).arg( bandNo ).arg( t ) );
-  return t;
-}
-
-double QgsRasterInterface::avgTime( )
-{
-  // Not perfect because Qtime measures ms only and we dont count rendered bands
-  double t = 0;
-  int count = 0;
   for ( int i = 1; i < mTime.size(); i++ )
   {
     t += mTime[i];
-    if ( mTime[i]  > 0 ) count++;
   }
-  return count > 0 ? t / count : 0;
+  if ( mInput )
+  {
+    t -= mInput->time();
+  }
+  return t;
 }

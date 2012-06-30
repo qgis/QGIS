@@ -861,6 +861,8 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
+
+  updatePipeList();
 }//apply
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
@@ -1607,22 +1609,28 @@ void QgsRasterLayerProperties::updatePipeList()
 {
   QgsDebugMsg( "Entered" );
 
-  mPipeTreeWidget->setColumnCount( 3 );
-  //mPipeTreeWidget->header()->setResizeMode(0, QHeaderView::Stretch);
+#ifndef QGISDEBUG
+  tabBar->removeTab( tabBar->indexOf( tabPagePipe ) );
+#else
+  mPipeTreeWidget->clear();
+
   mPipeTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
 
-  QStringList labels;
-  labels << tr( "Filter" ) << tr( "Bands" ) << tr( "Tot time" ) << tr( "Avg time" );
-  mPipeTreeWidget->setHeaderLabels( labels );
+  if ( mPipeTreeWidget->columnCount() <= 1 )
+  {
+    QStringList labels;
+    labels << tr( "Filter" ) << tr( "Bands" ) << tr( "Time" );
+    mPipeTreeWidget->setHeaderLabels( labels );
+  }
 
   QgsRasterPipe *pipe = mRasterLayer->pipe();
   for ( int i = 0; i < pipe->size(); i++ )
   {
-    QgsRasterInterface * filter = pipe->at( i );
+    QgsRasterInterface * interface = pipe->at( i );
     QStringList texts;
     QString name;
-    // Unfortunately at this moment not all filters inherits from QObject
-    QObject *o = dynamic_cast<QObject*>( filter );
+    // Unfortunately at this moment not all interfaces inherits from QObject
+    QObject *o = dynamic_cast<QObject*>( interface );
     if ( o )
     {
       //name = o->objectName(); // gives empty with provider
@@ -1630,13 +1638,14 @@ void QgsRasterLayerProperties::updatePipeList()
     }
     else
     {
-      name = QString( typeid( *filter ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" );
+      name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" );
     }
 
-    texts <<  name << QString( "%1" ).arg( filter->bandCount() );
-    texts << QString( "%1 ms" ).arg( filter->time( 0 ) ) << QString( "%1 ms" ).arg( filter->avgTime(), 0, 'd', 0 );
+    texts <<  name << QString( "%1" ).arg( interface->bandCount() );
+    texts << QString( "%1 ms" ).arg( interface->time() );
     QTreeWidgetItem *item = new QTreeWidgetItem( texts );
 
     mPipeTreeWidget->addTopLevelItem( item );
   }
+#endif
 }

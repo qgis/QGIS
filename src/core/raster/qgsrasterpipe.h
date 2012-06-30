@@ -87,6 +87,9 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterResampleFilter * resampleFilter() const;
     QgsRasterProjector * projector() const;
 
+    /** Clear last rendering time */
+    void clearTime() { if ( last() ) last()->clearTime(); }
+
   private:
     /** Get known parent type_info of interface parent */
     Role interfaceRole( QgsRasterInterface * interface ) const;

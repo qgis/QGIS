@@ -150,20 +150,15 @@ class CORE_EXPORT QgsRasterInterface
     /** Clear last rendering time */
     void clearTime() { mTime.clear(); if ( mInput ) mInput->clearTime(); }
 
-    /** Last time consumed by call to block()
-     * Returns total time (for all bands) if bandNo is 0
-     */
-    double time( int bandNo );
-
-    /** Average time for all bands consumed by last calls to block() */
-    double avgTime();
+    /** Last total time (for allbands) consumed by this interface for call to block() */
+    double time();
 
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
 
   private:
-    // Last rendering times, from index 1
+    // Last rendering cumulative (this and all preceding interfaces) times, from index 1
     QVector<double> mTime;
 
     // Minimum block size to record time (to ignore thumbnails etc)
