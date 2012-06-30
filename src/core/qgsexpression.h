@@ -16,6 +16,7 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
+#include <QMetaType>
 #include <QStringList>
 #include <QVariant>
 #include <QList>
@@ -256,6 +257,36 @@ class CORE_EXPORT QgsExpression
         QList<Node*> mList;
     };
 
+    class CORE_EXPORT Interval
+    {
+        // YEAR const value taken from postgres query
+        // SELECT EXTRACT(EPOCH FROM interval '1 year')
+        static const double YEARS = ( 31557600 );
+        static const double MONTHS = ( 60 * 60 * 24 * 30 );
+        static const double WEEKS = ( 60 * 60 * 24 * 7 );
+        static const double DAY = ( 60 * 60 * 24 );
+        static const double HOUR = ( 60 * 60 );
+        static const double MINUTE = ( 60 );
+      public:
+        Interval( double seconds = 0 ) { mSeconds = seconds; }
+        ~Interval();
+        double years() { return mSeconds / YEARS;}
+        double months() { return mSeconds / MONTHS; }
+        double weeks() { return mSeconds / WEEKS;}
+        double days() { return mSeconds / DAY;}
+        double hours() { return mSeconds / HOUR;}
+        double minutes() { return mSeconds / MINUTE;}
+        bool isValid() { return mValid; }
+        void setValid( bool valid ) { mValid = valid; }
+        double seconds() { return mSeconds; }
+        bool operator==( const QgsExpression::Interval& other ) const;
+        static QgsExpression::Interval invalidInterVal();
+        static QgsExpression::Interval fromString( QString string );
+      private:
+        double mSeconds;
+        bool mValid;
+    };
+
     class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
@@ -306,6 +337,7 @@ class CORE_EXPORT QgsExpression
         bool compare( double diff );
         int computeInt( int x, int y );
         double computeDouble( double x, double y );
+        QDateTime computeDateTimeFromInterval( QDateTime d, QgsExpression::Interval *i );
 
         BinaryOperator mOp;
         Node* mOpLeft;
@@ -482,5 +514,7 @@ class CORE_EXPORT QgsExpression
     void initGeomCalculator();
     QgsDistanceArea* mCalc;
 };
+
+Q_DECLARE_METATYPE( QgsExpression::Interval )
 
 #endif // QGSEXPRESSION_H

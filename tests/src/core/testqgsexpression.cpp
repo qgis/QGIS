@@ -270,6 +270,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "condition else" ) << "case when 1=0 then 'bad' else 678 end" << false << QVariant( 678 );
       QTest::newRow( "condition null" ) << "case when length(123)=0 then 111 end" << false << QVariant();
       QTest::newRow( "condition 2 when" ) << "case when 2>3 then 23 when 3>2 then 32 else 0 end" << false << QVariant( 32 );
+
+      // Datetime functions
+      QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 06, 28 ) );
+      QTest::newRow( "to interval" ) << "tointerval('1 Year 1 Month 1 Week 1 Hour 1 Minute')" << false << QVariant::fromValue( QgsExpression::Interval( 34758060 ) );
+      QTest::newRow( "day with date" ) << "day('2012-06-28')" << false << QVariant( 28 );
+      QTest::newRow( "day with interval" ) << "day(tointerval('28 days'))" << false << QVariant( 28.0 );
+      QTest::newRow( "month with date" ) << "month('2012-06-28')" << false << QVariant( 6 );
+      QTest::newRow( "month with interval" ) << "month(tointerval('2 months'))" << false << QVariant( 2.0 );
+      QTest::newRow( "year with date" ) << "year('2012-06-28')" << false << QVariant( 2012 );
+      QTest::newRow( "year with interval" ) << "year(tointerval('2 years'))" << false << QVariant( 2.0 );
+      QTest::newRow( "age" ) << "age('2012-06-30','2012-06-28')" << false << QVariant::fromValue( QgsExpression::Interval( 172800 ) );
+      QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsExpression::Interval( -172800 ) );
     }
 
     void evaluation()
@@ -280,6 +292,8 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
 
       QVariant res = exp.evaluate();
       if ( exp.hasEvalError() )
@@ -305,6 +319,22 @@ class TestQgsExpression: public QObject
         case QVariant::String:
           QCOMPARE( res.toString(), result.toString() );
           break;
+        case QVariant::Date:
+          QCOMPARE( res.toDate(), result.toDate() );
+          break;
+        case QVariant::DateTime:
+          QCOMPARE( res.toDateTime(), result.toDateTime() );
+          break;
+        case QVariant::Time:
+          QCOMPARE( res.toTime(), result.toTime() );
+          break;
+        case QVariant::UserType:
+        {
+          QgsExpression::Interval inter = res.value<QgsExpression::Interval>();
+          QgsExpression::Interval gotinter = result.value<QgsExpression::Interval>();
+          QCOMPARE( inter.seconds(), gotinter.seconds() );
+          break;
+        }
         default:
           Q_ASSERT( false ); // should never happen
       }

@@ -18,6 +18,8 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <QSettings>
+#include <QDate>
+#include <QRegExp>
 
 #include <math.h>
 #include <limits>
@@ -30,6 +32,79 @@
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
 
+QgsExpression::Interval::~Interval() {}
+
+QgsExpression::Interval QgsExpression::Interval::invalidInterVal()
+{
+  QgsExpression::Interval inter = QgsExpression::Interval();
+  inter.setValid( false );
+  return inter;
+}
+
+QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
+{
+  int seconds = 0;
+  QRegExp rx( "(\\d?\\.?\\d+\\s+[a-z]+)", Qt::CaseInsensitive );
+  QStringList list;
+  int pos = 0;
+
+  while (( pos = rx.indexIn( string, pos ) ) != -1 )
+  {
+    list << rx.cap( 1 );
+    pos += rx.matchedLength();
+  }
+
+  foreach( QString match, list )
+  {
+    QStringList split = match.split( QRegExp( "\\s+" ) );
+    bool ok;
+    int value = split.at( 0 ).toInt( &ok );
+    if ( !ok )
+    {
+      continue;
+    }
+
+    if ( match.contains(  "day", Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("day", "Note: Word is part matched in code"), Qt::CaseInsensitive )||
+         match.contains(  QObject::tr("days", "Note: Word is part matched in code"), Qt::CaseInsensitive) )
+      seconds += value * QgsExpression::Interval::DAY;
+    if ( match.contains(  "week", Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("week", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("weeks", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+      seconds += value * QgsExpression::Interval::WEEKS;
+    if ( match.contains(  "month", Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("month", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("months", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+      seconds += value * QgsExpression::Interval::MONTHS;
+    if ( match.contains( "year", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr("year", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr("years", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+      seconds += value * QgsExpression::Interval::YEARS;
+    if ( match.contains(  "second", Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("second", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("seconds", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+      seconds += value;
+    if ( match.contains(  "minute", Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("minute", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("minutes", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+      seconds += value * QgsExpression::Interval::MINUTE;
+    if ( match.contains(  "hour", Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("hour", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
+         match.contains(  QObject::tr("hours", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+      seconds += value * QgsExpression::Interval::HOUR;
+  }
+
+  // If we can't parse the string at all then we just return invalid
+  if ( seconds == 0 )
+    return QgsExpression::Interval::invalidInterVal();
+
+  return QgsExpression::Interval( seconds );
+}
+
+bool QgsExpression::Interval::operator==( const QgsExpression::Interval& other ) const
+{
+  return ( mSeconds == other.mSeconds );
+}
 
 ///////////////////////////////////////////////
 // three-value logic
@@ -88,6 +163,26 @@ inline bool isDoubleSafe( const QVariant& v )
 {
   if ( v.type() == QVariant::Double || v.type() == QVariant::Int ) return true;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toDouble( &ok ); return ok; }
+  return false;
+}
+
+inline bool isDateTimeSafe( const QVariant& v )
+{
+  return v.type() == QVariant::DateTime || v.type() == QVariant::Date ||
+         v.type() == QVariant::Time;
+}
+
+inline bool isIntervalSafe( const QVariant& v )
+{
+  if ( v.canConvert<QgsExpression::Interval>() )
+  {
+    return true;
+  }
+
+  if ( v.type() == QVariant::String )
+  {
+    return QgsExpression::Interval::fromString( v.toString() ).isValid();
+  }
   return false;
 }
 
@@ -165,6 +260,65 @@ static int getIntValue( const QVariant& value, QgsExpression* parent )
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
     return 0;
   }
+}
+
+static QDateTime getDateTimeValue( const QVariant& value, QgsExpression* parent )
+{
+  QDateTime d = value.toDateTime();
+  if ( d.isValid() )
+  {
+    return d;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );
+    return QDateTime();
+  }
+}
+
+static QDate getDateValue( const QVariant& value, QgsExpression* parent )
+{
+  QDate d = value.toDate();
+  if ( d.isValid() )
+  {
+    return d;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( value.toString() ) );
+    return QDate();
+  }
+}
+
+static QTime getTimeValue( const QVariant& value, QgsExpression* parent )
+{
+  QTime t = value.toTime();
+  if ( t.isValid() )
+  {
+    return t;
+  }
+  else
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( value.toString() ) );
+    return QTime();
+  }
+}
+
+static QgsExpression::Interval getInterval( const QVariant& value, QgsExpression* parent, bool report_error = false )
+{
+  if ( value.canConvert<QgsExpression::Interval>() )
+    return value.value<QgsExpression::Interval>();
+
+  QgsExpression::Interval inter = QgsExpression::Interval::fromString( value.toString() );
+  if ( inter.isValid() )
+  {
+    return inter;
+  }
+  // If we get here then we can't convert so we just error and return invalid.
+  if ( report_error )
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Interval" ).arg( value.toString() ) );
+
+  return QgsExpression::Interval::invalidInterVal();
 }
 
 
@@ -270,6 +424,12 @@ static QVariant fcnToString( const QVariantList& values, QgsFeature* , QgsExpres
 {
   return QVariant( getStringValue( values.at( 0 ), parent ) );
 }
+
+static QVariant fcnToDateTime( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  return QVariant( getDateTimeValue( values.at( 0 ), parent ) );
+}
+
 static QVariant fcnCoalesce( const QVariantList& values, QgsFeature* , QgsExpression* )
 {
   foreach( const QVariant &value, values )
@@ -343,6 +503,140 @@ static QVariant fcnConcat( const QVariantList& values, QgsFeature* , QgsExpressi
   }
   return concat;
 }
+
+static QVariant fcnNow( const QVariantList&, QgsFeature* , QgsExpression * )
+{
+  return QVariant( QDateTime::currentDateTime() );
+}
+
+static QVariant fcnToDate( const QVariantList& values, QgsFeature* , QgsExpression * parent )
+{
+  return QVariant( getDateValue( values.at( 0 ), parent ) );
+}
+
+static QVariant fcnToTime( const QVariantList& values, QgsFeature* , QgsExpression * parent )
+{
+  return QVariant( getTimeValue( values.at( 0 ), parent ) );
+}
+
+static QVariant fcnToInterval( const QVariantList& values, QgsFeature* , QgsExpression * parent )
+{
+  return QVariant::fromValue( getInterval( values.at( 0 ), parent ) );
+}
+
+static QVariant fcnAge( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QDateTime d1 = getDateTimeValue( values.at( 0 ), parent );
+  QDateTime d2 = getDateTimeValue( values.at( 1 ), parent );
+  int seconds = d2.secsTo( d1 );
+  return QVariant::fromValue( QgsExpression::Interval( seconds ) );
+}
+
+static QVariant fcnDay( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.days() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.date().day() );
+  }
+}
+
+static QVariant fcnYear( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.years() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.date().year() );
+  }
+}
+
+static QVariant fcnMonth( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.months() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.date().month() );
+  }
+}
+
+static QVariant fcnWeek( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.weeks() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.date().weekNumber() );
+  }
+}
+
+static QVariant fcnHour( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.hours() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.time().hour() );
+  }
+}
+
+static QVariant fcnMinute( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.minutes() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.time().minute() );
+  }
+}
+
+static QVariant fcnSeconds( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QVariant value = values.at( 0 );
+  QgsExpression::Interval inter = getInterval( value, parent, false );
+  if ( inter.isValid() )
+  {
+    return QVariant( inter.seconds() );
+  }
+  else
+  {
+    QDateTime d1 =  getDateTimeValue( value, parent );
+    return QVariant( d1.time().second() );
+  }
+}
+
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype)   if (!f) return QVariant(); \
   QgsGeometry* g = f->geometry(); \
@@ -450,7 +744,21 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
     << FunctionDef( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
+    << FunctionDef( "todatetime", 1, fcnToDateTime, QObject::tr( "Conversions" ) )
+    << FunctionDef( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
+    << FunctionDef( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
+    << FunctionDef( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
     << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conversions" ) )
+    // date/time
+    << FunctionDef( "$now", 0, fcnNow, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "age", 2, fcnAge, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "year", 1, fcnYear, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "month", 1, fcnMonth, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "week", 1, fcnWeek, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "day", 1, fcnDay, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "hour", 1, fcnHour, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "minute", 1, fcnMinute, QObject::tr( "Date/Time" ) )
+    << FunctionDef( "second", 1, fcnSeconds, QObject::tr( "Date/Time" ) )
     // string manipulation
     << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
@@ -905,6 +1213,17 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         if ( mOp == boDiv && iR == 0 ) return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeInt( iL, iR ) );
       }
+      else if ( isDateTimeSafe( vL ) && isIntervalSafe( vR ) )
+      {
+        QDateTime dL = getDateTimeValue( vL, parent );  ENSURE_NO_EVAL_ERROR;
+        QgsExpression::Interval iL = getInterval( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        if ( mOp == boDiv || mOp == boMul || mOp == boMod )
+        {
+          parent->setEvalErrorString( QObject::tr("Can't preform /, *, or % on DateTime and Interval") );
+          return QVariant();
+        }
+        return QVariant( computeDateTimeFromInterval( dL, &iL ) );
+      }
       else
       {
         // general floating point arithmetic
@@ -1065,6 +1384,16 @@ int QgsExpression::NodeBinaryOperator::computeInt( int x, int y )
     case boDiv: return x/y;
     case boMod: return x%y;
     default: Q_ASSERT( false ); return 0;
+  }
+}
+
+QDateTime QgsExpression::NodeBinaryOperator::computeDateTimeFromInterval( QDateTime d, QgsExpression::Interval *i )
+{
+  switch ( mOp )
+  {
+    case boPlus: return d.addSecs( i->seconds() );
+    case boMinus: return d.addSecs( -i->seconds() );
+    default: Q_ASSERT( false ); return QDateTime();
   }
 }
 
