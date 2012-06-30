@@ -352,12 +352,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer );
-    //const QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
     QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
 
     /**Set raster resample filter. Takes ownership of the resample filter object*/
     void setResampleFilter( QgsRasterResampleFilter* resampleFilter );
-    //const QgsRasterResampleFilter* resampleFilter() const { return mPipe.resampleFilter(); }
     QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
 
     /** Get raster pipe */

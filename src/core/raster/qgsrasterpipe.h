@@ -31,12 +31,10 @@
 /** \ingroup core
  * Base class for processing modules.
  */
-class CORE_EXPORT QgsRasterPipe //: public QObject
+class CORE_EXPORT QgsRasterPipe
 {
-    //Q_OBJECT
-
   public:
-    // Role of known filters
+    // Role of known interfaces
     enum Role
     {
       UnknownRole   = 0,
@@ -50,35 +48,38 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
 
     virtual ~QgsRasterPipe();
 
-    /** \brief Try to connect filters in pipe and to the provider at beginning.
+    /** \brief Try to connect interfaces in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
-    bool connectFilters( QVector<QgsRasterInterface*> theFilters );
+    bool connect( QVector<QgsRasterInterface*> theInterfaces );
 
+    /** Try to insert interface at specified index and connect
+     * if connection would fail, the interface is not inserted and false is returned */
+    bool insert( int idx, QgsRasterInterface* theInterface );
 
-    /** Try to insert filter at specified index and connect
-     * if connection would fail, the filter is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface* theFilter );
+    /** Try to replace interface at specified index and connect
+     * if connection would fail, the interface is not inserted and false is returned */
+    bool replace( int idx, QgsRasterInterface* theInterface );
 
-    /** Try to replace filter at specified index and connect
-     * if connection would fail, the filter is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface* theFilter );
+    /** Insert a new known interface in default place or replace interface of the same
+     * role if it already exists. Known interfaces are: QgsRasterDataProvider,
+     * QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
+     * subclasses. For unknown interfaces it mus be explicitly specified position
+     * where it should be inserted using insert() method.
+     */
+    bool set( QgsRasterInterface * theInterface );
 
-    /** Insert a new filter in prefered place or replace similar filter if it
-     *  already exists */
-    bool setFilter( QgsRasterInterface * theFilter );
+    /** Get known interface by role */
+    QgsRasterInterface * interface( Role role ) const;
 
-    /** Get known filter by role */
-    QgsRasterInterface * filter( Role role ) const;
-
-    /** Remove and delete filter at given index if possible */
+    /** Remove and delete interface at given index if possible */
     bool remove( int idx );
 
-    /** Remove and delete filter from pipe if possible */
-    bool remove( QgsRasterInterface * theFilter );
+    /** Remove and delete interface from pipe if possible */
+    bool remove( QgsRasterInterface * theInterface );
 
-    int size() { return mFilters.size(); }
-    QgsRasterInterface * at( int idx ) { return mFilters.at( idx ); }
-    QgsRasterInterface * last() { return mFilters.last(); }
+    int size() { return mInterfaces.size(); }
+    QgsRasterInterface * at( int idx ) { return mInterfaces.at( idx ); }
+    QgsRasterInterface * last() { return mInterfaces.last(); }
 
     // Getters for special types of interfaces
     QgsRasterDataProvider * provider() const;
@@ -88,24 +89,18 @@ class CORE_EXPORT QgsRasterPipe //: public QObject
 
   private:
     /** Get known parent type_info of interface parent */
-    Role filterRole( QgsRasterInterface * filter ) const;
+    Role interfaceRole( QgsRasterInterface * interface ) const;
 
-    // Filters in pipe, the first is always provider
-    QVector<QgsRasterInterface*> mFilters;
-
-    // Special types of interfaces
-    QgsRasterDataProvider * mProvider;
-    QgsRasterRenderer * mRenderer;
-    QgsRasterResampleFilter * mResampleFilter;
-    QgsRasterProjector * mProjector;
+    // Interfaces in pipe, the first is always provider
+    QVector<QgsRasterInterface*> mInterfaces;
 
     QMap<Role, int> mRoleMap;
 
-    // Set role in mFiltersMap
-    void setRole( QgsRasterInterface * theFilter, int idx );
+    // Set role in mRoleMap
+    void setRole( QgsRasterInterface * theInterface, int idx );
 
-    // Unset role in mFiltersMap
-    void unsetRole( QgsRasterInterface * theFilter );
+    // Unset role in mRoleMap
+    void unsetRole( QgsRasterInterface * theInterface );
 };
 
 #endif

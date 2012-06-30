@@ -858,7 +858,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   if ( !projector )
   {
     projector = new QgsRasterProjector;
-    mPipe.setFilter( projector );
+    mPipe.set( projector );
   }
 
   // TODO add a method to interface to get provider and get provider
@@ -1671,7 +1671,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     return;
   }
-  mPipe.setFilter( mDataProvider );
+  mPipe.set( mDataProvider );
 
   if ( provider == "gdal" )
   {
@@ -2116,14 +2116,14 @@ void QgsRasterLayer::setTransparentBandName( QString const & )
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
   QgsDebugMsg( "Entered" );
-  mPipe.setFilter( theRenderer );
+  mPipe.set( theRenderer );
 }
 
 // not sure if we want it
 void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
 {
   QgsDebugMsg( "Entered" );
-  mPipe.setFilter( resampleFilter );
+  mPipe.set( resampleFilter );
 }
 
 void QgsRasterLayer::showProgress( int theValue )
@@ -2291,7 +2291,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
       {
         //mRenderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
         QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
-        mPipe.setFilter( renderer );
+        mPipe.set( renderer );
       }
     }
   }
@@ -2301,7 +2301,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   //mResampleFilter = new QgsRasterResampleFilter( mRenderer );
 
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
-  mPipe.setFilter( resampleFilter );
+  mPipe.set( resampleFilter );
 
   //max oversampling
   QDomElement resampleElem = layer_node.firstChildElement( "rasterresampler" );
