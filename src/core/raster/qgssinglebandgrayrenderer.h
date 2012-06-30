@@ -43,6 +43,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
+    QList<int> usesBands() const;
+
   private:
     int mGrayBand;
     QgsContrastEnhancement* mContrastEnhancement;

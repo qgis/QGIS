@@ -351,3 +351,21 @@ void QgsMultiBandColorRenderer::writeXML( QDomDocument& doc, QDomElement& parent
   }
   parentElem.appendChild( rasterRendererElem );
 }
+
+QList<int> QgsMultiBandColorRenderer::usesBands() const
+{
+  QList<int> bandList;
+  if ( mRedBand != -1 )
+  {
+    bandList << mRedBand;
+  }
+  if ( mGreenBand != -1 )
+  {
+    bandList << mGreenBand;
+  }
+  if ( mBlueBand != -1 )
+  {
+    bandList << mBlueBand;
+  }
+  return bandList;
+}

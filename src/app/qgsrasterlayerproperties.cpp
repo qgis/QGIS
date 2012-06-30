@@ -325,8 +325,43 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     return;
   }
 
-  const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
+  tableTransparency->clear();
 
+  QList<int> bandList = renderer->usesBands();
+  tableTransparency->setColumnCount( bandList.size() + 1 );
+  for ( int i = 0; i < bandList.size(); ++i )
+  {
+    tableTransparency->setHorizontalHeaderItem( i, new QTableWidgetItem( QString::number( bandList.at( i ) ) ) );
+  }
+
+  const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
+  if ( !rasterTransparency )
+  {
+    return;
+  }
+
+  if ( bandList.count() == 1 )
+  {
+    tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> pixelList = rasterTransparency->transparentSingleValuePixelList();
+    for ( int i = 0; i < pixelList.size(); ++i )
+    {
+      tableTransparency->insertRow( i );
+      QTableWidgetItem* grayItem = new QTableWidgetItem( QString::number( pixelList[i].pixelValue ) );
+      QTableWidgetItem* percentItem = new QTableWidgetItem( QString::number( pixelList[i].percentTransparent ) );
+      tableTransparency->setItem( i, 0, grayItem );
+      tableTransparency->setItem( i, 1, percentItem );
+    }
+  }
+  else if ( bandList.count() == 3 )
+  {
+
+  }
+
+
+
+
+#if 0
   //Clear existing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
   QString myNumberFormatter;
@@ -405,6 +440,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
 
   tableTransparency->resizeColumnsToContents();
   tableTransparency->resizeRowsToContents();
+#endif //0
 }
 
 void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
