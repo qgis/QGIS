@@ -272,7 +272,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "condition 2 when" ) << "case when 2>3 then 23 when 3>2 then 32 else 0 end" << false << QVariant( 32 );
 
       // Datetime functions
-      QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 06, 28 ) );
+      QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
       QTest::newRow( "to interval" ) << "tointerval('1 Year 1 Month 1 Week 1 Hour 1 Minute')" << false << QVariant::fromValue( QgsExpression::Interval( 34758060 ) );
       QTest::newRow( "day with date" ) << "day('2012-06-28')" << false << QVariant( 28 );
       QTest::newRow( "day with interval" ) << "day(tointerval('28 days'))" << false << QVariant( 28.0 );
@@ -309,7 +309,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( res.type(), result.type() );
       switch ( res.type() )
       {
-        case QVariant::Invalid: break; // nothing more to check
+        case QVariant::Invalid:
+          break; // nothing more to check
         case QVariant::Int:
           QCOMPARE( res.toInt(), result.toInt() );
           break;
@@ -330,9 +331,16 @@ class TestQgsExpression: public QObject
           break;
         case QVariant::UserType:
         {
-          QgsExpression::Interval inter = res.value<QgsExpression::Interval>();
-          QgsExpression::Interval gotinter = result.value<QgsExpression::Interval>();
-          QCOMPARE( inter.seconds(), gotinter.seconds() );
+          if ( res.userType() == qMetaTypeId<QgsExpression::Interval>() )
+          {
+            QgsExpression::Interval inter = res.value<QgsExpression::Interval>();
+            QgsExpression::Interval gotinter = result.value<QgsExpression::Interval>();
+            QCOMPARE( inter.seconds(), gotinter.seconds() );
+          }
+          else
+          {
+            QFAIL( "unexpected user type" );
+          }
           break;
         }
         default:
