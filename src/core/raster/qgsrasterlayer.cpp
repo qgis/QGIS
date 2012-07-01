@@ -832,13 +832,24 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
     projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
   }
 
+#ifdef QGISDEBUG
+  // Collect stats only for larger sizes to avoid confusion (small time values)
+  // after thumbnail render e.g. 120 is current thumbnail size
+  // TODO: consider another way to switch stats on/off or storing of last significant
+  //       stats somehow
+  if ( theRasterViewPort->drawableAreaXDim > 120 && theRasterViewPort->drawableAreaYDim > 120 )
+  {
+    mPipe.setStatsOn( true );
+  }
+#endif
+
   // Drawer to pipe?
-  mPipe.clearTime();
   QgsRasterDrawer drawer( mPipe.last() );
   drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
-  // Print time stats
 #ifdef QGISDEBUG
+  mPipe.setStatsOn( false );
+  // Print time stats
   QgsDebugMsg( QString( "interface                  bands  time" ) );
   for ( int i = 0; i < mPipe.size(); i++ )
   {

@@ -147,11 +147,14 @@ class CORE_EXPORT QgsRasterInterface
      */
     QImage * createImage( int width, int height, QImage::Format format );
 
-    /** Clear last rendering time */
-    void clearTime() { mTime.clear(); if ( mInput ) mInput->clearTime(); }
+    /** Switch on (and clear old statistics) or off collection of statistics */
+    void setStatsOn( bool on );
 
-    /** Last total time (for allbands) consumed by this interface for call to block() */
-    double time();
+    /** Last total time (for allbands) consumed by this interface for call to block()
+     * If cumulative is true, the result includes also time spent in all preceding
+     * interfaces. If cumulative is false, only time consumed by this interface is
+     * returned. */
+    double time( bool cumulative = false );
 
   protected:
     // QgsRasterInterface used as input
@@ -161,8 +164,8 @@ class CORE_EXPORT QgsRasterInterface
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
     QVector<double> mTime;
 
-    // Minimum block size to record time (to ignore thumbnails etc)
-    int mTimeMinSize;
+    // Collect statistics
+    int mStatsOn;
 };
 
 #endif

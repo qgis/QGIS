@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <typeinfo>
+
 #include <QByteArray>
 #include <QTime>
 
@@ -23,7 +25,7 @@
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
-    , mTimeMinSize( 300 ) // dont forget resampling!
+    , mStatsOn( false )
 {
 }
 
@@ -51,31 +53,46 @@ void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int 
   time.start();
   void * b =  readBlock( bandNo, extent, width, height );
 
-  if ( width > mTimeMinSize && height > mTimeMinSize )
+  if ( mStatsOn )
   {
     if ( mTime.size() <= bandNo )
     {
       mTime.resize( bandNo + 1 );
     }
     // QTime counts only in miliseconds
-    mTime[bandNo] = time.elapsed();
+    // We are adding time until next clear, this way the time may be collected
+    // for the whole QgsRasterLayer::draw() for example, not just for a single part
+    mTime[bandNo] += time.elapsed();
     QgsDebugMsg( QString( "bandNo = %2 time = %3" ).arg( bandNo ).arg( mTime[bandNo] ) );
   }
   return b;
 }
 
-double QgsRasterInterface::time( )
+void QgsRasterInterface::setStatsOn( bool on )
 {
-  // We can only count give total time, because we have to subtract time of previous
+  if ( on )
+  {
+    mTime.clear();
+  }
+  if ( mInput ) mInput->setStatsOn( on );
+  mStatsOn = on;
+}
+
+double QgsRasterInterface::time( bool cumulative )
+{
+  // We can calculate total time only, because we have to subtract time of previous
   // interface(s) and we dont know how to assign bands to each other
   double t = 0;
   for ( int i = 1; i < mTime.size(); i++ )
   {
     t += mTime[i];
   }
+  if ( cumulative ) return t;
+
   if ( mInput )
   {
-    t -= mInput->time();
+    QgsDebugMsgLevel( QString( "%1 cumulative time = %2  time = %3" ).arg( typeid( *( this ) ).name() ).arg( t ).arg( t -  mInput->time( true ) ), 3 );
+    t -= mInput->time( true );
   }
   return t;
 }
