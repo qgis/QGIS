@@ -42,14 +42,32 @@ QgsRasterRenderer::~QgsRasterRenderer()
 {
 }
 
+int QgsRasterRenderer::bandCount() const
+{
+  if ( mOn ) return 1;
+
+  if ( mInput ) return mInput->bandCount();
+
+  return 0;
+}
+
+QgsRasterInterface::DataType QgsRasterRenderer::dataType( int bandNo ) const
+{
+  if ( mOn ) return QgsRasterInterface::ARGB32_Premultiplied;
+
+  if ( mInput ) return mInput->dataType( bandNo );
+
+  return QgsRasterInterface::UnknownDataType;
+}
+
 bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
 {
   // Renderer can only work with numerical values in at least 1 band
-  if ( !mInput ) return false;
+  if ( !input ) return false;
 
-  for ( int i = 1; i <= mInput->bandCount(); i++ )
+  for ( int i = 1; i <= input->bandCount(); i++ )
   {
-    if ( typeIsNumeric( mInput->dataType( i ) ) )
+    if ( typeIsNumeric( input->dataType( i ) ) )
     {
       mInput = input;
       return true;

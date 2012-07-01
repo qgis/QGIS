@@ -2109,7 +2109,11 @@ void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter 
 {
   QgsDebugMsg( "Entered" );
   if ( !resampleFilter ) { return; }
-  mPipe.set( resampleFilter );
+  if ( !mPipe.set( resampleFilter ) )
+  {
+    // TODO: somehow notify (and delete?)
+    QgsDebugMsg( "Cannot set resample filter." );
+  }
 }
 
 void QgsRasterLayer::showProgress( int theValue )

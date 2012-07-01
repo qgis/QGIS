@@ -45,15 +45,43 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
   delete mZoomedOutResampler;
 }
 
+int QgsRasterResampleFilter::bandCount() const
+{
+  if ( mOn ) return 1;
+
+  if ( mInput ) return mInput->bandCount();
+
+  return 0;
+}
+
+QgsRasterInterface::DataType QgsRasterResampleFilter::dataType( int bandNo ) const
+{
+  if ( mOn ) return QgsRasterInterface::ARGB32_Premultiplied;
+
+  if ( mInput ) return mInput->dataType( bandNo );
+
+  return QgsRasterInterface::UnknownDataType;
+}
+
 bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
 {
+  QgsDebugMsg( "Entered" );
   // Resampler can only work with single band ARGB32_Premultiplied
-  if ( !mInput ) return false;
+  if ( !input ) return false;
 
-  if ( mInput->bandCount() < 1 ) return false;
+  if ( input->bandCount() < 1 )
+  {
+    QgsDebugMsg( "No input band" );
+    return false;
+  }
 
-  if ( mInput->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied ) return false;
+  if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied )
+  {
+    return false;
+    QgsDebugMsg( "Unknown input data type" );
+  }
 
+  mInput = input;
   return true;
 }
 

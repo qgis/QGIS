@@ -142,6 +142,12 @@ class CORE_EXPORT QgsRasterInterface
       * Returns true if set correctly, false if cannot use that input */
     virtual bool setInput( QgsRasterInterface* input ) { mInput = input; return true; }
 
+    /** Is on/off */
+    virtual bool on( ) { return mOn; }
+
+    /** Set on/off */
+    virtual void setOn( bool on ) { mOn = on; }
+
     /** Get source / raw input, the first in pipe, usually provider.
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
@@ -165,6 +171,9 @@ class CORE_EXPORT QgsRasterInterface
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
+
+    // On/off state, if off, it does not do anything, replicates input
+    bool mOn;
 
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1

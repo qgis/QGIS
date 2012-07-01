@@ -72,6 +72,20 @@ QgsRasterProjector::~QgsRasterProjector()
   delete[] pHelperBottom;
 }
 
+int QgsRasterProjector::bandCount() const
+{
+  if ( mInput ) return mInput->bandCount();
+
+  return 0;
+}
+
+QgsRasterInterface::DataType QgsRasterProjector::dataType( int bandNo ) const
+{
+  if ( mInput ) return mInput->dataType( bandNo );
+
+  return QgsRasterInterface::UnknownDataType;
+}
+
 void QgsRasterProjector::setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS )
 {
   mSrcCRS = theSrcCRS;

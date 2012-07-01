@@ -77,10 +77,7 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface* theInterface )
 bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
 {
   QgsDebugMsg( QString( "replace by %1 at %2" ).arg( typeid( *theInterface ).name() ).arg( idx ) );
-  if ( idx < 0 || idx >= mInterfaces.size() )
-  {
-    return false;
-  }
+  if ( !checkBounds( idx ) ) return false;
   if ( !theInterface ) return false;
 
   // make a copy of pipe to test connection, we test the connections
@@ -216,10 +213,7 @@ bool QgsRasterPipe::remove( int idx )
 {
   QgsDebugMsg( QString( "remove at %1" ).arg( idx ) );
 
-  if ( idx < 0 || idx >= mInterfaces.size() )
-  {
-    return false;
-  }
+  if ( !checkBounds( idx ) ) return false;
 
   // make a copy of pipe to test connection, we test the connections
   // of the whole pipe, because the types and band numbers may change
@@ -246,4 +240,29 @@ bool QgsRasterPipe::remove( QgsRasterInterface * theInterface )
   if ( !theInterface ) return false;
 
   return remove( mInterfaces.indexOf( theInterface ) );
+}
+
+bool QgsRasterPipe::setOn( int idx, bool on )
+{
+  if ( !checkBounds( idx ) ) return false;
+
+  // Because setting interface on/off may change its output we must check if
+  // connection is OK after such switch
+  bool onOrig =  mInterfaces[idx]->on();
+
+  if ( onOrig == on ) return true;
+
+  mInterfaces[idx]->setOn( on );
+
+  if ( connect( mInterfaces ) ) return true;
+
+  mInterfaces[idx]->setOn( onOrig );
+  connect( mInterfaces );
+  return false;
+}
+
+bool QgsRasterPipe::checkBounds( int idx ) const
+{
+  if ( idx < 0 || idx >= mInterfaces.size() ) return false;
+  return true;
 }

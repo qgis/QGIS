@@ -37,6 +37,10 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
+    virtual int bandCount() const;
+
+    virtual QgsRasterInterface::DataType dataType( int bandNo ) const;
+
     virtual QString type() const { return mType; }
 
     virtual bool setInput( QgsRasterInterface* input );

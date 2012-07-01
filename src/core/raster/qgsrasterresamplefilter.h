@@ -31,6 +31,10 @@ class QgsRasterResampleFilter : public QgsRasterInterface
     QgsRasterResampleFilter( QgsRasterInterface* input = 0 );
     ~QgsRasterResampleFilter();
 
+    int bandCount() const;
+
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+
     bool setInput( QgsRasterInterface* input );
 
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );

@@ -25,6 +25,7 @@
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface * input )
     : mInput( input )
+    , mOn( true )
     , mStatsOn( false )
 {
 }
@@ -80,6 +81,13 @@ QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format 
 
 void * QgsRasterInterface::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  if ( !mOn )
+  {
+    // Switched off, pass input data unchanged
+    if ( !mInput ) return 0;
+    return mInput->block( bandNo, extent, width, height );
+  }
+
   QTime time;
   time.start();
   void * b =  readBlock( bandNo, extent, width, height );

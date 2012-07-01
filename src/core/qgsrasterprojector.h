@@ -61,6 +61,10 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief The destructor */
     ~QgsRasterProjector();
 
+    int bandCount() const;
+
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+
     /** \brief set source and destination CRS */
     void setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS );
 

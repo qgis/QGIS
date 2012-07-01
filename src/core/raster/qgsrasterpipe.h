@@ -81,6 +81,10 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterInterface * at( int idx ) { return mInterfaces.at( idx ); }
     QgsRasterInterface * last() { return mInterfaces.last(); }
 
+    /** Set interface at index on/off
+     *  Returns true on success */
+    bool setOn( int idx, bool on );
+
     // Getters for special types of interfaces
     QgsRasterDataProvider * provider() const;
     QgsRasterRenderer * renderer() const;
@@ -104,6 +108,9 @@ class CORE_EXPORT QgsRasterPipe
 
     // Unset role in mRoleMap
     void unsetRole( QgsRasterInterface * theInterface );
+
+    // Check if index is in bounds
+    bool checkBounds( int idx ) const;
 };
 
 #endif
