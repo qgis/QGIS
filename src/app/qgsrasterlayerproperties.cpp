@@ -1315,8 +1315,12 @@ void QgsRasterLayerProperties::on_pbnRemoveSelectedRow_clicked()
 
 void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 {
-#if 0 //needs to be fixed
-  //PixelSelectorTool has registered a mouse click on the canvas, so bring the dialog back to the front
+  QgsRasterRenderer* renderer = mRendererWidget->renderer();
+  if ( !renderer )
+  {
+    return;
+  }
+
   raise();
   setModal( true );
   activateWindow();
@@ -1324,35 +1328,29 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   //Get the pixel values and add a new entry to the transparency table
   if ( mMapCanvas && mPixelSelectorTool )
   {
-    QMap< QString, QString > myPixelMap;
+    QMap< int, QString > myPixelMap;
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
     mRasterLayer->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ), myPixelMap );
-    if ( tableTransparency->columnCount() == 2 )
+
+    QList<int> bands = renderer->usesBands();
+    tableTransparency->insertRow( tableTransparency->rowCount() );
+    tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
+
+    for ( int i = 0; i < bands.size(); ++i )
     {
-      QString myValue = myPixelMap[ mRasterLayer->grayBandName()];
-      if ( myValue != tr( "out of extent" ) )
+      QMap< int, QString >::const_iterator pixelResult = myPixelMap.find( bands.at( i ) );
+      if ( pixelResult != myPixelMap.constEnd() )
       {
-        tableTransparency->insertRow( tableTransparency->rowCount() );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
-      }
-    }
-    else
-    {
-      QString myValue = myPixelMap[ mRasterLayer->redBandName()];
-      if ( myValue != tr( "out of extent" ) )
-      {
-        tableTransparency->insertRow( tableTransparency->rowCount() );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 1, new QTableWidgetItem( myPixelMap[ mRasterLayer->greenBandName()] ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 2, new QTableWidgetItem( myPixelMap[ mRasterLayer->blueBandName()] ) );
+        QString value = pixelResult.value();
+        if ( value != tr( "out of extent" ) )
+        {
+          tableTransparency->setItem( tableTransparency->rowCount() - 1, i, new QTableWidgetItem( value ) );
+        }
       }
     }
   }
-#else
-  Q_UNUSED( canvasPoint );
-#endif //0
+
+  delete renderer;
 }
 
 void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )

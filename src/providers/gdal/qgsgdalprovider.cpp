@@ -1117,6 +1117,67 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
+bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  // QgsDebugMsg( "Entered" );
+  if ( !mExtent.contains( point ) )
+  {
+    // Outside the raster
+    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    {
+      results[ i ] = tr( "out of extent" );
+    }
+  }
+  else
+  {
+    double x = point.x();
+    double y = point.y();
+
+    // Calculate the row / column where the point falls
+    double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
+    double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
+
+    // Offset, not the cell index -> flor
+    int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
+    int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
+
+    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+
+    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    {
+      GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
+      double value;
+
+      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
+                                 &value, 1, 1, GDT_Float64, 0, 0 );
+
+      if ( err != CPLE_None )
+      {
+        QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      }
+
+      //double value = readValue( data, type, 0 );
+      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
+      QString v;
+
+      if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
+      {
+        v = tr( "null (no data)" );
+      }
+      else
+      {
+        v.setNum( value );
+      }
+
+      results[ i ] = v;
+
+      //CPLFree( data );
+    }
+  }
+
+  return true;
+}
+
 bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   // QgsDebugMsg( "Entered" );
