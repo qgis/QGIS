@@ -1621,6 +1621,7 @@ void QgsRasterLayerProperties::updatePipeList()
     QStringList labels;
     labels << tr( "Filter" ) << tr( "Bands" ) << tr( "Time" );
     mPipeTreeWidget->setHeaderLabels( labels );
+    connect( mPipeTreeWidget, SIGNAL( itemClicked( QTreeWidgetItem *, int ) ), this, SLOT( pipeItemClicked( QTreeWidgetItem *, int ) ) );
   }
 
   QgsRasterPipe *pipe = mRasterLayer->pipe();
@@ -1645,7 +1646,52 @@ void QgsRasterLayerProperties::updatePipeList()
     texts << QString( "%1 ms" ).arg( interface->time() );
     QTreeWidgetItem *item = new QTreeWidgetItem( texts );
 
+    bool on = interface->on();
+    item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
+
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    item->setFlags( flags );
+
     mPipeTreeWidget->addTopLevelItem( item );
   }
+  updatePipeItems();
 #endif
+}
+
+void QgsRasterLayerProperties::pipeItemClicked( QTreeWidgetItem * item, int column )
+{
+  QgsDebugMsg( "Entered" );
+  int idx = mPipeTreeWidget->indexOfTopLevelItem( item );
+
+  // This should not fail because we have enabled only checkboxes of items
+  // which may be changed
+  mRasterLayer->pipe()->setOn( idx, item->checkState( 0 ) );
+
+  updatePipeItems();
+}
+
+void QgsRasterLayerProperties::updatePipeItems()
+{
+  QgsDebugMsg( "Entered" );
+
+  QgsRasterPipe *pipe = mRasterLayer->pipe();
+
+  for ( int i = 0; i < pipe->size(); i++ )
+  {
+    if ( i >= mPipeTreeWidget->topLevelItemCount() ) break;
+    QgsRasterInterface * interface = pipe->at( i );
+    QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
+    if ( !item ) continue;
+    bool on = interface->on();
+    Qt::ItemFlags flags = item->flags();
+    if ( pipe->canSetOn( i, !on ) )
+    {
+      flags |= Qt::ItemIsUserCheckable;
+    }
+    else
+    {
+      flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
+    }
+    item->setFlags( flags );
+  }
 }

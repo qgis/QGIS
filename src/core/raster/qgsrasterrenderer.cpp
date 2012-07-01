@@ -65,6 +65,13 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
   // Renderer can only work with numerical values in at least 1 band
   if ( !input ) return false;
 
+  if ( !mOn )
+  {
+    // In off mode we can connect to anything
+    mInput = input;
+    return true;
+  }
+
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
     if ( typeIsNumeric( input->dataType( i ) ) )

@@ -66,8 +66,21 @@ QgsRasterInterface::DataType QgsRasterResampleFilter::dataType( int bandNo ) con
 bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
 {
   QgsDebugMsg( "Entered" );
+
   // Resampler can only work with single band ARGB32_Premultiplied
-  if ( !input ) return false;
+  if ( !input )
+  {
+    QgsDebugMsg( "No input" );
+    return false;
+  }
+
+  if ( !mOn )
+  {
+    // In off mode we can connect to anything
+    QgsDebugMsg( "OK" );
+    mInput = input;
+    return true;
+  }
 
   if ( input->bandCount() < 1 )
   {
@@ -82,6 +95,7 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
   }
 
   mInput = input;
+  QgsDebugMsg( "OK" );
   return true;
 }
 

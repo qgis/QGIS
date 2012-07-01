@@ -85,6 +85,9 @@ class CORE_EXPORT QgsRasterPipe
      *  Returns true on success */
     bool setOn( int idx, bool on );
 
+    /** Test if interface at index may be swithed on/off */
+    bool canSetOn( int idx, bool on );
+
     // Getters for special types of interfaces
     QgsRasterDataProvider * provider() const;
     QgsRasterRenderer * renderer() const;
