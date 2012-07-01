@@ -279,7 +279,8 @@ class SagaAlgorithm(GeoAlgorithm):
         loglines.append("SAGA execution commands")
         for line in commands:
             loglines.append(line)
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        if SextanteConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
+            SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
 
 

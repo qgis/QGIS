@@ -7,7 +7,8 @@ import stat
 
 class SagaUtils:
 
-    #SAGA_USE_SELECTED = "SAGA_USE_SELECTED"
+    SAGA_LOG_COMMANDS = "SAGA_LOG_COMMANDS"
+    SAGA_LOG_CONSOLE = "SAGA_LOG_CONSOLE"
     SAGA_AUTO_RESAMPLING = "SAGA_AUTO_RESAMPLING"
     SAGA_RESAMPLING_REGION_XMIN = "SAGA_RESAMPLING_REGION_XMIN"
     SAGA_RESAMPLING_REGION_YMIN = "SAGA_RESAMPLING_REGION_YMIN"
@@ -78,7 +79,8 @@ class SagaUtils:
                 line = line.strip()
                 if line!="/" and line!="-" and line !="\\" and line!="|":
                     loglines.append(line)
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        if SextanteConfig.getSetting(SagaUtils.SAGA_LOG_CONSOLE):
+            SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 
 

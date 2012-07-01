@@ -8,7 +8,6 @@ from sextante.grass.GrassUtils import GrassUtils
 from sextante.grass.GrassAlgorithm import GrassAlgorithm
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.grass.DefineGrassRegionAction import DefineGrassRegionAction
-from sextante.grass.nviz import nviz
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
@@ -22,6 +21,8 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         if SextanteUtils.isWindows():
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_CONSOLE, "Log console output", False))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_AUTO_REGION, "Use min covering region", True))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LATLON, "Coordinates are lat/lon", False))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_REGION_XMIN, "GRASS Region min x", 0))
@@ -44,6 +45,8 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_YMAX)
         SextanteConfig.removeSetting(GrassUtils.GRASS_REGION_CELLSIZE)
         SextanteConfig.removeSetting(GrassUtils.GRASS_HELP_FOLDER)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_COMMANDS)
+        SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_CONSOLE)
 
     def createAlgsList(self):
         self.preloadedAlgs = []

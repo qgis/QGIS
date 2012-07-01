@@ -19,6 +19,8 @@ class GrassUtils:
     GRASS_FOLDER = "GRASS_FOLDER"
     GRASS_HELP_FOLDER = "GRASS_HELP_FOLDER"
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
+    GRASS_LOG_COMMANDS = "GRASS_LOG_COMMANDS"
+    GRASS_LOG_CONSOLE = "GRASS_LOG_CONSOLE"
 
     @staticmethod
     def grassBatchJobFilename():
@@ -257,7 +259,8 @@ class GrassUtils:
                     pass
             else:
                 loglines.append(line)
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
+            SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
 
     @staticmethod

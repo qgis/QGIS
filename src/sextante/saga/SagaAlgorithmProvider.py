@@ -21,6 +21,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         if SextanteUtils.isWindows():
             SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_FOLDER, "SAGA folder", SagaUtils.sagaPath()))
         SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_AUTO_RESAMPLING, "Use min covering grid system for resampling", True))
+        SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_COMMANDS, "Log execution commands", False))
+        SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_LOG_CONSOLE, "Log console output", False))
         SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_RESAMPLING_REGION_XMIN, "Resampling region min x", 0))
         SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_RESAMPLING_REGION_YMIN, "Resampling region min y", 0))
         SextanteConfig.addSetting(Setting(self.getDescription(), SagaUtils.SAGA_RESAMPLING_REGION_XMAX, "Resampling region max x", 1000))
@@ -37,6 +39,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_XMAX)
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_YMAX)
         SextanteConfig.removeSetting(SagaUtils.SAGA_RESAMPLING_REGION_CELLSIZE)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
+        SextanteConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
 
     def createAlgsList(self):
         self.preloadedAlgs = []
