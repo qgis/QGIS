@@ -261,12 +261,12 @@ class CORE_EXPORT QgsExpression
     {
         // YEAR const value taken from postgres query
         // SELECT EXTRACT(EPOCH FROM interval '1 year')
-        static const double YEARS = 31557600;
-        static const double MONTHS = 60 * 60 * 24 * 30;
-        static const double WEEKS = 60 * 60 * 24 * 7;
-        static const double DAY = 60 * 60 * 24;
-        static const double HOUR = 60 * 60;
-        static const double MINUTE = 60;
+        static const int YEARS = 31557600;
+        static const int MONTHS = 60 * 60 * 24 * 30;
+        static const int WEEKS = 60 * 60 * 24 * 7;
+        static const int DAY = 60 * 60 * 24;
+        static const int HOUR = 60 * 60;
+        static const int MINUTE = 60;
       public:
         Interval( double seconds = 0 ) { mSeconds = seconds; }
         ~Interval();

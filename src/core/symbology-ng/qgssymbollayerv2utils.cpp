@@ -988,8 +988,6 @@ bool QgsSymbolLayerV2Utils::hasExternalGraphic( QDomElement &element )
   {
     return false;
   }
-
-  return false;
 }
 
 bool QgsSymbolLayerV2Utils::hasWellKnownMark( QDomElement &element )
@@ -1163,7 +1161,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
     QString name, format;
     int markIndex = -1;
     QColor fillColor, borderColor;
-    double borderWidth = 1, size, angle = 0.0;
+    double borderWidth = 1.0, size = 0.0, angle = 0.0;
     QPointF anchor, offset;
 
     // Fill element can contain a GraphicFill element
@@ -1324,7 +1322,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         map["fill"] = fillColor.name();
         map["outline"] = borderColor.name();
         map["outline-width"] = QString::number( borderWidth );
-        if ( size > 0 )
+        if ( !doubleNear( size, 0.0 ) )
           map["size"] = QString::number( size );
         if ( !doubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
