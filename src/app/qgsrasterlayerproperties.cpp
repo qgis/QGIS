@@ -380,7 +380,9 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
     if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
     {
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
+      QWidget* oldWidget = mRendererStackedWidget->currentWidget();
       mRendererStackedWidget->addWidget( mRendererWidget );
+      delete oldWidget;
     }
   }
 }
