@@ -358,16 +358,32 @@ class Sextante:
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             algEx = AlgorithmExecutor(alg)
+            progress = QProgressDialog()
+            progress.setWindowTitle(alg.name)
+            progress.setLabelText("Executing %s..." % alg.name) 
             def finish():
                 SextantePostprocessing.handleAlgorithmResults(alg)
                 QApplication.restoreOverrideCursor()
+                progress.close()
             def error(msg):
                 QApplication.restoreOverrideCursor()
                 QMessageBox.critical(None, "Error", msg)
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+            def cancel():
+                try:
+                    algEx.finished.disconnect()
+                    algEx.terminate()
+                    QApplication.restoreOverrideCursor()
+                    progress.close()
+                except:
+                    pass
             algEx.error.connect(error)
             algEx.finished.connect(finish)
+            algEx.textChanged.connect(lambda t: progress.setLabelText(t))
+            algEx.percentageChanged.connect(lambda x: progress.setValue(x))
+            progress.canceled.connect(cancel)
             algEx.start()
+            progress.show()
         else:
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
                 SextantePostprocessing.handleAlgorithmResults(alg)
