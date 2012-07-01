@@ -42,6 +42,22 @@ QgsRasterRenderer::~QgsRasterRenderer()
 {
 }
 
+bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
+{
+  // Renderer can only work with numerical values in at least 1 band
+  if ( !mInput ) return false;
+
+  for ( int i = 1; i <= mInput->bandCount(); i++ )
+  {
+    if ( typeIsNumeric( mInput->dataType( i ) ) )
+    {
+      mInput = input;
+      return true;
+    }
+  }
+  return false;
+}
+
 bool QgsRasterRenderer::usesTransparency( ) const
 {
   if ( !mInput )

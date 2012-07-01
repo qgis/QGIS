@@ -45,6 +45,18 @@ QgsRasterResampleFilter::~QgsRasterResampleFilter()
   delete mZoomedOutResampler;
 }
 
+bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
+{
+  // Resampler can only work with single band ARGB32_Premultiplied
+  if ( !mInput ) return false;
+
+  if ( mInput->bandCount() < 1 ) return false;
+
+  if ( mInput->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied ) return false;
+
+  return true;
+}
+
 void QgsRasterResampleFilter::setZoomedInResampler( QgsRasterResampler* r )
 {
   delete mZoomedInResampler;

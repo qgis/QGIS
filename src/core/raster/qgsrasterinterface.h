@@ -99,8 +99,14 @@ class CORE_EXPORT QgsRasterInterface
       return typeSize( dataType( bandNo ) );
     }
 
+    /** Returns true if data type is numeric */
+    bool typeIsNumeric( DataType type ) const;
+
+    /** Returns true if data type is color */
+    bool typeIsColor( DataType type ) const;
+
     /** Returns data type for the band specified by number */
-    virtual int dataType( int bandNo ) const
+    virtual DataType dataType( int bandNo ) const
     {
       Q_UNUSED( bandNo );
       return UnknownDataType;

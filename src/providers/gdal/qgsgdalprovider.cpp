@@ -1200,7 +1200,7 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-int QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
+QgsRasterInterface::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
@@ -1247,14 +1247,14 @@ int QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
   return QgsRasterDataProvider::UnknownDataType;
 }
 
-int QgsGdalProvider::srcDataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   return dataTypeFormGdal( myGdalDataType );
 }
 
-int QgsGdalProvider::dataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
   if ( mGdalDataType.size() == 0 ) return QgsRasterDataProvider::UnknownDataType;
 

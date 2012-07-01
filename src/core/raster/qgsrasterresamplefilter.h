@@ -31,6 +31,8 @@ class QgsRasterResampleFilter : public QgsRasterInterface
     QgsRasterResampleFilter( QgsRasterInterface* input = 0 );
     ~QgsRasterResampleFilter();
 
+    bool setInput( QgsRasterInterface* input );
+
     void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /**Set resampler for zoomed in scales. Takes ownership of the object*/

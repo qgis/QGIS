@@ -1350,12 +1350,12 @@ void QgsWmsProvider::capabilitiesReplyFinished()
   mCapabilitiesReply = 0;
 }
 
-int QgsWmsProvider::dataType( int bandNo ) const
+QgsRasterInterface::DataType QgsWmsProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-int QgsWmsProvider::srcDataType( int bandNo ) const
+QgsRasterInterface::DataType QgsWmsProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   return QgsRasterDataProvider::ARGB32;

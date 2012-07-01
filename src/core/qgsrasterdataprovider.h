@@ -106,6 +106,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterInterface * srcInput() { return this; }
 
+    /* It makes no sense to set input on provider */
+    bool setInput( QgsRasterInterface* input ) { return false; }
+
     /**
      * Add the list of WMS layer names to be rendered by this server
      */
@@ -157,7 +160,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual int dataType( int bandNo ) const
+    virtual QgsRasterInterface::DataType dataType( int bandNo ) const
     {
       return srcDataType( bandNo );
     }
@@ -165,7 +168,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual int srcDataType( int bandNo ) const
+    virtual QgsRasterInterface::DataType srcDataType( int bandNo ) const
     {
       Q_UNUSED( bandNo );
       return QgsRasterDataProvider::UnknownDataType;

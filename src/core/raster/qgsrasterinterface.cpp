@@ -33,6 +33,37 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
+bool QgsRasterInterface::typeIsNumeric( DataType dataType ) const
+{
+  switch ( dataType )
+  {
+    case Byte:
+    case UInt16:
+    case Int16:
+    case UInt32:
+    case Int32:
+    case Float32:
+    case CInt16:
+    case Float64:
+    case CInt32:
+    case CFloat32:
+    case CFloat64:
+      return true;
+  }
+  return false;
+}
+
+bool QgsRasterInterface::typeIsColor( DataType dataType ) const
+{
+  switch ( dataType )
+  {
+    case ARGB32:
+    case ARGB32_Premultiplied:
+      return true;
+  }
+  return false;
+}
+
 // To give to an image preallocated memory is the only way to avoid memcpy
 // when we want to keep data but delete QImage
 QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format format )
