@@ -74,7 +74,7 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 QgsWcsProvider::QgsWcsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( QString::null )
-    , mImageCrs( DEFAULT_LATLON_CRS )
+    , mCoverageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
     , mCacheReply( 0 )
     , mCachedViewExtent( 0 )
@@ -84,14 +84,49 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
+    , mCoverageSummary( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
-  // assume this is a valid layer until we determine otherwise
-  mValid = true;
+  mValid = false;
 
   parseUri( uri );
 
+  // GetCapabilities and DescribeCoverage
+  // TODO(?): do only DescribeCoverage to avoid one request
+  // We need to get at least server version, which is not set in of URI (if not part of url)
+  // and probably also rangeSet
+
+  QgsDataSourceURI capabilitiesUri;
+  capabilitiesUri.setEncodedUri( uri );
+  // remove non relevant params
+  capabilitiesUri.removeParam( "identifier" );
+  capabilitiesUri.removeParam( "crs" );
+  capabilitiesUri.removeParam( "format" );
+  // TODO: check if successful (add return to capabilities)
+  mCapabilities.setUri( capabilitiesUri );
+
+  // 1.0 get additional coverage info
+  if ( !mCapabilities.describeCoverage( mIdentifier ) )
+  {
+    QgsDebugMsg( "Cannot describe coverage" );
+    return;
+  }
+
+  mCoverageSummary = mCapabilities.coverageSummary( mIdentifier );
+  if ( !mCoverageSummary )
+  {
+    QgsDebugMsg( "coverage not found" );
+    return;
+  }
+
+  if ( !calculateExtent() )
+  {
+    QgsDebugMsg( "Cannot calculate extent" );
+    return;
+  }
+
+  mValid = true;
   QgsDebugMsg( "exiting constructor." );
 }
 
@@ -129,11 +164,6 @@ void QgsWcsProvider::parseUri( QString uriString )
 
 QString QgsWcsProvider::prepareUri( QString uri ) const
 {
-  if ( uri.contains( "SERVICE=WMTS" ) || uri.contains( "/WMTSCapabilities.xml" ) )
-  {
-    return uri;
-  }
-
   if ( !uri.contains( "?" ) )
   {
     uri.append( "?" );
@@ -175,27 +205,6 @@ QString QgsWcsProvider::baseUrl() const
   return mBaseUrl;
 }
 
-QString QgsWcsProvider::getMapUrl() const
-{
-  return "TODO";
-  /*
-  return mCapabilities.capability.request.getMap.dcpType.size() == 0
-         ? mBaseUrl
-         : prepareUri( mCapabilities.capability.request.getMap.dcpType.front().http.get.onlineResource.xlinkHref );
-  */
-}
-
-
-QString QgsWcsProvider::getFeatureInfoUrl() const
-{
-  return "TODO";
-  /*
-  return mCapabilities.capability.request.getFeatureInfo.dcpType.size() == 0
-         ? mBaseUrl
-         : prepareUri( mCapabilities.capability.request.getFeatureInfo.dcpType.front().http.get.onlineResource.xlinkHref );
-  */
-}
-
 QString QgsWcsProvider::format() const
 {
   return mFormat;
@@ -212,7 +221,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
 {
   QgsDebugMsg( "Setting coverage CRS to " + crs + "." );
 
-  if ( crs != mImageCrs && !crs.isEmpty() )
+  if ( crs != mCoverageCrs && !crs.isEmpty() )
   {
     // delete old coordinate transform as it is no longer valid
     if ( mCoordinateTransform )
@@ -223,7 +232,7 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
 
     mExtentDirty = true;
 
-    mImageCrs = crs;
+    mCoverageCrs = crs;
   }
 }
 
@@ -233,25 +242,17 @@ void QgsWcsProvider::setQueryItem( QUrl &url, QString item, QString value )
   url.addQueryItem( item, value );
 }
 
-QImage *QgsWcsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight )
+void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( "Entered" );
 
-  // Can we reuse the previously cached image?
-  if ( mCachedImage &&
-       mCachedViewExtent == viewExtent &&
-       mCachedViewWidth == pixelWidth &&
-       mCachedViewHeight == pixelHeight )
+  /*
+  if ( myExpectedSize != myImageSize )   // should not happen
   {
-    return mCachedImage;
+    QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WCS" ) );
+    return;
   }
-
-  // delete cached image and create network request(s) to fill it
-  if ( mCachedImage )
-  {
-    delete mCachedImage;
-    mCachedImage = 0;
-  }
+  */
 
   // abort running (untiled) request
   if ( mCacheReply )
@@ -261,24 +262,62 @@ QImage *QgsWcsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     mCacheReply = 0;
   }
 
+  // Can we reuse the previously cached image?
+  if ( mCachedImage &&
+       mCachedViewExtent == viewExtent &&
+       mCachedViewWidth == pixelWidth &&
+       mCachedViewHeight == pixelHeight )
+  {
+    //return mCachedImage;
+  }
+
+  // delete cached image and create network request(s) to fill it
+  if ( mCachedImage )
+  {
+    //delete mCachedImage;
+    //mCachedImage = 0;
+  }
+
+  // --------------- BOUNDING BOX --------------------------------
   //according to the WCS spec for 1.3, some CRS have inverted axis
   bool changeXY = false;
-  // TODO
-  //if ( !mIgnoreAxisOrientation && ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" ) )
-  //{
-    ////create CRS from string
-    //QgsCoordinateReferenceSystem theSrs;
-    //if ( theSrs.createFromOgcWcsCrs( mImageCrs ) && theSrs.axisInverted() )
-    //{
-      //changeXY = true;
-    //}
-  //}
+  // box:
+  //  1.0.0: minx,miny,maxx,maxy
+  //  1.1.0, 1.1.2: OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says
+  //  "The number of axes included, and the order of these axes, shall be as specified
+  //  by the referenced CRS." That means inverted for geographic.
+  if ( !mIgnoreAxisOrientation && ( mCapabilities.version().startsWith( "1.1" ) ) )
+  {
+    //create CRS from string
+    QgsCoordinateReferenceSystem theSrs;
+    if ( theSrs.createFromOgcWmsCrs( mCoverageCrs ) && theSrs.axisInverted() )
+    {
+      changeXY = true;
+    }
+  }
 
   if ( mInvertAxisOrientation )
     changeXY = !changeXY;
 
-  // compose the URL query string for the WCS server.
-  QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
+  // Bounding box in WCS format (Warning: does not work with scientific notation)
+  QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                 .arg( viewExtent.xMinimum(), 0, 'f', 16 )
+                 .arg( viewExtent.yMinimum(), 0, 'f', 16 )
+                 .arg( viewExtent.xMaximum(), 0, 'f', 16 )
+                 .arg( viewExtent.yMaximum(), 0, 'f', 16 );
+
+  // ---------------- CRS -----------------------------------------
+  // 1.0.0:
+  //   CRS - CRS of request
+  //   RESPONSE_CRS - requested CRS of response
+  // 1.1.0, 1.1.2
+  //   GridBaseCRS=urn:ogc:def:crs:SG:6.6:32618
+  //   GridType=urn:ogc:def:method:CS:1.1:2dGridIn2dCrs
+  //   GridCS=urn:ogc:def:cs:OGC:0Grid2dSquareCS
+  //   GridOrigin=0,0
+  //   GridOffsets=0.0707,-0.0707,0.1414,0.1414&
+
+  QString crsKey = "RESPONSE_CRS";
   // TODO
   /*
   if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
@@ -286,39 +325,27 @@ QImage *QgsWcsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     crsKey = "CRS";
   }
   */
-  // Bounding box in WMS format (Warning: does not work with scientific notation)
-  QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( viewExtent.xMinimum(), 0, 'f', 16 )
-                 .arg( viewExtent.yMinimum(), 0, 'f', 16 )
-                 .arg( viewExtent.xMaximum(), 0, 'f', 16 )
-                 .arg( viewExtent.yMaximum(), 0, 'f', 16 );
 
-  QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl() );
+  QString identifierKey = "COVERAGE";
+  if ( mCapabilities.version().startsWith( "1.1" ) ) identifierKey = "IDENTIFIER";
+
+  QUrl url( mIgnoreGetMapUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
+
+  // The same for 1.0.0, 1.1.0, 1.1.2
   setQueryItem( url, "SERVICE", "WCS" );
-  // TODO
-  //setQueryItem( url, "VERSION", mCapabilities.version );
-  setQueryItem( url, "REQUEST", "GetMap" );
+  setQueryItem( url, "VERSION", mCapabilities.version() );
+  setQueryItem( url, "REQUEST", "GetCoverage" );
+
+  // Different for each version
   setQueryItem( url, "BBOX", bbox );
-  setQueryItem( url, crsKey, mImageCrs );
+  setQueryItem( url, "CRS", mCoverageCrs ); // 1.0.0 - BOX is in coverage CRS
+  setQueryItem( url, crsKey, mCoverageCrs );
   setQueryItem( url, "WIDTH", QString::number( pixelWidth ) );
   setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
-  setQueryItem( url, "IDENTIFIER", mIdentifier );
+  setQueryItem( url, identifierKey, mIdentifier );
   setQueryItem( url, "FORMAT", mFormat );
 
-  //DPI parameter is accepted by QGIS mapserver (and ignored by the other WCS servers)
-  if ( mDpi != -1 )
-  {
-    setQueryItem( url, "DPI", QString::number( mDpi ) );
-  }
-
-  //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
-  if ( !mFormat.contains( "jpeg", Qt::CaseInsensitive ) &&
-       !mFormat.contains( "jpg", Qt::CaseInsensitive ) )
-  {
-    setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
-  }
-
-  QgsDebugMsg( QString( "getmap: %1" ).arg( url.toString() ) );
+  QgsDebugMsg( QString( "GetCoverage: %1" ).arg( url.toString() ) );
 
   // cache some details for if the user wants to do an identifyAsHtml() later
 
@@ -347,35 +374,8 @@ QImage *QgsWcsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   }
 
   mWaiting = false;
-  return mCachedImage;
-}
-
-//void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *block )
-void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
-{
-  Q_UNUSED( bandNo );
-  QgsDebugMsg( "Entered" );
-  // TODO: optimize to avoid writing to QImage
-  QImage* image = draw( viewExtent, pixelWidth, pixelHeight );
-
-  if ( ! image )   // should not happen
-  {
-    QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WCS" ) );
-    return;
-  }
-  QgsDebugMsg( QString( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) ) ;
-  int myExpectedSize = pixelWidth * pixelHeight * 4;
-  int myImageSize = image->height() *  image->bytesPerLine();
-  if ( myExpectedSize != myImageSize )   // should not happen
-  {
-    QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WCS" ) );
-    return;
-  }
-
-  uchar * ptr = image->bits() ;
-  memcpy( block, ptr, myExpectedSize );
-  // do not delete the image, it is handled by draw()
-  //delete image;
+  //memcpy( block, ptr, myExpectedSize );
+  //return mCachedImage;
 }
 
 void QgsWcsProvider::cacheReplyFinished()
@@ -655,7 +655,7 @@ QgsRectangle QgsWcsProvider::extent()
     }
   }
 
-  return mLayerExtent;
+  return mCoverageExtent;
 }
 
 bool QgsWcsProvider::isValid()
@@ -672,15 +672,13 @@ QString QgsWcsProvider::wcsVersion()
 
 bool QgsWcsProvider::calculateExtent()
 {
-  //! \todo Make this handle non-geographic CRSs (e.g. floor plans) as per WCS spec
-
   QgsDebugMsg( "entered." );
 
   // Make sure we know what extents are available
-  //if ( !retrieveServerCapabilities() )
-  //{
-    //return false;
-  //}
+  if ( !mCoverageSummary )
+  {
+    return false;
+  }
 
   // Set up the coordinate transform from the WCS standard CRS:84 bounding
   // box to the user's selected CRS
@@ -691,62 +689,30 @@ bool QgsWcsProvider::calculateExtent()
 
     qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
 
-    qgisSrsDest.createFromOgcWmsCrs( mImageCrs );
+    qgisSrsDest.createFromOgcWmsCrs( mCoverageCrs );
 
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
   }
 
-  //TODO
-  /* 
-  bool firstLayer = true; //flag to know if a layer is the first to be successfully transformed
-  for ( QStringList::Iterator it  = mActiveSubLayers.begin();
-        it != mActiveSubLayers.end();
-        ++it )
+  // Convert to the user's CRS as required
+  try
   {
-    QgsDebugMsg( "Sublayer Iterator: " + *it );
-    // This is the extent for the layer name in *it
-    QgsRectangle extent = mExtentForLayer.find( *it ).value();
-
-    // Convert to the user's CRS as required
-    try
-    {
-      extent = mCoordinateTransform->transformBoundingBox( extent, QgsCoordinateTransform::ForwardTransform );
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      continue; //ignore extents of layers which cannot be transformed info the required CRS
-    }
-
-    //make sure extent does not contain 'inf' or 'nan'
-    if ( !extent.isFinite() )
-    {
-      continue;
-    }
-
-    // add to the combined extent of all the active sublayers
-    if ( firstLayer )
-    {
-      mLayerExtent = extent;
-    }
-    else
-    {
-      mLayerExtent.combineExtentWith( &extent );
-    }
-
-    firstLayer = false;
-
-    QgsDebugMsg( "combined extent is '"  + mLayerExtent.toString()
-                 + "' after '"  + ( *it ) + "'." );
-
+    mCoverageExtent = mCoordinateTransform->transformBoundingBox( mCoverageSummary->wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
   }
-  */
-  QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    return false;
+  }
+
+  //make sure extent does not contain 'inf' or 'nan'
+  if ( !mCoverageExtent.isFinite() )
+  {
+    return false;
+  }
+
+  QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
   return true;
-
-  QgsDebugMsg( "exiting without extent." );
-  return false;
-
 }
 
 
@@ -762,174 +728,174 @@ int QgsWcsProvider::capabilities() const
 QString QgsWcsProvider::layerMetadata( )
 {
   QString metadata;
-/*
-  // Layer Properties section
+  /*
+    // Layer Properties section
 
-  // Use a nested table
-  metadata += "<tr><td>";
-  metadata += "<table width=\"100%\">";
-
-  // Table header
-  metadata += "<tr><th class=\"glossy\">";
-  metadata += tr( "Property" );
-  metadata += "</th>";
-  metadata += "<th class=\"glossy\">";
-  metadata += tr( "Value" );
-  metadata += "</th></tr>";
-
-  // Name
-  metadata += "<tr><td>";
-  metadata += tr( "Name" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += layer.name;
-  metadata += "</td></tr>";
-
-  // Layer Visibility (as managed by this provider)
-  metadata += "<tr><td>";
-  metadata += tr( "Visibility" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += mActiveSubLayerVisibility.find( layer.name ).value() ? tr( "Visible" ) : tr( "Hidden" );
-  metadata += "</td></tr>";
-
-  // Layer Title
-  metadata += "<tr><td>";
-  metadata += tr( "Title" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += layer.title;
-  metadata += "</td></tr>";
-
-  // Layer Abstract
-  metadata += "<tr><td>";
-  metadata += tr( "Abstract" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += layer.abstract;
-  metadata += "</td></tr>";
-
-  // Layer Queryability
-  metadata += "<tr><td>";
-  metadata += tr( "Can Identify" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += layer.queryable ? tr( "Yes" ) : tr( "No" );
-  metadata += "</td></tr>";
-
-  // Layer Opacity
-  metadata += "<tr><td>";
-  metadata += tr( "Can be Transparent" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += layer.opaque ? tr( "No" ) : tr( "Yes" );
-  metadata += "</td></tr>";
-
-  // Layer Subsetability
-  metadata += "<tr><td>";
-  metadata += tr( "Can Zoom In" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += layer.noSubsets ? tr( "No" ) : tr( "Yes" );
-  metadata += "</td></tr>";
-
-  // Layer Server Cascade Count
-  metadata += "<tr><td>";
-  metadata += tr( "Cascade Count" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += QString::number( layer.cascaded );
-  metadata += "</td></tr>";
-
-  // Layer Fixed Width
-  metadata += "<tr><td>";
-  metadata += tr( "Fixed Width" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += QString::number( layer.fixedWidth );
-  metadata += "</td></tr>";
-
-  // Layer Fixed Height
-  metadata += "<tr><td>";
-  metadata += tr( "Fixed Height" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += QString::number( layer.fixedHeight );
-  metadata += "</td></tr>";
-
-  // Layer Fixed Height
-  metadata += "<tr><td>";
-  metadata += tr( "WGS 84 Bounding Box" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += mExtentForLayer[ layer.name ].toString();
-  metadata += "</td></tr>";
-
-  // Layer Coordinate Reference Systems
-  for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
-  {
+    // Use a nested table
     metadata += "<tr><td>";
-    metadata += tr( "Available in CRS" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.crs[j];
-    metadata += "</td></tr>";
-  }
-
-  if ( layer.crs.size() > 10 )
-  {
-    metadata += "<tr><td>";
-    metadata += tr( "Available in CRS" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += tr( "(and %n more)", "crs", layer.crs.size() - 10 );
-    metadata += "</td></tr>";
-  }
-
-  // Layer Styles
-  for ( int j = 0; j < layer.style.size(); j++ )
-  {
-    metadata += "<tr><td>";
-    metadata += tr( "Available in style" );
-    metadata += "</td>";
-    metadata += "<td>";
-
-    // Nested table.
     metadata += "<table width=\"100%\">";
 
-    // Layer Style Name
+    // Table header
     metadata += "<tr><th class=\"glossy\">";
+    metadata += tr( "Property" );
+    metadata += "</th>";
+    metadata += "<th class=\"glossy\">";
+    metadata += tr( "Value" );
+    metadata += "</th></tr>";
+
+    // Name
+    metadata += "<tr><td>";
     metadata += tr( "Name" );
-    metadata += "</th>";
+    metadata += "</td>";
     metadata += "<td>";
-    metadata += layer.style[j].name;
+    metadata += layer.name;
     metadata += "</td></tr>";
 
-    // Layer Style Title
-    metadata += "<tr><th class=\"glossy\">";
+    // Layer Visibility (as managed by this provider)
+    metadata += "<tr><td>";
+    metadata += tr( "Visibility" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += mActiveSubLayerVisibility.find( layer.name ).value() ? tr( "Visible" ) : tr( "Hidden" );
+    metadata += "</td></tr>";
+
+    // Layer Title
+    metadata += "<tr><td>";
     metadata += tr( "Title" );
-    metadata += "</th>";
+    metadata += "</td>";
     metadata += "<td>";
-    metadata += layer.style[j].title;
+    metadata += layer.title;
     metadata += "</td></tr>";
 
-    // Layer Style Abstract
-    metadata += "<tr><th class=\"glossy\">";
+    // Layer Abstract
+    metadata += "<tr><td>";
     metadata += tr( "Abstract" );
-    metadata += "</th>";
+    metadata += "</td>";
     metadata += "<td>";
-    metadata += layer.style[j].abstract;
+    metadata += layer.abstract;
     metadata += "</td></tr>";
+
+    // Layer Queryability
+    metadata += "<tr><td>";
+    metadata += tr( "Can Identify" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += layer.queryable ? tr( "Yes" ) : tr( "No" );
+    metadata += "</td></tr>";
+
+    // Layer Opacity
+    metadata += "<tr><td>";
+    metadata += tr( "Can be Transparent" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += layer.opaque ? tr( "No" ) : tr( "Yes" );
+    metadata += "</td></tr>";
+
+    // Layer Subsetability
+    metadata += "<tr><td>";
+    metadata += tr( "Can Zoom In" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += layer.noSubsets ? tr( "No" ) : tr( "Yes" );
+    metadata += "</td></tr>";
+
+    // Layer Server Cascade Count
+    metadata += "<tr><td>";
+    metadata += tr( "Cascade Count" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += QString::number( layer.cascaded );
+    metadata += "</td></tr>";
+
+    // Layer Fixed Width
+    metadata += "<tr><td>";
+    metadata += tr( "Fixed Width" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += QString::number( layer.fixedWidth );
+    metadata += "</td></tr>";
+
+    // Layer Fixed Height
+    metadata += "<tr><td>";
+    metadata += tr( "Fixed Height" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += QString::number( layer.fixedHeight );
+    metadata += "</td></tr>";
+
+    // Layer Fixed Height
+    metadata += "<tr><td>";
+    metadata += tr( "WGS 84 Bounding Box" );
+    metadata += "</td>";
+    metadata += "<td>";
+    metadata += mExtentForLayer[ layer.name ].toString();
+    metadata += "</td></tr>";
+
+    // Layer Coordinate Reference Systems
+    for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
+    {
+      metadata += "<tr><td>";
+      metadata += tr( "Available in CRS" );
+      metadata += "</td>";
+      metadata += "<td>";
+      metadata += layer.crs[j];
+      metadata += "</td></tr>";
+    }
+
+    if ( layer.crs.size() > 10 )
+    {
+      metadata += "<tr><td>";
+      metadata += tr( "Available in CRS" );
+      metadata += "</td>";
+      metadata += "<td>";
+      metadata += tr( "(and %n more)", "crs", layer.crs.size() - 10 );
+      metadata += "</td></tr>";
+    }
+
+    // Layer Styles
+    for ( int j = 0; j < layer.style.size(); j++ )
+    {
+      metadata += "<tr><td>";
+      metadata += tr( "Available in style" );
+      metadata += "</td>";
+      metadata += "<td>";
+
+      // Nested table.
+      metadata += "<table width=\"100%\">";
+
+      // Layer Style Name
+      metadata += "<tr><th class=\"glossy\">";
+      metadata += tr( "Name" );
+      metadata += "</th>";
+      metadata += "<td>";
+      metadata += layer.style[j].name;
+      metadata += "</td></tr>";
+
+      // Layer Style Title
+      metadata += "<tr><th class=\"glossy\">";
+      metadata += tr( "Title" );
+      metadata += "</th>";
+      metadata += "<td>";
+      metadata += layer.style[j].title;
+      metadata += "</td></tr>";
+
+      // Layer Style Abstract
+      metadata += "<tr><th class=\"glossy\">";
+      metadata += tr( "Abstract" );
+      metadata += "</th>";
+      metadata += "<td>";
+      metadata += layer.style[j].abstract;
+      metadata += "</td></tr>";
+
+      // Close the nested table
+      metadata += "</table>";
+      metadata += "</td></tr>";
+    }
 
     // Close the nested table
     metadata += "</table>";
     metadata += "</td></tr>";
-  }
-
-  // Close the nested table
-  metadata += "</table>";
-  metadata += "</td></tr>";
-*/
+  */
   return metadata;
 }
 
@@ -950,9 +916,9 @@ QString QgsWcsProvider::metadata()
   metadata += "</a>";
 
 #if QT_VERSION >= 0x40500
-    metadata += "<a href=\"#cachestats\">";
-    metadata += tr( "Cache Stats" );
-    metadata += "</a> ";
+  metadata += "<a href=\"#cachestats\">";
+  metadata += tr( "Cache Stats" );
+  metadata += "</a> ";
 #endif
 
   metadata += "</td></tr>";
@@ -1080,7 +1046,7 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "GetMapUrl" );
   metadata += "</td>";
   metadata += "<td>";
-  metadata += getMapUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
+  //metadata += getMapUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
   metadata += "</td></tr>";
 
   // Close the nested table
@@ -1224,6 +1190,21 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
     mimes[mimeType] = desc;
   }
   return mimes;
+}
+
+// Not supported by WCS
+// TODO: remove from QgsRasterDataProvider?
+QImage* QgsWcsProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
+{
+  Q_UNUSED( viewExtent );
+  QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
+  QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
+  QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
+
+  QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
+  image->fill( QColor( Qt::gray ).rgb() );
+
+  return image;
 }
 
 QGISEXTERN QgsWcsProvider * classFactory( const QString *uri )

@@ -174,7 +174,6 @@ class QgsWcsCapabilities : public QObject
     static QString prepareUri( QString uri );
 
     /**Returns the GetCoverage url
-     * @added in 1.5
      */
     QString getCoverageUrl() const;
 
@@ -191,6 +190,8 @@ class QgsWcsCapabilities : public QObject
 
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
+
+    QString version() const { return mCapabilities.version; }
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

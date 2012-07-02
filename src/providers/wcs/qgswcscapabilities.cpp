@@ -93,6 +93,7 @@ QgsWcsCapabilities::~QgsWcsCapabilities()
   QgsDebugMsg( "deconstructing." );
 }
 
+// TODO: return if successful
 void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
 {
   mUri = theUri;
@@ -511,7 +512,7 @@ void QgsWcsCapabilities::parseCoverageOfferingBrief( QDomElement const & e, QgsW
 
   QDomElement lonLatEnvelopeElement = firstChild( e, "lonLatEnvelope" );
 
-  QDomNodeList posNodes = lonLatEnvelopeElement.elementsByTagName( "pos" );
+  QDomNodeList posNodes = lonLatEnvelopeElement.elementsByTagName( "gml:pos" );
   QList<double> lon, lat;
   for ( int i = 0; i < posNodes.size(); i++ )
   {

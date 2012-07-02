@@ -19,6 +19,7 @@
 
 #ifndef QGSWCSSOURCESELECT_H
 #define QGSWCSSOURCESELECT_H
+
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
 #include "qgisgui.h"

@@ -5,9 +5,9 @@
     begin                : 2 July, 2012
     copyright            : (C) 2012 by Radim Blazek
     email                : radim dot blazek at gmail.com
-  
+
     Based on qgswmsprovider.h written by Brendan Morley.
-    
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,6 +22,7 @@
 #ifndef QGSWCSPROVIDER_H
 #define QGSWCSPROVIDER_H
 
+#include "qgswcscapabilities.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 
@@ -118,14 +119,6 @@ class QgsWcsProvider : public QgsRasterDataProvider
      */
     virtual QString baseUrl() const;
 
-    /**Returns the GetMap url
-     */
-    virtual QString getMapUrl() const;
-
-    /**Returns the GetFeatureInfo url
-     */
-    virtual QString getFeatureInfoUrl() const;
-
     //! get WCS version string
     QString wcsVersion();
 
@@ -210,7 +203,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
     QString prepareUri( QString uri ) const;
 
     //QString layerMetadata( QgsWmsLayerProperty &layer );
-    QString layerMetadata(  );
+    QString layerMetadata( );
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );
@@ -235,6 +228,12 @@ class QgsWcsProvider : public QgsRasterDataProvider
      */
     bool mValid;
 
+    /** Server capabilities */
+    QgsWcsCapabilities mCapabilities;
+
+    /** Coverage summary */
+    QgsWcsCoverageSummary * mCoverageSummary;
+
     /**
      * Spatial reference id of the layer
      */
@@ -243,7 +242,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
     /**
      * Rectangle that contains the extent (bounding box) of the layer
      */
-    QgsRectangle mLayerExtent;
+    QgsRectangle mCoverageExtent;
 
     /**
      * Last Service Exception Report from the WCS
@@ -267,9 +266,9 @@ class QgsWcsProvider : public QgsRasterDataProvider
     QMap<QString, bool> mQueryableForLayer;
 
     /**
-     * WCS CRS type of the image CRS used from the WCS server
+     * WCS CRS type of the coverage CRS requested from the WCS server
      */
-    QString mImageCrs;
+    QString mCoverageCrs;
 
     /**
      * The previously retrieved image from the WCS server.

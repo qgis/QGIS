@@ -709,6 +709,11 @@ void QgsDataSourceURI::setParam( const QString &key, const QStringList &value )
   }
 }
 
+int QgsDataSourceURI::removeParam( const QString &key )
+{
+  return mParams.remove( key );
+}
+
 QString QgsDataSourceURI::param( const QString &key ) const
 {
   return mParams.value( key );
