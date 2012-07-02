@@ -19,7 +19,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
-#include "qgsgdalprovider.h"
+#include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
 #include "qgsnumericsortlistviewitem.h"
@@ -142,7 +142,7 @@ void QgsWCSSourceSelect::addClicked( )
     uri.setParam( "format", selectedFormat() );
   }
 
-  emit addRasterLayer( uri.encodedUri(), identifier, "gdal" );
+  emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
 }
 
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
@@ -187,7 +187,7 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
   QgsDebugMsg( "entered" );
   QList<QgsOWSSupportedFormat> formats;
 
-  QMap<QString, QString> mimes = QgsGdalProvider::supportedMimes();
+  QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
   foreach( QString mime, mimes.keys() )
   {
     QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
