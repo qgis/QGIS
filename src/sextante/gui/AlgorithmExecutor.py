@@ -8,7 +8,7 @@ from sextante.core.SextanteUtils import SextanteUtils
 class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
     textChanged = pyqtSignal(QString)
-    error = pyqtSignal()
+    error = pyqtSignal(str)
     iterated = pyqtSignal(int)
     #started & finished inherited from QThread
 

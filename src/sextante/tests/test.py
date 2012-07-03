@@ -28,31 +28,77 @@ sys.path.append(pardir)
 sys.path.append('/usr/share/qgis/python/plugins')
 
 from qgis.gui import QgsMapCanvas
+from qgis.core import *
 from qgis_interface import QgisInterface
 from PyQt4.QtGui import QWidget
 from utilities_test import getQgisTestApp
 #from gui.is_plugin import ISPlugin
-from sextante import SextantePlugin
+from sextante.SextantePlugin import SextantePlugin
 from sextante.core.Sextante import Sextante
+from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputVector import OutputVector
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+class DataProviderStub:
+    def __init__(self, uri):
+        self.dataSourceUri = lambda: uri
 
 class SextantePluginTest(unittest.TestCase):
     """Test suite for Sextante QGis plugin"""
-
-    def test_createplugin(self):
+    def gen_test_parameters(self, alg):
+        for p in alg.parameters:
+            if isinstance(p, ParameterRaster):
+                l = QgsRasterLayer('.data/raster', "test raster")
+                l.dataProvider = lambda: DataProviderStub('data/raster')
+                yield l
+            elif isinstance(p, ParameterVector):
+                l = QgsVectorLayer('.data/vector', "test vector")
+                l.dataProvider = lambda: DataProviderStub('data/vector')
+                yield l
+            elif isinstance(p, ParameterNumber):
+                yield p.max
+            else:
+                yield
+        i = 0;
+        for o in alg.outputs:
+            if o.hidden:
+                continue;
+            i = i + 1
+            if isinstance(o, OutputRaster):
+                yield 'output%i.tif' % i
+            elif isinstance(o, OutputVector):
+                yield 'output%i.shp' % i
+            else:
+                yield
+        
+    def test_0createplugin(self):
         """Initialize plugin"""
-        sextanteplugin = SextantePlugin(IFACE)
-        assert sextanteplugin != None,  "Unable to create plugin"
+        self.sextanteplugin = SextantePlugin(IFACE)
+        self.assertIsNotNone(self.sextanteplugin)
 
-    def test_sextante_alglist(self):
+    def test_1sextante_alglist(self):
         """Test alglist"""
-        sextanteplugin = SextantePlugin(IFACE)
-        algs = Sextante.algs.values()
-        for provider in Sextante.algs.values():
-            for algo in provider.values():
-                print algo.commandLineName()
-        assert algs, "Algo list is empty"
+        self.sextanteplugin = SextantePlugin(IFACE)
+        self.providerToAlgs = Sextante.algs
+        self.assertTrue(self.providerToAlgs, "Alg list")
+
+    def test_runalg(self):
+        self.sextanteplugin = SextantePlugin(IFACE)
+        self.providerToAlgs = Sextante.algs
+        for provider, algs in self.providerToAlgs.items():
+            if not algs.items():
+                print "WARINING: %s seems to provide no algs!" % provider
+                continue
+            algId, alg = algs.items()[-1]
+            args = list(self.gen_test_parameters(alg))
+            print "Alg: ", algId
+            print alg.parameters, ' => ', args
+            result = Sextante.runalg(algId, *args)
+            self.assertIsNotNone(result, "Running directly %s" % algId)
+            print algId, " ok."
 
 if __name__ == '__main__':
     unittest.main()

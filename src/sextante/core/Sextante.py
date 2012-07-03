@@ -387,8 +387,3 @@ class Sextante:
         else:
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
                 SextantePostprocessing.handleAlgorithmResults(alg)
-
-
-
-
-

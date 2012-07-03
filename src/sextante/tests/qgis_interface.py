@@ -92,3 +92,6 @@ class QgisInterface(QObject):
     def addDockWidget(self, area, dockwidget):
         """ Add a dock widget to the main window """
         pass
+
+    def legendInterface(self):
+        return type('FakeLInterface', (), {'layers' : list})()
