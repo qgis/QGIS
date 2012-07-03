@@ -39,6 +39,17 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
 
+#define CPL_SUPRESS_CPLUSPLUS
+#include <gdal.h>
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
+
 /**
 
   \brief Data provider for OGC WCS layers.
@@ -106,6 +117,9 @@ class QgsWcsProvider : public QgsRasterDataProvider
     QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight );
 
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+
+    /** Download cache */
+    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height );
 
     /** Return the extent for this data layer
     */
@@ -211,6 +225,12 @@ class QgsWcsProvider : public QgsRasterDataProvider
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
 
+    //! Convert data type from GDAL to QGIS
+    int dataTypeFormGdal( int theGdalDataType ) const;
+
+    //! Release cache resources
+    void clearCache();
+
     //! Data source URI of the WCS for this layer
     QString mHttpUri;
 
@@ -234,15 +254,37 @@ class QgsWcsProvider : public QgsRasterDataProvider
     /** Coverage summary */
     QgsWcsCoverageSummary * mCoverageSummary;
 
-    /**
-     * Spatial reference id of the layer
-     */
+    /** Spatial reference id of the layer */
     QString mSrid;
 
-    /**
-     * Rectangle that contains the extent (bounding box) of the layer
-     */
+    /** Rectangle that contains the extent (bounding box) of the layer */
     QgsRectangle mCoverageExtent;
+
+    /** Coverage width, may be 0 if it could not be found in DescribeCoverage */
+    int mWidth;
+
+    /** Coverage width, may be 0 if it could not be found in DescribeCoverage */
+    int mHeight;
+
+    /** Flag if size was parsed successfully */
+    bool mHasSize;
+
+    /** Number of bands */
+    int mBandCount;
+
+    /** \brief Gdal data types used to represent data in in QGIS,
+               may be longer than source data type to keep nulls
+               indexed from 0 */
+    QList<int>mGdalDataType;
+
+    /** GDAL source data types, indexed from 0 */
+    QList<int>mSrcGdalDataType;
+
+    /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
+    QList<double> mNoDataValue;
+
+    /** Source data types */
+    //QVector<QgsRasterDataProvider::DataType> mDataTypes;
 
     /**
      * Last Service Exception Report from the WCS
@@ -265,69 +307,51 @@ class QgsWcsProvider : public QgsRasterDataProvider
      */
     QMap<QString, bool> mQueryableForLayer;
 
-    /**
-     * WCS CRS type of the coverage CRS requested from the WCS server
-     */
+    /** WCS CRS type of the coverage CRS requested from the WCS server */
     QString mCoverageCrs;
+
+    /** The reply to the on going request to fill the cache */
+    QNetworkReply *mCacheReply;
+
+    /** Cached data */
+    QByteArray mCachedData;
+
+    /** Name of memory file for cached data */
+    QString mCachedMemFilename;
+
+    VSILFILE * mCachedMemFile;
+
+    /** Pointer to cached GDAL dataset */
+    GDALDatasetH mCachedGdalDataset;
+
+    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
+    //double mGeoTransform[6];
 
     /**
      * The previously retrieved image from the WCS server.
      * This can be reused if draw() is called consecutively
      * with the same parameters.
      */
-    QImage *mCachedImage;
+    //QImage *mCachedImage;
 
-    /**
-     * The reply to the on going request to fill the cache
-     */
-    QNetworkReply *mCacheReply;
 
-    /**
-     * Running tile requests
-     */
-    QList<QNetworkReply*> mTileReplies;
-
-    /**
-     * The reply to the capabilities request
-     */
-    QNetworkReply *mCapabilitiesReply;
-
-    /**
-     * The reply to the capabilities request
-     */
-    QNetworkReply *mIdentifyReply;
-
-    /**
-     * The result of the identify reply
-     */
-    QString mIdentifyResult;
-
-    /**
-     * The previous parameters to draw().
-     */
+    /** The previous parameters to draw(). */
     QgsRectangle mCachedViewExtent;
     int mCachedViewWidth;
     int mCachedViewHeight;
 
-    /**
-     * Maximum width and height of getmap requests
-     */
+    /** Maximum width and height of getmap requests */
     int mMaxWidth;
     int mMaxHeight;
 
-    /**
-     * The error caption associated with the last WCS error.
-     */
+    /** The error caption associated with the last WCS error. */
     QString mErrorCaption;
 
-    /**
-     * The error message associated with the last WCS error.
-     */
+    /** The error message associated with the last WCS error. */
     QString mError;
 
 
-    /** The mime type of the message
-     */
+    /** The mime type of the message */
     QString mErrorFormat;
 
     //! A QgsCoordinateTransform is used for transformation of WCS layer extents
@@ -365,6 +389,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
     bool mInvertAxisOrientation;
 
     QgsCoordinateReferenceSystem mCrs;
+
 };
 
 

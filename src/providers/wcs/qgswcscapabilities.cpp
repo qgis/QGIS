@@ -453,6 +453,43 @@ QString QgsWcsCapabilities::firstChildText( const QDomElement &element, const QS
   return QString();
 }
 
+QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QString & path )
+{
+  QStringList names = path.split( "." );
+  if ( names.size() == 0 ) return QDomElement();
+
+  QDomElement el = firstChild( element, names.value( 0 ) );
+  if ( names.size() == 1 || el.isNull() )
+  {
+    return el;
+  }
+  names.removeFirst();
+  return domElement( el, names.join( "." ) );
+}
+
+QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QString & path )
+{
+  QDomElement el = domElement( element, path );
+  return el.text();
+}
+
+QList<int> QgsWcsCapabilities::parseInts( const QString &text )
+{
+  QList<int> list;
+  foreach( QString s, text.split( " " ) )
+  {
+    int i;
+    bool ok;
+    list.append( s.toInt( &ok ) );
+    if ( !ok )
+    {
+      list.clear();
+      return list;
+    }
+  }
+  return list;
+}
+
 // ------------------------ 1.0 ----------------------------------------------
 void QgsWcsCapabilities::parseService( const QDomElement &e, QgsWcsServiceIdentification &serviceIdentification ) // 1.0
 {
@@ -490,6 +527,9 @@ void QgsWcsCapabilities::parseContentMetadata( QDomElement const & e, QgsWcsCove
         QgsWcsCoverageSummary subCoverageSummary;
 
         subCoverageSummary.described = false;
+        subCoverageSummary.width = 0;
+        subCoverageSummary.height = 0;
+        subCoverageSummary.hasSize = false;
 
         parseCoverageOfferingBrief( el, subCoverageSummary, &coverageSummary );
 
@@ -655,6 +695,32 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom( QByteArray const &xml, QgsWcs
   }
   QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
+  // spatialDomain and Grid/RectifiedGrid are optional according to specificationi.
+  // If missing, we cannot get native resolution and size.
+  QDomElement gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.Grid" );
+
+  if ( gridElement.isNull() )
+  {
+    gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.RectifiedGrid" );
+  }
+
+  if ( !gridElement.isNull() )
+  {
+    QList<int> low = parseInts( domElementText( gridElement, "limits.GridEnvelope.low" ) );
+    QList<int> high = parseInts( domElementText( gridElement, "limits.GridEnvelope.high" ) );
+    if ( low.size() == 2 && high.size() == 2 )
+    {
+      coverage->width = high[0] - low[0] + 1;
+      coverage->height = high[1] - low[1] + 1;
+      coverage->hasSize = true;
+    }
+    // RectifiedGrid has also gml:origin which we dont need I think (attention however
+    // it should contain gml:Point but mapserver 6.0.3 / WCS 1.0.0 is using gml:pos instead)
+    // RectifiedGrid also contains 2 gml:offsetVector which could be used to get resolution
+    // but it should be sufficient to calc resolution from size
+  }
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
+
   coverage->described = true;
 
   return true;
@@ -772,6 +838,11 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const & e, QgsWcsCove
         QgsDebugMsg( "      Nested coverage." );
 
         QgsWcsCoverageSummary subCoverageSummary;
+
+        subCoverageSummary.described = false;
+        subCoverageSummary.width = 0;
+        subCoverageSummary.height = 0;
+        subCoverageSummary.hasSize = false;
 
         // Inherit
         subCoverageSummary.supportedCrs = coverageSummary.supportedCrs;

@@ -97,6 +97,10 @@ struct QgsWcsCoverageSummary
   QgsRectangle  wgs84BoundingBox;
   QVector<QgsWcsCoverageSummary> coverageSummary;
   bool          described; // 1.0
+  // non reflecting directly Capabilities structure:
+  int width;
+  int height;
+  bool hasSize;
 };
 
 /** Contents structure */
@@ -242,6 +246,14 @@ class QgsWcsCapabilities : public QObject
     //! Get first child of specified name, NS is ignored
     QDomElement firstChild( const QDomElement &element, const QString &name );
 
+    /** Find first sub element by path which is string of dot separated tag names.
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+    QDomElement domElement( const QDomElement &element, const QString &path );
+
+    /** Get text of element specified by path */
+    QString domElementText( const QDomElement &element, const QString &path );
+
+    QList<int> parseInts( const QString &text );
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *

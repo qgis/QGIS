@@ -159,7 +159,11 @@ void QgsOWSSourceSelect::populateFormats()
 
   // selectedLayersFormats may come in various forms:
   // image/tiff, GTiff, GeoTIFF, TIFF, geotiff_int16, geotiff_rgb,
-  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC,
+  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC, GEOTIFFINT16
+
+  // TODO: It is impossible to cover all possible formats comming from server
+  //       -> enabled all formats, GDAL may be able to open them
+
   QMap<QString, QString> formatsMap;
   formatsMap.insert( "geotiff", "tiff" );
   formatsMap.insert( "gtiff", "tiff" );
@@ -215,14 +219,16 @@ void QgsOWSSourceSelect::populateFormats()
     else
     {
       QgsDebugMsg( QString( "format %1 not supported." ).arg( format ) );
-      btn->setEnabled( false );
+      //btn->setEnabled( false );
+      btn->setEnabled( true );
       tip += " " + tr( "is not supported by GDAL" );
     }
     btn->setText( label );
     btn->setToolTip( tip );
   }
   // Set prefered
-  prefered = prefered >= 0 ? prefered : firstEnabled;
+  // TODO: all enabled for now, see above
+  //prefered = prefered >= 0 ? prefered : firstEnabled;
   if ( prefered >= 0 )
   {
     mImageFormatGroup->button( prefered )->setChecked( true );

@@ -75,7 +75,6 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( QString::null )
     , mCoverageCrs( DEFAULT_LATLON_CRS )
-    , mCachedImage( 0 )
     , mCacheReply( 0 )
     , mCachedViewExtent( 0 )
     , mCoordinateTransform( 0 )
@@ -85,6 +84,12 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mUserName( QString::null )
     , mPassword( QString::null )
     , mCoverageSummary( 0 )
+    , mCachedGdalDataset( 0 )
+    , mCachedMemFile( 0 )
+    , mWidth( 0 )
+    , mHeight( 0 )
+    , mHasSize( false )
+    , mBandCount( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -119,6 +124,9 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     QgsDebugMsg( "coverage not found" );
     return;
   }
+  mWidth = mCoverageSummary->width;
+  mHeight = mCoverageSummary->height;
+  mHasSize = mCoverageSummary->hasSize;
 
   if ( !calculateExtent() )
   {
@@ -126,8 +134,98 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     return;
   }
 
+  mCachedMemFilename = QString( "/vsimem/qgis/wcs/%0.dat" ).arg(( qlonglong )this );
+
+  // Get small piece of coverage to find GDAL data type and nubmer of bands
+  int bandNo = 0; // All bands
+  double xRes, yRes;
+  int size = 5; // to be requested
+  int width = 1000; // just some number to get smaller piece of coverage
+  int height = 1000;
+  if ( mHasSize )
+  {
+    width = mWidth;
+    height = mHeight;
+  }
+  xRes = mCoverageExtent.width() / width;
+  yRes = mCoverageExtent.height() / height;
+  QgsRectangle extent = mCoverageExtent;
+  extent.setXMaximum( extent.xMinimum() + size * xRes );
+  extent.setYMaximum( extent.yMinimum() + size * yRes );
+  getCache( bandNo, extent, size, size );
+
+  if ( !mCachedGdalDataset )
+  {
+    QgsDebugMsg( "Cannot get test dataset." );
+    return;
+  }
+
+  mBandCount = GDALGetRasterCount( mCachedGdalDataset );
+  QgsDebugMsg( QString( "mBandCount = %1" ).arg( mBandCount ) ) ;
+
+  // Get types
+  // TODO: we are using the same data types like GDAL (not wider like GDAL provider)
+  // with expectation to replace 'no data' values by NaN
+  for ( int i = 1; i <= mBandCount; i++ )
+  {
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
+    GDALDataType myGdalDataType = GDALGetRasterDataType( gdalBand );
+
+    mSrcGdalDataType.append( myGdalDataType );
+    // TODO: This could be shared with GDAL provider
+    int isValid = false;
+    double myNoDataValue = GDALGetRasterNoDataValue( gdalBand, &isValid );
+    if ( isValid )
+    {
+      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
+      mGdalDataType.append( myGdalDataType );
+    }
+    else
+    {
+      // But we need a null value in case of reprojection and BTW also for
+      // aligned margines
+      switch ( dataTypeFormGdal( myGdalDataType ) )
+      {
+
+        case QgsRasterDataProvider::Byte:
+          // Use longer data type to avoid conflict with real data
+          myNoDataValue = -32768.0;
+          mGdalDataType.append( GDT_Int16 );
+          break;
+        case QgsRasterDataProvider::Int16:
+          myNoDataValue = -2147483648.0;
+          mGdalDataType.append( GDT_Int32 );
+          break;
+        case QgsRasterDataProvider::UInt16:
+          myNoDataValue = -2147483648.0;
+          mGdalDataType.append( GDT_Int32 );
+          break;
+        case QgsRasterDataProvider::Int32:
+          myNoDataValue = -2147483648.0;
+          mGdalDataType.append( myGdalDataType );
+          break;
+        case QgsRasterDataProvider::UInt32:
+          myNoDataValue = 4294967295.0;
+          mGdalDataType.append( myGdalDataType );
+          break;
+        default:
+          myNoDataValue = std::numeric_limits<int>::max();
+          // Would NaN work well?
+          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
+          mGdalDataType.append( myGdalDataType );
+      }
+    }
+    mNoDataValue.append( myNoDataValue );
+
+    QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
+    QgsDebugMsg( QString( "mGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mGdalDataType[i-1] ) );
+    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+  }
+
+  clearCache();
+
   mValid = true;
-  QgsDebugMsg( "exiting constructor." );
+  QgsDebugMsg( "Constructed ok, provider valid." );
 }
 
 void QgsWcsProvider::parseUri( QString uriString )
@@ -181,11 +279,7 @@ QgsWcsProvider::~QgsWcsProvider()
   QgsDebugMsg( "deconstructing." );
 
   // Dispose of any cached image as created by draw()
-  if ( mCachedImage )
-  {
-    delete mCachedImage;
-    mCachedImage = 0;
-  }
+  clearCache();
 
   if ( mCoordinateTransform )
   {
@@ -263,7 +357,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   }
 
   // Can we reuse the previously cached image?
-  if ( mCachedImage &&
+  if ( mCachedGdalDataset &&
        mCachedViewExtent == viewExtent &&
        mCachedViewWidth == pixelWidth &&
        mCachedViewHeight == pixelHeight )
@@ -271,12 +365,33 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     //return mCachedImage;
   }
 
-  // delete cached image and create network request(s) to fill it
-  if ( mCachedImage )
+  getCache( bandNo, viewExtent, pixelWidth, pixelHeight );
+
+  if ( mCachedGdalDataset )
   {
-    //delete mCachedImage;
-    //mCachedImage = 0;
+    // TODO band
+    int width = GDALGetRasterXSize( mCachedGdalDataset );
+    int height = GDALGetRasterYSize( mCachedGdalDataset );
+    QgsDebugMsg( QString( "cached data width = %1 height = %2" ).arg( width ).arg( height ) );
+    // TODO: check type? , check band count?
+    if ( width == pixelWidth && height == pixelHeight )
+    {
+      GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
+      GDALRasterIO( gdalBand, GF_Read, 0, 0, pixelWidth, pixelHeight, block, pixelWidth, pixelHeight, ( GDALDataType ) mGdalDataType[bandNo-1], 0, 0 );
+      QgsDebugMsg( tr( "Block read OK" ) );
+    }
+    else
+    {
+      QgsDebugMsg( tr( "Recieved coverage has wrong size" ) );
+      return;
+    }
   }
+}
+
+void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
+{
+  // delete cached data
+  clearCache();
 
   // --------------- BOUNDING BOX --------------------------------
   //according to the WCS spec for 1.3, some CRS have inverted axis
@@ -372,10 +487,8 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   {
     QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WCS_THRESHOLD );
   }
-
   mWaiting = false;
-  //memcpy( block, ptr, myExpectedSize );
-  //return mCachedImage;
+
 }
 
 void QgsWcsProvider::cacheReplyFinished()
@@ -411,18 +524,44 @@ void QgsWcsProvider::cacheReplyFinished()
 
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    //if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    // TODO: How to recognize easily coverage data from exception?
+    if ( !contentType.startsWith( "text/", Qt::CaseInsensitive ) &&
+         contentType.toLower() != "application/vnd.ogc.se_xml" )
     {
-      QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
-      if ( !myLocalImage.isNull() )
+      // Create memory file
+      clearCache();
+      mCachedData = mCacheReply->readAll();
+      if ( mCachedData.size() == 0 )
       {
-        QPainter p( mCachedImage );
-        p.drawImage( 0, 0, myLocalImage );
+        QgsMessageLog::logMessage( tr( "No data recieved" ), tr( "WCS" ) );
+        clearCache();
+        return;
       }
-      else
+      QgsDebugMsg( QString( "%1 bytes recieved" ).arg( mCachedData.size() ) );
+
+      mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
+                                             ( GByte* )mCachedData.data(),
+                                             ( vsi_l_offset )mCachedData.size(),
+                                             FALSE );
+
+      if ( !mCachedMemFile )
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( mCacheReply->url().toString() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Cannot create memory file" ), tr( "WCS" ) );
+        clearCache();
+        return;
       }
+      QgsDebugMsg( "Memory file created" );
+
+      CPLErrorReset();
+      mCachedGdalDataset = GDALOpen( TO8F( mCachedMemFilename ), GA_ReadOnly );
+      if ( !mCachedGdalDataset )
+      {
+        QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );
+        clearCache();
+        return;
+      }
+      QgsDebugMsg( "Dataset opened" );
     }
     else
     {
@@ -473,20 +612,93 @@ void QgsWcsProvider::cacheReplyFinished()
   }
 }
 
-int QgsWcsProvider::dataType( int bandNo ) const
-{
-  return srcDataType( bandNo );
-}
-
+// This could be shared with GDAL provider
 int QgsWcsProvider::srcDataType( int bandNo ) const
 {
-  Q_UNUSED( bandNo );
-  return QgsRasterDataProvider::ARGBDataType;
+  if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
+  {
+    return QgsRasterDataProvider::UnknownDataType;
+  }
+
+  return dataTypeFormGdal( mSrcGdalDataType[bandNo-1] );
+}
+
+int QgsWcsProvider::dataType( int bandNo ) const
+{
+  if ( bandNo < 0 || bandNo > mGdalDataType.size() )
+  {
+    return QgsRasterDataProvider::UnknownDataType;
+  }
+
+  return dataTypeFormGdal( mGdalDataType[bandNo-1] );
+}
+
+int QgsWcsProvider::dataTypeFormGdal( int theGdalDataType ) const
+{
+  switch ( theGdalDataType )
+  {
+    case GDT_Unknown:
+      return QgsRasterDataProvider::UnknownDataType;
+      break;
+    case GDT_Byte:
+      return QgsRasterDataProvider::Byte;
+      break;
+    case GDT_UInt16:
+      return QgsRasterDataProvider::UInt16;
+      break;
+    case GDT_Int16:
+      return QgsRasterDataProvider::Int16;
+      break;
+    case GDT_UInt32:
+      return QgsRasterDataProvider::UInt32;
+      break;
+    case GDT_Int32:
+      return QgsRasterDataProvider::Int32;
+      break;
+    case GDT_Float32:
+      return QgsRasterDataProvider::Float32;
+      break;
+    case GDT_Float64:
+      return QgsRasterDataProvider::Float64;
+      break;
+    case GDT_CInt16:
+      return QgsRasterDataProvider::CInt16;
+      break;
+    case GDT_CInt32:
+      return QgsRasterDataProvider::CInt32;
+      break;
+    case GDT_CFloat32:
+      return QgsRasterDataProvider::CFloat32;
+      break;
+    case GDT_CFloat64:
+      return QgsRasterDataProvider::CFloat64;
+      break;
+    case GDT_TypeCount:
+      // make gcc happy
+      break;
+  }
+  return QgsRasterDataProvider::UnknownDataType;
 }
 
 int QgsWcsProvider::bandCount() const
 {
-  return 1;
+  return mBandCount;
+}
+
+void QgsWcsProvider::clearCache()
+{
+  QgsDebugMsg( "Entered" );
+  if ( mCachedGdalDataset )
+  {
+    GDALClose( mCachedGdalDataset );
+    mCachedGdalDataset = 0;
+  }
+  if ( mCachedMemFile )
+  {
+    VSIFCloseL( mCachedMemFile );
+    mCachedMemFile = 0;
+  }
+  mCachedData.clear();
 }
 
 void QgsWcsProvider::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -720,6 +932,12 @@ int QgsWcsProvider::capabilities() const
 {
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
+
+  if ( mHasSize )
+  {
+    capability |= QgsRasterDataProvider::ExactResolution;
+    capability |= QgsRasterDataProvider::Size;
+  }
 
   return capability;
 }
@@ -1124,8 +1342,9 @@ QString  QgsWcsProvider::description() const
 
 void QgsWcsProvider::reloadData()
 {
-  delete mCachedImage;
-  mCachedImage = 0;
+  //delete mCachedImage;
+  //mCachedImage = 0;
+  clearCache();
 }
 
 void QgsWcsProvider::setAuthorization( QNetworkRequest &request ) const
