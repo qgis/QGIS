@@ -118,6 +118,8 @@ class QgsWcsProvider : public QgsRasterDataProvider
 
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
+    void readBlock( int theBandNo, int xBlock, int yBlock, void *block );
+
     /** Download cache */
     void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height );
 
@@ -141,6 +143,11 @@ class QgsWcsProvider : public QgsRasterDataProvider
     int dataType( int bandNo ) const;
     int srcDataType( int bandNo ) const;
     int bandCount() const;
+    double noDataValue() const;
+    int xBlockSize() const;
+    int yBlockSize() const;
+    int xSize() const;
+    int ySize() const;
     QString metadata();
     QString identifyAsHtml( const QgsPoint& point );
     QString identifyAsText( const QgsPoint& point );
@@ -265,6 +272,10 @@ class QgsWcsProvider : public QgsRasterDataProvider
 
     /** Coverage width, may be 0 if it could not be found in DescribeCoverage */
     int mHeight;
+
+    /** Block size */
+    int mXBlockSize;
+    int mYBlockSize;
 
     /** Flag if size was parsed successfully */
     bool mHasSize;

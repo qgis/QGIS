@@ -221,6 +221,7 @@ void QgsOWSSourceSelect::populateFormats()
       QgsDebugMsg( QString( "format %1 not supported." ).arg( format ) );
       //btn->setEnabled( false );
       btn->setEnabled( true );
+      if ( firstEnabled < 0 ) { firstEnabled = i; }
       tip += " " + tr( "is not supported by GDAL" );
     }
     btn->setText( label );
@@ -228,7 +229,7 @@ void QgsOWSSourceSelect::populateFormats()
   }
   // Set prefered
   // TODO: all enabled for now, see above
-  //prefered = prefered >= 0 ? prefered : firstEnabled;
+  prefered = prefered >= 0 ? prefered : firstEnabled;
   if ( prefered >= 0 )
   {
     mImageFormatGroup->button( prefered )->setChecked( true );

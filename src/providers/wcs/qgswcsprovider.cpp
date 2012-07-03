@@ -71,6 +71,8 @@ static QString WCS_DESCRIPTION = "OGC Web Coverage Service version 1.0/1.1 data 
 
 static QString DEFAULT_LATLON_CRS = "CRS:84";
 
+// TODO: colortable - use comon baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
+
 QgsWcsProvider::QgsWcsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , mHttpUri( QString::null )
@@ -88,6 +90,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mCachedMemFile( 0 )
     , mWidth( 0 )
     , mHeight( 0 )
+    , mXBlockSize( 0 )
+    , mYBlockSize( 0 )
     , mHasSize( false )
     , mBandCount( 0 )
 {
@@ -174,6 +178,12 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     mSrcGdalDataType.append( myGdalDataType );
     // TODO: This could be shared with GDAL provider
     int isValid = false;
+
+    // UMN Mapserver does not automaticaly set null value, METADATA wcs_rangeset_nullvalue must be used
+    // http://lists.osgeo.org/pipermail/mapserver-users/2010-April/065328.html
+
+    // TODO:
+
     double myNoDataValue = GDALGetRasterNoDataValue( gdalBand, &isValid );
     if ( isValid )
     {
@@ -216,6 +226,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
       }
     }
     mNoDataValue.append( myNoDataValue );
+    mValidNoDataValue = true;
 
     QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
     QgsDebugMsg( QString( "mGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mGdalDataType[i-1] ) );
@@ -223,6 +234,18 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   }
 
   clearCache();
+
+  // Block size is used for for statistics
+  // TODO: How to find maximum block size supported by server?
+  if ( mHasSize )
+  {
+    // This is taken from GDAL, how they come to these numbers?
+    if ( mWidth > 1800 ) mXBlockSize = 1024;
+    else mXBlockSize = mWidth;
+
+    if ( mHeight > 900 ) mYBlockSize = 512;
+    else mYBlockSize = mHeight;
+  }
 
   mValid = true;
   QgsDebugMsg( "Constructed ok, provider valid." );
@@ -491,6 +514,32 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
 
 }
 
+// For stats only, maybe change QgsRasterDataProvider::bandStatistics() to
+// use standard readBlock with extent
+void QgsWcsProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
+{
+  QgsDebugMsg( "Entered" );
+
+  QgsDebugMsg( QString( "xBlock = %1 yBlock = %2" ).arg( xBlock ).arg( yBlock ) );
+
+  if ( !mHasSize ) return;
+
+  double xRes = mCoverageExtent.width() / mWidth;
+  double yRes = mCoverageExtent.height() / mHeight;
+
+  // blocks on edges may run out of extent, that should not be problem (at least for
+  // stats - there is a check for it)
+  double xMin = mCoverageExtent.xMinimum() + xRes * xBlock * mXBlockSize;
+  double xMax = xMin + xRes * mXBlockSize;
+  double yMax = mCoverageExtent.yMaximum() - yRes * yBlock * mYBlockSize;
+  double yMin = yMax - yRes * mYBlockSize;
+  //QgsDebugMsg( QString("yMin = %1 yMax = %2").arg(yMin).arg(yMax) );
+
+  QgsRectangle extent( xMin, yMin, xMax, yMax );
+
+  readBlock( theBandNo, extent, mXBlockSize, mYBlockSize, block );
+}
+
 void QgsWcsProvider::cacheReplyFinished()
 {
   if ( mCacheReply->error() == QNetworkReply::NoError )
@@ -684,6 +733,29 @@ int QgsWcsProvider::bandCount() const
 {
   return mBandCount;
 }
+
+double  QgsWcsProvider::noDataValue() const
+{
+  if ( mNoDataValue.size() > 0 )
+  {
+    return mNoDataValue[0];
+  }
+  return std::numeric_limits<int>::max(); // should not happen or be used
+}
+
+// this is only called once when statistics are calculated
+// TODO
+int QgsWcsProvider::xBlockSize() const
+{
+  return mXBlockSize;
+}
+int QgsWcsProvider::yBlockSize() const
+{
+  return mYBlockSize;
+}
+
+int QgsWcsProvider::xSize() const { return mWidth; }
+int QgsWcsProvider::ySize() const { return mHeight; }
 
 void QgsWcsProvider::clearCache()
 {

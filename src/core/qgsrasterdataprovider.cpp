@@ -243,6 +243,7 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
 
 QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 {
+  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
   double myNoDataValue = noDataValue();
   QgsRasterBandStats myRasterBandStats;
   myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
@@ -255,7 +256,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   myXBlockSize = xBlockSize();
   myYBlockSize = yBlockSize();
 
-  if ( myXBlockSize == 0 || myYBlockSize == 0 )
+  if ( !( capabilities() & QgsRasterDataProvider::Size ) || xSize() == 0 || ySize() == 0 || myXBlockSize == 0 || myYBlockSize == 0 )
   {
     return QgsRasterBandStats(); //invalid raster band stats
   }
@@ -295,7 +296,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
         for ( int iX = 0; iX < nXValid; iX++ )
         {
           double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
-          //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (iX).arg(iY).arg( myValue ) );
+          QgsDebugMsgLevel( QString( "%1 %2 value %3" ).arg( iX ).arg( iY ).arg( myValue ), 10 );
 
           if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
           {
@@ -381,14 +382,13 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
                              ( myRasterBandStats.elementCount - 1 ) ) );
 
 #ifdef QGISDEBUG
-  QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "NULL", noDataValue() , 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsDebugMsg( "************ STATS **************" );
+  QgsDebugMsg( QString( "VALID NODATA %1" ).arg( mValidNoDataValue ) );
+  QgsDebugMsg( QString( "MIN %1" ).arg( myRasterBandStats.minimumValue ) );
+  QgsDebugMsg( QString( "MAX %1" ).arg( myRasterBandStats.maximumValue ) );
+  QgsDebugMsg( QString( "RANGE %1" ).arg( myRasterBandStats.range ) );
+  QgsDebugMsg( QString( "MEAN %1" ).arg( myRasterBandStats.mean ) );
+  QgsDebugMsg( QString( "STDDEV %1" ).arg( myRasterBandStats.stdDev ) );
 #endif
 
   CPLFree( myData );
