@@ -66,7 +66,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     enum GridAnnotationPosition
     {
       InsideMapFrame = 0,
-      OutsideMapFrame
+      OutsideMapFrame,
+      Disabled
     };
 
     enum GridAnnotationDirection
@@ -75,6 +76,15 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Vertical,
       HorizontalAndVertical,
       BoundaryDirection
+    };
+
+    /**Enum for different frame borders*/
+    enum Border
+    {
+      Left,
+      Right,
+      Bottom,
+      Top
     };
 
     /**This function is deprecated*/
@@ -227,20 +237,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
     bool showGridAnnotation() const {return mShowGridAnnotation;}
 
-    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
-    @note this function was added in version 1.4*/
-    void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
-    GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
+    void setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border );
+    GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
 
     /**Sets distance between map frame and annotations
     @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
     double annotationFrameDistance() const {return mAnnotationFrameDistance;}
 
-    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    @note this function was added in version 1.4*/
-    void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
-    GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
+    void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
+    GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
@@ -278,15 +284,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void renderModeUpdateCachedImage();
 
   private:
-
-    /**Enum for different frame borders*/
-    enum Border
-    {
-      Left,
-      Right,
-      Bottom,
-      Top
-    };
 
     // Pointer to map renderer of the QGIS main map. Note that QgsComposerMap uses a different map renderer,
     //it just copies some properties from the main map renderer.
@@ -352,12 +349,28 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mGridAnnotationPrecision;
     /**True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
-    /**Annotation position inside or outside of map frame*/
-    GridAnnotationPosition mGridAnnotationPosition;
+
+    /**Annotation position for left map side (inside / outside / not shown)*/
+    GridAnnotationPosition mLeftGridAnnotationPosition;
+    /**Annotation position for right map side (inside / outside / not shown)*/
+    GridAnnotationPosition mRightGridAnnotationPosition;
+    /**Annotation position for top map side (inside / outside / not shown)*/
+    GridAnnotationPosition mTopGridAnnotationPosition;
+    /**Annotation position for bottom map side (inside / outside / not shown)*/
+    GridAnnotationPosition mBottomGridAnnotationPosition;
+
     /**Distance between map frame and annotation*/
     double mAnnotationFrameDistance;
-    /**Annotation can be horizontal / vertical or different for axes*/
-    GridAnnotationDirection mGridAnnotationDirection;
+
+    /**Annotation direction on left side ( horizontal or vertical )*/
+    GridAnnotationDirection mLeftGridAnnotationDirection;
+    /**Annotation direction on right side ( horizontal or vertical )*/
+    GridAnnotationDirection mRightGridAnnotationDirection;
+    /**Annotation direction on top side ( horizontal or vertical )*/
+    GridAnnotationDirection mTopGridAnnotationDirection;
+    /**Annotation direction on bottom side ( horizontal or vertical )*/
+    GridAnnotationDirection mBottomGridAnnotationDirection;
+
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
     /**The length of the cross sides for mGridStyle Cross*/
