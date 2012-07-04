@@ -57,6 +57,12 @@ class QgsComposerMap : QgsComposerItem
       Top
     };
 
+    enum GridFrameStyle
+    {
+      NoGridFrame = 0,
+      Zebra //black / white pattern
+    };
+
     /**@deprecated*/
     void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
@@ -221,6 +227,16 @@ class QgsComposerMap : QgsComposerItem
     void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
     /**@note: this function was added in version 1.9*/
     GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
+
+    /**Set grid frame style (NoGridFrame or Zebra)
+        @note: this function was added in version 1.9*/
+    void setGridFrameStyle( GridFrameStyle style );
+    GridFrameStyle gridFrameStyle() const;
+
+    /**Set grid frame width
+        @note: this function was added in version 1.9*/
+    void setGridFrameWidth( double w );
+    double gridFrameWidth() const;
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/

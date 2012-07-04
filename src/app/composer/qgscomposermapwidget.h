@@ -76,6 +76,9 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mDrawAnnotationCheckBox_stateChanged( int state );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
 
+    void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
+    void on_mFrameWidthSpinBox_valueChanged( double d );
+
   private slots:
 
     /**Sets the GUI elements to the values of mPicture*/

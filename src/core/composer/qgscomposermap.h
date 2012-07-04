@@ -78,6 +78,12 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       BoundaryDirection
     };
 
+    enum GridFrameStyle
+    {
+      NoGridFrame = 0,
+      Zebra //black / white pattern
+    };
+
     /**Enum for different frame borders*/
     enum Border
     {
@@ -248,6 +254,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
     GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
 
+    /**Set grid frame style (NoGridFrame or Zebra)
+        @note: this function was added in version 1.9*/
+    void setGridFrameStyle( GridFrameStyle style ) { mGridFrameStyle = style; }
+    GridFrameStyle gridFrameStyle() const { return mGridFrameStyle; }
+
+    /**Set grid frame width
+        @note: this function was added in version 1.9*/
+    void setGridFrameWidth( double w ) { mGridFrameWidth = w; }
+    double gridFrameWidth() const { return mGridFrameWidth; }
+
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
     QRectF boundingRect() const;
@@ -371,6 +387,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Annotation direction on bottom side ( horizontal or vertical )*/
     GridAnnotationDirection mBottomGridAnnotationDirection;
 
+    GridFrameStyle mGridFrameStyle;
+    double mGridFrameWidth;
+
     /**Current bounding rectangle. This is used to check if notification to the graphics scene is necessary*/
     QRectF mCurrentRectangle;
     /**The length of the cross sides for mGridStyle Cross*/
@@ -381,6 +400,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
+    void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
     /**Draw coordinates for mGridAnnotationType Coordinate
         @param p drawing painter
         @param hLines horizontal coordinate lines in item coordinates
@@ -422,6 +442,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
     void drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
     QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
+    void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
+                                 QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
+    void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
 };
 
 #endif
