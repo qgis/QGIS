@@ -239,8 +239,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
     @note this function was added in version 1.4*/
-    void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
-    GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
+    //void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
+    //GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
 
     void setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border );
     GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
@@ -252,8 +252,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
     @note this function was added in version 1.4*/
-    void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
-    GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
+    //void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
+    //GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
     void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
     GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
@@ -359,8 +359,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mGridAnnotationPrecision;
     /**True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
-    /**Annotation position inside or outside of map frame*/
-    GridAnnotationPosition mGridAnnotationPosition;
 
     /**Annotation position for left map side (inside / outside / not shown)*/
     GridAnnotationPosition mLeftGridAnnotationPosition;
@@ -373,8 +371,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Distance between map frame and annotation*/
     double mAnnotationFrameDistance;
-    /**Annotation can be horizontal / vertical or different for axes*/
-    GridAnnotationDirection mGridAnnotationDirection;
 
     /**Annotation direction on left side ( horizontal or vertical )*/
     GridAnnotationDirection mLeftGridAnnotationDirection;

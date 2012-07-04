@@ -827,9 +827,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mRightGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "rightDirection", "0" ).toInt() );
       mTopGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "topDirection", "0" ).toInt() );
       mBottomGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "bottomDirection", "0" ).toInt() );
-
       mAnnotationFrameDistance = annotationElem.attribute( "frameDistance", "0" ).toDouble();
-      mGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "direction", "0" ).toInt() );
       mGridAnnotationFont.fromString( annotationElem.attribute( "font", "" ) );
       mGridAnnotationPrecision = annotationElem.attribute( "precision", "3" ).toInt();
     }
@@ -1352,7 +1350,8 @@ QPolygonF QgsComposerMap::transformedMapPolygon() const
 
 double QgsComposerMap::maxExtension() const
 {
-  if ( !mGridEnabled || !mShowGridAnnotation || mGridAnnotationPosition != OutsideMapFrame )
+  if ( !mGridEnabled || !mShowGridAnnotation || ( mLeftGridAnnotationPosition != OutsideMapFrame && mRightGridAnnotationPosition != OutsideMapFrame
+       && mTopGridAnnotationPosition != OutsideMapFrame && mBottomGridAnnotationPosition != OutsideMapFrame ) )
   {
     return 0;
   }

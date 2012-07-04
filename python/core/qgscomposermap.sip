@@ -47,6 +47,15 @@ class QgsComposerMap : QgsComposerItem
       BoundaryDirection
     };
 
+    /**Enum for different frame borders*/
+    enum Border
+    {
+      Left,
+      Right,
+      Bottom,
+      Top
+    };
+
     /**@deprecated*/
     void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
@@ -195,20 +204,22 @@ class QgsComposerMap : QgsComposerItem
     void setShowGridAnnotation( bool show );
     bool showGridAnnotation() const;
 
-    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
-    @note this function was added in version 1.4*/
-    void setGridAnnotationPosition( GridAnnotationPosition p );
-    GridAnnotationPosition gridAnnotationPosition() const;
+    /**Sets position of grid annotations. Possibilities are inside / outside of the map frame or disabled
+    @note this function was added in version 1.9*/
+    void setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border );
+    /**@note: this function was added in version 1.9*/
+    GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
 
     /**Sets distance between map frame and annotations
     @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d );
     double annotationFrameDistance() const;
 
-    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    @note this function was added in version 1.4*/
-    void setGridAnnotationDirection( GridAnnotationDirection d );
-    GridAnnotationDirection gridAnnotationDirection() const;
+    /**Sets grid annotation direction. Can be horizontal or vertical
+    @note this function was added in version 1.9*/
+    void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
+    /**@note: this function was added in version 1.9*/
+    GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
