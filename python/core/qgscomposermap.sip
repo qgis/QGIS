@@ -36,7 +36,8 @@ class QgsComposerMap : QgsComposerItem
     enum GridAnnotationPosition
     {
       InsideMapFrame = 0,
-      OutsideMapFrame
+      OutsideMapFrame,
+      Disabled
     };
 
     enum GridAnnotationDirection
