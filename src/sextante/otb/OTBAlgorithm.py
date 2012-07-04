@@ -28,6 +28,7 @@ class OTBAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
+        self.hasROI = None;
 
     def getCopy(self):
         newone = OTBAlgorithm(self.descriptionFile)
