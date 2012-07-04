@@ -56,6 +56,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxTop );
   insertAnnotationDirectionEntries( mAnnotationDirectionComboBoxBottom );
 
+  mFrameStyleComboBox->insertItem( 0, tr( "No frame" ) );
+  mFrameStyleComboBox->insertItem( 1, tr( "Zebra" ) );
+
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
@@ -442,6 +445,8 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationDirectionComboBoxBottom->blockSignals( b );
   mCoordinatePrecisionSpinBox->blockSignals( b );
   mDrawCanvasItemsCheckBox->blockSignals( b );
+  mFrameStyleComboBox->blockSignals( b );
+  mFrameWidthSpinBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -747,6 +752,39 @@ void QgsComposerMapWidget::on_mCoordinatePrecisionSpinBox_valueChanged( int valu
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mFrameStyleComboBox_currentIndexChanged( const QString& text )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mComposerMap->beginCommand( tr( "Changed grid frame style" ) );
+  if ( text == tr( "Zebra" ) )
+  {
+    mComposerMap->setGridFrameStyle( QgsComposerMap::Zebra );
+  }
+  else //no frame
+  {
+    mComposerMap->setGridFrameStyle( QgsComposerMap::NoGridFrame );
+  }
+  mComposerMap->updateBoundingRect();
+  mComposerMap->update();
+  mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double d )
+{
+  if ( mComposerMap )
+  {
+    mComposerMap->beginCommand( tr( "Changed grid frame width" ) );
+    mComposerMap->setGridFrameWidth( d );
+    mComposerMap->updateBoundingRect();
+    mComposerMap->update();
+    mComposerMap->endCommand();
+  }
 }
 
 void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )
