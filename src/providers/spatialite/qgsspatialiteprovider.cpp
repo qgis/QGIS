@@ -3600,13 +3600,6 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   values = QString( ") VALUES (" );
   separator = "";
 
-  if ( !mPrimaryKey.isEmpty() )
-  {
-    sql += separator + quotedIdentifier( mPrimaryKey );
-    values += separator + "NULL";
-    separator = ",";
-  }
-
   if ( !mGeometryColumn.isNull() )
   {
     sql += separator + quotedIdentifier( mGeometryColumn );
@@ -3621,11 +3614,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       continue;
 
     QString fieldname = fit->name();
-    if ( fieldname.isEmpty() || fieldname == mGeometryColumn || fieldname == mPrimaryKey )
+    if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
       continue;
 
     sql += separator + quotedIdentifier( fieldname );
     values += separator + "?";
+    separator = ",";
   }
 
   sql += values;
@@ -3673,7 +3667,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         continue;
 
       QString fieldname = fit->name();
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn || fieldname == mPrimaryKey )
+      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
 
       QVariant::Type type = fit->type();

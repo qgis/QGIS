@@ -247,9 +247,18 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     cboxTransparencyBand->addItem( tr( "None" ), -1 );
     int nBands = provider->bandCount();
+    QString bandName;
     for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
     {
-      cboxTransparencyBand->addItem( provider->colorInterpretationName( i ), i );
+      bandName = provider->colorInterpretationName( i );
+      if ( bandName == "Undefined" )
+      {
+        cboxTransparencyBand->addItem( provider->generateBandName( i ), i );
+      }
+      else
+      {
+        cboxTransparencyBand->addItem( bandName, i );
+      }
     }
 
     if ( renderer )

@@ -36,7 +36,8 @@ class QgsComposerMap : QgsComposerItem
     enum GridAnnotationPosition
     {
       InsideMapFrame = 0,
-      OutsideMapFrame
+      OutsideMapFrame,
+      Disabled
     };
 
     enum GridAnnotationDirection
@@ -45,6 +46,21 @@ class QgsComposerMap : QgsComposerItem
       Vertical,
       HorizontalAndVertical,
       BoundaryDirection
+    };
+
+    /**Enum for different frame borders*/
+    enum Border
+    {
+      Left,
+      Right,
+      Bottom,
+      Top
+    };
+
+    enum GridFrameStyle
+    {
+      NoGridFrame = 0,
+      Zebra //black / white pattern
     };
 
     /**@deprecated*/
@@ -195,20 +211,32 @@ class QgsComposerMap : QgsComposerItem
     void setShowGridAnnotation( bool show );
     bool showGridAnnotation() const;
 
-    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
-    @note this function was added in version 1.4*/
-    void setGridAnnotationPosition( GridAnnotationPosition p );
-    GridAnnotationPosition gridAnnotationPosition() const;
+    /**Sets position of grid annotations. Possibilities are inside / outside of the map frame or disabled
+    @note this function was added in version 1.9*/
+    void setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border );
+    /**@note: this function was added in version 1.9*/
+    GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
 
     /**Sets distance between map frame and annotations
     @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d );
     double annotationFrameDistance() const;
 
-    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    @note this function was added in version 1.4*/
-    void setGridAnnotationDirection( GridAnnotationDirection d );
-    GridAnnotationDirection gridAnnotationDirection() const;
+    /**Sets grid annotation direction. Can be horizontal or vertical
+    @note this function was added in version 1.9*/
+    void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
+    /**@note: this function was added in version 1.9*/
+    GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
+
+    /**Set grid frame style (NoGridFrame or Zebra)
+        @note: this function was added in version 1.9*/
+    void setGridFrameStyle( GridFrameStyle style );
+    GridFrameStyle gridFrameStyle() const;
+
+    /**Set grid frame width
+        @note: this function was added in version 1.9*/
+    void setGridFrameWidth( double w );
+    double gridFrameWidth() const;
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/

@@ -475,6 +475,62 @@ void QgsProjectFileTransform::transform1800to1900()
     rasterLayer.readXML( layerNode );
     convertRasterProperties( mDom, layerNode, rasterPropertiesElem, &rasterLayer );
   }
+
+  //composer: replace mGridAnnotationPosition with mLeftGridAnnotationPosition & co.
+  // and mGridAnnotationDirection with mLeftGridAnnotationDirection & co.
+  QDomNodeList composerMapList = mDom.elementsByTagName( "ComposerMap" );
+  for ( int i = 0; i < composerMapList.size(); ++i )
+  {
+    QDomNodeList gridList = composerMapList.at( i ).toElement().elementsByTagName( "Grid" );
+    for ( int j = 0; j < gridList.size(); ++j )
+    {
+      QDomNodeList annotationList = gridList.at( j ).toElement().elementsByTagName( "Annotation" );
+      for ( int k = 0; k < annotationList.size(); ++k )
+      {
+        QDomElement annotationElem = annotationList.at( k ).toElement();
+
+        //position
+        if ( annotationElem.hasAttribute( "position" ) )
+        {
+          int pos = annotationElem.attribute( "position" ).toInt();
+          annotationElem.setAttribute( "leftPosition", pos );
+          annotationElem.setAttribute( "rightPosition", pos );
+          annotationElem.setAttribute( "topPosition", pos );
+          annotationElem.setAttribute( "bottomPosition", pos );
+          annotationElem.removeAttribute( "position" );
+        }
+
+        //direction
+        if ( annotationElem.hasAttribute( "direction" ) )
+        {
+          int dir = annotationElem.attribute( "direction" ).toInt();
+          if ( dir == 2 )
+          {
+            annotationElem.setAttribute( "leftDirection", 0 );
+            annotationElem.setAttribute( "rightDirection", 0 );
+            annotationElem.setAttribute( "topDirection", 1 );
+            annotationElem.setAttribute( "bottomDirection", 1 );
+          }
+          else if ( dir == 3 )
+          {
+            annotationElem.setAttribute( "leftDirection", 1 );
+            annotationElem.setAttribute( "rightDirection", 1 );
+            annotationElem.setAttribute( "topDirection", 0 );
+            annotationElem.setAttribute( "bottomDirection", 0 );
+          }
+          else
+          {
+            annotationElem.setAttribute( "leftDirection", dir );
+            annotationElem.setAttribute( "rightDirection", dir );
+            annotationElem.setAttribute( "topDirection", dir );
+            annotationElem.setAttribute( "bottomDirection", dir );
+          }
+          annotationElem.removeAttribute( "direction" );
+        }
+      }
+    }
+  }
+
   QgsDebugMsg( mDom.toString() );
 }
 
