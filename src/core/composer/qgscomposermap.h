@@ -237,11 +237,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setShowGridAnnotation( bool show ) {mShowGridAnnotation = show;}
     bool showGridAnnotation() const {return mShowGridAnnotation;}
 
-    /**Sets position of grid annotations. Possibilities are inside or outside of the map frame
-    @note this function was added in version 1.4*/
-    //void setGridAnnotationPosition( GridAnnotationPosition p ) {mGridAnnotationPosition = p;}
-    //GridAnnotationPosition gridAnnotationPosition() const {return mGridAnnotationPosition;}
-
     void setGridAnnotationPosition( GridAnnotationPosition p, QgsComposerMap::Border border );
     GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
 
@@ -249,11 +244,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     @note this function was added in version 1.4*/
     void setAnnotationFrameDistance( double d ) {mAnnotationFrameDistance = d;}
     double annotationFrameDistance() const {return mAnnotationFrameDistance;}
-
-    /**Sets grid annotation direction. Can be horizontal, vertical, direction of axis and horizontal and vertical
-    @note this function was added in version 1.4*/
-    //void setGridAnnotationDirection( GridAnnotationDirection d ) {mGridAnnotationDirection = d;}
-    //GridAnnotationDirection gridAnnotationDirection() const {return mGridAnnotationDirection;}
 
     void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
     GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
