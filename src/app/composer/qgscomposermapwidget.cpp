@@ -349,6 +349,18 @@ void QgsComposerMapWidget::updateGuiElements()
 
     mCrossWidthSpinBox->setValue( mComposerMap->crossLength() );
 
+    //grid frame
+    mFrameWidthSpinBox->setValue( mComposerMap->gridFrameWidth() );
+    QgsComposerMap::GridFrameStyle gridFrameStyle = mComposerMap->gridFrameStyle();
+    if ( gridFrameStyle == QgsComposerMap::Zebra )
+    {
+      mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "Zebra" ) ) );
+    }
+    else //NoGridFrame
+    {
+      mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "No frame" ) ) );
+    }
+
     //grid annotation position
     initAnnotationPositionBox( mAnnotationPositionLeftComboBox, mComposerMap->gridAnnotationPosition( QgsComposerMap::Left ) );
     initAnnotationPositionBox( mAnnotationPositionRightComboBox, mComposerMap->gridAnnotationPosition( QgsComposerMap::Right ) );

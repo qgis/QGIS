@@ -692,6 +692,8 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   gridElem.setAttribute( "penColorGreen", mGridPen.color().green() );
   gridElem.setAttribute( "penColorBlue", mGridPen.color().blue() );
   gridElem.setAttribute( "crossLength",  QString::number( mCrossLength ) );
+  gridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
+  gridElem.setAttribute( "gridFrameWidth", QString::number( mGridFrameWidth ) );
 
   //grid annotation
   QDomElement annotationElem = doc.createElement( "Annotation" );
@@ -813,6 +815,8 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
                                gridElem.attribute( "penColorGreen", "0" ).toInt(),
                                gridElem.attribute( "penColorBlue", "0" ).toInt() ) );
     mCrossLength = gridElem.attribute( "crossLength", "3" ).toDouble();
+    mGridFrameStyle = ( QgsComposerMap::GridFrameStyle )gridElem.attribute( "gridFrameStyle", "0" ).toInt();
+    mGridFrameWidth = gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble();
 
     QDomNodeList annotationNodeList = gridElem.elementsByTagName( "Annotation" );
     if ( annotationNodeList.size() > 0 )
