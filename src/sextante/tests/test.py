@@ -50,6 +50,12 @@ class DataProviderStub:
     def __init__(self, uri):
         self.dataSourceUri = lambda: uri
 
+class bcolors:
+    INFO = '\033[94m'
+    WARNING = '\033[91m'
+    ENDC = '\033[0m'
+
+
 class SextantePluginTest(unittest.TestCase):
     """Test suite for Sextante QGis plugin"""
         
@@ -90,7 +96,7 @@ class SextanteProviderTestCase(unittest.TestCase):
                     yield p.min
                 yield 42
             elif isinstance(p, ParameterString):
-                yield str()
+                yield "Test string"
             elif isinstance(p, ParameterBoolean):
                 b = not b
                 yield b
@@ -112,9 +118,10 @@ class SextanteProviderTestCase(unittest.TestCase):
     def test_runalg(self):
         SextanteConfig.setSettingValue(SextanteConfig.USE_THREADS, self.threaded)
         args = list(self.gen_test_parameters(self.alg))
-        print 
-        print self.msg, "Parameters: ", self.alg.parameters, ' => ', args
+        print
+        print bcolors.INFO, self.msg, bcolors.ENDC, "Parameters: ", self.alg.parameters, ' => ', args, bcolors.WARNING,
         result = Sextante.runalg(self.algId, *args)
+        print bcolors.ENDC
         self.assertIsNotNone(result, self.msg)
         if not result:
             return
@@ -126,7 +133,8 @@ def algSuite():
     s = unittest.TestSuite()
     for provider, algs in Sextante.algs.items():
         if not algs.items():
-            print "WARNING: %s seems to provide no algs!" % provider
+            print bcolors.WARNING, "WARNING: %s seems to provide no algs!" % provider,
+            print bcolors.ENDC
             continue
         algId, alg = algs.items()[-1]        
         s.addTest(SextanteProviderTestCase(algId, alg, True))
@@ -137,7 +145,10 @@ if __name__ == '__main__':
     if not os.path.exists("data/raster") or not os.path.exists("data/vector"):
         print "Please install test data under ./data/raster and ./data/vector."
         exit(1)
-    loadSuite = unittest.TestLoader().loadTestsFromTestCase(SextantePluginTest)
-    unittest.TextTestRunner(verbosity=2).run(loadSuite)
-    unittest.TextTestRunner(verbosity=2).run(algSuite())
+    try:
+        loadSuite = unittest.TestLoader().loadTestsFromTestCase(SextantePluginTest)
+        unittest.TextTestRunner(verbosity=2).run(loadSuite)
+        unittest.TextTestRunner(verbosity=2).run(algSuite())
+    except KeyboardInterrupt:
+        print bcolors.ENDC, "Test interrupted."
 

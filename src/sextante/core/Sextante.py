@@ -369,6 +369,7 @@ class Sextante:
                 QApplication.restoreOverrideCursor()
                 QMessageBox.critical(None, "Error", msg)
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+                cancel();
             def cancel():
                 try:
                     algEx.finished.disconnect()
