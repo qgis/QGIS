@@ -79,7 +79,7 @@ class AlgorithmExecutor(QThread):
                 self.runalg()
                 self.iterated.emit(i)
                 i += 1
-        except BaseException as e:
+        except BaseException, e:
             self.error.emit(str(e))
             print "Error iterating " + str(e)
         except:

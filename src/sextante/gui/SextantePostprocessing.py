@@ -30,5 +30,6 @@ class SextantePostprocessing:
                 SextanteResults.addResult(out.description, out.value)
                 htmlResults = True
         if showResults and htmlResults:
+            QApplication.restoreOverrideCursor()
             dlg = ResultsDialog()
             dlg.exec_()

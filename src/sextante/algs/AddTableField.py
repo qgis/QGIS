@@ -29,15 +29,34 @@ class AddTableField(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Field name"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer", True))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        inputFilename = self.getParameterValue(self.INPUT_LAYER)
-        layer = QGisLayers.getObjectFromUri(inputFilename)
-        caps = layer.dataProvider().capabilities()
-        if caps & QgsVectorDataProvider.AddAttributes:
-            fieldName = self.getParameterValue(self.FIELD_NAME)
-            fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
-            layer.dataProvider().addAttributes([QgsField(fieldName, fieldType)])
-
+        fieldtype = self.getParameterValue(self.FIELD_TYPE)
+        fieldname = self.getParameterValue(self.FIELD_NAME)
+        settings = QSettings()
+        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        output = self.getOutputValue(self.OUTPUT_LAYER)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        vprovider = vlayer.dataProvider()
+        allAttrs = vprovider.attributeIndexes()
+        vprovider.select( allAttrs )
+        fields = vprovider.fields()
+        fields[len(fields)] = QgsField(fieldname, self.TYPES[fieldtype])
+        writer = QgsVectorFileWriter( output, systemEncoding,fields, vprovider.geometryType(), vprovider.crs() )
+        inFeat = QgsFeature()
+        outFeat = QgsFeature()
+        inGeom = QgsGeometry()
+        nFeat = vprovider.featureCount()
+        nElement = 0
+        while vprovider.nextFeature(inFeat):
+          progress.setPercentage(int((100 * nElement)/nFeat))
+          nElement += 1
+          inGeom = inFeat.geometry()
+          outFeat.setGeometry( inGeom )
+          atMap = inFeat.attributeMap()
+          outFeat.setAttributeMap( atMap )
+          outFeat.addAttribute( len(vprovider.fields()), QVariant() )
+          writer.addFeature( outFeat )
+        del writer
 

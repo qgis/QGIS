@@ -27,32 +27,44 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name"))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer", True))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        inputFilename = self.getParameterValue(self.INPUT_LAYER)
+        fieldname = self.getParameterValue(self.FIELD_NAME)
         formula = self.getParameterValue(self.FORMULA)
-        layer = QGisLayers.getObjectFromUri(inputFilename)
-        provider = layer.dataProvider()
-        caps = provider.capabilities()
-        if caps & QgsVectorDataProvider.AddAttributes:
-            fieldName = self.getParameterValue(self.FIELD_NAME)
-            layer.dataProvider().addAttributes([QgsField(fieldName, QVariant.Double)])
-            feat = QgsFeature()
-            allAttrs = provider.attributeIndexes()
-            provider.select(allAttrs)
-            fields = provider.fields()
-            while provider.nextFeature(feat):
-                attrs = feat.attributeMap()
-                expression = formula
-                for (k,attr) in attrs.iteritems():
-                    expression = expression.replace(str(fields[k].name()), str(attr.toString()))
-                try:
-                    result = eval(expression)
-                except Exception:
-                    raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
-                attrs[len(attrs) - 1] = QVariant(result)
-                provider.changeAttributeValues({feat.id() : attrs})
+        settings = QSettings()
+        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        output = self.getOutputValue(self.OUTPUT_LAYER)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        vprovider = vlayer.dataProvider()
+        allAttrs = vprovider.attributeIndexes()
+        vprovider.select( allAttrs )
+        fields = vprovider.fields()
+        fields[len(fields)] = QgsField(fieldname, QVariant.Double)
+        writer = QgsVectorFileWriter( output, systemEncoding,fields, vprovider.geometryType(), vprovider.crs() )
+        inFeat = QgsFeature()
+        outFeat = QgsFeature()
+        inGeom = QgsGeometry()
+        nFeat = vprovider.featureCount()
+        nElement = 0
+        while vprovider.nextFeature(inFeat):
+            progress.setPercentage(int((100 * nElement)/nFeat))
+            attrs = inFeat.attributeMap()
+            expression = formula
+            for (k,attr) in attrs.iteritems():
+                expression = expression.replace(str(fields[k].name()), str(attr.toString()))
+            try:
+                result = eval(expression)
+            except Exception:
+                raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
+            nElement += 1
+            inGeom = inFeat.geometry()
+            outFeat.setGeometry( inGeom )
+            atMap = inFeat.attributeMap()
+            outFeat.setAttributeMap( atMap )
+            outFeat.addAttribute( len(vprovider.fields()), QVariant(result) )
+            writer.addFeature( outFeat )
+        del writer
 
 
     def checkParameterValuesBeforeExecuting(self):

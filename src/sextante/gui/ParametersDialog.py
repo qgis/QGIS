@@ -202,6 +202,9 @@ class Ui_ParametersDialog(object):
                 if iterateParam:
                     UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
                 else:
+                    command = self.alg.getAsCommand()
+                    if command:
+                        SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
                         SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
                 self.dialog.executed = True
@@ -254,8 +257,8 @@ class Ui_ParametersDialog(object):
     @pyqtSlot(int)
     def iterate(self, i):
         SextanteLog.addToLog(SextanteLog.LOG_INFO,
-            "Algorithm %s iteration #%i completed" % (elf.alg.name, i))
-        
+            "Algorithm %s iteration #%i completed" % (self.alg.name, i))
+
     @pyqtSlot()
     def cancel(self):
         SextanteLog.addToLog(SextanteLog.LOG_INFO,
