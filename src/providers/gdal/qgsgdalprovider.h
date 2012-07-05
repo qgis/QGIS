@@ -135,6 +135,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
+    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
     /**
      * \brief Identify details from a GDAL layer from the last screen update
      *

@@ -217,3 +217,13 @@ void QgsPalettedRasterRenderer::legendSymbologyItems( QList< QPair< QString, QCo
     symbolItems.push_back( qMakePair( QString::number( i ), mColors[i] ) );
   }
 }
+
+QList<int> QgsPalettedRasterRenderer::usesBands() const
+{
+  QList<int> bandList;
+  if ( mBandNumber != -1 )
+  {
+    bandList << mBandNumber;
+  }
+  return bandList;
+}

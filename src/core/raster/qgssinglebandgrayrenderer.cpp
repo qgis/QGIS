@@ -199,3 +199,13 @@ void QgsSingleBandGrayRenderer::legendSymbologyItems( QList< QPair< QString, QCo
     symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), QColor( 255, 255, 255 ) ) );
   }
 }
+
+QList<int> QgsSingleBandGrayRenderer::usesBands() const
+{
+  QList<int> bandList;
+  if ( mGrayBand != -1 )
+  {
+    bandList << mGrayBand;
+  }
+  return bandList;
+}

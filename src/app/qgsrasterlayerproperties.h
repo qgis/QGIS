@@ -29,6 +29,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapToolEmitPoint;
+class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
 /**Property sheet for a raster map layer
@@ -137,7 +138,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QgsRasterRendererWidget* mRendererWidget;
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
-    void populateTransparencyTable();
+    void populateTransparencyTable( QgsRasterRenderer* renderer );
 
     void setRendererWidget( const QString& rendererName );
 
