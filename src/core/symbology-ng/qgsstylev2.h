@@ -142,6 +142,12 @@ class CORE_EXPORT QgsStyleV2
     //! return the names of the symbols which have a matching 'substring' in its defintion
     QStringList findSymbols( QString qword );
 
+    //! tags the symbol with the tags in the list, the remove flag DE-TAGS
+    bool tagSymbol( QString symbol, QStringList tags );
+
+    //! detags the symbol with the given list
+    bool detagSymbol( QString symbol, QStringList tags );
+
   protected:
 
     QgsSymbolV2Map mSymbols;

@@ -617,3 +617,111 @@ QStringList QgsStyleV2::findSymbols( QString qword )
 
   return symbols;
 }
+
+bool QgsStyleV2::tagSymbol( QString symbol, QStringList tags )
+{
+  QByteArray array = symbol.toUtf8();
+  char *query;
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+  {
+    QgsDebugMsg( "Sorry! Cannot open DB to tag." );
+    return false;
+  }
+
+  int symbolid = 0;
+  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
+  sqlite3_stmt *ppStmt;
+  int err = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  if ( err == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+    symbolid = sqlite3_column_int( ppStmt, 0 );
+  sqlite3_finalize( ppStmt );
+  if ( !symbolid )
+  {
+    QgsDebugMsg( "No such symbol for tagging in DB: " + symbol );
+    return false;
+  }
+
+  foreach ( QString tag, tags )
+  {
+    int tagid;
+    char *zErr = 0;
+    int nErr;
+    QByteArray tagArray = tag.toUtf8();
+    // sql: gets the id of the tag if present or insert the tag and get the id of the tag
+    query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q';", tagArray.constData() );
+    nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+    if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+    {
+      tagid = sqlite3_column_int( ppStmt, 0 );
+    }
+    else
+    {
+      query = sqlite3_mprintf( "INSERT INTO tag VALUES (NULL,'%q');", tagArray.constData() );
+      nErr = sqlite3_exec( db, query, NULL, NULL, &zErr );
+      if ( nErr )
+      {
+        QgsDebugMsg( zErr );
+        return false;
+      }
+      tagid = (int)sqlite3_last_insert_rowid( db );
+    }
+    sqlite3_finalize( ppStmt );
+    // Now map the tag to the symbol
+    query = sqlite3_mprintf( "INSERT INTO tagmap VALUES (%d,%d);", tagid, symbolid );
+    nErr = sqlite3_exec( db, query, NULL, NULL, &zErr );
+    if ( nErr )
+      QgsDebugMsg( zErr );
+  }
+  sqlite3_close( db );
+  return true;
+}
+
+bool QgsStyleV2::detagSymbol( QString symbol, QStringList tags )
+{
+  QByteArray array = symbol.toUtf8();
+  char *query;
+  int symbolid;
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+  {
+    QgsDebugMsg( "Sorry! Cannot open DB for detgging." );
+    return false;
+  }
+  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
+  sqlite3_stmt *ppStmt;
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbolid = sqlite3_column_int( ppStmt, 0 );
+  }
+  sqlite3_finalize( ppStmt );
+
+  foreach ( QString tag, tags )
+  {
+    int tagid = 0;
+    QByteArray tagArray = tag.toUtf8();
+    query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q';", tagArray.constData() );
+    sqlite3_stmt *ppStmt2;
+    nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt2, NULL );
+    if ( nErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
+    {
+      tagid = sqlite3_column_int( ppStmt2, 0 );
+    }
+    sqlite3_finalize( ppStmt2 );
+
+    if ( tagid )
+    {
+      // remove from the tagmap
+      query = sqlite3_mprintf( "DELETE FROM tagmap WHERE tag_id=%d AND symbol_id=%d;", tagid, symbolid );
+      runEmptyQuery( query );
+    }
+  }
+
+  // TODO Perform tag cleanup 
+  // check the number of entries for a given tag in the tagmap
+  // if the count is 0, then remove( TagEntity, tagid )
+  sqlite3_close( db );
+  return true;
+}
+
