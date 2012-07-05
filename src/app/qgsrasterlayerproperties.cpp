@@ -178,9 +178,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                                  .arg( pyramidSentence2 ).arg( pyramidSentence3 )
                                  .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
 
-  // update based on lyr's current state
-  sync();
-
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
   tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
@@ -292,6 +289,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     }
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
+
+  // update based on lyr's current state
+  sync();
 } // QgsRasterLayerProperties ctor
 
 
@@ -306,20 +306,22 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
   }
 }
 
-void QgsRasterLayerProperties::populateTransparencyTable()
+void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* renderer )
 {
   QgsDebugMsg( "entering." );
   if ( !mRasterLayer )
   {
     return;
   }
-  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+
   if ( !renderer )
   {
     return;
   }
 
   tableTransparency->clear();
+  tableTransparency->setColumnCount( 0 );
+  tableTransparency->setRowCount( 0 );
 
   QList<int> bandList = renderer->usesBands();
   tableTransparency->setColumnCount( bandList.size() + 1 );
@@ -371,8 +373,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
 
 void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
 {
-  delete mRendererWidget;
-  mRendererWidget = 0;
+  QgsRasterRendererWidget* oldWidget = mRendererWidget;
 
   QgsRasterRendererRegistryEntry rendererEntry;
   if ( QgsRasterRendererRegistry::instance()->rendererData( rendererName, rendererEntry ) )
@@ -380,11 +381,24 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
     if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
     {
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
-      QWidget* oldWidget = mRendererStackedWidget->currentWidget();
       mRendererStackedWidget->addWidget( mRendererWidget );
-      delete oldWidget;
+      if ( oldWidget )
+      {
+        //compare used bands in new and old renderer and reset transparency dialog if different
+        QgsRasterRenderer* oldRenderer = oldWidget->renderer();
+        QgsRasterRenderer* newRenderer = mRendererWidget->renderer();
+        QList<int> oldBands = oldRenderer->usesBands();
+        QList<int> newBands = newRenderer->usesBands();
+        if ( oldBands != newBands )
+        {
+          populateTransparencyTable( newRenderer );
+        }
+        delete oldRenderer;
+        delete newRenderer;
+      }
     }
   }
+  delete oldWidget;
 }
 
 /**
@@ -460,7 +474,7 @@ void QgsRasterLayerProperties::sync()
     leNoDataValue->insert( "" );
   }
 
-  populateTransparencyTable();
+  populateTransparencyTable( mRasterLayer->renderer() );
 
   QgsDebugMsg( "populate colormap tab" );
   /*
@@ -578,7 +592,7 @@ void QgsRasterLayerProperties::apply()
 
   //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
   QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
-  if ( mRasterLayer->bandCount() == 3 )
+  if ( tableTransparency->columnCount() == 4 )
   {
     double myTransparentValue;
     double myPercentTransparent;
@@ -678,7 +692,7 @@ void QgsRasterLayerProperties::apply()
     }
     rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
   }
-  else if ( mRasterLayer->bandCount() == 1 )
+  else if ( tableTransparency->columnCount() == 2 )
   {
     double myTransparentValue;
     double myPercentTransparent;
@@ -967,9 +981,21 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 
 void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 {
+  if ( !mRendererWidget )
+  {
+    return;
+  }
 
-  if ( /*rbtnThreeBand->isChecked() &&*/ QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
-                                         QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
+  QgsRasterRenderer* r = mRendererWidget->renderer();
+  if ( !r )
+  {
+    return;
+  }
+
+  int nBands = r->usesBands().size();
+  delete r;
+
+  if ( nBands == 3 )
   {
     tableTransparency->clear();
     tableTransparency->setColumnCount( 4 );
@@ -986,7 +1012,7 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
       tableTransparency->setItem( 0, 3, new QTableWidgetItem( "100.0" ) );
     }
   }
-  else
+  else //1 band
   {
     tableTransparency->clear();
     tableTransparency->setColumnCount( 2 );
@@ -1009,7 +1035,6 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
       tableTransparency->setItem( 0, 0, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
       tableTransparency->setItem( 0, 1, new QTableWidgetItem( "100.0" ) );
     }
-
   }
 }
 
