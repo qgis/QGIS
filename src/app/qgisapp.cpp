@@ -5303,6 +5303,8 @@ void QgisApp::options()
 
     mRasterFileFilter.clear();
     QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+
+    mScaleEdit->updateScales();
   }
 
   delete optionsDialog;

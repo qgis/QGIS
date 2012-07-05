@@ -25,6 +25,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 
+#include <QInputDialog>
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>
@@ -415,6 +416,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 2 ).toInt() );
   spinZoomFactor->setValue( settings.value( "/qgis/zoom_factor", 2 ).toDouble() );
+
+  // predefined scales for scale combobox
+  myPaths = settings.value( "Map/scales", PROJECT_SCALES ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myScalesList = myPaths.split( "," );
+    QStringList::const_iterator scaleIt = myScalesList.constBegin();
+    for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+      newItem->setText( *scaleIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListGlobalScales->addItem( newItem );
+    }
+  }
 
   //
   // Locale settings
@@ -846,23 +862,19 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/useStandardDeviation", chkUseStandardDeviation->isChecked() );
   settings.setValue( "/Raster/defaultStandardDeviation", spnThreeBandStdDev->value() );
 
-
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    //
     settings.setValue( "/Projections/defaultBehaviour", "prompt" );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    //
     settings.setValue( "/Projections/defaultBehaviour", "useProject" );
   }
   else //assumes radUseGlobalProjection is checked
   {
-    //
     settings.setValue( "/Projections/defaultBehaviour", "useGlobal" );
   }
 
@@ -884,11 +896,6 @@ void QgsOptions::saveOptions()
   }
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
-  if ( mDegreesRadioButton->isChecked() )
-  {
-
-  }
-
   QString angleUnitString = "degrees";
   if ( mRadiansRadioButton->isChecked() )
   {
@@ -900,13 +907,11 @@ void QgsOptions::saveOptions()
   }
   settings.setValue( "/qgis/measure/angleunits", angleUnitString );
 
-
   int decimalPlaces = mDecimalPlacesSpinBox->value();
   settings.setValue( "/qgis/measure/decimalplaces", decimalPlaces );
 
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
   settings.setValue( "/qgis/measure/keepbaseunit", baseUnit );
-
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
@@ -972,12 +977,22 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/offset_quad_seg", mOffsetQuadSegSpinBox->value() );
   settings.setValue( "/qgis/digitizing/offset_miter_limit", mCurveOffsetMiterLimitComboBox->value() );
 
+  // default scale list
+  for ( int i = 0; i < mListGlobalScales->count(); ++i )
+  {
+    if ( i != 0 )
+    {
+      myPaths += ",";
+    }
+    myPaths += mListGlobalScales->item( i )->text();
+  }
+  settings.setValue( "Map/scales", myPaths );
+
   //
   // Locale settings
   //
   settings.setValue( "locale/userLocale", cboLocale->itemData( cboLocale->currentIndex() ).toString() );
   settings.setValue( "locale/overrideFlag", grpLocale->isChecked() );
-
 
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
@@ -1182,7 +1197,6 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
   QListWidgetItem* itemToRemove = mListPluginPaths->takeItem( currentRow );
   delete itemToRemove;
 }
-
 
 void QgsOptions::on_mBtnAddSVGPath_clicked()
 {
@@ -1421,4 +1435,46 @@ void QgsOptions::saveGdalDriverList()
   }
   QSettings mySettings;
   mySettings.setValue( "gdal/skipList", QgsApplication::skippedGdalDrivers().join( " " ) );
+}
+
+void QgsOptions::on_pbnAddScale_clicked()
+{
+  int myScale = QInputDialog::getInt(
+                   this,
+                   tr( "Enter scale" ),
+                   tr( "Scale denominator" ),
+                   -1,
+                   1
+                 );
+
+  if ( myScale != -1 )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+    newItem->setText( QString( "1:%1" ).arg( myScale ) );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListGlobalScales->addItem( newItem );
+    mListGlobalScales->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::on_pbnRemoveScale_clicked()
+{
+  int currentRow = mListGlobalScales->currentRow();
+  QListWidgetItem* itemToRemove = mListGlobalScales->takeItem( currentRow );
+  delete itemToRemove;
+}
+
+void QgsOptions::on_pbnDefaultValues_clicked()
+{
+  mListGlobalScales->clear();
+
+  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  QStringList::const_iterator scaleIt = myScalesList.constBegin();
+  for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+    newItem->setText( *scaleIt );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListGlobalScales->addItem( newItem );
+  }
 }

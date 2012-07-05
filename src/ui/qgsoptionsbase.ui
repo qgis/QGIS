@@ -67,7 +67,7 @@
             <x>0</x>
             <y>0</y>
             <width>760</width>
-            <height>1005</height>
+            <height>887</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -1104,9 +1104,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>760</width>
-            <height>506</height>
+            <y>-308</y>
+            <width>762</width>
+            <height>750</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1360,6 +1360,90 @@
              </layout>
             </widget>
            </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="groupBox_15">
+             <property name="title">
+              <string>Predefined scales</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_26">
+              <item row="0" column="0">
+               <widget class="QListWidget" name="mListGlobalScales"/>
+              </item>
+              <item row="0" column="1">
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QToolButton" name="pbnAddScale">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnRemoveScale">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnDefaultValues">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnImportScales">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFolder.png</normaloff>:/images/themes/default/mActionFolder.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnExportScales">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1392,7 +1476,7 @@
             <x>0</x>
             <y>0</y>
             <width>778</width>
-            <height>436</height>
+            <height>437</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1472,7 +1556,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>760</width>
+            <width>762</width>
             <height>627</height>
            </rect>
           </property>
@@ -1849,7 +1933,7 @@
             <x>0</x>
             <y>0</y>
             <width>778</width>
-            <height>436</height>
+            <height>437</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2022,8 +2106,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>760</width>
-            <height>551</height>
+            <width>762</width>
+            <height>566</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2119,7 +2203,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>760</width>
+            <width>762</width>
             <height>554</height>
            </rect>
           </property>

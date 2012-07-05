@@ -106,7 +106,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mBtnAddPluginPath_clicked();
 
-    /* Let the user remove a path to the list of search paths
+    /* Let the user remove a path from the list of search paths
      * used for finding Plugin libs.
      * @note added in QGIS 1.7
      */
@@ -118,7 +118,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mBtnAddSVGPath_clicked();
 
-    /* Let the user remove a path to the list of search paths
+    /* Let the user remove a path from the list of search paths
      * used for finding SVG files.
      * @note added in QGIS 1.4
      */
@@ -128,6 +128,24 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
+
+    /* Let the user add a scale to the list of scales
+     * used in scale combobox
+     * @note added in QGIS 2.0
+     */
+    void on_pbnAddScale_clicked();
+
+    /* Let the user remove a scale from the list of scales
+     * used in scale combobox
+     * @note added in QGIS 2.0
+     */
+    void on_pbnRemoveScale_clicked();
+
+    /* Let the user restore default scales
+     * used in scale combobox
+     * @note added in QGIS 2.0
+     */
+    void on_pbnDefaultValues_clicked();
 
     /** Auto slot executed when the active page in the main widget stack is changed
      * @note added in 2.0

@@ -8,8 +8,11 @@ class QgsScaleComboBox : QComboBox
 #include <qgsscalecombobox.h>
 %End
 
- public:
+  public:
     QgsScaleComboBox(QWidget * parent = 0);
     ~QgsScaleComboBox();
+
+  public slots:
+    void updateScales( const QStringList &scales = QStringList() );
 };
 
