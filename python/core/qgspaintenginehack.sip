@@ -1,4 +1,4 @@
-class CORE_EXPORT QgsPaintEngineHack : public QPaintEngine
+class QgsPaintEngineHack : QPaintEngine
 {
 %TypeHeaderCode
 #include <qgspaintenginehack.h>
