@@ -72,6 +72,7 @@ void TestQgsComposerMap::cleanupTestCase()
 {
   delete mComposition;
   delete mMapRenderer;
+  delete mRasterLayer;
 }
 
 void TestQgsComposerMap::init()

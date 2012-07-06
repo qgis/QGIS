@@ -98,5 +98,9 @@ bool QgsCompositionChecker::compareImages( const QImage& img1, const QImage& img
       }
     }
   }
-  return mismatchCount < 1;
+
+  int pixelCount = imageWidth * imageHeight;
+
+  //allow pixel deviation of 1 percent
+  return (( double )mismatchCount / ( double )pixelCount ) < 0.01;
 }
