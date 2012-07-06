@@ -53,7 +53,6 @@ bool QgsCompositionChecker::testComposition()
   return false;
 #endif //0
 
-#if 1
   //load expected image
   QImage expectedImage( mExpectedImageFile );
 
@@ -63,8 +62,8 @@ bool QgsCompositionChecker::testComposition()
   QImage outputImage( QSize( width, height ), QImage::Format_ARGB32 );
 
   mComposition->setPlotStyle( QgsComposition::Print );
-  outputImage.setDotsPerMeterX( expectedImage.dotsPerMeterX() /*mComposition->printResolution() / 25.4 * 1000*/ );
-  outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() /*mComposition->printResolution() / 25.4 * 1000*/ );
+  outputImage.setDotsPerMeterX( expectedImage.dotsPerMeterX() );
+  outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() );
   outputImage.fill( 0 );
   QPainter p( &outputImage );
   QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
@@ -73,7 +72,6 @@ bool QgsCompositionChecker::testComposition()
   p.end();
 
   return compareImages( expectedImage, outputImage );
-#endif //0
 }
 
 bool QgsCompositionChecker::compareImages( const QImage& img1, const QImage& img2 ) const

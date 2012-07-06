@@ -21,6 +21,7 @@
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
+#include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
 #include <QtTest>
@@ -34,6 +35,7 @@ class TestQgsComposerMap: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void render(); //test if rendering of the composition with composr map is correct
+    void grid(); //test if grid and grid annotation works
 
   private:
     QgsComposition* mComposition;
@@ -51,6 +53,9 @@ void TestQgsComposerMap::initTestCase()
   QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
+  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  mRasterLayer->setRenderer( rasterRenderer );
+
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
@@ -83,7 +88,27 @@ void TestQgsComposerMap::render()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   QgsCompositionChecker checker( mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "composermap_landsat1.png" ) );
+                                 "control_images" + QDir::separator() + "composermap_landsat_render.png" ) );
+  QVERIFY( checker.testComposition() );
+}
+
+void TestQgsComposerMap::grid()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  mComposerMap->setGridEnabled( true );
+  mComposerMap->setGridIntervalX( 2000 );
+  mComposerMap->setGridIntervalY( 2000 );
+  mComposerMap->setShowGridAnnotation( true );
+  mComposerMap->setGridPenWidth( 0.5 );
+  mComposerMap->setGridAnnotationPrecision( 0 );
+  mComposerMap->setGridAnnotationPosition( QgsComposerMap::Disabled, QgsComposerMap::Left );
+  mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, QgsComposerMap::Right );
+  mComposerMap->setGridAnnotationPosition( QgsComposerMap::Disabled, QgsComposerMap::Top );
+  mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, QgsComposerMap::Bottom );
+  mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Right );
+  mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
+  QgsCompositionChecker checker( mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "composermap_landsat_grid.png" ) );
   QVERIFY( checker.testComposition() );
 }
 
