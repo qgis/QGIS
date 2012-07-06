@@ -43,6 +43,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mUpdatePreviewButton_clicked();
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
+    void on_mOverviewFrameMapComboBox_activated( const QString& text );
 
     void on_mXMinLineEdit_editingFinished();
     void on_mXMaxLineEdit_editingFinished();

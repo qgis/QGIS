@@ -289,6 +289,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;
 
+    /**Sets overview frame map. -1 disables the overview frame*/
+    void setOverviewFrameMap( int mapId );
+    /**Returns id of overview frame (or -1 if no overfiew frame)*/
+    int overviewFrameMapId() const;
+
   signals:
     void extentChanged();
 
@@ -338,6 +343,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
+
+    /**Map that displays its rectangle into this composer map (or 0 if no frame of another map)*/
+    const QgsComposerMap* mOverviewFrameMap;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
@@ -445,6 +453,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
+    void drawOverviewMapExtent( QPainter* p );
 };
 
 #endif

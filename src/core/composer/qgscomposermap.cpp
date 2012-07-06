@@ -38,7 +38,7 @@
 #include <cmath>
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
-    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ),
+    : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mOverviewFrameMap( 0 ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
@@ -85,7 +85,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ),
+    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMap( 0 ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
@@ -364,6 +364,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     drawSelectionBoxes( painter );
   }
 
+  if ( mOverviewFrameMap )
+  {
+    drawOverviewMapExtent( painter );
+  }
 
   painter->restore();
 }
@@ -679,6 +683,13 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
   composerMapElem.appendChild( layerSetElem );
 
+  int overviewMapId = -1;
+  if ( mOverviewFrameMap )
+  {
+    overviewMapId = mOverviewFrameMap->id();
+  }
+  composerMapElem.setAttribute( "overviewFrameMap", overviewMapId );
+
   //grid
   QDomElement gridElem = doc.createElement( "Grid" );
   gridElem.setAttribute( "show", mGridEnabled );
@@ -798,6 +809,26 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   mDrawing = false;
   mNumCachedLayers = 0;
   mCacheUpdated = false;
+
+  //todo: overview frame map
+#if 0
+  //rotation map
+  int rotationMapId = itemElem.attribute( "mapId", "-1" ).toInt();
+  if ( rotationMapId == -1 )
+  {
+    mRotationMap = 0;
+  }
+  else if ( mComposition )
+  {
+
+    if ( mRotationMap )
+    {
+      QObject::disconnect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+    }
+    mRotationMap = mComposition->getComposerMapById( rotationMapId );
+    QObject::connect( mRotationMap, SIGNAL( rotationChanged( double ) ), this, SLOT( setRotation( double ) ) );
+  }
+#endif //0
 
   //grid
   QDomNodeList gridNodeList = itemElem.elementsByTagName( "Grid" );
@@ -1536,6 +1567,44 @@ double QgsComposerMap::mapUnitsToMM() const
   return rect().width() / extentWidth;
 }
 
+void QgsComposerMap::setOverviewFrameMap( int mapId )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  if ( mapId == -1 ) //disable overview map frame
+  {
+    QObject::disconnect( mOverviewFrameMap, SIGNAL( extentChanged() ), this, SLOT( repaint() ) );
+    mOverviewFrameMap = 0;
+  }
+
+  const QgsComposerMap* map = mComposition->getComposerMapById( mapId );
+  if ( !map )
+  {
+    return;
+  }
+  if ( mOverviewFrameMap )
+  {
+    QObject::disconnect( mOverviewFrameMap, SIGNAL( extentChanged() ), this, SLOT( repaint() ) );
+  }
+  QObject::connect( mOverviewFrameMap, SIGNAL( extentChanged() ), this, SLOT( repaint() ) );
+  mOverviewFrameMap = map;
+}
+
+int QgsComposerMap::overviewFrameMapId() const
+{
+  if ( !mOverviewFrameMap )
+  {
+    return -1;
+  }
+  else
+  {
+    return mOverviewFrameMap->id();
+  }
+}
+
 void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
 {
   double mmToMapUnits = 1.0 / mapUnitsToMM();
@@ -1845,4 +1914,22 @@ void QgsComposerMap::sortGridLinesOnBorders( const QList< QPair< double, QLineF 
   }
 }
 
+void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
+{
+  if ( !mOverviewFrameMap )
+  {
+    return;
+  }
 
+  QgsRectangle otherExtent = mOverviewFrameMap->extent();
+  QgsRectangle thisExtent = extent();
+  QgsRectangle intersectRect = thisExtent.intersect( &otherExtent );
+
+  p->setPen( QPen( Qt::red ) ); //todo: make appearance configurable
+  p->setBrush( QBrush( QColor( 255, 0, 0, 100 ) ) );
+  double x = ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
+  double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
+  double width = intersectRect.width() / thisExtent.width() * rect().width();
+  double height = intersectRect.height() / thisExtent.height() * rect().height();
+  p->drawRect( QRectF( x, y, width, height ) );
+}

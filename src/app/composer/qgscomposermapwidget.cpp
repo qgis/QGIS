@@ -64,6 +64,25 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   }
 
+  if ( mComposerMap )
+  {
+    //insert available maps into mMapComboBox
+    const QgsComposition* composition = mComposerMap->composition();
+    if ( composition )
+    {
+      QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
+      QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+      for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+      {
+        if (( *mapItemIt )->id() != mComposerMap->id() )
+        {
+          mOverviewFrameMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
+        }
+      }
+    }
+  }
+
+
   updateGuiElements();
   blockAllSignals( false );
 }
@@ -459,6 +478,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mDrawCanvasItemsCheckBox->blockSignals( b );
   mFrameStyleComboBox->blockSignals( b );
   mFrameWidthSpinBox->blockSignals( b );
+  mOverviewFrameMapComboBox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -517,6 +537,88 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->update();
   mUpdatePreviewButton->setEnabled( true );
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_activated( const QString& text )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  //get composition
+  const QgsComposition* composition = mComposerMap->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  //extract id
+  int id;
+  bool conversionOk;
+  QStringList textSplit = text.split( " " );
+  if ( textSplit.size() < 1 )
+  {
+    return;
+  }
+
+  QString idString = textSplit.at( textSplit.size() - 1 );
+  id = idString.toInt( &conversionOk );
+
+  if ( !conversionOk )
+  {
+    return;
+  }
+
+  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
+  if ( !composerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setOverviewFrameMap( id );
+  mComposerMap->update();
+
+#if 0
+  f( !mPicture || text.isEmpty() || !mPicture->useRotationMap() )
+  {
+    return;
+  }
+
+  //get composition
+  const QgsComposition* composition = mPicture->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  //extract id
+  int id;
+  bool conversionOk;
+  QStringList textSplit = text.split( " " );
+  if ( textSplit.size() < 1 )
+  {
+    return;
+  }
+
+  QString idString = textSplit.at( textSplit.size() - 1 );
+  id = idString.toInt( &conversionOk );
+
+  if ( !conversionOk )
+  {
+    return;
+  }
+
+  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
+  if ( !composerMap )
+  {
+    return;
+  }
+  mPicture->beginCommand( tr( "Rotation map changed" ) );
+  mPicture->setRotationMap( id );
+  mPicture->update();
+  mPicture->endCommand();
+#endif //0
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
