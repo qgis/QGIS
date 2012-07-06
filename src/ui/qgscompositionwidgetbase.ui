@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
+    <width>435</width>
     <height>570</height>
    </rect>
   </property>
@@ -42,7 +42,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>352</width>
+        <width>435</width>
         <height>570</height>
        </rect>
       </property>
@@ -98,11 +98,11 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,0">
             <item>
              <widget class="QDoubleSpinBox" name="mPaperWidthDoubleSpinBox">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -121,7 +121,7 @@
             <item>
              <widget class="QDoubleSpinBox" name="mPaperHeightDoubleSpinBox">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
