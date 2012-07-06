@@ -172,6 +172,7 @@ class SextanteToolbox(QtGui.QDockWidget):
                     algItem = TreeActionItem(action)
                     groupItem.addChild(algItem)
 
+
             if len(groups)>0:
                 providerItem = QtGui.QTreeWidgetItem()
                 providerItem.setText(0, Sextante.getProviderFromName(providerName).getDescription()
@@ -204,6 +205,8 @@ class SextanteToolbox(QtGui.QDockWidget):
                     self.algorithmTree.insertTopLevelItem(0, recentItem)
                     recentItem.setExpanded(True)
 
+            self.algorithmTree.setWordWrap(True)
+
 
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
@@ -213,6 +216,7 @@ class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
         self.alg = alg
         self.setText(0, alg.name)
         self.setIcon(0, alg.getIcon())
+        self.setToolTip(0, alg.name)
 
 
 class TreeActionItem(QtGui.QTreeWidgetItem):
