@@ -15,6 +15,8 @@
 
 #include "qgscompositionchecker.h"
 #include "qgscomposition.h"
+#include <QDir>
+#include <QFileInfo>
 #include <QImage>
 #include <QPainter>
 
@@ -71,10 +73,11 @@ bool QgsCompositionChecker::testComposition()
   mComposition->render( &p, targetArea, sourceArea );
   p.end();
 
-  return compareImages( expectedImage, outputImage );
+  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mExpectedImageFile ).baseName() + "_diff.png";
+  return compareImages( expectedImage, outputImage, diffFilePath );
 }
 
-bool QgsCompositionChecker::compareImages( const QImage& img1, const QImage& img2 ) const
+bool QgsCompositionChecker::compareImages( const QImage& img1, const QImage& img2, const QString& differenceImagePath ) const
 {
   if ( img1.width() != img2.width() || img1.height() != img2.height() )
   {
@@ -84,6 +87,9 @@ bool QgsCompositionChecker::compareImages( const QImage& img1, const QImage& img
   int imageWidth = img1.width();
   int imageHeight = img1.height();
   int mismatchCount = 0;
+
+  QImage differenceImage( imageWidth, imageHeight, QImage::Format_ARGB32_Premultiplied );
+  differenceImage.fill( qRgb( 152, 219, 249 ) );
 
   QRgb pixel1, pixel2;
   for ( int i = 0; i < imageHeight; ++i )
@@ -95,12 +101,17 @@ bool QgsCompositionChecker::compareImages( const QImage& img1, const QImage& img
       if ( pixel1 != pixel2 )
       {
         ++mismatchCount;
+        differenceImage.setPixel( j, i, qRgb( 255, 0, 0 ) );
       }
     }
   }
 
-  int pixelCount = imageWidth * imageHeight;
+  if ( !differenceImagePath.isEmpty() )
+  {
+    differenceImage.save( differenceImagePath, "PNG" );
+  }
 
   //allow pixel deviation of 1 percent
+  int pixelCount = imageWidth * imageHeight;
   return (( double )mismatchCount / ( double )pixelCount ) < 0.01;
 }

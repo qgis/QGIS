@@ -31,7 +31,7 @@ class QgsCompositionChecker
 
   private:
     QgsCompositionChecker(); //forbidden
-    bool compareImages( const QImage& img1, const QImage& img2 ) const;
+    bool compareImages( const QImage& img1, const QImage& img2, const QString& differenceImagePath = QString() ) const;
 
     QgsComposition* mComposition;
     QString mExpectedImageFile;
