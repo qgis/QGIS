@@ -3192,7 +3192,7 @@ bool QgisApp::fileSave()
                      lastUsedDir + "/" + QgsProject::instance()->title(),
                      tr( "QGis files" ) + " (*.qgs *.QGS)" );
     if ( path.isEmpty() )
-      return true;
+      return false;
 
     QFileInfo fullPath( path );
 
@@ -3276,10 +3276,6 @@ void QgisApp::fileSaveAs()
 } // QgisApp::fileSaveAs
 
 
-
-
-
-
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
 void QgisApp::openProject( QAction *action )
@@ -3294,14 +3290,15 @@ void QgisApp::openProject( QAction *action )
   if ( saveDirty() )
   {
     addProject( debugme );
-
   }
+
   //set the projections enabled icon in the status bar
   int myProjectionEnabledFlag =
     QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 );
   mMapCanvas->mapRenderer()->setProjectionsEnabled( myProjectionEnabledFlag );
 
 } // QgisApp::openProject
+
 
 /**
   Open the specified project file; prompt to save previous project if necessary.
@@ -3315,7 +3312,7 @@ void QgisApp::openProject( const QString & fileName )
     // error handling and reporting is in addProject() function
     addProject( fileName );
   }
-  return ;
+  return;
 }
 
 
