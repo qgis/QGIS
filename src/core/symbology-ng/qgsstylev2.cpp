@@ -400,28 +400,6 @@ QStringList QgsStyleV2::symbolsOfGroup( int groupid )
   return symbols;
 }
 
-QgsSymbolTagMap QgsStyleV2::symbolTags()
-{
-  QgsSymbolTagMap tags;
-  sqlite3* db = openDB( mFileName );
-  if ( db == NULL )
-  {
-    QgsDebugMsg( "Cannot open DB to get the tags" );
-    return QgsSymbolTagMap();
-  }
-  sqlite3_stmt *ppStmt;
-  char *query = sqlite3_mprintf( "SELECT * FROM tag;" );
-  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    QString tag = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, TagName ) ) );
-    tags.insert( sqlite3_column_int( ppStmt, TagId ), tag );
-  }
-  sqlite3_finalize( ppStmt );
-  sqlite3_close( db );
-  return tags;
-}
-
 QStringList QgsStyleV2::symbolsWithTag( int tagid )
 {
   QStringList symbols;
@@ -642,7 +620,7 @@ bool QgsStyleV2::tagSymbol( QString symbol, QStringList tags )
     return false;
   }
 
-  foreach ( QString tag, tags )
+  foreach ( const QString &tag, tags )
   {
     int tagid;
     char *zErr = 0;
@@ -697,7 +675,7 @@ bool QgsStyleV2::detagSymbol( QString symbol, QStringList tags )
   }
   sqlite3_finalize( ppStmt );
 
-  foreach ( QString tag, tags )
+  foreach ( const QString &tag, tags )
   {
     int tagid = 0;
     QByteArray tagArray = tag.toUtf8();
@@ -725,3 +703,46 @@ bool QgsStyleV2::detagSymbol( QString symbol, QStringList tags )
   return true;
 }
 
+QStringList QgsStyleV2::tagsOfSymbol( QString symbol )
+{
+  QStringList tagList;
+  QByteArray array = symbol.toUtf8();
+  char *query;
+  sqlite3_stmt *ppStmt;
+  int symbolid;
+  sqlite3 *db = openDB( mFileName );
+  if ( db == NULL )
+  {
+    QgsDebugMsg( "Sorry! Cannot open DB for getting the tags." );
+    return QStringList();
+  }
+  // get the symbol id
+  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
+  int nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbolid = sqlite3_column_int( ppStmt, 0 );
+  }
+  sqlite3_finalize( ppStmt );
+  // get the ids of tags for the symbol
+  query = sqlite3_mprintf( "SELECT tag_id FROM tagmap WHERE symbol_id=%d;", symbolid );
+  nErr = sqlite3_prepare_v2( db, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    int tagid = sqlite3_column_int( ppStmt, 0 );
+    char *subquery;
+    sqlite3_stmt *ppStmt2;
+    subquery = sqlite3_mprintf( "SELECT name FROM tag WHERE id=%d;", tagid );
+    int pErr = sqlite3_prepare_v2( db, subquery, -1, &ppStmt2, NULL );
+    if ( pErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
+    {
+      QString tag = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt2, 0 ) ) );
+      tagList.append( tag );
+    }
+    sqlite3_finalize( ppStmt2 );
+  }
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
+
+  return tagList;
+}

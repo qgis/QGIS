@@ -32,7 +32,6 @@ class QDomElement;
 
 typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
 typedef QMap<int, QString> QgsSymbolGroupMap;
-typedef QMap<int, QString> QgsSymbolTagMap;
 
 // Enumeraters representing sqlite DB  columns
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
@@ -84,8 +83,6 @@ class CORE_EXPORT QgsStyleV2
     QgsSymbolGroupMap groupNames( QString parent = "" );
     //! returns the symbolnames of a given groupid
     QStringList symbolsOfGroup( int groupid );
-    //! returns the tags in the DB
-    QgsSymbolTagMap symbolTags();
     //! returns the symbol names with which have the given tag
     QStringList symbolsWithTag( int tagid );
     //! adds a new group and returns the group's id
@@ -147,6 +144,9 @@ class CORE_EXPORT QgsStyleV2
 
     //! detags the symbol with the given list
     bool detagSymbol( QString symbol, QStringList tags );
+
+    //! return the tags associated with the symbol
+    QStringList tagsOfSymbol( QString symbol );
 
   protected:
 

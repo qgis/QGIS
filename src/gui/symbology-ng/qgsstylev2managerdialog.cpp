@@ -75,6 +75,12 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   listItems->setModel( model );
 
   connect( model, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( itemChanged( QStandardItem* ) ) );
+  // TODO take up the selectiopn model for the symbols
+  // connect currentChanged signal to a slot which would populate the tags for that symbol
+  // as comma seperated values in tagLineEdit and fill the mTagList
+  //
+  connect( listItems->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
+      this, SLOT( symbolSelected( const QModelIndex& ) ) );
 
   populateTypes();
 
@@ -105,6 +111,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   populateList();
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
+  connect( tagBtn, SIGNAL( clicked() ), this, SLOT( tagsChanged() ) );
 
 }
 
@@ -622,7 +629,7 @@ void QgsStyleV2ManagerDialog::populateGroups()
   QStandardItem *tag = new QStandardItem( "Smart Groups" );
   tag->setData( "tags" );
   tag->setEditable( false );
-  buildTagTree( tag );
+  // TODO populate/build smart groups
   model->appendRow( tag );
 
 }
@@ -637,19 +644,6 @@ void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
     item->setData( i.key() );
     parent->appendRow( item );
     buildGroupTree( item );
-    ++i;
-  }
-}
-
-void QgsStyleV2ManagerDialog::buildTagTree( QStandardItem* &parent )
-{
-  QgsSymbolTagMap tags = mStyle->symbolTags();
-  QgsSymbolTagMap::const_iterator i = tags.constBegin();
-  while ( i != tags.constEnd() )
-  {
-    QStandardItem *item = new QStandardItem( i.value() );
-    item->setData( i.key() );
-    parent->appendRow( item );
     ++i;
   }
 }
@@ -933,7 +927,8 @@ void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
     regrouped = mStyle->regroup( symbolName, 0 );
   if ( !regrouped )
   {
-    int er = QMessageBox::critical( this, tr( "Database Error"), tr( "There was a problem with the Symbols database while regrouping." ) );
+    int er = QMessageBox::critical( this, tr( "Database Error"),
+        tr( "There was a problem with the Symbols database while regrouping." ) );
     // call the slot again to get back to normal
     if ( er )
       groupSymbolsAction();
@@ -960,4 +955,39 @@ void QgsStyleV2ManagerDialog::filterSymbols( QString qword )
 {
   QStringList symbols = mStyle->findSymbols( qword );
   populateSymbols( symbols );
+}
+
+void QgsStyleV2ManagerDialog::tagsChanged()
+{
+  QStringList addtags;
+  QStringList removetags;
+
+  QStringList oldtags = mTagList;
+  QStringList newtags = tagsLineEdit->text().split( ",", QString::SkipEmptyParts );
+
+  // compare old with new to find removed tags
+  foreach( const QString &tag, oldtags )
+  {
+    if ( !newtags.contains( tag ) )
+      removetags.append( tag );
+  }
+  if ( removetags.size() > 0 )
+    mStyle->detagSymbol( currentItemName(), removetags );
+
+  // compare new with old to find added tags
+  foreach( const QString &tag, newtags )
+  {
+    if( !oldtags.contains( tag ) )
+      addtags.append( tag );
+  }
+  if ( addtags.size() > 0 )
+    mStyle->tagSymbol( currentItemName(), addtags );
+}
+
+void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
+{
+  tagsLineEdit->clear();
+  QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
+  mTagList = mStyle->tagsOfSymbol( item->data().toString() );
+  tagsLineEdit->setText( mTagList.join( "," ) );
 }

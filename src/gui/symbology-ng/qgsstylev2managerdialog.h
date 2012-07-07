@@ -63,6 +63,12 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! filter the symbols based on input search term
     void filterSymbols( QString );
 
+    //! Listen to tag changes
+    void tagsChanged();
+
+    //! Perform symbol specific tasks when selected
+    void symbolSelected( const QModelIndex& );
+
   protected:
 
     //! populate combo box with known style items (symbols, color ramps)
@@ -72,8 +78,6 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void populateGroups();
     //! build the groups tree
     void buildGroupTree( QStandardItem* &parent );
-    //! build the tag tree
-    void buildTagTree( QStandardItem* &parent );
     //! to set symbols checked when in editing mode
     void setSymbolsChecked( QStringList );
 
@@ -105,6 +109,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     //! Mode to display the symbol list
     bool mGrouppingMode;
+
+    //! space to store symbol tags
+    QStringList mTagList;
 };
 
 #endif
