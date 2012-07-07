@@ -161,6 +161,7 @@ SET(QGIS_CORE_SRCS
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
   raster/qgsrasterinterface.cpp
+  raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrastertransparency.cpp
   raster/qgsrasterpipe.cpp
