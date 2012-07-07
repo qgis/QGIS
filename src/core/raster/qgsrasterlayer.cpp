@@ -48,6 +48,9 @@ email                : tim at linfiniti.com
 
 #include "qgsrasterprojector.h"
 
+#include "qgsrasteriterator.h"
+#include "qgsrasterdrawer.h"
+
 #include <cstdio>
 #include <cmath>
 #include <limits>
@@ -844,7 +847,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 #endif
 
   // Drawer to pipe?
-  QgsRasterDrawer drawer( mPipe.last() );
+  QgsRasterIterator iterator( mPipe.last() );
+  QgsRasterDrawer drawer( &iterator );
   drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
 #ifdef QGISDEBUG

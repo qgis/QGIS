@@ -17,48 +17,31 @@
 
 #include "qgslogger.h"
 #include "qgsrasterdrawer.h"
-//#include "qgsrasterresampler.h"
-#include "qgsrasterprojector.h"
-#include "qgsrastertransparency.h"
+#include "qgsrasteriterator.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
-
-//resamplers
-//#include "qgsbilinearrasterresampler.h"
-//#include "qgscubicrasterresampler.h"
-
-#include <QDomDocument>
-#include <QDomElement>
 #include <QImage>
 #include <QPainter>
 
-QgsRasterDrawer::QgsRasterDrawer( QgsRasterInterface* input ): mInput( input )
+QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iterator )
 {
 }
 
 QgsRasterDrawer::~QgsRasterDrawer()
 {
-  //remove remaining memory in partinfos
-  /*
-  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.begin();
-  for ( ; partIt != mRasterPartInfos.end(); ++partIt )
-  {
-    CPLFree( partIt.value().data );
-  }
-  */
 }
 
 void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
   QgsDebugMsg( "Entered" );
-  if ( !p || !mInput || !viewPort || !theQgsMapToPixel )
+  if ( !p || !mIterator || !viewPort || !theQgsMapToPixel )
   {
     return;
   }
 
   // last pipe filter has only 1 band
   int bandNumber = 1;
-  startRasterRead( bandNumber, viewPort, theQgsMapToPixel );
+  mIterator->startRasterRead( bandNumber, viewPort, theQgsMapToPixel );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -76,8 +59,8 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   void* rasterData;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
-  while ( readNextRasterPart( bandNumber, viewPort, nCols, nRows,
-                              &rasterData, topLeftCol, topLeftRow ) )
+  while ( mIterator->readNextRasterPart( bandNumber, viewPort, nCols, nRows,
+                                         &rasterData, topLeftCol, topLeftRow ) )
   {
     //create image
     //QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
@@ -88,120 +71,6 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
     // QImage does not delete data block passed to constructor
     free( rasterData );
-  }
-}
-
-void QgsRasterDrawer::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel )
-{
-  if ( !viewPort || !mapToPixel || !mInput )
-  {
-    return;
-  }
-
-  //remove any previous part on that band
-  removePartInfo( bandNumber );
-
-  //split raster into small portions if necessary
-  RasterPartInfo pInfo;
-  pInfo.nCols = viewPort->drawableAreaXDim;
-  pInfo.nRows = viewPort->drawableAreaYDim;
-
-  //effective oversampling factors are different to global one because of rounding
-  //oversamplingX = (( double )pInfo.nCols * oversampling ) / viewPort->drawableAreaXDim;
-  //oversamplingY = (( double )pInfo.nRows * oversampling ) / viewPort->drawableAreaYDim;
-
-  // TODO : we dont know oversampling (grid size) here - how to get totalMemoryUsage ?
-  //int totalMemoryUsage = pInfo.nCols * oversamplingX * pInfo.nRows * oversamplingY * mInput->dataTypeSize( bandNumber );
-  int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mInput->dataTypeSize( bandNumber );
-  int parts = totalMemoryUsage / 100000000 + 1;
-  int nPartsPerDimension = sqrt( parts );
-  pInfo.nColsPerPart = pInfo.nCols / nPartsPerDimension;
-  pInfo.nRowsPerPart = pInfo.nRows / nPartsPerDimension;
-  pInfo.currentCol = 0;
-  pInfo.currentRow = 0;
-  pInfo.data = 0;
-  pInfo.prj = 0;
-  mRasterPartInfos.insert( bandNumber, pInfo );
-}
-
-bool QgsRasterDrawer::readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort,
-    int& nCols, int& nRows, void** rasterData, int& topLeftCol, int& topLeftRow )
-{
-  if ( !viewPort )
-  {
-    return false;
-  }
-
-  //get partinfo
-  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
-  if ( partIt == mRasterPartInfos.end() )
-  {
-    return false;
-  }
-
-  RasterPartInfo& pInfo = partIt.value();
-
-  //remove last data block
-  // TODO: data are released somewhere else (check)
-  //free( pInfo.data );
-  pInfo.data = 0;
-  delete pInfo.prj;
-  pInfo.prj = 0;
-
-  //already at end
-  if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow == pInfo.nRows )
-  {
-    return false;
-  }
-
-  //read data block
-  nCols = qMin( pInfo.nColsPerPart, pInfo.nCols - pInfo.currentCol );
-  nRows = qMin( pInfo.nRowsPerPart, pInfo.nRows - pInfo.currentRow );
-  int typeSize = mInput->dataTypeSize( bandNumber ) / 8;
-
-  //get subrectangle
-  QgsRectangle viewPortExtent = viewPort->mDrawnExtent;
-  double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / ( double )pInfo.nCols * viewPortExtent.width();
-  double xmax = viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / ( double )pInfo.nCols * viewPortExtent.width();
-  double ymin = viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / ( double )pInfo.nRows * viewPortExtent.height();
-  double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / ( double )pInfo.nRows * viewPortExtent.height();
-  QgsRectangle blockRect( xmin, ymin, xmax, ymax );
-
-  pInfo.data = mInput->block( bandNumber, blockRect, nCols, nRows );
-
-  *rasterData = pInfo.data;
-  topLeftCol = pInfo.currentCol;
-  topLeftRow = pInfo.currentRow;
-
-  pInfo.currentCol += nCols;
-  if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow + nRows == pInfo.nRows ) //end of raster
-  {
-    pInfo.currentRow = pInfo.nRows;
-  }
-  else if ( pInfo.currentCol == pInfo.nCols ) //start new row
-  {
-    pInfo.currentCol = 0;
-    pInfo.currentRow += pInfo.nRowsPerPart;
-  }
-
-  return true;
-}
-
-void QgsRasterDrawer::stopRasterRead( int bandNumber )
-{
-  removePartInfo( bandNumber );
-}
-
-void QgsRasterDrawer::removePartInfo( int bandNumber )
-{
-  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
-  if ( partIt != mRasterPartInfos.end() )
-  {
-    RasterPartInfo& pInfo = partIt.value();
-    //CPLFree( pInfo.data );
-    free( pInfo.data );
-    delete pInfo.prj;
-    mRasterPartInfos.remove( bandNumber );
   }
 }
 
