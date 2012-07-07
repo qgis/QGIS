@@ -5284,13 +5284,15 @@ void QgisApp::options()
     return;
   }
 
+  QSettings mySettings;
+  QString oldScales = mySettings.value( "Map/scales", PROJECT_SCALES ).toString();
+
   QgsOptions *optionsDialog = new QgsOptions( this );
   if ( optionsDialog->exec() )
   {
     // set the theme if it changed
     setTheme( optionsDialog->theme() );
 
-    QSettings mySettings;
     mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing" ).toBool() );
     mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render" ).toBool() );
 
@@ -5304,7 +5306,10 @@ void QgisApp::options()
     mRasterFileFilter.clear();
     QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
 
-    mScaleEdit->updateScales();
+    if ( oldScales != mySettings.value( "Map/scales", PROJECT_SCALES ).toString() )
+    {
+      mScaleEdit->updateScales();
+    }
   }
 
   delete optionsDialog;
