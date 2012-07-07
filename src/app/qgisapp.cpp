@@ -2973,6 +2973,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
+  mScaleEdit->updateScales();
 
   // set project CRS
   QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
@@ -3107,6 +3108,13 @@ void QgisApp::fileOpen()
     }
 
     setTitleBarText_( *this );
+
+    bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+    if ( projectScales )
+    {
+      mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+    }
+
     emit projectRead();     // let plug-ins know that we've read in a new
     // project so that they can check any project
     // specific plug-in state
@@ -3117,7 +3125,6 @@ void QgisApp::fileOpen()
     mMapCanvas->freeze( false );
     mMapCanvas->refresh();
   }
-
 } // QgisApp::fileOpen
 
 
@@ -3169,6 +3176,13 @@ bool QgisApp::addProject( QString projectFile )
   int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
   int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
   QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+
+  //load project scales
+  bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
+  if ( projectScales )
+  {
+    mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
+  }
 
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
@@ -3302,12 +3316,10 @@ void QgisApp::fileSaveAs()
   }
 } // QgisApp::fileSaveAs
 
-
 // Open the project file corresponding to the
 // path at the given index in mRecentProjectPaths
 void QgisApp::openProject( QAction *action )
 {
-
   // possibly save any pending work before opening a different project
   QString debugme;
   assert( action != NULL );
@@ -3323,7 +3335,6 @@ void QgisApp::openProject( QAction *action )
   int myProjectionEnabledFlag =
     QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 );
   mMapCanvas->mapRenderer()->setProjectionsEnabled( myProjectionEnabledFlag );
-
 } // QgisApp::openProject
 
 
@@ -3341,7 +3352,6 @@ void QgisApp::openProject( const QString & fileName )
   }
   return;
 }
-
 
 /**
   Open a raster or vector file; ignore other files.
@@ -6499,6 +6509,9 @@ void QgisApp::projectProperties()
   // changing things in the project properties dialog box
   connect( pp, SIGNAL( displayPrecisionChanged() ), this,
            SLOT( updateMouseCoordinatePrecision() ) );
+
+  connect( pp, SIGNAL( scalesChanged( const QStringList & ) ), mScaleEdit,
+           SLOT( updateScales( const QStringList & ) ) );
   QApplication::restoreOverrideCursor();
 
   //pass any refresh signals off to canvases

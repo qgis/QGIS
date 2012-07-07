@@ -1440,12 +1440,12 @@ void QgsOptions::saveGdalDriverList()
 void QgsOptions::on_pbnAddScale_clicked()
 {
   int myScale = QInputDialog::getInt(
-                   this,
-                   tr( "Enter scale" ),
-                   tr( "Scale denominator" ),
-                   -1,
-                   1
-                 );
+                  this,
+                  tr( "Enter scale" ),
+                  tr( "Scale denominator" ),
+                  -1,
+                  1
+                );
 
   if ( myScale != -1 )
   {
@@ -1464,7 +1464,7 @@ void QgsOptions::on_pbnRemoveScale_clicked()
   delete itemToRemove;
 }
 
-void QgsOptions::on_pbnDefaultValues_clicked()
+void QgsOptions::on_pbnDefaultScaleValues_clicked()
 {
   mListGlobalScales->clear();
 

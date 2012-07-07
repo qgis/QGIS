@@ -46,15 +46,15 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
     if ( !myScales.isEmpty() )
     {
       myScalesList = myScales.split( "," );
-      //~ QStringList::const_iterator scaleIt = myScalesList.constBegin();
-      //~ for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
-      //~ {
-        //~ addItem( *scaleIt );
-      //~ }
     }
   }
   else
   {
+    QStringList::const_iterator scaleIt = scales.constBegin();
+    for ( ; scaleIt != scales.constEnd(); ++scaleIt )
+    {
+      myScalesList.append( *scaleIt );
+    }
   }
 
   blockSignals( true );

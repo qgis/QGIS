@@ -145,7 +145,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * used in scale combobox
      * @note added in QGIS 2.0
      */
-    void on_pbnDefaultValues_clicked();
+    void on_pbnDefaultScaleValues_clicked();
 
     /** Auto slot executed when the active page in the main widget stack is changed
      * @note added in 2.0

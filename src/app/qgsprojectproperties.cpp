@@ -39,11 +39,11 @@
 
 //qt includes
 #include <QColorDialog>
+#include <QInputDialog>
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 
 //stdc++ includes
-
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
@@ -112,6 +112,22 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   pbnCanvasColor->setColor( myColor );
+
+  //get project scales
+  QStringList myScales = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+  if ( !myScales.isEmpty() )
+  {
+    QStringList::const_iterator scaleIt = myScales.constBegin();
+    for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+      newItem->setText( *scaleIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      lstScales->addItem( newItem );
+    }
+  }
+
+  grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
 
   QgsMapLayer* currentLayer = 0;
 
@@ -423,6 +439,33 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
 
+  //save project scales
+  QStringList myScales;
+  for ( int i = 0; i < lstScales->count(); ++i )
+  {
+    myScales.append( lstScales->item( i )->text() );
+  }
+
+  if ( !myScales.isEmpty() )
+  {
+    QgsProject::instance()->writeEntry( "Scales", "/ScalesList", myScales );
+    QgsProject::instance()->writeEntry( "Scales", "/useProjectScales", grpProjectScales->isChecked() );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "Scales", "/" );
+  }
+
+  //use global or project scales depending on checkbox state
+  if ( grpProjectScales->isChecked() )
+  {
+    emit scalesChanged( myScales );
+  }
+  else
+  {
+    emit scalesChanged();
+  }
+
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
@@ -693,6 +736,33 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
+}
+
+void QgsProjectProperties::on_pbnAddScale_clicked()
+{
+  int myScale = QInputDialog::getInt(
+                  this,
+                  tr( "Enter scale" ),
+                  tr( "Scale denominator" ),
+                  -1,
+                  1
+                );
+
+  if ( myScale != -1 )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+    newItem->setText( QString( "1:%1" ).arg( myScale ) );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    lstScales->addItem( newItem );
+    lstScales->setCurrentItem( newItem );
+  }
+}
+
+void QgsProjectProperties::on_pbnRemoveScale_clicked()
+{
+  int currentRow = lstScales->currentRow();
+  QListWidgetItem* itemToRemove = lstScales->takeItem( currentRow );
+  delete itemToRemove;
 }
 
 void QgsProjectProperties::populateStyles()

@@ -858,7 +858,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>760</width>
+            <width>630</width>
             <height>625</height>
            </rect>
           </property>
@@ -1104,7 +1104,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-308</y>
+            <y>-313</y>
             <width>762</width>
             <height>750</height>
            </rect>
@@ -1394,7 +1394,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QToolButton" name="pbnDefaultValues">
+                 <widget class="QToolButton" name="pbnDefaultScaleValues">
                   <property name="text">
                    <string>...</string>
                   </property>
@@ -1475,8 +1475,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>778</width>
-            <height>437</height>
+            <width>270</width>
+            <height>93</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1556,7 +1556,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
+            <width>571</width>
             <height>627</height>
            </rect>
           </property>
@@ -1932,8 +1932,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>778</width>
-            <height>437</height>
+            <width>425</width>
+            <height>417</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2106,8 +2106,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>566</height>
+            <width>519</width>
+            <height>584</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2203,7 +2203,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
+            <width>355</width>
             <height>554</height>
            </rect>
           </property>
