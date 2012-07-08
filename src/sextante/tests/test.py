@@ -28,6 +28,7 @@ sys.path.append(pardir)
 sys.path.append('/usr/share/qgis/python/plugins')
 
 import itertools
+import time
 from qgis.gui import QgsMapCanvas
 from qgis.core import *
 from qgis_interface import QgisInterface
@@ -36,6 +37,7 @@ from utilities_test import getQgisTestApp
 #from gui.is_plugin import ISPlugin
 from sextante.SextantePlugin import SextantePlugin
 from sextante.core.Sextante import Sextante
+from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterNumber import ParameterNumber
@@ -71,36 +73,43 @@ class SextantePluginTest(unittest.TestCase):
         self.assertTrue(self.providerToAlgs, "Alg list")
 
 class SextanteProviderTestCase(unittest.TestCase):
-    def __init__(self, algId, alg, threaded):
+    def __init__(self, algId, alg, threaded, dialog = "none"):
         self.algId = algId
         self.alg = alg
         self.threaded = threaded
-        self.msg = "ALG %s (%s)" % (self.algId, { True: "threaded" , False : "unthreaded"}[threaded])
-        unittest.TestCase.__init__(self, "test_runalg")
+        self.msg = "ALG %s (%s %s)" % (self.algId, { True: "threaded" , False : "unthreaded"}[threaded], dialog)
+        unittest.TestCase.__init__(self, "runalg_%s" % dialog)
 
-    def gen_test_parameters(self, alg):
+    def gen_test_parameters(self, alg, doSet = False):
         b = False
         for p in alg.parameters:
             if isinstance(p, ParameterRaster):
                 l = QgsRasterLayer('data/raster', "test raster")
                 l.dataProvider = lambda: DataProviderStub('data/raster')
+                if doSet: p.setValue(l)
                 yield l
             elif isinstance(p, ParameterVector):
                 l = QgsVectorLayer('data/vector', "test vector")
-                l.dataProvider = lambda: DataProviderStub('data/vector')
+                if doSet: p.setValue(l)
                 yield l
             elif isinstance(p, ParameterNumber):
+                n = 42
                 if p.max:
-                    yield p.max
+                    n = p.max
                 elif p.min:
-                    yield p.min
-                yield 42
+                    n = p.min
+                if doSet: p.setValue(n)
+                yield n
             elif isinstance(p, ParameterString):
-                yield "Test string"
+                s = "Test string"
+                if doSet: p.setValue(s)
+                yield s
             elif isinstance(p, ParameterBoolean):
                 b = not b
+                if doSet: p.setValue(b)
                 yield b
             else:
+                if doSet: p.setValue(None)
                 yield
         i = 0;
         for o in alg.outputs:
@@ -109,18 +118,28 @@ class SextanteProviderTestCase(unittest.TestCase):
             i = i + 1
             outbasename = self.msg.replace('/', '-')
             if isinstance(o, OutputRaster):
-                yield 'outputs/%s - %i.tif' % (outbasename, i)
+                fn = 'outputs/%s - %i.tif' % (outbasename, i)
+                if doSet: o.setValue(fn)
+                yield fn
             elif isinstance(o, OutputVector):
-                yield 'outputs/%s - %i.shp' % (outbasename, i)
+                fn = 'outputs/%s - %i.shp' % (outbasename, i)
+                if doSet: o.setValue(fn)
+                yield fn
             else:
+                if doSet: o.setValue(None)
                 yield
-        
-    def test_runalg(self):
+
+    def setUp(self):
         SextanteConfig.setSettingValue(SextanteConfig.USE_THREADS, self.threaded)
-        args = list(self.gen_test_parameters(self.alg))
-        print
-        print bcolors.INFO, self.msg, bcolors.ENDC, "Parameters: ", self.alg.parameters, ' => ', args, bcolors.WARNING,
-        result = Sextante.runalg(self.algId, *args)
+        self.args = list(self.gen_test_parameters(self.alg, True))
+        print 
+        print bcolors.INFO, self.msg, bcolors.ENDC,
+        print "Parameters: ", self.alg.parameters,
+        print "Outputs: ", [out for out in self.alg.outputs if not out.hidden],
+        print ' => ', self.args, bcolors.WARNING,
+    
+    def runalg_none(self):
+        result = Sextante.runalg(self.algId, *self.args)
         print bcolors.ENDC
         self.assertIsNotNone(result, self.msg)
         if not result:
@@ -128,6 +147,21 @@ class SextanteProviderTestCase(unittest.TestCase):
         for p in result.values():
             if isinstance(p, str):
                 self.assertTrue(os.path.exists(p), "Output %s exists" % p)
+
+    def runalg_parameters(self):
+        dlg = self.alg.getCustomParametersDialog()
+        if not dlg:
+            dlg = ParametersDialog(self.alg)
+        # hack to handle that hacky code...
+        dlg.ui.setParamValues = lambda: True
+        dlg.show()
+        dlg.ui.accept()
+        while (not dlg.executed):
+            time.sleep(.5)
+
+    def tearDown(self):
+        print bcolors.ENDC
+        
 
 def algSuite():
     s = unittest.TestSuite()
@@ -139,6 +173,8 @@ def algSuite():
         algId, alg = algs.items()[-1]        
         s.addTest(SextanteProviderTestCase(algId, alg, True))
         s.addTest(SextanteProviderTestCase(algId, alg, False))
+        s.addTest(SextanteProviderTestCase(algId, alg, True, "parameters"))
+        s.addTest(SextanteProviderTestCase(algId, alg, False, "parameters"))
     return s
 
 if __name__ == '__main__':
