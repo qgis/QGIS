@@ -89,6 +89,14 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
   currentRuleChanged();
+
+  //expand headerview to width of widget by streching expression column
+  viewRules->header()->resizeSection( 0, 200 );
+  viewRules->header()->setResizeMode( 0, QHeaderView::Interactive );
+  viewRules->header()->setResizeMode( 1, QHeaderView::Stretch );
+  viewRules->header()->setResizeMode( 2, QHeaderView::Interactive );
+  viewRules->header()->setResizeMode( 3, QHeaderView::Interactive );
+
 }
 
 QgsRuleBasedRendererV2Widget::~QgsRuleBasedRendererV2Widget()
@@ -379,8 +387,10 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   editFilter->setText( mRule->filterExpression() );
+  editFilter->setToolTip( mRule->filterExpression() );
   editLabel->setText( mRule->label() );
   editDescription->setText( mRule->description() );
+  editDescription->setToolTip( mRule->description() );
 
   if ( mRule->dependsOnScale() )
   {
@@ -518,7 +528,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
 
   QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index );
 
-  if ( role == Qt::DisplayRole )
+  if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
     switch ( index.column() )
     {
