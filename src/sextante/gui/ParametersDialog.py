@@ -244,7 +244,7 @@ class Ui_ParametersDialog(object):
     def error(self, msg):
         self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
-        QMessageBox.critical(self, "Error", msg)
+        QMessageBox.critical(self.dialog, "Error", msg)
         SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
