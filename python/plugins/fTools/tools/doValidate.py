@@ -99,7 +99,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
   def closeEvent(self, e):
     settings = QSettings()
     settings.setValue( "/fTools/ValidateDialog/geometry", QVariant(self.saveGeometry()) )
-    QMainWindow.closeEvent(self, e)
+    QDialog.closeEvent(self, e)
     del self.marker
     
   def keyPressEvent( self, e ):
