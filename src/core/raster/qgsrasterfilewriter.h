@@ -1,0 +1,81 @@
+#ifndef QGSRASTERFILEWRITER_H
+#define QGSRASTERFILEWRITER_H
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
+#include <QDomDocument>
+#include <QDomElement>
+#include <QString>
+
+class QProgressDialog;
+class QgsRasterDataProvider;
+
+class CORE_EXPORT QgsRasterFileWriter
+{
+  public:
+    enum WriterError
+    {
+      NoError = 0,
+      SourceProviderError = 1,
+      DestProviderError = 2,
+      CreateDatasourceError = 3,
+      WriteError = 4
+    };
+
+    QgsRasterFileWriter( const QString& outputUrl );
+    ~QgsRasterFileWriter();
+
+    WriterError writeRaster( QgsRasterDataProvider* sourceProvider, int nCols, QgsRectangle outputExtent = QgsRectangle(), QProgressDialog* p = 0 );
+
+    void setOutputFormat( const QString& format ) { mOutputFormat = format; }
+    QString outputFormat() const { return mOutputFormat; }
+
+    void setOutputProviderKey( const QString& key ) { mOutputProviderKey = key; }
+    QString outputProviderKey() const { return mOutputProviderKey; }
+
+    void setTiledMode( bool t ) { mTiledMode = t; }
+    bool tiledMode() const { return mTiledMode; }
+
+#if 0
+    void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
+    int maxTileWidth() const { return mMaxTileWidth; }
+
+    void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
+    int maxTileHeight() const { return mMaxTileHeight; }
+#endif //0
+
+  private:
+    QgsRasterFileWriter(); //forbidden
+    WriterError writeRasterSingleTile( QgsRasterDataProvider* sourceProvider, int nCols );
+    WriterError writeARGBRaster( QgsRasterDataProvider* sourceProvider, int nCols, const QgsRectangle& outputExtent );
+
+    //initialize vrt member variables
+    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );
+    //write vrt document to disk
+    bool writeVRT( const QString& file );
+    //add file entry to vrt
+    void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
+    void buildPyramides( const QString& filename );
+
+    static int pyramidesProgress( double dfComplete, const char *pszMessage, void* pData );
+
+    QString mOutputUrl;
+    QString mOutputProviderKey;
+    QString mOutputFormat;
+    QgsCoordinateReferenceSystem mOutputCRS;
+
+    /**False: Write one file, true: create a directory and add the files numbered*/
+    bool mTiledMode;
+    double mMaxTileWidth;
+    double mMaxTileHeight;
+
+    QDomDocument mVRTDocument;
+    QDomElement mVRTRedBand;
+    QDomElement mVRTGreenBand;
+    QDomElement mVRTBlueBand;
+    QDomElement mVRTAlphaBand;
+
+    QProgressDialog* mProgressDialog;
+};
+
+#endif // QGSRASTERFILEWRITER_H

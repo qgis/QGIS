@@ -169,6 +169,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrastershaderfunction.cpp
 
   raster/qgsrasterdrawer.cpp
+  raster/qgsrasterfilewriter.cpp
   raster/qgsrasterresamplefilter.cpp
   raster/qgsrasterrendererregistry.cpp
   raster/qgsrasterrenderer.cpp
