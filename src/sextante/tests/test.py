@@ -46,6 +46,7 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class DataProviderStub:
@@ -163,28 +164,58 @@ class SextanteProviderTestCase(unittest.TestCase):
         print bcolors.ENDC
         
 
-def algSuite():
+def algSuite(dialog = "none", threaded = True, unthreaded = True, provider = None, algName = None):
     s = unittest.TestSuite()
     for provider, algs in Sextante.algs.items():
         if not algs.items():
             print bcolors.WARNING, "WARNING: %s seems to provide no algs!" % provider,
             print bcolors.ENDC
             continue
-        algId, alg = algs.items()[-1]        
-        s.addTest(SextanteProviderTestCase(algId, alg, True))
-        s.addTest(SextanteProviderTestCase(algId, alg, False))
-        s.addTest(SextanteProviderTestCase(algId, alg, True, "parameters"))
-        s.addTest(SextanteProviderTestCase(algId, alg, False, "parameters"))
+        algId, alg = algs.items()[-1]
+        if threaded:
+            s.addTest(SextanteProviderTestCase(algId, alg, True, dialog))
+        if unthreaded:
+            s.addTest(SextanteProviderTestCase(algId, alg, False, dialog))
+    return s
+
+def modelSuite(modelFile, threaded = True, unthreaded = True):
+    s = unittest.TestSuite()
+    model = ModelerAlgorithm()
+    model.openModel(modelFile)
+    s.addTest(SextanteProviderTestCase(modelFile, model, True))
     return s
 
 if __name__ == '__main__':
-    if not os.path.exists("data/raster") or not os.path.exists("data/vector"):
-        print "Please install test data under ./data/raster and ./data/vector."
-        exit(1)
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Sextante test suite.')
+    parser.add_argument('-l', action='store_true', help='Test sextante loading only. Ignore further arguments.')
+    #~ parser.add_argument('-a', dest='algorithm', help='Test a particular alg.')
+    #~ parser.add_argument('-p', dest='provider', help='Test a particular provider.')
+    parser.add_argument('-m', dest='model', help='Test a particular model.', default=None)
+    parser.add_argument('-d', dest='dialog', help='Test a particular dialog.', default = "none")
+    parser.add_argument('-t', dest='tOnly', action='store_true', help='Enable threaded execution only.')
+    parser.add_argument('-u', dest='uOnly', action='store_true', help='Enable unthreaded execution only.')
+    parser.add_argument('-r', dest='raster', help='Use specified raster as input.', default='data/raster')
+    parser.add_argument('-v', dest='vector', help='Use specified vectro as input.', default='data/vector')
+    
+    args = parser.parse_args()
+
+    threaded = not args.uOnly or args.tOnly
+    unthreaded = not args.tOnly or args.uOnly
+    
     try:
         loadSuite = unittest.TestLoader().loadTestsFromTestCase(SextantePluginTest)
         unittest.TextTestRunner(verbosity=2).run(loadSuite)
-        unittest.TextTestRunner(verbosity=2).run(algSuite())
+        if args.l:
+            exit(0)
+        if not os.path.exists(args.raster) or not os.path.exists(args.vector):
+            print "No data under %s or %s. Run with -h argument for help" % (args.raster, args.vector)
+            exit(1)
+        if args.model:
+            unittest.TextTestRunner(verbosity=2).run(modelSuite(args.model or 'data/model', threaded, unthreaded))
+            exit(0)
+        unittest.TextTestRunner(verbosity=2).run(algSuite(args.dialog, threaded, unthreaded))
     except KeyboardInterrupt:
         print bcolors.ENDC, "Test interrupted."
 

@@ -1,1 +1,1 @@
-PYTHONPATH=~/Proyectos/qgis/output/python/:~/Proyectos/qgis/python/plugins/ python test.py
+PYTHONPATH=~/Proyectos/qgis/output/python/:~/Proyectos/qgis/python/plugins/ python test.py $@
