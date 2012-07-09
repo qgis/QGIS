@@ -82,6 +82,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( btnAddToStyle, SIGNAL( clicked() ), this, SLOT( addSymbolToStyle() ) );
   btnAddToStyle->setIcon( QIcon( QgsApplication::defaultThemePath() + "symbologyAdd.png" ) );
 
+  // Set symbol color in btnColor
+  updateSymbolColor();
+
 }
 
 

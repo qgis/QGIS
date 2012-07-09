@@ -328,14 +328,12 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
 
   protected:
     QgsPointPatternFillSymbolLayer* mLayer;
-    void updateMarkerIcon();
 
   private slots:
     void on_mHorizontalDistanceSpinBox_valueChanged( double d );
     void on_mVerticalDistanceSpinBox_valueChanged( double d );
     void on_mHorizontalDisplacementSpinBox_valueChanged( double d );
     void on_mVerticalDisplacementSpinBox_valueChanged( double d );
-    void on_mChangeMarkerButton_clicked();
 };
 
 /////////
@@ -391,12 +389,7 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
 
-  public slots:
-    void setMarker();
-
   protected:
-    void updateMarker();
-
     QgsCentroidFillSymbolLayerV2* mLayer;
 };
 

@@ -1167,7 +1167,6 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( cons
     QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )
 {
   setupUi( this );
-  updateMarkerIcon();
 }
 
 
@@ -1183,21 +1182,11 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* lay
   mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
   mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
   mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
-  updateMarkerIcon();
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
-}
-
-void QgsPointPatternFillSymbolLayerWidget::updateMarkerIcon()
-{
-  if ( mLayer )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeMarkerButton->iconSize() );
-    mChangeMarkerButton->setIcon( icon );
-  }
 }
 
 void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDistanceSpinBox_valueChanged( double d )
@@ -1234,23 +1223,6 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_value
     mLayer->setDisplacementY( d );
     emit changed();
   }
-}
-
-void QgsPointPatternFillSymbolLayerWidget::on_mChangeMarkerButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  updateMarkerIcon();
-  emit changed();
 }
 
 /////////////
@@ -1362,8 +1334,6 @@ QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( const Qg
   mLayer = NULL;
 
   setupUi( this );
-
-  connect( btnChangeMarker, SIGNAL( clicked() ), this, SLOT( setMarker() ) );
 }
 
 void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -1373,9 +1343,6 @@ void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
 
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsCentroidFillSymbolLayerV2*>( layer );
-
-  // set values
-  updateMarker();
 }
 
 QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
@@ -1383,18 +1350,3 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
   return mLayer;
 }
 
-void QgsCentroidFillSymbolLayerV2Widget::setMarker()
-{
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == 0 )
-    return;
-  updateMarker();
-
-  emit changed();
-}
-
-void QgsCentroidFillSymbolLayerV2Widget::updateMarker()
-{
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), btnChangeMarker->iconSize() );
-  btnChangeMarker->setIcon( icon );
-}
