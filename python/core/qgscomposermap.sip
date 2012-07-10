@@ -254,6 +254,13 @@ class QgsComposerMap : QgsComposerItem
 
     void updateItem();
 
+    /**Sets overview frame map. -1 disables the overview frame
+    @note: this function was added in version 1.9*/
+    void setOverviewFrameMap( int mapId );
+    /**Returns id of overview frame (or -1 if no overfiew frame)
+    @note: this function was added in version 1.9*/
+    int overviewFrameMapId() const;
+
   public slots:
 
     /**Called if map canvas has changed*/

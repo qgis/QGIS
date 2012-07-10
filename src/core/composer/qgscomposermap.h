@@ -289,9 +289,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;
 
-    /**Sets overview frame map. -1 disables the overview frame*/
+    /**Sets overview frame map. -1 disables the overview frame
+    @note: this function was added in version 1.9*/
     void setOverviewFrameMap( int mapId );
-    /**Returns id of overview frame (or -1 if no overfiew frame)*/
+    /**Returns id of overview frame (or -1 if no overfiew frame)
+    @note: this function was added in version 1.9*/
     int overviewFrameMapId() const { return mOverviewFrameMapId; }
 
   signals:
