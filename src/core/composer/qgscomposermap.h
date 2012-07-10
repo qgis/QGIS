@@ -29,6 +29,7 @@ class QDomNode;
 class QDomDocument;
 class QGraphicsView;
 class QPainter;
+class QgsFillSymbolV2;
 
 /** \ingroup MapComposer
  *  \class QgsComposerMap
@@ -296,6 +297,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     @note: this function was added in version 1.9*/
     int overviewFrameMapId() const { return mOverviewFrameMapId; }
 
+    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
+    QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
+
   signals:
     void extentChanged();
 
@@ -348,6 +352,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
     int mOverviewFrameMapId;
+    /**Drawing style for overview farme*/
+    QgsFillSymbolV2* mOverviewFrameMapSymbol;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();

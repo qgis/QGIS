@@ -44,6 +44,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
     void on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text );
+    void on_mOverviewFrameStyleButton_clicked();
 
     void on_mXMinLineEdit_editingFinished();
     void on_mXMaxLineEdit_editingFinished();
@@ -105,6 +106,8 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
     void initAnnotationPositionBox( QComboBox* c, QgsComposerMap::GridAnnotationPosition pos );
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
+
+    void updateOverviewSymbolMarker();
 };
 
 #endif

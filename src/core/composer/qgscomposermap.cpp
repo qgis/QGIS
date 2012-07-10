@@ -46,6 +46,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mComposition = composition;
+  mOverviewFrameMapSymbol = new QgsFillSymbolV2();
 
   //mId = mComposition->composerMapItems().size();
   int maxId = -1;
@@ -92,6 +93,9 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
     mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
+
+  mOverviewFrameMapSymbol = new QgsFillSymbolV2();
+
   //Offset
   mXOffset = 0.0;
   mYOffset = 0.0;
@@ -110,6 +114,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 
 QgsComposerMap::~QgsComposerMap()
 {
+  delete mOverviewFrameMapSymbol;
 }
 
 void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi )
@@ -756,7 +761,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mPreviewMode = Rectangle;
   }
 
-  mOverviewFrameMapId = itemElem.attribute( "overviewFrameMap", "-1" ).toInt();
+  setOverviewFrameMap( itemElem.attribute( "overviewFrameMap", "-1" ).toInt() );
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( "Extent" );
@@ -1570,6 +1575,12 @@ void QgsComposerMap::setOverviewFrameMap( int mapId )
   update();
 }
 
+void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
+{
+  delete mOverviewFrameMapSymbol;
+  mOverviewFrameMapSymbol = symbol;
+}
+
 void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
 {
   double mmToMapUnits = 1.0 / mapUnitsToMM();
@@ -1881,7 +1892,7 @@ void QgsComposerMap::sortGridLinesOnBorders( const QList< QPair< double, QLineF 
 
 void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
 {
-  if ( mOverviewFrameMapId == -1 )
+  if ( mOverviewFrameMapId == -1 || !mComposition )
   {
     return;
   }
@@ -1896,11 +1907,41 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   QgsRectangle thisExtent = extent();
   QgsRectangle intersectRect = thisExtent.intersect( &otherExtent );
 
-  p->setPen( QPen( Qt::red ) ); //todo: make appearance configurable
+  QgsRenderContext context;
+  context.setPainter( p );
+  if ( mPreviewMode == Rectangle )
+  {
+    return;
+  }
+  else if ( mComposition->plotStyle() == QgsComposition::Preview )
+  {
+    context.setScaleFactor( 1.0 );
+    context.setRasterScaleFactor( /*96.0*/ mComposition->printResolution() / 25.4 );
+  }
+  else //print
+  {
+    context.setScaleFactor( 1.0 );
+    double rasterScaleFactor =  mComposition->printResolution() / 25.4;
+    context.setRasterScaleFactor( rasterScaleFactor );
+  }
+
+  QPolygonF polygon;
+  double x = ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
+  double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
+  double width = intersectRect.width() / thisExtent.width() * rect().width();
+  double height = intersectRect.height() / thisExtent.height() * rect().height();
+  polygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height );
+
+  QList<QPolygonF> rings; //empty list
+  mOverviewFrameMapSymbol->startRender( context );
+  mOverviewFrameMapSymbol->renderPolygon( polygon, &rings, 0, context );
+  mOverviewFrameMapSymbol->stopRender( context );
+
+  /*p->setPen( QPen( Qt::red ) ); //todo: make appearance configurable
   p->setBrush( QBrush( QColor( 255, 0, 0, 100 ) ) );
   double x = ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
   double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
   double width = intersectRect.width() / thisExtent.width() * rect().width();
   double height = intersectRect.height() / thisExtent.height() * rect().height();
-  p->drawRect( QRectF( x, y, width, height ) );
+  p->drawRect( QRectF( x, y, width, height ) );*/
 }

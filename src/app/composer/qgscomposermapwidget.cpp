@@ -18,6 +18,9 @@
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgsmaprenderer.h"
+#include "qgssymbolv2.h"
+#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 #include <QFontDialog>
 
@@ -484,6 +487,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mFrameStyleComboBox->blockSignals( b );
   mFrameWidthSpinBox->blockSignals( b );
   mOverviewFrameMapComboBox->blockSignals( b );
+  mOverviewFrameStyleButton->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -588,6 +592,19 @@ void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( con
 
   mComposerMap->setOverviewFrameMap( id );
   mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+  QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    updateOverviewSymbolMarker();
+  }
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
@@ -965,5 +982,14 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
   else //horizontal
   {
     c->setCurrentIndex( c->findText( tr( "Horizontal" ) ) );
+  }
+}
+
+void QgsComposerMapWidget::updateOverviewSymbolMarker()
+{
+  if ( mComposerMap )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
+    mOverviewFrameStyleButton->setIcon( icon );
   }
 }
