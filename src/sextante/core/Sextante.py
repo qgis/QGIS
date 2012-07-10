@@ -5,6 +5,7 @@ from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteLog import SextanteLog
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.ftools.FToolsAlgorithmProvider import FToolsAlgorithmProvider
@@ -246,8 +247,11 @@ class Sextante:
 
 
     @staticmethod
-    def runalg(name, *args):
-        alg = Sextante.getAlgorithm(name)
+    def runalg(algOrName, *args):
+        if isinstance(algOrName, GeoAlgorithm):
+            alg = algOrName
+        else:
+            alg = Sextante.getAlgorithm(algOrName)
         if alg == None:
             print("Error: Algorithm not found\n")
             return
