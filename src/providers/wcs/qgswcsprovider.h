@@ -149,6 +149,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
     int xSize() const;
     int ySize() const;
     QString metadata();
+    bool identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults );
     QString identifyAsHtml( const QgsPoint& point );
     QString identifyAsText( const QgsPoint& point );
     QString lastErrorTitle();

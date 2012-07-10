@@ -80,8 +80,6 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
-  mUserVersion = QUrl( mUri.param( "url" ) ).queryItemValue( "VERSION" );
-
   retrieveServerCapabilities();
 }
 
@@ -99,14 +97,9 @@ QgsWcsCapabilities::~QgsWcsCapabilities()
 void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
 {
   mUri = theUri;
-  mCoverageCount = 0;
-  mCoveragesSupported.clear();
-  QgsWcsCapabilitiesProperty c;
-  mCapabilities = c;
 
-  mUserVersion = QUrl( mUri.param( "url" ) ).queryItemValue( "VERSION" );
-
-  retrieveServerCapabilities( true );
+  clear();
+  retrieveServerCapabilities( );
 }
 
 QString QgsWcsCapabilities::prepareUri( QString uri )
@@ -195,39 +188,62 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   return true;
 }
 
-bool QgsWcsCapabilities::retrieveServerCapabilities( bool forceRefresh )
+void QgsWcsCapabilities::clear()
 {
-  if ( mCapabilitiesResponse.isNull() || forceRefresh )
+  mCoverageCount = 0;
+  mCoveragesSupported.clear();
+  QgsWcsCapabilitiesProperty c;
+  mCapabilities = c;
+}
+
+bool QgsWcsCapabilities::retrieveServerCapabilities( )
+{
+  clear();
+  QStringList versions;
+
+  // 1.0.0 - VERSION
+  // 1.1.0 - AcceptedVersions (not supported by UMN Mapserver 6.0.3 - defaults to 1.1.1
+  versions << "AcceptVersions=1.1.0,1.0.0" << "VERSION=1.0.0";
+
+  foreach( QString v, versions )
   {
-    // Check if user tried to force version
-    if ( !mUserVersion.isEmpty() && !mUserVersion.startsWith( "1.0." ) && !mUserVersion.startsWith( "1.1." ) )
+    if ( retrieveServerCapabilities( v ) )
     {
-      mErrorTitle = tr( "Version not supported" );
-      mErrorFormat = "text/plain";
-      mError = tr( "The version %1 specified in connection URL parameter VERSION is not supported by QGIS" ).arg( mUserVersion );
-      return false;
+      return true;
     }
+  }
 
-    QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
+  return false;
+}
 
-    if ( ! sendRequest( url ) ) { return false; }
+bool QgsWcsCapabilities::retrieveServerCapabilities( QString preferredVersion )
+{
+  clear();
 
-    QgsDebugMsg( "Converting to Dom." );
+  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
 
-    bool domOK;
-    domOK = parseCapabilitiesDom( mCapabilitiesResponse, mCapabilities );
+  if ( !preferredVersion.isEmpty() )
+  {
+    url += "&" + preferredVersion;
+  }
 
-    if ( !domOK )
-    {
-      // We had an Dom exception -
-      // mErrorTitle and mError are pre-filled by parseCapabilitiesDom
+  if ( ! sendRequest( url ) ) { return false; }
 
-      mError += tr( "\nTried URL: %1" ).arg( url );
+  QgsDebugMsg( "Converting to Dom." );
 
-      QgsDebugMsg( "!domOK: " + mError );
+  bool domOK;
+  domOK = parseCapabilitiesDom( mCapabilitiesResponse, mCapabilities );
 
-      return false;
-    }
+  if ( !domOK )
+  {
+    // We had an Dom exception -
+    // mErrorTitle and mError are pre-filled by parseCapabilitiesDom
+
+    mError += tr( "\nTried URL: %1" ).arg( url );
+
+    QgsDebugMsg( "!domOK: " + mError );
+
+    return false;
   }
 
   return true;
@@ -246,12 +262,8 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 
   if ( coverage->described && ! forceRefresh ) return true;
 
-  //QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=1.0.0&COVERAGE=" + coverage->identifier;
   QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&COVERAGE=" + coverage->identifier;
-  if ( mUserVersion.isEmpty() )
-  {
-    url += "&VERSION=" + mVersion;
-  }
+  url += "&VERSION=" + mVersion;
 
   if ( ! sendRequest( url ) ) { return false; }
 

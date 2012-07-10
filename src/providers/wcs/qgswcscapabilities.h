@@ -236,6 +236,8 @@ class QgsWcsCapabilities : public QObject
     void capabilitiesReplyProgress( qint64, qint64 );
 
   private:
+    void clear();
+
     void showMessageBox( const QString &title, const QString &text );
 
     //! Get tag name without namespace
@@ -262,8 +264,8 @@ class QgsWcsCapabilities : public QObject
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
-     * \param forceRefresh  if true, ignores any previous response cached in memory
-     *                      and always contact the server for a new copy.
+     * \param preferredVersion - optional version KVP
+     *
      * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
@@ -271,7 +273,10 @@ class QgsWcsCapabilities : public QObject
      *
      * TODO: Make network-timeout tolerant
      */
-    bool retrieveServerCapabilities( bool forceRefresh = false );
+    bool retrieveServerCapabilities( QString preferredVersion );
+
+    /** Retrieve the best WCS version supported by server and QGIS */
+    bool retrieveServerCapabilities( );
 
     //! \return false if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities );
@@ -315,9 +320,6 @@ class QgsWcsCapabilities : public QObject
 
     //! Response capabilities version
     QString mVersion;
-
-    //! Version specified by user in url
-    QString mUserVersion;
 
     /**
      * Capabilities of the WCS Server (raw)

@@ -366,13 +366,15 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 {
   QgsDebugMsg( "Entered" );
 
-  /*
-  if ( myExpectedSize != myImageSize )   // should not happen
+  // Requested extent must at least partialy overlap coverage extent, otherwise
+  // server gives error. QGIS usually does not request blocks outside raster extent
+  // (higher level checks) but it is better to do check here as well
+  if ( !viewExtent.intersects( mCoverageExtent ) )
   {
-    QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WCS" ) );
+    // TODO: set block to null values
+    memset( block, 0, pixelWidth * pixelHeight * typeSize( dataType( bandNo ) ) / 8 );
     return;
   }
-  */
 
   // abort running (untiled) request
   if ( mCacheReply )
@@ -382,16 +384,14 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     mCacheReply = 0;
   }
 
-  // Can we reuse the previously cached image?
-  if ( mCachedGdalDataset &&
-       mCachedViewExtent == viewExtent &&
-       mCachedViewWidth == pixelWidth &&
-       mCachedViewHeight == pixelHeight )
+  // Can we reuse the previously cached coverage?
+  if ( !mCachedGdalDataset ||
+       mCachedViewExtent != viewExtent ||
+       mCachedViewWidth != pixelWidth ||
+       mCachedViewHeight != pixelHeight )
   {
-    //return mCachedImage;
+    getCache( bandNo, viewExtent, pixelWidth, pixelHeight );
   }
-
-  getCache( bandNo, viewExtent, pixelWidth, pixelHeight );
 
   if ( mCachedGdalDataset )
   {
@@ -408,7 +408,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     }
     else
     {
-      QgsDebugMsg( tr( "Recieved coverage has wrong size" ) );
+      QgsMessageLog::logMessage( tr( "Received coverage has wrong size" ), tr( "WCS" ) );
       return;
     }
   }
@@ -416,8 +416,13 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 
 void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
 {
+  QgsDebugMsg( "Entered" );
   // delete cached data
   clearCache();
+
+  mCachedViewExtent = viewExtent;
+  mCachedViewWidth = pixelWidth;
+  mCachedViewHeight = pixelHeight;
 
   // --------------- BOUNDING BOX --------------------------------
   //according to the WCS spec for 1.1, some CRS have inverted axis
@@ -1482,6 +1487,105 @@ QString QgsWcsProvider::metadata()
   QgsDebugMsg( "exiting with '"  + metadata  + "'." );
 
   return metadata;
+}
+
+bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+{
+  QgsDebugMsg( "Entered" );
+  theResults.clear();
+
+  if ( !extent().contains( thePoint ) )
+  {
+    // Outside the raster
+    for ( int i = 1; i <= bandCount(); i++ )
+    {
+      theResults[ generateBandName( i )] = tr( "out of extent" );
+    }
+    return true;
+  }
+
+  // It would be nice to use last cached block if possible, unfortunately we don't know
+  // at which resolution identify() is called. It may happen, that user zoomed in with
+  // layer switched off, canvas resolution increased, but provider cache was not refreshed.
+  // In that case the resolution is too low and identify() could give wron results.
+  // So we have to read always a block of data around the point on highest resolution
+  // if not already cached.
+  // TODO: change provider identify() prototype to pass also the resolution
+
+  int width, height;
+  if ( mHasSize )
+  {
+    width = mWidth;
+    height = mHeight;
+  }
+  else
+  {
+    // Bad in any case, either not precise or too much data requests
+    width = height = 1000;
+  }
+  double xRes = mCoverageExtent.width() / width;
+  double yRes = mCoverageExtent.height() / height;
+
+  if ( !mCachedGdalDataset ||
+       !mCachedViewExtent.contains( thePoint ) ||
+       mCachedViewWidth == 0 || mCachedViewHeight == 0 ||
+       mCachedViewExtent.width() / mCachedViewWidth - xRes > TINY_VALUE ||
+       mCachedViewExtent.height() / mCachedViewHeight - yRes > TINY_VALUE )
+  {
+    int half = 50;
+    QgsRectangle extent( thePoint.x() - xRes * half, thePoint.y() - yRes * half,
+                         thePoint.x() + xRes * half, thePoint.y() + yRes * half );
+    getCache( 1, extent, 2*half, 2*half );
+
+  }
+
+  if ( !mCachedGdalDataset ||
+       !mCachedViewExtent.contains( thePoint ) )
+  {
+    return false; // should not happen
+  }
+
+  double x = thePoint.x();
+  double y = thePoint.y();
+
+  // Calculate the row / column where the point falls
+  xRes = ( mCachedViewExtent.xMaximum() - mCachedViewExtent.xMinimum() ) / mCachedViewWidth;
+  yRes = ( mCachedViewExtent.yMaximum() - mCachedViewExtent.yMinimum() ) / mCachedViewHeight;
+
+  // Offset, not the cell index -> flor
+  int col = ( int ) floor(( x - mCachedViewExtent.xMinimum() ) / xRes );
+  int row = ( int ) floor(( mCachedViewExtent.yMaximum() - y ) / yRes );
+
+  QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+
+  for ( int i = 1; i <= GDALGetRasterCount( mCachedGdalDataset ); i++ )
+  {
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
+    double value;
+
+    CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
+                               &value, 1, 1, GDT_Float64, 0, 0 );
+
+    if ( err != CPLE_None )
+    {
+      QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    }
+
+    QString v;
+
+    if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
+    {
+      v = tr( "null (no data)" );
+    }
+    else
+    {
+      v.setNum( value );
+    }
+
+    theResults[ generateBandName( i )] = v;
+  }
+
+  return true;
 }
 
 QString QgsWcsProvider::identifyAsText( const QgsPoint &point )
