@@ -318,7 +318,8 @@ class QgsWcsProvider : public QgsRasterDataProvider
      */
     QMap<QString, bool> mQueryableForLayer;
 
-    /** WCS CRS type of the coverage CRS requested from the WCS server */
+    /** Coverage CRS used for requests in Auth */
+    // TODO: use QgsCoordinateReferenceSystem ?
     QString mCoverageCrs;
 
     /** The reply to the on going request to fill the cache */

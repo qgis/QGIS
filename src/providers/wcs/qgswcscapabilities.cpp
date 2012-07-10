@@ -80,6 +80,8 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
+  mUserVersion = QUrl( mUri.param( "url" ) ).queryItemValue( "VERSION" );
+
   retrieveServerCapabilities();
 }
 
@@ -101,6 +103,8 @@ void QgsWcsCapabilities::setUri( QgsDataSourceURI const &theUri )
   mCoveragesSupported.clear();
   QgsWcsCapabilitiesProperty c;
   mCapabilities = c;
+
+  mUserVersion = QUrl( mUri.param( "url" ) ).queryItemValue( "VERSION" );
 
   retrieveServerCapabilities( true );
 }
@@ -196,16 +200,15 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( bool forceRefresh )
   if ( mCapabilitiesResponse.isNull() || forceRefresh )
   {
     // Check if user tried to force version
-    QString userVersion = QUrl( mUri.param( "url" ) ).queryItemValue( "VERSION" );
-    if ( !userVersion.isEmpty() && !userVersion.startsWith( "1.0." ) )
+    if ( !mUserVersion.isEmpty() && !mUserVersion.startsWith( "1.0." ) && !mUserVersion.startsWith( "1.1." ) )
     {
       mErrorTitle = tr( "Version not supported" );
       mErrorFormat = "text/plain";
-      mError = tr( "The version %1 specified in connection URL parameter VERSION is not supported by QGIS" ).arg( userVersion );
+      mError = tr( "The version %1 specified in connection URL parameter VERSION is not supported by QGIS" ).arg( mUserVersion );
       return false;
     }
 
-    QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities&VERSION=1.0.0";
+    QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=GetCapabilities";
 
     if ( ! sendRequest( url ) ) { return false; }
 
@@ -234,8 +237,6 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 {
   QgsDebugMsg( " identifier = " + identifier );
 
-  if ( !mVersion.startsWith( "1.0." ) ) { return true; } // no need for 1.1
-
   QgsWcsCoverageSummary *coverage = coverageSummary( identifier );
   if ( !coverage )
   {
@@ -245,15 +246,26 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 
   if ( coverage->described && ! forceRefresh ) return true;
 
-  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=1.0.0&COVERAGE=" + coverage->identifier;
+  //QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&VERSION=1.0.0&COVERAGE=" + coverage->identifier;
+  QString url = prepareUri( mUri.param( "url" ) ) + "SERVICE=WCS&REQUEST=DescribeCoverage&COVERAGE=" + coverage->identifier;
+  if ( mUserVersion.isEmpty() )
+  {
+    url += "&VERSION=" + mVersion;
+  }
 
   if ( ! sendRequest( url ) ) { return false; }
 
   QgsDebugMsg( "Converting to Dom." );
 
-  bool domOK;
-  domOK = parseDescribeCoverageDom( mCapabilitiesResponse, coverage );
-  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
+  bool domOK = false;
+  if ( mVersion.startsWith( "1.0" ) )
+  {
+    domOK = parseDescribeCoverageDom10( mCapabilitiesResponse, coverage );
+  }
+  else if ( mVersion.startsWith( "1.1" ) )
+  {
+    domOK = parseDescribeCoverageDom11( mCapabilitiesResponse, coverage );
+  }
 
   if ( !domOK )
   {
@@ -266,6 +278,8 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
 
     return false;
   }
+
+  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
   return true;
 }
@@ -366,11 +380,11 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
   capabilities.version = docElem.attribute( "version" );
   mVersion = capabilities.version;
 
-  if ( !mVersion.startsWith( "1.0." ) )
+  if ( !mVersion.startsWith( "1.0" ) && !mVersion.startsWith( "1.1" ) )
   {
     mErrorTitle = tr( "Version not supported" );
     mErrorFormat = "text/plain";
-    mError = tr( "Could not get WCS capabilities in the expected version 1.1.\nResponse version was: %1" )
+    mError = tr( "WCS server version %1 is not supported by Quantum GIS (supported versions: 1.0.0, 1.1.0, 1.1.2)" )
              .arg( mVersion );
 
     QgsLogger::debug( "WCS version: " + mError );
@@ -451,6 +465,41 @@ QString QgsWcsCapabilities::firstChildText( const QDomElement &element, const QS
     return el.text();
   }
   return QString();
+}
+
+QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, const QString & path )
+{
+  QList<QDomElement> list;
+
+  QStringList names = path.split( "." );
+  if ( names.size() == 0 ) return list;
+  QString name = names.value( 0 );
+  names.removeFirst();
+
+  QDomNode n1 = element.firstChild();
+  while ( !n1.isNull() )
+  {
+    QDomElement el = n1.toElement();
+    if ( !el.isNull() )
+    {
+      QString tagName = stripNS( el.tagName() );
+      if ( tagName == name )
+      {
+        QgsDebugMsg( name + " found" );
+        if ( names.size() == 0 )
+        {
+          list.append( el );
+        }
+        else
+        {
+          list.append( domElements( el,  names.join( "." ) ) );
+        }
+      }
+    }
+    n1 = n1.nextSibling();
+  }
+
+  return list;
 }
 
 QDomElement QgsWcsCapabilities::domElement( const QDomElement &element, const QString & path )
@@ -629,7 +678,7 @@ bool QgsWcsCapabilities::convertToDom( QByteArray const &xml )
   return true;
 }
 
-bool QgsWcsCapabilities::parseDescribeCoverageDom( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
+bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
 {
   QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
   if ( ! convertToDom( xml ) ) return false;
@@ -726,6 +775,58 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom( QByteArray const &xml, QgsWcs
   return true;
 }
 // ------------------------ 1.1 ----------------------------------------------
+bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage )
+{
+  QgsDebugMsg( "coverage->identifier = " + coverage->identifier );
+  if ( ! convertToDom( xml ) ) return false;
+
+  QDomElement docElem = mCapabilitiesDom.documentElement();
+
+  QgsDebugMsg( "testing tagName " + docElem.tagName() );
+
+  QString tagName = stripNS( docElem.tagName() );
+  if ( tagName != "CoverageDescriptions" )
+  {
+    mErrorTitle = tr( "Dom Exception" );
+    mErrorFormat = "text/plain";
+    mError = tr( "Could not get WCS capabilities in the expected format (DTD): no %1 found.\nThis might be due to an incorrect WCS Server URL.\nTag:%3\nResponse was:\n%4" )
+             .arg( "CoverageDescriptions" )
+             .arg( docElem.tagName() )
+             .arg( QString( xml ) );
+
+    QgsLogger::debug( "Dom Exception: " + mError );
+
+    return false;
+  }
+
+  // Get image size, we can get it from BoundingBox with crs=urn:ogc:def:crs:OGC::imageCRS
+  // but while at least one BoundingBox is mandatory, it does not have to be urn:ogc:def:crs:OGC::imageCRS
+  // TODO: if BoundingBox with crs=urn:ogc:def:crs:OGC::imageCRS is not found,
+  // we could calculate image size from GridCRS.GridOffsets (if available)
+  QList<QDomElement> boundingBoxElements = domElements( docElem, "CoverageDescription.Domain.SpatialDomain.BoundingBox" );
+
+  QgsDebugMsg( QString( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
+
+  foreach( QDomElement el, boundingBoxElements )
+  {
+    if ( el.attribute( "crs" ) != "urn:ogc:def:crs:OGC::imageCRS" ) continue;
+
+    QList<int> low = parseInts( domElementText( el, "LowerCorner" ) );
+    QList<int> high = parseInts( domElementText( el, "UpperCorner" ) );
+    if ( low.size() == 2 && high.size() == 2 )
+    {
+      coverage->width = high[0] - low[0] + 1;
+      coverage->height = high[1] - low[1] + 1;
+      coverage->hasSize = true;
+    }
+    break;
+  }
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
+
+  coverage->described = true;
+
+  return true;
+}
 void QgsWcsCapabilities::parseServiceIdentification( const QDomElement &e, QgsWcsServiceIdentification &serviceIdentification ) // 1.1
 {
   serviceIdentification.title = firstChildText( e, "Title" );

@@ -190,7 +190,8 @@ class QgsWcsCapabilities : public QObject
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
 
     bool convertToDom( QByteArray const &xml );
-    bool parseDescribeCoverageDom( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
+    bool parseDescribeCoverageDom10( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
+    bool parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
 
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
@@ -245,6 +246,10 @@ class QgsWcsCapabilities : public QObject
 
     //! Get first child of specified name, NS is ignored
     QDomElement firstChild( const QDomElement &element, const QString &name );
+
+    /** Find sub elements by path which is string of dot separated tag names.
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+    QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
     /** Find first sub element by path which is string of dot separated tag names.
      *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
@@ -310,6 +315,9 @@ class QgsWcsCapabilities : public QObject
 
     //! Response capabilities version
     QString mVersion;
+
+    //! Version specified by user in url
+    QString mUserVersion;
 
     /**
      * Capabilities of the WCS Server (raw)

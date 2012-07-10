@@ -258,6 +258,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 
   if ( !( capabilities() & QgsRasterDataProvider::Size ) || xSize() == 0 || ySize() == 0 || myXBlockSize == 0 || myYBlockSize == 0 )
   {
+    QgsDebugMsg( "Cannot collect statistics (raster size or block size) are unknown" );
     return QgsRasterBandStats(); //invalid raster band stats
   }
 

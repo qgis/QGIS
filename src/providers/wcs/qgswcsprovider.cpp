@@ -50,6 +50,7 @@
 #include <QImageReader>
 #include <QPainter>
 #include <QPixmap>
+#include <QRegExp>
 #include <QSet>
 #include <QSettings>
 #include <QEventLoop>
@@ -131,6 +132,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   mWidth = mCoverageSummary->width;
   mHeight = mCoverageSummary->height;
   mHasSize = mCoverageSummary->hasSize;
+
+  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) ) ;
 
   if ( !calculateExtent() )
   {
@@ -417,13 +420,13 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   clearCache();
 
   // --------------- BOUNDING BOX --------------------------------
-  //according to the WCS spec for 1.3, some CRS have inverted axis
-  bool changeXY = false;
+  //according to the WCS spec for 1.1, some CRS have inverted axis
   // box:
   //  1.0.0: minx,miny,maxx,maxy
   //  1.1.0, 1.1.2: OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says
   //  "The number of axes included, and the order of these axes, shall be as specified
   //  by the referenced CRS." That means inverted for geographic.
+  bool changeXY = false;
   if ( !mIgnoreAxisOrientation && ( mCapabilities.version().startsWith( "1.1" ) ) )
   {
     //create CRS from string
@@ -434,54 +437,71 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     }
   }
 
-  if ( mInvertAxisOrientation )
-    changeXY = !changeXY;
+  if ( mInvertAxisOrientation ) changeXY = !changeXY;
+
+  double xRes = viewExtent.width() / pixelWidth;
+  double yRes = viewExtent.height() / pixelHeight;
+  QgsRectangle extent = viewExtent;
+  if ( mCapabilities.version().startsWith( "1.1" ) )
+  {
+    // WCS 1.1 grid is using cell centers -> shrink the extent to border cells centers by half cell size
+    extent = QgsRectangle( viewExtent.xMinimum() + xRes / 2., viewExtent.yMinimum() + yRes / 2., viewExtent.xMaximum() - xRes / 2., viewExtent.yMaximum() - yRes / 2. );
+  }
 
   // Bounding box in WCS format (Warning: does not work with scientific notation)
   QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( viewExtent.xMinimum(), 0, 'f', 16 )
-                 .arg( viewExtent.yMinimum(), 0, 'f', 16 )
-                 .arg( viewExtent.xMaximum(), 0, 'f', 16 )
-                 .arg( viewExtent.yMaximum(), 0, 'f', 16 );
-
-  // ---------------- CRS -----------------------------------------
-  // 1.0.0:
-  //   CRS - CRS of request
-  //   RESPONSE_CRS - requested CRS of response
-  // 1.1.0, 1.1.2
-  //   GridBaseCRS=urn:ogc:def:crs:SG:6.6:32618
-  //   GridType=urn:ogc:def:method:CS:1.1:2dGridIn2dCrs
-  //   GridCS=urn:ogc:def:cs:OGC:0Grid2dSquareCS
-  //   GridOrigin=0,0
-  //   GridOffsets=0.0707,-0.0707,0.1414,0.1414&
-
-  QString crsKey = "RESPONSE_CRS";
-  // TODO
-  /*
-  if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
-  {
-    crsKey = "CRS";
-  }
-  */
-
-  QString identifierKey = "COVERAGE";
-  if ( mCapabilities.version().startsWith( "1.1" ) ) identifierKey = "IDENTIFIER";
+                 .arg( extent.xMinimum(), 0, 'f', 16 )
+                 .arg( extent.yMinimum(), 0, 'f', 16 )
+                 .arg( extent.xMaximum(), 0, 'f', 16 )
+                 .arg( extent.yMaximum(), 0, 'f', 16 );
 
   QUrl url( mIgnoreGetMapUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
 
-  // The same for 1.0.0, 1.1.0, 1.1.2
+  // Version 1.0.0, 1.1.0, 1.1.2
   setQueryItem( url, "SERVICE", "WCS" );
   setQueryItem( url, "VERSION", mCapabilities.version() );
   setQueryItem( url, "REQUEST", "GetCoverage" );
-
-  // Different for each version
-  setQueryItem( url, "BBOX", bbox );
-  setQueryItem( url, "CRS", mCoverageCrs ); // 1.0.0 - BOX is in coverage CRS
-  setQueryItem( url, crsKey, mCoverageCrs );
-  setQueryItem( url, "WIDTH", QString::number( pixelWidth ) );
-  setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
-  setQueryItem( url, identifierKey, mIdentifier );
   setQueryItem( url, "FORMAT", mFormat );
+
+  // Version 1.0.0
+  if ( mCapabilities.version().startsWith( "1.0" ) )
+  {
+    setQueryItem( url, "COVERAGE", mIdentifier );
+    setQueryItem( url, "BBOX", bbox );
+    setQueryItem( url, "CRS", mCoverageCrs ); // request BBOX CRS
+    setQueryItem( url, "RESPONSE_CRS", mCoverageCrs ); // response CRS
+    setQueryItem( url, "WIDTH", QString::number( pixelWidth ) );
+    setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
+  }
+
+  // Version 1.1.0, 1.1.2
+  if ( mCapabilities.version().startsWith( "1.1" ) )
+  {
+    setQueryItem( url, "IDENTIFIER", mIdentifier );
+    QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( mCoverageCrs.split( ':' ).value( 0 ) ).arg( mCoverageCrs.split( ':' ).value( 1 ) );
+    bbox += "," + crsUrn;
+    setQueryItem( url, "BOUNDINGBOX", bbox );
+
+    //   GridBaseCRS=urn:ogc:def:crs:SG:6.6:32618
+    //   GridType=urn:ogc:def:method:CS:1.1:2dGridIn2dCrs
+    //   GridCS=urn:ogc:def:cs:OGC:0Grid2dSquareCS
+    //   GridOrigin=0,0
+    //   GridOffsets=0.0707,-0.0707,0.1414,0.1414&
+
+    setQueryItem( url, "GRIDBASECRS", crsUrn ); // response CRS
+    // GridOrigin is BBOX minx, maxy
+    // TODO: invert axis, pixels centers
+    QString gridOrigin = QString( changeXY ? "%2,%1" : "%1,%2" )
+                         .arg( extent.xMinimum(), 0, 'f', 16 )
+                         .arg( extent.yMaximum(), 0, 'f', 16 );
+    setQueryItem( url, "GRIDORIGIN", gridOrigin );
+
+    QString gridOffsets = QString( changeXY ? "%2,%1" : "%1,%2" )
+                          .arg( xRes, 0, 'f', 16 )
+                          .arg( yRes, 0, 'f', 16 );
+    setQueryItem( url, "GRIDOFFSETS", gridOffsets );
+  }
+
 
   QgsDebugMsg( QString( "GetCoverage: %1" ).arg( url.toString() ) );
 
@@ -571,49 +591,17 @@ void QgsWcsProvider::cacheReplyFinished()
       return;
     }
 
+    // Read response
+    clearCache(); // should not be necessary
+
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    //if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
-    // TODO: How to recognize easily coverage data from exception?
-    if ( !contentType.startsWith( "text/", Qt::CaseInsensitive ) &&
-         contentType.toLower() != "application/vnd.ogc.se_xml" )
+
+    // Exception
+    if ( contentType.startsWith( "text/", Qt::CaseInsensitive ) ||
+         contentType.toLower() == "application/vnd.ogc.se_xml" )
     {
-      // Create memory file
-      clearCache();
-      mCachedData = mCacheReply->readAll();
-      if ( mCachedData.size() == 0 )
-      {
-        QgsMessageLog::logMessage( tr( "No data recieved" ), tr( "WCS" ) );
-        clearCache();
-        return;
-      }
-      QgsDebugMsg( QString( "%1 bytes recieved" ).arg( mCachedData.size() ) );
-
-      mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
-                                             ( GByte* )mCachedData.data(),
-                                             ( vsi_l_offset )mCachedData.size(),
-                                             FALSE );
-
-      if ( !mCachedMemFile )
-      {
-        QgsMessageLog::logMessage( tr( "Cannot create memory file" ), tr( "WCS" ) );
-        clearCache();
-        return;
-      }
-      QgsDebugMsg( "Memory file created" );
-
-      CPLErrorReset();
-      mCachedGdalDataset = GDALOpen( TO8F( mCachedMemFilename ), GA_ReadOnly );
-      if ( !mCachedGdalDataset )
-      {
-        QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );
-        clearCache();
-        return;
-      }
-      QgsDebugMsg( "Dataset opened" );
-    }
-    else
-    {
+      // TODO: test also if it is really exception (from content)
       QByteArray text = mCacheReply->readAll();
       if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
       {
@@ -634,6 +622,127 @@ void QgsWcsProvider::cacheReplyFinished()
 
       return;
     }
+
+    // WCS 1.1 gives response as multipart, e.g.
+    //   multipart/mixed; boundary=wcs
+    //   multipart/mixed; boundary="wcs"\n
+    if ( contentType.startsWith( "multipart/", Qt::CaseInsensitive ) )
+    {
+      // It seams that Qt does not have currently support for multipart reply
+      // and it is not even possible to create QNetworkReply from raw data
+      // so we have to parse response
+      QRegExp re( ".*boundary=\"?([^\"]+)\"?\\s?", Qt::CaseInsensitive );
+
+      if ( !re.indexIn( contentType ) == 0 )
+      {
+        QgsMessageLog::logMessage( tr( "Cannot find boundary in multipart content type" ), tr( "WCS" ) );
+        clearCache();
+        mCacheReply->deleteLater();
+        mCacheReply = 0;
+        return;
+      }
+
+      QString boundary = re.cap( 1 );
+      QgsDebugMsg( "boundary = " + boundary );
+      boundary = "--" + boundary;
+
+      // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
+      QByteArray data = mCacheReply->readAll();
+      int from, to;
+      from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1 ;
+      QVector<QByteArray> partHeaders;
+      QVector<QByteArray> partBodies;
+      while ( true )
+      {
+        to = data.indexOf( boundary.toAscii(), from );
+        if ( to < 0 ) break;
+        QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
+        QByteArray part = data.mid( from, to - from );
+        // Remove possible new line from beginning
+        while ( part.size() > 0 && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
+        {
+          part.remove( 0, 1 );
+        }
+        // Split header and data (find empty new line)
+        // New lines should be CRLF, but we support also CRLFCRLF, LFLF to find empty line
+        int pos = 0; // body start
+        while ( pos < part.size() - 1 )
+        {
+          if ( part.at( pos ) == '\n' && ( part.at( pos + 1 ) == '\n' || part.at( pos + 1 ) == '\r' ) )
+          {
+            if ( part.at( pos + 1 ) == '\r' ) pos++;
+            pos += 2;
+            break;
+          }
+          pos++;
+        }
+        partHeaders.append( part.left( pos ) );
+        partBodies.append( part.mid( pos ) );
+        QgsDebugMsg( "Part header:\n" + partHeaders.last() );
+
+        from = to + boundary.length() + 1;
+      }
+      if ( partBodies.size() < 2 )
+      {
+        QgsMessageLog::logMessage( tr( "Expected 2 parts, %1 recieved" ).arg( partBodies.size() ), tr( "WCS" ) );
+        clearCache();
+        mCacheReply->deleteLater();
+        mCacheReply = 0;
+        return;
+      }
+      else if ( partBodies.size() > 2 )
+      {
+        // We will try the second one
+        QgsMessageLog::logMessage( tr( "More than 2 parts (%1) recieved" ).arg( partBodies.size() ), tr( "WCS" ) );
+      }
+      mCachedData = partBodies.value( 1 );
+    }
+    else
+    {
+      // Mime types for WCS 1.0 response should be usually image/<format>
+      // (image/tiff, image/png, image/jpeg, image/png; mode=8bit, etc.)
+      // but other mime types (like application/*) may probably also appear
+
+      // Create memory file
+      mCachedData = mCacheReply->readAll();
+    }
+
+    if ( mCachedData.size() == 0 )
+    {
+      QgsMessageLog::logMessage( tr( "No data recieved" ), tr( "WCS" ) );
+      clearCache();
+      mCacheReply->deleteLater();
+      mCacheReply = 0;
+      return;
+    }
+    QgsDebugMsg( QString( "%1 bytes recieved" ).arg( mCachedData.size() ) );
+
+    mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
+                                           ( GByte* )mCachedData.data(),
+                                           ( vsi_l_offset )mCachedData.size(),
+                                           FALSE );
+
+    if ( !mCachedMemFile )
+    {
+      QgsMessageLog::logMessage( tr( "Cannot create memory file" ), tr( "WCS" ) );
+      clearCache();
+      mCacheReply->deleteLater();
+      mCacheReply = 0;
+      return;
+    }
+    QgsDebugMsg( "Memory file created" );
+
+    CPLErrorReset();
+    mCachedGdalDataset = GDALOpen( TO8F( mCachedMemFilename ), GA_ReadOnly );
+    if ( !mCachedGdalDataset )
+    {
+      QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );
+      clearCache();
+      mCacheReply->deleteLater();
+      mCacheReply = 0;
+      return;
+    }
+    QgsDebugMsg( "Dataset opened" );
 
     mCacheReply->deleteLater();
     mCacheReply = 0;
@@ -762,15 +871,21 @@ void QgsWcsProvider::clearCache()
   QgsDebugMsg( "Entered" );
   if ( mCachedGdalDataset )
   {
+    QgsDebugMsg( "Close mCachedGdalDataset" );
     GDALClose( mCachedGdalDataset );
     mCachedGdalDataset = 0;
+    QgsDebugMsg( "Closed" );
   }
   if ( mCachedMemFile )
   {
+    QgsDebugMsg( "Close mCachedMemFile" );
     VSIFCloseL( mCachedMemFile );
     mCachedMemFile = 0;
+    QgsDebugMsg( "Closed" );
   }
+  QgsDebugMsg( "Clear mCachedData" );
   mCachedData.clear();
+  QgsDebugMsg( "Cleared" );
 }
 
 void QgsWcsProvider::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -1414,8 +1529,6 @@ QString  QgsWcsProvider::description() const
 
 void QgsWcsProvider::reloadData()
 {
-  //delete mCachedImage;
-  //mCachedImage = 0;
   clearCache();
 }
 

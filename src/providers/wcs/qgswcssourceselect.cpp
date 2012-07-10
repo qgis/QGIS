@@ -152,7 +152,11 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
 
-  mCapabilities.describeCoverage( identifier );  // 1.0 get additional info
+  if ( mCapabilities.version().startsWith( "1.0" ) )
+  {
+    // 1.0 get additional info
+    mCapabilities.describeCoverage( identifier );
+  }
 
   populateFormats();
 
