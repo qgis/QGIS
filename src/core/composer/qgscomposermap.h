@@ -292,7 +292,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Sets overview frame map. -1 disables the overview frame*/
     void setOverviewFrameMap( int mapId );
     /**Returns id of overview frame (or -1 if no overfiew frame)*/
-    int overviewFrameMapId() const;
+    int overviewFrameMapId() const { return mOverviewFrameMapId; }
 
   signals:
     void extentChanged();
@@ -344,8 +344,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
 
-    /**Map that displays its rectangle into this composer map (or 0 if no frame of another map)*/
-    const QgsComposerMap* mOverviewFrameMap;
+    /**Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
+    int mOverviewFrameMapId;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();

@@ -67,6 +67,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   if ( mComposerMap )
   {
     //insert available maps into mMapComboBox
+    mOverviewFrameMapComboBox->addItem( tr( "None" ), -1 );
     const QgsComposition* composition = mComposerMap->composition();
     if ( composition )
     {
@@ -341,6 +342,10 @@ void QgsComposerMapWidget::updateGuiElements()
       mDrawCanvasItemsCheckBox->setCheckState( Qt::Unchecked );
     }
 
+    //overview frame
+    int overviewMapFrameId = mComposerMap->overviewFrameMapId();
+    mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findData( overviewMapFrameId ) );
+
     //grid
     if ( mComposerMap->gridEnabled() )
     {
@@ -539,11 +544,16 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_activated( const QString& text )
+void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text )
 {
   if ( !mComposerMap )
   {
     return;
+  }
+
+  if ( text == tr( "None" ) )
+  {
+    mComposerMap->setOverviewFrameMap( -1 );
   }
 
   //get composition
@@ -578,47 +588,6 @@ void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_activated( const QString
 
   mComposerMap->setOverviewFrameMap( id );
   mComposerMap->update();
-
-#if 0
-  f( !mPicture || text.isEmpty() || !mPicture->useRotationMap() )
-  {
-    return;
-  }
-
-  //get composition
-  const QgsComposition* composition = mPicture->composition();
-  if ( !composition )
-  {
-    return;
-  }
-
-  //extract id
-  int id;
-  bool conversionOk;
-  QStringList textSplit = text.split( " " );
-  if ( textSplit.size() < 1 )
-  {
-    return;
-  }
-
-  QString idString = textSplit.at( textSplit.size() - 1 );
-  id = idString.toInt( &conversionOk );
-
-  if ( !conversionOk )
-  {
-    return;
-  }
-
-  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
-  if ( !composerMap )
-  {
-    return;
-  }
-  mPicture->beginCommand( tr( "Rotation map changed" ) );
-  mPicture->setRotationMap( id );
-  mPicture->update();
-  mPicture->endCommand();
-#endif //0
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
