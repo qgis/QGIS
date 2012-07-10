@@ -290,9 +290,29 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     }
 
     mFormNr = smFormCounter++;
-    QgsPythonRunner::run( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mFormNr ).arg(( unsigned long ) mDialog ) );
 
-    QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->id() ).arg( mFeature->id() );
+    QString form =  QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" )
+                    .arg( mFormNr )
+                    .arg(( unsigned long ) mDialog );
+
+    QString layer = QString( "_qgis_layer_%1 = wrapinstance( %2, qgis.core.QgsVectorLayer )" )
+                    .arg( vl->id() )
+                    .arg(( unsigned long ) vl );
+
+    QString feature = QString( "_qgis_feature_%1 = wrapinstance( %2, qgis.core.QgsFeature )" )
+                      .arg( mFeature->id() )
+                      .arg(( unsigned long ) mFeature );
+
+    QgsPythonRunner::run( form );
+    QgsPythonRunner::run( feature );
+    QgsPythonRunner::run( layer );
+
+    QString expr = QString( "%1(_qgis_featureform_%2, _qgis_layer_%3, _qgis_feature_%4)" )
+                   .arg( vl->editFormInit() )
+                   .arg( mFormNr )
+                   .arg( vl->id() )
+                   .arg( mFeature->id() );
+
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
     QgsPythonRunner::run( expr );
   }
