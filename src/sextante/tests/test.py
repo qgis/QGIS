@@ -140,7 +140,7 @@ class SextanteProviderTestCase(unittest.TestCase):
         print ' => ', self.args, bcolors.WARNING,
     
     def runalg_none(self):
-        result = Sextante.runalg(self.algId, *self.args)
+        result = Sextante.runalg(self.alg, *self.args)
         print bcolors.ENDC
         self.assertIsNotNone(result, self.msg)
         if not result:
@@ -178,11 +178,14 @@ def algSuite(dialog = "none", threaded = True, unthreaded = True, provider = Non
             s.addTest(SextanteProviderTestCase(algId, alg, False, dialog))
     return s
 
-def modelSuite(modelFile, threaded = True, unthreaded = True):
+def modelSuite(modelFile, dialog = "none", threaded = True, unthreaded = True):
     s = unittest.TestSuite()
     model = ModelerAlgorithm()
     model.openModel(modelFile)
-    s.addTest(SextanteProviderTestCase(modelFile, model, True))
+    if threaded:
+        s.addTest(SextanteProviderTestCase(modelFile, model, True, dialog))
+    if unthreaded:
+        s.addTest(SextanteProviderTestCase(modelFile, model, False, dialog))
     return s
 
 if __name__ == '__main__':
@@ -204,6 +207,7 @@ if __name__ == '__main__':
     threaded = not args.uOnly or args.tOnly
     unthreaded = not args.tOnly or args.uOnly
     
+    
     try:
         loadSuite = unittest.TestLoader().loadTestsFromTestCase(SextantePluginTest)
         unittest.TextTestRunner(verbosity=2).run(loadSuite)
@@ -213,9 +217,9 @@ if __name__ == '__main__':
             print "No data under %s or %s. Run with -h argument for help" % (args.raster, args.vector)
             exit(1)
         if args.model:
-            unittest.TextTestRunner(verbosity=2).run(modelSuite(args.model or 'data/model', threaded, unthreaded))
+            unittest.TextTestRunner(verbosity=2).run(modelSuite(args.model or 'data/model', args.dialog, threaded, unthreaded))
             exit(0)
-        unittest.TextTestRunner(verbosity=2).run(algSuite(args.dialog, threaded, unthreaded))
+        unittest.TextTestRunner(verbosity=2).run(algSuite(args.dialog, threaded, unthreaded, args.dialog))
     except KeyboardInterrupt:
         print bcolors.ENDC, "Test interrupted."
 
