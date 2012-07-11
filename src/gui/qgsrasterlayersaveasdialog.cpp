@@ -77,7 +77,7 @@ void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString& 
     return;
   }
 
-  okButton->setEnabled( QFile::exists( text ) );
+  okButton->setEnabled( QFileInfo( text ).absoluteDir().exists() );
 }
 
 int QgsRasterLayerSaveAsDialog::nColumns() const

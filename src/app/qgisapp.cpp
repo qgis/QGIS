@@ -3778,8 +3778,8 @@ void QgisApp::saveAsRasterFile()
     if ( d.tileMode() )
     {
       fileWriter.setTiledMode( true );
-      fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
-      fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
+      //fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
+      //fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
     }
     fileWriter.writeRaster( rasterLayer->dataProvider(), d.nColumns() );
   }
