@@ -25,7 +25,8 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent, QProgressDialog* p )
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent,
+    const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
   if ( !iter )
   {
@@ -47,11 +48,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIter
 
   mProgressDialog = p;
 
-  QgsRasterInterface::DataType debug = iface->dataType( 1 );
-
   if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 )
   {
-    WriterError e = writeARGBRaster( iter, nCols, outputExtent );
+    WriterError e = writeARGBRaster( iter, nCols, outputExtent, crs );
     mProgressDialog = 0;
     return e;
   }
@@ -162,7 +161,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRasterSingleTile( Qgs
   return NoError;
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent )
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+    const QgsCoordinateReferenceSystem& crs )
 {
   if ( !iter )
   {
@@ -212,13 +212,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
   geoTransform[4] = 0.0;
   geoTransform[5] = -pixelSize;
 
-  //where to get CRS from?
-  QgsCoordinateReferenceSystem fakeCRS;
-  fakeCRS.createFromEpsg( 21781 );
-
   if ( mTiledMode )
   {
-    createVRT( nCols, nRows, fakeCRS, geoTransform );
+    createVRT( nCols, nRows, crs, geoTransform );
   }
   else
   {
@@ -229,7 +225,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
     }
 
     if ( !destProvider->create( mOutputFormat, 4, QgsRasterInterface::Byte, nCols, nRows, geoTransform,
-                                fakeCRS ) )
+                                crs ) )
     {
       delete destProvider;
       return CreateDatasourceError;
@@ -319,7 +315,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
       geoTransform[4] = 0.0;
       geoTransform[5] = -outputMapUnitsPerPixel;
       if ( !destProvider->create( mOutputFormat, 4, QgsRasterInterface::Byte, iterCols, iterRows, geoTransform,
-                                  fakeCRS ) )
+                                  crs ) )
       {
         delete destProvider;
         return CreateDatasourceError;

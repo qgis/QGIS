@@ -3779,14 +3779,14 @@ void QgisApp::saveAsRasterFile()
     if ( d.tileMode() )
     {
       fileWriter.setTiledMode( true );
-      //fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
-      //fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
+      fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
+      fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
     }
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     pd.setWindowModality( Qt::WindowModal );
     QgsRasterIterator iterator( rasterLayer->pipe()->last() );
-    fileWriter.writeRaster( &iterator, d.nColumns(), d.outputRectangle(), &pd );
+    fileWriter.writeRaster( &iterator, d.nColumns(), d.outputRectangle(), rasterLayer->crs(), &pd );
   }
 }
 

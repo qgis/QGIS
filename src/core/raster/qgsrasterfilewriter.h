@@ -25,7 +25,8 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsRasterFileWriter( const QString& outputUrl );
     ~QgsRasterFileWriter();
 
-    WriterError writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent = QgsRectangle(), QProgressDialog* p = 0 );
+    WriterError writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent,
+                             const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 
     void setOutputFormat( const QString& format ) { mOutputFormat = format; }
     QString outputFormat() const { return mOutputFormat; }
@@ -45,7 +46,8 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeRasterSingleTile( QgsRasterIterator* iter, int nCols );
-    WriterError writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent );
+    WriterError writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+                                 const QgsCoordinateReferenceSystem& crs );
 
     //initialize vrt member variables
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );
