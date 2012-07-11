@@ -37,6 +37,7 @@ from utilities_test import getQgisTestApp
 #from gui.is_plugin import ISPlugin
 from sextante.SextantePlugin import SextantePlugin
 from sextante.core.Sextante import Sextante
+from sextante.core.SextanteLog import SextanteLog
 from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
@@ -49,10 +50,6 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
-
-class DataProviderStub:
-    def __init__(self, uri):
-        self.dataSourceUri = lambda: uri
 
 class bcolors:
     INFO = '\033[94m'
@@ -86,13 +83,11 @@ class SextanteProviderTestCase(unittest.TestCase):
         b = False
         for p in alg.parameters:
             if isinstance(p, ParameterRaster):
-                l = QgsRasterLayer('data/raster', "test raster")
-                l.dataProvider = lambda: DataProviderStub('data/raster')
+                l = IFACE.testRaster
                 if doSet: p.setValue(l)
                 yield l
             elif isinstance(p, ParameterVector):
-                l = QgsVectorLayer('data/vector', "test vector")
-                #~ l.dataProvider = lambda: DataProviderStub('data/vector')
+                l = IFACE.testVector
                 if doSet: p.setValue(l)
                 yield l
             elif isinstance(p, ParameterNumber):
@@ -134,11 +129,11 @@ class SextanteProviderTestCase(unittest.TestCase):
 
     def setUp(self):
         SextanteConfig.setSettingValue(SextanteConfig.USE_THREADS, self.threaded)
-        self.args = list(self.gen_test_parameters(self.alg, True))
         print 
         print bcolors.INFO, self.msg, bcolors.ENDC,
         print "Parameters: ", self.alg.parameters,
         print "Outputs: ", [out for out in self.alg.outputs if not out.hidden],
+        self.args = list(self.gen_test_parameters(self.alg, True))
         print ' => ', self.args, bcolors.WARNING,
     
     def runalg_none(self):

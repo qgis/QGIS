@@ -26,7 +26,7 @@ __copyright__ = ('Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and '
 
 from PyQt4.QtCore import QObject
 from qgis.core import QgsMapLayerRegistry
-
+from qgis.core import *
 
 class QgisInterface(QObject):
     """Class to expose qgis objects and functionalities to plugins.
@@ -39,6 +39,11 @@ class QgisInterface(QObject):
         """Constructor"""
         QObject.__init__(self)
         self.canvas = canvas
+        QgsProviderRegistry.instance()
+        self.testRaster = QgsRasterLayer('data/raster', "test raster")
+        self.testVector = QgsVectorLayer('data/vector', "test vector")
+        self.testRaster.dataProvider = lambda: QgsProviderRegistry.instance().provider('ogr','data/raster')
+        self.testVector.dataProvider = lambda: QgsProviderRegistry.instance().provider('gdal','data/vector')
 
     def zoomFull(self):
         """Zoom to the map full extent"""
@@ -94,4 +99,9 @@ class QgisInterface(QObject):
         pass
 
     def legendInterface(self):
-        return type('FakeLInterface', (), {'layers' : list})()
+        return type('FakeLInterface', (),
+        {'layers' :
+            lambda _: [
+                self.testRaster,
+                self.testVector]
+            })()
