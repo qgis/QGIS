@@ -495,13 +495,8 @@ void QgsSymbolV2SelectorDialog::changeLayer( QgsSymbolLayerV2* newLayer )
   // When it is a marker symbol
   if ( newLayer->subSymbol() )
   {
-    /*
-    SymbolLayerItem *subsymbol = new SymbolLayerItem( newLayer->subSymbol() );
-    SymbolLayerItem *sublayer = new SymbolLayerItem( newLayer->subSymbol()->symbolLayer( 0 ) );
-    subsymbol->appendRow( sublayer );
-    item->appendRow( subsymbol );
-    */
     loadSymbol( newLayer->subSymbol(), item );
+    layersTree->setExpanded( item->index(), true );
   }
 
   // Change the symbol at last to avoid deleting item's layer

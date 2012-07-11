@@ -53,7 +53,16 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   viewSymbols->setModel( model );
   connect( viewSymbols, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
-  connect( btnStyleManager, SIGNAL( clicked() ), SLOT( openStyleManager() ) );
+  // Set the Style Menu under btnStyle
+  QMenu *styleMenu = new QMenu( btnStyle );
+  QAction *styleMgrAction = new QAction( "Style Manager", styleMenu );
+  styleMenu->addAction( styleMgrAction );
+  QAction *saveStyle = new QAction( "Save as style", styleMenu );
+  styleMenu->addAction( saveStyle );
+  connect( styleMgrAction, SIGNAL( triggered() ), this, SLOT( openStyleManager() ) );
+  connect( saveStyle, SIGNAL( triggered() ), this, SLOT( addSymbolToStyle() ) );
+  btnStyle->setMenu( styleMenu );
+
   lblSymbolName->setText( "" );
   populateSymbolView();
 
@@ -79,8 +88,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
 
-  connect( btnAddToStyle, SIGNAL( clicked() ), this, SLOT( addSymbolToStyle() ) );
-  btnAddToStyle->setIcon( QIcon( QgsApplication::defaultThemePath() + "symbologyAdd.png" ) );
 
   // Set symbol color in btnColor
   updateSymbolColor();

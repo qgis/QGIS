@@ -250,20 +250,6 @@
        </property>
       </spacer>
      </item>
-     <item>
-      <widget class="QPushButton" name="btnAddToStyle">
-       <property name="text">
-        <string>Save as style</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnStyleManager">
-       <property name="text">
-        <string>Style manager...</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item row="2" column="0">
@@ -324,6 +310,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnStyle">
+       <property name="text">
+        <string>Style</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnAdvanced">
