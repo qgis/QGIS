@@ -101,25 +101,28 @@ void QgsSymbolV2SelectorDialog::populateSymbolView()
   }
   model->clear();
 
-  QStringList names = mStyle->symbolNames();
-  for ( int i = 0; i < names.count(); i++ )
+  if ( mStyle )
   {
-    QgsSymbolV2* s = mStyle->symbol( names[i] );
-    if ( s->type() != mSymbol->type() )
+    QStringList names = mStyle->symbolNames();
+    for ( int i = 0; i < names.count(); i++ )
     {
+      QgsSymbolV2* s = mStyle->symbol( names[i] );
+      if ( s->type() != mSymbol->type() )
+      {
+        delete s;
+        continue;
+      }
+      QStandardItem* item = new QStandardItem( names[i] );
+      item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
+      item->setText( "" ); //set the text to nothing and show in label when clicked rather
+      item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      // create preview icon
+      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
+      item->setIcon( icon );
+      // add to model
+      model->appendRow( item );
       delete s;
-      continue;
     }
-    QStandardItem* item = new QStandardItem( names[i] );
-    item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
-    item->setText( "" ); //set the text to nothing and show in label when clicked rather
-    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-    // create preview icon
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
-    item->setIcon( icon );
-    // add to model
-    model->appendRow( item );
-    delete s;
   }
 }
 

@@ -18,8 +18,10 @@
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgsmaprenderer.h"
+#include "qgsstylev2.h"
 #include "qgssymbolv2.h"
-#include "qgssymbolv2propertiesdialog.h"
+//#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 #include <QFontDialog>
@@ -86,6 +88,7 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
     }
   }
 
+  updateOverviewSymbolMarker();
 
   updateGuiElements();
   blockAllSignals( false );
@@ -600,7 +603,10 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   {
     return;
   }
-  QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
+
+  QgsSymbolV2SelectorDialog d( mComposerMap->overviewFrameMapSymbol(), QgsStyleV2::defaultStyle(), 0 );
+
+  //QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
   if ( d.exec() == QDialog::Accepted )
   {
     updateOverviewSymbolMarker();
