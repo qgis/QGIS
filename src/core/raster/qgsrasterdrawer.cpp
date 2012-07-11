@@ -41,7 +41,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // last pipe filter has only 1 band
   int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort, theQgsMapToPixel );
+  mIterator->startRasterRead( bandNumber, viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, viewPort->mDrawnExtent );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -59,7 +59,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   void* rasterData;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
-  while ( mIterator->readNextRasterPart( bandNumber, viewPort, nCols, nRows,
+  while ( mIterator->readNextRasterPart( bandNumber, nCols, nRows,
                                          &rasterData, topLeftCol, topLeftRow ) )
   {
     //create image

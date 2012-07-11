@@ -1,6 +1,7 @@
 #ifndef QGSRASTERITERATOR_H
 #define QGSRASTERITERATOR_H
 
+#include "qgsrectangle.h"
 #include <QMap>
 
 class QgsMapToPixel;
@@ -31,23 +32,26 @@ class QgsRasterIterator
       @param bandNumer number of raster band to read
       @param viewPort describes raster position on screen
      */
-    void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel );
+    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent );
 
     /**Fetches next part of raster data
        @param nCols number of columns on output device
        @param nRows number of rows on output device
        @param nColsRaster number of raster columns (different to nCols if oversamplingX != 1.0)
        @param nRowsRaster number of raster rows (different to nRows if oversamplingY != 0)*/
-    bool readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort,
+    bool readNextRasterPart( int bandNumber,
                              int& nCols, int& nRows,
                              void** rasterData,
                              int& topLeftCol, int& topLeftRow );
 
     void stopRasterRead( int bandNumber );
 
+    const QgsRasterInterface* input() const { return mInput; }
+
   private:
     QgsRasterInterface* mInput;
     QMap<int, RasterPartInfo> mRasterPartInfos;
+    QgsRectangle mExtent;
 
     /**Remove part into and release memory*/
     void removePartInfo( int bandNumber );

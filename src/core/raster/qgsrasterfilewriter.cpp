@@ -25,26 +25,33 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterDataProvider* sourceProvider, int nCols, QgsRectangle outputExtent, QProgressDialog* p )
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent, QProgressDialog* p )
 {
-    return NoError;
-#if 0
-  if ( !sourceProvider || ! sourceProvider->isValid() )
+  if ( !iter )
   {
     return SourceProviderError;
   }
 
+  const QgsRasterInterface* iface = iter->input();
+  if ( !iface )
+  {
+    return SourceProviderError;
+  }
+
+#if 0
   if ( outputExtent.isEmpty() )
   {
     outputExtent = sourceProvider->extent();
   }
+#endif //0
 
   mProgressDialog = p;
 
-  QgsRasterInterface::DataType inputDataType = ( QgsRasterInterface::DataType )sourceProvider->dataType( 1 );
-  if ( inputDataType == QgsRasterInterface::::ARGBDataType && sourceProvider->bandCount() == 1 )
+  QgsRasterInterface::DataType debug = iface->dataType( 1 );
+
+  if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 )
   {
-    WriterError e = writeARGBRaster( sourceProvider, nCols, outputExtent );
+    WriterError e = writeARGBRaster( iter, nCols, outputExtent );
     mProgressDialog = 0;
     return e;
   }
@@ -54,10 +61,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterData
     mProgressDialog = 0;
     return NoError;
   }
-#endif //0
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRasterSingleTile( QgsRasterDataProvider* sourceProvider, int nCols )
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRasterSingleTile( QgsRasterIterator* iter, int nCols )
 {
 #if 0
   if ( !sourceProvider || ! sourceProvider->isValid() )
@@ -156,21 +162,19 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRasterSingleTile( Qgs
   return NoError;
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRasterDataProvider* sourceProvider, int nCols, const QgsRectangle& outputExtent )
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent )
 {
 #if 0
-  if ( !sourceProvider || ! sourceProvider->isValid() )
+  if ( !iter )
   {
     return SourceProviderError;
   }
 
-  QgsRasterInterface::DataType sourceDataType = ( QgsRasterInterface::DataType )sourceProvider->dataType( 1 );
-  int nInputBands = sourceProvider->bandCount();
-  if ( sourceDataType != QgsRasterInterface::ARGBDataType || nInputBands != 1 )
+  const QgsRasterInterface* iface = iter->input();
+  if ( !iface ||  iface->dataType( 1 ) != QgsRasterInterface::ARGB32 )
   {
     return SourceProviderError;
   }
-
 
   //create directory for output files
   QDir destDir( mOutputUrl );
@@ -185,7 +189,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
   QgsRasterIterator iter( 1, sourceProvider );
   iter.setMaximumTileWidth( mMaxTileWidth );
   iter.setMaximumTileHeight( mMaxTileHeight );
-  void* data = VSIMalloc( sourceProvider->dataTypeSize( 1 ) * mMaxTileWidth * mMaxTileHeight );
+
+  void* data = VSIMalloc( iface->typeSize( QgsRasterInterface::ARGB32 ) * mMaxTileWidth * mMaxTileHeight );
   void* redData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* greenData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* blueData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
@@ -208,9 +213,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
   geoTransform[4] = 0.0;
   geoTransform[5] = -pixelSize;
 
+  //where to get CRS from?
+  QgsCoordinateReferenceSystem fakeCRS;
+  fakeCRS.createFromEpsg( 21781 );
+
   if ( mTiledMode )
   {
-    createVRT( nCols, nRows, sourceProvider->crs(), geoTransform );
+    createVRT( nCols, nRows, fakeCRS, geoTransform );
   }
   else
   {
@@ -221,14 +230,21 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
     }
 
     if ( !destProvider->create( mOutputFormat, 4, QgsRasterInterface::Byte, nCols, nRows, geoTransform,
-                                sourceProvider->crs() ) )
+                                fakeCRS ) )
     {
       delete destProvider;
       return CreateDatasourceError;
     }
   }
 
-  iter.select( outputExtent, outputMapUnitsPerPixel );
+  QgsRasterViewPort viewPort;
+  viewPort.drawableAreaXDim = nCols;
+  viewPort.drawableAreaYDim = nRows;
+
+  QgsMapUnitsPerPixel mup;
+
+  //iter->select( outputExtent, outputMapUnitsPerPixel );
+  iter->startRasterRead( 1, &viewPort, &mup );
 
   //initialize progress dialog
   int nTiles = iter.nTilesX() * iter.nTilesY();
@@ -239,7 +255,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
     mProgressDialog->show();
   }
 
-  while ( iter.nextPart( data, mapRect, iterLeft, iterTop, iterCols, iterRows, progress ) )
+  while ( iter->nextPart( data, mapRect, iterLeft, iterTop, iterCols, iterRows, progress ) )
   {
     if ( iterCols <= 5 || iterRows <= 5 ) //some wms servers don't like small values
     {
@@ -299,7 +315,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
       geoTransform[4] = 0.0;
       geoTransform[5] = -outputMapUnitsPerPixel;
       if ( !destProvider->create( mOutputFormat, 4, QgsRasterInterface::Byte, iterCols, iterRows, geoTransform,
-                                  sourceProvider->crs() ) )
+                                  fakeCRS ) )
       {
         delete destProvider;
         return CreateDatasourceError;

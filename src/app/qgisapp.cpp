@@ -159,6 +159,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterrenderer.h"
@@ -3784,7 +3785,8 @@ void QgisApp::saveAsRasterFile()
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     pd.setWindowModality( Qt::WindowModal );
-    fileWriter.writeRaster( rasterLayer->dataProvider(), d.nColumns(), d.outputRectangle(), &pd );
+    QgsRasterIterator iterator( rasterLayer->pipe()->last() );
+    fileWriter.writeRaster( &iterator, d.nColumns(), d.outputRectangle(), &pd );
   }
 }
 

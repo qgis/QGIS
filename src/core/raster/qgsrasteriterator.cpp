@@ -11,20 +11,22 @@ QgsRasterIterator::~QgsRasterIterator()
 {
 }
 
-void QgsRasterIterator::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel )
+void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent )
 {
-  if ( !viewPort || !mapToPixel || !mInput )
+  if ( !mInput )
   {
     return;
   }
+
+  mExtent = extent;
 
   //remove any previous part on that band
   removePartInfo( bandNumber );
 
   //split raster into small portions if necessary
   RasterPartInfo pInfo;
-  pInfo.nCols = viewPort->drawableAreaXDim;
-  pInfo.nRows = viewPort->drawableAreaYDim;
+  pInfo.nCols = nCols;
+  pInfo.nRows = nRows;
 
   //effective oversampling factors are different to global one because of rounding
   //oversamplingX = (( double )pInfo.nCols * oversampling ) / viewPort->drawableAreaXDim;
@@ -44,16 +46,11 @@ void QgsRasterIterator::startRasterRead( int bandNumber, QgsRasterViewPort* view
   mRasterPartInfos.insert( bandNumber, pInfo );
 }
 
-bool QgsRasterIterator::readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort,
+bool QgsRasterIterator::readNextRasterPart( int bandNumber,
     int& nCols, int& nRows,
     void** rasterData,
     int& topLeftCol, int& topLeftRow )
 {
-  if ( !viewPort )
-  {
-    return false;
-  }
-
   //get partinfo
   QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
   if ( partIt == mRasterPartInfos.end() )
@@ -81,7 +78,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber, QgsRasterViewPort* v
   nRows = qMin( pInfo.nRowsPerPart, pInfo.nRows - pInfo.currentRow );
 
   //get subrectangle
-  QgsRectangle viewPortExtent = viewPort->mDrawnExtent;
+  QgsRectangle viewPortExtent = mExtent;
   double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / ( double )pInfo.nCols * viewPortExtent.width();
   double xmax = viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / ( double )pInfo.nCols * viewPortExtent.width();
   double ymin = viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / ( double )pInfo.nRows * viewPortExtent.height();
