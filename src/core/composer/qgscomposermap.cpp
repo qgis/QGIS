@@ -669,7 +669,11 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   }
 
   //overview map frame
-  composerMapElem.setAttribute( "overviewMapFrame", mOverviewFrameMapId );
+  QDomElement overviewFrameElem = doc.createElement( "overviewFrame" );
+  overviewFrameElem.setAttribute( "overviewFrameMap", mOverviewFrameMapId );
+  QDomElement overviewFrameStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mOverviewFrameMapSymbol, doc );
+  overviewFrameElem.appendChild( overviewFrameStyleElem );
+  composerMapElem.appendChild( overviewFrameElem );
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
@@ -761,7 +765,17 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mPreviewMode = Rectangle;
   }
 
-  setOverviewFrameMap( itemElem.attribute( "overviewFrameMap", "-1" ).toInt() );
+  QDomElement overviewFrameElem = itemElem.firstChildElement( "overviewFrame" );
+  if ( !overviewFrameElem.isNull() )
+  {
+    setOverviewFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
+    QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
+    if ( !overviewFrameSymbolElem.isNull() )
+    {
+      delete mOverviewFrameMapSymbol;
+      mOverviewFrameMapSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( overviewFrameSymbolElem ) );
+    }
+  }
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( "Extent" );
