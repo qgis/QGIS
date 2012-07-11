@@ -1,11 +1,13 @@
 
 SET (WCS_SRCS      
+  ../gdal/qgsgdalproviderbase.cpp 
   qgswcsprovider.cpp 
   qgswcscapabilities.cpp 
   qgswcssourceselect.cpp 
   qgswcsdataitems.cpp 
 )
 SET (WCS_MOC_HDRS  
+  ../gdal/qgsgdalproviderbase.h 
   qgswcsprovider.h 
   qgswcscapabilities.h 
   qgswcssourceselect.h 
@@ -15,6 +17,7 @@ SET (WCS_MOC_HDRS
 QT4_WRAP_CPP (WCS_MOC_SRCS ${WCS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES( . ../../core ../../core/raster ../../gui
+  ../gdal
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}
 )

@@ -26,7 +26,6 @@
 
 #include "qgslogger.h"
 #include "qgswcsprovider.h"
-//#include "qgswcsconnection.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrasterlayer.h"
@@ -45,13 +44,7 @@
 #endif
 
 #include <QUrl>
-#include <QIcon>
-#include <QImage>
-#include <QImageReader>
-#include <QPainter>
-#include <QPixmap>
 #include <QRegExp>
-#include <QSet>
 #include <QSettings>
 #include <QEventLoop>
 #include <QCoreApplication>
@@ -76,6 +69,7 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 QgsWcsProvider::QgsWcsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
+    , QgsGdalProviderBase()
     , mHttpUri( QString::null )
     , mCoverageCrs( DEFAULT_LATLON_CRS )
     , mCacheReply( 0 )
@@ -129,6 +123,22 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     QgsDebugMsg( "coverage not found" );
     return;
   }
+
+  // It could happen (usually not with current QgsWCSSourceSelect if at least 
+  // one CRS is available) that crs is not set in uri, in that case we  
+  // use the native, if available, or the first supported
+  if ( mCoverageCrs.isEmpty() )
+  {
+    if ( !mCoverageSummary->nativeCrs.isEmpty() )
+    {
+      setCoverageCrs( mCoverageSummary->nativeCrs );
+    }
+    else if ( mCoverageSummary->supportedCrs.size() > 0 )
+    {
+      setCoverageCrs(  mCoverageSummary->supportedCrs.value(0) );
+    }
+  }
+
   mWidth = mCoverageSummary->width;
   mHeight = mCoverageSummary->height;
   mHasSize = mCoverageSummary->hasSize;
@@ -144,22 +154,51 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   mCachedMemFilename = QString( "/vsimem/qgis/wcs/%0.dat" ).arg(( qlonglong )this );
 
   // Get small piece of coverage to find GDAL data type and nubmer of bands
+  // Using non native CRS (if we don't know which is native) it could easily happen, 
+  // that a small part of bbox in request CRS near margin falls outside 
+  // coverage native bbox and server reports error => take a piece from center
+
   int bandNo = 0; // All bands
-  double xRes, yRes;
-  int size = 5; // to be requested
-  int width = 1000; // just some number to get smaller piece of coverage
-  int height = 1000;
-  if ( mHasSize )
+  // just a number to get smaller piece of coverage
+  int width; 
+  int height;
+  QString crs;
+  QgsRectangle box; // box to use to calc extent 
+  // Prefer native CRS
+  if ( !mCoverageSummary->nativeCrs.isEmpty() && 
+       !mCoverageSummary->nativeBoundingBox.isEmpty() &&
+       mCoverageSummary->supportedCrs.contains ( mCoverageSummary->nativeCrs ) &&
+       mHasSize )
   {
+    box = mCoverageSummary->nativeBoundingBox;
     width = mWidth;
     height = mHeight;
+    crs = mCoverageSummary->nativeCrs;
   }
-  xRes = mCoverageExtent.width() / width;
-  yRes = mCoverageExtent.height() / height;
-  QgsRectangle extent = mCoverageExtent;
-  extent.setXMaximum( extent.xMinimum() + size * xRes );
-  extent.setYMaximum( extent.yMinimum() + size * yRes );
-  getCache( bandNo, extent, size, size );
+  else
+  {
+    box = mCoverageExtent;
+    if ( mHasSize )
+    {
+      width = mWidth;
+      height = mHeight;
+    }
+    else
+    {
+      width = 1000; 
+      height = 1000;
+    }
+  }
+  double xRes = box.width() / width;
+  double yRes = box.height() / height;
+  QgsPoint p = box.center();
+
+  int half = 2; // to be requested
+
+  // extent to be used for test request 
+  QgsRectangle extent = QgsRectangle ( p.x() - half * xRes, p.y() - half * yRes, p.x() + half * xRes, p.y() + half * yRes ); 
+  
+  getCache( bandNo, extent, 2*half, 2*half, crs );
 
   if ( !mCachedGdalDataset )
   {
@@ -197,7 +236,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     {
       // But we need a null value in case of reprojection and BTW also for
       // aligned margines
-      switch ( dataTypeFormGdal( myGdalDataType ) )
+      switch ( dataTypeFromGdal( myGdalDataType ) )
       {
 
         case QgsRasterDataProvider::Byte:
@@ -234,6 +273,10 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
     QgsDebugMsg( QString( "mGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mGdalDataType[i-1] ) );
     QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+
+    // Create and store color table
+    // TODO: never tested because mapserver (6.0.3) does not support color tables
+    mColorTables.append ( QgsGdalProviderBase::colorTable( mCachedGdalDataset, i ) );
   }
 
   clearCache();
@@ -414,11 +457,16 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   }
 }
 
-void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
+void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs )
 {
   QgsDebugMsg( "Entered" );
   // delete cached data
   clearCache();
+
+  if ( crs.isEmpty() ) 
+  {
+    crs = mCoverageCrs;
+  }
 
   mCachedViewExtent = viewExtent;
   mCachedViewWidth = pixelWidth;
@@ -436,7 +484,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   {
     //create CRS from string
     QgsCoordinateReferenceSystem theSrs;
-    if ( theSrs.createFromOgcWmsCrs( mCoverageCrs ) && theSrs.axisInverted() )
+    if ( theSrs.createFromOgcWmsCrs( crs ) && theSrs.axisInverted() )
     {
       changeXY = true;
     }
@@ -473,8 +521,8 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   {
     setQueryItem( url, "COVERAGE", mIdentifier );
     setQueryItem( url, "BBOX", bbox );
-    setQueryItem( url, "CRS", mCoverageCrs ); // request BBOX CRS
-    setQueryItem( url, "RESPONSE_CRS", mCoverageCrs ); // response CRS
+    setQueryItem( url, "CRS", crs ); // request BBOX CRS
+    setQueryItem( url, "RESPONSE_CRS", crs ); // response CRS
     setQueryItem( url, "WIDTH", QString::number( pixelWidth ) );
     setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
   }
@@ -483,7 +531,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   if ( mCapabilities.version().startsWith( "1.1" ) )
   {
     setQueryItem( url, "IDENTIFIER", mIdentifier );
-    QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( mCoverageCrs.split( ':' ).value( 0 ) ).arg( mCoverageCrs.split( ':' ).value( 1 ) );
+    QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( crs.split( ':' ).value( 0 ) ).arg( crs.split( ':' ).value( 1 ) );
     bbox += "," + crsUrn;
     setQueryItem( url, "BOUNDINGBOX", bbox );
 
@@ -783,7 +831,7 @@ int QgsWcsProvider::srcDataType( int bandNo ) const
     return QgsRasterDataProvider::UnknownDataType;
   }
 
-  return dataTypeFormGdal( mSrcGdalDataType[bandNo-1] );
+  return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
 }
 
 int QgsWcsProvider::dataType( int bandNo ) const
@@ -793,54 +841,7 @@ int QgsWcsProvider::dataType( int bandNo ) const
     return QgsRasterDataProvider::UnknownDataType;
   }
 
-  return dataTypeFormGdal( mGdalDataType[bandNo-1] );
-}
-
-int QgsWcsProvider::dataTypeFormGdal( int theGdalDataType ) const
-{
-  switch ( theGdalDataType )
-  {
-    case GDT_Unknown:
-      return QgsRasterDataProvider::UnknownDataType;
-      break;
-    case GDT_Byte:
-      return QgsRasterDataProvider::Byte;
-      break;
-    case GDT_UInt16:
-      return QgsRasterDataProvider::UInt16;
-      break;
-    case GDT_Int16:
-      return QgsRasterDataProvider::Int16;
-      break;
-    case GDT_UInt32:
-      return QgsRasterDataProvider::UInt32;
-      break;
-    case GDT_Int32:
-      return QgsRasterDataProvider::Int32;
-      break;
-    case GDT_Float32:
-      return QgsRasterDataProvider::Float32;
-      break;
-    case GDT_Float64:
-      return QgsRasterDataProvider::Float64;
-      break;
-    case GDT_CInt16:
-      return QgsRasterDataProvider::CInt16;
-      break;
-    case GDT_CInt32:
-      return QgsRasterDataProvider::CInt32;
-      break;
-    case GDT_CFloat32:
-      return QgsRasterDataProvider::CFloat32;
-      break;
-    case GDT_CFloat64:
-      return QgsRasterDataProvider::CFloat64;
-      break;
-    case GDT_TypeCount:
-      // make gcc happy
-      break;
-  }
-  return QgsRasterDataProvider::UnknownDataType;
+  return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
 
 int QgsWcsProvider::bandCount() const
@@ -891,6 +892,12 @@ void QgsWcsProvider::clearCache()
   QgsDebugMsg( "Clear mCachedData" );
   mCachedData.clear();
   QgsDebugMsg( "Cleared" );
+}
+
+QList<QgsColorRampShader::ColorRampItem> QgsWcsProvider::colorTable( int theBandNumber )const
+{
+  QgsDebugMsg( "entered." );
+  return mColorTables.value( theBandNumber - 1 );
 }
 
 void QgsWcsProvider::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -1091,13 +1098,16 @@ bool QgsWcsProvider::calculateExtent()
     QgsCoordinateReferenceSystem qgisSrsSource;
     QgsCoordinateReferenceSystem qgisSrsDest;
 
-    qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
-
+    //qgisSrsSource.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
+    qgisSrsSource.createFromOgcWmsCrs( "EPSG:4326" );
+    //QgsDebugMsg( "qgisSrsSource: " + qgisSrsSource.toWkt() );
     qgisSrsDest.createFromOgcWmsCrs( mCoverageCrs );
+    //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
   }
 
+  QgsDebugMsg( "mCoverageSummary->wgs84BoundingBox= " + mCoverageSummary->wgs84BoundingBox.toString() );
   // Convert to the user's CRS as required
   try
   {
@@ -1133,179 +1143,59 @@ int QgsWcsProvider::capabilities() const
 
   return capability;
 }
-//TODO
-//QString QgsWcsProvider::layerMetadata( QgsWcsLayerProperty &layer )
-QString QgsWcsProvider::layerMetadata( )
+
+QString QgsWcsProvider::coverageMetadata( QgsWcsCoverageSummary coverage )
 {
   QString metadata;
-  /*
-    // Layer Properties section
 
-    // Use a nested table
-    metadata += "<tr><td>";
-    metadata += "<table width=\"100%\">";
+  // Use a nested table
+  metadata += "<tr><td>";
+  metadata += "<table width=\"100%\">";
 
-    // Table header
-    metadata += "<tr><th class=\"glossy\">";
-    metadata += tr( "Property" );
-    metadata += "</th>";
-    metadata += "<th class=\"glossy\">";
-    metadata += tr( "Value" );
-    metadata += "</th></tr>";
+  // Table header
+  metadata += "<tr><th class=\"glossy\">";
+  metadata += tr( "Property" );
+  metadata += "</th>";
+  metadata += "<th class=\"glossy\">";
+  metadata += tr( "Value" );
+  metadata += "</th></tr>";
 
-    // Name
-    metadata += "<tr><td>";
-    metadata += tr( "Name" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.name;
-    metadata += "</td></tr>";
+  metadata += htmlRow ( tr( "Name (identifier)" ), coverage.identifier );
+  metadata += htmlRow ( tr( "Title" ), coverage.title );
+  metadata += htmlRow ( tr( "Abstract" ), coverage.abstract );
+  // We dont have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
+  //metadata += htmlRow ( tr( "Fixed Width" ), QString::number( coverage.width ) );
+  //metadata += htmlRow ( tr( "Fixed Height" ), QString::number( coverage.height ) );
+  //metadata += htmlRow ( tr( "Native CRS" ), coverage.nativeCrs );
+  //metadata += htmlRow ( tr( "Native Bounding Box" ), coverage.nativeBoundingBox.toString() );
 
-    // Layer Visibility (as managed by this provider)
-    metadata += "<tr><td>";
-    metadata += tr( "Visibility" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += mActiveSubLayerVisibility.find( layer.name ).value() ? tr( "Visible" ) : tr( "Hidden" );
-    metadata += "</td></tr>";
+  metadata += htmlRow ( tr( "WGS 84 Bounding Box" ), coverage.wgs84BoundingBox.toString() );
 
-    // Layer Title
-    metadata += "<tr><td>";
-    metadata += tr( "Title" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.title;
-    metadata += "</td></tr>";
+  // Layer Coordinate Reference Systems
+  for ( int j = 0; j < qMin( coverage.supportedCrs.size(), 10 ); j++ )
+  {
+    metadata += htmlRow ( tr( "Available in CRS" ), coverage.supportedCrs.value(j) );
+  }
 
-    // Layer Abstract
-    metadata += "<tr><td>";
-    metadata += tr( "Abstract" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.abstract;
-    metadata += "</td></tr>";
+  if ( coverage.supportedCrs.size() > 10 )
+  {
+    metadata += htmlRow ( tr( "Available in CRS" ), tr( "(and %n more)", "crs", coverage.supportedCrs.size() - 10 ) );
+  }
 
-    // Layer Queryability
-    metadata += "<tr><td>";
-    metadata += tr( "Can Identify" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.queryable ? tr( "Yes" ) : tr( "No" );
-    metadata += "</td></tr>";
+  for ( int j = 0; j < qMin( coverage.supportedFormat.size(), 10 ); j++ )
+  {
+    metadata += htmlRow ( tr( "Available in format" ), coverage.supportedFormat.value(j) );
+  }
 
-    // Layer Opacity
-    metadata += "<tr><td>";
-    metadata += tr( "Can be Transparent" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.opaque ? tr( "No" ) : tr( "Yes" );
-    metadata += "</td></tr>";
+  if ( coverage.supportedFormat.size() > 10 )
+  {
+    metadata += htmlRow ( tr( "Available in format" ), tr( "(and %n more)", "crs", coverage.supportedFormat.size() - 10 ) );
+  }
 
-    // Layer Subsetability
-    metadata += "<tr><td>";
-    metadata += tr( "Can Zoom In" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += layer.noSubsets ? tr( "No" ) : tr( "Yes" );
-    metadata += "</td></tr>";
+  // Close the nested table
+  metadata += "</table>";
+  metadata += "</td></tr>";
 
-    // Layer Server Cascade Count
-    metadata += "<tr><td>";
-    metadata += tr( "Cascade Count" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += QString::number( layer.cascaded );
-    metadata += "</td></tr>";
-
-    // Layer Fixed Width
-    metadata += "<tr><td>";
-    metadata += tr( "Fixed Width" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += QString::number( layer.fixedWidth );
-    metadata += "</td></tr>";
-
-    // Layer Fixed Height
-    metadata += "<tr><td>";
-    metadata += tr( "Fixed Height" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += QString::number( layer.fixedHeight );
-    metadata += "</td></tr>";
-
-    // Layer Fixed Height
-    metadata += "<tr><td>";
-    metadata += tr( "WGS 84 Bounding Box" );
-    metadata += "</td>";
-    metadata += "<td>";
-    metadata += mExtentForLayer[ layer.name ].toString();
-    metadata += "</td></tr>";
-
-    // Layer Coordinate Reference Systems
-    for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
-    {
-      metadata += "<tr><td>";
-      metadata += tr( "Available in CRS" );
-      metadata += "</td>";
-      metadata += "<td>";
-      metadata += layer.crs[j];
-      metadata += "</td></tr>";
-    }
-
-    if ( layer.crs.size() > 10 )
-    {
-      metadata += "<tr><td>";
-      metadata += tr( "Available in CRS" );
-      metadata += "</td>";
-      metadata += "<td>";
-      metadata += tr( "(and %n more)", "crs", layer.crs.size() - 10 );
-      metadata += "</td></tr>";
-    }
-
-    // Layer Styles
-    for ( int j = 0; j < layer.style.size(); j++ )
-    {
-      metadata += "<tr><td>";
-      metadata += tr( "Available in style" );
-      metadata += "</td>";
-      metadata += "<td>";
-
-      // Nested table.
-      metadata += "<table width=\"100%\">";
-
-      // Layer Style Name
-      metadata += "<tr><th class=\"glossy\">";
-      metadata += tr( "Name" );
-      metadata += "</th>";
-      metadata += "<td>";
-      metadata += layer.style[j].name;
-      metadata += "</td></tr>";
-
-      // Layer Style Title
-      metadata += "<tr><th class=\"glossy\">";
-      metadata += tr( "Title" );
-      metadata += "</th>";
-      metadata += "<td>";
-      metadata += layer.style[j].title;
-      metadata += "</td></tr>";
-
-      // Layer Style Abstract
-      metadata += "<tr><th class=\"glossy\">";
-      metadata += tr( "Abstract" );
-      metadata += "</th>";
-      metadata += "<td>";
-      metadata += layer.style[j].abstract;
-      metadata += "</td></tr>";
-
-      // Close the nested table
-      metadata += "</table>";
-      metadata += "</td></tr>";
-    }
-
-    // Close the nested table
-    metadata += "</table>";
-    metadata += "</td></tr>";
-  */
   return metadata;
 }
 
@@ -1315,20 +1205,15 @@ QString QgsWcsProvider::metadata()
 
   metadata += "<tr><td>";
 
-  metadata += "<a href=\"#serverproperties\">";
-  metadata += tr( "Server Properties" );
-  metadata += "</a> ";
-
-  metadata += "&nbsp;<a href=\"#selectedlayers\">";
-  metadata += tr( "Selected Layers" );
-  metadata += "</a>&nbsp;<a href=\"#otherlayers\">";
-  metadata += tr( "Other Layers" );
+  metadata += "</a>&nbsp;<a href=\"#coverages\">";
+  metadata += tr( "Coverages" );
   metadata += "</a>";
 
 #if QT_VERSION >= 0x40500
-  metadata += "<a href=\"#cachestats\">";
-  metadata += tr( "Cache Stats" );
-  metadata += "</a> ";
+  // TODO
+  //metadata += "<a href=\"#cachestats\">";
+  //metadata += tr( "Cache Stats" );
+  //metadata += "</a> ";
 #endif
 
   metadata += "</td></tr>";
@@ -1350,143 +1235,53 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Value" );
   metadata += "</th></tr>";
 
-  // WCS Version
-  metadata += "<tr><td>";
-  metadata += tr( "WCS Version" );
-  metadata += "</td>";
-  metadata += "<td>";
-  // TODO
-  //metadata += mCapabilities.version;
-  metadata += "</td></tr>";
-
-  // Service Title
-  metadata += "<tr><td>";
-  metadata += tr( "Title" );
-  metadata += "</td>";
-  metadata += "<td>";
-  // TODO metadata += mCapabilities.service.title;
-  metadata += "</td></tr>";
-
-  // Service Abstract
-  metadata += "<tr><td>";
-  metadata += tr( "Abstract" );
-  metadata += "</td>";
-  metadata += "<td>";
-  // TODO metadata += mCapabilities.service.abstract;
-  metadata += "</td></tr>";
-
-  // Service Keywords
-  metadata += "<tr><td>";
-  metadata += tr( "Keywords" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += mCapabilities.service.keywordList.join( "<br />" );
-  metadata += "</td></tr>";
-
-  // Service Online Resource
-  metadata += "<tr><td>";
-  metadata += tr( "Online Resource" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += "-";
-  metadata += "</td></tr>";
-
-  // Service Contact Information
-  metadata += "<tr><td>";
-  metadata += tr( "Contact Person" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson;
-  metadata += "<br />";
-  //metadata += mCapabilities.service.contactInformation.contactPosition;
-  metadata += "<br />";
-  //metadata += mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization;
-  metadata += "</td></tr>";
-
-  // Service Fees
-  metadata += "<tr><td>";
-  metadata += tr( "Fees" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += mCapabilities.service.fees;
-  metadata += "</td></tr>";
-
-  // Service Access Constraints
-  metadata += "<tr><td>";
-  metadata += tr( "Access Constraints" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += mCapabilities.service.accessConstraints;
-  metadata += "</td></tr>";
-
-  // GetMap Request Formats
-  metadata += "<tr><td>";
-  metadata += tr( "Image Formats" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += mCapabilities.capability.request.getMap.format.join( "<br />" );
-  metadata += "</td></tr>";
-
-  // GetFeatureInfo Request Formats
-  metadata += "<tr><td>";
-  metadata += tr( "Identify Formats" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += mCapabilities.capability.request.getFeatureInfo.format.join( "<br />" );
-  metadata += "</td></tr>";
-
-  // Layer Count (as managed by this provider)
-  metadata += "<tr><td>";
-  metadata += tr( "Layer Count" );
-  metadata += "</td>";
-  metadata += "<td>";
-  // TODO
-  //metadata += QString::number( mLayersSupported.size() );
-  metadata += "</td></tr>";
-
-  // Base URL
-  metadata += "<tr><td>";
-  metadata += tr( "GetCapabilitiesUrl" );
-  metadata += "</td>";
-  metadata += "<td>";
-  metadata += mBaseUrl;
-  metadata += "</td></tr>";
-
-  metadata += "<tr><td>";
-  metadata += tr( "GetMapUrl" );
-  metadata += "</td>";
-  metadata += "<td>";
-  //metadata += getMapUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
-  metadata += "</td></tr>";
+  metadata += htmlRow ( ( "Coverage" ), mIdentifier );
+  metadata += htmlRow ( ( "WCS Version" ), mCapabilities.version() );
+  metadata += htmlRow ( tr( "Title" ), mCapabilities.capabilities().serviceIdentification.title );
+  metadata +=  htmlRow ( tr( "Abstract" ), mCapabilities.capabilities().serviceIdentification.abstract );
+  // TODO 
+  //metadata += htmlRow ( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
+  //metadata += htmlRow (  tr( "Online Resource" ), "-" );
+  //metadata += htmlRow (  tr( "Contact Person" ), 
+  //  mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson
+  //    + "<br />" + mCapabilities.service.contactInformation.contactPosition;
+  //    + "<br />" + mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization );
+  //metadata += htmlRow ( tr( "Fees" ), mCapabilities.service.fees );
+  //metadata += htmlRow ( tr( "Access Constraints" ), mCapabilities.service.accessConstraints );
+  //metadata += htmlRow ( tr( "Image Formats" ), mCapabilities.capability.request.getMap.format.join( "<br />" ) );
+  //metadata += htmlRow (  tr( "GetCapabilitiesUrl" ), mBaseUrl );
+  //metadata += htmlRow ( tr( "GetMapUrl" ), getMapUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" ) );
 
   // Close the nested table
   metadata += "</table>";
   metadata += "</td></tr>";
 
-  // Layer properties
-  metadata += "<tr><th class=\"glossy\"><a name=\"selectedlayers\"></a>";
-  metadata += tr( "Selected Layers" );
+  // Coverage properties
+  metadata += "<tr><th class=\"glossy\"><a name=\"coverages\"></a>";
+  metadata += tr( "Coverages" );
   metadata += "</th></tr>";
 
-  // Layer properties
-  metadata += "<tr><th class=\"glossy\"><a name=\"otherlayers\"></a>";
-  metadata += tr( "Other Layers" );
-  metadata += "</th></tr>";
-
-  /* TODO
-  for ( int i = 0; i < mLayersSupported.size(); i++ )
+  for ( int i = 0; i < mCapabilities.capabilities().contents.coverageSummary.size(); i++ )
   {
-    if ( mActiveSubLayers.indexOf( mLayersSupported[i].name ) < 0 )
-    {
-      metadata += layerMetadata( mLayersSupported[i] );
-    }
-  } // for each layer
-  */
+    QgsWcsCoverageSummary c = mCapabilities.capabilities().contents.coverageSummary.value(i);
+    metadata += coverageMetadata( c );
+  }
+
   metadata += "</table>";
 
   QgsDebugMsg( "exiting with '"  + metadata  + "'." );
 
   return metadata;
+}
+
+QString QgsWcsProvider::htmlCell ( const QString &text )
+{
+  return "<td>" + text + "</td>";
+}
+
+QString QgsWcsProvider:: htmlRow ( const QString &text1, const QString &text2 )
+{
+  return "<tr>" + htmlCell ( text1 ) +  htmlCell ( text2 ) + "</tr>";
 }
 
 bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )

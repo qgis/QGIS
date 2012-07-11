@@ -131,10 +131,12 @@ void QgsWCSSourceSelect::addClicked( )
   // Set crs only if necessary (multiple offered), so that we can decide in the
   // provider if WCS 1.0 with RESPONSE_CRS has to be used.  Not perfect, they can
   // add more CRS in future and URI will be saved in project without any.
-  if ( selectedLayersCRSs().size() > 1 )
-  {
+  // TODO: consider again, currently if crs in url is used to set WCS coverage CRS,
+  //       without that param user is asked for CRS
+  //if ( selectedLayersCRSs().size() > 1 )
+  //{
     uri.setParam( "crs", selectedCRS() );
-  }
+  //}
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
   if ( !selectedFormat().isEmpty() )

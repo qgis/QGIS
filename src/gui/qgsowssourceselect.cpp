@@ -159,7 +159,10 @@ void QgsOWSSourceSelect::populateFormats()
 
   // selectedLayersFormats may come in various forms:
   // image/tiff, GTiff, GeoTIFF, TIFF, geotiff_int16, geotiff_rgb,
-  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC, GEOTIFFINT16
+  // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC
+  // and even any string defined in server configuration, for example the 
+  // value used in UMN Mapserver for OUTPUTFORMAT->NAME is used in 
+  // WCS 1.0.0 SupportedFormats/Format
 
   // TODO: It is impossible to cover all possible formats comming from server
   //       -> enabled all formats, GDAL may be able to open them
@@ -433,6 +436,7 @@ void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
 void QgsOWSSourceSelect::populateCRS()
 {
+  QgsDebugMsg ("Entered");
   mSelectedLayersCRSs = selectedLayersCRSs().toSet();
   mCRSGroupBox->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) );
 
@@ -470,6 +474,7 @@ void QgsOWSSourceSelect::populateCRS()
     mSelectedCRS = "";
     mSelectedCRSLabel->setText( "" );
   }
+  QgsDebugMsg ("mSelectedCRS = " + mSelectedCRS);
   mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() );
 }
 

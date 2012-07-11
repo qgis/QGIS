@@ -1,8 +1,10 @@
 SET(GDAL_SRCS 
+  qgsgdalproviderbase.cpp 
   qgsgdalprovider.cpp 
   qgsgdaldataitems.cpp 
 )
 SET(GDAL_MOC_HDRS  
+  qgsgdalproviderbase.h 
   qgsgdalprovider.h 
   qgsgdaldataitems.h
 )

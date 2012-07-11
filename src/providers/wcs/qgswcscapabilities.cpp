@@ -458,13 +458,13 @@ QDomElement QgsWcsCapabilities::firstChild( const QDomElement &element, const QS
       QString tagName = stripNS( el.tagName() );
       if ( tagName == name )
       {
-        QgsDebugMsg( name + " found" );
+        //QgsDebugMsg( name + " found" );
         return el;
       }
     }
     n1 = n1.nextSibling();
   }
-  QgsDebugMsg( name + " not found" );
+  //QgsDebugMsg( name + " not found" );
   return QDomElement();
 }
 
@@ -473,7 +473,7 @@ QString QgsWcsCapabilities::firstChildText( const QDomElement &element, const QS
   QDomElement el = firstChild( element, name );
   if ( !el.isNull() )
   {
-    QgsDebugMsg( name + " : " + el.text() );
+    //QgsDebugMsg( name + " : " + el.text() );
     return el.text();
   }
   return QString();
@@ -497,7 +497,7 @@ QList<QDomElement> QgsWcsCapabilities::domElements( const QDomElement &element, 
       QString tagName = stripNS( el.tagName() );
       if ( tagName == name )
       {
-        QgsDebugMsg( name + " found" );
+        //QgsDebugMsg( name + " found" );
         if ( names.size() == 0 )
         {
           list.append( el );
@@ -549,6 +549,38 @@ QList<int> QgsWcsCapabilities::parseInts( const QString &text )
     }
   }
   return list;
+}
+
+QList<double> QgsWcsCapabilities::parseDoubles( const QString &text )
+{
+  QList<double> list;
+  foreach( QString s, text.split( " " ) )
+  {
+    int i;
+    bool ok;
+    list.append( s.toDouble( &ok ) );
+    if ( !ok )
+    {
+      list.clear();
+      return list;
+    }
+  }
+  return list;
+}
+
+QString QgsWcsCapabilities::crsUrnToAuthId ( const QString &text )
+{
+  QString urnCrs = text;
+
+  QString authid;
+
+  // example: urn:ogc:def:crs:EPSG::4326
+  QStringList split = urnCrs.remove("urn:ogc:def:crs:").split(":");
+  if ( split.size() == 3 ) 
+  {
+    authid = QString("%1:%2").arg( split.value(0) ).arg(split.value(2) );
+  }
+  return authid;
 }
 
 // ------------------------ 1.0 ----------------------------------------------
@@ -727,10 +759,15 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     {
       QString tagName = stripNS( el.tagName() );
 
-      if ( tagName == "requestResponseCRSs" )
+      if ( tagName == "requestResponseCRSs" ) // requestCRSs + responseCRSs alternative
       {
         coverage->supportedCrs << el.text();
       }
+      else if ( tagName == "nativeCRSs" ) // optional 
+      {
+        coverage->nativeCrs = el.text();
+      }
+      // TODO: requestCRSs, responseCRSs - must be then implemented also in provider
     }
     n1 = n1.nextSibling();
   }
@@ -758,11 +795,12 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   // spatialDomain and Grid/RectifiedGrid are optional according to specificationi.
   // If missing, we cannot get native resolution and size.
-  QDomElement gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.Grid" );
+  QDomElement gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.RectifiedGrid" );
 
   if ( gridElement.isNull() )
   {
-    gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.RectifiedGrid" );
+    // Grid has also GridEnvelope from which we can get coverage size but it does not
+    gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.Grid" );
   }
 
   if ( !gridElement.isNull() )
@@ -771,16 +809,60 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     QList<int> high = parseInts( domElementText( gridElement, "limits.GridEnvelope.high" ) );
     if ( low.size() == 2 && high.size() == 2 )
     {
-      coverage->width = high[0] - low[0] + 1;
-      coverage->height = high[1] - low[1] + 1;
-      coverage->hasSize = true;
+      double width = high[0] - low[0] + 1;
+      double height = high[1] - low[1] + 1;
+      if ( width > 0 && height > 0 )
+      {
+        coverage->width = width;
+        coverage->height = height;
+        coverage->hasSize = true;
+      }
     }
     // RectifiedGrid has also gml:origin which we dont need I think (attention however
     // it should contain gml:Point but mapserver 6.0.3 / WCS 1.0.0 is using gml:pos instead)
     // RectifiedGrid also contains 2 gml:offsetVector which could be used to get resolution
     // but it should be sufficient to calc resolution from size
+      
+    // TODO: check if coverage is rotated, in that case probably treat as without size
+    //       or recalc resolution from rotated grid to base CRS
   }
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
+
+  QList<QDomElement> envelopeElements = domElements( coverageOfferingElement, "domainSet.spatialDomain.Envelope" );
+
+  QgsDebugMsg( QString( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
+
+  foreach( QDomElement el, envelopeElements )
+  {
+    QString srsName = el.attribute( "srsName" );
+
+    QList<QDomElement> posElements = domElements( el, "pos" );
+    if ( posElements.size() != 2 ) 
+    {
+      QgsDebugMsg ("Wrong number of pos elements");
+      continue;
+    }
+
+    QList<double> low = parseDoubles( posElements.value(0).text() );
+    QList<double> high = parseDoubles( posElements.value(1).text() );
+    if ( low.size() == 2 && high.size() == 2 )
+    {
+      QgsRectangle box ( low[0], low[1], high[0], high[1] ) ;
+      coverage->boundingBoxes.insert( srsName, box );
+      QgsDebugMsg ( "Envelope: " + srsName + " : " + box.toString() );
+    }
+  }
+
+  // Find native bounding box
+  if ( !coverage->nativeCrs.isEmpty() )
+  {
+    foreach ( QString srsName, coverage->boundingBoxes.keys() )
+    {
+      if ( srsName == coverage->nativeCrs ) 
+      {
+        coverage->nativeBoundingBox = coverage->boundingBoxes.value( srsName );
+      }
+    }
+  }
 
   coverage->described = true;
 
@@ -821,19 +903,39 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   foreach( QDomElement el, boundingBoxElements )
   {
-    if ( el.attribute( "crs" ) != "urn:ogc:def:crs:OGC::imageCRS" ) continue;
+    QString authid = crsUrnToAuthId ( el.attribute( "crs" ) );
+    QList<double> low = parseDoubles( domElementText( el, "LowerCorner" ) );
+    QList<double> high = parseDoubles( domElementText( el, "UpperCorner" ) );
 
-    QList<int> low = parseInts( domElementText( el, "LowerCorner" ) );
-    QList<int> high = parseInts( domElementText( el, "UpperCorner" ) );
-    if ( low.size() == 2 && high.size() == 2 )
+    if ( low.size() != 2 && high.size() != 2 ) continue;
+
+    if ( el.attribute( "crs" ) == "urn:ogc:def:crs:OGC::imageCRS" )
     {
-      coverage->width = high[0] - low[0] + 1;
-      coverage->height = high[1] - low[1] + 1;
+      coverage->width = (int) ( high[0] - low[0] + 1 );
+      coverage->height = (int) ( high[1] - low[1] + 1 );
       coverage->hasSize = true;
     }
-    break;
+    else
+    {
+      QgsRectangle box ( low[0], low[1], high[0], high[1] ) ;
+      coverage->boundingBoxes.insert( authid, box );
+      QgsDebugMsg ( "BoundingBox: " + authid + " : " + box.toString() );
+    }
   }
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( coverage->width ).arg( coverage->height ) );
+
+  // Each georectified coverage should have GridCRS
+  QDomElement gridCRSElement = domElement( docElem, "CoverageDescription.Domain.SpatialDomain.GridCRS" );
+
+  if ( !gridCRSElement.isNull() )
+  {
+    QString crsUrn = firstChildText ( gridCRSElement, "GridBaseCRS" );
+    coverage->nativeCrs = crsUrnToAuthId( crsUrn );
+    QgsDebugMsg( "nativeCrs = " + coverage->nativeCrs );
+
+    // TODO: consider getting coverage size from GridOffsets (resolution)
+    // if urn:ogc:def:crs:OGC::imageCRS BoundingBox was not found
+  }
 
   coverage->described = true;
 

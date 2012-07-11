@@ -94,11 +94,16 @@ struct QgsWcsCoverageSummary
   QString       abstract;
   QStringList   supportedCrs;
   QStringList   supportedFormat;
-  QgsRectangle  wgs84BoundingBox;
+  QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
+  // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
+  QString       nativeCrs;
+  QMap<QString, QgsRectangle> boundingBoxes; 
+  QgsRectangle  nativeBoundingBox;
   QVector<QgsWcsCoverageSummary> coverageSummary;
   bool          described; // 1.0
   // non reflecting directly Capabilities structure:
-  int width;
+  // native size
+  int width; 
   int height;
   bool hasSize;
 };
@@ -261,6 +266,8 @@ class QgsWcsCapabilities : public QObject
     QString domElementText( const QDomElement &element, const QString &path );
 
     QList<int> parseInts( const QString &text );
+    QList<double> parseDoubles( const QString &text );
+    QString crsUrnToAuthId ( const QString &text );
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *

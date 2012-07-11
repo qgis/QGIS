@@ -24,6 +24,7 @@
 
 #include "qgswcscapabilities.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 
 #include <QString>
@@ -59,7 +60,7 @@ class QNetworkRequest;
   data residing in a OGC Web Map Service.
 
 */
-class QgsWcsProvider : public QgsRasterDataProvider
+class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -121,7 +122,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
     void readBlock( int theBandNo, int xBlock, int yBlock, void *block );
 
     /** Download cache */
-    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height );
+    void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
 
     /** Return the extent for this data layer
     */
@@ -158,6 +159,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
     QString name() const;
     QString description() const;
     void reloadData();
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
     // WMS specific, maybe to be removed from QgsRasterDataProvider
     void addLayers( QStringList const &layers, QStringList const &styles = QStringList() ) { Q_UNUSED( layers ); Q_UNUSED( styles ); }
@@ -224,8 +226,7 @@ class QgsWcsProvider : public QgsRasterDataProvider
      */
     QString prepareUri( QString uri ) const;
 
-    //QString layerMetadata( QgsWmsLayerProperty &layer );
-    QString layerMetadata( );
+    QString coverageMetadata( QgsWcsCoverageSummary c );
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );
@@ -233,11 +234,14 @@ class QgsWcsProvider : public QgsRasterDataProvider
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
 
-    //! Convert data type from GDAL to QGIS
-    int dataTypeFormGdal( int theGdalDataType ) const;
-
     //! Release cache resources
     void clearCache();
+
+    //! Create html cell (used by metadata)
+    QString htmlCell ( const QString &text );
+
+    //! Create html row with 2 cells (used by metadata)
+    QString htmlRow ( const QString &text1, const QString &text2 );
 
     //! Data source URI of the WCS for this layer
     QString mHttpUri;
@@ -295,8 +299,8 @@ class QgsWcsProvider : public QgsRasterDataProvider
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
     QList<double> mNoDataValue;
 
-    /** Source data types */
-    //QVector<QgsRasterDataProvider::DataType> mDataTypes;
+    /** Color tables indexed from 0 */
+    QList< QList<QgsColorRampShader::ColorRampItem> > mColorTables;
 
     /**
      * Last Service Exception Report from the WCS
