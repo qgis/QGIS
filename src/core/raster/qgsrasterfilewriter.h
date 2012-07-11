@@ -36,13 +36,11 @@ class CORE_EXPORT QgsRasterFileWriter
     void setTiledMode( bool t ) { mTiledMode = t; }
     bool tiledMode() const { return mTiledMode; }
 
-#if 0
     void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
     int maxTileWidth() const { return mMaxTileWidth; }
 
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
-#endif //0
 
   private:
     QgsRasterFileWriter(); //forbidden

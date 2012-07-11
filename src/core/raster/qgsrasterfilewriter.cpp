@@ -10,7 +10,7 @@
 #include "gdal.h"
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ): mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ), mTiledMode( false ),
-    /*mMaxTileWidth( 500 ), mMaxTileHeight( 500 ), */ mProgressDialog( 0 )
+    mMaxTileWidth( 500 ), mMaxTileHeight( 500 ), mProgressDialog( 0 )
 {
 
 }
@@ -164,7 +164,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRasterSingleTile( Qgs
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent )
 {
-#if 0
   if ( !iter )
   {
     return SourceProviderError;
@@ -186,9 +185,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
   //Get output map units per pixel
   double outputMapUnitsPerPixel = outputExtent.width() / nCols;
 
-  QgsRasterIterator iter( 1, sourceProvider );
-  iter.setMaximumTileWidth( mMaxTileWidth );
-  iter.setMaximumTileHeight( mMaxTileHeight );
+
+  iter->setMaximumTileWidth( mMaxTileWidth );
+  iter->setMaximumTileHeight( mMaxTileHeight );
 
   void* data = VSIMalloc( iface->typeSize( QgsRasterInterface::ARGB32 ) * mMaxTileWidth * mMaxTileHeight );
   void* redData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
@@ -237,15 +236,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
     }
   }
 
-  QgsRasterViewPort viewPort;
-  viewPort.drawableAreaXDim = nCols;
-  viewPort.drawableAreaYDim = nRows;
-
-  QgsMapUnitsPerPixel mup;
-
   //iter->select( outputExtent, outputMapUnitsPerPixel );
-  iter->startRasterRead( 1, &viewPort, &mup );
+  iter->startRasterRead( 1, nCols, nRows, outputExtent );
 
+#if 0
   //initialize progress dialog
   int nTiles = iter.nTilesX() * iter.nTilesY();
   if ( mProgressDialog )
@@ -254,19 +248,28 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
     mProgressDialog->setMaximum( nTiles );
     mProgressDialog->show();
   }
+#endif //0
 
-  while ( iter->nextPart( data, mapRect, iterLeft, iterTop, iterCols, iterRows, progress ) )
+  while ( iter->readNextRasterPart( 1, iterCols, iterRows, &data, iterLeft, iterTop ) )
   {
     if ( iterCols <= 5 || iterRows <= 5 ) //some wms servers don't like small values
     {
       continue;
     }
 
+    double mup = outputExtent.width() / nCols;
+    double mapLeft = outputExtent.xMinimum() + iterLeft * mup;
+    double mapRight = mapLeft + mup * iterCols;
+    double mapTop = outputExtent.yMaximum() - iterTop * mup;
+    double mapBottom = mapTop - iterTop * mup;
+    QgsRectangle mapRect( mapLeft, mapBottom, mapRight, mapTop );
+
     if ( mapRect.width() < 0.000000001 || mapRect.height() < 0.000000001 )
     {
       continue;
     }
 
+#if 0
     if ( mProgressDialog )
     {
       mProgressDialog->setValue( fileIndex + 1 );
@@ -277,6 +280,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
         break;
       }
     }
+#endif //0
 
     //fill into red/green/blue/alpha channels
     uint* p = ( uint* ) data;
@@ -345,10 +349,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
   delete destProvider;
   CPLFree( data ); CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
 
+#if 0
   if ( mProgressDialog )
   {
     mProgressDialog->setValue( nTiles );
   }
+#endif //0
 
   if ( mTiledMode )
   {
@@ -357,7 +363,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeARGBRaster( QgsRaster
     writeVRT( vrtFilePath );
     buildPyramides( vrtFilePath );
   }
-#endif //0
   return NoError;
 }
 
