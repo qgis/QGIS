@@ -67,6 +67,10 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             dlg.exec_()
             if dlg.param != None:
                 self.model.updateParameter(self.elementIndex, dlg.param)
+                self.element = dlg.param
+                self.text = self.element.description
+                self.update()
+
         else:
             dlg = self.element.getCustomModelerParametersDialog(self.model, self.elementIndex)
             if not dlg:
@@ -101,6 +105,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
 
     def paint(self, painter, option, widget=None):
+
         rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2,
                              ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + 2)
         painter.setPen(QtGui.QPen(QtCore.Qt.gray, 1))
