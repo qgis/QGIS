@@ -220,6 +220,30 @@
          </property>
         </spacer>
        </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="mOverviewFrameMapComboBox"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="mOverviewFrameMapLabel">
+         <property name="text">
+          <string>Overview frame</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="mFrameStyleLabel_2">
+         <property name="text">
+          <string>Frame style</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QPushButton" name="mOverviewFrameStyleButton">
+         <property name="text">
+          <string>Change...</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -336,7 +360,7 @@
         <x>0</x>
         <y>0</y>
         <width>218</width>
-        <height>712</height>
+        <height>716</height>
        </rect>
       </property>
       <attribute name="label">

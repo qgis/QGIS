@@ -29,6 +29,7 @@ class QDomNode;
 class QDomDocument;
 class QGraphicsView;
 class QPainter;
+class QgsFillSymbolV2;
 
 /** \ingroup MapComposer
  *  \class QgsComposerMap
@@ -289,6 +290,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;
 
+    /**Sets overview frame map. -1 disables the overview frame
+    @note: this function was added in version 1.9*/
+    void setOverviewFrameMap( int mapId );
+    /**Returns id of overview frame (or -1 if no overfiew frame)
+    @note: this function was added in version 1.9*/
+    int overviewFrameMapId() const { return mOverviewFrameMapId; }
+
+    void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
+    QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
+
   signals:
     void extentChanged();
 
@@ -338,6 +349,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
+
+    /**Id of map which displays its extent rectangle into this composer map (overview map functionality). -1 if not present*/
+    int mOverviewFrameMapId;
+    /**Drawing style for overview farme*/
+    QgsFillSymbolV2* mOverviewFrameMapSymbol;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
@@ -445,6 +461,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
+    void drawOverviewMapExtent( QPainter* p );
+    void createDefaultOverviewFrameSymbol();
 };
 
 #endif

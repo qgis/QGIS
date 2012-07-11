@@ -18,6 +18,11 @@
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgsmaprenderer.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
+//#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgssymbollayerv2utils.h"
 #include <QColorDialog>
 #include <QFontDialog>
 
@@ -63,6 +68,27 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   }
+
+  if ( mComposerMap )
+  {
+    //insert available maps into mMapComboBox
+    mOverviewFrameMapComboBox->addItem( tr( "None" ), -1 );
+    const QgsComposition* composition = mComposerMap->composition();
+    if ( composition )
+    {
+      QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
+      QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+      for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+      {
+        if (( *mapItemIt )->id() != mComposerMap->id() )
+        {
+          mOverviewFrameMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
+        }
+      }
+    }
+  }
+
+  updateOverviewSymbolMarker();
 
   updateGuiElements();
   blockAllSignals( false );
@@ -322,6 +348,10 @@ void QgsComposerMapWidget::updateGuiElements()
       mDrawCanvasItemsCheckBox->setCheckState( Qt::Unchecked );
     }
 
+    //overview frame
+    int overviewMapFrameId = mComposerMap->overviewFrameMapId();
+    mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findData( overviewMapFrameId ) );
+
     //grid
     if ( mComposerMap->gridEnabled() )
     {
@@ -459,6 +489,8 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mDrawCanvasItemsCheckBox->blockSignals( b );
   mFrameStyleComboBox->blockSignals( b );
   mFrameWidthSpinBox->blockSignals( b );
+  mOverviewFrameMapComboBox->blockSignals( b );
+  mOverviewFrameStyleButton->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -517,6 +549,68 @@ void QgsComposerMapWidget::on_mDrawCanvasItemsCheckBox_stateChanged( int state )
   mComposerMap->update();
   mUpdatePreviewButton->setEnabled( true );
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  if ( text == tr( "None" ) )
+  {
+    mComposerMap->setOverviewFrameMap( -1 );
+  }
+
+  //get composition
+  const QgsComposition* composition = mComposerMap->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  //extract id
+  int id;
+  bool conversionOk;
+  QStringList textSplit = text.split( " " );
+  if ( textSplit.size() < 1 )
+  {
+    return;
+  }
+
+  QString idString = textSplit.at( textSplit.size() - 1 );
+  id = idString.toInt( &conversionOk );
+
+  if ( !conversionOk )
+  {
+    return;
+  }
+
+  const QgsComposerMap* composerMap = composition->getComposerMapById( id );
+  if ( !composerMap )
+  {
+    return;
+  }
+
+  mComposerMap->setOverviewFrameMap( id );
+  mComposerMap->update();
+}
+
+void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  QgsSymbolV2SelectorDialog d( mComposerMap->overviewFrameMapSymbol(), QgsStyleV2::defaultStyle(), 0 );
+
+  //QgsSymbolV2PropertiesDialog d( mComposerMap->overviewFrameMapSymbol(), 0, this );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    updateOverviewSymbolMarker();
+  }
 }
 
 void QgsComposerMapWidget::on_mGridCheckBox_toggled( bool state )
@@ -894,5 +988,14 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
   else //horizontal
   {
     c->setCurrentIndex( c->findText( tr( "Horizontal" ) ) );
+  }
+}
+
+void QgsComposerMapWidget::updateOverviewSymbolMarker()
+{
+  if ( mComposerMap )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
+    mOverviewFrameStyleButton->setIcon( icon );
   }
 }
