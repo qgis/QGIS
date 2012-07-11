@@ -22,6 +22,9 @@ class QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSave
     QString outputFormat() const;
     QgsRectangle outputRectangle() const;
 
+    void hideFormat();
+    void hideOutput();
+
   private slots:
     void on_mBrowseButton_clicked();
     void on_mSaveAsLineEdit_textChanged( const QString& text );

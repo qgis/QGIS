@@ -147,3 +147,16 @@ void QgsRasterLayerSaveAsDialog::setOutputExtent( const QgsRectangle& r )
   mYMinLineEdit->setText( QString::number( r.yMinimum() ) );
   mYMaxLineEdit->setText( QString::number( r.yMaximum() ) );
 }
+
+void QgsRasterLayerSaveAsDialog::hideFormat()
+{
+  mFormatLabel->hide();
+  mFormatComboBox->hide();
+}
+
+void QgsRasterLayerSaveAsDialog::hideOutput()
+{
+  mSaveAsLabel->hide();
+  mSaveAsLineEdit->hide();
+  mBrowseButton->hide();
+}
