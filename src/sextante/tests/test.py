@@ -43,6 +43,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.modeler.Providers import Providers
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
 from sextante.core.SextanteConfig import SextanteConfig
@@ -91,6 +92,7 @@ class SextanteProviderTestCase(unittest.TestCase):
                 yield l
             elif isinstance(p, ParameterVector):
                 l = QgsVectorLayer('data/vector', "test vector")
+                #~ l.dataProvider = lambda: DataProviderStub('data/vector')
                 if doSet: p.setValue(l)
                 yield l
             elif isinstance(p, ParameterNumber):
@@ -182,6 +184,8 @@ def modelSuite(modelFile, dialog = "none", threaded = True, unthreaded = True):
     s = unittest.TestSuite()
     model = ModelerAlgorithm()
     model.openModel(modelFile)
+    if model.provider is None: # might happen if model is opened from modeler dialog
+        model.provider = Providers.providers["model"]
     if threaded:
         s.addTest(SextanteProviderTestCase(modelFile, model, True, dialog))
     if unthreaded:
