@@ -1928,16 +1928,10 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   {
     return;
   }
-  else if ( mComposition->plotStyle() == QgsComposition::Preview )
+  else
   {
     context.setScaleFactor( 1.0 );
-    context.setRasterScaleFactor( /*96.0*/ mComposition->printResolution() / 25.4 );
-  }
-  else //print
-  {
-    context.setScaleFactor( 1.0 );
-    double rasterScaleFactor =  mComposition->printResolution() / 25.4;
-    context.setRasterScaleFactor( rasterScaleFactor );
+    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
   }
 
   QPolygonF polygon;
@@ -1945,20 +1939,12 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
   double width = intersectRect.width() / thisExtent.width() * rect().width();
   double height = intersectRect.height() / thisExtent.height() * rect().height();
-  polygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height );
+  polygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height ) << QPointF( x, y );
 
   QList<QPolygonF> rings; //empty list
   mOverviewFrameMapSymbol->startRender( context );
   mOverviewFrameMapSymbol->renderPolygon( polygon, &rings, 0, context );
   mOverviewFrameMapSymbol->stopRender( context );
-
-  /*p->setPen( QPen( Qt::red ) ); //todo: make appearance configurable
-  p->setBrush( QBrush( QColor( 255, 0, 0, 100 ) ) );
-  double x = ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
-  double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
-  double width = intersectRect.width() / thisExtent.width() * rect().width();
-  double height = intersectRect.height() / thisExtent.height() * rect().height();
-  p->drawRect( QRectF( x, y, width, height ) );*/
 }
 
 void QgsComposerMap::createDefaultOverviewFrameSymbol()
