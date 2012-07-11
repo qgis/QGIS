@@ -2089,6 +2089,16 @@ bool QgsGdalProvider::create( const QString& format, int nBands, QgsRasterDataPr
   return mValid;
 }
 
+bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )
+{
+    GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+    if ( rasterBand == NULL )
+    {
+        return false;
+    }
+    return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
+}
+
 QStringList QgsGdalProvider::createFormats() const
 {
   return QStringList();

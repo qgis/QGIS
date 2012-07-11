@@ -435,6 +435,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
 
+    /**Writes into the provider datasource*/
+    virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset )
+    {
+        Q_UNUSED( data );
+        Q_UNUSED( band );
+        Q_UNUSED( width );
+        Q_UNUSED( height );
+        Q_UNUSED( xOffset );
+        Q_UNUSED( yOffset );
+        return false;
+    }
+
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
