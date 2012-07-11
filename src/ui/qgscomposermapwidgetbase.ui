@@ -231,9 +231,9 @@
         </widget>
        </item>
        <item row="6" column="0">
-        <widget class="QLabel" name="mFrameStyleLabel_2">
+        <widget class="QLabel" name="mOverviewFrameStyleLabel">
          <property name="text">
-          <string>Frame style</string>
+          <string>Overview style</string>
          </property>
         </widget>
        </item>
