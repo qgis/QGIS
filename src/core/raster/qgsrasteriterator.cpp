@@ -3,7 +3,8 @@
 #include "qgsrasterprojector.h"
 #include "qgsrasterviewport.h"
 
-QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input ): mInput( input )
+QgsRasterIterator::QgsRasterIterator( QgsRasterInterface* input ): mInput( input ),
+    mMaximumTileWidth( 2000 ), mMaximumTileHeight( 2000 )
 {
 }
 
@@ -27,18 +28,6 @@ void QgsRasterIterator::startRasterRead( int bandNumber, int nCols, int nRows, c
   RasterPartInfo pInfo;
   pInfo.nCols = nCols;
   pInfo.nRows = nRows;
-
-  //effective oversampling factors are different to global one because of rounding
-  //oversamplingX = (( double )pInfo.nCols * oversampling ) / viewPort->drawableAreaXDim;
-  //oversamplingY = (( double )pInfo.nRows * oversampling ) / viewPort->drawableAreaYDim;
-
-  // TODO : we dont know oversampling (grid size) here - how to get totalMemoryUsage ?
-  //int totalMemoryUsage = pInfo.nCols * oversamplingX * pInfo.nRows * oversamplingY * mInput->dataTypeSize( bandNumber );
-  int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mInput->dataTypeSize( bandNumber );
-  int parts = totalMemoryUsage / 100000000 + 1;
-  int nPartsPerDimension = sqrt( parts );
-  pInfo.nColsPerPart = pInfo.nCols / nPartsPerDimension;
-  pInfo.nRowsPerPart = pInfo.nRows / nPartsPerDimension;
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
   pInfo.data = 0;
@@ -74,8 +63,8 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   }
 
   //read data block
-  nCols = qMin( pInfo.nColsPerPart, pInfo.nCols - pInfo.currentCol );
-  nRows = qMin( pInfo.nRowsPerPart, pInfo.nRows - pInfo.currentRow );
+  nCols = qMin( mMaximumTileWidth, pInfo.nCols - pInfo.currentCol );
+  nRows = qMin( mMaximumTileHeight, pInfo.nRows - pInfo.currentRow );
 
   //get subrectangle
   QgsRectangle viewPortExtent = mExtent;
@@ -99,7 +88,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   else if ( pInfo.currentCol == pInfo.nCols ) //start new row
   {
     pInfo.currentCol = 0;
-    pInfo.currentRow += pInfo.nRowsPerPart;
+    pInfo.currentRow += nRows;
   }
 
   return true;

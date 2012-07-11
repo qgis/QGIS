@@ -19,8 +19,6 @@ class QgsRasterIterator
       int currentRow;
       int nCols;
       int nRows;
-      int nColsPerPart;
-      int nRowsPerPart;
       void* data; //data (can be in oversampled/undersampled resolution)
       QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
     };
@@ -48,10 +46,19 @@ class QgsRasterIterator
 
     const QgsRasterInterface* input() const { return mInput; }
 
+    void setMaximumTileWidth( int w ) { mMaximumTileWidth = w; }
+    int maximumTileWidth() const { return mMaximumTileWidth; }
+
+    void setMaximumTileHeight( int h ) { mMaximumTileHeight = h; }
+    int maximumTileHeight() const { return mMaximumTileHeight; }
+
   private:
     QgsRasterInterface* mInput;
     QMap<int, RasterPartInfo> mRasterPartInfos;
     QgsRectangle mExtent;
+
+    int mMaximumTileWidth;
+    int mMaximumTileHeight;
 
     /**Remove part into and release memory*/
     void removePartInfo( int bandNumber );
