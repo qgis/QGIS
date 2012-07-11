@@ -462,6 +462,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
     void drawOverviewMapExtent( QPainter* p );
+    void createDefaultOverviewFrameSymbol();
 };
 
 #endif

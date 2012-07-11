@@ -46,7 +46,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mComposition = composition;
-  mOverviewFrameMapSymbol = new QgsFillSymbolV2();
+  mOverviewFrameMapSymbol = 0;
+  createDefaultOverviewFrameSymbol();
 
   //mId = mComposition->composerMapItems().size();
   int maxId = -1;
@@ -93,8 +94,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
     mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
-
-  mOverviewFrameMapSymbol = new QgsFillSymbolV2();
+  mOverviewFrameMapSymbol = 0;
+  createDefaultOverviewFrameSymbol();
 
   //Offset
   mXOffset = 0.0;
@@ -1958,4 +1959,15 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
   double width = intersectRect.width() / thisExtent.width() * rect().width();
   double height = intersectRect.height() / thisExtent.height() * rect().height();
   p->drawRect( QRectF( x, y, width, height ) );*/
+}
+
+void QgsComposerMap::createDefaultOverviewFrameSymbol()
+{
+  delete mOverviewFrameMapSymbol;
+  QgsStringMap properties;
+  properties.insert( "color", "255,0,0,125" );
+  properties.insert( "style", "solid" );
+  properties.insert( "style_border", "no" );
+  mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );
+  mOverviewFrameMapSymbol->setAlpha( 0.3 );
 }
