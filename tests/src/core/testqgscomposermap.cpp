@@ -36,6 +36,7 @@ class TestQgsComposerMap: public QObject
     void cleanup();// will be called after every testfunction.
     void render(); //test if rendering of the composition with composr map is correct
     void grid(); //test if grid and grid annotation works
+    void overviewMap(); //test if overview map frame works
 
   private:
     QgsComposition* mComposition;
@@ -110,7 +111,24 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
   QgsCompositionChecker checker( "Composer map grid", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
                                  "control_images" + QDir::separator() + "composermap_landsat_grid.png" ) );
-  QVERIFY( checker.testComposition() );
+  bool testResult = checker.testComposition();
+  mComposerMap->setGridEnabled( false );
+  mComposerMap->setShowGridAnnotation( false );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::overviewMap()
+{
+  QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
+  mComposition->addComposerMap( overviewMap );
+  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  overviewMap->setOverviewFrameMap( mComposerMap->id() );
+  QgsCompositionChecker checker( "Composer map overview", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "composermap_landsat_overview.png" ) );
+  bool testResult = checker.testComposition();
+  mComposition->removeComposerItem( overviewMap );
+  QVERIFY( testResult );
 }
 
 QTEST_MAIN( TestQgsComposerMap )
