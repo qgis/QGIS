@@ -90,7 +90,7 @@ void TestQgsComposerMap::render()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   QgsCompositionChecker checker( "Composer map render", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "composermap_landsat_render.png" ) );
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_render.png" ) );
   QVERIFY( checker.testComposition() );
 }
 
@@ -110,7 +110,7 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Right );
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
   QgsCompositionChecker checker( "Composer map grid", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "composermap_landsat_grid.png" ) );
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_grid.png" ) );
   bool testResult = checker.testComposition();
   mComposerMap->setGridEnabled( false );
   mComposerMap->setShowGridAnnotation( false );
@@ -125,7 +125,7 @@ void TestQgsComposerMap::overviewMap()
   overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
   overviewMap->setOverviewFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "Composer map overview", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
-                                 "control_images" + QDir::separator() + "composermap_landsat_overview.png" ) );
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview.png" ) );
   bool testResult = checker.testComposition();
   mComposition->removeComposerItem( overviewMap );
   QVERIFY( testResult );
