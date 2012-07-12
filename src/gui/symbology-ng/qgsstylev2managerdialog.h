@@ -101,6 +101,13 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     bool removeSymbol();
     bool removeColorRamp();
 
+    //! Enables or disbables the symbol specific inputs
+    void enableSymbolInputs( bool );
+    //! Enables or disables the groupTree specific inputs
+    void enableGroupInputs( bool );
+    //! Enables or diables the groupTree items for grouping mode
+    void enableItemsForGroupingMode( bool );
+
     QgsStyleV2* mStyle;
 
     QString mStyleFilename;

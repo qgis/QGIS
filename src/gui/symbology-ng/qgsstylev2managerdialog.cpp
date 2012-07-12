@@ -75,10 +75,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   listItems->setModel( model );
 
   connect( model, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( itemChanged( QStandardItem* ) ) );
-  // TODO take up the selectiopn model for the symbols
-  // connect currentChanged signal to a slot which would populate the tags for that symbol
-  // as comma seperated values in tagLineEdit and fill the mTagList
-  //
   connect( listItems->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
       this, SLOT( symbolSelected( const QModelIndex& ) ) );
 
@@ -173,10 +169,12 @@ void QgsStyleV2ManagerDialog::populateList()
 
   if ( itemType < 3 )
   {
+    enableSymbolInputs( true );
     groupChanged( groupTree->selectionModel()->currentIndex() );
   }
   else if ( itemType == 3 )
   {
+    enableSymbolInputs( false );
     populateColorRamps();
   }
   else
@@ -627,7 +625,7 @@ void QgsStyleV2ManagerDialog::populateGroups()
   model->appendRow( group );
 
   QStandardItem *tag = new QStandardItem( "Smart Groups" );
-  tag->setData( "tags" );
+  tag->setData( "smartgroups" );
   tag->setEditable( false );
   // TODO populate/build smart groups
   model->appendRow( tag );
@@ -654,30 +652,42 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
   QStringList groupSymbols;
 
   QString category = index.data( Qt::UserRole + 1 ).toString();
-  if ( category == "all" || category == "groups" || category == "tags" )
+  if ( category == "all" || category == "groups" || category == "smartgroups" )
   {
+    enableGroupInputs( false );
+    if ( category == "groups" || category == "smartgroups" )
+    {
+      btnAddGroup->setEnabled( true );
+    }
     symbolNames = mStyle->symbolNames();
   }
   else if (  category == "recent" )
   {
     // TODO add session symbols
+    enableGroupInputs( false );
     symbolNames = QStringList();
   }
   else if ( category == "project" )
   {
     // TODO add project symbols
+    enableGroupInputs( false );
     symbolNames = QStringList();
   }
   else
   {
     //determine groups and tags
-    if ( index.parent().data( Qt::UserRole + 1 ) == "tags" )
+    if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
     {
-      int tagId = index.data( Qt::UserRole + 1 ).toInt();
-      symbolNames = mStyle->symbolsWithTag( tagId );
+      // TODO
+      // create a new Menu with smart group specific functions
+      // and set it to the btnManageGroups
     }
     else // then it must be a group
     {
+      if ( index.data() == "Ungrouped" )
+        enableGroupInputs( false );
+      else
+        enableGroupInputs( true );
       int groupId = index.data( Qt::UserRole + 1 ).toInt();
       symbolNames = mStyle->symbolsOfGroup( groupId );
       if ( mGrouppingMode && groupId )
@@ -710,7 +720,7 @@ void QgsStyleV2ManagerDialog::addGroup()
   }
 
   // Violation 2: Creating a nested tag
-  if ( parentIndex.parent().data( Qt::UserRole + 1 ).toString() == "tags" )
+  if ( parentIndex.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
   {
     int err = QMessageBox::critical( this, tr( "Operation Not Allowed" ),
         tr( "Creation of nested Smart Groups are not allowed\n"
@@ -736,7 +746,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
 
   // Violation: removing system groups
   QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == "all" || data == "recent" || data == "project" || data == "groups" || data == "tags" || index.data() == "Ungrouped" )
+  if ( data == "all" || data == "recent" || data == "project" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid slection" ),
         tr( "Cannot delete system defined categories.\n"
@@ -746,7 +756,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
   }
 
   QStandardItem *parentItem = model->itemFromIndex( index.parent() );
-  if ( parentItem->data( Qt::UserRole + 1 ).toString() == "tags" )
+  if ( parentItem->data( Qt::UserRole + 1 ).toString() == "smartgroups" )
   {
     mStyle->remove( TagEntity, index.data( Qt::UserRole + 1 ).toInt() );
   }
@@ -773,7 +783,7 @@ void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
   if ( data == "newgroup" )
   {
     int id;
-    if ( item->parent()->data( Qt::UserRole + 1 ).toString() == "tags" )
+    if ( item->parent()->data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
       id = mStyle->addTag( item->text() );
     }
@@ -803,7 +813,7 @@ void QgsStyleV2ManagerDialog::groupRenamed( QStandardItem * item )
   {
     int id = item->data( Qt::UserRole + 1 ).toInt();
     QString name = item->text();
-    if ( item->parent()->data( Qt::UserRole + 1 ) == "tags" )
+    if ( item->parent()->data( Qt::UserRole + 1 ) == "smartgroups" )
     {
       mStyle->rename( TagEntity, id, name );
     }
@@ -837,20 +847,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
     btnAddGroup->setEnabled( true );
     btnRemoveGroup->setEnabled( true );
     // disabel all items except groups in groupTree
-    for( int i = 0; i < treeModel->rowCount(); i++ )
-    {
-      if( treeModel->item( i )->text() == "Smart Groups" )
-      {
-        for( int j = 0; j < treeModel->item( i )->rowCount(); j++ )
-        {
-          treeModel->item( i )->child( j )->setEnabled( true );
-        }
-      }
-      if ( treeModel->item( i )->text() != "Groups" )
-      {
-        treeModel->item( i )->setEnabled( true );
-      }
-    }
+    enableItemsForGroupingMode( true );
     groupChanged( groupTree->currentIndex() );
     // Finally: Reconnect all Symbol editing functionalities
     connect( treeModel, SIGNAL( itemChanged( QStandardItem* ) ),
@@ -860,7 +857,6 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
   }
   else
   {
-    mGrouppingMode = true;
     bool validGroup = false;
     // determine whether it is a valid group
     QModelIndex present = groupTree->currentIndex();
@@ -876,6 +872,8 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
     }
     if ( !validGroup )
       return;
+
+    mGrouppingMode = true;
     // Change the text menu
     senderAction->setText( "Finish Grouping" );
 
@@ -894,20 +892,7 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
     btnAddGroup->setEnabled( false );
     btnRemoveGroup->setEnabled( false );
     // disabel all items except groups in groupTree
-    for( int i = 0; i < treeModel->rowCount(); i++ )
-    {
-      if( treeModel->item( i )->text() == "Smart Groups" )
-      {
-        for( int j = 0; j < treeModel->item( i )->rowCount(); j++ )
-        {
-          treeModel->item( i )->child( j )->setEnabled( false );
-        }
-      }
-      if ( treeModel->item( i )->text() != "Groups" )
-      {
-        treeModel->item( i )->setEnabled( false );
-      }
-    }
+    enableItemsForGroupingMode( false );
     groupChanged( groupTree->currentIndex() );
 
     // Connect to slot which handles regrouping
@@ -986,8 +971,52 @@ void QgsStyleV2ManagerDialog::tagsChanged()
 
 void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
 {
+  // Populate the tags for the symbol
   tagsLineEdit->clear();
   QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
   mTagList = mStyle->tagsOfSymbol( item->data().toString() );
   tagsLineEdit->setText( mTagList.join( "," ) );
+}
+
+void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )
+{
+  groupTree->setEnabled( enable );
+  tagBtn->setEnabled( enable );
+  btnAddGroup->setEnabled( enable );
+  btnRemoveGroup->setEnabled( enable );
+  btnManageGroups->setEnabled( enable );
+  searchBox->setEnabled( enable );
+  tagsLineEdit->setEnabled( enable );
+}
+
+void QgsStyleV2ManagerDialog::enableGroupInputs( bool enable )
+{
+  btnAddGroup->setEnabled( enable );
+  btnRemoveGroup->setEnabled( enable );
+  btnManageGroups->setEnabled( enable );
+}
+
+void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
+{
+  QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
+  for( int i = 0; i < treeModel->rowCount(); i++ )
+  {
+    if ( treeModel->item( i )->text() != "Groups" )
+    {
+      treeModel->item( i )->setEnabled( enable );
+    }
+    if ( treeModel->item( i )->text() == "Groups" )
+    {
+      treeModel->item( i )->setEnabled( enable );
+      treeModel->item( i )->child( treeModel->item( i )->rowCount() - 1 )->setEnabled( enable );
+    }
+    if( treeModel->item( i )->text() == "Smart Groups" )
+    {
+      for( int j = 0; j < treeModel->item( i )->rowCount(); j++ )
+      {
+        treeModel->item( i )->child( j )->setEnabled( enable );
+      }
+    }
+  }
+
 }
