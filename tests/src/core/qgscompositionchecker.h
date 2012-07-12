@@ -24,15 +24,16 @@ class QImage;
 class QgsCompositionChecker
 {
   public:
-    QgsCompositionChecker( QgsComposition* composition, const QString& expectedImageFile );
+    QgsCompositionChecker( const QString& testName, QgsComposition* composition, const QString& expectedImageFile );
     ~QgsCompositionChecker();
 
     bool testComposition();
 
   private:
     QgsCompositionChecker(); //forbidden
-    bool compareImages( const QImage& img1, const QImage& img2, const QString& differenceImagePath = QString() ) const;
+    bool compareImages( const QImage& imgExpected, const QImage& imgRendered, const QString& differenceImagePath = QString() ) const;
 
+    QString mTestName;
     QgsComposition* mComposition;
     QString mExpectedImageFile;
 };
