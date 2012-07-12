@@ -20,7 +20,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 
-#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
@@ -295,7 +295,7 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // get symbol design
-  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -443,7 +443,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   QgsSymbolV2* symbol = mStyle->symbol( symbolName );
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL , this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;

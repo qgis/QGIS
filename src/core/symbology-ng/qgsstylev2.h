@@ -156,10 +156,12 @@ class CORE_EXPORT QgsStyleV2
     QString mErrorString;
     QString mFileName;
 
+    sqlite3* mCurrentDB;
+
     static QgsStyleV2* mDefaultStyle;
 
     //! Convinence function to open the DB and return a sqlite3 object
-    sqlite3* openDB( QString filename );
+    bool openDB( QString filename );
     //! Convinence function that would run queries which donot generate return values
     //! it returns sucess result
     bool runEmptyQuery( char* query );
