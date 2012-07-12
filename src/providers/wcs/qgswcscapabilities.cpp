@@ -131,7 +131,7 @@ bool QgsWcsCapabilities::supportedCoverages( QVector<QgsWcsCoverageSummary> &cov
 
 QString QgsWcsCapabilities::getCoverageUrl() const
 {
-  QString url = mCapabilities.operationsMetadata.getCoverage.getUrl;
+  QString url = mCapabilities.getCoverageGetUrl;
   if ( url.isEmpty() )
   {
     url = mUri.param( "url" );
@@ -401,7 +401,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     capabilities.abstract = domElementText( docElem, "Service.description" );
     // There is also "label" in 1.0
 
-    capabilities.operationsMetadata.getCoverage.getUrl = domElement( docElem, "Capability.Request.GetCoverage.DCPType.HTTP.Get.OnlineResource" ).attribute( "xlink:href" );
+    capabilities.getCoverageGetUrl = domElement( docElem, "Capability.Request.GetCoverage.DCPType.HTTP.Get.OnlineResource" ).attribute( "xlink:href" );
 
     parseContentMetadata( domElement( docElem, "ContentMetadata" ), capabilities.contents );
   }
@@ -415,7 +415,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     {
       if ( el.attribute( "name" ) == "GetCoverage" )
       {
-        capabilities.operationsMetadata.getCoverage.getUrl = domElement( el, "DCP.HTTP.Get" ).attribute( "xlink:href" );
+        capabilities.getCoverageGetUrl = domElement( el, "DCP.HTTP.Get" ).attribute( "xlink:href" );
       }
     }
 
@@ -1032,4 +1032,25 @@ QgsWcsCoverageSummary* QgsWcsCapabilities::coverageSummary( QString const & theI
     }
   }
   return 0;
+}
+
+QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverages( )
+{
+  return coverageSummaries( );
+}
+
+QList<QgsWcsCoverageSummary> QgsWcsCapabilities::coverageSummaries( QgsWcsCoverageSummary* parent )
+{
+  QList<QgsWcsCoverageSummary> list;
+  if ( !parent )
+  {
+    parent = &( mCapabilities.contents );
+  }
+
+  for ( QVector<QgsWcsCoverageSummary>::iterator c = parent->coverageSummary.begin(); c != parent->coverageSummary.end(); ++c )
+  {
+    list.append( *c );
+    list.append( coverageSummaries( c ) );
+  }
+  return list;
 }

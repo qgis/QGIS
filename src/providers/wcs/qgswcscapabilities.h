@@ -30,29 +30,9 @@
 #include <QVector>
 #include <QUrl>
 
-//class QgsCoordinateTransform;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
-
-/** Operation type structure */
-struct QgsWcsOperation
-{
-  QString getUrl;
-};
-
-/** OperationsMetadata */
-struct QgsWcsOperationsMetadata
-{
-  QgsWcsOperation  getCoverage;
-};
-
-/** ServiceerviceIdentification structure */
-struct QgsWcsServiceIdentification
-{
-  QString  title;
-  QString  abstract;
-};
 
 /** CoverageSummary structure */
 struct QgsWcsCoverageSummary
@@ -81,12 +61,12 @@ struct QgsWcsCoverageSummary
 /** Capability Property structure */
 struct QgsWcsCapabilitiesProperty
 {
-  QString                       version;
-  QString  title;
-  QString  abstract;
-  QgsWcsOperationsMetadata      operationsMetadata;
+  QString                   version;
+  QString                   title;
+  QString                   abstract;
+  QString                   getCoverageGetUrl;
   // using QgsWcsCoverageSummary for contents for simplification
-  QgsWcsCoverageSummary         contents;
+  QgsWcsCoverageSummary     contents;
 };
 
 /**
@@ -124,7 +104,6 @@ class QgsWcsCapabilities : public QObject
      */
     bool supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary );
 
-
     /**
      * \brief   Returns a map for the hierarchy of layers
      */
@@ -132,6 +111,9 @@ class QgsWcsCapabilities : public QObject
 
     //! Get coverage summary for identifier
     QgsWcsCoverageSummary coverage( QString const & theIdentifier );
+
+    //! Get list of all coverage summaries
+    QList<QgsWcsCoverageSummary> coverages();
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -224,6 +206,9 @@ class QgsWcsCapabilities : public QObject
   private:
     //! Get coverage summary for identifier
     QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+
+    // ! Get list of all sub coverages
+    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = 0 );
 
     void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
 

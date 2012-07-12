@@ -51,35 +51,39 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
-    if ( mBaseKey == "/Qgis/connections-wms/" )
-    {
-      cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
-      cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
-      cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
-      cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
-    }
-    else
-    {
-      cbxIgnoreGetMapURI->setVisible( false );
-      cbxIgnoreGetFeatureInfoURI->setVisible( false );
-      cbxIgnoreAxisOrientation->setVisible( false );
-      cbxInvertAxisOrientation->setVisible( false );
-    }
+    cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
+    cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
+    cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
+    cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
   }
+
   if ( mBaseKey != "/Qgis/connections-wms/" )
   {
-    cbxIgnoreGetMapURI->setVisible( false );
+    if ( mBaseKey == "/Qgis/connections-wcs/" )
+    {
+      cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
+      cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
+    }
+    else
+    {
+      cbxIgnoreGetMapURI->setVisible( false );
+      cbxIgnoreAxisOrientation->setVisible( false );
+      cbxInvertAxisOrientation->setVisible( false );
+      mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
+      mGroupBox->layout()->removeWidget( cbxIgnoreAxisOrientation );
+      mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
+    }
+
     cbxIgnoreGetFeatureInfoURI->setVisible( false );
-    mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
     mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+
     // Adjust height
     int w = width();
     adjustSize();
     resize( w, height() );
-
   }
 
   on_txtName_textChanged( connName );
@@ -134,12 +138,15 @@ void QgsNewHttpConnection::accept()
   }
 
   settings.setValue( key + "/url", url.toString() );
-  if ( mBaseKey == "/Qgis/connections-wms/" )
+  if ( mBaseKey == "/Qgis/connections-wms/" || mBaseKey == "/Qgis/connections-wcs/" )
   {
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
-    settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
     settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
     settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
+  }
+  if ( mBaseKey == "/Qgis/connections-wms/" )
+  {
+    settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
   }
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );

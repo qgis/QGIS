@@ -1230,7 +1230,7 @@ QString QgsWcsProvider::metadata()
   metadata += htmlRow(( "WCS Version" ), mCapabilities.version() );
   metadata += htmlRow( tr( "Title" ), mCapabilities.capabilities().title );
   metadata +=  htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
-  // TODO
+  // TODO: probably apply stylesheet in QgsWcsCapabilities and save as html
   //metadata += htmlRow ( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
   //metadata += htmlRow (  tr( "Online Resource" ), "-" );
   //metadata += htmlRow (  tr( "Contact Person" ),
@@ -1241,7 +1241,7 @@ QString QgsWcsProvider::metadata()
   //metadata += htmlRow ( tr( "Access Constraints" ), mCapabilities.service.accessConstraints );
   //metadata += htmlRow ( tr( "Image Formats" ), mCapabilities.capability.request.getMap.format.join( "<br />" ) );
   //metadata += htmlRow (  tr( "GetCapabilitiesUrl" ), mBaseUrl );
-  metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.capabilities().operationsMetadata.getCoverage.getUrl + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" ) );
+  metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.getCoverageUrl() + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" ) );
 
   // Close the nested table
   metadata += "</table>";
@@ -1252,9 +1252,8 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Coverages" );
   metadata += "</th></tr>";
 
-  for ( int i = 0; i < mCapabilities.capabilities().contents.coverageSummary.size(); i++ )
+  foreach( QgsWcsCoverageSummary c, mCapabilities.coverages() )
   {
-    QgsWcsCoverageSummary c = mCapabilities.capabilities().contents.coverageSummary.value( i );
     metadata += coverageMetadata( c );
   }
 
