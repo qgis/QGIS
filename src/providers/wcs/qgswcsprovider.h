@@ -238,10 +238,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void clearCache();
 
     //! Create html cell (used by metadata)
-    QString htmlCell ( const QString &text );
+    QString htmlCell( const QString &text );
 
     //! Create html row with 2 cells (used by metadata)
-    QString htmlRow ( const QString &text1, const QString &text2 );
+    QString htmlRow( const QString &text1, const QString &text2 );
 
     //! Data source URI of the WCS for this layer
     QString mHttpUri;
@@ -264,7 +264,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsWcsCapabilities mCapabilities;
 
     /** Coverage summary */
-    QgsWcsCoverageSummary * mCoverageSummary;
+    QgsWcsCoverageSummary mCoverageSummary;
 
     /** Spatial reference id of the layer */
     QString mSrid;
@@ -400,8 +400,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! whether to use hrefs from GetCapabilities (default) or
     // the given base urls for GetMap and GetFeatureInfo
-    bool mIgnoreGetMapUrl;
-    bool mIgnoreGetFeatureInfoUrl;
+    bool mIgnoreGetCoverageUrl;
     bool mIgnoreAxisOrientation;
     bool mInvertAxisOrientation;
 

@@ -20,7 +20,6 @@
 #ifndef QGSWCSCAPABILITIES_H
 #define QGSWCSCAPABILITIES_H
 
-//#include "qgsrasterdataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 
@@ -31,45 +30,15 @@
 #include <QVector>
 #include <QUrl>
 
-class QgsCoordinateTransform;
+//class QgsCoordinateTransform;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
 
-/*
- * The following structs reflect the WCS XML schema,
- * as illustrated in ... the Web Coverage Service standard, version x.x xxxx-xx-xx.
- */
-
-/** Get Property structure */
-struct QgsWcsGet
-{
-  QString xlinkHref;
-};
-
-/** HTTP Property structure */
-struct QgsWcsHTTP
-{
-  QgsWcsGet get;
-};
-
-/** DCP Type Property structure */
-struct QgsWcsDCP
-{
-  QgsWcsHTTP http;
-};
-
-/** Version parameter */
-struct QgsWcsVersion
-{
-  QStringList allowedValues;
-};
-
 /** Operation type structure */
 struct QgsWcsOperation
 {
-  QgsWcsVersion version;
-  QgsWcsDCP     dcp;
+  QString getUrl;
 };
 
 /** OperationsMetadata */
@@ -81,8 +50,8 @@ struct QgsWcsOperationsMetadata
 /** ServiceerviceIdentification structure */
 struct QgsWcsServiceIdentification
 {
-  QString                            title;
-  QString                            abstract;
+  QString  title;
+  QString  abstract;
 };
 
 /** CoverageSummary structure */
@@ -95,44 +64,33 @@ struct QgsWcsCoverageSummary
   QStringList   supportedCrs;
   QStringList   supportedFormat;
   QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
-  // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
   QString       nativeCrs;
-  QMap<QString, QgsRectangle> boundingBoxes; 
+  // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
+  QMap<QString, QgsRectangle> boundingBoxes;
   QgsRectangle  nativeBoundingBox;
   QVector<QgsWcsCoverageSummary> coverageSummary;
-  bool          described; // 1.0
-  // non reflecting directly Capabilities structure:
+  // non reflecting Capabilities structure:
+  bool valid;
+  bool described;
   // native size
-  int width; 
+  int width;
   int height;
   bool hasSize;
 };
-
-/** Contents structure */
-/*
-struct QgsWcsContents
-{
-  QStringList   supportedCrs;
-  QStringList   supportedFormat;
-  QVector<QgsWcsCoverageSummary> coverageSummary;
-};
-*/
 
 /** Capability Property structure */
 struct QgsWcsCapabilitiesProperty
 {
   QString                       version;
-  QgsWcsServiceIdentification   serviceIdentification;
+  QString  title;
+  QString  abstract;
   QgsWcsOperationsMetadata      operationsMetadata;
-//  QgsWcsContents                contents;
   // using QgsWcsCoverageSummary for contents for simplification
   QgsWcsCoverageSummary         contents;
 };
 
 /**
-
-  \brief Data provider for OGC WCS layers.
-
+  \brief WCS Capabilities.
 */
 class QgsWcsCapabilities : public QObject
 {
@@ -172,8 +130,8 @@ class QgsWcsCapabilities : public QObject
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
-    //! Get coverage summare for identifier
-    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+    //! Get coverage summary for identifier
+    QgsWcsCoverageSummary coverage( QString const & theIdentifier );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -228,6 +186,29 @@ class QgsWcsCapabilities : public QObject
      */
     QString lastErrorFormat();
 
+    //! Get tag name without namespace
+    static QString stripNS( const QString &name );
+
+    //! Get text of first child of specified name, NS is ignored
+    static QString firstChildText( const QDomElement &element, const QString &name );
+
+    //! Get first child of specified name, NS is ignored
+    static QDomElement firstChild( const QDomElement &element, const QString &name );
+
+    /** Find sub elements by path which is string of dot separated tag names.
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+    static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
+
+    /** Find first sub element by path which is string of dot separated tag names.
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+    static QDomElement domElement( const QDomElement &element, const QString &path );
+
+    /** Get text of element specified by path */
+    static QString domElementText( const QDomElement &element, const QString &path );
+
+    /** Get sub elements texts by path */
+    static QStringList domElementsTexts( const QDomElement &element, const QString &path );
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -241,33 +222,18 @@ class QgsWcsCapabilities : public QObject
     void capabilitiesReplyProgress( qint64, qint64 );
 
   private:
+    //! Get coverage summary for identifier
+    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+
+    void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
+
     void clear();
 
     void showMessageBox( const QString &title, const QString &text );
 
-    //! Get tag name without namespace
-    QString stripNS( const QString &name );
-
-    //! Get text of first child of specified name, NS is ignored
-    QString firstChildText( const QDomElement &element, const QString &name );
-
-    //! Get first child of specified name, NS is ignored
-    QDomElement firstChild( const QDomElement &element, const QString &name );
-
-    /** Find sub elements by path which is string of dot separated tag names.
-     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
-    QList<QDomElement> domElements( const QDomElement &element, const QString &path );
-
-    /** Find first sub element by path which is string of dot separated tag names.
-     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
-    QDomElement domElement( const QDomElement &element, const QString &path );
-
-    /** Get text of element specified by path */
-    QString domElementText( const QDomElement &element, const QString &path );
-
     QList<int> parseInts( const QString &text );
     QList<double> parseDoubles( const QString &text );
-    QString crsUrnToAuthId ( const QString &text );
+    QString crsUrnToAuthId( const QString &text );
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
@@ -289,12 +255,6 @@ class QgsWcsCapabilities : public QObject
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities );
 
     // ------------- 1.0 --------------------
-    //! parse the WCS Service XML element
-    void parseService( QDomElement const &e, QgsWcsServiceIdentification &serviceIdentification );
-
-    //! parse the WCS Capability XML element
-    void parseCapability( QDomElement const &e, QgsWcsOperationsMetadata &operationsMetadata );
-
     //! parse the WCS Layer XML element
     void parseContentMetadata( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary );
 
@@ -303,21 +263,6 @@ class QgsWcsCapabilities : public QObject
                                      QgsWcsCoverageSummary *parent = 0 );
 
     // ------------- 1.1 --------------------
-    //! parse the WCS ServiceIdentificatio XML element
-    void parseServiceIdentification( QDomElement const &e, QgsWcsServiceIdentification &serviceIdentification );
-
-    //! parse the WCS OperationsMetadata XML element
-    void parseOperationsMetadata( QDomElement const &e, QgsWcsOperationsMetadata &operationsMetadata );
-
-    //! parse the WCS GetCoverage
-    void parseOperation( QDomElement const & e, QgsWcsOperation& operation );
-
-    //! parse the WCS HTTP XML element
-    void parseHttp( QDomElement const &e, QgsWcsHTTP &http );
-
-    //! parse the WCS DCPType XML element
-    void parseDcp( QDomElement const &e, QgsWcsDCP &dcp );
-
     //! parse the WCS Layer XML element
     void parseCoverageSummary( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
                                QgsWcsCoverageSummary *parent = 0 );

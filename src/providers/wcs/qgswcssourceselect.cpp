@@ -135,7 +135,7 @@ void QgsWCSSourceSelect::addClicked( )
   //       without that param user is asked for CRS
   //if ( selectedLayersCRSs().size() > 1 )
   //{
-    uri.setParam( "crs", selectedCRS() );
+  uri.setParam( "crs", selectedCRS() );
   //}
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
@@ -219,11 +219,11 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
 
-  QgsWcsCoverageSummary * c = mCapabilities.coverageSummary( identifier );
-  if ( !c ) { return QStringList(); }
+  QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
+  if ( !c.valid ) { return QStringList(); }
 
-  QgsDebugMsg( "supportedFormat = " + c->supportedFormat.join( "," ) );
-  return c->supportedFormat;
+  QgsDebugMsg( "supportedFormat = " + c.supportedFormat.join( "," ) );
+  return c.supportedFormat;
 }
 
 QStringList QgsWCSSourceSelect::selectedLayersCRSs()
@@ -233,10 +233,10 @@ QStringList QgsWCSSourceSelect::selectedLayersCRSs()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
 
-  QgsWcsCoverageSummary * c = mCapabilities.coverageSummary( identifier );
-  if ( !c ) { return QStringList(); }
+  QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
+  if ( !c.valid ) { return QStringList(); }
 
-  return c->supportedCrs;
+  return c.supportedCrs;
 }
 
 void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )

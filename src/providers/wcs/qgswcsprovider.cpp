@@ -80,7 +80,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
-    , mCoverageSummary( 0 )
+    , mCoverageSummary()
     , mCachedGdalDataset( 0 )
     , mCachedMemFile( 0 )
     , mWidth( 0 )
@@ -113,67 +113,67 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   // 1.0 get additional coverage info
   if ( !mCapabilities.describeCoverage( mIdentifier ) )
   {
-    QgsDebugMsg( "Cannot describe coverage" );
+    QgsMessageLog::logMessage( tr( "Cannot describe coverage" ), tr( "WCS" ) );
     return;
   }
 
-  mCoverageSummary = mCapabilities.coverageSummary( mIdentifier );
-  if ( !mCoverageSummary )
+  mCoverageSummary = mCapabilities.coverage( mIdentifier );
+  if ( !mCoverageSummary.valid )
   {
-    QgsDebugMsg( "coverage not found" );
+    // Should not happen if describeCoverage() did not fail
+    QgsMessageLog::logMessage( tr( "Coverage not found" ), tr( "WCS" ) );
     return;
   }
 
-  // It could happen (usually not with current QgsWCSSourceSelect if at least 
-  // one CRS is available) that crs is not set in uri, in that case we  
+  // It could happen (usually not with current QgsWCSSourceSelect if at least
+  // one CRS is available) that crs is not set in uri, in that case we
   // use the native, if available, or the first supported
   if ( mCoverageCrs.isEmpty() )
   {
-    if ( !mCoverageSummary->nativeCrs.isEmpty() )
+    if ( !mCoverageSummary.nativeCrs.isEmpty() )
     {
-      setCoverageCrs( mCoverageSummary->nativeCrs );
+      setCoverageCrs( mCoverageSummary.nativeCrs );
     }
-    else if ( mCoverageSummary->supportedCrs.size() > 0 )
+    else if ( mCoverageSummary.supportedCrs.size() > 0 )
     {
-      setCoverageCrs(  mCoverageSummary->supportedCrs.value(0) );
+      setCoverageCrs( mCoverageSummary.supportedCrs.value( 0 ) );
     }
   }
 
-  mWidth = mCoverageSummary->width;
-  mHeight = mCoverageSummary->height;
-  mHasSize = mCoverageSummary->hasSize;
+  mWidth = mCoverageSummary.width;
+  mHeight = mCoverageSummary.height;
+  mHasSize = mCoverageSummary.hasSize;
 
   QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) ) ;
 
   if ( !calculateExtent() )
   {
-    QgsDebugMsg( "Cannot calculate extent" );
+    QgsMessageLog::logMessage( tr( "Cannot calculate extent" ), tr( "WCS" ) );
     return;
   }
 
   mCachedMemFilename = QString( "/vsimem/qgis/wcs/%0.dat" ).arg(( qlonglong )this );
 
   // Get small piece of coverage to find GDAL data type and nubmer of bands
-  // Using non native CRS (if we don't know which is native) it could easily happen, 
-  // that a small part of bbox in request CRS near margin falls outside 
+  // Using non native CRS (if we don't know which is native) it could easily happen,
+  // that a small part of bbox in request CRS near margin falls outside
   // coverage native bbox and server reports error => take a piece from center
 
   int bandNo = 0; // All bands
-  // just a number to get smaller piece of coverage
-  int width; 
+  int width;
   int height;
   QString crs;
-  QgsRectangle box; // box to use to calc extent 
+  QgsRectangle box; // box to use to calc extent
   // Prefer native CRS
-  if ( !mCoverageSummary->nativeCrs.isEmpty() && 
-       !mCoverageSummary->nativeBoundingBox.isEmpty() &&
-       mCoverageSummary->supportedCrs.contains ( mCoverageSummary->nativeCrs ) &&
+  if ( !mCoverageSummary.nativeCrs.isEmpty() &&
+       !mCoverageSummary.nativeBoundingBox.isEmpty() &&
+       mCoverageSummary.supportedCrs.contains( mCoverageSummary.nativeCrs ) &&
        mHasSize )
   {
-    box = mCoverageSummary->nativeBoundingBox;
+    box = mCoverageSummary.nativeBoundingBox;
     width = mWidth;
     height = mHeight;
-    crs = mCoverageSummary->nativeCrs;
+    crs = mCoverageSummary.nativeCrs;
   }
   else
   {
@@ -185,7 +185,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     }
     else
     {
-      width = 1000; 
+      // just a number to get smaller piece of coverage
+      width = 1000;
       height = 1000;
     }
   }
@@ -195,14 +196,14 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   int half = 2; // to be requested
 
-  // extent to be used for test request 
-  QgsRectangle extent = QgsRectangle ( p.x() - half * xRes, p.y() - half * yRes, p.x() + half * xRes, p.y() + half * yRes ); 
-  
+  // extent to be used for test request
+  QgsRectangle extent = QgsRectangle( p.x() - half * xRes, p.y() - half * yRes, p.x() + half * xRes, p.y() + half * yRes );
+
   getCache( bandNo, extent, 2*half, 2*half, crs );
 
   if ( !mCachedGdalDataset )
   {
-    QgsDebugMsg( "Cannot get test dataset." );
+    QgsMessageLog::logMessage( tr( "Cannot get test dataset." ), tr( "WCS" ) );
     return;
   }
 
@@ -276,7 +277,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
     // Create and store color table
     // TODO: never tested because mapserver (6.0.3) does not support color tables
-    mColorTables.append ( QgsGdalProviderBase::colorTable( mCachedGdalDataset, i ) );
+    mColorTables.append( QgsGdalProviderBase::colorTable( mCachedGdalDataset, i ) );
   }
 
   clearCache();
@@ -311,7 +312,7 @@ void QgsWcsProvider::parseUri( QString uriString )
   mBaseUrl = prepareUri( mHttpUri );
   QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
 
-  mIgnoreGetMapUrl = uri.hasParam( "IgnoreGetMapUrl" );
+  mIgnoreGetCoverageUrl = uri.hasParam( "IgnoreGetMapUrl" );
   mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
 
@@ -409,13 +410,14 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 {
   QgsDebugMsg( "Entered" );
 
+  // TODO: set block to null values, move that to function and call only if fails
+  memset( block, 0, pixelWidth * pixelHeight * typeSize( dataType( bandNo ) ) / 8 );
+
   // Requested extent must at least partialy overlap coverage extent, otherwise
   // server gives error. QGIS usually does not request blocks outside raster extent
   // (higher level checks) but it is better to do check here as well
   if ( !viewExtent.intersects( mCoverageExtent ) )
   {
-    // TODO: set block to null values
-    memset( block, 0, pixelWidth * pixelHeight * typeSize( dataType( bandNo ) ) / 8 );
     return;
   }
 
@@ -463,7 +465,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   // delete cached data
   clearCache();
 
-  if ( crs.isEmpty() ) 
+  if ( crs.isEmpty() )
   {
     crs = mCoverageCrs;
   }
@@ -508,7 +510,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
                  .arg( extent.xMaximum(), 0, 'f', 16 )
                  .arg( extent.yMaximum(), 0, 'f', 16 );
 
-  QUrl url( mIgnoreGetMapUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
+  QUrl url( mIgnoreGetCoverageUrl ? mBaseUrl : mCapabilities.getCoverageUrl() );
 
   // Version 1.0.0, 1.1.0, 1.1.2
   setQueryItem( url, "SERVICE", "WCS" );
@@ -654,9 +656,9 @@ void QgsWcsProvider::cacheReplyFinished()
     if ( contentType.startsWith( "text/", Qt::CaseInsensitive ) ||
          contentType.toLower() == "application/vnd.ogc.se_xml" )
     {
-      // TODO: test also if it is really exception (from content)
       QByteArray text = mCacheReply->readAll();
-      if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
+      if (( contentType.toLower() == "text/xml" || contentType.toLower() == "application/vnd.ogc.se_xml" )
+          && parseServiceExceptionReportDom( text ) )
       {
         QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
                                    .arg( mErrorCaption ).arg( mError )
@@ -941,33 +943,22 @@ bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
 
   QDomElement docElem = mServiceExceptionReportDom.documentElement();
 
-  // TODO: Assert the docElem.tagName() is "ServiceExceptionReport"
+  // TODO: Assert the docElem.tagName() is
+  //  ServiceExceptionReport // 1.0
+  //  ows:ExceptionReport  // 1.1
 
-  // serviceExceptionProperty.version = docElem.attribute("version");
+  //QString version = docElem.attribute("version");
 
-  // Start walking through XML.
-  QDomNode n = docElem.firstChild();
-
-  while ( !n.isNull() )
+  QDomElement e;
+  if ( mCapabilities.version().startsWith( "1.0" ) )
   {
-    QDomElement e = n.toElement(); // try to convert the node to an element.
-    if ( !e.isNull() )
-    {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
-
-      QString tagName = e.tagName();
-      if ( tagName.startsWith( "wcs:" ) )
-        tagName = tagName.mid( 4 );
-
-      if ( tagName == "ServiceException" )
-      {
-        QgsDebugMsg( "  ServiceException." );
-        parseServiceException( e );
-      }
-
-    }
-    n = n.nextSibling();
+    e = QgsWcsCapabilities::domElement( docElem, "ServiceException" );
   }
+  else // 1.1
+  {
+    e = QgsWcsCapabilities::domElement( docElem, "Exception" );
+  }
+  parseServiceException( e );
 
   QgsDebugMsg( "exiting." );
 
@@ -978,67 +969,58 @@ void QgsWcsProvider::parseServiceException( QDomElement const & e )
 {
   QgsDebugMsg( "entering." );
 
-  QString seCode = e.attribute( "code" );
-  QString seText = e.text();
+
+  QMap<QString, QString> exceptions;
+
+  // Some codes are in both 1.0 and 1.1, in that case the 'meaning of code' is
+  // taken from 1.0 specification
+
+  // set up friendly descriptions for the service exception
+  // 1.0
+  exceptions["InvalidFormat"] = tr( "Request contains a format not offered by the server." );
+  exceptions["CoverageNotDefined"] = tr( "Request is for a Coverage not offered by the service instance." );
+  exceptions["CurrentUpdateSequence"] = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number." );
+  exceptions["InvalidUpdateSequence"] = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number." );
+  // 1.0, 1.1
+  exceptions["MissingParameterValue"] = tr( "Request does not include a parameter value, and the servervice instance did not declare a default value for that dimension." );
+  exceptions["InvalidParameterValue"] = tr( "Request contains an invalid parameter value." );
+  // 1.1
+  exceptions["NoApplicableCode"] = tr( "No other exceptionCode specified by this service and server applies to this exception." );
+  exceptions["UnsupportedCombination"] = tr( "Operation request contains an output CRS that can not be used within the output format." );
+  exceptions["NotEnoughStorage"] = tr( "Operation request specifies \"store\" the result, but not enough storage is available to do this." );
+
+  QString seCode;
+  QString seText;
+  if ( mCapabilities.version().startsWith( "1.0" ) )
+  {
+    seCode = e.attribute( "code" );
+    seText = e.text();
+  }
+  else
+  {
+    QStringList codes;
+    seCode = e.attribute( "exceptionCode" );
+    // UMN Mapserver (6.0.3) has messed/switched 'locator' and 'exceptionCode'
+    if ( ! exceptions.contains( seCode ) )
+    {
+      seCode = e.attribute( "locator" );
+      if ( ! exceptions.contains( seCode ) )
+      {
+        seCode = "";
+      }
+    }
+    seText = QgsWcsCapabilities::firstChildText( e, "ExceptionText" );
+  }
 
   mErrorFormat = "text/plain";
 
-  // set up friendly descriptions for the service exception
-  if ( seCode == "InvalidFormat" )
-  {
-    mError = tr( "Request contains a format not offered by the server." );
-  }
-  else if ( seCode == "InvalidCRS" )
-  {
-    mError = tr( "Request contains a CRS not offered by the server for one or more of the Layers in the request." );
-  }
-  else if ( seCode == "InvalidSRS" )  // legacy WCS < 1.3.0
-  {
-    mError = tr( "Request contains a SRS not offered by the server for one or more of the Layers in the request." );
-  }
-  else if ( seCode == "LayerNotDefined" )
-  {
-    mError = tr( "GetMap request is for a Layer not offered by the server, "
-                 "or GetFeatureInfo request is for a Layer not shown on the map." );
-  }
-  else if ( seCode == "StyleNotDefined" )
-  {
-    mError = tr( "Request is for a Layer in a Style not offered by the server." );
-  }
-  else if ( seCode == "LayerNotQueryable" )
-  {
-    mError = tr( "GetFeatureInfo request is applied to a Layer which is not declared queryable." );
-  }
-  else if ( seCode == "InvalidPoint" )
-  {
-    mError = tr( "GetFeatureInfo request contains invalid X or Y value." );
-  }
-  else if ( seCode == "CurrentUpdateSequence" )
-  {
-    mError = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to "
-                 "current value of service metadata update sequence number." );
-  }
-  else if ( seCode == "InvalidUpdateSequence" )
-  {
-    mError = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is greater "
-                 "than current value of service metadata update sequence number." );
-  }
-  else if ( seCode == "MissingDimensionValue" )
-  {
-    mError = tr( "Request does not include a sample dimension value, and the server did not declare a "
-                 "default value for that dimension." );
-  }
-  else if ( seCode == "InvalidDimensionValue" )
-  {
-    mError = tr( "Request contains an invalid sample dimension value." );
-  }
-  else if ( seCode == "OperationNotSupported" )
-  {
-    mError = tr( "Request is for an optional operation that is not supported by the server." );
-  }
-  else if ( seCode.isEmpty() )
+  if ( seCode.isEmpty() )
   {
     mError = tr( "(No error code was reported)" );
+  }
+  else if ( exceptions.contains( seCode ) )
+  {
+    mError = exceptions.value( seCode );
   }
   else
   {
@@ -1047,8 +1029,6 @@ void QgsWcsProvider::parseServiceException( QDomElement const & e )
 
   mError += "\n" + tr( "The WCS vendor also reported: " );
   mError += seText;
-
-  // TODO = e.attribute("locator");
 
   QgsMessageLog::logMessage( tr( "composed error message '%1'." ).arg( mError ), tr( "WCS" ) );
   QgsDebugMsg( "exiting." );
@@ -1077,8 +1057,7 @@ bool QgsWcsProvider::isValid()
 
 QString QgsWcsProvider::wcsVersion()
 {
-  // TODO
-  return NULL;
+  return mCapabilities.version();
 }
 
 bool QgsWcsProvider::calculateExtent()
@@ -1086,9 +1065,18 @@ bool QgsWcsProvider::calculateExtent()
   QgsDebugMsg( "entered." );
 
   // Make sure we know what extents are available
-  if ( !mCoverageSummary )
+  if ( !mCoverageSummary.described )
   {
     return false;
+  }
+
+  // Prefer to use extent from capabilities / coverage description because
+  // transformation from WGS84 increases the extent
+  mCoverageExtent = mCoverageSummary.boundingBoxes.value( mCoverageCrs );
+  if ( !mCoverageExtent.isEmpty() && !mCoverageExtent.isFinite() )
+  {
+    QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
+    return true;
   }
 
   // Set up the coordinate transform from the WCS standard CRS:84 bounding
@@ -1107,11 +1095,11 @@ bool QgsWcsProvider::calculateExtent()
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
   }
 
-  QgsDebugMsg( "mCoverageSummary->wgs84BoundingBox= " + mCoverageSummary->wgs84BoundingBox.toString() );
+  QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
   // Convert to the user's CRS as required
   try
   {
-    mCoverageExtent = mCoordinateTransform->transformBoundingBox( mCoverageSummary->wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
+    mCoverageExtent = mCoordinateTransform->transformBoundingBox( mCoverageSummary.wgs84BoundingBox, QgsCoordinateTransform::ForwardTransform );
   }
   catch ( QgsCsException &cse )
   {
@@ -1160,18 +1148,21 @@ QString QgsWcsProvider::coverageMetadata( QgsWcsCoverageSummary coverage )
   metadata += tr( "Value" );
   metadata += "</th></tr>";
 
-  metadata += htmlRow ( tr( "Name (identifier)" ), coverage.identifier );
-  metadata += htmlRow ( tr( "Title" ), coverage.title );
-  metadata += htmlRow ( tr( "Abstract" ), coverage.abstract );
+  metadata += htmlRow( tr( "Name (identifier)" ), coverage.identifier );
+  metadata += htmlRow( tr( "Title" ), coverage.title );
+  metadata += htmlRow( tr( "Abstract" ), coverage.abstract );
   // We dont have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
   //metadata += htmlRow ( tr( "Fixed Width" ), QString::number( coverage.width ) );
   //metadata += htmlRow ( tr( "Fixed Height" ), QString::number( coverage.height ) );
   //metadata += htmlRow ( tr( "Native CRS" ), coverage.nativeCrs );
   //metadata += htmlRow ( tr( "Native Bounding Box" ), coverage.nativeBoundingBox.toString() );
 
-  metadata += htmlRow ( tr( "WGS 84 Bounding Box" ), coverage.wgs84BoundingBox.toString() );
+  metadata += htmlRow( tr( "WGS 84 Bounding Box" ), coverage.wgs84BoundingBox.toString() );
 
   // Layer Coordinate Reference Systems
+  // TODO(?): supportedCrs and supportedFormat are not available in 1.0
+  // until coverage is described - it would be confusing to show it only if available
+  /*
   for ( int j = 0; j < qMin( coverage.supportedCrs.size(), 10 ); j++ )
   {
     metadata += htmlRow ( tr( "Available in CRS" ), coverage.supportedCrs.value(j) );
@@ -1191,6 +1182,7 @@ QString QgsWcsProvider::coverageMetadata( QgsWcsCoverageSummary coverage )
   {
     metadata += htmlRow ( tr( "Available in format" ), tr( "(and %n more)", "crs", coverage.supportedFormat.size() - 10 ) );
   }
+  */
 
   // Close the nested table
   metadata += "</table>";
@@ -1235,14 +1227,13 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Value" );
   metadata += "</th></tr>";
 
-  metadata += htmlRow ( ( "Coverage" ), mIdentifier );
-  metadata += htmlRow ( ( "WCS Version" ), mCapabilities.version() );
-  metadata += htmlRow ( tr( "Title" ), mCapabilities.capabilities().serviceIdentification.title );
-  metadata +=  htmlRow ( tr( "Abstract" ), mCapabilities.capabilities().serviceIdentification.abstract );
-  // TODO 
+  metadata += htmlRow(( "WCS Version" ), mCapabilities.version() );
+  metadata += htmlRow( tr( "Title" ), mCapabilities.capabilities().title );
+  metadata +=  htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
+  // TODO
   //metadata += htmlRow ( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
   //metadata += htmlRow (  tr( "Online Resource" ), "-" );
-  //metadata += htmlRow (  tr( "Contact Person" ), 
+  //metadata += htmlRow (  tr( "Contact Person" ),
   //  mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson
   //    + "<br />" + mCapabilities.service.contactInformation.contactPosition;
   //    + "<br />" + mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization );
@@ -1250,7 +1241,7 @@ QString QgsWcsProvider::metadata()
   //metadata += htmlRow ( tr( "Access Constraints" ), mCapabilities.service.accessConstraints );
   //metadata += htmlRow ( tr( "Image Formats" ), mCapabilities.capability.request.getMap.format.join( "<br />" ) );
   //metadata += htmlRow (  tr( "GetCapabilitiesUrl" ), mBaseUrl );
-  //metadata += htmlRow ( tr( "GetMapUrl" ), getMapUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" ) );
+  metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.capabilities().operationsMetadata.getCoverage.getUrl + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" ) );
 
   // Close the nested table
   metadata += "</table>";
@@ -1263,7 +1254,7 @@ QString QgsWcsProvider::metadata()
 
   for ( int i = 0; i < mCapabilities.capabilities().contents.coverageSummary.size(); i++ )
   {
-    QgsWcsCoverageSummary c = mCapabilities.capabilities().contents.coverageSummary.value(i);
+    QgsWcsCoverageSummary c = mCapabilities.capabilities().contents.coverageSummary.value( i );
     metadata += coverageMetadata( c );
   }
 
@@ -1274,14 +1265,14 @@ QString QgsWcsProvider::metadata()
   return metadata;
 }
 
-QString QgsWcsProvider::htmlCell ( const QString &text )
+QString QgsWcsProvider::htmlCell( const QString &text )
 {
   return "<td>" + text + "</td>";
 }
 
-QString QgsWcsProvider:: htmlRow ( const QString &text1, const QString &text2 )
+QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
 {
-  return "<tr>" + htmlCell ( text1 ) +  htmlCell ( text2 ) + "</tr>";
+  return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
 bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
