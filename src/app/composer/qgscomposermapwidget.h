@@ -19,8 +19,7 @@
 #define QGSCOMPOSERMAPWIDGET_H
 
 #include "ui_qgscomposermapwidgetbase.h"
-
-class QgsComposerMap;
+#include "qgscomposermap.h"
 
 /** \ingroup MapComposer
  * Input widget for the configuration of QgsComposerMap
@@ -44,6 +43,8 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mUpdatePreviewButton_clicked();
     void on_mKeepLayerListCheckBox_stateChanged( int state );
     void on_mDrawCanvasItemsCheckBox_stateChanged( int state );
+    void on_mOverviewFrameMapComboBox_currentIndexChanged( const QString& text );
+    void on_mOverviewFrameStyleButton_clicked();
 
     void on_mXMinLineEdit_editingFinished();
     void on_mXMaxLineEdit_editingFinished();
@@ -61,10 +62,24 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mCrossWidthSpinBox_valueChanged( double d );
     void on_mAnnotationFontButton_clicked();
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
-    void on_mAnnotationPositionComboBox_currentIndexChanged( const QString& text );
+
+    //annotation position
+    void on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationPositionTopComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString& text );
+
+    //annotation direction
+    void on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxRight_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxTop_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( const QString& text );
+
     void on_mDrawAnnotationCheckBox_stateChanged( int state );
-    void on_mAnnotationDirectionComboBox_currentIndexChanged( const QString& text );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
+
+    void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
+    void on_mFrameWidthSpinBox_valueChanged( double d );
 
   private slots:
 
@@ -82,6 +97,17 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
 
     /**Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
+
+    void handleChangedAnnotationPosition( QgsComposerMap::Border border, const QString& text );
+    void handleChangedAnnotationDirection( QgsComposerMap::Border border, const QString& text );
+
+    void insertAnnotationPositionEntries( QComboBox* c );
+    void insertAnnotationDirectionEntries( QComboBox* c );
+
+    void initAnnotationPositionBox( QComboBox* c, QgsComposerMap::GridAnnotationPosition pos );
+    void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
+
+    void updateOverviewSymbolMarker();
 };
 
 #endif

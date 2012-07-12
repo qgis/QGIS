@@ -100,3 +100,5 @@
 %Include qgsgpsdconnection.sip
 %Include qgsnmeaconnection.sip
 %Include qgsgpsdetector.sip
+
+%Include qgspaintenginehack.sip

@@ -40,6 +40,8 @@
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgslogger.h"
+#include "qgspaintenginehack.h"
+
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
@@ -505,38 +507,6 @@ QDomDocument QgsWMSServer::getStyle()
   return mConfigParser->getStyle( styleName, layerName );
 }
 
-// Hack to workaround Qt #5114 by disabling PatternTransform
-class QgsPaintEngineHack : public QPaintEngine
-{
-  public:
-    void fixFlags()
-    {
-      gccaps = 0;
-      gccaps |= ( QPaintEngine::PrimitiveTransform
-                  // | QPaintEngine::PatternTransform
-                  | QPaintEngine::PixmapTransform
-                  | QPaintEngine::PatternBrush
-                  // | QPaintEngine::LinearGradientFill
-                  // | QPaintEngine::RadialGradientFill
-                  // | QPaintEngine::ConicalGradientFill
-                  | QPaintEngine::AlphaBlend
-                  // | QPaintEngine::PorterDuff
-                  | QPaintEngine::PainterPaths
-                  | QPaintEngine::Antialiasing
-                  | QPaintEngine::BrushStroke
-                  | QPaintEngine::ConstantOpacity
-                  | QPaintEngine::MaskedBrush
-                  // | QPaintEngine::PerspectiveTransform
-                  | QPaintEngine::BlendModes
-                  // | QPaintEngine::ObjectBoundingModeGradients
-#if QT_VERSION >= 0x040500
-                  | QPaintEngine::RasterOpModes
-#endif
-                  | QPaintEngine::PaintOutsidePaintEvent
-                );
-    }
-};
-
 QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 {
   QStringList layersList, stylesList, layerIdList;
@@ -632,12 +602,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
 
-    QPaintEngine *engine = printer.paintEngine();
-    if ( engine )
-    {
-      QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
-      hack->fixFlags();
-    }
+    QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
 
     QPainter p( &printer );
     if ( c->printAsRaster() ) //embed one raster into the pdf

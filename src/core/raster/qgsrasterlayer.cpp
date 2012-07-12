@@ -914,6 +914,18 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   return ( mDataProvider->identify( thePoint, theResults ) );
 }
 
+bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  if ( !mDataProvider )
+  {
+    return false;
+  }
+
+  results.clear();
+  return mDataProvider->identify( point, results );
+}
+
+
 /**
  * @note  The arbitraryness of the returned document is enforced by WMS standards up to at least v1.3.0
  *

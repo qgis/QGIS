@@ -390,6 +390,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /** \brief Identify raster value(s) found on the point position */
     virtual bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
+    virtual bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update
      *

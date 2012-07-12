@@ -943,6 +943,14 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
     return true;
   }
 
+  if ( doubleNear( qAbs( mRotation ), 90 ) || doubleNear( qAbs( mRotation ), 270 ) )
+  {
+    double tmp = width;
+    width = height;
+    height = tmp;
+    return true;
+  }
+
   double x1 = 0;
   double y1 = 0;
   double x2 = width;
@@ -990,33 +998,6 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
   height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
   return true;
-
-
-#if 0
-  double x1 = 0;
-  double y1 = 0;
-  double x2 = width;
-  double y2 = 0;
-  double x3 = width;
-  double y3 = height;
-
-  if ( !cornerPointOnRotatedAndScaledRect( x1, y1, width, height ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x2, y2, width, height ) )
-  {
-    return false;
-  }
-  if ( !cornerPointOnRotatedAndScaledRect( x3, y3, width, height ) )
-  {
-    return false;
-  }
-
-  width = sqrt(( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
-  height = sqrt(( x3 - x2 ) * ( x3 - x2 ) + ( y3 - y2 ) * ( y3 - y2 ) );
-  return true;
-#endif //0
 }
 
 bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const

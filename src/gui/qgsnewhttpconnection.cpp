@@ -115,6 +115,15 @@ void QgsNewHttpConnection::accept()
     return;
   }
 
+  if ( !txtPassword->text().isEmpty() &&
+       QMessageBox::question( this,
+                              tr( "Saving passwords" ),
+                              tr( "WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\nNote: giving the password is optional. It will be requested interactivly, when needed." ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {

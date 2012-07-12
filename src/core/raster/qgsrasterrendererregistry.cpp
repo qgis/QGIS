@@ -256,6 +256,29 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       break;
   }
 
+  QgsRasterTransparency* tr = new QgsRasterTransparency(); //renderer takes ownership
+  int bandCount = renderer->usesBands().size();
+  if ( bandCount == 1 )
+  {
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleList;
+    QgsRasterTransparency::TransparentSingleValuePixel singleEntry;
+    singleEntry.pixelValue = provider->noDataValue();
+    singleEntry.percentTransparent = 100;
+    transparentSingleList.push_back( singleEntry );
+    tr->setTransparentSingleValuePixelList( transparentSingleList );
+  }
+  else if ( bandCount == 3 )
+  {
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
+    QgsRasterTransparency::TransparentThreeValuePixel threeValueEntry;
+    threeValueEntry.red = provider->noDataValue();
+    threeValueEntry.green = provider->noDataValue();
+    threeValueEntry.blue = provider->noDataValue();
+    threeValueEntry.percentTransparent = 100;
+    transparentThreeValueList.push_back( threeValueEntry );
+    tr->setTransparentThreeValuePixelList( transparentThreeValueList );
+  }
+  renderer->setRasterTransparency( tr );
 #if 0
   if ( !renderer )
   {

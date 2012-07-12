@@ -457,6 +457,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
+    /** \brief Identify raster value(s) found on the point position */
+    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
     /** \brief Identify arbitrary details from the WMS server found on the point position */
     QString identifyAsText( const QgsPoint & point );
 

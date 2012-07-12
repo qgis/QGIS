@@ -64,33 +64,33 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
       continue;
     }
 
-    if ( match.contains(  "day", Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("day", "Note: Word is part matched in code"), Qt::CaseInsensitive )||
-         match.contains(  QObject::tr("days", "Note: Word is part matched in code"), Qt::CaseInsensitive) )
+    if ( match.contains( "day", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "day", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "days", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value * QgsExpression::Interval::DAY;
-    if ( match.contains(  "week", Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("week", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("weeks", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+    if ( match.contains( "week", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "week", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "weeks", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value * QgsExpression::Interval::WEEKS;
-    if ( match.contains(  "month", Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("month", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("months", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+    if ( match.contains( "month", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "month", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "months", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value * QgsExpression::Interval::MONTHS;
     if ( match.contains( "year", Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr("year", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
-         match.contains( QObject::tr("years", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+         match.contains( QObject::tr( "year", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "years", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value * QgsExpression::Interval::YEARS;
-    if ( match.contains(  "second", Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("second", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("seconds", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+    if ( match.contains( "second", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "second", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "seconds", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value;
-    if ( match.contains(  "minute", Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("minute", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("minutes", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+    if ( match.contains( "minute", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "minute", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "minutes", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value * QgsExpression::Interval::MINUTE;
-    if ( match.contains(  "hour", Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("hour", "Note: Word is part matched in code"), Qt::CaseInsensitive ) ||
-         match.contains(  QObject::tr("hours", "Note: Word is part matched in code"), Qt::CaseInsensitive ) )
+    if ( match.contains( "hour", Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "hour", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) ||
+         match.contains( QObject::tr( "hours", "Note: Word is part matched in code" ), Qt::CaseInsensitive ) )
       seconds += value * QgsExpression::Interval::HOUR;
   }
 
@@ -494,6 +494,7 @@ static QVariant fcnFeatureId( const QVariantList& , QgsFeature* f, QgsExpression
   // TODO: handling of 64-bit feature ids?
   return f ? QVariant(( int )f->id() ) : QVariant();
 }
+
 static QVariant fcnConcat( const QVariantList& values, QgsFeature* , QgsExpression *parent )
 {
   QString concat;
@@ -502,6 +503,12 @@ static QVariant fcnConcat( const QVariantList& values, QgsFeature* , QgsExpressi
     concat += getStringValue( value, parent );
   }
   return concat;
+}
+
+static QVariant fcnStrpos( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  return string.indexOf( QRegExp( getStringValue( values.at( 1 ), parent ) ) );
 }
 
 static QVariant fcnNow( const QVariantList&, QgsFeature* , QgsExpression * )
@@ -767,6 +774,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
     << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
     << FunctionDef( "concat", -1, fcnConcat, QObject::tr( "String" ) )
+    << FunctionDef( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
@@ -1219,7 +1227,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         QgsExpression::Interval iL = getInterval( vR, parent ); ENSURE_NO_EVAL_ERROR;
         if ( mOp == boDiv || mOp == boMul || mOp == boMod )
         {
-          parent->setEvalErrorString( QObject::tr("Can't preform /, *, or % on DateTime and Interval") );
+          parent->setEvalErrorString( QObject::tr( "Can't preform /, *, or % on DateTime and Interval" ) );
           return QVariant();
         }
         return QVariant( computeDateTimeFromInterval( dL, &iL ) );

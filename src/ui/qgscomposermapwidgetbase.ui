@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>309</width>
-    <height>452</height>
+    <width>240</width>
+    <height>483</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>309</width>
-        <height>365</height>
+        <width>230</width>
+        <height>395</height>
        </rect>
       </property>
       <attribute name="label">
@@ -220,6 +220,30 @@
          </property>
         </spacer>
        </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="mOverviewFrameMapComboBox"/>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="mOverviewFrameMapLabel">
+         <property name="text">
+          <string>Overview frame</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="mOverviewFrameStyleLabel">
+         <property name="text">
+          <string>Overview style</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QPushButton" name="mOverviewFrameStyleButton">
+         <property name="text">
+          <string>Change...</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2">
@@ -227,8 +251,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>169</width>
-        <height>169</height>
+        <width>230</width>
+        <height>395</height>
        </rect>
       </property>
       <attribute name="label">
@@ -335,20 +359,14 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>199</width>
-        <height>581</height>
+        <width>218</width>
+        <height>716</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Grid</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <property name="margin">
-        <number>3</number>
-       </property>
-       <property name="horizontalSpacing">
-        <number>6</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QGroupBox" name="mGridCheckBox">
          <property name="title">
@@ -360,14 +378,8 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="margin">
-           <number>3</number>
-          </property>
-          <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="1">
            <widget class="QLabel" name="mGridTypeLabel">
             <property name="accessibleName">
              <string extracomment="Hello translotor"/>
@@ -383,207 +395,339 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="3">
            <widget class="QComboBox" name="mGridTypeComboBox"/>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mIntervalXLabel">
-            <property name="text">
-             <string>Interval X</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mIntervalXSpinBox</cstring>
-            </property>
-           </widget>
+          <item row="1" column="0" colspan="4">
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="mIntervalXLabel">
+              <property name="text">
+               <string>Interval X</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mIntervalXSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <double>9999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="mIntervalYLabel">
+              <property name="text">
+               <string>Interval Y</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mIntervalYSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <double>9999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="mOffsetXLabel">
+              <property name="text">
+               <string>Offset X</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mOffsetXSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <double>9999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="mOffsetYLabel">
+              <property name="text">
+               <string>Offset Y</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mOffsetYSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <double>9999999.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="mCrossWidthLabel">
+              <property name="text">
+               <string>Cross width</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mCrossWidthSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QDoubleSpinBox" name="mCrossWidthSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="mLineWidthLabel">
+              <property name="text">
+               <string>Line width</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mLineWidthSpinBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="mFrameStyleLabel">
+              <property name="text">
+               <string>Frame style</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QComboBox" name="mFrameStyleComboBox"/>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="mFrameWidthLabel">
+              <property name="text">
+               <string>Frame width</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
+            </item>
+           </layout>
           </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="maximum">
-             <double>9999999.000000000000000</double>
-            </property>
-           </widget>
+          <item row="2" column="0" colspan="4">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="mLineColorLabel">
+              <property name="text">
+               <string>Line color</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mLineColorButton</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsColorButton" name="mLineColorButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="mIntervalYLabel">
-            <property name="text">
-             <string>Interval Y</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mIntervalYSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="mOffsetXLabel">
-            <property name="text">
-             <string>Offset X</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mOffsetXSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="maximum">
-             <double>9999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="0">
-           <widget class="QLabel" name="mOffsetYLabel">
-            <property name="text">
-             <string>Offset Y</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mOffsetYSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="maximum">
-             <double>9999999.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="0">
-           <widget class="QLabel" name="mCrossWidthLabel">
-            <property name="text">
-             <string>Cross width</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mCrossWidthSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="10" column="1">
-           <widget class="QDoubleSpinBox" name="mCrossWidthSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="0">
-           <widget class="QLabel" name="mLineWidthLabel">
-            <property name="text">
-             <string>Line width</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mLineWidthSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="1">
-           <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="0">
-           <widget class="QLabel" name="mLineColorLabel">
-            <property name="text">
-             <string>Line color</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mLineColorButton</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="14" column="1">
-           <widget class="QgsColorButton" name="mLineColorButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="16" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawAnnotationCheckBox">
             <property name="text">
              <string>Draw annotation</string>
             </property>
            </widget>
           </item>
-          <item row="17" column="0">
-           <widget class="QLabel" name="mAnnotationPositionLabel">
-            <property name="text">
-             <string>Annotation position</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mAnnotationPositionComboBox</cstring>
-            </property>
-           </widget>
+          <item row="4" column="0" colspan="4">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="mAnnotationPositionLabelLeft">
+              <property name="text">
+               <string>Annotation position left side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mAnnotationPositionLeftComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="mAnnotationPositionLabelRight">
+              <property name="text">
+               <string>Annotation position right side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mAnnotationPositionRightComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="mAnnotationPositionLabelTop">
+              <property name="text">
+               <string>Annotation position top side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mAnnotationPositionTopComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="mAnnotationPositionLabelBottom">
+              <property name="text">
+               <string>Annotation position bottom side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mAnnotationPositionRightComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="mAnnotationDirectionLabelLeft">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="text">
+               <string>Annotation direction left side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mAnnotationDirectionComboBoxLeft</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="mAnnotationDirectionLabelRight">
+              <property name="text">
+               <string>Annotation direction right side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mAnnotationDirectionComboBoxRight</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="mAnnotationDirectionLabelTop">
+              <property name="text">
+               <string>Annotation direction top side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="mAnnotationDirectionLabeBottom">
+              <property name="text">
+               <string>Annotation direction bottom side</string>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
+            </item>
+           </layout>
           </item>
-          <item row="17" column="1">
-           <widget class="QComboBox" name="mAnnotationPositionComboBox"/>
-          </item>
-          <item row="19" column="0">
-           <widget class="QLabel" name="mAnnotationDirectionLabel">
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Annotation direction</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mAnnotationDirectionComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="19" column="1">
-           <widget class="QComboBox" name="mAnnotationDirectionComboBox"/>
-          </item>
-          <item row="21" column="0" colspan="2">
+          <item row="5" column="0">
            <widget class="QPushButton" name="mAnnotationFontButton">
             <property name="text">
              <string>Font...</string>
             </property>
            </widget>
           </item>
-          <item row="22" column="0">
+          <item row="6" column="0" colspan="2">
            <widget class="QLabel" name="mDistanceToFrameLabel">
             <property name="text">
              <string>Distance to map frame</string>
@@ -596,10 +740,10 @@
             </property>
            </widget>
           </item>
-          <item row="22" column="1">
+          <item row="6" column="2" colspan="2">
            <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
           </item>
-          <item row="24" column="0">
+          <item row="7" column="0" colspan="2">
            <widget class="QLabel" name="mCoordinatePrecisionLabel">
             <property name="text">
              <string>Coordinate precision</string>
@@ -612,10 +756,10 @@
             </property>
            </widget>
           </item>
-          <item row="24" column="1">
+          <item row="7" column="2" colspan="2">
            <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
           </item>
-          <item row="26" column="0" colspan="2">
+          <item row="8" column="0">
            <spacer name="verticalSpacer_2">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -627,16 +771,6 @@
              </size>
             </property>
            </spacer>
-          </item>
-          <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
-            <property name="decimals">
-             <number>5</number>
-            </property>
-            <property name="maximum">
-             <double>9999999.000000000000000</double>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

@@ -45,6 +45,7 @@
 #include "qgsmessageviewer.h"
 #include "qgscontexthelp.h"
 #include "qgscursors.h"
+#include "qgspaintenginehack.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -524,38 +525,6 @@ void QgsComposer::on_mActionRefreshView_triggered()
   mComposition->update();
 }
 
-// Hack to workaround Qt #5114 by disabling PatternTransform
-class QgsPaintEngineHack : public QPaintEngine
-{
-  public:
-    void fixFlags()
-    {
-      gccaps = 0;
-      gccaps |= ( QPaintEngine::PrimitiveTransform
-                  // | QPaintEngine::PatternTransform
-                  | QPaintEngine::PixmapTransform
-                  | QPaintEngine::PatternBrush
-                  // | QPaintEngine::LinearGradientFill
-                  // | QPaintEngine::RadialGradientFill
-                  // | QPaintEngine::ConicalGradientFill
-                  | QPaintEngine::AlphaBlend
-                  // | QPaintEngine::PorterDuff
-                  | QPaintEngine::PainterPaths
-                  | QPaintEngine::Antialiasing
-                  | QPaintEngine::BrushStroke
-                  | QPaintEngine::ConstantOpacity
-                  | QPaintEngine::MaskedBrush
-                  // | QPaintEngine::PerspectiveTransform
-                  | QPaintEngine::BlendModes
-                  // | QPaintEngine::ObjectBoundingModeGradients
-#if QT_VERSION >= 0x040500
-                  | QPaintEngine::RasterOpModes
-#endif
-                  | QPaintEngine::PaintOutsidePaintEvent
-                );
-    }
-};
-
 void QgsComposer::on_mActionExportAsPDF_triggered()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
@@ -582,13 +551,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
   printer.setOutputFileName( outputFileName );
   printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
 
-  QPaintEngine *engine = printer.paintEngine();
-  if ( engine )
-  {
-    QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
-    hack->fixFlags();
-  }
-
+  QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
   print( printer );
 }
 
@@ -1131,23 +1094,8 @@ void QgsComposer::showEvent( QShowEvent* event )
 {
   if ( event->spontaneous() ) //event from the window system
   {
-    //go through maps and restore original preview modes (show on demand after loading from project file)
-    QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
-    for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
-    {
-      mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
-      mapIt.key()->cache();
-      mapIt.key()->update();
-    }
-    mMapsToRestore.clear();
-
-    //create composer picture widget previews
-    QList< QgsComposerPictureWidget* >::iterator picIt = mPicturePreviews.begin();
-    for ( ; picIt != mPicturePreviews.end(); ++picIt )
-    {
-      ( *picIt )->addStandardDirectoriesToPreview();
-    }
-    mPicturePreviews.clear();
+    restoreComposerMapStates();
+    initialiseComposerPicturePreviews();
   }
 
 #ifdef Q_WS_MAC
@@ -1542,6 +1490,9 @@ void QgsComposer::cleanupAfterTemplateRead()
       }
     }
   }
+
+  restoreComposerMapStates();
+  initialiseComposerPicturePreviews();
 }
 
 void QgsComposer::on_mActionPageSetup_triggered()
@@ -1553,4 +1504,28 @@ void QgsComposer::on_mActionPageSetup_triggered()
 
   QPageSetupDialog pageSetupDialog( &mPrinter, this );
   pageSetupDialog.exec();
+}
+
+void QgsComposer::restoreComposerMapStates()
+{
+  //go through maps and restore original preview modes (show on demand after loading from project file)
+  QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
+  for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+  {
+    mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
+    mapIt.key()->cache();
+    mapIt.key()->update();
+  }
+  mMapsToRestore.clear();
+}
+
+void QgsComposer::initialiseComposerPicturePreviews()
+{
+  //create composer picture widget previews
+  QList< QgsComposerPictureWidget* >::iterator picIt = mPicturePreviews.begin();
+  for ( ; picIt != mPicturePreviews.end(); ++picIt )
+  {
+    ( *picIt )->addStandardDirectoriesToPreview();
+  }
+  mPicturePreviews.clear();
 }
