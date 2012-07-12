@@ -244,19 +244,23 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     cboxTransparencyBand->addItem( tr( "None" ), -1 );
     int nBands = provider->bandCount();
     QString bandName;
-    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+
+    if ( nBands == 1 )
     {
-      bandName = provider->colorInterpretationName( i );
+      /* Color interpretation name only makes sense for 1-band rasters */
+      bandName = provider->colorInterpretationName( 1 );
       if ( bandName == "Undefined" )
+        bandName = provider->generateBandName( 1 );
+      cboxTransparencyBand->addItem( bandName, 1 );
+    }
+    else if ( nBands > 1 )
+    {
+      for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
       {
-        cboxTransparencyBand->addItem( provider->generateBandName( i ), i );
-      }
-      else
-      {
+        bandName = provider->generateBandName( i );
         cboxTransparencyBand->addItem( bandName, i );
       }
     }
-
     if ( renderer )
     {
       cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
