@@ -1094,23 +1094,8 @@ void QgsComposer::showEvent( QShowEvent* event )
 {
   if ( event->spontaneous() ) //event from the window system
   {
-    //go through maps and restore original preview modes (show on demand after loading from project file)
-    QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
-    for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
-    {
-      mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
-      mapIt.key()->cache();
-      mapIt.key()->update();
-    }
-    mMapsToRestore.clear();
-
-    //create composer picture widget previews
-    QList< QgsComposerPictureWidget* >::iterator picIt = mPicturePreviews.begin();
-    for ( ; picIt != mPicturePreviews.end(); ++picIt )
-    {
-      ( *picIt )->addStandardDirectoriesToPreview();
-    }
-    mPicturePreviews.clear();
+    restoreComposerMapStates();
+    initialiseComposerPicturePreviews();
   }
 
 #ifdef Q_WS_MAC
@@ -1505,6 +1490,9 @@ void QgsComposer::cleanupAfterTemplateRead()
       }
     }
   }
+
+  restoreComposerMapStates();
+  initialiseComposerPicturePreviews();
 }
 
 void QgsComposer::on_mActionPageSetup_triggered()
@@ -1516,4 +1504,28 @@ void QgsComposer::on_mActionPageSetup_triggered()
 
   QPageSetupDialog pageSetupDialog( &mPrinter, this );
   pageSetupDialog.exec();
+}
+
+void QgsComposer::restoreComposerMapStates()
+{
+  //go through maps and restore original preview modes (show on demand after loading from project file)
+  QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
+  for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+  {
+    mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
+    mapIt.key()->cache();
+    mapIt.key()->update();
+  }
+  mMapsToRestore.clear();
+}
+
+void QgsComposer::initialiseComposerPicturePreviews()
+{
+  //create composer picture widget previews
+  QList< QgsComposerPictureWidget* >::iterator picIt = mPicturePreviews.begin();
+  for ( ; picIt != mPicturePreviews.end(); ++picIt )
+  {
+    ( *picIt )->addStandardDirectoriesToPreview();
+  }
+  mPicturePreviews.clear();
 }
