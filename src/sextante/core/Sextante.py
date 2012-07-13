@@ -245,9 +245,8 @@ class Sextante:
         else:
             print "Algorithm not found"
 
-
     @staticmethod
-    def runalg(algOrName, *args):
+    def runAlgorithm(algOrName, onFinish, *args):
         if isinstance(algOrName, GeoAlgorithm):
             alg = algOrName
         else:
@@ -287,27 +286,50 @@ class Sextante:
 
         msg = alg.checkParameterValuesBeforeExecuting()
         if msg:
-            print ("Unable to execute algorithm\n" + msg)
-            return
-
+            try:
+                QMessageBox.critical(None, "Unable to execute algorithm", msg)
+                return
+            except:
+                print ("Unable to execute algorithm\n" + msg)
+                return
+    
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS) and onFinish:
             algEx = AlgorithmExecutor(alg)
+            progress = QProgressDialog()
+            progress.setWindowTitle(alg.name)
+            progress.setLabelText("Executing %s..." % alg.name) 
             def finish():
                 QApplication.restoreOverrideCursor()
+                onFinish(alg)
+                progress.close()
             def error(msg):
                 QApplication.restoreOverrideCursor()
                 print msg
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+            def cancel():
+                try:
+                    algEx.finished.disconnect()
+                    algEx.terminate()
+                    QApplication.restoreOverrideCursor()
+                    progress.close()
+                except:
+                    pass
             algEx.error.connect(error)
             algEx.finished.connect(finish)
             algEx.start()
             algEx.wait()
         else:
             UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
+            if onFinish:
+                onFinish(alg)
+        return alg
 
+    @staticmethod
+    def runalg(algOrName, *args):
+        alg = Sextante.runAlgorithm(algOrName, None, *args)
         return alg.getOutputValuesAsDictionary()
 
 
@@ -329,66 +351,4 @@ class Sextante:
 
     @staticmethod
     def runandload(name, *args):
-        #a quick fix to call algorithms from the history dialog
-        alg = Sextante.getAlgorithm(name)
-        if alg == None:
-            #in theory, this could not happen. Maybe we should show a message box?
-            QMessageBox.critical(None,"Error", "Error: Algorithm not found\n")
-            return
-        if len(args) != len(alg.parameters) + alg.getVisibleOutputsCount():
-            QMessageBox.critical(None,"Error", "Error: Wrong number of parameters")
-            Sextante.alghelp(name)
-            return
-
-        alg = alg.getCopy()
-        i = 0
-        for param in alg.parameters:
-            if not param.setValue(args[i]):
-                QMessageBox.critical(None, "Error", "Error: Wrong parameter value: " + args[i])
-                return
-            i = i +1
-
-        for output in alg.outputs:
-            if not output.hidden:
-                if not output.setValue(args[i]):
-                    QMessageBox.critical(None, "Error", "Error: Wrong output value: " + args[i])
-                    return
-                i = i +1
-
-        msg = alg.checkParameterValuesBeforeExecuting()
-        if msg:
-            QMessageBox.critical(None, "Unable to execute algorithm", msg)
-            return
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
-            algEx = AlgorithmExecutor(alg)
-            progress = QProgressDialog()
-            progress.setWindowTitle(alg.name)
-            progress.setLabelText("Executing %s..." % alg.name) 
-            def finish():
-                SextantePostprocessing.handleAlgorithmResults(alg)
-                QApplication.restoreOverrideCursor()
-                progress.close()
-            def error(msg):
-                QApplication.restoreOverrideCursor()
-                QMessageBox.critical(None, "Error", msg)
-                SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
-                cancel();
-            def cancel():
-                try:
-                    algEx.finished.disconnect()
-                    algEx.terminate()
-                    QApplication.restoreOverrideCursor()
-                    progress.close()
-                except:
-                    pass
-            algEx.error.connect(error)
-            algEx.finished.connect(finish)
-            algEx.textChanged.connect(lambda t: progress.setLabelText(t))
-            algEx.percentageChanged.connect(lambda x: progress.setValue(x))
-            progress.canceled.connect(cancel)
-            algEx.start()
-            progress.show()
-        else:
-            if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
-                SextantePostprocessing.handleAlgorithmResults(alg)
+        Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
