@@ -69,6 +69,9 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! Perform symbol specific tasks when selected
     void symbolSelected( const QModelIndex& );
 
+    //! Context menu for the groupTree
+    void grouptreeContextMenu( const QPoint& );
+
   protected:
 
     //! populate combo box with known style items (symbols, color ramps)

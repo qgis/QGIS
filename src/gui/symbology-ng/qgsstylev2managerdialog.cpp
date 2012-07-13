@@ -109,6 +109,11 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
   connect( tagBtn, SIGNAL( clicked() ), this, SLOT( tagsChanged() ) );
 
+  // Context menu for groupTree
+  groupTree->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( groupTree, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+          this, SLOT( grouptreeContextMenu( const QPoint& ) ) );
+
 }
 
 void QgsStyleV2ManagerDialog::onFinished()
@@ -684,7 +689,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
     }
     else // then it must be a group
     {
-      if ( index.data() == "Ungrouped" )
+      if ( !index.data( Qt::UserRole + 1 ).toInt() && ( index.data() == "Ungrouped" ) )
         enableGroupInputs( false );
       else
         enableGroupInputs( true );
@@ -710,7 +715,8 @@ void QgsStyleV2ManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || parentData == "recent" || parentData == "project" || parentIndex.data() == "Ungrouped" )
+  if ( parentData == "all" || parentData == "recent" || parentData == "project" || 
+      ( parentIndex.data() == "Ungrouped" && parentData == "0" ) )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
         tr( "The parent group you have selected is not user editable.\n"
@@ -1001,16 +1007,20 @@ void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
   QStandardItemModel *treeModel = qobject_cast<QStandardItemModel*>( groupTree->model() );
   for( int i = 0; i < treeModel->rowCount(); i++ )
   {
-    if ( treeModel->item( i )->text() != "Groups" )
+    if ( treeModel->item( i )->data() != "groups" )
     {
       treeModel->item( i )->setEnabled( enable );
     }
-    if ( treeModel->item( i )->text() == "Groups" )
+    if ( treeModel->item( i )->data() == "groups" )
     {
       treeModel->item( i )->setEnabled( enable );
-      treeModel->item( i )->child( treeModel->item( i )->rowCount() - 1 )->setEnabled( enable );
+      for ( int k = 0; k < treeModel->item( i )->rowCount(); k++ )
+      {
+        if ( !treeModel->item( i )->child( k )->data().toInt() )
+          treeModel->item( i )->child( k )->setEnabled( enable );
+      }
     }
-    if( treeModel->item( i )->text() == "Smart Groups" )
+    if( treeModel->item( i )->data() == "smartgroups" )
     {
       for( int j = 0; j < treeModel->item( i )->rowCount(); j++ )
       {
@@ -1019,4 +1029,23 @@ void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
     }
   }
 
+}
+
+void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
+{
+  QPoint globalPos = groupTree->viewport()->mapToGlobal( point );
+
+  QMenu groupMenu;
+  groupMenu.addAction( "Add Group" );
+  groupMenu.addAction( "Remove Group" );
+
+  QAction* selectedItem = groupMenu.exec( globalPos );
+
+  if ( selectedItem )
+  {
+    if ( selectedItem->text() == "Add Group" )
+      addGroup();
+    else if ( selectedItem->text() == "Remove Group" )
+      removeGroup();
+  }
 }
