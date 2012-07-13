@@ -307,6 +307,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mHistoZoomer = NULL;
   mHistoMarkerMin = NULL;
   mHistoMarkerMax = NULL;
+  mHistoShowMarkers = false;
+  mHistoLoadApplyAll = false;
+  mHistoShowBands = ShowAll;
   if ( tabPageHistogram->isEnabled() )
   {
     //band selector
@@ -328,18 +331,49 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     // connect( leHistoMax, SIGNAL( textChanged( const QString & ) ), this, SLOT( applyHistoMax() ) );
     connect( leHistoMin, SIGNAL( editingFinished() ), this, SLOT( applyHistoMin() ) );
     connect( leHistoMax, SIGNAL( editingFinished() ), this, SLOT( applyHistoMax() ) );
-    connect( cbxHistoShow, SIGNAL( toggled( bool ) ), this, SLOT( updateHistoMarkers() ) );
 
     // histo actions
     QMenu* menu = new QMenu( this );
     menu->setSeparatorsCollapsible( false );
     btnHistoActions->setMenu( menu );
     QActionGroup* group;
+    QAction* action;
 
+    // various actions / prefs
     group = new QActionGroup( this );
     group->setExclusive( false );
     connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
-    QAction* action;
+    action = new QAction( tr( "Visibility" ), group );
+    action->setSeparator( true );
+    menu->addAction( action );
+    action = new QAction( tr( "Show min/max markers" ), group );
+    action->setData( QVariant( "Show markers" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoShowMarkers );
+    menu->addAction( action );
+    group = new QActionGroup( this );
+    group->setExclusive( true ); // these options are exclusive
+    connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
+    action = new QAction( tr( "Show all bands" ), group );
+    action->setData( QVariant( "Show all" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoShowBands == ShowAll );
+    menu->addAction( action );
+    action = new QAction( tr( "Show RGB/Gray band(s)" ), group );
+    action->setData( QVariant( "Show RGB" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoShowBands == ShowRGB );
+    menu->addAction( action );
+    action = new QAction( tr( "Show selected band" ), group );
+    action->setData( QVariant( "Show selected" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoShowBands == ShowSelected );
+    menu->addAction( action );
+
+    // load actions
+    group = new QActionGroup( this );
+    group->setExclusive( false );
+    connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
     // action = new QAction( tr( "Load min/max from band" ), group );
     action = new QAction( tr( "Load min/max" ), group );
     action->setSeparator( true );
@@ -353,30 +387,27 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     action = new QAction( tr( "Current extent" ), group );
     action->setData( QVariant( "Load extent" ) );
     menu->addAction( action );
-    // stddev was removed...
-    action = new QAction( tr( "Use 1 stddev" ), group );
+    action = new QAction( tr( "Use stddev (1.0)" ), group );
     action->setData( QVariant( "Load 1 stddev" ) );
     menu->addAction( action );
-    /*
-    action = new QAction( tr( "Use custom stddev" ), group );
+    action = new QAction( tr( "Use stddev (custom)" ), group );
     action->setData( QVariant( "Load stddev" ) );
     menu->addAction( action );
-    */
     action = new QAction( tr( "Reset" ), group );
     action->setData( QVariant( "Load reset" ) );
     menu->addAction( action );
-    action = new QAction( tr( "Load for all bands" ), group );
+    action = new QAction( tr( "Load for each band" ), group );
     action->setData( QVariant( "Load apply all" ) );
     action->setCheckable( true );
-    action->setChecked( true );
+    action->setChecked( mHistoLoadApplyAll );
     menu->addAction( action );
 
+    //others
     menu->addSeparator( );
-    group = new QActionGroup( this );
-    connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
-    action = new QAction( tr( "Compute Histogram" ), group );
-    action->setData( QVariant( "Compute Histogram" ) );
+    action = new QAction( tr( "Recompute Histogram" ), group );
+    action->setData( QVariant( "Compute histogram" ) );
     menu->addAction( action );
+
   }
 
   // update based on lyr's current state
@@ -1205,7 +1236,6 @@ void QgsRasterLayerProperties::on_btnHistoCompute_clicked()
 // which is only visible if there is no cached histogram or by calling the
 // "Compute Histogram" action. Due to limitations in the gdal api, it is not possible
 // to re-calculate the histogramif it has already been calculated
-  QgsDebugMsg( "Entered" );
   computeHistogram( true );
   refreshHistogram();
 }
@@ -1270,6 +1300,7 @@ void QgsRasterLayerProperties::refreshHistogram()
 
   if ( ! computeHistogram( false ) )
   {
+    // TODO - check raster min/max and min/max of default histogram
     QgsDebugMsg( QString( "raster does not have cached histo" ) );
     stackedWidget2->setCurrentIndex( 2 );
     return;
@@ -1315,7 +1346,10 @@ void QgsRasterLayerProperties::refreshHistogram()
     for ( int i = 1; i <= myBandCountInt; i++ )
     {
       if ( i == myGrayBand )
+      {
         mHistoColors << Qt::black;
+        cboHistoBand->setItemData( i - 1, Qt::darkGray, Qt::ForegroundRole );
+      }
       else
       {
         if ( ! myColors.isEmpty() )
@@ -1327,6 +1361,7 @@ void QgsRasterLayerProperties::refreshHistogram()
         {
           mHistoColors << Qt::black;
         }
+        cboHistoBand->setItemData( i - 1, Qt::black, Qt::ForegroundRole );
       }
     }
   }
@@ -1382,10 +1417,19 @@ void QgsRasterLayerProperties::refreshHistogram()
   mHistoMin = 0;
   mHistoMax = 0;
   bool myFirstIteration = true;
+  /* get selected band list, if mHistoShowBands != ShowAll */
+  QList< int > mySelectedBands = histoSelectedBands();
+
   for ( int myIteratorInt = 1;
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
   {
+    /* skip this band if mHistoShowBands != ShowAll and this band is not selected */
+    if ( mHistoShowBands != ShowAll )
+    {
+      if ( ! mySelectedBands.contains( myIteratorInt ) )
+        continue;
+    }
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -1464,12 +1508,10 @@ void QgsRasterLayerProperties::refreshHistogram()
   }
 
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
-  // mHistogramProgress->hide();
   stackedWidget2->setCurrentIndex( 0 );
-  // mpPlot->canvas()->setCursor( Qt::ArrowCursor );
   // icon from http://findicons.com/icon/169577/14_zoom?id=171427
   mpPlot->canvas()->setCursor( QCursor( QgisApp::getThemePixmap( "/mIconZoom.png" ) ) );
-  on_cboHistoBand_currentIndexChanged( -1 );
+  //  on_cboHistoBand_currentIndexChanged( -1 );
   QApplication::restoreOverrideCursor();
 }
 
@@ -1843,6 +1885,9 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 
 void QgsRasterLayerProperties::on_cboHistoBand_currentIndexChanged( int index )
 {
+  if ( mHistoShowBands == ShowSelected )
+    refreshHistogram();
+
   // get the current index value, index can be -1
   index = cboHistoBand->currentIndex();
   if ( mHistoPicker != NULL )
@@ -1899,52 +1944,74 @@ void QgsRasterLayerProperties::histoActionTriggered( QAction* action )
   if ( ! action )
     return;
 
-  // this approach is a bit of a hack, but we don't have to define slots for each action
+  // this approach is a bit of a hack, but this way we don't have to define slots for each action
   QString actionName = action->data().toString();
 
   QgsDebugMsg( QString( "band = %1 action = %2" ).arg( cboHistoBand->currentIndex() + 1 ).arg( actionName ) );
 
-  if ( actionName.left( 5 ) == "Load " )
+  // checkeable actions
+  if ( actionName == "Show markers" )
   {
-    if ( actionName == "Load apply all" )
-      return;
-
+    mHistoShowMarkers = action->isChecked();
+    updateHistoMarkers();
+    return;
+  }
+  else if ( actionName == "Show all" )
+  {
+    mHistoShowBands = ShowAll;
+    refreshHistogram();
+    return;
+  }
+  else if ( actionName == "Show selected" )
+  {
+    mHistoShowBands = ShowSelected;
+    refreshHistogram();
+    return;
+  }
+  else if ( actionName == "Show RGB" )
+  {
+    mHistoShowBands = ShowRGB;
+    refreshHistogram();
+    return;
+  }
+  else if ( actionName == "Load apply all" )
+  {
+    mHistoLoadApplyAll = action->isChecked();
+    return;
+  }
+  // Load actions
+  else if ( actionName.left( 5 ) == "Load " )
+  {
     QgsRasterBandStats myRasterBandStats;
     QVector<int> myBands;
     double minMaxValues[2];
     bool ok = false;
 
-    // get "Load apply all" value to find which band(s) need updating
-    QList< QAction* > actions;
-    if ( action->actionGroup() )
-      actions = action->actionGroup()->actions();
-    foreach( QAction* tmpAction, actions )
+    // find which band(s) need updating (all or current)
+    if ( mHistoLoadApplyAll )
     {
-      if ( tmpAction && ( tmpAction->data().toString() == "Load apply all" ) )
+      int myBandCountInt = mRasterLayer->bandCount();
+      for ( int i = 1; i <= myBandCountInt; i++ )
       {
-        // add all bands
-        if ( tmpAction->isChecked() )
-        {
-          int myBandCountInt = mRasterLayer->bandCount();
-          for ( int myIteratorInt = 1;
-                myIteratorInt <= myBandCountInt;
-                ++myIteratorInt )
-          {
-            if ( myIteratorInt != cboHistoBand->currentIndex() + 1 )
-              myBands << myIteratorInt;
-          }
-        }
-        // add current band to the end
-        myBands << cboHistoBand->currentIndex() + 1;
-        break;
+        if ( i != cboHistoBand->currentIndex() + 1 )
+          myBands << i;
       }
     }
-    // don't update markers every time
-    if ( myBands.size() > 1 )
+    // add current band to the end
+    myBands << cboHistoBand->currentIndex() + 1;
+
+    // get stddev value once if needed
+    double myStdDev = 1.0;
+    if ( actionName == "Load stddev" )
     {
-      leHistoMin->blockSignals( true );
-      leHistoMax->blockSignals( true );
+      myStdDev = mRendererWidget->stdDev().toDouble();
     }
+
+    // don't update markers every time
+    leHistoMin->blockSignals( true );
+    leHistoMax->blockSignals( true );
+
+    // process each band
     foreach( int theBandNo, myBands )
     {
       ok = false;
@@ -1963,9 +2030,9 @@ void QgsRasterLayerProperties::histoActionTriggered( QAction* action )
         ok = mRendererWidget->bandMinMax( QgsRasterRendererWidget::CurrentExtent,
                                           theBandNo, minMaxValues );
       }
-      else if ( actionName == "Load 1 stddev" )
+      else if ( actionName == "Load 1 stddev" ||
+                actionName == "Load stddev" )
       {
-        double myStdDev = 1.0;
         ok = mRendererWidget->bandMinMaxFromStdDev( myStdDev, theBandNo, minMaxValues );
       }
 
@@ -1991,19 +2058,17 @@ void QgsRasterLayerProperties::histoActionTriggered( QAction* action )
       applyHistoMax( );
     }
     // update markers
-    if ( myBands.size() > 1 )
-    {
-      leHistoMin->blockSignals( false );
-      leHistoMax->blockSignals( false );
-      updateHistoMarkers();
-    }
+    leHistoMin->blockSignals( false );
+    leHistoMax->blockSignals( false );
+    updateHistoMarkers();
   }
-  else if ( actionName == "Compute Histogram" )
+  else if ( actionName == "Compute histogram" )
   {
     on_btnHistoCompute_clicked();
   }
   else
   {
+    QgsDebugMsg( "Invalid action " + actionName );
     return;
   }
 }
@@ -2149,7 +2214,11 @@ void QgsRasterLayerProperties::updateHistoMarkers( )
   if ( mpPlot == NULL || mHistoMarkerMin == NULL || mHistoMarkerMax == NULL )
     return;
 
-  if ( ! cbxHistoShow->isChecked() )
+  int theBandNo = cboHistoBand->currentIndex() + 1;
+  QList< int > mySelectedBands = histoSelectedBands();
+
+  if ( ! mHistoShowMarkers ||
+       ( ! mySelectedBands.isEmpty() && ! mySelectedBands.contains( theBandNo ) ) )
   {
     mHistoMarkerMin->hide();
     mHistoMarkerMax->hide();
@@ -2157,7 +2226,6 @@ void QgsRasterLayerProperties::updateHistoMarkers( )
     return;
   }
 
-  int theBandNo = cboHistoBand->currentIndex() + 1;
   double minVal = mHistoMin;
   double maxVal = mHistoMax;
   QString minStr = leHistoMin->text();
@@ -2182,3 +2250,33 @@ void QgsRasterLayerProperties::updateHistoMarkers( )
 
 }
 
+
+QList< int > QgsRasterLayerProperties::histoSelectedBands()
+{
+  QList< int > mySelectedBands;
+  QString rendererName = mRenderTypeComboBox->itemData( mRenderTypeComboBox->currentIndex() ).toString();
+
+  if ( mHistoShowBands != ShowAll )
+  {
+    if ( mHistoShowBands == ShowSelected )
+    {
+      mySelectedBands << cboHistoBand->currentIndex() + 1;
+    }
+    else if ( mHistoShowBands == ShowRGB )
+    {
+      if ( rendererName.startsWith( "singlebandgray" ) )
+      {
+        mySelectedBands << mRendererWidget->selectedBand( );
+      }
+      else if ( rendererName == "multibandcolor" )
+      {
+        for ( int i = 0; i <= 2; i++ )
+        {
+          mySelectedBands << mRendererWidget->selectedBand( i );
+        }
+      }
+    }
+  }
+
+  return mySelectedBands;
+}

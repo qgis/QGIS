@@ -45,6 +45,8 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     virtual QString max( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
     virtual void setMin( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
     virtual void setMax( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
+    virtual QString stdDev( ) { return QString( ); }
+    virtual void setStdDev( QString value ) { Q_UNUSED( value ); }
     virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
 
     bool bandMinMax( LoadMinMaxAlgo loadAlgo, int band, double *values );

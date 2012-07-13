@@ -184,9 +184,20 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QwtPlotMarker* mHistoMarkerMax;
     double mHistoMin;
     double mHistoMax;
-    QVector<QColor> mHistoColors; 
+    QVector<QColor> mHistoColors;
+    bool mHistoShowMarkers;
+    bool mHistoLoadApplyAll;
+    enum HistoShowBands
+    {
+      ShowAll = 0,
+      ShowSelected = 1,
+      ShowRGB = 2
+    };
+    HistoShowBands mHistoShowBands;
 
     /** \brief Compute the histogram on demand. */
     bool computeHistogram( bool forceComputeFlag );
+    /** \brief Returns a list of selected bands - or empty if there is no selection restriction. */
+    QList< int > histoSelectedBands();
 };
 #endif
