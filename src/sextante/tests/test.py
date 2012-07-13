@@ -151,9 +151,9 @@ class SextanteProviderTestCase(unittest.TestCase):
         if not dlg:
             dlg = ParametersDialog(self.alg)
         # hack to handle that hacky code...
-        dlg.ui.setParamValues = lambda: True
+        dlg.setParamValues = lambda: True
         dlg.show()
-        dlg.ui.accept()
+        dlg.accept()
         while (not dlg.executed):
             time.sleep(.5)
 

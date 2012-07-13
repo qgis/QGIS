@@ -37,16 +37,13 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 class ParametersDialog(QtGui.QDialog):
+
+    NOT_SELECTED = "[Not selected]"
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
         QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
-        self.ui = Ui_ParametersDialog()
-        self.ui.setupUi(self, alg)
+        self.setupUi(self, alg)
         self.executed = False
-
-class Ui_ParametersDialog(object):
-
-    NOT_SELECTED = "[Not selected]"
 
     def setupUi(self, dialog, alg):
         self.alg = alg
