@@ -267,7 +267,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
+    void updatePaperItems();
     void addPaperItem();
+    void removePaperItems();
 
   signals:
     void paperSizeChanged();

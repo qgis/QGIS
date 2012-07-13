@@ -52,11 +52,7 @@ QgsComposition::QgsComposition():
 
 QgsComposition::~QgsComposition()
 {
-  for ( int i = 0; i < mPages.size(); ++i )
-  {
-    delete mPages.at( i );
-  }
-
+  removePaperItems();
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore
@@ -65,9 +61,13 @@ QgsComposition::~QgsComposition()
 
 void QgsComposition::setPaperSize( double width, double height )
 {
+  mPageWidth = width;
+  mPageHeight = height;
+  double currentY = 0;
   for ( int i = 0; i < mPages.size(); ++i )
   {
-    mPages.at( i )->setRect( QRectF( 0, 0, width, height ) );
+    mPages.at( i )->setRect( QRectF( 0, currentY, width, height ) );
+    ++currentY;
   }
 }
 
@@ -213,13 +213,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   }
 
   QDomElement compositionElem = doc.createElement( "Composition" );
-#if 0
-  if ( mPaperItem )
-  {
-    compositionElem.setAttribute( "paperWidth", QString::number( mPaperItem->rect().width() ) );
-    compositionElem.setAttribute( "paperHeight", QString::number( mPaperItem->rect().height() ) );
-  }
-#endif //0
+  compositionElem.setAttribute( "paperWidth", QString::number( mPageWidth ) );
+  compositionElem.setAttribute( "paperHeight", QString::number( mPageHeight ) );
+  compositionElem.setAttribute( "numPages", mPages.size() );
 
   //snapping
   if ( mSnapToGrid )
@@ -250,20 +246,19 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     return false;
   }
 
-  //create paper item
+  //create pages
   bool widthConversionOk, heightConversionOk;
-  double paperWidth = compositionElem.attribute( "paperWidth" ).toDouble( &widthConversionOk );
-  double paperHeight = compositionElem.attribute( "paperHeight" ).toDouble( &heightConversionOk );
+  mPageWidth = compositionElem.attribute( "paperWidth" ).toDouble( &widthConversionOk );
+  mPageHeight = compositionElem.attribute( "paperHeight" ).toDouble( &heightConversionOk );
+  int numPages = compositionElem.attribute( "numPages", "1" ).toInt();
 
   if ( widthConversionOk && heightConversionOk )
   {
-#if 0
-    delete mPaperItem;
-    mPaperItem = new QgsPaperItem( 0, 0, paperWidth, paperHeight, this );
-    mPaperItem->setBrush( Qt::white );
-    addItem( mPaperItem );
-    mPaperItem->setZValue( 0 );
-#endif //0
+    removePaperItems();
+    for ( int i = 0; i < numPages; ++i )
+    {
+      addPaperItem();
+    }
   }
 
   //snapping
@@ -281,14 +276,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
-
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
-
+  updatePaperItems();
   return true;
 }
 
@@ -856,72 +844,42 @@ int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 void QgsComposition::setSnapToGridEnabled( bool b )
 {
   mSnapToGrid = b;
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
 {
   mSnapGridOffsetX = offset;
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetY( double offset )
 {
   mSnapGridOffsetY = offset;
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setGridPen( const QPen& p )
 {
   mGridPen = p;
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setGridStyle( GridStyle s )
 {
   mGridStyle = s;
-#if 0
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-#endif //0
+  updatePaperItems();
   saveSettings();
 }
 
@@ -1242,6 +1200,15 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
   }
 }
 
+void QgsComposition::updatePaperItems()
+{
+  QList< QgsPaperItem* >::iterator paperIt = mPages.begin();
+  for ( ; paperIt != mPages.end(); ++paperIt )
+  {
+    ( *paperIt )->update();
+  }
+}
+
 void QgsComposition::addPaperItem()
 {
   double paperHeight = this->paperHeight();
@@ -1252,4 +1219,13 @@ void QgsComposition::addPaperItem()
   addItem( paperItem );
   paperItem->setZValue( 0 );
   mPages.push_back( paperItem );
+}
+
+void QgsComposition::removePaperItems()
+{
+  for ( int i = 0; i < mPages.size(); ++i )
+  {
+    delete mPages.at( i );
+  }
+  mPages.clear();
 }
