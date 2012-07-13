@@ -2,6 +2,7 @@
 #define QGSRASTERFILEWRITER_H
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -45,9 +46,10 @@ class CORE_EXPORT QgsRasterFileWriter
 
   private:
     QgsRasterFileWriter(); //forbidden
-    WriterError writeRasterSingleTile( QgsRasterIterator* iter, int nCols );
-    WriterError writeARGBRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+    WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs );
+    WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+                                  const QgsCoordinateReferenceSystem& crs );
 
     //initialize vrt member variables
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );
@@ -58,6 +60,12 @@ class CORE_EXPORT QgsRasterFileWriter
     void buildPyramides( const QString& filename );
 
     static int pyramidesProgress( double dfComplete, const char *pszMessage, void* pData );
+
+    /**Create provider and datasource for a part image (vrt mode)*/
+    QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
+        int iterLeft, int iterTop,
+        const QString& outputUrl, int fileIndex, int nBands, QgsRasterInterface::DataType type,
+        const QgsCoordinateReferenceSystem& crs );
 
     QString mOutputUrl;
     QString mOutputProviderKey;

@@ -3785,7 +3785,7 @@ void QgisApp::saveAsRasterFile()
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     pd.setWindowModality( Qt::WindowModal );
-    QgsRasterIterator iterator( rasterLayer->pipe()->last() );
+    QgsRasterIterator iterator( rasterLayer->dataProvider() );
     fileWriter.writeRaster( &iterator, d.nColumns(), d.outputRectangle(), rasterLayer->crs(), &pd );
   }
 }
