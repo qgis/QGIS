@@ -79,6 +79,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns width of paper item*/
     double paperWidth() const;
 
+    void setNumPages( int pages );
+    int numPages() const;
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
@@ -222,7 +225,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
     QgsComposition::PlotStyle mPlotStyle;
-    QgsPaperItem* mPaperItem;
+    double mPageWidth;
+    double mPageHeight;
+    QList< QgsPaperItem* > mPages;
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
@@ -261,6 +266,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void saveSettings();
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
+
+    void addPaperItem();
 
   signals:
     void paperSizeChanged();

@@ -33,22 +33,18 @@
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
+  addPaperItem();
 
-  //set paper item
-  mPaperItem = new QgsPaperItem( 0, 0, 297, 210, this ); //default size A4
-  mPaperItem->setBrush( Qt::white );
-  addItem( mPaperItem );
-  mPaperItem->setZValue( 0 );
   mPrintResolution = 300; //hardcoded default
   loadSettings();
 }
 
 QgsComposition::QgsComposition():
-    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ),
+    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mPrintAsRaster( false ),
     mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   loadSettings();
@@ -56,7 +52,10 @@ QgsComposition::QgsComposition():
 
 QgsComposition::~QgsComposition()
 {
-  delete mPaperItem;
+  for ( int i = 0; i < mPages.size(); ++i )
+  {
+    delete mPages.at( i );
+  }
 
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
@@ -66,21 +65,47 @@ QgsComposition::~QgsComposition()
 
 void QgsComposition::setPaperSize( double width, double height )
 {
-  if ( mPaperItem )
+  for ( int i = 0; i < mPages.size(); ++i )
   {
-    mPaperItem->setRect( QRectF( 0, 0, width, height ) );
-    emit paperSizeChanged();
+    mPages.at( i )->setRect( QRectF( 0, 0, width, height ) );
   }
 }
 
 double QgsComposition::paperHeight() const
 {
-  return mPaperItem->rect().height();
+  return mPageHeight;
 }
 
 double QgsComposition::paperWidth() const
 {
-  return mPaperItem->rect().width();
+  return mPageWidth;
+}
+
+void QgsComposition::setNumPages( int pages )
+{
+  int currentPages = numPages();
+  int diff = pages - currentPages;
+  if ( diff >= 0 )
+  {
+    for ( int i = 0; i < diff; ++i )
+    {
+      addPaperItem();
+    }
+  }
+  else
+  {
+    diff = -diff;
+    for ( int i = 0; i < diff; ++i )
+    {
+      delete mPages.last();
+      mPages.removeLast();
+    }
+  }
+}
+
+int QgsComposition::numPages() const
+{
+  return mPages.size();
 }
 
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
@@ -100,7 +125,8 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
     QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIt );
-    if ( composerItem && composerItem != mPaperItem )
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( composerItem && !paperItem )
     {
       return composerItem;
     }
@@ -187,11 +213,13 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   }
 
   QDomElement compositionElem = doc.createElement( "Composition" );
+#if 0
   if ( mPaperItem )
   {
     compositionElem.setAttribute( "paperWidth", QString::number( mPaperItem->rect().width() ) );
     compositionElem.setAttribute( "paperHeight", QString::number( mPaperItem->rect().height() ) );
   }
+#endif //0
 
   //snapping
   if ( mSnapToGrid )
@@ -229,11 +257,13 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   if ( widthConversionOk && heightConversionOk )
   {
+#if 0
     delete mPaperItem;
     mPaperItem = new QgsPaperItem( 0, 0, paperWidth, paperHeight, this );
     mPaperItem->setBrush( Qt::white );
     addItem( mPaperItem );
     mPaperItem->setZValue( 0 );
+#endif //0
   }
 
   //snapping
@@ -252,10 +282,12 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
 
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
 
   return true;
 }
@@ -824,60 +856,72 @@ int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 void QgsComposition::setSnapToGridEnabled( bool b )
 {
   mSnapToGrid = b;
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
   saveSettings();
 }
 
 void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
   saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
 {
   mSnapGridOffsetX = offset;
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
   saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetY( double offset )
 {
   mSnapGridOffsetY = offset;
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
   saveSettings();
 }
 
 void QgsComposition::setGridPen( const QPen& p )
 {
   mGridPen = p;
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
   saveSettings();
 }
 
 void QgsComposition::setGridStyle( GridStyle s )
 {
   mGridStyle = s;
+#if 0
   if ( mPaperItem )
   {
     mPaperItem->update();
   }
+#endif //0
   saveSettings();
 }
 
@@ -1196,4 +1240,16 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     emit selectedItemChanged( table );
     return;
   }
+}
+
+void QgsComposition::addPaperItem()
+{
+  double paperHeight = this->paperHeight();
+  double paperWidth = this->paperWidth();
+  double currentY = paperHeight * mPages.size();
+  QgsPaperItem* paperItem = new QgsPaperItem( 0, currentY, paperWidth, paperHeight, this ); //default size A4
+  paperItem->setBrush( Qt::white );
+  addItem( paperItem );
+  paperItem->setZValue( 0 );
+  mPages.push_back( paperItem );
 }
