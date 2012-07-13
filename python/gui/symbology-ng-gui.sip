@@ -1,31 +1,4 @@
 
-
-class QgsSymbolV2PropertiesDialog : QDialog //, private Ui::DlgSymbolV2Properties
-{
-%TypeHeaderCode
-#include <qgssymbolv2propertiesdialog.h>
-%End
-
-public:
-  QgsSymbolV2PropertiesDialog(QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = NULL);
-  
-  
-public slots:
-  void moveLayerDown();
-  void moveLayerUp();
-
-  void addLayer();
-  void removeLayer();
-
-  void lockLayer();
-
-  void layerTypeChanged();
-  
-  void layerChanged();
-
-};
-
-
 class QgsRendererV2PropertiesDialog : QDialog //, private Ui::QgsRendererV2PropsDialogBase
 {
 %TypeHeaderCode

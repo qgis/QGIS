@@ -22,8 +22,10 @@
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
-#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
+
+#include "qgsstylev2.h" //for symbol selector dialog
 
 #include "qgsapplication.h"
 
@@ -989,7 +991,7 @@ void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex& idx )
 
 void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
 {
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
+  QgsSymbolV2SelectorDialog dlg( mLayer->subSymbol(), QgsStyleV2::defaultStyle(), mVectorLayer, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     return;
@@ -1150,7 +1152,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOutlinePushButton_clicked()
 {
   if ( mLayer )
   {
-    QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
+    QgsSymbolV2SelectorDialog dlg( mLayer->subSymbol(), QgsStyleV2::defaultStyle(), mVectorLayer, this );
     if ( dlg.exec() == QDialog::Rejected )
     {
       return;

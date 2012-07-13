@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
-#include "qgssymbolv2propertiesdialog.h"
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
