@@ -67,6 +67,13 @@ class CORE_EXPORT QgsRasterFileWriter
         const QString& outputUrl, int fileIndex, int nBands, QgsRasterInterface::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
+    /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
+    QgsRasterDataProvider* initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
+                                       QgsRasterInterface::DataType type );
+
+    /**Calculate nRows, geotransform and pixel size for output*/
+    void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );
+
     QString mOutputUrl;
     QString mOutputProviderKey;
     QString mOutputFormat;

@@ -90,15 +90,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
 
   //create destProvider for whole dataset here
   QgsRasterDataProvider* destProvider = 0;
-  double pixelSize = outputExtent.width() / nCols;
-  int nRows = ( double )nCols / outputExtent.width() * outputExtent.height() + 0.5;
+  int nRows;
+  double pixelSize;
   double geoTransform[6];
-  geoTransform[0] = outputExtent.xMinimum();
-  geoTransform[1] = pixelSize;
-  geoTransform[2] = 0.0;
-  geoTransform[3] = outputExtent.yMaximum();
-  geoTransform[4] = 0.0;
-  geoTransform[5] = -pixelSize;
+  globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
   //check if all the bands have the same data type size, otherwise we cannot write it to the provider
   //(at least not with the current interface)
@@ -118,25 +113,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
     dataList.push_back( VSIMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
   }
 
-  if ( mTiledMode )
-  {
-    createVRT( nCols, nRows, crs, geoTransform );
-  }
-  else
-  {
-    destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
-    if ( !destProvider )
-    {
-      return DestProviderError;
-    }
-
-    if ( !destProvider->create( mOutputFormat, nBands, iface->dataType( 1 ), nCols, nRows, geoTransform,
-                                crs ) )
-    {
-      delete destProvider;
-      return CreateDatasourceError;
-    }
-  }
+  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  iface->dataType( 1 ) );
 
   int fileIndex = 0;
   while ( true )
@@ -221,38 +198,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   double progress = 0;
   int fileIndex = 0;
 
-  QgsRasterDataProvider* destProvider = 0;
-
   //create destProvider for whole dataset here
-  double pixelSize = outputExtent.width() / nCols;
-  int nRows = ( double )nCols / outputExtent.width() * outputExtent.height() + 0.5;
+  QgsRasterDataProvider* destProvider = 0;
+  int nRows;
+  double pixelSize;
   double geoTransform[6];
-  geoTransform[0] = outputExtent.xMinimum();
-  geoTransform[1] = pixelSize;
-  geoTransform[2] = 0.0;
-  geoTransform[3] = outputExtent.yMaximum();
-  geoTransform[4] = 0.0;
-  geoTransform[5] = -pixelSize;
+  globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
-  if ( mTiledMode )
-  {
-    createVRT( nCols, nRows, crs, geoTransform );
-  }
-  else
-  {
-    destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
-    if ( !destProvider )
-    {
-      return DestProviderError;
-    }
-
-    if ( !destProvider->create( mOutputFormat, 4, QgsRasterInterface::Byte, nCols, nRows, geoTransform,
-                                crs ) )
-    {
-      delete destProvider;
-      return CreateDatasourceError;
-    }
-  }
+  destProvider = initOutput( nCols, nRows, crs, geoTransform, 4, QgsRasterInterface::Byte );
 
   //iter->select( outputExtent, outputMapUnitsPerPixel );
   iter->startRasterRead( 1, nCols, nRows, outputExtent );
@@ -546,6 +499,45 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
     return 0;
   }
   return destProvider;
+}
+
+QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs,
+    double* geoTransform, int nBands, QgsRasterInterface::DataType type )
+{
+  if ( mTiledMode )
+  {
+    createVRT( nCols, nRows, crs, geoTransform );
+    return 0;
+  }
+  else
+  {
+    QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
+    if ( !destProvider )
+    {
+      return 0;
+    }
+
+    if ( !destProvider->create( mOutputFormat, nBands, type, nCols, nRows, geoTransform,
+                                crs ) )
+    {
+      delete destProvider;
+      return 0;
+    }
+    return destProvider;
+  }
+}
+
+void QgsRasterFileWriter::globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows,
+    double* geoTransform, double& pixelSize )
+{
+  pixelSize = extent.width() / nCols;
+  nRows = ( double )nCols / extent.width() * extent.height() + 0.5;
+  geoTransform[0] = extent.xMinimum();
+  geoTransform[1] = pixelSize;
+  geoTransform[2] = 0.0;
+  geoTransform[3] = extent.yMaximum();
+  geoTransform[4] = 0.0;
+  geoTransform[5] = -pixelSize;
 }
 
 
