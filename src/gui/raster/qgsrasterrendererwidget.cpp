@@ -55,7 +55,7 @@ bool QgsRasterRendererWidget::bandMinMax( LoadMinMaxAlgo loadAlgo, int band, dou
   {
     return false;
   }
-  if ( band < 0 )
+  if ( band <= 0 )
   {
     return false;
   }
