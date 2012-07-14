@@ -64,6 +64,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
   private:
     static QgsRasterRendererRegistry* mInstance;
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;
+    QStringList mSortedEntries;
 
     //read min/max values from
     bool minMaxValuesForBand( int band, QgsRasterDataProvider* provider, double& minValue, double& maxValue ) const;

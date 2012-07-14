@@ -48,13 +48,14 @@ QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
 
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
-  insert( QgsRasterRendererRegistryEntry( "paletted", QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, 0 ) );
+  // insert items in a particular order, which is returned in renderersList()
   insert( QgsRasterRendererRegistryEntry( "multibandcolor", QObject::tr( "Multiband color" ),
                                           QgsMultiBandColorRenderer::create, 0 ) );
-  insert( QgsRasterRendererRegistryEntry( "singlebandpseudocolor", QObject::tr( "Singleband pseudocolor" ),
-                                          QgsSingleBandPseudoColorRenderer::create, 0 ) );
+  insert( QgsRasterRendererRegistryEntry( "paletted", QObject::tr( "Paletted" ), QgsPalettedRasterRenderer::create, 0 ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandgray", QObject::tr( "Singleband gray" ),
                                           QgsSingleBandGrayRenderer::create, 0 ) );
+  insert( QgsRasterRendererRegistryEntry( "singlebandpseudocolor", QObject::tr( "Singleband pseudocolor" ),
+                                          QgsSingleBandPseudoColorRenderer::create, 0 ) );
   insert( QgsRasterRendererRegistryEntry( "singlebandcolordata", QObject::tr( "Singleband color data" ),
                                           QgsSingleBandColorDataRenderer::create, 0 ) );
 }
@@ -66,6 +67,7 @@ QgsRasterRendererRegistry::~QgsRasterRendererRegistry()
 void QgsRasterRendererRegistry::insert( QgsRasterRendererRegistryEntry entry )
 {
   mEntries.insert( entry.name, entry );
+  mSortedEntries.append( entry.name );
 }
 
 void QgsRasterRendererRegistry::insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func )
@@ -90,7 +92,8 @@ bool QgsRasterRendererRegistry::rendererData( const QString& rendererName, QgsRa
 
 QStringList QgsRasterRendererRegistry::renderersList() const
 {
-  return QStringList( mEntries.keys() );
+  // return QStringList( mEntries.keys() );
+  return mSortedEntries;
 }
 
 QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() const

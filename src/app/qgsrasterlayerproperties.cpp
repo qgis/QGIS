@@ -274,11 +274,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandgray", QgsSingleBandGrayRendererWidget::create );
 
   //fill available renderers into combo box
-  QList< QgsRasterRendererRegistryEntry > rendererEntries = QgsRasterRendererRegistry::instance()->entries();
-  QList< QgsRasterRendererRegistryEntry >::const_iterator rendererIt = rendererEntries.constBegin();
-  for ( ; rendererIt != rendererEntries.constEnd(); ++rendererIt )
+  QgsRasterRendererRegistryEntry entry;
+  foreach( QString name, QgsRasterRendererRegistry::instance()->renderersList() )
   {
-    mRenderTypeComboBox->addItem( rendererIt->visibleName, rendererIt->name );
+    if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
+    {
+      mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
+    }
   }
 
   if ( renderer )
