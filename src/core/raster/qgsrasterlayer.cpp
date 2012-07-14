@@ -371,6 +371,8 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     return myNullReturnStats;
   }
 
+  // TODO this is buggy - because the stats might have changed (e.g. theIgnoreOutOfRangeFlag in populateHistogram())
+  // should have a pointer to the stats instead
   QgsRasterBandStats myRasterBandStats = mRasterStatsList[theBandNo - 1];
   myRasterBandStats.bandNumber = theBandNo;
 
@@ -384,6 +386,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
   QgsDebugMsg( "adding stats to stats collection at position " + QString::number( theBandNo - 1 ) );
   //add this band to the class stats map
   mRasterStatsList[theBandNo - 1] = myRasterBandStats;
+
   emit drawingProgress( mHeight, mHeight ); //reset progress
   QgsDebugMsg( "Stats collection completed returning" );
   return myRasterBandStats;
@@ -1422,7 +1425,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
 }
 
 /*
- * @param theBandNoInt - which band to compute the histogram for
+ * @param theBandNoInt - which band to find out if has a cached histogram
  * @param theBinCountInt - how many 'bins' to categorise the data into
  */
 bool QgsRasterLayer::hasCachedHistogram( int theBandNo, int theBinCount )

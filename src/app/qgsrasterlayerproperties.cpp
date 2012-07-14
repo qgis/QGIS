@@ -1300,8 +1300,7 @@ void QgsRasterLayerProperties::refreshHistogram()
 
   if ( ! computeHistogram( false ) )
   {
-    // TODO - check raster min/max and min/max of default histogram
-    QgsDebugMsg( QString( "raster does not have cached histo" ) );
+    QgsDebugMsg( QString( "raster does not have cached histogram" ) );
     stackedWidget2->setCurrentIndex( 2 );
     return;
   }
@@ -1419,6 +1418,8 @@ void QgsRasterLayerProperties::refreshHistogram()
   bool myFirstIteration = true;
   /* get selected band list, if mHistoShowBands != ShowAll */
   QList< int > mySelectedBands = histoSelectedBands();
+  double myBinXStep = 1;
+  double myBinX = 0;
 
   for ( int myIteratorInt = 1;
         myIteratorInt <= myBandCountInt;
@@ -1442,15 +1443,28 @@ void QgsRasterLayerProperties::refreshHistogram()
     QVector<double> myX2Data;
     QVector<double> myY2Data;
 #endif
+    // calculate first bin x value and bin step size if not Byte data
+    if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QgsRasterDataProvider::Byte )
+    {
+      myBinXStep = myRasterBandStats.range / BINCOUNT;
+      myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;
+    }
+    else
+    {
+      myBinXStep = 1;
+      myBinX = 0;
+    }
+
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
       int myBinValue = myRasterBandStats.histogramVector->at( myBin );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-      data << QPointF( myBin, myBinValue );
+      data << QPointF( myBinX, myBinValue );
 #else
-      myX2Data.append( double( myBin ) );
+      myX2Data.append( double( myBinX ) );
       myY2Data.append( double( myBinValue ) );
 #endif
+      myBinX += myBinXStep;
     }
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     mypCurve->setSamples( data );
@@ -1472,9 +1486,10 @@ void QgsRasterLayerProperties::refreshHistogram()
   // for x axis use band pixel values rather than gdal hist. bin values
   // subtract -0.5 to prevent rounding errors
   // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
+  // fix x range for non-Byte data
   mpPlot->setAxisScale( QwtPlot::xBottom,
-                        mHistoMin - 0.5,
-                        mHistoMax + 0.5 );
+                        mHistoMin - myBinXStep / 2,
+                        mHistoMax + myBinXStep / 2 );
 
   mpPlot->replot();
 
@@ -1982,7 +1997,6 @@ void QgsRasterLayerProperties::histoActionTriggered( QAction* action )
   // Load actions
   else if ( actionName.left( 5 ) == "Load " )
   {
-    QgsRasterBandStats myRasterBandStats;
     QVector<int> myBands;
     double minMaxValues[2];
     bool ok = false;
