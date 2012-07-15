@@ -98,8 +98,6 @@ SET(QGIS_CORE_SRCS
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
-  qgssearchstring.cpp
-  qgssearchtreenode.cpp
   qgssnapper.cpp
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
@@ -244,9 +242,9 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 
-ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy qgsexpressionparser.yy)
+ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
@@ -362,8 +360,6 @@ SET(QGIS_CORE_HDRS
   qgsrendercontext.h
   qgsrunprocess.h
   qgsscalecalculator.h
-  qgssearchstring.h
-  qgssearchtreenode.h
   qgssnapper.h
   qgscoordinatereferencesystem.h
   qgsvectordataprovider.h
