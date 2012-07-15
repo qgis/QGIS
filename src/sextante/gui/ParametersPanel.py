@@ -33,10 +33,10 @@ class ParametersPanel(QtGui.QWidget):
 
     NOT_SELECTED = "[Not selected]"
 
-    def __init__(self, alg, paramDialog):
+    def __init__(self, parent, alg):
         super(ParametersPanel, self).__init__(None)
+        self.parent = parent
         self.alg = alg;
-        self.paramDialog = paramDialog
         self.valueItems = {}
         self.labels = {}
         self.widgets = {}
@@ -246,7 +246,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):
-            item = ExtentSelectionPanel(self.paramDialog, param.default)
+            item = ExtentSelectionPanel(self.parent, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         else:

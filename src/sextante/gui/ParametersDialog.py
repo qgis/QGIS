@@ -4,6 +4,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
 from sextante.core.QGisLayers import QGisLayers
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+from sextante.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -14,7 +16,7 @@ from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.core.SextanteLog import SextanteLog
-from sextante.gui.SextantePostprocessing import SextantePostprocessing
+#~ from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.parameters.ParameterNumber import ParameterNumber
 
@@ -36,71 +38,14 @@ try:
 except AttributeError:
     _fromUtf8 = lambda s: s
 
-class ParametersDialog(QtGui.QDialog):
+class ParametersDialog(AlgorithmExecutionDialog):
 
     NOT_SELECTED = "[Not selected]"
     '''the default parameters dialog, to be used when an algorithm is called from the toolbox'''
     def __init__(self, alg):
-        QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
-        self.setupUi(self, alg)
+        self.paramTable = ParametersPanel(self, alg)        
+        AlgorithmExecutionDialog.__init__(self, alg, self.paramTable)
         self.executed = False
-
-    def setupUi(self, dialog, alg):
-        self.alg = alg
-        self.dialog = dialog
-        dialog.resize(650, 450)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Close|QtGui.QDialogButtonBox.Ok)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
-
-        self.paramTable = ParametersPanel(self.alg, self.dialog)
-        self.scrollArea = QtGui.QScrollArea()
-        self.scrollArea.setWidget(self.paramTable)
-        self.scrollArea.setWidgetResizable(True)
-        dialog.setWindowTitle(self.alg.name)
-        self.progressLabel = QtGui.QLabel()
-        self.progress = QtGui.QProgressBar()
-        self.progress.setMinimum(0)
-        self.progress.setMaximum(100)
-        self.progress.setValue(0)
-        self.verticalLayout = QtGui.QVBoxLayout(dialog)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
-        self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMinimumWidth(300)
-        self.tabWidget.addTab(self.scrollArea, "Parameters")
-        self.verticalLayout.addWidget(self.tabWidget)
-        self.webView = QtWebKit.QWebView()
-        cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))
-        self.webView.settings().setUserStyleSheetUrl(cssUrl)
-        html = None
-        try:
-            if self.alg.helpFile():
-                helpFile = self.alg.helpFile()
-            else:
-                html = "<h2>Sorry, no help is available for this algorithm.</h2>"
-        except WrongHelpFileException, e:
-            html = e.msg
-            self.webView.setHtml("<h2>Could not open help file :-( </h2>")
-        try:
-            if html:
-                self.webView.setHtml(html)
-            else:
-                url = QtCore.QUrl(helpFile)
-                self.webView.load(url)
-        except:
-            self.webView.setHtml("<h2>Could not open help file :-( </h2>")
-        self.tabWidget.addTab(self.webView, "Help")
-        self.verticalLayout.addWidget(self.progressLabel)
-        self.verticalLayout.addWidget(self.progress)
-        self.verticalLayout.addWidget(self.buttonBox)
-        dialog.setLayout(self.verticalLayout)
-        self.buttonBox.accepted.connect(self.accept)
-        self.buttonBox.rejected.connect(self.dialog.close)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.cancel)
-        QtCore.QMetaObject.connectSlotsByName(dialog)
 
 
     def setParamValues(self):
@@ -159,7 +104,7 @@ class ParametersDialog(QtGui.QDialog):
         if self.setParamValues():
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.critical(self.dialog, "Unable to execute algorithm", msg)
+                QMessageBox.critical(self, "Unable to execute algorithm", msg)
                 return
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(False)
@@ -204,10 +149,10 @@ class ParametersDialog(QtGui.QDialog):
                         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
                         SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
-                self.dialog.executed = True
+                self.executed = True
                 QApplication.restoreOverrideCursor()
                 if not keepOpen:
-                        self.dialog.close()
+                        self.close()
                 else:
                     self.progressLabel.setText("")
                     self.progress.setMaximum(100)
@@ -218,17 +163,17 @@ class ParametersDialog(QtGui.QDialog):
 
 
         else:
-            QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
+            QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
 
     @pyqtSlot()
     def finish(self):
-        self.dialog.executed = True
+        self.executed = True
         SextanteLog.addToLog(SextanteLog.LOG_INFO,
             "Algorithm %s finished correctly" % self.alg.name)
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
-            self.dialog.close()
+            self.close()
         else:
             self.progressLabel.setText("")
             self.progress.setMaximum(100)
@@ -237,41 +182,8 @@ class ParametersDialog(QtGui.QDialog):
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
         self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 
-    @pyqtSlot(str)
-    def error(self, msg):
-        self.algEx.finished.disconnect()
-        QApplication.restoreOverrideCursor()
-        QMessageBox.critical(self.dialog, "Error", msg)
-        SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        if not keepOpen:
-            self.dialog.close()
-        else:
-            self.progressLabel.setText("")
-            self.progress.setValue(0)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-
     @pyqtSlot(int)
     def iterate(self, i):
         SextanteLog.addToLog(SextanteLog.LOG_INFO,
             "Algorithm %s iteration #%i completed" % (self.alg.name, i))
 
-    @pyqtSlot()
-    def cancel(self):
-        SextanteLog.addToLog(SextanteLog.LOG_INFO,
-            "Algorithm %s canceled" % self.alg.name)
-        try:
-            self.algEx.finished.disconnect()
-            self.algEx.terminate()
-            QApplication.restoreOverrideCursor()
-            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
-        except:
-            pass
-
-    def setPercentage(self, i):
-        if self.progress.maximum() == 0:
-            self.progress.setMaximum(100)
-        self.progress.setValue(i)
-
-    def setText(self, text):
-        self.progressLabel.setText(text)
