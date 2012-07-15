@@ -130,21 +130,13 @@ bool QgsStyleV2::removeSymbol( QString name )
 
   // TODO
   // Simplify this work here, its STUPID to run two DB queries for the sake of remove()
-  QByteArray array = name.toUtf8();
-  char *query;
   if ( mCurrentDB == NULL )
   {
     QgsDebugMsg( "Sorry! Cannot open database to tag." );
     return false;
   }
 
-  int symbolid = 0;
-  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
-  sqlite3_stmt *ppStmt;
-  int err = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
-  if ( err == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-    symbolid = sqlite3_column_int( ppStmt, 0 );
-  sqlite3_finalize( ppStmt );
+  int symbolid = symbolId( name );
   if ( !symbolid )
   {
     QgsDebugMsg( "No such symbol for deleting in database: " + name + ". Cheers." );
@@ -188,6 +180,28 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp )
   if ( mColorRamps.contains( name ) )
     delete mColorRamps.value( name );
 
+  // insert it into the database
+  QDomDocument doc( "dummy" );
+  QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( name, colorRamp, doc );
+  if ( rampEl.isNull() )
+  {
+    QgsDebugMsg( "Couldnot convert color ramp to valid XML!" );
+    return false;
+  }
+
+  QByteArray *xmlArray = new QByteArray();
+  QTextStream stream( xmlArray );
+  rampEl.save( stream, 4 );
+  QByteArray nameArray = name.toUtf8();
+  char *query = sqlite3_mprintf( "INSERT INTO colorramp VALUES (NULL, '%q', '%q');",
+      nameArray.constData(), xmlArray->constData() );
+
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( "Couldnot insert colorramp into the Database!" );
+    return false;
+  }
+
   mColorRamps.insert( name, colorRamp );
   return true;
 }
@@ -197,6 +211,13 @@ bool QgsStyleV2::removeColorRamp( QString name )
   if ( !mColorRamps.contains( name ) )
     return false;
 
+  QByteArray array = name.toUtf8();
+  char *query = sqlite3_mprintf( "DELETE FROM colorramp WHERE name='%q';", array.constData() );
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( "Couldn't remove color ramp from the database." );
+    return false;
+  }
   // remove from map and delete
   delete mColorRamps.take( name );
   return true;
@@ -285,7 +306,7 @@ bool QgsStyleV2::load( QString filename )
     QDomElement rampElement = doc.documentElement();
     QgsVectorColorRampV2* ramp = QgsSymbolLayerV2Utils::loadColorRamp( rampElement );
     if ( ramp != NULL )
-      addColorRamp( ramp_name, ramp );
+      mColorRamps.insert( ramp_name, ramp );
   }
 
   mFileName = filename;
@@ -628,32 +649,27 @@ QStringList QgsStyleV2::findSymbols( QString qword )
 
 bool QgsStyleV2::tagSymbol( QString symbol, QStringList tags )
 {
-  QByteArray array = symbol.toUtf8();
-  char *query;
   if ( mCurrentDB == NULL )
   {
     QgsDebugMsg( "Sorry! Cannot open database to tag." );
     return false;
   }
 
-  int symbolid = 0;
-  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
-  sqlite3_stmt *ppStmt;
-  int err = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
-  if ( err == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-    symbolid = sqlite3_column_int( ppStmt, 0 );
-  sqlite3_finalize( ppStmt );
+  int symbolid = symbolId( symbol );
   if ( !symbolid )
   {
     QgsDebugMsg( "No such symbol for tagging in database: " + symbol );
     return false;
   }
 
+  char *query;
+  int nErr;
+  sqlite3_stmt *ppStmt;
+
   foreach ( const QString &tag, tags )
   {
     int tagid;
     char *zErr = 0;
-    int nErr;
     QByteArray tagArray = tag.toUtf8();
     // sql: gets the id of the tag if present or insert the tag and get the id of the tag
     query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q';", tagArray.constData() );
@@ -664,14 +680,7 @@ bool QgsStyleV2::tagSymbol( QString symbol, QStringList tags )
     }
     else
     {
-      query = sqlite3_mprintf( "INSERT INTO tag VALUES (NULL,'%q');", tagArray.constData() );
-      nErr = sqlite3_exec( mCurrentDB, query, NULL, NULL, &zErr );
-      if ( nErr )
-      {
-        QgsDebugMsg( zErr );
-        return false;
-      }
-      tagid = (int)sqlite3_last_insert_rowid( mCurrentDB );
+      tagid = addTag( tag );
     }
     sqlite3_finalize( ppStmt );
     // Now map the tag to the symbol
@@ -731,27 +740,21 @@ bool QgsStyleV2::detagSymbol( QString symbol, QStringList tags )
 
 QStringList QgsStyleV2::tagsOfSymbol( QString symbol )
 {
-  QStringList tagList;
-  QByteArray array = symbol.toUtf8();
-  char *query;
-  sqlite3_stmt *ppStmt;
-  int symbolid;
   if ( mCurrentDB == NULL )
   {
     QgsDebugMsg( "Sorry! Cannot open database for getting the tags." );
     return QStringList();
   }
-  // get the symbol id
-  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
-  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    symbolid = sqlite3_column_int( ppStmt, 0 );
-  }
-  sqlite3_finalize( ppStmt );
+  QStringList tagList;
+  char *query;
+  sqlite3_stmt *ppStmt;
+  int symbolid = symbolId( symbol );
+  if ( !symbolid )
+    return QStringList();
+
   // get the ids of tags for the symbol
   query = sqlite3_mprintf( "SELECT tag_id FROM tagmap WHERE symbol_id=%d;", symbolid );
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     int tagid = sqlite3_column_int( ppStmt, 0 );
@@ -769,4 +772,20 @@ QStringList QgsStyleV2::tagsOfSymbol( QString symbol )
   sqlite3_finalize( ppStmt );
 
   return tagList;
+}
+
+int QgsStyleV2::symbolId( QString name )
+{
+  int symbolid = 0;
+  char *query;
+  sqlite3_stmt *ppStmt;
+  QByteArray array = name.toUtf8();
+  query = sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q';", array.constData() );
+  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbolid = sqlite3_column_int( ppStmt, 0 );
+  }
+  sqlite3_finalize( ppStmt );
+  return symbolid;
 }

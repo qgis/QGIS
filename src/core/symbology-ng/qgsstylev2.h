@@ -78,6 +78,10 @@ class CORE_EXPORT QgsStyleV2
     //! return a list of names of symbols
     QStringList symbolNames();
 
+    //! return the id in the style database for the given symbol name
+    //! returns 0 if not found
+    int symbolId( QString name );
+
     //! return a map of all groupid and names for the given parent
     //! Returns the First order groups when empty QString is passed
     QgsSymbolGroupMap groupNames( QString parent = "" );
