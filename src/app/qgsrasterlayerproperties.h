@@ -39,6 +39,11 @@ class QwtPlotZoomer;
   *@author Tim Sutton
   */
 
+// fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+typedef QPointF QwtDoublePoint;
+#endif
+
 class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPropertiesBase
 {
     Q_OBJECT
@@ -53,6 +58,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     /** synchronize state with associated raster layer */
     void sync();
+
+    /** Save the histogram as an image to disk */
+    void histoSaveAsImage( const QString& theFilename );
 
   public slots:
     //TODO: Verify that these all need to be public
@@ -115,6 +123,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_btnHistoMax_toggled();
     /** Called when a selection has been made using the plot picker. */
     void histoPickerSelected( const QPointF & );
+    /** Called when a selection has been made using the plot picker (for qwt5 only). */
+    void histoPickerSelectedQwt5( const QwtDoublePoint & );
     /** Various actions that are stored in btnHistoActions. */
     void histoActionTriggered( QAction* );
     /** Draw the min/max markers on the histogram plot. */
@@ -178,6 +188,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QgsMapToolEmitPoint* mPixelSelectorTool;
 
     // histogram
+
     QwtPlotPicker* mHistoPicker;
     QwtPlotZoomer* mHistoZoomer;
     QwtPlotMarker* mHistoMarkerMin;

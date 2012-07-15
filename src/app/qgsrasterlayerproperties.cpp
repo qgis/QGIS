@@ -72,6 +72,10 @@
 #include <qwt_plot_picker.h>
 #include <qwt_picker_machine.h>
 #include <qwt_plot_zoomer.h>
+#include <qwt_plot_layout.h>
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+#include <qwt_plot_renderer.h>
+#endif
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
@@ -1323,7 +1327,9 @@ void QgsRasterLayerProperties::refreshHistogram()
     return;
   }
 
-#if !defined(QWT_VERSION) || QWT_VERSION<0x060000
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  mpPlot->detachItems();
+#else
   mpPlot->clear();
 #endif
   //ensure all children get removed
@@ -1334,6 +1340,7 @@ void QgsRasterLayerProperties::refreshHistogram()
   mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Pixel Value" ) );
   mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Frequency" ) );
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
+
   // x axis scale only set after computing global min/max across bands (see below)
   // add a grid
   QwtPlotGrid * myGrid = new QwtPlotGrid();
@@ -1523,24 +1530,25 @@ void QgsRasterLayerProperties::refreshHistogram()
   if ( ! mHistoPicker )
   {
     mHistoPicker = new QwtPlotPicker( mpPlot->canvas() );
-#if (QWT_VERSION>=0x060000)
-    mHistoPicker->setStateMachine(new QwtPickerDragPointMachine);
-#else
-    mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
-#endif
     // mHistoPicker->setTrackerMode( QwtPicker::ActiveOnly );
     mHistoPicker->setTrackerMode( QwtPicker::AlwaysOff );
     mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
     mHistoPicker->setEnabled( false );
-    connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelected( const QwtDoublePoint & ) ) );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    mHistoPicker->setStateMachine( new QwtPickerDragPointMachine );
+    connect( mHistoPicker, SIGNAL( selected( const QPointF & ) ), this, SLOT( histoPickerSelected( const QPointF & ) ) );
+#else
+    mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
+    connect( mHistoPicker, SIGNAL( selected( const QwtDoublePoint & ) ), this, SLOT( histoPickerSelectedQwt5( const QwtDoublePoint & ) ) );
+#endif
   }
 
   // plot zoomer
   if ( ! mHistoZoomer )
   {
     mHistoZoomer = new QwtPlotZoomer( mpPlot->canvas() );
-#if (QWT_VERSION>=0x060000)
-    mHistoZoomer->setStateMachine(new QwtPickerDragRectMachine);
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    mHistoZoomer->setStateMachine( new QwtPickerDragRectMachine );
 #else
     mHistoZoomer->setSelectionFlags( QwtPicker::RectSelection | QwtPicker::DragSelection );
 #endif
@@ -1563,29 +1571,64 @@ void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
     return;
   }
 
+  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
+  QFileInfo myInfo( myFileNameAndFilter.first );
+  if ( QFileInfo( myFileNameAndFilter.first ).baseName() != "" )
+  {
+    histoSaveAsImage( myFileNameAndFilter.first );
+  }
+}
+
+void QgsRasterLayerProperties::histoSaveAsImage( const QString& theFilename )
+{
+  // make sure dir. exists
+  QDir myDir( QFileInfo( theFilename ).dir() );
+  if ( ! myDir.exists() )
+  {
+    QgsDebugMsg( QString( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath() ).arg( theFilename ) );
+    return;
+  }
+
+  // prepare the pixmap
   QPixmap myPixmap( 600, 600 );
+  QRect myQRect( 5, 5, 590, 590 ); // leave a 5px border on all sides
   myPixmap.fill( Qt::white ); // Qt::transparent ?
 
-#if (QWT_VERSION<0x060000)
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+  QwtPlotRenderer myRenderer;
+  myRenderer.setDiscardFlags( QwtPlotRenderer::DiscardBackground |
+                              QwtPlotRenderer::DiscardCanvasBackground );
+  myRenderer.setLayoutFlags( QwtPlotRenderer::FrameWithScales );
+
+  QPainter myPainter;
+  myPainter.begin( &myPixmap );
+  myRenderer.render( mpPlot, &myPainter, myQRect );
+  myPainter.end();
+#else
   QwtPlotPrintFilter myFilter;
   int myOptions = QwtPlotPrintFilter::PrintAll;
   myOptions &= ~QwtPlotPrintFilter::PrintBackground;
   myOptions |= QwtPlotPrintFilter::PrintFrameWithScales;
   myFilter.setOptions( myOptions );
 
-  mpPlot->print( myPixmap, myFilter );
-#else
-  QPainter painter;
-  painter.begin( &myPixmap );
-  mpPlot->drawCanvas( &painter );
-  painter.end();
+  QPainter myPainter;
+  myPainter.begin( &myPixmap );
+  mpPlot->print( &myPainter, myQRect, myFilter );
+  myPainter.end();
+
+  // "fix" for bug in qwt5 - legend and plot shifts a bit
+  // can't see how to avoid this without picking qwt5 apart...
+  refreshHistogram();
+  refreshHistogram();
 #endif
-  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( myFileNameAndFilter.first != "" )
-  {
-    myPixmap.save( myFileNameAndFilter.first );
-  }
+
+  // save pixmap to file
+  myPixmap.save( theFilename );
+
+#if defined(QWT_VERSION) && QWT_VERSION<0x060000
+#endif
 }
+
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
 {
   int myLineCounter = 0;
@@ -2242,7 +2285,11 @@ void QgsRasterLayerProperties::histoPickerSelected( const QPointF & pos )
   }
   if ( QApplication::overrideCursor() )
     QApplication::restoreOverrideCursor();
+}
 
+void QgsRasterLayerProperties::histoPickerSelectedQwt5( const QwtDoublePoint & pos )
+{
+  histoPickerSelected( QPointF( pos.x(), pos.y() ) );
 }
 
 void QgsRasterLayerProperties::updateHistoMarkers( )
@@ -2287,7 +2334,6 @@ void QgsRasterLayerProperties::updateHistoMarkers( )
   mHistoMarkerMax->show();
 
   mpPlot->replot();
-
 }
 
 
