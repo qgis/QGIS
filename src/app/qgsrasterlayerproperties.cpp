@@ -244,28 +244,24 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     cboxTransparencyBand->addItem( tr( "None" ), -1 );
     int nBands = provider->bandCount();
     QString bandName;
+    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+    {
+      bandName = provider->generateBandName( i );
 
-    if ( nBands == 1 )
-    {
-      /* Color interpretation name only makes sense for 1-band rasters */
-      bandName = provider->colorInterpretationName( 1 );
-      if ( bandName == "Undefined" )
-        bandName = provider->generateBandName( 1 );
-      cboxTransparencyBand->addItem( bandName, 1 );
-    }
-    else if ( nBands > 1 )
-    {
-      for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+      QString colorInterp = provider->colorInterpretationName( i );
+      if ( colorInterp != "Undefined" )
       {
-        bandName = provider->generateBandName( i );
-        cboxTransparencyBand->addItem( bandName, i );
+        bandName.append( QString( " (%1)" ).arg( colorInterp ) );
       }
+      cboxTransparencyBand->addItem( bandName, i );
     }
+
     if ( renderer )
     {
       cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
     }
   }
+
 
   //insert renderer widgets into registry
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "paletted", QgsPalettedRendererWidget::create );

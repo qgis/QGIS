@@ -34,16 +34,13 @@ QString QgsRasterRendererWidget::displayBandName( int band ) const
     return name;
   }
 
-  /* Color interpretation name only makes sense for 1-band rasters */
-  if ( provider->bandCount() <= 1 )
-  {
-    name = provider->colorInterpretationName( band );
-    if ( name != "Undefined" )
-      return name;
-  }
-
   name = provider->generateBandName( band );
 
+  QString colorInterp = provider->colorInterpretationName( band );
+  if ( colorInterp != "Undefined" )
+  {
+    name.append( QString( " (%1)" ).arg( colorInterp ) );
+  }
   return name;
 }
 
