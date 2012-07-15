@@ -244,28 +244,24 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     cboxTransparencyBand->addItem( tr( "None" ), -1 );
     int nBands = provider->bandCount();
     QString bandName;
+    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+    {
+      bandName = provider->generateBandName( i );
 
-    if ( nBands == 1 )
-    {
-      /* Color interpretation name only makes sense for 1-band rasters */
-      bandName = provider->colorInterpretationName( 1 );
-      if ( bandName == "Undefined" )
-        bandName = provider->generateBandName( 1 );
-      cboxTransparencyBand->addItem( bandName, 1 );
-    }
-    else if ( nBands > 1 )
-    {
-      for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
+      QString colorInterp = provider->colorInterpretationName( i );
+      if ( colorInterp != "Undefined" )
       {
-        bandName = provider->generateBandName( i );
-        cboxTransparencyBand->addItem( bandName, i );
+        bandName.append( QString( " (%1)" ).arg( colorInterp ) );
       }
+      cboxTransparencyBand->addItem( bandName, i );
     }
+
     if ( renderer )
     {
       cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
     }
   }
+
 
   //insert renderer widgets into registry
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "paletted", QgsPalettedRendererWidget::create );
@@ -449,13 +445,30 @@ void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* ren
   tableTransparency->setColumnCount( 0 );
   tableTransparency->setRowCount( 0 );
 
-  QList<int> bandList = renderer->usesBands();
-  tableTransparency->setColumnCount( bandList.size() + 1 );
-  for ( int i = 0; i < bandList.size(); ++i )
+  int nBands = renderer->usesBands().size();
+  tableTransparency->setColumnCount( nBands + 1 );
+  if ( nBands == 3 )
   {
-    tableTransparency->setHorizontalHeaderItem( i, new QTableWidgetItem( QString::number( bandList.at( i ) ) ) );
+    tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Red" ) ) );
+    tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Green" ) ) );
+    tableTransparency->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Blue" ) ) );
+    tableTransparency->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
   }
-  tableTransparency->setHorizontalHeaderItem( bandList.size(), new QTableWidgetItem( tr( "Percent Transparent" ) ) );
+  else //1 band
+  {
+    if ( QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
+         QgsRasterLayer::PalettedSingleBandGray != mRasterLayer->drawingStyle() &&
+         QgsRasterLayer::PalettedSingleBandPseudoColor != mRasterLayer->drawingStyle() &&
+         QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
+    {
+      tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Gray" ) ) );
+    }
+    else
+    {
+      tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Indexed Value" ) ) );
+    }
+    tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
+  }
 
   const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
   if ( !rasterTransparency )
@@ -463,27 +476,27 @@ void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* ren
     return;
   }
 
-  if ( bandList.count() == 1 )
+  if ( nBands == 1 )
   {
     QList<QgsRasterTransparency::TransparentSingleValuePixel> pixelList = rasterTransparency->transparentSingleValuePixelList();
     for ( int i = 0; i < pixelList.size(); ++i )
     {
       tableTransparency->insertRow( i );
-      QTableWidgetItem* grayItem = new QTableWidgetItem( QString::number( pixelList[i].pixelValue ) );
+      QTableWidgetItem* grayItem = new QTableWidgetItem( QString::number( pixelList[i].pixelValue, 'f' ) );
       QTableWidgetItem* percentItem = new QTableWidgetItem( QString::number( pixelList[i].percentTransparent ) );
       tableTransparency->setItem( i, 0, grayItem );
       tableTransparency->setItem( i, 1, percentItem );
     }
   }
-  else if ( bandList.count() == 3 )
+  else if ( nBands == 3 )
   {
     QList<QgsRasterTransparency::TransparentThreeValuePixel> pixelList = rasterTransparency->transparentThreeValuePixelList();
     for ( int i = 0; i < pixelList.size(); ++i )
     {
       tableTransparency->insertRow( i );
-      QTableWidgetItem* redItem = new QTableWidgetItem( QString::number( pixelList[i].red ) );
-      QTableWidgetItem* greenItem = new QTableWidgetItem( QString::number( pixelList[i].green ) );
-      QTableWidgetItem* blueItem = new QTableWidgetItem( QString::number( pixelList[i].blue ) );
+      QTableWidgetItem* redItem = new QTableWidgetItem( QString::number( pixelList[i].red, 'f' ) );
+      QTableWidgetItem* greenItem = new QTableWidgetItem( QString::number( pixelList[i].green, 'f' ) );
+      QTableWidgetItem* blueItem = new QTableWidgetItem( QString::number( pixelList[i].blue, 'f' ) );
       QTableWidgetItem* transparentItem = new QTableWidgetItem( QString::number( pixelList[i].percentTransparent ) );
 
       tableTransparency->setItem( i, 0, redItem );
@@ -1121,10 +1134,12 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
   int nBands = r->usesBands().size();
   delete r;
 
+  tableTransparency->clear();
+  tableTransparency->setRowCount( 0 );
+  tableTransparency->setColumnCount( nBands + 1 );
+
   if ( nBands == 3 )
   {
-    tableTransparency->clear();
-    tableTransparency->setColumnCount( 4 );
     tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Red" ) ) );
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Green" ) ) );
     tableTransparency->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Blue" ) ) );
@@ -1135,13 +1150,11 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
       tableTransparency->setItem( 0, 0, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
       tableTransparency->setItem( 0, 1, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
       tableTransparency->setItem( 0, 2, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
-      tableTransparency->setItem( 0, 3, new QTableWidgetItem( "100.0" ) );
+      tableTransparency->setItem( 0, 3, new QTableWidgetItem( "100" ) );
     }
   }
   else //1 band
   {
-    tableTransparency->clear();
-    tableTransparency->setColumnCount( 2 );
     if ( QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
          QgsRasterLayer::PalettedSingleBandGray != mRasterLayer->drawingStyle() &&
          QgsRasterLayer::PalettedSingleBandPseudoColor != mRasterLayer->drawingStyle() &&
@@ -1159,9 +1172,12 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
     {
       tableTransparency->insertRow( tableTransparency->rowCount() );
       tableTransparency->setItem( 0, 0, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
-      tableTransparency->setItem( 0, 1, new QTableWidgetItem( "100.0" ) );
+      tableTransparency->setItem( 0, 1, new QTableWidgetItem( "100" ) );
     }
   }
+
+  tableTransparency->resizeColumnsToContents();
+  tableTransparency->resizeRowsToContents();
 }
 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
