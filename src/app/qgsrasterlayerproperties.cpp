@@ -1523,7 +1523,11 @@ void QgsRasterLayerProperties::refreshHistogram()
   if ( ! mHistoPicker )
   {
     mHistoPicker = new QwtPlotPicker( mpPlot->canvas() );
+#if (QWT_VERSION>=0x060000)
+    mHistoPicker->setStateMachine(new QwtPickerDragPointMachine);
+#else
     mHistoPicker->setSelectionFlags( QwtPicker::PointSelection | QwtPicker::DragSelection );
+#endif
     // mHistoPicker->setTrackerMode( QwtPicker::ActiveOnly );
     mHistoPicker->setTrackerMode( QwtPicker::AlwaysOff );
     mHistoPicker->setRubberBand( QwtPicker::VLineRubberBand );
@@ -1535,7 +1539,11 @@ void QgsRasterLayerProperties::refreshHistogram()
   if ( ! mHistoZoomer )
   {
     mHistoZoomer = new QwtPlotZoomer( mpPlot->canvas() );
+#if (QWT_VERSION>=0x060000)
+    mHistoZoomer->setStateMachine(new QwtPickerDragRectMachine);
+#else
     mHistoZoomer->setSelectionFlags( QwtPicker::RectSelection | QwtPicker::DragSelection );
+#endif
     mHistoZoomer->setTrackerMode( QwtPicker::AlwaysOff );
     mHistoZoomer->setEnabled( true );
   }
@@ -2218,7 +2226,7 @@ QString findClosestTickVal( double target, QwtScaleDiv * scale, int div = 100 )
   return QString::number( closest );
 }
 
-void QgsRasterLayerProperties::histoPickerSelected( const QwtDoublePoint & pos )
+void QgsRasterLayerProperties::histoPickerSelected( const QPointF & pos )
 {
   if ( btnHistoMin->isChecked() )
   {

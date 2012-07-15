@@ -114,7 +114,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_btnHistoMin_toggled();
     void on_btnHistoMax_toggled();
     /** Called when a selection has been made using the plot picker. */
-    void histoPickerSelected( const QwtDoublePoint & );
+    void histoPickerSelected( const QPointF & );
     /** Various actions that are stored in btnHistoActions. */
     void histoActionTriggered( QAction* );
     /** Draw the min/max markers on the histogram plot. */
