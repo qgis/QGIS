@@ -10,27 +10,28 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#ifndef PLUGINGUI_H
-#define PLUGINGUI_H
+#ifndef QGSDELIMITEDTEXTSOURCESELECT_H
+#define QGSDELIMITEDTEXTSOURCESELECT_H
 
-#include "ui_qgsdelimitedtextpluginguibase.h"
+#include "ui_qgsdelimitedtextsourceselectbase.h"
+
 #include <QTextStream>
 #include "qgscontexthelp.h"
+#include "qgisgui.h"
 
 class QgisInterface;
 
 /**
- * \class QgsDelimitedTextPluginGui
+ * \class QgsDelimitedTextSourceSelect
  */
-class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPluginGuiBase
+class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTextSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget* parent = 0, Qt::WFlags fl = 0 );
-    ~QgsDelimitedTextPluginGui();
+    QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
+    ~QgsDelimitedTextSourceSelect();
 
-    QString readLine( QTextStream & stream );
     QStringList splitLine( QString line );
 
   private:
@@ -38,9 +39,6 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void updateFieldLists();
     void getOpenFileName();
     QString selectedChars();
-
-    QgisInterface * qI;
-    QAbstractButton *pbnOK;
 
   private slots:
     void on_buttonBox_accepted();
@@ -53,8 +51,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void enableAccept();
 
   signals:
-    void drawRasterLayer( QString );
-    void drawVectorLayer( QString, QString, QString );
+    void addVectorLayer( QString, QString, QString );
 };
 
-#endif
+#endif // QGSDELIMITEDTEXTSOURCESELECT_H

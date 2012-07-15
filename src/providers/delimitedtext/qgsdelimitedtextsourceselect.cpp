@@ -11,11 +11,13 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "qgsdelimitedtextplugingui.h"
+#include "qgsdelimitedtextsourceselect.h"
 
 #include "qgisinterface.h"
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
+
+#include "qgsdelimitedtextprovider.h"
 
 #include <QFile>
 #include <QFileDialog>
@@ -26,15 +28,19 @@
 #include <QTextStream>
 #include <QUrl>
 
-QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget * parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), qI( _qI )
+QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
+    QDialog( parent, fl )
 {
   setupUi( this );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Plugin-DelimitedText/geometry" ).toByteArray() );
 
-  pbnOK = buttonBox->button( QDialogButtonBox::Ok );
+  if ( embedded )
+  {
+    buttonBox->button( QDialogButtonBox::Cancel )->hide();
+    buttonBox->button( QDialogButtonBox::Ok )->hide();
+  }
 
   updateFieldsAndEnable();
 
@@ -89,18 +95,18 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   connect( rowCounter, SIGNAL( valueChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
 }
 
-QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
+QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
 {
   QSettings settings;
   settings.setValue( "/Plugin-DelimitedText/geometry", saveGeometry() );
 }
 
-void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
+void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
 {
   getOpenFileName();
 }
 
-void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
+void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 {
   if ( !txtLayerName->text().isEmpty() )
   {
@@ -143,7 +149,7 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
       url.addQueryItem( "skipLines", QString( "%1" ).arg( skipLines ) );
 
     // add the layer to the map
-    emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), "delimitedtext" );
+    emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), "delimitedtext" );
 
     // store the settings
     QSettings settings;
@@ -170,12 +176,12 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
   }
 }
 
-void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
+void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
 {
   reject();
 }
 
-QString QgsDelimitedTextPluginGui::selectedChars()
+QString QgsDelimitedTextSourceSelect::selectedChars()
 {
   QString chars = "";
   if ( cbxDelimSpace->isChecked() )
@@ -191,36 +197,27 @@ QString QgsDelimitedTextPluginGui::selectedChars()
   return chars;
 }
 
-QStringList QgsDelimitedTextPluginGui::splitLine( QString line )
+QStringList QgsDelimitedTextSourceSelect::splitLine( QString line )
 {
-  QStringList fieldList;
   QString delimiter = txtDelimiter->text();
 
   if ( delimiterPlain->isChecked() )
   {
-    // convert \t to tabulator
-    delimiter = txtDelimiter->text();
-    delimiter.replace( "\\t", "\t" );
-    fieldList = line.split( delimiter );
+    return QgsDelimitedTextProvider::splitLine( line, "plain", delimiter );
   }
-  else if ( delimiterSelection->isChecked() )
+
+  if ( delimiterSelection->isChecked() )
   {
     delimiter = "[";
     delimiter += selectedChars();
     delimiter += "]";
     txtDelimiter->setText( delimiter );
-    fieldList = line.split( QRegExp( delimiter ) );
-  }
-  else
-  {
-    QRegExp del( delimiter );
-    fieldList = line.split( QRegExp( delimiter ) );
   }
 
-  return fieldList;
+  return QgsDelimitedTextProvider::splitLine( line, "regexp", delimiter );
 }
 
-bool QgsDelimitedTextPluginGui::haveValidFileAndDelimiters()
+bool QgsDelimitedTextSourceSelect::haveValidFileAndDelimiters()
 {
 
   bool valid = true;
@@ -245,7 +242,7 @@ bool QgsDelimitedTextPluginGui::haveValidFileAndDelimiters()
   return valid;
 }
 
-void QgsDelimitedTextPluginGui::updateFieldLists()
+void QgsDelimitedTextSourceSelect::updateFieldLists()
 {
   // Update the x and y field dropdown boxes
   QgsDebugMsg( "Updating field lists" );
@@ -288,7 +285,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   QString line;
   do
   {
-    line = readLine( stream ); // line of text excluding '\n'
+    line = QgsDelimitedTextProvider::readLine( &stream ); // line of text excluding '\n'
   }
   while ( !line.isEmpty() && skipLines-- > 0 );
 
@@ -403,7 +400,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
   // put a few more lines into the sample box
   int counter = 0;
-  line = readLine( stream );
+  line = QgsDelimitedTextProvider::readLine( &stream );
   while ( !line.isEmpty() && counter < 20 )
   {
     QStringList values = splitLine( line );
@@ -430,7 +427,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
     }
 
     counter++;
-    line = readLine( stream );
+    line = QgsDelimitedTextProvider::readLine( &stream );
   }
   // close the file
   file.close();
@@ -440,7 +437,7 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   txtLayerName->setText( finfo.completeBaseName() );
 }
 
-void QgsDelimitedTextPluginGui::getOpenFileName()
+void QgsDelimitedTextSourceSelect::getOpenFileName()
 {
   // Get a file to process, starting at the current directory
   // Set inital dir to last used
@@ -457,13 +454,13 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
   txtFilePath->setText( s );
 }
 
-void QgsDelimitedTextPluginGui::updateFieldsAndEnable()
+void QgsDelimitedTextSourceSelect::updateFieldsAndEnable()
 {
   updateFieldLists();
   enableAccept();
 }
 
-void QgsDelimitedTextPluginGui::enableAccept()
+void QgsDelimitedTextSourceSelect::enableAccept()
 {
   // If the geometry type field is enabled then there must be
   // a valid file, and it must be
@@ -481,27 +478,5 @@ void QgsDelimitedTextPluginGui::enableAccept()
     }
   }
 
-  pbnOK->setEnabled( enabled );
-}
-
-QString QgsDelimitedTextPluginGui::readLine( QTextStream &stream )
-{
-  QString buffer;
-
-  while ( !stream.atEnd() )
-  {
-    QChar c = stream.read( 1 ).at( 0 );
-
-    if ( c == '\r' || c == '\n' )
-    {
-      if ( buffer.isEmpty() )
-      {
-        // skip leading CR / LF
-        continue;
-      }
-      break;
-    }
-    buffer.append( c );
-  }
-  return buffer;
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

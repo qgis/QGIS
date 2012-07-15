@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsDelimitedTextPluginGuiBase</class>
- <widget class="QDialog" name="QgsDelimitedTextPluginGuiBase">
+ <class>QgsDelimitedTextSourceSelectBase</class>
+ <widget class="QDialog" name="QgsDelimitedTextSourceSelectBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>492</width>
-    <height>528</height>
+    <height>543</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -42,7 +42,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsFileDropEdit" name="txtFilePath">
+       <widget class="QLineEdit" name="txtFilePath">
         <property name="toolTip">
          <string>Full path to the delimited text file</string>
         </property>
@@ -462,13 +462,6 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>QgsFileDropEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfiledropedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>txtFilePath</tabstop>
   <tabstop>btnBrowseForFile</tabstop>
@@ -491,9 +484,7 @@
   <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources>
-  <include location="delimited_text.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>delimiterSelection</sender>

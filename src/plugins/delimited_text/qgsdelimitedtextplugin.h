@@ -65,8 +65,8 @@ class QgsDelimitedTextPlugin: public QObject, public QgisPlugin, private Ui::Qgs
     virtual void initGui();
     //! Show the dialog box
     void run();
-    //! Add a vector layer given vectorLayerPath, baseName, providerKey ("ogr" or "postgres");
-    void drawVectorLayer( QString, QString, QString );
+    //! Add a vector layer given vectorLayerPath, baseName, providerKey (i.e. delimitedtext)
+    void addVectorLayer( QString, QString, QString );
     //! unload the plugin
     void unload();
     //! show the help document
