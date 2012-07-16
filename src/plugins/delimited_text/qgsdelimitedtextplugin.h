@@ -18,9 +18,12 @@
  ***************************************************************************/
 #ifndef PLUGIN
 #define PLUGIN
+#include <QObject>
+
 #include "../qgisplugin.h"
 
 class QgisInterface;
+class QAction;
 
 /**
 * \class QgsDelimitedTextPlugin
