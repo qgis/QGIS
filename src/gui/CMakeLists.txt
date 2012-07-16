@@ -6,6 +6,7 @@ raster/qgsmultibandcolorrendererwidget.cpp
 raster/qgspalettedrendererwidget.cpp
 raster/qgssinglebandgrayrendererwidget.cpp
 raster/qgssinglebandpseudocolorrendererwidget.cpp
+raster/qgsrasterhistogramwidget.cpp
 
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
@@ -100,6 +101,7 @@ raster/qgspalettedrendererwidget.h
 raster/qgsmultibandcolorrendererwidget.h
 raster/qgssinglebandgrayrendererwidget.h
 raster/qgssinglebandpseudocolorrendererwidget.h
+raster/qgsrasterhistogramwidget.h
 
 symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
@@ -251,6 +253,7 @@ INCLUDE_DIRECTORIES(
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QWT_INCLUDE_DIR}
 )
 IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(../core/spatialite/headers)
@@ -316,12 +319,17 @@ ADD_DEPENDENCIES(qgis_gui ui)
 TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   ${QT_QTUITOOLS_LIBRARY}
+  ${QWT_LIBRARY}
   #${QT_QTTEST_LIBRARY}  # for ModelTest
 )
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(qgis_gui ${SQLITE3_LIBRARIES})
 ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+
+IF(WIN32)
+  ADD_DEFINITIONS(-DQWT_DLL)
+ENDIF(WIN32)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_gui PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
