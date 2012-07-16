@@ -30,6 +30,7 @@
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsscaleutils.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
@@ -40,6 +41,7 @@
 //qt includes
 #include <QColorDialog>
 #include <QInputDialog>
+#include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 
@@ -763,6 +765,60 @@ void QgsProjectProperties::on_pbnRemoveScale_clicked()
   int currentRow = lstScales->currentRow();
   QListWidgetItem* itemToRemove = lstScales->takeItem( currentRow );
   delete itemToRemove;
+}
+
+void QgsProjectProperties::on_pbnImportScales_clicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QString msg;
+  QStringList myScales;
+  if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
+
+  QStringList::const_iterator scaleIt = myScales.constBegin();
+  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+    newItem->setText( *scaleIt );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    lstScales->addItem( newItem );
+  }
+}
+
+void QgsProjectProperties::on_pbnExportScales_clicked()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure the user never ommited the extension from the file name
+  if ( !fileName.toLower().endsWith( ".xml" ) )
+  {
+    fileName += ".xml";
+  }
+
+  QStringList myScales;
+  for ( int i = 0; i < lstScales->count(); ++i )
+  {
+    myScales.append( lstScales->item( i )->text() );
+  }
+
+  QString msg;
+  if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
 }
 
 void QgsProjectProperties::populateStyles()

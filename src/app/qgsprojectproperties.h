@@ -95,6 +95,16 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void on_pbnRemoveScale_clicked();
 
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnImportScales_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnExportScales_clicked();
+
     /*!
      * Slots for WMS project settings
      */
