@@ -69,25 +69,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   }
 
-  if ( mComposerMap )
-  {
-    //insert available maps into mMapComboBox
-    mOverviewFrameMapComboBox->addItem( tr( "None" ), -1 );
-    const QgsComposition* composition = mComposerMap->composition();
-    if ( composition )
-    {
-      QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
-      QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
-      for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
-      {
-        if (( *mapItemIt )->id() != mComposerMap->id() )
-        {
-          mOverviewFrameMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
-        }
-      }
-    }
-  }
-
   updateOverviewSymbolMarker();
 
   updateGuiElements();
@@ -893,6 +874,12 @@ void QgsComposerMapWidget::on_mFrameWidthSpinBox_valueChanged( double d )
   }
 }
 
+void QgsComposerMapWidget::showEvent( QShowEvent * event )
+{
+  refreshMapComboBox();
+  QWidget::showEvent( event );
+}
+
 void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )
 {
   c->insertItem( 0, tr( "Inside frame" ) );
@@ -998,4 +985,52 @@ void QgsComposerMapWidget::updateOverviewSymbolMarker()
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
   }
+}
+
+void QgsComposerMapWidget::refreshMapComboBox()
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  mOverviewFrameMapComboBox->blockSignals( true );
+
+  //save the current entry in case it is still present after refresh
+  QString saveComboText = mOverviewFrameMapComboBox->currentText();
+
+  mOverviewFrameMapComboBox->clear();
+  mOverviewFrameMapComboBox->addItem( tr( "None" ), -1 );
+  const QgsComposition* composition = mComposerMap->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
+  QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+  for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+  {
+    if (( *mapItemIt )->id() != mComposerMap->id() )
+    {
+      mOverviewFrameMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
+    }
+  }
+
+
+  if ( !saveComboText.isEmpty() )
+  {
+    int saveTextIndex = mOverviewFrameMapComboBox->findText( saveComboText );
+    if ( saveTextIndex == -1 )
+    {
+      //entry is no longer present
+      mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findText( tr( "None" ) ) );
+    }
+    else
+    {
+      mOverviewFrameMapComboBox->setCurrentIndex( saveTextIndex );
+    }
+  }
+
+  mOverviewFrameMapComboBox->blockSignals( false );
 }
