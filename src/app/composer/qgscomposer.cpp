@@ -592,66 +592,54 @@ void QgsComposer::print( QPrinter &printer )
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   bool printAsRaster = mComposition->printAsRaster();
-  //mView->setScene( 0 );
 
   if ( printAsRaster )
   {
-    //print out via QImage, code copied from on_mActionExportAsImage_activated
-    int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
-    int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
-    QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-    if ( !image.isNull() )
+    for ( int i = 0; i < mComposition->numPages(); ++i )
     {
-      image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
-      image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
-      image.fill( 0 );
-      QPainter imagePainter( &image );
-      QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-      QRectF targetArea( 0, 0, width, height );
-      mView->setPaintingEnabled( false );
-      mComposition->render( &imagePainter, targetArea, sourceArea );
-      mView->setPaintingEnabled( true );
-      p.drawImage( targetArea, image, targetArea );
-    }
-    else
-    {
-      QApplication::restoreOverrideCursor();
-      int answer = QMessageBox::warning( 0,
-                                         tr( "Image too large" ),
-                                         tr( "Creation of image with %1x%2 pixels failed.  Retry without 'Print As Raster'?" )
-                                         .arg( width ).arg( height ),
-                                         QMessageBox::Ok | QMessageBox::Cancel,
-                                         QMessageBox::Ok );
-      if ( answer == QMessageBox::Cancel )
+      if ( i > 0 )
       {
-        mComposition->setPlotStyle( savedPlotStyle );
-        return;
+        printer.newPage();
       }
 
-      QApplication::setOverrideCursor( Qt::BusyCursor );
-      printAsRaster = false;
+      QImage image = printPageAsRaster( i );
+
+      if ( image.isNull() )
+      {
+        QApplication::restoreOverrideCursor();
+        int answer = QMessageBox::warning( 0,
+                                           tr( "Image too large" ),
+                                           tr( "Creation of image failed.  Retry without 'Print As Raster'?" ),
+                                           QMessageBox::Ok | QMessageBox::Cancel,
+                                           QMessageBox::Ok );
+        if ( answer == QMessageBox::Cancel )
+        {
+          mComposition->setPlotStyle( savedPlotStyle );
+          return;
+        }
+
+        QApplication::setOverrideCursor( Qt::BusyCursor );
+        printAsRaster = false;
+      }
+      else
+      {
+        QRectF targetArea( 0, 0, image.width(), image.height() );
+        p.drawImage( targetArea, image, targetArea );
+      }
     }
   }
 
   if ( !printAsRaster )
   {
-    //better in case of custom page size, but only possible with Qt>=4.4.0
-    QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-    QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-
     mView->setPaintingEnabled( false );
     for ( int i = 0; i < mComposition->numPages(); ++i )
     {
       if ( i > 0 )
       {
-        if ( !printer.newPage() )
-        {
-          return;
-        }
+        printer.newPage();
       }
       mComposition->renderPage( &p, i );
     }
-    //mComposition->render( &p, paperRectPixel, paperRectMM );
     mView->setPaintingEnabled( true );
   }
 
@@ -659,8 +647,32 @@ void QgsComposer::print( QPrinter &printer )
   QApplication::restoreOverrideCursor();
 }
 
+QImage QgsComposer::printPageAsRaster( int page )
+{
+  //print out via QImage, code copied from on_mActionExportAsImage_activated
+  int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
+  int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
+  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+  if ( !image.isNull() )
+  {
+    image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
+    image.fill( 0 );
+    QPainter imagePainter( &image );
+    mView->setPaintingEnabled( false );
+    mComposition->renderPage( &imagePainter, page );
+    mView->setPaintingEnabled( true );
+  }
+  return image;
+}
+
 void QgsComposer::on_mActionExportAsImage_triggered()
 {
+  if ( !mComposition )
+  {
+    return;
+  }
+
   if ( containsWMSLayer() )
   {
     showWMSPrintingWarning();
@@ -688,36 +700,25 @@ void QgsComposer::on_mActionExportAsImage_triggered()
 
   QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
 
-  QgsDebugMsg( QString( "Selected filter: %1" ).arg( fileNExt.first ) );
-  QgsDebugMsg( QString( "Image type: %1" ).arg( fileNExt.second ) );
-
   if ( fileNExt.first.isEmpty() )
-    return;
-
-  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-  if ( image.isNull() )
   {
-    QMessageBox::warning( 0,
-                          tr( "Image too big" ),
-                          tr( "Creation of image with %1x%2 pixels failed.  Export aborted." )
-                          .arg( width ).arg( height ),
-                          QMessageBox::Ok );
     return;
   }
 
-  mComposition->setPlotStyle( QgsComposition::Print );
-  image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
-  image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
-  image.fill( 0 );
-  QPainter p( &image );
-  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-  QRectF targetArea( 0, 0, width, height );
-  mView->setPaintingEnabled( false );
-  mComposition->render( &p, targetArea, sourceArea );
-  p.end();
-  mComposition->setPlotStyle( QgsComposition::Preview );
-  mView->setPaintingEnabled( true );
-  image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
+  for ( int i = 0; i < mComposition->numPages(); ++i )
+  {
+    QImage image = printPageAsRaster( i );
+    if ( i == 0 )
+    {
+      image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
+    }
+    else
+    {
+      QFileInfo fi( fileNExt.first );
+      QString outputFilePath = fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix();
+      image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
+    }
+  }
 }
 
 
@@ -773,29 +774,39 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   settings.setValue( "/UI/lastSaveAsSvgFile", outputFileName );
   mComposition->setPlotStyle( QgsComposition::Print );
 
-  QSvgGenerator generator;
-#if QT_VERSION >= 0x040500
-  generator.setTitle( QgsProject::instance()->title() );
-#endif
-  generator.setFileName( outputFileName );
-  //width in pixel
-  int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
-  //height in pixel
-  int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
-  generator.setSize( QSize( width, height ) );
-#if QT_VERSION >= 0x040500
-  generator.setViewBox( QRect( 0, 0, width, height ) );
-#endif
-  generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
-
-  QPainter p( &generator );
-
-  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-  QRectF targetArea( 0, 0, width, height );
   mView->setPaintingEnabled( false );
-  mComposition->render( &p, targetArea, sourceArea );
-  p.end();
-  mComposition->setPlotStyle( QgsComposition::Preview );
+  for ( int i = 0; i < mComposition->numPages(); ++i )
+  {
+    QSvgGenerator generator;
+#if QT_VERSION >= 0x040500
+    generator.setTitle( QgsProject::instance()->title() );
+#endif
+    if ( i == 0 )
+    {
+      generator.setFileName( outputFileName );
+    }
+    else
+    {
+      QFileInfo fi( outputFileName );
+      generator.setFileName( fi.absolutePath() + "/" + fi.baseName() + "_" + QString::number( i + 1 ) + "." + fi.suffix() );
+    }
+
+    //width in pixel
+    int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
+    //height in pixel
+    int height = ( int )( mComposition->paperHeight() * mComposition->printResolution() / 25.4 );
+    generator.setSize( QSize( width, height ) );
+#if QT_VERSION >= 0x040500
+    generator.setViewBox( QRect( 0, 0, width, height ) );
+#endif
+    generator.setResolution( mComposition->printResolution() ); //because the rendering is done in mm, convert the dpi
+
+    QPainter p( &generator );
+
+    mComposition->renderPage( &p, i );
+    p.end();
+    mComposition->setPlotStyle( QgsComposition::Preview );
+  }
   mView->setPaintingEnabled( true );
 }
 
