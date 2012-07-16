@@ -30,10 +30,11 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
+#include <QPainter>
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
@@ -44,7 +45,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
 }
 
 QgsComposition::QgsComposition():
-    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mPrintAsRaster( false ),
+    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
     mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   loadSettings();
@@ -1213,7 +1214,7 @@ void QgsComposition::addPaperItem()
 {
   double paperHeight = this->paperHeight();
   double paperWidth = this->paperWidth();
-  double currentY = paperHeight * mPages.size();
+  double currentY = paperHeight * mPages.size() + mPages.size() * mSpaceBetweenPages; //add 10mm visible space between pages
   QgsPaperItem* paperItem = new QgsPaperItem( 0, currentY, paperWidth, paperHeight, this ); //default size A4
   paperItem->setBrush( Qt::white );
   addItem( paperItem );
@@ -1228,4 +1229,27 @@ void QgsComposition::removePaperItems()
     delete mPages.at( i );
   }
   mPages.clear();
+}
+
+void QgsComposition::renderPage( QPainter* p, int page )
+{
+  if ( mPages.size() <= page )
+  {
+    return;
+  }
+
+  QgsPaperItem* paperItem = mPages[page];
+  if ( !paperItem )
+  {
+    return;
+  }
+
+  QPaintDevice* paintDevice = p->device();
+  if ( !paintDevice )
+  {
+    return;
+  }
+
+  QRectF paperRect = QRectF( paperItem->transform().dx(), paperItem->transform().dy(), paperItem->rect().width(), paperItem->rect().height() );
+  render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
 }

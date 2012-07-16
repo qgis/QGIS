@@ -640,7 +640,18 @@ void QgsComposer::print( QPrinter &printer )
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
 
     mView->setPaintingEnabled( false );
-    mComposition->render( &p, paperRectPixel, paperRectMM );
+    for ( int i = 0; i < mComposition->numPages(); ++i )
+    {
+      if ( i > 0 )
+      {
+        if ( !printer.newPage() )
+        {
+          return;
+        }
+      }
+      mComposition->renderPage( &p, i );
+    }
+    //mComposition->render( &p, paperRectPixel, paperRectMM );
     mView->setPaintingEnabled( true );
   }
 

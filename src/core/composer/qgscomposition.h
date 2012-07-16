@@ -217,6 +217,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
+    void renderPage( QPainter* p, int page );
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -228,6 +230,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     double mPageWidth;
     double mPageHeight;
     QList< QgsPaperItem* > mPages;
+    double mSpaceBetweenPages; //space in preview between pages
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
