@@ -19,7 +19,6 @@
 #ifndef PLUGIN
 #define PLUGIN
 #include "../qgisplugin.h"
-#include "ui_qgsdelimitedtextpluginguibase.h"
 
 class QgisInterface;
 
@@ -28,7 +27,7 @@ class QgisInterface;
 * \brief Delimited text plugin for QGIS
 *
 */
-class QgsDelimitedTextPlugin: public QObject, public QgisPlugin, private Ui::QgsDelimitedTextPluginGuiBase
+class QgsDelimitedTextPlugin: public QObject, public QgisPlugin
 {
   Q_OBJECT public:
     /**

@@ -11,8 +11,6 @@ SET (DLTEXT_RCCS  delimited_text.qrc)
 ########################################################
 # Build
 
-QT4_WRAP_UI (DLTEXT_UIS_H  ${DLTEXT_UIS})
-
 QT4_WRAP_CPP (DLTEXT_MOC_SRCS  ${DLTEXT_MOC_HDRS})
 
 QT4_ADD_RESOURCES(DLTEXT_RCC_SRCS ${DLTEXT_RCCS})
