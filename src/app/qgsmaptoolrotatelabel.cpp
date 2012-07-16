@@ -25,6 +25,7 @@
 #include <QMouseEvent>
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas ), mRotationItem( 0 ), mRotationPreviewBox( 0 )
 {
@@ -76,7 +77,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
 
       mRotationItem = new QgsPointRotationItem( mCanvas );
       mRotationItem->setOrientation( QgsPointRotationItem::Counterclockwise );
-      mRotationItem->setSymbol( QgisApp::instance()->getThemePixmap( "mActionRotatePointSymbols.png" ).toImage() );
+      mRotationItem->setSymbol( QgsApplication::getThemePixmap( "mActionRotatePointSymbols.png" ).toImage() );
       mRotationItem->setPointLocation( mRotationPoint );
       mRotationItem->setSymbolRotation( mCurrentRotation );
     }

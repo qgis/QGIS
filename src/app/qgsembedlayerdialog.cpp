@@ -15,6 +15,8 @@
 #include "qgsembedlayerdialog.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
+
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -172,7 +174,7 @@ void QgsEmbedLayerDialog::addLegendGroupToTreeWidget( const QDomElement& groupEl
   {
     groupItem = new QTreeWidgetItem( parent );
   }
-  groupItem->setIcon( 0, QgisApp::getThemeIcon( "mActionFolder.png" ) );
+  groupItem->setIcon( 0, QgsApplication::getThemeIcon( "mActionFolder.png" ) );
   groupItem->setText( 0, groupElem.attribute( "name" ) );
   groupItem->setData( 0, Qt::UserRole, "group" );
 

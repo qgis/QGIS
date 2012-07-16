@@ -19,6 +19,7 @@
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
+#include "qgsapplication.h"
 
 #include <QMessageBox>
 
@@ -28,7 +29,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
 }
 
 QgsPGConnectionItem::~QgsPGConnectionItem()
@@ -304,7 +305,7 @@ QString QgsPGLayerItem::createUri()
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconDbSchema.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconDbSchema.png" );
 }
 
 QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
@@ -364,7 +365,7 @@ void QgsPGSchemaItem::addLayer( QgsPostgresLayerProperty layerProperty )
 QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconPostgis.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconPostgis.png" );
   populate();
 }
 

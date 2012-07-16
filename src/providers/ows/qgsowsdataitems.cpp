@@ -7,13 +7,15 @@
 #include "qgsowsconnection.h"
 #include "qgsnewhttpconnection.h"
 
+#include "qgsapplication.h"
+
 #include <QFileInfo>
 
 // ---------------------------------------------------------------------------
 QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
 }
 
 QgsOWSConnectionItem::~QgsOWSConnectionItem()
@@ -134,7 +136,7 @@ void QgsOWSConnectionItem::deleteConnection()
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconOws.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconOws.png" );
 
   populate();
 }

@@ -26,6 +26,8 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QSettings>
+#include <QIcon>
+#include <QPixmap>
 
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
@@ -327,6 +329,43 @@ QString QgsApplication::iconPath( QString iconFile )
 
   // use default theme
   return defaultThemePath() + iconFile;
+}
+
+QIcon QgsApplication::getThemeIcon( const QString theName )
+{
+  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  if ( QFile::exists( myPreferredPath ) )
+  {
+    return QIcon( myPreferredPath );
+  }
+  else if ( QFile::exists( myDefaultPath ) )
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QIcon( myDefaultPath );
+  }
+  else
+  {
+    return QIcon();
+  }
+}
+
+// TODO: add some caching mechanism ?
+QPixmap QgsApplication::getThemePixmap( const QString theName )
+{
+  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  if ( QFile::exists( myPreferredPath ) )
+  {
+    return QPixmap( myPreferredPath );
+  }
+  else
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QPixmap( myDefaultPath );
+  }
 }
 
 /*!
