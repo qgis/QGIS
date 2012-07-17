@@ -1080,11 +1080,12 @@ QPixmap QgsRasterLayer::legendAsPixmap()
 }
 
 /**
- * @param theWithNameFlag - boolena flag whether to overlay the legend name in the text
+ * @param theWithNameFlag - boolean flag whether to overlay the legend name in the text
  * @return a pixmap representing a legend image
  */
-QPixmap QgsRasterLayer::legendAsPixmap( bool )
+QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
 {
+  Q_UNUSED( theWithNameFlag );
   return QPixmap();
 }                               //end of legendAsPixmap function
 
