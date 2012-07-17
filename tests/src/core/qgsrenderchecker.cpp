@@ -15,7 +15,6 @@
 
 #include "qgsrenderchecker.h"
 
-#include <QDir>
 #include <QColor>
 #include <QPainter>
 #include <QImage>
@@ -33,7 +32,8 @@ QgsRenderChecker::QgsRenderChecker( ) :
     mMatchTarget( 0 ),
     mElapsedTime( 0 ),
     mElapsedTimeTarget( 0 ),
-    mpMapRenderer( NULL )
+    mpMapRenderer( NULL ),
+    mControlPathPrefix( "" )
 {
 
 }
@@ -41,8 +41,8 @@ QgsRenderChecker::QgsRenderChecker( ) :
 QString QgsRenderChecker::controlImagePath() const
 {
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myControlImageDir = myDataDir + QDir::separator() + "control_images"
-                              + QDir::separator() ;
+  QString myControlImageDir = myDataDir + QDir::separator() + "control_images" +
+                              QDir::separator() + mControlPathPrefix;
   return myControlImageDir;
 }
 
@@ -167,7 +167,8 @@ bool QgsRenderChecker::runTest( QString theTestName,
 
 
 bool QgsRenderChecker::compareImages( QString theTestName,
-                                      unsigned int theMismatchCount )
+                                      unsigned int theMismatchCount,
+                                      QString theRenderedImageFile )
 {
   if ( mExpectedImageFile.isEmpty() )
   {
@@ -177,6 +178,10 @@ bool QgsRenderChecker::compareImages( QString theTestName,
               "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
               "Image File not set.</td></tr></table>\n";
     return false;
+  }
+  if ( ! theRenderedImageFile.isEmpty() )
+  {
+    mRenderedImageFile = theRenderedImageFile;
   }
   if ( mRenderedImageFile.isEmpty() )
   {
@@ -327,7 +332,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                                "\" type=\"text/text\">" +  myMessage +
                                " If you feel the difference image should be considered an anomaly "
                                "you can do something like this\n"
-                               "cp " + myDiffImageFile  + "../tests/testdata/control_images/" + theTestName +
+                               "cp " + myDiffImageFile  + " ../tests/testdata/control_images/" + theTestName +
                                "/<imagename>.png"
                                "</DartMeasurement>";
     qDebug() << myMeasureMessage;

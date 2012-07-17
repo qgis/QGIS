@@ -522,19 +522,21 @@ void QgsRasterHistogramWidget::on_mSaveAsImageButton_clicked()
   }
 }
 
-void QgsRasterHistogramWidget::histoSaveAsImage( const QString& theFilename )
+bool QgsRasterHistogramWidget::histoSaveAsImage( const QString& theFilename,
+    int width, int height, int quality )
 {
   // make sure dir. exists
-  QDir myDir( QFileInfo( theFilename ).dir() );
+  QFileInfo myInfo( theFilename );
+  QDir myDir( myInfo.dir() );
   if ( ! myDir.exists() )
   {
     QgsDebugMsg( QString( "Error, directory %1 non-existent (theFilename = %2)" ).arg( myDir.absolutePath() ).arg( theFilename ) );
-    return;
+    return false;
   }
 
   // prepare the pixmap
-  QPixmap myPixmap( 600, 600 );
-  QRect myQRect( 5, 5, 590, 590 ); // leave a 5px border on all sides
+  QPixmap myPixmap( width, height );
+  QRect myQRect( 5, 5, width - 10, height - 10 ); // leave a 5px border on all sides
   myPixmap.fill( Qt::white ); // Qt::transparent ?
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
@@ -566,10 +568,15 @@ void QgsRasterHistogramWidget::histoSaveAsImage( const QString& theFilename )
 #endif
 
   // save pixmap to file
-  myPixmap.save( theFilename );
+  myPixmap.save( theFilename, 0, quality );
 
-#if defined(QWT_VERSION) && QWT_VERSION<0x060000
-#endif
+  // should do more error checking
+  return true;
+}
+
+void QgsRasterHistogramWidget::setSelectedBand( int theBandNo )
+{
+  cboHistoBand->setCurrentIndex( theBandNo - 1 );
 }
 
 void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
@@ -610,16 +617,21 @@ void QgsRasterHistogramWidget::histoActionTriggered( QAction* action )
 {
   if ( ! action )
     return;
+  histoAction( action->data().toString(), action->isChecked() );
+}
+
+void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actionFlag )
+{
+  if ( actionName == "" )
+    return;
 
   // this approach is a bit of a hack, but this way we don't have to define slots for each action
-  QString actionName = action->data().toString();
-
   QgsDebugMsg( QString( "band = %1 action = %2" ).arg( cboHistoBand->currentIndex() + 1 ).arg( actionName ) );
 
   // checkeable actions
   if ( actionName == "Show markers" )
   {
-    mHistoShowMarkers = action->isChecked();
+    mHistoShowMarkers = actionFlag;
     updateHistoMarkers();
     return;
   }
@@ -643,7 +655,7 @@ void QgsRasterHistogramWidget::histoActionTriggered( QAction* action )
   }
   else if ( actionName == "Load apply all" )
   {
-    mHistoLoadApplyAll = action->isChecked();
+    mHistoLoadApplyAll = actionFlag;
     return;
   }
   // Load actions

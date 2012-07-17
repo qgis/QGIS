@@ -43,7 +43,7 @@ class QgsRasterHistogramWidget : public QWidget, private Ui::QgsRasterHistogramW
     ~QgsRasterHistogramWidget();
 
     /** Save the histogram as an image to disk */
-    void histoSaveAsImage( const QString& theFilename );
+    bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
 
     /** Set the renderer widget (or just its name if there is no widget) */
     void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = NULL );
@@ -53,6 +53,12 @@ class QgsRasterHistogramWidget : public QWidget, private Ui::QgsRasterHistogramW
 
     /** \brief Compute the histogram on demand. */
     bool computeHistogram( bool forceComputeFlag );
+
+    /** Apply a histoActionTriggered() event. */
+    void histoAction( const QString actionName, bool actionFlag = true );
+
+    /** Apply a histoActionTriggered() event. */
+    void setSelectedBand( int index );
 
   public slots:
     /** \brief slot executed when user wishes to refresh raster histogramwidget */
