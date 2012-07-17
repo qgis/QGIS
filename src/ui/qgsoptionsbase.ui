@@ -65,7 +65,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-22</y>
+            <y>0</y>
             <width>760</width>
             <height>1005</height>
            </rect>
@@ -96,27 +96,47 @@
                 <item>
                  <widget class="QCheckBox" name="cbxNewProjectTemplate">
                   <property name="text">
-                   <string>New project template</string>
+                   <string>Create new project from default project</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="leNewProjectTemplate">
-                  <property name="enabled">
-                   <bool>false</bool>
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnSetCurrentProjectDefault">
                   <property name="text">
-                   <string/>
+                   <string>Set current project as default</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pbtnNewProjectTemplate">
-                  <property name="enabled">
-                   <bool>false</bool>
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnResetCurrentProjectDefault">
                   <property name="text">
-                   <string>Browse</string>
+                   <string>Reset default</string>
                   </property>
                  </widget>
                 </item>

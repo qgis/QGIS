@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgstolerance.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QSettings>
@@ -31,6 +32,7 @@
 #include <QToolBar>
 #include <QSize>
 #include <QStyleFactory>
+#include <QMessageBox>
 
 #if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
@@ -410,7 +412,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
   cbxNewProjectTemplate->setChecked( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() );
-  leNewProjectTemplate->setText( settings.value( "/qgis/newProjectTemplateFile", "" ).toString() );
 
   cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 2 ).toInt() );
   spinZoomFactor->setValue( settings.value( "/qgis/zoom_factor", 2 ).toDouble() );
@@ -560,12 +561,7 @@ QgsOptions::~QgsOptions()
   settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
 }
 
-void QgsOptions::on_cbxNewProjectTemplate_toggled( bool checked )
-{
-  pbtnNewProjectTemplate->setEnabled( checked );
-  leNewProjectTemplate->setEnabled( checked );
-}
-
+#if 0
 void QgsOptions::on_pbtnNewProjectTemplate_pressed( )
 {
   QString lastUsedDir = QFileInfo( leNewProjectTemplate->text() ).canonicalFilePath();
@@ -583,6 +579,43 @@ void QgsOptions::on_pbtnNewProjectTemplate_pressed( )
   {
     leNewProjectTemplate->setText( fullPath );
   }
+}
+#endif
+
+void QgsOptions::on_cbxNewProjectTemplate_toggled( bool checked )
+{
+  if ( checked )
+  {
+    QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "default.qgs" );
+    if ( ! QFile::exists( fileName ) )
+    {
+      QMessageBox::information( 0, tr( "Save default project" ), tr( "You must set a default project" ) );
+      cbxNewProjectTemplate->setChecked( false );
+    }
+  }
+}
+
+void QgsOptions::on_pbnSetCurrentProjectDefault_clicked( )
+{
+  QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "default.qgs" );
+  if ( QgsProject::instance()->write( QFileInfo( fileName ) ) )
+  {
+    QMessageBox::information( 0, tr( "Save default project" ), tr( "Current project saved as default" ) );
+  }
+  else
+  {
+    QMessageBox::critical( 0, tr( "Save default project" ), tr( "Error saving current project as default" ) );
+  }
+}
+
+void QgsOptions::on_pbnResetCurrentProjectDefault_clicked( )
+{
+  QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "default.qgs" );
+  if ( QFile::exists( fileName ) )
+  {
+    QFile::remove( fileName );
+  }
+  cbxNewProjectTemplate->setChecked( false );
 }
 
 void QgsOptions::on_pbnSelectionColor_clicked()
@@ -750,7 +783,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
   settings.setValue( "/qgis/newProjectTemplate", cbxNewProjectTemplate->isChecked() );
-  settings.setValue( "/qgis/newProjectTemplateFile", leNewProjectTemplate->text().trimmed() );
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
 

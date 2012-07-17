@@ -2914,7 +2914,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   QSettings settings;
   if ( ! forceBlank )
   {
-    QString projectTemplate = settings.value( "/qgis/newProjectTemplateFile", "" ).toString();
+    QString projectTemplate = QgsApplication::qgisSettingsDirPath() + QString( "default.qgs" );
     if ( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() &&
          ! projectTemplate.isEmpty() )
     {
