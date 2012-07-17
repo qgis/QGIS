@@ -16,6 +16,8 @@
 #ifndef QGSMAPTOOL_H
 #define QGSMAPTOOL_H
 
+#include "qgsconfig.h"
+
 #include <QCursor>
 #include <QString>
 #include <QObject>

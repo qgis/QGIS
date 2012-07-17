@@ -84,17 +84,17 @@ class QgsTileScaleWidget;
 #include <QPointer>
 #include <QSslError>
 
-#ifdef HAVE_TOUCH
-#include <QGestureEvent>
-#include <QTapAndHoldGesture>
-#endif
-
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
 #include "qgssnappingdialog.h"
 
 #include "ui_qgisapp.h"
+
+#ifdef HAVE_TOUCH
+#include <QGestureEvent>
+#include <QTapAndHoldGesture>
+#endif
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application

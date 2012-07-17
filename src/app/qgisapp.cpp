@@ -1779,9 +1779,6 @@ void QgisApp::createCanvasTools()
   mMapTools.mChangeLabelProperties->setAction( mActionChangeLabelProperties );
   //ensure that non edit tool is initialised or we will get crashes in some situations
   mNonEditMapTool = mMapTools.mPan;
-//#ifdef HAVE_TOUCH
-//  mNonEditMapTool = mMapTools.mTouch;
-//#endif
 }
 
 void QgisApp::createOverview()
@@ -2969,10 +2966,10 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   updateCRSStatusBar();
 
   // set the initial map tool
+#ifndef HAVE_TOUCH
   mMapCanvas->setMapTool( mMapTools.mPan );
   mNonEditMapTool = mMapTools.mPan;  // signals are not yet setup to catch this
-
-#ifdef HAVE_TOUCH
+#else
   mMapCanvas->setMapTool( mMapTools.mTouch );
   mNonEditMapTool = mMapTools.mTouch;  // signals are not yet setup to catch this
 #endif
