@@ -30,25 +30,22 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
+#include <QPainter>
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
+  addPaperItem();
 
-  //set paper item
-  mPaperItem = new QgsPaperItem( 0, 0, 297, 210, this ); //default size A4
-  mPaperItem->setBrush( Qt::white );
-  addItem( mPaperItem );
-  mPaperItem->setZValue( 0 );
   mPrintResolution = 300; //hardcoded default
   loadSettings();
 }
 
 QgsComposition::QgsComposition():
-    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ),
+    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
     mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   loadSettings();
@@ -56,8 +53,7 @@ QgsComposition::QgsComposition():
 
 QgsComposition::~QgsComposition()
 {
-  delete mPaperItem;
-
+  removePaperItems();
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore
@@ -66,21 +62,51 @@ QgsComposition::~QgsComposition()
 
 void QgsComposition::setPaperSize( double width, double height )
 {
-  if ( mPaperItem )
+  mPageWidth = width;
+  mPageHeight = height;
+  double currentY = 0;
+  for ( int i = 0; i < mPages.size(); ++i )
   {
-    mPaperItem->setRect( QRectF( 0, 0, width, height ) );
-    emit paperSizeChanged();
+    mPages.at( i )->setSceneRect( QRectF( 0, currentY, width, height ) );
+    currentY += ( height + mSpaceBetweenPages );
   }
 }
 
 double QgsComposition::paperHeight() const
 {
-  return mPaperItem->rect().height();
+  return mPageHeight;
 }
 
 double QgsComposition::paperWidth() const
 {
-  return mPaperItem->rect().width();
+  return mPageWidth;
+}
+
+void QgsComposition::setNumPages( int pages )
+{
+  int currentPages = numPages();
+  int diff = pages - currentPages;
+  if ( diff >= 0 )
+  {
+    for ( int i = 0; i < diff; ++i )
+    {
+      addPaperItem();
+    }
+  }
+  else
+  {
+    diff = -diff;
+    for ( int i = 0; i < diff; ++i )
+    {
+      delete mPages.last();
+      mPages.removeLast();
+    }
+  }
+}
+
+int QgsComposition::numPages() const
+{
+  return mPages.size();
 }
 
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
@@ -100,7 +126,8 @@ QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
     QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem *>( *itemIt );
-    if ( composerItem && composerItem != mPaperItem )
+    QgsPaperItem* paperItem = dynamic_cast<QgsPaperItem*>( *itemIt );
+    if ( composerItem && !paperItem )
     {
       return composerItem;
     }
@@ -187,11 +214,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   }
 
   QDomElement compositionElem = doc.createElement( "Composition" );
-  if ( mPaperItem )
-  {
-    compositionElem.setAttribute( "paperWidth", QString::number( mPaperItem->rect().width() ) );
-    compositionElem.setAttribute( "paperHeight", QString::number( mPaperItem->rect().height() ) );
-  }
+  compositionElem.setAttribute( "paperWidth", QString::number( mPageWidth ) );
+  compositionElem.setAttribute( "paperHeight", QString::number( mPageHeight ) );
+  compositionElem.setAttribute( "numPages", mPages.size() );
 
   //snapping
   if ( mSnapToGrid )
@@ -222,18 +247,19 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
     return false;
   }
 
-  //create paper item
+  //create pages
   bool widthConversionOk, heightConversionOk;
-  double paperWidth = compositionElem.attribute( "paperWidth" ).toDouble( &widthConversionOk );
-  double paperHeight = compositionElem.attribute( "paperHeight" ).toDouble( &heightConversionOk );
+  mPageWidth = compositionElem.attribute( "paperWidth" ).toDouble( &widthConversionOk );
+  mPageHeight = compositionElem.attribute( "paperHeight" ).toDouble( &heightConversionOk );
+  int numPages = compositionElem.attribute( "numPages", "1" ).toInt();
 
   if ( widthConversionOk && heightConversionOk )
   {
-    delete mPaperItem;
-    mPaperItem = new QgsPaperItem( 0, 0, paperWidth, paperHeight, this );
-    mPaperItem->setBrush( Qt::white );
-    addItem( mPaperItem );
-    mPaperItem->setZValue( 0 );
+    removePaperItems();
+    for ( int i = 0; i < numPages; ++i )
+    {
+      addPaperItem();
+    }
   }
 
   //snapping
@@ -251,12 +277,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mPrintAsRaster = compositionElem.attribute( "printAsRaster" ).toInt();
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
-
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
-
+  updatePaperItems();
   return true;
 }
 
@@ -774,11 +795,16 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
     return scenePoint;
   }
 
-  //snap x coordinate //todo: add support for x- and y- offset
-  int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
-  int yRatio = ( int )(( scenePoint.y() - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+  //y offset to current page
+  int pageNr = ( int )( scenePoint.y() / ( mPageHeight + mSpaceBetweenPages ) );
+  double yOffset = pageNr * ( mPageHeight + mSpaceBetweenPages );
+  double yPage = scenePoint.y() - yOffset; //y-coordinate relative to current page
 
-  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY );
+  //snap x coordinate
+  int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
+  int yRatio = ( int )(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+
+  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
 }
 
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
@@ -824,60 +850,42 @@ int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 void QgsComposition::setSnapToGridEnabled( bool b )
 {
   mSnapToGrid = b;
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setSnapGridResolution( double r )
 {
   mSnapGridResolution = r;
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
 {
   mSnapGridOffsetX = offset;
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetY( double offset )
 {
   mSnapGridOffsetY = offset;
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setGridPen( const QPen& p )
 {
   mGridPen = p;
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
+  updatePaperItems();
   saveSettings();
 }
 
 void QgsComposition::setGridStyle( GridStyle s )
 {
   mGridStyle = s;
-  if ( mPaperItem )
-  {
-    mPaperItem->update();
-  }
+  updatePaperItems();
   saveSettings();
 }
 
@@ -1196,4 +1204,57 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     emit selectedItemChanged( table );
     return;
   }
+}
+
+void QgsComposition::updatePaperItems()
+{
+  QList< QgsPaperItem* >::iterator paperIt = mPages.begin();
+  for ( ; paperIt != mPages.end(); ++paperIt )
+  {
+    ( *paperIt )->update();
+  }
+}
+
+void QgsComposition::addPaperItem()
+{
+  double paperHeight = this->paperHeight();
+  double paperWidth = this->paperWidth();
+  double currentY = paperHeight * mPages.size() + mPages.size() * mSpaceBetweenPages; //add 10mm visible space between pages
+  QgsPaperItem* paperItem = new QgsPaperItem( 0, currentY, paperWidth, paperHeight, this ); //default size A4
+  paperItem->setBrush( Qt::white );
+  addItem( paperItem );
+  paperItem->setZValue( 0 );
+  mPages.push_back( paperItem );
+}
+
+void QgsComposition::removePaperItems()
+{
+  for ( int i = 0; i < mPages.size(); ++i )
+  {
+    delete mPages.at( i );
+  }
+  mPages.clear();
+}
+
+void QgsComposition::renderPage( QPainter* p, int page )
+{
+  if ( mPages.size() <= page )
+  {
+    return;
+  }
+
+  QgsPaperItem* paperItem = mPages[page];
+  if ( !paperItem )
+  {
+    return;
+  }
+
+  QPaintDevice* paintDevice = p->device();
+  if ( !paintDevice )
+  {
+    return;
+  }
+
+  QRectF paperRect = QRectF( paperItem->transform().dx(), paperItem->transform().dy(), paperItem->rect().width(), paperItem->rect().height() );
+  render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
 }
