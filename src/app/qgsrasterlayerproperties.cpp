@@ -1646,10 +1646,14 @@ void QgsRasterLayerProperties::updatePipeList()
     texts << QString( "%1 ms" ).arg( interface->time() );
     QTreeWidgetItem *item = new QTreeWidgetItem( texts );
 
-    bool on = interface->on();
-    item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
+    // Switching on/off would be possible but problematic - drawer is not pipe
+    // memer so we dont know required output format
+    // Checkobxes are very usefel however for QgsRasterPipe debugging.
+    //bool on = interface->on();
+    //item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
 
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    //Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    Qt::ItemFlags flags = Qt::ItemIsEnabled;
     item->setFlags( flags );
 
     mPipeTreeWidget->addTopLevelItem( item );
@@ -1682,6 +1686,8 @@ void QgsRasterLayerProperties::updatePipeItems()
     QgsRasterInterface * interface = pipe->at( i );
     QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
     if ( !item ) continue;
+    // Checkboxes disabled for now, see above
+    /*
     bool on = interface->on();
     Qt::ItemFlags flags = item->flags();
     if ( pipe->canSetOn( i, !on ) )
@@ -1693,5 +1699,6 @@ void QgsRasterLayerProperties::updatePipeItems()
       flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
     }
     item->setFlags( flags );
+    */
   }
 }
