@@ -41,6 +41,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
   if ( mComposition )
   {
+    mNumPagesSpinBox->setValue( mComposition->numPages() );
+
     //read printout resolution from composition
     mResolutionSpinBox->setValue( mComposition->printResolution() );
 
@@ -328,6 +330,15 @@ void QgsCompositionWidget::on_mPaperHeightDoubleSpinBox_editingFinished()
   applyWidthHeight();
 }
 
+void QgsCompositionWidget::on_mNumPagesSpinBox_valueChanged( int value )
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+  mComposition->setNumPages( value );
+}
+
 void QgsCompositionWidget::displayCompositionWidthHeight()
 {
   if ( !mComposition )
@@ -519,6 +530,7 @@ void QgsCompositionWidget::blockSignals( bool block )
   mPaperUnitsComboBox->blockSignals( block );
   mPaperWidthDoubleSpinBox->blockSignals( block );
   mPaperHeightDoubleSpinBox->blockSignals( block );
+  mNumPagesSpinBox->blockSignals( block );
   mPaperOrientationComboBox->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
   mPrintAsRasterCheckBox->blockSignals( block );

@@ -64,6 +64,7 @@
     </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
+    <addaction name="mActionNewBlankProject"/>
     <addaction name="separator"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="mActionSaveProject"/>
@@ -1695,6 +1696,18 @@
    </property>
    <property name="whatsThis">
     <string>Creates a scale bar that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionNewBlankProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Blank Project</string>
+   </property>
+   <property name="toolTip">
+    <string>New Blank Project</string>
    </property>
   </action>
  </widget>

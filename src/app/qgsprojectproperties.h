@@ -23,7 +23,7 @@
 #include "qgscontexthelp.h"
 
 class QgsMapCanvas;
-
+class QgsStyleV2;
 
 /*!  Dialog to set project level properties
 
@@ -92,6 +92,16 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnWMSSetUsedSRS_clicked();
 
     /*!
+     * Slots for Styles
+     */
+    void on_pbtnStyleManager_clicked();
+    void on_pbtnStyleMarker_clicked();
+    void on_pbtnStyleLine_clicked();
+    void on_pbtnStyleFill_clicked();
+    void on_pbtnStyleColorRamp_clicked();
+    void on_mTransparencySlider_valueChanged( int value );
+
+    /*!
      * Slot to show the context help for this dialog
      */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
@@ -113,6 +123,10 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
   private:
     QgsMapCanvas* mMapCanvas;
+    QgsStyleV2* mStyle;
+
+    void populateStyles();
+    void editSymbol( QComboBox* cbo );
 
     /*!
      * Function to save dialog window state

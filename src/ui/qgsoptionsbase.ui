@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>823</height>
+            <width>760</width>
+            <height>1005</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -90,6 +90,57 @@
                  <string>Warn when opening a project file saved with an older version of QGIS</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_16">
+                <item>
+                 <widget class="QCheckBox" name="cbxNewProjectTemplate">
+                  <property name="text">
+                   <string>Create new project from default project</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnSetCurrentProjectDefault">
+                  <property name="text">
+                   <string>Set current project as default</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnResetCurrentProjectDefault">
+                  <property name="text">
+                   <string>Reset default</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -806,9 +857,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-174</y>
-            <width>762</width>
-            <height>658</height>
+            <y>0</y>
+            <width>760</width>
+            <height>625</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1054,8 +1105,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>539</width>
-            <height>502</height>
+            <width>760</width>
+            <height>506</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1340,8 +1391,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
-            <height>93</height>
+            <width>778</width>
+            <height>436</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1421,8 +1472,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>571</width>
-            <height>620</height>
+            <width>760</width>
+            <height>627</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1797,8 +1848,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>425</width>
-            <height>417</height>
+            <width>778</width>
+            <height>436</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1971,8 +2022,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>584</height>
+            <width>760</width>
+            <height>551</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2068,8 +2119,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>355</width>
-            <height>572</height>
+            <width>760</width>
+            <height>554</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

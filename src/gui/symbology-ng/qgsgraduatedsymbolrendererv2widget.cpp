@@ -25,6 +25,8 @@
 
 #include "qgsludialog.h"
 
+#include "qgsproject.h"
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -60,6 +62,15 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   populateColumns();
 
   cboGraduatedColorRamp->populate( mStyle );
+
+  // set project default color ramp
+  QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
+  if ( defaultColorRamp != "" )
+  {
+    int index = cboGraduatedColorRamp->findText( defaultColorRamp, Qt::MatchCaseSensitive );
+    if ( index >= 0 )
+      cboGraduatedColorRamp->setCurrentIndex( index );
+  }
 
   QStandardItemModel* mg = new QStandardItemModel( this );
   QStringList labels;

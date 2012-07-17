@@ -39,6 +39,11 @@ class QgsComposition: QGraphicsScene
     /**Returns width of paper item*/
     double paperWidth() const;
 
+    /**Note: added in version 1.9*/
+    void setNumPages( int pages );
+    /**Note: added in version 1.9*/
+    int numPages() const;
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const;
 
@@ -172,4 +177,8 @@ class QgsComposition: QGraphicsScene
 
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state );
+
+    /**Render a page to a paint device
+        @note added in version 1.9*/
+    void renderPage( QPainter* p, int page );
 };

@@ -79,6 +79,13 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns width of paper item*/
     double paperWidth() const;
 
+    double spaceBetweenPages() const { return mSpaceBetweenPages; }
+
+    /**Note: added in version 1.9*/
+    void setNumPages( int pages );
+    /**Note: added in version 1.9*/
+    int numPages() const;
+
     void setSnapToGridEnabled( bool b );
     bool snapToGridEnabled() const {return mSnapToGrid;}
 
@@ -214,6 +221,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
+    /**Render a page to a paint device
+        @note added in version 1.9*/
+    void renderPage( QPainter* p, int page );
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -222,7 +233,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
     QgsComposition::PlotStyle mPlotStyle;
-    QgsPaperItem* mPaperItem;
+    double mPageWidth;
+    double mPageHeight;
+    QList< QgsPaperItem* > mPages;
+    double mSpaceBetweenPages; //space in preview between pages
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
@@ -261,6 +275,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void saveSettings();
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
+
+    void updatePaperItems();
+    void addPaperItem();
+    void removePaperItems();
 
   signals:
     void paperSizeChanged();
