@@ -795,11 +795,16 @@ QPointF QgsComposition::snapPointToGrid( const QPointF& scenePoint ) const
     return scenePoint;
   }
 
-  //snap x coordinate //todo: add support for x- and y- offset
-  int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
-  int yRatio = ( int )(( scenePoint.y() - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+  //y offset to current page
+  int pageNr = ( int )( scenePoint.y() / ( mPageHeight + mSpaceBetweenPages ) );
+  double yOffset = pageNr * ( mPageHeight + mSpaceBetweenPages );
+  double yPage = scenePoint.y() - yOffset; //y-coordinate relative to current page
 
-  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY );
+  //snap x coordinate
+  int xRatio = ( int )(( scenePoint.x() - mSnapGridOffsetX ) / mSnapGridResolution + 0.5 );
+  int yRatio = ( int )(( yPage - mSnapGridOffsetY ) / mSnapGridResolution + 0.5 );
+
+  return QPointF( xRatio * mSnapGridResolution + mSnapGridOffsetX, yRatio * mSnapGridResolution + mSnapGridOffsetY + yOffset );
 }
 
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
