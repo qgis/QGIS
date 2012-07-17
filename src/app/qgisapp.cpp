@@ -231,6 +231,7 @@
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
+#include "qgsmaptoolfreezelabels.h"
 #include "qgsmaptoolmovelabel.h"
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
@@ -709,6 +710,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mAddPart;
   delete mMapTools.mNodeTool;
   delete mMapTools.mRotatePointSymbolsTool;
+  delete mMapTools.mFreezeLabels;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
@@ -974,6 +976,8 @@ void QgisApp::createActions()
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
   connect( mActionSponsors, SIGNAL( triggered() ), this, SLOT( sponsors() ) );
 
+  connect( mActionShowFrozenLabels, SIGNAL( toggled( bool ) ), this, SLOT( showFrozenLabels( bool ) ) );
+  connect( mActionFreezeLabels, SIGNAL( triggered() ), this, SLOT( freezeLabels() ) );
   connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
   connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
   connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
@@ -1083,6 +1087,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMergeFeatureAttributes );
   mMapToolGroup->addAction( mActionNodeTool );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
+  mMapToolGroup->addAction( mActionFreezeLabels );
   mMapToolGroup->addAction( mActionMoveLabel );
   mMapToolGroup->addAction( mActionRotateLabel );
   mMapToolGroup->addAction( mActionChangeLabelProperties );
@@ -1612,6 +1617,8 @@ void QgisApp::setTheme( QString theThemeName )
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.png" ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
+  mActionShowFrozenLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowFrozenLabels.png" ) );
+  mActionFreezeLabels->setIcon( QgsApplication::getThemeIcon( "/mActionFreezeLabels.png" ) );
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.png" ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );
@@ -1778,6 +1785,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mNodeTool->setAction( mActionNodeTool );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
+  mMapTools.mFreezeLabels = new QgsMapToolFreezeLabels( mMapCanvas );
+  mMapTools.mFreezeLabels->setAction( mActionFreezeLabels );
   mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
   mMapTools.mMoveLabel->setAction( mActionMoveLabel );
   mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
@@ -4135,6 +4144,17 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
     newFormItem->readXML( doc, formItemList.at( i ).toElement() );
   }
   return true;
+}
+
+void QgisApp::showFrozenLabels( bool show )
+{
+  qobject_cast<QgsMapToolFreezeLabels*>( mMapTools.mFreezeLabels )->showFrozenLabels( show );
+}
+
+void QgisApp::freezeLabels()
+{
+  mActionShowFrozenLabels->setChecked( true );
+  mMapCanvas->setMapTool( mMapTools.mFreezeLabels );
 }
 
 void QgisApp::moveLabel()
@@ -6557,7 +6577,7 @@ void QgisApp::legendLayerSelectionChanged( void )
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 {
-  bool enableMove = false, enableRotate = false, enableChange = false;
+  bool enableMove = false, enableRotate = false, enableFreeze = false, enableChange = false;
 
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
@@ -6568,6 +6588,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       continue;
 
     int colX, colY, colAng;
+    enableFreeze =
+      enableFreeze ||
+      ( qobject_cast<QgsMapToolFreezeLabels*>( mMapTools.mFreezeLabels ) &&
+        qobject_cast<QgsMapToolFreezeLabels*>( mMapTools.mFreezeLabels )->layerCanFreeze( vlayer, colX, colY ) );
+
     enableMove =
       enableMove ||
       ( qobject_cast<QgsMapToolMoveLabel*>( mMapTools.mMoveLabel ) &&
@@ -6582,10 +6607,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     enableChange = true;
 
-    if ( enableMove && enableRotate && enableChange )
+    if ( enableFreeze && enableMove && enableRotate && enableChange )
       break;
   }
 
+  mActionFreezeLabels->setEnabled( enableFreeze );
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
@@ -6632,6 +6658,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionMergeFeatureAttributes->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
 
+    mActionFreezeLabels->setEnabled( false );
     mActionMoveLabel->setEnabled( false );
     mActionRotateLabel->setEnabled( false );
     mActionChangeLabelProperties->setEnabled( false );
