@@ -478,7 +478,13 @@ void QgsComposer::zoomFull( void )
 {
   if ( mView )
   {
-    mView->fitInView( 0, 0, mComposition->paperWidth() + 1, mComposition->paperHeight() + 1, Qt::KeepAspectRatio );
+    int nPages = mComposition->numPages();
+    if ( nPages < 1 )
+    {
+      return;
+    }
+    double height = mComposition->paperHeight() * nPages + mComposition->spaceBetweenPages() * ( nPages - 1 );
+    mView->fitInView( 0, 0, mComposition->paperWidth() + 1, height + 1, Qt::KeepAspectRatio );
   }
 }
 

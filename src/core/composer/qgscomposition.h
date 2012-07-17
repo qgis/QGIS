@@ -79,6 +79,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns width of paper item*/
     double paperWidth() const;
 
+    double spaceBetweenPages() const { return mSpaceBetweenPages; }
+
     /**Note: added in version 1.9*/
     void setNumPages( int pages );
     /**Note: added in version 1.9*/
