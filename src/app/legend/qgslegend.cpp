@@ -674,13 +674,13 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     }
     else if ( li->type() == QgsLegendItem::LEGEND_GROUP )
     {
-      theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
+      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
                          tr( "Zoom to Group" ), this, SLOT( legendLayerZoom() ) );
 
       // use QGisApp::removeLayer() to remove all selected layers+groups
-      theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
-      theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ),
+      theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ),
                          tr( "&Set Group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
@@ -709,11 +709,11 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     }
   }
 
-  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/folder_new.png" ), tr( "&Add New Group" ), this, SLOT( addGroupToCurrentItem() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), this, SLOT( expandAll() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), this, SLOT( collapseAll() ) );
 
-  QAction *updateDrawingOrderAction = theMenu.addAction( QgisApp::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
+  QAction *updateDrawingOrderAction = theMenu.addAction( QgsApplication::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update Drawing Order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
   updateDrawingOrderAction->setCheckable( true );
   updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
 
@@ -722,10 +722,10 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
 void QgsLegend::initPixmaps()
 {
-  mPixmaps.mOriginalPixmap = QgisApp::getThemePixmap( "/mActionFileSmall.png" );
-  mPixmaps.mInOverviewPixmap = QgisApp::getThemePixmap( "/mActionInOverview.png" );
-  mPixmaps.mEditablePixmap = QgisApp::getThemePixmap( "/mIconEditable.png" );
-  mPixmaps.mProjectionErrorPixmap = QgisApp::getThemePixmap( "/mIconProjectionProblem.png" );
+  mPixmaps.mOriginalPixmap = QgsApplication::getThemePixmap( "/mActionFileSmall.png" );
+  mPixmaps.mInOverviewPixmap = QgsApplication::getThemePixmap( "/mActionInOverview.png" );
+  mPixmaps.mEditablePixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
+  mPixmaps.mProjectionErrorPixmap = QgsApplication::getThemePixmap( "/mIconProjectionProblem.png" );
 }
 
 Qt::CheckState QgsLegend::layerCheckState( QgsMapLayer * layer )

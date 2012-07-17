@@ -1498,7 +1498,10 @@ void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & the
       double dfHalfBucket = 0;
       eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
       if ( eErr != CE_None )
+      {
+        delete [] myHistogramArray;
         return;
+      }
       dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * theBinCount );
       myMinVal -= dfHalfBucket;
       myMaxVal += dfHalfBucket;
@@ -1509,7 +1512,10 @@ void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & the
                      theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
                      &myProg ); //this is the arg for our custom gdal progress callback
     if ( myError != CE_None )
+    {
+      delete [] myHistogramArray;
       return;
+    }
 
 #endif
 
@@ -1526,6 +1532,8 @@ void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & the
         // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
       }
     }
+    delete [] myHistogramArray;
+
 
   }
   QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( theBandStats.histogramVector->size() ) +

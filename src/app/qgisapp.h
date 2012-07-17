@@ -183,15 +183,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! update proxy settings
     void namUpdate();
 
-    //! Helper to get a theme icon. It will fall back to the
-    //default theme if the active theme does not have the required
-    //icon.
-    static QIcon getThemeIcon( const QString theName );
-    //! Helper to get a theme icon as a pixmap. It will fall back to the
-    //default theme if the active theme does not have the required
-    //icon.
-    static QPixmap getThemePixmap( const QString theName );
-
     /** Add a dock widget to the main window. Overloaded from QMainWindow.
      * After adding the dock widget to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of docks.*/

@@ -31,18 +31,11 @@ class QgsRasterLayer;
 class QgsMapToolEmitPoint;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
-class QwtPlotPicker;
-class QwtPlotMarker;
-class QwtPlotZoomer;
+class QgsRasterHistogramWidget;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
   */
-
-// fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-typedef QPointF QwtDoublePoint;
-#endif
 
 class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPropertiesBase
 {
@@ -58,9 +51,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     /** synchronize state with associated raster layer */
     void sync();
-
-    /** Save the histogram as an image to disk */
-    void histoSaveAsImage( const QString& theFilename );
 
   public slots:
     //TODO: Verify that these all need to be public
@@ -80,8 +70,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnExportTransparentPixelValues_clicked();
     /** \brief auto slot executed when the active page in the main widget stack is changed */
     void on_tabBar_currentChanged( int theTab );
-    /** \brief slot executed when user wishes to refresh raster histogram */
-    void refreshHistogram();
     /** \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
@@ -106,31 +94,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    /** This slot lets you save the histogram as an image to disk */
-    void on_mSaveAsImageButton_clicked();
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
-
-    // histogram
-
-    /** Used when the histogram band selector changes, or when tab is loaded. */
-    void on_cboHistoBand_currentIndexChanged( int );
-    /** Applies the selected min/max values to the renderer widget. */
-    void applyHistoMin( );
-    void applyHistoMax( );
-    /** Button to activate picking of the min/max value on the graph. */
-    void on_btnHistoMin_toggled();
-    void on_btnHistoMax_toggled();
-    /** Called when a selection has been made using the plot picker. */
-    void histoPickerSelected( const QPointF & );
-    /** Called when a selection has been made using the plot picker (for qwt5 only). */
-    void histoPickerSelectedQwt5( const QwtDoublePoint & );
-    /** Various actions that are stored in btnHistoActions. */
-    void histoActionTriggered( QAction* );
-    /** Draw the min/max markers on the histogram plot. */
-    void updateHistoMarkers();
-    /** Button to compute the histogram, appears when no cached histogram is available. */
-    void on_btnHistoCompute_clicked();
 
   signals:
     /** emitted when changes to layer were saved to update legend */
@@ -187,28 +152,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;
 
-    // histogram
-
-    QwtPlotPicker* mHistoPicker;
-    QwtPlotZoomer* mHistoZoomer;
-    QwtPlotMarker* mHistoMarkerMin;
-    QwtPlotMarker* mHistoMarkerMax;
-    double mHistoMin;
-    double mHistoMax;
-    QVector<QColor> mHistoColors;
-    bool mHistoShowMarkers;
-    bool mHistoLoadApplyAll;
-    enum HistoShowBands
-    {
-      ShowAll = 0,
-      ShowSelected = 1,
-      ShowRGB = 2
-    };
-    HistoShowBands mHistoShowBands;
-
-    /** \brief Compute the histogram on demand. */
-    bool computeHistogram( bool forceComputeFlag );
-    /** \brief Returns a list of selected bands - or empty if there is no selection restriction. */
-    QList< int > histoSelectedBands();
+    QgsRasterHistogramWidget* mHistogramWidget;
 };
 #endif

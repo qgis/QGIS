@@ -30,7 +30,7 @@ QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSour
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType );
   mPopulated = true;
   //mIcon = QIcon( getThemePixmap( "mIconVectorLayer.png" ) );
-  mIcon = QIcon( getThemePixmap( "mIconWfs.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
 }
 
 QgsWFSLayerItem::~QgsWFSLayerItem()
@@ -42,7 +42,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path ), mName( name ), mCapabilities( NULL )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWfs.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
 }
 
 QgsWFSConnectionItem::~QgsWFSConnectionItem()
@@ -138,7 +138,7 @@ void QgsWFSConnectionItem::deleteConnection()
 QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWfs.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWfs.png" );
 
   populate();
 }
@@ -155,7 +155,7 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
   {
     QgsOWSConnection connection( "WF", connName );
     QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, connection.uri().encodedUri() );
-    conn->setIcon( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
+    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;

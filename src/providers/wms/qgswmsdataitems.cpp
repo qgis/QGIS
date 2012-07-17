@@ -24,11 +24,13 @@
 
 #include "qgstilescalewidget.h"
 
+#include "qgsapplication.h"
+
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWms.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWms.png" );
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
@@ -163,7 +165,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
   if ( mChildren.size() == 0 )
   {
     //mIcon = iconRaster();
-    mIcon = QIcon( getThemePixmap( "mIconWms.png" ) );
+    mIcon = QgsApplication::getThemeIcon( "mIconWms.png" );
   }
   mPopulated = true;
 }
@@ -221,7 +223,7 @@ QString QgsWMSLayerItem::createUri()
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWms.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWms.png" );
 
   populate();
 }
@@ -240,7 +242,7 @@ QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
     QgsWMSConnection connection( connName );
     QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, connection.uri().encodedUri() );
 
-    conn->setIcon( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
+    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;

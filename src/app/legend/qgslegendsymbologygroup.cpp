@@ -23,7 +23,7 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup( QTreeWidgetItem * theItem, QSt
     : QgsLegendItem( theItem, theString )
 {
   mType = LEGEND_SYMBOL_GROUP;
-  QIcon myIcon = QgisApp::getThemeIcon( "/mIconSymbology.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mIconSymbology.png" );
   setText( 0, theString );
   setIcon( 0, myIcon );
 }
