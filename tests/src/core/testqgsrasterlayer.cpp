@@ -76,6 +76,8 @@ void TestQgsRasterLayer::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init( QString() );
   QgsApplication::initQgis();
+  // disable any PAM stuff to make sure stats are consistent
+  CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />" );
   //create some objects that will be used in all tests...
@@ -197,7 +199,8 @@ void TestQgsRasterLayer::checkStats()
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).minimumValue == 0 );
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).maximumValue == 9 );
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).mean == 4.5 );
-  QVERIFY( mpRasterLayer->bandStatistics( 1 ).stdDev == 2.872281323269 );
+  QVERIFY( fabs( mpRasterLayer->bandStatistics( 1 ).stdDev - 2.87228132326901431 ) 
+           < 0.0000000000000001 );
   mReport += "<h2>Check Stats</h2>\n";
   mReport += "<p>Passed</p>";
 }
