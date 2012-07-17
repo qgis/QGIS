@@ -821,12 +821,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   //
 
   QgsRasterProjector *projector = mPipe.projector();
-  // TODO: add in init?
-  if ( !projector )
-  {
-    projector = new QgsRasterProjector;
-    mPipe.set( projector );
-  }
 
   // TODO add a method to interface to get provider and get provider
   // params in QgsRasterProjector
@@ -1786,6 +1780,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     setDrawingStyle( SingleBandGray );  //sensible default
   }
 
+  //resampler (must be after renderer)
+  QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
+  mPipe.set( resampleFilter );
+
+  // projector (may be anywhere in pipe)
+  QgsRasterProjector * projector = new QgsRasterProjector;
+  mPipe.set( projector );
+
   // Store timestamp
   // TODO move to provider
   mLastModified = lastModified( mDataSource );
@@ -2109,6 +2111,7 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 }
 
 // not sure if we want it
+/*
 void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
 {
   QgsDebugMsg( "Entered" );
@@ -2119,7 +2122,7 @@ void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter 
     QgsDebugMsg( "Cannot set resample filter." );
   }
 }
-
+*/
 void QgsRasterLayer::showProgress( int theValue )
 {
   emit progressUpdate( theValue );

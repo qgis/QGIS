@@ -354,7 +354,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
 
     /**Set raster resample filter. Takes ownership of the resample filter object*/
-    void setResampleFilter( QgsRasterResampleFilter* resampleFilter );
+    //void setResampleFilter( QgsRasterResampleFilter* resampleFilter );
     QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
 
     /** Get raster pipe */
