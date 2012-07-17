@@ -73,6 +73,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
   QStandardItemModel* model = new QStandardItemModel( listItems );
   listItems->setModel( model );
+  listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   connect( model, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( itemChanged( QStandardItem* ) ) );
   connect( listItems->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
@@ -91,7 +92,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   }
   connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
       this, SLOT( groupChanged( const QModelIndex& ) ) );
-  connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ), this, SLOT( groupRenamed( QStandardItem* ) ) );
+  connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
+      this, SLOT( groupRenamed( QStandardItem* ) ) );
 
   QMenu *groupMenu = new QMenu( "Group Actions" );
   QAction *groupSymbols = groupMenu->addAction( "Group Symbols" );
@@ -113,6 +115,11 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   groupTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( groupTree, SIGNAL( customContextMenuRequested( const QPoint& ) ),
           this, SLOT( grouptreeContextMenu( const QPoint& ) ) );
+
+  // Context menu for listItems
+  listItems->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( listItems, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+      this, SLOT( listitemsContextMenu( const QPoint& ) ) );
 
 }
 
@@ -639,7 +646,7 @@ void QgsStyleV2ManagerDialog::populateGroups()
 
 void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
 {
-  QgsSymbolGroupMap groups = mStyle->groupNames( parent->text() );
+  QgsSymbolGroupMap groups = mStyle->childGroupNames( parent->text() );
   QgsSymbolGroupMap::const_iterator i = groups.constBegin();
   while ( i != groups.constEnd() )
   {
@@ -860,6 +867,8 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
         this, SLOT( groupRenamed( QStandardItem* ) ) );
     connect( model, SIGNAL( itemChanged( QStandardItem* ) ),
         this, SLOT( itemChanged( QStandardItem* ) ) );
+    // Reset the selection mode
+    listItems->setSelectionMode( QAbstractItemView::ExtendedSelection );
   }
   else
   {
@@ -904,6 +913,9 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
     // Connect to slot which handles regrouping
     connect( model, SIGNAL( itemChanged( QStandardItem* )),
         this, SLOT( regrouped( QStandardItem* ) ) );
+
+    // No selection should be possible
+    listItems->setSelectionMode( QAbstractItemView::NoSelection );
   }
 }
 
@@ -1047,5 +1059,42 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
       addGroup();
     else if ( selectedItem->text() == "Remove Group" )
       removeGroup();
+  }
+}
+
+void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
+{
+  QPoint globalPos = listItems->viewport()->mapToGlobal( point );
+
+  QMenu *groupMenu = new QMenu( this );
+  QMenu *groupList = new QMenu( this );
+  groupList->setTitle( "Apply Group" );
+
+  QStringList groups = mStyle->groupNames();
+  foreach( QString group, groups )
+  {
+    groupList->addAction( group );
+  }
+  groupMenu->addMenu( groupList );
+
+  groupMenu->addAction( "Un-group" );
+
+  QAction* selectedItem = groupMenu->exec( globalPos );
+
+  if ( selectedItem )
+  {
+    int groupId = 0;
+    if ( selectedItem->text() != "Un-group" )
+    {
+      groupId = mStyle->groupId( selectedItem->text() );
+    }
+    QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+    foreach( QModelIndex index, indexes )
+    {
+      mStyle->regroup( index.data().toString(), groupId );
+    }
+    populateList();
+
+    QgsDebugMsg( "Selected Action: " + selectedItem->text() );
   }
 }

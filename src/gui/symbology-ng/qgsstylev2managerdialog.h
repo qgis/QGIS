@@ -72,6 +72,10 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! Context menu for the groupTree
     void grouptreeContextMenu( const QPoint& );
 
+    //! Context menu for the listItems ( symbols list )
+    void listitemsContextMenu( const QPoint& );
+
+
   protected:
 
     //! populate combo box with known style items (symbols, color ramps)
