@@ -705,6 +705,9 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     return;
   }
 
+  QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
+  mComposition->setPlotStyle( QgsComposition::Print );
+
   for ( int i = 0; i < mComposition->numPages(); ++i )
   {
     QImage image = printPageAsRaster( i );
@@ -719,6 +722,8 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
     }
   }
+
+  mComposition->setPlotStyle( savedPlotStyle );
 }
 
 
@@ -772,6 +777,8 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   }
 
   settings.setValue( "/UI/lastSaveAsSvgFile", outputFileName );
+
+  QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
   mComposition->setPlotStyle( QgsComposition::Print );
 
   mView->setPaintingEnabled( false );
@@ -805,8 +812,9 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 
     mComposition->renderPage( &p, i );
     p.end();
-    mComposition->setPlotStyle( QgsComposition::Preview );
   }
+
+  mComposition->setPlotStyle( savedPlotStyle );
   mView->setPaintingEnabled( true );
 }
 
