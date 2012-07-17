@@ -95,6 +95,9 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
     }
   }
 
+  // set alpha transparency
+  s->setAlpha( QgsProject::instance()->readDoubleEntry( "DefaultStyles", "/AlphaInt", 255 ) / 255.0 );
+
   // set random color, it project prefs allow
   if ( defaultSymbol == "" ||
        QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) )

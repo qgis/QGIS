@@ -520,6 +520,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Line", cboStyleLine->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Fill", cboStyleFill->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", 255 - mTransparencySlider->value() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   //todo XXX set canvas color
@@ -761,9 +762,13 @@ void QgsProjectProperties::populateStyles()
       cboList[i]->setCurrentIndex( index );
   }
 
-  // random colors?
+  // random colors
   cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) );
 
+  // alpha transparency
+  int transparencyInt = 255 - QgsProject::instance()->readNumEntry( "DefaultStyles", "/AlphaInt", 255 );
+  mTransparencySlider->setValue( transparencyInt );
+  on_mTransparencySlider_valueChanged( transparencyInt );
 }
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
@@ -786,6 +791,20 @@ void QgsProjectProperties::on_pbtnStyleLine_clicked()
 void QgsProjectProperties::on_pbtnStyleFill_clicked()
 {
   editSymbol( cboStyleFill );
+}
+
+void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
+{
+  // TODO for now just open style manager
+  // code in QgsStyleV2ManagerDialog::editColorRamp()
+  on_pbtnStyleManager_clicked();
+}
+
+void QgsProjectProperties::on_mTransparencySlider_valueChanged( int value )
+{
+  double alpha = 1 - ( value / 255.0 );
+  double transparencyPercent = ( 1 - alpha ) * 100;
+  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg(( int ) transparencyPercent ) );
 }
 
 void QgsProjectProperties::editSymbol( QComboBox* cbo )
@@ -819,10 +838,4 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
   cbo->setItemIcon( cbo->currentIndex(), icon );
 }
 
-void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
-{
-  // TODO for now just open style manager
-  // code in QgsStyleV2ManagerDialog::editColorRamp()
-  on_pbtnStyleManager_clicked();
-}
 

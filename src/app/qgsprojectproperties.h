@@ -99,6 +99,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbtnStyleLine_clicked();
     void on_pbtnStyleFill_clicked();
     void on_pbtnStyleColorRamp_clicked();
+    void on_mTransparencySlider_valueChanged( int value );
 
     /*!
      * Slot to show the context help for this dialog
