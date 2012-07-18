@@ -1260,11 +1260,15 @@ void QgsComposition::print( QPrinter &printer )
 
   QPainter p( &printer );
 
+  //QgsComposition starts page numbering at 0
+  int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1 ;
+  int toPage = ( printer.toPage() < 1 ) ? numPages() - 1 : printer.toPage() - 1;
+
   if ( mPrintAsRaster )
   {
-    for ( int i = 0; i < numPages(); ++i )
+    for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > 0 )
+      if ( i > fromPage )
       {
         printer.newPage();
       }
@@ -1280,9 +1284,9 @@ void QgsComposition::print( QPrinter &printer )
 
   if ( !mPrintAsRaster )
   {
-    for ( int i = 0; i < numPages(); ++i )
+    for ( int i = fromPage; i <= toPage; ++i )
     {
-      if ( i > 0 )
+      if ( i > fromPage )
       {
         printer.newPage();
       }
