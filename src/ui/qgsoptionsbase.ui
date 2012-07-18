@@ -94,7 +94,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_16">
                 <item>
-                 <widget class="QCheckBox" name="cbxNewProjectTemplate">
+                 <widget class="QCheckBox" name="cbxProjectDefaultNew">
                   <property name="text">
                    <string>Create new project from default project</string>
                   </property>
@@ -114,7 +114,7 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pbnSetCurrentProjectDefault">
+                 <widget class="QPushButton" name="pbnProjectDefaultSetCurrent">
                   <property name="text">
                    <string>Set current project as default</string>
                   </property>
@@ -134,9 +134,41 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pbnResetCurrentProjectDefault">
+                 <widget class="QPushButton" name="pbnProjectDefaultReset">
                   <property name="text">
                    <string>Reset default</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_15">
+                <item>
+                 <widget class="QLabel" name="label_31">
+                  <property name="text">
+                   <string>Template folder</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="leTemplateFolder">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnTemplateFolderBrowse">
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnTemplateFolderReset">
+                  <property name="text">
+                   <string>Reset</string>
                   </property>
                  </widget>
                 </item>

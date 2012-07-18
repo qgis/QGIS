@@ -472,6 +472,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsMessageLogViewer *logViewer() { return mLogViewer; }
 
+    //! Update file menu with the project templates
+    void updateProjectFromTemplates();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -623,6 +626,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNewBlank();
     //! As above but allows forcing without prompt and forcing blank project
     void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
+    //! Create a new file from a template project
+    bool fileNewFromTemplate( QString fileName );
+    void fileNewFromTemplateAction( QAction * qAction );
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
     void embedLayers();

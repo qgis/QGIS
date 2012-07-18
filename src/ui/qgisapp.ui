@@ -62,9 +62,14 @@
       <string>Print Composers</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mProjectFromTemplateMenu">
+     <property name="title">
+      <string>New Project From Template</string>
+     </property>
+    </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
-    <addaction name="mActionNewBlankProject"/>
+    <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="separator"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="mActionSaveProject"/>

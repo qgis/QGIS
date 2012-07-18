@@ -485,6 +485,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   createDecorations();
   readSettings();
   updateRecentProjectPaths();
+  updateProjectFromTemplates();
   activateDeactivateLayerRelatedActions( NULL );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
@@ -1140,6 +1141,8 @@ void QgisApp::createMenus()
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, SIGNAL( triggered( QAction * ) ),
            this, SLOT( openProject( QAction * ) ) );
+  connect( mProjectFromTemplateMenu, SIGNAL( triggered( QAction * ) ),
+           this, SLOT( fileNewFromTemplateAction( QAction * ) ) );
 
   if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
   {
@@ -2111,6 +2114,33 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
 
 } // QgisApp::saveRecentProjectPath
 
+// Update file menu with the project templates
+void QgisApp::updateProjectFromTemplates()
+{
+  // get list of project files in template dir
+  QSettings settings;
+  QString templateDirName = settings.value( "/qgis/projectTemplateDir",
+                            QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+  QDir templateDir( templateDirName );
+  QStringList filters( "*.qgs" );
+  templateDir.setNameFilters( filters );
+  QStringList templateFiles = templateDir.entryList( filters );
+
+  // Remove existing entries
+  mProjectFromTemplateMenu->clear();
+
+  // Add entries
+  foreach( QString templateFile, templateFiles )
+  {
+    mProjectFromTemplateMenu->addAction( templateFile );
+  }
+
+  // add <blank> entry, which loads a blank template (regardless of "default template")
+  if ( settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() )
+    mProjectFromTemplateMenu->addAction( tr( "< Blank >" ) );
+
+} // QgisApp::updateProjectFromTemplates
+
 void QgisApp::saveWindowState()
 {
   // store window and toolbar positions
@@ -2920,17 +2950,12 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   QSettings settings;
   if ( ! forceBlank )
   {
-    QString projectTemplate = QgsApplication::qgisSettingsDirPath() + QString( "default.qgs" );
+    QString projectTemplate = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
     if ( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() &&
          ! projectTemplate.isEmpty() )
     {
-      QgsDebugMsg( QString( "loading template: %1 - %2" ).arg( settings.value( "/qgis/newProjectTemplate", QVariant( false ) ).toBool() ).arg( projectTemplate ) );
-      if ( addProject( projectTemplate ) )
-      {
-        // set null filename so we don't override the template
-        QgsProject::instance()->setFileName( QString() );
+      if ( fileNewFromTemplate( projectTemplate ) )
         return;
-      }
     }
   }
 
@@ -3013,6 +3038,36 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 #endif
 
 } // QgisApp::fileNew(bool thePromptToSaveFlag)
+
+bool QgisApp::fileNewFromTemplate( QString fileName )
+{
+  QgsDebugMsg( QString( "loading project template: %1" ).arg( fileName ) );
+  if ( addProject( fileName ) )
+  {
+    // set null filename so we don't override the template
+    QgsProject::instance()->setFileName( QString() );
+    return true;
+  }
+  return false;
+}
+
+void QgisApp::fileNewFromTemplateAction( QAction * qAction )
+{
+  if ( ! qAction )
+    return;
+
+  if ( qAction->text() == tr( "< Blank >" ) )
+  {
+    fileNewBlank();
+  }
+  else
+  {
+    QSettings settings;
+    QString templateDirName = settings.value( "/qgis/projectTemplateDir",
+                              QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+    fileNewFromTemplate( templateDirName + QDir::separator() + qAction->text() );
+  }
+}
 
 
 void QgisApp::newVectorLayer()
