@@ -394,6 +394,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
+   <addaction name="mActionShowFrozenLabels"/>
+   <addaction name="mActionFreezeLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -1696,6 +1698,41 @@
    </property>
    <property name="whatsThis">
     <string>Creates a scale bar that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionFreezeLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFreezeLabels.png</normaloff>:/images/themes/default/mActionFreezeLabels.png</iconset>
+   </property>
+   <property name="text">
+    <string>Freeze or Thaw Labels</string>
+   </property>
+   <property name="whatsThis">
+    <string>Freeze (write label location and optionally rotation) to attribute table.
+
+Click on individual labels, or draw a marquee (labels touching will be included). Actions on in-memory attribute table fields are immediate.
+
+Hold Shift key down to Thaw (write NULLs to attribute table), reverting label to dynamic.
+Hold Alt key down to toggle selected labels between Frozen and Thawed states.</string>
+   </property>
+  </action>
+  <action name="mActionShowFrozenLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowFrozenLabels.png</normaloff>:/images/themes/default/mActionShowFrozenLabels.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Frozen Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Frozen Labels</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">

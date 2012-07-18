@@ -43,9 +43,9 @@ struct QgsDiagramLayerSettings;
 
 struct CORE_EXPORT QgsLabelPosition
 {
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ) {}
+  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool frozen = false ):
+      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isFrozen( frozen ) {}
+  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isFrozen( false ) {}
   int featureId;
   double rotation;
   QVector< QgsPoint > cornerPoints;
@@ -55,6 +55,7 @@ struct CORE_EXPORT QgsLabelPosition
   QString layerID;
   bool upsideDown;
   bool isDiagram;
+  bool isFrozen;
 };
 
 /** Labeling engine interface.

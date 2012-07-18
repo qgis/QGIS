@@ -41,6 +41,11 @@ class QgsMapToolLabel: public QgsMapTool
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
     bool diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    /**Returns true if layer has attribute fields set up
+        @param xCol out: index of the attribute for data defined x coordinate
+        @param yCol out: index of the attribute for data defined y coordinate
+        @return true if layer fields set up and exist*/
+    bool layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
 
   protected:
     QgsRubberBand* mLabelRubberBand;

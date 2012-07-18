@@ -77,6 +77,7 @@
     <file>themes/default/mActionFileSmall.png</file>
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
+    <file>themes/default/mActionFreezeLabels.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
     <file>themes/default/mActionFullHistogramStretch.png</file>
     <file>themes/default/mActionGroupItems.png</file>
@@ -143,6 +144,7 @@
     <file>themes/default/mActionSelectRectangle.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
+    <file>themes/default/mActionShowFrozenLabels.png</file>
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
     <file>themes/default/mActionSplitFeatures.png</file>
