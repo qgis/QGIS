@@ -30,6 +30,7 @@
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsscaleutils.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
@@ -39,11 +40,12 @@
 
 //qt includes
 #include <QColorDialog>
+#include <QInputDialog>
+#include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 
 //stdc++ includes
-
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
@@ -112,6 +114,22 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   pbnCanvasColor->setColor( myColor );
+
+  //get project scales
+  QStringList myScales = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+  if ( !myScales.isEmpty() )
+  {
+    QStringList::const_iterator scaleIt = myScales.constBegin();
+    for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+      newItem->setText( *scaleIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      lstScales->addItem( newItem );
+    }
+  }
+
+  grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
 
   QgsMapLayer* currentLayer = 0;
 
@@ -423,6 +441,33 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
 
+  //save project scales
+  QStringList myScales;
+  for ( int i = 0; i < lstScales->count(); ++i )
+  {
+    myScales.append( lstScales->item( i )->text() );
+  }
+
+  if ( !myScales.isEmpty() )
+  {
+    QgsProject::instance()->writeEntry( "Scales", "/ScalesList", myScales );
+    QgsProject::instance()->writeEntry( "Scales", "/useProjectScales", grpProjectScales->isChecked() );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "Scales", "/" );
+  }
+
+  //use global or project scales depending on checkbox state
+  if ( grpProjectScales->isChecked() )
+  {
+    emit scalesChanged( myScales );
+  }
+  else
+  {
+    emit scalesChanged();
+  }
+
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
@@ -693,6 +738,87 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
 
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
+}
+
+void QgsProjectProperties::on_pbnAddScale_clicked()
+{
+  int myScale = QInputDialog::getInt(
+                  this,
+                  tr( "Enter scale" ),
+                  tr( "Scale denominator" ),
+                  -1,
+                  1
+                );
+
+  if ( myScale != -1 )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+    newItem->setText( QString( "1:%1" ).arg( myScale ) );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    lstScales->addItem( newItem );
+    lstScales->setCurrentItem( newItem );
+  }
+}
+
+void QgsProjectProperties::on_pbnRemoveScale_clicked()
+{
+  int currentRow = lstScales->currentRow();
+  QListWidgetItem* itemToRemove = lstScales->takeItem( currentRow );
+  delete itemToRemove;
+}
+
+void QgsProjectProperties::on_pbnImportScales_clicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QString msg;
+  QStringList myScales;
+  if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
+
+  QStringList::const_iterator scaleIt = myScales.constBegin();
+  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+    newItem->setText( *scaleIt );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    lstScales->addItem( newItem );
+  }
+}
+
+void QgsProjectProperties::on_pbnExportScales_clicked()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure the user never ommited the extension from the file name
+  if ( !fileName.toLower().endsWith( ".xml" ) )
+  {
+    fileName += ".xml";
+  }
+
+  QStringList myScales;
+  for ( int i = 0; i < lstScales->count(); ++i )
+  {
+    myScales.append( lstScales->item( i )->text() );
+  }
+
+  QString msg;
+  if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
 }
 
 void QgsProjectProperties::populateStyles()

@@ -83,6 +83,28 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void on_pbnCanvasColor_clicked();
 
+    /*! Let the user add a scale to the list of project scales
+     * used in scale combobox instead of global ones
+     * @note added in QGIS 2.0
+     */
+    void on_pbnAddScale_clicked();
+
+    /*! Let the user remove a scale from the list of project scales
+     * used in scale combobox instead of global ones
+     * @note added in QGIS 2.0
+     */
+    void on_pbnRemoveScale_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnImportScales_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnExportScales_clicked();
+
     /*!
      * Slots for WMS project settings
      */
@@ -116,6 +138,9 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
+
+    //! Signal used to inform listeners that project scale list may have chnaged
+    void scalesChanged( const QStringList &scales = QStringList() );
 
     //! let listening canvases know to refresh
     void refresh();

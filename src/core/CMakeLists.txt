@@ -186,6 +186,7 @@ SET(QGIS_CORE_SRCS
   qgsspatialindex.cpp
 
   qgspaintenginehack.cpp
+  qgsscaleutils.cpp
 )
 
 IF(WIN32)
@@ -426,6 +427,7 @@ SET(QGIS_CORE_HDRS
   qgsspatialindex.h
 
   qgspaintenginehack.h
+  qgsscaleutils.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
