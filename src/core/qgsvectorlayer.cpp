@@ -2410,12 +2410,12 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
         QgsFeature newFeature;
         newFeature.setGeometry( newGeometry );
 
-        //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
-        QgsAttributeMap newAttributes = select_it->attributeMap();
-        QVariant defaultValue;
-        for ( int j = 0; j < newAttributes.size(); ++j )
+        if ( mDataProvider )
         {
-          if ( mDataProvider )
+          //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
+          QgsAttributeMap newAttributes = select_it->attributeMap();
+          QVariant defaultValue;
+          foreach( int j, newAttributes.keys() )
           {
             defaultValue = mDataProvider->defaultValue( j );
             if ( !defaultValue.isNull() )
@@ -2423,9 +2423,10 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
               newAttributes.insert( j, defaultValue );
             }
           }
+
+          newFeature.setAttributeMap( newAttributes );
         }
 
-        newFeature.setAttributeMap( newAttributes );
         newFeatures.append( newFeature );
       }
 
