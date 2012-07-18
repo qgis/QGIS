@@ -45,7 +45,6 @@
 #include "qgsmessageviewer.h"
 #include "qgscontexthelp.h"
 #include "qgscursors.h"
-#include "qgspaintenginehack.h"
 
 #include <QCloseEvent>
 #include <QCheckBox>
@@ -533,6 +532,16 @@ void QgsComposer::on_mActionRefreshView_triggered()
 
 void QgsComposer::on_mActionExportAsPDF_triggered()
 {
+  if ( !mComposition || !mView )
+  {
+    return;
+  }
+
+  if ( containsWMSLayer() )
+  {
+    showWMSPrintingWarning();
+  }
+
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString lastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
   QFileInfo file( lastUsedFile );
@@ -543,7 +552,9 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
                              file.path(),
                              tr( "PDF Format" ) + " (*.pdf *.PDF)" );
   if ( outputFileName.isEmpty() )
+  {
     return;
+  }
 
   if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
   {
@@ -552,17 +563,25 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
   myQSettings.setValue( "/UI/lastSaveAsPdfFile", outputFileName );
 
-  QPrinter printer;
-  printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( outputFileName );
-  printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
-
-  QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
-  print( printer );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+  mView->setPaintingEnabled( false );
+  mComposition->exportAsPDF( outputFileName );
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsComposer::on_mActionPrint_triggered()
 {
+  if ( !mComposition || !mView )
+  {
+    return;
+  }
+
+  if ( containsWMSLayer() )
+  {
+    showWMSPrintingWarning();
+  }
+
   //orientation and page size are already set to QPrinter in the page setup dialog
   QPrintDialog printDialog( &mPrinter, 0 );
   if ( printDialog.exec() != QDialog::Accepted )
@@ -570,111 +589,16 @@ void QgsComposer::on_mActionPrint_triggered()
     return;
   }
 
-  print( mPrinter );
-}
-
-void QgsComposer::print( QPrinter &printer )
-{
-  if ( !mComposition || !mView )
-    return;
-
-  if ( containsWMSLayer() )
-  {
-    showWMSPrintingWarning();
-  }
-
-  //set resolution based on composer setting
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
-
-  //set user-defined resolution
-  printer.setResolution( mComposition->printResolution() );
-
-  QPainter p( &printer );
-
-  QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
-  mComposition->setPlotStyle( QgsComposition::Print );
-
   QApplication::setOverrideCursor( Qt::BusyCursor );
-
-  bool printAsRaster = mComposition->printAsRaster();
-
-  if ( printAsRaster )
-  {
-    for ( int i = 0; i < mComposition->numPages(); ++i )
-    {
-      if ( i > 0 )
-      {
-        printer.newPage();
-      }
-
-      QImage image = printPageAsRaster( i );
-
-      if ( image.isNull() )
-      {
-        QApplication::restoreOverrideCursor();
-        int answer = QMessageBox::warning( 0,
-                                           tr( "Image too large" ),
-                                           tr( "Creation of image failed.  Retry without 'Print As Raster'?" ),
-                                           QMessageBox::Ok | QMessageBox::Cancel,
-                                           QMessageBox::Ok );
-        if ( answer == QMessageBox::Cancel )
-        {
-          mComposition->setPlotStyle( savedPlotStyle );
-          return;
-        }
-
-        QApplication::setOverrideCursor( Qt::BusyCursor );
-        printAsRaster = false;
-      }
-      else
-      {
-        QRectF targetArea( 0, 0, image.width(), image.height() );
-        p.drawImage( targetArea, image, targetArea );
-      }
-    }
-  }
-
-  if ( !printAsRaster )
-  {
-    mView->setPaintingEnabled( false );
-    for ( int i = 0; i < mComposition->numPages(); ++i )
-    {
-      if ( i > 0 )
-      {
-        printer.newPage();
-      }
-      mComposition->renderPage( &p, i );
-    }
-    mView->setPaintingEnabled( true );
-  }
-
-  mComposition->setPlotStyle( savedPlotStyle );
+  mView->setPaintingEnabled( false );
+  mComposition->print( mPrinter );
+  mView->setPaintingEnabled( true );
   QApplication::restoreOverrideCursor();
-}
-
-QImage QgsComposer::printPageAsRaster( int page )
-{
-  //print out via QImage, code copied from on_mActionExportAsImage_activated
-  int width = ( int )( mComposition->printResolution() * mComposition->paperWidth() / 25.4 );
-  int height = ( int )( mComposition-> printResolution() * mComposition->paperHeight() / 25.4 );
-  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
-  if ( !image.isNull() )
-  {
-    image.setDotsPerMeterX( mComposition->printResolution() / 25.4 * 1000 );
-    image.setDotsPerMeterY( mComposition->printResolution() / 25.4 * 1000 );
-    image.fill( 0 );
-    QPainter imagePainter( &image );
-    mView->setPaintingEnabled( false );
-    mComposition->renderPage( &imagePainter, page );
-    mView->setPaintingEnabled( true );
-  }
-  return image;
 }
 
 void QgsComposer::on_mActionExportAsImage_triggered()
 {
-  if ( !mComposition )
+  if ( !mComposition || !mView )
   {
     return;
   }
@@ -711,12 +635,11 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     return;
   }
 
-  QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
-  mComposition->setPlotStyle( QgsComposition::Print );
+  mView->setPaintingEnabled( false );
 
   for ( int i = 0; i < mComposition->numPages(); ++i )
   {
-    QImage image = printPageAsRaster( i );
+    QImage image = mComposition->printPageAsRaster( i );
     if ( i == 0 )
     {
       image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
@@ -728,8 +651,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       image.save( outputFilePath, fileNExt.second.toLocal8Bit().constData() );
     }
   }
-
-  mComposition->setPlotStyle( savedPlotStyle );
+  mView->setPaintingEnabled( true );
 }
 
 
@@ -784,9 +706,6 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 
   settings.setValue( "/UI/lastSaveAsSvgFile", outputFileName );
 
-  QgsComposition::PlotStyle savedPlotStyle = mComposition->plotStyle();
-  mComposition->setPlotStyle( QgsComposition::Print );
-
   mView->setPaintingEnabled( false );
   for ( int i = 0; i < mComposition->numPages(); ++i )
   {
@@ -819,8 +738,6 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     mComposition->renderPage( &p, i );
     p.end();
   }
-
-  mComposition->setPlotStyle( savedPlotStyle );
   mView->setPaintingEnabled( true );
 }
 

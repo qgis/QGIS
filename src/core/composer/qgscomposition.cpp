@@ -16,7 +16,6 @@
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
-#include "qgspaperitem.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
@@ -27,10 +26,13 @@
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
 #include "qgslogger.h"
+#include "qgspaintenginehack.h"
+#include "qgspaperitem.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
 #include <QPainter>
+#include <QPrinter>
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
@@ -1236,6 +1238,76 @@ void QgsComposition::removePaperItems()
   mPages.clear();
 }
 
+void QgsComposition::exportAsPDF( const QString& file )
+{
+  QPrinter printer;
+  printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( file );
+  printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+
+  QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
+  print( printer );
+}
+
+void QgsComposition::print( QPrinter &printer )
+{
+  //set resolution based on composer setting
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+
+  //set user-defined resolution
+  printer.setResolution( printResolution() );
+
+  QPainter p( &printer );
+
+  if ( mPrintAsRaster )
+  {
+    for ( int i = 0; i < numPages(); ++i )
+    {
+      if ( i > 0 )
+      {
+        printer.newPage();
+      }
+
+      QImage image = printPageAsRaster( i );
+      if ( !image.isNull() )
+      {
+        QRectF targetArea( 0, 0, image.width(), image.height() );
+        p.drawImage( targetArea, image, targetArea );
+      }
+    }
+  }
+
+  if ( !mPrintAsRaster )
+  {
+    for ( int i = 0; i < numPages(); ++i )
+    {
+      if ( i > 0 )
+      {
+        printer.newPage();
+      }
+      renderPage( &p, i );
+    }
+  }
+}
+
+QImage QgsComposition::printPageAsRaster( int page )
+{
+  //print out via QImage, code copied from on_mActionExportAsImage_activated
+  int width = ( int )( printResolution() * paperWidth() / 25.4 );
+  int height = ( int )( printResolution() * paperHeight() / 25.4 );
+  QImage image( QSize( width, height ), QImage::Format_ARGB32 );
+  if ( !image.isNull() )
+  {
+    image.setDotsPerMeterX( printResolution() / 25.4 * 1000 );
+    image.setDotsPerMeterY( printResolution() / 25.4 * 1000 );
+    image.fill( 0 );
+    QPainter imagePainter( &image );
+    renderPage( &imagePainter, page );
+  }
+  return image;
+}
+
 void QgsComposition::renderPage( QPainter* p, int page )
 {
   if ( mPages.size() <= page )
@@ -1256,5 +1328,11 @@ void QgsComposition::renderPage( QPainter* p, int page )
   }
 
   QRectF paperRect = QRectF( paperItem->transform().dx(), paperItem->transform().dy(), paperItem->rect().width(), paperItem->rect().height() );
+
+  QgsComposition::PlotStyle savedPlotStyle = mPlotStyle;
+  mPlotStyle = QgsComposition::Print;
+
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
+
+  mPlotStyle = savedPlotStyle;
 }

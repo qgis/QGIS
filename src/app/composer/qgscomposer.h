@@ -280,13 +280,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
 
-    //! Print to a printer object
-    void print( QPrinter &printer );
-
-    //! print composer page to image
-    //! If the image does not fit into memory, a null image is returned
-    QImage printPageAsRaster( int page );
-
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
