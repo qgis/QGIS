@@ -43,11 +43,12 @@ class TestQgsWcsProvider: public QObject
 
     void read();
   private:
-    bool read( QString identifier, QString theFilePath, QString & theReport );
+    bool read( QString theIdentifier, QString theWcsUri, QString theFilePath, QString & theReport );
     // Log error in html
     void error( QString theMessage, QString &theReport );
     // compare values and add table row in html report, set ok to false if not equal
     QString compareHead();
+    bool compare ( double wcsVal, double gdalVal, double theTolerance );
     void compare( QString theParamName, int wcsVal, int gdalVal, QString &theReport, bool &theOk );
     void compare( QString theParamName, double wcsVal, double gdalVal, QString &theReport, bool &theOk, double theTolerance = 0 );
     void compareRow( QString theParamName, QString wcsVal, QString gdalVal, QString &theReport, bool theOk, QString theDifference = "", QString theTolerance = "" );
@@ -82,7 +83,7 @@ void TestQgsWcsProvider::initTestCase()
   mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "raster";
   qDebug() << "mTestDataDir = " << mTestDataDir;
 
-  mUrl = "http://127.0.0.1//cgi-bin/wcstest";
+  mUrl =  QString( TEST_SERVER_URL ) + QDir::separator() + "wcs";
 }
 
 //runs after all tests
@@ -102,39 +103,52 @@ void TestQgsWcsProvider::cleanupTestCase()
 void TestQgsWcsProvider::read( )
 {
   bool ok = true;
+  QStringList versions;
+
+  versions << "1.0" << "1.1";
+
   QStringList identifiers;
 
   // identifiers in mapfile have the same name as files without .tif extension
   identifiers << "band1_byte_noct_epsg4326";
   identifiers << "band1_int16_noct_epsg4326";
   identifiers << "band1_float32_noct_epsg4326";
+  identifiers << "band3_byte_noct_epsg4326";
+  identifiers << "band3_int16_noct_epsg4326";
+  identifiers << "band3_float32_noct_epsg4326";
 
   // How to reasonably log multiple fails within this loop?
-  foreach( QString identifier, identifiers )
+  foreach( QString version, versions )
   {
-    QString filePath = mTestDataDir + QDir::separator() + identifier + ".tif";
-    if ( !read( identifier, filePath, mReport ) )
+    foreach( QString identifier, identifiers )
     {
-      ok = false;
+      QString filePath = mTestDataDir + QDir::separator() + identifier + ".tif";
+
+      QgsDataSourceURI uri;
+      uri.setParam( "url", mUrl );
+      uri.setParam( "identifier", identifier );
+      uri.setParam( "crs", "epsg:4326" );
+      uri.setParam( "version", version );
+
+      if ( !read( identifier, uri.encodedUri(), filePath, mReport ) )
+      {
+        ok = false;
+      }
     }
   }
   QVERIFY2( ok, "Reading data failed. See report for details." );
 }
 
-bool TestQgsWcsProvider::read( QString theIdentifier, QString theFilePath, QString & theReport )
+bool TestQgsWcsProvider::read( QString theIdentifier, QString theWcsUri, QString theFilePath, QString & theReport )
 {
   bool ok = true;
-  QgsDataSourceURI uri;
-  uri.setParam( "url", mUrl );
-  uri.setParam( "identifier", theIdentifier );
-  uri.setParam( "crs", "epsg:4326" );
 
   theReport += QString( "<h2>Identifier (coverage): %1</h2>" ).arg( theIdentifier );
 
-  QgsRasterDataProvider* wcsProvider = QgsRasterLayer::loadProvider( "wcs", uri.encodedUri() );
+  QgsRasterDataProvider* wcsProvider = QgsRasterLayer::loadProvider( "wcs", theWcsUri );
   if ( !wcsProvider || !wcsProvider->isValid() )
   {
-    error( QString( "Cannot load WCS provider with URI: %1" ).arg( QString( uri.encodedUri() ) ), theReport );
+    error( QString( "Cannot load WCS provider with URI: %1" ).arg( QString( theWcsUri ) ), theReport );
     ok = false;
   }
 
@@ -147,7 +161,7 @@ bool TestQgsWcsProvider::read( QString theIdentifier, QString theFilePath, QStri
 
   if ( !ok ) return false;
 
-  theReport += QString( "WCS URI: %1<br>" ).arg( QString( uri.encodedUri() ).replace( "&", "&amp;" ) );
+  theReport += QString( "WCS URI: %1<br>" ).arg( theWcsUri.replace( "&", "&amp;" ) );
   theReport += QString( "GDAL URI: %1<br>" ).arg( theFilePath );
 
   theReport += "<br>";
@@ -212,7 +226,7 @@ bool TestQgsWcsProvider::read( QString theIdentifier, QString theFilePath, QStri
       continue;
     }
 
-    if ( !statsOk || typesOk )
+    if ( !statsOk || !typesOk )
     {
       allOk = false;
       // create values table anyway so that values are available
@@ -247,7 +261,7 @@ bool TestQgsWcsProvider::read( QString theIdentifier, QString theFilePath, QStri
         double gdalVal =  gdalProvider->readValue( gdalData,  gdalProvider->dataType( band ), row * width + col );
 
         QString valStr;
-        if ( wcsVal == gdalVal )
+        if ( compare ( wcsVal, gdalVal, 0 ) )
         {
           valStr = QString( "%1" ).arg( wcsVal );
         }
@@ -299,10 +313,15 @@ void TestQgsWcsProvider::compare( QString theParamName, int wcsVal, int gdalVal,
   if ( !ok ) theOk = false;
 }
 
+bool TestQgsWcsProvider::compare ( double wcsVal, double gdalVal, double theTolerance )
+{
+  // values may be nan
+  return ( std::isnan( wcsVal ) && std::isnan( gdalVal ) ) || ( qAbs( wcsVal - gdalVal ) <= theTolerance ); 
+}
+
 void TestQgsWcsProvider::compare( QString theParamName, double wcsVal, double gdalVal, QString &theReport, bool &theOk, double theTolerance )
 {
-  bool ok = ( qAbs( wcsVal - gdalVal ) <= theTolerance );
-
+  bool ok = compare ( wcsVal, gdalVal, theTolerance );
   compareRow( theParamName, QString::number( wcsVal ), QString::number( gdalVal ), theReport, ok, QString::number( wcsVal - gdalVal ), QString::number( theTolerance ) );
   if ( !ok ) theOk = false;
 }

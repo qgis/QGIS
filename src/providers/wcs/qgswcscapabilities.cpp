@@ -192,9 +192,27 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( )
   clear();
   QStringList versions;
 
-  // 1.0.0 - VERSION
-  // 1.1.0 - AcceptedVersions (not supported by UMN Mapserver 6.0.3 - defaults to 1.1.1
-  versions << "AcceptVersions=1.1.0,1.0.0" << "VERSION=1.0.0";
+  QString preferredVersion = mUri.param( "version" );
+
+  if ( !preferredVersion.isEmpty() )
+  {
+    // This is not 
+    if ( preferredVersion.startsWith ( "1.0" ) )
+    {
+      versions << "VERSION=" + preferredVersion;
+    }
+    else if ( preferredVersion.startsWith ( "1.1" ) )
+    {
+        // Ignored by UMN Mapserver 6.0.3, see below
+        versions << "AcceptVersions=" + preferredVersion;
+    }
+  }
+  else
+  {
+    // 1.0.0 - VERSION
+    // 1.1.0 - AcceptVersions (not supported by UMN Mapserver 6.0.3 - defaults to latest 1.1
+    versions << "AcceptVersions=1.1,1.0" << "VERSION=1.0";
+  }
 
   foreach( QString v, versions )
   {

@@ -279,6 +279,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 
   int myBandXSize = xSize();
   int myBandYSize = ySize();
+  int maxCount = xSize() * ySize();
   for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
   {
     for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
@@ -306,12 +307,15 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
           double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
           QgsDebugMsgLevel( QString( "%1 %2 value %3" ).arg( iX ).arg( iY ).arg( myValue ), 10 );
 
-          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          if ( mValidNoDataValue && 
+               ( ( std::isnan( myNoDataValue ) && std::isnan( myValue ) ) ||  qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) ) 
           {
             continue; // NULL
           }
 
           myRasterBandStats.sum += myValue;
+          // sum can easily run out of limits
+          myRasterBandStats.mean += myValue / maxCount;
           ++myRasterBandStats.elementCount;
           //only use this element if we have a non null element
           if ( myFirstIterationFlag )
@@ -342,7 +346,8 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   //end of first pass through data now calculate the range
   myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
   //calculate the mean
-  myRasterBandStats.mean = myRasterBandStats.sum / myRasterBandStats.elementCount;
+  //myRasterBandStats.mean = myRasterBandStats.sum / myRasterBandStats.elementCount;
+  myRasterBandStats.mean = maxCount * ( myRasterBandStats.mean / myRasterBandStats.elementCount );
 
   //for the second pass we will get the sum of the squares / mean
   for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
@@ -373,21 +378,20 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
           double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
           //QgsDebugMsg ( "myValue = " + QString::number(myValue) );
 
-          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          if ( mValidNoDataValue && 
+               ( ( std::isnan( myNoDataValue ) && std::isnan( myValue ) ) ||  qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) ) 
           {
             continue; // NULL
           }
 
-          myRasterBandStats.sumOfSquares += static_cast < double >
-                                            ( pow( myValue - myRasterBandStats.mean, 2 ) );
+          myRasterBandStats.sumOfSquares += static_cast < double >( pow( myValue - myRasterBandStats.mean, 2 ) );
         }
       }
     } //end of column wise loop
   } //end of row wise loop
 
   //divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumOfSquares /
-                             ( myRasterBandStats.elementCount - 1 ) ) );
+  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumOfSquares / ( myRasterBandStats.elementCount - 1 ) ) );
 
 #ifdef QGISDEBUG
   QgsDebugMsg( "************ STATS **************" );
