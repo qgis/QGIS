@@ -48,6 +48,7 @@ class QgsMapToPixel;
 class QgsFeature;
 
 #include "qgspoint.h"
+#include "qgsrectangle.h"
 #include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
 #include "qgsexpression.h"
 
@@ -224,6 +225,8 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual void exit();
     //! return infos about labels at a given (map) position
     virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
+    //! return infos about labels within a given (map) rectangle
+    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone();
