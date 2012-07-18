@@ -214,10 +214,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *
      * \param uri uri to check
      *
-     * \note added in 1.1
      */
 
-    void parseUri( QString uri );
+    bool parseUri( QString uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value

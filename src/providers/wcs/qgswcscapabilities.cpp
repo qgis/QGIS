@@ -282,8 +282,6 @@ bool QgsWcsCapabilities::describeCoverage( QString const &identifier, bool force
     return false;
   }
 
-  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
-
   return true;
 }
 
@@ -696,13 +694,13 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
   // requestResponseCRSs and requestCRSs + responseCRSs are alternatives
   coverage->supportedCrs = domElementsTexts( coverageOfferingElement, "supportedCRSs.requestResponseCRSs" );
   // TODO: requestCRSs, responseCRSs - must be then implemented also in provider
-  QgsDebugMsg( "supportedCrs = " + coverage->supportedCrs.join( "," ) );
+  //QgsDebugMsg( "supportedCrs = " + coverage->supportedCrs.join( "," ) );
 
   coverage->nativeCrs = domElementText( coverageOfferingElement, "supportedCRSs.nativeCRSs" );
 
   // may be GTiff, GeoTIFF, TIFF, GIF, ....
   coverage->supportedFormat = domElementsTexts( coverageOfferingElement, "supportedFormats.formats" );
-  QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
+  //QgsDebugMsg( "supportedFormat = " + coverage->supportedFormat.join( "," ) );
 
   // spatialDomain and Grid/RectifiedGrid are optional according to specificationi.
   // If missing, we cannot get native resolution and size.
@@ -772,6 +770,18 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
       {
         coverage->nativeBoundingBox = coverage->boundingBoxes.value( srsName );
       }
+    }
+  }
+
+  // NULL / no data values
+  // TODO: handle multiple range sets
+  foreach( QString text, domElementsTexts( coverageOfferingElement, "rangeSet.RangeSet.nullValue.singleValue" ) )
+  {
+    bool ok;
+    double val = text.toDouble( &ok );
+    if ( ok )
+    {
+      coverage->nullValues.append( val );
     }
   }
 
@@ -848,6 +858,18 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     // if urn:ogc:def:crs:OGC::imageCRS BoundingBox was not found
   }
 
+  // NULL / no data values
+  // TODO: handle multiple fields / ranges (?)
+  foreach( QString text, domElementsTexts( docElem, "CoverageDescription.Range.Field.NullValue" ) )
+  {
+    bool ok;
+    double val = text.toDouble( &ok );
+    if ( ok )
+    {
+      coverage->nullValues.append( val );
+    }
+  }
+
   coverage->described = true;
 
   return true;
@@ -894,7 +916,7 @@ void QgsWcsCapabilities::parseCoverageSummary( QDomElement const & e, QgsWcsCove
     }
     n1 = n1.nextSibling();
   }
-  QgsDebugMsg( "supportedFormat = " + coverageSummary.supportedFormat.join( "," ) );
+  //QgsDebugMsg( "supportedFormat = " + coverageSummary.supportedFormat.join( "," ) );
 
   // We collected params to be inherited, do children
   n1 = e.firstChild();
@@ -998,12 +1020,10 @@ void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& te
 QgsWcsCoverageSummary QgsWcsCapabilities::coverage( QString const & theIdentifier )
 {
   QgsWcsCoverageSummary * cp = coverageSummary( theIdentifier );
-  QgsDebugMsg( "supportedFormat = " + ( *cp ).supportedFormat.join( "," ) );
   if ( cp ) return *cp;
 
   QgsWcsCoverageSummary c;
   initCoverageSummary( c );
-  QgsDebugMsg( "supportedFormat = " + c.supportedFormat.join( "," ) );
   return c;
 }
 

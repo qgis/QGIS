@@ -94,7 +94,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   mValid = false;
 
-  parseUri( uri );
+  if ( !parseUri( uri ) ) return;
 
   // GetCapabilities and DescribeCoverage
   // TODO(?): do only DescribeCoverage to avoid one request
@@ -124,6 +124,22 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     QgsMessageLog::logMessage( tr( "Coverage not found" ), tr( "WCS" ) );
     return;
   }
+
+  // It may happen that format is empty (e.g. uri created in python script),
+  // in that casei select one from available formats
+  if ( mFormat.isEmpty() )
+  {
+    // TIFF is known by GDAL
+    mFormat = mCoverageSummary.supportedFormat.filter( "tif", Qt::CaseInsensitive ).value( 0 );
+  }
+  if ( mFormat.isEmpty() )
+  {
+    // Take the first if TIFF was not found
+    mFormat = mCoverageSummary.supportedFormat.value( 0 );
+  }
+
+  // We cannot continue without format, it is required
+  if ( mFormat.isEmpty() ) return;
 
   // It could happen (usually not with current QgsWCSSourceSelect if at least
   // one CRS is available) that crs is not set in uri, in that case we
@@ -218,6 +234,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( gdalBand );
 
+    QgsDebugMsg( QString( "myGdalDataType[%1] = %2" ).arg( i - 1 ).arg( myGdalDataType ) );
     mSrcGdalDataType.append( myGdalDataType );
     // TODO: This could be shared with GDAL provider
     int isValid = false;
@@ -269,6 +286,13 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
       }
     }
     mNoDataValue.append( myNoDataValue );
+
+    // TODO: what to do if null values from DescribeCoverage differ?
+    if ( !mCoverageSummary.nullValues.contains( myNoDataValue ) )
+    {
+      QgsDebugMsg( QString( "noDataValue %1 is missing in nullValues from CoverageDescription" ).arg( myNoDataValue ) );
+    }
+
     mValidNoDataValue = true;
 
     QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
@@ -298,7 +322,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   QgsDebugMsg( "Constructed ok, provider valid." );
 }
 
-void QgsWcsProvider::parseUri( QString uriString )
+bool QgsWcsProvider::parseUri( QString uriString )
 {
 
   QgsDebugMsg( "uriString = " + uriString );
@@ -326,8 +350,11 @@ void QgsWcsProvider::parseUri( QString uriString )
 
   setFormat( uri.param( "format" ) );
 
+  // TODO: if not defined, use the best available, probably EPSG:4326
   setCoverageCrs( uri.param( "crs" ) );
   mCrs.createFromOgcWmsCrs( uri.param( "crs" ) );
+
+  return true;
 }
 
 QString QgsWcsProvider::prepareUri( QString uri ) const

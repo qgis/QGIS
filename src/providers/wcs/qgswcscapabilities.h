@@ -43,6 +43,7 @@ struct QgsWcsCoverageSummary
   QString       abstract;
   QStringList   supportedCrs;
   QStringList   supportedFormat;
+  QList<double> nullValues;
   QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
   QString       nativeCrs;
   // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
