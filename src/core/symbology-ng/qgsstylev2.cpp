@@ -656,6 +656,9 @@ QStringList QgsStyleV2::findSymbols( QString qword )
   }
 
   QStringList symbols;
+  QStringList tagids;
+  QStringList symbolids;
+
   char *query;
   sqlite3_stmt *ppStmt;
   QByteArray array = qword.toUtf8();
@@ -666,6 +669,37 @@ QStringList QgsStyleV2::findSymbols( QString qword )
   {
     QString symbolName = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
     symbols.append( symbolName );
+  }
+  sqlite3_finalize( ppStmt );
+
+  query = sqlite3_mprintf( "SELECT id FROM tag WHERE name LIKE '%%%q%%';", array.constData() );
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    tagids.append( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+  }
+  sqlite3_finalize( ppStmt );
+
+  QString dummy = tagids.join( ", " );
+  QByteArray dummyArray = dummy.toUtf8();
+
+  query = sqlite3_mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q);", dummyArray.constData() );
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    symbolids.append( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+  }
+  sqlite3_finalize( ppStmt );
+
+  dummy = symbolids.join( ", " );
+  dummyArray = dummy.toUtf8();
+  query = sqlite3_mprintf( "SELECT name FROM symbol WHERE id IN (%q);", dummyArray.constData() );
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QString symbolName = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+    if ( !symbols.contains( symbolName ) )
+      symbols.append( symbolName );
   }
   sqlite3_finalize( ppStmt );
 
