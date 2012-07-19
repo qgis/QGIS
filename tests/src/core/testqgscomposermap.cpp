@@ -37,6 +37,7 @@ class TestQgsComposerMap: public QObject
     void render(); //test if rendering of the composition with composr map is correct
     void grid(); //test if grid and grid annotation works
     void overviewMap(); //test if overview map frame works
+    void uniqueId(); //test if map id is adapted when doing copy paste
 
   private:
     QgsComposition* mComposition;
@@ -129,6 +130,33 @@ void TestQgsComposerMap::overviewMap()
   bool testResult = checker.testComposition();
   mComposition->removeComposerItem( overviewMap );
   QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::uniqueId()
+{
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
+  mComposerMap->writeXML( documentElement, doc );
+  mComposition->addItemsFromXML( documentElement, doc, 0, false );
+
+  //test if both composer maps have different ids
+  const QgsComposerMap* newMap = 0;
+  QList<const QgsComposerMap*> mapList = mComposition->composerMapItems();
+  QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
+  for ( ; mapIt != mapList.constEnd(); ++mapIt )
+  {
+    if ( *mapIt != mComposerMap )
+    {
+      newMap = *mapIt;
+      break;
+    }
+  }
+  int oldId = mComposerMap->id();
+  int newId = newMap->id();
+
+  mComposition->removeComposerItem( const_cast<QgsComposerMap*>( newMap ) );
+
+  QVERIFY( oldId != newId );
 }
 
 QTEST_MAIN( TestQgsComposerMap )
