@@ -2055,11 +2055,6 @@ void QgsGdalProvider::initBaseDataset()
 bool QgsGdalProvider::create( const QString& format, int nBands, QgsRasterDataProvider::DataType type, int width, int height,
                               double* geoTransform, const QgsCoordinateReferenceSystem& crs )
 {
-  if ( isValid() ) //datasource already exists
-  {
-    return false;
-  }
-
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
   if ( !driver )
@@ -2091,12 +2086,12 @@ bool QgsGdalProvider::create( const QString& format, int nBands, QgsRasterDataPr
 
 bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )
 {
-    GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
-    if ( rasterBand == NULL )
-    {
-        return false;
-    }
-    return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+  if ( rasterBand == NULL )
+  {
+    return false;
+  }
+  return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
 }
 
 QStringList QgsGdalProvider::createFormats() const

@@ -69,7 +69,7 @@ void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
   }
   else
   {
-    fileName = QFileDialog::getOpenFileName( this, tr( "Select output file" ) );
+    fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ) );
   }
 
   if ( !fileName.isEmpty() )
