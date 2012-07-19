@@ -112,4 +112,7 @@ source directory.
 
 %!include: osx.t2t
 
+%!include: wcs-test-server.t2t
+
+
 %!include: iauthors.t2t
