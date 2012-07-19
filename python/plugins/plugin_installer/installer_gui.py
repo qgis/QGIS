@@ -485,7 +485,16 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         a.setText(2,ver)
         a.setToolTip(2,verTip)
         a.setText(3,desc)
-        a.setToolTip(3,descTip)
+        # split the tooltip into multiple lines when they are too long
+        tmp = ""
+        splitTip = ""
+        for word in descTip.split(" "):
+            if len(tmp + word) < 80:
+                tmp = tmp + " " + word
+            else:
+                splitTip += tmp + "\n"
+                tmp = word
+        a.setToolTip(3, splitTip+tmp)
         a.setText(4,p["author"])
         if p["homepage"]:
           a.setToolTip(4,p["homepage"])
