@@ -24,7 +24,7 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent,
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
   if ( !iter )
@@ -42,19 +42,19 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIter
 
   if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 )
   {
-    WriterError e = writeImageRaster( iter, nCols, outputExtent, crs );
+    WriterError e = writeImageRaster( iter, nCols, nRows, outputExtent, crs );
     mProgressDialog = 0;
     return e;
   }
   else
   {
     mProgressDialog = 0;
-    WriterError e = writeDataRaster( iter, nCols, outputExtent, crs );
+    WriterError e = writeDataRaster( iter, nCols, nRows, outputExtent, crs );
     return e;
   }
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs )
 {
   if ( !iter )
@@ -76,7 +76,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
   }
 
   //Get output map units per pixel
-  double outputMapUnitsPerPixel = outputExtent.width() / nCols;
   int iterLeft, iterTop, iterCols, iterRows;
 
   iter->setMaximumTileWidth( mMaxTileWidth );
@@ -90,7 +89,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
 
   //create destProvider for whole dataset here
   QgsRasterDataProvider* destProvider = 0;
-  int nRows;
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
@@ -160,7 +158,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
   }
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs )
 {
   if ( !iter )
@@ -181,10 +179,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     destDir.mkdir( mOutputUrl );
   }
 
-  //Get output map units per pixel
-  double outputMapUnitsPerPixel = outputExtent.width() / nCols;
-
-
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
@@ -195,12 +189,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   void* alphaData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   QgsRectangle mapRect;
   int iterLeft, iterTop, iterCols, iterRows;
-  double progress = 0;
   int fileIndex = 0;
 
   //create destProvider for whole dataset here
   QgsRasterDataProvider* destProvider = 0;
-  int nRows;
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
@@ -531,13 +523,18 @@ void QgsRasterFileWriter::globalOutputParameters( const QgsRectangle& extent, in
     double* geoTransform, double& pixelSize )
 {
   pixelSize = extent.width() / nCols;
-  nRows = ( double )nCols / extent.width() * extent.height() + 0.5;
+
+  //calculate nRows automatically for providers without exact resolution
+  if ( nRows < 0 )
+  {
+    nRows = ( double )nCols / extent.width() * extent.height() + 0.5;
+  }
   geoTransform[0] = extent.xMinimum();
   geoTransform[1] = pixelSize;
   geoTransform[2] = 0.0;
   geoTransform[3] = extent.yMaximum();
   geoTransform[4] = 0.0;
-  geoTransform[5] = -pixelSize;
+  geoTransform[5] = -( extent.height() / nRows );
 }
 
 

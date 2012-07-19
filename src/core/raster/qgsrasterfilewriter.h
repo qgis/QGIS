@@ -26,7 +26,10 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsRasterFileWriter( const QString& outputUrl );
     ~QgsRasterFileWriter();
 
-    WriterError writeRaster( QgsRasterIterator* iter, int nCols, QgsRectangle outputExtent,
+    /**Write raster file
+        @param nCols number of output columns
+        @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)*/
+    WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 
     void setOutputFormat( const QString& format ) { mOutputFormat = format; }
@@ -46,9 +49,9 @@ class CORE_EXPORT QgsRasterFileWriter
 
   private:
     QgsRasterFileWriter(); //forbidden
-    WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+    WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs );
-    WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, const QgsRectangle& outputExtent,
+    WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
                                   const QgsCoordinateReferenceSystem& crs );
 
     //initialize vrt member variables

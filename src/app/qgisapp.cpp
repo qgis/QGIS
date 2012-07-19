@@ -3785,8 +3785,18 @@ void QgisApp::saveAsRasterFile()
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     pd.setWindowModality( Qt::WindowModal );
-    QgsRasterIterator iterator( rasterLayer->dataProvider() );
-    fileWriter.writeRaster( &iterator, d.nColumns(), d.outputRectangle(), rasterLayer->crs(), &pd );
+    QgsRasterDataProvider* provider = rasterLayer->dataProvider();
+    if ( !provider )
+    {
+      return;
+    }
+    QgsRasterIterator iterator( provider );
+    int nRows = -1; //calculate number of rows such that pixels are squares
+    if ( provider->capabilities() & QgsRasterDataProvider::ExactResolution )
+    {
+      nRows = d.nRows();
+    }
+    fileWriter.writeRaster( &iterator, d.nColumns(), nRows, d.outputRectangle(), rasterLayer->crs(), &pd );
   }
 }
 
