@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>760</width>
-            <height>887</height>
+            <width>766</width>
+            <height>938</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -890,8 +890,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>630</width>
-            <height>625</height>
+            <width>766</width>
+            <height>592</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1136,9 +1136,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-313</y>
-            <width>762</width>
-            <height>750</height>
+            <y>0</y>
+            <width>766</width>
+            <height>718</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1507,8 +1507,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
-            <height>93</height>
+            <width>784</width>
+            <height>452</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1588,8 +1588,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>571</width>
-            <height>627</height>
+            <width>766</width>
+            <height>572</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1964,8 +1964,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>425</width>
-            <height>417</height>
+            <width>784</width>
+            <height>452</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1984,28 +1984,21 @@
               <bool>false</bool>
              </property>
              <layout class="QGridLayout" name="gridLayout_22">
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLineEdit" name="leProjectGlobalCrs">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="chkOtfTransform">
-                <property name="text">
-                 <string>Enable 'on the &amp;fly' reprojection by default</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
+              <item row="3" column="1">
                <widget class="QPushButton" name="pbnSelectOtfProjection">
                 <property name="text">
                  <string>Select...</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
+              <item row="6" column="0" colspan="2">
                <spacer name="verticalSpacer">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -2018,13 +2011,33 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label_16">
                 <property name="text">
                  <string>Always start new projects with this CRS</string>
                 </property>
                 <property name="buddy">
                  <cstring>leProjectGlobalCrs</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="chkOtfAuto">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="whatsThis">
+                 <string>Automatically enable 'on the fly' reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</string>
+                </property>
+                <property name="text">
+                 <string>Automatically enable 'on the fly' reprojection  if layers have different CRS</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="chkOtfTransform">
+                <property name="text">
+                 <string>Enable 'on the &amp;fly' reprojection by default</string>
                 </property>
                </widget>
               </item>
@@ -2138,8 +2151,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>584</height>
+            <width>766</width>
+            <height>536</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2235,8 +2248,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>355</width>
-            <height>554</height>
+            <width>766</width>
+            <height>491</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -2528,7 +2541,6 @@
   <tabstop>scrollArea_6</tabstop>
   <tabstop>pbnSelectOtfProjection</tabstop>
   <tabstop>leProjectGlobalCrs</tabstop>
-  <tabstop>chkOtfTransform</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>
