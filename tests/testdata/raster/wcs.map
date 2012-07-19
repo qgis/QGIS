@@ -1,3 +1,4 @@
+
 MAP
   NAME WCS
   STATUS ON
@@ -8,7 +9,8 @@ MAP
     # in 1.1 the MIMETYPE is used instead
     NAME "GEOTIFFBYTE" 
     DRIVER "GDAL/GTiff"
-    MIMETYPE "image/tiff"
+    # MIMETYPE is used as format by 1.1
+    MIMETYPE "image/x-tiff-byte" 
     # IMAGEMODE: standard modes: PC256, RGB, RGBA
     #            WCS (GDAL) modes: BYTE, INT16, FLOAT32
     IMAGEMODE "BYTE"
@@ -18,7 +20,7 @@ MAP
   OUTPUTFORMAT
     NAME "GEOTIFFINT16" 
     DRIVER "GDAL/GTiff"
-    MIMETYPE "image/tiff16"
+    MIMETYPE "image/x-tiff-int16"
     IMAGEMODE "INT16"
     EXTENSION "tif"
   END
@@ -26,7 +28,7 @@ MAP
   OUTPUTFORMAT
     NAME "GEOTIFFFLOAT32" 
     DRIVER "GDAL/GTiff"
-    MIMETYPE "image/tiff32"
+    MIMETYPE "image/x-tiff-float32"
     IMAGEMODE "FLOAT32"
     EXTENSION "tif"
   END
