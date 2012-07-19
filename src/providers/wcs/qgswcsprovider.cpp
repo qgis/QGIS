@@ -71,7 +71,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
     , mHttpUri( QString::null )
-    , mCoverageCrs( DEFAULT_LATLON_CRS )
+    , mCoverageCrs()
     , mCacheReply( 0 )
     , mCachedViewExtent( 0 )
     , mCoordinateTransform( 0 )
@@ -143,18 +143,27 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
 
   // It could happen (usually not with current QgsWCSSourceSelect if at least
   // one CRS is available) that crs is not set in uri, in that case we
-  // use the native, if available, or the first supported
+  // use the native, if available or WGS84 or the first supported
   if ( mCoverageCrs.isEmpty() )
   {
+    QgsDebugMsg( "nativeCrs = " + mCoverageSummary.nativeCrs );
+    QgsDebugMsg( "supportedCrs = " + mCoverageSummary.supportedCrs.join( "," ) );
     if ( !mCoverageSummary.nativeCrs.isEmpty() )
     {
       setCoverageCrs( mCoverageSummary.nativeCrs );
+    }
+    else if ( mCoverageSummary.supportedCrs.contains( "EPSG:4326", Qt::CaseInsensitive ) )
+    {
+      setCoverageCrs( "EPSG:4326" );
     }
     else if ( mCoverageSummary.supportedCrs.size() > 0 )
     {
       setCoverageCrs( mCoverageSummary.supportedCrs.value( 0 ) );
     }
   }
+  QgsDebugMsg( "mCoverageCrs = " + mCoverageCrs );
+  // We cannot continue without CRS
+  if ( mCoverageCrs.isEmpty() ) return;
 
   mWidth = mCoverageSummary.width;
   mHeight = mCoverageSummary.height;
@@ -350,9 +359,10 @@ bool QgsWcsProvider::parseUri( QString uriString )
 
   setFormat( uri.param( "format" ) );
 
-  // TODO: if not defined, use the best available, probably EPSG:4326
-  setCoverageCrs( uri.param( "crs" ) );
-  mCrs.createFromOgcWmsCrs( uri.param( "crs" ) );
+  if ( !uri.param( "crs" ).isEmpty() )
+  {
+    setCoverageCrs( uri.param( "crs" ) );
+  }
 
   return true;
 }
@@ -424,6 +434,8 @@ void QgsWcsProvider::setCoverageCrs( QString const & crs )
     mExtentDirty = true;
 
     mCoverageCrs = crs;
+
+    mCrs.createFromOgcWmsCrs( mCoverageCrs );
   }
 }
 

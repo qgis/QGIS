@@ -29,6 +29,41 @@ public:
 
   //! quoted table name
   QString quotedTablename() const;
+
+  //! return complete encoded uri (generic mode)
+  // \note added in 1.9
+  QByteArray encodedUri() const;
+
+  //! set complete encoded uri (generic mode)
+  // \note added in 1.9
+  void setEncodedUri( const QByteArray & uri );
+
+  //! set complete encoded uri (generic mode)
+  // \note added in 1.9
+  void setEncodedUri( const QString & uri );
+
+  //! Set generic param (generic mode)
+  // \note if key exists, another is inserted
+  // \note added in 1.9
+  void setParam( const QString &key, const QString &value );
+  void setParam( const QString &key, const QStringList &value );
+
+  //! Remove generic param (generic mode)
+  // \note remove all occurrences of key, returns number of params removed
+  // \note added in 1.9
+  int removeParam( const QString &key );
+
+  //! Get generic param (generic mode)
+  // \note added in 1.9
+  QString param( const QString &key ) const;
+
+  //! Get multiple generic param (generic mode)
+  // \note added in 1.9
+  QStringList params( const QString &key ) const;
+
+  //! Test if param exists (generic mode)
+  // \note added in 1.9
+  bool hasParam( const QString &key ) const;
   
   //! Set all connection related members at once
   //! \note This optional sslmode parameter has been added in version 1.1
