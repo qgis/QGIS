@@ -27,7 +27,7 @@ class QgsCompositionChecker
     QgsCompositionChecker( const QString& testName, QgsComposition* composition, const QString& expectedImageFile );
     ~QgsCompositionChecker();
 
-    bool testComposition();
+    bool testComposition( int page = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden
