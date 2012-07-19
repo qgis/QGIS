@@ -309,6 +309,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
     QgsComposerMap* newMap = new QgsComposerMap( this );
     newMap->readXML( currentComposerMapElem, doc );
+    newMap->assignFreeId();
 
     if ( mapsToRestore )
     {

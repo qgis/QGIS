@@ -34,7 +34,7 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition()
+bool QgsCompositionChecker::testComposition( int page )
 {
   if ( !mComposition )
   {
@@ -70,9 +70,7 @@ bool QgsCompositionChecker::testComposition()
   outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() );
   outputImage.fill( 0 );
   QPainter p( &outputImage );
-  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-  QRectF targetArea( 0, 0, width, height );
-  mComposition->render( &p, targetArea, sourceArea );
+  mComposition->renderPage( &p, page );
   p.end();
 
   QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mExpectedImageFile ).baseName() + "_rendered.png";

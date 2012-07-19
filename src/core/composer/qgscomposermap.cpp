@@ -49,18 +49,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   mOverviewFrameMapSymbol = 0;
   createDefaultOverviewFrameSymbol();
 
-  //mId = mComposition->composerMapItems().size();
-  int maxId = -1;
-  QList<const QgsComposerMap*> mapList = mComposition->composerMapItems();
-  QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
-  for ( ; mapIt != mapList.constEnd(); ++mapIt )
-  {
-    if (( *mapIt )->id() > maxId )
-    {
-      maxId = ( *mapIt )->id();
-    }
-  }
-  mId = maxId + 1;
+  mId = 0;
+  assignFreeId();
 
   mMapRenderer = mComposition->mapRenderer();
   mPreviewMode = QgsComposerMap::Rectangle;
@@ -1956,4 +1946,30 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
   properties.insert( "style_border", "no" );
   mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );
   mOverviewFrameMapSymbol->setAlpha( 0.3 );
+}
+
+void QgsComposerMap::assignFreeId()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
+
+  const QgsComposerMap* existingMap = mComposition->getComposerMapById( mId );
+  if ( !existingMap )
+  {
+    return; //keep mId as it is still available
+  }
+
+  int maxId = -1;
+  QList<const QgsComposerMap*> mapList = mComposition->composerMapItems();
+  QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
+  for ( ; mapIt != mapList.constEnd(); ++mapIt )
+  {
+    if (( *mapIt )->id() > maxId )
+    {
+      maxId = ( *mapIt )->id();
+    }
+  }
+  mId = maxId + 1;
 }
