@@ -152,7 +152,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
     else
     {
       //loop over data
-      for ( int i = 0; i <= nBands; ++i )
+      for ( int i = 1; i <= nBands; ++i )
       {
         destProvider->write( dataList[i - 1], i, iterCols, iterRows, iterLeft, iterTop );
       }

@@ -10,6 +10,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
   setupUi( this );
   setValidators();
 
+  mFormatComboBox->addItem( "GeoTIFF" ); //only one hardcoded format at the moment
+
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
   {
