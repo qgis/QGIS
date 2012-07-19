@@ -820,6 +820,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void saveAsFile();
     void saveSelectionAsVectorFile();
 
+    //! save current raster layer
+    void saveAsRasterFile();
+
     //! show python console
     void showPythonDialog();
 
@@ -955,8 +958,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
 
     void saveAsVectorFileGeneral( bool saveOnlySelection );
-    //! save current raster layer
-    void saveAsRasterFile();
 
     /**Returns all annotation items in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();

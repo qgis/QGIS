@@ -480,6 +480,10 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     theMenu.addAction( showNFeaturesAction );
     theMenu.addSeparator();
   }
+  else if ( lyr->type() == QgsMapLayer::RasterLayer )
+  {
+    theMenu.addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
+  }
 
   // properties goes on bottom of menu for consistency with normal ui standards
   // e.g. kde stuff
