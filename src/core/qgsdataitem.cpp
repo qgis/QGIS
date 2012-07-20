@@ -28,7 +28,6 @@
 #include <QSettings>
 
 #include "qgis.h"
-#include "qgsapplication.h"
 #include "qgsdataitem.h"
 
 #include "qgsdataprovider.h"
@@ -46,7 +45,7 @@ const QIcon &QgsLayerItem::iconPoint()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconPointLayer.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconPointLayer.png" );
 
   return icon;
 }
@@ -56,7 +55,7 @@ const QIcon &QgsLayerItem::iconLine()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconLineLayer.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconLineLayer.png" );
 
   return icon;
 }
@@ -66,7 +65,7 @@ const QIcon &QgsLayerItem::iconPolygon()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconPolygonLayer.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" );
 
   return icon;
 }
@@ -76,7 +75,7 @@ const QIcon &QgsLayerItem::iconTable()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconTableLayer.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
 
   return icon;
 }
@@ -86,7 +85,7 @@ const QIcon &QgsLayerItem::iconRaster()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconRaster.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconRaster.png" );
 
   return icon;
 }
@@ -96,7 +95,7 @@ const QIcon &QgsLayerItem::iconDefault()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconLayer.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconLayer.png" );
 
   return icon;
 }
@@ -106,7 +105,7 @@ const QIcon &QgsDataCollectionItem::iconDataCollection()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconDbSchema.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconDbSchema.png" );
 
   return icon;
 }
@@ -132,7 +131,7 @@ const QIcon &QgsFavouritesItem::iconFavourites()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconFavourites.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconFavourites.png" );
 
   return icon;
 }
@@ -142,7 +141,7 @@ const QIcon &QgsZipItem::iconZip()
   static QIcon icon;
 
   if ( icon.isNull() )
-    icon = QIcon( getThemePixmap( "/mIconZip.png" ) );
+    icon = QgsApplication::getThemeIcon( "/mIconZip.png" );
 // icon from http://www.softicons.com/free-icons/application-icons/mega-pack-icons-1-by-nikolay-verin/winzip-folder-icon
 
   return icon;
@@ -158,28 +157,6 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString n
 QgsDataItem::~QgsDataItem()
 {
   QgsDebugMsg( "mName = " + mName + " mPath = " + mPath );
-}
-
-// TODO: This is copy from QgisApp, bad
-// TODO: add some caching mechanism ?
-QPixmap QgsDataItem::getThemePixmap( const QString theName )
-{
-  QString myPreferredPath = QgsApplication::activeThemePath()  + QDir::separator() + theName;
-  QString myDefaultPath = QgsApplication::defaultThemePath()  + QDir::separator() + theName;
-
-  // QgsDebugMsg( "theName = " + theName );
-  // QgsDebugMsg( "myPreferredPath = " + myPreferredPath );
-  // QgsDebugMsg( "myDefaultPath = " + myDefaultPath );
-  if ( QFile::exists( myPreferredPath ) )
-  {
-    return QPixmap( myPreferredPath );
-  }
-  else
-  {
-    //could still return an empty icon if it
-    //doesnt exist in the default theme either!
-    return QPixmap( myDefaultPath );
-  }
 }
 
 void QgsDataItem::emitBeginInsertItems( QgsDataItem* parent, int first, int last )
@@ -698,7 +675,7 @@ void QgsDirectoryParamWidget::showHideColumn()
 QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
     : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {
-  mIcon = QIcon( getThemePixmap( "/mIconDelete.png" ) );
+  mIcon = QIcon( QgsApplication::getThemePixmap( "/mIconDelete.png" ) );
 
   mPopulated = true; // no more children
 }

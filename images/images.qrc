@@ -77,6 +77,7 @@
     <file>themes/default/mActionFileSmall.png</file>
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
+    <file>themes/default/mActionFreezeLabels.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
     <file>themes/default/mActionFullHistogramStretch.png</file>
     <file>themes/default/mActionGroupItems.png</file>
@@ -143,6 +144,7 @@
     <file>themes/default/mActionSelectRectangle.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
+    <file>themes/default/mActionShowFrozenLabels.png</file>
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
     <file>themes/default/mActionSplitFeatures.png</file>
@@ -199,6 +201,7 @@
     <file>themes/default/mIconWms.png</file>
     <file>themes/default/mIconWmsLayer.png</file>
     <file>themes/default/mIconWarn.png</file>
+    <file>themes/default/mIconZoom.png</file>
     <file>themes/default/mIconZip.png</file>
     <file>themes/default/mMapserverExport.png</file>
     <file>themes/default/plugin.png</file>
@@ -389,6 +392,7 @@
     <file>themes/gis/mActionTouch.png</file>
     <file>themes/default/mActionAddMssqlLayer.png</file>
     <file>themes/default/mActionTouch.png</file>
+    <file>themes/default/mActionTouch2.png</file>
     <file>themes/classic/mActionTouch.png</file>
     <file>flags/af.png</file>
     <file>flags/ar.png</file>

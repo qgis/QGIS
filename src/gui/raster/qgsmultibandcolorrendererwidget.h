@@ -40,6 +40,14 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
+    QString min( int index = 0 );
+    QString max( int index = 0 );
+    void setMin( QString value, int index = 0 );
+    void setMax( QString value, int index = 0 );
+    QString stdDev( ) { return QString::number( mStdDevSpinBox->value() ); }
+    void setStdDev( QString value ) { mStdDevSpinBox->setValue( value.toDouble() ); }
+    int selectedBand( int index = 0 );
+
   private slots:
     void on_mLoadPushButton_clicked();
 

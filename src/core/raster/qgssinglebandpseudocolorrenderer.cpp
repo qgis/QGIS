@@ -169,3 +169,13 @@ void QgsSingleBandPseudoColorRenderer::legendSymbologyItems( QList< QPair< QStri
     }
   }
 }
+
+QList<int> QgsSingleBandPseudoColorRenderer::usesBands() const
+{
+  QList<int> bandList;
+  if ( mBand != -1 )
+  {
+    bandList << mBand;
+  }
+  return bandList;
+}

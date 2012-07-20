@@ -207,6 +207,13 @@ bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QS
   return false;
 }
 
+bool QgsRasterDataProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  Q_UNUSED( point );
+  results.clear();
+  return false;
+}
+
 QString QgsRasterDataProvider::lastErrorFormat()
 {
   return "text/plain";

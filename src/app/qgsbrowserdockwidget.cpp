@@ -88,7 +88,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   mBrowserView = new QgsBrowserTreeView( this );
 
   QToolButton* refreshButton = new QToolButton( this );
-  refreshButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionDraw.png" ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( "mActionDraw.png" ) );
   // remove this to save space
   refreshButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   refreshButton->setText( tr( "Refresh" ) );
@@ -97,7 +97,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   connect( refreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
 
   QToolButton* addLayersButton = new QToolButton( this );
-  addLayersButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionAddLayer.png" ) );
+  addLayersButton->setIcon( QgsApplication::getThemeIcon( "mActionAddLayer.png" ) );
   // remove this to save space
   addLayersButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   addLayersButton->setText( tr( "Add Selection" ) );
@@ -106,7 +106,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   connect( addLayersButton, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
 
   QToolButton* collapseButton = new QToolButton( this );
-  collapseButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionCollapseTree.png" ) );
+  collapseButton->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
   collapseButton->setToolTip( tr( "Collapse All" ) );
   collapseButton->setAutoRaise( true );
   connect( collapseButton, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );

@@ -50,6 +50,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QString theme();
 
   public slots:
+    void on_cbxProjectDefaultNew_toggled( bool checked );
+    void on_pbnProjectDefaultSetCurrent_clicked();
+    void on_pbnProjectDefaultReset_clicked();
+    void on_pbnTemplateFolderBrowse_pressed();
+    void on_pbnTemplateFolderReset_pressed();
     //! Slot called when user chooses to change the project wide projection.
     void on_pbnSelectProjection_clicked();
     //! Slot called when user chooses to change the default 'on the fly' projection.
@@ -103,7 +108,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mBtnAddPluginPath_clicked();
 
-    /* Let the user remove a path to the list of search paths
+    /* Let the user remove a path from the list of search paths
      * used for finding Plugin libs.
      * @note added in QGIS 1.7
      */
@@ -115,7 +120,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_mBtnAddSVGPath_clicked();
 
-    /* Let the user remove a path to the list of search paths
+    /* Let the user remove a path from the list of search paths
      * used for finding SVG files.
      * @note added in QGIS 1.4
      */
@@ -125,6 +130,39 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void on_mBrowseCacheDirectory_clicked();
     void on_mClearCache_clicked();
+
+    /** Let the user add a scale to the list of scales
+     * used in scale combobox
+     * @note added in QGIS 2.0
+     */
+    void on_pbnAddScale_clicked();
+
+    /** Let the user remove a scale from the list of scales
+     * used in scale combobox
+     * @note added in QGIS 2.0
+     */
+    void on_pbnRemoveScale_clicked();
+
+    /** Let the user restore default scales
+     * used in scale combobox
+     * @note added in QGIS 2.0
+     */
+    void on_pbnDefaultScaleValues_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnImportScales_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnExportScales_clicked();
+
+    /** Auto slot executed when the active page in the main widget stack is changed
+     * @note added in 2.0
+     */
+    void on_tabWidget_currentChanged( int theTab );
 
     /* Load the list of drivers available in GDAL
      * @note added in 2.0
@@ -147,6 +185,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QStringList i18nList();
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
+    bool mLoadedGdalDriverList;
 };
 
 #endif // #ifndef QGSOPTIONS_H

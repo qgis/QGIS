@@ -466,6 +466,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
+    /** \brief Identify raster value(s) found on the point position */
+    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
     /** \brief Identify arbitrary details from the WMS server found on the point position */
     QString identifyAsText( const QgsPoint & point );
 
@@ -639,10 +642,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                            const QString &  theResamplingMethod = "NEAREST",
                            bool theTryInternalFlag = false );
 
+    /** \brief test if the requested histogram is already available */
+
+    bool hasCachedHistogram( int theBandNoInt,
+                             int theBinCountInt = RASTER_HISTOGRAM_BINS );
+
     /** \brief Populate the histogram vector for a given band */
 
     void populateHistogram( int theBandNoInt,
-                            int theBinCountInt = 256,
+                            int theBinCountInt = RASTER_HISTOGRAM_BINS,
                             bool theIgnoreOutOfRangeFlag = true,
                             bool theThoroughBandScanFlag = false );
 

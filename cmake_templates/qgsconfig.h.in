@@ -35,5 +35,7 @@
 
 #cmakedefine HAVE_PYTHON
 
+#cmakedefine HAVE_TOUCH
+
 #endif
 

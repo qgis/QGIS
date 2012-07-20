@@ -45,6 +45,7 @@
 #include "qgspalettedrendererwidget.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
+#include "qgsrasterhistogramwidget.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -61,14 +62,6 @@
 #include <QSettings>
 #include <QMouseEvent>
 #include <QVector>
-
-// QWT Charting widget
-#include <qwt_global.h>
-#include <qwt_plot_canvas.h>
-#include <qwt_legend.h>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_grid.h>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
@@ -98,17 +91,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
   // build GUI components
-  QIcon myPyramidPixmap( QgisApp::getThemeIcon( "/mIconPyramid.png" ) );
-  QIcon myNoPyramidPixmap( QgisApp::getThemeIcon( "/mIconNoPyramid.png" ) );
+  QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.png" ) );
+  QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.png" ) );
 
-  pbnAddValuesManually->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
-  pbnAddValuesFromDisplay->setIcon( QgisApp::getThemeIcon( "/mActionContextHelp.png" ) );
-  pbnRemoveSelectedRow->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  pbnDefaultValues->setIcon( QgisApp::getThemeIcon( "/mActionCopySelected.png" ) );
-  pbnImportTransparentPixelValues->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
-  pbnExportTransparentPixelValues->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
-
-  mSaveAsImageButton->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
+  pbnAddValuesManually->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  pbnAddValuesFromDisplay->setIcon( QgsApplication::getThemeIcon( "/mActionContextHelp.png" ) );
+  pbnRemoveSelectedRow->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  pbnDefaultValues->setIcon( QgsApplication::getThemeIcon( "/mActionCopySelected.png" ) );
+  pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
+  pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
 
   mMapCanvas = theCanvas;
   mPixelSelectorTool = 0;
@@ -179,19 +170,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                                  .arg( pyramidSentence2 ).arg( pyramidSentence3 )
                                  .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
 
-  // update based on lyr's current state
-  sync();
-
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
-  tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
-  int myHistogramTab = 5;
-  if ( tabBar->currentIndex() == myHistogramTab )
-  {
-    refreshHistogram();
-  }
+
   tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
 
@@ -250,15 +233,31 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     cboxTransparencyBand->addItem( tr( "None" ), -1 );
     int nBands = provider->bandCount();
+    QString bandName;
     for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
     {
-      cboxTransparencyBand->addItem( provider->colorInterpretationName( i ), i );
+      bandName = provider->generateBandName( i );
+
+      QString colorInterp = provider->colorInterpretationName( i );
+      if ( colorInterp != "Undefined" )
+      {
+        bandName.append( QString( " (%1)" ).arg( colorInterp ) );
+      }
+      cboxTransparencyBand->addItem( bandName, i );
     }
 
     if ( renderer )
     {
       cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
     }
+  }
+
+  // create histogram widget
+  mHistogramWidget = NULL;
+  if ( tabPageHistogram->isEnabled() )
+  {
+    mHistogramWidget = new QgsRasterHistogramWidget( mRasterLayer, tabPageHistogram );
+    mHistogramStackedWidget->addWidget( mHistogramWidget );
   }
 
   //insert renderer widgets into registry
@@ -268,11 +267,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandgray", QgsSingleBandGrayRendererWidget::create );
 
   //fill available renderers into combo box
-  QList< QgsRasterRendererRegistryEntry > rendererEntries = QgsRasterRendererRegistry::instance()->entries();
-  QList< QgsRasterRendererRegistryEntry >::const_iterator rendererIt = rendererEntries.constBegin();
-  for ( ; rendererIt != rendererEntries.constEnd(); ++rendererIt )
+  QgsRasterRendererRegistryEntry entry;
+  foreach( QString name, QgsRasterRendererRegistry::instance()->renderersList() )
   {
-    mRenderTypeComboBox->addItem( rendererIt->visibleName, rendererIt->name );
+    if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
+    {
+      mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
+    }
   }
 
   if ( renderer )
@@ -297,6 +298,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
 
   updatePipeList();
+
+  // update based on lyr's current state
+  sync();
+
+  // set current tab after everything has been initialized
+  tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
+
 } // QgsRasterLayerProperties ctor
 
 
@@ -311,74 +319,34 @@ QgsRasterLayerProperties::~QgsRasterLayerProperties()
   }
 }
 
-/*
- *
- * PUBLIC METHODS
- *
- */
-
-void QgsRasterLayerProperties::populateTransparencyTable()
+void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* renderer )
 {
   QgsDebugMsg( "entering." );
   if ( !mRasterLayer )
   {
     return;
   }
-  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+
   if ( !renderer )
   {
     return;
   }
 
-  const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
+  tableTransparency->clear();
+  tableTransparency->setColumnCount( 0 );
+  tableTransparency->setRowCount( 0 );
 
-  //Clear existing color transparency list
-  //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
-  QString myNumberFormatter;
-  if ( mRasterLayer->bandCount() == 3 )
+  int nBands = renderer->usesBands().size();
+  tableTransparency->setColumnCount( nBands + 1 );
+  if ( nBands == 3 )
   {
-    for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
-    {
-      tableTransparency->removeRow( myTableRunner );
-    }
-
-    tableTransparency->clear();
-    tableTransparency->setColumnCount( 4 );
     tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Red" ) ) );
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Green" ) ) );
     tableTransparency->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Blue" ) ) );
     tableTransparency->setHorizontalHeaderItem( 3, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
-
-
-    //populate three band transparency list
-    if ( rasterTransparency )
-    {
-      QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList = rasterTransparency->transparentThreeValuePixelList();
-      for ( int myListRunner = 0; myListRunner < myTransparentThreeValuePixelList.count(); myListRunner++ )
-      {
-        tableTransparency->insertRow( myListRunner );
-        QTableWidgetItem* myRedItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].red ) );
-        QTableWidgetItem* myGreenItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].green ) );
-        QTableWidgetItem* myBlueItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].blue ) );
-        QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentThreeValuePixelList[myListRunner].percentTransparent ) );
-
-        tableTransparency->setItem( myListRunner, 0, myRedItem );
-        tableTransparency->setItem( myListRunner, 1, myGreenItem );
-        tableTransparency->setItem( myListRunner, 2, myBlueItem );
-        tableTransparency->setItem( myListRunner, 3, myPercentTransparentItem );
-      }
-    }
   }
-  else if ( mRasterLayer->bandCount() == 1 )
+  else //1 band
   {
-    //Clear existing single band or palette values transparency list
-    for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
-    {
-      tableTransparency->removeRow( myTableRunner );
-    }
-
-    tableTransparency->clear();
-    tableTransparency->setColumnCount( 2 );
     if ( QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
          QgsRasterLayer::PalettedSingleBandGray != mRasterLayer->drawingStyle() &&
          QgsRasterLayer::PalettedSingleBandPseudoColor != mRasterLayer->drawingStyle() &&
@@ -391,20 +359,41 @@ void QgsRasterLayerProperties::populateTransparencyTable()
       tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Indexed Value" ) ) );
     }
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Percent Transparent" ) ) );
+  }
 
-    //populate gray transparency list
-    if ( rasterTransparency )
+  const QgsRasterTransparency* rasterTransparency = renderer->rasterTransparency();
+  if ( !rasterTransparency )
+  {
+    return;
+  }
+
+  if ( nBands == 1 )
+  {
+    QList<QgsRasterTransparency::TransparentSingleValuePixel> pixelList = rasterTransparency->transparentSingleValuePixelList();
+    for ( int i = 0; i < pixelList.size(); ++i )
     {
-      QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList = rasterTransparency->transparentSingleValuePixelList();
-      for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
-      {
-        tableTransparency->insertRow( myListRunner );
-        QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%g", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
-        QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].percentTransparent ) );
+      tableTransparency->insertRow( i );
+      QTableWidgetItem* grayItem = new QTableWidgetItem( QString::number( pixelList[i].pixelValue, 'f' ) );
+      QTableWidgetItem* percentItem = new QTableWidgetItem( QString::number( pixelList[i].percentTransparent ) );
+      tableTransparency->setItem( i, 0, grayItem );
+      tableTransparency->setItem( i, 1, percentItem );
+    }
+  }
+  else if ( nBands == 3 )
+  {
+    QList<QgsRasterTransparency::TransparentThreeValuePixel> pixelList = rasterTransparency->transparentThreeValuePixelList();
+    for ( int i = 0; i < pixelList.size(); ++i )
+    {
+      tableTransparency->insertRow( i );
+      QTableWidgetItem* redItem = new QTableWidgetItem( QString::number( pixelList[i].red, 'f' ) );
+      QTableWidgetItem* greenItem = new QTableWidgetItem( QString::number( pixelList[i].green, 'f' ) );
+      QTableWidgetItem* blueItem = new QTableWidgetItem( QString::number( pixelList[i].blue, 'f' ) );
+      QTableWidgetItem* transparentItem = new QTableWidgetItem( QString::number( pixelList[i].percentTransparent ) );
 
-        tableTransparency->setItem( myListRunner, 0, myGrayItem );
-        tableTransparency->setItem( myListRunner, 1, myPercentTransparentItem );
-      }
+      tableTransparency->setItem( i, 0, redItem );
+      tableTransparency->setItem( i, 1, greenItem );
+      tableTransparency->setItem( i, 2, blueItem );
+      tableTransparency->setItem( i, 3, transparentItem );
     }
   }
 
@@ -414,8 +403,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
 
 void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
 {
-  delete mRendererWidget;
-  mRendererWidget = 0;
+  QgsRasterRendererWidget* oldWidget = mRendererWidget;
 
   QgsRasterRendererRegistryEntry rendererEntry;
   if ( QgsRasterRendererRegistry::instance()->rendererData( rendererName, rendererEntry ) )
@@ -424,7 +412,27 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
     {
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
       mRendererStackedWidget->addWidget( mRendererWidget );
+      if ( oldWidget )
+      {
+        //compare used bands in new and old renderer and reset transparency dialog if different
+        QgsRasterRenderer* oldRenderer = oldWidget->renderer();
+        QgsRasterRenderer* newRenderer = mRendererWidget->renderer();
+        QList<int> oldBands = oldRenderer->usesBands();
+        QList<int> newBands = newRenderer->usesBands();
+        if ( oldBands != newBands )
+        {
+          populateTransparencyTable( newRenderer );
+        }
+        delete oldRenderer;
+        delete newRenderer;
+      }
     }
+  }
+  delete oldWidget;
+
+  if ( mHistogramWidget )
+  {
+    mHistogramWidget->setRendererWidget( rendererName, mRendererWidget );
   }
 }
 
@@ -464,6 +472,8 @@ void QgsRasterLayerProperties::sync()
     {
       delete tabPageHistogram;
       tabPageHistogram = NULL;
+      delete mHistogramWidget;
+      mHistogramWidget = NULL;
     }
   }
 
@@ -502,7 +512,7 @@ void QgsRasterLayerProperties::sync()
     leNoDataValue->insert( "" );
   }
 
-  populateTransparencyTable();
+  populateTransparencyTable( mRasterLayer->renderer() );
 
   QgsDebugMsg( "populate colormap tab" );
   /*
@@ -621,7 +631,7 @@ void QgsRasterLayerProperties::apply()
 
   //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
   QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
-  if ( mRasterLayer->bandCount() == 3 )
+  if ( tableTransparency->columnCount() == 4 )
   {
     double myTransparentValue;
     double myPercentTransparent;
@@ -721,7 +731,7 @@ void QgsRasterLayerProperties::apply()
     }
     rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
   }
-  else if ( mRasterLayer->bandCount() == 1 )
+  else if ( tableTransparency->columnCount() == 2 )
   {
     double myTransparentValue;
     double myPercentTransparent;
@@ -933,8 +943,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   lbxPyramidResolutions->clear();
   // Need to rebuild list as some or all pyramids may have failed to build
   myPyramidList = mRasterLayer->buildPyramidList();
-  QIcon myPyramidPixmap( QgisApp::getThemeIcon( "/mIconPyramid.png" ) );
-  QIcon myNoPyramidPixmap( QgisApp::getThemeIcon( "/mIconNoPyramid.png" ) );
+  QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.png" ) );
+  QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.png" ) );
 
   QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator = myPyramidList.begin();
@@ -1014,12 +1024,26 @@ void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 
 void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 {
-
-  if ( /*rbtnThreeBand->isChecked() &&*/ QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
-                                         QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
+  if ( !mRendererWidget )
   {
-    tableTransparency->clear();
-    tableTransparency->setColumnCount( 4 );
+    return;
+  }
+
+  QgsRasterRenderer* r = mRendererWidget->renderer();
+  if ( !r )
+  {
+    return;
+  }
+
+  int nBands = r->usesBands().size();
+  delete r;
+
+  tableTransparency->clear();
+  tableTransparency->setRowCount( 0 );
+  tableTransparency->setColumnCount( nBands + 1 );
+
+  if ( nBands == 3 )
+  {
     tableTransparency->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Red" ) ) );
     tableTransparency->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Green" ) ) );
     tableTransparency->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Blue" ) ) );
@@ -1030,13 +1054,11 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
       tableTransparency->setItem( 0, 0, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
       tableTransparency->setItem( 0, 1, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
       tableTransparency->setItem( 0, 2, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
-      tableTransparency->setItem( 0, 3, new QTableWidgetItem( "100.0" ) );
+      tableTransparency->setItem( 0, 3, new QTableWidgetItem( "100" ) );
     }
   }
-  else
+  else //1 band
   {
-    tableTransparency->clear();
-    tableTransparency->setColumnCount( 2 );
     if ( QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
          QgsRasterLayer::PalettedSingleBandGray != mRasterLayer->drawingStyle() &&
          QgsRasterLayer::PalettedSingleBandPseudoColor != mRasterLayer->drawingStyle() &&
@@ -1054,10 +1076,12 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
     {
       tableTransparency->insertRow( tableTransparency->rowCount() );
       tableTransparency->setItem( 0, 0, new QTableWidgetItem( QString::number( mRasterLayer->noDataValue(), 'f' ) ) );
-      tableTransparency->setItem( 0, 1, new QTableWidgetItem( "100.0" ) );
+      tableTransparency->setItem( 0, 1, new QTableWidgetItem( "100" ) );
     }
-
   }
+
+  tableTransparency->resizeColumnsToContents();
+  tableTransparency->resizeRowsToContents();
 }
 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
@@ -1114,157 +1138,18 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 
 void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 {
-  int myHistogramTab = 5;
-  if ( theTab == myHistogramTab )
+  if ( mHistogramWidget == 0 ) return;
+
+  if ( theTab == 5 )
   {
-    refreshHistogram();
+    mHistogramWidget->setActive( true );
+  }
+  else
+  {
+    mHistogramWidget->setActive( false );
   }
 }
 
-void QgsRasterLayerProperties::refreshHistogram()
-{
-#if !defined(QWT_VERSION) || QWT_VERSION<0x060000
-  mpPlot->clear();
-#endif
-  mHistogramProgress->show();
-  connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-  QgsDebugMsg( "entered." );
-  //ensure all children get removed
-  mpPlot->setAutoDelete( true );
-  mpPlot->setTitle( QObject::tr( "Raster Histogram" ) );
-  mpPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
-  // Set axis titles
-  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Pixel Value" ) );
-  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Frequency" ) );
-  mpPlot->setAxisAutoScale( QwtPlot::yLeft );
-  // x axis scale only set after computing global min/max across bands (see below)
-  // add a grid
-  QwtPlotGrid * myGrid = new QwtPlotGrid();
-  myGrid->attach( mpPlot );
-  // Explanation:
-  // We use the gdal histogram creation routine is called for each selected
-  // layer. Currently the hist is hardcoded
-  // to create 256 bins. Each bin stores the total number of cells that
-  // fit into the range defined by that bin.
-  //
-  // The graph routine below determines the greatest number of pixesl in any given
-  // bin in all selected layers, and the min. It then draws a scaled line between min
-  // and max - scaled to image height. 1 line drawn per selected band
-  //
-  const int BINCOUNT = 256;
-  bool myIgnoreOutOfRangeFlag = true;
-  bool myThoroughBandScanFlag = false;
-  int myBandCountInt = mRasterLayer->bandCount();
-  QList<QColor> myColors;
-  myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
-
-  while ( myColors.size() <= myBandCountInt )
-  {
-    myColors <<
-    QColor( 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ) );
-  }
-
-  //
-  //now draw actual graphs
-  //
-
-  //somtimes there are more bins than needed
-  //we find out the last one that actually has data in it
-  //so we can discard the rest and set the x-axis scales correctly
-  //
-  // scan through to get counts from layers' histograms
-  //
-  float myGlobalMin = 0;
-  float myGlobalMax = 0;
-  bool myFirstIteration = true;
-  for ( int myIteratorInt = 1;
-        myIteratorInt <= myBandCountInt;
-        ++myIteratorInt )
-  {
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
-    mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
-    QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
-    mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
-    mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
-    mypCurve->setPen( QPen( myColors.at( myIteratorInt ) ) );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QVector<QPointF> data;
-#else
-    QVector<double> myX2Data;
-    QVector<double> myY2Data;
-#endif
-    for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
-    {
-      int myBinValue = myRasterBandStats.histogramVector->at( myBin );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-      data << QPointF( myBin, myBinValue );
-#else
-      myX2Data.append( double( myBin ) );
-      myY2Data.append( double( myBinValue ) );
-#endif
-    }
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    mypCurve->setSamples( data );
-#else
-    mypCurve->setData( myX2Data, myY2Data );
-#endif
-    mypCurve->attach( mpPlot );
-    if ( myFirstIteration || myGlobalMin < myRasterBandStats.minimumValue )
-    {
-      myGlobalMin = myRasterBandStats.minimumValue;
-    }
-    if ( myFirstIteration || myGlobalMax < myRasterBandStats.maximumValue )
-    {
-      myGlobalMax = myRasterBandStats.maximumValue;
-    }
-    myFirstIteration = false;
-  }
-  // for x axis use band pixel values rather than gdal hist. bin values
-  // subtract -0.5 to prevent rounding errors
-  // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
-  mpPlot->setAxisScale( QwtPlot::xBottom,
-                        myGlobalMin - 0.5,
-                        myGlobalMax + 0.5 );
-  mpPlot->replot();
-  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
-  mHistogramProgress->hide();
-  mpPlot->canvas()->setCursor( Qt::ArrowCursor );
-  QApplication::restoreOverrideCursor();
-}
-
-void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
-{
-  if ( mpPlot == 0 )
-  {
-    return;
-  }
-
-  QPixmap myPixmap( 600, 600 );
-  myPixmap.fill( Qt::white ); // Qt::transparent ?
-
-#if (QWT_VERSION<0x060000)
-  QwtPlotPrintFilter myFilter;
-  int myOptions = QwtPlotPrintFilter::PrintAll;
-  myOptions &= ~QwtPlotPrintFilter::PrintBackground;
-  myOptions |= QwtPlotPrintFilter::PrintFrameWithScales;
-  myFilter.setOptions( myOptions );
-
-  mpPlot->print( myPixmap, myFilter );
-#else
-  QPainter painter;
-  painter.begin( &myPixmap );
-  mpPlot->drawCanvas( &painter );
-  painter.end();
-#endif
-  QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
-  if ( myFileNameAndFilter.first != "" )
-  {
-    myPixmap.save( myFileNameAndFilter.first );
-  }
-}
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
 {
   int myLineCounter = 0;
@@ -1364,8 +1249,12 @@ void QgsRasterLayerProperties::on_pbnRemoveSelectedRow_clicked()
 
 void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 {
-#if 0 //needs to be fixed
-  //PixelSelectorTool has registered a mouse click on the canvas, so bring the dialog back to the front
+  QgsRasterRenderer* renderer = mRendererWidget->renderer();
+  if ( !renderer )
+  {
+    return;
+  }
+
   raise();
   setModal( true );
   activateWindow();
@@ -1373,35 +1262,29 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   //Get the pixel values and add a new entry to the transparency table
   if ( mMapCanvas && mPixelSelectorTool )
   {
-    QMap< QString, QString > myPixelMap;
+    QMap< int, QString > myPixelMap;
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
     mRasterLayer->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ), myPixelMap );
-    if ( tableTransparency->columnCount() == 2 )
+
+    QList<int> bands = renderer->usesBands();
+    tableTransparency->insertRow( tableTransparency->rowCount() );
+    tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
+
+    for ( int i = 0; i < bands.size(); ++i )
     {
-      QString myValue = myPixelMap[ mRasterLayer->grayBandName()];
-      if ( myValue != tr( "out of extent" ) )
+      QMap< int, QString >::const_iterator pixelResult = myPixelMap.find( bands.at( i ) );
+      if ( pixelResult != myPixelMap.constEnd() )
       {
-        tableTransparency->insertRow( tableTransparency->rowCount() );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
-      }
-    }
-    else
-    {
-      QString myValue = myPixelMap[ mRasterLayer->redBandName()];
-      if ( myValue != tr( "out of extent" ) )
-      {
-        tableTransparency->insertRow( tableTransparency->rowCount() );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, new QTableWidgetItem( "100.0" ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 0, new QTableWidgetItem( myValue ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 1, new QTableWidgetItem( myPixelMap[ mRasterLayer->greenBandName()] ) );
-        tableTransparency->setItem( tableTransparency->rowCount() - 1, 2, new QTableWidgetItem( myPixelMap[ mRasterLayer->blueBandName()] ) );
+        QString value = pixelResult.value();
+        if ( value != tr( "out of extent" ) )
+        {
+          tableTransparency->setItem( tableTransparency->rowCount() - 1, i, new QTableWidgetItem( value ) );
+        }
       }
     }
   }
-#else
-  Q_UNUSED( canvasPoint );
-#endif //0
+
+  delete renderer;
 }
 
 void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )

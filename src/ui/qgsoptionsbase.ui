@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>762</width>
-            <height>823</height>
+            <width>766</width>
+            <height>938</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -90,6 +90,89 @@
                  <string>Warn when opening a project file saved with an older version of QGIS</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_16">
+                <item>
+                 <widget class="QCheckBox" name="cbxProjectDefaultNew">
+                  <property name="text">
+                   <string>Create new project from default project</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_13">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnProjectDefaultSetCurrent">
+                  <property name="text">
+                   <string>Set current project as default</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnProjectDefaultReset">
+                  <property name="text">
+                   <string>Reset default</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_15">
+                <item>
+                 <widget class="QLabel" name="label_31">
+                  <property name="text">
+                   <string>Template folder</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="leTemplateFolder">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnTemplateFolderBrowse">
+                  <property name="text">
+                   <string>Browse</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pbnTemplateFolderReset">
+                  <property name="text">
+                   <string>Reset</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -680,16 +763,6 @@
           <string>GDAL Drivers</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_24">
-          <item row="1" column="0">
-           <widget class="QListWidget" name="lstGdalDrivers">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>141</height>
-             </size>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_17">
             <property name="text">
@@ -698,6 +771,36 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTreeWidget" name="lstGdalDrivers">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>141</height>
+             </size>
+            </property>
+            <column>
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>ext</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Flags</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Description</string>
+             </property>
+            </column>
            </widget>
           </item>
          </layout>
@@ -786,9 +889,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-174</y>
-            <width>762</width>
-            <height>658</height>
+            <y>0</y>
+            <width>766</width>
+            <height>592</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1034,8 +1137,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>539</width>
-            <height>502</height>
+            <width>766</width>
+            <height>718</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1289,6 +1392,90 @@
              </layout>
             </widget>
            </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="groupBox_15">
+             <property name="title">
+              <string>Predefined scales</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_26">
+              <item row="0" column="0">
+               <widget class="QListWidget" name="mListGlobalScales"/>
+              </item>
+              <item row="0" column="1">
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QToolButton" name="pbnAddScale">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnRemoveScale">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnDefaultScaleValues">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnImportScales">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFolder.png</normaloff>:/images/themes/default/mActionFolder.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnExportScales">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1320,8 +1507,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
-            <height>93</height>
+            <width>784</width>
+            <height>452</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1401,8 +1588,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>571</width>
-            <height>620</height>
+            <width>766</width>
+            <height>572</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1777,8 +1964,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>425</width>
-            <height>417</height>
+            <width>784</width>
+            <height>452</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1797,28 +1984,21 @@
               <bool>false</bool>
              </property>
              <layout class="QGridLayout" name="gridLayout_22">
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLineEdit" name="leProjectGlobalCrs">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="chkOtfTransform">
-                <property name="text">
-                 <string>Enable 'on the &amp;fly' reprojection by default</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
+              <item row="3" column="1">
                <widget class="QPushButton" name="pbnSelectOtfProjection">
                 <property name="text">
                  <string>Select...</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
+              <item row="6" column="0" colspan="2">
                <spacer name="verticalSpacer">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -1831,13 +2011,33 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label_16">
                 <property name="text">
                  <string>Always start new projects with this CRS</string>
                 </property>
                 <property name="buddy">
                  <cstring>leProjectGlobalCrs</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="chkOtfAuto">
+                <property name="toolTip">
+                 <string/>
+                </property>
+                <property name="whatsThis">
+                 <string>Automatically enable 'on the fly' reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</string>
+                </property>
+                <property name="text">
+                 <string>Automatically enable 'on the fly' reprojection  if layers have different CRS</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="chkOtfTransform">
+                <property name="text">
+                 <string>Enable 'on the &amp;fly' reprojection by default</string>
                 </property>
                </widget>
               </item>
@@ -1951,8 +2151,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>584</height>
+            <width>766</width>
+            <height>536</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2048,8 +2248,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>355</width>
-            <height>572</height>
+            <width>766</width>
+            <height>491</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -2341,7 +2541,6 @@
   <tabstop>scrollArea_6</tabstop>
   <tabstop>pbnSelectOtfProjection</tabstop>
   <tabstop>leProjectGlobalCrs</tabstop>
-  <tabstop>chkOtfTransform</tabstop>
   <tabstop>radPromptForProjection</tabstop>
   <tabstop>radUseProjectProjection</tabstop>
   <tabstop>radUseGlobalProjection</tabstop>

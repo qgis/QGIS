@@ -60,8 +60,8 @@ my $translators= {
 	tr => 'Osman Yilmaz',
 	uk => 'Сергей Якунин',
 	vi => 'Bùi Hữu Mạnh',
-	zh_CN => 'Zhang Jun',
-	zh_TW => 'Nungyao Lin',
+	zh_CN => 'Calvin Ngei, Zhang Jun',
+	zh_TW => 'Nung-yao Lin',
 };
 
 my $maxn;

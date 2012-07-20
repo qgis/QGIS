@@ -285,23 +285,23 @@ QIcon QgsPgTableModel::iconForWkbType( QGis::WkbType type )
     case QGis::WKBPoint25D:
     case QGis::WKBMultiPoint:
     case QGis::WKBMultiPoint25D:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconPointLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconPointLayer.png" );
     case QGis::WKBLineString:
     case QGis::WKBLineString25D:
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconLineLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconLineLayer.png" );
     case QGis::WKBPolygon:
     case QGis::WKBPolygon25D:
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconPolygonLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.png" );
     case QGis::WKBNoGeometry:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconTableLayer.png" ) );
+      return QgsApplication::getThemeIcon( "/mIconTableLayer.png" );
     case QGis::WKBUnknown:
       break;
   }
-  return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
+  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
 }
 
 bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

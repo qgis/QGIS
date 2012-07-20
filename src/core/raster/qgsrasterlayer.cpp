@@ -370,6 +370,8 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     return myNullReturnStats;
   }
 
+  // TODO this is buggy - because the stats might have changed (e.g. theIgnoreOutOfRangeFlag in populateHistogram())
+  // should have a pointer to the stats instead
   QgsRasterBandStats myRasterBandStats = mRasterStatsList[theBandNo - 1];
   myRasterBandStats.bandNumber = theBandNo;
 
@@ -383,6 +385,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
   QgsDebugMsg( "adding stats to stats collection at position " + QString::number( theBandNo - 1 ) );
   //add this band to the class stats map
   mRasterStatsList[theBandNo - 1] = myRasterBandStats;
+
   emit drawingProgress( mHeight, mHeight ); //reset progress
   QgsDebugMsg( "Stats collection completed returning" );
   return myRasterBandStats;
@@ -944,6 +947,18 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   return ( mDataProvider->identify( thePoint, theResults ) );
 }
 
+bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  if ( !mDataProvider )
+  {
+    return false;
+  }
+
+  results.clear();
+  return mDataProvider->identify( point, results );
+}
+
+
 /**
  * @note  The arbitraryness of the returned document is enforced by WMS standards up to at least v1.3.0
  *
@@ -1096,15 +1111,16 @@ QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
  */
 QPixmap QgsRasterLayer::legendAsPixmap()
 {
-  return legendAsPixmap( false );
+  return QPixmap();
 }
 
 /**
- * @param theWithNameFlag - boolena flag whether to overlay the legend name in the text
+ * @param theWithNameFlag - boolean flag whether to overlay the legend name in the text
  * @return a pixmap representing a legend image
  */
-QPixmap QgsRasterLayer::legendAsPixmap( bool )
+QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
 {
+  Q_UNUSED( theWithNameFlag );
   return QPixmap();
 }                               //end of legendAsPixmap function
 
@@ -1445,6 +1461,15 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
 }
 
 /*
+ * @param theBandNoInt - which band to find out if has a cached histogram
+ * @param theBinCountInt - how many 'bins' to categorise the data into
+ */
+bool QgsRasterLayer::hasCachedHistogram( int theBandNo, int theBinCount )
+{
+  return mDataProvider->hasCachedHistogram( theBandNo, theBinCount );
+}
+
+/*
  * @param theBandNoInt - which band to compute the histogram for
  * @param theBinCountInt - how many 'bins' to categorise the data into
  * @param theIgnoreOutOfRangeFlag - whether to ignore values that are out of range (default=true)
@@ -1750,14 +1775,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   else
   {
     mRasterType = GrayOrUndefined;
-  }
-
-  // Set min/max values for single band if we have them ready (no need to calculate which is slow)
-  // don't set min/max on multiband even if available because it would cause stretch of bands and thus colors distortion
-  if ( mDataProvider->bandCount() == 1 && ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactMinimumMaximum ) )
-  {
-    setMinimumValue( 1, mDataProvider->minimumValue( 1 ) );
-    setMaximumValue( 1, mDataProvider->maximumValue( 1 ) );
   }
 
   QgsDebugMsg( "mRasterType = " + QString::number( mRasterType ) );

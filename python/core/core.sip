@@ -73,8 +73,6 @@
 %Include qgsrenderer.sip
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
-%Include qgssearchstring.sip
-%Include qgssearchtreenode.sip
 %Include qgssinglesymbolrenderer.sip
 %Include qgssnapper.sip
 %Include qgsspatialindex.sip
@@ -100,3 +98,5 @@
 %Include qgsgpsdconnection.sip
 %Include qgsnmeaconnection.sip
 %Include qgsgpsdetector.sip
+
+%Include qgspaintenginehack.sip

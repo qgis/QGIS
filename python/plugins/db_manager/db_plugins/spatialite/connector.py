@@ -208,7 +208,7 @@ class SpatiaLiteDBConnector(DBConnector):
 			
 		# get geometry info from geometry_columns if exists
 		sql = u"""SELECT m.name, m.type = 'view', g.f_table_name, g.f_geometry_column, g.type, g.coord_dimension, g.srid 
-						FROM sqlite_master AS m JOIN geometry_columns AS g ON lower(m.name) = lower(g.f_table_name)
+						FROM sqlite_master AS m JOIN geometry_columns AS g ON upper(m.name) = upper(g.f_table_name)
 						WHERE m.type in ('table', 'view') 
 						ORDER BY m.name, g.f_geometry_column"""
 
@@ -243,9 +243,9 @@ class SpatiaLiteDBConnector(DBConnector):
 			
 		# get geometry info from geometry_columns if exists
 		sql = u"""SELECT r.table_name||'_rasters', m.type = 'view', r.table_name, r.geometry_column, g.srid
-						FROM sqlite_master AS m JOIN geometry_columns AS g ON lower(m.name) = lower(g.f_table_name) 
-						JOIN layer_params AS r ON REPLACE(m.name, '_metadata', '') = r.table_name
-						WHERE m.type in ('table', 'view') AND m.name = r.table_name||'_metadata'
+						FROM sqlite_master AS m JOIN geometry_columns AS g ON upper(m.name) = upper(g.f_table_name)
+						JOIN layer_params AS r ON upper(REPLACE(m.name, '_metadata', '')) = upper(r.table_name)
+						WHERE m.type in ('table', 'view') AND upper(m.name) = upper(r.table_name||'_metadata')
 						ORDER BY r.table_name"""
 
 		self._execute(c, sql)
@@ -298,7 +298,7 @@ class SpatiaLiteDBConnector(DBConnector):
 	def getTableTriggers(self, table):
 		c = self._get_cursor()
 		schema, tablename = self.getSchemaTableName(table)
-		sql = u"SELECT name, sql FROM sqlite_master WHERE lower(tbl_name) = lower(%s) AND type = 'trigger'" % (self.quoteString(tablename))
+		sql = u"SELECT name, sql FROM sqlite_master WHERE tbl_name = %s AND type = 'trigger'" % (self.quoteString(tablename))
 		self._execute(c, sql)
 		return c.fetchall()
 
@@ -339,7 +339,7 @@ class SpatiaLiteDBConnector(DBConnector):
 	def isVectorTable(self, table):
 		if self.has_geometry_columns:
 			schema, tablename = self.getSchemaTableName(table)
-			sql = u"SELECT count(*) FROM geometry_columns WHERE f_table_name = %s" % self.quoteString(tablename)
+			sql = u"SELECT count(*) FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(tablename)
 			c = self._execute(None, sql)
 			ret = c.fetchone()
 			return res != None and ret[0] > 0
@@ -353,8 +353,8 @@ class SpatiaLiteDBConnector(DBConnector):
 
 			sql = u"""SELECT count(*) 
 					FROM layer_params AS r JOIN geometry_columns AS g 
-						ON r.table_name||'_metadata' = g.f_table_name
-					WHERE r.table_name = REPLACE(%s, '_rasters', '')""" % self.quoteString(tablename)
+						ON upper(r.table_name||'_metadata') = upper(g.f_table_name)
+					WHERE upper(r.table_name) = upper(REPLACE(%s, '_rasters', ''))""" % self.quoteString(tablename)
 			c = self._execute(None, sql)
 			ret = c.fetchone()
 			return res != None and ret[0] > 0
@@ -388,7 +388,7 @@ class SpatiaLiteDBConnector(DBConnector):
 		sql = u"DROP TABLE %s" % self.quoteId(table)
 		self._execute(c, sql)
 		schema, tablename = self.getSchemaTableName(table)
-		sql = u"DELETE FROM geometry_columns WHERE lower(f_table_name) = lower(%s)" % self.quoteString(tablename)
+		sql = u"DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%s)" % self.quoteString(tablename)
 		self._execute(c, sql)
 		self._commit()
 
@@ -417,7 +417,7 @@ class SpatiaLiteDBConnector(DBConnector):
 		
 		# update geometry_columns
 		if self.has_geometry_columns:
-			sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s" % (self.quoteString(new_table), self.quoteString(tablename))
+			sql = u"UPDATE geometry_columns SET f_table_name = %s WHERE upper(f_table_name) = upper(%s)" % (self.quoteString(new_table), self.quoteString(tablename))
 			self._execute(c, sql)
 
 		self._commit()
@@ -480,7 +480,7 @@ class SpatiaLiteDBConnector(DBConnector):
 	def isGeometryColumn(self, table, column):
 		c = self._get_cursor()
 		schema, tablename = self.getSchemaTableName(table)
-		sql = u"SELECT count(*) > 0 FROM geometry_columns WHERE lower(f_table_name)=lower(%s) AND lower(f_geometry_column)=lower(%s)" % (self.quoteString(tablename), self.quoteString(column))
+		sql = u"SELECT count(*) > 0 FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (self.quoteString(tablename), self.quoteString(column))
 		self._execute(c, sql)
 		return c.fetchone()[0] == 't'
 
@@ -547,7 +547,7 @@ class SpatiaLiteDBConnector(DBConnector):
 			return False
 		c = self._get_cursor()
 		schema, tablename = self.getSchemaTableName(table)
-		sql = u"SELECT spatial_index_enabled FROM geometry_columns WHERE f_table_name = %s AND f_geometry_column = %s" % (self.quoteString(tablename), self.quoteString(geom_column))
+		sql = u"SELECT spatial_index_enabled FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (self.quoteString(tablename), self.quoteString(geom_column))
 		self._execute(c, sql)
 		row = c.fetchone()
 		return row != None and row[0] == 1

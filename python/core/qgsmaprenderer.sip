@@ -28,6 +28,9 @@ public:
   //! return infos about labels at a given (map) position
   //! @note: this method was added in version 1.7
   virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p )= 0;
+  //! return infos about labels within a given (map) rectangle
+  //! @note: this method was added in version 1.9
+  virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
 
   //! called when passing engine among map renderers

@@ -29,7 +29,9 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapToolEmitPoint;
+class QgsRasterRenderer;
 class QgsRasterRendererWidget;
+class QgsRasterHistogramWidget;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -68,8 +70,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnExportTransparentPixelValues_clicked();
     /** \brief auto slot executed when the active page in the main widget stack is changed */
     void on_tabBar_currentChanged( int theTab );
-    /** \brief slot executed when user wishes to refresh raster histogram */
-    void refreshHistogram();
     /** \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
@@ -94,8 +94,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    /** This slot lets you save the histogram as an image to disk */
-    void on_mSaveAsImageButton_clicked();
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
@@ -140,7 +138,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QgsRasterRendererWidget* mRendererWidget;
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
-    void populateTransparencyTable();
+    void populateTransparencyTable( QgsRasterRenderer* renderer );
 
     void setRendererWidget( const QString& rendererName );
 
@@ -162,5 +160,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;
+
+    QgsRasterHistogramWidget* mHistogramWidget;
 };
 #endif

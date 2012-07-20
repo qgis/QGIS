@@ -203,6 +203,9 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   int redVal = 0;
   int greenVal = 0;
   int blueVal = 0;
+  int redDataVal = 0;
+  int greenDataVal = 0;
+  int blueDataVal = 0;
   QRgb defaultColor = qRgba( 255, 255, 255, 0 );
   double currentOpacity = mOpacity; //opacity (between 0 and 1)
 
@@ -224,14 +227,17 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
       if ( mRedBand > 0 )
       {
         redVal = readValue( redData, redType, currentRasterPos );
+        redDataVal = redVal;
       }
       if ( mGreenBand > 0 )
       {
         greenVal = readValue( greenData, greenType, currentRasterPos );
+        greenDataVal = greenVal;
       }
       if ( mBlueBand > 0 )
       {
         blueVal = readValue( blueData, blueType, currentRasterPos );
+        blueDataVal = blueVal;
       }
 
       //apply default color if red, green or blue not in displayable range
@@ -310,7 +316,7 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
       currentOpacity = mOpacity;
       if ( mRasterTransparency )
       {
-        currentOpacity = mRasterTransparency->alphaValue( redVal, greenVal, blueVal, mOpacity * 255 ) / 255.0;
+        currentOpacity = mRasterTransparency->alphaValue( redDataVal, greenDataVal, blueDataVal, mOpacity * 255 ) / 255.0;
       }
       if ( mAlphaBand > 0 )
       {
@@ -372,4 +378,22 @@ void QgsMultiBandColorRenderer::writeXML( QDomDocument& doc, QDomElement& parent
     rasterRendererElem.appendChild( blueContrastElem );
   }
   parentElem.appendChild( rasterRendererElem );
+}
+
+QList<int> QgsMultiBandColorRenderer::usesBands() const
+{
+  QList<int> bandList;
+  if ( mRedBand != -1 )
+  {
+    bandList << mRedBand;
+  }
+  if ( mGreenBand != -1 )
+  {
+    bandList << mGreenBand;
+  }
+  if ( mBlueBand != -1 )
+  {
+    bandList << mBlueBand;
+  }
+  return bandList;
 }

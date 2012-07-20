@@ -44,6 +44,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
+    QList<int> usesBands() const;
+
   private:
     int mBandNumber;
     /**Color array*/

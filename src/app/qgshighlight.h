@@ -21,6 +21,7 @@
 #include <QList>
 #include <QPen>
 #include <QPainter>
+#include <QPainterPath>
 
 class QgsVectorLayer;
 

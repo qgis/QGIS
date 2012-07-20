@@ -73,6 +73,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& rendererElem );
 
+    /**Returns a list of band numbers used by the renderer*/
+    virtual QList<int> usesBands() const { return QList<int>(); }
+
   protected:
     inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
 

@@ -36,7 +36,7 @@
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
   QSettings settings;
   QString key = "/MSSQL/connections/" + mName;
   mService = settings.value( key + "/service" ).toString();
@@ -438,7 +438,7 @@ QString QgsMssqlLayerItem::createUri()
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconDbSchema.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconDbSchema.png" );
 }
 
 QVector<QgsDataItem*> QgsMssqlSchemaItem::createChildren()
@@ -518,7 +518,7 @@ QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProp
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconMssql.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconMssql.png" );
   populate();
 }
 

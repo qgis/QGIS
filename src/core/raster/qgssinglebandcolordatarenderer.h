@@ -34,6 +34,8 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
+    QList<int> usesBands() const;
+
   private:
     int mBand;
 };

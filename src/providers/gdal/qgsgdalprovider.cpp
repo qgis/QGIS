@@ -49,7 +49,6 @@
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
 #include "cpl_conv.h"
-#include "cpl_string.h"
 
 
 static QString PROVIDER_KEY = "gdal";
@@ -937,6 +936,67 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
+bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  // QgsDebugMsg( "Entered" );
+  if ( !mExtent.contains( point ) )
+  {
+    // Outside the raster
+    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    {
+      results[ i ] = tr( "out of extent" );
+    }
+  }
+  else
+  {
+    double x = point.x();
+    double y = point.y();
+
+    // Calculate the row / column where the point falls
+    double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
+    double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
+
+    // Offset, not the cell index -> flor
+    int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
+    int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
+
+    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+
+    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    {
+      GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
+      double value;
+
+      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
+                                 &value, 1, 1, GDT_Float64, 0, 0 );
+
+      if ( err != CPLE_None )
+      {
+        QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      }
+
+      //double value = readValue( data, type, 0 );
+      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
+      QString v;
+
+      if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
+      {
+        v = tr( "null (no data)" );
+      }
+      else
+      {
+        v.setNum( value );
+      }
+
+      results[ i ] = v;
+
+      //CPLFree( data );
+    }
+  }
+
+  return true;
+}
+
 bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   // QgsDebugMsg( "Entered" );
@@ -1182,7 +1242,34 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
   return subLayers;
 }
 
-void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
+bool QgsGdalProvider::hasCachedHistogram( int theBandNo, int theBinCount )
+{
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+  if ( ! myGdalBand )
+    return false;
+
+  // get default histogram with force=false to see if there is a cached histo
+  double myMinVal, myMaxVal;
+  int myBinCount;
+  int *myHistogramArray = 0;
+  CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal,
+                   &myBinCount, &myHistogramArray, false,
+                   NULL, NULL );
+  if ( myHistogramArray )
+    VSIFree( myHistogramArray );
+
+  // if there was any error/warning assume the histogram is not valid or non-existent
+  if ( myError != CE_None )
+    return false;
+
+  // make sure the cached histo has the same number of bins than requested
+  if ( myBinCount != theBinCount )
+    return false;
+
+  return true;
+}
+
+void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
@@ -1196,46 +1283,79 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
        theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
        theHistogramEstimatedFlag != theBandStats.isHistogramEstimated )
   {
+    QgsDebugMsg( "Computing histogram" );
     theBandStats.histogramVector->clear();
     theBandStats.isHistogramEstimated = theHistogramEstimatedFlag;
     theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
     int *myHistogramArray = new int[theBinCount];
 
-#if 0
-    CPLErr GDALRasterBand::GetHistogram(
-      double       dfMin,
-      double      dfMax,
-      int     nBuckets,
-      int *   panHistogram,
-      int     bIncludeOutOfRange,
-      int     bApproxOK,
-      GDALProgressFunc    pfnProgress,
-      void *      pProgressData
-    )
-#endif
-
     QgsGdalProgress myProg;
     myProg.type = ProgressHistogram;
     myProg.provider = this;
+
+#if 0 // this is the old method
+
     double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
     GDALGetRasterHistogram( myGdalBand, theBandStats.minimumValue - 0.1*myerval,
                             theBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
                             theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
-                            &myProg ); //this is the arg for our custome gdal progress callback
+                            &myProg ); //this is the arg for our custom gdal progress callback
+
+#else // this is the new method, which gets a "Default" histogram
+
+    // calculate min/max like in GDALRasterBand::GetDefaultHistogram, but don't call it directly
+    // because there is no bApproxOK argument - that is lacking from the API
+    double myMinVal, myMaxVal;
+    const char* pszPixelType = GDALGetMetadataItem( myGdalBand, "PIXELTYPE", "IMAGE_STRUCTURE" );
+    int bSignedByte = ( pszPixelType != NULL && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
+
+    if ( GDALGetRasterDataType( myGdalBand ) == GDT_Byte && !bSignedByte )
+    {
+      myMinVal = -0.5;
+      myMaxVal = 255.5;
+    }
+    else
+    {
+      CPLErr eErr = CE_Failure;
+      double dfHalfBucket = 0;
+      eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
+      if ( eErr != CE_None )
+      {
+        delete [] myHistogramArray;
+        return;
+      }
+      dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * theBinCount );
+      myMinVal -= dfHalfBucket;
+      myMaxVal += dfHalfBucket;
+    }
+
+    CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
+                     theBinCount, myHistogramArray,
+                     theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
+                     &myProg ); //this is the arg for our custom gdal progress callback
+    if ( myError != CE_None )
+    {
+      delete [] myHistogramArray;
+      return;
+    }
+
+#endif
 
     for ( int myBin = 0; myBin < theBinCount; myBin++ )
     {
       if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
       {
         theBandStats.histogramVector->push_back( 0 );
-        QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
+        // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
       }
       else
       {
         theBandStats.histogramVector->push_back( myHistogramArray[myBin] );
-        QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
+        // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
       }
     }
+    delete [] myHistogramArray;
+
 
   }
   QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( theBandStats.histogramVector->size() ) +
@@ -1798,7 +1918,8 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   QgsRasterBandStats myRasterBandStats;
-  int bApproxOK = true;
+  // int bApproxOK = true;
+  int bApproxOK = false; //as we asked for stats, don't get approx values
   double pdfMin;
   double pdfMax;
   double pdfMean;
@@ -1806,16 +1927,6 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
   QgsGdalProgress myProg;
   myProg.type = ProgressHistogram;
   myProg.provider = this;
-
-  // double myerval =
-  //   GDALComputeRasterStatistics (
-  //      myGdalBand, bApproxOK, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-  //      progressCallback, &myProg ) ;
-  // double myerval =
-  //   GDALGetRasterStatistics ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev);
-  // double myerval =
-  //   GDALGetRasterStatisticsProgress ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-  //           progressCallback, &myProg );
 
   // try to fetch the cached stats (bForce=FALSE)
   CPLErr myerval =

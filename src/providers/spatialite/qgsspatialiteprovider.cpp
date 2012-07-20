@@ -202,7 +202,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
 
-        sql = QString( "DELETE FROM geometry_columns WHERE f_table_name = %1" )
+        sql = QString( "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%1)" )
               .arg( quotedValue( tableName ) );
 
         ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
@@ -381,7 +381,9 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )
-        oldToNewAttrIdxMap->insert( fldIt.key(), offset++ );
+        oldToNewAttrIdxMap->insert( fldIt.key(), offset );
+
+      offset++;
     }
 
     if ( !provider->addAttributes( flist ) )
@@ -3600,13 +3602,6 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   values = QString( ") VALUES (" );
   separator = "";
 
-  if ( !mPrimaryKey.isEmpty() )
-  {
-    sql += separator + quotedIdentifier( mPrimaryKey );
-    values += separator + "NULL";
-    separator = ",";
-  }
-
   if ( !mGeometryColumn.isNull() )
   {
     sql += separator + quotedIdentifier( mGeometryColumn );
@@ -3621,11 +3616,12 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       continue;
 
     QString fieldname = fit->name();
-    if ( fieldname.isEmpty() || fieldname == mGeometryColumn || fieldname == mPrimaryKey )
+    if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
       continue;
 
     sql += separator + quotedIdentifier( fieldname );
     values += separator + "?";
+    separator = ",";
   }
 
   sql += values;
@@ -3673,7 +3669,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         continue;
 
       QString fieldname = fit->name();
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn || fieldname == mPrimaryKey )
+      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
         continue;
 
       QVariant::Type type = fit->type();
@@ -4298,7 +4294,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     sql = QString( "SELECT read_only FROM geometry_columns "
                    "LEFT JOIN geometry_columns_auth "
                    "USING (f_table_name, f_geometry_column) "
-                   "WHERE f_table_name=%1 and f_geometry_column=%2" )
+                   "WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" )
           .arg( quotedValue( mTableName ) )
           .arg( quotedValue( mGeometryColumn ) );
 
@@ -4308,7 +4304,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       if ( errMsg && strcmp( errMsg, "no such table: geometry_columns_auth" ) == 0 )
       {
         sqlite3_free( errMsg );
-        sql = QString( "SELECT 0 FROM geometry_columns WHERE f_table_name=%1 and f_geometry_column=%2" )
+        sql = QString( "SELECT 0 FROM geometry_columns WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" )
               .arg( quotedValue( mTableName ) )
               .arg( quotedValue( mGeometryColumn ) );
         ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -4419,7 +4415,7 @@ bool QgsSpatiaLiteProvider::getTableGeometryDetails()
   mIndexGeometry = mGeometryColumn;
 
   QString sql = QString( "SELECT type, srid, spatial_index_enabled, coord_dimension FROM geometry_columns"
-                         " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( quotedValue( mTableName ) ).
+                         " WHERE upper(f_table_name) = upper(%1) and upper(f_geometry_column) = upper(%2)" ).arg( quotedValue( mTableName ) ).
                 arg( quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -4517,7 +4513,7 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
   QString sql = QString( "SELECT type, srid, spatial_index_enabled, f_table_name, f_geometry_column "
                          " FROM views_geometry_columns"
                          " JOIN geometry_columns USING (f_table_name, f_geometry_column)"
-                         " WHERE view_name=%1 and view_geometry=%2" ).arg( quotedValue( mTableName ) ).
+                         " WHERE upper(view_name) = upper(%1) and upper(view_geometry) = upper(%2)" ).arg( quotedValue( mTableName ) ).
                 arg( quotedValue( mGeometryColumn ) );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
@@ -5045,7 +5041,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
   }
 
   // remove table from geometry columns
-  sql = QString( "DELETE FROM geometry_columns WHERE f_table_name = %1" )
+  sql = QString( "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%1)" )
         .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) );
   ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, NULL );
   if ( ret != SQLITE_OK )

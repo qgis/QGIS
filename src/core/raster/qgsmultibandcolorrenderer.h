@@ -57,6 +57,8 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
+    QList<int> usesBands() const;
+
   private:
     int mRedBand;
     int mGreenBand;

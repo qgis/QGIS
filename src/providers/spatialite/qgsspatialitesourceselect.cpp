@@ -493,6 +493,8 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
   // If possible, set the item currently displayed database
   QString toSelect = settings.value( "/SpatiaLite/connections/selected" ).toString();
 
+  toSelect += "@" + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
+
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )

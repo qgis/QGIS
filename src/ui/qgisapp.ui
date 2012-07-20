@@ -62,8 +62,14 @@
       <string>Print Composers</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mProjectFromTemplateMenu">
+     <property name="title">
+      <string>New Project From Template</string>
+     </property>
+    </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
+    <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="separator"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="mActionSaveProject"/>
@@ -393,6 +399,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
+   <addaction name="mActionShowFrozenLabels"/>
+   <addaction name="mActionFreezeLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -1695,6 +1703,49 @@
    </property>
    <property name="whatsThis">
     <string>Creates a scale bar that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionFreezeLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFreezeLabels.png</normaloff>:/images/themes/default/mActionFreezeLabels.png</iconset>
+   </property>
+   <property name="text">
+    <string>Freeze or Thaw Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Freeze or Thaw Labels
+Shift thaws, Alt toggles, Ctl (Cmd) hides</string>
+   </property>
+  </action>
+  <action name="mActionShowFrozenLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowFrozenLabels.png</normaloff>:/images/themes/default/mActionShowFrozenLabels.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Frozen Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Frozen Labels</string>
+   </property>
+  </action>
+  <action name="mActionNewBlankProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Blank Project</string>
+   </property>
+   <property name="toolTip">
+    <string>New Blank Project</string>
    </property>
   </action>
  </widget>

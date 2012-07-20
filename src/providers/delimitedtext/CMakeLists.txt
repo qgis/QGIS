@@ -2,18 +2,24 @@
 ########################################################
 # Files
 
-SET (DTEXT_SRCS qgsdelimitedtextprovider.cpp)
+SET (DTEXT_SRCS
+  qgsdelimitedtextprovider.cpp
+  qgsdelimitedtextsourceselect.cpp
+)
 
-SET (DTEXT_MOC_HDRS	qgsdelimitedtextprovider.h)
+SET (DTEXT_MOC_HDRS
+  qgsdelimitedtextprovider.h
+  qgsdelimitedtextsourceselect.h
+)
 
 ########################################################
 # Build
 
 INCLUDE_DIRECTORIES(
-  .
   ../../core
-  ${GDAL_INCLUDE_DIR}
+  ../../gui
   ${GEOS_INCLUDE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
 QT4_WRAP_CPP(DTEXT_MOC_SRCS ${DTEXT_MOC_HDRS})

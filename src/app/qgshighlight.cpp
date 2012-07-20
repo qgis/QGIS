@@ -19,7 +19,6 @@
 #include "qgsmaprenderer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsvectorlayer.h"
-#include <QPainter>
 
 /*!
   \class QgsHighlight
@@ -93,11 +92,11 @@ void QgsHighlight::paintLine( QPainter *p, QgsPolyline line )
 
 void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 {
-  QPolygonF poly;
+  // OddEven fill rule by default
+  QPainterPath path;
 
-  // just ring outlines, no fill
   p->setPen( mPen );
-  p->setBrush( Qt::NoBrush );
+  p->setBrush( mBrush );
 
   for ( int i = 0; i < polygon.size(); i++ )
   {
@@ -110,18 +109,10 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
 
     ring[ polygon[i].size()] = ring[ 0 ];
 
-    p->drawPolygon( ring );
-
-    if ( i == 0 )
-      poly = ring;
-    else
-      poly = poly.subtracted( ring );
+    path.addPolygon( ring );
   }
 
-  // just fill, no outline
-  p->setPen( Qt::NoPen );
-  p->setBrush( mBrush );
-  p->drawPolygon( poly );
+  p->drawPath( path );
 }
 
 /*!

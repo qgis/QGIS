@@ -48,8 +48,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/NewSpatiaLiteLayer/geometry" ).toByteArray() );
 
-  mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
-  mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mTypeBox->addItem( tr( "Text data" ), "text" );
   mTypeBox->addItem( tr( "Whole number" ), "integer" );
   mTypeBox->addItem( tr( "Decimal number" ), "real" );

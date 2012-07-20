@@ -280,14 +280,19 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
 
-    //! Print to a printer object
-    void print( QPrinter &printer );
-
     //! Writes state under DOM element
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
     //! Removes all the item from the graphics scene and deletes them
     void deleteItems();
+
+    //! Restores composer map preview states.
+    //! Initially after reading from xml, states are set to rectangle to achieve faster project loading.
+    void restoreComposerMapStates();
+
+    //! Fills icons into composer picture widgets
+    //! To make loading from project faster, the previews are generated when the composer becomes visible.
+    void initialiseComposerPicturePreviews();
 
     /**Composer title*/
     QString mTitle;

@@ -105,3 +105,13 @@ void QgsSingleBandColorDataRenderer::writeXML( QDomDocument& doc, QDomElement& p
   rasterRendererElem.setAttribute( "band", mBand );
   parentElem.appendChild( rasterRendererElem );
 }
+
+QList<int> QgsSingleBandColorDataRenderer::usesBands() const
+{
+  QList<int> bandList;
+  if ( mBand != -1 )
+  {
+    bandList << mBand;
+  }
+  return bandList;
+}

@@ -175,6 +175,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
+
+    static QString readLine( QTextStream *stream );
+    static QStringList splitLine( QString line, QString delimiterType, QString delimiter );
+
   private:
 
     //! Fields
@@ -246,6 +250,5 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QGis::WkbType mWkbType;
 
-    QString readLine( QTextStream *stream );
-    QStringList splitLine( QString line );
+    QStringList splitLine( QString line ) { return splitLine( line, mDelimiterType, mDelimiter ); }
 };

@@ -19,6 +19,7 @@
 #include "qgslegend.h"
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
     : QDockWidget( parent )
@@ -148,13 +149,13 @@ void QgsUndoWidget::setupUi( QDockWidget *UndoWidget )
 
   undoButton = new QPushButton( dockWidgetContents );
   undoButton->setObjectName( QString::fromUtf8( "undoButton" ) );
-  undoButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionUndo.png" ) );
+  undoButton->setIcon( QgsApplication::getThemeIcon( "mActionUndo.png" ) );
 
   gridLayout->addWidget( undoButton, 1, 0, 1, 1 );
 
   redoButton = new QPushButton( dockWidgetContents );
   redoButton->setObjectName( QString::fromUtf8( "redoButton" ) );
-  redoButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionRedo.png" ) );
+  redoButton->setIcon( QgsApplication::getThemeIcon( "mActionRedo.png" ) );
 
   gridLayout->addWidget( redoButton, 1, 1, 1, 1 );
 

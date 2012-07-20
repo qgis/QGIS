@@ -43,6 +43,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
+    QList<int> usesBands() const;
+
   private:
     QgsRasterShader* mShader;
     int mBand;
