@@ -75,6 +75,36 @@ bool QgsRasterRendererWidget::bandMinMax( LoadMinMaxAlgo loadAlgo, int band, dou
   {
     mRasterLayer->computeMinimumMaximumFromLastExtent( band, minMaxValues );
   }
+  else if ( loadAlgo == CumulativeCut )
+  {
+    // Currently 2 - 98% cumulative pixel count cut
+    bool myIgnoreOutOfRangeFlag = true;
+    bool myThoroughBandScanFlag = false;
+    mRasterLayer->populateHistogram( band, RASTER_HISTOGRAM_BINS, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+
+    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( band );
+    double myBinXStep = myRasterBandStats.range / RASTER_HISTOGRAM_BINS;
+    int myCount = 0;
+    int myMinCount = ( int ) qRound( 0.02 * myRasterBandStats.elementCount );
+    int myMaxCount = ( int ) qRound( 0.98 * myRasterBandStats.elementCount );
+    bool myMinFound = false;
+    QgsDebugMsg( QString( "RASTER_HISTOGRAM_BINS = %1 range = %2 minimumValue = %3 myBinXStep = %4" ).arg( RASTER_HISTOGRAM_BINS ).arg( myRasterBandStats.range ).arg( myRasterBandStats.minimumValue ).arg( myBinXStep ) );
+    for ( int myBin = 0; myBin < RASTER_HISTOGRAM_BINS; myBin++ )
+    {
+      int myBinValue = myRasterBandStats.histogramVector->value( myBin );
+      myCount += myBinValue;
+      if ( !myMinFound && myCount > myMinCount )
+      {
+        minMaxValues[0] = myRasterBandStats.minimumValue + myBin * myBinXStep;
+        myMinFound = true;
+      }
+      if ( myCount > myMaxCount )
+      {
+        minMaxValues[1] = myRasterBandStats.minimumValue + myBin * myBinXStep;
+        break;
+      }
+    }
+  }
   else
   {
     return false;

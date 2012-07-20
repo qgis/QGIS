@@ -98,11 +98,9 @@ void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
   {
     ok = bandMinMax( CurrentExtent, band, minMaxValues );
   }
-
-  if ( ok )
+  else if ( mCumulativeCut->isChecked() )
   {
-    mMinLineEdit->setText( QString::number( minMaxValues[0] ) );
-    mMaxLineEdit->setText( QString::number( minMaxValues[1] ) );
+    ok = bandMinMax( CumulativeCut, band, minMaxValues );
   }
   else if ( mUseStdDevRadioButton->isChecked() )
   {
@@ -110,6 +108,13 @@ void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
     double diff = mStdDevSpinBox->value() * rasterBandStats.stdDev;
     minMaxValues[0] = rasterBandStats.mean - diff;
     minMaxValues[1] = rasterBandStats.mean + diff;
+    ok = true;
+  }
+
+  if ( ok )
+  {
+    mMinLineEdit->setText( QString::number( minMaxValues[0] ) );
+    mMaxLineEdit->setText( QString::number( minMaxValues[1] ) );
   }
   else
   {

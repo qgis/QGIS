@@ -33,7 +33,8 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
     {
       Estimate,
       Actual,
-      CurrentExtent
+      CurrentExtent,
+      CumulativeCut   // 2 - 98% cumulative cut
     };
 
     virtual QgsRasterRenderer* renderer() = 0;
