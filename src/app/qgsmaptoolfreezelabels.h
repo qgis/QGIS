@@ -95,6 +95,9 @@ class QgsMapToolFreezeLabels: public QgsMapToolLabel
     bool freezeThawLabel( QgsVectorLayer* vlayer,
                           const QgsLabelPosition& labelpos,
                           bool freeze );
+
+    //! Hide chosen label by setting font size to 0
+    bool hideLabel( QgsVectorLayer* vlayer, const QgsLabelPosition& labelpos );
 };
 
 #endif // QGSMAPTOOLFREEZELABELS_H
