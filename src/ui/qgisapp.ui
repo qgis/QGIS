@@ -1716,13 +1716,9 @@
    <property name="text">
     <string>Freeze or Thaw Labels</string>
    </property>
-   <property name="whatsThis">
-    <string>Freeze (write label location and optionally rotation) to attribute table.
-
-Click on individual labels, or draw a marquee (labels touching will be included). Actions on in-memory attribute table fields are immediate.
-
-Hold Shift key down to Thaw (write NULLs to attribute table), reverting label to dynamic.
-Hold Alt key down to toggle selected labels between Frozen and Thawed states.</string>
+   <property name="toolTip">
+    <string>Freeze or Thaw Labels
+Shift thaws, Alt toggles, Ctl (Cmd) hides</string>
    </property>
   </action>
   <action name="mActionShowFrozenLabels">
