@@ -2,13 +2,13 @@
 
 # BundleUtilities has functions to bundle and fixup libraries into an
 # application package, but it's all-or-nothing and is missing some features:
-# 
+#
 # - @loader_path
 # - helper functions can't get install_name, just dependencies
 
 # the following cmakecache vars must be set, redefine them
 # with config-file substitutions in install-run scripts:
-# 
+#
 # CPACK_PACKAGE_VERSION_MAJOR, CPACK_PACKAGE_VERSION_MINOR
 # CMAKE_INSTALL_PREFIX, CMAKE_VERBOSE_MAKEFILE, CMAKE_BUILD_TYPE
 # CMAKE_OSX_ARCHITECTURES, OSX_HAVE_LOADERPATH
@@ -118,8 +118,8 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         # libs
         IF (${OSX_HAVE_LOADERPATH})
             # bundled frameworks can use short relative path
-            IF (ISLIB})
-                SET (LIB_CHG_TO "${ATLOADER}/${QGIS_FW_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+            IF (ISLIB)
+                SET (LIB_CHG_TO "${ATLOADER}/../../../${QGIS_FW_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
             ElSE ()
                 SET (LIB_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
             ENDIF ()
