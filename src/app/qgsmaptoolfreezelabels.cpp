@@ -258,6 +258,7 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
 
   bool doThaw = e->modifiers() & Qt::ShiftModifier ? true : false;
   bool toggleThawOrFreeze = e->modifiers() & Qt::AltModifier ? true : false;
+  bool doHide = e->modifiers() & Qt::ControlModifier ? true : false;
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
@@ -314,9 +315,8 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
     QString labelStringID = QString("%0|%1").arg(mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
     // thaw label
-    if ( mCurrentLabelPos.isFrozen && ( doThaw  || toggleThawOrFreeze  ) )
+    if ( mCurrentLabelPos.isFrozen && !doHide && ( doThaw  || toggleThawOrFreeze  ) )
     {
-
       // thaw previously frozen label (set attribute table fields to NULL)
       if ( freezeThawLabel( vlayer, mCurrentLabelPos, false ) )
       {
@@ -329,9 +329,8 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
     }
 
     // freeze label
-    if ( !mCurrentLabelPos.isFrozen && ( !doThaw || toggleThawOrFreeze ) )
+    if ( !mCurrentLabelPos.isFrozen && !doHide && ( !doThaw || toggleThawOrFreeze ) )
     {
-
       // freeze label's location, and optionally rotation, to attribute table
       if ( freezeThawLabel( vlayer, mCurrentLabelPos, true ) )
       {
@@ -340,6 +339,20 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
       else
       {
         QgsDebugMsg( QString( "Freeze failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
+      }
+    }
+
+    // hide label
+    if ( doHide )
+    {
+      // write 0 font size to attribute table
+      if ( hideLabel( vlayer, mCurrentLabelPos ) )
+      {
+        labelChanged = true;
+      }
+      else
+      {
+        QgsDebugMsg( QString( "Hide failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
       }
     }
   }
@@ -477,5 +490,44 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
     }
     vlayer->endEditCommand();
   }
+  return true;
+}
+
+bool QgsMapToolFreezeLabels::hideLabel( QgsVectorLayer* vlayer,
+                                        const QgsLabelPosition& labelpos )
+{
+  // skip diagrams
+  if ( labelpos.isDiagram )
+  {
+    QgsDebugMsg( QString( "Label is diagram, skipping" ) );
+    return false;
+  }
+  // verify attribute table has proper fields setup
+  bool sizeColOk;
+  int sizeCol;
+
+  QVariant sizeColumn = vlayer->customProperty( "labeling/dataDefinedProperty0" );
+  if ( !sizeColumn.isValid() )
+  {
+    QgsDebugMsg( QString( "Size column not set" ) );
+    return false;
+  }
+  sizeCol = sizeColumn.toInt( &sizeColOk );
+  if ( !sizeColOk )
+  {
+    QgsDebugMsg( QString( "Size column not convertible to integer" ) );
+    return false;
+  }
+
+  // edit attribute table
+  int fid = labelpos.featureId;
+
+  vlayer->beginEditCommand( tr( "Label hidden" ) );
+  if ( !vlayer->changeAttributeValue( fid, sizeCol, 0, false ) )
+  {
+    QgsDebugMsg( QString( "Failed write to attribute table" ) );
+    return false;
+  }
+  vlayer->endEditCommand();
   return true;
 }
