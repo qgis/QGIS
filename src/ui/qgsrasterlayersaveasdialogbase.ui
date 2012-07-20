@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>415</width>
-    <height>383</height>
+    <height>457</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,31 +54,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="mColumnsLabel">
-       <property name="text">
-        <string>Columns</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mColumnsLineEdit"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="mRowsLabel">
-       <property name="text">
-        <string>Rows</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mRowsLineEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0" colspan="3">
+   <item row="6" column="0" colspan="3">
     <widget class="QGroupBox" name="mExtentGroupBox">
      <property name="title">
       <string>Extent</string>
@@ -162,7 +138,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0" colspan="3">
+   <item row="7" column="0" colspan="3">
     <widget class="QGroupBox" name="mTilesGroupBox">
      <property name="title">
       <string>Tiles</string>
@@ -198,13 +174,47 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="3">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="mColumnsLabel">
+       <property name="text">
+        <string>Columns</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mColumnsLineEdit"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="mRowsLabel">
+       <property name="text">
+        <string>Rows</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mRowsLineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QLineEdit" name="mCreateOptionsLineEdit"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mCreateOptionsLabel">
+     <property name="text">
+      <string>Options</string>
      </property>
     </widget>
    </item>

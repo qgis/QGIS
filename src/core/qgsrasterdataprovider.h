@@ -110,7 +110,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QgsRasterInterface * srcInput() { return this; }
 
     /* It makes no sense to set input on provider */
-    bool setInput( QgsRasterInterface* input ) { return false; }
+    bool setInput( QgsRasterInterface* input ) { Q_UNUSED( input ); return false; }
 
     /**
      * Add the list of WMS layer names to be rendered by this server
@@ -463,8 +463,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
-                         QgsRasterDataProvider::DataType type, int width, int height, double* geoTransform,
-                         const QgsCoordinateReferenceSystem& crs /*e.v. color table*/ )
+                         QgsRasterDataProvider::DataType type, 
+                         int width, int height, double* geoTransform,
+                         const QgsCoordinateReferenceSystem& crs, 
+                         QStringList createOptions = QStringList() /*e.v. color table*/ )
     {
       Q_UNUSED( format );
       Q_UNUSED( nBands );
@@ -473,6 +475,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( height );
       Q_UNUSED( geoTransform );
       Q_UNUSED( crs );
+      Q_UNUSED( createOptions );
       return false;
     }
 

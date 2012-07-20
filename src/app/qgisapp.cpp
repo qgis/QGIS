@@ -3894,6 +3894,8 @@ void QgisApp::saveAsRasterFile()
     {
       nRows = d.nRows();
     }
+    fileWriter.setCreateOptions( d.createOptions() );
+
     fileWriter.writeRaster( &iterator, d.nColumns(), nRows, d.outputRectangle(), rasterLayer->crs(), &pd );
   }
 }

@@ -20,6 +20,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     bool tileMode() const;
     QString outputFileName() const;
     QString outputFormat() const;
+    QStringList createOptions() const;
     QgsRectangle outputRectangle() const;
 
     void hideFormat();
@@ -30,6 +31,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mSaveAsLineEdit_textChanged( const QString& text );
     void on_mCurrentExtentButton_clicked();
     void on_mProviderExtentButton_clicked();
+    void on_mFormatComboBox_currentIndexChanged( const QString& text );
 
   private:
     QgsRasterDataProvider* mDataProvider;

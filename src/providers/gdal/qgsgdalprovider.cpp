@@ -49,6 +49,7 @@
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
 #include "cpl_conv.h"
+#include "cpl_string.h"
 
 
 static QString PROVIDER_KEY = "gdal";
@@ -2163,8 +2164,21 @@ void QgsGdalProvider::initBaseDataset()
   mValid = true;
 }
 
-bool QgsGdalProvider::create( const QString& format, int nBands, QgsRasterDataProvider::DataType type, int width, int height,
-                              double* geoTransform, const QgsCoordinateReferenceSystem& crs )
+char** papszFromStringList( const QStringList& list )
+{
+  char **papszRetList = NULL;
+  foreach( QString elem, list )
+  {
+    papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
+  }
+  return papszRetList;
+}
+
+bool QgsGdalProvider::create( const QString& format, int nBands, 
+                              QgsRasterDataProvider::DataType type, 
+                              int width, int height, double* geoTransform, 
+                              const QgsCoordinateReferenceSystem& crs, 
+                              QStringList createOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
@@ -2173,8 +2187,10 @@ bool QgsGdalProvider::create( const QString& format, int nBands, QgsRasterDataPr
     return false;
   }
 
-  //create dataset
-  GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, 0 );
+  //create dataset 
+  char **papszOptions = papszFromStringList( createOptions );
+  GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
     return false;

@@ -1,6 +1,7 @@
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrasterdataprovider.h"
 #include <QFileDialog>
+#include <QSettings>
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
     QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ),
@@ -10,7 +11,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
   setupUi( this );
   setValidators();
 
-  mFormatComboBox->addItem( "GeoTIFF" ); //only one hardcoded format at the moment
+  //only one hardcoded format at the moment
+  QStringList myFormats;
+  myFormats << "GTiff";
+  foreach ( QString myFormat, myFormats )
+  {
+    mFormatComboBox->addItem( myFormat );
+  }
 
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
@@ -102,6 +109,16 @@ void QgsRasterLayerSaveAsDialog::on_mProviderExtentButton_clicked()
   }
 }
 
+void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString & text )
+{
+  //gdal-specific
+  if ( mDataProvider && mDataProvider->name() == "gdal" )
+  {
+    QSettings mySettings;
+    mCreateOptionsLineEdit->setText( mySettings.value( "gdal/driverOptions/" + text.toLower() + "/create", "" ).toString() );
+  }
+}
+
 int QgsRasterLayerSaveAsDialog::nColumns() const
 {
   return mColumnsLineEdit->text().toInt();
@@ -134,7 +151,12 @@ QString QgsRasterLayerSaveAsDialog::outputFileName() const
 
 QString QgsRasterLayerSaveAsDialog::outputFormat() const
 {
-  return ""; //soon...
+  return mFormatComboBox->currentText();
+}
+
+QStringList QgsRasterLayerSaveAsDialog::createOptions() const
+{
+  return mCreateOptionsLineEdit->text().trimmed().toUpper().split( " " );
 }
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const

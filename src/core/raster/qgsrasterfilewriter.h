@@ -45,7 +45,11 @@ class CORE_EXPORT QgsRasterFileWriter
     int maxTileWidth() const { return mMaxTileWidth; }
 
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
-    int maxTileHeight() const { return mMaxTileHeight; }
+    int maxTileHeight() const { return mMaxTileHeight; } 
+
+    // for now not putting createOptions in all methods, use createOptions()
+    void setCreateOptions( const QStringList& list ) { mCreateOptions = list; }
+    QStringList createOptions() const { return mCreateOptions; }
 
   private:
     QgsRasterFileWriter(); //forbidden
@@ -60,15 +64,15 @@ class CORE_EXPORT QgsRasterFileWriter
     bool writeVRT( const QString& file );
     //add file entry to vrt
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
-    void buildPyramides( const QString& filename );
+    void buildPyramids( const QString& filename );
 
-    static int pyramidesProgress( double dfComplete, const char *pszMessage, void* pData );
+    static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
 
     /**Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
         const QString& outputUrl, int fileIndex, int nBands, QgsRasterInterface::DataType type,
-        const QgsCoordinateReferenceSystem& crs );
+                                               const QgsCoordinateReferenceSystem& crs );
 
     /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
     QgsRasterDataProvider* initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
@@ -80,6 +84,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QString mOutputUrl;
     QString mOutputProviderKey;
     QString mOutputFormat;
+    QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
     /**False: Write one file, true: create a directory and add the files numbered*/

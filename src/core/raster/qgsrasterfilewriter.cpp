@@ -126,7 +126,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
           QFileInfo outputInfo( mOutputUrl );
           QString vrtFilePath( mOutputUrl + "/" + outputInfo.baseName() + ".vrt" );
           writeVRT( vrtFilePath );
-          buildPyramides( vrtFilePath );
+          buildPyramids( vrtFilePath );
         }
 
         return NoError; //reached last tile, bail out
@@ -262,7 +262,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     QFileInfo outputInfo( mOutputUrl );
     QString vrtFilePath( mOutputUrl + "/" + outputInfo.baseName() + ".vrt" );
     writeVRT( vrtFilePath );
-    buildPyramides( vrtFilePath );
+    buildPyramids( vrtFilePath );
   }
   return NoError;
 }
@@ -332,7 +332,7 @@ void QgsRasterFileWriter::addToVRT( const QString& filename, int band, int xSize
   bandElem.appendChild( simpleSourceElem );
 }
 
-void QgsRasterFileWriter::buildPyramides( const QString& filename )
+void QgsRasterFileWriter::buildPyramids( const QString& filename )
 {
   GDALDatasetH dataSet;
   GDALAllRegister();
@@ -353,15 +353,15 @@ void QgsRasterFileWriter::buildPyramides( const QString& filename )
 
   /*if ( mProgressDialog )
   {
-    mProgressDialog->setLabelText( QObject::tr( "Building Pyramides..." ) );
+    mProgressDialog->setLabelText( QObject::tr( "Building Pyramids..." ) );
     mProgressDialog->setValue( 0 );
     mProgressDialog->setWindowModality( Qt::WindowModal );
     mProgressDialog->show();
   }*/
-  GDALBuildOverviews( dataSet, "AVERAGE", 6, overviewList, 0, 0, /*pyramidesProgress*/ 0, /*mProgressDialog*/ 0 );
+  GDALBuildOverviews( dataSet, "AVERAGE", 6, overviewList, 0, 0, /*pyramidsProgress*/ 0, /*mProgressDialog*/ 0 );
 }
 
-int QgsRasterFileWriter::pyramidesProgress( double dfComplete, const char *pszMessage, void* pData )
+int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMessage, void* pData )
 {
   Q_UNUSED( pszMessage );
   GDALTermProgress( dfComplete, 0, 0 );
@@ -484,6 +484,8 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
   geoTransform[3] = mapRect.yMaximum();
   geoTransform[4] = 0.0;
   geoTransform[5] = -mup;
+
+  // perhaps we need a separate createOptions for tiles ?
   if ( !destProvider->create( mOutputFormat, nBands, type, iterCols, iterRows, geoTransform,
                               crs ) )
   {
@@ -510,7 +512,7 @@ QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, co
     }
 
     if ( !destProvider->create( mOutputFormat, nBands, type, nCols, nRows, geoTransform,
-                                crs ) )
+                                crs, mCreateOptions ) )
     {
       delete destProvider;
       return 0;

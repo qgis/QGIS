@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>938</height>
+            <width>760</width>
+            <height>1041</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -798,6 +798,11 @@
             </column>
             <column>
              <property name="text">
+              <string>opt</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
               <string>Description</string>
              </property>
             </column>
@@ -890,8 +895,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>592</height>
+            <width>760</width>
+            <height>625</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1137,8 +1142,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>718</height>
+            <width>760</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1507,8 +1512,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>784</width>
-            <height>452</height>
+            <width>778</width>
+            <height>436</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1588,8 +1593,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>572</height>
+            <width>760</width>
+            <height>627</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1964,8 +1969,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>784</width>
-            <height>452</height>
+            <width>778</width>
+            <height>436</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2151,8 +2156,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>536</height>
+            <width>760</width>
+            <height>551</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2248,8 +2253,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>491</height>
+            <width>760</width>
+            <height>554</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

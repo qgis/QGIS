@@ -1063,6 +1063,49 @@ void QgsOptions::on_pbnSelectOtfProjection_clicked()
   }
 }
 
+void QgsOptions::on_lstGdalDrivers_itemPressed( QTreeWidgetItem * item, int column )
+{
+  // edit driver if "options" icon (column 3) is pressed  
+  if ( item && column == 3 )
+  {
+    editGdalDriver( item->text( 0 ) );
+  }    
+}
+
+void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )
+{
+  Q_UNUSED( column );
+  // edit driver if "options" icon (column 3) exists (only if driver supports write)
+  if ( item && ! item->icon( 3 ).isNull() )
+  {
+    editGdalDriver( item->text( 0 ) );
+  }
+}
+
+
+void QgsOptions::editGdalDriver( const QString& driverName )
+{
+  QSettings mySettings;
+
+  // this will go to a standalone widget class
+  QDialog dlg( this ); 
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
+  connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
+  QVBoxLayout *layout = new QVBoxLayout();
+  QLineEdit *lineEdit = new QLineEdit();
+  layout->addWidget( lineEdit );
+  layout->addWidget( buttonBox );
+  dlg.setLayout( layout );
+
+  lineEdit->setText( mySettings.value( "gdal/driverOptions/" + driverName.toLower() + "/create", "" ).toString() );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    // perhaps setting should not be applied already, but this is easier
+    mySettings.setValue( "gdal/driverOptions/" + driverName.toLower() + "/create", lineEdit->text().trimmed().toUpper() );
+  }
+}
+
 // Return state of the visibility flag for newly added layers. If
 
 bool QgsOptions::newVisible()
@@ -1405,11 +1448,11 @@ void QgsOptions::loadGdalDriverList()
   myDrivers = strMap.values();
 
   QStringListIterator myIterator( myDrivers );
+  QIcon myIcon = QgsApplication::getThemeIcon( "mActionOptions.png" );
 
   while ( myIterator.hasNext() )
   {
     QString myName = myIterator.next();
-
     // QListWidgetItem * mypItem = new QListWidgetItem( myName );
     QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -1423,8 +1466,13 @@ void QgsOptions::loadGdalDriverList()
 
     // add driver metadata
     mypItem->setText( 1, myDriversExt[myName] );
-    mypItem->setText( 2, myDriversFlags[myName] );
-    mypItem->setText( 3, myDriversLongName[myName] );
+    QString myFlags = myDriversFlags[myName];
+    mypItem->setText( 2, myFlags );
+    if ( myFlags.contains( "w+" ) )
+    {
+      mypItem->setIcon( 3, myIcon );     
+    }
+    mypItem->setText( 4, myDriversLongName[myName] );
 
     lstGdalDrivers->addTopLevelItem( mypItem );
   }
