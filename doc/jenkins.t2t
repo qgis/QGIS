@@ -1,0 +1,89 @@
+
+= Setting up a Jenkins Build Server =
+
+**Assumption:** You know how to make a working build environment and want to
+deploy it under Jenkins for continuous integration testing now.
+
+These notes are terse, I will expand on them later as the need arises. The 
+procedure is:
+
+- Install Jenkins and get it configured according to your own preferences
+- Make sure you have the git, github, junit etc plugins installed. A complete
+  list of the plugins I have installed follows (note that you almost certainly
+  don't need evey plugin listed here):
+ - External Monitor Job Type Plugin
+ - LDAP Plugin
+ - pam-auth
+ - javadoc
+ - ant
+ - Jenkins Subversion Plug-in
+ - Git Plugin
+ - Maven 2 Project Plugin
+ - Jenkins SLOCCount Plug-in
+ - Jenkins Sounds plugin
+ - Jenkins Translation Assistance plugin
+ - ruby-runtime
+ - Jenkins CVS Plug-in
+ - Coverage/Complexity Scatter Plot PlugIn
+ - Status Monitor Plugin
+ - Git Parameter Plug-In
+ - github-api
+ - GitHub plugin
+ - Jenkins Violations plugin
+ - git-notes Plugin
+ - Twitter plugin
+ - Jenkins Cobertura Plugin
+ - Jenkins Gravatar plugin
+ - Jenkins SSH Slaves plugin
+- Create a Job called 'QGIS'
+- Use the following options for your job:
+ - Job Name: QGIS
+ - Job Type: Build a free-style software project
+ - Tick enable project based security (you need to elsewhere configure your
+   Jenkins security to per project settings)
+ - Allow Anonymous user Read and Discover access
+ - Set the github project to https://github.com/qgis/Quantum-GIS/
+ - Set source code management to Git
+ - Set repository url to git://github.com/qgis/Quantum-GIS.git
+ - In advanced repository url settings set refspec to : 
+
+```
++refs/heads/master:refs/remotes/origin/master
+```
+
+ - Set branch to build to master
+ - Repository Browser: Auto
+ - Build triggers: set to Poll SCM and set schedule to ``* * * * *`` (polls every minute)
+ - Build - Execute shell and set shell script to:
+
+```
+  cd build
+  cmake ..
+  xvfb-run --auto-servernum --server-num=1 \
+           --server-args="-screen 0 1024x768x24" \
+           make Experimental || true
+  if [ -f Testing/TAG ] ; then
+     xsltproc ../tests/ctest2junix.xsl \
+       Testing/`head -n 1 < Testing/TAG`/Test.xml > \
+       CTestResults.xml
+  fi
+```
+
+ - Add Junit post build action and set 'Publish Junit test result report' to:
+   ``build/CTestResults.xml``
+ - Email notification: Send separate e-mails to individuals who broke the build
+ - Jenkins sounds - set up sounds for Failure, Success and Unstable.
+ - Save
+ -
+
+Now open the Job dash board and push something to QGIS and wait a minute to
+validate automated builds work.
+
+**Note:** You will need to log in to the Jenkins user account and go to
+/var/lib/jenkins/jobs/QGIS/workspace, then make a ``build`` directory and run
+the initial cmake setup and then do test build. This process is the same as
+described elsewhere in this doc.
+
+I based some of the set up from this nice blog article here:
+
+* http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html
