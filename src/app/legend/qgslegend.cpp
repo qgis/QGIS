@@ -884,9 +884,15 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
   //Note if the canvas was previously blank so we can
   //zoom to all layers at the end if neeeded
   bool myFirstLayerFlag = false;
+  QgsCoordinateReferenceSystem myPreviousCrs;
   if ( layers().count() < 1 )
   {
     myFirstLayerFlag = true;
+  }
+  else
+  {
+    // remember CRS of present layer
+    myPreviousCrs = layers().first()->crs();
   }
 
   //iteratively add the layers to the canvas
@@ -956,10 +962,26 @@ void QgsLegend::addLayers( QList<QgsMapLayer *> theLayerList )
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
   }
+  else
+  {
+    if ( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() &&
+         !mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+    {
+      // Verify if all layers have the same CRS
+      foreach( QgsMapLayer *l, layers() )
+      {
+        if ( myPreviousCrs != l->crs() )
+        {
+          // Set to the previous de facto used so that extent does not change
+          mMapCanvas->mapRenderer()->setDestinationCrs( myPreviousCrs );
+          mMapCanvas->mapRenderer()->setProjectionsEnabled( true );
+          break;
+        }
+      }
+    }
+  }
   //make the QTreeWidget item up-to-date
   doItemsLayout();
-
-
 }
 
 //deprecated since 1.8 - delegates to addLayers

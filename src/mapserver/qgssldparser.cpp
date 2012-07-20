@@ -1486,7 +1486,6 @@ void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
     if ( rl->rasterType() == QgsRasterLayer::GrayOrUndefined )
     {
       rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
-      rl->setRasterShaderFunction( new QgsRasterShaderFunction() );
     }
   }
 }

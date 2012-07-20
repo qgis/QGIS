@@ -42,8 +42,10 @@ void QgsComposerLabelWidget::on_mTextEdit_textChanged()
   if ( mComposerLabel )
   {
     mComposerLabel->beginCommand( tr( "Label text changed" ), QgsComposerMergeCommand::ComposerLabelSetText );
+    mComposerLabel->blockSignals( true );
     mComposerLabel->setText( mTextEdit->toPlainText() );
     mComposerLabel->update();
+    mComposerLabel->blockSignals( false );
     mComposerLabel->endCommand();
   }
 }

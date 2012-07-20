@@ -237,6 +237,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 QGISEXTERN QDialog * selectWidget( QWidget * parent, Qt::WFlags fl )
 {
   Q_UNUSED( parent );
+  Q_UNUSED( fl );
   //return new QgsOWSSourceSelect( parent, fl );
   return 0;
 }

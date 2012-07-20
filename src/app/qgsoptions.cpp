@@ -245,6 +245,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
 
   //on the fly CRS transformation settings
+  chkOtfAuto->setChecked( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() );
   chkOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
 
   QString myDefaultCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
@@ -897,6 +898,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Projections/layerDefaultCrs", mLayerDefaultCrs.authid() );
 
   // save 'on the fly' CRS transformation settings
+  settings.setValue( "/Projections/otfTransformAutoEnable", chkOtfAuto->isChecked() );
   settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
 
