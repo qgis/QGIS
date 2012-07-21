@@ -26,6 +26,7 @@
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgssnapper.h"
 #include "qgsfield.h"
 
@@ -912,6 +913,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
+
+    QgsFeatureIterator mProviderIterator;
 
     /** index of the primary label field */
     QString mDisplayField;

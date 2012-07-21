@@ -31,22 +31,20 @@
 #include "qgspostgresconn.h"
 #include "qgspgsourceselect.h"
 #include "qgspostgresdataitems.h"
+#include "qgspostgresfeatureiterator.h"
 #include "qgslogger.h"
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
 int QgsPostgresProvider::sProviderIds = 0;
-const int QgsPostgresProvider::sFeatureQueueSize = 2000;
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     : QgsVectorDataProvider( uri )
-    , mFetching( false )
     , mValid( false )
     , mPrimaryKeyType( pktUnknown )
     , mDetectedGeomType( QGis::WKBUnknown )
     , mRequestedGeomType( QGis::WKBUnknown )
-    , mFeatureQueueSize( sFeatureQueueSize )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
     , mConnectionRO( 0 )
@@ -210,12 +208,6 @@ QgsPostgresProvider::~QgsPostgresProvider()
 
 void QgsPostgresProvider::disconnectDb()
 {
-  if ( mFetching )
-  {
-    mConnectionRO->closeCursor( QString( "qgisf%1" ).arg( mProviderId ) );
-    mFetching = false;
-  }
-
   if ( mConnectionRO )
   {
     mConnectionRO->disconnect();
@@ -234,90 +226,6 @@ QString QgsPostgresProvider::storageType() const
   return "PostgreSQL database with PostGIS extension";
 }
 
-bool QgsPostgresProvider::declareCursor(
-  const QString &cursorName,
-  const QgsAttributeList &fetchAttributes,
-  bool fetchGeometry,
-  QString whereClause )
-{
-  if ( fetchGeometry && mGeometryColumn.isNull() )
-  {
-    return false;
-  }
-
-  try
-  {
-    QString query = "SELECT ", delim = "";
-
-    if ( fetchGeometry )
-    {
-      query += QString( "%1(%2(%3),'%4')" )
-               .arg( mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-               .arg( mConnectionRO->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
-               .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
-               .arg( endianString() );
-      delim = ",";
-    }
-
-    switch ( mPrimaryKeyType )
-    {
-      case pktOid:
-        query += delim + "oid";
-        delim = ",";
-        break;
-
-      case pktTid:
-        query += delim + "ctid";
-        delim = ",";
-        break;
-
-      case pktInt:
-        query += delim + quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() );
-        delim = ",";
-        break;
-
-      case pktFidMap:
-        foreach ( int idx, mPrimaryKeyAttrs )
-        {
-          query += delim + mConnectionRO->fieldExpression( field( idx ) );
-          delim = ",";
-        }
-        break;
-
-      case pktUnknown:
-        QgsDebugMsg( "Cannot declare cursor without primary key." );
-        return false;
-        break;
-    }
-
-    foreach ( int idx, fetchAttributes )
-    {
-      if ( mPrimaryKeyAttrs.contains( idx ) )
-        continue;
-
-      query += delim + mConnectionRO->fieldExpression( field( idx ) );
-    }
-
-    query += " FROM " + mQuery;
-
-    if ( !whereClause.isEmpty() )
-      query += QString( " WHERE %1" ).arg( whereClause );
-
-    if ( !mConnectionRO->openCursor( cursorName, query ) )
-    {
-      // reloading the fields might help next time around
-      rewind();
-      return false;
-    }
-  }
-  catch ( PGFieldNotFound )
-  {
-    rewind();
-    return false;
-  }
-
-  return true;
-}
 
 static bool operator<( const QVariant &a, const QVariant &b )
 {
@@ -411,270 +319,17 @@ QgsFeatureId QgsPostgresProvider::lookupFid( const QVariant &v )
   return mFidCounter;
 }
 
-bool QgsPostgresProvider::getFeature( QgsPostgresResult &queryResult, int row, bool fetchGeometry,
-                                      QgsFeature &feature,
-                                      const QgsAttributeList &fetchAttributes )
+QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  try
-  {
-    feature.clearAttributeMap();
-
-    int col = 0;
-
-    if ( fetchGeometry )
-    {
-      int returnedLength = ::PQgetlength( queryResult.result(), row, col );
-      if ( returnedLength > 0 )
-      {
-        unsigned char *featureGeom = new unsigned char[returnedLength + 1];
-        memset( featureGeom, 0, returnedLength + 1 );
-        memcpy( featureGeom, PQgetvalue( queryResult.result(), row, col ), returnedLength );
-        feature.setGeometryAndOwnership( featureGeom, returnedLength + 1 );
-      }
-      else
-      {
-        feature.setGeometryAndOwnership( 0, 0 );
-        QgsMessageLog::logMessage( tr( "Couldn't get the feature geometry in binary form" ), tr( "PostGIS" ) );
-      }
-
-      col++;
-    }
-
-    QgsFeatureId fid = 0;
-
-    switch ( mPrimaryKeyType )
-    {
-      case pktOid:
-      case pktTid:
-      case pktInt:
-        fid = mConnectionRO->getBinaryInt( queryResult, row, col++ );
-        if ( mPrimaryKeyType == pktInt && fetchAttributes.contains( mPrimaryKeyAttrs[0] ) )
-          feature.addAttribute( mPrimaryKeyAttrs[0], fid );
-        break;
-
-      case pktFidMap:
-      {
-        QList<QVariant> primaryKeyVals;
-
-        foreach ( int idx, mPrimaryKeyAttrs )
-        {
-          const QgsField &fld = field( idx );
-
-          QVariant v = convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
-          primaryKeyVals << v;
-
-          if ( fetchAttributes.contains( idx ) )
-            feature.addAttribute( idx, v );
-
-          col++;
-        }
-
-        fid = lookupFid( QVariant( primaryKeyVals ) );
-      }
-      break;
-
-      case pktUnknown:
-        Q_ASSERT( !"FAILURE: cannot get feature with unknown primary key" );
-        return false;
-    }
-
-    feature.setFeatureId( fid );
-    QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
-
-    // iterate attributes
-    foreach ( int idx, fetchAttributes )
-    {
-      if ( mPrimaryKeyAttrs.contains( idx ) )
-        continue;
-
-      const QgsField &fld = field( idx );
-
-      QVariant v = convertValue( fld.type(), queryResult.PQgetvalue( row, col ) );
-      feature.addAttribute( idx, v );
-
-      col++;
-    }
-
-    return true;
-  }
-  catch ( PGFieldNotFound )
-  {
-    return false;
-  }
-}
-
-void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
-{
-  QString cursorName = QString( "qgisf%1" ).arg( mProviderId );
-
-  if ( mFetching )
-  {
-    mConnectionRO->closeCursor( cursorName );
-    mFetching = false;
-
-    while ( !mFeatureQueue.empty() )
-    {
-      mFeatureQueue.dequeue();
-    }
-  }
-
-  QString whereClause;
-
-  if ( !rect.isEmpty() && !mGeometryColumn.isNull() )
-  {
-    if ( mIsGeography )
-    {
-      rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
-      if ( !rect.isFinite() )
-        whereClause = "false";
-    }
-
-    if ( whereClause.isEmpty() )
-    {
-      QString qBox;
-      if ( mConnectionRO->majorVersion() < 2 )
-      {
-        qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
-               .arg( rect.asWktCoordinates() )
-               .arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
-      }
-      else
-      {
-        qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
-               .arg( rect.xMinimum(), 0, 'f', 16 )
-               .arg( rect.yMinimum(), 0, 'f', 16 )
-               .arg( rect.xMaximum(), 0, 'f', 16 )
-               .arg( rect.yMaximum(), 0, 'f', 16 )
-               .arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
-      }
-
-      whereClause = QString( "%1 && %2" )
-                    .arg( quotedIdentifier( mGeometryColumn ) )
-                    .arg( qBox );
-      if ( useIntersect )
-      {
-        whereClause += QString( " AND %1(%2,%3)" )
-                       .arg( mConnectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                       .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
-                       .arg( qBox );
-      }
-    }
-
-    if ( !mRequestedSrid.isEmpty() && mRequestedSrid != mDetectedSrid )
-    {
-      whereClause += QString( " AND %1(%2)=%3" )
-                     .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
-                     .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
-                     .arg( mRequestedSrid );
-    }
-
-    if ( mRequestedGeomType != QGis::WKBUnknown && mRequestedGeomType != mDetectedGeomType )
-    {
-      whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, mIsGeography ) );
-    }
-  }
-
-  if ( !mSqlWhereClause.isEmpty() )
-  {
-    if ( !whereClause.isEmpty() )
-      whereClause += " AND ";
-
-    whereClause += "(" + mSqlWhereClause + ")";
-  }
-
-  mFetchGeom = fetchGeometry;
-  mAttributesToFetch = fetchAttributes;
-  if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause ) )
-    return;
-
-  mFetching = true;
-  mFetched = 0;
-}
-
-bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
-{
-  feature.setValid( false );
   if ( !mValid )
   {
     QgsMessageLog::logMessage( tr( "Read attempt on an invalid postgresql data source" ), tr( "PostGIS" ) );
-    return false;
+    return QgsFeatureIterator();
   }
-
-  if ( !mFetching )
-  {
-    QgsMessageLog::logMessage( tr( "nextFeature() without select()" ), tr( "PostGIS" ) );
-    return false;
-  }
-
-  QString cursorName = QString( "qgisf%1" ).arg( mProviderId );
-
-  if ( mFeatureQueue.empty() )
-  {
-    QString fetch = QString( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( cursorName );
-    QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 3 );
-    if ( mConnectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
-    {
-      QgsMessageLog::logMessage( tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( cursorName ).arg( mConnectionRO->PQerrorMessage() ), tr( "PostGIS" ) );
-    }
-
-    QgsPostgresResult queryResult;
-    for ( ;; )
-    {
-      queryResult = mConnectionRO->PQgetResult();
-      if ( !queryResult.result() )
-        break;
-
-      if ( queryResult.PQresultStatus() != PGRES_TUPLES_OK )
-      {
-        QgsMessageLog::logMessage( tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( cursorName ).arg( mConnectionRO->PQerrorMessage() ), tr( "PostGIS" ) );
-        break;
-      }
-
-      int rows = queryResult.PQntuples();
-      if ( rows == 0 )
-        continue;
-
-      for ( int row = 0; row < rows; row++ )
-      {
-        mFeatureQueue.enqueue( QgsFeature() );
-        getFeature( queryResult, row, mFetchGeom, mFeatureQueue.back(), mAttributesToFetch );
-      } // for each row in queue
-    }
-  }
-
-  if ( mFeatureQueue.empty() )
-  {
-    QgsDebugMsg( QString( "Finished after %1 features" ).arg( mFetched ) );
-    mConnectionRO->closeCursor( cursorName );
-    mFetching = false;
-    if ( mFeaturesCounted < mFetched )
-    {
-      QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( mFeaturesCounted ).arg( mFetched ) );
-      mFeaturesCounted = mFetched;
-    }
-    return false;
-  }
-
-  // Now return the next feature from the queue
-  if ( mFetchGeom )
-  {
-    QgsGeometry* featureGeom = mFeatureQueue.front().geometryAndOwnership();
-    feature.setGeometry( featureGeom );
-  }
-  else
-  {
-    feature.setGeometryAndOwnership( 0, 0 );
-  }
-  feature.setFeatureId( mFeatureQueue.front().id() );
-  feature.setAttributeMap( mFeatureQueue.front().attributeMap() );
-
-  mFeatureQueue.dequeue();
-  mFetched++;
-
-  feature.setValid( true );
-  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
-  return true;
+  return QgsFeatureIterator( new QgsPostgresFeatureIterator( this, request ) );
 }
+
+
 
 QString QgsPostgresProvider::pkParamWhereClause( int offset ) const
 {
@@ -837,63 +492,6 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
   return whereClause;
 }
 
-bool QgsPostgresProvider::featureAtId( QgsFeatureId featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
-{
-  feature.setValid( false );
-
-#if 0
-  if ( mFeatureMap.contains( featureId ) )
-  {
-    QgsFeature * fpointer = &feature;
-    *fpointer = mFeatureMap.value( featureId );
-    QgsDebugMsg( QString( "retrieve feature %1 from cache" ).arg( featureId ) );
-
-    mPriorityIds.removeAll( featureId );
-    mPriorityIds.prepend( featureId );
-    return true;
-  }
-#endif
-
-  QString cursorName = QString( "qgisfid%1" ).arg( mProviderId );
-
-  if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause( featureId ) ) )
-    return false;
-
-  QgsPostgresResult queryResult = mConnectionRO->PQexec( QString( "FETCH FORWARD 1 FROM %1" ).arg( cursorName ) );
-
-  int rows = queryResult.PQntuples();
-  if ( rows == 0 )
-  {
-    QgsMessageLog::logMessage( tr( "feature %1 not found" ).arg( featureId ), tr( "PostGIS" ) );
-    mConnectionRO->closeCursor( cursorName );
-    return false;
-  }
-  else if ( rows != 1 )
-  {
-    QgsMessageLog::logMessage( tr( "found %1 features instead of just one." ).arg( rows ), tr( "PostGIS" ) );
-  }
-
-  bool gotit = getFeature( queryResult, 0, fetchGeometry, feature, fetchAttributes );
-
-  mConnectionRO->closeCursor( cursorName );
-
-  feature.setValid( gotit );
-  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
-
-#if 0
-  if ( gotit )
-  {
-    mFeatureMap.insert( featureId, feature );
-    mPriorityIds.prepend( featureId );
-    if ( mPriorityIds.count() == 20 )
-    {
-      mFeatureMap.remove( mPriorityIds.takeLast() );
-    }
-  }
-#endif
-
-  return gotit;
-}
 
 void QgsPostgresProvider::setExtent( QgsRectangle& newExtent )
 {
@@ -942,16 +540,6 @@ QString QgsPostgresProvider::dataComment() const
   return mDataComment;
 }
 
-void QgsPostgresProvider::rewind()
-{
-  if ( mFetching )
-  {
-    //move cursor to first record
-    mConnectionRO->PQexecNR( QString( "move 0 in qgisf%1" ).arg( mProviderId ) );
-  }
-  mFeatureQueue.empty();
-  loadFields();
-}
 
 /** @todo XXX Perhaps this should be promoted to QgsDataProvider? */
 QString QgsPostgresProvider::endianString()
@@ -2103,7 +1691,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     returnvalue = false;
   }
 
-  rewind();
   return returnvalue;
 }
 
@@ -2147,7 +1734,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
     mConnectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
-  rewind();
+
   return returnvalue;
 }
 
@@ -2211,7 +1798,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
     returnvalue = false;
   }
 
-  rewind();
+  loadFields();
   return returnvalue;
 }
 
@@ -2258,7 +1845,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
     returnvalue = false;
   }
 
-  rewind();
+  loadFields();
   return returnvalue;
 }
 
@@ -2363,8 +1950,6 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
     returnvalue = false;
   }
 
-  rewind();
-
   return returnvalue;
 }
 
@@ -2444,8 +2029,6 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
     returnvalue = false;
   }
-
-  rewind();
 
   QgsDebugMsg( "exiting." );
 

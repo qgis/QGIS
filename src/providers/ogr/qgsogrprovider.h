@@ -83,37 +83,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
-
-    /**
-     * Gets the feature at the given feature ID.
-     * @param featureId id of the feature
-     * @param feature feature which will receive the data
-     * @param fetchGeoemtry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @return True when feature was found, otherwise false
-     */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList() );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /** Accessor for sql where clause used to limit dataset */
     virtual QString subsetString();
@@ -159,9 +129,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** Update the extents
      */
     virtual void updateExtents();
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind();
 
     /**Writes a list of features to the file*/
     virtual bool addFeatures( QgsFeatureList & flist );
@@ -287,9 +254,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
-    /**Get an attribute associated with a feature*/
-    void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
-
     /** find out the number of features of the whole layer */
     void recalculateFeatureCount();
 
@@ -347,8 +311,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     bool mRelevantFieldsForNextFeature;
 
-    //! Selection rectangle
-    OGRGeometryH mSelectionRectangle;
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
@@ -358,4 +320,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
+
+    friend class QgsOgrFeatureIterator;
 };

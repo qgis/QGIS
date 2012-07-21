@@ -21,6 +21,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
@@ -46,39 +47,11 @@ QString QgsVectorDataProvider::storageType() const
 }
 
 
-void QgsVectorDataProvider::select( const QgsFeatureRequest& request )
-{
-  QgsAttributeList attrs;
-  if ( !( request.flags() & QgsFeatureRequest::SubsetOfAttributes ) )
-    attrs = request.subsetOfAttributes();
-  else
-    attrs = attributeIndexes();
-  bool fetchGeom = !( request.flags() & QgsFeatureRequest::NoGeometry );
-  bool exactIntersect = ( request.flags() & QgsFeatureRequest::ExactIntersect );
-  select( attrs, request.filterRect(), fetchGeom, exactIntersect );
-}
-
-
 long QgsVectorDataProvider::updateFeatureCount()
 {
   return -1;
 }
 
-bool QgsVectorDataProvider::featureAtId( QgsFeatureId featureId,
-    QgsFeature& feature,
-    bool fetchGeometry,
-    QgsAttributeList fetchAttributes )
-{
-  select( fetchAttributes, QgsRectangle(), fetchGeometry );
-
-  while ( nextFeature( feature ) )
-  {
-    if ( feature.id() == featureId )
-      return true;
-  }
-
-  return false;
-}
 
 QString QgsVectorDataProvider::dataComment() const
 {
@@ -372,12 +345,12 @@ void QgsVectorDataProvider::uniqueValues( int index, QList<QVariant> &values, in
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
-  select( keys, QgsRectangle(), false );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ) );
 
   QSet<QString> set;
   values.clear();
 
-  while ( nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
     if ( !set.contains( f.attributeMap()[index].toString() ) )
     {
@@ -422,9 +395,9 @@ void QgsVectorDataProvider::fillMinMaxCache()
 
   QgsFeature f;
   QgsAttributeList keys = mCacheMinValues.keys();
-  select( keys, QgsRectangle(), false );
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( keys ) );
 
-  while ( nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
     QgsAttributeMap attrMap = f.attributeMap();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
@@ -562,5 +535,24 @@ void QgsVectorDataProvider::pushError( QString msg )
 {
   mErrors << msg;
 }
+
+QgsFeatureIterator QgsVectorDataProvider::select( QgsAttributeList fetchAttributes,
+    QgsRectangle rect,
+    bool fetchGeometry,
+    bool useIntersect )
+{
+  qDebug( "OLD SELECT!" );
+
+  QgsFeatureRequest request;
+  if ( !rect.isEmpty() )
+    request.setFilterRect( rect );
+  if ( !fetchGeometry )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( useIntersect )
+    request.setFlags( request.flags() | QgsFeatureRequest::ExactIntersect );
+  request.setSubsetOfAttributes( fetchAttributes );
+  return getFeatures( request );
+}
+
 
 QStringList QgsVectorDataProvider::smEncodings;

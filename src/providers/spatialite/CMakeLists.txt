@@ -6,6 +6,7 @@ SET(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
+  qgsspatialitefeatureiterator.cpp
   qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp
 )

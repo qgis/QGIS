@@ -1731,16 +1731,16 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
         }
       }
 
-      mDataProvider->select( mFetchProvAttributes, rect, fetchGeometries, useIntersect );
+      mProviderIterator = mDataProvider->select( mFetchProvAttributes, rect, fetchGeometries, useIntersect );
     }
     else
     {
-      mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
+      mProviderIterator = mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
     }
   }
   else //we don't need any attributes at all
   {
-    mDataProvider->select( QgsAttributeList(), rect, fetchGeometries, useIntersect );
+    mProviderIterator = mDataProvider->select( QgsAttributeList(), rect, fetchGeometries, useIntersect );
   }
 }
 
@@ -1815,9 +1815,15 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
           {
             // retrieve attributes from provider
             QgsFeature tmp;
-            mDataProvider->featureAtId( fid, tmp, false, mFetchProvAttributes );
-            updateFeatureAttributes( tmp );
-            f.setAttributeMap( tmp.attributeMap() );
+            //mDataProvider->featureAtId( fid, tmp, false, mFetchProvAttributes );
+            QgsFeatureRequest request;
+            request.setFilterFid( fid ).setSubsetOfAttributes( mFetchProvAttributes );
+            QgsFeatureIterator fi = mDataProvider->getFeatures( request );
+            if ( fi.nextFeature( tmp ) )
+            {
+              updateFeatureAttributes( tmp );
+              f.setAttributeMap( tmp.attributeMap() );
+            }
           }
         }
 
@@ -1862,7 +1868,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
     // no more added features
   }
 
-  while ( dataProvider()->nextFeature( f ) )
+  while ( mProviderIterator.nextFeature( f ) )
   {
     if ( mFetchConsidered.contains( f.id() ) )
     {
@@ -1924,8 +1930,12 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
       {
         // retrieve attributes from provider
         QgsFeature tmp;
-        mDataProvider->featureAtId( featureId, tmp, false, mDataProvider->attributeIndexes() );
-        f.setAttributeMap( tmp.attributeMap() );
+        //mDataProvider->featureAtId( featureId, tmp, false, mDataProvider->attributeIndexes() );
+        QgsFeatureRequest request;
+        request.setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry );
+        QgsFeatureIterator fi = mDataProvider->getFeatures( request );
+        if ( fi.nextFeature( tmp ) )
+          f.setAttributeMap( tmp.attributeMap() );
       }
       updateFeatureAttributes( f, true );
     }
@@ -1950,21 +1960,20 @@ bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fe
   }
 
   // regular features
-  if ( fetchAttributes )
+  QgsFeatureRequest request;
+  request.setFilterFid( featureId );
+  if ( !fetchGeometries )
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( !fetchAttributes )
+    request.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator fi = mDataProvider->getFeatures( request );
+  if ( fi.nextFeature( f ) )
   {
-    if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, mDataProvider->attributeIndexes() ) )
-    {
-      updateFeatureAttributes( f, true );
-      return true;
-    }
+    updateFeatureAttributes( f, true );
+    return true;
   }
-  else
-  {
-    if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, QgsAttributeList() ) )
-    {
-      return true;
-    }
-  }
+
   return false;
 }
 
@@ -2358,7 +2367,10 @@ int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double 
 
   //else get the geometry from provider (may be slow)
   QgsFeature f;
-  if ( mDataProvider && mDataProvider->featureAtId( featureId, f, true ) )
+  QgsFeatureRequest request;
+  request.setFilterFid( featureId );
+  QgsFeatureIterator fi = mDataProvider->getFeatures( request );
+  if ( fi.nextFeature( f ) )
   {
     if ( f.geometry() )
     {
@@ -5132,8 +5144,13 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
       if ( attrChIt.value().isFirstChange )
       {
         QgsFeature tmp;
-        mDataProvider->featureAtId( fid, tmp, false, QgsAttributeList() << attrChIt.key() );
-        original = tmp.attributeMap()[ attrChIt.key()];
+        //mDataProvider->featureAtId( fid, tmp, false, QgsAttributeList() << attrChIt.key() );
+        QgsFeatureRequest request;
+        request.setFlags( QgsFeatureRequest::NoGeometry );
+        request.setSubsetOfAttributes( QgsAttributeList() << attrChIt.key() );
+        QgsFeatureIterator fi = mDataProvider->getFeatures( request );
+        if ( fi.nextFeature( tmp ) )
+          original = tmp.attributeMap()[ attrChIt.key()];
       }
       emit attributeValueChanged( fid, attrChIt.key(), original );
     }

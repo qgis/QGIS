@@ -5,11 +5,11 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
 ADD_SUBDIRECTORY(memory)
 ADD_SUBDIRECTORY(ogr)
 ADD_SUBDIRECTORY(wms)
-ADD_SUBDIRECTORY(delimitedtext)
-ADD_SUBDIRECTORY(osm)
-ADD_SUBDIRECTORY(sqlanywhere)
+#ADD_SUBDIRECTORY(delimitedtext) # TODO: enable when migrated to new api
+#ADD_SUBDIRECTORY(osm)           # TODO: enable when migrated to new api
+#ADD_SUBDIRECTORY(sqlanywhere)   # TODO: enable when migrated to new api
 ADD_SUBDIRECTORY(gdal)
-ADD_SUBDIRECTORY(mssql)
+#ADD_SUBDIRECTORY(mssql)         # TODO: enable when migrated to new api
 ADD_SUBDIRECTORY(ows)
 ADD_SUBDIRECTORY(wcs)
 
@@ -22,8 +22,8 @@ IF (SPATIALITE_FOUND OR WITH_INTERNAL_SPATIALITE)
 ENDIF (SPATIALITE_FOUND OR WITH_INTERNAL_SPATIALITE)
 
 IF (EXPAT_FOUND)
-  ADD_SUBDIRECTORY(gpx)
-  ADD_SUBDIRECTORY(wfs)
+#  ADD_SUBDIRECTORY(gpx)         # TODO: enable when migrated to new api
+#  ADD_SUBDIRECTORY(wfs)         # TODO: enable when migrated to new api
 ENDIF (EXPAT_FOUND)
 
 IF (GRASS_FOUND)

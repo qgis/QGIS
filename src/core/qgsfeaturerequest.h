@@ -51,9 +51,9 @@ class QgsFeatureRequest
 
     enum FilterType
     {
-        FilterNone,   //!< No filter is applied
-        FilterRect,   //!< Filter using a rectangle
-        FilterFid     //!< Filter using feature ID
+      FilterNone,   //!< No filter is applied
+      FilterRect,   //!< Filter using a rectangle
+      FilterFid     //!< Filter using feature ID
     };
 
     //! construct a default request: for all features get attributes and geometries
@@ -67,7 +67,7 @@ class QgsFeatureRequest
     const QgsRectangle& filterRect() const { return mFilterRect; }
 
     //! Set feature ID that should be fetched.
-    QgsFeatureRequest& setFilterFid( QgsFeatureId fid ) { mFilterFid = FilterFid; mFilterFid = fid; return *this; }
+    QgsFeatureRequest& setFilterFid( QgsFeatureId fid ) { mFilter = FilterFid; mFilterFid = fid; return *this; }
     const QgsFeatureId& filterFid() const { return mFilterFid; }
 
     //! Set flags that affect how features will be fetched

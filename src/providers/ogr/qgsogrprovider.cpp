@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
+#include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
@@ -208,8 +209,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QSettings settings;
   CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", false ).toBool() ? "" : 0 );
 
-  // set the selection rectangle pointer to 0
-  mSelectionRectangle = 0;
   // make connection to the data source
 
   QgsDebugMsg( "Data source uri is " + uri );
@@ -358,12 +357,6 @@ QgsOgrProvider::~QgsOgrProvider()
   {
     free( extent_ );
     extent_ = 0;
-  }
-
-  if ( mSelectionRectangle )
-  {
-    OGR_G_DestroyGeometry( mSelectionRectangle );
-    mSelectionRectangle = 0;
   }
 }
 
@@ -628,213 +621,9 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 #endif
 }
 
-bool QgsOgrProvider::featureAtId( QgsFeatureId featureId,
-                                  QgsFeature& feature,
-                                  bool fetchGeometry,
-                                  QgsAttributeList fetchAttributes )
+QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  setRelevantFields( fetchGeometry, fetchAttributes );
-
-  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( featureId ) );
-  if ( !fet )
-    return false;
-
-  feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
-  feature.setFeatureId( OGR_F_GetFID( fet ) );
-  feature.clearAttributeMap();
-  // skip features without geometry
-  if ( !OGR_F_GetGeometryRef( fet ) && !mFetchFeaturesWithoutGeom )
-  {
-    OGR_F_Destroy( fet );
-    return false;
-  }
-
-  /* fetch geometry */
-  if ( fetchGeometry )
-  {
-    OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
-    // skip features without geometry
-
-    // get the wkb representation
-    unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
-    OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-
-    feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
-  }
-
-  /* fetch attributes */
-  for ( QgsAttributeList::iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it )
-  {
-    getFeatureAttribute( fet, feature, *it );
-  }
-
-  if ( OGR_F_GetGeometryRef( fet ) != NULL )
-  {
-    feature.setValid( true );
-  }
-  else
-  {
-    feature.setValid( false );
-  }
-  OGR_F_Destroy( fet );
-  return true;
-}
-
-bool QgsOgrProvider::nextFeature( QgsFeature& feature )
-{
-  feature.setValid( false );
-
-  if ( !valid )
-  {
-    QgsMessageLog::logMessage( tr( "Read attempt on an invalid OGR data source" ), tr( "OGR" ) );
-    return false;
-  }
-
-  if ( !mRelevantFieldsForNextFeature )
-  {
-    // setting relevant fields has some overhead so set it only when necessary
-    setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
-                       mAttributesToFetch );
-    mRelevantFieldsForNextFeature = true;
-  }
-
-  OGRFeatureH fet;
-  QgsRectangle selectionRect;
-
-  while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
-  {
-    // skip features without geometry
-    if ( !mFetchFeaturesWithoutGeom && !OGR_F_GetGeometryRef( fet ) )
-    {
-      OGR_F_Destroy( fet );
-      continue;
-    }
-
-    OGRFeatureDefnH featureDefinition = OGR_F_GetDefnRef( fet );
-    QString featureTypeName = featureDefinition ? FROM8( OGR_FD_GetName( featureDefinition ) ) : QString( "" );
-    feature.setFeatureId( OGR_F_GetFID( fet ) );
-    feature.clearAttributeMap();
-    feature.setTypeName( featureTypeName );
-    feature.setFieldMap( &mAttributeFields ); // allow name-based attribute lookups
-
-    /* fetch geometry */
-    if ( mFetchGeom || mUseIntersect )
-    {
-      OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
-
-      if ( geom == 0 )
-      {
-        OGR_F_Destroy( fet );
-        continue;
-      }
-
-      // get the wkb representation
-      unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
-      OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-
-      feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
-
-      if ( mUseIntersect )
-      {
-        //precise test for intersection with search rectangle
-        //first make QgsRectangle from OGRPolygon
-        OGREnvelope env;
-        memset( &env, 0, sizeof( env ) );
-        if ( mSelectionRectangle )
-          OGR_G_GetEnvelope( mSelectionRectangle, &env );
-        if ( env.MinX != 0 || env.MinY != 0 || env.MaxX != 0 || env.MaxY != 0 ) //if envelope is invalid, skip the precise intersection test
-        {
-          selectionRect.set( env.MinX, env.MinY, env.MaxX, env.MaxY );
-          if ( !feature.geometry()->intersects( selectionRect ) )
-          {
-            OGR_F_Destroy( fet );
-            continue;
-          }
-        }
-
-      }
-    }
-
-    /* fetch attributes */
-    for ( QgsAttributeList::iterator it = mAttributesToFetch.begin(); it != mAttributesToFetch.end(); ++it )
-    {
-      getFeatureAttribute( fet, feature, *it );
-    }
-
-    /* we have a feature, end this cycle */
-    break;
-
-  } /* while */
-
-  if ( fet )
-  {
-    if ( OGR_F_GetGeometryRef( fet ) != NULL )
-    {
-      feature.setValid( true );
-    }
-    else
-    {
-      feature.setValid( false );
-    }
-    OGR_F_Destroy( fet );
-    return true;
-  }
-  else
-  {
-    QgsDebugMsg( "Feature is null" );
-    // probably should reset reading here
-    OGR_L_ResetReading( ogrLayer );
-    return false;
-  }
-}
-
-void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
-{
-  if ( geometryType() == QGis::WKBNoGeometry )
-  {
-    fetchGeometry = false;
-  }
-
-  mUseIntersect = useIntersect;
-  mAttributesToFetch = fetchAttributes;
-  mFetchGeom = fetchGeometry;
-  mFetchRect = rect;
-
-  setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
-                     mAttributesToFetch );
-  mRelevantFieldsForNextFeature = true;
-
-  // spatial query to select features
-  if ( rect.isEmpty() )
-  {
-    OGR_L_SetSpatialFilter( ogrLayer, 0 );
-  }
-  else
-  {
-    OGRGeometryH filter = 0;
-    QString wktExtent = QString( "POLYGON((%1))" ).arg( rect.asPolygon() );
-    QByteArray ba = wktExtent.toAscii();
-    const char *wktText = ba;
-
-    if ( useIntersect )
-    {
-      // store the selection rectangle for use in filtering features during
-      // an identify and display attributes
-      if ( mSelectionRectangle )
-        OGR_G_DestroyGeometry( mSelectionRectangle );
-
-      OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &mSelectionRectangle );
-      wktText = ba;
-    }
-
-    OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
-    QgsDebugMsg( "Setting spatial filter using " + wktExtent );
-    OGR_L_SetSpatialFilter( ogrLayer, filter );
-    OGR_G_DestroyGeometry( filter );
-  }
-
-  //start with first feature
-  OGR_L_ResetReading( ogrLayer );
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );
 }
 
 
@@ -946,46 +735,10 @@ uint QgsOgrProvider::fieldCount() const
   return mAttributeFields.size();
 }
 
-void QgsOgrProvider::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex )
-{
-  OGRFieldDefnH fldDef = OGR_F_GetFieldDefnRef( ogrFet, attindex );
-
-  if ( ! fldDef )
-  {
-    QgsDebugMsg( "ogrFet->GetFieldDefnRef(attindex) returns NULL" );
-    return;
-  }
-
-  QVariant value;
-
-  if ( OGR_F_IsFieldSet( ogrFet, attindex ) )
-  {
-    switch ( mAttributeFields[attindex].type() )
-    {
-      case QVariant::String: value = QVariant( mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
-      case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
-      case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
-        //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
-      default: assert( NULL && "unsupported field type" );
-    }
-  }
-  else
-  {
-    value = QVariant( QString::null );
-  }
-
-  f.addAttribute( attindex, value );
-}
-
 
 const QgsFieldMap & QgsOgrProvider::fields() const
 {
   return mAttributeFields;
-}
-
-void QgsOgrProvider::rewind()
-{
-  OGR_L_ResetReading( ogrLayer );
 }
 
 

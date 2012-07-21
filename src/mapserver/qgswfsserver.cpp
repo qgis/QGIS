@@ -28,7 +28,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsscalecalculator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsfilter.h"
 #include "qgslogger.h"
@@ -313,15 +312,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
 
     //do a select with searchRect and go through all the features
-    QgsVectorDataProvider* provider = layer->dataProvider();
-    if ( !provider )
-    {
-      return 2;
-    }
 
     QgsFeature feature;
     QgsAttributeMap featureAttributes;
-    const QgsFieldMap& fields = provider->fields();
+    const QgsFieldMap& fields = layer->pendingFields();
 
     //map extent
     QgsRectangle searchRect = layer->extent();
@@ -402,7 +396,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     //read PROPERTYNAME
     mWithGeom = true;
-    QgsAttributeList attrIndexes = provider->attributeIndexes();
+    QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
     QMap<QString, QString>::const_iterator pnIt = mParameterMap.find( "PROPERTYNAME" );
     if ( pnIt != mParameterMap.end() )
     {
@@ -412,16 +406,15 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         mWithGeom = false;
         QStringList::const_iterator alstIt;
         QList<int> idxList;
-        QMap<QString, int> fieldMap = provider->fieldNameMap();
         QMap<QString, int>::const_iterator fieldIt;
         QString fieldName;
         for ( alstIt = attrList.begin(); alstIt != attrList.end(); ++alstIt )
         {
           fieldName = *alstIt;
-          fieldIt = fieldMap.find( fieldName );
-          if ( fieldIt != fieldMap.end() )
+          int idx = layer->fieldNameIndex( fieldName );
+          if ( idx != -1 )
           {
-            idxList.append( fieldIt.value() );
+            idxList.append( idx );
           }
           else if ( fieldName == "geometry" )
           {
@@ -452,16 +445,16 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
     if ( fidOk )
     {
-      provider->featureAtId( fid.toInt(), feature, mWithGeom, attrIndexes );
+      layer->featureAtId( fid.toInt(), feature, mWithGeom ); // TODO: option to fetch only some attrIndexes
       sendGetFeature( request, format, &feature, 0, layerCrs, fields, layerHiddenAttributes );
     }
     else if ( filterOk )
     {
-      provider->select( attrIndexes, searchRect, mWithGeom, true );
+      layer->select( attrIndexes, searchRect, mWithGeom, true );
       try
       {
         QgsFilter* mFilter = QgsFilter::createFilterFromXml( filter.firstChild().toElement().firstChild().toElement(), layer );
-        while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+        while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
         {
           if ( mFilter )
           {
@@ -483,7 +476,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       {
         Q_UNUSED( e );
 
-        while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+        while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
         {
           sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
           ++featureCounter;
@@ -492,8 +485,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
     }
     else
     {
-      provider->select( attrIndexes, searchRect, mWithGeom, true );
-      while ( provider->nextFeature( feature ) && featureCounter < maxFeat )
+      layer->select( attrIndexes, searchRect, mWithGeom, true );
+      while ( layer->nextFeature( feature ) && featureCounter < maxFeat )
       {
         sendGetFeature( request, format, &feature, featureCounter, layerCrs, fields, layerHiddenAttributes );
         ++featureCounter;

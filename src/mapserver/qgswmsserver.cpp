@@ -1159,20 +1159,15 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   }
 
   //do a select with searchRect and go through all the features
-  QgsVectorDataProvider* provider = layer->dataProvider();
-  if ( !provider )
-  {
-    return 2;
-  }
 
   QgsFeature feature;
   QgsAttributeMap featureAttributes;
   int featureCounter = 0;
-  const QgsFieldMap& fields = provider->fields();
+  const QgsFieldMap& fields = layer->pendingFields();
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
 
-  provider->select( provider->attributeIndexes(), searchRect, addWktGeometry || featureBBox, true );
-  while ( provider->nextFeature( feature ) )
+  layer->select( layer->pendingAllAttributesList(), searchRect, addWktGeometry || featureBBox, true );
+  while ( layer->nextFeature( feature ) )
   {
     ++featureCounter;
     if ( featureCounter > nFeatures )

@@ -46,6 +46,8 @@ class TestQgsVectorDataProvider : public QObject
     void select_checkSubset_data();
     void select_checkSubset();
 
+    void featureAtId();
+
   private:
 
     QgsVectorLayer* vlayerPoints;
@@ -54,6 +56,9 @@ class TestQgsVectorDataProvider : public QObject
 
 void TestQgsVectorDataProvider::initTestCase()
 {
+  vlayerPoints = 0;
+  vlayerLines = 0;
+
   // load QGIS
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -127,9 +132,9 @@ void TestQgsVectorDataProvider::select_checkContents_data()
   QTest::addColumn<int>( "onlyOneAttribute" ); // -1 if all attributes should be fetched
 
   QTest::newRow( "all" ) << QgsFeatureRequest() << 17 << true << true << -1;
-  QTest::newRow( "no attrs" ) << QgsFeatureRequest().setFlags( QgsFeatureRequest::NoAttributes ) << 17 << true << false << -1;
+  QTest::newRow( "no attrs" ) << QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) << 17 << true << false << -1;
   QTest::newRow( "no geom" ) << QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) << 17 << false << true << -1;
-  QTest::newRow( "one attr" ) << QgsFeatureRequest().setAttributes( QgsAttributeList() << 1 ) << 17 << true << true << 1;
+  QTest::newRow( "one attr" ) << QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() << 1 ) << 17 << true << true << 1;
 }
 
 void TestQgsVectorDataProvider::select_checkContents()
@@ -142,12 +147,12 @@ void TestQgsVectorDataProvider::select_checkContents()
 
   // base select: check num. features, check geometry, check attrs
   QgsVectorDataProvider* pr = vlayerPoints->dataProvider();
-  pr->select( request );
+  QgsFeatureIterator fi = pr->getFeatures( request );
 
   bool foundFid4 = false;
   int realCount = 0;
   QgsFeature f;
-  while ( pr->nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
     if ( f.id() == 4 )
     {
@@ -175,8 +180,8 @@ void TestQgsVectorDataProvider::select_checkSubset_data()
   // OGR always does exact intersection test
   //QTest::newRow("rect1") << QgsFeatureRequest().setExtent(rect1) << 2;
   //QTest::newRow("rect2") << QgsFeatureRequest().setExtent(rect2) << 4;
-  QTest::newRow( "rect1 + exact intersect" ) << QgsFeatureRequest().setExtent( rect1 ).setFlags( QgsFeatureRequest::ExactIntersect ) << 0;
-  QTest::newRow( "rect2 + exact intersect" ) << QgsFeatureRequest().setExtent( rect2 ).setFlags( QgsFeatureRequest::ExactIntersect ) << 2;
+  QTest::newRow( "rect1 + exact intersect" ) << QgsFeatureRequest().setFilterRect( rect1 ).setFlags( QgsFeatureRequest::ExactIntersect ) << 0;
+  QTest::newRow( "rect2 + exact intersect" ) << QgsFeatureRequest().setFilterRect( rect2 ).setFlags( QgsFeatureRequest::ExactIntersect ) << 2;
 }
 
 void TestQgsVectorDataProvider::select_checkSubset()
@@ -186,16 +191,37 @@ void TestQgsVectorDataProvider::select_checkSubset()
 
   // base select: check num. features, check geometry, check attrs
   QgsVectorDataProvider* pr = vlayerLines->dataProvider();
-  pr->select( request );
+  QgsFeatureIterator fi = pr->getFeatures( request );
 
   int realCount = 0;
   QgsFeature f;
-  while ( pr->nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
     realCount++;
   }
 
   QCOMPARE( realCount, count );
+}
+
+void TestQgsVectorDataProvider::featureAtId()
+{
+  QgsVectorDataProvider* pr = vlayerLines->dataProvider();
+  QgsFeatureRequest request;
+  request.setFilterFid( 4 );
+  QVERIFY( request.filterType() == QgsFeatureRequest::FilterFid );
+  QVERIFY( request.filterFid() == 4 );
+
+  QgsFeatureIterator fi = pr->getFeatures( request );
+  QgsFeature feature;
+
+  QVERIFY( fi.nextFeature( feature ) );
+  QVERIFY( feature.isValid() );
+  qDebug( "FID: %d", feature.id() );
+  QVERIFY( feature.id() == 4 );
+
+  // further invocations are not valid
+  QVERIFY( !fi.nextFeature( feature ) );
+  QVERIFY( !feature.isValid() );
 }
 
 

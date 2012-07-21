@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmemoryprovider.h"
+#include "qgsmemoryfeatureiterator.h"
 
 #include "qgsfeature.h"
 #include "qgsfield.h"
@@ -31,7 +32,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION = "Memory provider";
 
 QgsMemoryProvider::QgsMemoryProvider( QString uri )
     : QgsVectorDataProvider( uri ),
-    mSelectRectGeom( NULL ),
     mSpatialIndex( NULL )
 {
   // Initialize the geometry with the uri to support old style uri's
@@ -139,7 +139,6 @@ QgsMemoryProvider::QgsMemoryProvider( QString uri )
 QgsMemoryProvider::~QgsMemoryProvider()
 {
   delete mSpatialIndex;
-  delete mSelectRectGeom;
 }
 
 QString QgsMemoryProvider::dataSourceUri() const
@@ -217,138 +216,9 @@ QString QgsMemoryProvider::storageType() const
   return "Memory storage";
 }
 
-bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
+QgsFeatureIterator QgsMemoryProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  feature.setValid( false );
-  bool hasFeature = false;
-
-  // option 1: using spatial index
-  if ( mSelectUsingSpatialIndex )
-  {
-    while ( mSelectSI_Iterator != mSelectSI_Features.end() )
-    {
-      // do exact check in case we're doing intersection
-      if ( mSelectUseIntersect )
-      {
-        if ( mFeatures[*mSelectSI_Iterator].geometry()->intersects( mSelectRectGeom ) )
-          hasFeature = true;
-      }
-      else
-        hasFeature = true;
-
-      if ( hasFeature )
-        break;
-
-      mSelectSI_Iterator++;
-    }
-
-    // copy feature
-    if ( hasFeature )
-    {
-      feature = mFeatures[*mSelectSI_Iterator];
-      mSelectSI_Iterator++;
-    }
-    return hasFeature;
-  }
-
-  // option 2: not using spatial index
-  while ( mSelectIterator != mFeatures.end() )
-  {
-    if ( mSelectRect.isEmpty() )
-    {
-      // selection rect empty => using all features
-      hasFeature = true;
-    }
-    else
-    {
-      if ( mSelectUseIntersect )
-      {
-        // using exact test when checking for intersection
-        if ( mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
-          hasFeature = true;
-      }
-      else
-      {
-        // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->geometry()->boundingBox().intersects( mSelectRect ) )
-          hasFeature = true;
-      }
-    }
-
-    if ( hasFeature )
-      break;
-
-    mSelectIterator++;
-  }
-
-  // copy feature
-  if ( hasFeature )
-  {
-    feature = mSelectIterator.value();
-    mSelectIterator++;
-    feature.setValid( true );
-    feature.setFieldMap( &mFields ); // allow name-based attribute lookups
-  }
-
-  return hasFeature;
-}
-
-
-bool QgsMemoryProvider::featureAtId( QgsFeatureId featureId,
-                                     QgsFeature& feature,
-                                     bool fetchGeometry,
-                                     QgsAttributeList fetchAttributes )
-{
-  Q_UNUSED( fetchGeometry );
-  Q_UNUSED( fetchAttributes );
-  feature.setValid( false );
-  QgsFeatureMap::iterator it = mFeatures.find( featureId );
-
-  if ( it == mFeatures.end() )
-    return false;
-
-  feature = *it;
-  feature.setValid( true );
-  feature.setFieldMap( &mFields ); // allow name-based attribute lookups
-  return true;
-}
-
-
-void QgsMemoryProvider::select( QgsAttributeList fetchAttributes,
-                                QgsRectangle rect,
-                                bool fetchGeometry,
-                                bool useIntersect )
-{
-  mSelectAttrs = fetchAttributes;
-  mSelectRect = rect;
-  delete mSelectRectGeom;
-  mSelectRectGeom = QgsGeometry::fromRect( rect );
-  mSelectGeometry = fetchGeometry;
-  mSelectUseIntersect = useIntersect;
-
-  // if there's spatial index, use it!
-  // (but don't use it when selection rect is not specified)
-  if ( mSpatialIndex && !mSelectRect.isEmpty() )
-  {
-    mSelectUsingSpatialIndex = true;
-    mSelectSI_Features = mSpatialIndex->intersects( rect );
-    QgsDebugMsg( "Features returned by spatial index: " + QString::number( mSelectSI_Features.count() ) );
-  }
-  else
-  {
-    mSelectUsingSpatialIndex = false;
-    mSelectSI_Features.clear();
-  }
-
-  rewind();
-}
-
-void QgsMemoryProvider::rewind()
-{
-  if ( mSelectUsingSpatialIndex )
-    mSelectSI_Iterator = mSelectSI_Features.begin();
-  else
-    mSelectIterator = mFeatures.begin();
+  return QgsFeatureIterator( new QgsMemoryFeatureIterator( this, request ) );
 }
 
 

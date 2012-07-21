@@ -80,15 +80,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     virtual QgsCoordinateReferenceSystem crs();
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-      *  @param fetchAttributes list of attributes which should be fetched
-      *  @param rect spatial filter
-      *  @param fetchGeometry true if the feature geometry should be fetched
-      *  @param useIntersect true if an accurate intersection test should be used,
-      *                     false if a test based on bounding box is sufficient
-      */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /** Accessor for sql where clause used to limit dataset */
     virtual QString subsetString();
@@ -97,23 +89,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
 
     virtual bool supportsSubsetString() { return true; }
-
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(), bool fetchGeometry = true, bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature & feature );
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -161,9 +136,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       * @return vector of QgsField objects
       */
     const QgsFieldMap & fields() const;
-
-    /** Reset the layer */
-    void rewind();
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
@@ -348,10 +320,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     sqlite3 *sqliteHandle;
     /**
-      * SQLite statement handle
-     */
-    sqlite3_stmt *sqliteStatement;
-    /**
      * String used to define a subset of the layer
      */
     QString mSubsetString;
@@ -392,9 +360,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     int enabledCapabilities;
 
     const QgsField & field( int index ) const;
-
-    /** geometry column index used when fetching geometry */
-    int mGeomColIdx;
 
     /**
     * internal utility functions used to handle common SQLite tasks
@@ -521,4 +486,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * sqlite3 handles pointer
      */
     SqliteHandles *handle;
+
+    friend class QgsSpatiaLiteFeatureIterator;
 };

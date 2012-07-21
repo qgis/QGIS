@@ -55,8 +55,8 @@ int QgsInterpolator::cacheBaseData()
       continue;
     }
 
-    QgsVectorDataProvider* provider = v_it->vectorLayer->dataProvider();
-    if ( !provider )
+    QgsVectorLayer* vlayer = v_it->vectorLayer;
+    if ( !vlayer )
     {
       return 2;
     }
@@ -67,13 +67,13 @@ int QgsInterpolator::cacheBaseData()
       attList.push_back( v_it->interpolationAttribute );
     }
 
-    provider->select( attList );
+    vlayer->select( attList );
 
     QgsFeature theFeature;
     double attributeValue = 0.0;
     bool attributeConversionOk = false;
 
-    while ( provider->nextFeature( theFeature ) )
+    while ( vlayer->nextFeature( theFeature ) )
     {
       if ( !v_it->zCoordInterpolation )
       {

@@ -3302,11 +3302,11 @@ void QgsGrassModuleSelection::updateSelection()
     return;
 
   QString cats;
-  provider->select( allAttributes, QgsRectangle(), true );
+  QgsFeatureIterator fi = provider->getFeatures( QgsFeatureRequest() );
   QgsFeature feature;
 
   int i = 0;
-  while ( provider->nextFeature( feature ) )
+  while ( fi.nextFeature( feature ) )
   {
     if ( !selected.contains( feature.id() ) )
       continue;

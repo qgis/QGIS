@@ -65,6 +65,7 @@ SET(QGIS_CORE_SRCS
   qgsdistancearea.cpp
   qgsexpression.cpp
   qgsfeature.cpp
+  qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp
   qgsfield.cpp
   qgsgeometry.cpp
@@ -353,6 +354,7 @@ SET(QGIS_CORE_HDRS
   qgsexception.h
   qgsexpression.h
   qgsfeature.h
+  qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfield.h
   qgsgeometry.h
