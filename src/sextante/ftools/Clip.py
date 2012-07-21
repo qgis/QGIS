@@ -6,7 +6,6 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
 from sextante.ftools import ftools_utils
 from sextante.core.SextanteLog import SextanteLog
@@ -33,10 +32,10 @@ class Clip(GeoAlgorithm):
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Clip.INPUT2))
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
-        vproviderA = self.vlayerA.dataProvider()
+        vproviderA = vlayerA.dataProvider()
         allAttrsA = vproviderA.attributeIndexes()
         vproviderA.select( allAttrsA )
-        vproviderB = self.vlayerB.dataProvider()
+        vproviderB = vlayerB.dataProvider()
         allAttrsB = vproviderB.attributeIndexes()
         vproviderB.select( allAttrsB )
         # check for crs compatibility
@@ -59,10 +58,10 @@ class Clip(GeoAlgorithm):
         # there is selection in input layer
         if useSelection:
           nFeat = vlayerA.selectedFeatureCount()
-          selectionA = self.vlayerA.selectedFeatures()
+          selectionA = vlayerA.selectedFeatures()
           # we have selection in overlay layer
           if useSelection2:
-            selectionB = self.vlayerB.selectedFeaturesIds()
+            selectionB = vlayerB.selectedFeaturesIds()
             for inFeatA in selectionA:
               nElement += 1
               progress.setPercentage(int(nElement/nFeat * 100))
@@ -156,7 +155,7 @@ class Clip(GeoAlgorithm):
           nFeat = vproviderA.featureCount()
           # we have selection in overlay layer
           if useSelection2:
-            selectionB = self.vlayerB.selectedFeaturesIds()
+            selectionB = vlayerB.selectedFeaturesIds()
             while vproviderA.nextFeature( inFeatA ):
               nElement += 1
               progress.setPercentage(int(nElement/nFeat * 100))

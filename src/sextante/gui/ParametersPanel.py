@@ -1,4 +1,5 @@
 import os
+import locale
 from PyQt4 import QtCore, QtGui
 from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
 from sextante.core.QGisLayers import QGisLayers
@@ -219,9 +220,7 @@ class ParametersPanel(QtGui.QWidget):
             else:
                 layers = QGisLayers.getTables()
             if len(layers)>0:
-                fields = self.getFields(layers[0])
-                for i in fields:
-                    item.addItem(fields[i].name())
+                item.addItems(self.getFields(layers[0], param.datatype))
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()
             item.addItems(param.options)
@@ -266,12 +265,26 @@ class ParametersPanel(QtGui.QWidget):
         for child in children:
             widget = self.valueItems[child]
             widget.clear()
-            fields = self.getFields(layer)
-            for i in fields:
-                widget.addItem(fields[i].name())
+            widget.addItems(self.getFields(layer, self.alg.getParameterFromName(child).datatype))
 
-    def getFields(self, layer):
-        return layer.dataProvider().fields()
+    def getFields(self, layer, datatype):
+        fieldTypes = []
+        if datatype == ParameterTableField.DATA_TYPE_STRING:
+            fieldTypes = [QVariant.String]
+        elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
+            fieldTypes = [QVariant.Int, QVariant.Double]
+
+        fieldNames = []
+        fieldMap = layer.pendingFields()
+        if len(fieldTypes) == 0:
+            for idx, field in fieldMap.iteritems():
+                if not field.name() in fieldNames:
+                    fieldNames.append( unicode( field.name() ) )
+        else:
+            for idx, field in fieldMap.iteritems():
+                if field.type() in fieldTypes and not field.name() in fieldNames:
+                    fieldNames.append( unicode( field.name() ) )
+        return sorted( fieldNames, cmp=locale.strcoll )
 
     def somethingDependsOnThisParameter(self, parent):
         for param in self.alg.parameters:
