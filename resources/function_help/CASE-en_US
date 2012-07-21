@@ -1,0 +1,31 @@
+<h3>CASE statement</h3>
+A conditional statement that can be used to evaluate exissions and 
+return a result.
+
+<h4>Syntax</h4>
+<pre>
+     CASE
+        WHEN <i>expression</i> THEN <i>result</i>
+        [ ...n ]
+        [ ELSE <i>result</i> ]
+     END
+</pre>
+[ ] marks optional statements
+
+
+<h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  WHEN expression</i> - The expression to evaluate. <br>
+<i>  THEN result</i> - If <i>expression</i> evaluates True then <i>result</i> is returned. <br>
+<i>  ELSE result</i> - If <i>expression</i> evaluates False then <i>result</i> is returned. <br>
+ 
+
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<pre>
+    CASE
+        WHEN <i>"column" IS NULL</i> THEN <i>'None'</i>
+    END
+</pre>
+
