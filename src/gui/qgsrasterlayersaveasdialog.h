@@ -5,6 +5,7 @@
 #include "qgsrectangle.h"
 
 class QgsRasterDataProvider;
+class QgsRasterFormatOptionsWidget;
 
 class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {

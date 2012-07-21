@@ -26,6 +26,8 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 
+#include "qgsrasterformatoptionswidget.h"
+
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QSettings>
@@ -579,7 +581,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
-  tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
+  // tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
+  int currentTab = settings.value( "/Windows/Options/row" ).toInt();
+  QgsDebugMsg(QString("current=%1").arg(currentTab));
+  tabWidget->setCurrentIndex( currentTab );
+  on_tabWidget_currentChanged( currentTab );
 }
 
 //! Destructor
@@ -1085,25 +1091,24 @@ void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, in
 
 void QgsOptions::editGdalDriver( const QString& driverName )
 {
-  QSettings mySettings;
-
   // this will go to a standalone widget class
   QDialog dlg( this ); 
+  QVBoxLayout *layout = new QVBoxLayout();
+  QgsRasterFormatOptionsWidget* optionsWidget = new QgsRasterFormatOptionsWidget( 0, driverName, "gdal" );
+  layout->addWidget( optionsWidget );
+  optionsWidget->showProfileButtons( true );
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   connect(buttonBox, SIGNAL(accepted()), &dlg, SLOT(accept()));
   connect(buttonBox, SIGNAL(rejected()), &dlg, SLOT(reject()));
-  QVBoxLayout *layout = new QVBoxLayout();
-  QLineEdit *lineEdit = new QLineEdit();
-  layout->addWidget( lineEdit );
   layout->addWidget( buttonBox );
   dlg.setLayout( layout );
 
-  lineEdit->setText( mySettings.value( "gdal/driverOptions/" + driverName.toLower() + "/create", "" ).toString() );
   if ( dlg.exec() == QDialog::Accepted )
   {
     // perhaps setting should not be applied already, but this is easier
-    mySettings.setValue( "gdal/driverOptions/" + driverName.toLower() + "/create", lineEdit->text().trimmed().toUpper() );
+    optionsWidget->apply();
   }
+  delete optionsWidget;
 }
 
 // Return state of the visibility flag for newly added layers. If
@@ -1326,6 +1331,7 @@ void QgsOptions::on_mClearCache_clicked()
 
 void QgsOptions::on_tabWidget_currentChanged( int theTab )
 {
+  QgsDebugMsg(QString("current=%1").arg(theTab));
   // load gdal driver list when gdal tab is first opened
   if ( theTab == 1 && ! mLoadedGdalDriverList )
   {
