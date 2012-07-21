@@ -43,6 +43,8 @@ def getQgisTestApp():
             myPath = os.environ['QGISPATH']
             myUseDefaultPathFlag = True
             QGISAPP.setPrefixPath(myPath, myUseDefaultPathFlag)
+        else:
+            print "Warning: QGISPATH is not set"
 
         QGISAPP.initQgis()
         s = QGISAPP.showSettings()

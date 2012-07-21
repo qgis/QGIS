@@ -39,11 +39,8 @@ class QgisInterface(QObject):
         """Constructor"""
         QObject.__init__(self)
         self.canvas = canvas
-        QgsProviderRegistry.instance()
-        self.testRaster = QgsRasterLayer('data/raster', "test raster")
-        self.testVector = QgsVectorLayer('data/vector', "test vector")
-        self.testRaster.dataProvider = lambda: QgsProviderRegistry.instance().provider('ogr','data/raster')
-        self.testVector.dataProvider = lambda: QgsProviderRegistry.instance().provider('gdal','data/vector')
+        self.testRaster = QgsRasterLayer('data/raster', "raster")
+        self.testVector = QgsVectorLayer('data/vector', "vector", 'ogr')
 
     def zoomFull(self):
         """Zoom to the map full extent"""
