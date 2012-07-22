@@ -1,0 +1,20 @@
+<h3>minute() function</h3>
+Extract the minute from a datetime or time, or the number of minutes
+from a <code>Interval</code>
+
+<h4>Syntax</h4>
+<code>minute(datetime)</code><br>
+<code>minute(Interval)</code><br>
+
+<h4>Arguments</h4>
+<code>date</code> - is datetime or time. The date to extract the minute from.
+<br>
+<code>Interval</code> - is Interval. The Interval to return the number of minutes from.
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>minute('2012-07-22T13:24:57') -> 24</code><br>
+<code>minute(tointerval('3 minutes')) -> 3</code><br>
+<code>minute(age('2012-07-22T00:20:00','2012-07-22T00:00:00')) -> 20</code><br>
+<code>minute(age('2012-01-01','2010-01-01')) -> 1051200</code><br>
+

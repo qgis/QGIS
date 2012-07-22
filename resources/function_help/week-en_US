@@ -1,0 +1,19 @@
+<h3>week() function</h3>
+Extract the week number from a date, or the number of weeks
+from a <code>Interval</code>
+
+<h4>Syntax</h4>
+<code>week(date)</code><br>
+<code>week(Interval)</code><br>
+
+<h4>Arguments</h4>
+<code>date</code> - is date or datetime. The date to extract the week from.
+<br>
+<code>Interval</code> - is Interval. The Interval to return the number of weeks from.
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>week('2012-05-12') -> 19</code><br>
+<code>week(tointerval('3 weeks')) -> 3</code><br>
+<code>week(age('2012-01-01','2010-01-01')) -> 104.285...</code><br>
+

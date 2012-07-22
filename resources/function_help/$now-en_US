@@ -1,0 +1,12 @@
+<h3>$now function</h3>
+Returns the current data and time
+
+<h4>Syntax</h4>
+<pre>$now</pre>
+
+<h4>Arguments</h4>
+None
+<h4>Example</h4>
+<!-- Show example of function.-->
+<pre>$now -> 2012-07-22T13:24:57</pre>
+
