@@ -5,6 +5,8 @@ from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
+from sextante.gui.AlgorithmExecutionDialog import AlgorithmExecutionDialog
+
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
@@ -20,24 +22,15 @@ from sextante.core.SextanteConfig import SextanteConfig
 from sextante.gui.UnthreadedAlgorithmExecutor import SilentProgress,\
     UnthreadedAlgorithmExecutor
 
-class BatchProcessingDialog(QtGui.QDialog):
+class BatchProcessingDialog(AlgorithmExecutionDialog):
     def __init__(self, alg):
-        QtGui.QDialog.__init__(self)
-        self.setModal(True)
-        self.alg = alg
         self.algs = None
-        self.setupUi()
+        self.table = QtGui.QTableWidget(None)
+        AlgorithmExecutionDialog.__init__(self, alg, self.table)
+        self.setModal(True)
         self.algEx = None
-
-    def setupUi(self):
         self.resize(800, 500)
         self.setWindowTitle("Batch Processing - " + self.alg.name)
-        self.horizontalLayout = QtGui.QVBoxLayout(self)
-        self.horizontalLayout.setSpacing(10)
-        self.horizontalLayout.setMargin(10)
-        self.buttonBox = QtGui.QDialogButtonBox(self)
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.addRowButton = QtGui.QPushButton()
         self.addRowButton.setText("Add row")
         self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
@@ -45,23 +38,14 @@ class BatchProcessingDialog(QtGui.QDialog):
         self.deleteRowButton.setText("Delete row")
         self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.deleteRowButton, QtGui.QDialogButtonBox.ActionRole)
-        self.table = QtGui.QTableWidget(self)
         self.table.setColumnCount(len(self.alg.parameters) + len(self.alg.outputs))
         self.setTableContent()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
         self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.progress = QtGui.QProgressBar()
-        self.progress.setMinimum(0)
-        self.horizontalLayout.addWidget(self.table)
-        self.horizontalLayout.addWidget(self.progress)
-        self.horizontalLayout.addWidget(self.buttonBox)
-        self.setLayout(self.horizontalLayout)
-        QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
-        QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
-        QObject.connect(self.addRowButton, QtCore.SIGNAL("clicked()"), self.addRow)
-        QObject.connect(self.deleteRowButton, QtCore.SIGNAL("clicked()"), self.deleteRow)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        self.addRowButton.clicked.connect(self.addRow)
+        self.deleteRowButton.clicked.connect(self.deleteRow)
 
     def setTableContent(self):
         i = 0
@@ -77,7 +61,7 @@ class BatchProcessingDialog(QtGui.QDialog):
         for i in range(3):
             self.addRow()
 
-    def okPressed(self):
+    def accept(self):
         self.algs = []
         for row in range(self.table.rowCount()):
             alg = self.alg.getCopy()#copy.deepcopy(self.alg)
@@ -128,7 +112,7 @@ class BatchProcessingDialog(QtGui.QDialog):
             if isinstance(out, OutputHTML):
                 SextanteResults.addResult(out.description + "[" + str(i) + "]", out.value)
 
-    def cancelPressed(self):
+    def cancel(self):
         self.algs = None
         if self.algEx:
             self.algEx.terminate()
