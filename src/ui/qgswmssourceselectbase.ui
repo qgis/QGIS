@@ -267,7 +267,11 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLineEdit" name="mFeatureCount"/>
+           <widget class="QLineEdit" name="mFeatureCount">
+            <property name="text">
+             <string>10</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
