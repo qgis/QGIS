@@ -1,0 +1,15 @@
+<h3>left() function</h3>
+Returns a substring that contains the <i>n</i> leftmost characters of the string.
+
+<h4>Syntax</h4>
+<code>left(string, pos)</code><br>
+
+<h4>Arguments</h4>
+<code>string</code> - is string. The string.
+<br>
+<code>length</code> - is int. The numbder of characters from the left to return.
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>left('Hello World',5) -> 'Hello'</code><br>
+

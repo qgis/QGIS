@@ -511,6 +511,36 @@ static QVariant fcnStrpos( const QVariantList& values, QgsFeature* , QgsExpressi
   return string.indexOf( QRegExp( getStringValue( values.at( 1 ), parent ) ) );
 }
 
+static QVariant fcnRight( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int pos = getIntValue( values.at( 1 ), parent );
+  return string.right( pos );
+}
+
+static QVariant fcnLeft( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int pos = getIntValue( values.at( 1 ), parent );
+  return string.left( pos );
+}
+
+static QVariant fcnRPad( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int length = getIntValue( values.at( 1 ), parent );
+  QString fill = getStringValue( values.at( 2 ), parent );
+  return string.rightJustified( length, fill.at( 0 ), true );
+}
+
+static QVariant fcnLPad( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int length = getIntValue( values.at( 1 ), parent );
+  QString fill = getStringValue( values.at( 2 ), parent );
+  return string.leftJustified( length, fill.at( 0 ), true );
+}
+
 static QVariant fcnNow( const QVariantList&, QgsFeature* , QgsExpression * )
 {
   return QVariant( QDateTime::currentDateTime() );
@@ -775,6 +805,11 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
     << FunctionDef( "concat", -1, fcnConcat, QObject::tr( "String" ) )
     << FunctionDef( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
+    << FunctionDef( "left", 2, fcnLeft, QObject::tr( "String" ) )
+    << FunctionDef( "right", 2, fcnRight, QObject::tr( "String" ) )
+    << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
+    << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
+
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )

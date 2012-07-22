@@ -1,0 +1,18 @@
+<h3>rpad() function</h3>
+Returns a string with supplied width padded
+using the fill character.
+
+<h4>Syntax</h4>
+<code>rpad(string, width, fill)</code><br>
+
+<h4>Arguments</h4>
+<code>string</code> - is string. The string.
+<br>
+<code>width</code> - is int. The length of the new string.
+<br>
+<code>fill</code> - is char. The character to padd the remaining space with. 
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>rpad('Hello', 10, 'x') -> 'xxxxxHello'</code><br>
+
