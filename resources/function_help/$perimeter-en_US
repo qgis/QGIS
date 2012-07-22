@@ -1,0 +1,12 @@
+<h3>$perimeter function</h3>
+Returns the perimeter length of the current feature.
+
+<h4>Syntax</h4>
+<pre>$perimeter</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre>$perimeter &rarr; 42</pre>
+

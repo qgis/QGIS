@@ -785,7 +785,8 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
     << FunctionDef( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
     << FunctionDef( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
-    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conversions" ) )
+    // conditionals
+    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
     // Date and Time
     << FunctionDef( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
     << FunctionDef( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )

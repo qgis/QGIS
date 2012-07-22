@@ -1,0 +1,12 @@
+<h3>Funktion $y</h3>
+Liefert die Y-Koordinate des aktuellen Objekts zurück.
+
+<h4>Syntax</h4>
+<pre>$y</pre>
+
+<h4>Argumente</h4>
+Keine
+
+<h4>Beispiel</h4>
+<pre>$y &rarr; 42</pre>
+

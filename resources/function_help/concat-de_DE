@@ -1,0 +1,13 @@
+<h3>Funktion concat()</h3>
+Fügt Zeichenketten zu einer zusammen.
+
+<p><h4>Syntax</h4>
+     substr(<i>zeichenkette<i>[, <i>zeichenkette</i>...])</p>
+
+<p><h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>  zeichenkette</i> &rarr; ist string.  Ein Zeichenkette.<br>
+
+<p><h4>Beispiel</h4>
+<!-- Show example of function.-->
+     concat('a','b','c','d','e') &rarr; 'abcde'</p>
