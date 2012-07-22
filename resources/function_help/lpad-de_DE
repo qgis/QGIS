@@ -1,0 +1,15 @@
+<h3>Funktion lpad()</h3>
+Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte Länge aufgefüllte Zeichenkette.
+
+<h4>Syntax</h4>
+<code>lpad(zeichenkette, laenge, fuellzeichen)</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - ist string. Die Zeichenkette.
+<br>
+<code>laenge</code> - ist int. Die Länge der neuen Zeichenkette.
+<br>
+<code>fuellzeichen</code> - ist char. Das Zeichen mit dem die Zeichenkette am Ende aufgefüllt werden soll. 
+
+<h4>Beispiel</h4>
+<code>lpad('Hallo', 10, 'x') &rarr; 'Halloxxxxx'</code><br>

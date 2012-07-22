@@ -6,10 +6,10 @@ Liefert einen Teil einer Zeichenkette
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> -> ist eine Zeichenkette.  Die vollständige Zeichenkette.<br>
-<i>  startpos</i> -> ist eine Zahl.  Die Startposition des Teils.<br>
-<i>  länge</i> -> ist eine Zahl.  Die Länge des Teils.<br></p>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die vollständige Zeichenkette.<br>
+<i>  startpos</i> &rarr; ist eine Zahl.  Die Startposition des Teils.<br>
+<i>  länge</i> &rarr; ist eine Zahl.  Die Länge des Teils.<br></p>
 
 <p><h4>Beispiel</h4>
 <!-- Show example of function.-->
-     substr('HELLO WORLD',3,5) -> 'LLO W'</p>
+     substr('HELLO WORLD',3,5) &rarr; 'LLO W'</p>

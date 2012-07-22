@@ -1935,7 +1935,7 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
         <source>Unable to load %1 plugin. 
 The required &quot;%2&quot; module is missing. 
 Install it and try again.</source>
-        <translation type="obsolete">Konnte Erweiterung %1 nicht laden.
+        <translation>Konnte Erweiterung %1 nicht laden.
 Das erforderliche Modul &quot;%2&quot; fehlt.
 Installieren Sie es und versuchen
 Sie es erneut.</translation>
@@ -2630,7 +2630,7 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="obsolete">Eine durch Doppelpunkte (Linux/MacOS) oder 
+        <translation>Eine durch Doppelpunkte (Linux/MacOS) oder 
 Semikolons (Windows) unterteilte Pfadliste zu den 
 Programmen und Pythonscripts.
 MacOS-Benutzer müssen dies normalerweise auf etwas
@@ -2640,14 +2640,14 @@ wie das folgende setzen:
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="obsolete">Eine durch Doppelpunkte (Linux/MacOS) oder 
+        <translation>Eine durch Doppelpunkte (Linux/MacOS) oder 
 Semikolons (Windows) unterteilte Pfadliste zu den 
 Pythonmodulen.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="obsolete">Nützlich um die lokale GDAL-Dokumentation statt der Onlinehilfe
+        <translation>Nützlich um die lokale GDAL-Dokumentation statt der Onlinehilfe
 über den Hilfeknopf des Werkzeugs aufzurufen.</translation>
     </message>
     <message>
@@ -6489,52 +6489,13 @@ qgis.utils.iface object (instance of QgisInterface class) zugegriffen werden.
         <translation>Ungültiger regulärer Ausdruck &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="688"/>
+        <location filename="../src/core/qgsexpression.cpp" line="718"/>
         <source>Index is out of range</source>
         <translation>Index außerhalb des Bereichs</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="738"/>
-        <location filename="../src/core/qgsexpression.cpp" line="739"/>
-        <location filename="../src/core/qgsexpression.cpp" line="740"/>
-        <location filename="../src/core/qgsexpression.cpp" line="741"/>
-        <location filename="../src/core/qgsexpression.cpp" line="742"/>
-        <location filename="../src/core/qgsexpression.cpp" line="743"/>
-        <location filename="../src/core/qgsexpression.cpp" line="744"/>
-        <location filename="../src/core/qgsexpression.cpp" line="745"/>
-        <location filename="../src/core/qgsexpression.cpp" line="746"/>
-        <location filename="../src/core/qgsexpression.cpp" line="747"/>
-        <location filename="../src/core/qgsexpression.cpp" line="748"/>
-        <location filename="../src/core/qgsexpression.cpp" line="749"/>
-        <source>Math</source>
-        <translation>Mathematik</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression.cpp" line="751"/>
-        <location filename="../src/core/qgsexpression.cpp" line="752"/>
-        <location filename="../src/core/qgsexpression.cpp" line="753"/>
-        <location filename="../src/core/qgsexpression.cpp" line="754"/>
-        <location filename="../src/core/qgsexpression.cpp" line="755"/>
-        <location filename="../src/core/qgsexpression.cpp" line="756"/>
-        <location filename="../src/core/qgsexpression.cpp" line="757"/>
-        <location filename="../src/core/qgsexpression.cpp" line="758"/>
-        <source>Conversions</source>
-        <translation>Umwandlungen</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsexpression.cpp" line="760"/>
-        <location filename="../src/core/qgsexpression.cpp" line="761"/>
-        <location filename="../src/core/qgsexpression.cpp" line="762"/>
-        <location filename="../src/core/qgsexpression.cpp" line="763"/>
-        <location filename="../src/core/qgsexpression.cpp" line="764"/>
-        <location filename="../src/core/qgsexpression.cpp" line="765"/>
-        <location filename="../src/core/qgsexpression.cpp" line="766"/>
-        <location filename="../src/core/qgsexpression.cpp" line="767"/>
         <location filename="../src/core/qgsexpression.cpp" line="768"/>
-        <source>Date/Time</source>
-        <translation>Datum/Zeit</translation>
-    </message>
-    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="769"/>
         <location filename="../src/core/qgsexpression.cpp" line="770"/>
         <location filename="../src/core/qgsexpression.cpp" line="771"/>
         <location filename="../src/core/qgsexpression.cpp" line="772"/>
@@ -6543,54 +6504,101 @@ qgis.utils.iface object (instance of QgisInterface class) zugegriffen werden.
         <location filename="../src/core/qgsexpression.cpp" line="775"/>
         <location filename="../src/core/qgsexpression.cpp" line="776"/>
         <location filename="../src/core/qgsexpression.cpp" line="777"/>
-        <source>String</source>
-        <translation>Zeichenketten</translation>
+        <location filename="../src/core/qgsexpression.cpp" line="778"/>
+        <location filename="../src/core/qgsexpression.cpp" line="779"/>
+        <source>Math</source>
+        <translation>Mathematik</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="779"/>
-        <location filename="../src/core/qgsexpression.cpp" line="780"/>
         <location filename="../src/core/qgsexpression.cpp" line="781"/>
         <location filename="../src/core/qgsexpression.cpp" line="782"/>
         <location filename="../src/core/qgsexpression.cpp" line="783"/>
         <location filename="../src/core/qgsexpression.cpp" line="784"/>
         <location filename="../src/core/qgsexpression.cpp" line="785"/>
+        <location filename="../src/core/qgsexpression.cpp" line="786"/>
+        <location filename="../src/core/qgsexpression.cpp" line="787"/>
+        <location filename="../src/core/qgsexpression.cpp" line="788"/>
+        <source>Conversions</source>
+        <translation>Umwandlungen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="790"/>
+        <location filename="../src/core/qgsexpression.cpp" line="791"/>
+        <location filename="../src/core/qgsexpression.cpp" line="792"/>
+        <location filename="../src/core/qgsexpression.cpp" line="793"/>
+        <location filename="../src/core/qgsexpression.cpp" line="794"/>
+        <location filename="../src/core/qgsexpression.cpp" line="795"/>
+        <location filename="../src/core/qgsexpression.cpp" line="796"/>
+        <location filename="../src/core/qgsexpression.cpp" line="797"/>
+        <location filename="../src/core/qgsexpression.cpp" line="798"/>
+        <source>Date and Time</source>
+        <translation>Datum und Zeit</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="obsolete">Datum/Zeit</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="800"/>
+        <location filename="../src/core/qgsexpression.cpp" line="801"/>
+        <location filename="../src/core/qgsexpression.cpp" line="802"/>
+        <location filename="../src/core/qgsexpression.cpp" line="803"/>
+        <location filename="../src/core/qgsexpression.cpp" line="804"/>
+        <location filename="../src/core/qgsexpression.cpp" line="805"/>
+        <location filename="../src/core/qgsexpression.cpp" line="806"/>
+        <location filename="../src/core/qgsexpression.cpp" line="807"/>
+        <location filename="../src/core/qgsexpression.cpp" line="808"/>
+        <location filename="../src/core/qgsexpression.cpp" line="809"/>
+        <location filename="../src/core/qgsexpression.cpp" line="810"/>
+        <location filename="../src/core/qgsexpression.cpp" line="811"/>
+        <source>String</source>
+        <translation>Zeichenketten</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="814"/>
+        <location filename="../src/core/qgsexpression.cpp" line="815"/>
+        <location filename="../src/core/qgsexpression.cpp" line="816"/>
+        <location filename="../src/core/qgsexpression.cpp" line="817"/>
+        <location filename="../src/core/qgsexpression.cpp" line="818"/>
+        <location filename="../src/core/qgsexpression.cpp" line="819"/>
+        <location filename="../src/core/qgsexpression.cpp" line="820"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="787"/>
-        <location filename="../src/core/qgsexpression.cpp" line="788"/>
+        <location filename="../src/core/qgsexpression.cpp" line="822"/>
+        <location filename="../src/core/qgsexpression.cpp" line="823"/>
         <source>Record</source>
         <translation>Datensatz</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="879"/>
-        <location filename="../src/core/qgsexpression.cpp" line="891"/>
+        <location filename="../src/core/qgsexpression.cpp" line="914"/>
+        <location filename="../src/core/qgsexpression.cpp" line="926"/>
         <source>No root node! Parsing failed?</source>
         <translation>Kein Wurzelknoten! Parsen gescheitert?</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="912"/>
+        <location filename="../src/core/qgsexpression.cpp" line="947"/>
         <source>(no root)</source>
         <translation>(Keine Wurzel)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1128"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1163"/>
         <source>Unary minus only for numeric values.</source>
         <translation>Negatives Vorzeichen nur für nummerische Werte.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1230"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1265"/>
         <source>Can&apos;t preform /, *, or % on DateTime and Interval</source>
         <translation>Kann /, * or % nicht auf Daten oder Intervallen ausführen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1812"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1847"/>
         <source>[unsupported type;%1; value:%2]</source>
         <translation>[nicht unterstützter Typ;%1; Wert:%2]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1919"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1954"/>
         <source>Column &apos;%1&apos; not found</source>
         <translation>Spalte &apos;%1&apos; nicht gefunden</translation>
     </message>
@@ -6693,11 +6701,13 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="37"/>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="50"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="38"/>
         <source>Version 0.2</source>
         <translation>Version 0.2</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="38"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="39"/>
         <source>Loads and displays delimited text files containing x,y coordinates</source>
         <translation>Lädt und stellt Textdateien in CSV-Format, die x und y-Koordinaten haben, dar</translation>
     </message>
@@ -6705,11 +6715,13 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="39"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="50"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="40"/>
         <source>Layers</source>
         <translation>Layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="193"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="192"/>
         <source>Add Delimited Text Layer</source>
         <translation>Textdatei als Layer importieren</translation>
     </message>
@@ -15538,11 +15550,13 @@ p, li { white-space: pre-wrap; }
     <name>QgsDelimitedTextPlugin</name>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="103"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="104"/>
         <source>&amp;Add Delimited Text Layer</source>
         <translation>Textd&amp;atei als Layer importieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="105"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="106"/>
         <source>Add a delimited text file as a map layer. The file must have a header row containing the field names. The file must either contain X and Y fields with coordinates in decimal units or a WKT field.</source>
         <translation>Eine Textdatei als Layer hinzufügen. Die Datei muss eine Kopfzeile mit Spaltennamen enthalten. X- und Y-Spalten mit dezimalen Koordinaten oder ein WKT-Feld sind unbedingt erforderlich.</translation>
     </message>
@@ -15558,6 +15572,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="52"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextplugin.cpp" line="53"/>
         <source>DelimitedTextLayer</source>
         <translation>Layer aus Textdatei</translation>
     </message>
@@ -16311,62 +16326,68 @@ p, li { white-space: pre-wrap; }
         <translation>&apos;Durchmesser&apos; || Durchmesser</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="95"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="84"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="85"/>
+        <source>Conditionals</source>
+        <translation>Bedingungen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="99"/>
         <source>Search</source>
         <translation>Suchen</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="169"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="173"/>
         <source>Fields and Values</source>
         <translation>Felder und Werte</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="284"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="288"/>
         <source>Parser Error</source>
         <translation>Parsingfehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="286"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="290"/>
         <source>Eval Error</source>
         <translation>Auswertungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="288"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="292"/>
         <source>Expression is invalid &lt;a href=more&gt;(more info)&lt;/a&gt;</source>
         <translation>Ausdruck ist ungültig &lt;a href=more&gt;(mehr Information)&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="317"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="321"/>
         <source>More info on expression error</source>
         <translation>Mehr Informations zum Ausdrucksfehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="344"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="348"/>
         <source>Load top 10 unique values</source>
         <translation>Die ersten zehn eindeutigen Werte laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="345"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="349"/>
         <source>Load all unique values</source>
         <translation>Alle eindeutigen Werte laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="423"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="427"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this function.&lt;/h3&gt;The help file for %1 was not found.&lt;br&gt;</source>
         <translation>&lt;h3&gt;Hoppla!  QGIS kann die Hilfe für die Funktion nicht finden&lt;/h3&gt;Die Hilfedatei für %1 wurde nicht gefunden.&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="432"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="436"/>
         <source>(Showing English version as there was no help available in your language (%1). If you would like to create it, contact the QGIS translation team).&lt;br&gt;</source>
         <translation>(Weil keine Version in Ihrer Sprache (%1) vorhanden war, wird die englische Version angezeigt. Wenden Sie sich bitte an das QGIS-Übersetzungsteam, wenn Sie eine ergänzen möchen).&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="434"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="438"/>
         <source>It was neither available in your language (%1) nor English.</source>
         <translation>Sie war weder in Ihrer (%1) noch in englischer Sprache verfügbar.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="442"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="446"/>
         <source>&lt;br&gt;If you would like to create it, contact the QGIS development team.</source>
         <translation>&lt;br&gt;Wenden Sie sich an das QGIS-Entwicklerteam, falls Sie eine ergänzen möchten.</translation>
     </message>
@@ -33401,22 +33422,27 @@ Der Fehler war:
         <translation>Standardabweichung verwenden</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="160"/>
+        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="142"/>
+        <source>2 - 98% cumulative pixel count cut</source>
+        <translation type="unfinished">2 - 98% der Pixel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="180"/>
         <source>Gray band</source>
         <translation>Grauer Kanal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="147"/>
+        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="167"/>
         <source>Contrast enhancement</source>
         <translation>Kontrastverbesserung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="167"/>
+        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="187"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="177"/>
+        <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="197"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>

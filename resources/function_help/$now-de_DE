@@ -1,0 +1,11 @@
+<h3>Funktion $now</h3>
+Ergibt aktuelles Datum und Zeit
+
+<h4>Syntax</h4>
+<pre>$now</pre>
+
+<h4>Argumente</h4>
+Keine
+
+<h4>Beispiel</h4>
+<pre>$now &rarr; 2012-07-22T13:24:57</pre>

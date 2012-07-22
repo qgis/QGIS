@@ -257,6 +257,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "substr outside" ) << "substr('HeLLo', -5,2)" << false << QVariant( "" );
       QTest::newRow( "strpos" ) << "strpos('Hello World','World')" << false << QVariant( 6 );
       QTest::newRow( "strpos outside" ) << "strpos('Hello World','blah')" << false << QVariant( -1 );
+      QTest::newRow( "left" ) << "left('Hello World',5)" << false << QVariant( "Hello" );
+      QTest::newRow( "right" ) << "right('Hello World', 5)" << false << QVariant( "World" );
+      QTest::newRow( "rpad" ) << "rpad('Hello', 10, 'x')" << false << QVariant( "xxxxxHello" );
+      QTest::newRow( "rpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
+      QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
+      QTest::newRow( "lpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
 
       // implicit conversions
       QTest::newRow( "implicit int->text" ) << "length(123)" << false << QVariant( 3 );
