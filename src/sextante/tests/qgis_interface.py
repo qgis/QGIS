@@ -41,6 +41,12 @@ class QgisInterface(QObject):
         self.canvas = canvas
         self.testRaster = QgsRasterLayer('data/raster', "raster")
         self.testVector = QgsVectorLayer('data/vector', "vector", 'ogr')
+        QgsMapLayerRegistry.instance().addMapLayer(self.testRaster)
+        QgsMapLayerRegistry.instance().addMapLayer(self.testVector)
+
+        self.statusBar = type('FakeStatusBar', (),
+        {'showMessage' : lambda _, m: None
+            })()
 
     def zoomFull(self):
         """Zoom to the map full extent"""
@@ -89,7 +95,10 @@ class QgisInterface(QObject):
 
         In case of QGIS it returns an instance of QgisApp
         """
-        pass
+        return type('FakeMainWindow', (),
+        {'statusBar' :
+            lambda _: self.statusBar
+            })()
 
     def addDockWidget(self, area, dockwidget):
         """ Add a dock widget to the main window """
