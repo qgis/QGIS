@@ -5,7 +5,7 @@ Converts a string to lower case letters.
      lower(<i>string</i>)</p>
 
 <p><h4>  Arguments</h4>
-<i>  string</i> -> is string.  The String to convert to lower case.</p>
+<i>  string</i> &rarr; is string.  The String to convert to lower case.</p>
 
 <p><h4>  Example</h4>
-     lower('HELLO World') -> 'hello world'</p>
+     lower('HELLO World') &rarr; 'hello world'</p>

@@ -13,7 +13,7 @@ from a <code>Interval</code>
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>day('2012-05-12') -> 12</code><br>
-<code>day(tointerval('3 days')) -> 3</code><br>
-<code>day(age('2012-01-01','2010-01-01')) -> 730</code><br>
+<code>day('2012-05-12') &rarr; 12</code><br>
+<code>day(tointerval('3 days')) &rarr; 3</code><br>
+<code>day(age('2012-01-01','2010-01-01')) &rarr; 730</code><br>
 

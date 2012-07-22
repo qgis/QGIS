@@ -11,5 +11,5 @@ Returns a substring that contains the <i>n</i> rightmost characters of the strin
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>right('Hello World',5) -> 'World'</code><br>
+<code>right('Hello World',5) &rarr; 'World'</code><br>
 

@@ -14,5 +14,5 @@ using the fill character.
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>rpad('Hello', 10, 'x') -> 'xxxxxHello'</code><br>
+<code>rpad('Hello', 10, 'x') &rarr; 'xxxxxHello'</code><br>
 

@@ -13,7 +13,7 @@ from a <code>Interval</code>
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>week('2012-05-12') -> 19</code><br>
-<code>week(tointerval('3 weeks')) -> 3</code><br>
-<code>week(age('2012-01-01','2010-01-01')) -> 104.285...</code><br>
+<code>week('2012-05-12') &rarr; 19</code><br>
+<code>week(tointerval('3 weeks')) &rarr; 3</code><br>
+<code>week(age('2012-01-01','2010-01-01')) &rarr; 104.285...</code><br>
 

@@ -6,8 +6,8 @@ Converts a string to upper case letters.
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
-<i>  string</i> -> is string.  The String to convert to upper case.</p>
+<i>  string</i> &rarr; is string.  The String to convert to upper case.</p>
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     upper('hello WOrld') -> 'HELLO WORLD'</p>
+     upper('hello WOrld') &rarr; 'HELLO WORLD'</p>

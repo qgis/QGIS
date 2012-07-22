@@ -13,8 +13,8 @@ from a <code>Interval</code>
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>hour('2012-07-22T13:24:57') -> 13</code><br>
-<code>hour(tointerval('3 hours')) -> 3</code><br>
-<code>hour(age('2012-07-22T13:00:00','2012-07-22T10:00:00')) -> 3</code><br>
-<code>hour(age('2012-01-01','2010-01-01')) -> 17520</code><br>
+<code>hour('2012-07-22T13:24:57') &rarr; 13</code><br>
+<code>hour(tointerval('3 hours')) &rarr; 3</code><br>
+<code>hour(age('2012-07-22T13:00:00','2012-07-22T10:00:00')) &rarr; 3</code><br>
+<code>hour(age('2012-01-01','2010-01-01')) &rarr; 17520</code><br>
 

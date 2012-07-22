@@ -13,7 +13,7 @@ from a <code>Interval</code>
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>month('2012-05-12') -> 05</code><br>
-<code>month(tointerval('3 months')) -> 3</code><br>
-<code>month(age('2012-01-01','2010-01-01')) -> 4.033...</code><br>
+<code>month('2012-05-12') &rarr; 05</code><br>
+<code>month(tointerval('3 months')) &rarr; 3</code><br>
+<code>month(age('2012-01-01','2010-01-01')) &rarr; 4.033...</code><br>
 
