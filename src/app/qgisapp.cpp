@@ -1852,6 +1852,12 @@ void QgisApp::addDockWidget( Qt::DockWidgetArea theArea, QDockWidget * thepDockW
   mMapCanvas->refresh();
 }
 
+void QgisApp::removeDockWidget( QDockWidget * thepDockWidget )
+{
+  QMainWindow::removeDockWidget( thepDockWidget );
+  mPanelMenu->removeAction( thepDockWidget->toggleViewAction() );
+}
+
 QToolBar *QgisApp::addToolBar( QString name )
 {
   QToolBar *toolBar = QMainWindow::addToolBar( name );

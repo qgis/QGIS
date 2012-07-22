@@ -187,6 +187,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      * After adding the dock widget to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of docks.*/
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
+    void removeDockWidget( QDockWidget * dockwidget );
     /** Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
