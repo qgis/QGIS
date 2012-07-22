@@ -18,7 +18,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if SextanteUtils.isWindows():
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
@@ -34,7 +34,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if SextanteUtils.isWindows():
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
             SextanteConfig.removeSetting(GrassUtils.GRASS_FOLDER)
             SextanteConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)
         SextanteConfig.removeSetting(GrassUtils.GRASS_AUTO_REGION)
@@ -62,7 +62,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                 except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
         #self.preloadedAlgs.append(nviz())
-        #self.createDescriptionFiles()
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs

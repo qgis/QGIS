@@ -40,20 +40,23 @@ class GrassUtils:
 
     @staticmethod
     def grassPath():
-        if not SextanteUtils.isWindows():
+        if not SextanteUtils.isWindows() and not SextanteUtils.isMac():
             return ""
 
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_FOLDER)
         if folder == None:
-            folder = plugin_installer.__file__
-            idx = folder.find('qgis')
-            folder = folder[:idx] + "grass"
-            if not os.path.isdir(folder):
-                return ""
-            for subfolder in os.listdir(folder):
-                if subfolder.startswith("grass"):
-                    folder = folder + os.sep + subfolder
-                    break
+            if SextanteUtils.isWindows():
+                folder = plugin_installer.__file__
+                idx = folder.find('qgis')
+                folder = folder[:idx] + "grass"
+                if not os.path.isdir(folder):
+                    return ""
+                for subfolder in os.listdir(folder):
+                    if subfolder.startswith("grass"):
+                        folder = folder + os.sep + subfolder
+                        break
+            else:
+                return "/Applications/GRASS-6.4.app/Contents/MacOS"
 
         return folder
 
@@ -247,7 +250,10 @@ class GrassUtils:
             os.putenv("GRASS_BATCH_JOB", GrassUtils.grassBatchJobFilename())
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
-            command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
+            if SextanteUtils.isMac():
+                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/user"
+            else:
+                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
         loglines = []
         loglines.append("GRASS execution console output")
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
