@@ -18,7 +18,7 @@ class HistoryDialog(QtGui.QDialog):
         self.tree.setHeaderHidden(True)
         self.tree.doubleClicked.connect(self.executeAlgorithm)
         self.verticalLayout.addWidget(self.tree)
-        QObject.connect(self.tree, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*, int)"), self.changeText)
+        self.tree.currentItemChanged.connect(self.changeText)
         self.groupIcon = QtGui.QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_DirClosedIcon),
                 QtGui.QIcon.Normal, QtGui.QIcon.Off)
