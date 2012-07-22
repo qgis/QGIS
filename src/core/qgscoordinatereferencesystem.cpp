@@ -26,6 +26,7 @@
 #include <QFileInfo>
 #include <QRegExp>
 #include <QTextStream>
+#include <QFile>
 
 #include "qgsapplication.h"
 #include "qgscrscache.h"
@@ -1509,9 +1510,119 @@ QString QgsCoordinateReferenceSystem::quotedValue( QString value )
   return value.prepend( "'" ).append( "'" );
 }
 
+// adapted from gdal/ogr/ogr_srs_dict.cpp
+bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const char *filename )
+{
+  qDebug( "Loading %s", filename );
+  const char *pszFilename = CPLFindFile( "gdal", filename );
+  if ( !pszFilename )
+    return false;
+
+  QFile csv( pszFilename );
+  if ( !csv.open( QIODevice::ReadOnly ) )
+    return false;
+
+  QTextStream lines( &csv );
+
+  for ( ;; )
+  {
+    QString line = lines.readLine();
+    if ( line.isNull() )
+      break;
+
+    if ( line.startsWith( '#' ) )
+    {
+      continue;
+    }
+    else if ( line.startsWith( "include " ) )
+    {
+      if ( !loadWkts( wkts, line.mid( 8 ).toUtf8() ) )
+        break;
+    }
+    else
+    {
+      int pos = line.indexOf( "," );
+      if ( pos < 0 )
+        return false;
+
+      bool ok;
+      int epsg = line.left( pos ).toInt( &ok );
+      if ( !ok )
+        return false;
+
+      wkts.insert( epsg, line.mid( pos + 1 ) );
+    }
+  }
+
+  csv.close();
+
+  return true;
+}
+
+bool QgsCoordinateReferenceSystem::loadIDs( QHash<int, QString> &wkts )
+{
+  OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
+
+  foreach( QString csv, QStringList() << "gcs.csv" << "pcs.csv" << "vertcs.csv" << "compdcs.csv" << "geoccs.csv" )
+  {
+    QString filename = CPLFindFile( "gdal", csv.toUtf8() );
+
+    QFile f( filename );
+    if ( !f.open( QIODevice::ReadOnly ) )
+      continue;
+
+    QTextStream lines( &f );
+    int l = 0, n = 0;
+
+    lines.readLine();
+    for ( ;; )
+    {
+      l++;
+      QString line = lines.readLine();
+      if ( line.isNull() )
+        break;
+
+      int pos = line.indexOf( "," );
+      if ( pos < 0 )
+        continue;
+
+      bool ok;
+      int epsg = line.left( pos ).toInt( &ok );
+      if ( !ok )
+        continue;
+
+      if ( OSRImportFromEPSG( crs, epsg ) != OGRERR_NONE )
+      {
+        qDebug( "EPSG %d: not imported", epsg );
+        continue;
+      }
+
+      char *wkt = 0;
+      if ( OSRExportToWkt( crs, &wkt ) != OGRERR_NONE )
+      {
+        qWarning( "EPSG %d: not exported to WKT", epsg );
+        continue;
+      }
+
+      wkts.insert( epsg, wkt );
+      n++;
+
+      OGRFree( wkt );
+    }
+
+    f.close();
+
+    qDebug( "Loaded %d/%d from %s", n, l, filename.toUtf8().constData() );
+  }
+
+  OSRDestroySpatialReference( crs );
+
+  return true;
+}
+
 int QgsCoordinateReferenceSystem::syncDb()
 {
-  int updated = 0, errors = 0;
+  int inserted = 0, updated = 0, deleted = 0, errors = 0;
 
   sqlite3 *database;
   if ( sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &database ) != SQLITE_OK )
@@ -1524,54 +1635,154 @@ int QgsCoordinateReferenceSystem::syncDb()
   {
     qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
+
   }
 
-  const char *tail;
-  sqlite3_stmt *select;
-  QString sql = "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name IS NOT NULL AND auth_id IS NOT NULL order by deprecated";
-  if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) != SQLITE_OK )
-  {
-    qCritical( "Could not prepare: %s [%s]\n", sql.toAscii().constData(), sqlite3_errmsg( database ) );
-    sqlite3_close( database );
-    return -1;
-  }
+  sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", 0, 0, 0 );
 
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
+  const char *tail;
+  sqlite3_stmt *select;
+  char *errMsg = NULL;
 
-  while ( sqlite3_step( select ) == SQLITE_ROW )
+  QString sql;
+  QHash<int, QString> wkts;
+  loadIDs( wkts );
+  loadWkts( wkts, "epsg.wkt" );
+
+  qDebug( "%d WKTs loaded", wkts.count() );
+
+  for ( QHash<int, QString>::const_iterator it = wkts.constBegin(); it != wkts.constEnd(); ++it )
   {
-    const char *auth_name = ( const char * ) sqlite3_column_text( select, 0 );
-    const char *auth_id   = ( const char * ) sqlite3_column_text( select, 1 );
-    const char *params    = ( const char * ) sqlite3_column_text( select, 2 );
-
-    QString proj4;
-
-    if ( QString( auth_name ).compare( "epsg", Qt::CaseInsensitive ) == 0 )
+    QByteArray ba( it.value().toUtf8() );
+    char *psz = ba.data();
+    OGRErr ogrErr = OSRImportFromWkt( crs, &psz );
+    if ( ogrErr != OGRERR_NONE )
     {
-      OGRErr ogrErr = OSRSetFromUserInput( crs, QString( "epsg:%1" ).arg( auth_id ).toAscii() );
+      continue;
+    }
 
-      if ( ogrErr == OGRERR_NONE )
+    if ( OSRExportToProj4( crs, &psz ) != OGRERR_NONE )
+      continue;
+
+    QString proj4( psz );
+    proj4 = proj4.trimmed();
+
+    CPLFree( psz );
+
+    if ( proj4.isEmpty() )
+    {
+      continue;
+    }
+
+    sql = QString( "SELECT parameters FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
+    if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) != SQLITE_OK )
+    {
+      qCritical( "Could not prepare: %s [%s]\n", sql.toAscii().constData(), sqlite3_errmsg( database ) );
+      continue;
+    }
+
+    QString srsProj4;
+    if ( sqlite3_step( select ) == SQLITE_ROW )
+    {
+      srsProj4 = ( const char * ) sqlite3_column_text( select, 0 );
+    }
+
+    sqlite3_finalize( select );
+
+    if ( !srsProj4.isEmpty() )
+    {
+      if ( proj4 != srsProj4 )
       {
-        char *output = 0;
+        errMsg = NULL;
+        sql = QString( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name='EPSG' AND auth_id=%2" ).arg( quotedValue( proj4 ) ).arg( it.key() );
 
-        if ( OSRExportToProj4( crs, &output ) == OGRERR_NONE )
+        if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, &errMsg ) != SQLITE_OK )
         {
-          proj4 = output;
-          proj4 = proj4.trimmed();
+          qCritical( "Could not execute: %s [%s/%s]\n",
+                     sql.toLocal8Bit().constData(),
+                     sqlite3_errmsg( database ),
+                     errMsg ? errMsg : "(unknown error)" );
+          errors++;
         }
         else
         {
-          QgsDebugMsg( QString( "could not retrieve proj.4 string for epsg:%1 from OGR" ).arg( auth_id ) );
+          updated++;
+          QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql ).arg( srsProj4 ).arg( proj4 ), 3 );
         }
-
-        if ( output )
-          CPLFree( output );
       }
     }
-#if !defined(PJ_VERSION) || PJ_VERSION!=470
-    // 4.7.0 has a bug that crashes after 16 consecutive pj_init_plus with different strings
     else
     {
+      QRegExp projRegExp( "\\+proj=(\\S+)" );
+      if ( projRegExp.indexIn( proj4 ) < 0 )
+      {
+        QgsDebugMsg( QString( "EPSG %1: no +proj argument found [%2]" ).arg( it.key() ).arg( proj4 ) );
+        continue;
+      }
+
+      QRegExp ellipseRegExp( "\\+ellps=(\\S+)" );
+      QString ellps;
+      if ( ellipseRegExp.indexIn( proj4 ) >= 0 )
+      {
+        ellps = ellipseRegExp.cap( 1 );
+      }
+
+      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
+      if ( name.isEmpty() )
+        name = QObject::tr( "Imported from GDAL" );
+
+      sql = QString( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,0)" )
+            .arg( quotedValue( name ) )
+            .arg( quotedValue( projRegExp.cap( 1 ) ) )
+            .arg( quotedValue( ellps ) )
+            .arg( quotedValue( proj4 ) )
+            .arg( it.key() )
+            .arg( OSRIsGeographic( crs ) );
+
+      errMsg = NULL;
+      if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, &errMsg ) == SQLITE_OK )
+      {
+        inserted++;
+      }
+      else
+      {
+        qCritical( "Could not execute: %s [%s/%s]\n",
+                   sql.toLocal8Bit().constData(),
+                   sqlite3_errmsg( database ),
+                   errMsg ? errMsg : "(unknown error)" );
+        errors++;
+
+        if ( errMsg )
+          sqlite3_free( errMsg );
+      }
+    }
+  }
+
+  sql = "DELETE FROM tbl_srs WHERE auth_name='EPSG' AND NOT auth_id IN (";
+  QString delim;
+  foreach( int i, wkts.keys() )
+  {
+    sql += delim + QString::number( i );
+    delim = ",";
+  }
+  sql += ")";
+
+  if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, 0 ) == SQLITE_OK )
+  {
+    deleted = sqlite3_changes( database );
+  }
+
+#if !defined(PJ_VERSION) || PJ_VERSION!=470
+  QString sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' WHERE NOT deprecated" );
+  if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) == SQLITE_OK )
+  {
+    while ( sqlite3_step( select ) == SQLITE_ROW )
+    {
+      const char *auth_name = ( const char * ) sqlite3_column_text( select, 0 );
+      const char *auth_id   = ( const char * ) sqlite3_column_text( select, 1 );
+      const char *params    = ( const char * ) sqlite3_column_text( select, 2 );
+
       QString input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toLower() ).arg( auth_id );
       projPJ pj = pj_init_plus( input.toAscii() );
       if ( !pj )
@@ -1607,43 +1818,10 @@ int QgsCoordinateReferenceSystem::syncDb()
 
       pj_free( pj );
     }
+  }
 #endif
 
-    if ( proj4.isEmpty() )
-    {
-      continue;
-    }
-
-    if ( proj4 != params )
-    {
-      char *errMsg = NULL;
-      sql = QString( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
-            .arg( quotedValue( proj4 ) )
-            .arg( quotedValue( auth_name ) )
-            .arg( quotedValue( auth_id ) );
-
-      if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, &errMsg ) != SQLITE_OK )
-      {
-        qCritical( "Could not execute: %s [%s/%s]\n",
-                   sql.toLocal8Bit().constData(),
-                   sqlite3_errmsg( database ),
-                   errMsg ? errMsg : "(unknown error)" );
-        errors++;
-      }
-      else
-      {
-        updated++;
-        QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql ).arg( params ).arg( proj4 ), 3 );
-      }
-
-      if ( errMsg )
-        sqlite3_free( errMsg );
-    }
-  }
-
   OSRDestroySpatialReference( crs );
-
-  sqlite3_finalize( select );
 
   if ( sqlite3_exec( database, "COMMIT", 0, 0, 0 ) != SQLITE_OK )
   {
@@ -1653,8 +1831,10 @@ int QgsCoordinateReferenceSystem::syncDb()
 
   sqlite3_close( database );
 
+  qWarning( "CRS update (inserted:%d updated:%d deleted:%d errors:%d)", inserted, updated, deleted, errors );
+
   if ( errors > 0 )
     return -errors;
   else
-    return updated;
+    return updated + inserted;
 }
