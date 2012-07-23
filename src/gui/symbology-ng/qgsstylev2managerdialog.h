@@ -56,8 +56,14 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void groupRenamed( QStandardItem * );
     void addGroup();
     void removeGroup();
+
+    //! carryout symbol grouping using check boxes
     void groupSymbolsAction();
-    void tagSymbolsAction();
+
+    //! edit the selected smart group
+    void editSmartgroupAction();
+
+    //! symbol changed from one group 
     void regrouped( QStandardItem* );
 
     //! filter the symbols based on input search term

@@ -52,7 +52,12 @@ _symgroup = "CREATE TABLE symgroup("\
         "name TEXT,"\
         "parent INTEGER)"
 
-create_tables = [ _symbol, _colorramp, _tag, _tagmap, _symgroup ]
+_smartgroup = "CREATE TABLE smartgroup("\
+        "id INTEGER PRIMARY KEY,"\
+        "name TEXT,"\
+        "xml TEXT)"
+
+create_tables = [ _symbol, _colorramp, _tag, _tagmap, _symgroup, _smartgroup ]
 
 # Create the DB with required Schema
 conn = sqlite3.connect( dbfile )

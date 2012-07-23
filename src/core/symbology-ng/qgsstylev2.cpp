@@ -25,6 +25,8 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QDomNode>
+#include <QDomNodeList>
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
@@ -572,6 +574,8 @@ void QgsStyleV2::rename( StyleEntity type, int id, QString newName )
                         break;
     case ColorrampEntity  : query = sqlite3_mprintf( "UPDATE colorramp SET name='%q' WHERE id=%d;", nameArray.constData(), id );
                         break;
+    case SmartgroupEntity  : query = sqlite3_mprintf( "UPDATE smartgroup SET name='%q' WHERE id=%d;", nameArray.constData(), id );
+                        break;
     default           : QgsDebugMsg( "Invalid Style Entity indicated" );
                         return;
   }
@@ -615,6 +619,8 @@ void QgsStyleV2::remove( StyleEntity type, int id )
     case TagEntity    : query = sqlite3_mprintf( "DELETE FROM tag WHERE id=%d; DELETE FROM tagmap WHERE tag_id=%d;", id, id );
                         break;
     case ColorrampEntity  : query = sqlite3_mprintf( "DELETE FROM colorramp WHERE id=%d;", id );
+                        break;
+    case SmartgroupEntity : query = sqlite3_mprintf( "DELETE FROM smartgroup WHERE id=%d;", id );
                         break;
     default           : QgsDebugMsg( "Invalid Style Entity indicated" );
                         return;
@@ -863,4 +869,290 @@ int QgsStyleV2::groupId( QString name )
   }
   sqlite3_finalize( ppStmt );
   return groupid;
+}
+
+int QgsStyleV2::tagId( QString name )
+{
+  int tagid = 0;
+  char *query;
+  sqlite3_stmt *ppStmt;
+  QByteArray array = name.toUtf8();
+  query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q';", array.constData() );
+  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    tagid = sqlite3_column_int( ppStmt, 0 );
+  }
+  sqlite3_finalize( ppStmt );
+  return tagid;
+}
+
+
+int QgsStyleV2::addSmartgroup( QString name, QString op, QgsSmartConditionMap conditions )
+{
+  int sgId = 0;
+
+  QDomDocument doc( "dummy" );
+  QDomElement smartEl = doc.createElement( "smartgroup" );
+  smartEl.setAttribute( "name", name );
+  smartEl.setAttribute( "operator", op );
+
+  QStringList constraints;
+  constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name" ;
+
+  foreach ( const QString &constraint, constraints )
+  {
+    QStringList parameters = conditions.values( constraint );
+    foreach ( const QString &param, parameters )
+    {
+      QDomElement condEl = doc.createElement( "condition" );
+      condEl.setAttribute( "constraint", constraint);
+      condEl.setAttribute( "param", param );
+      smartEl.appendChild( condEl );
+    }
+  }
+
+  QByteArray *xmlArray = new QByteArray();
+  QTextStream stream( xmlArray );
+  smartEl.save( stream, 4 );
+  QByteArray nameArray = name.toUtf8();
+  char *query = sqlite3_mprintf( "INSERT INTO smartgroup VALUES (NULL, '%q', '%q');",
+      nameArray.constData(), xmlArray->constData() );
+
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( "Couldnot insert symbol into the Database!" );
+  }
+  else
+  {
+    sgId = (int)sqlite3_last_insert_rowid( mCurrentDB );
+  }
+  return sgId;
+}
+
+QgsSymbolGroupMap QgsStyleV2::smartgroupsListMap()
+{
+  if( mCurrentDB == NULL )
+  {
+    QgsDebugMsg( "Cannot open database for listing groups" );
+    return QgsSymbolGroupMap();
+  }
+  char *query;
+  int nError;
+  sqlite3_stmt *ppStmt;
+  QgsSymbolGroupMap groupNames;
+
+  query = sqlite3_mprintf( "SELECT * FROM smartgroup;" );
+
+  // Now run the query and retrive the group names
+  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QString group = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, SmartgroupName ) ) );
+    groupNames.insert( sqlite3_column_int( ppStmt, SmartgroupId ), group );
+  }
+  sqlite3_finalize( ppStmt );
+  return groupNames;
+}
+
+QStringList QgsStyleV2::smartgroupNames()
+{
+  QStringList groups;
+
+  if( mCurrentDB == NULL )
+  {
+    QgsDebugMsg( "Cannot open database for listing groups" );
+    return QStringList();
+  }
+  char *query;
+  int nError;
+  sqlite3_stmt *ppStmt;
+
+  query = sqlite3_mprintf( "SELECT name FROM smartgroup;" );
+  // Now run the query and retrive the group names
+  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    groups.append( QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) ) );
+  }
+  sqlite3_finalize( ppStmt );
+  return groups;
+}
+
+QStringList QgsStyleV2::symbolsOfSmartgroup( int id )
+{
+  char *query;
+  int nErr;
+  sqlite3_stmt *ppStmt;
+
+  QStringList symbols;
+  bool firstSet = true;
+
+  query = sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d;", id );
+  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  if ( !( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW ) )
+  {
+    sqlite3_finalize( ppStmt );
+    return QStringList();
+  }
+  else
+  {
+    QDomDocument doc;
+    QString xmlstr = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+    if ( !doc.setContent( xmlstr ) )
+    {
+      QgsDebugMsg( "Cannot open smartgroup id: " + id );
+    }
+    QDomElement smartEl = doc.documentElement();
+    QString op = smartEl.attribute( "operator" );
+    QDomNodeList conditionNodes = smartEl.childNodes();
+
+    for ( int i = 0; i < conditionNodes.count(); i++ )
+    {
+      QDomElement condEl = conditionNodes.at( i ).toElement();
+      QString constraint = condEl.attribute( "constraint" );
+      QString param = condEl.attribute( "param" );
+
+      QStringList resultNames;
+      // perform suitable action for the given constraint
+      if ( constraint == "tag" )
+      {
+        resultNames = symbolsWithTag( tagId( param ) );
+      }
+      else if ( constraint == "group" )
+      {
+        // XXX Validating group id might be a good idea here
+        resultNames = symbolsOfGroup( groupId( param ) );
+      }
+      else if ( constraint == "name" )
+      {
+        resultNames = symbolNames().filter( param, Qt::CaseInsensitive );
+      }
+      else if ( constraint == "!tag" )
+      {
+        resultNames = symbolNames();
+        QStringList unwanted = symbolsWithTag( tagId( param ) );
+        foreach( QString name, unwanted )
+        {
+          resultNames.removeOne( name );
+        }
+      }
+      else if ( constraint == "!group" )
+      {
+        resultNames = symbolNames();
+        QStringList unwanted = symbolsOfGroup( groupId( param ) );
+        foreach( QString name, unwanted )
+        {
+          resultNames.removeOne( name );
+        }
+      }
+      else if ( constraint == "!name" )
+      {
+        QStringList all = symbolNames();
+        foreach ( const QString &str, all )
+        {
+          if ( !str.contains( param, Qt::CaseInsensitive ) )
+            resultNames.append( str );
+        }
+      }
+
+      // not apply the operator
+      if ( firstSet )
+      {
+        symbols = resultNames;
+        firstSet = false;
+      }
+      else
+      {
+        if ( op == "OR" )
+        {
+          symbols.append( resultNames );
+        }
+        else if ( op == "AND" )
+        {
+          QStringList dummy = symbols;
+          symbols.clear();
+          foreach ( const QString &result, resultNames )
+          {
+            if ( dummy.contains( result ) )
+              symbols.append( result );
+          }
+        }
+      }
+    } // DOM loop ends here
+  }
+  sqlite3_finalize( ppStmt );
+  return symbols;
+}
+
+QgsSmartConditionMap QgsStyleV2::smartgroup( int id )
+{
+ if( mCurrentDB == NULL )
+  {
+    QgsDebugMsg( "Cannot open database for listing groups" );
+    return QgsSmartConditionMap();
+  }
+  char *query;
+  int nError;
+  sqlite3_stmt *ppStmt;
+
+  QgsSmartConditionMap condition;
+
+  query = sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d;", id );
+  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QDomDocument doc;
+    QString xmlstr = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+    if ( !doc.setContent( xmlstr ) )
+    {
+      QgsDebugMsg( "Cannot open smartgroup id: " + id );
+    }
+    QDomElement smartEl = doc.documentElement();
+    QString op = smartEl.attribute( "operator" );
+    QDomNodeList conditionNodes = smartEl.childNodes();
+
+    for ( int i = 0; i < conditionNodes.count(); i++ )
+    {
+      QDomElement condEl = conditionNodes.at( i ).toElement();
+      QString constraint = condEl.attribute( "constraint" );
+      QString param = condEl.attribute( "param" );
+
+      condition.insert( constraint, param );
+    }
+  }
+  sqlite3_finalize( ppStmt );
+
+  return condition;
+}
+
+QString QgsStyleV2::smartgroupOperator( int id )
+{
+  if( mCurrentDB == NULL )
+  {
+    QgsDebugMsg( "Cannot open database for listing groups" );
+    return QString();
+  }
+  char *query;
+  int nError;
+  sqlite3_stmt *ppStmt;
+
+  QString op;
+
+  query = sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d;", id );
+  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
+  if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  {
+    QDomDocument doc;
+    QString xmlstr = QString( reinterpret_cast<const char*>( sqlite3_column_text( ppStmt, 0 ) ) );
+    if ( !doc.setContent( xmlstr ) )
+    {
+      QgsDebugMsg( "Cannot open smartgroup id: " + id );
+    }
+    QDomElement smartEl = doc.documentElement();
+    op = smartEl.attribute( "operator" );
+  }
+  sqlite3_finalize( ppStmt );
+
+  return op;
 }

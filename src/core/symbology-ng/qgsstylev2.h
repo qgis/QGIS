@@ -17,6 +17,7 @@
 #define QGSSTYLEV2_H
 
 #include <QMap>
+#include <QMultiMap>
 #include <QString>
 
 #include <sqlite3.h>
@@ -32,6 +33,7 @@ class QDomElement;
 
 typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
 typedef QMap<int, QString> QgsSymbolGroupMap;
+typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
 // Enumeraters representing sqlite DB  columns
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
@@ -39,9 +41,10 @@ enum SymgroupTable { SymgroupId, SymgroupName, SymgroupParent };
 enum TagTable { TagId, TagName };
 enum TagmapTable { TagmapTagId, TagmapSymbolId };
 enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML };
+enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
 // Enums for types
-enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity };
+enum StyleEntity { SymbolEntity, GroupEntity, TagEntity, ColorrampEntity, SmartgroupEntity };
 
 class CORE_EXPORT QgsStyleV2
 {
@@ -84,6 +87,7 @@ class CORE_EXPORT QgsStyleV2
 
     //! return the id in the style database for the given group name
     int groupId( QString group );
+    int tagId( QString tag );
 
     //! return the all the groups in the style
     QStringList groupNames();
@@ -157,6 +161,25 @@ class CORE_EXPORT QgsStyleV2
 
     //! return the tags associated with the symbol
     QStringList tagsOfSymbol( QString symbol );
+
+    //! adds the smartgroup to the database and returns the id
+    int addSmartgroup( QString name, QString op, QgsSmartConditionMap conditions );
+
+    //! returns the smart groups map
+    QgsSymbolGroupMap smartgroupsListMap();
+
+    //! returns the smart groups list
+    QStringList smartgroupNames();
+
+    //! returns the QgsSmartConditionMap for the given id
+    QgsSmartConditionMap smartgroup( int id );
+
+    //! returns the operator for the smartgroup
+    //! @note: clumsy implementation TODO create a class for smartgroups
+    QString smartgroupOperator( int id );
+
+    //! returns the symbols for the smartgroup
+    QStringList symbolsOfSmartgroup( int id );
 
   protected:
 
