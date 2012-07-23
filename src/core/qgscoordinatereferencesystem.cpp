@@ -1645,6 +1645,7 @@ int QgsCoordinateReferenceSystem::syncDb()
   sqlite3_stmt *select;
   char *errMsg = NULL;
 
+  QString proj4;
   QString sql;
   QHash<int, QString> wkts;
   loadIDs( wkts );
@@ -1665,7 +1666,7 @@ int QgsCoordinateReferenceSystem::syncDb()
     if ( OSRExportToProj4( crs, &psz ) != OGRERR_NONE )
       continue;
 
-    QString proj4( psz );
+    proj4 = psz;
     proj4 = proj4.trimmed();
 
     CPLFree( psz );
@@ -1774,7 +1775,7 @@ int QgsCoordinateReferenceSystem::syncDb()
   }
 
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
-  QString sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' WHERE NOT deprecated" );
+  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' WHERE NOT deprecated" );
   if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) == SQLITE_OK )
   {
     while ( sqlite3_step( select ) == SQLITE_ROW )
