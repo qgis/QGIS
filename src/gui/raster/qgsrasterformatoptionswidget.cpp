@@ -1,5 +1,23 @@
+/***************************************************************************
+                          qgsrasterformatoptionswidget.cpp
+                             -------------------
+    begin                : July 2012
+    copyright            : (C) 2012 by Etienne Tourigny
+    email                : etourigny dot dev at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsrasterformatoptionswidget.h"
 #include "qgslogger.h"
+#include "qgsdialog.h"
 
 #include "gdal.h"
 #include "cpl_string.h"
@@ -10,7 +28,6 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTextEdit>
-#include <QDialogButtonBox>
 
 // todo put this somewhere else - how can we access gdal provider?
 char** papszFromStringList( const QStringList& list )
@@ -187,18 +204,12 @@ void QgsRasterFormatOptionsWidget::optionsHelp()
   else
     message = tr( "No help available" );
 
-  // show simple noon-modal dialog - should we make this basic xml pretty?
-  QDialog *dlg = new QDialog( this );
-  QVBoxLayout *layout = new QVBoxLayout();
+  // show simple non-modal dialog - should we make the basic xml prettier?
+  QgsDialog *dlg = new QgsDialog( this );
   QTextEdit *textEdit = new QTextEdit( dlg );
-  layout->addWidget( textEdit );
   textEdit->setReadOnly( true );
   textEdit->setText( message );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close );
-  connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), dlg, SLOT( reject() ) );
-  layout->addWidget( buttonBox );
-  dlg->setLayout( layout );
+  dlg->layout()->addWidget( textEdit );
   dlg->resize( 600, 600 );
   dlg->show(); //non modal
 }

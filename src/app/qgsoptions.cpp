@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 
 #include "qgsrasterformatoptionswidget.h"
+#include "qgsdialog.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -1093,30 +1094,23 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   if ( driverName.isEmpty() )
     return;
 
-  QDialog dlg( this );
-  QVBoxLayout *layout = new QVBoxLayout();
+  QgsDialog dlg( this, 0, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QVBoxLayout *layout = dlg.layout();
   QString title = tr( "Create Options - %1 Driver" ).arg( driverName );
   if ( driverName == "_pyramids" )
     title = tr( "Create Options - pyramids" );
   dlg.setWindowTitle( title );
-  QLabel *label = new QLabel( title );
+  QLabel *label = new QLabel( title, &dlg );
   label->setAlignment( Qt::AlignHCenter );
   layout->addWidget( label );
-  QgsRasterFormatOptionsWidget* optionsWidget = new QgsRasterFormatOptionsWidget( 0, driverName, "gdal" );
+  QgsRasterFormatOptionsWidget* optionsWidget = new QgsRasterFormatOptionsWidget( &dlg, driverName, "gdal" );
   layout->addWidget( optionsWidget );
   optionsWidget->showProfileButtons( true );
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-  connect( buttonBox, SIGNAL( accepted() ), &dlg, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), &dlg, SLOT( reject() ) );
-  layout->addWidget( buttonBox );
-  dlg.setLayout( layout );
 
   if ( dlg.exec() == QDialog::Accepted )
   {
-    // perhaps setting should not be applied already, but this is easier
     optionsWidget->apply();
   }
-  delete optionsWidget;
 }
 
 // Return state of the visibility flag for newly added layers. If
