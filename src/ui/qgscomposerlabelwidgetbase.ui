@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>256</width>
-        <height>444</height>
+        <width>271</width>
+        <height>470</height>
        </rect>
       </property>
       <attribute name="label">
@@ -41,7 +41,7 @@
        <item row="0" column="0" colspan="2">
         <widget class="QTextEdit" name="mTextEdit">
          <property name="lineWrapMode">
-          <enum>QTextEdit::NoWrap</enum>
+          <enum>QTextEdit::WidgetWidth</enum>
          </property>
         </widget>
        </item>
