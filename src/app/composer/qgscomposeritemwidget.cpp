@@ -89,6 +89,19 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
   mItem->endCommand();
 }
 
+void QgsComposerItemWidget::on_mOpacitySpinBox_valueChanged( int value )
+{
+  if ( !mItem )
+  {
+    return;
+  }
+
+  mOpacitySlider->blockSignals( true );
+  mOpacitySlider->setValue( value );
+  mOpacitySlider->blockSignals( false );
+  changeItemOpacity( value );
+}
+
 void QgsComposerItemWidget::on_mOpacitySlider_sliderReleased()
 {
   if ( !mItem )
@@ -96,7 +109,14 @@ void QgsComposerItemWidget::on_mOpacitySlider_sliderReleased()
     return;
   }
   int value = mOpacitySlider->value();
+  mOpacitySpinBox->blockSignals( true );
+  mOpacitySpinBox->setValue( value );
+  mOpacitySpinBox->blockSignals( false );
+  changeItemOpacity( value );
+}
 
+void QgsComposerItemWidget::changeItemOpacity( int value )
+{
   mItem->beginCommand( tr( "Item opacity changed" ) );
   QBrush itemBrush = mItem->brush();
   QColor brushColor = itemBrush.color();
@@ -151,7 +171,9 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOutlineWidthSpinBox->blockSignals( true );
   mFrameCheckBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
+  mOpacitySpinBox->blockSignals( true );
 
+  mOpacitySpinBox->setValue( mItem->brush().color().alpha() );
   mOpacitySlider->setValue( mItem->brush().color().alpha() );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
@@ -168,6 +190,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameCheckBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
+  mOpacitySpinBox->blockSignals( false );
 }
 
 void QgsComposerItemWidget::on_mPositionButton_clicked()
