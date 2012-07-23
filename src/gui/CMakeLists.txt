@@ -51,6 +51,7 @@ qgscursors.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
+qgsdialog.cpp
 qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
@@ -139,6 +140,7 @@ qgsattributeeditor.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
+qgsdialog.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
