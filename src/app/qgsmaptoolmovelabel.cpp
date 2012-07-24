@@ -122,6 +122,16 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   {
     xPosNew = releaseCoords.x() - mClickOffsetX;
     yPosNew = releaseCoords.y() - mClickOffsetY;
+
+    // handle upsidedown offset on first freeze
+    // TODO: test if this is enough relative to hali and vali options
+    if ( mCurrentLabelPos.upsideDown )
+    {
+      QgsPoint rsu = mCurrentLabelPos.cornerPoints.at( 0 );
+      QgsPoint usd = mCurrentLabelPos.cornerPoints.at( 2 );
+      xPosNew = xPosNew - ( usd.x() - rsu.x() );
+      yPosNew = yPosNew - ( usd.y() - rsu.y() );
+    }
   }
   else
   {
@@ -149,9 +159,31 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
     }
   }
 
+  // set rotation to that of label, if data-defined and no rotation set yet
+  // handle case of initially set rotation column fields of 0 instead of NULL
+  int rCol;
+  double defRot;
+  double labelRot = 0;
+  bool rSuccess;
+  bool setRot = false;
+
+  if ( !mCurrentLabelPos.isDiagram && !mCurrentLabelPos.isFrozen
+       && dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, defRot, rSuccess, rCol ) )
+  {
+    labelRot = mCurrentLabelPos.rotation * 180 / M_PI;
+    if ( !rSuccess || ( rSuccess && defRot != labelRot ) )
+    {
+      setRot = true;
+    }
+  }
+
   vlayer->beginEditCommand( tr( "Label moved" ) );
   vlayer->changeAttributeValue( mCurrentLabelPos.featureId, xCol, xPosNew, false );
   vlayer->changeAttributeValue( mCurrentLabelPos.featureId, yCol, yPosNew, false );
+  if ( setRot )
+  {
+    vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rCol, labelRot, false );
+  }
   vlayer->endEditCommand();
 
   mCanvas->refresh();
