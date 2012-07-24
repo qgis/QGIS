@@ -291,46 +291,6 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
         imageScanLine[j] = qRgba( currentOpacity * redVal, currentOpacity * greenVal, currentOpacity * blueVal, currentOpacity * 255 );
       }
 
-      //stretch color values
-      if ( mRedContrastEnhancement )
-      {
-        redVal = mRedContrastEnhancement->enhanceContrast( redVal );
-      }
-      if ( mGreenContrastEnhancement )
-      {
-        greenVal = mGreenContrastEnhancement->enhanceContrast( greenVal );
-      }
-      if ( mBlueContrastEnhancement )
-      {
-        blueVal = mBlueContrastEnhancement->enhanceContrast( blueVal );
-      }
-
-      if ( mInvertColor )
-      {
-        redVal = 255 - redVal;
-        greenVal = 255 - greenVal;
-        blueVal = 255 - blueVal;
-      }
-
-      //opacity
-      currentOpacity = mOpacity;
-      if ( mRasterTransparency )
-      {
-        currentOpacity = mRasterTransparency->alphaValue( redDataVal, greenDataVal, blueDataVal, mOpacity * 255 ) / 255.0;
-      }
-      if ( mAlphaBand > 0 )
-      {
-        currentOpacity *= ( readValue( alphaData, transparencyType, currentRasterPos ) / 255.0 );
-      }
-
-      if ( doubleNear( currentOpacity, 255 ) )
-      {
-        imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
-      }
-      else
-      {
-        imageScanLine[j] = qRgba( currentOpacity * redVal, currentOpacity * greenVal, currentOpacity * blueVal, currentOpacity * 255 );
-      }
       ++currentRasterPos;
     }
   }
