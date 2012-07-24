@@ -21,6 +21,8 @@
 
 class QgsComposerItem;
 class QgsComposition;
+class QRectF;
+class QPainter;
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
 class QgsComposerMultiFrame: public QObject
@@ -37,6 +39,7 @@ class QgsComposerMultiFrame: public QObject
     QgsComposerMultiFrame( QgsComposition* c );
     virtual ~QgsComposerMultiFrame();
     virtual QSizeF totalSize() const = 0;
+    virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
 
   protected:
     QgsComposition* mComposition;

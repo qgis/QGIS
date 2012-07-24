@@ -282,6 +282,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
   composer/qgscomposition.h
 
@@ -520,6 +521,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTGUI_LIBRARY}
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
+  ${QT_QTWEBKIT_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}

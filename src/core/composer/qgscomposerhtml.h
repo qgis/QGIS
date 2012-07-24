@@ -19,19 +19,29 @@
 #include "qgscomposermultiframe.h"
 #include <QUrl>
 
+class QWebPage;
+
 class QgsComposerHtml: public QgsComposerMultiFrame
 {
+    Q_OBJECT
   public:
     QgsComposerHtml( QgsComposition* c );
+    QgsComposerHtml();
     ~QgsComposerHtml();
 
-    void setUrl( const QUrl& url ) { mUrl = url; }
+    void setUrl( const QUrl& url );
     const QUrl& url() const { return mUrl; }
 
     QSizeF totalSize() const;
+    void render( QPainter* p, const QRectF& renderExtent );
+
+  private slots:
+    void frameLoaded( bool ok );
 
   private:
     QUrl mUrl;
+    QWebPage* mWebPage;
+    bool mLoaded;
 };
 
 #endif // QGSCOMPOSERHTML_H

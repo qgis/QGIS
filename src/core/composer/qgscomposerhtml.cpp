@@ -14,16 +14,51 @@
  ***************************************************************************/
 
 #include "qgscomposerhtml.h"
+#include <QCoreApplication>
+#include <QWebFrame>
+#include <QWebPage>
 
-QgsComposerHtml::QgsComposerHtml( QgsComposition* c ): QgsComposerMultiFrame( c )
+QgsComposerHtml::QgsComposerHtml( QgsComposition* c ): QgsComposerMultiFrame( c ), mWebPage( 0 ), mLoaded( false )
+{
+  mWebPage = new QWebPage();
+  QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
+}
+
+QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0 ), mWebPage( 0 ), mLoaded( false )
 {
 }
 
 QgsComposerHtml::~QgsComposerHtml()
 {
+  delete mWebPage;
+}
+
+void QgsComposerHtml::setUrl( const QUrl& url )
+{
+  if ( !mWebPage )
+  {
+    return;
+  }
+
+  mUrl = url;
+  mWebPage->mainFrame()->load( mUrl );
+  while ( !mLoaded )
+  {
+    qApp->processEvents();
+  }
+}
+
+void QgsComposerHtml::frameLoaded( bool ok )
+{
+  mLoaded = true;
 }
 
 QSizeF QgsComposerHtml::totalSize() const
 {
   return QSizeF(); //soon...
+}
+
+void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
+{
+  //soon...
 }
