@@ -133,6 +133,7 @@ SET(QGIS_CORE_SRCS
   composer/qgsnumericscalebarstyle.cpp
   composer/qgssingleboxscalebarstyle.cpp
   composer/qgsticksscalebarstyle.cpp
+  composer/qgscomposermultiframe.cpp
   composer/qgscomposition.cpp
 
   pal/costcalculator.cpp
@@ -280,6 +281,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposermultiframe.h
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h
