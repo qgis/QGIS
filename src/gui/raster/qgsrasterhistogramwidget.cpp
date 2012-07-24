@@ -830,7 +830,11 @@ QString findClosestTickVal( double target, QwtScaleDiv * scale, int div = 100 )
   double min = majorTicks[0] - diff;
   if ( min > target )
     min -= ( majorTicks[1] - majorTicks[0] );
+#if defined(QWT_VERSION) && QWT_VERSION<0x0502000
+  double max = scale->hBound();
+#else
   double max = scale->upperBound();
+#endif
   double closest = target;
   double current = min;
 
