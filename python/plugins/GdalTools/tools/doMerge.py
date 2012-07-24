@@ -33,8 +33,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
           ( self.separateCheck, SIGNAL( "stateChanged( int )" ) ),
           ( self.pctCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) ),
-          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox)
+          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) )
         ]
       )
 
