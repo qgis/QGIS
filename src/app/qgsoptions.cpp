@@ -1104,9 +1104,9 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   label->setAlignment( Qt::AlignHCenter );
   layout->addWidget( label );
   QgsRasterFormatSaveOptionsWidget* optionsWidget =
-    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName, "gdal" );
+    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
+                                          QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
   layout->addWidget( optionsWidget );
-  optionsWidget->showProfileButtons( true );
 
   if ( dlg.exec() == QDialog::Accepted )
   {

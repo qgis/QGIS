@@ -20,6 +20,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setType( self.inSelector.FILE )
       self.outSelector.setType( self.outSelector.FILE )
       self.recurseCheck.hide()
+      # use this for approx. previous UI
+      #self.creationOptionsTable.setType(QgsRasterFormatSaveOptionsWidget.Table)
 
       self.outputFormat = Utils.fillRasterOutputFormat()
       self.extent = None

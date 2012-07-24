@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QTextEdit>
 #include <QMouseEvent>
+#include <QMenu>
 
 // todo put this somewhere else - how can we access gdal provider?
 char** papszFromStringList( const QStringList& list )
@@ -43,11 +44,16 @@ char** papszFromStringList( const QStringList& list )
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
 
-QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, QString format, QString provider )
+QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, QString format,
+    QgsRasterFormatSaveOptionsWidget::Type type,
+    QString provider )
     : QWidget( parent ), mFormat( format ), mProvider( provider )
 
 {
   setupUi( this );
+
+
+  setType( type );
 
   if ( mBuiltinProfiles.isEmpty() )
   {
@@ -66,16 +72,16 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
                                             << "COMPRESS=JPEG" );
   }
 
-  showProfileButtons( false );
-
   connect( mProfileComboBox, SIGNAL( currentIndexChanged( const QString & ) ),
            this, SLOT( updateOptions() ) );
   connect( mOptionsTable, SIGNAL( cellChanged( int, int ) ), this, SLOT( optionsTableChanged() ) );
   connect( mOptionsHelpButton, SIGNAL( clicked() ), this, SLOT( helpOptions() ) );
   connect( mOptionsValidateButton, SIGNAL( clicked() ), this, SLOT( validateOptions() ) );
 
-  // map options label left mouse click to optionsToggle()
-  mOptionsLabel->installEventFilter( this );
+  // create eventFilter to map right click to swapOptionsUI()
+  // mOptionsLabel->installEventFilter( this );
+  mOptionsLineEdit->installEventFilter( this );
+  mOptionsStackedWidget->installEventFilter( this );
 
   updateProfiles();
 }
@@ -95,10 +101,40 @@ void QgsRasterFormatSaveOptionsWidget::setProvider( QString provider )
   mProvider = provider;
 }
 
-
-void QgsRasterFormatSaveOptionsWidget::showProfileButtons( bool show )
+// show/hide widgets - we need this function if widget is used in creator
+void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget::Type type )
 {
-  mProfileButtons->setVisible( show );
+  QList< QWidget* > widgets = this->findChildren<QWidget *>();
+  if (( type == Table ) || ( type == LineEdit ) )
+  {
+    // hide all controls, except stacked widget
+    foreach( QWidget* widget, widgets )
+    {
+      widget->setVisible( false );
+    }
+    mOptionsStackedWidget->setVisible( true );
+    foreach( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    {
+      widget->setVisible( true );
+    }
+    // show page relevant page
+    if ( type == Table )
+      swapOptionsUI( 0 );
+    else if ( type == LineEdit )
+      swapOptionsUI( 1 );
+  }
+  else
+  {
+    // show all widgets, except profile buttons (unless Full)
+    foreach( QWidget* widget, widgets )
+    {
+      widget->setVisible( true );
+    }
+    if ( type != Full )
+    {
+      mProfileButtons->setVisible( false );
+    }
+  }
 }
 
 void QgsRasterFormatSaveOptionsWidget::updateProfiles()
@@ -152,7 +188,7 @@ void QgsRasterFormatSaveOptionsWidget::updateOptions()
   QString myOptions = mOptionsMap.value( currentProfileKey() );
   QStringList myOptionsList = myOptions.trimmed().split( " ", QString::SkipEmptyParts );
 
-  if ( mOptionsStackedWIdget->currentIndex() == 0 )
+  if ( mOptionsStackedWidget->currentIndex() == 0 )
   {
     mOptionsTable->setRowCount( 0 );
     for ( int i = 0; i < myOptionsList.count(); i++ )
@@ -392,19 +428,61 @@ QStringList QgsRasterFormatSaveOptionsWidget::profiles() const
   return mySettings.value( mProvider + "/driverOptions/" + mFormat.toLower() + "/profiles", "" ).toString().trimmed().split( " ", QString::SkipEmptyParts );
 }
 
+void QgsRasterFormatSaveOptionsWidget::swapOptionsUI( int newIndex )
+{
+  // set new page
+  int oldIndex;
+  if ( newIndex == -1 )
+  {
+    oldIndex = mOptionsStackedWidget->currentIndex();
+    newIndex = ( oldIndex + 1 ) % 2;
+  }
+  else
+  {
+    oldIndex = ( newIndex + 1 ) % 2;
+  }
+
+  // resize pages to minimum - this works well with gdaltools merge ui, but not raster save as...
+  mOptionsStackedWidget->setCurrentIndex( newIndex );
+  mOptionsStackedWidget->widget( newIndex )->setSizePolicy(
+    QSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred ) );
+  mOptionsStackedWidget->widget( oldIndex )->setSizePolicy(
+    QSizePolicy( QSizePolicy::Ignored, QSizePolicy::Ignored ) );
+  layout()->activate();
+
+  updateOptions();
+}
+
 // map options label left mouse click to optionsToggle()
 bool QgsRasterFormatSaveOptionsWidget::eventFilter( QObject *obj, QEvent *event )
 {
   if ( event->type() == QEvent::MouseButtonPress )
   {
     QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
-    if ( mouseEvent && ( mouseEvent->button() == Qt::LeftButton ) )
+    if ( mouseEvent && ( mouseEvent->button() == Qt::RightButton ) )
     {
-      mOptionsStackedWIdget->setCurrentIndex(( mOptionsStackedWIdget->currentIndex() + 1 ) % 2 );
-      updateOptions();
+      QMenu* menu = 0;
+      QString text;
+      if ( mOptionsStackedWidget->currentIndex() == 0 )
+        text = tr( "Use simple interface" );
+      else
+        text = tr( "Use table interface" );
+      if ( obj->objectName() == "mOptionsLineEdit" )
+      {
+        menu = mOptionsLineEdit->createStandardContextMenu();
+        menu->addSeparator();
+      }
+      else
+        menu = new QMenu( this );
+      QAction* action = new QAction( text, menu );
+      menu->addAction( action );
+      connect( action, SIGNAL( triggered() ), this, SLOT( swapOptionsUI() ) );
+      menu->exec( mouseEvent->globalPos() );
+      delete menu;
       return true;
     }
   }
   // standard event processing
   return QObject::eventFilter( obj, event );
 }
+

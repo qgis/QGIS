@@ -6,13 +6,24 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 %End
  
   public:
-    QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff", QString provider = "gdal" );
+
+    enum Type
+    {
+      Default, // everything except profile buttons (save as dlg)
+      Full, // everything (options dlg)
+      Table, // just table
+      LineEdit // just the line edit
+    };
+
+    QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff",
+                                      QgsRasterFormatSaveOptionsWidget::Type type = Default,
+                                      QString provider = "gdal" );
     ~QgsRasterFormatSaveOptionsWidget();
 
     void setFormat( QString format );
     void setProvider( QString provider );
     QStringList options() const;
-    void showProfileButtons( bool show = true );
+    void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
 
   public slots:
 
@@ -32,6 +43,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void optionsTableChanged();
     void optionsTableEnableDeleteButton();
     void updateOptions();
+    void swapOptionsUI( int newIndex = -1 );
 
   private:
 
