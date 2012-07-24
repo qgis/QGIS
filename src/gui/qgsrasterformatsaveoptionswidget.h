@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsrasterformatoptionswidget.h
+                          qgsrasterformatsaveoptionswidget.h
                              -------------------
     begin                : July 2012
     copyright            : (C) 2012 by Etienne Tourigny
@@ -15,30 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRASTERFORMATOPTIONSWIDGET_H
-#define QGSRASTERFORMATOPTIONSWIDGET_H
+#ifndef QGSRASTERFORMATSAVEOPTIONSWIDGET_H
+#define QGSRASTERFORMATSAVEOPTIONSWIDGET_H
 
-#include "ui_qgsrasterformatoptionswidgetbase.h"
+#include "ui_qgsrasterformatsaveoptionswidgetbase.h"
 
-class GUI_EXPORT QgsRasterFormatOptionsWidget: public QWidget, private Ui::QgsRasterFormatOptionsWidgetBase
+/** \ingroup gui
+ * A widget to select format-specific raster saving options
+ */
+class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
 
-    QgsRasterFormatOptionsWidget( QWidget* parent = 0, QString format = "GTiff", QString provider = "gdal" );
-    ~QgsRasterFormatOptionsWidget();
+    QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff", QString provider = "gdal" );
+    ~QgsRasterFormatSaveOptionsWidget();
 
     void setFormat( QString format );
     void setProvider( QString provider );
-    QStringList createOptions() const;
+    QStringList options() const;
     void showProfileButtons( bool show = true );
 
   public slots:
 
     void apply();
-    void optionsHelp();
-    bool optionsValidate( bool message = true );
+    void helpOptions();
+    bool validateOptions( bool gui = true );
 
   private slots:
 
@@ -47,7 +50,6 @@ class GUI_EXPORT QgsRasterFormatOptionsWidget: public QWidget, private Ui::QgsRa
     void on_mProfileResetButton_clicked();
     void on_mOptionsAddButton_clicked();
     void on_mOptionsDeleteButton_clicked();
-    void on_mOptionsLabel_clicked();
     void on_mOptionsLineEdit_editingFinished();
     void optionsTableChanged();
     void optionsTableEnableDeleteButton();
@@ -69,6 +71,7 @@ class GUI_EXPORT QgsRasterFormatOptionsWidget: public QWidget, private Ui::QgsRa
     void setCreateOptions( QString profile, QStringList list );
     QStringList profiles() const;
     void updateProfiles();
+    bool eventFilter( QObject *obj, QEvent *event );
 
 };
 

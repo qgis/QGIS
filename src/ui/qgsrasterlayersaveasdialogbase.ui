@@ -218,7 +218,7 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QgsRasterFormatOptionsWidget" name="mOptionsWidget" native="true"/>
+       <widget class="QgsRasterFormatSaveOptionsWidget" name="mOptionsWidget" native="true"/>
       </item>
      </layout>
     </widget>
@@ -227,9 +227,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsRasterFormatOptionsWidget</class>
+   <class>QgsRasterFormatSaveOptionsWidget</class>
    <extends>QWidget</extends>
-   <header>raster/qgsrasterformatoptionswidget.h</header>
+   <header>qgsrasterformatsaveoptionswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -26,7 +26,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 
-#include "qgsrasterformatoptionswidget.h"
+#include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsdialog.h"
 
 #include <QInputDialog>
@@ -1103,7 +1103,8 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   QLabel *label = new QLabel( title, &dlg );
   label->setAlignment( Qt::AlignHCenter );
   layout->addWidget( label );
-  QgsRasterFormatOptionsWidget* optionsWidget = new QgsRasterFormatOptionsWidget( &dlg, driverName, "gdal" );
+  QgsRasterFormatSaveOptionsWidget* optionsWidget =
+    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName, "gdal" );
   layout->addWidget( optionsWidget );
   optionsWidget->showProfileButtons( true );
 

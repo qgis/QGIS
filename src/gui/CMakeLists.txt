@@ -7,7 +7,6 @@ raster/qgspalettedrendererwidget.cpp
 raster/qgssinglebandgrayrendererwidget.cpp
 raster/qgssinglebandpseudocolorrendererwidget.cpp
 raster/qgsrasterhistogramwidget.cpp
-raster/qgsrasterformatoptionswidget.cpp
 
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
@@ -79,6 +78,7 @@ qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrasterlayersaveasdialog.cpp
+qgsrasterformatsaveoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
 qgstextannotationitem.cpp
@@ -105,7 +105,6 @@ raster/qgsmultibandcolorrendererwidget.h
 raster/qgssinglebandgrayrendererwidget.h
 raster/qgssinglebandpseudocolorrendererwidget.h
 raster/qgsrasterhistogramwidget.h
-raster/qgsrasterformatoptionswidget.h
 
 symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
@@ -160,6 +159,7 @@ qgsowssourceselect.h
 qgsprojectionselector.h
 qgsquickprint.h
 qgsrasterlayersaveasdialog.h
+qgsrasterformatsaveoptionswidget.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
