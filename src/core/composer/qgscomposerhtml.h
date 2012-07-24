@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgscomposermultiframe.cpp
+                              qgscomposerhtml.h
     ------------------------------------------------------------
     begin                : Julli 2012
     copyright            : (C) 2012 by Marco Hugentobler
@@ -13,21 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSCOMPOSERHTML_H
+#define QGSCOMPOSERHTML_H
+
 #include "qgscomposermultiframe.h"
+#include <QUrl>
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c )
+class QgsComposerHtml: public QgsComposerMultiFrame
 {
-}
+  public:
+    QgsComposerHtml( QgsComposition* c );
+    ~QgsComposerHtml();
 
-QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 )
-{
-}
+    void setUrl( const QUrl& url ) { mUrl = url; }
+    const QUrl& url() const { return mUrl; }
 
-QgsComposerMultiFrame::~QgsComposerMultiFrame()
-{
-}
+    QSizeF totalSize() const;
 
-void QgsComposerMultiFrame::recalculateFrameSizes()
-{
-  //todo...
-}
+  private:
+    QUrl mUrl;
+};
+
+#endif // QGSCOMPOSERHTML_H

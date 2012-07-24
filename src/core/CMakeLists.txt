@@ -133,6 +133,7 @@ SET(QGIS_CORE_SRCS
   composer/qgsnumericscalebarstyle.cpp
   composer/qgssingleboxscalebarstyle.cpp
   composer/qgsticksscalebarstyle.cpp
+  composer/qgscomposerhtml.cpp
   composer/qgscomposermultiframe.cpp
   composer/qgscomposition.cpp
 
