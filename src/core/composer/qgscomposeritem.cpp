@@ -724,6 +724,8 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
   QTransform t;
   t.translate( xTranslation, yTranslation );
   setTransform( t );
+
+  emit sizeChanged();
 }
 
 void QgsComposerItem::drawBackground( QPainter* p )
