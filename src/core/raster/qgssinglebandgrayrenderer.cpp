@@ -62,6 +62,7 @@ void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement* 
 
 void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  Q_UNUSED( bandNo );
   if ( !mInput )
   {
     return 0;
@@ -79,14 +80,15 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   void* alphaData = 0;
   double currentAlpha = mOpacity;
-  int grayVal, grayValOrig;
+  int grayVal;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
     alphaData = mInput->block( mAlphaBand, extent, width, height );
-    if ( !alphaData ) {
-      free ( rasterData );
+    if ( !alphaData )
+    {
+      free( rasterData );
       return 0;
     }
   }
@@ -95,7 +97,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     alphaData = rasterData;
   }
 
-  QImage *img = createImage ( width, height, QImage::Format_ARGB32_Premultiplied );
+  QImage *img = createImage( width, height, QImage::Format_ARGB32_Premultiplied );
   QRgb* imageScanLine = 0;
   int currentRasterPos = 0;
 
@@ -104,7 +106,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     imageScanLine = ( QRgb* )( img->scanLine( i ) );
     for ( int j = 0; j < width; ++j )
     {
-      grayValOrig = grayVal = readValue( rasterData, rasterType, currentRasterPos );
+      grayVal = readValue( rasterData, rasterType, currentRasterPos );
 
       //alpha
       currentAlpha = mOpacity;
@@ -145,13 +147,13 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     }
   }
 
-  free ( rasterData );
-  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand ) 
+  free( rasterData );
+  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
   {
-    free ( alphaData );
+    free( alphaData );
   }
 
-  void * data = (void *)img->bits();
+  void * data = ( void * )img->bits();
   delete img;
   return data; // OK, the image was created with extraneous data
 }

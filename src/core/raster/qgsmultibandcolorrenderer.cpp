@@ -103,6 +103,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
 
 void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  Q_UNUSED( bandNo );
   if ( !mInput )
   {
     return 0;
@@ -136,7 +137,6 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
     transparencyType = ( QgsRasterInterface::DataType )mInput->dataType( mAlphaBand );
   }
 
-  double oversamplingX = 1.0, oversamplingY = 1.0;
   QSet<int> bands;
   if ( mRedBand > 0 )
   {
@@ -203,9 +203,6 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
   int redVal = 0;
   int greenVal = 0;
   int blueVal = 0;
-  int redDataVal = 0;
-  int greenDataVal = 0;
-  int blueDataVal = 0;
   QRgb defaultColor = qRgba( 255, 255, 255, 0 );
   double currentOpacity = mOpacity; //opacity (between 0 and 1)
 
@@ -227,17 +224,14 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
       if ( mRedBand > 0 )
       {
         redVal = readValue( redData, redType, currentRasterPos );
-        redDataVal = redVal;
       }
       if ( mGreenBand > 0 )
       {
         greenVal = readValue( greenData, greenType, currentRasterPos );
-        greenDataVal = greenVal;
       }
       if ( mBlueBand > 0 )
       {
         blueVal = readValue( blueData, blueType, currentRasterPos );
-        blueDataVal = blueVal;
       }
 
       //apply default color if red, green or blue not in displayable range

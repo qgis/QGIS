@@ -34,8 +34,8 @@ QgsRasterProjector::QgsRasterProjector(
     , mDestExtent( theDestExtent )
     , mExtent( theExtent )
     , mDestRows( theDestRows ), mDestCols( theDestCols )
-    , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
     , pHelperTop( 0 ), pHelperBottom( 0 )
+    , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
 {
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "theDestExtent = " + theDestExtent.toString() );
@@ -53,8 +53,8 @@ QgsRasterProjector::QgsRasterProjector(
     , mDestCRS( theDestCRS )
     , mCoordinateTransform( theDestCRS, theSrcCRS )
     , mExtent( theExtent )
-    , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
     , pHelperTop( 0 ), pHelperBottom( 0 )
+    , mMaxSrcXRes( theMaxSrcXRes ), mMaxSrcYRes( theMaxSrcYRes )
 {
   QgsDebugMsg( "Entered" );
 }

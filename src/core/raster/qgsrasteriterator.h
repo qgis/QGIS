@@ -7,9 +7,9 @@
 class QgsMapToPixel;
 class QgsRasterInterface;
 class QgsRasterProjector;
-class QgsRasterViewPort;
+struct QgsRasterViewPort;
 
-class QgsRasterIterator
+class CORE_EXPORT QgsRasterIterator
 {
   public:
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates

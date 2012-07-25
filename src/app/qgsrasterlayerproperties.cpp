@@ -1547,6 +1547,7 @@ void QgsRasterLayerProperties::updatePipeList()
 
 void QgsRasterLayerProperties::pipeItemClicked( QTreeWidgetItem * item, int column )
 {
+  Q_UNUSED( column );
   QgsDebugMsg( "Entered" );
   int idx = mPipeTreeWidget->indexOfTopLevelItem( item );
 
@@ -1566,12 +1567,12 @@ void QgsRasterLayerProperties::updatePipeItems()
   for ( int i = 0; i < pipe->size(); i++ )
   {
     if ( i >= mPipeTreeWidget->topLevelItemCount() ) break;
-    QgsRasterInterface * interface = pipe->at( i );
     QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
     if ( !item ) continue;
     // Checkboxes disabled for now, see above
-    /*
-    bool on = interface->on();
+#if 0
+    QgsRasterInterface * iface = pipe->at( i );
+    bool on = iface->on();
     Qt::ItemFlags flags = item->flags();
     if ( pipe->canSetOn( i, !on ) )
     {
@@ -1582,6 +1583,6 @@ void QgsRasterLayerProperties::updatePipeItems()
       flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
     }
     item->setFlags( flags );
-    */
+#endif
   }
 }

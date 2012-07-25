@@ -90,8 +90,8 @@ bool QgsRasterResampleFilter::setInput( QgsRasterInterface* input )
 
   if ( input->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied )
   {
-    return false;
     QgsDebugMsg( "Unknown input data type" );
+    return false;
   }
 
   mInput = input;
@@ -113,6 +113,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
 
 void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
   if ( !mInput ) return 0;
 
@@ -190,7 +191,7 @@ void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentEl
 
   QDomElement rasterRendererElem = doc.createElement( "rasterresampler" );
 
-  rasterRendererElem.setAttribute( "maxOversampling", mMaxOversampling );
+  rasterRendererElem.setAttribute( "maxOversampling", QString::number( mMaxOversampling ) );
   if ( mZoomedInResampler )
   {
     rasterRendererElem.setAttribute( "zoomedInResampler", mZoomedInResampler->type() );

@@ -1008,7 +1008,7 @@ void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
   if ( index < 0 )
     return;
 
-  saveStyleAs( (StyleType) index );
+  saveStyleAs(( StyleType ) index );
 }
 
 void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
@@ -1029,7 +1029,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   }
 
   QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
-                                                           myLastUsedDir, format );
+                             myLastUsedDir, format );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
     return;

@@ -249,7 +249,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
               item = new QListWidgetItem( it.key() );
               item->setData( Qt::UserRole, it.value() );
               item->setCheckState( checkList.contains( it.value() ) ? Qt::Checked : Qt::Unchecked );
-	    }
+            }
             else
             {
               item = new QListWidgetItem( it.value() );

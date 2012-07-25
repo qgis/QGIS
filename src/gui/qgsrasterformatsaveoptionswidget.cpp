@@ -262,7 +262,7 @@ bool QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui )
     {
       // print error string?
       char** papszOptions = papszFromStringList( createOptions );
-      ok = ( GDALValidateCreationOptions( myGdalDriver, papszOptions ) == TRUE );
+      ok = GDALValidateCreationOptions( myGdalDriver, papszOptions );
       CSLDestroy( papszOptions );
       if ( gui )
       {

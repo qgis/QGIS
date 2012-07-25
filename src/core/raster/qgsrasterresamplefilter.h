@@ -25,7 +25,7 @@ class QgsRasterResampler;
 
 class QDomElement;
 
-class QgsRasterResampleFilter : public QgsRasterInterface
+class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 {
   public:
     QgsRasterResampleFilter( QgsRasterInterface* input = 0 );

@@ -24,7 +24,7 @@
 class QPainter;
 class QImage;
 class QgsMapToPixel;
-class QgsRasterViewPort;
+struct QgsRasterViewPort;
 class QgsRasterIterator;
 
 class QgsRasterDrawer

@@ -199,7 +199,7 @@ void TestQgsRasterLayer::checkStats()
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).minimumValue == 0 );
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).maximumValue == 9 );
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).mean == 4.5 );
-  QVERIFY( fabs( mpRasterLayer->bandStatistics( 1 ).stdDev - 2.87228132326901431 ) 
+  QVERIFY( fabs( mpRasterLayer->bandStatistics( 1 ).stdDev - 2.87228132326901431 )
            < 0.0000000000000001 );
   mReport += "<h2>Check Stats</h2>\n";
   mReport += "<p>Passed</p>";
