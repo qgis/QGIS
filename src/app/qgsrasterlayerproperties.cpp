@@ -1547,6 +1547,7 @@ void QgsRasterLayerProperties::updatePipeList()
 
 void QgsRasterLayerProperties::pipeItemClicked( QTreeWidgetItem * item, int column )
 {
+  Q_UNUSED( column );
   QgsDebugMsg( "Entered" );
   int idx = mPipeTreeWidget->indexOfTopLevelItem( item );
 
