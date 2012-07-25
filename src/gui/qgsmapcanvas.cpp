@@ -158,7 +158,7 @@ QgsMapCanvas::~QgsMapCanvas()
     it++;
   }
 
-  delete mScene;
+  mScene->deleteLater();  // crashes in python tests on windows
 
   delete mMapRenderer;
   // mCanvasProperties auto-deleted via std::auto_ptr
