@@ -59,9 +59,8 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   QSize contentsSize = mWebPage->mainFrame()->contentsSize();
   mWebPage->setViewportSize( contentsSize );
 
-  double pixelPerMM = mComposition->printResolution() / 25.4;
-  mSize.setWidth( contentsSize.width() / pixelPerMM );
-  mSize.setHeight( contentsSize.height() / pixelPerMM );
+  mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
+  mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
@@ -83,7 +82,8 @@ void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
 
   p->save();
   p->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
-  mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top(), renderExtent.width() * mHtmlUnitsToMM, renderExtent.height() * mHtmlUnitsToMM ) );
+  p->translate( 0.0, -renderExtent.top() * mHtmlUnitsToMM );
+  mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top() * mHtmlUnitsToMM, renderExtent.width() * mHtmlUnitsToMM, renderExtent.height() * mHtmlUnitsToMM ) );
   p->restore();
 }
 

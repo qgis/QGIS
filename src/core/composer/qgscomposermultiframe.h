@@ -32,8 +32,8 @@ class QgsComposerMultiFrame: public QObject
 
     enum ResizeMode
     {
-      ExtendToNextPage = 0, //duplicates last frame to next page to fit the total size
-      UseExistingFrames //
+      UseExistingFrames = 0,
+      ExtendToNextPage //duplicates last frame to next page to fit the total size
     };
 
     QgsComposerMultiFrame( QgsComposition* c );
@@ -43,9 +43,13 @@ class QgsComposerMultiFrame: public QObject
 
     void addFrame( QgsComposerFrame* frame );
 
+    void setResizeMode( ResizeMode mode ) { mResizeMode = mode; }
+    ResizeMode resizeMode() const { return mResizeMode; }
+
   protected:
     QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
+    ResizeMode mResizeMode;
 
   protected slots:
     void recalculateFrameSizes();
