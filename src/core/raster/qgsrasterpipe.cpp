@@ -174,34 +174,34 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
   return insert( idx, theInterface );  // insert may still fail and return false
 }
 
-QgsRasterInterface * QgsRasterPipe::interface( Role role ) const
+QgsRasterInterface * QgsRasterPipe::iface( Role role ) const
+{
+  QgsDebugMsg( QString( "role = %1" ).arg( role ) );
+  if ( mRoleMap.contains( role ) )
   {
-    QgsDebugMsg( QString( "role = %1" ).arg( role ) );
-    if ( mRoleMap.contains( role ) )
-    {
-      return mInterfaces.value( mRoleMap.value( role ) );
-    }
-    return 0;
+    return mInterfaces.value( mRoleMap.value( role ) );
   }
+  return 0;
+}
 
 QgsRasterDataProvider * QgsRasterPipe::provider() const
 {
-  return dynamic_cast<QgsRasterDataProvider *>( interface( ProviderRole ) );
+  return dynamic_cast<QgsRasterDataProvider *>( iface( ProviderRole ) );
 }
 
 QgsRasterRenderer * QgsRasterPipe::renderer() const
 {
-  return dynamic_cast<QgsRasterRenderer *>( interface( RendererRole ) );
+  return dynamic_cast<QgsRasterRenderer *>( iface( RendererRole ) );
 }
 
 QgsRasterResampleFilter * QgsRasterPipe::resampleFilter() const
 {
-  return dynamic_cast<QgsRasterResampleFilter *>( interface( ResamplerRole ) );
+  return dynamic_cast<QgsRasterResampleFilter *>( iface( ResamplerRole ) );
 }
 
 QgsRasterProjector * QgsRasterPipe::projector() const
 {
-  return dynamic_cast<QgsRasterProjector*>( interface( ProjectorRole ) );
+  return dynamic_cast<QgsRasterProjector*>( iface( ProjectorRole ) );
 }
 
 bool QgsRasterPipe::remove( int idx )

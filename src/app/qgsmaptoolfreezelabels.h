@@ -24,7 +24,7 @@
 #include "qgscoordinatetransform.h"
 
 class QgsHighlight;
-class QgsLabelPosition;
+struct QgsLabelPosition;
 
 /**A map tool for freezing (writing to attribute table) and thawing label positions and rotation*/
 class QgsMapToolFreezeLabels: public QgsMapToolLabel

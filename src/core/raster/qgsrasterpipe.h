@@ -69,7 +69,7 @@ class CORE_EXPORT QgsRasterPipe
     bool set( QgsRasterInterface * theInterface );
 
     /** Get known interface by role */
-    QgsRasterInterface * interface( Role role ) const;
+    QgsRasterInterface * iface( Role role ) const;
 
     /** Remove and delete interface at given index if possible */
     bool remove( int idx );
@@ -99,7 +99,7 @@ class CORE_EXPORT QgsRasterPipe
 
   private:
     /** Get known parent type_info of interface parent */
-    Role interfaceRole( QgsRasterInterface * interface ) const;
+    Role interfaceRole( QgsRasterInterface * iface ) const;
 
     // Interfaces in pipe, the first is always provider
     QVector<QgsRasterInterface*> mInterfaces;

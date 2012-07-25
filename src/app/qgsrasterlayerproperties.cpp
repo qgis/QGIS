@@ -1566,12 +1566,12 @@ void QgsRasterLayerProperties::updatePipeItems()
   for ( int i = 0; i < pipe->size(); i++ )
   {
     if ( i >= mPipeTreeWidget->topLevelItemCount() ) break;
-    QgsRasterInterface * interface = pipe->at( i );
     QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
     if ( !item ) continue;
     // Checkboxes disabled for now, see above
 #if 0
-    bool on = interface->on();
+    QgsRasterInterface * iface = pipe->at( i );
+    bool on = iface->on();
     Qt::ItemFlags flags = item->flags();
     if ( pipe->canSetOn( i, !on ) )
     {

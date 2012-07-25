@@ -188,7 +188,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   void* blueData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* alphaData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   QgsRectangle mapRect;
-  int iterLeft, iterTop, iterCols, iterRows;
+  int iterLeft = 0, iterTop = 0, iterCols = 0, iterRows = 0;
   int fileIndex = 0;
 
   //create destProvider for whole dataset here
