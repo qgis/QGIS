@@ -45,6 +45,7 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
     void on_mPaperOrientationComboBox_currentIndexChanged( const QString& text );
     void on_mPaperWidthDoubleSpinBox_editingFinished();
     void on_mPaperHeightDoubleSpinBox_editingFinished();
+    void on_mNumPagesSpinBox_valueChanged( int value );
     void on_mResolutionSpinBox_valueChanged( const int value );
     void on_mPrintAsRasterCheckBox_stateChanged( int state );
 

@@ -267,7 +267,11 @@
            </widget>
           </item>
           <item row="2" column="2">
-           <widget class="QLineEdit" name="mFeatureCount"/>
+           <widget class="QLineEdit" name="mFeatureCount">
+            <property name="text">
+             <string>10</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -355,22 +359,27 @@
          </attribute>
          <column>
           <property name="text">
-           <string>Layers</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Styles</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Size</string>
+           <string>Layer</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Format</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Style</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Title</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Tileset</string>
           </property>
          </column>
          <column>

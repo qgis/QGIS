@@ -40,6 +40,8 @@
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgslogger.h"
+#include "qgspaintenginehack.h"
+
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
@@ -505,38 +507,6 @@ QDomDocument QgsWMSServer::getStyle()
   return mConfigParser->getStyle( styleName, layerName );
 }
 
-// Hack to workaround Qt #5114 by disabling PatternTransform
-class QgsPaintEngineHack : public QPaintEngine
-{
-  public:
-    void fixFlags()
-    {
-      gccaps = 0;
-      gccaps |= ( QPaintEngine::PrimitiveTransform
-                  // | QPaintEngine::PatternTransform
-                  | QPaintEngine::PixmapTransform
-                  | QPaintEngine::PatternBrush
-                  // | QPaintEngine::LinearGradientFill
-                  // | QPaintEngine::RadialGradientFill
-                  // | QPaintEngine::ConicalGradientFill
-                  | QPaintEngine::AlphaBlend
-                  // | QPaintEngine::PorterDuff
-                  | QPaintEngine::PainterPaths
-                  | QPaintEngine::Antialiasing
-                  | QPaintEngine::BrushStroke
-                  | QPaintEngine::ConstantOpacity
-                  | QPaintEngine::MaskedBrush
-                  // | QPaintEngine::PerspectiveTransform
-                  | QPaintEngine::BlendModes
-                  // | QPaintEngine::ObjectBoundingModeGradients
-#if QT_VERSION >= 0x040500
-                  | QPaintEngine::RasterOpModes
-#endif
-                  | QPaintEngine::PaintOutsidePaintEvent
-                );
-    }
-};
-
 QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 {
   QStringList layersList, stylesList, layerIdList;
@@ -583,34 +553,24 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     generator.setResolution( c->printResolution() ); //because the rendering is done in mm, convert the dpi
 
     QPainter p( &generator );
-    QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
-    QRectF targetArea( 0, 0, width, height );
     if ( c->printAsRaster() ) //embed one raster into the svg
     {
-      QImage* img = printCompositionToImage( c );
-      if ( img )
-      {
-        p.drawImage( targetArea, *img, QRectF( 0, 0, img->width(), img->height() ) );
-      }
-      delete img;
+      QImage img = c->printPageAsRaster( 0 );
+      p.drawImage( QRect( 0, 0, width, height ), img, QRectF( 0, 0, img.width(), img.height() ) );
     }
     else
     {
-      c->render( &p, targetArea, sourceArea );
+      c->renderPage( &p, 0 );
     }
     p.end();
   }
   else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
   {
-    QImage* image = printCompositionToImage( c );
-    if ( image )
-    {
-      ba = new QByteArray();
-      QBuffer buffer( ba );
-      buffer.open( QIODevice::WriteOnly );
-      image->save( &buffer, formatString.toLocal8Bit().data(), -1 );
-    }
-    delete image;
+    QImage image = c->printPageAsRaster( 0 ); //can only return the first page if pixmap is requested
+    ba = new QByteArray();
+    QBuffer buffer( ba );
+    buffer.open( QIODevice::WriteOnly );
+    image.save( &buffer, formatString.toLocal8Bit().data(), -1 );
   }
   else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
   {
@@ -623,38 +583,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
       return 0;
     }
 
-    QPrinter printer;
-    printer.setResolution( c->printResolution() );
-    printer.setFullPage( true );
-    printer.setOutputFormat( QPrinter::PdfFormat );
-    printer.setOutputFileName( tempFile.fileName() );
-    printer.setPaperSize( QSizeF( c->paperWidth(), c->paperHeight() ), QPrinter::Millimeter );
-    QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-    QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-
-    QPaintEngine *engine = printer.paintEngine();
-    if ( engine )
-    {
-      QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
-      hack->fixFlags();
-    }
-
-    QPainter p( &printer );
-    if ( c->printAsRaster() ) //embed one raster into the pdf
-    {
-      QImage* img = printCompositionToImage( c );
-      if ( img )
-      {
-        p.drawImage( paperRectPixel, *img, QRectF( 0, 0, img->width(), img->height() ) );
-      }
-      delete img;
-    }
-    else //vector pdf
-    {
-      c->render( &p, paperRectPixel, paperRectMM );
-    }
-    p.end();
-
+    c->exportAsPDF( tempFile.fileName() );
     ba = new QByteArray();
     *ba = tempFile.readAll();
   }
@@ -923,10 +852,10 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   {
     QDomElement bBoxElem = result.createElement( "BoundingBox" );
     bBoxElem.setAttribute( "CRS", mMapRenderer->destinationCrs().authid() );
-    bBoxElem.setAttribute( "minx", featuresRect->xMinimum() );
-    bBoxElem.setAttribute( "maxx", featuresRect->xMaximum() );
-    bBoxElem.setAttribute( "miny", featuresRect->yMinimum() );
-    bBoxElem.setAttribute( "maxy", featuresRect->yMaximum() );
+    bBoxElem.setAttribute( "minx", QString::number( featuresRect->xMinimum() ) );
+    bBoxElem.setAttribute( "maxx", QString::number( featuresRect->xMaximum() ) );
+    bBoxElem.setAttribute( "miny", QString::number( featuresRect->yMinimum() ) );
+    bBoxElem.setAttribute( "maxy", QString::number( featuresRect->yMaximum() ) );
     getFeatureInfoElement.insertBefore( bBoxElem, QDomNode() ); //insert as first child
   }
 
@@ -1382,10 +1311,10 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       //append feature bounding box to feature info xml
       QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
       bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", mapRender->destinationCrs().authid() );
-      bBoxElem.setAttribute( "minx", box.xMinimum() );
-      bBoxElem.setAttribute( "maxx", box.xMaximum() );
-      bBoxElem.setAttribute( "miny", box.yMinimum() );
-      bBoxElem.setAttribute( "maxy", box.yMaximum() );
+      bBoxElem.setAttribute( "minx", QString::number( box.xMinimum() ) );
+      bBoxElem.setAttribute( "maxx", QString::number( box.xMaximum() ) );
+      bBoxElem.setAttribute( "miny", QString::number( box.yMinimum() ) );
+      bBoxElem.setAttribute( "maxy", QString::number( box.yMaximum() ) );
       featureElement.appendChild( bBoxElem );
     }
   }

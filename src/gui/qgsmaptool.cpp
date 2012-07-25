@@ -145,6 +145,7 @@ void QgsMapTool::keyReleaseEvent( QKeyEvent *e )
 bool QgsMapTool::gestureEvent( QGestureEvent *e )
 {
   Q_UNUSED( e );
+  return true;
 }
 #endif
 

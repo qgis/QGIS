@@ -1030,19 +1030,19 @@ void QgsGeorefPluginGui::setupConnections()
 
 void QgsGeorefPluginGui::removeOldLayer()
 {
-    // delete layer (and don't signal it as it's our private layer)
-    if ( mLayer )
-    {
-      QgsMapLayerRegistry::instance()->removeMapLayers(
-        ( QStringList() << mLayer->id() ), false );
-      mLayer = NULL;
-    }
-    mCanvas->refresh();
+  // delete layer (and don't signal it as it's our private layer)
+  if ( mLayer )
+  {
+    QgsMapLayerRegistry::instance()->removeMapLayers(
+      ( QStringList() << mLayer->id() ), false );
+    mLayer = NULL;
+  }
+  mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::updateIconTheme( QString theme )
 {
-  Q_UNUSED(theme);
+  Q_UNUSED( theme );
   // File actions
   mActionOpenRaster->setIcon( getThemeIcon( "/mActionOpenRaster.png" ) );
   mActionStartGeoref->setIcon( getThemeIcon( "/mActionStartGeoref.png" ) );

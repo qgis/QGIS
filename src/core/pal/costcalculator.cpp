@@ -159,7 +159,6 @@ namespace pal
     delete pCost;
   }
 
-
   int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     // If candidates list is smaller than expected
@@ -191,7 +190,7 @@ namespace pal
       max_p = stop;
 
 #ifdef _DEBUG_FULL_
-    std::cout << "Nblabel kept for feat " << feat->feature->uid << "/" << feat->feature->layer->name << ": " << max_p << "/" << feat->nblp << std::endl;
+    std::cout << "Nblabel kept for feat " << feat->feature->getUID() << "/" << feat->feature->getLayer()->getName() << ": " << max_p << "/" << feat->nblp << std::endl;
 #endif
 
     // Sets costs for candidates of polygon

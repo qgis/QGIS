@@ -83,6 +83,7 @@ void QgsQtLocationConnection::parseData()
 
       //TODO implement dop maybe by getting a
       //http://developer.android.com/reference/android/location/GpsStatus.NmeaListener.html
+      //http://doc.qt.nokia.com/qtmobility-1.1/qnmeapositioninfosource.html
       //into QtLocation and subclass QgsNMEAConnection directly?
       mLastGPSInformation.pdop;     //< Dilution of precision
       mLastGPSInformation.hdop;     //< Horizontal dilution of precision
@@ -157,7 +158,7 @@ void QgsQtLocationConnection::startGPS()
     if ( locationDataSource )
     {
       locationDataSource->setPreferredPositioningMethods( QGeoPositionInfoSource::SatellitePositioningMethods );  //QGeoPositionInfoSource::AllPositioningMethods
-      // locationDataSource->setUpdateInterval(2000);
+      locationDataSource->setUpdateInterval(1000);
       // Whenever the location data source signals that the current
       // position is updated, the positionUpdated function is called.
       QObject::connect( locationDataSource,

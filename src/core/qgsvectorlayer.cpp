@@ -70,6 +70,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgsstylev2.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -2409,12 +2410,12 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
         QgsFeature newFeature;
         newFeature.setGeometry( newGeometry );
 
-        //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
-        QgsAttributeMap newAttributes = select_it->attributeMap();
-        QVariant defaultValue;
-        for ( int j = 0; j < newAttributes.size(); ++j )
+        if ( mDataProvider )
         {
-          if ( mDataProvider )
+          //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
+          QgsAttributeMap newAttributes = select_it->attributeMap();
+          QVariant defaultValue;
+          foreach( int j, newAttributes.keys() )
           {
             defaultValue = mDataProvider->defaultValue( j );
             if ( !defaultValue.isNull() )
@@ -2422,9 +2423,10 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
               newAttributes.insert( j, defaultValue );
             }
           }
+
+          newFeature.setAttributeMap( newAttributes );
         }
 
-        newFeature.setAttributeMap( newAttributes );
         newFeatures.append( newFeature );
       }
 
@@ -3132,7 +3134,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           QString value = editTypeElement.attribute( "value" );
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
-          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue );
+          bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
+          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti );
         }
         break;
 
@@ -3219,8 +3222,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     {
       // use scale dependent visibility flag
       mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
-      mapLayerNode.setAttribute( "minLabelScale", mLabel->minScale() );
-      mapLayerNode.setAttribute( "maxLabelScale", mLabel->maxScale() );
+      mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
+      mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
 
       //classification field(s)
       QgsAttributeList attributes = mRenderer->classificationAttributes();
@@ -3353,6 +3356,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "value", data.mValue );
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
             editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
+            editTypeElement.setAttribute( "allowMulti", data.mAllowMulti ? "true" : "false" );
           }
           break;
 
@@ -5700,7 +5704,7 @@ QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
   const QgsFieldMap &fields = pendingFields();
 
   // FIXME: throw an exception!?
-  if ( fields.contains( idx ) )
+  if ( !fields.contains( idx ) )
   {
     QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
   }

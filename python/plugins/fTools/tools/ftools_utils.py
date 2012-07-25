@@ -351,6 +351,9 @@ def getGeomType(gT):
   elif gT == 2 or gT == 5:
     gTypeListLine = [ QGis.WKBLineString, QGis.WKBMultiLineString ]
     return gTypeListLine
+  elif gT == 1 or gT == 4:
+    gTypeListPoint = [ QGis.WKBPoint, QGis.WKBMultiPoint ]
+    return gTypeListPoint
 
 def getShapesByGeometryType( baseDir, inShapes, geomType ):
   outShapes = QStringList()

@@ -18,6 +18,7 @@
 
 #include "qgsmergeattributesdialog.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
@@ -46,8 +47,8 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
   mTableWidget->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTableWidget->setSelectionMode( QAbstractItemView::SingleSelection );
 
-  mFromSelectedPushButton->setIcon( QgisApp::getThemeIcon( "mActionFromSelectedFeature.png" ) );
-  mRemoveFeatureFromSelectionButton->setIcon( QgisApp::getThemeIcon( "mActionRemoveSelectedFeature.png" ) );
+  mFromSelectedPushButton->setIcon( QgsApplication::getThemeIcon( "mActionFromSelectedFeature.png" ) );
+  mRemoveFeatureFromSelectionButton->setIcon( QgsApplication::getThemeIcon( "mActionRemoveSelectedFeature.png" ) );
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
@@ -155,10 +156,12 @@ QComboBox* QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
   {
     newComboBox->addItem( tr( "Concatenation" ) );
   }
-  if ( columnType == QVariant::Double )
+  else if ( columnType == QVariant::Double )
   {
     newComboBox->addItem( tr( "Mean" ) );
   }
+
+  newComboBox->addItem( tr( "Skip attribute" ) );
 
   QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ),
                     this, SLOT( comboValueChanged( const QString& ) ) );
@@ -228,13 +231,7 @@ void QgsMergeAttributesDialog::selectedRowChanged()
 
 void QgsMergeAttributesDialog::refreshMergedValue( int col )
 {
-  //get QComboBox
-  QWidget* cellWidget = mTableWidget->cellWidget( 0, col );
-  if ( !cellWidget )
-  {
-    return;
-  }
-  QComboBox* comboBox = qobject_cast<QComboBox *>( cellWidget );
+  QComboBox* comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, col ) );
   if ( !comboBox )
   {
     return;
@@ -266,6 +263,10 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   else if ( mergeBehaviourString == tr( "Concatenation" ) )
   {
     evalText = concatenationAttributeString( col );
+  }
+  else if ( mergeBehaviourString == tr( "Skip attribute" ) )
+  {
+    evalText = tr( "Skipped" );
   }
   else //an existing feature value
   {
@@ -561,6 +562,10 @@ QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
   for ( int i = 0; i < mTableWidget->columnCount(); i++ )
   {
     int idx = mTableWidget->horizontalHeaderItem( i )->data( Qt::UserRole ).toInt();
+
+    QComboBox* comboBox = qobject_cast<QComboBox *>( mTableWidget->cellWidget( 0, i ) );
+    if ( comboBox && comboBox->currentText() == tr( "Skip attribute" ) )
+      continue;
 
     QTableWidgetItem* currentItem = mTableWidget->item( mFeatureList.size() + 1, i );
     if ( !currentItem )

@@ -1,6 +1,13 @@
 
 SET(QGIS_GUI_SRCS
 
+raster/qgsrasterrendererwidget.cpp
+raster/qgsmultibandcolorrendererwidget.cpp
+raster/qgspalettedrendererwidget.cpp
+raster/qgssinglebandgrayrendererwidget.cpp
+raster/qgssinglebandpseudocolorrendererwidget.cpp
+raster/qgsrasterhistogramwidget.cpp
+
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
 symbology-ng/qgsdashspacedialog.cpp
@@ -65,6 +72,7 @@ qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgscredentialdialog.cpp
+qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
@@ -88,6 +96,12 @@ IF (WITH_TOUCH)
 ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
+
+raster/qgspalettedrendererwidget.h
+raster/qgsmultibandcolorrendererwidget.h
+raster/qgssinglebandgrayrendererwidget.h
+raster/qgssinglebandpseudocolorrendererwidget.h
+raster/qgsrasterhistogramwidget.h
 
 symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
@@ -137,6 +151,7 @@ qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
 qgscredentialdialog.h
+qgsowssourceselect.h
 qgsprojectionselector.h
 qgsquickprint.h
 qgsludialog.h
@@ -172,6 +187,7 @@ qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessageviewer.h
 qgscredentialdialog.h
+qgsowssourceselect.h
 qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
@@ -204,6 +220,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
@@ -236,6 +253,7 @@ INCLUDE_DIRECTORIES(
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QWT_INCLUDE_DIR}
 )
 IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(../core/spatialite/headers)
@@ -245,6 +263,7 @@ ELSE (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${GDAL_INCLUDE_DIR})
 
 IF (WIN32)
   IF (MSVC)
@@ -300,12 +319,17 @@ ADD_DEPENDENCIES(qgis_gui ui)
 TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   ${QT_QTUITOOLS_LIBRARY}
+  ${QWT_LIBRARY}
   #${QT_QTTEST_LIBRARY}  # for ModelTest
 )
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(qgis_gui ${SQLITE3_LIBRARIES})
 ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+
+IF(WIN32)
+  ADD_DEFINITIONS(-DQWT_DLL)
+ENDIF(WIN32)
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_gui PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)

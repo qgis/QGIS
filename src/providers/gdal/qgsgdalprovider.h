@@ -135,6 +135,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
+    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
     /**
      * \brief Identify details from a GDAL layer from the last screen update
      *
@@ -242,9 +244,10 @@ class QgsGdalProvider : public QgsRasterDataProvider
     */
     QgsRasterBandStats bandStatistics( int theBandNo );
 
+    bool hasCachedHistogram( int theBandNoInt, int theBinCountInt = RASTER_HISTOGRAM_BINS );
     void populateHistogram( int theBandNoInt,
                             QgsRasterBandStats & theBandStats,
-                            int theBinCountInt = 256,
+                            int theBinCountInt = RASTER_HISTOGRAM_BINS,
                             bool theIgnoreOutOfRangeFlag = true,
                             bool theThoroughBandScanFlag = false
                           );
@@ -259,6 +262,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
+
+    static QMap<QString, QString> supportedMimes();
 
   signals:
     void statusChanged( QString );

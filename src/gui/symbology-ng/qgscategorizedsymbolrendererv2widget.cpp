@@ -24,6 +24,9 @@
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgsvectorlayer.h"
+
+#include "qgsproject.h"
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -62,6 +65,15 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   populateColumns();
 
   cboCategorizedColorRamp->populate( mStyle );
+
+  // set project default color ramp
+  QString defaultColorRamp = QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
+  if ( defaultColorRamp != "" )
+  {
+    int index = cboCategorizedColorRamp->findText( defaultColorRamp, Qt::MatchCaseSensitive );
+    if ( index >= 0 )
+      cboCategorizedColorRamp->setCurrentIndex( index );
+  }
 
   QStandardItemModel* m = new QStandardItemModel( this );
   QStringList labels;

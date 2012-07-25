@@ -38,7 +38,7 @@ class QgsPoint;
 class QByteArray;
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
-
+#define RASTER_HISTOGRAM_BINS 256
 
 /** \ingroup core
  * Base class for raster data providers.
@@ -347,15 +347,25 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
       return QStringList();
     }
 
+    /** \brief test if the requested histogram is already available */
+
+    virtual bool hasCachedHistogram( int theBandNoInt, int theBinCountInt = RASTER_HISTOGRAM_BINS )
+    {
+      Q_UNUSED( theBandNoInt ); Q_UNUSED( theBinCountInt ); return false;
+    }
+
     /** \brief Populate the histogram vector for a given band */
 
     virtual void populateHistogram( int theBandNoInt,
                                     QgsRasterBandStats & theBandStats,
-                                    int theBinCountInt = 256,
+                                    int theBinCountInt = RASTER_HISTOGRAM_BINS,
                                     bool theIgnoreOutOfRangeFlag = true,
                                     bool theThoroughBandScanFlag = false
                                   )
-    { Q_UNUSED( theBandNoInt ); Q_UNUSED( theBandStats ); Q_UNUSED( theBinCountInt ); Q_UNUSED( theIgnoreOutOfRangeFlag ); Q_UNUSED( theThoroughBandScanFlag ); }
+    {
+      Q_UNUSED( theBandNoInt ); Q_UNUSED( theBandStats ); Q_UNUSED( theBinCountInt );
+      Q_UNUSED( theIgnoreOutOfRangeFlag ); Q_UNUSED( theThoroughBandScanFlag );
+    }
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
@@ -376,7 +386,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     virtual QgsRasterBandStats bandStatistics( int theBandNo );
 
     /** \brief helper function to create zero padded band names */
-    QString  generateBandName( int theBandNumber )
+    QString  generateBandName( int theBandNumber ) const
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
     }
@@ -389,6 +399,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** \brief Identify raster value(s) found on the point position */
     virtual bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+
+    virtual bool identify( const QgsPoint & point, QMap<int, QString>& results );
 
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update

@@ -1,0 +1,27 @@
+<h3>CASE Ausdruck</h3>
+Ist ein bedingter Ausdruck mit dem mehrere Ausdrücken ausgewertet und ein
+Ergebnis zurückgegeben werden kann.
+
+<h4>Syntax</h4>
+<pre>
+     CASE
+        WHEN <i>bedingung</i> THEN <i>ergebnis</i>
+        [ ...n ]
+        [ ELSE <i>ergebnis</i> ]
+     END
+</pre>
+[ ] markiert optionale Komponenten
+
+<h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>  WHEN bedingung</i> - Der Bedingungsausdruck. <br>
+<i>  THEN ergebnis</i> - Wenn die <i>bedingung</i> True ergibt, wird der Ausdruck <i>ergebnis</i> ausgewertet und zurückgegeben. <br>
+<i>  ELSE ergebnis</i> - Wenn keine der Bedingungen erfüllt ist, wird der Ausdruck <i>ergebnis</i> ausgewertet und zurückgegeben. <br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<pre>
+    CASE
+        WHEN <i>"column" IS NULL</i> THEN <i>'Leer'</i>
+    END
+</pre>

@@ -41,6 +41,7 @@ class QgsAnnotationItem;
 class QgsClipboard;
 class QgsComposer;
 class QgsComposerView;
+class QgsContrastEnhancement;
 class QgsGeometry;
 class QgsFeature;
 
@@ -58,7 +59,6 @@ class QgsRasterLayer;
 class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
-class QgsTileScaleWidget;
 
 class QDomDocument;
 class QNetworkReply;
@@ -69,13 +69,14 @@ class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
-class QgsDecorationCopyright;
-class QgsDecorationNorthArrow;
-class QgsDecorationScaleBar;
+class QgsDecorationItem;
 
 class QgsMessageLogViewer;
 
 class QgsScaleComboBox;
+
+class QgsDataItem;
+class QgsTileScaleWidget;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -83,17 +84,17 @@ class QgsScaleComboBox;
 #include <QPointer>
 #include <QSslError>
 
-#ifdef HAVE_TOUCH
-#include <QGestureEvent>
-#include <QTapAndHoldGesture>
-#endif
-
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
 #include "qgssnappingdialog.h"
 
 #include "ui_qgisapp.h"
+
+#ifdef HAVE_TOUCH
+#include <QGestureEvent>
+#include <QTapAndHoldGesture>
+#endif
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -182,19 +183,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! update proxy settings
     void namUpdate();
 
-    //! Helper to get a theme icon. It will fall back to the
-    //default theme if the active theme does not have the required
-    //icon.
-    static QIcon getThemeIcon( const QString theName );
-    //! Helper to get a theme icon as a pixmap. It will fall back to the
-    //default theme if the active theme does not have the required
-    //icon.
-    static QPixmap getThemePixmap( const QString theName );
-
     /** Add a dock widget to the main window. Overloaded from QMainWindow.
      * After adding the dock widget to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of docks.*/
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
+    void removeDockWidget( QDockWidget * dockwidget );
     /** Add a toolbar to the main window. Overloaded from QMainWindow.
      * After adding the toolbar to the ui (by delegating to the QMainWindow
      * parent class, it will also add it to the View menu list of toolbars.*/
@@ -243,12 +236,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionNodeTool() { return mActionNodeTool; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
-
-#ifdef HAVE_TOUCH
-    QAction *actionTouch() { return mActionTouch; }
-#endif
-
     QAction *actionPan() { return mActionPan; }
+    QAction *actionTouch() { return mActionTouch; }
     QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
@@ -280,6 +269,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
+    QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
@@ -289,7 +279,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
-    QAction *actionTileScale() { return mActionTileScale; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -320,6 +309,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionCheckQgisVersion() { return mActionCheckQgisVersion; }
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
+
+    QAction *actionShowFrozenLabels() { return mActionShowFrozenLabels; }
 
     //! Menus
     QMenu *fileMenu() { return mFileMenu; }
@@ -377,6 +368,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void completeInitialization();
 
     void emitCustomSrsValidation( QgsCoordinateReferenceSystem *crs );
+
+    QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
+    void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
 
   public slots:
     //! Zoom to full extent
@@ -469,22 +463,18 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     virtual bool event( QEvent * event );
 
     /** Open a raster layer using the Raster Data Provider.
-     *  Note this is included to support WMS layers only at this stage,
-     *  GDAL layer support via a Provider is not yet implemented.
+     *  \note added in 1.9
      */
-    QgsRasterLayer* addRasterLayer( QString const & rasterLayerPath,
-                                    QString const & baseName,
-                                    QString const & providerKey,
-                                    QStringList const & layers,
-                                    QStringList const & styles,
-                                    QString const & format,
-                                    QString const & crs );
+    QgsRasterLayer* addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
 
     void addWfsLayer( QString uri, QString typeName );
 
     void versionReplyFinished();
 
     QgsMessageLogViewer *logViewer() { return mLogViewer; }
+
+    //! Update file menu with the project templates
+    void updateProjectFromTemplates();
 
   protected:
 
@@ -544,8 +534,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
-    //! Show tile scale slider
-    void showTileScale();
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
@@ -635,8 +623,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileOpen();
     //! Create a new project
     void fileNew();
-    //! As above but allows forcing without prompt
-    void fileNew( bool thePromptToSaveFlag );
+    //! Create a new blank project (no template)
+    void fileNewBlank();
+    //! As above but allows forcing without prompt and forcing blank project
+    void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
+    //! Create a new file from a template project
+    bool fileNewFromTemplate( QString fileName );
+    void fileNewFromTemplateAction( QAction * qAction );
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
     void embedLayers();
@@ -781,6 +774,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileExit();
     //! Add a WMS layer to the map
     void addWmsLayer();
+    //! Add a WCS layer to the map
+    void addWcsLayer();
     //! Add a WFS layer to the map
     void addWfsLayer();
     //! Set map tool to Zoom out
@@ -866,12 +861,19 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
+    //! Toggles whether to show frozen labels
+    void showFrozenLabels( bool show );
+    //! Activates freeze labels tool
+    void freezeLabels();
     //! Activates the move label tool
     void moveLabel();
     //! Activates rotate label tool
     void rotateLabel();
     //! Activates label property tool
     void changeLabelProperties();
+
+    void renderDecorationItems( QPainter *p );
+    void projectReadDecorationItems( );
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -916,11 +918,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void customSrsValidation( QgsCoordinateReferenceSystem *crs );
 
   private:
-    /** This method will open a dialog so the user can select the sublayers to load
-    */
-    bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
-    void askUserForOGRSublayers( QgsVectorLayer *layer );
+    /** This method will open a dialog so the user can select GDAL sublayers to load
+     * @returns true if any items were loaded
+     * @note added in version 1.9
+     */
+    bool askUserForZipItemLayers( QString path );
+    /** This method will open a dialog so the user can select GDAL sublayers to load
+     * @note added in version 1.8
+     */
     void askUserForGDALSublayers( QgsRasterLayer *layer );
+    /** This method will verify if a GDAL layer contains sublayers
+     * @note added in version 1.8
+     */
+    bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
+    /** This method will open a dialog so the user can select OGR sublayers to load
+    */
+    void askUserForOGRSublayers( QgsVectorLayer *layer );
     /** Add a raster layer to the map (passed in as a ptr).
      * It won't force a refresh.
      */
@@ -975,6 +988,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void updateCRSStatusBar();
     void createDecorations();
 
+    /**Do histogram stretch for singleband gray / multiband color rasters*/
+    void histogramStretch( bool visibleAreaOnly = false );
+    /**Create raster enhancement object for a raster band*/
+    QgsContrastEnhancement* rasterContrastEnhancement( QgsRasterLayer* rlayer, int band,
+        bool visibleAreaOnly = false ) const;
+
     // actions for menus and toolbars -----------------
 
 #ifdef Q_WS_MAC
@@ -1005,7 +1024,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QDockWidget *mLegendDock;
     QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
-    QDockWidget *mpTileScaleDock;
     QDockWidget *mpGpsDock;
     QDockWidget *mLogDock;
 
@@ -1051,6 +1069,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mTextAnnotation;
+        QgsMapTool* mFreezeLabels;
         QgsMapTool* mMoveLabel;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;
@@ -1176,9 +1195,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
 
-    QgsDecorationCopyright* mDecorationCopyright;
-    QgsDecorationNorthArrow* mDecorationNorthArrow;
-    QgsDecorationScaleBar* mDecorationScaleBar;
+    QList<QgsDecorationItem*> mDecorationItems;
 
     int mLastComposerId;
 
@@ -1204,6 +1221,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );
 #endif
+
 };
 
 #ifdef ANDROID

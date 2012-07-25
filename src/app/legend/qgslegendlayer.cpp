@@ -325,7 +325,7 @@ void QgsLegendLayer::updateIcon()
   if ( theFile->isInOverview() )
   {
     // Overlay the overview icon on the default icon
-    QPixmap myPixmap = QgisApp::getThemePixmap(  "/mIconOverview.png" );
+    QPixmap myPixmap = QgsApplication::getThemePixmap(  "/mIconOverview.png" );
     QPainter p( &newIcon );
     p.drawPixmap( 0, 0, myPixmap );
     p.end();
@@ -334,7 +334,7 @@ void QgsLegendLayer::updateIcon()
   //editable
   if ( theLayer->isEditable() )
   {
-    QPixmap myPixmap = QgisApp::getThemePixmap( "/mIconEditable.png" );
+    QPixmap myPixmap = QgsApplication::getThemePixmap( "/mIconEditable.png" );
     // use editable icon instead of the layer's type icon
     newIcon = myPixmap;
 
@@ -371,15 +371,15 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       switch ( vlayer->geometryType() )
       {
         case QGis::Point:
-          return QgisApp::getThemePixmap( "/mIconPointLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconPointLayer.png" );
         case QGis::Line:
-          return QgisApp::getThemePixmap( "/mIconLineLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconLineLayer.png" );
         case QGis::Polygon:
-          return QgisApp::getThemePixmap( "/mIconPolygonLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconPolygonLayer.png" );
         case QGis::NoGeometry:
-          return QgisApp::getThemePixmap( "/mIconTableLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconTableLayer.png" );
         default:
-          return QgisApp::getThemePixmap( "/mIconLayer.png" );
+          return QgsApplication::getThemePixmap( "/mIconLayer.png" );
       }
     }
     else if ( theLayer->type() == QgsMapLayer::RasterLayer )
@@ -400,7 +400,7 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
   }
 
   // undefined - should never reach this
-  return QgisApp::getThemePixmap( "/mIconLayer.png" );
+  return QgsApplication::getThemePixmap( "/mIconLayer.png" );
 }
 
 void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
@@ -409,7 +409,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
 
   // zoom to layer extent
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ),
                      tr( "&Zoom to Layer Extent" ), legend(), SLOT( legendLayerZoom() ) );
   if ( lyr->type() == QgsMapLayer::RasterLayer )
   {
@@ -430,13 +430,13 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
   showInOverviewAction->blockSignals( false );
 
   // remove from canvas
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionRemoveLayer.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   // set layer crs
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
   // assign layer crs to project
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+  theMenu.addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
   theMenu.addSeparator();
 
@@ -445,7 +445,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    theMenu.addAction( QgisApp::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
+    theMenu.addAction( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open Attribute Table" ),
                        QgisApp::instance(), SLOT( attributeTable() ) );
 
     // allow editing

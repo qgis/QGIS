@@ -240,6 +240,23 @@ public:
       @note added in 1.4 */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
+    /**Convenience function to set snap settings per layer
+      @note added in version 1.9*/
+    void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance, bool avoidIntersection );
+
+    /**Convenience function to query snap settings of a layer
+      @note added in version 1.9*/
+    bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
+                               bool& avoidIntersection /Out/ );
+
+    /**Convenience function to set topological editing
+        @note added in version 1.9*/
+    void setTopologicalEditing( bool enabled );
+
+    /**Convenience function to query topological editing status
+        @note added in version 1.9*/
+    bool topologicalEditing() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -257,6 +274,8 @@ public:
     
     //! emitted when project is being written
     void writeProject(QDomDocument &);
+
+    void snapSettingsChanged();
 
   private:
 

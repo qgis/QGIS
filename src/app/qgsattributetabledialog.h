@@ -67,14 +67,6 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
 
   private slots:
     /**
-     * submits the data
-     */
-    void submit();
-    /**
-     * Reverts the changes
-     */
-    void revert();
-    /**
      * Launches search
      */
     void search();
@@ -148,10 +140,7 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      * Shows advanced actions
      */
     void showAdvanced();
-    /**
-     * Starts editing mode
-     */
-    void startEditing();
+
     /**Opens dialog to add new attribute*/
     void on_mAddAttribute_clicked();
     /**Opens dialog to remove attribute*/

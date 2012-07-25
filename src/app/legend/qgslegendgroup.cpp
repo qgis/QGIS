@@ -25,7 +25,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidgetItem * theItem, QString theName )
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   setCheckState( 0, Qt::Checked );
-  QIcon myIcon = QgisApp::getThemeIcon( "/mActionFolder.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
 }
 QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
@@ -34,7 +34,7 @@ QgsLegendGroup::QgsLegendGroup( QTreeWidget* theListView, QString theString )
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   setCheckState( 0, Qt::Checked );
-  QIcon myIcon = QgisApp::getThemeIcon( "/mActionFolder.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mActionFolder.png" );
   setIcon( 0, myIcon );
 }
 
@@ -43,7 +43,7 @@ QgsLegendGroup::QgsLegendGroup( QString name ): QgsLegendItem()
   mType = LEGEND_GROUP;
   setFlags( Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   setCheckState( 0, Qt::Checked );
-  QIcon myIcon = QgisApp::getThemeIcon( + "/mActionFolder.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( + "/mActionFolder.png" );
   setText( 0, name );
   setIcon( 0, myIcon );
 }

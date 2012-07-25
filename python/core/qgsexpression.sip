@@ -1,4 +1,3 @@
-
 class QgsExpression
 {
 %TypeHeaderCode
@@ -122,6 +121,8 @@ public:
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name );
+    //! return quoted string (in single quotes)
+    static QString quotedString( QString text );
 
     //////
 
@@ -302,7 +303,24 @@ public:
       virtual void visit( QgsExpression::NodeCondition* n ) = 0;
     };
 
+    class Interval
+    {
+    public:
+      Interval(int seconds);
+      ~Interval();
+      int years();
+      int weeks();
+      int days();
+      int hours();
+      int minutes();
+      int seconds();
+      bool isValid();
+      void setValid(bool valid);
+      bool operator==(const QgsExpression::Interval& other) const;
+      static QgsExpression::Interval invalidInterVal();
+      static QgsExpression::Interval fromString(QString string);
+    };
+
     /** entry function for the visitor pattern */
     void acceptVisitor( QgsExpression::Visitor& v );
-
 };

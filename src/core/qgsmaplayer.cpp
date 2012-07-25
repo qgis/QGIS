@@ -165,6 +165,7 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
   mne = mnl.toElement();
   mDataSource = mne.text();
 
+  // TODO: this should go to providers
   if ( provider == "spatialite" )
   {
     QgsDataSourceURI uri( mDataSource );
@@ -191,6 +192,82 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
+  }
+  else if ( provider == "wms" )
+  {
+    // >>> BACKWARD COMPATIBILITY < 1.9
+    // For project file backward compatibility we must support old format:
+    // 1. mode: <url>
+    //    example: http://example.org/wms?
+    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>...,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
+    //    example: tiled=256;256;0.703;0.351,url=http://example.org/tilecache?
+    //    example: featureCount=10,http://example.org/wms?
+    //    example: ignoreUrl=GetMap;GetFeatureInfo,username=cimrman,password=jara,url=http://example.org/wms?
+    // This is modified version of old QgsWmsProvider::parseUri
+    // The new format has always params crs,format,layers,styles and that params
+    // should not appear in old format url -> use them to identify version
+    if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
+    {
+      QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
+      QgsDataSourceURI uri;
+      if ( !mDataSource.startsWith( "http:" ) )
+      {
+        QStringList parts = mDataSource.split( "," );
+        QStringListIterator iter( parts );
+        while ( iter.hasNext() )
+        {
+          QString item = iter.next();
+          if ( item.startsWith( "username=" ) )
+          {
+            uri.setParam( "username", item.mid( 9 ) );
+          }
+          else if ( item.startsWith( "password=" ) )
+          {
+            uri.setParam( "password", item.mid( 9 ) );
+          }
+          else if ( item.startsWith( "tiled=" ) )
+          {
+            // in < 1.9 tiled= may apper in to variants:
+            // tiled=width;height - non tiled mode, specifies max width and max height
+            // tiled=width;height;resolutions-1;resolution2;... - tile mode
+
+            QStringList params = item.mid( 6 ).split( ";" );
+
+            if ( params.size() == 2 ) // non tiled mode
+            {
+              uri.setParam( "maxWidth", params.takeFirst() );
+              uri.setParam( "maxHeight", params.takeFirst() );
+            }
+            else if ( params.size() > 2 ) // tiled mode
+            {
+              // resolutions are no more needed and size limit is not used for tiles
+              // we have to tell to the provider however that it is tiled
+              uri.setParam( "tileMatrixSet", "" );
+            }
+          }
+          else if ( item.startsWith( "featureCount=" ) )
+          {
+            uri.setParam( "featureCount", item.mid( 13 ) );
+          }
+          else if ( item.startsWith( "url=" ) )
+          {
+            uri.setParam( "url", item.mid( 4 ) );
+          }
+          else if ( item.startsWith( "ignoreUrl=" ) )
+          {
+            uri.setParam( "ignoreUrl", item.mid( 10 ).split( ";" ) );
+          }
+        }
+      }
+      else
+      {
+        uri.setParam( "url", mDataSource );
+      }
+      mDataSource = uri.encodedUri();
+      // At this point, the URI is obviously incomplete, we add additional params
+      // in QgsRasterLayer::readXml
+    }
+    // <<< BACKWARD COMPATIBILITY < 1.9
   }
   else
   {
@@ -302,8 +379,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // use scale dependent visibility flag
   maplayer.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
-  maplayer.setAttribute( "minimumScale", minimumScale() );
-  maplayer.setAttribute( "maximumScale", maximumScale() );
+  maplayer.setAttribute( "minimumScale", QString::number( minimumScale() ) );
+  maplayer.setAttribute( "maximumScale", QString::number( maximumScale() ) );
 
   // ID
   QDomElement layerId = document.createElement( "id" );
@@ -318,6 +395,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QString src = source();
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+  // TODO: what about postgres, mysql and others, they should not go through writePath()
   if ( vlayer && vlayer->providerType() == "spatialite" )
   {
     QgsDataSourceURI uri( src );
@@ -564,6 +642,14 @@ QString QgsMapLayer::styleURI( )
     // ideally we should look for .qml file inside zip file
     myURI.remove( 0, 8 );
   }
+  else if ( myURI.startsWith( "/vsitar/", Qt::CaseInsensitive ) &&
+            ( myURI.endsWith( ".tar", Qt::CaseInsensitive ) ||
+              myURI.endsWith( ".tar.gz", Qt::CaseInsensitive ) ||
+              myURI.endsWith( ".tgz", Qt::CaseInsensitive ) ) )
+  {
+    // ideally we should look for .qml file inside tar file
+    myURI.remove( 0, 8 );
+  }
 
   QFileInfo myFileInfo( myURI );
   QString key;
@@ -572,15 +658,18 @@ QString QgsMapLayer::styleURI( )
   {
     // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
     if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
-    {
       myURI.chop( 3 );
-      myFileInfo.setFile( myURI );
-    }
     else if ( myURI.endsWith( ".zip", Qt::CaseInsensitive ) )
-    {
       myURI.chop( 4 );
-      myFileInfo.setFile( myURI );
-    }
+    else if ( myURI.endsWith( ".tar", Qt::CaseInsensitive ) )
+      myURI.chop( 4 );
+    else if ( myURI.endsWith( ".tar.gz", Qt::CaseInsensitive ) )
+      myURI.chop( 7 );
+    else if ( myURI.endsWith( ".tgz", Qt::CaseInsensitive ) )
+      myURI.chop( 4 );
+    else if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
+      myURI.chop( 3 );
+    myFileInfo.setFile( myURI );
     // get the file name for our .qml style file
     key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
   }
@@ -745,8 +834,8 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
 
   // use scale dependent visibility flag
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
-  myRootNode.setAttribute( "minimumScale", minimumScale() );
-  myRootNode.setAttribute( "maximumScale", maximumScale() );
+  myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
+  myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
 
   // <transparencyLevelInt>
   QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );

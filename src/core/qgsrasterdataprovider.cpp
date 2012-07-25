@@ -184,6 +184,13 @@ bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QS
   return false;
 }
 
+bool QgsRasterDataProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  Q_UNUSED( point );
+  results.clear();
+  return false;
+}
+
 QString QgsRasterDataProvider::lastErrorFormat()
 {
   return "text/plain";
@@ -254,6 +261,11 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
   myXBlockSize = xBlockSize();
   myYBlockSize = yBlockSize();
+
+  if ( myXBlockSize == 0 || myYBlockSize == 0 )
+  {
+    return QgsRasterBandStats(); //invalid raster band stats
+  }
 
   myNXBlocks = ( xSize() + myXBlockSize - 1 ) / myXBlockSize;
   myNYBlocks = ( ySize() + myYBlockSize - 1 ) / myYBlockSize;

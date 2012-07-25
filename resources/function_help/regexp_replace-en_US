@@ -1,0 +1,15 @@
+<h3>regexp_replace() function</h3>
+Returns a string with the supplied regular expression replaced.
+
+<p><h4>Syntax</h4>
+     replace(<i>string,before,after</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> &rarr; is string.  The start string.<br>
+<i>  before</i> &rarr; is string.  The string to replace.<br>
+<i>  after</i> &rarr; is string.  The string that will replace <i>before</i><br></p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     replace('QGIS SHOULD ROCK','SHOULD','DOES') &rarr; 'QGIS DOES ROCK'</p>

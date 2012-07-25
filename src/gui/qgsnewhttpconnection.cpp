@@ -29,6 +29,9 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 {
   setupUi( this );
 
+  QString service = baseKey.mid( 18, 3 ).toUpper();
+  setWindowTitle( tr( "Create a new %1 connection" ).arg( service ) );
+
   // It would be obviously much better to use mBaseKey also for credentials,
   // but for some strange reason a different hardcoded key was used instead.
   // WFS and WMS credentials were mixed with the same key WMS.
@@ -52,15 +55,31 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     {
       cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
       cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
+      cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
+      cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
     }
     else
     {
       cbxIgnoreGetMapURI->setVisible( false );
       cbxIgnoreGetFeatureInfoURI->setVisible( false );
+      cbxIgnoreAxisOrientation->setVisible( false );
+      cbxInvertAxisOrientation->setVisible( false );
     }
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+  }
+  if ( mBaseKey != "/Qgis/connections-wms/" )
+  {
+    cbxIgnoreGetMapURI->setVisible( false );
+    cbxIgnoreGetFeatureInfoURI->setVisible( false );
+    mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
+    mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+    // Adjust height
+    int w = width();
+    adjustSize();
+    resize( w, height() );
+
   }
 
   on_txtName_textChanged( connName );
@@ -92,6 +111,15 @@ void QgsNewHttpConnection::accept()
     return;
   }
 
+  if ( !txtPassword->text().isEmpty() &&
+       QMessageBox::question( this,
+                              tr( "Saving passwords" ),
+                              tr( "WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\nNote: giving the password is optional. It will be requested interactivly, when needed." ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
@@ -100,24 +128,27 @@ void QgsNewHttpConnection::accept()
   }
 
   QUrl url( txtUrl->text().trimmed() );
-
-  QList< QPair<QByteArray, QByteArray> > params = url.encodedQueryItems();
-  for ( int i = 0; i < params.size(); i++ )
+  const QList< QPair<QByteArray, QByteArray> > &items = url.encodedQueryItems();
+  QHash< QString, QPair<QByteArray, QByteArray> > params;
+  for ( QList< QPair<QByteArray, QByteArray> >::const_iterator it = items.constBegin(); it != items.constEnd(); ++it )
   {
-    if ( params[i].first.toUpper() == "SERVICE" ||
-         params[i].first.toUpper() == "REQUEST" ||
-         params[i].first.toUpper() == "FORMAT" )
-    {
-      params.removeAt( i-- );
-    }
+    params.insert( QString( it->first ).toUpper(), *it );
   }
-  url.setEncodedQueryItems( params );
+
+  if ( params["SERVICE"].second.toUpper() == "WMS" )
+  {
+    url.removeEncodedQueryItem( params["SERVICE"].first );
+    url.removeEncodedQueryItem( params["REQUEST"].first );
+    url.removeEncodedQueryItem( params["FORMAT"].first );
+  }
 
   settings.setValue( key + "/url", url.toString() );
   if ( mBaseKey == "/Qgis/connections-wms/" )
   {
     settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+    settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
+    settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
   }
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );

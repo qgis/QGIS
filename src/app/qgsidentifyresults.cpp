@@ -226,7 +226,7 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
     if ( vlayer->pendingFields().size() > 0 )
     {
       QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
-      editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+      editItem->setIcon( 0, QgsApplication::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
       editItem->setData( 0, Qt::UserRole, "edit" );
       actionItem->addChild( editItem );
     }
@@ -239,7 +239,7 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
         continue;
 
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << "" << action.name() );
-      twi->setIcon( 0, QgisApp::getThemeIcon( "/mAction.png" ) );
+      twi->setIcon( 0, QgsApplication::getThemeIcon( "/mAction.png" ) );
       twi->setData( 0, Qt::UserRole, "action" );
       twi->setData( 0, Qt::UserRole + 1, QVariant::fromValue( i ) );
       actionItem->addChild( twi );
@@ -329,7 +329,7 @@ void QgsIdentifyResults::editingToggled()
       continue;
 
     QTreeWidgetItem *editItem = actions->child( j );
-    editItem->setIcon( 0, QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
+    editItem->setIcon( 0, QgsApplication::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ) );
     editItem->setText( 1, vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
   }
 }
@@ -434,7 +434,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   if ( featItem )
   {
     mActionPopup->addAction(
-      QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ),
+      QgsApplication::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ),
       vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ),
       this, SLOT( featureForm() ) );
     mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
@@ -474,7 +474,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
         continue;
 
       QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx, this );
-      mActionPopup->addAction( QgisApp::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
+      mActionPopup->addAction( QgsApplication::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
     }
   }
 
@@ -743,7 +743,7 @@ void QgsIdentifyResults::featureDeleted( QgsFeatureId fid )
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
-    if ( featItem && featItem->data( 0, Qt::UserRole ).toString() == FID_TO_STRING( fid ) )
+    if ( featItem && STRING_TO_FID( featItem->data( 0, Qt::UserRole ) ) == fid )
     {
       delete mHighlights.take( featItem );
       delete featItem;
@@ -774,7 +774,7 @@ void QgsIdentifyResults::attributeValueChanged( QgsFeatureId fid, int idx, const
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
-    if ( featItem && featItem->data( 0, Qt::UserRole ).toString() == FID_TO_STRING( fid ) )
+    if ( featItem && STRING_TO_FID( featItem->data( 0, Qt::UserRole ) ) == fid )
     {
       if ( featItem->data( 0, Qt::DisplayRole ).toString() == vlayer->displayField() )
         featItem->setData( 1, Qt::DisplayRole, val );
@@ -808,7 +808,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  QgsFeatureId fid = featItem->data( 0, Qt::UserRole ).toInt();
+  QgsFeatureId fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
 
   QgsFeature feat;
   if ( !layer->featureAtId( fid, feat, true, false ) )
@@ -843,7 +843,7 @@ void QgsIdentifyResults::zoomToFeature()
   if ( !featItem )
     return;
 
-  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
 
   QgsFeature feat;
   if ( ! layer->featureAtId( fid, feat, true, false ) )
@@ -881,7 +881,7 @@ void QgsIdentifyResults::featureForm()
   if ( !featItem )
     return;
 
-  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  int fid = STRING_TO_FID( featItem->data( 0, Qt::UserRole ) );
   int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
   QgsFeature f;

@@ -21,12 +21,13 @@ email                : sbr00pwb@users.sourceforge.net
 #ifndef QGSCALEBARPLUGIN
 #define QGSCALEBARPLUGIN
 
+#include "qgsdecorationitem.h"
+
 class QPainter;
 
 #include <QColor>
-#include <QObject>
 
-class QgsDecorationScaleBar: public QObject
+class QgsDecorationScaleBar: public QgsDecorationItem
 {
     Q_OBJECT
   public:
@@ -42,7 +43,7 @@ class QgsDecorationScaleBar: public QObject
     void saveToProject();
 
     //! this does the meaty bit of the work
-    void renderScaleBar( QPainter * );
+    void render( QPainter * );
     //! Show the dialog box
     void run();
 
@@ -55,8 +56,6 @@ class QgsDecorationScaleBar: public QObject
     int mPreferredSize;
     //! Should we snap to integer times power of 10?
     bool mSnapping;
-    //! Scale bar enabled?
-    bool mEnabled;
     //! Style of scale bar. An index and the translated text
     int mStyleIndex;
     QStringList mStyleLabels;

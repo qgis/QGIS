@@ -152,6 +152,11 @@ const QString GEOWKT =
  * @note deprecated in 1.8 due to violation of coding conventions (globals
  *  should be in all caps).
 */
+
+const QString PROJECT_SCALES =
+  "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+  "1:10000,1:5000,1:2500,1:1000,1:500";
+
 #ifndef _MSC_VER
 Q_DECL_DEPRECATED
 #endif

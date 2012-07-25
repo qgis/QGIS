@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>433</width>
-    <height>425</height>
+    <width>274</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,42 +30,29 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>415</width>
-        <height>378</height>
+        <width>271</width>
+        <height>470</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Label</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
+       <item row="0" column="0" colspan="2">
         <widget class="QTextEdit" name="mTextEdit">
          <property name="lineWrapMode">
-          <enum>QTextEdit::NoWrap</enum>
+          <enum>QTextEdit::WidgetWidth</enum>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QPushButton" name="mFontButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Font</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
+       <item row="2" column="0" colspan="2">
         <widget class="QPushButton" name="mFontColorButton">
          <property name="text">
           <string>Font color...</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="3" column="0" colspan="2">
         <widget class="QGroupBox" name="buttonGroup1">
          <property name="title">
           <string>Horizontal Alignment:</string>
@@ -111,7 +98,7 @@
          </layout>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="4" column="0" colspan="2">
         <widget class="QGroupBox" name="buttonGroup2">
          <property name="title">
           <string>Vertical Alignment:</string>
@@ -154,13 +141,52 @@
          </layout>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="5" column="0" colspan="2">
         <widget class="QDoubleSpinBox" name="mMarginDoubleSpinBox">
          <property name="prefix">
           <string>Margin </string>
          </property>
          <property name="suffix">
           <string>mm</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="mRotationLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Rotation</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="buddy">
+          <cstring>mRotationSpinBox</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+         <property name="maximum">
+          <double>360.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QPushButton" name="mFontButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Font</string>
          </property>
         </widget>
        </item>

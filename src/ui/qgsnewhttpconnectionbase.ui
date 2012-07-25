@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>507</width>
-    <height>322</height>
+    <width>475</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
     </widget>
    </item>
    <item row="0" column="0">
-    <widget class="QGroupBox" name="GroupBox1">
+    <widget class="QGroupBox" name="mGroupBox">
      <property name="title">
       <string>Connection details</string>
      </property>
@@ -48,6 +48,12 @@
       </item>
       <item row="4" column="0" colspan="3">
        <widget class="QLabel" name="label">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>If the service requires basic authentication, enter a user name and optional password</string>
         </property>
@@ -128,17 +134,31 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="9" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreGetFeatureInfoURI">
         <property name="text">
          <string>Ignore GetFeatureInfo URI reported in capabilities</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="0" colspan="2">
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="cbxIgnoreGetMapURI">
         <property name="text">
          <string>Ignore GetMap URI reported in capabilities</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="2">
+       <widget class="QCheckBox" name="cbxIgnoreAxisOrientation">
+        <property name="text">
+         <string>Ignore axis orientation (WMS 1.3/WMTS)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0" colspan="2">
+       <widget class="QCheckBox" name="cbxInvertAxisOrientation">
+        <property name="text">
+         <string>Invert axis orientation</string>
         </property>
        </widget>
       </item>

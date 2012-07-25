@@ -502,28 +502,36 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
+      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
       ( *itemIt )->move( -1.0, 0.0 );
+      ( *itemIt )->endCommand();
     }
   }
   else if ( e->key() == Qt::Key_Right )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
+      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
       ( *itemIt )->move( 1.0, 0.0 );
+      ( *itemIt )->endCommand();
     }
   }
   else if ( e->key() == Qt::Key_Down )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
+      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
       ( *itemIt )->move( 0.0, 1.0 );
+      ( *itemIt )->endCommand();
     }
   }
   else if ( e->key() == Qt::Key_Up )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
+      ( *itemIt )->beginCommand( tr( "Item moved" ), QgsComposerMergeCommand::ItemMove );
       ( *itemIt )->move( 0.0, -1.0 );
+      ( *itemIt )->endCommand();
     }
   }
 }

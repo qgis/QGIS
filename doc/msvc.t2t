@@ -44,7 +44,7 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 
 - expat
 - fcgi
-- gdal17
+- gdal
 - grass
 - gsl-devel
 - iconv
@@ -52,6 +52,8 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - qt4-devel
 - qwt5-devel-qt4
 - sip
+- spatialite
+- libspatialindex-devel
 -
 
 This will also select packages the above packages depend on.
@@ -140,27 +142,23 @@ directory or add their respective directories to your PATH.
 
 === Packaging ===
 
-To create a windows 'all in one' standalone  package ''under ubuntu'' (yes you
-read correctly) do the following:
+To create a standalone installer there is a perl script named 'creatensis.pl'
+in 'qgis/ms-windows/osgeo4w'.  It downloads all required packages from OSGeo4W
+and repackages them into an installer using NSIS.
 
-```
-sudo apt-get install nsis
-```
 
-Now 
+The script can either be run on Windows, but also can be run on Linux.
 
-```
-cd qgis/ms-windows/osgeo4w
-```
+On Debian/Ubuntu you can just install the 'nsis' package.
 
-And run the nsis creation script:
+NSIS for Windows can be downloaded at:
 
-```
-creatensis.pl
-```
+	http://nsis.sourceforge.net
 
-When the script completes, it should have created a QGIS installer executable
-in the ms-windows directory (using the QGIS binaries from OSGEO4W). 
+And Perl for Windows (including other requirements like 'wget', 'unzip', 'tar'
+and 'bzip2') is available at:
+
+	http://cygwin.com
 
 === Packaging your own build of QGIS ===
 

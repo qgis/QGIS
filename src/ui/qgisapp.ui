@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>28</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -62,8 +62,14 @@
       <string>Print Composers</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mProjectFromTemplateMenu">
+     <property name="title">
+      <string>New Project From Template</string>
+     </property>
+    </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
+    <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="separator"/>
     <addaction name="mRecentProjectsMenu"/>
     <addaction name="mActionSaveProject"/>
@@ -103,9 +109,10 @@
      <property name="title">
       <string>&amp;Decorations</string>
      </property>
-     <addaction name="mActionDecorationCopyright"/>
-     <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
+     <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationCopyright"/>
     </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
@@ -128,7 +135,6 @@
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
-    <addaction name="mActionTileScale"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -150,6 +156,7 @@
     <addaction name="mActionAddMssqlLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
+    <addaction name="mActionAddWcsLayer"/>
     <addaction name="mActionAddWfsLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
@@ -256,6 +263,7 @@
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
    <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
@@ -391,6 +399,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
+   <addaction name="mActionShowFrozenLabels"/>
+   <addaction name="mActionFreezeLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -1251,11 +1261,6 @@
     <string>Set Project CRS from Layer</string>
    </property>
   </action>
-  <action name="mActionTileScale">
-   <property name="text">
-    <string>Tile scale slider</string>
-   </property>
-  </action>
   <action name="mActionLayerProperties">
    <property name="text">
     <string>Properties...</string>
@@ -1377,6 +1382,9 @@
    </property>
    <property name="text">
     <string>Configure shortcuts...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
    </property>
   </action>
   <action name="mActionLocalHistogramStretch">
@@ -1671,6 +1679,73 @@
    </property>
    <property name="text">
     <string>Paste style</string>
+   </property>
+  </action>
+  <action name="mActionAddWcsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.png</normaloff>:/images/themes/default/mActionAddWcsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add WCS Layer...</string>
+   </property>
+  </action>
+  <action name="mActionDecorationGrid">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/transformed.png</normaloff>:/images/themes/default/transformed.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a scale bar that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionFreezeLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFreezeLabels.png</normaloff>:/images/themes/default/mActionFreezeLabels.png</iconset>
+   </property>
+   <property name="text">
+    <string>Freeze or Thaw Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Freeze or Thaw Labels
+Shift thaws, Alt toggles, Ctl (Cmd) hides</string>
+   </property>
+  </action>
+  <action name="mActionShowFrozenLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowFrozenLabels.png</normaloff>:/images/themes/default/mActionShowFrozenLabels.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Frozen Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Frozen Labels</string>
+   </property>
+  </action>
+  <action name="mActionNewBlankProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Blank Project</string>
+   </property>
+   <property name="toolTip">
+    <string>New Blank Project</string>
    </property>
   </action>
  </widget>

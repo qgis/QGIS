@@ -49,13 +49,13 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/CustomProjection/geometry" ).toByteArray() );
 
-  pbnFirst->setIcon( QgisApp::getThemeIcon( "mIconFirst.png" ) );
-  pbnPrevious->setIcon( QgisApp::getThemeIcon( "mIconPrevious.png" ) );
-  pbnNext->setIcon( QgisApp::getThemeIcon( "mIconNext.png" ) );
-  pbnLast->setIcon( QgisApp::getThemeIcon( "mIconLast.png" ) );
-  pbnNew->setIcon( QgisApp::getThemeIcon( "mIconNew.png" ) );
-  pbnSave->setIcon( QgisApp::getThemeIcon( "mActionFileSave.png" ) );
-  pbnDelete->setIcon( QgisApp::getThemeIcon( "mIconDelete.png" ) );
+  pbnFirst->setIcon( QgsApplication::getThemeIcon( "mIconFirst.png" ) );
+  pbnPrevious->setIcon( QgsApplication::getThemeIcon( "mIconPrevious.png" ) );
+  pbnNext->setIcon( QgsApplication::getThemeIcon( "mIconNext.png" ) );
+  pbnLast->setIcon( QgsApplication::getThemeIcon( "mIconLast.png" ) );
+  pbnNew->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
+  pbnSave->setIcon( QgsApplication::getThemeIcon( "mActionFileSave.png" ) );
+  pbnDelete->setIcon( QgsApplication::getThemeIcon( "mIconDelete.png" ) );
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -594,7 +594,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
   if ( pbnNew->text() == tr( "Abort" ) )
   {
     //if we get here, user has aborted add record
-    pbnNew->setIcon( QgisApp::getThemeIcon( "mIconNew.png" ) );
+    pbnNew->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
     //next line needed for new/abort logic
     pbnNew->setText( tr( "New" ) );
     //get back to the last used record before insert was pressed
@@ -616,7 +616,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
     pbnNext->setEnabled( false );
     pbnLast->setEnabled( false );
     pbnDelete->setEnabled( false );
-    pbnNew->setIcon( QgisApp::getThemeIcon( "mIconNew.png" ) );
+    pbnNew->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
     //next line needed for new/abort logic
     pbnNew->setText( tr( "Abort" ) );
     //clear the controls

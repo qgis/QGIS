@@ -20,28 +20,14 @@
 
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-//#include "qgisapp.h" //for getThemeIcon
-//#include "qgscontexthelp.h"
-//#include "qgscoordinatereferencesystem.h"
-//#include "qgsgenericprojectionselector.h"
-//#include "qgslogger.h"
-//#include "qgsmanageconnectionsdialog.h"
-//#include "qgsmessageviewer.h"
+#include "qgsdatasourceuri.h"
 #include "qgsnewhttpconnection.h"
-//#include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
 #include "qgsnetworkaccessmanager.h"
 
-//#include <QButtonGroup>
-//#include <QFileDialog>
-//#include <QRadioButton>
-//#include <QDomDocument>
-//#include <QHeaderView>
-//#include <QImageReader>
 #include <QInputDialog>
-//#include <QMap>
 #include <QMessageBox>
 #include <QPicture>
 #include <QSettings>
@@ -63,6 +49,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
+  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -76,21 +63,49 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
       password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), "Password", QLineEdit::Password );
     }
     mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
+    mUri.setParam( "username", username );
+    mUri.setParam( "password", password );
   }
 
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
-  if ( ignoreGetMap || ignoreGetFeatureInfo )
+  bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
+  bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
+
+  QString connArgs, delim;
+
+
+  if ( ignoreGetMap )
   {
-    QString connArgs = "ignoreUrl=";
-    if ( ignoreGetMap )
-    {
-      connArgs += "GetMap";
-      if ( ignoreGetFeatureInfo )
-        connArgs += ";";
-    }
-    if ( ignoreGetFeatureInfo )
-      connArgs += "GetFeatureInfo";
+    connArgs += delim + "GetMap";
+    delim = ";";
+    mUri.setParam( "IgnoreGetMapUrl", "1" );
+  }
+
+  if ( ignoreGetFeatureInfo )
+  {
+    connArgs += delim + "GetFeatureInfo";
+    delim = ";";
+    mUri.setParam( "IgnoreGetFeatureInfoUrl", "1" );
+  }
+
+  if ( ignoreAxisOrientation )
+  {
+    connArgs += delim + "AxisOrientation";
+    delim = ";";
+    mUri.setParam( "IgnoreAxisOrientation", "1" );
+  }
+
+  if ( invertAxisOrientation )
+  {
+    connArgs += delim + "InvertAxisOrientation";
+    delim = ";";
+    mUri.setParam( "InvertAxisOrientation", "1" );
+  }
+
+  if ( !connArgs.isEmpty() )
+  {
+    connArgs.prepend( "ignoreUrl=" );
 
     if ( mConnectionInfo.startsWith( "username=" ) )
     {
@@ -110,9 +125,14 @@ QgsWMSConnection::~QgsWMSConnection()
 
 }
 
-QString QgsWMSConnection::connectionInfo( )
+QString QgsWMSConnection::connectionInfo()
 {
   return mConnectionInfo;
+}
+
+QgsDataSourceURI QgsWMSConnection::uri()
+{
+  return mUri;
 }
 
 QgsWmsProvider * QgsWMSConnection::provider( )
@@ -123,7 +143,7 @@ QgsWmsProvider * QgsWMSConnection::provider( )
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
   QgsWmsProvider *wmsProvider =
-    ( QgsWmsProvider* ) pReg->provider( "wms", mConnectionInfo );
+    ( QgsWmsProvider* ) pReg->provider( "wms", mUri.encodedUri() );
 
   return wmsProvider;
 }

@@ -87,10 +87,10 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
   composerShapeElem.setAttribute( "shapeType", mShape );
-  composerShapeElem.setAttribute( "outlineWidth", mPen.widthF() );
+  composerShapeElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerShapeElem.setAttribute( "transparentFill", mBrush.style() == Qt::NoBrush );
-  composerShapeElem.setAttribute( "shapeWidth", mShapeWidth );
-  composerShapeElem.setAttribute( "shapeHeight", mShapeHeight );
+  composerShapeElem.setAttribute( "shapeWidth", QString::number( mShapeWidth ) );
+  composerShapeElem.setAttribute( "shapeHeight", QString::number( mShapeHeight ) );
   QDomElement outlineColorElem = doc.createElement( "OutlineColor" );
   outlineColorElem.setAttribute( "red", mPen.color().red() );
   outlineColorElem.setAttribute( "green", mPen.color().green() );

@@ -134,10 +134,10 @@ void QgsComposerTable::adjustFrameToSize()
 
 bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
 {
-  elem.setAttribute( "lineTextDist", mLineTextDistance );
+  elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
   elem.setAttribute( "headerFont", mHeaderFont.toString() );
   elem.setAttribute( "contentFont", mContentFont.toString() );
-  elem.setAttribute( "gridStrokeWidth", mGridStrokeWidth );
+  elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColorRed", mGridColor.red() );
   elem.setAttribute( "gridColorGreen", mGridColor.green() );
   elem.setAttribute( "gridColorBlue", mGridColor.blue() );

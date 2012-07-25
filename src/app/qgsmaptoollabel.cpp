@@ -449,3 +449,38 @@ bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol
 
   return true;
 }
+
+bool QgsMapToolLabel::layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+{
+  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  if ( !vlayer || !vlayer->isEditable() )
+  {
+    return false;
+  }
+
+  bool xColOk, yColOk;
+
+  QVariant xColumn = ml->customProperty( "labeling/dataDefinedProperty9" );
+  if ( !xColumn.isValid() )
+  {
+    return false;
+  }
+  xCol = xColumn.toInt( &xColOk );
+  if ( !xColOk )
+  {
+    return false;
+  }
+
+  QVariant yColumn = ml->customProperty( "labeling/dataDefinedProperty10" );
+  if ( !yColumn.isValid() )
+  {
+    return false;
+  }
+  yCol = yColumn.toInt( &yColOk );
+  if ( !yColOk )
+  {
+    return false;
+  }
+
+  return true;
+}

@@ -803,9 +803,18 @@ void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule*
 {
   foreach( const QgsRendererCategoryV2& cat, r->categories() )
   {
-    // replace simple "double quotes" by double "double quotes" in field name
-    QString escapedId = r->classAttribute().replace(QString("\""), QString("\"\""));
-    QString filter = QString( "\"%1\" = '%2'" ).arg( escapedId ).arg( cat.value().toString() );
+    QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
+    QString value;
+    // not quoting numbers saves a type cast
+    if ( cat.value().type() == QVariant::Int )
+      value = cat.value().toString();
+    else if ( cat.value().type() == QVariant::Double )
+      // we loose precision here - so we may miss some categories :-(
+      // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
+      value = QString::number( cat.value().toDouble(), 'f', 4 );
+    else
+      value = QgsExpression::quotedString( cat.value().toString() );
+    QString filter = QString( "%1 = %2" ).arg( attr ).arg( value );
     QString label = filter;
     initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
   }
@@ -815,9 +824,12 @@ void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* ini
 {
   foreach( const QgsRendererRangeV2& rng, r->ranges() )
   {
-    // replace simple "double quotes" by double "double quotes" in field name
-    QString escapedId = r->classAttribute().replace(QString("\""), QString("\"\""));
-    QString filter = QString( "\"%1\" >= '%2' AND \"%1\" <= '%3'" ).arg( escapedId ).arg( rng.lowerValue() ).arg( rng.upperValue() );
+    // due to the loss of precision in double->string conversion we may miss out values at the limit of the range
+    // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
+    QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
+    QString filter = QString( "%1 >= %2 AND %1 <= %3" ).arg( attr )
+                     .arg( QString::number( rng.lowerValue(), 'f', 4 ) )
+                     .arg( QString::number( rng.upperValue(), 'f', 4 ) );
     QString label = filter;
     initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }

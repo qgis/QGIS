@@ -76,6 +76,7 @@ SET(QGIS_CORE_SRCS
   qgsmessagelog.cpp
   qgscredentials.cpp
   qgsoverlayobject.cpp
+  qgsowsconnection.cpp
   qgspalgeometry.cpp
   qgspallabeling.cpp
   qgspalobjectpositionmanager.cpp
@@ -97,8 +98,6 @@ SET(QGIS_CORE_SRCS
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
-  qgssearchstring.cpp
-  qgssearchtreenode.cpp
   qgssnapper.cpp
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
@@ -164,6 +163,16 @@ SET(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
 
+  raster/qgsrasterrendererregistry.cpp
+  raster/qgsrasterrenderer.cpp
+  raster/qgsbilinearrasterresampler.cpp
+  raster/qgscubicrasterresampler.cpp
+  raster/qgspalettedrasterrenderer.cpp
+  raster/qgsmultibandcolorrenderer.cpp
+  raster/qgssinglebandcolordatarenderer.cpp
+  raster/qgssinglebandgrayrenderer.cpp
+  raster/qgssinglebandpseudocolorrenderer.cpp
+
   renderer/qgscontinuouscolorrenderer.cpp
   renderer/qgsgraduatedsymbolrenderer.cpp
   renderer/qgsrenderer.cpp
@@ -175,6 +184,9 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   qgsspatialindex.cpp
+
+  qgspaintenginehack.cpp
+  qgsscaleutils.cpp
 )
 
 IF(WIN32)
@@ -231,9 +243,9 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 
-ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy qgsexpressionparser.yy)
+ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
@@ -265,6 +277,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerscalebar.h
   composer/qgscomposeritem.h
   composer/qgscomposeritemgroup.h
+  composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
   composer/qgscomposition.h
@@ -327,6 +340,7 @@ SET(QGIS_CORE_HDRS
   qgsmimedatautils.h
   qgscredentials.h
   qgsoverlayobjectpositionmanager.h
+  qgsowsconnection.h
   qgspallabeling.h
   qgspalobjectpositionmanager.h
   qgspluginlayer.h
@@ -347,8 +361,6 @@ SET(QGIS_CORE_HDRS
   qgsrendercontext.h
   qgsrunprocess.h
   qgsscalecalculator.h
-  qgssearchstring.h
-  qgssearchtreenode.h
   qgssnapper.h
   qgscoordinatereferencesystem.h
   qgsvectordataprovider.h
@@ -390,23 +402,32 @@ SET(QGIS_CORE_HDRS
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
+  symbology-ng/qgsellipsesymbollayerv2.h
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
   symbology-ng/qgslinesymbollayerv2.h
   symbology-ng/qgsmarkersymbollayerv2.h
+  symbology-ng/qgspointdisplacementrenderer.h
   symbology-ng/qgsrendererv2.h
   symbology-ng/qgsrendererv2registry.h
+  symbology-ng/qgsrulebasedrendererv2.h
   symbology-ng/qgssinglesymbolrendererv2.h
   symbology-ng/qgsstylev2.h
+  symbology-ng/qgssvgcache.h
   symbology-ng/qgssymbollayerv2.h
   symbology-ng/qgssymbollayerv2registry.h
   symbology-ng/qgssymbollayerv2utils.h
   symbology-ng/qgssymbologyv2conversion.h
   symbology-ng/qgssymbolv2.h
   symbology-ng/qgsvectorcolorrampv2.h
+  symbology-ng/qgsvectorfieldsymbollayer.h
+
   qgsdiagramrendererv2.h
 
   qgsspatialindex.h
+
+  qgspaintenginehack.h
+  qgsscaleutils.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)

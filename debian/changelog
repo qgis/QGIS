@@ -1,6 +1,12 @@
-qgis (1.9.90) UNRELEASED; urgency=low
+qgis (1.9.0) UNRELEASED; urgency=low
 
-  * new development version 1.9.90 after branch of 1.8.0
+  * new development version 1.9 after branch of 1.8
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 14 Jun 2012 10:56:27 +0200
+
+qgis (1.8.0) UNRELEASED; urgency=low
+
+  * new development version 1.8 after branch
   * include function help in package
   * include heatmap plugin
   * drop extra include path for QtWebkit on oneiric and natty
@@ -13,11 +19,6 @@ qgis (1.9.90) UNRELEASED; urgency=low
   * copyright & policy update (synced from debiangis)
   * run crssync in postinst
   * run tests with xvfb and upload to results to (c)dashboard
-
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 18 Apr 2012 20:50:12 +0200
-
-qgis (1.8.0) UNRELEASED; urgency=low
-
   * new development version 1.8 after branch
   * add qgis browser (qbrowser)
   * add zonal statistics plugins and globe plugin
@@ -30,7 +31,7 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * build package with libspatialindex where available
   * drop wfsplugin & displaceplugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 28 Oct 2011 08:52:45 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 14 Jun 2012 10:56:27 +0200
 
 qgis (1.7.0) UNRELEASED; urgency=low
 

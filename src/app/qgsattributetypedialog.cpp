@@ -432,6 +432,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
       valueRelationAllowNull->setChecked( mValueRelationData.mAllowNull );
       valueRelationOrderByValue->setChecked( mValueRelationData.mOrderByValue );
+      valueRelationAllowMulti->setChecked( mValueRelationData.mAllowMulti );
       break;
 
     case QgsVectorLayer::LineEdit:
@@ -604,6 +605,7 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mValue = valueRelationValueColumn->currentText();
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
       mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
+      mValueRelationData.mAllowMulti = valueRelationAllowMulti->isChecked();
       break;
     case 13:
       mEditType = QgsVectorLayer::UuidGenerator;

@@ -419,6 +419,8 @@ QgsFeatureRendererV2* QgsSLDParser::rendererFromUserStyle( const QDomElement& us
 
 bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleElement, QgsRasterLayer* r ) const
 {
+  return false;
+#if 0 //needs to be fixed
   QgsDebugMsg( "Entering" );
   if ( !r )
   {
@@ -502,6 +504,10 @@ bool QgsSLDParser::rasterSymbologyFromUserStyle( const QDomElement& userStyleEle
 
   //set pseudo color mode
   return true;
+#else
+  Q_UNUSED( userStyleElement );
+  Q_UNUSED( r );
+#endif //0
 }
 
 // ---------------labelSettingsFromUserStyle-----------------------
@@ -1480,7 +1486,6 @@ void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
     if ( rl->rasterType() == QgsRasterLayer::GrayOrUndefined )
     {
       rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
-      rl->setRasterShaderFunction( new QgsRasterShaderFunction() );
     }
   }
 }

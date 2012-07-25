@@ -23,7 +23,7 @@
 #include "qgscontexthelp.h"
 
 class QgsMapCanvas;
-
+class QgsStyleV2;
 
 /*!  Dialog to set project level properties
 
@@ -83,6 +83,28 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void on_pbnCanvasColor_clicked();
 
+    /*! Let the user add a scale to the list of project scales
+     * used in scale combobox instead of global ones
+     * @note added in QGIS 2.0
+     */
+    void on_pbnAddScale_clicked();
+
+    /*! Let the user remove a scale from the list of project scales
+     * used in scale combobox instead of global ones
+     * @note added in QGIS 2.0
+     */
+    void on_pbnRemoveScale_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnImportScales_clicked();
+
+    /** Let the user load scales from file
+     * @note added in QGIS 2.0
+     */
+    void on_pbnExportScales_clicked();
+
     /*!
      * Slots for WMS project settings
      */
@@ -90,6 +112,16 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbnWMSAddSRS_clicked();
     void on_pbnWMSRemoveSRS_clicked();
     void on_pbnWMSSetUsedSRS_clicked();
+
+    /*!
+     * Slots for Styles
+     */
+    void on_pbtnStyleManager_clicked();
+    void on_pbtnStyleMarker_clicked();
+    void on_pbtnStyleLine_clicked();
+    void on_pbtnStyleFill_clicked();
+    void on_pbtnStyleColorRamp_clicked();
+    void on_mTransparencySlider_valueChanged( int value );
 
     /*!
      * Slot to show the context help for this dialog
@@ -107,12 +139,19 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
+    //! Signal used to inform listeners that project scale list may have chnaged
+    void scalesChanged( const QStringList &scales = QStringList() );
+
     //! let listening canvases know to refresh
     void refresh();
 
 
   private:
     QgsMapCanvas* mMapCanvas;
+    QgsStyleV2* mStyle;
+
+    void populateStyles();
+    void editSymbol( QComboBox* cbo );
 
     /*!
      * Function to save dialog window state

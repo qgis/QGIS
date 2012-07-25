@@ -887,7 +887,6 @@ namespace pal
       flags = FLAG_ON_LINE; // default flag
 
     // generate curved labels
-    std::cerr << "------" << std::endl;
     for ( int i = 0; i*delta < total_distance; i++ )
     {
       LabelPosition* slp = curvedPlacementAtOffset( mapShape, path_distances, 0, 1, i * delta );
@@ -914,7 +913,7 @@ namespace pal
           tmp = tmp->getNextPart();
         }
 
-        double angle_diff_avg = angle_diff / ( f->labelInfo->char_num - 1 ); // <0, pi> but pi/8 is much already
+        double angle_diff_avg = f->labelInfo->char_num > 1 ? ( angle_diff / ( f->labelInfo->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
         double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
         if ( cost < 0.0001 ) cost = 0.0001;
 

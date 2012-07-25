@@ -1,0 +1,11 @@
+<h3>Funktion yat</h3>
+Liefert eine Y-Koordinate der Geometrie der aktuellen Geometrie.
+
+<h4>Syntax</h4>
+<code>xat(i)</code>
+
+<h4>Argumente</h4>
+<code>i</code> - ist int. Y-Koordinate des n-ten Punkts einer Linie (Indizes beginnen bei 0; Negative Werte beziehen sich auf das Linienende)
+
+<h4>Beispiel</h4>
+<pre>yat(1) &rarr; 5</pre>

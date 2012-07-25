@@ -639,40 +639,32 @@ class geoprocessingThread( QThread ):
         outFeat.setAttributeMap( attrs )
         writer.addFeature( outFeat )
       else:
-        unique = vproviderA.uniqueValues( int( self.myParam ) )
-        nFeat = nFeat * len( unique )
-        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-        for item in unique:
-          first = True
-          add = False
-          vproviderA.rewind()
-          vproviderA.select( allAttrsA )
-          for inFeat in selectionA:
-            nElement += 1
-            self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
-            atMap = inFeat.attributeMap()
-            tempItem = atMap[ self.myParam ]
-            if tempItem.toString().trimmed() == item.toString().trimmed():
-              add = True
-              if first:
-                QgsGeometry( inFeat.geometry() )
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                outFeat.setGeometry( tmpInGeom )
-                first = False
-                attrs = inFeat.attributeMap()
-              else:
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                tmpOutGeom = QgsGeometry( outFeat.geometry() )
-                try:
-                  tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-                  outFeat.setGeometry( tmpOutGeom )
-                except:
-                  GEOS_EXCEPT = False
-                  add = False
-          if add:
-            outFeat.setAttributeMap( attrs )
-            writer.addFeature( outFeat )
+
+        outFeats = {}
+        attrs = {}
+
+        for inFeat in selectionA:
+          nElement += 1
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+          atMap = inFeat.attributeMap()
+          tempItem = unicode(atMap[self.myParam].toString().trimmed())
+
+          if not (tempItem in outFeats):
+            outFeats[tempItem] = QgsGeometry(inFeat.geometry())
+            attrs[tempItem] = atMap
+          else:
+            try:
+              outFeats[tempItem] = outFeats[tempItem].combine(inFeat.geometry())
+            except:
+              GEOS_EXCEPT = False
+              continue
+        for k in outFeats.keys():
+          feature = QgsFeature()
+          feature.setAttributeMap(attrs[k])
+          feature.setGeometry(outFeats[k])
+          writer.addFeature( feature )
     # there is no selection in input layer
     else:
       nFeat = vproviderA.featureCount()
@@ -700,40 +692,32 @@ class geoprocessingThread( QThread ):
         outFeat.setAttributeMap( attrs )
         writer.addFeature( outFeat )
       else:
-        unique = vproviderA.uniqueValues( int( self.myParam ) )
-        nFeat = nFeat * len( unique )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-        for item in unique:
-          first = True
-          add = True
-          vproviderA.rewind()
-          vproviderA.select( allAttrsA )
-          while vproviderA.nextFeature( inFeat ):
-            nElement += 1
-            self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
-            atMap = inFeat.attributeMap()
-            tempItem = atMap[ self.myParam ]
 
-            if tempItem.toString().trimmed() == item.toString().trimmed():
-              if first:
-                QgsGeometry( inFeat.geometry() )
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                outFeat.setGeometry( tmpInGeom )
-                first = False
-                attrs = inFeat.attributeMap()
-              else:
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                tmpOutGeom = QgsGeometry( outFeat.geometry() )
-                try:
-                  tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-                  outFeat.setGeometry( tmpOutGeom )
-                except:
-                  GEOS_EXCEPT = False
-                  add = False
-          if add:
-            outFeat.setAttributeMap( attrs )
-            writer.addFeature( outFeat )
+        outFeats = {}
+        attrs = {}
+
+        while vproviderA.nextFeature( inFeat ):
+          nElement += 1
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+          atMap = inFeat.attributeMap()
+          tempItem = unicode(atMap[self.myParam].toString().trimmed())
+
+          if not (tempItem in outFeats):
+            outFeats[tempItem] = QgsGeometry(inFeat.geometry())
+            attrs[tempItem] = atMap
+          else:
+            try:
+              outFeats[tempItem] = outFeats[tempItem].combine(inFeat.geometry())
+            except:
+              GEOS_EXCEPT = False
+              continue
+        for k in outFeats.keys():
+          feature = QgsFeature()
+          feature.setAttributeMap(attrs[k])
+          feature.setGeometry(outFeats[k])
+          writer.addFeature( feature )
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, True, None
 
@@ -970,9 +954,9 @@ class geoprocessingThread( QThread ):
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
                   try:
-                    # Geometry list: prevents writing error 
+                    # Geometry list: prevents writing error
                     # in geometries of different types
-                    # produced by the intersection 
+                    # produced by the intersection
                     # fix #3549
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
@@ -1192,7 +1176,7 @@ class geoprocessingThread( QThread ):
                     except Exception, err:
                       FEATURE_EXCEPT = False
               else:
-                # Geometry list: prevents writing error 
+                # Geometry list: prevents writing error
                 # in geometries of different types
                 # produced by the intersection
                 # fix #3549

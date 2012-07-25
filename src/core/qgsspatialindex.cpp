@@ -89,7 +89,7 @@ Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
   return Region( pt1, pt2, 2 );
 }
 
-bool QgsSpatialIndex::featureInfo( QgsFeature& f, Region& r, QgsFeatureId &id )
+bool QgsSpatialIndex::featureInfo( QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id )
 {
   QgsGeometry *g = f.geometry();
   if ( !g )

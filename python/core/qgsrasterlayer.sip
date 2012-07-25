@@ -35,15 +35,10 @@ public:
                     bool loadDefaultStyleFlag = true );
 
     /**  \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( int dummy,
-                    const QString & baseName = QString(),
-                    const QString & path = QString(),
-                    const QString & providerLib = QString(),
-                    const QStringList & layers = QStringList(),
-                    const QStringList & styles = QStringList(),
-                    const QString & format = QString(),
-                    const QString & crs = QString());
-
+    QgsRasterLayer( const QString & uri,
+                    const QString & baseName,
+                    const QString & providerKey,
+                    bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
     ~QgsRasterLayer();
@@ -150,10 +145,10 @@ public:
     DrawingStyle drawingStyle();
 
     /** \brief Accessor for gray band name mapping */
-    QString grayBandName() const;
+    //QString grayBandName() const; //removed with raster redesign
 
     /** \brief Accessor for green band name mapping */
-    QString greenBandName() const;
+    //QString greenBandName() const; //removed with raster redesign
 
     /** \brief Accessor for mHasPyramids (READ ONLY) */
     bool hasPyramids();
@@ -168,65 +163,65 @@ public:
     int height();
 
     /** \brief Accessor to find out whether the histogram should be inverted  */
-    bool invertHistogram() const;
+    //bool invertHistogram() const; //removed with raster redesign
 
     /** \brief Is the NoDataValue Valid */
     bool isNoDataValueValid() const;
 
     /** \brief Accessor for mGrayMinimumMaximumEstimated */
-    bool isGrayMinimumMaximumEstimated() const;
+    //bool isGrayMinimumMaximumEstimated() const; //removed with raster redesign
 
     /** \brief Accessor for mRGBMinimumMaximumEstimated */
-    bool isRGBMinimumMaximumEstimated() const;
+    //bool isRGBMinimumMaximumEstimated() const; //removed with raster redesign
 
     /** \brief Accessor that returns the NO_DATA entry for this raster */
     double noDataValue( bool* isValid = 0 );
 
     /** \brief Returns a pointer to the transparency object */
-    QgsRasterTransparency* rasterTransparency();
+    //QgsRasterTransparency* rasterTransparency(); //removed with raster redesign
 
     /** \brief Accessor for raster shader */
-    QgsRasterShader* rasterShader();
+    //QgsRasterShader* rasterShader(); //removed with raster redesign
 
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType();
 
     /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red color) */
-    QString redBandName();
+    //QString redBandName(); //removed with raster redesign
 
     /**  [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider,
-                          const QStringList & layers,
-                          const QStringList & styles,
-                          const QString & format,
-                          const QString & crs );
+    void setDataProvider( const QString & provider );
 
     /** \brief Mutator for drawing style */
     void setDrawingStyle( const DrawingStyle &  theDrawingStyle );
 
     /** \brief Mutator for mGrayMinimumMaximumEstimated */
-    void setGrayMinimumMaximumEstimated( bool theBool );
+    //void setGrayMinimumMaximumEstimated( bool theBool ); //removed with raster redesign
 
     /** \brief Mutator to alter the state of the invert histogram flag  */
-    void setInvertHistogram( bool theFlag );
+    //void setInvertHistogram( bool theFlag ); //removed with raster redesign
 
     /** \brief Mutator for mRGBMinimumMaximumEstimated */
-    void setRGBMinimumMaximumEstimated( bool theBool );
+    //void setRGBMinimumMaximumEstimated( bool theBool ); //removed with raster redesign
 
     /** \brief Mutator to alter the number of standard deviations that should be plotted */
-    void setStandardDeviations( double theStdDevsToPlot );
+    //void setStandardDeviations( double theStdDevsToPlot ); //removed with raster redesign
 
     /** \brief Mutator for mUserDefinedGrayMinimumMaximum */
-    void setUserDefinedGrayMinimumMaximum( bool theBool );
+    //void setUserDefinedGrayMinimumMaximum( bool theBool ); //removed with raster redesign
 
     /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
-    void setUserDefinedRGBMinimumMaximum( bool theBool );
+    //void setUserDefinedRGBMinimumMaximum( bool theBool ); //removed with raster redesign
+
+    /**Set raster renderer. Takes ownership of the renderer object*/
+    void setRenderer( QgsRasterRenderer* renderer );
+    QgsRasterRenderer* renderer();
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const;
 
     /** \brief  Accessor for transparent band name mapping */
-    QString transparentBandName() const;
+    //QString transparentBandName() const; //removed with raster redesign
 
     /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? 
      * @deprecated in 2.0

@@ -24,6 +24,8 @@
 //qt includes
 #include <QString>
 #include <QMap>
+#include <QHash>
+
 class QDomNode;
 class QDomDocument;
 
@@ -183,6 +185,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note this function generates a WKT string using OSRSetFromUserInput() and
      * passes it to createFromWkt() function.
      * @param theDefinition A String containing a coordinate reference system definition.
+     *
+     * @note added in 1.8
      */
     bool createFromUserInput( const QString theDefinition );
 
@@ -193,6 +197,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
      * unless it has been set by the user through the commandline or an environment variable.
      * For more details refer to OGRSpatialReference::morphFromESRI() .
+     *
      * @note added in 1.8
      */
     static void setupESRIWktFix();
@@ -337,7 +342,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /*! return if axis is inverted (eg. for WMS 1.3)
      * @return  bool Whether this is crs axis is inverted
-     * @note added in 1.9.90
+     * @note added in 1.8
      */
     bool axisInverted() const;
 
@@ -473,6 +478,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QString mValidationHint;
     mutable QString mWkt;
+
+    static bool loadIDs( QHash<int, QString> &wkts );
+    static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
 
     //!Whether this is a coordinate system has inverted axis
     mutable int mAxisInverted;

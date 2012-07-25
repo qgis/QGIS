@@ -114,8 +114,10 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
   ruleElem.appendChild( nameElem );
 
   QDomElement descrElem = doc.createElement( "se:Description" );
+  QDomElement abstractElem = doc.createElement( "se:Abstract" );
   QString descrStr = QString( "range: %1 - %2" ).arg( mLowerValue ).arg( mUpperValue );
-  descrElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
+  abstractElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
+  descrElem.appendChild( abstractElem );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
@@ -124,6 +126,7 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
                        .arg( attrName.replace( "\"", "\"\"" ) )
                        .arg( mLowerValue ).arg( mUpperValue );
   QgsSymbolLayerV2Utils::createFunctionElement( doc, filterElem, filterFunc );
+  ruleElem.appendChild( filterElem );
 
   mSymbol->toSld( doc, ruleElem, props );
 }
@@ -948,8 +951,8 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
     symbols.insert( symbolName, range.symbol() );
 
     QDomElement rangeElem = doc.createElement( "range" );
-    rangeElem.setAttribute( "lower", range.lowerValue() );
-    rangeElem.setAttribute( "upper", range.upperValue() );
+    rangeElem.setAttribute( "lower", QString::number( range.lowerValue() ) );
+    rangeElem.setAttribute( "upper", QString::number( range.upperValue() ) );
     rangeElem.setAttribute( "symbol", symbolName );
     rangeElem.setAttribute( "label", range.label() );
     rangesElem.appendChild( rangeElem );

@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS qgsrenderchecker.cpp)
+SET (util_SRCS qgsrenderchecker.cpp qgscompositionchecker.cpp)
 
 
 #####################################################
@@ -8,6 +8,7 @@ SET (util_SRCS qgsrenderchecker.cpp)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/renderer
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -91,8 +92,8 @@ ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
 ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
 ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
 ADD_QGIS_TEST(pointtest testqgspoint.cpp)
-ADD_QGIS_TEST(searchstringtest testqgssearchstring.cpp)
 ADD_QGIS_TEST(vectorlayertest testqgsvectorlayer.cpp)
 ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
 ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
 ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
+ADD_QGIS_TEST(composermaptest testqgscomposermap.cpp)

@@ -18,6 +18,8 @@
 #ifndef QGSMAPCANVAS_H
 #define QGSMAPCANVAS_H
 
+#include "qgsconfig.h"
+
 #include <list>
 #include <memory>
 #include <deque>

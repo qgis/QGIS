@@ -37,6 +37,8 @@
 #include "qgsrectangle.h"
 #include "qgis.h"
 
+#include "qgsdelimitedtextsourceselect.h"
+
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
@@ -66,19 +68,19 @@ QString QgsDelimitedTextProvider::readLine( QTextStream *stream )
   return buffer;
 }
 
-QStringList QgsDelimitedTextProvider::splitLine( QString line )
+QStringList QgsDelimitedTextProvider::splitLine( QString line, QString delimiterType, QString delimiter )
 {
-  QgsDebugMsgLevel( "Attempting to split the input line: " + line + " using delimiter " + mDelimiter, 3 );
+  QgsDebugMsgLevel( "Attempting to split the input line: " + line + " using delimiter " + delimiter, 3 );
 
   QStringList parts;
-  if ( mDelimiterType == "regexp" )
-    parts = line.split( mDelimiterRegexp );
+  if ( delimiterType == "regexp" )
+    parts = line.split( QRegExp( delimiter ) );
   else
-    parts = line.split( mDelimiter );
+    parts = line.split( delimiter );
 
   QgsDebugMsgLevel( "Split line into " + QString::number( parts.size() ) + " parts", 3 );
 
-  if ( mDelimiterType == "plain" )
+  if ( delimiterType == "plain" )
   {
     QChar delim;
     int i = 0, first = parts.size();
@@ -106,7 +108,7 @@ QStringList QgsDelimitedTextProvider::splitLine( QString line )
             i--;
           }
 
-          parts.insert( first, values.join( mDelimiter ) );
+          parts.insert( first, values.join( delimiter ) );
         }
 
         first = -1;
@@ -130,7 +132,6 @@ QStringList QgsDelimitedTextProvider::splitLine( QString line )
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri )
     , mDelimiter( "," )
-    , mDelimiterRegexp()
     , mDelimiterType( "plain" )
     , mFieldCount( 0 )
     , mXFieldIndex( -1 )
@@ -139,6 +140,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWktHasZM( false )
     , mWktZMRegexp( "\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive )
     , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
+    , mFile( 0 )
+    , mStream( 0 )
     , mSkipLines( 0 )
     , mFirstDataLine( 0 )
     , mShowInvalidLines( false )
@@ -181,9 +184,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QgsDebugMsg( "skipLines is: " + QString::number( mSkipLines ) );
 
   // if delimiter contains some special characters, convert them
-  if ( mDelimiterType == "regexp" )
-    mDelimiterRegexp = QRegExp( mDelimiter );
-  else
+  if ( mDelimiterType != "regexp" )
     mDelimiter.replace( "\\t", "\t" ); // replace "\t" with a real tabulator
 
   // Set the selection rectangle to null
@@ -212,6 +213,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   {
     QgsDebugMsg( "Data source " + dataSourceUri() + " could not be opened" );
     delete mFile;
+    mFile = 0;
     return;
   }
 
@@ -447,7 +449,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
 {
-  mFile->close();
+  if ( mFile )
+    mFile->close();
   delete mFile;
   delete mStream;
 }
@@ -591,7 +594,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     mShowInvalidLines = false;
     QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Error" ) );
-    output->setMessage( tr( "Note: the following lines were not loaded because Qgis was "
+    output->setMessage( tr( "Note: the following lines were not loaded because QGIS was "
                             "unable to determine values for the x and y coordinates:\n" ),
                         QgsMessageOutput::MessageText );
 
@@ -766,4 +769,9 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+
+QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WFlags fl )
+{
+  return new QgsDelimitedTextSourceSelect( parent, fl );
 }

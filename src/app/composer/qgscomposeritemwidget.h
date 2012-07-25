@@ -35,6 +35,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mFrameColorButton_clicked();
     void on_mBackgroundColorButton_clicked();
     void on_mOpacitySlider_sliderReleased();
+    void on_mOpacitySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameCheckBox_stateChanged( int state );
     void on_mPositionButton_clicked();
@@ -43,6 +44,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
   private:
     QgsComposerItemWidget();
     void setValuesForGuiElements();
+    void changeItemOpacity( int value );
 
     QgsComposerItem* mItem;
 };

@@ -127,11 +127,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
   if ( ptr->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-    if ( layer->providerKey() != "wms" )
-    {
-      flags |= Qt::ItemIsDragEnabled;
-    }
+    flags |= Qt::ItemIsDragEnabled;
   }
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
@@ -368,7 +364,6 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
       QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
       if ( ptr->type() != QgsDataItem::Layer ) continue;
       QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-      if ( layer->providerKey() == "wms" ) continue;
       lst.append( QgsMimeDataUtils::Uri( layer ) );
     }
   }

@@ -81,6 +81,8 @@ class TableFieldsDelegate(QItemDelegate):
 
 class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 	
+	GEOM_TYPES = ["POINT", "LINESTRING", "POLYGON", "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", "GEOMETRYCOLLECTION"]
+
 	def __init__(self, item, parent=None):
 		QDialog.__init__(self, parent)
 		self.item = item
@@ -284,7 +286,7 @@ class DlgCreateTable(QDialog, Ui_DlgCreateTable):
 				QMessageBox.information(self, "sorry", "set geometry column name")
 				return
 
-			geomType = str(self.cboGeomType.currentText())
+			geomType = self.GEOM_TYPES[ self.cboGeomType.currentIndex() ]
 			geomDim = self.spinGeomDim.value()
 			try:
 				geomSrid = int(self.editGeomSrid.text())

@@ -25,7 +25,7 @@ my $packagename;
 my $releasename;
 my $shortname;
 my $version;
-my $revision;
+my $binary;
 my $help;
 
 my $result = GetOptions(
@@ -33,7 +33,7 @@ my $result = GetOptions(
 		"keep" => \$keep,
 		"releasename=s" => \$releasename,
 		"version=s" => \$version,
-		"revision=s" => \$revision,
+		"binary=s" => \$binary,
 		"packagename=s" => \$packagename,
 		"shortname=s" => \$shortname,
 		"help" => \$help
@@ -83,7 +83,7 @@ sub getDeps {
 
 	return if exists $pkgs{$pkg};
 
-	print " Including package $pkg" if $verbose;
+	print " Including package $pkg\n" if $verbose;
 	$pkgs{$pkg} = 1;
 
 	foreach my $p ( @{ $dep{$pkg} } ) {
@@ -137,7 +137,9 @@ my $taropt = "v" x $verbose;
 unless(-d "unpacked") {
 	mkdir "unpacked", 0755;
 
-	for my $p (<packages/*.tar.bz2>) {
+	foreach my $p ( keys %pkgs ) {
+		$p = $file{$p};
+		$p =~ s#^.*/#packages/#;
 
 		print "Unpacking $p...\n" if $verbose;
 		system "tar $taropt -C unpacked -xjf $p";
@@ -152,7 +154,7 @@ unless(-d "unpacked") {
 	system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
 
 	if( -d "../addons" ) {
-		print " Including addons..." if $verbose;
+		print " Including addons...\n" if $verbose;
 		system "tar -C ../addons -cf - . | tar $taropt -xf -";
 	}
 
@@ -221,7 +223,6 @@ my($major, $minor, $patch);
 
 open F, "../../CMakeLists.txt";
 while(<F>) {
-	print;
 	if(/SET\(CPACK_PACKAGE_VERSION_MAJOR "(\d+)"\)/) {
 		$major = $1;
 	} elsif(/SET\(CPACK_PACKAGE_VERSION_MINOR "(\d+)"\)/) {
@@ -236,14 +237,18 @@ close F;
 
 $version = "$major.$minor.$patch" unless defined $version;
 
-unless( defined $revision ) {
-	open F, "svnversion|";
-	$revision = <F>;
-	$revision =~ s/\D+$//g;
-	close F;
+unless( defined $binary ) {
+	if( -f "binary-$version" ) {
+		open P, "binary-$version";
+		$binary = <P>;
+		close P;
+		$binary++;
+	} else {
+		$binary = 1;
+	}
+} else {
+	die "given binary version not numeric" unless $package =~ /^\d+$/;
 }
-
-$revision = 14615 unless $revision =~ /^\d+$/;
 
 system "unzip packages/Untgz.zip" unless -d "untgz";
 
@@ -254,19 +259,24 @@ $shortname = "qgis" unless defined $shortname;
 
 my $cmd = "makensis";
 $cmd .= " -V$verbose";
-$cmd .= " -DVERSION_NUMBER='$version'";
 $cmd .= " -DVERSION_NAME='$releasename'";
-$cmd .= " -DSVN_REVISION='$revision'";
+$cmd .= " -DVERSION_NUMBER='$version'";
+$cmd .= " -DBINARY_REVISION=$binary";
+$cmd .= sprintf( " -DVERSION_INT='%d%02d%02d%02d'", $major, $minor, $patch, $binary );
 $cmd .= " -DQGIS_BASE='$packagename $releasename'";
-$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$version-$revision-Setup.exe'";
+$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$version-$binary-Setup.exe'";
 $cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
-$cmd .= " -DBINARY_REVISION=1";
 $cmd .= " -DSHORTNAME='$shortname'";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/unpacked";
 $cmd .= " QGIS-Installer.nsi";
 
 system $cmd;
+
+open P, ">osgeo4w/binary-$version";
+print P $binary;
+close P;
+
 
 __END__
 
@@ -283,7 +293,7 @@ creatensis.pl [options] [packages...]
     -releasename=name	name of release (defaults to CMakeLists.txt setting)
     -keep		don't start with a fresh unpacked directory
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
-    -revision=rNNNNN	svn revision of package (determined by svnversion if not given)
+    -binary=b		binary version of package
     -packagename=s	name of package (defaults to 'Quantum GIS')
     -shortname=s	shortname used for batch file (defaults to 'qgis')
     -help		this help

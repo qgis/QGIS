@@ -33,6 +33,8 @@ from .ui.ui_DlgAddGeometryColumn import Ui_DlgAddGeometryColumn
 
 class DlgAddGeometryColumn(QDialog, Ui_DlgAddGeometryColumn):
 
+	GEOM_TYPES = ["POINT", "LINESTRING", "POLYGON", "MULTIPOINT", "MULTILINESTRING", "MULTIPOLYGON", "GEOMETRYCOLLECTION"]
+
 	def __init__(self, parent=None, table=None, db=None):
 		QDialog.__init__(self, parent)
 		self.table = table
@@ -48,7 +50,7 @@ class DlgAddGeometryColumn(QDialog, Ui_DlgAddGeometryColumn):
 			return
 
 		name = self.editName.text()
-		geom_type = self.cboType.currentText()
+		geom_type = self.GEOM_TYPES[ self.cboType.currentIndex() ]
 		dim = self.spinDim.value()
 		try:
 			srid = int(self.editSrid.text())

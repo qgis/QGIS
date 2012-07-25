@@ -19,12 +19,15 @@ SET(QGIS_APP_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
+  qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
   qgsdecorationnortharrow.cpp
   qgsdecorationnortharrowdialog.cpp
   qgsdecorationscalebar.cpp
   qgsdecorationscalebardialog.cpp
+  qgsdecorationgrid.cpp
+  qgsdecorationgriddialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -52,6 +55,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
+  qgsmaptoolfreezelabels.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
@@ -95,7 +99,6 @@ SET(QGIS_APP_SRCS
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgsundowidget.cpp
-  qgstilescalewidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
   qgsuniquevaluedialog.cpp
@@ -168,12 +171,15 @@ SET (QGIS_APP_MOC_HDRS
   qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
+  qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
   qgsdecorationnortharrow.h
   qgsdecorationnortharrowdialog.h
   qgsdecorationscalebar.h
   qgsdecorationscalebardialog.h
+  qgsdecorationgrid.h
+  qgsdecorationgriddialog.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h
@@ -198,6 +204,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooldeletering.h
   qgsmaptooldeletevertex.h
   qgsmaptoolfeatureaction.h
+  qgsmaptoolfreezelabels.h
   qgsmaptoolidentify.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
@@ -232,7 +239,6 @@ SET (QGIS_APP_MOC_HDRS
   qgssnappingdialog.h
   qgssponsors.h
   qgstextannotationdialog.h
-  qgstilescalewidget.h
   qgstipgui.h
   qgstipfactory.h
   qgsundowidget.h
@@ -396,7 +402,7 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/gps ../core/gps/qextserialport
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable
+  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
   ../python
   gps

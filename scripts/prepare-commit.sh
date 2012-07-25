@@ -34,10 +34,10 @@ fi
 # save original changes
 if [ -d .svn ]; then
 	REV=r$(svn info | sed -ne "s/Revision: //p")
-	svn diff >$REV.diff
+	svn diff >rev-$REV.diff
 elif [ -d .git ]; then
 	REV=$(git log -n1 --pretty=%H)
-	git diff >$REV.diff
+	git diff >sha-$REV.diff
 fi
 
 ASTYLEDIFF=astyle.$REV.diff

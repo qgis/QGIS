@@ -22,7 +22,7 @@
 #include "qgscontexthelp.h"
 
 class QgsGenericProjectionSelector;
-class QgsWFSConnection;
+class QgsWFSCapabilities;
 
 class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 {
@@ -45,7 +45,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     std::map<QString, std::list<QString> > mAvailableCRS;
     QAbstractButton* btnAdd;
-    QgsWFSConnection* mConn;
+    QgsWFSCapabilities* mCapabilities;
     QString mUri;            // data source URI
 
     void populateConnectionList();

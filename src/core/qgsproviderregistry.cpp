@@ -400,6 +400,8 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
           // necessarily a reflection on the data provider itself
           QgsDebugMsg( "Invalid data provider" );
 
+          delete dataProvider;
+
           myLib->unload();
           delete myLib;
           return 0;
@@ -436,19 +438,14 @@ typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
     QWidget * parent, Qt::WFlags fl )
 {
-  QLibrary *myLib = providerLibrary( providerKey );
-  if ( !myLib )
-    return 0;
-
   selectFactoryFunction_t * selectFactory =
-    ( selectFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "selectWidget" ) );
+    ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );
 
   if ( !selectFactory )
     return 0;
 
   return selectFactory( parent, fl );
 }
-
 
 void * QgsProviderRegistry::function( QString const & providerKey,
                                       QString const & functionName )
@@ -487,6 +484,21 @@ QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) co
   }
   delete myLib;
   return 0;
+}
+
+void QgsProviderRegistry::registerGuis( QWidget *parent )
+{
+  typedef void registerGui_function( QWidget * parent );
+
+  foreach( const QString &provider, providerList() )
+  {
+    registerGui_function *registerGui = ( registerGui_function * ) cast_to_fptr( function( provider, "registerGui" ) );
+
+    if ( !registerGui )
+      continue;
+
+    registerGui( parent );
+  }
 }
 
 QString QgsProviderRegistry::fileVectorFilters() const

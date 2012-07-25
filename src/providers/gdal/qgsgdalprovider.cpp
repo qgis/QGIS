@@ -24,11 +24,14 @@
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
+#include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
+#include "qgswcscapabilities.h"
 
 #include <QImage>
 #include <QSettings>
@@ -41,11 +44,11 @@
 #include <QHash>
 #include <QTime>
 #include <QSettings>
+#include <QTextDocument>
 
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
 #include "cpl_conv.h"
-#include "cpl_string.h"
 
 
 static QString PROVIDER_KEY = "gdal";
@@ -107,28 +110,87 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   mGdalDataset = NULL;
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
-  // TODO suppress error messages and report in debug, like in OGR provider
-  // TODO use the file name of the file inside the zip, needs unzip.h
-  if ( uri.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+  if ( vsiPrefix != "" )
   {
-    if ( !uri.startsWith( "/vsizip/" ) )
-      setDataSourceUri( "/vsizip/" + uri );
-    QgsDebugMsg( QString( "Trying /vsizip syntax, uri= %1" ).arg( dataSourceUri() ) );
-  }
-  else if ( uri.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !uri.startsWith( "/vsigzip/" ) )
-      setDataSourceUri( "/vsigzip/" + uri );
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, uri= %1" ).arg( dataSourceUri() ) );
+    if ( !uri.startsWith( vsiPrefix ) )
+      setDataSourceUri( vsiPrefix + uri );
+    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
 
-  //mGdalBaseDataset = GDALOpen( QFile::encodeName( uri ).constData(), GA_ReadOnly );
-  mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+  // The uri is either a file name or encoded parameters for WCS
+  QString gdalUri = dataSourceUri();
+  if ( uri.contains( "url=" ) && uri.contains( "identifier=" ) && !QFile::exists( uri ) )
+  {
+    // - GDAL currently (4/2012) supports  WCS 1.0.0 (default) and 1.1.0
+    //   We cannot use 1.1.0 because of wrong longlat bbox send by GDAL
+    //   and impossibility to set GridOffsets.
+
+    // - WCS 1.0.0 does not work with GDAL r24316 2012-04-25 + Mapserver 6.0.2
+    //   1) with geographic CRS
+    //      GDAL sends BOUNDINGBOX=min_long,min_lat,max_lon,max_lat,urn:ogc:def:crs:EPSG::4326
+    //      Mapserver works with min_lat,min_long,max_lon,max_lat
+    //      OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says:
+    //        "The number of axes included, and the order of these axes, shall be as
+    //         specified by the referenced CRS."
+    //      EPSG defines for EPSG:4326 Axes: latitude, longitude
+    //      (don't confuse with OGC:CRS84 with lon,lat order)
+    //      Created a ticket: http://trac.osgeo.org/gdal/ticket/4639
+
+    //   2) Mapserver ignores RangeSubset (not implemented in mapserver)
+    //      and GDAL fails with "Returned tile does not match expected band count"
+    //      because it requested single band but recieved all bands
+    //      Created ticket: https://github.com/mapserver/mapserver/issues/4299
+
+    // Other problems:
+    // - GDAL WCS fails to open 1.1 with space in RangeSubset, there is a ticket about
+    //   it http://trac.osgeo.org/gdal/ticket/1833 without conclusion, Frank suggests
+    //   that ServiceURL should be expected to be escaped while CoverageName should not
+
+    QgsDataSourceURI dsUri;
+    dsUri.setEncodedUri( uri );
+    gdalUri = "<WCS_GDAL>";
+    gdalUri += "<Version>1.0.0</Version>";
+    //gdalUri += "<Version>1.1.0</Version>";
+    // prepareUri adds ? or & if necessary, GDAL fails otherwise
+    gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param( "url" ) ) ) + "</ServiceURL>";
+    gdalUri += "<CoverageName>" + dsUri.param( "identifier" ) + "</CoverageName>";
+
+    if ( dsUri.hasParam( "format" ) )
+    {
+      gdalUri += "<PreferredFormat>" + dsUri.param( "format" ) + "</PreferredFormat>";
+    }
+
+    // - CRS : there is undocumented GDAL CRS tag, but it only overrides CRS param
+    //         in requests but the BBOX is left unchanged and thus results in server error (usually).
+    // 1.0 : RESPONSE_CRS
+    if ( dsUri.hasParam( "crs" ) )
+    {
+      gdalUri += "<GetCoverageExtra>&amp;RESPONSE_CRS=" + dsUri.param( "crs" ) + "</GetCoverageExtra>";
+    }
+    // 1.1 : Required parameters are: GridBaseCRS and GridOffsets (resolution)
+    //       We dont have the GridOffsets here and it should be probably dynamic
+    //       according to requested data (zoom).
+    //       Mapserver 6.0.2 works without the GridOffsets, but other servers may not.
+    //QString crsUrn = "urn:ogc:def:crs:" + dsUri.param("crs").replace(":","::");
+    //gdalUri += "<GetCoverageExtra>&amp;GridBaseCRS=" + crsUrn + "</GetCoverageExtra>";
+
+    if ( dsUri.hasParam( "username" ) && dsUri.hasParam( "password" ) )
+    {
+      gdalUri += "<UserPwd>" + dsUri.param( "username" ) + ":" + dsUri.param( "password" ) + "</UserPwd>";
+    }
+    gdalUri += "</WCS_GDAL>";
+    QgsDebugMsg( "WCS uri: " + gdalUri );
+  }
 
   CPLErrorReset();
+  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
+
   if ( !mGdalBaseDataset )
   {
-    QgsDebugMsg( QString( "Cannot open GDAL dataset %1: %2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    QgsDebugMsg( msg );
+    QgsMessageLog::logMessage( msg );
     return;
   }
 
@@ -1054,9 +1116,70 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
+bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
+{
+  // QgsDebugMsg( "Entered" );
+  if ( !mExtent.contains( point ) )
+  {
+    // Outside the raster
+    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    {
+      results[ i ] = tr( "out of extent" );
+    }
+  }
+  else
+  {
+    double x = point.x();
+    double y = point.y();
+
+    // Calculate the row / column where the point falls
+    double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
+    double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
+
+    // Offset, not the cell index -> flor
+    int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
+    int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
+
+    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
+
+    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
+    {
+      GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
+      double value;
+
+      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
+                                 &value, 1, 1, GDT_Float64, 0, 0 );
+
+      if ( err != CPLE_None )
+      {
+        QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      }
+
+      //double value = readValue( data, type, 0 );
+      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
+      QString v;
+
+      if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
+      {
+        v = tr( "null (no data)" );
+      }
+      else
+      {
+        v.setNum( value );
+      }
+
+      results[ i ] = v;
+
+      //CPLFree( data );
+    }
+  }
+
+  return true;
+}
+
 bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
-  QgsDebugMsg( "Entered" );
+  // QgsDebugMsg( "Entered" );
   if ( !mExtent.contains( thePoint ) )
   {
     // Outside the raster
@@ -1188,6 +1311,8 @@ int QgsGdalProvider::srcDataType( int bandNo ) const
 
 int QgsGdalProvider::dataType( int bandNo ) const
 {
+  if ( mGdalDataType.size() == 0 ) return QgsRasterDataProvider::UnknownDataType;
+
   return dataTypeFormGdal( mGdalDataType[bandNo-1] );
 }
 
@@ -1295,7 +1420,34 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
   return subLayers;
 }
 
-void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
+bool QgsGdalProvider::hasCachedHistogram( int theBandNo, int theBinCount )
+{
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+  if ( ! myGdalBand )
+    return false;
+
+  // get default histogram with force=false to see if there is a cached histo
+  double myMinVal, myMaxVal;
+  int myBinCount;
+  int *myHistogramArray = 0;
+  CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal,
+                   &myBinCount, &myHistogramArray, false,
+                   NULL, NULL );
+  if ( myHistogramArray )
+    VSIFree( myHistogramArray );
+
+  // if there was any error/warning assume the histogram is not valid or non-existent
+  if ( myError != CE_None )
+    return false;
+
+  // make sure the cached histo has the same number of bins than requested
+  if ( myBinCount != theBinCount )
+    return false;
+
+  return true;
+}
+
+void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
@@ -1309,46 +1461,79 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
        theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
        theHistogramEstimatedFlag != theBandStats.isHistogramEstimated )
   {
+    QgsDebugMsg( "Computing histogram" );
     theBandStats.histogramVector->clear();
     theBandStats.isHistogramEstimated = theHistogramEstimatedFlag;
     theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
     int *myHistogramArray = new int[theBinCount];
 
-#if 0
-    CPLErr GDALRasterBand::GetHistogram(
-      double       dfMin,
-      double      dfMax,
-      int     nBuckets,
-      int *   panHistogram,
-      int     bIncludeOutOfRange,
-      int     bApproxOK,
-      GDALProgressFunc    pfnProgress,
-      void *      pProgressData
-    )
-#endif
-
     QgsGdalProgress myProg;
     myProg.type = ProgressHistogram;
     myProg.provider = this;
+
+#if 0 // this is the old method
+
     double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
     GDALGetRasterHistogram( myGdalBand, theBandStats.minimumValue - 0.1*myerval,
                             theBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
                             theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
-                            &myProg ); //this is the arg for our custome gdal progress callback
+                            &myProg ); //this is the arg for our custom gdal progress callback
+
+#else // this is the new method, which gets a "Default" histogram
+
+    // calculate min/max like in GDALRasterBand::GetDefaultHistogram, but don't call it directly
+    // because there is no bApproxOK argument - that is lacking from the API
+    double myMinVal, myMaxVal;
+    const char* pszPixelType = GDALGetMetadataItem( myGdalBand, "PIXELTYPE", "IMAGE_STRUCTURE" );
+    int bSignedByte = ( pszPixelType != NULL && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
+
+    if ( GDALGetRasterDataType( myGdalBand ) == GDT_Byte && !bSignedByte )
+    {
+      myMinVal = -0.5;
+      myMaxVal = 255.5;
+    }
+    else
+    {
+      CPLErr eErr = CE_Failure;
+      double dfHalfBucket = 0;
+      eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
+      if ( eErr != CE_None )
+      {
+        delete [] myHistogramArray;
+        return;
+      }
+      dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * theBinCount );
+      myMinVal -= dfHalfBucket;
+      myMaxVal += dfHalfBucket;
+    }
+
+    CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
+                     theBinCount, myHistogramArray,
+                     theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
+                     &myProg ); //this is the arg for our custom gdal progress callback
+    if ( myError != CE_None )
+    {
+      delete [] myHistogramArray;
+      return;
+    }
+
+#endif
 
     for ( int myBin = 0; myBin < theBinCount; myBin++ )
     {
       if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
       {
         theBandStats.histogramVector->push_back( 0 );
-        QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
+        // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
       }
       else
       {
         theBandStats.histogramVector->push_back( myHistogramArray[myBin] );
-        QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
+        // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
       }
     }
+    delete [] myHistogramArray;
+
 
   }
   QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( theBandStats.histogramVector->size() ) +
@@ -1844,12 +2029,13 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   // VSIFileHandler (see qgsogrprovider.cpp)
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
   QSettings settings;
-  if ( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() != 0 )
+  if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
   {
     QString glob = "*.zip";
     glob += " *.gz";
+    glob += " *.tar *.tar.gz *.tgz";
     theFileFiltersString += ";;[GDAL] " + QObject::tr( "GDAL/OGR VSIFileHandler" ) + " (" + glob.toLower() + " " + glob.toUpper() + ")";
-    theExtensions << "zip" << "gz";
+    theExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
   }
 #endif
 
@@ -1868,21 +2054,12 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   // TODO suppress error messages and report in debug, like in OGR provider
-  if ( fileName.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( fileName );
+  if ( vsiPrefix != "" )
   {
-    if ( !fileName.startsWith( "/vsizip/" ) )
-    {
-      fileName = "/vsizip/" + fileName;
-    }
-    QgsDebugMsg( QString( "Trying /vsizip syntax, fileName= %1" ).arg( fileName ) );
-  }
-  if ( fileName.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !fileName.startsWith( "/vsigzip/" ) )
-    {
-      fileName = "/vsigzip/" + fileName;
-    }
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, fileName= %1" ).arg( fileName ) );
+    if ( !fileName.startsWith( vsiPrefix ) )
+      fileName = vsiPrefix + fileName;
+    QgsDebugMsg( QString( "Trying %1 syntax, fileName= %2" ).arg( vsiPrefix ).arg( fileName ) );
   }
 
   //open the file using gdal making sure we have handled locale properly
@@ -1919,7 +2096,8 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   QgsRasterBandStats myRasterBandStats;
-  int bApproxOK = true;
+  // int bApproxOK = true;
+  int bApproxOK = false; //as we asked for stats, don't get approx values
   double pdfMin;
   double pdfMax;
   double pdfMean;
@@ -1927,16 +2105,6 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
   QgsGdalProgress myProg;
   myProg.type = ProgressHistogram;
   myProg.provider = this;
-
-  // double myerval =
-  //   GDALComputeRasterStatistics (
-  //      myGdalBand, bApproxOK, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-  //      progressCallback, &myProg ) ;
-  // double myerval =
-  //   GDALGetRasterStatistics ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev);
-  // double myerval =
-  //   GDALGetRasterStatisticsProgress ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-  //           progressCallback, &myProg );
 
   // try to fetch the cached stats (bForce=FALSE)
   CPLErr myerval =
@@ -2002,3 +2170,34 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
 
+QMap<QString, QString> QgsGdalProvider::supportedMimes()
+{
+  QMap<QString, QString> mimes;
+  GDALAllRegister();
+
+  QgsDebugMsg( QString( "GDAL drivers cont %1" ).arg( GDALGetDriverCount() ) );
+  for ( int i = 0; i < GDALGetDriverCount(); ++i )
+  {
+    GDALDriverH driver = GDALGetDriver( i );
+    Q_CHECK_PTR( driver );
+
+    if ( !driver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+
+    QString desc = GDALGetDescription( driver );
+
+    QString mimeType = GDALGetMetadataItem( driver, "DMD_MIMETYPE", "" );
+
+    if ( mimeType.isEmpty() ) continue;
+
+    desc = desc.isEmpty() ? mimeType : desc;
+
+    QgsDebugMsg( "add GDAL format " + mimeType + " " + desc );
+
+    mimes[mimeType] = desc;
+  }
+  return mimes;
+}

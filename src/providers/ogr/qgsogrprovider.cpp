@@ -264,26 +264,18 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  if ( mFilePath.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+  if ( vsiPrefix != "" )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
-    if ( !mFilePath.startsWith( "/vsizip/" ) )
+    if ( !mFilePath.startsWith( vsiPrefix ) )
     {
-      mFilePath = "/vsizip/" + mFilePath;
+      mFilePath = vsiPrefix + mFilePath;
       setDataSourceUri( mFilePath );
     }
-    QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
-  }
-  else if ( mFilePath.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !mFilePath.startsWith( "/vsigzip/" ) )
-    {
-      mFilePath = "/vsigzip/" + mFilePath;
-      setDataSourceUri( mFilePath );
-    }
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix ).arg( mFilePath ) );
   }
 
   QgsDebugMsg( "mFilePath: " + mFilePath );
@@ -456,18 +448,22 @@ QString QgsOgrProvider::subsetString()
 
 QStringList QgsOgrProvider::subLayers() const
 {
-  QStringList theList = QStringList();
   if ( !valid )
   {
-    return theList;
+    return QStringList();
   }
+
+  if ( !mSubLayerList.isEmpty() )
+    return mSubLayerList;
 
   for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
-    QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
-    OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) );
+    OGRLayerH layer = OGR_DS_GetLayer( ogrDataSource, i );
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( layer );
+    QString theLayerName = FROM8( OGR_FD_GetName( fdef ) );
+    OGRwkbGeometryType layerGeomType = OGR_FD_GetGeomType( fdef );
 
-    int theLayerFeatureCount = OGR_L_GetFeatureCount( OGR_DS_GetLayer( ogrDataSource, i ), 1 ) ;
+    int theLayerFeatureCount = OGR_L_GetFeatureCount( layer, 0 );
 
     QString geom;
     switch ( layerGeomType )
@@ -486,11 +482,13 @@ QStringList QgsOgrProvider::subLayers() const
       case wkbMultiPoint25D:      geom = "MultiPoint25D"; break;
       case wkbMultiLineString25D: geom = "MultiLineString25D"; break;
       case wkbMultiPolygon25D:    geom = "MultiPolygon25D"; break;
-      default: geom="Unknown WKB: " + QString::number( layerGeomType );
+      default:                    geom = QString( "Unknown WKB: %1" ).arg( layerGeomType );
     }
-    theList.append( QString::number( i ) + ":" + theLayerName + ":" + QString::number( theLayerFeatureCount ) + ":" + geom );
+
+    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
   }
-  return theList;
+
+  return mSubLayerList;
 }
 
 void QgsOgrProvider::setEncoding( const QString& e )
@@ -1684,9 +1682,9 @@ QString createFilters( QString type )
         myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), "*.itf *.xml *.ili" );
         myExtensions << "itf" << "xml" << "ili";
       }
-      else if ( driverName.startsWith( "INGRES" ) )
+      else if ( driverName.startsWith( "Ingres" ) )
       {
-        myDatabaseDrivers += QObject::tr( "INGRES" ) + ",INGRES;";
+        myDatabaseDrivers += QObject::tr( "Ingres" ) + ",Ingres;";
       }
       else if ( driverName.startsWith( "KML" ) )
       {
@@ -1786,16 +1784,14 @@ QString createFilters( QString type )
     // VSIFileHandler (.zip and .gz files)
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
-    // For .zip this works only if there is one file (or dataset) in the root of the zip.
-    // Only tested with tiff, shape (zip) and spatialite (zip and gz).
     // This does not work for some file types, see VSIFileHandler doc.
-    // Ideally we should also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
-    if ( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() != 0 )
+    if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
     {
-      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz" );
-      myExtensions << "zip" << "gz";
+      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
+      myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
+
     }
 #endif
 

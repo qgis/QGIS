@@ -25,14 +25,14 @@ my $translators= {
 	bg => 'Захари Савов, Jordan Tzvetkov',
 	ca_ES => 'Xavi',
 	cs_CZ => 'Martin Landa, Peter Antolik, Martin Dzurov, Jan Helebrant',
-	da_DK => 'Henriette Roued',
+	da_DK => 'Preben Lisby',
 	de => 'Jürgen E. Fischer, Stephan Holl, Otto Dassau, Werner Macho',
 	es => 'Carlos Dávila, Javier César Aldariz, Gabriela Awad, Edwin Amado, Mayeul Kauffmann',
 	el_GR => 'Evripidis Argyropoulos, Mike Pegnigiannis, Nikos Ves',
 	et_EE => 'Veiko Viil',
 	fa => 'Mola Pahnadayan',
 	fi => 'Marko Jarvenpaa',
-	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui',
+	fr => 'Eve Rousseau, Marc Monnerat, Lionel Roubeyrie, Jean Roc Morreale, Benjamin Bohard, Jeremy Garniaux, Yves Jacolin, Benjamin Lerre, Stéphane Morel, Marie Silvestre, Tahir Tamba, Xavier M, Mayeul Kauffmann, Mehdi Semchaoui, Robin Cura, Etienne Tourigny, Mathieu Bossaert',
 	gl_ES => 'Xan Vieiro',
 	hu => 'Zoltan Siki',
 	hr_HR => 'Zoran Jankovic',
@@ -48,7 +48,7 @@ my $translators= {
 	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk',
 	mn => 'Bayarmaa Enkhtur',
 	pl_PL => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Loskot, Tomasz Paul, Andrzej Swiader ',
-	pt_BR => 'Arthur Nanni, Christian Ferreira, Leandro Kaut',
+	pt_BR => 'Arthur Nanni',
 	pt_PT => 'Giovanni Manghi, Joana Simoes, Duarte Carreira, Alexandre Neto, Pedro Pereira',
 	ro => 'Lonut Losifescu-Enescu',
 	ru => 'Artem Popov',
@@ -60,8 +60,8 @@ my $translators= {
 	tr => 'Osman Yilmaz',
 	uk => 'Сергей Якунин',
 	vi => 'Bùi Hữu Mạnh',
-	zh_CN => 'Zhang Jun',
-	zh_TW => 'Nungyao Lin',
+	zh_CN => 'Calvin Ngei, Zhang Jun',
+	zh_TW => 'Nung-yao Lin',
 };
 
 my $maxn;
@@ -96,14 +96,19 @@ for my $i (<i18n/qgis_*.ts>) {
 	close F;
 
 	my $n = $translations+$untranslated;
-	$maxn = $n unless defined $maxn && $maxn>$n;
+	$maxn = $n unless defined $maxn;
+
+	if( $n>$maxn ) {
+		print STDERR "$i: more translation than others. ($n>$maxn)\n";
+		$maxn = $n;
+	}
 
 	push @lang, { code=>$langcode, name=>$name, n=>$n, translations=>$translations, finished=>$finished, unfinished=>$unfinished, untranslated=>$untranslated, };
 }
 
 foreach my $l (@lang) {
 	$l->{diff}       = $l->{n}-$maxn;
-	$l->{percentage} = ($l->{finished}+$l->{unfinished})/$maxn*100;
+	$l->{percentage} = ($l->{finished}+$l->{unfinished}/2)/$maxn*100;
 }
 
 if ($ARGV[0] eq "site") {

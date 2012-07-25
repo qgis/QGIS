@@ -221,11 +221,13 @@ void QgsPostgresProvider::disconnectDb()
   if ( mConnectionRO )
   {
     mConnectionRO->disconnect();
+    mConnectionRO = 0;
   }
 
   if ( mConnectionRW )
   {
     mConnectionRW->disconnect();
+    mConnectionRW = 0;
   }
 }
 

@@ -22,7 +22,7 @@ QgsLegendPropertyGroup::QgsLegendPropertyGroup( QTreeWidgetItem* theLegendItem, 
     : QgsLegendItem( theLegendItem, theString )
 {
   mType = LEGEND_PROPERTY_GROUP;
-  QIcon myIcon = QgisApp::getThemeIcon( "/mIconProperties.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mIconProperties.png" );
   setText( 0, theString );
   setIcon( 0, myIcon );
 }

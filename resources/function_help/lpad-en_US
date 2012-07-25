@@ -1,0 +1,17 @@
+<h3>lpad() function</h3>
+Returns a string with supplied width padded
+using the fill character.
+
+<h4>Syntax</h4>
+<code>lpad(string, length, fill)</code><br>
+
+<h4>Arguments</h4>
+<code>string</code> - is string. The string.
+<br>
+<code>length</code> - is int. The length of the new string.
+<br>
+<code>fill</code> - is char. The character to padd the remaining space with. 
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>lpad('Hello', 10, 'x') &rarr; 'Helloxxxxx'</code><br>

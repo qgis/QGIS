@@ -302,11 +302,11 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   rendererElement.setAttribute( "type", "pointDisplacement" );
   rendererElement.setAttribute( "labelAttributeName", mLabelAttributeName );
   rendererElement.setAttribute( "labelFont", mLabelFont.toString() );
-  rendererElement.setAttribute( "circleWidth", mCircleWidth );
+  rendererElement.setAttribute( "circleWidth", QString::number( mCircleWidth ) );
   rendererElement.setAttribute( "circleColor", QgsSymbolLayerV2Utils::encodeColor( mCircleColor ) );
   rendererElement.setAttribute( "labelColor", QgsSymbolLayerV2Utils::encodeColor( mLabelColor ) );
-  rendererElement.setAttribute( "circleRadiusAddition", mCircleRadiusAddition );
-  rendererElement.setAttribute( "maxLabelScaleDenominator", mMaxLabelScaleDenominator );
+  rendererElement.setAttribute( "circleRadiusAddition", QString::number( mCircleRadiusAddition ) );
+  rendererElement.setAttribute( "maxLabelScaleDenominator", QString::number( mMaxLabelScaleDenominator ) );
 
   if ( mRenderer )
   {

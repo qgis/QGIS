@@ -5,7 +5,7 @@
     copyright            :
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
     wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
-    wms-c support        : (C) 2010 Juergen E. Fischer < jef at norbit dot de >, norBIT GmbH
+    wmts/wms-c support   : (C) 2010-2012 Juergen E. Fischer < jef at norbit dot de >, norBIT GmbH
 
  ***************************************************************************/
 
@@ -18,10 +18,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "../providers/wms/qgswmsprovider.h"
+#include "qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
@@ -33,6 +34,7 @@
 #include "qgswmsconnection.h"
 #include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
+#include "qgswmtsdimensions.h"
 #include "qgsnetworkaccessmanager.h"
 
 #include <QButtonGroup>
@@ -333,57 +335,68 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   lstLayers->sortByColumn( 0, Qt::AscendingOrder );
 
-  QVector<QgsWmsTileSetProfile> tilesets;
-  wmsProvider->supportedTileSets( tilesets );
+  wmsProvider->supportedTileLayers( mTileLayers );
 
-  tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), tilesets.size() > 0 );
+  tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), mTileLayers.size() > 0 );
   if ( tabServers->isTabEnabled( tabServers->indexOf( tabTilesets ) ) )
     tabServers->setCurrentWidget( tabTilesets );
 
-  if ( tilesets.size() > 0 )
+  if ( mTileLayers.size() > 0 )
   {
+    QHash<QString, QgsWmtsTileMatrixSet> tileMatrixSets;
+    wmsProvider->supportedTileMatrixSets( tileMatrixSets );
+
+    int rows = 0;
+    foreach( const QgsWmtsTileLayer &l, mTileLayers )
+    {
+      rows += l.styles.size() * l.setLinks.size() * l.formats.size();
+    }
+
     lstTilesets->clearContents();
-    lstTilesets->setRowCount( tilesets.size() );
+    lstTilesets->setRowCount( rows );
     lstTilesets->setSortingEnabled( true );
 
-    for ( int i = 0; i < tilesets.size(); i++ )
+    int row = 0;
+    foreach( const QgsWmtsTileLayer &l, mTileLayers )
     {
-      QTableWidgetItem *item = new QTableWidgetItem( tilesets[i].layers.join( ", " ) );
-
-      item->setData( Qt::UserRole + 0, tilesets[i].layers.join( "," ) );
-      item->setData( Qt::UserRole + 1, tilesets[i].styles.join( "," ) );
-      item->setData( Qt::UserRole + 2, tilesets[i].format );
-      item->setData( Qt::UserRole + 3, tilesets[i].crs );
-      item->setData( Qt::UserRole + 4, tilesets[i].tileWidth );
-      item->setData( Qt::UserRole + 5, tilesets[i].tileHeight );
-      item->setData( Qt::UserRole + 6, tilesets[i].resolutions );
-
-      lstTilesets->setItem( i, 0, item );
-      lstTilesets->setItem( i, 1, new QTableWidgetItem( tilesets[i].styles.join( ", " ) ) );
-      lstTilesets->setItem( i, 2, new QTableWidgetItem( QString( "%1x%2" ).arg( tilesets[i].tileWidth ).arg( tilesets[i].tileHeight ) ) );
-      lstTilesets->setItem( i, 3, new QTableWidgetItem( tilesets[i].format ) );
-      lstTilesets->setItem( i, 4, new QTableWidgetItem( tilesets[i].crs ) );
-
-      for ( int j = 0; j < 5; j++ )
+      foreach( const QgsWmtsStyle &style, l.styles )
       {
-        QTableWidgetItem *item = lstTilesets->item( i, j );
-        item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-      }
-
-      if ( !mMimeMap.contains( tilesets[i].format ) )
-      {
-        for ( int j = 0; j < 5; j++ )
+        foreach( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
         {
-          QTableWidgetItem *item = lstTilesets->item( i, j );
-          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
-          item->setToolTip( tr( "encoding %1 not supported." ).arg( tilesets[i].format ) );
+          foreach( QString format, l.formats )
+          {
+            QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
+            item->setData( Qt::UserRole + 0, l.identifier );
+
+            item->setData( Qt::UserRole + 1, format );
+            item->setData( Qt::UserRole + 2, style.identifier );
+            item->setData( Qt::UserRole + 3, setLink.tileMatrixSet );
+            item->setData( Qt::UserRole + 4, tileMatrixSets[ setLink.tileMatrixSet ].crs );
+
+            lstTilesets->setItem( row, 0, item );
+            lstTilesets->setItem( row, 1, new QTableWidgetItem( format ) );
+            lstTilesets->setItem( row, 2, new QTableWidgetItem( style.identifier ) );
+            QTableWidgetItem *styleItem = new QTableWidgetItem( l.title );
+            if ( !l.abstract.isEmpty() )
+              styleItem->setToolTip( "<p>" + l.abstract + "</p>" );
+            lstTilesets->setItem( row, 3, styleItem );
+            lstTilesets->setItem( row, 4, new QTableWidgetItem( setLink.tileMatrixSet ) );
+            lstTilesets->setItem( row, 5, new QTableWidgetItem( tileMatrixSets[ setLink.tileMatrixSet ].crs ) );
+
+            if ( !mMimeMap.contains( format ) )
+            {
+              for ( int i = 0; i < lstTilesets->columnCount(); i++ )
+              {
+                QTableWidgetItem *item = lstTilesets->item( row, i );
+                item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+                item->setToolTip( tr( "encoding %1 not supported." ).arg( format ) );
+              }
+            }
+
+            row++;
+          }
         }
       }
-
-      QString crsName = descriptionForAuthId( tilesets[i].crs );
-      if ( crsName.isEmpty() )
-        crsName = tr( "CRS %1 not supported." ).arg( tilesets[i].crs );
-      lstTilesets->item( i, 4 )->setToolTip( crsName );
     }
 
     lstTilesets->resizeColumnsToContents();
@@ -405,8 +418,9 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   mConnName = cmbConnections->currentText();
 
   QgsWMSConnection connection( cmbConnections->currentText() );
-  QgsWmsProvider *wmsProvider = connection.provider( );
+  QgsWmsProvider *wmsProvider = connection.provider();
   mConnectionInfo = connection.connectionInfo();
+  mUri = connection.uri();
 
   if ( wmsProvider )
   {
@@ -442,58 +456,91 @@ void QgsWMSSourceSelect::addClicked()
   QStringList styles;
   QString format;
   QString crs;
-  QString connInfo = connectionInfo();
 
-  QString connArgs;
+  QgsDataSourceURI uri = mUri;
+
+  if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
+  {
+    uri.setParam( "maxWidth", mTileWidth->text() );
+    uri.setParam( "maxHeight", mTileHeight->text() );
+  }
 
   if ( lstTilesets->selectedItems().isEmpty() )
   {
     collectSelectedLayers( layers, styles );
     crs = mCRS;
     format = mFormats[ mImageFormatGroup->checkedId()].format;
-
-    if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
-    {
-      connArgs = QString( "tiled=%1;%2" ).arg( mTileWidth->text().toInt() ).arg( mTileHeight->text().toInt() );
-    }
   }
   else
   {
     QTableWidgetItem *item = lstTilesets->selectedItems().first();
-    layers = item->data( Qt::UserRole + 0 ).toStringList();
-    styles = item->data( Qt::UserRole + 1 ).toStringList();
-    format = item->data( Qt::UserRole + 2 ).toString();
-    crs    = item->data( Qt::UserRole + 3 ).toString();
 
-    connArgs = QString( "tiled=%1;%2;%3" )
-               .arg( item->data( Qt::UserRole + 4 ).toInt() )
-               .arg( item->data( Qt::UserRole + 5 ).toInt() )
-               .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
+    layers = QStringList( item->data( Qt::UserRole + 0 ).toString() );
+    format = item->data( Qt::UserRole + 1 ).toString();
+    styles = QStringList( item->data( Qt::UserRole + 2 ).toString() );
+    crs    = item->data( Qt::UserRole + 4 ).toString();
+
+    uri.setParam( "tileMatrixSet", item->data( Qt::UserRole + 3 ).toStringList() );
+
+    const QgsWmtsTileLayer *layer = 0;
+
+    foreach( const QgsWmtsTileLayer &l, mTileLayers )
+    {
+      if ( l.identifier == layers.join( "," ) )
+      {
+        layer = &l;
+        break;
+      }
+    }
+
+    Q_ASSERT( layer );
+
+    if ( !layer->dimensions.isEmpty() )
+    {
+      QgsWmtsDimensions *dlg = new QgsWmtsDimensions( *layer, this );
+      if ( dlg->exec() != QDialog::Accepted )
+      {
+        delete dlg;
+        return;
+      }
+
+      QHash<QString, QString> dims;
+      dlg->selectedDimensions( dims );
+
+      QString dimString;
+      QString delim;
+
+      for ( QHash<QString, QString>::const_iterator it = dims.constBegin();
+            it != dims.constEnd();
+            ++it )
+      {
+        dimString += delim + it.key() + "=" + it.value();
+        delim = ";";
+      }
+
+      delete dlg;
+
+      uri.setParam( "tileDimensions", dimString );
+    }
   }
+
+  uri.setParam( "layers", layers );
+  uri.setParam( "styles", styles );
+  uri.setParam( "format", format );
+  uri.setParam( "crs", crs );
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
-    if ( !connArgs.isEmpty() )
-      connArgs += ",";
-    connArgs += QString( "featureCount=%1" ).arg( mFeatureCount->text().toInt() );
+    uri.setParam( "featureCount", mFeatureCount->text() );
   }
 
-  if ( !connArgs.isEmpty() )
-  {
-    if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "ignoreUrl=" ) )
-    {
-      connInfo.prepend( connArgs + "," );
-    }
-    else
-    {
-      connInfo.prepend( connArgs + ",url=" );
-    }
-  }
-  QgsDebugMsg( "crs = " + crs );
+  QgsDebugMsg( QString( "crs=%2 " ).arg( crs ) );
 
-  emit addRasterLayer( connInfo,
+  QgsDebugMsg( "uri = " + uri.encodedUri() );
+  emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
-                       "wms", layers, styles, format, crs );
+                       "wms" );
+
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )

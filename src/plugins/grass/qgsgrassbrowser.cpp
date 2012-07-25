@@ -154,8 +154,7 @@ void QgsGrassBrowser::addMap()
     {
       QgsDebugMsg( QString( "add raster: %1" ).arg( uri ) );
       //mIface->addRasterLayer( uri, map );
-      mIface->addRasterLayer( uri, map, "grassraster", QStringList(), QStringList(),
-                              QString(), QString() );
+      mIface->addRasterLayer( uri, map, "grassraster" );
     }
     else if ( type == QgsGrassModel::Vector )
     {

@@ -713,7 +713,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
   symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
-  symEl.setAttribute( "alpha", symbol->alpha() );
+  symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
@@ -988,8 +988,6 @@ bool QgsSymbolLayerV2Utils::hasExternalGraphic( QDomElement &element )
   {
     return false;
   }
-
-  return false;
 }
 
 bool QgsSymbolLayerV2Utils::hasWellKnownMark( QDomElement &element )
@@ -1163,7 +1161,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
     QString name, format;
     int markIndex = -1;
     QColor fillColor, borderColor;
-    double borderWidth = 1, size, angle = 0.0;
+    double borderWidth = 1.0, size = 0.0, angle = 0.0;
     QPointF anchor, offset;
 
     // Fill element can contain a GraphicFill element
@@ -1324,7 +1322,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         map["fill"] = fillColor.name();
         map["outline"] = borderColor.name();
         map["outline-width"] = QString::number( borderWidth );
-        if ( size > 0 )
+        if ( !doubleNear( size, 0.0 ) )
           map["size"] = QString::number( size );
         if ( !doubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
@@ -2057,12 +2055,12 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
-  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
   onlineResourceElem.setAttribute( "xlink:href", path );
   element.appendChild( onlineResourceElem );
 
-  QDomElement formatElem = doc.createElement( "Format" );
+  QDomElement formatElem = doc.createElement( "se:Format" );
   formatElem.appendChild( doc.createTextNode( format ) );
   element.appendChild( formatElem );
 }

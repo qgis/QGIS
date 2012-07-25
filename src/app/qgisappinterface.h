@@ -64,8 +64,7 @@ class QgisAppInterface : public QgisInterface
     //! Add a raster layer given its file name
     QgsRasterLayer* addRasterLayer( QString rasterLayerPath, QString baseName );
     //! Add a WMS layer
-    QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey,
-                                    const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs );
+    QgsRasterLayer* addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey );
 
     //! Add a project
     bool addProject( QString theProjectName );
@@ -261,6 +260,7 @@ class QgisAppInterface : public QgisInterface
 
     //! View menu actions
     virtual QAction *actionPan();
+    virtual QAction *actionTouch();
     virtual QAction *actionPanToSelected();
     virtual QAction *actionZoomIn();
     virtual QAction *actionZoomOut();
