@@ -2174,10 +2174,10 @@ char** papszFromStringList( const QStringList& list )
   return papszRetList;
 }
 
-bool QgsGdalProvider::create( const QString& format, int nBands, 
-                              QgsRasterDataProvider::DataType type, 
-                              int width, int height, double* geoTransform, 
-                              const QgsCoordinateReferenceSystem& crs, 
+bool QgsGdalProvider::create( const QString& format, int nBands,
+                              QgsRasterDataProvider::DataType type,
+                              int width, int height, double* geoTransform,
+                              const QgsCoordinateReferenceSystem& crs,
                               QStringList createOptions )
 {
   //get driver
@@ -2187,7 +2187,7 @@ bool QgsGdalProvider::create( const QString& format, int nBands,
     return false;
   }
 
-  //create dataset 
+  //create dataset
   char **papszOptions = papszFromStringList( createOptions );
   GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );

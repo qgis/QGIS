@@ -61,6 +61,7 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
 
 void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  Q_UNUSED( bandNo );
   if ( !mInput || !mShader )
   {
     return 0;

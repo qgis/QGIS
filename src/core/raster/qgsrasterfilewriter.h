@@ -45,7 +45,7 @@ class CORE_EXPORT QgsRasterFileWriter
     int maxTileWidth() const { return mMaxTileWidth; }
 
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
-    int maxTileHeight() const { return mMaxTileHeight; } 
+    int maxTileHeight() const { return mMaxTileHeight; }
 
     // for now not putting createOptions in all methods, use createOptions()
     void setCreateOptions( const QStringList& list ) { mCreateOptions = list; }
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
         const QString& outputUrl, int fileIndex, int nBands, QgsRasterInterface::DataType type,
-                                               const QgsCoordinateReferenceSystem& crs );
+        const QgsCoordinateReferenceSystem& crs );
 
     /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
     QgsRasterDataProvider* initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,

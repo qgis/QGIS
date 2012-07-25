@@ -118,12 +118,12 @@ void QgsMapToolFreezeLabels::showFrozenLabels( bool show )
   mShowFrozen = show;
   if ( mShowFrozen )
   {
-    QgsDebugMsg( QString( "Toggling on frozen label highlighting" ));
+    QgsDebugMsg( QString( "Toggling on frozen label highlighting" ) );
     highlightFrozenLabels();
   }
   else
   {
-    QgsDebugMsg( QString( "Toggling off frozen label highlighting" ));
+    QgsDebugMsg( QString( "Toggling off frozen label highlighting" ) );
     removeFrozenHighlights();
   }
 }
@@ -133,15 +133,15 @@ void QgsMapToolFreezeLabels::updateFrozenLabels()
 {
   if ( mShowFrozen )
   {
-    QgsDebugMsg( QString( "Updating highlighting due to layer editing mode change" ));
+    QgsDebugMsg( QString( "Updating highlighting due to layer editing mode change" ) );
     mCanvas->refresh();
   }
 }
 
 void QgsMapToolFreezeLabels::highlightLabel( QgsVectorLayer* vlayer,
-                                             const QgsLabelPosition& labelpos,
-                                             const QString& id,
-                                             const QColor& color )
+    const QgsLabelPosition& labelpos,
+    const QString& id,
+    const QColor& color )
 {
   QgsRectangle rect = labelpos.labelRect;
 
@@ -152,7 +152,7 @@ void QgsMapToolFreezeLabels::highlightLabel( QgsVectorLayer* vlayer,
     if ( vlayer->crs() != mRender->destinationCrs() )
     {
       rect = mRender->mapToLayerCoordinates( vlayer, rect );
-      QgsDebugMsg( QString( "Reverse transform needed for highlight rectangle" ));
+      QgsDebugMsg( QString( "Reverse transform needed for highlight rectangle" ) );
     }
   }
 
@@ -209,9 +209,9 @@ void QgsMapToolFreezeLabels::highlightFrozenLabels()
   {
     mCurrentLabelPos = *it;
 
-    if( mCurrentLabelPos.isFrozen )
+    if ( mCurrentLabelPos.isFrozen )
     {
-      QString labelStringID = QString("%0|%1").arg(mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
+      QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
       // don't highlight again
       if ( mHighlights.contains( labelStringID ) )
@@ -236,7 +236,7 @@ void QgsMapToolFreezeLabels::highlightFrozenLabels()
         lblcolor = QColor( 54, 129, 0, 255 );
       }
 
-      highlightLabel( vlayer, ( *it ), labelStringID, lblcolor);
+      highlightLabel( vlayer, ( *it ), labelStringID, lblcolor );
     }
   }
   QApplication::restoreOverrideCursor();
@@ -253,7 +253,7 @@ void QgsMapToolFreezeLabels::removeFrozenHighlights()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEvent * e  )
+void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEvent * e )
 {
 
   bool doThaw = e->modifiers() & Qt::ShiftModifier ? true : false;
@@ -312,10 +312,10 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
       continue;
     }
 
-    QString labelStringID = QString("%0|%1").arg(mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
+    QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
     // thaw label
-    if ( mCurrentLabelPos.isFrozen && !doHide && ( doThaw  || toggleThawOrFreeze  ) )
+    if ( mCurrentLabelPos.isFrozen && !doHide && ( doThaw  || toggleThawOrFreeze ) )
     {
       // thaw previously frozen label (set attribute table fields to NULL)
       if ( freezeThawLabel( vlayer, mCurrentLabelPos, false ) )
@@ -370,8 +370,8 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
 }
 
 bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
-                                              const QgsLabelPosition& labelpos,
-                                              bool freeze )
+    const QgsLabelPosition& labelpos,
+    bool freeze )
 {
   // skip diagrams
   if ( labelpos.isDiagram )

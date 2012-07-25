@@ -55,8 +55,6 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
 
   bool hasTransparency = usesTransparency();
 
-  QgsRasterInterface::DataType rasterType = ( QgsRasterInterface::DataType )mInput->dataType( mBand );
-
   void* rasterData = mInput->block( bandNo, extent, width, height );
 
   currentRasterPos = 0;

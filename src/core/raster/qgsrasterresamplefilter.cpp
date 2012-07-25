@@ -113,6 +113,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
 
 void * QgsRasterResampleFilter::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
+  Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
   if ( !mInput ) return 0;
 

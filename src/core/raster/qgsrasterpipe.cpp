@@ -129,11 +129,6 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
 
   if ( !theInterface ) return false;
 
-  QgsRasterDataProvider * provider = dynamic_cast<QgsRasterDataProvider *>( theInterface );
-  QgsRasterRenderer * renderer;
-  QgsRasterResampleFilter * resampleFilter;
-  QgsRasterProjector * projector;
-
   Role role = interfaceRole( theInterface );
 
   // We dont know where to place unknown interface

@@ -147,7 +147,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
   private slots:
 
     /** save the style based on selected format from the menu */
-      void saveStyleAsMenuTriggered( QAction * );
+    void saveStyleAsMenuTriggered( QAction * );
 
   protected:
 

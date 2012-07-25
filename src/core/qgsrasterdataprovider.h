@@ -451,21 +451,21 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**Writes into the provider datasource*/
     virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset )
     {
-        Q_UNUSED( data );
-        Q_UNUSED( band );
-        Q_UNUSED( width );
-        Q_UNUSED( height );
-        Q_UNUSED( xOffset );
-        Q_UNUSED( yOffset );
-        return false;
+      Q_UNUSED( data );
+      Q_UNUSED( band );
+      Q_UNUSED( width );
+      Q_UNUSED( height );
+      Q_UNUSED( xOffset );
+      Q_UNUSED( yOffset );
+      return false;
     }
 
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
     virtual bool create( const QString& format, int nBands,
-                         QgsRasterDataProvider::DataType type, 
+                         QgsRasterDataProvider::DataType type,
                          int width, int height, double* geoTransform,
-                         const QgsCoordinateReferenceSystem& crs, 
+                         const QgsCoordinateReferenceSystem& crs,
                          QStringList createOptions = QStringList() /*e.v. color table*/ )
     {
       Q_UNUSED( format );

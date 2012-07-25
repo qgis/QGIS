@@ -50,6 +50,12 @@ bool QgsRasterInterface::typeIsNumeric( DataType dataType ) const
     case CFloat32:
     case CFloat64:
       return true;
+
+    case UnknownDataType:
+    case ARGB32:
+    case ARGB32_Premultiplied:
+    case TypeCount:
+      return false;
   }
   return false;
 }
@@ -61,6 +67,21 @@ bool QgsRasterInterface::typeIsColor( DataType dataType ) const
     case ARGB32:
     case ARGB32_Premultiplied:
       return true;
+
+    case UnknownDataType:
+    case Byte:
+    case UInt16:
+    case Int16:
+    case UInt32:
+    case Int32:
+    case Float32:
+    case CInt16:
+    case Float64:
+    case CInt32:
+    case CFloat32:
+    case CFloat64:
+    case TypeCount:
+      return false;
   }
   return false;
 }

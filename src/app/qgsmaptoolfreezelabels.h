@@ -89,7 +89,7 @@ class QgsMapToolFreezeLabels: public QgsMapToolLabel
                          const QColor& color );
 
     //! Select valid labels to freeze or thaw
-    void freezeThawLabels( const QgsRectangle& ext, QMouseEvent * e  );
+    void freezeThawLabels( const QgsRectangle& ext, QMouseEvent * e );
 
     //! Freeze or thaw label relative to whether its editable
     bool freezeThawLabel( QgsVectorLayer* vlayer,

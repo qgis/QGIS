@@ -1570,7 +1570,7 @@ void QgsRasterLayerProperties::updatePipeItems()
     QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
     if ( !item ) continue;
     // Checkboxes disabled for now, see above
-    /*
+#if 0
     bool on = interface->on();
     Qt::ItemFlags flags = item->flags();
     if ( pipe->canSetOn( i, !on ) )
@@ -1582,6 +1582,6 @@ void QgsRasterLayerProperties::updatePipeItems()
       flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
     }
     item->setFlags( flags );
-    */
+#endif
   }
 }
