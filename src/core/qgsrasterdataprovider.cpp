@@ -23,6 +23,8 @@
 #include <QMap>
 #include <QByteArray>
 
+#include <cmath>
+
 void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
                                        const & viewExtent, int width,
                                        int height,
@@ -270,7 +272,6 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   return ba;
 }
 
-
 QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 {
   double myNoDataValue = noDataValue();
@@ -424,6 +425,169 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   CPLFree( myData );
   myRasterBandStats.statsGathered = true;
   return myRasterBandStats;
+}
+
+QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
+    double theMinimum, double theMaximum,
+    int theBinCount,
+    const QgsRectangle & theExtent,
+    int theSampleSize,
+    bool theIncludeOutOfRange )
+{
+  QgsRasterHistogram myHistogram;
+  myHistogram.bandNumber = theBandNo;
+  myHistogram.minimum = theMinimum;
+  myHistogram.maximum = theMaximum;
+  myHistogram.includeOutOfRange = theIncludeOutOfRange;
+  //myHistogram.sampleSize = theSampleSize
+
+  // First calc defaults
+  QgsRectangle myExtent = theExtent.isEmpty() ? extent() : theExtent;
+  myHistogram.extent = myExtent;
+
+  int myWidth, myHeight;
+  if ( theSampleSize > 0 )
+  {
+    // Calc resolution from theSampleSize
+    double xRes, yRes;
+    xRes = yRes = sqrt(( myExtent.width() * myExtent.height() ) / theSampleSize );
+
+    // But limit by physical resolution
+    if ( capabilities() & Size )
+    {
+      double srcXRes = extent().width() / xSize();
+      double srcYRes = extent().height() / ySize();
+      if ( xRes < srcXRes ) xRes = srcXRes;
+      if ( yRes < srcYRes ) yRes = srcYRes;
+    }
+
+    myWidth = static_cast <int>( myExtent.width() / xRes );
+    myHeight = static_cast <int>( myExtent.height() / yRes );
+  }
+  else
+  {
+    if ( capabilities() & Size )
+    {
+      myWidth = xSize();
+      myHeight = ySize();
+    }
+    else
+    {
+      myWidth = 1000;
+      myHeight = 1000;
+    }
+  }
+  myHistogram.width = myWidth;
+  myHistogram.height = myHeight;
+  QgsDebugMsg( QString( "myWidth = %1 myHeight = %2" ).arg( myWidth ).arg( myHeight ) );
+
+  double myNoDataValue = noDataValue();
+  int myDataType = dataType( theBandNo );
+
+  int myBinCount = theBinCount;
+  if ( myBinCount == 0 )
+  {
+    if ( myDataType == QgsRasterDataProvider::Byte )
+    {
+      myBinCount = 256; // Cannot store more values in byte
+    }
+    else
+    {
+      // There is no best default value, to display something reasonable in histogram chart, binCount should be small, OTOH, to get precise data for cumulative cut, the number should be big. Because it is easier to define fixed lower value for the chart, we calc optimum binCount for higher resolution (to avoid calculating that where histogram() is used. In any any case, it does not make sense to use more than width*height;
+      myBinCount = myWidth * myHeight;
+      if ( myBinCount > 1000 )  myBinCount = 1000;
+    }
+  }
+  myHistogram.binCount = theBinCount;
+  QgsDebugMsg( QString( "myBinCount = %1" ).arg( myBinCount ) );
+
+  // Check if we have cached
+  foreach( QgsRasterHistogram histogram, mHistograms )
+  {
+    if ( histogram.bandNumber == theBandNo &&
+         histogram.minimum == theMinimum &&
+         histogram.maximum == theMaximum &&
+         histogram.binCount == myBinCount &&
+         histogram.extent == myExtent &&
+         histogram.width == myWidth &&
+         histogram.height == myHeight &&
+         histogram.includeOutOfRange == theIncludeOutOfRange )
+    {
+      return histogram;
+    }
+  }
+
+  myHistogram.histogramVector.resize( myBinCount );
+
+  int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
+  myXBlockSize = xBlockSize();
+  myYBlockSize = yBlockSize();
+
+  if ( myXBlockSize == 0 || myYBlockSize == 0 ) // should not happen
+  {
+    return myHistogram;
+  }
+
+  myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
+  myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
+
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( dataTypeSize( theBandNo ) / 8 ) );
+
+  int myBandXSize = xSize();
+  int myBandYSize = ySize();
+  double myXRes = myExtent.width() / myWidth;
+  double myYRes = myExtent.height() / myHeight;
+  double binSize = ( theMaximum - theMinimum ) / myBinCount;
+  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
+  {
+    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
+    {
+      int myPartWidth = qMin( myXBlockSize, myWidth - iXBlock * myXBlockSize );
+      int myPartHeight = qMin( myYBlockSize, myHeight - iYBlock * myYBlockSize );
+
+      double xmin = myExtent.xMinimum() + iXBlock * myXBlockSize * myXRes;
+      double xmax = xmin + myPartWidth * myXRes;
+      double ymin = myExtent.yMaximum() - iYBlock * myYBlockSize * myYRes;
+      double ymax = ymin - myPartHeight * myYRes;
+
+      QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
+
+      readBlock( theBandNo, myPartExtent, myPartWidth, myPartHeight, myData );
+
+      // Collect the histogram counts.
+      for ( int iY = 0; iY < myPartHeight; iY++ )
+      {
+        for ( int iX = 0; iX < myPartWidth; iX++ )
+        {
+          double myValue = readValue( myData, myDataType, iX + ( iY * myPartWidth ) );
+          //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (iX).arg(iY).arg( myValue ) );
+
+          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          {
+            continue; // NULL
+          }
+
+          int myBinIndex = static_cast <int>( floor(( myValue - theMinimum ) /  binSize ) ) ;
+          if (( myBinIndex < 0 || myBinIndex > ( myBinCount - 1 ) ) && !theIncludeOutOfRange )
+          {
+            continue;
+          }
+          if ( myBinIndex < 0 ) myBinIndex = 0;
+          if ( myBinIndex > ( myBinCount - 1 ) ) myBinIndex = myBinCount - 1;
+
+          myHistogram.histogramVector[myBinIndex] += 1;
+          myHistogram.nonNullCount++;
+        }
+      }
+    } //end of column wise loop
+  } //end of row wise loop
+
+  CPLFree( myData );
+
+  myHistogram.valid = true;
+  mHistograms.append( myHistogram );
+
+  return myHistogram;
 }
 
 double QgsRasterDataProvider::readValue( void *data, int type, int index )

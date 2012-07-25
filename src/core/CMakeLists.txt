@@ -390,6 +390,7 @@ SET(QGIS_CORE_HDRS
   raster/qgspseudocolorshader.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
+  raster/qgsrasterhistogram.h
   raster/qgsrasterinterface.h
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h

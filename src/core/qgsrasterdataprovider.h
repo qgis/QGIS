@@ -30,6 +30,7 @@
 #include "qgsrasterpyramid.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasterhistogram.h"
 
 #include "cpl_conv.h"
 #include <cmath>
@@ -314,6 +315,22 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( theIgnoreOutOfRangeFlag ); Q_UNUSED( theThoroughBandScanFlag );
     }
 
+    /** \brief Get histogram. Histograms are cached in providers.
+     * @param theBandNo The band (number).
+     * @param theMinimum Minimum value.
+     * @param theMaximum Maximum value.
+     * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
+     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @return Vector of non NULL cell counts for each bin.
+     */
+    virtual QgsRasterHistogram histogram( int theBandNo,
+                                          double theMinimum, double theMaximum,
+                                          int theBinCount = 0,
+                                          const QgsRectangle & theExtent = QgsRectangle(),
+                                          int theSampleSize = 0,
+                                          bool theIncludeOutOfRange = false );
+
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
                                    const QString &  theResamplingMethod = "NEAREST",
@@ -503,6 +520,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool mValidNoDataValue;
 
     QgsRectangle mExtent;
+
+    /** \brief List  of cached histograms, all bands mixed */
+    QList <QgsRasterHistogram> mHistograms;
 };
 
 #endif
