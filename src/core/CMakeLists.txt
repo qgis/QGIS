@@ -113,6 +113,7 @@ SET(QGIS_CORE_SRCS
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgscomposerarrow.cpp
+  composer/qgscomposerframe.cpp
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemcommand.cpp
   composer/qgscomposeritemgroup.cpp

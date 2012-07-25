@@ -1,7 +1,7 @@
 /***************************************************************************
                               qgscomposerhtml.cpp
     ------------------------------------------------------------
-    begin                : Julli 2012
+    begin                : July 2012
     copyright            : (C) 2012 by Marco Hugentobler
     email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************
@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgscomposerhtml.h"
+#include "qgscomposition.h"
 #include <QCoreApplication>
+#include <QImage>
+#include <QPainter>
 #include <QWebFrame>
 #include <QWebPage>
 
@@ -66,10 +69,12 @@ void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
     return;
   }
 
+  QImage img; //dummy image to find out assumed screen dpi
+
   double pixelPerMM = mComposition->printResolution() / 25.4;
-  double painterScale = 1.0 / ( pixelPerMM / (( double )mImage->dotsPerMeterX() / 1000.0 ) );
-  painter->save();
-  painter->scale( painterScale, painterScale );
+  double painterScale = 1.0 / ( pixelPerMM / (( double )img.dotsPerMeterX() / 1000.0 ) );
+  p->save();
+  p->scale( painterScale, painterScale );
   mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top(), renderExtent.width(), renderExtent.height() ) );
-  painter->restore();
+  p->restore();
 }

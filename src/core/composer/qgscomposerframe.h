@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgscomposermultiframe.h
+                              qgscomposerframe.h
     ------------------------------------------------------------
     begin                : July 2012
     copyright            : (C) 2012 by Marco Hugentobler
@@ -13,42 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOMPOSERMULTIFRAME_H
-#define QGSCOMPOSERMULTIFRAME_H
+#ifndef QGSCOMPOSERFRAME_H
+#define QGSCOMPOSERFRAME_H
 
-#include <QObject>
-#include <QSizeF>
+#include "qgscomposeritem.h"
 
-class QgsComposerItem;
 class QgsComposition;
-class QRectF;
-class QPainter;
+class QgsComposerMultiFrame;
 
-/**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class QgsComposerMultiFrame: public QObject
+/**Frame for html, table, text which can be divided onto several frames*/
+class QgsComposerFrame: public QgsComposerItem
 {
-    Q_OBJECT
   public:
+    QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf );
+    ~QgsComposerFrame();
 
-    enum ResizeMode
-    {
-      ExtendToNextPage = 0, //duplicates last frame to next page to fit the total size
-      UseExistingFrames //
-    };
+    /**Sets the part of this frame (relative to the total multiframe extent in mm)*/
+    void setContentSection( const QRectF& section ) { mSection = section; }
 
-    QgsComposerMultiFrame( QgsComposition* c );
-    virtual ~QgsComposerMultiFrame();
-    virtual QSizeF totalSize() const = 0;
-    virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-  protected:
-    QgsComposition* mComposition;
-    QList<QgsComposerItem*> mFrameItems;
-
-    void recalculateFrameSizes();
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
   private:
-    QgsComposerMultiFrame(); //forbidden
+    QgsComposerFrame(); //forbidden
+
+    QgsComposition* mComposition;
+    QgsComposerMultiFrame* mMultiFrame;
+    QRectF mSection;
 };
 
-#endif // QGSCOMPOSERMULTIFRAME_H
+#endif // QGSCOMPOSERFRAME_H

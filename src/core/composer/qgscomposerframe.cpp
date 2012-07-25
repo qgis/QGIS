@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgscomposermultiframe.cpp
+                              qgscomposerframe.cpp
     ------------------------------------------------------------
     begin                : July 2012
     copyright            : (C) 2012 by Marco Hugentobler
@@ -13,21 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c )
+QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf ): QgsComposerItem( c ), mMultiFrame( mf )
 {
 }
 
-QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 )
+QgsComposerFrame::~QgsComposerFrame()
 {
 }
 
-QgsComposerMultiFrame::~QgsComposerMultiFrame()
+bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
+  return false; //_writeXML( element, doc );
 }
 
-void QgsComposerMultiFrame::recalculateFrameSizes()
+bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  //todo...
+  return false; //_readXML( element, doc )
+}
+
+void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+{
+  if ( mMultiFrame && painter )
+  {
+    mMultiFrame->render( painter, mSection );
+  }
 }
