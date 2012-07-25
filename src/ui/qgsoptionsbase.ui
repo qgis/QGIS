@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="iconSize">
       <size>
@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>938</height>
+            <width>760</width>
+            <height>1041</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -757,7 +757,7 @@
        <string>GDAL</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_27">
-       <item row="0" column="0">
+       <item row="1" column="0">
         <widget class="QGroupBox" name="groupBox_13">
          <property name="title">
           <string>GDAL Drivers</string>
@@ -801,6 +801,58 @@
               <string>Description</string>
              </property>
             </column>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_16">
+         <property name="title">
+          <string>GDAL Driver Options</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_29">
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cmbEditCreateOptions"/>
+          </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_15">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="4">
+           <widget class="QPushButton" name="pbnEditPyramidsOptions">
+            <property name="text">
+             <string>Edit Pyramids Options</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <spacer name="horizontalSpacer_16">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="pbnEditCreateOptions">
+            <property name="text">
+             <string>Edit Create Options</string>
+            </property>
            </widget>
           </item>
          </layout>
@@ -890,8 +942,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>592</height>
+            <width>760</width>
+            <height>625</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1137,8 +1189,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>718</height>
+            <width>760</width>
+            <height>780</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1507,8 +1559,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>784</width>
-            <height>452</height>
+            <width>778</width>
+            <height>436</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1588,8 +1640,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>572</height>
+            <width>760</width>
+            <height>627</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1964,8 +2016,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>784</width>
-            <height>452</height>
+            <width>778</width>
+            <height>436</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2151,8 +2203,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>536</height>
+            <width>760</width>
+            <height>551</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2248,8 +2300,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>766</width>
-            <height>491</height>
+            <width>760</width>
+            <height>554</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

@@ -97,6 +97,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
+    /** Update items in pipe list */
+    void pipeItemClicked( QTreeWidgetItem * item, int column );
+
   signals:
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
@@ -148,6 +151,12 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QLinearGradient highlightGradient();
     qreal mGradientHeight;
     qreal mGradientWidth;
+
+    /** Update pipe tab - interfaces list */
+    void updatePipeList();
+
+    /** Update items in pipe list */
+    void updatePipeItems();
 
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;

@@ -50,6 +50,7 @@ qgscursors.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
+qgsdialog.cpp
 qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
@@ -76,6 +77,8 @@ qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
+qgsrasterlayersaveasdialog.cpp
+qgsrasterformatsaveoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
 qgstextannotationitem.cpp
@@ -136,6 +139,7 @@ qgsattributeeditor.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
+qgsdialog.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
@@ -154,6 +158,8 @@ qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
 qgsquickprint.h
+qgsrasterlayersaveasdialog.h
+qgsrasterformatsaveoptionswidget.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h

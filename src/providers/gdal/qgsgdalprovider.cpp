@@ -49,6 +49,7 @@
 #include "gdalwarper.h"
 #include "ogr_spatialref.h"
 #include "cpl_conv.h"
+#include "cpl_string.h"
 
 
 static QString PROVIDER_KEY = "gdal";
@@ -195,192 +196,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   }
 
   QgsDebugMsg( "GdalDataset opened" );
-
-  for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
-  {
-    mMinMaxComputed.append( false );
-    mMinimum.append( 0 );
-    mMaximum.append( 0 );
-  }
-
-  // Check if we need a warped VRT for this file.
-  bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
-  if (( hasGeoTransform
-        && ( mGeoTransform[1] < 0.0
-             || mGeoTransform[2] != 0.0
-             || mGeoTransform[4] != 0.0
-             || mGeoTransform[5] > 0.0 ) )
-      || GDALGetGCPCount( mGdalBaseDataset ) > 0 )
-  {
-    QgsLogger::warning( "Creating Warped VRT." );
-
-    mGdalDataset =
-      GDALAutoCreateWarpedVRT( mGdalBaseDataset, NULL, NULL,
-                               GRA_NearestNeighbour, 0.2, NULL );
-
-    if ( mGdalDataset == NULL )
-    {
-      QgsLogger::warning( "Warped VRT Creation failed." );
-      mGdalDataset = mGdalBaseDataset;
-      GDALReferenceDataset( mGdalDataset );
-    }
-    else
-    {
-      GDALGetGeoTransform( mGdalDataset, mGeoTransform );
-    }
-  }
-  else
-  {
-    mGdalDataset = mGdalBaseDataset;
-    GDALReferenceDataset( mGdalDataset );
-  }
-
-  if ( !hasGeoTransform )
-  {
-    // Initialise the affine transform matrix
-    mGeoTransform[0] =  0;
-    mGeoTransform[1] =  1;
-    mGeoTransform[2] =  0;
-    mGeoTransform[3] =  0;
-    mGeoTransform[4] =  0;
-    mGeoTransform[5] = -1;
-  }
-
-  // get sublayers
-  mSubLayers = QgsGdalProvider::subLayers( mGdalDataset );
-
-  // check if this file has bands or subdatasets
-  CPLErrorReset();
-  GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
-  if ( myGDALBand == NULL )
-  {
-    QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
-
-    // if there are no subdatasets, then close the dataset
-    if ( mSubLayers.size() == 0 )
-    {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
-
-      GDALDereferenceDataset( mGdalBaseDataset );
-      mGdalBaseDataset = NULL;
-
-      GDALClose( mGdalDataset );
-      mGdalDataset = NULL;
-      return;
-    }
-    // if there are subdatasets, leave the dataset open for subsequent queries
-    else
-    {
-      QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
-                   QString( " but dataset has %1 subdatasets" ).arg( mSubLayers.size() ) );
-      return;
-    }
-  }
-
-  // check if this file has pyramids
-  mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
-
-  // Get the layer's projection info and set up the
-  // QgsCoordinateTransform for this layer
-  // NOTE: we must do this before metadata is called
-
-  if ( !crsFromWkt( GDALGetProjectionRef( mGdalDataset ) ) &&
-       !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
-  {
-    QgsDebugMsg( "No valid CRS identified" );
-    mCrs.validate();
-  }
-
-  //set up the coordinat transform - in the case of raster this is mainly used to convert
-  //the inverese projection of the map extents of the canvas when zooming in etc. so
-  //that they match the coordinate system of this layer
-  //QgsDebugMsg( "Layer registry has " + QString::number( QgsMapLayerRegistry::instance()->count() ) + "layers" );
-
-  //metadata();
-
-  // Use the affine transform to get geo coordinates for
-  // the corners of the raster
-  double myXMax = mGeoTransform[0] +
-                  GDALGetRasterXSize( mGdalDataset ) * mGeoTransform[1] +
-                  GDALGetRasterYSize( mGdalDataset ) * mGeoTransform[2];
-  double myYMin = mGeoTransform[3] +
-                  GDALGetRasterXSize( mGdalDataset ) * mGeoTransform[4] +
-                  GDALGetRasterYSize( mGdalDataset ) * mGeoTransform[5];
-
-  mExtent.setXMaximum( myXMax );
-  // The affine transform reduces to these values at the
-  // top-left corner of the raster
-  mExtent.setXMinimum( mGeoTransform[0] );
-  mExtent.setYMaximum( mGeoTransform[3] );
-  mExtent.setYMinimum( myYMin );
-
-  //
-  // Set up the x and y dimensions of this raster layer
-  //
-  mWidth = GDALGetRasterXSize( mGdalDataset );
-  mHeight = GDALGetRasterYSize( mGdalDataset );
-
-
-  GDALGetBlockSize( GDALGetRasterBand( mGdalDataset, 1 ), &mXBlockSize, &mYBlockSize );
-  //
-  // Determine the nodata value and data type
-  //
-  mValidNoDataValue = true;
-  for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
-  {
-    computeMinMax( i );
-    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
-    GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
-    int isValid = false;
-    double myNoDataValue = GDALGetRasterNoDataValue( GDALGetRasterBand( mGdalDataset, i ), &isValid );
-    if ( isValid )
-    {
-      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
-      mGdalDataType.append( myGdalDataType );
-
-    }
-    else
-    {
-      // But we need a null value in case of reprojection and BTW also for
-      // aligned margines
-
-      switch ( srcDataType( i ) )
-      {
-        case QgsRasterDataProvider::Byte:
-          // Use longer data type to avoid conflict with real data
-          myNoDataValue = -32768.0;
-          mGdalDataType.append( GDT_Int16 );
-          break;
-        case QgsRasterDataProvider::Int16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::UInt16:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( GDT_Int32 );
-          break;
-        case QgsRasterDataProvider::Int32:
-          myNoDataValue = -2147483648.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        case QgsRasterDataProvider::UInt32:
-          myNoDataValue = 4294967295.0;
-          mGdalDataType.append( myGdalDataType );
-          break;
-        default:
-          myNoDataValue = std::numeric_limits<int>::max();
-          // Would NaN work well?
-          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
-          mGdalDataType.append( myGdalDataType );
-      }
-    }
-    mNoDataValue.append( myNoDataValue );
-    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
-  }
-
-  mValid = true;
-  QgsDebugMsg( "end" );
+  initBaseDataset();
 }
 
 bool QgsGdalProvider::crsFromWkt( const char *wkt )
@@ -803,6 +619,11 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   return;
 }
+
+//void * QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
+//{
+//  return 0;
+//}
 
 // this is old version which was using GDALWarpOperation, unfortunately
 // it may be very slow on large datasets
@@ -1244,7 +1065,9 @@ int QgsGdalProvider::capabilities() const
                    | QgsRasterDataProvider::ExactResolution
                    | QgsRasterDataProvider::EstimatedMinimumMaximum
                    | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Histogram;
+                   | QgsRasterDataProvider::Histogram
+                   | QgsRasterDataProvider::Create
+                   | QgsRasterDataProvider::Remove;
   GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
   QString name = GDALGetDriverShortName( myDriver );
   QgsDebugMsg( "driver short name = " + name );
@@ -1255,7 +1078,7 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-int QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
+QgsRasterInterface::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
@@ -1302,14 +1125,14 @@ int QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
   return QgsRasterDataProvider::UnknownDataType;
 }
 
-int QgsGdalProvider::srcDataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   return dataTypeFormGdal( myGdalDataType );
 }
 
-int QgsGdalProvider::dataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
   if ( mGdalDataType.size() == 0 ) return QgsRasterDataProvider::UnknownDataType;
 
@@ -2152,6 +1975,261 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
   return myRasterBandStats;
 
 } // QgsGdalProvider::bandStatistics
+
+void QgsGdalProvider::initBaseDataset()
+{
+  for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
+  {
+    mMinMaxComputed.append( false );
+    mMinimum.append( 0 );
+    mMaximum.append( 0 );
+  }
+
+  // Check if we need a warped VRT for this file.
+  bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
+  if (( hasGeoTransform
+        && ( mGeoTransform[1] < 0.0
+             || mGeoTransform[2] != 0.0
+             || mGeoTransform[4] != 0.0
+             || mGeoTransform[5] > 0.0 ) )
+      || GDALGetGCPCount( mGdalBaseDataset ) > 0 )
+  {
+    QgsLogger::warning( "Creating Warped VRT." );
+
+    mGdalDataset =
+      GDALAutoCreateWarpedVRT( mGdalBaseDataset, NULL, NULL,
+                               GRA_NearestNeighbour, 0.2, NULL );
+
+    if ( mGdalDataset == NULL )
+    {
+      QgsLogger::warning( "Warped VRT Creation failed." );
+      mGdalDataset = mGdalBaseDataset;
+      GDALReferenceDataset( mGdalDataset );
+    }
+    else
+    {
+      GDALGetGeoTransform( mGdalDataset, mGeoTransform );
+    }
+  }
+  else
+  {
+    mGdalDataset = mGdalBaseDataset;
+    GDALReferenceDataset( mGdalDataset );
+  }
+
+  if ( !hasGeoTransform )
+  {
+    // Initialise the affine transform matrix
+    mGeoTransform[0] =  0;
+    mGeoTransform[1] =  1;
+    mGeoTransform[2] =  0;
+    mGeoTransform[3] =  0;
+    mGeoTransform[4] =  0;
+    mGeoTransform[5] = -1;
+  }
+
+  // get sublayers
+  mSubLayers = QgsGdalProvider::subLayers( mGdalDataset );
+
+  // check if this file has bands or subdatasets
+  CPLErrorReset();
+  GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
+  if ( myGDALBand == NULL )
+  {
+    QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
+
+    // if there are no subdatasets, then close the dataset
+    if ( mSubLayers.size() == 0 )
+    {
+      QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                            QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
+
+      GDALDereferenceDataset( mGdalBaseDataset );
+      mGdalBaseDataset = NULL;
+
+      GDALClose( mGdalDataset );
+      mGdalDataset = NULL;
+      return;
+    }
+    // if there are subdatasets, leave the dataset open for subsequent queries
+    else
+    {
+      QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
+                   QString( " but dataset has %1 subdatasets" ).arg( mSubLayers.size() ) );
+      return;
+    }
+  }
+
+  // check if this file has pyramids
+  mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
+
+  // Get the layer's projection info and set up the
+  // QgsCoordinateTransform for this layer
+  // NOTE: we must do this before metadata is called
+
+  if ( !crsFromWkt( GDALGetProjectionRef( mGdalDataset ) ) &&
+       !crsFromWkt( GDALGetGCPProjection( mGdalDataset ) ) )
+  {
+    QgsDebugMsg( "No valid CRS identified" );
+    mCrs.validate();
+  }
+
+  //set up the coordinat transform - in the case of raster this is mainly used to convert
+  //the inverese projection of the map extents of the canvas when zooming in etc. so
+  //that they match the coordinate system of this layer
+  //QgsDebugMsg( "Layer registry has " + QString::number( QgsMapLayerRegistry::instance()->count() ) + "layers" );
+
+  //metadata();
+
+  // Use the affine transform to get geo coordinates for
+  // the corners of the raster
+  double myXMax = mGeoTransform[0] +
+                  GDALGetRasterXSize( mGdalDataset ) * mGeoTransform[1] +
+                  GDALGetRasterYSize( mGdalDataset ) * mGeoTransform[2];
+  double myYMin = mGeoTransform[3] +
+                  GDALGetRasterXSize( mGdalDataset ) * mGeoTransform[4] +
+                  GDALGetRasterYSize( mGdalDataset ) * mGeoTransform[5];
+
+  mExtent.setXMaximum( myXMax );
+  // The affine transform reduces to these values at the
+  // top-left corner of the raster
+  mExtent.setXMinimum( mGeoTransform[0] );
+  mExtent.setYMaximum( mGeoTransform[3] );
+  mExtent.setYMinimum( myYMin );
+
+  //
+  // Set up the x and y dimensions of this raster layer
+  //
+  mWidth = GDALGetRasterXSize( mGdalDataset );
+  mHeight = GDALGetRasterYSize( mGdalDataset );
+
+
+  GDALGetBlockSize( GDALGetRasterBand( mGdalDataset, 1 ), &mXBlockSize, &mYBlockSize );
+  //
+  // Determine the nodata value and data type
+  //
+  mValidNoDataValue = true;
+  for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
+  {
+    computeMinMax( i );
+    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
+    GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
+    int isValid = false;
+    double myNoDataValue = GDALGetRasterNoDataValue( GDALGetRasterBand( mGdalDataset, i ), &isValid );
+    if ( isValid )
+    {
+      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
+      mGdalDataType.append( myGdalDataType );
+
+    }
+    else
+    {
+      // But we need a null value in case of reprojection and BTW also for
+      // aligned margines
+
+      switch ( srcDataType( i ) )
+      {
+        case QgsRasterDataProvider::Byte:
+          // Use longer data type to avoid conflict with real data
+          myNoDataValue = -32768.0;
+          mGdalDataType.append( GDT_Int16 );
+          break;
+        case QgsRasterDataProvider::Int16:
+          myNoDataValue = -2147483648.0;
+          mGdalDataType.append( GDT_Int32 );
+          break;
+        case QgsRasterDataProvider::UInt16:
+          myNoDataValue = -2147483648.0;
+          mGdalDataType.append( GDT_Int32 );
+          break;
+        case QgsRasterDataProvider::Int32:
+          myNoDataValue = -2147483648.0;
+          mGdalDataType.append( myGdalDataType );
+          break;
+        case QgsRasterDataProvider::UInt32:
+          myNoDataValue = 4294967295.0;
+          mGdalDataType.append( myGdalDataType );
+          break;
+        default:
+          myNoDataValue = std::numeric_limits<int>::max();
+          // Would NaN work well?
+          //myNoDataValue = std::numeric_limits<double>::quiet_NaN();
+          mGdalDataType.append( myGdalDataType );
+      }
+    }
+    mNoDataValue.append( myNoDataValue );
+    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+  }
+
+  mValid = true;
+}
+
+char** papszFromStringList( const QStringList& list )
+{
+  char **papszRetList = NULL;
+  foreach( QString elem, list )
+  {
+    papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
+  }
+  return papszRetList;
+}
+
+bool QgsGdalProvider::create( const QString& format, int nBands, 
+                              QgsRasterDataProvider::DataType type, 
+                              int width, int height, double* geoTransform, 
+                              const QgsCoordinateReferenceSystem& crs, 
+                              QStringList createOptions )
+{
+  //get driver
+  GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
+  if ( !driver )
+  {
+    return false;
+  }
+
+  //create dataset 
+  char **papszOptions = papszFromStringList( createOptions );
+  GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  CSLDestroy( papszOptions );
+  if ( dataset == NULL )
+  {
+    return false;
+  }
+
+  mGeoTransform[0] = geoTransform[0];
+  mGeoTransform[1] = geoTransform[1];
+  mGeoTransform[2] = geoTransform[2];
+  mGeoTransform[3] = geoTransform[3];
+  mGeoTransform[4] = geoTransform[4];
+  mGeoTransform[5] = geoTransform[5];
+
+  GDALSetGeoTransform( dataset, mGeoTransform );
+  GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
+
+  mGdalBaseDataset = dataset;
+  initBaseDataset();
+  return mValid;
+}
+
+bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )
+{
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+  if ( rasterBand == NULL )
+  {
+    return false;
+  }
+  return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
+}
+
+QStringList QgsGdalProvider::createFormats() const
+{
+  return QStringList();
+}
+
+bool QgsGdalProvider::remove()
+{
+  return false;
+}
 
 /**
   Builds the list of file filter strings to later be used by

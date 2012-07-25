@@ -59,6 +59,10 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void on_pbnSelectProjection_clicked();
     //! Slot called when user chooses to change the default 'on the fly' projection.
     void on_pbnSelectOtfProjection_clicked();
+    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_pbnEditCreateOptions_pressed();
+    void on_pbnEditPyramidsOptions_pressed();
+    void editGdalDriver( const QString& driverName );
     void saveOptions();
     //! Slot to change the theme this is handled when the user
     // activates or highlights a theme name in the drop-down list

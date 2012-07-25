@@ -383,12 +383,12 @@ int QgsGrassRasterProvider::capabilities() const
   return capability;
 }
 
-int QgsGrassRasterProvider::dataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGrassRasterProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-int QgsGrassRasterProvider::srcDataType( int bandNo ) const
+QgsRasterInterface::DataType QgsGrassRasterProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
   switch ( mGrassDataType )

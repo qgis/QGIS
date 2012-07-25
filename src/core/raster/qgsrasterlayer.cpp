@@ -46,9 +46,15 @@ email                : tim at linfiniti.com
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 
+#include "qgsrasterprojector.h"
+
+#include "qgsrasteriterator.h"
+#include "qgsrasterdrawer.h"
+
 #include <cstdio>
 #include <cmath>
 #include <limits>
+#include <typeinfo>
 
 #include <QApplication>
 #include <QCursor>
@@ -98,7 +104,6 @@ QgsRasterLayer::QgsRasterLayer()
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mRenderer( 0 )
 {
   init();
   mValid = false;
@@ -116,7 +121,6 @@ QgsRasterLayer::QgsRasterLayer(
     , mDataProvider( 0 )
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
-    , mRenderer( 0 )
 {
   QgsDebugMsg( "Entered" );
 
@@ -130,8 +134,6 @@ QgsRasterLayer::QgsRasterLayer(
     loadDefaultStyle( defaultLoadedFlag );
   }
   return;
-
-
 } // QgsRasterLayer ctor
 
 /**
@@ -153,7 +155,6 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
     , mHeight( std::numeric_limits<int>::max() )
     , mModified( false )
     , mProviderKey( providerKey )
-    , mRenderer( 0 )
 {
   QgsDebugMsg( "Entered" );
   init();
@@ -187,8 +188,6 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
 QgsRasterLayer::~QgsRasterLayer()
 {
   mValid = false;
-  delete mDataProvider;
-  delete mRenderer;
 }
 
 //////////////////////////////////////////////////////////
@@ -824,12 +823,43 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // procedure to use :
   //
 
-  if ( mRenderer )
+  QgsRasterProjector *projector = mPipe.projector();
+
+  // TODO add a method to interface to get provider and get provider
+  // params in QgsRasterProjector
+  if ( projector )
   {
-    mRenderer->draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+    projector->setCRS( theRasterViewPort->mSrcCRS, theRasterViewPort->mDestCRS );
   }
 
-  QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );
+#ifdef QGISDEBUG
+  // Collect stats only for larger sizes to avoid confusion (small time values)
+  // after thumbnail render e.g. 120 is current thumbnail size
+  // TODO: consider another way to switch stats on/off or storing of last significant
+  //       stats somehow
+  if ( theRasterViewPort->drawableAreaXDim > 120 && theRasterViewPort->drawableAreaYDim > 120 )
+  {
+    mPipe.setStatsOn( true );
+  }
+#endif
+
+  // Drawer to pipe?
+  QgsRasterIterator iterator( mPipe.last() );
+  QgsRasterDrawer drawer( &iterator );
+  drawer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+
+#ifdef QGISDEBUG
+  mPipe.setStatsOn( false );
+  // Print time stats
+  QgsDebugMsg( QString( "interface                  bands  time" ) );
+  for ( int i = 0; i < mPipe.size(); i++ )
+  {
+    QgsRasterInterface * interface = mPipe.at( i );
+    QString name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" ).left( 30 );
+    QgsDebugMsg( QString( "%1 %2 %3" ).arg( name, -30 ).arg( interface->bandCount() ).arg( interface->time(), 5 ) );
+  }
+  QgsDebugMsg( QString( "total raster draw time (ms):     %1" ).arg( time.elapsed(), 5 ) );
+#endif
 } //end of draw method
 
 QString QgsRasterLayer::drawingStyleAsString() const
@@ -985,9 +1015,14 @@ QString QgsRasterLayer::lastErrorTitle()
 QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 {
   QList< QPair< QString, QColor > > symbolList;
-  if ( mRenderer )
+  //if ( mPipe.renderer() )
+  //{
+  //  mPipe.renderer()->legendSymbologyItems( symbolList );
+  //}
+  QgsRasterRenderer *renderer = mPipe.renderer();
+  if ( renderer )
   {
-    mRenderer->legendSymbologyItems( symbolList );
+    renderer->legendSymbologyItems( symbolList );
   }
   return symbolList;
 
@@ -1643,6 +1678,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     return;
   }
+  mPipe.set( mDataProvider );
 
   if ( provider == "gdal" )
   {
@@ -1722,7 +1758,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Multiband;
   }
-  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
+  else if ( mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32
+            ||  mDataProvider->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
   {
     mRasterType = ColorLayer;
   }
@@ -1760,6 +1797,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     setDrawingStyle( SingleBandGray );  //sensible default
   }
 
+  //resampler (must be after renderer)
+  QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
+  mPipe.set( resampleFilter );
+
+  // projector (may be anywhere in pipe)
+  QgsRasterProjector * projector = new QgsRasterProjector;
+  mPipe.set( projector );
+
   // Store timestamp
   // TODO move to provider
   mLastModified = lastModified( mDataSource );
@@ -1785,7 +1830,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 void QgsRasterLayer::closeDataProvider()
 {
   mValid = false;
-  delete mDataProvider;
+  mPipe.remove( mDataProvider );
   mDataProvider = 0;
 
   mRasterStatsList.clear();
@@ -1807,15 +1852,15 @@ void QgsRasterLayer::setColorShadingAlgorithm( QString )
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
 {
-  if ( !mRenderer || !mDataProvider )
+  if ( !mPipe.renderer() || !mDataProvider )
   {
     return;
   }
 
-  QString rendererType  = mRenderer->type();
+  QString rendererType  = mPipe.renderer()->type();
   if ( rendererType == "singlebandgray" )
   {
-    QgsSingleBandGrayRenderer* gr = dynamic_cast<QgsSingleBandGrayRenderer*>( mRenderer );
+    QgsSingleBandGrayRenderer* gr = dynamic_cast<QgsSingleBandGrayRenderer*>( mPipe.renderer() );
     if ( gr )
     {
       int grayBand = gr->grayBand();
@@ -1833,7 +1878,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   }
   else if ( rendererType == "multibandcolor" )
   {
-    QgsMultiBandColorRenderer* cr = dynamic_cast<QgsMultiBandColorRenderer*>( mRenderer );
+    QgsMultiBandColorRenderer* cr = dynamic_cast<QgsMultiBandColorRenderer*>( mPipe.renderer() );
     if ( cr )
     {
       //red enhancement
@@ -2075,12 +2120,26 @@ void QgsRasterLayer::setTransparentBandName( QString const & )
   //legacy method
 }
 
-void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
+void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
 {
-  delete mRenderer;
-  mRenderer = renderer;
+  QgsDebugMsg( "Entered" );
+  if ( !theRenderer ) { return; }
+  mPipe.set( theRenderer );
 }
 
+// not sure if we want it
+/*
+void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
+{
+  QgsDebugMsg( "Entered" );
+  if ( !resampleFilter ) { return; }
+  if ( !mPipe.set( resampleFilter ) )
+  {
+    // TODO: somehow notify (and delete?)
+    QgsDebugMsg( "Cannot set resample filter." );
+  }
+}
+*/
 void QgsRasterLayer::showProgress( int theValue )
 {
   emit progressUpdate( theValue );
@@ -2236,18 +2295,29 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   if ( !rasterRendererElem.isNull() )
   {
-    delete mRenderer;
-    mRenderer = 0;
     if ( !rasterRendererElem.isNull() )
     {
       QString rendererType = rasterRendererElem.attribute( "type" );
       QgsRasterRendererRegistryEntry rendererEntry;
       if ( QgsRasterRendererRegistry::instance()->rendererData( rendererType, rendererEntry ) )
       {
-        mRenderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        QgsRasterRenderer *renderer = rendererEntry.rendererCreateFunction( rasterRendererElem, dataProvider() );
+        mPipe.set( renderer );
       }
     }
   }
+
+  //resampler
+  QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
+  mPipe.set( resampleFilter );
+
+  //max oversampling
+  QDomElement resampleElem = layer_node.firstChildElement( "rasterresampler" );
+  if ( !resampleElem.isNull() )
+  {
+    resampleFilter->readXML( resampleElem );
+  }
+
   return true;
 } //readSymbology
 
@@ -2380,9 +2450,18 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
 {
   Q_UNUSED( errorMessage );
   QDomElement layerElem = layer_node.toElement();
-  if ( mRenderer )
+
+  QgsRasterRenderer *renderer = mPipe.renderer();
+  if ( renderer )
   {
-    mRenderer->writeXML( document, layerElem );
+    renderer->writeXML( document, layerElem );
+  }
+
+  QgsRasterResampleFilter *resampleFilter = mPipe.resampleFilter();
+  if ( resampleFilter )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    resampleFilter->writeXML( document, layerElem );
   }
 
   return true;
@@ -2667,3 +2746,4 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   *theList = myColorRampItemList;
   return true;
 }
+

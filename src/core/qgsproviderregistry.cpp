@@ -389,23 +389,8 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
         QgsDebugMsg( "Instantiated the data provider plugin" );
         QgsDebugMsg( "provider name: " + dataProvider->name() );
 
-        if ( dataProvider->isValid() )
-        {
-          delete myLib;
-          return dataProvider;
-        }
-        else
-        {
-          // this is likely because the dataSource is invalid, and isn't
-          // necessarily a reflection on the data provider itself
-          QgsDebugMsg( "Invalid data provider" );
-
-          delete dataProvider;
-
-          myLib->unload();
-          delete myLib;
-          return 0;
-        }
+        delete myLib;
+        return dataProvider;
       }
       else
       {

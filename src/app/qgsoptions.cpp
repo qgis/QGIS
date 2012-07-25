@@ -26,6 +26,9 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 
+#include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsdialog.h"
+
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QSettings>
@@ -579,7 +582,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
-  tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
+  // tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
+  int currentTab = settings.value( "/Windows/Options/row" ).toInt();
+  tabWidget->setCurrentIndex( currentTab );
+  on_tabWidget_currentChanged( currentTab );
 }
 
 //! Destructor
@@ -1063,6 +1069,51 @@ void QgsOptions::on_pbnSelectOtfProjection_clicked()
   }
 }
 
+void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )
+{
+  Q_UNUSED( column );
+  // edit driver if driver supports write
+  if ( item && ( cmbEditCreateOptions->findText( item->text( 0 ) ) != -1 ) )
+  {
+    editGdalDriver( item->text( 0 ) );
+  }
+}
+
+void QgsOptions::on_pbnEditCreateOptions_pressed()
+{
+  editGdalDriver( cmbEditCreateOptions->currentText() );
+}
+
+void QgsOptions::on_pbnEditPyramidsOptions_pressed()
+{
+  editGdalDriver( "_pyramids" );
+}
+
+void QgsOptions::editGdalDriver( const QString& driverName )
+{
+  if ( driverName.isEmpty() )
+    return;
+
+  QgsDialog dlg( this, 0, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QVBoxLayout *layout = dlg.layout();
+  QString title = tr( "Create Options - %1 Driver" ).arg( driverName );
+  if ( driverName == "_pyramids" )
+    title = tr( "Create Options - pyramids" );
+  dlg.setWindowTitle( title );
+  QLabel *label = new QLabel( title, &dlg );
+  label->setAlignment( Qt::AlignHCenter );
+  layout->addWidget( label );
+  QgsRasterFormatSaveOptionsWidget* optionsWidget =
+    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
+                                          QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
+  layout->addWidget( optionsWidget );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    optionsWidget->apply();
+  }
+}
+
 // Return state of the visibility flag for newly added layers. If
 
 bool QgsOptions::newVisible()
@@ -1343,6 +1394,7 @@ void QgsOptions::loadGdalDriverList()
   GDALDriverH myGdalDriver; // current driver
   QString myGdalDriverDescription;
   QStringList myDrivers;
+  QStringList myGdalWriteDrivers;
   QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
 
   // make sure we save list when accept()
@@ -1372,7 +1424,10 @@ void QgsOptions::loadGdalDriverList()
     // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
     const char *pszRWFlag, *pszVirtualIO;
     if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, NULL ) )
+    {
+      myGdalWriteDrivers << myGdalDriverDescription;
       pszRWFlag = "rw+";
+    }
     else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
                                    NULL ) )
       pszRWFlag = "rw";
@@ -1399,18 +1454,11 @@ void QgsOptions::loadGdalDriverList()
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
   foreach( QString str, myDrivers )
-  {
-    strMap.insert( str.toLower(), str );
-  }
+  strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  QStringListIterator myIterator( myDrivers );
-
-  while ( myIterator.hasNext() )
+  foreach( QString myName, myDrivers )
   {
-    QString myName = myIterator.next();
-
-    // QListWidgetItem * mypItem = new QListWidgetItem( myName );
     QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
     {
@@ -1423,9 +1471,9 @@ void QgsOptions::loadGdalDriverList()
 
     // add driver metadata
     mypItem->setText( 1, myDriversExt[myName] );
-    mypItem->setText( 2, myDriversFlags[myName] );
+    QString myFlags = myDriversFlags[myName];
+    mypItem->setText( 2, myFlags );
     mypItem->setText( 3, myDriversLongName[myName] );
-
     lstGdalDrivers->addTopLevelItem( mypItem );
   }
   // adjust column width
@@ -1434,13 +1482,26 @@ void QgsOptions::loadGdalDriverList()
     lstGdalDrivers->resizeColumnToContents( i );
     lstGdalDrivers->setColumnWidth( i, lstGdalDrivers->columnWidth( i ) + 5 );
   }
+
+  // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
+  strMap.clear();
+  foreach( QString str, myGdalWriteDrivers )
+  strMap.insert( str.toLower(), str );
+  myGdalWriteDrivers = strMap.values();
+  myGdalWriteDrivers.removeAll( "Gtiff" );
+  myGdalWriteDrivers.prepend( "GTiff" );
+  cmbEditCreateOptions->clear();
+  foreach( QString myName, myGdalWriteDrivers )
+  {
+    cmbEditCreateOptions->addItem( myName );
+  }
+
 }
 
 void QgsOptions::saveGdalDriverList()
 {
   for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
   {
-    // QListWidgetItem * mypItem = lstGdalDrivers->item( i );
     QTreeWidgetItem * mypItem = lstGdalDrivers->topLevelItem( i );
     if ( mypItem->checkState( 0 ) == Qt::Unchecked )
     {

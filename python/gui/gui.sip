@@ -37,5 +37,7 @@
 %Include qgsattributeeditor.sip
 %Include qgsfieldvalidator.sip
 %Include qgsquerybuilder.sip
+%Include qgsrasterformatsaveoptionswidget.sip
 
 %Include symbology-ng-gui.sip
+

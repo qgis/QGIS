@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <limits>
+#include <typeinfo>
 
 #include "qgsmaptopixel.h"
 #include "qgsmapcanvas.h"
@@ -184,8 +185,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
   mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
   mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
+
+  const QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
   //set combo boxes to current resampling types
-  if ( renderer )
+  if ( resampleFilter )
   {
     //invert color map
     if ( renderer->invertColor() )
@@ -193,7 +196,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mInvertColorMapCheckBox->setCheckState( Qt::Checked );
     }
 
-    const QgsRasterResampler* zoomedInResampler = renderer->zoomedInResampler();
+    const QgsRasterResampler* zoomedInResampler = resampleFilter->zoomedInResampler();
     if ( zoomedInResampler )
     {
       if ( zoomedInResampler->type() == "bilinear" )
@@ -210,7 +213,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mZoomedInResamplingComboBox->setCurrentIndex( 0 );
     }
 
-    const QgsRasterResampler* zoomedOutResampler = renderer->zoomedOutResampler();
+    const QgsRasterResampler* zoomedOutResampler = resampleFilter->zoomedOutResampler();
     if ( zoomedOutResampler )
     {
       if ( zoomedOutResampler->type() == "bilinear" ) //bilinear resampler does averaging when zooming out
@@ -222,7 +225,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     {
       mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
     }
-    mMaximumOversamplingSpinBox->setValue( renderer->maxOversampling() );
+    mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
   }
 
   //transparency band
@@ -293,6 +296,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     }
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
+
+  updatePipeList();
 
   // update based on lyr's current state
   sync();
@@ -444,7 +449,8 @@ void QgsRasterLayerProperties::sync()
 {
   QSettings myQSettings;
 
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGB32
+       || mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
@@ -535,7 +541,8 @@ void QgsRasterLayerProperties::sync()
     lblRows->setText( tr( "Rows: " ) + tr( "n/a" ) );
   }
 
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
+  if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGB32
+       || mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGB32_Premultiplied )
   {
     lblNoData->setText( tr( "No-Data Value: " ) + tr( "n/a" ) );
   }
@@ -808,6 +815,8 @@ void QgsRasterLayerProperties::apply()
   pixmapLegend->setScaledContents( true );
   pixmapLegend->repaint();
 
+  QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
+
   QgsRasterResampler* zoomedInResampler = 0;
   QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
   if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
@@ -819,9 +828,9 @@ void QgsRasterLayerProperties::apply()
     zoomedInResampler = new QgsCubicRasterResampler();
   }
 
-  if ( rasterRenderer )
+  if ( resampleFilter )
   {
-    rasterRenderer->setZoomedInResampler( zoomedInResampler );
+    resampleFilter->setZoomedInResampler( zoomedInResampler );
   }
 
   //raster resampling
@@ -832,14 +841,14 @@ void QgsRasterLayerProperties::apply()
     zoomedOutResampler = new QgsBilinearRasterResampler();
   }
 
-  if ( rasterRenderer )
+  if ( resampleFilter )
   {
-    rasterRenderer->setZoomedOutResampler( zoomedOutResampler );
+    resampleFilter->setZoomedOutResampler( zoomedOutResampler );
   }
 
-  if ( rasterRenderer )
+  if ( resampleFilter )
   {
-    rasterRenderer->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
+    resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
 
@@ -862,6 +871,8 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
+
+  updatePipeList();
 }//apply
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
@@ -1477,3 +1488,100 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
   }
 }
 
+void QgsRasterLayerProperties::updatePipeList()
+{
+  QgsDebugMsg( "Entered" );
+
+#ifndef QGISDEBUG
+  tabBar->removeTab( tabBar->indexOf( tabPagePipe ) );
+#else
+  mPipeTreeWidget->clear();
+
+  mPipeTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
+
+  if ( mPipeTreeWidget->columnCount() <= 1 )
+  {
+    QStringList labels;
+    labels << tr( "Filter" ) << tr( "Bands" ) << tr( "Time" );
+    mPipeTreeWidget->setHeaderLabels( labels );
+    connect( mPipeTreeWidget, SIGNAL( itemClicked( QTreeWidgetItem *, int ) ), this, SLOT( pipeItemClicked( QTreeWidgetItem *, int ) ) );
+  }
+
+  QgsRasterPipe *pipe = mRasterLayer->pipe();
+  for ( int i = 0; i < pipe->size(); i++ )
+  {
+    QgsRasterInterface * interface = pipe->at( i );
+    QStringList texts;
+    QString name;
+    // Unfortunately at this moment not all interfaces inherits from QObject
+    QObject *o = dynamic_cast<QObject*>( interface );
+    if ( o )
+    {
+      //name = o->objectName(); // gives empty with provider
+      name = o->metaObject()->className();
+    }
+    else
+    {
+      name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" );
+    }
+
+    texts <<  name << QString( "%1" ).arg( interface->bandCount() );
+    texts << QString( "%1 ms" ).arg( interface->time() );
+    QTreeWidgetItem *item = new QTreeWidgetItem( texts );
+
+    // Switching on/off would be possible but problematic - drawer is not pipe
+    // memer so we dont know required output format
+    // Checkobxes are very usefel however for QgsRasterPipe debugging.
+    //bool on = interface->on();
+    //item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
+
+    //Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    Qt::ItemFlags flags = Qt::ItemIsEnabled;
+    item->setFlags( flags );
+
+    mPipeTreeWidget->addTopLevelItem( item );
+  }
+  updatePipeItems();
+#endif
+}
+
+void QgsRasterLayerProperties::pipeItemClicked( QTreeWidgetItem * item, int column )
+{
+  QgsDebugMsg( "Entered" );
+  int idx = mPipeTreeWidget->indexOfTopLevelItem( item );
+
+  // This should not fail because we have enabled only checkboxes of items
+  // which may be changed
+  mRasterLayer->pipe()->setOn( idx, item->checkState( 0 ) );
+
+  updatePipeItems();
+}
+
+void QgsRasterLayerProperties::updatePipeItems()
+{
+  QgsDebugMsg( "Entered" );
+
+  QgsRasterPipe *pipe = mRasterLayer->pipe();
+
+  for ( int i = 0; i < pipe->size(); i++ )
+  {
+    if ( i >= mPipeTreeWidget->topLevelItemCount() ) break;
+    QgsRasterInterface * interface = pipe->at( i );
+    QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
+    if ( !item ) continue;
+    // Checkboxes disabled for now, see above
+    /*
+    bool on = interface->on();
+    Qt::ItemFlags flags = item->flags();
+    if ( pipe->canSetOn( i, !on ) )
+    {
+      flags |= Qt::ItemIsUserCheckable;
+    }
+    else
+    {
+      flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
+    }
+    item->setFlags( flags );
+    */
+  }
+}

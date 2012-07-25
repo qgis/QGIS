@@ -27,11 +27,13 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
   public:
     /**Renderer owns color array*/
-    QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber, QColor* colorArray, int nColors );
+    QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
+    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+
+    void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /**Returns number of colors*/
     int nColors() const { return mNColors; }

@@ -819,8 +819,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void saveEdits( QgsMapLayer *layer );
 
     //! save current vector layer
-    void saveAsVectorFile();
+    void saveAsFile();
     void saveSelectionAsVectorFile();
+
+    //! save current raster layer
+    void saveAsRasterFile();
 
     //! show python console
     void showPythonDialog();

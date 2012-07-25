@@ -41,7 +41,10 @@
 #include "qgsrastershader.h"
 #include "qgscolorrampshader.h"
 #include "qgsrastershaderfunction.h"
+#include "qgsrasterinterface.h"
+#include "qgsrasterresamplefilter.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterpipe.h"
 
 //
 // Forward declarations
@@ -347,9 +350,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
 
     /**Set raster renderer. Takes ownership of the renderer object*/
-    void setRenderer( QgsRasterRenderer* renderer );
-    const QgsRasterRenderer* renderer() const { return mRenderer; }
-    QgsRasterRenderer* renderer() { return mRenderer; }
+    void setRenderer( QgsRasterRenderer* theRenderer );
+    QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
+
+    /**Set raster resample filter. Takes ownership of the resample filter object*/
+    //void setResampleFilter( QgsRasterResampleFilter* resampleFilter );
+    QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
+
+    /** Get raster pipe */
+    QgsRasterPipe * pipe() { return &mPipe; }
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
@@ -860,7 +869,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
 
-    QgsRasterRenderer* mRenderer;
+    //QgsRasterRenderer* mRenderer;
+    //QgsRasterResampleFilter *mResampleFilter;
+    QgsRasterPipe mPipe;
 };
 
 #endif

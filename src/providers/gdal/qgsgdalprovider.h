@@ -186,10 +186,10 @@ class QgsGdalProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    int dataType( int bandNo ) const;
-    int srcDataType( int bandNo ) const;
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
 
-    int dataTypeFormGdal( int theGdalDataType ) const;
+    QgsRasterInterface::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -204,6 +204,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+
+    //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     double noDataValue() const;
     void computeMinMax( int bandNo );
@@ -265,12 +267,32 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     static QMap<QString, QString> supportedMimes();
 
+    /** Creates a new dataset with mDataSourceURI
+        @return true in case of success*/
+    bool create( const QString& format, int nBands, 
+                 QgsRasterDataProvider::DataType type, 
+                 int width, int height, double* geoTransform, 
+                 const QgsCoordinateReferenceSystem& crs,
+                 QStringList createOptions = QStringList() );
+
+    /**Writes into the provider datasource*/
+    bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    /**Returns the formats supported by create()*/
+    QStringList createFormats() const;
+
+    /**Remove dataset*/
+    bool remove();
+
   signals:
     void statusChanged( QString );
 
   private:
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
+
+    /**Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
+    void initBaseDataset();
 
     /**
     * Flag indicating if the layer data source is a valid layer

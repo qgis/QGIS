@@ -159,9 +159,12 @@
 #include "qgspythonrunner.h"
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgsscalecombobox.h"
@@ -909,7 +912,7 @@ void QgisApp::createActions()
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
-  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsVectorFile() ) );
+  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsFile() ) );
   connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
@@ -3865,8 +3868,56 @@ void QgisApp::attributeTable()
   // the dialog will be deleted by itself on close
 }
 
-void QgisApp::saveAsVectorFile()
+void QgisApp::saveAsRasterFile()
 {
+  QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
+  if ( !rasterLayer )
+  {
+    return;
+  }
+
+  QgsRasterLayerSaveAsDialog d( rasterLayer->dataProvider(),  mMapCanvas->extent() );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsRasterFileWriter fileWriter( d.outputFileName() );
+    if ( d.tileMode() )
+    {
+      fileWriter.setTiledMode( true );
+      fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
+      fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
+    }
+
+    QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
+    pd.setWindowModality( Qt::WindowModal );
+    QgsRasterDataProvider* provider = rasterLayer->dataProvider();
+    if ( !provider )
+    {
+      return;
+    }
+    QgsRasterIterator iterator( provider );
+    int nRows = -1; //calculate number of rows such that pixels are squares
+    if ( provider->capabilities() & QgsRasterDataProvider::ExactResolution )
+    {
+      nRows = d.nRows();
+    }
+    fileWriter.setCreateOptions( d.createOptions() );
+
+    fileWriter.writeRaster( &iterator, d.nColumns(), nRows, d.outputRectangle(), rasterLayer->crs(), &pd );
+  }
+}
+
+void QgisApp::saveAsFile()
+{
+  QgsMapLayer* layer = activeLayer();
+  if ( layer )
+  {
+    QgsMapLayer::LayerType layerType = layer->type();
+    if ( layerType == QgsMapLayer::RasterLayer )
+    {
+      saveAsRasterFile();
+    }
+    return;
+  }
   saveAsVectorFileGeneral( false );
 }
 
@@ -6929,7 +6980,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-    if ( rlayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
+    if ( rlayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGB32
+         && rlayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGB32_Premultiplied )
     {
       if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
       {
@@ -6958,7 +7010,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionOpenTable->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionSaveEdits->setEnabled( false );
-    mActionLayerSaveAs->setEnabled( false );
+    mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );

@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 #include "qgsdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
 #include "qgscoordinatereferencesystem.h"
@@ -47,7 +48,7 @@ class QByteArray;
  *         QgsVectorDataProvider, and does not yet make
  *         sense for Raster layers.
  */
-class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
+class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRasterInterface
 {
 
     Q_OBJECT
@@ -64,26 +65,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
       EstimatedMinimumMaximum = 1 << 3,
       BuildPyramids =           1 << 4,
       Histogram =               1 << 5,
-      Size =                    1 << 6  // has fixed source type
-    };
-
-    // This is modified copy of GDALDataType
-    enum DataType
-    {
-      /*! Unknown or unspecified type */          UnknownDataType = 0,
-      /*! Eight bit unsigned integer */           Byte = 1,
-      /*! Sixteen bit unsigned integer */         UInt16 = 2,
-      /*! Sixteen bit signed integer */           Int16 = 3,
-      /*! Thirty two bit unsigned integer */      UInt32 = 4,
-      /*! Thirty two bit signed integer */        Int32 = 5,
-      /*! Thirty two bit floating point */        Float32 = 6,
-      /*! Sixty four bit floating point */        Float64 = 7,
-      /*! Complex Int16 */                        CInt16 = 8,
-      /*! Complex Int32 */                        CInt32 = 9,
-      /*! Complex Float32 */                      CFloat32 = 10,
-      /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes */ ARGBDataType = 12,
-      TypeCount = 13          /* maximum type # + 1 */
+      Size =                    1 << 6,  // has fixed source type
+      Create =                  1 << 7, //create new datasets
+      Remove =                  1 << 8 //delete datasets
     };
 
     // This is modified copy of GDALColorInterp
@@ -123,6 +107,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     virtual ~QgsRasterDataProvider() {};
 
+    QgsRasterInterface * srcInput() { return this; }
+
+    /* It makes no sense to set input on provider */
+    bool setInput( QgsRasterInterface* input ) { Q_UNUSED( input ); return false; }
 
     /**
      * Add the list of WMS layer names to be rendered by this server
@@ -175,7 +163,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
     /** Returns data type for the band specified by number */
-    virtual int dataType( int bandNo ) const
+    virtual QgsRasterInterface::DataType dataType( int bandNo ) const
     {
       return srcDataType( bandNo );
     }
@@ -183,54 +171,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual int srcDataType( int bandNo ) const
+    virtual QgsRasterInterface::DataType srcDataType( int bandNo ) const
     {
       Q_UNUSED( bandNo );
       return QgsRasterDataProvider::UnknownDataType;
-    }
-
-    int typeSize( int dataType ) const
-    {
-      // modified copy from GDAL
-      switch ( dataType )
-      {
-        case Byte:
-          return 8;
-
-        case UInt16:
-        case Int16:
-          return 16;
-
-        case UInt32:
-        case Int32:
-        case Float32:
-        case CInt16:
-          return 32;
-
-        case Float64:
-        case CInt32:
-        case CFloat32:
-          return 64;
-
-        case CFloat64:
-          return 128;
-
-        case ARGBDataType:
-          return 32;
-
-        default:
-          return 0;
-      }
-    }
-    int dataTypeSize( int bandNo ) const
-    {
-      return typeSize( dataType( bandNo ) );
-    }
-
-    /** Get numbur of bands */
-    virtual int bandCount() const
-    {
-      return 1;
     }
 
     /** Returns data type for the band specified by number */
@@ -327,6 +271,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** read block of data using give extent and size */
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
+
+    /** Read block of data using given extent and size. */
+    virtual void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
@@ -500,6 +447,43 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
+
+    /**Writes into the provider datasource*/
+    virtual bool write( void* data, int band, int width, int height, int xOffset, int yOffset )
+    {
+        Q_UNUSED( data );
+        Q_UNUSED( band );
+        Q_UNUSED( width );
+        Q_UNUSED( height );
+        Q_UNUSED( xOffset );
+        Q_UNUSED( yOffset );
+        return false;
+    }
+
+    /** Creates a new dataset with mDataSourceURI
+        @return true in case of success*/
+    virtual bool create( const QString& format, int nBands,
+                         QgsRasterDataProvider::DataType type, 
+                         int width, int height, double* geoTransform,
+                         const QgsCoordinateReferenceSystem& crs, 
+                         QStringList createOptions = QStringList() /*e.v. color table*/ )
+    {
+      Q_UNUSED( format );
+      Q_UNUSED( nBands );
+      Q_UNUSED( type );
+      Q_UNUSED( width );
+      Q_UNUSED( height );
+      Q_UNUSED( geoTransform );
+      Q_UNUSED( crs );
+      Q_UNUSED( createOptions );
+      return false;
+    }
+
+    /**Returns the formats supported by create()*/
+    virtual QStringList createFormats() const { return QStringList(); }
+
+    /** Remove dataset*/
+    virtual bool remove() { return false; }
 
   signals:
     /** Emit a signal to notify of the progress event.
