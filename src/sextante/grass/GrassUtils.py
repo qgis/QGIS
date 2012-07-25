@@ -63,7 +63,7 @@ class GrassUtils:
     @staticmethod
     def grassHelpPath():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
-        if folder == None:
+        if folder == None or folder == "":
             if SextanteUtils.isWindows():
                 testfolders = [os.path.join(GrassUtils.grassPath(), "docs", "html")]
             else:
