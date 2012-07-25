@@ -46,6 +46,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   {
     qApp->processEvents();
   }
+  mWebPage->setViewportSize( mWebPage->mainFrame()->contentsSize() );
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
@@ -60,5 +61,15 @@ QSizeF QgsComposerHtml::totalSize() const
 
 void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
 {
-  //soon...
+  if ( !mWebPage )
+  {
+    return;
+  }
+
+  double pixelPerMM = mComposition->printResolution() / 25.4;
+  double painterScale = 1.0 / ( pixelPerMM / (( double )mImage->dotsPerMeterX() / 1000.0 ) );
+  painter->save();
+  painter->scale( painterScale, painterScale );
+  mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top(), renderExtent.width(), renderExtent.height() ) );
+  painter->restore();
 }
