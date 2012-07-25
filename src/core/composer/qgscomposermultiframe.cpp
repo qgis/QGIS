@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscomposermultiframe.h"
+#include "qgscomposerframe.h"
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c )
 {
@@ -29,5 +30,10 @@ QgsComposerMultiFrame::~QgsComposerMultiFrame()
 
 void QgsComposerMultiFrame::recalculateFrameSizes()
 {
-  //todo...
+  if ( mFrameItems.size() > 0 )
+  {
+    QSizeF size = totalSize();
+    QgsComposerFrame* item = mFrameItems[0];
+    item->setContentSection( QRectF( 0, 0, item->rect().width(), item->rect().height() ) );
+  }
 }

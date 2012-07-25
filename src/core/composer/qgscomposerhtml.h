@@ -25,7 +25,7 @@ class QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT
   public:
-    QgsComposerHtml( QgsComposition* c );
+    QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height );
     QgsComposerHtml();
     ~QgsComposerHtml();
 
@@ -42,6 +42,10 @@ class QgsComposerHtml: public QgsComposerMultiFrame
     QUrl mUrl;
     QWebPage* mWebPage;
     bool mLoaded;
+    QSizeF mSize; //total size in mm
+    double mHtmlUnitsToMM;
+
+    double htmlUnitsToMM(); //calculate scale factor
 };
 
 #endif // QGSCOMPOSERHTML_H

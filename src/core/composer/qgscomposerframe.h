@@ -25,7 +25,7 @@ class QgsComposerMultiFrame;
 class QgsComposerFrame: public QgsComposerItem
 {
   public:
-    QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf );
+    QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
     ~QgsComposerFrame();
 
     /**Sets the part of this frame (relative to the total multiframe extent in mm)*/

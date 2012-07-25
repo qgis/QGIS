@@ -24,6 +24,7 @@
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
+#include "qgscomposerhtml.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
@@ -126,6 +127,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case AddRectangle:
     case AddTriangle:
     case AddEllipse:
+    case AddHtml:
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
@@ -317,6 +319,17 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       break;
 
+    case AddHtml:
+      if ( composition() )
+      {
+        QgsComposerHtml* composerHtml = new QgsComposerHtml( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
+            mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        scene()->removeItem( mRubberBandItem );
+        delete mRubberBandItem;
+        mRubberBandItem = 0;
+        emit actionFinished();
+        //composition()->pushAddRemoveCommand...
+      }
     default:
       break;
   }
@@ -359,6 +372,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       case AddRectangle:
       case AddTriangle:
       case AddEllipse:
+      case AddHtml:
         //adjust rubber band item
       {
         double x = 0;

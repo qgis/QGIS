@@ -136,6 +136,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddEllipse );
   toggleActionGroup->addAction( mActionAddArrow );
   toggleActionGroup->addAction( mActionAddTable );
+  toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
 
 
@@ -818,6 +819,14 @@ void QgsComposer::on_mActionAddTable_triggered()
   if ( mView )
   {
     mView->setCurrentTool( QgsComposerView::AddTable );
+  }
+}
+
+void QgsComposer::on_mActionAddHtml_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::AddHtml );
   }
 }
 

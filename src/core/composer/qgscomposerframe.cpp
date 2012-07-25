@@ -16,7 +16,8 @@
 #include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
 
-QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf ): QgsComposerItem( c ), mMultiFrame( mf )
+QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, double x, double y, double width, double height ):
+    QgsComposerItem( x, y, width, height, c ), mMultiFrame( mf )
 {
 }
 
@@ -36,8 +37,20 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
 
 void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
-  if ( mMultiFrame && painter )
+  if ( !painter )
+  {
+    return;
+  }
+
+  drawBackground( painter );
+  if ( mMultiFrame )
   {
     mMultiFrame->render( painter, mSection );
+  }
+
+  drawFrame( painter );
+  if ( isSelected() )
+  {
+    drawSelectionBoxes( painter );
   }
 }

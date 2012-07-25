@@ -167,6 +167,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Add attribute table
     void on_mActionAddTable_triggered();
 
+    void on_mActionAddHtml_triggered();
+
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
 

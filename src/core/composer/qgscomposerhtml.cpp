@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscomposerhtml.h"
+#include "qgscomposerframe.h"
 #include "qgscomposition.h"
 #include <QCoreApplication>
 #include <QImage>
@@ -21,13 +22,19 @@
 #include <QWebFrame>
 #include <QWebPage>
 
-QgsComposerHtml::QgsComposerHtml( QgsComposition* c ): QgsComposerMultiFrame( c ), mWebPage( 0 ), mLoaded( false )
+QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height ): QgsComposerMultiFrame( c ), mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 )
 {
+  mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
+  setUrl( QUrl( "http://www.qgis.org" ) );//test
+  QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
+  addFrame( frame );
+  mComposition->addItem( frame );
+  recalculateFrameSizes();
 }
 
-QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0 ), mWebPage( 0 ), mLoaded( false )
+QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0 ), mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 )
 {
 }
 
@@ -49,7 +56,12 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   {
     qApp->processEvents();
   }
-  mWebPage->setViewportSize( mWebPage->mainFrame()->contentsSize() );
+  QSize contentsSize = mWebPage->mainFrame()->contentsSize();
+  mWebPage->setViewportSize( contentsSize );
+
+  double pixelPerMM = mComposition->printResolution() / 25.4;
+  mSize.setWidth( contentsSize.width() / pixelPerMM );
+  mSize.setHeight( contentsSize.height() / pixelPerMM );
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
@@ -59,7 +71,7 @@ void QgsComposerHtml::frameLoaded( bool ok )
 
 QSizeF QgsComposerHtml::totalSize() const
 {
-  return QSizeF(); //soon...
+  return mSize;
 }
 
 void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
@@ -69,12 +81,21 @@ void QgsComposerHtml::render( QPainter* p, const QRectF& renderExtent )
     return;
   }
 
-  QImage img; //dummy image to find out assumed screen dpi
-
-  double pixelPerMM = mComposition->printResolution() / 25.4;
-  double painterScale = 1.0 / ( pixelPerMM / (( double )img.dotsPerMeterX() / 1000.0 ) );
   p->save();
-  p->scale( painterScale, painterScale );
-  mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top(), renderExtent.width(), renderExtent.height() ) );
+  p->scale( 1.0 / mHtmlUnitsToMM, 1.0 / mHtmlUnitsToMM );
+  mWebPage->mainFrame()->render( p, QRegion( renderExtent.left(), renderExtent.top(), renderExtent.width() * mHtmlUnitsToMM, renderExtent.height() * mHtmlUnitsToMM ) );
   p->restore();
+}
+
+double QgsComposerHtml::htmlUnitsToMM()
+{
+  if ( !mComposition )
+  {
+    return 1.0;
+  }
+
+  QImage img( 1, 1, QImage::Format_ARGB32_Premultiplied );
+  double debug = img.dotsPerMeterX();
+  double pixelPerMM = mComposition->printResolution() / 25.4;
+  return ( pixelPerMM / ( img.dotsPerMeterX() / 1000.0 ) );
 }

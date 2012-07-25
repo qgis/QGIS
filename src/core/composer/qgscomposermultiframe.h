@@ -19,7 +19,7 @@
 #include <QObject>
 #include <QSizeF>
 
-class QgsComposerItem;
+class QgsComposerFrame;
 class QgsComposition;
 class QRectF;
 class QPainter;
@@ -41,9 +41,11 @@ class QgsComposerMultiFrame: public QObject
     virtual QSizeF totalSize() const = 0;
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
 
+    void addFrame( QgsComposerFrame* frame ) { mFrameItems.push_back( frame ); }
+
   protected:
     QgsComposition* mComposition;
-    QList<QgsComposerItem*> mFrameItems;
+    QList<QgsComposerFrame*> mFrameItems;
 
     void recalculateFrameSizes();
 
