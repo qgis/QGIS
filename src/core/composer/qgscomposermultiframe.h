@@ -41,12 +41,13 @@ class QgsComposerMultiFrame: public QObject
     virtual QSizeF totalSize() const = 0;
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
 
-    void addFrame( QgsComposerFrame* frame ) { mFrameItems.push_back( frame ); }
+    void addFrame( QgsComposerFrame* frame );
 
   protected:
     QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
 
+  protected slots:
     void recalculateFrameSizes();
 
   private:

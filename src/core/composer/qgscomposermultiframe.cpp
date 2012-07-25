@@ -37,3 +37,9 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     item->setContentSection( QRectF( 0, 0, item->rect().width(), item->rect().height() ) );
   }
 }
+
+void QgsComposerMultiFrame::addFrame( QgsComposerFrame* frame )
+{
+  mFrameItems.push_back( frame );
+  QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+}
