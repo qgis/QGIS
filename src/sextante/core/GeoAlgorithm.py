@@ -246,7 +246,7 @@ class GeoAlgorithm:
 
     def getAsCommand(self):
         '''Returns the command that would run this same algorithm from the console.
-        Should return null if the algorithm can be run from the console.'''
+        Should return null if the algorithm cannot be run from the console.'''
         s="Sextante.runalg(\"" + self.commandLineName() + "\","
         for param in self.parameters:
             s+=param.getValueAsCommandLineParameter() + ","

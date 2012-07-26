@@ -28,17 +28,18 @@ class SextanteLog():
 
     @staticmethod
     def addToLog(msgtype, msg):
-        try: #it seems that this fails sometimes depending on the msg added:
+        #try: #it seems that this fails sometimes depending on the msg added:
             #To avoid it stopping the normal functioning of the algorithm,
             #we catch all errors, assuming that is better to miss some log info
             #that breaking the algorithm.
             if isinstance(msg, list):
                 a = "|".join(m.strip("\n")  for m in msg)
-                text = unicode(a)
+                text = a
             else:
-                text = unicode(msg).replace("\n", "|")
+                text = msg.replace("\n", "|")
             line = msgtype + "|" + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "|" + text + "\n"
-            logfile = codecs.open(SextanteLog.logFilename(), "a", encoding='utf-8')
+            logfile = open(SextanteLog.logFilename(), "a")
+            #logfile = codecs.open(SextanteLog.logFilename(), "a", encoding='utf-8')
             logfile.write(line)
             logfile.close()
             if msgtype==SextanteLog.LOG_ALGORITHM:
@@ -46,7 +47,7 @@ class SextanteLog():
                algname = algname[:algname.index("\"")]
                if algname not in SextanteLog.recentAlgs:
                    SextanteLog.recentAlgs.append(algname)
-        except:
+        #except:
             pass
 
 
@@ -57,7 +58,8 @@ class SextanteLog():
         algorithms=[]
         warnings=[]
         info=[]
-        lines = codecs.open(SextanteLog.logFilename(), encoding='utf-8')
+        #lines = codecs.open(SextanteLog.logFilename(), encoding='utf-8')
+        lines = open(SextanteLog.logFilename())
         line = lines.readline()
         while line != "":
             line = line.strip("\n").strip()

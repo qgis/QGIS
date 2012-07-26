@@ -292,7 +292,7 @@ class Sextante:
             except:
                 print ("Unable to execute algorithm\n" + msg)
                 return
-    
+
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -300,7 +300,7 @@ class Sextante:
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()
             progress.setWindowTitle(alg.name)
-            progress.setLabelText("Executing %s..." % alg.name) 
+            progress.setLabelText("Executing %s..." % alg.name)
             def finish():
                 QApplication.restoreOverrideCursor()
                 onFinish(alg)
@@ -325,6 +325,7 @@ class Sextante:
             UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
             if onFinish:
                 onFinish(alg)
+            QApplication.restoreOverrideCursor()
         return alg
 
     @staticmethod
