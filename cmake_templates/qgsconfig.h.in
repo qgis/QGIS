@@ -17,6 +17,7 @@
 //reinstate this more generic approach below at some point though
 //#define VERSION_INT ${CPACK_PACKAGE_VERSION_MAJOR}${CPACK_PACKAGE_VERSION_MINOR}${CPACK_PACKAGE_VERSION_PATCH}
 #define VERSION_INT ${QGIS_VERSION_INT}
+#define ABISYM(x) x ## ${QGIS_VERSION_INT}
 //used in main.cpp and anywhere else where the release name is needed
 #define RELEASE_NAME "${RELEASE_NAME}"
 

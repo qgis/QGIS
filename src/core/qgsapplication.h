@@ -20,8 +20,7 @@
 #include <QStringList>
 
 #include <qgis.h>
-
-#define ABISYM(x)  x ## VERSION_INT
+#include <qgsconfig.h>
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
