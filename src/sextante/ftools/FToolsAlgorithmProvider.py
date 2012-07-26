@@ -8,6 +8,7 @@ from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.ftools.SumLines import SumLines
 from sextante.ftools.MeanCoords import MeanCoords
 from sextante.ftools.UniqueValues import UniqueValues
+from sextante.ftools.PointDistance import PointDistance
 from sextante.ftools.BasicStatistics import BasicStatistics
 from sextante.ftools.PointsInPolygon import PointsInPolygon
 from sextante.ftools.LinesIntersection import LinesIntersection
@@ -49,7 +50,7 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.alglist = [SumLines(), PointsInPolygon(), BasicStatistics(),
                         NearestNeighbourAnalysis(), MeanCoords(), LinesIntersection(),
-                        UniqueValues(),
+                        UniqueValues(), PointDistance(),
                         # data management
                         # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
