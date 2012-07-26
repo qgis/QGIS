@@ -1243,124 +1243,212 @@ QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
   return subLayers;
 }
 
-bool QgsGdalProvider::hasCachedHistogram( int theBandNo, int theBinCount )
+bool QgsGdalProvider::hasHistogram( int theBandNo,
+                                    int theBinCount,
+                                    double theMinimum, double theMaximum,
+                                    const QgsRectangle & theExtent,
+                                    int theSampleSize,
+                                    bool theIncludeOutOfRange )
 {
+  QgsDebugMsg( QString( "theBandNo = %1 theBinCount = %2 theMinimum = %3 theMaximum = %4 theSampleSize = %5" ).arg( theBandNo ).arg( theBinCount ).arg( theMinimum ).arg( theMaximum ).arg( theSampleSize ) );
+
+  // First check if cached in mHistograms
+  if ( QgsRasterDataProvider::hasHistogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange ) )
+  {
+    return true;
+  }
+
+  QgsRasterHistogram myHistogram = histogramDefaults( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+
+  // If not cached, check if supported by GDAL
+  if ( myHistogram.extent != extent() )
+  {
+    QgsDebugMsg( "Not supported by GDAL." );
+    return false;
+  }
+
+  QgsDebugMsg( "Looking for GDAL histogram xxxx" );
+
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   if ( ! myGdalBand )
+  {
     return false;
+  }
 
   // get default histogram with force=false to see if there is a cached histo
   double myMinVal, myMaxVal;
   int myBinCount;
   int *myHistogramArray = 0;
+
+  // TODO: GDALGetDefaultHistogram has no bIncludeOutOfRange and bApproxOK,
+  //       consider consequences
   CPLErr myError = GDALGetDefaultHistogram( myGdalBand, &myMinVal, &myMaxVal,
                    &myBinCount, &myHistogramArray, false,
                    NULL, NULL );
+
   if ( myHistogramArray )
     VSIFree( myHistogramArray );
 
   // if there was any error/warning assume the histogram is not valid or non-existent
   if ( myError != CE_None )
+  {
+    QgsDebugMsg( "Cannot get default GDAL histogram" );
     return false;
+  }
 
-  // make sure the cached histo has the same number of bins than requested
-  if ( myBinCount != theBinCount )
+  // This is fragile
+  double myExpectedMinVal = myHistogram.minimum;
+  double myExpectedMaxVal = myHistogram.maximum;
+
+  double dfHalfBucket = ( myExpectedMaxVal - myExpectedMinVal ) / ( 2 * myHistogram.binCount );
+  myExpectedMinVal -= dfHalfBucket;
+  myExpectedMaxVal += dfHalfBucket;
+
+  // min/max are stored as text in aux file => use threshold
+  if ( myBinCount != myHistogram.binCount ||
+       qAbs( myMinVal - myExpectedMinVal ) > qAbs( myExpectedMinVal ) / 10e6 ||
+       qAbs( myMaxVal - myExpectedMaxVal ) > qAbs( myExpectedMaxVal ) / 10e6 )
+  {
+    QgsDebugMsg( QString( "Params do not match binCount: %1 x %2, minVal: %3 x %4, maxVal: %5 x %6" ).arg( myBinCount ).arg( myHistogram.binCount ).arg( myMinVal ).arg( myExpectedMinVal ).arg( myMaxVal ).arg( myExpectedMaxVal ) );
     return false;
+  }
+
+  QgsDebugMsg( "GDAL has cached histogram" );
+
+  // This should be enough, possible call to histogram() should retrieve the histogram cached in GDAL
 
   return true;
 }
 
-void QgsGdalProvider::populateHistogram( int theBandNo, QgsRasterBandStats & theBandStats, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
+QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
+    int theBinCount,
+    double theMinimum, double theMaximum,
+    const QgsRectangle & theExtent,
+    int theSampleSize,
+    bool theIncludeOutOfRange )
 {
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  //QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
-  //calculate the histogram for this band
-  //we assume that it only needs to be calculated if the length of the histogram
-  //vector is not equal to the number of bins
-  //i.e if the histogram has never previously been generated or the user has
-  //selected a new number of bins.
-  if ( theBandStats.histogramVector == 0 ||
-       theBandStats.histogramVector->size() != theBinCount ||
-       theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
-       theHistogramEstimatedFlag != theBandStats.isHistogramEstimated )
-  {
-    QgsDebugMsg( "Computing histogram" );
-    theBandStats.histogramVector->clear();
-    theBandStats.isHistogramEstimated = theHistogramEstimatedFlag;
-    theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
-    int *myHistogramArray = new int[theBinCount];
+  QgsDebugMsg( QString( "theBandNo = %1 theBinCount = %2 theMinimum = %3 theMaximum = %4 theSampleSize = %5" ).arg( theBandNo ).arg( theBinCount ).arg( theMinimum ).arg( theMaximum ).arg( theSampleSize ) );
 
-    QgsGdalProgress myProg;
-    myProg.type = ProgressHistogram;
-    myProg.provider = this;
+  QgsRasterHistogram myHistogram = histogramDefaults( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+
+  // Find cached
+  foreach( QgsRasterHistogram histogram, mHistograms )
+  {
+    if ( histogram == myHistogram )
+    {
+      QgsDebugMsg( "Using cached histogram." );
+      return histogram;
+    }
+  }
+
+  if ( myHistogram.extent != extent() )
+  {
+    QgsDebugMsg( "Using generic histogram." );
+    return QgsRasterDataProvider::histogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+  }
+
+  QgsDebugMsg( "Computing GDAL histogram" );
+
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+
+  int bApproxOK = false;
+  if ( theSampleSize > 0 )
+  {
+    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    {
+      bApproxOK = true;
+    }
+  }
+
+  QgsGdalProgress myProg;
+  myProg.type = ProgressHistogram;
+  myProg.provider = this;
 
 #if 0 // this is the old method
 
-    double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
-    GDALGetRasterHistogram( myGdalBand, theBandStats.minimumValue - 0.1*myerval,
-                            theBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
-                            theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
-                            &myProg ); //this is the arg for our custom gdal progress callback
+  double myerval = ( theBandStats.maximumValue - theBandStats.minimumValue ) / theBinCount;
+  GDALGetRasterHistogram( myGdalBand, theBandStats.minimumValue - 0.1*myerval,
+                          theBandStats.maximumValue + 0.1*myerval, theBinCount, myHistogramArray,
+                          theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
+                          &myProg ); //this is the arg for our custom gdal progress callback
 
 #else // this is the new method, which gets a "Default" histogram
 
-    // calculate min/max like in GDALRasterBand::GetDefaultHistogram, but don't call it directly
-    // because there is no bApproxOK argument - that is lacking from the API
-    double myMinVal, myMaxVal;
-    const char* pszPixelType = GDALGetMetadataItem( myGdalBand, "PIXELTYPE", "IMAGE_STRUCTURE" );
-    int bSignedByte = ( pszPixelType != NULL && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
+  // calculate min/max like in GDALRasterBand::GetDefaultHistogram, but don't call it directly
+  // because there is no bApproxOK argument - that is lacking from the API
 
-    if ( GDALGetRasterDataType( myGdalBand ) == GDT_Byte && !bSignedByte )
-    {
-      myMinVal = -0.5;
-      myMaxVal = 255.5;
-    }
-    else
-    {
-      CPLErr eErr = CE_Failure;
-      double dfHalfBucket = 0;
-      eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
-      if ( eErr != CE_None )
-      {
-        delete [] myHistogramArray;
-        return;
-      }
-      dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * theBinCount );
-      myMinVal -= dfHalfBucket;
-      myMaxVal += dfHalfBucket;
-    }
+  // Min/max, if not specified, are set by histogramDefaults, it does not
+  // set however min/max shifted to avoid rounding errors
 
-    CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
-                     theBinCount, myHistogramArray,
-                     theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag, progressCallback,
-                     &myProg ); //this is the arg for our custom gdal progress callback
-    if ( myError != CE_None )
+  double myMinVal = myHistogram.minimum;
+  double myMaxVal = myHistogram.maximum;
+
+  double dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * myHistogram.binCount );
+  myMinVal -= dfHalfBucket;
+  myMaxVal += dfHalfBucket;
+
+  /*
+  const char* pszPixelType = GDALGetMetadataItem( myGdalBand, "PIXELTYPE", "IMAGE_STRUCTURE" );
+  int bSignedByte = ( pszPixelType != NULL && EQUAL( pszPixelType, "SIGNEDBYTE" ) );
+
+  if ( GDALGetRasterDataType( myGdalBand ) == GDT_Byte && !bSignedByte )
+  {
+    myMinVal = -0.5;
+    myMaxVal = 255.5;
+  }
+  else
+  {
+    CPLErr eErr = CE_Failure;
+    double dfHalfBucket = 0;
+    eErr = GDALGetRasterStatistics( myGdalBand, TRUE, TRUE, &myMinVal, &myMaxVal, NULL, NULL );
+    if ( eErr != CE_None )
     {
       delete [] myHistogramArray;
       return;
     }
+    dfHalfBucket = ( myMaxVal - myMinVal ) / ( 2 * theBinCount );
+    myMinVal -= dfHalfBucket;
+    myMaxVal += dfHalfBucket;
+  }
+  */
+
+  int *myHistogramArray = new int[myHistogram.binCount];
+  CPLErr myError = GDALGetRasterHistogram( myGdalBand, myMinVal, myMaxVal,
+                   myHistogram.binCount, myHistogramArray,
+                   theIncludeOutOfRange, bApproxOK, progressCallback,
+                   &myProg ); //this is the arg for our custom gdal progress callback
+  if ( myError != CE_None )
+  {
+    QgsDebugMsg( "Cannot get histogram" );
+    delete [] myHistogramArray;
+    return myHistogram;
+  }
 
 #endif
 
-    for ( int myBin = 0; myBin < theBinCount; myBin++ )
+  for ( int myBin = 0; myBin < myHistogram.binCount; myBin++ )
+  {
+    if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
     {
-      if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
-      {
-        theBandStats.histogramVector->push_back( 0 );
-        // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
-      }
-      else
-      {
-        theBandStats.histogramVector->push_back( myHistogramArray[myBin] );
-        // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
-      }
+      myHistogram.histogramVector.push_back( 0 );
+      // QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
     }
-    delete [] myHistogramArray;
-
-
+    else
+    {
+      myHistogram.histogramVector.push_back( myHistogramArray[myBin] );
+      myHistogram.nonNullCount += myHistogramArray[myBin];
+      // QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
+    }
   }
-  QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( theBandStats.histogramVector->size() ) +
-               " elements" );
+
+  myHistogram.valid = true;
+
+  delete [] myHistogramArray;
+
+  QgsDebugMsg( ">>>>> Histogram vector now contains " + QString::number( myHistogram.histogramVector.size() ) + " elements" );
+
+  mHistograms.append( myHistogram );
+  return myHistogram;
 }
 
 /*
@@ -1913,14 +2001,47 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   }
 }
 
-
-
-QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
+QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, const QgsRectangle & theExtent, int theSampleSize )
 {
+  QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
+  // Currently there is no API in GDAL to collect statistics of specified extent
+  // or with defined sample size. We check first if we have cached stats, if not,
+  // and it is not possible to use GDAL we call generic provider method,
+  // otherwise we use GDAL (faster, cache)
+
+  QgsRasterBandStats myRasterBandStats = statisticsDefaults( theBandNo, theExtent, theSampleSize );
+
+  foreach( QgsRasterBandStats stats, mStatistics )
+  {
+    if ( stats == myRasterBandStats )
+    {
+      QgsDebugMsg( "Using cached statistics." );
+      return stats;
+    }
+  }
+
+  if ( myRasterBandStats.extent != extent() )
+  {
+    QgsDebugMsg( "Using generic statistics." );
+    return QgsRasterDataProvider::bandStatistics( theBandNo, theExtent, theSampleSize );
+  }
+
+  QgsDebugMsg( "Using GDAL statistics." );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  QgsRasterBandStats myRasterBandStats;
-  // int bApproxOK = true;
-  int bApproxOK = false; //as we asked for stats, don't get approx values
+
+  //int bApproxOK = false; //as we asked for stats, don't get approx values
+  // GDAL does not have sample size parameter in API, just bApproxOK or not,
+  // we decide if approximation should be used according to
+  // total size / sample size ration
+  int bApproxOK = false;
+  if ( theSampleSize > 0 )
+  {
+    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    {
+      bApproxOK = true;
+    }
+  }
+
   double pdfMin;
   double pdfMax;
   double pdfMean;
@@ -1972,6 +2093,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
 
   }
 
+  mStatistics.append( myRasterBandStats );
   return myRasterBandStats;
 
 } // QgsGdalProvider::bandStatistics

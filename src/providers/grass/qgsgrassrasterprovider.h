@@ -230,13 +230,6 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     void setImageCrs( QString const &crs )
     { Q_UNUSED( crs ); }
 
-    void populateHistogram( int theBandNoInt,
-                            QgsRasterBandStats & theBandStats,
-                            int theBinCountInt = 256,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false
-                          );
-
     virtual QDateTime dataTimestamp() const;
   private:
 

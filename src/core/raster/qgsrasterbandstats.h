@@ -24,6 +24,8 @@
 #include <limits>
 
 #include "qgscolorrampshader.h"
+#include "qgsrectangle.h"
+
 /** \ingroup core
  * The RasterBandStats struct is a container for statistics about a single
  * raster band.
@@ -31,8 +33,6 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
-    typedef QVector<int> HistogramVector;
-
     QgsRasterBandStats()
     {
       bandName = "";
@@ -45,9 +45,17 @@ class CORE_EXPORT QgsRasterBandStats
       stdDev = 0.0;
       sum = 0.0;
       elementCount = 0;
-      histogramVector = new HistogramVector();
-      isHistogramEstimated = false;
-      isHistogramOutOfRange = false;
+      width = 0;
+      height = 0;
+    }
+
+    /*! Compares region, size etc. not collected statistics */
+    bool operator==( const QgsRasterBandStats &s ) const
+    {
+      return ( s.bandNumber == bandNumber &&
+               s.extent == extent &&
+               s.width == width &&
+               s.height == height );
     }
 
     /** \brief The name of the band that these stats belong to. */
@@ -62,15 +70,6 @@ class CORE_EXPORT QgsRasterBandStats
     /** \brief The number of cells in the band. Equivalent to height x width.
      * TODO: check if NO_DATA are excluded!*/
     int elementCount;
-
-    /** \brief whteher histogram values are estimated or completely calculated */
-    bool isHistogramEstimated;
-
-    /** whehter histogram compuation should include out of range values */
-    bool isHistogramOutOfRange;
-
-    /** \brief Store the histogram for a given layer */
-    HistogramVector * histogramVector;
 
     /** \brief The maximum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMaximmum function. */
@@ -98,5 +97,14 @@ class CORE_EXPORT QgsRasterBandStats
 
     /** \brief The sum of the squares. Used to calculate standard deviation. */
     double sumOfSquares;
+
+    /** \brief Number of columns used to calc statistics */
+    int width;
+
+    /** \brief Number of rows used to calc statistics */
+    int height;
+
+    /** \brief Extent used to calc statistics */
+    QgsRectangle extent;
 };
 #endif

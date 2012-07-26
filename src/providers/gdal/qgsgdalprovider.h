@@ -244,15 +244,25 @@ class QgsGdalProvider : public QgsRasterDataProvider
         @note overloads virtual method from QgsRasterProvider::bandStatistics
 
     */
-    QgsRasterBandStats bandStatistics( int theBandNo );
+    QgsRasterBandStats bandStatistics( int theBandNo,
+                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       int theSampleSize = 0 );
 
-    bool hasCachedHistogram( int theBandNoInt, int theBinCountInt = RASTER_HISTOGRAM_BINS );
-    void populateHistogram( int theBandNoInt,
-                            QgsRasterBandStats & theBandStats,
-                            int theBinCountInt = RASTER_HISTOGRAM_BINS,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false
-                          );
+    bool hasHistogram( int theBandNo,
+                       int theBinCount = 0,
+                       double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                       double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                       const QgsRectangle & theExtent = QgsRectangle(),
+                       int theSampleSize = 0,
+                       bool theIncludeOutOfRange = false );
+
+    QgsRasterHistogram histogram( int theBandNo,
+                                  int theBinCount = 0,
+                                  double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle & theExtent = QgsRectangle(),
+                                  int theSampleSize = 0,
+                                  bool theIncludeOutOfRange = false );
 
     QString buildPyramids( const QList<QgsRasterPyramid> &,
                            const QString &  theResamplingMethod = "NEAREST",

@@ -1729,7 +1729,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     myRasterBandStats.bandName = mDataProvider->generateBandName( i );
     myRasterBandStats.bandNumber = i;
     myRasterBandStats.statsGathered = false;
-    myRasterBandStats.histogramVector->clear();
     //Store the default color table
     //readColorTable( i, &myRasterBandStats.colorTable );
     QList<QgsColorRampShader::ColorRampItem> ct;

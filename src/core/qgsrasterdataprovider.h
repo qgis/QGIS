@@ -317,19 +317,30 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief Get histogram. Histograms are cached in providers.
      * @param theBandNo The band (number).
-     * @param theMinimum Minimum value.
-     * @param theMaximum Maximum value.
      * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
+     * @param theMinimum Minimum value, if NaN, raster minimum value will be used.
+     * @param theMaximum Maximum value, if NaN, raster minimum value will be used.
      * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
      * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * @return Vector of non NULL cell counts for each bin.
      */
     virtual QgsRasterHistogram histogram( int theBandNo,
-                                          double theMinimum, double theMaximum,
                                           int theBinCount = 0,
+                                          double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                                          double theMaximum = std::numeric_limits<double>::quiet_NaN(),
                                           const QgsRectangle & theExtent = QgsRectangle(),
                                           int theSampleSize = 0,
                                           bool theIncludeOutOfRange = false );
+
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
+    virtual bool hasHistogram( int theBandNo,
+                               int theBinCount = 0,
+                               double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                               double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                               const QgsRectangle & theExtent = QgsRectangle(),
+                               int theSampleSize = 0,
+                               bool theIncludeOutOfRange = false );
+
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
@@ -347,7 +358,17 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** If the provider supports it, return band stats for the
         given band. Default behaviour is to blockwise read the data
         and generate the stats unless the provider overloads this function. */
-    virtual QgsRasterBandStats bandStatistics( int theBandNo );
+    //virtual QgsRasterBandStats bandStatistics( int theBandNo );
+
+    /** \brief Get band statistics.
+     * @param theBandNo The band (number).
+     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @return Band statistics.
+     */
+    virtual QgsRasterBandStats bandStatistics( int theBandNo,
+        const QgsRectangle & theExtent = QgsRectangle(),
+        int theSampleSize = 0 );
 
     /** \brief helper function to create zero padded band names */
     QString  generateBandName( int theBandNumber ) const
@@ -521,8 +542,25 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRectangle mExtent;
 
+    /** \brief List  of cached statistics, all bands mixed */
+    QList <QgsRasterBandStats> mStatistics;
+
     /** \brief List  of cached histograms, all bands mixed */
     QList <QgsRasterHistogram> mHistograms;
-};
 
+    /** Fill in histogram defaults if not specified */
+    virtual QgsRasterHistogram histogramDefaults( int theBandNo,
+        int theBinCount = 0,
+        double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+        double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+        const QgsRectangle & theExtent = QgsRectangle(),
+        int theSampleSize = 0,
+        bool theIncludeOutOfRange = false );
+
+    /** Fill in statistics defaults if not specified */
+    virtual QgsRasterBandStats statisticsDefaults( int theBandNo,
+        const QgsRectangle & theExtent = QgsRectangle(),
+        int theBinCount = 0 );
+
+};
 #endif

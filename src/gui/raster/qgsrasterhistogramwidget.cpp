@@ -215,7 +215,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
           myIteratorInt <= myBandCountInt;
           ++myIteratorInt )
     {
-      if ( ! mRasterLayer->hasCachedHistogram( myIteratorInt, BINCOUNT ) )
+      //if ( ! mRasterLayer->hasCachedHistogram( myIteratorInt, BINCOUNT ) )
+      int sampleSize = 250000; // number of sample cells
+      if ( !mRasterLayer->dataProvider()->hasHistogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize ) )
       {
         QgsDebugMsg( QString( "band %1 does not have cached histo" ).arg( myIteratorInt ) );
         return false;
@@ -232,7 +234,9 @@ bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
         myIteratorInt <= myBandCountInt;
         ++myIteratorInt )
   {
-    mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    //mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    int sampleSize = 250000; // number of sample cells
+    mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
   }
 
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
@@ -401,6 +405,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
     }
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    int sampleSize = 250000; // number of sample cells
+    QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
     mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
@@ -425,7 +432,8 @@ void QgsRasterHistogramWidget::refreshHistogram()
 
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
-      int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+      //int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+      int myBinValue = myHistogram.histogramVector.at( myBin );
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
       data << QPointF( myBinX, myBinValue );
 #else

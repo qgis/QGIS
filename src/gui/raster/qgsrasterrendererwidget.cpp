@@ -78,29 +78,30 @@ bool QgsRasterRendererWidget::bandMinMax( LoadMinMaxAlgo loadAlgo, int band, dou
   else if ( loadAlgo == CumulativeCut )
   {
     // Currently 2 - 98% cumulative pixel count cut
-    bool myIgnoreOutOfRangeFlag = true;
-    bool myThoroughBandScanFlag = false;
-    mRasterLayer->populateHistogram( band, RASTER_HISTOGRAM_BINS, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    //QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( band );
 
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( band );
-    double myBinXStep = myRasterBandStats.range / RASTER_HISTOGRAM_BINS;
+    int sampleSize = 250000; // number of sample cells
+    QgsRasterHistogram myHistogram =  mRasterLayer->dataProvider()->histogram( band, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
+
+    double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
     int myCount = 0;
-    int myMinCount = ( int ) qRound( 0.02 * myRasterBandStats.elementCount );
-    int myMaxCount = ( int ) qRound( 0.98 * myRasterBandStats.elementCount );
+    int myMinCount = ( int ) qRound( 0.02 * myHistogram.nonNullCount );
+    int myMaxCount = ( int ) qRound( 0.98 * myHistogram.nonNullCount );
     bool myMinFound = false;
-    QgsDebugMsg( QString( "RASTER_HISTOGRAM_BINS = %1 range = %2 minimumValue = %3 myBinXStep = %4" ).arg( RASTER_HISTOGRAM_BINS ).arg( myRasterBandStats.range ).arg( myRasterBandStats.minimumValue ).arg( myBinXStep ) );
-    for ( int myBin = 0; myBin < RASTER_HISTOGRAM_BINS; myBin++ )
+    QgsDebugMsg( QString( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ) );
+
+    for ( int myBin = 0; myBin < myHistogram.histogramVector.size(); myBin++ )
     {
-      int myBinValue = myRasterBandStats.histogramVector->value( myBin );
+      int myBinValue = myHistogram.histogramVector.value( myBin );
       myCount += myBinValue;
       if ( !myMinFound && myCount > myMinCount )
       {
-        minMaxValues[0] = myRasterBandStats.minimumValue + myBin * myBinXStep;
+        minMaxValues[0] = myHistogram.minimum + myBin * myBinXStep;
         myMinFound = true;
       }
       if ( myCount > myMaxCount )
       {
-        minMaxValues[1] = myRasterBandStats.minimumValue + myBin * myBinXStep;
+        minMaxValues[1] = myHistogram.minimum + myBin * myBinXStep;
         break;
       }
     }
