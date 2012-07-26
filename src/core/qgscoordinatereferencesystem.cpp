@@ -1773,9 +1773,16 @@ int QgsCoordinateReferenceSystem::syncDb()
   {
     deleted = sqlite3_changes( database );
   }
+  else
+  {
+    errors++;
+    qCritical( "Could not execute: %s [%s]\n",
+               sql.toLocal8Bit().constData(),
+               sqlite3_errmsg( database ) );
+  }
 
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
-  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' WHERE NOT deprecated" );
+  sql = QString( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated" );
   if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) == SQLITE_OK )
   {
     while ( sqlite3_step( select ) == SQLITE_ROW )
@@ -1806,6 +1813,28 @@ int QgsCoordinateReferenceSystem::syncDb()
             proj4 = proj4.mid( input.size() );
             proj4 = proj4.trimmed();
           }
+
+          if ( proj4 != params )
+          {
+            sql = QString( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
+                  .arg( quotedValue( proj4 ) )
+                  .arg( quotedValue( auth_name ) )
+                  .arg( quotedValue( auth_id ) );
+
+            if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, &errMsg ) == SQLITE_OK )
+            {
+              updated++;
+              QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql ).arg( params ).arg( proj4 ), 3 );
+            }
+            else
+            {
+              qCritical( "Could not execute: %s [%s/%s]\n",
+                         sql.toLocal8Bit().constData(),
+                         sqlite3_errmsg( database ),
+                         errMsg ? errMsg : "(unknown error)" );
+              errors++;
+            }
+          }
         }
         else
         {
@@ -1819,6 +1848,13 @@ int QgsCoordinateReferenceSystem::syncDb()
 
       pj_free( pj );
     }
+  }
+  else
+  {
+    errors++;
+    qCritical( "Could not execute: %s [%s]\n",
+               sql.toLocal8Bit().constData(),
+               sqlite3_errmsg( database ) );
   }
 #endif
 
