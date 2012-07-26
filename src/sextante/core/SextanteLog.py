@@ -28,7 +28,7 @@ class SextanteLog():
 
     @staticmethod
     def addToLog(msgtype, msg):
-        #try: #it seems that this fails sometimes depending on the msg added:
+        try: #it seems that this fails sometimes depending on the msg added:
             #To avoid it stopping the normal functioning of the algorithm,
             #we catch all errors, assuming that is better to miss some log info
             #that breaking the algorithm.
@@ -47,7 +47,7 @@ class SextanteLog():
                algname = algname[:algname.index("\"")]
                if algname not in SextanteLog.recentAlgs:
                    SextanteLog.recentAlgs.append(algname)
-        #except:
+        except:
             pass
 
 
