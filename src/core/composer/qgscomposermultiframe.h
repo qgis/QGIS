@@ -42,6 +42,7 @@ class QgsComposerMultiFrame: public QObject
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
 
     void addFrame( QgsComposerFrame* frame );
+    void removeFrame( int i );
 
     void setResizeMode( ResizeMode mode ) { mResizeMode = mode; }
     ResizeMode resizeMode() const { return mResizeMode; }

@@ -43,14 +43,21 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   double currentHeight = 0;
   QgsComposerFrame* currentItem = 0;
 
-  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
-  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  for ( int i = 0; i < mFrameItems.size(); ++i )
   {
     if ( currentY >= totalHeight )
     {
+      if ( mResizeMode == ExtendToNextPage ) //remove unneeded frames in extent mode
+      {
+        for ( int j = mFrameItems.size(); j > i; --j )
+        {
+          removeFrame( j - 1 );
+        }
+      }
       return;
     }
-    currentItem = *frameIt;
+
+    currentItem = mFrameItems.value( i );
     currentHeight = currentItem->rect().height();
     currentItem->setContentSection( QRectF( 0, currentY, currentItem->rect().width(), currentHeight ) );
     currentItem->update();
@@ -64,9 +71,8 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
     {
       //find out on which page the lower left point of the last frame is
       int page = currentItem->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
-      //double offset = currentItem->transform().dy() - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
 
-      //e.v. add a new page
+      //add new pages if necessary
       if ( mComposition->numPages() < ( page + 2 ) )
       {
         mComposition->setNumPages( page + 2 );
@@ -79,22 +85,27 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       currentY += newFrame->rect().height();
       currentItem = newFrame;
       addFrame( newFrame );
-      mComposition->addItem( newFrame );
     }
   }
-
-#if 0
-  if ( mFrameItems.size() > 0 )
-  {
-    QSizeF size = totalSize();
-    QgsComposerFrame* item = mFrameItems[0];
-    item->setContentSection( QRectF( 0, 0, item->rect().width(), item->rect().height() ) );
-  }
-#endif //0
 }
 
 void QgsComposerMultiFrame::addFrame( QgsComposerFrame* frame )
 {
   mFrameItems.push_back( frame );
   QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+  QObject::connect( frame, SIGNAL( destroyed() ), this, SLOT( recalculateFrameSizes() ) );
+  if ( mComposition )
+  {
+    mComposition->addItem( frame );
+  }
+}
+
+void QgsComposerMultiFrame::removeFrame( int i )
+{
+  QgsComposerFrame* frameItem = mFrameItems[i];
+  if ( mComposition )
+  {
+    mComposition->removeComposerItem( frameItem );
+  }
+  mFrameItems.removeAt( i );
 }

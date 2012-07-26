@@ -30,7 +30,6 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal wid
   setUrl( QUrl( "http://www.qgis.org" ) );//test
   QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
   addFrame( frame );
-  mComposition->addItem( frame );
   recalculateFrameSizes();
 }
 
