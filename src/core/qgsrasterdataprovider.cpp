@@ -22,7 +22,8 @@
 #include <QTime>
 #include <QMap>
 #include <QByteArray>
-#include <qmath>
+
+#include <qmath.h>
 
 void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
                                        const & viewExtent, int width,

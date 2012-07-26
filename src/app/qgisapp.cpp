@@ -3909,16 +3909,18 @@ void QgisApp::saveAsRasterFile()
 void QgisApp::saveAsFile()
 {
   QgsMapLayer* layer = activeLayer();
-  if ( layer )
-  {
-    QgsMapLayer::LayerType layerType = layer->type();
-    if ( layerType == QgsMapLayer::RasterLayer )
-    {
-      saveAsRasterFile();
-    }
+  if ( !layer )
     return;
+
+  QgsMapLayer::LayerType layerType = layer->type();
+  if ( layerType == QgsMapLayer::RasterLayer )
+  {
+    saveAsRasterFile();
   }
-  saveAsVectorFileGeneral( false );
+  else if ( layerType == QgsMapLayer::VectorLayer )
+  {
+    saveAsVectorFileGeneral( false );
+  }
 }
 
 void QgisApp::saveSelectionAsVectorFile()
