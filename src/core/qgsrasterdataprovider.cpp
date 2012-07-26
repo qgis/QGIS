@@ -22,8 +22,7 @@
 #include <QTime>
 #include <QMap>
 #include <QByteArray>
-
-#include <cmath>
+#include <qmath>
 
 void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle
                                        const & viewExtent, int width,
@@ -271,7 +270,8 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   }
   return ba;
 }
-/*
+
+#if 0
 QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 {
   // TODO: cache stats here in provider
@@ -398,7 +398,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
           }
 
           myRasterBandStats.sumOfSquares += static_cast < double >
-                                            ( pow( myValue - myRasterBandStats.mean, 2 ) );
+                                            ( qPow( myValue - myRasterBandStats.mean, 2 ) );
         }
       }
     } //end of column wise loop
@@ -420,7 +420,8 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
   myRasterBandStats.statsGathered = true;
   return myRasterBandStats;
 }
-*/
+#endif
+
 QgsRasterBandStats QgsRasterDataProvider::statisticsDefaults( int theBandNo,
     const QgsRectangle & theExtent,
     int theSampleSize )
@@ -565,7 +566,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
           }
 
           //myRasterBandStats.sumOfSquares += static_cast < double >
-          //                                  ( pow( myValue - myRasterBandStats.mean, 2 ) );
+          //                                  ( qPow( myValue - myRasterBandStats.mean, 2 ) );
 
           // Single pass stdev
           double myDelta = myValue - myMean;
@@ -813,7 +814,7 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
             continue; // NULL
           }
 
-          int myBinIndex = static_cast <int>( floor(( myValue - myMinimum ) /  myBinSize ) ) ;
+          int myBinIndex = static_cast <int>( qFloor(( myValue - myMinimum ) /  myBinSize ) ) ;
           //QgsDebugMsg( QString( "myValue = %1 myBinIndex = %2" ).arg( myValue ).arg( myBinIndex ) );
 
           if (( myBinIndex < 0 || myBinIndex > ( myBinCount - 1 ) ) && !theIncludeOutOfRange )

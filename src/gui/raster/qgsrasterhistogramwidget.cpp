@@ -204,8 +204,8 @@ void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
   const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
-  bool myIgnoreOutOfRangeFlag = true;
-  bool myThoroughBandScanFlag = false;
+  //bool myIgnoreOutOfRangeFlag = true;
+  //bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
 
   // if forceComputeFlag = false make sure raster has cached histogram, else return false

@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrasterfilewriter.h
+    ---------------------
+    begin                : July 2012
+    copyright            : (C) 2012 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSRASTERFILEWRITER_H
 #define QGSRASTERFILEWRITER_H
 
@@ -27,8 +41,12 @@ class CORE_EXPORT QgsRasterFileWriter
     ~QgsRasterFileWriter();
 
     /**Write raster file
+        @param iter raster iterator
         @param nCols number of output columns
-        @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)*/
+        @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
+        @param outputExtent extent to output
+        @param crs crs to reproject to
+        @param p dialog to show progress in */
     WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 

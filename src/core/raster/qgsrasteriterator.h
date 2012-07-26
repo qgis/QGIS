@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsrasteriterator.h
+    ---------------------
+    begin                : July 2012
+    copyright            : (C) 2012 by Marco Hugentobler
+    email                : marco dot hugentobler at sourcepole dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSRASTERITERATOR_H
 #define QGSRASTERITERATOR_H
 
@@ -27,16 +41,21 @@ class CORE_EXPORT QgsRasterIterator
     ~QgsRasterIterator();
 
     /**Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
-      @param bandNumer number of raster band to read
-      @param viewPort describes raster position on screen
+      @param bandNumber number of raster band to read
+      @param nCols number of columns
+      @param nRows number of rows
+      @param extent area to read
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent );
 
     /**Fetches next part of raster data
+       @param bandNumber band to read
        @param nCols number of columns on output device
        @param nRows number of rows on output device
-       @param nColsRaster number of raster columns (different to nCols if oversamplingX != 1.0)
-       @param nRowsRaster number of raster rows (different to nRows if oversamplingY != 0)*/
+       @param rasterData to return the pointer to raster data in
+       @param topLeftCol top left column
+       @param topLeftRow top left row
+       @return false if the last part was already returned*/
     bool readNextRasterPart( int bandNumber,
                              int& nCols, int& nRows,
                              void** rasterData,
