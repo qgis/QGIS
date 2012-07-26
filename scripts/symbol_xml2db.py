@@ -37,7 +37,8 @@ _symbol = "CREATE TABLE symbol("\
 _colorramp = "CREATE TABLE colorramp("\
         "id INTEGER PRIMARY KEY,"\
         "name TEXT,"\
-        "xml TEXT)"
+        "xml TEXT,"\
+        "groupid INTEGER)"
 
 _tag = "CREATE TABLE tag("\
         "id INTEGER PRIMARY KEY,"\
@@ -57,7 +58,11 @@ _smartgroup = "CREATE TABLE smartgroup("\
         "name TEXT,"\
         "xml TEXT)"
 
-create_tables = [ _symbol, _colorramp, _tag, _tagmap, _symgroup, _smartgroup ]
+_ctagmap = "CREATE TABLE ctagmap("\
+        "tag_id INTEGER NOT NULL,"\
+        "colorramp_id INTEGER)"
+
+create_tables = [ _symbol, _colorramp, _tag, _tagmap, _ctagmap, _symgroup, _smartgroup ]
 
 # Create the DB with required Schema
 conn = sqlite3.connect( dbfile )
@@ -93,7 +98,7 @@ conn.commit()
 colorramps = dom.getElementsByTagName( "colorramp" )
 for ramp in colorramps:
     ramp_name = ramp.getAttribute( "name" )
-    c.execute( "INSERT INTO colorramp VALUES (?,?,?)", ( None, ramp_name, ramp.toxml() ) )
+    c.execute( "INSERT INTO colorramp VALUES (?,?,?,?)", ( None, ramp_name, ramp.toxml(), None ) )
 conn.commit()
 
 # Finally close the sqlite cursor
