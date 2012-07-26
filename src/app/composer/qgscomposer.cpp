@@ -23,6 +23,9 @@
 #include "qgscompositionwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerarrowwidget.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerhtmlwidget.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlabelwidget.h"
 #include "qgscomposerlegend.h"
@@ -368,6 +371,7 @@ void QgsComposer::connectSlots()
 
   connect( mComposition, SIGNAL( selectedItemChanged( QgsComposerItem* ) ), this, SLOT( showItemOptions( QgsComposerItem* ) ) );
   connect( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
+  connect( mComposition, SIGNAL( composerHtmlAdded( QgsComposerHtml* ) ), this, SLOT( addComposerHtml( QgsComposerHtml* ) ) );
   connect( mComposition, SIGNAL( composerLabelAdded( QgsComposerLabel* ) ), this, SLOT( addComposerLabel( QgsComposerLabel* ) ) );
   connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( addComposerMap( QgsComposerMap* ) ) );
   connect( mComposition, SIGNAL( composerScaleBarAdded( QgsComposerScaleBar* ) ), this, SLOT( addComposerScaleBar( QgsComposerScaleBar* ) ) );
@@ -1344,7 +1348,13 @@ void QgsComposer::addComposerHtml( QgsComposerHtml* html )
     return;
   }
 
-  //todo: create html widget and create entry for each frame in the item/widget map
+  QgsComposerHtmlWidget* hWidget = new QgsComposerHtmlWidget( html );
+  QList<QgsComposerFrame*> frameList = html->frameItems();
+  QList<QgsComposerFrame*>::iterator frameIt = frameList.begin();
+  for ( ; frameIt != frameList.end(); ++frameIt )
+  {
+    mItemWidgetMap.insert( *frameIt, hWidget );
+  }
 }
 
 void QgsComposer::deleteItem( QgsComposerItem* item )

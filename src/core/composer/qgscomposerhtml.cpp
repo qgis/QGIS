@@ -27,7 +27,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal wid
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
-  setUrl( QUrl( "http://www.qgis.org" ) );//test
+  //setUrl( QUrl( "http://www.qgis.org" ) );//test
   QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
   addFrame( frame );
   recalculateFrameSizes();
@@ -94,7 +94,6 @@ double QgsComposerHtml::htmlUnitsToMM()
   }
 
   QImage img( 1, 1, QImage::Format_ARGB32_Premultiplied );
-  double debug = img.dotsPerMeterX();
   double pixelPerMM = mComposition->printResolution() / 25.4;
   return ( pixelPerMM / ( img.dotsPerMeterX() / 1000.0 ) );
 }

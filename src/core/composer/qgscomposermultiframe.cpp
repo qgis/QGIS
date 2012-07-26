@@ -19,7 +19,7 @@
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c ), mResizeMode( UseExistingFrames )
 {
   //debug
-  mResizeMode = ExtendToNextPage;
+  //mResizeMode = ExtendToNextPage;
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( UseExistingFrames )
@@ -28,6 +28,15 @@ QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( 
 
 QgsComposerMultiFrame::~QgsComposerMultiFrame()
 {
+}
+
+void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
+{
+  if ( mode != mResizeMode )
+  {
+    mResizeMode = mode;
+    recalculateFrameSizes();
+  }
 }
 
 void QgsComposerMultiFrame::recalculateFrameSizes()
@@ -94,10 +103,10 @@ void QgsComposerMultiFrame::addFrame( QgsComposerFrame* frame )
   mFrameItems.push_back( frame );
   QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
 //  QObject::connect( frame, SIGNAL( destroyed( QObject* ) ), this, SLOT( removeFrame( QObject* ) ) );
-  if ( mComposition )
-  {
-    mComposition->addItem( frame );
-  }
+  /* if ( mComposition )
+   {
+     mComposition->addItem( frame );
+   }*/
 }
 
 void QgsComposerMultiFrame::removeFrame( int i )
@@ -120,3 +129,13 @@ void QgsComposerMultiFrame::removeFrame( QObject* frame )
         recalculateFrameSizes();
     }
 }*/
+
+
+void QgsComposerMultiFrame::update()
+{
+  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
+  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  {
+    ( *frameIt )->update();
+  }
+}

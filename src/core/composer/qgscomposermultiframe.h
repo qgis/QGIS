@@ -44,8 +44,12 @@ class QgsComposerMultiFrame: public QObject
     void addFrame( QgsComposerFrame* frame );
     void removeFrame( int i );
 
-    void setResizeMode( ResizeMode mode ) { mResizeMode = mode; }
+    void update();
+
+    void setResizeMode( ResizeMode mode );
     ResizeMode resizeMode() const { return mResizeMode; }
+
+    QList<QgsComposerFrame*> frameItems() { return mFrameItems; }
 
   protected:
     QgsComposition* mComposition;

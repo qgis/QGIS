@@ -17,6 +17,8 @@
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerarrow.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
@@ -1098,8 +1100,26 @@ void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
 
 void QgsComposition::addComposerHtml( QgsComposerHtml* html )
 {
+  QList<QgsComposerFrame*> htmlFrames = html->frameItems();
+  if ( htmlFrames.size() < 1 )
+  {
+    return;
+  }
+
+  QList<QgsComposerFrame*>::iterator frameIt = htmlFrames.begin();
+  for ( ; frameIt != htmlFrames.end(); ++frameIt )
+  {
+    addItem( *frameIt );
+  }
   emit composerHtmlAdded( html );
   clearSelection();
+
+  QgsComposerFrame* firstItem = htmlFrames[0];
+  if ( firstItem )
+  {
+    firstItem->setSelected( true );
+    emit selectedItemChanged( firstItem );
+  }
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item )
