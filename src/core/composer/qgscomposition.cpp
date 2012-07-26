@@ -1096,6 +1096,12 @@ void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
   emit selectedItemChanged( table );
 }
 
+void QgsComposition::addComposerHtml( QgsComposerHtml* html )
+{
+  emit composerHtmlAdded( html );
+  clearSelection();
+}
+
 void QgsComposition::removeComposerItem( QgsComposerItem* item )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );

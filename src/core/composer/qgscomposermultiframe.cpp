@@ -93,7 +93,7 @@ void QgsComposerMultiFrame::addFrame( QgsComposerFrame* frame )
 {
   mFrameItems.push_back( frame );
   QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
-  QObject::connect( frame, SIGNAL( destroyed() ), this, SLOT( recalculateFrameSizes() ) );
+//  QObject::connect( frame, SIGNAL( destroyed( QObject* ) ), this, SLOT( removeFrame( QObject* ) ) );
   if ( mComposition )
   {
     mComposition->addItem( frame );
@@ -109,3 +109,14 @@ void QgsComposerMultiFrame::removeFrame( int i )
   }
   mFrameItems.removeAt( i );
 }
+
+/*
+void QgsComposerMultiFrame::removeFrame( QObject* frame )
+{
+    QgsComposerFrame* composerFrame = dynamic_cast<QgsComposerFrame*>( frame );
+    if( composerFrame )
+    {
+        removeFrame( mFrameItems.indexOf( composerFrame ) );
+        recalculateFrameSizes();
+    }
+}*/

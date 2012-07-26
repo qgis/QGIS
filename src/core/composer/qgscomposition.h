@@ -31,6 +31,7 @@ class QGraphicsRectItem;
 class QgsMapRenderer;
 class QDomElement;
 class QgsComposerArrow;
+class QgsComposerHtml;
 class QgsComposerItem;
 class QgsComposerLabel;
 class QgsComposerLegend;
@@ -214,6 +215,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void addComposerShape( QgsComposerShape* shape );
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
+    /**Adds composer html and advices composer to create a widget for it (through signal)*/
+    void addComposerHtml( QgsComposerHtml* html );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
     void removeComposerItem( QgsComposerItem* item );
@@ -298,6 +301,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void selectedItemChanged( QgsComposerItem* selected );
     /**Is emitted when new composer arrow has been added to the view*/
     void composerArrowAdded( QgsComposerArrow* arrow );
+    /**Is emitted when a new composer html has been added to the view*/
+    void composerHtmlAdded( QgsComposerHtml* html );
     /**Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /**Is emitted when new composer map has been added to the view*/

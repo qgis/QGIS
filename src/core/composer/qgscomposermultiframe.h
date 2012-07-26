@@ -54,6 +54,7 @@ class QgsComposerMultiFrame: public QObject
 
   protected slots:
     void recalculateFrameSizes();
+    //void removeFrame( QObject* frame );
 
   private:
     QgsComposerMultiFrame(); //forbidden

@@ -1337,6 +1337,16 @@ void QgsComposer::addComposerTable( QgsComposerAttributeTable* table )
   mItemWidgetMap.insert( table, tWidget );
 }
 
+void QgsComposer::addComposerHtml( QgsComposerHtml* html )
+{
+  if ( !html )
+  {
+    return;
+  }
+
+  //todo: create html widget and create entry for each frame in the item/widget map
+}
+
 void QgsComposer::deleteItem( QgsComposerItem* item )
 {
   QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.find( item );

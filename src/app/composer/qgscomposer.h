@@ -246,6 +246,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     /**Adds a composer table to the item/widget map and creates a configuration widget*/
     void addComposerTable( QgsComposerAttributeTable* table );
 
+    /**Adds composer html and creates a configuration widget*/
+    void addComposerHtml( QgsComposerHtml* html );
+
     /**Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself*/
     void deleteItem( QgsComposerItem* item );
 
