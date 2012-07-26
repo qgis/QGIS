@@ -7,9 +7,7 @@ from sextante.modeler.ModelerParametersDialog import ModelerParametersDialog
 from sextante.modeler.ModelerUtils import ModelerUtils
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerScene import ModelerScene
-import copy
 from sextante.modeler.Providers import Providers
-from sextante.script.ScriptUtils import ScriptUtils
 from sextante.gui.HelpEditionDialog import HelpEditionDialog
 import pickle
 from sextante.gui.ParametersDialog import ParametersDialog

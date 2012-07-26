@@ -5,6 +5,8 @@ class Output(object):
     def __init__(self, name="", description="", hidden=False):
         self.name = name
         self.description = description
+        #the value of an output is a string representing the location of the output.
+        #For a file based output, it should be the filepath to it.
         self.value = None
         # a hidden output will not be shown to the user, who will not be able to select where to store it
         # Use this to generate outputs that are modified version of inputs (like a selection in a vector layer)

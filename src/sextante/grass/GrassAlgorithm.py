@@ -305,3 +305,16 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def commandLineName(self):
         return "grass:" + self.name[:self.name.find(" ")]
+
+    def checkBeforeOpeningParametersDialog(self):
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector)):
+                return None
+            if isinstance(param, ParameterMultipleInput):
+                if not param.optional:
+                    return None
+
+        if SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION):
+            return "This algorithm cannot be run with the 'auto-region' setting\nPlease set a GRASS region before running it"
+        else:
+            return None
