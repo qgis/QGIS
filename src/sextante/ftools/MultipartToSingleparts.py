@@ -9,7 +9,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.outputs.OutputVector import OutputVector
 
-class MultipartTosingleparts(GeoAlgorithm):
+class MultipartToSingleparts(GeoAlgorithm):
 
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
