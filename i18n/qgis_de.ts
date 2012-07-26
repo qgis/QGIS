@@ -14342,7 +14342,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="333"/>
         <source>Selection tolerance (mm) </source>
-        <translation>Auswahltoleranz (mm)</translation>
+        <translation>Auswahltoleranz (mm) </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="254"/>
