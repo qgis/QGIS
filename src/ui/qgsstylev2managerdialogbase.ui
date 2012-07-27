@@ -292,13 +292,6 @@
      <item>
       <widget class="QLineEdit" name="tagsLineEdit"/>
      </item>
-     <item>
-      <widget class="QPushButton" name="tagBtn">
-       <property name="text">
-        <string>Apply Tags</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
   </layout>

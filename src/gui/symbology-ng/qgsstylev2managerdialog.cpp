@@ -110,7 +110,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   populateList();
 
   connect( searchBox, SIGNAL( textChanged( QString ) ), this, SLOT( filterSymbols( QString ) ) );
-  connect( tagBtn, SIGNAL( clicked() ), this, SLOT( tagsChanged() ) );
+  tagsLineEdit->installEventFilter( this );
+
 
   // Context menu for groupTree
   groupTree->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -177,23 +178,12 @@ void QgsStyleV2ManagerDialog::populateTypes()
 
 void QgsStyleV2ManagerDialog::populateList()
 {
-  // get current symbol type
-  int itemType = currentItemType();
-
-  if ( itemType < 3 )
-  {
-    enableSymbolInputs( true );
-    groupChanged( groupTree->selectionModel()->currentIndex() );
-  }
-  else if ( itemType == 3 )
-  {
-    enableSymbolInputs( false );
-    populateColorRamps();
-  }
-  else
+  if ( currentItemType() > 3 )
   {
     Q_ASSERT( 0 && "not implemented" );
+    return;
   }
+  groupChanged( groupTree->selectionModel()->currentIndex() );
 }
 
 void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool check )
@@ -223,12 +213,10 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
 }
 
 
-void QgsStyleV2ManagerDialog::populateColorRamps()
+void QgsStyleV2ManagerDialog::populateColorRamps( QStringList colorRamps, bool check )
 {
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
-
-  QStringList colorRamps = mStyle->colorRampNames();
 
   for ( int i = 0; i < colorRamps.count(); ++i )
   {
@@ -239,6 +227,7 @@ void QgsStyleV2ManagerDialog::populateColorRamps()
     QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, listItems->iconSize() );
     item->setIcon( icon );
     item->setData( name ); // used to find out original name when user edited the name
+    item->setCheckable( check );
     model->appendRow( item );
     delete ramp;
   }
@@ -607,6 +596,13 @@ void QgsStyleV2ManagerDialog::importItems()
   populateList();
 }
 
+void QgsStyleV2ManagerDialog::setBold( QStandardItem* item )
+{
+  QFont font = item->font();
+  font.setBold( true );
+  item->setFont( font );
+}
+
 void QgsStyleV2ManagerDialog::populateGroups()
 {
   QStandardItemModel *model = qobject_cast<QStandardItemModel*>( groupTree->model() );
@@ -615,16 +611,19 @@ void QgsStyleV2ManagerDialog::populateGroups()
   QStandardItem *allSymbols = new QStandardItem( "All Symbols" );
   allSymbols->setData( "all" );
   allSymbols->setEditable( false );
+  setBold( allSymbols );
   model->appendRow( allSymbols );
 
   QStandardItem *projectSymbols = new QStandardItem( "Project Symbols" );
   projectSymbols->setData( "project" );
   projectSymbols->setEditable( false );
+  setBold( projectSymbols );
   model->appendRow( projectSymbols );
 
   QStandardItem *recent = new QStandardItem( "Recently Used" );
   recent->setData( "recent" );
   recent->setEditable( false );
+  setBold( recent );
   model->appendRow( recent );
 
   QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
@@ -634,12 +633,15 @@ void QgsStyleV2ManagerDialog::populateGroups()
   group->setText( "Groups" );//set title later
   QStandardItem *ungrouped = new QStandardItem( "Ungrouped" );
   ungrouped->setData( 0 );
+  setBold( ungrouped );
+  setBold( group );
   group->appendRow( ungrouped );
   model->appendRow( group );
 
   QStandardItem *tag = new QStandardItem( "Smart Groups" );
   tag->setData( "smartgroups" );
   tag->setEditable( false );
+  setBold( tag );
   QgsSymbolGroupMap sgMap = mStyle->smartgroupsListMap();
   QgsSymbolGroupMap::const_iterator i = sgMap.constBegin();
   while ( i != sgMap.constEnd() )
@@ -672,6 +674,13 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
   QStringList symbolNames;
   QStringList groupSymbols;
 
+  StyleEntity type = currentItemType() < 3 ? SymbolEntity : ColorrampEntity;
+  if ( currentItemType() > 3 )
+  {
+    QgsDebugMsg( "Entity not implemented" );
+    return;
+  }
+
   QString category = index.data( Qt::UserRole + 1 ).toString();
   if ( category == "all" || category == "groups" || category == "smartgroups" )
   {
@@ -680,7 +689,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
     {
       btnAddGroup->setEnabled( true );
     }
-    symbolNames = mStyle->symbolNames();
+    symbolNames = currentItemType() < 3 ? mStyle->symbolNames() : mStyle->colorRampNames();
   }
   else if (  category == "recent" )
   {
@@ -702,7 +711,8 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
       btnAddGroup->setEnabled( false );
       btnRemoveGroup->setEnabled( true );
       btnManageGroups->setEnabled( true );
-      symbolNames = mStyle->symbolsOfSmartgroup( index.data( Qt::UserRole + 1 ).toInt() );
+      int groupId = index.data( Qt::UserRole + 1 ).toInt();
+      symbolNames = mStyle->symbolsOfSmartgroup( type, groupId );
     }
     else // then it must be a group
     {
@@ -711,16 +721,23 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
       else
         enableGroupInputs( true );
       int groupId = index.data( Qt::UserRole + 1 ).toInt();
-      symbolNames = mStyle->symbolsOfGroup( groupId );
+      symbolNames = mStyle->symbolsOfGroup( type, groupId );
       if ( mGrouppingMode && groupId )
       {
         groupSymbols = symbolNames;
-        symbolNames += mStyle->symbolsOfGroup( 0 );
+        symbolNames += mStyle->symbolsOfGroup( type, 0 );
       }
     }
   }
 
-  populateSymbols( symbolNames, mGrouppingMode );
+  if ( currentItemType() < 3 )
+  {
+    populateSymbols( symbolNames, mGrouppingMode );
+  }
+  else if ( currentItemType() == 3 )
+  {
+    populateColorRamps( symbolNames, mGrouppingMode );
+  }
   if( mGrouppingMode )
     setSymbolsChecked( groupSymbols );
 }
@@ -940,13 +957,19 @@ void QgsStyleV2ManagerDialog::groupSymbolsAction()
 
 void QgsStyleV2ManagerDialog::regrouped( QStandardItem *item )
 {
+  StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+  if ( currentItemType() > 3 )
+  {
+    QgsDebugMsg( "Unknown style entity" );
+    return;
+  }
   int groupid = groupTree->currentIndex().data( Qt::UserRole + 1 ).toInt();
   QString symbolName = item->text();
   bool regrouped;
   if ( item->checkState() == Qt::Checked )
-    regrouped = mStyle->regroup( symbolName, groupid );
+    regrouped = mStyle->group( type, symbolName, groupid );
   else
-    regrouped = mStyle->regroup( symbolName, 0 );
+    regrouped = mStyle->group( type, symbolName, 0 );
   if ( !regrouped )
   {
     int er = QMessageBox::critical( this, tr( "Database Error"),
@@ -976,12 +999,27 @@ void QgsStyleV2ManagerDialog::filterSymbols( QString qword )
 
 void QgsStyleV2ManagerDialog::tagsChanged()
 {
+  QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
   QStringList addtags;
   QStringList removetags;
 
   QStringList oldtags = mTagList;
   QStringList newtags = tagsLineEdit->text().split( ",", QString::SkipEmptyParts );
 
+  StyleEntity type;
+  if ( currentItemType() < 3 )
+  {
+    type = SymbolEntity;
+  }
+  else if ( currentItemType() == 3 )
+  {
+    type = ColorrampEntity;
+  }
+  else
+  {
+    QgsDebugMsg( "Unknown Style Entity!" );
+    return;
+  }
   // compare old with new to find removed tags
   foreach( const QString &tag, oldtags )
   {
@@ -989,8 +1027,12 @@ void QgsStyleV2ManagerDialog::tagsChanged()
       removetags.append( tag );
   }
   if ( removetags.size() > 0 )
-    mStyle->detagSymbol( currentItemName(), removetags );
-
+  {
+    foreach( QModelIndex index, indexes )
+    {
+      mStyle->detagSymbol( type, index.data().toString(), removetags );
+    }
+  }
   // compare new with old to find added tags
   foreach( const QString &tag, newtags )
   {
@@ -998,7 +1040,12 @@ void QgsStyleV2ManagerDialog::tagsChanged()
       addtags.append( tag );
   }
   if ( addtags.size() > 0 )
-    mStyle->tagSymbol( currentItemName(), addtags );
+  {
+    foreach( QModelIndex index, indexes )
+    {
+      mStyle->tagSymbol( type, index.data().toString(), addtags );
+    }
+  }
 }
 
 void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
@@ -1006,14 +1053,14 @@ void QgsStyleV2ManagerDialog::symbolSelected( const QModelIndex& index )
   // Populate the tags for the symbol
   tagsLineEdit->clear();
   QStandardItem *item = static_cast<QStandardItemModel*>( listItems->model() )->itemFromIndex( index );
-  mTagList = mStyle->tagsOfSymbol( item->data().toString() );
+  StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+  mTagList = mStyle->tagsOfSymbol( type, item->data().toString() );
   tagsLineEdit->setText( mTagList.join( "," ) );
 }
 
 void QgsStyleV2ManagerDialog::enableSymbolInputs( bool enable )
 {
   groupTree->setEnabled( enable );
-  tagBtn->setEnabled( enable );
   btnAddGroup->setEnabled( enable );
   btnRemoveGroup->setEnabled( enable );
   btnManageGroups->setEnabled( enable );
@@ -1097,13 +1144,18 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
     groupList->addAction( group );
   }
   groupMenu->addMenu( groupList );
-
   groupMenu->addAction( "Un-group" );
 
   QAction* selectedItem = groupMenu->exec( globalPos );
 
   if ( selectedItem )
   {
+    StyleEntity type = ( currentItemType() < 3 ) ? SymbolEntity : ColorrampEntity;
+    if ( currentItemType() > 3 )
+    {
+      QgsDebugMsg( "unknow entity type" );
+      return;
+    }
     int groupId = 0;
     if ( selectedItem->text() != "Un-group" )
     {
@@ -1112,7 +1164,7 @@ void QgsStyleV2ManagerDialog::listitemsContextMenu( const QPoint& point )
     QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
     foreach( QModelIndex index, indexes )
     {
-      mStyle->regroup( index.data().toString(), groupId );
+      mStyle->group( type, index.data().toString(), groupId );
     }
     populateList();
 
@@ -1155,4 +1207,15 @@ void QgsStyleV2ManagerDialog::editSmartgroupAction()
   item->setData( id );
 
   groupChanged( present );
+}
+
+bool QgsStyleV2ManagerDialog::eventFilter( QObject *obj, QEvent *event )
+{
+
+  if ( ( obj == tagsLineEdit ) && ( event->type() == QEvent::FocusOut ) )
+  {
+    tagsChanged();
+    return true;
+  }
+  return false;
 }

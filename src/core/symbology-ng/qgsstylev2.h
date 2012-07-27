@@ -40,7 +40,7 @@ enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
 enum SymgroupTable { SymgroupId, SymgroupName, SymgroupParent };
 enum TagTable { TagId, TagName };
 enum TagmapTable { TagmapTagId, TagmapSymbolId };
-enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML };
+enum ColorrampTable { ColorrampId, ColorrampName, ColorrampXML, ColorrampGroupId };
 enum SmartgroupTable { SmartgroupId, SmartgroupName, SmartgroupXML };
 
 // Enums for types
@@ -84,6 +84,7 @@ class CORE_EXPORT QgsStyleV2
     //! return the id in the style database for the given symbol name
     //! returns 0 if not found
     int symbolId( QString name );
+    int colorrampId( QString name );
 
     //! return the id in the style database for the given group name
     int groupId( QString group );
@@ -96,16 +97,16 @@ class CORE_EXPORT QgsStyleV2
     QgsSymbolGroupMap childGroupNames( QString parent = "" );
 
     //! returns the symbolnames of a given groupid
-    QStringList symbolsOfGroup( int groupid );
+    QStringList symbolsOfGroup( StyleEntity type, int groupid );
     //! returns the symbol names with which have the given tag
-    QStringList symbolsWithTag( int tagid );
+    QStringList symbolsWithTag( StyleEntity type, int tagid );
     //! adds a new group and returns the group's id
     int addGroup( QString groupName, int parent = 0 );
     //! adds a new tag and returns the tag's id
     int addTag( QString tagName );
 
-    //! regroup the symbol to specifed group
-    bool regroup( QString symbolName, int groupid );
+    //! applies the specifed group to the symbol or colorramp specified by StyleEntity
+    bool group( StyleEntity type, QString name, int groupid );
 
     //! rename the given entity with the specified id
     void rename( StyleEntity type, int id, QString newName );
@@ -154,13 +155,13 @@ class CORE_EXPORT QgsStyleV2
     QStringList findSymbols( QString qword );
 
     //! tags the symbol with the tags in the list, the remove flag DE-TAGS
-    bool tagSymbol( QString symbol, QStringList tags );
+    bool tagSymbol( StyleEntity type, QString symbol, QStringList tags );
 
     //! detags the symbol with the given list
-    bool detagSymbol( QString symbol, QStringList tags );
+    bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
 
     //! return the tags associated with the symbol
-    QStringList tagsOfSymbol( QString symbol );
+    QStringList tagsOfSymbol( StyleEntity type, QString symbol );
 
     //! adds the smartgroup to the database and returns the id
     int addSmartgroup( QString name, QString op, QgsSmartConditionMap conditions );
@@ -179,7 +180,7 @@ class CORE_EXPORT QgsStyleV2
     QString smartgroupOperator( int id );
 
     //! returns the symbols for the smartgroup
-    QStringList symbolsOfSmartgroup( int id );
+    QStringList symbolsOfSmartgroup( StyleEntity type, int id );
 
   protected:
 

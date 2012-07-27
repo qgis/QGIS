@@ -98,7 +98,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void populateSymbols( QStringList symbolNames, bool checkable = false );
 
     //! populate list view with color ramps
-    void populateColorRamps();
+    void populateColorRamps( QStringList colorRamps, bool check );
 
     int currentItemType();
     QString currentItemName();
@@ -120,6 +120,12 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void enableGroupInputs( bool );
     //! Enables or diables the groupTree items for grouping mode
     void enableItemsForGroupingMode( bool );
+
+    //! Event filter to capture tagsLineEdit out of focus
+    bool eventFilter( QObject* , QEvent* );
+
+    //! sets the text of the item with bold font
+    void setBold( QStandardItem* );
 
     QgsStyleV2* mStyle;
 
