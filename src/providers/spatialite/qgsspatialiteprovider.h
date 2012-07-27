@@ -453,6 +453,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
 
+    struct SLFieldNotFound {}; //! Exception to throw
+
   public:
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
