@@ -120,23 +120,21 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
 {
   const QgsAttributeMap &attrs = feat.attributeMap();
 
-  QgsAttributeMap newAttrs;
+  QgsFeature newFeat;
+  newFeat.setGeometry( *feat.geometry() );
+
   for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
   {
+    // add only mapped attributes (un-mapped ones are not present in the
+    // destination layer)
     if ( mOldToNewAttrIdx.contains( it.key() ) )
     {
       QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( it.key() ).arg( mOldToNewAttrIdx.value( it.key() ) ), 3 );
-      newAttrs.insert( mOldToNewAttrIdx.value( it.key() ), *it );
-    }
-    else
-    {
-      QgsDebugMsgLevel( QString( "added attr pos %1" ).arg( it.key() ), 3 );
-      newAttrs.insert( it.key(), *it );
+      newFeat.addAttribute( mOldToNewAttrIdx.value( it.key() ), *it );
     }
   }
-  feat.setAttributeMap( newAttrs );
 
-  mFeatureBuffer.append( feat );
+  mFeatureBuffer.append( newFeat );
 
   if ( mFeatureBuffer.count() >= FEATURE_BUFFER_SIZE )
   {
