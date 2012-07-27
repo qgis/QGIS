@@ -27,9 +27,13 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal wid
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
-  //setUrl( QUrl( "http://www.qgis.org" ) );//test
-  QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
-  addFrame( frame );
+
+  if ( mComposition )
+  {
+    QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
+    addFrame( frame );
+    QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
+  }
   recalculateFrameSizes();
 }
 
@@ -64,6 +68,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
 
 void QgsComposerHtml::frameLoaded( bool ok )
 {
+  Q_UNUSED( ok );
   mLoaded = true;
 }
 
@@ -96,4 +101,14 @@ double QgsComposerHtml::htmlUnitsToMM()
   QImage img( 1, 1, QImage::Format_ARGB32_Premultiplied );
   double pixelPerMM = mComposition->printResolution() / 25.4;
   return ( pixelPerMM / ( img.dotsPerMeterX() / 1000.0 ) );
+}
+
+void QgsComposerHtml::addFrame( QgsComposerFrame* frame )
+{
+  mFrameItems.push_back( frame );
+  QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+  if ( mComposition )
+  {
+    mComposition->addComposerHtmlFrame( this, frame );
+  }
 }

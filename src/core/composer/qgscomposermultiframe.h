@@ -20,6 +20,7 @@
 #include <QSizeF>
 
 class QgsComposerFrame;
+class QgsComposerItem;
 class QgsComposition;
 class QRectF;
 class QPainter;
@@ -40,8 +41,6 @@ class QgsComposerMultiFrame: public QObject
     virtual ~QgsComposerMultiFrame();
     virtual QSizeF totalSize() const = 0;
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
-
-    void addFrame( QgsComposerFrame* frame );
     void removeFrame( int i );
 
     void update();
@@ -49,16 +48,17 @@ class QgsComposerMultiFrame: public QObject
     void setResizeMode( ResizeMode mode );
     ResizeMode resizeMode() const { return mResizeMode; }
 
-    QList<QgsComposerFrame*> frameItems() { return mFrameItems; }
-
   protected:
     QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
     ResizeMode mResizeMode;
 
+    virtual void addFrame( QgsComposerFrame* frame ) = 0;
+
   protected slots:
     void recalculateFrameSizes();
-    //void removeFrame( QObject* frame );
+    /**Called before a frame is going to be removed (update frame list)*/
+    void handleFrameRemoval( QgsComposerItem* item );
 
   private:
     QgsComposerMultiFrame(); //forbidden

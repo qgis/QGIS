@@ -1098,28 +1098,13 @@ void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
   emit selectedItemChanged( table );
 }
 
-void QgsComposition::addComposerHtml( QgsComposerHtml* html )
+void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
 {
-  QList<QgsComposerFrame*> htmlFrames = html->frameItems();
-  if ( htmlFrames.size() < 1 )
-  {
-    return;
-  }
-
-  QList<QgsComposerFrame*>::iterator frameIt = htmlFrames.begin();
-  for ( ; frameIt != htmlFrames.end(); ++frameIt )
-  {
-    addItem( *frameIt );
-  }
-  emit composerHtmlAdded( html );
+  addItem( frame );
+  emit composerHtmlFrameAdded( html, frame );
   clearSelection();
-
-  QgsComposerFrame* firstItem = htmlFrames[0];
-  if ( firstItem )
-  {
-    firstItem->setSelected( true );
-    emit selectedItemChanged( firstItem );
-  }
+  frame->setSelected( true );
+  emit selectedItemChanged( frame );
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item )

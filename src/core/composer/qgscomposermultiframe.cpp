@@ -18,8 +18,6 @@
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c ), mResizeMode( UseExistingFrames )
 {
-  //debug
-  //mResizeMode = ExtendToNextPage;
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( UseExistingFrames )
@@ -98,15 +96,20 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   }
 }
 
-void QgsComposerMultiFrame::addFrame( QgsComposerFrame* frame )
+void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
 {
-  mFrameItems.push_back( frame );
-  QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
-//  QObject::connect( frame, SIGNAL( destroyed( QObject* ) ), this, SLOT( removeFrame( QObject* ) ) );
-  /* if ( mComposition )
-   {
-     mComposition->addItem( frame );
-   }*/
+  QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( item );
+  if ( !frame )
+  {
+    return;
+  }
+  int index = mFrameItems.indexOf( frame );
+  if ( index == -1 )
+  {
+    return;
+  }
+  mFrameItems.removeAt( index );
+  recalculateFrameSizes();
 }
 
 void QgsComposerMultiFrame::removeFrame( int i )
@@ -116,20 +119,7 @@ void QgsComposerMultiFrame::removeFrame( int i )
   {
     mComposition->removeComposerItem( frameItem );
   }
-  mFrameItems.removeAt( i );
 }
-
-/*
-void QgsComposerMultiFrame::removeFrame( QObject* frame )
-{
-    QgsComposerFrame* composerFrame = dynamic_cast<QgsComposerFrame*>( frame );
-    if( composerFrame )
-    {
-        removeFrame( mFrameItems.indexOf( composerFrame ) );
-        recalculateFrameSizes();
-    }
-}*/
-
 
 void QgsComposerMultiFrame::update()
 {

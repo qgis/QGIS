@@ -1,12 +1,22 @@
 #include "qgscomposerhtmlwidget.h"
+#include "qgscomposerframe.h"
+#include "qgscomposeritemwidget.h"
 #include "qgscomposerhtml.h"
 #include <QFileDialog>
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html ): mHtml( html )
+QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): mHtml( html ), mFrame( frame )
 {
   setupUi( this );
   mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsComposerMultiFrame::UseExistingFrames );
   mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsComposerMultiFrame::ExtendToNextPage );
+
+  //embed widget for general options
+  if ( mFrame )
+  {
+    //add widget for general composer item properties
+    QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
+    mToolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  }
 }
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget()
@@ -28,10 +38,8 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 {
   if ( mHtml )
   {
-    //mHtml->beginCommand( tr( "Url changed" ) );
     mHtml->setUrl( QUrl( mUrlLineEdit->text() ) );
     mHtml->update();
-    //mHtmlItem->endCommand();
   }
 }
 
@@ -41,9 +49,7 @@ void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
   if ( !file.isEmpty() )
   {
     QUrl url = QUrl::fromLocalFile( file );
-    //mHtmlItem->beginCommand( tr( "Url changed" ) );
     mHtml->setUrl( url );
-    //mHtmlItem->endCommand();
     mUrlLineEdit->setText( url.toString() );
   }
 }

@@ -35,6 +35,9 @@ class QgsComposerHtml: public QgsComposerMultiFrame
     QSizeF totalSize() const;
     void render( QPainter* p, const QRectF& renderExtent );
 
+  protected:
+    void addFrame( QgsComposerFrame* frame );
+
   private slots:
     void frameLoaded( bool ok );
 

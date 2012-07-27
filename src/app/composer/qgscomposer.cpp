@@ -371,7 +371,7 @@ void QgsComposer::connectSlots()
 
   connect( mComposition, SIGNAL( selectedItemChanged( QgsComposerItem* ) ), this, SLOT( showItemOptions( QgsComposerItem* ) ) );
   connect( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
-  connect( mComposition, SIGNAL( composerHtmlAdded( QgsComposerHtml* ) ), this, SLOT( addComposerHtml( QgsComposerHtml* ) ) );
+  connect( mComposition, SIGNAL( composerHtmlFrameAdded( QgsComposerHtml*, QgsComposerFrame* ) ), this, SLOT( addComposerHtmlFrame( QgsComposerHtml*, QgsComposerFrame* ) ) );
   connect( mComposition, SIGNAL( composerLabelAdded( QgsComposerLabel* ) ), this, SLOT( addComposerLabel( QgsComposerLabel* ) ) );
   connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( addComposerMap( QgsComposerMap* ) ) );
   connect( mComposition, SIGNAL( composerScaleBarAdded( QgsComposerScaleBar* ) ), this, SLOT( addComposerScaleBar( QgsComposerScaleBar* ) ) );
@@ -1341,20 +1341,15 @@ void QgsComposer::addComposerTable( QgsComposerAttributeTable* table )
   mItemWidgetMap.insert( table, tWidget );
 }
 
-void QgsComposer::addComposerHtml( QgsComposerHtml* html )
+void QgsComposer::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
 {
   if ( !html )
   {
     return;
   }
 
-  QgsComposerHtmlWidget* hWidget = new QgsComposerHtmlWidget( html );
-  QList<QgsComposerFrame*> frameList = html->frameItems();
-  QList<QgsComposerFrame*>::iterator frameIt = frameList.begin();
-  for ( ; frameIt != frameList.end(); ++frameIt )
-  {
-    mItemWidgetMap.insert( *frameIt, hWidget );
-  }
+  QgsComposerHtmlWidget* hWidget = new QgsComposerHtmlWidget( html, frame );
+  mItemWidgetMap.insert( frame, hWidget );
 }
 
 void QgsComposer::deleteItem( QgsComposerItem* item )

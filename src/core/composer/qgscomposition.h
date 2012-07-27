@@ -24,6 +24,7 @@
 #include "qgscomposeritemcommand.h"
 #include "qgsaddremoveitemcommand.h"
 
+class QgsComposerFrame;
 class QgsComposerItem;
 class QgsComposerMap;
 class QgsPaperItem;
@@ -215,8 +216,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void addComposerShape( QgsComposerShape* shape );
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
-    /**Adds composer html and advices composer to create a widget for it (through signal)*/
-    void addComposerHtml( QgsComposerHtml* html );
+    /**Adds composer html frame and advices composer to create a widget for it (through signal)*/
+    void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
     void removeComposerItem( QgsComposerItem* item );
@@ -302,7 +303,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Is emitted when new composer arrow has been added to the view*/
     void composerArrowAdded( QgsComposerArrow* arrow );
     /**Is emitted when a new composer html has been added to the view*/
-    void composerHtmlAdded( QgsComposerHtml* html );
+    void composerHtmlFrameAdded( QgsComposerHtml* html, QgsComposerFrame* frame );
     /**Is emitted when new composer label has been added to the view*/
     void composerLabelAdded( QgsComposerLabel* label );
     /**Is emitted when new composer map has been added to the view*/

@@ -4,12 +4,13 @@
 #include "ui_qgscomposerhtmlwidgetbase.h"
 
 class QgsComposerHtml;
+class QgsComposerFrame;
 
 class QgsComposerHtmlWidget: public QWidget, private Ui::QgsComposerHtmlWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerHtmlWidget( QgsComposerHtml* html );
+    QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame );
     ~QgsComposerHtmlWidget();
 
   private slots:
@@ -25,6 +26,7 @@ class QgsComposerHtmlWidget: public QWidget, private Ui::QgsComposerHtmlWidgetBa
     void blockSignals( bool block );
 
     QgsComposerHtml* mHtml;
+    QgsComposerFrame* mFrame;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H
