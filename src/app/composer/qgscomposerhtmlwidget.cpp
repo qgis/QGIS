@@ -51,6 +51,7 @@ void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
     QUrl url = QUrl::fromLocalFile( file );
     mHtml->setUrl( url );
     mUrlLineEdit->setText( url.toString() );
+    mHtml->update();
   }
 }
 

@@ -64,6 +64,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
 
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
+  recalculateFrameSizes();
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
