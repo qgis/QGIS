@@ -299,7 +299,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
 QgsComposer::~QgsComposer()
 {
-  deleteItems();
+  deleteItemWidgets();
 }
 
 void QgsComposer::setupTheme()
@@ -909,7 +909,11 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
     return;
   }
 
-  deleteItems();
+  deleteItemWidgets();
+  if ( mComposition )
+  {
+    mComposition->clear();
+  }
   readXML( templateDocument );
   emit composerAdded( mView );
 }
@@ -1233,13 +1237,12 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   setSelectionTool();
 }
 
-void QgsComposer::deleteItems()
+void QgsComposer::deleteItemWidgets()
 {
   //delete all the items
   QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
   for ( ; it != mItemWidgetMap.end(); ++it )
   {
-    delete it.key();
     delete it.value();
   }
   mItemWidgetMap.clear();

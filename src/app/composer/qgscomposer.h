@@ -289,7 +289,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
     //! Removes all the item from the graphics scene and deletes them
-    void deleteItems();
+    void deleteItemWidgets();
 
     //! Restores composer map preview states.
     //! Initially after reading from xml, states are set to rectangle to achieve faster project loading.

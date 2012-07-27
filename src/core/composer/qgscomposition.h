@@ -19,6 +19,7 @@
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
+#include <QSet>
 #include <QUndoStack>
 
 #include "qgscomposeritemcommand.h"
@@ -41,6 +42,7 @@ class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
+class QgsComposerMultiFrame;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -200,6 +202,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
+    void addMultiFrame( QgsComposerMultiFrame* multiFrame ) { mMultiFrames.insert( multiFrame ); }
+    void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
@@ -255,6 +259,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Maintains z-Order of items. Starts with item at position 1 (position 0 is always paper item)*/
     QLinkedList<QgsComposerItem*> mItemZList;
+
+    /**List multiframe objects*/
+    QSet<QgsComposerMultiFrame*> mMultiFrames;
 
     /**Dpi for printout*/
     int mPrintResolution;

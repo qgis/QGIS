@@ -18,6 +18,7 @@
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c ), mResizeMode( UseExistingFrames )
 {
+  mComposition->addMultiFrame( this );
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( UseExistingFrames )
@@ -46,6 +47,12 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
   QSizeF size = totalSize();
   double totalHeight = size.height();
+
+  if ( totalHeight < 1 )
+  {
+    return;
+  }
+
   double currentY = 0;
   double currentHeight = 0;
   QgsComposerFrame* currentItem = 0;
@@ -109,7 +116,19 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     return;
   }
   mFrameItems.removeAt( index );
-  recalculateFrameSizes();
+
+  if ( mFrameItems.size() < 1 )
+  {
+    if ( mComposition )
+    {
+      //schedule this composer multi frame for deletion
+      mComposition->removeMultiFrame( this );
+    }
+  }
+  else
+  {
+    recalculateFrameSizes();
+  }
 }
 
 void QgsComposerMultiFrame::removeFrame( int i )
