@@ -238,12 +238,10 @@ class QgsGdalProvider : public QgsRasterDataProvider
     QStringList subLayers() const;
     static QStringList subLayers( GDALDatasetH dataset );
 
-    /** \brief If the provider supports it, return band stats for the
-        given band.
-        @note added in QGIS 1.7
-        @note overloads virtual method from QgsRasterProvider::bandStatistics
+    bool hasStatistics( int theBandNo,
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0 );
 
-    */
     QgsRasterBandStats bandStatistics( int theBandNo,
                                        const QgsRectangle & theExtent = QgsRectangle(),
                                        int theSampleSize = 0 );

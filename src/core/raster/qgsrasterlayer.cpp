@@ -339,6 +339,7 @@ int QgsRasterLayer::bandNumber( QString const & theBandName ) const
  * @sa RasterBandStats
  * @note This is a cpu intensive and slow task!
  */
+/*
 const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
 {
   QgsDebugMsg( "theBandNo = " + QString::number( theBandNo ) );
@@ -411,7 +412,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBand
 
   return QgsRasterBandStats();     // return a null one
 }
-
+*/
 
 QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyramidList,
                                        QString const & theResamplingMethod, bool theTryInternalFlag )
@@ -922,6 +923,7 @@ bool QgsRasterLayer::hasCompatibleSymbology( const QgsMapLayer& theOther ) const
  * @param theBandNo The number of the band to check
  * @return true if statistics have already been build for this band otherwise false
  */
+/*
 bool QgsRasterLayer::hasStatistics( int theBandNo )
 {
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
@@ -934,6 +936,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
     return false;
   }
 }
+*/
 
 /**
  * @param thePoint the QgsPoint for which to obtain pixel values
@@ -1289,7 +1292,7 @@ QString QgsRasterLayer::metadata()
     myMetadata += "</p>\n";
 
     //check if full stats for this layer have already been collected
-    if ( !hasStatistics( myIteratorInt ) )  //not collected
+    if ( !dataProvider()->hasStatistics( myIteratorInt ) )  //not collected
     {
       QgsDebugMsg( ".....no" );
 
@@ -1304,7 +1307,7 @@ QString QgsRasterLayer::metadata()
     {
       QgsDebugMsg( ".....yes" );
 
-      QgsRasterBandStats myRasterBandStats = bandStatistics( myIteratorInt );
+      QgsRasterBandStats myRasterBandStats = dataProvider()->bandStatistics( myIteratorInt );
       //Min Val
       myMetadata += "<p>";
       myMetadata += tr( "Min Val" );
@@ -1458,27 +1461,6 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
     QPixmap myNullPixmap;
     return myNullPixmap;
   }
-}
-
-/*
- * @param theBandNoInt - which band to find out if has a cached histogram
- * @param theBinCountInt - how many 'bins' to categorise the data into
- */
-bool QgsRasterLayer::hasCachedHistogram( int theBandNo, int theBinCount )
-{
-  return mDataProvider->hasCachedHistogram( theBandNo, theBinCount );
-}
-
-/*
- * @param theBandNoInt - which band to compute the histogram for
- * @param theBinCountInt - how many 'bins' to categorise the data into
- * @param theIgnoreOutOfRangeFlag - whether to ignore values that are out of range (default=true)
- * @param theThoroughBandScanFlag - whether to visit each cell when computing the histogram (default=false)
- */
-void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool theIgnoreOutOfRangeFlag, bool theHistogramEstimatedFlag )
-{
-  QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
-  mDataProvider->populateHistogram( theBandNo, myRasterBandStats, theBinCount, theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag );
 }
 
 QString QgsRasterLayer::providerType() const

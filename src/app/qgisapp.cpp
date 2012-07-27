@@ -5581,7 +5581,7 @@ QgsContrastEnhancement* QgisApp::rasterContrastEnhancement( QgsRasterLayer* rlay
   }
   else
   {
-    QgsRasterBandStats rasterBandStats = rlayer->bandStatistics( band );
+    QgsRasterBandStats rasterBandStats = rlayer->dataProvider()->bandStatistics( band );
     minValue = rasterBandStats.minimumValue;
     maxValue = rasterBandStats.maximumValue;
   }

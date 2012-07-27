@@ -473,6 +473,26 @@ QgsRasterBandStats QgsRasterDataProvider::statisticsDefaults( int theBandNo,
   return myRasterBandStats;
 }
 
+bool QgsRasterDataProvider::hasStatistics( int theBandNo,
+    const QgsRectangle & theExtent,
+    int theSampleSize )
+{
+  QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
+  if ( mStatistics.size() == 0 ) return false;
+
+  QgsRasterBandStats myRasterBandStats = statisticsDefaults( theBandNo, theExtent, theSampleSize );
+
+  foreach( QgsRasterBandStats stats, mStatistics )
+  {
+    if ( stats == myRasterBandStats )
+    {
+      QgsDebugMsg( "Has cached statistics." );
+      return true;
+    }
+  }
+  return false;
+}
+
 // Find cached
 QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
     const QgsRectangle & theExtent,

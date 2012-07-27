@@ -1267,7 +1267,7 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
     return false;
   }
 
-  QgsDebugMsg( "Looking for GDAL histogram xxxx" );
+  QgsDebugMsg( "Looking for GDAL histogram" );
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   if ( ! myGdalBand )
@@ -1999,6 +1999,63 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
     GDALClose( myDataset );
     return true;
   }
+}
+
+bool QgsGdalProvider::hasStatistics( int theBandNo,
+                                     const QgsRectangle & theExtent,
+                                     int theSampleSize )
+{
+  QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
+
+  // First check if cached in mStatistics
+  if ( QgsRasterDataProvider::hasStatistics( theBandNo, theExtent, theSampleSize ) )
+  {
+    return true;
+  }
+
+  QgsRasterBandStats myRasterBandStats = statisticsDefaults( theBandNo, theExtent, theSampleSize );
+
+  // If not cached, check if supported by GDAL
+  if ( myRasterBandStats.extent != extent() )
+  {
+    QgsDebugMsg( "Not supported by GDAL." );
+    return false;
+  }
+
+  QgsDebugMsg( "Looking for GDAL statistics" );
+
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+  if ( ! myGdalBand )
+  {
+    return false;
+  }
+
+  int bApproxOK = false;
+  if ( theSampleSize > 0 )
+  {
+    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    {
+      bApproxOK = true;
+    }
+  }
+
+  // Params in GDALGetRasterStatistics must not be NULL otherwise GDAL returns
+  // without error even if stats are not cached
+  double pdfMin;
+  double pdfMax;
+  double pdfMean;
+  double pdfStdDev;
+
+  // try to fetch the cached stats (bForce=FALSE)
+  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, FALSE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
+
+  if ( CE_None == myerval ) // CE_Warning if cached not found
+  {
+    QgsDebugMsg( "GDAL has cached statistics" );
+    return true;
+  }
+
+  return false;
 }
 
 QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, const QgsRectangle & theExtent, int theSampleSize )

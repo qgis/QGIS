@@ -295,26 +295,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return QStringList();
     }
 
-    /** \brief test if the requested histogram is already available */
-
-    virtual bool hasCachedHistogram( int theBandNoInt, int theBinCountInt = RASTER_HISTOGRAM_BINS )
-    {
-      Q_UNUSED( theBandNoInt ); Q_UNUSED( theBinCountInt ); return false;
-    }
-
-    /** \brief Populate the histogram vector for a given band */
-
-    virtual void populateHistogram( int theBandNoInt,
-                                    QgsRasterBandStats & theBandStats,
-                                    int theBinCountInt = RASTER_HISTOGRAM_BINS,
-                                    bool theIgnoreOutOfRangeFlag = true,
-                                    bool theThoroughBandScanFlag = false
-                                  )
-    {
-      Q_UNUSED( theBandNoInt ); Q_UNUSED( theBandStats ); Q_UNUSED( theBinCountInt );
-      Q_UNUSED( theIgnoreOutOfRangeFlag ); Q_UNUSED( theThoroughBandScanFlag );
-    }
-
     /** \brief Get histogram. Histograms are cached in providers.
      * @param theBandNo The band (number).
      * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
@@ -370,6 +350,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsRasterBandStats bandStatistics( int theBandNo,
         const QgsRectangle & theExtent = QgsRectangle(),
         int theSampleSize = 0 );
+
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
+    virtual bool hasStatistics( int theBandNo,
+                                const QgsRectangle & theExtent = QgsRectangle(),
+                                int theSampleSize = 0 );
 
     /** \brief helper function to create zero padded band names */
     QString  generateBandName( int theBandNumber ) const

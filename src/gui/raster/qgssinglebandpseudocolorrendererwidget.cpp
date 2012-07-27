@@ -184,7 +184,7 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   }
 
   int bandNr = mBandComboBox->itemData( bandComboIndex ).toInt();
-  QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( bandNr );
+  QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( bandNr );
   int numberOfEntries = mNumberOfEntriesSpinBox->value();
 
   QList<double> entryValues;

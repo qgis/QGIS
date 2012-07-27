@@ -386,10 +386,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     int bandNumber( const QString & theBandName ) const;
 
     /** \brief Get RasterBandStats for a band given its number (read only)  */
-    const  QgsRasterBandStats bandStatistics( int );
+    //const  QgsRasterBandStats bandStatistics( int );
 
     /** \brief Get RasterBandStats for a band given its name (read only)  */
-    const  QgsRasterBandStats bandStatistics( const QString & );
+    //const  QgsRasterBandStats bandStatistics( const QString & );
 
     /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -461,7 +461,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
 
     /** \brief  Check whether a given band number has stats associated with it */
-    bool hasStatistics( int theBandNoInt );
+    //bool hasStatistics( int theBandNoInt );
 
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
@@ -641,18 +641,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString buildPyramids( const RasterPyramidList &,
                            const QString &  theResamplingMethod = "NEAREST",
                            bool theTryInternalFlag = false );
-
-    /** \brief test if the requested histogram is already available */
-
-    bool hasCachedHistogram( int theBandNoInt,
-                             int theBinCountInt = RASTER_HISTOGRAM_BINS );
-
-    /** \brief Populate the histogram vector for a given band */
-
-    void populateHistogram( int theBandNoInt,
-                            int theBinCountInt = RASTER_HISTOGRAM_BINS,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false );
 
     void showStatusMessage( const QString & theMessage );
 
