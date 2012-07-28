@@ -103,6 +103,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         outputs = self.alg.outputs
 
         for param in params:
+            if param.hidden:
+                continue
             if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
                 return False
 

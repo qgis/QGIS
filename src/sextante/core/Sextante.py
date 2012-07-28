@@ -124,7 +124,7 @@ class Sextante:
 
     @staticmethod
     def addAlgListListener(listener):
-        '''listener should implement a algsListHasChanged() method. whenever the list of algorithms changed,
+        '''listener should implement a algsListHasChanged() method. Whenever the list of algorithms changes,
         that method will be called for all registered listeners'''
         Sextante.listeners.append(listener)
 
@@ -254,9 +254,9 @@ class Sextante:
         if alg == None:
             print("Error: Algorithm not found\n")
             return
-        if len(args) != len(alg.parameters) + alg.getVisibleOutputsCount():
+        if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
             print ("Error: Wrong number of parameters")
-            Sextante.alghelp(name)
+            Sextante.alghelp(algOrName)
             return
 
         alg = alg.getCopy()#copy.deepcopy(alg)
@@ -272,10 +272,11 @@ class Sextante:
         else:
             i = 0
             for param in alg.parameters:
-                if not param.setValue(args[i]):
-                    print ("Error: Wrong parameter value: " + args[i])
-                    return
-                i = i +1
+                if not param.hidden:
+                    if not param.setValue(args[i]):
+                        print ("Error: Wrong parameter value: " + args[i])
+                        return
+                    i = i +1
 
             for output in alg.outputs:
                 if not output.hidden:

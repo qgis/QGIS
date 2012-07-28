@@ -268,21 +268,21 @@ class ModelerDialog(QtGui.QDialog):
 
 
     def fillInputsTree(self):
-        inputsItem = QtGui.QTreeWidgetItem()
-        inputsItem.setText(0, "Inputs")
+        parametersItem = QtGui.QTreeWidgetItem()
+        parametersItem.setText(0, "Parameters")
         for paramType in ModelerParameterDefinitionDialog.paramTypes:
-            inputItem = QtGui.QTreeWidgetItem()
-            inputItem.setText(0, paramType)
-            inputsItem.addChild(inputItem)
-        self.inputsTree.addTopLevelItem(inputsItem)
-        inputsItem.setExpanded(True)
+            paramItem = QtGui.QTreeWidgetItem()
+            paramItem.setText(0, paramType)
+            parametersItem.addChild(paramItem)
+        self.inputsTree.addTopLevelItem(parametersItem)
+        parametersItem.setExpanded(True)
 
 
     def addAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = ModelerUtils.getAlgorithm(item.alg.commandLineName())
-            alg = alg.getCopy()#copy.deepcopy(alg)
+            alg = alg.getCopy()
             dlg = alg.getCustomModelerParametersDialog(self.alg)
             if not dlg:
                 dlg = ModelerParametersDialog(alg, self.alg)

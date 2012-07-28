@@ -196,6 +196,14 @@ class GeoAlgorithm:
                 i+=1
         return i;
 
+    def getVisibleParametersCount(self):
+        '''returns the number of non-hidden parameters'''
+        i = 0;
+        for param in self.parameters:
+            if not param.hidden:
+                i+=1
+        return i;
+
     def getOutputValuesAsDictionary(self):
         d = {}
         for out in self.outputs:

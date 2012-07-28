@@ -80,6 +80,8 @@ class ParametersPanel(QtGui.QWidget):
                     self.verticalLayout.addWidget(self.advancedButton)
                     break
             for param in self.alg.parameters:
+                if param.hidden:
+                    continue
                 desc = param.description
                 if isinstance(param, ParameterExtent):
                     desc += "(xmin, xmax, ymin, ymax)"
@@ -296,7 +298,10 @@ class ParametersPanel(QtGui.QWidget):
     def setTableContent(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
-        numParams = len(self.alg.parameters)
+        numParams = 0
+        for param in params:
+            if not param.hidden:
+                numParams += 1
         numOutputs = 0
         for output in outputs:
             if not output.hidden:
@@ -305,6 +310,8 @@ class ParametersPanel(QtGui.QWidget):
 
         i=0
         for param in params:
+            if param.hidden:
+                continue
             item = QtGui.QTableWidgetItem(param.description)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)

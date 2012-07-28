@@ -6,8 +6,11 @@ class Parameter:
         self.description = description
         self.value = None
 
-        #this is not used yet
         self.isAdvanced = False
+
+        #a hidden parameter can be used to set a hard-coded value.
+        #It can be used as any other parameter, but it will not be shown to the user
+        self.hidden = False
 
 
     def setValue(self, obj):

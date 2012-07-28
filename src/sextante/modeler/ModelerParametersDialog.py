@@ -230,6 +230,7 @@ class ModelerParametersDialog(QtGui.QDialog):
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             item = QtGui.QComboBox()
+            item.setEditable(True)
             layers = self.getRasterLayers()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -237,6 +238,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterVector):
             item = QtGui.QComboBox()
+            item.setEditable(True)
             layers = self.getVectorLayers()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -244,6 +246,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterTable):
             item = QtGui.QComboBox()
+            item.setEditable(True)
             layers = self.getTables()
             if (param.optional):
                 item.addItem(self.NOT_SELECTED, None)
@@ -310,7 +313,10 @@ class ModelerParametersDialog(QtGui.QDialog):
     def setTableContent(self):
         params = self.alg.parameters
         outputs = self.alg.outputs
-        numParams = len(self.alg.parameters)
+        numParams = 0
+        for param in params:
+            if not param.hidden:
+                numParams += 1
         numOutputs = 0
         for output in outputs:
             if not output.hidden:
@@ -319,14 +325,15 @@ class ModelerParametersDialog(QtGui.QDialog):
 
         i=0
         for param in params:
-            item = QtGui.QTableWidgetItem(param.description)
-            item.setFlags(QtCore.Qt.ItemIsEnabled)
-            self.tableWidget.setItem(i,0, item)
-            item = self.getWidgetFromParameter(param)
-            self.valueItems[param.name] = item
-            self.tableWidget.setCellWidget(i,1, item)
-            self.tableWidget.setRowHeight(i,22)
-            i+=1
+            if not param.hidden:
+                item = QtGui.QTableWidgetItem(param.description)
+                item.setFlags(QtCore.Qt.ItemIsEnabled)
+                self.tableWidget.setItem(i,0, item)
+                item = self.getWidgetFromParameter(param)
+                self.valueItems[param.name] = item
+                self.tableWidget.setCellWidget(i,1, item)
+                self.tableWidget.setRowHeight(i,22)
+                i+=1
 
         for output in outputs:
             if not output.hidden:
@@ -400,6 +407,8 @@ class ModelerParametersDialog(QtGui.QDialog):
         params = self.alg.parameters
         outputs = self.alg.outputs
         for param in params:
+            if param.hidden:
+                continue
             if not self.setParamValue(param, self.valueItems[param.name]):
                 return False
         for output in outputs:
@@ -413,21 +422,21 @@ class ModelerParametersDialog(QtGui.QDialog):
         return True
 
 
-    def setParamRasterValue(self, param, widget):
-        if widget.currentIndex() < 0:
-            return False
-        value = widget.itemData(widget.currentIndex()).toPyObject()
-        self.params[param.name] = value
+    def setParamValueLayerOrTable(self, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            name =  self.getSafeNameForHarcodedParameter(param)
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            self.params[param.name] = value
+            s = str(widget.currentText())
+            self.values[name] = s
+        else:
+            value = widget.itemData(widget.currentIndex()).toPyObject()
+            self.params[param.name] = value
         return True
 
-    def setParamVectorValue(self, param, widget):
-        if widget.currentIndex() < 0:
-            return False
-        value = widget.itemData(widget.currentIndex()).toPyObject()
-        self.params[param.name] = value
-        return True
 
-    def setParamTableValue(self, param, widget):
+
         if widget.currentIndex() < 0:
             return False
         value = widget.itemData(widget.currentIndex()).toPyObject()
@@ -505,12 +514,8 @@ class ModelerParametersDialog(QtGui.QDialog):
         return True
 
     def setParamValue(self, param, widget):
-        if isinstance(param, ParameterRaster):
-            return self.setParamRasterValue(param, widget)
-        elif isinstance(param, ParameterVector):
-            return self.setParamVectorValue(param, widget)
-        elif isinstance(param, ParameterTable):
-            return self.setParamTableValue(param, widget)
+        if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
+            return self.setParamValueLayerOrTable(param, widget)
         elif isinstance(param, ParameterBoolean):
             return self.setParamBooleanValue(param, widget)
         elif isinstance(param, ParameterString):
@@ -539,13 +544,6 @@ class ModelerParametersDialog(QtGui.QDialog):
             return True
         if isinstance(param, ParameterTableField):
             return self.setParamTableFieldValue(param, widget)
-            #===================================================================
-            # name =  self.getSafeNameForHarcodedParameter(param)
-            # value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            # self.params[param.name] = value
-            # self.values[name] = str(widget.text())
-            # return True
-            #===================================================================
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = self.getVectorLayers()
