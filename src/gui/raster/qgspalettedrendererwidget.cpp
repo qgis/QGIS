@@ -91,11 +91,11 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer* r )
   else
   {
     //read default palette settings from layer
-    QList<QgsColorRampShader::ColorRampItem>* itemList =
+    QList<QgsColorRampShader::ColorRampItem> itemList =
       mRasterLayer->colorTable( mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt() );
-    QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList->constBegin();
+    QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = itemList.constBegin();
     int index = 0;
-    for ( ; itemIt != itemList->constEnd(); ++itemIt )
+    for ( ; itemIt != itemList.constEnd(); ++itemIt )
     {
       QTreeWidgetItem* item = new QTreeWidgetItem( mTreeWidget );
       item->setText( 0, QString::number( index ) );

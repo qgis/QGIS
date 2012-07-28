@@ -287,6 +287,7 @@ unsigned int QgsRasterLayer::bandCount() const
 
 const QString QgsRasterLayer::bandName( int theBandNo )
 {
+#if 0
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
   {
     //vector starts at base 0, band counts at base1!
@@ -296,23 +297,30 @@ const QString QgsRasterLayer::bandName( int theBandNo )
   {
     return QString( "" );
   }
+#endif
+  return dataProvider()->generateBandName( theBandNo );
 }
 
 int QgsRasterLayer::bandNumber( QString const & theBandName ) const
 {
-  for ( int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator )
+  if ( !mDataProvider ) return 0;
+  for ( int myIterator = 1; myIterator <= dataProvider()->bandCount(); ++myIterator )
   {
     //find out the name of this band
+#if 0
     QgsRasterBandStats myRasterBandStats = mRasterStatsList[myIterator];
     QgsDebugMsg( "myRasterBandStats.bandName: " + myRasterBandStats.bandName + "  :: theBandName: "
                  + theBandName );
 
     if ( myRasterBandStats.bandName == theBandName )
+#endif
+      QString myBandName =  dataProvider()->generateBandName( myIterator );
+    if ( myBandName == theBandName )
     {
-      QgsDebugMsg( "********** band " + QString::number( myRasterBandStats.bandNumber ) +
+      QgsDebugMsg( "********** band " + QString::number( myIterator ) +
                    " was found in bandNumber " + theBandName );
 
-      return myRasterBandStats.bandNumber;
+      return myIterator;
     }
   }
   QgsDebugMsg( "********** no band was found in bandNumber " + theBandName );
@@ -612,11 +620,13 @@ bool QgsRasterLayer::copySymbologySettings( const QgsMapLayer& theOther )
 
 /**
  * @param theBandNo the band number
- * @return pointer to the color table
+ * @return ointer to the color table
  */
-QList<QgsColorRampShader::ColorRampItem>* QgsRasterLayer::colorTable( int theBandNo )
+QList<QgsColorRampShader::ColorRampItem> QgsRasterLayer::colorTable( int theBandNo )
 {
-  return &( mRasterStatsList[theBandNo-1].colorTable );
+  //return &( mRasterStatsList[theBandNo-1].colorTable );
+  if ( !mDataProvider ) return QList<QgsColorRampShader::ColorRampItem>();
+  return dataProvider()->colorTable( theBandNo );
 }
 
 /**
@@ -1707,6 +1717,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mBandCount = mDataProvider->bandCount( );
   for ( int i = 1; i <= mBandCount; i++ )
   {
+#if 0
     QgsRasterBandStats myRasterBandStats;
     myRasterBandStats.bandName = mDataProvider->generateBandName( i );
     myRasterBandStats.bandNumber = i;
@@ -1718,6 +1729,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     myRasterBandStats.colorTable = ct;
 
     mRasterStatsList.push_back( myRasterBandStats );
+#endif
 
     //Build a new contrast enhancement for the band and store in list
     //QgsContrastEnhancement myContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )mDataProvider->dataType( i ) );
@@ -1814,7 +1826,7 @@ void QgsRasterLayer::closeDataProvider()
   mPipe.remove( mDataProvider );
   mDataProvider = 0;
 
-  mRasterStatsList.clear();
+  //mRasterStatsList.clear();
   mContrastEnhancementList.clear();
 
   mHasPyramids = false;
@@ -2066,12 +2078,15 @@ void QgsRasterLayer::setNoDataValue( double theNoDataValue )
     mNoDataValue = theNoDataValue;
     mValidNoDataValue = true;
     //Basically set the raster stats as invalid
+    // TODO! No data value must be set on provider and stats cleared
+#if 0
     QList<QgsRasterBandStats>::iterator myIterator = mRasterStatsList.begin();
     while ( myIterator !=  mRasterStatsList.end() )
     {
       ( *myIterator ).statsGathered = false;
       ++myIterator;
     }
+#endif
   }
 }
 
@@ -2651,12 +2666,14 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
     return TRSTRING_NOT_SET;
   }
 
+  if ( !mDataProvider ) return TRSTRING_NOT_SET;
+
   //check that a valid band name was passed
   QgsDebugMsg( "Looking through raster band stats for matching band name" );
-  for ( int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator )
+  for ( int myIterator = 1; myIterator < mDataProvider->bandCount(); ++myIterator )
   {
     //find out the name of this band
-    if ( mRasterStatsList[myIterator].bandName == theBandName )
+    if ( mDataProvider->generateBandName( myIterator ) == theBandName );
     {
       QgsDebugMsg( "Matching band name found" );
       return theBandName;
@@ -2664,6 +2681,7 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   }
   QgsDebugMsg( "No matching band name found in raster band stats" );
 
+#if 0
   QgsDebugMsg( "Testing for non zero-buffered names" );
   //TODO Remove test in v2.0 or earlier
   QStringList myBandNameComponents = theBandName.split( " " );
@@ -2702,6 +2720,7 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
       }
     }
   }
+#endif
 
   //if no matches were found default to not set
   QgsDebugMsg( "All checks failed, returning '" + QSTRING_NOT_SET + "'" );

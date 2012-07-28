@@ -1258,7 +1258,8 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
     return true;
   }
 
-  QgsRasterHistogram myHistogram = histogramDefaults( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+  QgsRasterHistogram myHistogram;
+  initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // If not cached, check if supported by GDAL
   if ( myHistogram.extent != extent() )
@@ -1329,7 +1330,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
 {
   QgsDebugMsg( QString( "theBandNo = %1 theBinCount = %2 theMinimum = %3 theMaximum = %4 theSampleSize = %5" ).arg( theBandNo ).arg( theBinCount ).arg( theMinimum ).arg( theMaximum ).arg( theSampleSize ) );
 
-  QgsRasterHistogram myHistogram = histogramDefaults( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+  QgsRasterHistogram myHistogram;
+  initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // Find cached
   foreach( QgsRasterHistogram histogram, mHistograms )
@@ -2002,21 +2004,28 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 }
 
 bool QgsGdalProvider::hasStatistics( int theBandNo,
+                                     int theStats,
                                      const QgsRectangle & theExtent,
                                      int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
 
   // First check if cached in mStatistics
-  if ( QgsRasterDataProvider::hasStatistics( theBandNo, theExtent, theSampleSize ) )
+  if ( QgsRasterDataProvider::hasStatistics( theBandNo, theStats, theExtent, theSampleSize ) )
   {
     return true;
   }
 
-  QgsRasterBandStats myRasterBandStats = statisticsDefaults( theBandNo, theExtent, theSampleSize );
+  QgsRasterBandStats myRasterBandStats;
+  initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
   // If not cached, check if supported by GDAL
-  if ( myRasterBandStats.extent != extent() )
+  int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
+                       | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
+                       | QgsRasterBandStats::StdDev;
+
+  if ( myRasterBandStats.extent != extent() ||
+       ( theStats & ( ~supportedStats ) ) )
   {
     QgsDebugMsg( "Not supported by GDAL." );
     return false;
@@ -2041,13 +2050,19 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
 
   // Params in GDALGetRasterStatistics must not be NULL otherwise GDAL returns
   // without error even if stats are not cached
-  double pdfMin;
-  double pdfMax;
-  double pdfMean;
-  double pdfStdDev;
+  double dfMin, dfMax, dfMean, dfStdDev;
+  double *pdfMin = &dfMin;
+  double *pdfMax = &dfMax;
+  double *pdfMean = &dfMean;
+  double *pdfStdDev = &dfStdDev;
+
+  if ( !( theStats & QgsRasterBandStats::Min ) ) pdfMin = NULL;
+  if ( !( theStats & QgsRasterBandStats::Max ) ) pdfMax = NULL;
+  if ( !( theStats & QgsRasterBandStats::Mean ) ) pdfMean = NULL;
+  if ( !( theStats & QgsRasterBandStats::StdDev ) ) pdfStdDev = NULL;
 
   // try to fetch the cached stats (bForce=FALSE)
-  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, FALSE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
+  CPLErr myerval = GDALGetRasterStatistics( myGdalBand, bApproxOK, FALSE, pdfMin, pdfMax, pdfMean, pdfStdDev );
 
   if ( CE_None == myerval ) // CE_Warning if cached not found
   {
@@ -2058,29 +2073,40 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   return false;
 }
 
-QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, const QgsRectangle & theExtent, int theSampleSize )
+QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
+
+  // TODO: null values set on raster layer!!!
+
   // Currently there is no API in GDAL to collect statistics of specified extent
   // or with defined sample size. We check first if we have cached stats, if not,
   // and it is not possible to use GDAL we call generic provider method,
   // otherwise we use GDAL (faster, cache)
 
-  QgsRasterBandStats myRasterBandStats = statisticsDefaults( theBandNo, theExtent, theSampleSize );
+  QgsRasterBandStats myRasterBandStats;
+  initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
   foreach( QgsRasterBandStats stats, mStatistics )
   {
-    if ( stats == myRasterBandStats )
+    if ( stats.contains( myRasterBandStats ) )
     {
       QgsDebugMsg( "Using cached statistics." );
       return stats;
     }
   }
 
-  if ( myRasterBandStats.extent != extent() )
+  int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
+                       | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
+                       | QgsRasterBandStats::StdDev;
+
+  QgsDebugMsg( QString( "theStats = %1 supportedStats = %2" ).arg( theStats, 0, 2 ).arg( supportedStats, 0, 2 ) );
+
+  if ( myRasterBandStats.extent != extent() ||
+       ( theStats & ( ~supportedStats ) ) )
   {
     QgsDebugMsg( "Using generic statistics." );
-    return QgsRasterDataProvider::bandStatistics( theBandNo, theExtent, theSampleSize );
+    return QgsRasterDataProvider::bandStatistics( theBandNo, theStats, theExtent, theSampleSize );
   }
 
   QgsDebugMsg( "Using GDAL statistics." );
@@ -2131,10 +2157,14 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, const QgsRect
     //calculate the mean
     myRasterBandStats.mean = pdfMean;
     myRasterBandStats.sum = 0; //not available via gdal
-    myRasterBandStats.elementCount = mWidth * mHeight;
+    //myRasterBandStats.elementCount = mWidth * mHeight;
+    // Sum of non NULL
+    myRasterBandStats.elementCount = 0; //not available via gdal
     myRasterBandStats.sumOfSquares = 0; //not available via gdal
     myRasterBandStats.stdDev = pdfStdDev;
-    myRasterBandStats.statsGathered = true;
+    myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max
+                                      | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
+                                      | QgsRasterBandStats::StdDev;
 
 #ifdef QGISDEBUG
     QgsDebugMsg( "************ STATS **************" );
@@ -2145,9 +2175,6 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, const QgsRect
     QgsDebugMsg( QString( "MEAN %1" ).arg( myRasterBandStats.mean ) );
     QgsDebugMsg( QString( "STDDEV %1" ).arg( myRasterBandStats.stdDev ) );
 #endif
-
-    myRasterBandStats.statsGathered = true;
-
   }
 
   mStatistics.append( myRasterBandStats );

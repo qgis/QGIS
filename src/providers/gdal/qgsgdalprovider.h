@@ -239,10 +239,12 @@ class QgsGdalProvider : public QgsRasterDataProvider
     static QStringList subLayers( GDALDatasetH dataset );
 
     bool hasStatistics( int theBandNo,
+                        int theStats = QgsRasterBandStats::All,
                         const QgsRectangle & theExtent = QgsRectangle(),
                         int theSampleSize = 0 );
 
     QgsRasterBandStats bandStatistics( int theBandNo,
+                                       int theStats = QgsRasterBandStats::All,
                                        const QgsRectangle & theExtent = QgsRectangle(),
                                        int theSampleSize = 0 );
 

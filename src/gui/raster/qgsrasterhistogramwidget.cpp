@@ -406,9 +406,9 @@ void QgsRasterHistogramWidget::refreshHistogram()
       if ( ! mySelectedBands.contains( myIteratorInt ) )
         continue;
     }
-    QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( myIteratorInt );
-    // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     int sampleSize = 250000; // number of sample cells
+    //QgsRasterBandStats myRasterBandStats = mRasterLayer->dataProvider()->bandStatistics( myIteratorInt );
+    // mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     QgsRasterHistogram myHistogram = mRasterLayer->dataProvider()->histogram( myIteratorInt, BINCOUNT, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), QgsRectangle(), sampleSize );
 
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
@@ -424,8 +424,10 @@ void QgsRasterHistogramWidget::refreshHistogram()
     // calculate first bin x value and bin step size if not Byte data
     if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QgsRasterDataProvider::Byte )
     {
-      myBinXStep = myRasterBandStats.range / BINCOUNT;
-      myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;
+      //myBinXStep = myRasterBandStats.range / BINCOUNT;
+      //myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;
+      myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / BINCOUNT;
+      myBinX = myHistogram.minimum + myBinXStep / 2.0;
     }
     else
     {
@@ -451,13 +453,13 @@ void QgsRasterHistogramWidget::refreshHistogram()
     mypCurve->setData( myX2Data, myY2Data );
 #endif
     mypCurve->attach( mpPlot );
-    if ( myFirstIteration || mHistoMin > myRasterBandStats.minimumValue )
+    if ( myFirstIteration || mHistoMin > myHistogram.minimum )
     {
-      mHistoMin = myRasterBandStats.minimumValue;
+      mHistoMin = myHistogram.minimum;
     }
-    if ( myFirstIteration || mHistoMax < myRasterBandStats.maximumValue )
+    if ( myFirstIteration || mHistoMax < myHistogram.maximum )
     {
-      mHistoMax = myRasterBandStats.maximumValue;
+      mHistoMax = myHistogram.maximum;
     }
     QgsDebugMsg( QString( "computed histo min = %1 max = %2" ).arg( mHistoMin ).arg( mHistoMax ) );
     myFirstIteration = false;

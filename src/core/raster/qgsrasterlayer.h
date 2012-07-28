@@ -430,7 +430,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool copySymbologySettings( const QgsMapLayer& theOther );
 
     /** \brief Get a pointer to the color table */
-    QList<QgsColorRampShader::ColorRampItem>* colorTable( int theBandNoInt );
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int theBandNoInt );
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -530,7 +530,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
-    const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
+    //const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
 
     /** \brief Read color table from GDAL raster band */
     // Keep this for QgsRasterLayerProperties
@@ -844,7 +844,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     RasterPyramidList mPyramidList;
 
     /** \brief A collection of stats - one for each band in the layer */
-    RasterStatsList mRasterStatsList;
+    //RasterStatsList mRasterStatsList;
 
     LayerType mRasterType;
 

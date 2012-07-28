@@ -19,10 +19,10 @@
 #include "qgsrasterminmaxwidget.h"
 
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent ):
-  QWidget( parent )
-  ,mLayer ( theLayer ) 
+    QWidget( parent )
+    , mLayer( theLayer )
 {
-  QgsDebugMsg("Entered.");
+  QgsDebugMsg( "Entered." );
   setupUi( this );
 }
 
@@ -32,12 +32,12 @@ QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()
 
 void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 {
-  QgsDebugMsg("Entered.");
+  QgsDebugMsg( "Entered." );
 
-  foreach ( int myBand, mBands )
+  foreach( int myBand, mBands )
   {
-    QgsDebugMsg( QString("myBand = %1").arg(myBand));
-    if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() ) 
+    QgsDebugMsg( QString( "myBand = %1" ).arg( myBand ) );
+    if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )
     {
       continue;
     }
@@ -46,10 +46,10 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 
     QgsRectangle myExtent; // empty == full
     if ( mCurrentExtentRadioButton->isChecked() )
-    { 
+    {
       myExtent = mExtent; // current
     }
-    QgsDebugMsg( QString("myExtent.isEmpty() = %1").arg(myExtent.isEmpty()) );
+    QgsDebugMsg( QString( "myExtent.isEmpty() = %1" ).arg( myExtent.isEmpty() ) );
 
     int mySampleSize = 0; // 0 == exact
     if ( mEstimateRadioButton->isChecked() )
@@ -59,24 +59,24 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 
     if ( mCumulativeCutRadioButton->isChecked() )
     {
-      mLayer->dataProvider()->cumulativeCut ( myBand, 0.02, 0.98, myMin, myMax, myExtent, mySampleSize );
-    } 
+      mLayer->dataProvider()->cumulativeCut( myBand, 0.02, 0.98, myMin, myMax, myExtent, mySampleSize );
+    }
     else if ( mMinMaxRadioButton->isChecked() )
     {
       // TODO: consider provider minimum/maximumValue() (has to be defined well in povider)
-      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, myExtent, mySampleSize );
+      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, myExtent, mySampleSize );
       myMin = myRasterBandStats.minimumValue;
       myMax = myRasterBandStats.maximumValue;
     }
     else if ( mStdDevRadioButton->isChecked() )
     {
-      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, myExtent, mySampleSize );
+      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Mean, myExtent, mySampleSize );
       double myStdDev = mStdDevSpinBox->value();
       myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
       myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
 
     }
 
-    emit load ( myBand, myMin, myMax );
+    emit load( myBand, myMin, myMax );
   }
 }

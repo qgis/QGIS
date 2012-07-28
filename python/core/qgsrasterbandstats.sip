@@ -13,9 +13,8 @@ class QgsRasterBandStats
     QString bandName;
     /** \brief The gdal band number (starts at 1)*/
     int bandNumber; 
-    /** \brief A flag to indicate whether this RasterBandStats struct 
-     * is completely populated */
-    bool statsGathered; 
+    /** \brief Collected statistics */
+    int statsGathered; 
     /** \brief The minimum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMinimum function. */
     double minimumValue;

@@ -359,16 +359,19 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief Get band statistics.
      * @param theBandNo The band (number).
+     * @param theStats Requested statistics
      * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
      * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
      * @return Band statistics.
      */
     virtual QgsRasterBandStats bandStatistics( int theBandNo,
+        int theStats = QgsRasterBandStats::All,
         const QgsRectangle & theExtent = QgsRectangle(),
         int theSampleSize = 0 );
 
     /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
     virtual bool hasStatistics( int theBandNo,
+                                int theStats = QgsRasterBandStats::All,
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
 
@@ -551,18 +554,19 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QList <QgsRasterHistogram> mHistograms;
 
     /** Fill in histogram defaults if not specified */
-    virtual QgsRasterHistogram histogramDefaults( int theBandNo,
-        int theBinCount = 0,
-        double theMinimum = std::numeric_limits<double>::quiet_NaN(),
-        double theMaximum = std::numeric_limits<double>::quiet_NaN(),
-        const QgsRectangle & theExtent = QgsRectangle(),
-        int theSampleSize = 0,
-        bool theIncludeOutOfRange = false );
+    void initHistogram( QgsRasterHistogram &theHistogram, int theBandNo,
+                        int theBinCount = 0,
+                        double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                        double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0,
+                        bool theIncludeOutOfRange = false );
 
     /** Fill in statistics defaults if not specified */
-    virtual QgsRasterBandStats statisticsDefaults( int theBandNo,
-        const QgsRectangle & theExtent = QgsRectangle(),
-        int theBinCount = 0 );
+    void initStatistics( QgsRasterBandStats &theStatistics, int theBandNo,
+                         int theStats = QgsRasterBandStats::All,
+                         const QgsRectangle & theExtent = QgsRectangle(),
+                         int theBinCount = 0 );
 
 };
 #endif

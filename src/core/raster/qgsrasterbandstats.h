@@ -33,10 +33,23 @@
 class CORE_EXPORT QgsRasterBandStats
 {
   public:
+    enum Stats
+    {
+      None         = 0,
+      Min          = 1,
+      Max          = 1 << 1,
+      Range        = 1 << 2,
+      Sum          = 1 << 3,
+      Mean         = 1 << 4,
+      StdDev       = 1 << 5,
+      SumOfSquares = 1 << 6,
+      All          = Min | Max | Range | Sum | Mean | StdDev | SumOfSquares
+    };
+
     QgsRasterBandStats()
     {
       bandName = "";
-      statsGathered = false;
+      statsGathered = None;
       minimumValue = std::numeric_limits<double>::max();
       maximumValue = std::numeric_limits<double>::min();
       range = 0.0;
@@ -50,12 +63,13 @@ class CORE_EXPORT QgsRasterBandStats
     }
 
     /*! Compares region, size etc. not collected statistics */
-    bool operator==( const QgsRasterBandStats &s ) const
+    bool contains( const QgsRasterBandStats &s ) const
     {
       return ( s.bandNumber == bandNumber &&
                s.extent == extent &&
                s.width == width &&
-               s.height == height );
+               s.height == height &&
+               s.statsGathered == ( statsGathered & s.statsGathered ) );
     }
 
     /** \brief The name of the band that these stats belong to. */
@@ -88,9 +102,8 @@ class CORE_EXPORT QgsRasterBandStats
     /** \brief The standard deviation of the cell values. */
     double stdDev;
 
-    /** \brief A flag to indicate whether this RasterBandStats struct
-     * is completely populated */
-    bool statsGathered;
+    /** \brief Collected statistics */
+    int statsGathered;
 
     /** \brief The sum of all cells in the band. NO_DATA values are excluded. */
     double sum;
