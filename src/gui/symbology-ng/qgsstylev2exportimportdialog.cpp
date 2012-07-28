@@ -13,20 +13,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-
-#include <QCloseEvent>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QStandardItemModel>
-
 #include "qgsstylev2exportimportdialog.h"
 
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgslogger.h"
+
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QStandardItemModel>
 
 QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent, Mode mode, QString fileName )
     : QDialog( parent )
@@ -102,7 +101,7 @@ void QgsStyleV2ExportImportDialog::doExportImport()
     mFileName = fileName;
 
     moveStyles( &selection, mQgisStyle, mTempStyle );
-    if ( !mTempStyle->save( mFileName ) )
+    if ( !mTempStyle->exportXML( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Export/import error" ),
                             tr( "Error when saving selected symbols to file:\n%1" )
@@ -113,6 +112,7 @@ void QgsStyleV2ExportImportDialog::doExportImport()
   else // import
   {
     moveStyles( &selection, mTempStyle, mQgisStyle );
+    // TODO save in the move function itself using saveSymbol and saveColorRamp
     mQgisStyle->save();
 
     // clear model
@@ -130,10 +130,11 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
   // load symbols and color ramps from file
   if ( mDialogMode == Import )
   {
-    if ( !mTempStyle->load( mFileName ) )
+    // NOTE mTempStyle is style here
+    if ( !style->importXML( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Import error" ),
-                            tr( "An error occured during import:\n%1" ).arg( mTempStyle->errorString() ) );
+                            tr( "An error occured during import:\n%1" ).arg( style->errorString() ) );
       return false;
     }
   }
@@ -210,6 +211,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
             continue;
           case QMessageBox::Yes:
             dst->addSymbol( symbolName, symbol );
+            if ( mDialogMode == Import )
+              dst->saveSymbol( symbolName, symbol, 0, QStringList() );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -225,6 +228,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       if ( dst->symbolNames().contains( symbolName ) && overwrite )
       {
         dst->addSymbol( symbolName, symbol );
+        if ( mDialogMode == Import )
+          dst->saveSymbol( symbolName, symbol, 0, QStringList() );
       }
       else if ( dst->symbolNames().contains( symbolName ) && !overwrite )
       {
@@ -233,6 +238,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       else
       {
         dst->addSymbol( symbolName, symbol );
+        if ( mDialogMode == Import )
+          dst->saveSymbol( symbolName, symbol, 0, QStringList() );
       }
     }
     else
@@ -251,6 +258,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
             continue;
           case QMessageBox::Yes:
             dst->addColorRamp( symbolName, ramp );
+            if ( mDialogMode == Import )
+              dst->saveColorRamp( symbolName, ramp, 0, QStringList() );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -265,6 +274,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       if ( dst->colorRampNames().contains( symbolName ) && overwrite )
       {
         dst->addColorRamp( symbolName, ramp );
+        if ( mDialogMode == Import )
+          dst->saveColorRamp( symbolName, ramp, 0, QStringList() );
       }
       else if ( dst->colorRampNames().contains( symbolName ) && !overwrite )
       {
@@ -273,6 +284,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       else
       {
         dst->addColorRamp( symbolName, ramp );
+        if ( mDialogMode == Import )
+          dst->saveColorRamp( symbolName, ramp, 0, QStringList() );
       }
     }
   }

@@ -40,6 +40,7 @@ QgsStyleV2* QgsStyleV2::mDefaultStyle = NULL;
 
 QgsStyleV2::QgsStyleV2()
 {
+  mCurrentDB = NULL;
 }
 
 QgsStyleV2::~QgsStyleV2()
@@ -75,8 +76,8 @@ void QgsStyleV2::clear()
 
   mSymbols.clear();
   mColorRamps.clear();
-
-  sqlite3_close( mCurrentDB );
+  if ( mCurrentDB )
+    sqlite3_close( mCurrentDB );
 }
 
 bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol )
@@ -88,7 +89,6 @@ bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol )
     delete mSymbols.value( name );
 
   mSymbols.insert( name, symbol );
-  saveSymbol( name, symbol, 0, QStringList() );
 
   return true;
 }
@@ -182,9 +182,19 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp )
   if ( mColorRamps.contains( name ) )
     delete mColorRamps.value( name );
 
+  mColorRamps.insert( name, colorRamp );
+  return true;
+}
+
+bool QgsStyleV2::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int groupid, QStringList tags )
+{
+  // TODO add support for groups and tags
+  Q_UNUSED( groupid );
+  Q_UNUSED( tags );
+
   // insert it into the database
   QDomDocument doc( "dummy" );
-  QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( name, colorRamp, doc );
+  QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( name, ramp, doc );
   if ( rampEl.isNull() )
   {
     QgsDebugMsg( "Couldnot convert color ramp to valid XML!" );
@@ -204,7 +214,6 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp )
     return false;
   }
 
-  mColorRamps.insert( name, colorRamp );
   return true;
 }
 
@@ -271,7 +280,11 @@ bool QgsStyleV2::load( QString filename )
 
   // Open the sqlite database
   if ( !openDB( filename ) )
+  {
+    mErrorString = "Unable to open database file specified";
+    QgsDebugMsg( mErrorString );
     return false;
+  }
   // First create all the Main symbols
   sqlite3_stmt *ppStmt;
   const char *query = "SELECT * FROM symbol;";
@@ -1222,4 +1235,129 @@ QString QgsStyleV2::smartgroupOperator( int id )
   sqlite3_finalize( ppStmt );
 
   return op;
+}
+
+bool QgsStyleV2::exportXML( QString filename )
+{
+  if ( filename.isEmpty() )
+  {
+    QgsDebugMsg( "Invalid filename for style export." );
+    return false;
+  }
+
+  QDomDocument doc( "qgis_style" );
+  QDomElement root = doc.createElement( "qgis_style" );
+  root.setAttribute( "version", STYLE_CURRENT_VERSION );
+  doc.appendChild( root );
+
+  // TODO work on the groups and tags
+
+  QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( mSymbols, "symbols", doc );
+
+  QDomElement rampsElem = doc.createElement( "colorramps" );
+
+  // save color ramps
+  for ( QMap<QString, QgsVectorColorRampV2*>::iterator itr = mColorRamps.begin(); itr != mColorRamps.end(); ++itr )
+  {
+    QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( itr.key(), itr.value(), doc );
+    rampsElem.appendChild( rampEl );
+  }
+
+  root.appendChild( symbolsElem );
+  root.appendChild( rampsElem );
+
+ // save
+  QFile f( filename );
+  if ( !f.open( QFile::WriteOnly ) )
+  {
+    mErrorString = "Couldn't open file for writing: " + filename;
+    return false;
+  }
+  QTextStream ts( &f );
+  doc.save( ts, 2 );
+  f.close();
+
+  mFileName = filename;
+  return true;
+
+}
+
+bool QgsStyleV2::importXML( QString filename )
+{
+  mErrorString = QString();
+  QDomDocument doc( "style" );
+  QFile f( filename );
+  if ( !f.open( QFile::ReadOnly ) )
+  {
+    mErrorString = "Unable to open the specified file";
+    QgsDebugMsg( "Error opening the style XML file.");
+    return false;
+  }
+
+  if( !doc.setContent( &f ) )
+  {
+    mErrorString = "Unbale to understand the style file.";
+    QgsDebugMsg( "XML Parsing error" );
+    f.close();
+    return false;
+  }
+  f.close();
+
+  QDomElement docEl = doc.documentElement();
+  if ( docEl.tagName() != "qgis_style" )
+  {
+    mErrorString = "Incoerrect root tag in style: " + docEl.tagName();
+    return false;
+  }
+
+  QString version = docEl.attribute( "version" );
+  if ( version != STYLE_CURRENT_VERSION )
+  {
+    mErrorString = "Unknown style file version: " + version;
+    return false;
+  }
+
+  QgsStyleV2* defStyle = QgsStyleV2::defaultStyle();
+
+  // load symbols
+  QDomElement symbolsElement = docEl.firstChildElement( "symbols" );
+  QDomElement e = symbolsElement.firstChildElement();
+  while ( !e.isNull() )
+  {
+    if ( e.tagName() == "symbol" )
+    {
+      QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol( e );
+      if ( symbol != NULL )
+      {
+        addSymbol( e.attribute( "name" ), symbol );
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "unknown tag: " + e.tagName() );
+    }
+    e = e.nextSiblingElement();
+  }
+
+  // load color ramps
+  QDomElement rampsElement = docEl.firstChildElement( "colorramps" );
+  e = rampsElement.firstChildElement();
+  while ( !e.isNull() )
+  {
+    if ( e.tagName() == "colorramp" )
+    {
+      QgsVectorColorRampV2* ramp = QgsSymbolLayerV2Utils::loadColorRamp( e );
+      if ( ramp != NULL )
+      {
+        addColorRamp( e.attribute( "name" ), ramp );
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "unknown tag: " + e.tagName() );
+    }
+    e = e.nextSiblingElement();
+  }
+  mFileName = filename;
+  return true;
 }

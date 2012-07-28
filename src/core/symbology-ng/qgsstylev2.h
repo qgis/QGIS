@@ -115,6 +115,8 @@ class CORE_EXPORT QgsStyleV2
 
     //! add the symbol to the DB with the tags
     bool saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QStringList tags );
+    //! add the colorramp to the DB
+    bool saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int groupid, QStringList tags );
 
     //! add color ramp to style. takes ramp's ownership
     bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp );
@@ -181,6 +183,12 @@ class CORE_EXPORT QgsStyleV2
 
     //! returns the symbols for the smartgroup
     QStringList symbolsOfSmartgroup( StyleEntity type, int id );
+
+    //! Exports the style as a XML file
+    bool exportXML( QString filename );
+
+    //! Imports the symbols and colorramps into the default style database from the given XML file
+    bool importXML( QString filename );
 
   protected:
 
