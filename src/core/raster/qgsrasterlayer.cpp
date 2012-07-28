@@ -919,11 +919,11 @@ bool QgsRasterLayer::hasCompatibleSymbology( const QgsMapLayer& theOther ) const
   return false;
 } //todo
 
+#if 0
 /**
  * @param theBandNo The number of the band to check
  * @return true if statistics have already been build for this band otherwise false
  */
-/*
 bool QgsRasterLayer::hasStatistics( int theBandNo )
 {
   if ( theBandNo <= mRasterStatsList.size() && theBandNo > 0 )
@@ -936,7 +936,7 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
     return false;
   }
 }
-*/
+#endif
 
 /**
  * @param thePoint the QgsPoint for which to obtain pixel values

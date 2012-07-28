@@ -128,15 +128,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QGridLayout *mypInnerLayout = new QGridLayout( mypInnerFrame );
 
     int index = 0;
-    for ( QgsAttributeMap::const_iterator it = myAttributes.begin(); it != myAttributes.end(); ++it )
+    for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
     {
-      const QgsField &field = theFieldMap[it.key()];
-
       //show attribute alias if available
       QString myFieldName = vl->attributeDisplayName( it.key() );
-      int myFieldType = field.type();
+      int myFieldType = it->type();
 
-      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), it.value() );
+      QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
       if ( !myWidget )
         continue;
 
@@ -179,15 +177,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   }
   else
   {
-    for ( QgsAttributeMap::const_iterator it = myAttributes.begin(); it != myAttributes.end(); ++it )
+    for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
     {
-      const QgsField &field = theFieldMap[it.key()];
-
-      QWidget *myWidget = mDialog->findChild<QWidget*>( field.name() );
+      QWidget *myWidget = mDialog->findChild<QWidget*>( it->name() );
       if ( !myWidget )
         continue;
 
-      QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, it.key(), it.value() );
+      QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, it.key(), myAttributes.value( it.key(), QVariant() ) );
 
       if ( vl->editType( it.key() ) != QgsVectorLayer::Immutable )
       {
@@ -348,9 +344,8 @@ void QgsAttributeDialog::accept()
     return;
 
   //write the new values back to the feature
-  QgsAttributeMap myAttributes = mFeature->attributeMap();
   int myIndex = 0;
-  for ( QgsAttributeMap::const_iterator it = myAttributes.begin(); it != myAttributes.end(); ++it )
+  for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().begin(); it != mLayer->pendingFields().end(); ++it )
   {
     QVariant value;
 

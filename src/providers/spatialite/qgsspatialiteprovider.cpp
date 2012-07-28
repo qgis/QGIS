@@ -4896,7 +4896,7 @@ const QgsField & QgsSpatiaLiteProvider::field( int index ) const
 
   if ( it == attributeFields.constEnd() )
   {
-    QgsLogger::warning( QString( "FAILURE: Field %1 not found." ).arg( index ) );
+    QgsMessageLog::logMessage( tr( "FAILURE: Field %1 not found." ).arg( index ), tr( "SpatiaLite" ) );
     throw SLFieldNotFound();
   }
 
