@@ -410,7 +410,9 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
   {
     if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
     {
-      mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
+      // Current canvas extent (used to calc min/max) in layer CRS
+      QgsRectangle myExtent = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
+      mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer, myExtent );
       mRendererStackedWidget->addWidget( mRendererWidget );
       if ( oldWidget )
       {

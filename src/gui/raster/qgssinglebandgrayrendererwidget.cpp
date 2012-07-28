@@ -19,9 +19,10 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 
-QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer ): QgsRasterRendererWidget( layer )
+QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
+
   mMinLineEdit->setValidator( new QDoubleValidator( mMinLineEdit ) );
   mMaxLineEdit->setValidator( new QDoubleValidator( mMaxLineEdit ) );
 
@@ -32,6 +33,12 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     {
       return;
     }
+
+    mMinMaxWidget = new QgsRasterMinMaxWidget( layer, this );
+    mMinMaxWidget->setExtent( extent );
+    layout()->addWidget( mMinMaxWidget );
+    connect( mMinMaxWidget, SIGNAL( load( int, double, double ) ),
+             this, SLOT( loadMinMax( int, double, double ) ) );
 
     //fill available bands into combo box
     int nBands = provider->bandCount();
@@ -80,47 +87,34 @@ QgsRasterRenderer* QgsSingleBandGrayRendererWidget::renderer()
   return renderer;
 }
 
-void QgsSingleBandGrayRendererWidget::on_mLoadPushButton_clicked()
+void QgsSingleBandGrayRendererWidget::loadMinMax( int theBandNo, double theMin, double theMax )
 {
-  int band = mGrayBandComboBox->itemData( mGrayBandComboBox->currentIndex() ).toInt();
-  double minMaxValues[2];
-  bool ok = false;
+  QgsDebugMsg( QString( "theBandNo = %1 theMin = %2 theMax = %3" ).arg( theBandNo ).arg( theMin ).arg( theMax ) );
 
-  if ( mEstimateRadioButton->isChecked() )
+  if ( qIsNaN( theMin ) )
   {
-    ok = bandMinMax( Estimate, band, minMaxValues );
-  }
-  else if ( mActualRadioButton->isChecked() )
-  {
-    ok = bandMinMax( Actual, band, minMaxValues );
-  }
-  else if ( mCurrentExtentRadioButton->isChecked() )
-  {
-    ok = bandMinMax( CurrentExtent, band, minMaxValues );
-  }
-  else if ( mCumulativeCut->isChecked() )
-  {
-    ok = bandMinMax( CumulativeCut, band, minMaxValues );
-  }
-  else if ( mUseStdDevRadioButton->isChecked() )
-  {
-    QgsRasterBandStats rasterBandStats = mRasterLayer->dataProvider()->bandStatistics( band );
-    double diff = mStdDevSpinBox->value() * rasterBandStats.stdDev;
-    minMaxValues[0] = rasterBandStats.mean - diff;
-    minMaxValues[1] = rasterBandStats.mean + diff;
-    ok = true;
-  }
-
-  if ( ok )
-  {
-    mMinLineEdit->setText( QString::number( minMaxValues[0] ) );
-    mMaxLineEdit->setText( QString::number( minMaxValues[1] ) );
+    mMinLineEdit->clear();
   }
   else
   {
-    mMinLineEdit->clear();
+    mMinLineEdit->setText( QString::number( theMin ) );
+  }
+
+  if ( qIsNaN( theMax ) )
+  {
     mMaxLineEdit->clear();
   }
+  else
+  {
+    mMaxLineEdit->setText( QString::number( theMax ) );
+  }
+}
+
+void QgsSingleBandGrayRendererWidget::on_mGrayBandComboBox_currentIndexChanged( int index )
+{
+  QList<int> myBands;
+  myBands.append( mGrayBandComboBox->itemData( index ).toInt() );
+  mMinMaxWidget->setBands( myBands );
 }
 
 void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* r )

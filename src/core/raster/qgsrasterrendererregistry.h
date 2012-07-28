@@ -30,7 +30,7 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
 typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
-typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer* );
+typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer*, const QgsRectangle &extent );
 
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {

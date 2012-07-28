@@ -1,6 +1,7 @@
 
 SET(QGIS_GUI_SRCS
 
+raster/qgsrasterminmaxwidget.cpp
 raster/qgsrasterrendererwidget.cpp
 raster/qgsmultibandcolorrendererwidget.cpp
 raster/qgspalettedrendererwidget.cpp
@@ -100,6 +101,7 @@ ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
 
+raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h
 raster/qgsmultibandcolorrendererwidget.h
 raster/qgssinglebandgrayrendererwidget.h

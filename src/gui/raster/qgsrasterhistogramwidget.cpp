@@ -124,7 +124,12 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     group = new QActionGroup( this );
     group->setExclusive( false );
     connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
-    // action = new QAction( tr( "Load min/max from band" ), group );
+    action = new QAction( tr( "Reset" ), group );
+    action->setData( QVariant( "Load reset" ) );
+    menu->addAction( action );
+
+    // Load min/max needs 3 params (method, extent, accuracy), cannot put it in single item
+#if 0
     action = new QAction( tr( "Load min/max" ), group );
     action->setSeparator( true );
     menu->addAction( action );
@@ -143,14 +148,12 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action = new QAction( tr( "Use stddev (custom)" ), group );
     action->setData( QVariant( "Load stddev" ) );
     menu->addAction( action );
-    action = new QAction( tr( "Reset" ), group );
-    action->setData( QVariant( "Load reset" ) );
-    menu->addAction( action );
     action = new QAction( tr( "Load for each band" ), group );
     action->setData( QVariant( "Load apply all" ) );
     action->setCheckable( true );
     action->setChecked( mHistoLoadApplyAll );
     menu->addAction( action );
+#endif
 
     //others
     menu->addSeparator( );
@@ -688,11 +691,13 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
     myBands << cboHistoBand->currentIndex() + 1;
 
     // get stddev value once if needed
+    /*
     double myStdDev = 1.0;
     if ( actionName == "Load stddev" )
     {
       myStdDev = mRendererWidget->stdDev().toDouble();
     }
+    */
 
     // don't update markers every time
     leHistoMin->blockSignals( true );
@@ -702,6 +707,7 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
     foreach( int theBandNo, myBands )
     {
       ok = false;
+#if 0
       if ( actionName == "Load actual" )
       {
         ok = mRendererWidget->bandMinMax( QgsRasterRendererWidget::Actual,
@@ -722,6 +728,7 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
       {
         ok = mRendererWidget->bandMinMaxFromStdDev( myStdDev, theBandNo, minMaxValues );
       }
+#endif
 
       // apply current item
       cboHistoBand->setCurrentIndex( theBandNo - 1 );

@@ -869,6 +869,44 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
   return myHistogram;
 }
 
+void QgsRasterDataProvider::cumulativeCut( int theBandNo,
+    double theLowerCount, double theUpperCount,
+    double &theLowerValue, double &theUpperValue,
+    const QgsRectangle & theExtent,
+    int theSampleSize )
+{
+  QgsDebugMsg( QString( "theBandNo = %1 theLowerCount = %2 theUpperCount = %3 theSampleSize = %4" ).arg( theBandNo ).arg( theLowerCount ).arg( theUpperCount ).arg( theSampleSize ) );
+
+  QgsRasterHistogram myHistogram = histogram( theBandNo, 0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), theExtent, theSampleSize );
+
+  // Init to NaN is better than histogram min/max to catch errors
+  theLowerValue = std::numeric_limits<double>::quiet_NaN();
+  theUpperValue = std::numeric_limits<double>::quiet_NaN();
+
+  double myBinXStep = ( myHistogram.maximum - myHistogram.minimum ) / myHistogram.binCount;
+  int myCount = 0;
+  int myMinCount = ( int ) qRound( theLowerCount * myHistogram.nonNullCount );
+  int myMaxCount = ( int ) qRound( theUpperCount * myHistogram.nonNullCount );
+  bool myLowerFound = false;
+  QgsDebugMsg( QString( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ) );
+
+  for ( int myBin = 0; myBin < myHistogram.histogramVector.size(); myBin++ )
+  {
+    int myBinValue = myHistogram.histogramVector.value( myBin );
+    myCount += myBinValue;
+    if ( !myLowerFound && myCount > myMinCount )
+    {
+      theLowerValue = myHistogram.minimum + myBin * myBinXStep;
+      myLowerFound = true;
+    }
+    if ( myCount >= myMaxCount )
+    {
+      theUpperValue = myHistogram.minimum + myBin * myBinXStep;
+      break;
+    }
+  }
+}
+
 double QgsRasterDataProvider::readValue( void *data, int type, int index )
 {
   if ( !data )

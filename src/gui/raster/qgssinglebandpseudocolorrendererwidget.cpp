@@ -24,8 +24,8 @@
 #include <QSettings>
 #include <QTextStream>
 
-QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer ):
-    QgsRasterRendererWidget( layer )
+QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ):
+    QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 

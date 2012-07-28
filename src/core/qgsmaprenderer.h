@@ -168,6 +168,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! transform extent in layer's CRS to extent in output CRS
     QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
+    //! transform extent in output CRS to extent in layer's CRS
+    QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent );
+
     //! transform coordinates from layer's CRS to output CRS
     QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point );
 

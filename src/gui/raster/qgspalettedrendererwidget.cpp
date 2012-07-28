@@ -20,7 +20,7 @@
 #include "qgsrasterlayer.h"
 #include <QColorDialog>
 
-QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer ): QgsRasterRendererWidget( layer )
+QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 

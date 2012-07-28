@@ -18,6 +18,7 @@
 #ifndef QGSMULTIBANDCOLORRENDERERWIDGET_H
 #define QGSMULTIBANDCOLORRENDERERWIDGET_H
 
+#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgsmultibandcolorrendererwidgetbase.h"
 
@@ -32,8 +33,8 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     Q_OBJECT
 
   public:
-    QgsMultiBandColorRendererWidget( QgsRasterLayer* layer );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer ) { return new QgsMultiBandColorRendererWidget( layer ); }
+    QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsMultiBandColorRendererWidget( layer, theExtent ); }
     ~QgsMultiBandColorRendererWidget();
 
     QgsRasterRenderer* renderer();
@@ -44,12 +45,16 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     QString max( int index = 0 );
     void setMin( QString value, int index = 0 );
     void setMax( QString value, int index = 0 );
-    QString stdDev( ) { return QString::number( mStdDevSpinBox->value() ); }
-    void setStdDev( QString value ) { mStdDevSpinBox->setValue( value.toDouble() ); }
+    //QString stdDev( ) { return QString::number( mStdDevSpinBox->value() ); }
+    //void setStdDev( QString value ) { mStdDevSpinBox->setValue( value.toDouble() ); }
     int selectedBand( int index = 0 );
 
+  public slots:
+    void loadMinMax( int theBandNo, double theMin, double theMax );
+
   private slots:
-    void on_mLoadPushButton_clicked();
+    //void on_mLoadPushButton_clicked();
+    void onBandChanged( int );
 
   private:
     void createValidators();
@@ -57,7 +62,7 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
                                 int blueBand );
     /**Reads min/max values from contrast enhancement and fills values into the min/max line edits*/
     void setMinMaxValue( const QgsContrastEnhancement* ce, QLineEdit* minEdit, QLineEdit* maxEdit );
-    void loadMinMaxValueForBand( int band, QLineEdit* minEdit, QLineEdit* maxEdit );
+    QgsRasterMinMaxWidget * mMinMaxWidget;
 };
 
 #endif // QGSMULTIBANDCOLORRENDERERWIDGET_H
