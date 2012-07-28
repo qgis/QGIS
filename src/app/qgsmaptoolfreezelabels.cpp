@@ -257,8 +257,8 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
 {
 
   bool doThaw = e->modifiers() & Qt::ShiftModifier ? true : false;
-  bool toggleThawOrFreeze = e->modifiers() & Qt::AltModifier ? true : false;
-  bool doHide = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool toggleThawOrFreeze = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool doHide = ( doThaw && toggleThawOrFreeze );
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
@@ -432,16 +432,23 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
   if ( freeze )
   {
 
-    QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
+//     QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
 
-    double labelX = labelpoint.x();
-    double labelY = labelpoint.y();
+    QgsPoint referencePoint;
+    if ( !rotationPoint( referencePoint, true ) )
+    {
+      referencePoint.setX( mCurrentLabelPos.labelRect.xMinimum() );
+      referencePoint.setY( mCurrentLabelPos.labelRect.yMinimum() );
+    }
+
+    double labelX = referencePoint.x();
+    double labelY = referencePoint.y();
     double labelR = labelpos.rotation * 180 / M_PI;
 
     // transform back to layer crs, if on-fly on
     if ( mRender->hasCrsTransformEnabled() )
     {
-      QgsPoint transformedPoint = mRender->mapToLayerCoordinates( vlayer, labelpoint );
+      QgsPoint transformedPoint = mRender->mapToLayerCoordinates( vlayer, referencePoint );
       labelX = transformedPoint.x();
       labelY = transformedPoint.y();
     }

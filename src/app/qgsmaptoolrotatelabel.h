@@ -33,17 +33,7 @@ class QgsMapToolRotateLabel: public QgsMapToolLabel
     virtual void canvasMoveEvent( QMouseEvent * e );
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-    /**Checks if labels in a layer can be rotated
-      @param rotationCol out: attribute column for data defined label rotation*/
-    bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
-
   protected:
-    /**Returns data defined rotation of a feature.
-      @param rotation out: rotation value
-      @param rotationSuccess out: false if rotation value is NULL
-      @return true if data defined rotation is enabled on the layer
-      */
-    bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess );
 
     static int roundTo15Degrees( double n );
     /**Converts azimuth value to counterclockwise 0 - 360*/
