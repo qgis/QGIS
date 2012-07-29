@@ -20,7 +20,15 @@ set -e
 if [ -d .svn ]; then
 	MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
 elif [ -d .git ]; then
-	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p" | sort -u)
+  case $OSTYPE in
+  darwin*)
+    MODIFIED=$(git status | sed -Ene "s/^#	(modified|new file): *//p" | sort -u)
+    ;;
+  *)
+    MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p" | sort -u)
+    ;;
+  esac
+
 else
 	echo No working copy
 	exit 1
