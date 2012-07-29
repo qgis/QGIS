@@ -1008,6 +1008,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/offset_miter_limit", mCurveOffsetMiterLimitComboBox->value() );
 
   // default scale list
+  myPaths.clear();
   for ( int i = 0; i < mListGlobalScales->count(); ++i )
   {
     if ( i != 0 )
