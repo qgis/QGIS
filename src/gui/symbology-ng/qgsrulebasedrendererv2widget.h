@@ -107,6 +107,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 
     void currentRuleChanged( const QModelIndex& current = QModelIndex(), const QModelIndex& previous = QModelIndex() );
 
+    void saveSectionWidth( int section, int oldSize, int newSize );
+    void restoreSectionWidths();
+
   protected:
 
     void refineRule( int type );
