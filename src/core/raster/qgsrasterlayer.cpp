@@ -96,6 +96,10 @@ typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QStrin
 // doubles can take for the current system.  (Yes, 20 was arbitrary.)
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
+const double QgsRasterLayer::CUMULATIVE_CUT_LOWER = 0.02;
+const double QgsRasterLayer::CUMULATIVE_CUT_UPPER = 0.98;
+const double QgsRasterLayer::SAMPLE_SIZE = 250000;
+
 QgsRasterLayer::QgsRasterLayer()
     : QgsMapLayer( RasterLayer )
     , QSTRING_NOT_SET( "Not Set" )
@@ -1845,71 +1849,91 @@ void QgsRasterLayer::setColorShadingAlgorithm( QString )
 
 void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, bool theGenerateLookupTableFlag )
 {
+  setContrastEnhancementAlgorithm( theAlgorithm, ContrastEnhancementMinMax, QgsRectangle(), SAMPLE_SIZE, theGenerateLookupTableFlag );
+}
+
+void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+{
+  QgsDebugMsg( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ) );
   if ( !mPipe.renderer() || !mDataProvider )
   {
     return;
   }
 
+  QList<int> myBands;
+  QList<QgsContrastEnhancement*> myEnhancements;
+  QgsSingleBandGrayRenderer* myGrayRenderer = 0;
+  QgsMultiBandColorRenderer* myMultiBandRenderer = 0;
   QString rendererType  = mPipe.renderer()->type();
   if ( rendererType == "singlebandgray" )
   {
-    QgsSingleBandGrayRenderer* gr = dynamic_cast<QgsSingleBandGrayRenderer*>( mPipe.renderer() );
-    if ( gr )
-    {
-      int grayBand = gr->grayBand();
-      if ( grayBand == -1 )
-      {
-        return;
-      }
-      QgsRasterDataProvider::DataType dataType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( grayBand );
-      QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )dataType );
-      ce->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
-      ce->setMinimumValue( mDataProvider->minimumValue( grayBand ) );
-      ce->setMaximumValue( mDataProvider->maximumValue( grayBand ) );
-      gr->setContrastEnhancement( ce );
-    }
+    myGrayRenderer = dynamic_cast<QgsSingleBandGrayRenderer*>( mPipe.renderer() );
+    if ( !myGrayRenderer ) return;
+    myBands << myGrayRenderer->grayBand();
   }
   else if ( rendererType == "multibandcolor" )
   {
-    QgsMultiBandColorRenderer* cr = dynamic_cast<QgsMultiBandColorRenderer*>( mPipe.renderer() );
-    if ( cr )
+    myMultiBandRenderer = dynamic_cast<QgsMultiBandColorRenderer*>( mPipe.renderer() );
+    if ( !myMultiBandRenderer ) return;
+    myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
+  }
+
+  foreach( int myBand, myBands )
+  {
+    if ( myBand != -1 )
     {
-      //red enhancement
-      int redBand = cr->redBand();
-      if ( redBand != -1 )
+      QgsRasterDataProvider::DataType myType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( myBand );
+      QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )myType );
+      myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
+
+      double myMin = std::numeric_limits<double>::quiet_NaN();
+      double myMax = std::numeric_limits<double>::quiet_NaN();
+
+      if ( theLimits == ContrastEnhancementMinMax )
       {
-        QgsRasterDataProvider::DataType redType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( redBand );
-        QgsContrastEnhancement* redEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )redType );
-        redEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
-        redEnhancement->setMinimumValue( mDataProvider->minimumValue( redBand ) );
-        redEnhancement->setMaximumValue( mDataProvider->maximumValue( redBand ) );
-        cr->setRedContrastEnhancement( redEnhancement );
+        // minimumValue/maximumValue are not well defined (estimation) and will be removed
+        //myMin = mDataProvider->minimumValue( myBand );
+        //myMax = mDataProvider->maximumValue( myBand );
+        QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, theExtent, theSampleSize );
+        myMin = myRasterBandStats.minimumValue;
+        myMax = myRasterBandStats.maximumValue;
+      }
+      else if ( theLimits == ContrastEnhancementStdDev )
+      {
+        double myStdDev = 1; // make optional?
+        QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( myBand, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, theExtent, theSampleSize );
+        myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
+        myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
+      }
+      else if ( theLimits == ContrastEnhancementCumulativeCut )
+      {
+        QSettings mySettings;
+        double myLower = mySettings.value( "/Raster/cumulativeCutLower", QString::number( CUMULATIVE_CUT_LOWER ) ).toDouble();
+        double myUpper = mySettings.value( "/Raster/cumulativeCutUpper", QString::number( CUMULATIVE_CUT_UPPER ) ).toDouble();
+        QgsDebugMsg( QString( "myLower = %1 myUpper = %2" ).arg( myLower ).arg( myUpper ) );
+        mDataProvider->cumulativeCut( myBand, myLower, myUpper, myMin, myMax, theExtent, theSampleSize );
       }
 
-      //green enhancement
-      int greenBand = cr->greenBand();
-      if ( greenBand != -1 )
-      {
-        QgsRasterDataProvider::DataType greenType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( cr->greenBand() );
-        QgsContrastEnhancement* greenEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )greenType );
-        greenEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
-        greenEnhancement->setMinimumValue( mDataProvider->minimumValue( greenBand ) );
-        greenEnhancement->setMaximumValue( mDataProvider->maximumValue( greenBand ) );
-        cr->setGreenContrastEnhancement( greenEnhancement );
-      }
-
-      //blue enhancement
-      int blueBand = cr->blueBand();
-      if ( blueBand != -1 )
-      {
-        QgsRasterDataProvider::DataType blueType = ( QgsRasterDataProvider::DataType )mDataProvider->dataType( cr->blueBand() );
-        QgsContrastEnhancement* blueEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )blueType );
-        blueEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
-        blueEnhancement->setMinimumValue( mDataProvider->minimumValue( blueBand ) );
-        blueEnhancement->setMaximumValue( mDataProvider->maximumValue( blueBand ) );
-        cr->setBlueContrastEnhancement( blueEnhancement );
-      }
+      QgsDebugMsg( QString( "myBand = %1 myMin = %2 myMax = %3" ).arg( myBand ).arg( myMin ).arg( myMax ) );
+      myEnhancement->setMinimumValue( myMin );
+      myEnhancement->setMaximumValue( myMax );
+      myEnhancements.append( myEnhancement );
     }
+    else
+    {
+      myEnhancements.append( 0 );
+    }
+  }
+
+  if ( rendererType == "singlebandgray" )
+  {
+    if ( myEnhancements.value( 0 ) ) myGrayRenderer->setContrastEnhancement( myEnhancements.value( 0 ) );
+  }
+  else if ( rendererType == "multibandcolor" )
+  {
+    if ( myEnhancements.value( 0 ) ) myMultiBandRenderer->setRedContrastEnhancement( myEnhancements.value( 0 ) );
+    if ( myEnhancements.value( 1 ) ) myMultiBandRenderer->setGreenContrastEnhancement( myEnhancements.value( 1 ) );
+    if ( myEnhancements.value( 2 ) ) myMultiBandRenderer->setBlueContrastEnhancement( myEnhancements.value( 2 ) );
   }
 }
 

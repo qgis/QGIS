@@ -55,7 +55,6 @@ class QgsPalLabeling;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
-class QgsRasterLayer;
 class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
@@ -87,6 +86,7 @@ class QgsTileScaleWidget;
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
+#include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
 
 #include "ui_qgisapp.h"
@@ -548,6 +548,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      * Valid for non wms raster layers only.
      * @note Added in QGIS 1.7 */
     void fullHistogramStretch();
+    /** Perform a local cumulative cut stretch */
+    void localCumulativeCutStretch();
+    /** Perform a full extent cumulative cut stretch */
+    void fullCumulativeCutStretch();
     //! plugin manager
     void showPluginManager();
     //! load python support if possible
@@ -992,10 +996,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void createDecorations();
 
     /**Do histogram stretch for singleband gray / multiband color rasters*/
-    void histogramStretch( bool visibleAreaOnly = false );
-    /**Create raster enhancement object for a raster band*/
-    QgsContrastEnhancement* rasterContrastEnhancement( QgsRasterLayer* rlayer, int band,
-        bool visibleAreaOnly = false ) const;
+    void histogramStretch( bool visibleAreaOnly = false, QgsRasterLayer::ContrastEnhancementLimits theLimits = QgsRasterLayer::ContrastEnhancementMinMax );
 
     // actions for menus and toolbars -----------------
 

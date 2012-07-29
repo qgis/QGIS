@@ -174,6 +174,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
+    /**  \brief Default cumulative cut lower limit */
+    static const double CUMULATIVE_CUT_LOWER;
+
+    /**  \brief Default cumulative cut upper limit */
+    static const double CUMULATIVE_CUT_UPPER;
+
+    /**  \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
+    static const double SAMPLE_SIZE;
+
     /**  \brief Constructor. Provider is not set. */
     QgsRasterLayer();
 
@@ -243,7 +252,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       Palette,
       Multiband,
       ColorLayer
-    } ;
+    };
+
+    /** \brief Contrast enhancement limits */
+    enum ContrastEnhancementLimits
+    {
+      ContrastEnhancementMinMax,
+      ContrastEnhancementStdDev,
+      ContrastEnhancementCumulativeCut
+    };
 
     /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
     typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
@@ -548,8 +565,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator for color shader algorithm */
     Q_DECL_DEPRECATED void setColorShadingAlgorithm( QString theShaderAlgorithm );
 
-    /** \brief Mutator for contrast enhancement algorithm */
+    /** \brief Mutator for contrast enhancement algorithm using min/max */
+    // TODO: remove in 2.0, replaced by following
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+                                          bool theGenerateLookupTableFlag = true );
+
+    /** \brief Mutator for contrast enhancement algorithm
+     *  @param theAlgorithm Contrast enhancement algorithm
+     *  @param theLimits Limits
+     *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
+     *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  @param theGenerateLookupTableFlag Generate llokup table. */
+
+
+    void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+                                          ContrastEnhancementLimits theLimits = ContrastEnhancementMinMax,
+                                          QgsRectangle theExtent = QgsRectangle(),
+                                          int theSampleSize = SAMPLE_SIZE,
                                           bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator for contrast enhancement algorithm */

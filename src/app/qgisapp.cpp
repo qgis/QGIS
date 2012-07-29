@@ -963,6 +963,8 @@ void QgisApp::createActions()
   // Raster toolbar items
   connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
   connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
+  connect( mActionLocalCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( localCumulativeCutStretch() ) );
+  connect( mActionFullCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( fullCumulativeCutStretch() ) );
 
   // Help Menu Items
 
@@ -5461,14 +5463,29 @@ void QgisApp::options()
 
 void QgisApp::fullHistogramStretch()
 {
-  histogramStretch( false );
+  histogramStretch( false, QgsRasterLayer::ContrastEnhancementMinMax );
 }
 
-void QgisApp::histogramStretch( bool visibleAreaOnly )
+void QgisApp::localHistogramStretch()
 {
-  QgsMapLayer * layer = mMapLegend->currentLayer();
+  histogramStretch( true, QgsRasterLayer::ContrastEnhancementMinMax );
+}
 
-  if ( !layer )
+void QgisApp::fullCumulativeCutStretch()
+{
+  histogramStretch( false, QgsRasterLayer::ContrastEnhancementCumulativeCut );
+}
+
+void QgisApp::localCumulativeCutStretch()
+{
+  histogramStretch( true, QgsRasterLayer::ContrastEnhancementCumulativeCut );
+}
+
+void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEnhancementLimits theLimits )
+{
+  QgsMapLayer * myLayer = mMapLegend->currentLayer();
+
+  if ( !myLayer )
   {
     QMessageBox::information( this,
                               tr( "No Layer Selected" ),
@@ -5476,8 +5493,8 @@ void QgisApp::histogramStretch( bool visibleAreaOnly )
     return;
   }
 
-  QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
-  if ( !rlayer )
+  QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
+  if ( !myRasterLayer )
   {
     QMessageBox::information( this,
                               tr( "No Raster Layer Selected" ),
@@ -5485,116 +5502,12 @@ void QgisApp::histogramStretch( bool visibleAreaOnly )
     return;
   }
 
-  QgsRasterDataProvider* provider = rlayer->dataProvider();
-  if ( !provider )
-  {
-    return;
-  }
+  QgsRectangle myRectangle;
+  if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
-  //get renderer
-  QgsRasterRenderer* renderer = rlayer->renderer();
-  if ( !renderer )
-  {
-    return;
-  }
-
-  //singleband gray <-> multiband color
-  if ( renderer->type() == "singlebandgray" )
-  {
-    QgsSingleBandGrayRenderer* grayRenderer = static_cast<QgsSingleBandGrayRenderer*>( renderer );
-    if ( !grayRenderer )
-    {
-      return;
-    }
-
-    //create new contrast enhancements
-    int grayBand = grayRenderer->grayBand();
-    if ( grayBand == -1 )
-    {
-      return;
-    }
-
-    QgsContrastEnhancement* e = rasterContrastEnhancement( rlayer, grayBand, visibleAreaOnly );
-    if ( !e )
-    {
-      return;
-    }
-    grayRenderer->setContrastEnhancement( e );
-  }
-  else if ( renderer->type() == "multibandcolor" )
-  {
-    QgsMultiBandColorRenderer* colorRenderer = static_cast<QgsMultiBandColorRenderer*>( renderer );
-    if ( !colorRenderer )
-    {
-      return;
-    }
-
-    QgsContrastEnhancement* redEnhancement = rasterContrastEnhancement( rlayer, colorRenderer->redBand(), visibleAreaOnly );
-    if ( redEnhancement )
-    {
-      colorRenderer->setRedContrastEnhancement( redEnhancement );
-    }
-    QgsContrastEnhancement* greenEnhancement = rasterContrastEnhancement( rlayer, colorRenderer->greenBand(), visibleAreaOnly );
-    if ( greenEnhancement )
-    {
-      colorRenderer->setGreenContrastEnhancement( greenEnhancement );
-    }
-    QgsContrastEnhancement* blueEnhancement = rasterContrastEnhancement( rlayer, colorRenderer->blueBand(), visibleAreaOnly );
-    if ( blueEnhancement )
-    {
-      colorRenderer->setBlueContrastEnhancement( blueEnhancement );
-    }
-  }
-  else
-  {
-    return;
-  }
+  myRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
   mMapCanvas->refresh();
-}
-
-QgsContrastEnhancement* QgisApp::rasterContrastEnhancement( QgsRasterLayer* rlayer, int band,
-    bool visibleAreaOnly ) const
-{
-  if ( !rlayer || band == -1 )
-  {
-    return 0;
-  }
-
-  QgsRasterDataProvider* provider = rlayer->dataProvider();
-  if ( !provider )
-  {
-    return 0;
-  }
-
-  QgsContrastEnhancement* e = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
-        provider->dataType( band ) ) );
-  double minValue = 0;
-  double maxValue = 0;
-
-  if ( visibleAreaOnly )
-  {
-    double minMax[2];
-    rlayer->computeMinimumMaximumFromLastExtent( band, minMax );
-    minValue = minMax[0];
-    maxValue = minMax[1];
-  }
-  else
-  {
-    QgsRasterBandStats rasterBandStats = rlayer->dataProvider()->bandStatistics( band );
-    minValue = rasterBandStats.minimumValue;
-    maxValue = rasterBandStats.maximumValue;
-  }
-
-  e->setMinimumValue( minValue );
-  e->setMaximumValue( maxValue );
-  e->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
-  return e;
-}
-
-void QgisApp::localHistogramStretch()
-{
-  histogramStretch( true );
 }
 
 void QgisApp::helpContents()

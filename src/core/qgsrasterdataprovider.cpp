@@ -435,7 +435,15 @@ void QgsRasterDataProvider::initStatistics( QgsRasterBandStats &theStatistics,
   theStatistics.bandNumber = theBandNo;
   theStatistics.statsGathered = theStats;
 
-  QgsRectangle myExtent = theExtent.isEmpty() ? extent() : theExtent;
+  QgsRectangle myExtent;
+  if ( theExtent.isEmpty() )
+  {
+    myExtent = extent();
+  }
+  else
+  {
+    myExtent = extent().intersect( &theExtent );
+  }
   theStatistics.extent = myExtent;
 
   if ( theSampleSize > 0 )
@@ -674,7 +682,15 @@ void QgsRasterDataProvider::initHistogram( QgsRasterHistogram &theHistogram,
     }
   }
 
-  QgsRectangle myExtent = theExtent.isEmpty() ? extent() : theExtent;
+  QgsRectangle myExtent;
+  if ( theExtent.isEmpty() )
+  {
+    myExtent = extent();
+  }
+  else
+  {
+    myExtent = extent().intersect( &theExtent );
+  }
   theHistogram.extent = myExtent;
 
   if ( theSampleSize > 0 )

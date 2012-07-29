@@ -28,7 +28,6 @@
 #include "sanewconnection.h"
 #include "qgsquerybuilder.h"
 
-#include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"

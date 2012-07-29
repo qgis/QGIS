@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -189,12 +189,6 @@
     <addaction name="separator"/>
     <addaction name="mActionShowPythonDialog"/>
    </widget>
-   <widget class="QMenu" name="mRasterMenu">
-    <property name="title">
-     <string>&amp;Raster</string>
-    </property>
-    <addaction name="mActionShowRasterCalculator"/>
-   </widget>
    <widget class="QMenu" name="mHelpMenu">
     <property name="title">
      <string>&amp;Help</string>
@@ -219,6 +213,12 @@
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
     <addaction name="mActionSnappingOptions"/>
+   </widget>
+   <widget class="QMenu" name="mRasterMenu">
+    <property name="title">
+     <string>&amp;Raster</string>
+    </property>
+    <addaction name="mActionShowRasterCalculator"/>
    </widget>
    <addaction name="mFileMenu"/>
    <addaction name="mEditMenu"/>
@@ -385,8 +385,10 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionLocalCumulativeCutStretch"/>
+   <addaction name="mActionFullCumulativeCutStretch"/>
    <addaction name="mActionLocalHistogramStretch"/>
+   <addaction name="mActionFullHistogramStretch"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
@@ -1746,6 +1748,30 @@ Shift thaws, Alt toggles, Ctl (Cmd) hides</string>
    </property>
    <property name="toolTip">
     <string>New Blank Project</string>
+   </property>
+  </action>
+  <action name="mActionLocalCumulativeCutStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Local Cumulative Cut Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Local cumulative cut stretch using current extent, default limits and estimated values.</string>
+   </property>
+  </action>
+  <action name="mActionFullCumulativeCutStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full Dataset Cumulative Cut Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Cumulative cut stretch using full dataset extent, default limits and estimated values.</string>
    </property>
   </action>
  </widget>

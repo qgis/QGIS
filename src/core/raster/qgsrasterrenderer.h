@@ -22,6 +22,8 @@
 #include "qgsrasterdataprovider.h"
 #include <QPair>
 
+#include "cpl_conv.h"
+
 class QPainter;
 class QgsMapToPixel;
 class QgsRasterResampler;

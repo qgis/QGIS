@@ -70,7 +70,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
     }
     else if ( mStdDevRadioButton->isChecked() )
     {
-      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Mean, myExtent, mySampleSize );
+      QgsRasterBandStats myRasterBandStats = mLayer->dataProvider()->bandStatistics( myBand, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, myExtent, mySampleSize );
       double myStdDev = mStdDevSpinBox->value();
       myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
       myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );

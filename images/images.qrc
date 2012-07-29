@@ -79,6 +79,7 @@
     <file>themes/default/mActionFormAnnotation.png</file>
     <file>themes/default/mActionFreezeLabels.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
+    <file>themes/default/mActionFullCumulativeCutStretch.png</file>
     <file>themes/default/mActionFullHistogramStretch.png</file>
     <file>themes/default/mActionGroupItems.png</file>
     <file>themes/default/mActionHelpAbout.png</file>
@@ -91,6 +92,7 @@
     <file>themes/default/mActionInvertSelection.png</file>
     <file>themes/default/mActionLabeling.png</file>
     <file>themes/default/mActionLabel.png</file>
+    <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
     <file>themes/default/mActionLocalHistogramStretch.png</file>
     <file>themes/default/mActionLowerItems.png</file>
     <file>themes/default/mActionMapTips.png</file>
