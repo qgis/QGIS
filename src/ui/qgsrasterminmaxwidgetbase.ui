@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
-    <height>275</height>
+    <width>433</width>
+    <height>293</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,29 +22,63 @@
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QWidget" name="widget" native="true">
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0" colspan="3">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0" colspan="2">
           <widget class="QRadioButton" name="mCumulativeCutRadioButton">
            <property name="text">
-            <string>2 - 98% cumulative pixel count cut</string>
+            <string>Cumulative pixel count cut</string>
            </property>
            <property name="checked">
             <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="3" colspan="2">
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>123</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+         <item row="0" column="2" colspan="3">
+          <widget class="QWidget" name="widget_4" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QDoubleSpinBox" name="mCumulativeCutLowerDoubleSpinBox">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>-</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="mCumulativeCutUpperDoubleSpinBox">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>%</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>123</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
          </item>
          <item row="1" column="0">
           <widget class="QRadioButton" name="mMinMaxRadioButton">
@@ -66,14 +100,14 @@
            </property>
           </spacer>
          </item>
-         <item row="2" column="0" colspan="2">
+         <item row="2" column="0" colspan="3">
           <widget class="QRadioButton" name="mStdDevRadioButton">
            <property name="text">
             <string>Mean +/- standard deviation ×</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="2" colspan="2">
+         <item row="2" column="3">
           <widget class="QDoubleSpinBox" name="mStdDevSpinBox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">

@@ -394,6 +394,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spnThreeBandStdDev->setValue( settings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
   toggleStandardDeviation( chkUseStandardDeviation->checkState() );
 
+  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble() );
+  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble() );
+
   //set the color for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
@@ -884,6 +887,9 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/Raster/useStandardDeviation", chkUseStandardDeviation->isChecked() );
   settings.setValue( "/Raster/defaultStandardDeviation", spnThreeBandStdDev->value() );
+
+  settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no

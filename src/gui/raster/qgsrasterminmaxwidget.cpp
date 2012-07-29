@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QSettings>
+
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
 
@@ -24,6 +26,12 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget 
 {
   QgsDebugMsg( "Entered." );
   setupUi( this );
+
+  QSettings mySettings;
+  double myLower = 100.0 * mySettings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble();
+  double myUpper = 100.0 * mySettings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble();
+  mCumulativeCutLowerDoubleSpinBox->setValue( myLower );
+  mCumulativeCutUpperDoubleSpinBox->setValue( myUpper );
 }
 
 QgsRasterMinMaxWidget::~QgsRasterMinMaxWidget()
@@ -59,7 +67,9 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 
     if ( mCumulativeCutRadioButton->isChecked() )
     {
-      mLayer->dataProvider()->cumulativeCut( myBand, 0.02, 0.98, myMin, myMax, myExtent, mySampleSize );
+      double myLower = mCumulativeCutLowerDoubleSpinBox->value() / 100.0;
+      double myUpper = mCumulativeCutUpperDoubleSpinBox->value() / 100.0;
+      mLayer->dataProvider()->cumulativeCut( myBand, myLower, myUpper, myMin, myMax, myExtent, mySampleSize );
     }
     else if ( mMinMaxRadioButton->isChecked() )
     {

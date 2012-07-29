@@ -912,6 +912,7 @@ void QgsRasterDataProvider::cumulativeCut( int theBandNo,
   int myMaxCount = ( int ) qRound( theUpperCount * myHistogram.nonNullCount );
   bool myLowerFound = false;
   QgsDebugMsg( QString( "binCount = %1 minimum = %2 maximum = %3 myBinXStep = %4" ).arg( myHistogram.binCount ).arg( myHistogram.minimum ).arg( myHistogram.maximum ).arg( myBinXStep ) );
+  QgsDebugMsg( QString( "myMinCount = %1 myMaxCount = %2" ).arg( myMinCount ).arg( myMaxCount ) );
 
   for ( int myBin = 0; myBin < myHistogram.histogramVector.size(); myBin++ )
   {
