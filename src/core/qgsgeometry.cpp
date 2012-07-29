@@ -6409,6 +6409,24 @@ QgsGeometry* QgsGeometry::convexHull()
   CATCH_GEOS( 0 )
 }
 
+QgsGeometry* QgsGeometry::interpolate( double distance )
+{
+    if ( !mGeos )
+    {
+      exportWkbToGeos();
+    }
+    if ( !mGeos )
+    {
+      return 0;
+    }
+
+    try
+    {
+       return fromGeosGeom( GEOSInterpolate( mGeos, distance ) );
+    }
+    CATCH_GEOS( 0 )
+}
+
 QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
 {
   if ( !geometry )
