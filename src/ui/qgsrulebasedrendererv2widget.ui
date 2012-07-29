@@ -37,6 +37,12 @@
      <property name="allColumnsShowFocus">
       <bool>true</bool>
      </property>
+     <attribute name="headerMinimumSectionSize">
+      <number>100</number>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>true</bool>
+     </attribute>
     </widget>
    </item>
    <item>
