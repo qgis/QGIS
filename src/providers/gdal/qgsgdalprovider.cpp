@@ -1356,11 +1356,15 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   int bApproxOK = false;
   if ( theSampleSize > 0 )
   {
-    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    // cast to double, integer could overflow
+    if ((( double )xSize() * ( double )ySize() / theSampleSize ) > 2 )  // not perfect
     {
+      QgsDebugMsg( "Approx" );
       bApproxOK = true;
     }
   }
+
+  QgsDebugMsg( QString( "xSize() = %1 ySize() = %2 theSampleSize = %3 bApproxOK = %4" ).arg( xSize() ).arg( ySize() ).arg( theSampleSize ).arg( bApproxOK ) );
 
   QgsGdalProgress myProg;
   myProg.type = ProgressHistogram;
@@ -2042,7 +2046,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   int bApproxOK = false;
   if ( theSampleSize > 0 )
   {
-    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    if ((( double )xSize() * ( double )ySize() / theSampleSize ) > 2 )  // not perfect
     {
       bApproxOK = true;
     }
@@ -2119,7 +2123,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   int bApproxOK = false;
   if ( theSampleSize > 0 )
   {
-    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    if ((( double )xSize() * ( double )ySize() / theSampleSize ) > 2 )  // not perfect
     {
       bApproxOK = true;
     }
