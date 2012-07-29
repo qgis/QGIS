@@ -298,7 +298,7 @@ not disjoint with existing polygons of the feature*/
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull() /Factory/;
 
-    QgsGeometry* interoplate( double distance ) /Factory/;
+    QgsGeometry* interpolate( double distance ) /Factory/;
     
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection(QgsGeometry* geometry) /Factory/;
