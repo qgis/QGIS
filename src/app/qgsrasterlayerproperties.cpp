@@ -147,7 +147,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     // disable Pyramids tab completely
     tabPagePyramids->setEnabled( false );
+  }
 
+  if ( !( provider->capabilities() & QgsRasterDataProvider::Histogram ) )
+  {
     // disable Histogram tab completely
     tabPageHistogram->setEnabled( false );
   }
