@@ -95,10 +95,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 
-  mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
-  mDeleteAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
-  mCalculateFieldButton->setIcon( QgisApp::getThemeIcon( "/mActionCalculateField.png" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
+  mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
 
   connect( btnUseNewSymbology, SIGNAL( clicked() ), this, SLOT( useNewSymbology() ) );
 
@@ -179,7 +179,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   for ( ; it != overlayPluginList.constEnd(); ++it )
   {
     QgsApplyDialog* d = ( *it )->dialog( lyr );
-    position = tabWidget->insertTab( tabWidget->count(), qobject_cast<QDialog*>( d ), QgisApp::getThemeIcon( "propertyicons/diagram.png" ), tr( "Overlay" ) );
+    position = tabWidget->insertTab( tabWidget->count(), qobject_cast<QDialog*>( d ), QgsApplication::getThemeIcon( "propertyicons/diagram.png" ), tr( "Overlay" ) );
     tabWidget->setCurrentIndex( position ); //ugly, but otherwise the properties dialog is a mess
     mOverlayDialogs.push_back( d );
   }
@@ -1008,7 +1008,7 @@ void QgsVectorLayerProperties::saveStyleAsMenuTriggered( QAction *action )
   if ( index < 0 )
     return;
 
-  saveStyleAs( (StyleType) index );
+  saveStyleAs(( StyleType ) index );
 }
 
 void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
@@ -1029,7 +1029,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   }
 
   QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
-                                                           myLastUsedDir, format );
+                             myLastUsedDir, format );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
     return;

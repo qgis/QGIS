@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgswcsdataitems.h"
 #include "qgswcsprovider.h"
 #include "qgslogger.h"
@@ -26,7 +27,7 @@
 QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWcs.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWcs.png" );
 }
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
@@ -139,7 +140,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
   if ( mChildren.size() == 0 )
   {
     //mIcon = iconRaster();
-    mIcon = QIcon( getThemePixmap( "mIconWcs.png" ) );
+    mIcon = QgsApplication::getThemeIcon( "mIconWcs.png" );
   }
   mPopulated = true;
 }
@@ -219,7 +220,7 @@ QString QgsWCSLayerItem::createUri()
 QgsWCSRootItem::QgsWCSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWcs.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconWcs.png" );
 
   populate();
 }
@@ -237,7 +238,7 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
     QgsOWSConnection connection( "WCS", connName );
     QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, connection.uri().encodedUri() );
 
-    conn->setIcon( QIcon( getThemePixmap( "mIconConnect.png" ) ) );
+    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;

@@ -79,6 +79,10 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   registerItem( tr( "Operators" ), "AND", " AND " );
   registerItem( tr( "Operators" ), "NOT", " NOT " );
 
+  QString casestring = "CASE WHEN condition THEN result END";
+  QString caseelsestring = "CASE WHEN condition THEN result ELSE result END";
+  registerItem( tr( "Conditionals" ), "CASE", casestring );
+  registerItem( tr( "Conditionals" ), "CASE ELSE", caseelsestring );
 
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
@@ -380,9 +384,9 @@ void QgsExpressionBuilderWidget::setExpressionState( bool state )
   mExpressionValid = state;
 }
 
-QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functionName )
+QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* expressionItem )
 {
-  if ( functionName == NULL )
+  if ( expressionItem == NULL )
     return "";
 
   // set up the path to the help file
@@ -410,9 +414,9 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
     lang = "en_US";
   }
 
-  QString name = functionName->text();
+  QString name = expressionItem->text();
 
-  if ( functionName->getItemType() == QgsExpressionItem::Field )
+  if ( expressionItem->getItemType() == QgsExpressionItem::Field )
     name = "Field";
 
   QString fullHelpPath = helpFilesPath + name + "-" + lang;
@@ -434,7 +438,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
       missingError += tr( "It was neither available in your language (%1) nor English." ).arg( lang );
 
       // try en_US next
-      fullHelpPath = helpFilesPath + functionName->text() + "-en_US";
+      fullHelpPath = helpFilesPath + name + "-en_US";
       file.setFileName( fullHelpPath );
     }
   }
@@ -449,11 +453,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
   {
     QTextStream in( &file );
     in.setCodec( "UTF-8" ); // Help files must be in Utf-8
-    while ( !in.atEnd() )
-    {
-      QString line = in.readLine();
-      helpContents += line;
-    }
+    helpContents = in.readAll();
   }
 
   file.close();

@@ -1,0 +1,15 @@
+<h3>Funktion left()</h3>
+Ergibt ersten <i>n</i> Zeichen von links.
+
+<h4>Syntax</h4>
+<code>left(zeichenkette, laenge)</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - ist eine Zeichenkette. Die Zeichenkette.
+<br>
+<code>laenge</code> - ist eine Zahl. Die Anzahl der zurückzugebenden Zeichen.
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>left('Hallo Welt',5) &rarr; 'Hallo'</code><br>
+

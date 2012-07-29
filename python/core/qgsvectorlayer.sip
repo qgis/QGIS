@@ -2,6 +2,7 @@
 typedef QList<int> QgsAttributeList;
 typedef QSet<qint64> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
+typedef qint64 QgsFeatureId;
 
 
 /** @note added in 1.7 */
@@ -675,8 +676,8 @@ signals:
   void featureDeleted(qint64 fid);
   void layerDeleted();
 
-  void attributeValueChanged(qint64 fid, int idx, const QVariant &);
-  void geometryChanged(qint64 fid, QgsGeometry & );
+  void attributeValueChanged(QgsFeatureId fid, int idx, const QVariant &);
+  void geometryChanged(QgsFeatureId fid, QgsGeometry & );
 
   /** Signals emitted after committing changes
     \note added in v1.6 */

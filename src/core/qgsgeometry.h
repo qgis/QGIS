@@ -343,6 +343,8 @@ class CORE_EXPORT QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull();
 
+    QgsGeometry* interpolate( double distance );
+
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( QgsGeometry* geometry );
 

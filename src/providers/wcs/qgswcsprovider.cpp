@@ -71,8 +71,17 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
     , mHttpUri( QString::null )
+    , mCoverageSummary()
+    , mWidth( 0 )
+    , mHeight( 0 )
+    , mXBlockSize( 0 )
+    , mYBlockSize( 0 )
+    , mHasSize( false )
+    , mBandCount( 0 )
     , mCoverageCrs()
     , mCacheReply( 0 )
+    , mCachedMemFile( 0 )
+    , mCachedGdalDataset( 0 )
     , mCachedViewExtent( 0 )
     , mCoordinateTransform( 0 )
     , mExtentDirty( true )
@@ -80,15 +89,6 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
-    , mCoverageSummary()
-    , mCachedGdalDataset( 0 )
-    , mCachedMemFile( 0 )
-    , mWidth( 0 )
-    , mHeight( 0 )
-    , mXBlockSize( 0 )
-    , mYBlockSize( 0 )
-    , mHasSize( false )
-    , mBandCount( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -865,7 +865,7 @@ void QgsWcsProvider::cacheReplyFinished()
 }
 
 // This could be shared with GDAL provider
-int QgsWcsProvider::srcDataType( int bandNo ) const
+QgsRasterInterface::DataType QgsWcsProvider::srcDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
@@ -875,7 +875,7 @@ int QgsWcsProvider::srcDataType( int bandNo ) const
   return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
 }
 
-int QgsWcsProvider::dataType( int bandNo ) const
+QgsRasterInterface::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mGdalDataType.size() )
   {

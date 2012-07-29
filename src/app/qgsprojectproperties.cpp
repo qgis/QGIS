@@ -30,15 +30,22 @@
 #include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsscaleutils.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
+#include "qgsstylev2managerdialog.h"
+#include "qgsvectorcolorrampv2.h"
+#include "qgssymbolv2propertiesdialog.h"
 
 //qt includes
 #include <QColorDialog>
+#include <QInputDialog>
+#include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 
 //stdc++ includes
-
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
@@ -107,6 +114,22 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   myColor = QColor( myRedInt, myGreenInt, myBlueInt );
   pbnCanvasColor->setColor( myColor );
+
+  //get project scales
+  QStringList myScales = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
+  if ( !myScales.isEmpty() )
+  {
+    QStringList::const_iterator scaleIt = myScales.constBegin();
+    for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+      newItem->setText( *scaleIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      lstScales->addItem( newItem );
+    }
+  }
+
+  grpProjectScales->setChecked( QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" ) );
 
   QgsMapLayer* currentLayer = 0;
 
@@ -276,6 +299,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   twWFSLayers->setRowCount( j );
   twWFSLayers->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
 
+  // Default Styles
+  mStyle = QgsStyleV2::defaultStyle();
+  populateStyles();
+
   restoreState();
 }
 
@@ -414,6 +441,33 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
 
+  //save project scales
+  QStringList myScales;
+  for ( int i = 0; i < lstScales->count(); ++i )
+  {
+    myScales.append( lstScales->item( i )->text() );
+  }
+
+  if ( !myScales.isEmpty() )
+  {
+    QgsProject::instance()->writeEntry( "Scales", "/ScalesList", myScales );
+    QgsProject::instance()->writeEntry( "Scales", "/useProjectScales", grpProjectScales->isChecked() );
+  }
+  else
+  {
+    QgsProject::instance()->removeEntry( "Scales", "/" );
+  }
+
+  //use global or project scales depending on checkbox state
+  if ( grpProjectScales->isChecked() )
+  {
+    emit scalesChanged( myScales );
+  }
+  else
+  {
+    emit scalesChanged();
+  }
+
   QStringList noIdentifyLayerList;
   for ( int i = 0; i < twIdentifyLayers->rowCount(); i++ )
   {
@@ -505,6 +559,14 @@ void QgsProjectProperties::apply()
     }
   }
   QgsProject::instance()->writeEntry( "WFSLayers", "/", wfsLayerList );
+
+  // Default Styles
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/Marker", cboStyleMarker->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/Line", cboStyleLine->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/Fill", cboStyleFill->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", 255 - mTransparencySlider->value() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   //todo XXX set canvas color
   emit refresh();
@@ -677,3 +739,229 @@ void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()
   mWMSList->clear();
   mWMSList->addItems( crsList.values() );
 }
+
+void QgsProjectProperties::on_pbnAddScale_clicked()
+{
+  int myScale = QInputDialog::getInt(
+                  this,
+                  tr( "Enter scale" ),
+                  tr( "Scale denominator" ),
+                  -1,
+                  1
+                );
+
+  if ( myScale != -1 )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+    newItem->setText( QString( "1:%1" ).arg( myScale ) );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    lstScales->addItem( newItem );
+    lstScales->setCurrentItem( newItem );
+  }
+}
+
+void QgsProjectProperties::on_pbnRemoveScale_clicked()
+{
+  int currentRow = lstScales->currentRow();
+  QListWidgetItem* itemToRemove = lstScales->takeItem( currentRow );
+  delete itemToRemove;
+}
+
+void QgsProjectProperties::on_pbnImportScales_clicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QString msg;
+  QStringList myScales;
+  if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
+
+  QStringList::const_iterator scaleIt = myScales.constBegin();
+  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( lstScales );
+    newItem->setText( *scaleIt );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    lstScales->addItem( newItem );
+  }
+}
+
+void QgsProjectProperties::on_pbnExportScales_clicked()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure the user never ommited the extension from the file name
+  if ( !fileName.toLower().endsWith( ".xml" ) )
+  {
+    fileName += ".xml";
+  }
+
+  QStringList myScales;
+  for ( int i = 0; i < lstScales->count(); ++i )
+  {
+    myScales.append( lstScales->item( i )->text() );
+  }
+
+  QString msg;
+  if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
+}
+
+void QgsProjectProperties::populateStyles()
+{
+  // Styles - taken from qgsstylev2managerdialog
+
+  // use QComboBox and QString lists for shorter code
+  QStringList prefList;
+  QList<QComboBox*> cboList;
+  cboList << cboStyleMarker;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
+  cboList << cboStyleLine;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
+  cboList << cboStyleFill;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
+  cboList << cboStyleColorRamp;
+  prefList << QgsProject::instance()->readEntry( "DefaultStyles", "/ColorRamp", "" );
+  for ( int i = 0; i < cboList.count(); i++ )
+  {
+    cboList[i]->clear();
+    cboList[i]->addItem( "" );
+  }
+
+  // populate symbols
+  QStringList symbolNames = mStyle->symbolNames();
+  for ( int i = 0; i < symbolNames.count(); ++i )
+  {
+    QString name = symbolNames[i];
+    QgsSymbolV2* symbol = mStyle->symbol( name );
+    QComboBox* cbo = 0;
+    switch ( symbol->type() )
+    {
+      case QgsSymbolV2::Marker :
+        cbo = cboStyleMarker;
+        break;
+      case QgsSymbolV2::Line :
+        cbo = cboStyleLine;
+        break;
+      case QgsSymbolV2::Fill :
+        cbo = cboStyleFill;
+        break;
+    }
+    if ( cbo )
+    {
+      QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, cbo->iconSize() );
+      cbo->addItem( icon, name );
+    }
+    delete symbol;
+  }
+
+  // populate color ramps
+  QStringList colorRamps = mStyle->colorRampNames();
+  for ( int i = 0; i < colorRamps.count(); ++i )
+  {
+    QString name = colorRamps[i];
+    QgsVectorColorRampV2* ramp = mStyle->colorRamp( name );
+    QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( ramp, cboStyleColorRamp->iconSize() );
+    cboStyleColorRamp->addItem( icon, name );
+    delete ramp;
+  }
+
+  // set current index if found
+  for ( int i = 0; i < cboList.count(); i++ )
+  {
+    int index = cboList[i]->findText( prefList[i], Qt::MatchCaseSensitive );
+    if ( index >= 0 )
+      cboList[i]->setCurrentIndex( index );
+  }
+
+  // random colors
+  cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) );
+
+  // alpha transparency
+  int transparencyInt = 255 - QgsProject::instance()->readNumEntry( "DefaultStyles", "/AlphaInt", 255 );
+  mTransparencySlider->setValue( transparencyInt );
+  on_mTransparencySlider_valueChanged( transparencyInt );
+}
+
+void QgsProjectProperties::on_pbtnStyleManager_clicked()
+{
+  QgsStyleV2ManagerDialog dlg( mStyle, this );
+  dlg.exec();
+  populateStyles();
+}
+
+void QgsProjectProperties::on_pbtnStyleMarker_clicked()
+{
+  editSymbol( cboStyleMarker );
+}
+
+void QgsProjectProperties::on_pbtnStyleLine_clicked()
+{
+  editSymbol( cboStyleLine );
+}
+
+void QgsProjectProperties::on_pbtnStyleFill_clicked()
+{
+  editSymbol( cboStyleFill );
+}
+
+void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
+{
+  // TODO for now just open style manager
+  // code in QgsStyleV2ManagerDialog::editColorRamp()
+  on_pbtnStyleManager_clicked();
+}
+
+void QgsProjectProperties::on_mTransparencySlider_valueChanged( int value )
+{
+  double alpha = 1 - ( value / 255.0 );
+  double transparencyPercent = ( 1 - alpha ) * 100;
+  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg(( int ) transparencyPercent ) );
+}
+
+void QgsProjectProperties::editSymbol( QComboBox* cbo )
+{
+  QString symbolName = cbo->currentText();
+  if ( symbolName == "" )
+  {
+    QMessageBox::information( this, "", tr( "Select a valid symbol" ) );
+    return;
+  }
+  QgsSymbolV2* symbol = mStyle->symbol( symbolName );
+  if ( ! symbol )
+  {
+    QMessageBox::warning( this, "", tr( "Invalid symbol : " ) + symbolName );
+    return;
+  }
+
+  // let the user edit the symbol and update list when done
+  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
+  if ( dlg.exec() == 0 )
+  {
+    delete symbol;
+    return;
+  }
+
+  // by adding symbol to style with the same name the old effectively gets overwritten
+  mStyle->addSymbol( symbolName, symbol );
+
+  // update icon
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, cbo->iconSize() );
+  cbo->setItemIcon( cbo->currentIndex(), icon );
+}
+
+

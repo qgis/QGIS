@@ -15,32 +15,53 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgsscalecombobox.h"
 
 #include <QAbstractItemView>
+#include <QSettings>
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent )
 {
-  // make combobox editable and populate with predefined scales
-  setEditable( true );
-  addItem( "1:1000000" );
-  addItem( "1:500000" );
-  addItem( "1:250000" );
-  addItem( "1:100000" );
-  addItem( "1:50000" );
-  addItem( "1:25000" );
-  addItem( "1:10000" );
-  addItem( "1:5000" );
-  addItem( "1:2500" );
-  addItem( "1:1000" );
-  addItem( "1:500" );
+  updateScales();
 
+  setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( 0 );
 }
 
 QgsScaleComboBox::~QgsScaleComboBox()
 {
+}
+
+void QgsScaleComboBox::updateScales( const QStringList &scales )
+{
+  QStringList myScalesList;
+  QString oldScale = currentText();
+
+  if ( scales.isEmpty() )
+  {
+    QSettings settings;
+    QString myScales = settings.value( "Map/scales", PROJECT_SCALES ).toString();
+    if ( !myScales.isEmpty() )
+    {
+      myScalesList = myScales.split( "," );
+    }
+  }
+  else
+  {
+    QStringList::const_iterator scaleIt = scales.constBegin();
+    for ( ; scaleIt != scales.constEnd(); ++scaleIt )
+    {
+      myScalesList.append( *scaleIt );
+    }
+  }
+
+  blockSignals( true );
+  clear();
+  addItems( myScalesList );
+  setEditText( oldScale );
+  blockSignals( false );
 }
 
 void QgsScaleComboBox::showPopup()

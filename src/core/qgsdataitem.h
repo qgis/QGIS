@@ -25,6 +25,7 @@
 #include <QVector>
 #include <QTreeWidget>
 
+#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -106,8 +107,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual Capability capabilities() { return NoCapabilities; }
 
     // static methods
-
-    static QPixmap getThemePixmap( const QString theName );
 
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );

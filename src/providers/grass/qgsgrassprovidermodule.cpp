@@ -27,7 +27,7 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString path )
 {
   QFileInfo fi( path );
   mName = fi.baseName();
-  mIcon = QIcon( getThemePixmap( "grass_location.png" ) );
+  mIcon = QIcon( QgsApplication::getThemePixmap( "grass_location.png" ) );
 }
 QgsGrassLocationItem::~QgsGrassLocationItem() {}
 
@@ -67,7 +67,7 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString path )
   dir.cdUp();
   mGisdbase = dir.path();
 
-  mIcon = QIcon( getThemePixmap( "grass_mapset.png" ) );
+  mIcon = QIcon( QgsApplication::getThemePixmap( "grass_mapset.png" ) );
 }
 
 QgsGrassMapsetItem::~QgsGrassMapsetItem() {}

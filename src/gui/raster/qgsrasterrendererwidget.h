@@ -18,6 +18,8 @@
 #ifndef QGSRASTERRENDERERWIDGET_H
 #define QGSRASTERRENDERERWIDGET_H
 
+#include "qgsrectangle.h"
+
 #include <QWidget>
 
 class QgsRasterLayer;
@@ -26,18 +28,41 @@ class QgsRasterRenderer;
 class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 {
   public:
-    QgsRasterRendererWidget( QgsRasterLayer* layer ) { mRasterLayer = layer; }
+    QgsRasterRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ):
+        mRasterLayer( layer )
+        , mExtent( extent )
+    {
+    }
     virtual ~QgsRasterRendererWidget() {}
+
+    enum LoadMinMaxAlgo
+    {
+      Estimate,
+      Actual,
+      CurrentExtent,
+      CumulativeCut   // 2 - 98% cumulative cut
+    };
 
     virtual QgsRasterRenderer* renderer() = 0;
 
     void setRasterLayer( QgsRasterLayer* layer ) { mRasterLayer = layer; }
     const QgsRasterLayer* rasterLayer() const { return mRasterLayer; }
 
+    virtual QString min( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
+    virtual QString max( int index = 0 ) { Q_UNUSED( index ); return QString( ); }
+    virtual void setMin( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
+    virtual void setMax( QString value, int index = 0 ) { Q_UNUSED( index ); Q_UNUSED( value ); }
+    virtual QString stdDev( ) { return QString( ); }
+    virtual void setStdDev( QString value ) { Q_UNUSED( value ); }
+    virtual int selectedBand( int index = 0 ) { Q_UNUSED( index ); return -1; }
+
   protected:
     QgsRasterLayer* mRasterLayer;
     /**Returns a band name for display. First choice is color name, otherwise band number*/
     QString displayBandName( int band ) const;
+
+    /** Current extent */
+    QgsRectangle mExtent;
 };
 
 #endif // QGSRASTERRENDERERWIDGET_H

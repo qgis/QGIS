@@ -124,7 +124,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-int QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
+QgsRasterInterface::DataType QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {

@@ -162,9 +162,6 @@ public:
     /** \brief Accessor that returns the height of the (unclipped) raster */
     int height();
 
-    /** \brief Accessor to find out whether the histogram should be inverted  */
-    //bool invertHistogram() const; //removed with raster redesign
-
     /** \brief Is the NoDataValue Valid */
     bool isNoDataValueValid() const;
 
@@ -197,9 +194,6 @@ public:
 
     /** \brief Mutator for mGrayMinimumMaximumEstimated */
     //void setGrayMinimumMaximumEstimated( bool theBool ); //removed with raster redesign
-
-    /** \brief Mutator to alter the state of the invert histogram flag  */
-    //void setInvertHistogram( bool theFlag ); //removed with raster redesign
 
     /** \brief Mutator for mRGBMinimumMaximumEstimated */
     //void setRGBMinimumMaximumEstimated( bool theBool ); //removed with raster redesign
@@ -248,12 +242,6 @@ public:
     *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
     *   If no matching band is found zero will be returned! */
     int bandNumber( const QString & theBandName );
-
-    /** \brief Get RasterBandStats for a band given its number (read only)  */
-    const  QgsRasterBandStats bandStatistics( int );
-
-    /** \brief Get RasterBandStats for a band given its name (read only)  */
-    const  QgsRasterBandStats bandStatistics( const QString & );
 
     /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -321,9 +309,6 @@ public:
 
     /** \brief Checks if symbology is the same as another layers */
     bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
-
-    /** \brief  Check whether a given band number has stats associated with it */
-    bool hasStatistics( int theBandNoInt );
 
     /** \brief Identify raster value(s) found on the point position */
     bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
@@ -488,12 +473,6 @@ public:
     QString buildPyramids( const RasterPyramidList &,
                            const QString &  theResamplingMethod = "NEAREST",
                            bool theTryInternalFlag = false );
-
-    /** \brief Populate the histogram vector for a given band */
-    void populateHistogram( int theBandNoInt,
-                            int theBinCountInt = 256,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false );
 
     void showStatusMessage( const QString & theMessage );
 

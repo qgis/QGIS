@@ -189,8 +189,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    int dataType( int bandNo ) const;
-    int srcDataType( int bandNo ) const;
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
 
     int bandCount() const;
 
@@ -229,13 +229,6 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     { Q_UNUSED( mimeType ); }
     void setImageCrs( QString const &crs )
     { Q_UNUSED( crs ); }
-
-    void populateHistogram( int theBandNoInt,
-                            QgsRasterBandStats & theBandStats,
-                            int theBinCountInt = 256,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false
-                          );
 
     virtual QDateTime dataTimestamp() const;
   private:

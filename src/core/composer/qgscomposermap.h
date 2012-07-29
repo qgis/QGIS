@@ -300,6 +300,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
     QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
 
+    /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
+        Usually, this function is called before adding the composer map to the composition*/
+    void assignFreeId();
+
   signals:
     void extentChanged();
 

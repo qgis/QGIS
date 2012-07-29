@@ -30,11 +30,11 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setContent( tr( "Quantum GIS is open source software."
                         " This means that the software source code can be freely viewed"
                         " and modified. The GPL places a restriction that any modifications"
-                        " you make must be made available to the Quantum GIS project, and"
-                        " that you can not create a new version of Quantum GIS under a"
-                        " 'closed source' license. Visit <a href=\"http://qgis.org\">"
-                        " the QGIS home page (http://qgis.org)</a> for more"
-                        " information." ) );
+                        " you make must be made available in source form to whoever you give"
+                        " modified versions to, and that you can not create a new version of"
+                        " Quantum GIS under a 'closed source' license. Visit"
+                        " <a href=\"http://qgis.org\"> the QGIS home page (http://qgis.org)</a>"
+                        " for more information." ) );
   addGenericTip( myTip );
   //
   myTip.setTitle( tr( "QGIS Publications" ) );

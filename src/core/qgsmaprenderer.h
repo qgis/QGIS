@@ -43,9 +43,9 @@ struct QgsDiagramLayerSettings;
 
 struct CORE_EXPORT QgsLabelPosition
 {
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ) {}
+  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool frozen = false ):
+      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ), isFrozen( frozen ) {}
+  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ), isFrozen( false ) {}
   int featureId;
   double rotation;
   QVector< QgsPoint > cornerPoints;
@@ -55,6 +55,7 @@ struct CORE_EXPORT QgsLabelPosition
   QString layerID;
   bool upsideDown;
   bool isDiagram;
+  bool isFrozen;
 };
 
 /** Labeling engine interface.
@@ -88,6 +89,9 @@ class QgsLabelingEngineInterface
     //! return infos about labels at a given (map) position
     //! @note: this method was added in version 1.7
     virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
+    //! return infos about labels within a given (map) rectangle
+    //! @note: this method was added in version 1.9
+    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() = 0;
@@ -163,6 +167,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! transform extent in layer's CRS to extent in output CRS
     QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
+
+    //! transform extent in output CRS to extent in layer's CRS
+    QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
     //! transform coordinates from layer's CRS to output CRS
     QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point );

@@ -26,6 +26,8 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QSettings>
+#include <QIcon>
+#include <QPixmap>
 
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
@@ -83,8 +85,10 @@ void QgsApplication::init( QString customConfigPath )
   }
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
 
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+
   // check if QGIS is run from build directory (not the install directory)
-  QDir appDir( applicationDirPath() );
+  QDir appDir( prefixPath );
 #ifndef _MSC_VER
 #define SOURCE_PATH "source_path.txt"
 #else
@@ -92,19 +96,19 @@ void QgsApplication::init( QString customConfigPath )
 #endif
   if ( appDir.exists( SOURCE_PATH ) )
   {
-    QFile f( applicationDirPath() + "/" + SOURCE_PATH );
+    QFile f( prefixPath + "/" + SOURCE_PATH );
     if ( f.open( QIODevice::ReadOnly ) )
     {
       ABISYM( mRunningFromBuildDir ) = true;
       ABISYM( mBuildSourcePath ) = f.readAll();
 #if _MSC_VER
-      QStringList elems = applicationDirPath().split( "/", QString::SkipEmptyParts );
+      QStringList elems = prefixPath.split( "/", QString::SkipEmptyParts );
       ABISYM( mCfgIntDir ) = elems.last();
-      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/../..";
+      ABISYM( mBuildOutputPath ) = prefixPath + "/../..";
 #elif defined(Q_WS_MACX)
-      ABISYM( mBuildOutputPath ) = applicationDirPath();
+      ABISYM( mBuildOutputPath ) = prefixPath;
 #else
-      ABISYM( mBuildOutputPath ) = applicationDirPath() + "/.."; // on linux
+      ABISYM( mBuildOutputPath ) = prefixPath + "/.."; // on linux
 #endif
       qDebug( "Running from build directory!" );
       qDebug( "- source directory: %s", ABISYM( mBuildSourcePath ).toAscii().data() );
@@ -327,6 +331,43 @@ QString QgsApplication::iconPath( QString iconFile )
 
   // use default theme
   return defaultThemePath() + iconFile;
+}
+
+QIcon QgsApplication::getThemeIcon( const QString theName )
+{
+  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  if ( QFile::exists( myPreferredPath ) )
+  {
+    return QIcon( myPreferredPath );
+  }
+  else if ( QFile::exists( myDefaultPath ) )
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QIcon( myDefaultPath );
+  }
+  else
+  {
+    return QIcon();
+  }
+}
+
+// TODO: add some caching mechanism ?
+QPixmap QgsApplication::getThemePixmap( const QString theName )
+{
+  QString myPreferredPath = activeThemePath() + QDir::separator() + theName;
+  QString myDefaultPath = defaultThemePath() + QDir::separator() + theName;
+  if ( QFile::exists( myPreferredPath ) )
+  {
+    return QPixmap( myPreferredPath );
+  }
+  else
+  {
+    //could still return an empty icon if it
+    //doesnt exist in the default theme either!
+    return QPixmap( myDefaultPath );
+  }
 }
 
 /*!

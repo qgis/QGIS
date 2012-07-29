@@ -590,7 +590,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
       newColorRampShaderElem.setAttribute( "colorRampType", "INTERPOLATED" );
 
       //get minmax from rasterlayer
-      QgsRasterBandStats rasterBandStats = rlayer->bandStatistics( grayBand );
+      QgsRasterBandStats rasterBandStats = rlayer->dataProvider()->bandStatistics( grayBand );
       double minValue = rasterBandStats.minimumValue;
       double maxValue = rasterBandStats.maximumValue;
       double breakSize = ( maxValue - minValue ) / 3;

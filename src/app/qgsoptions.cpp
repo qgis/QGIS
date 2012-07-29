@@ -22,8 +22,14 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgstolerance.h"
+#include "qgsscaleutils.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsproject.h"
 
+#include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsdialog.h"
+
+#include <QInputDialog>
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>
@@ -31,6 +37,7 @@
 #include <QToolBar>
 #include <QSize>
 #include <QStyleFactory>
+#include <QMessageBox>
 
 #if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
@@ -45,6 +52,7 @@
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
 #include <geos_c.h>
+#include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
 
@@ -56,6 +64,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     QDialog( parent, fl )
 {
   setupUi( this );
+
   connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
@@ -239,6 +248,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
 
   //on the fly CRS transformation settings
+  chkOtfAuto->setChecked( settings.value( "/Projections/otfTransformAutoEnable", true ).toBool() );
   chkOtfTransform->setChecked( settings.value( "/Projections/otfTransformEnabled", 0 ).toBool() );
 
   QString myDefaultCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
@@ -384,6 +394,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spnThreeBandStdDev->setValue( settings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
   toggleStandardDeviation( chkUseStandardDeviation->checkState() );
 
+  mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble() );
+  mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble() );
+
   //set the color for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
@@ -408,8 +421,35 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
 
+  // templates
+  cbxProjectDefaultNew->setChecked( settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() );
+  QString templateDirName = settings.value( "/qgis/projectTemplateDir",
+                            QgsApplication::qgisSettingsDirPath() + "project_templates" ).toString();
+  // make dir if it doesn't exists - should just be called once
+  QDir templateDir;
+  if ( ! templateDir.exists( templateDirName ) )
+  {
+    templateDir.mkdir( templateDirName );
+  }
+  leTemplateFolder->setText( templateDirName );
+
   cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 2 ).toInt() );
   spinZoomFactor->setValue( settings.value( "/qgis/zoom_factor", 2 ).toDouble() );
+
+  // predefined scales for scale combobox
+  myPaths = settings.value( "Map/scales", PROJECT_SCALES ).toString();
+  if ( !myPaths.isEmpty() )
+  {
+    QStringList myScalesList = myPaths.split( "," );
+    QStringList::const_iterator scaleIt = myScalesList.constBegin();
+    for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+    {
+      QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+      newItem->setText( *scaleIt );
+      newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+      mListGlobalScales->addItem( newItem );
+    }
+  }
 
   //
   // Locale settings
@@ -541,10 +581,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   } //default is central point
 
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
-  tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
 
-  loadGdalDriverList();
+  // load gdal driver list only when gdal tab is first opened
+  mLoadedGdalDriverList = false;
 
+  // tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
+  int currentTab = settings.value( "/Windows/Options/row" ).toInt();
+  tabWidget->setCurrentIndex( currentTab );
+  on_tabWidget_currentChanged( currentTab );
 }
 
 //! Destructor
@@ -554,6 +598,58 @@ QgsOptions::~QgsOptions()
   settings.setValue( "/Windows/Options/geometry", saveGeometry() );
   settings.setValue( "/Windows/Options/row", tabWidget->currentIndex() );
 }
+
+void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
+{
+  if ( checked )
+  {
+    QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+    if ( ! QFile::exists( fileName ) )
+    {
+      QMessageBox::information( 0, tr( "Save default project" ), tr( "You must set a default project" ) );
+      cbxProjectDefaultNew->setChecked( false );
+    }
+  }
+}
+
+void QgsOptions::on_pbnProjectDefaultSetCurrent_clicked( )
+{
+  QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+  if ( QgsProject::instance()->write( QFileInfo( fileName ) ) )
+  {
+    QMessageBox::information( 0, tr( "Save default project" ), tr( "Current project saved as default" ) );
+  }
+  else
+  {
+    QMessageBox::critical( 0, tr( "Save default project" ), tr( "Error saving current project as default" ) );
+  }
+}
+
+void QgsOptions::on_pbnProjectDefaultReset_clicked( )
+{
+  QString fileName = QgsApplication::qgisSettingsDirPath() + QString( "project_default.qgs" );
+  if ( QFile::exists( fileName ) )
+  {
+    QFile::remove( fileName );
+  }
+  cbxProjectDefaultNew->setChecked( false );
+}
+
+void QgsOptions::on_pbnTemplateFolderBrowse_pressed( )
+{
+  QString newDir = QFileDialog::getExistingDirectory( 0, tr( "Choose a directory to store project template files" ),
+                   leTemplateFolder->text() );
+  if ( ! newDir.isNull() )
+  {
+    leTemplateFolder->setText( newDir );
+  }
+}
+
+void QgsOptions::on_pbnTemplateFolderReset_pressed( )
+{
+  leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
+}
+
 
 void QgsOptions::on_pbnSelectionColor_clicked()
 {
@@ -717,8 +813,18 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+
+  // project
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
+  if (( settings.value( "/qgis/projectTemplateDir" ).toString() != leTemplateFolder->text() ) ||
+      ( settings.value( "/qgis/newProjectDefault" ).toBool() != cbxProjectDefaultNew->isChecked() ) )
+  {
+    settings.setValue( "/qgis/newProjectDefault", cbxProjectDefaultNew->isChecked() );
+    settings.setValue( "/qgis/projectTemplateDir", leTemplateFolder->text() );
+    QgisApp::instance()->updateProjectFromTemplates();
+  }
+
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
 
@@ -782,29 +888,29 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/useStandardDeviation", chkUseStandardDeviation->isChecked() );
   settings.setValue( "/Raster/defaultStandardDeviation", spnThreeBandStdDev->value() );
 
+  settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
+  settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    //
     settings.setValue( "/Projections/defaultBehaviour", "prompt" );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    //
     settings.setValue( "/Projections/defaultBehaviour", "useProject" );
   }
   else //assumes radUseGlobalProjection is checked
   {
-    //
     settings.setValue( "/Projections/defaultBehaviour", "useGlobal" );
   }
 
   settings.setValue( "/Projections/layerDefaultCrs", mLayerDefaultCrs.authid() );
 
   // save 'on the fly' CRS transformation settings
+  settings.setValue( "/Projections/otfTransformAutoEnable", chkOtfAuto->isChecked() );
   settings.setValue( "/Projections/otfTransformEnabled", chkOtfTransform->isChecked() );
   settings.setValue( "/Projections/projectDefaultCrs", mDefaultCrs.authid() );
 
@@ -820,11 +926,6 @@ void QgsOptions::saveOptions()
   }
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
-  if ( mDegreesRadioButton->isChecked() )
-  {
-
-  }
-
   QString angleUnitString = "degrees";
   if ( mRadiansRadioButton->isChecked() )
   {
@@ -836,13 +937,11 @@ void QgsOptions::saveOptions()
   }
   settings.setValue( "/qgis/measure/angleunits", angleUnitString );
 
-
   int decimalPlaces = mDecimalPlacesSpinBox->value();
   settings.setValue( "/qgis/measure/decimalplaces", decimalPlaces );
 
   bool baseUnit = mKeepBaseUnitCheckBox->isChecked();
   settings.setValue( "/qgis/measure/keepbaseunit", baseUnit );
-
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
@@ -908,15 +1007,26 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/offset_quad_seg", mOffsetQuadSegSpinBox->value() );
   settings.setValue( "/qgis/digitizing/offset_miter_limit", mCurveOffsetMiterLimitComboBox->value() );
 
+  // default scale list
+  for ( int i = 0; i < mListGlobalScales->count(); ++i )
+  {
+    if ( i != 0 )
+    {
+      myPaths += ",";
+    }
+    myPaths += mListGlobalScales->item( i )->text();
+  }
+  settings.setValue( "Map/scales", myPaths );
+
   //
   // Locale settings
   //
   settings.setValue( "locale/userLocale", cboLocale->itemData( cboLocale->currentIndex() ).toString() );
   settings.setValue( "locale/overrideFlag", grpLocale->isChecked() );
 
-
   // Gdal skip driver list
-  saveGdalDriverList();
+  if ( mLoadedGdalDriverList )
+    saveGdalDriverList();
 }
 
 
@@ -962,6 +1072,51 @@ void QgsOptions::on_pbnSelectOtfProjection_clicked()
   {
     QgsDebugMsg( "------ Global OTF Projection Selection change cancelled ----------" );
     QApplication::restoreOverrideCursor();
+  }
+}
+
+void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )
+{
+  Q_UNUSED( column );
+  // edit driver if driver supports write
+  if ( item && ( cmbEditCreateOptions->findText( item->text( 0 ) ) != -1 ) )
+  {
+    editGdalDriver( item->text( 0 ) );
+  }
+}
+
+void QgsOptions::on_pbnEditCreateOptions_pressed()
+{
+  editGdalDriver( cmbEditCreateOptions->currentText() );
+}
+
+void QgsOptions::on_pbnEditPyramidsOptions_pressed()
+{
+  editGdalDriver( "_pyramids" );
+}
+
+void QgsOptions::editGdalDriver( const QString& driverName )
+{
+  if ( driverName.isEmpty() )
+    return;
+
+  QgsDialog dlg( this, 0, QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QVBoxLayout *layout = dlg.layout();
+  QString title = tr( "Create Options - %1 Driver" ).arg( driverName );
+  if ( driverName == "_pyramids" )
+    title = tr( "Create Options - pyramids" );
+  dlg.setWindowTitle( title );
+  QLabel *label = new QLabel( title, &dlg );
+  label->setAlignment( Qt::AlignHCenter );
+  layout->addWidget( label );
+  QgsRasterFormatSaveOptionsWidget* optionsWidget =
+    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
+                                          QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
+  layout->addWidget( optionsWidget );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    optionsWidget->apply();
   }
 }
 
@@ -1118,7 +1273,6 @@ void QgsOptions::on_mBtnRemovePluginPath_clicked()
   delete itemToRemove;
 }
 
-
 void QgsOptions::on_mBtnAddSVGPath_clicked()
 {
   QString myDir = QFileDialog::getExistingDirectory(
@@ -1184,6 +1338,16 @@ void QgsOptions::on_mClearCache_clicked()
 #endif
 }
 
+void QgsOptions::on_tabWidget_currentChanged( int theTab )
+{
+  // load gdal driver list when gdal tab is first opened
+  if ( theTab == 1 && ! mLoadedGdalDriverList )
+  {
+    loadGdalDriverList();
+  }
+}
+
+#if 0
 void QgsOptions::loadGdalDriverList()
 {
   QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
@@ -1228,21 +1392,228 @@ void QgsOptions::loadGdalDriverList()
     lstGdalDrivers->addItem( mypItem );
   }
 }
+#endif
 
-void QgsOptions::saveGdalDriverList()
+void QgsOptions::loadGdalDriverList()
 {
-  for ( int i = 0; i < lstGdalDrivers->count(); i++ )
+  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
+  GDALDriverH myGdalDriver; // current driver
+  QString myGdalDriverDescription;
+  QStringList myDrivers;
+  QStringList myGdalWriteDrivers;
+  QMap<QString, QString> myDriversFlags, myDriversExt, myDriversLongName;
+
+  // make sure we save list when accept()
+  mLoadedGdalDriverList = true;
+
+  // allow to retrieve metadata from all drivers, they will be skipped again when saving
+  CPLSetConfigOption( "GDAL_SKIP",  "" );
+  GDALAllRegister();
+
+  int myGdalDriverCount = GDALGetDriverCount();
+  for ( int i = 0; i < myGdalDriverCount; ++i )
   {
-    QListWidgetItem * mypItem = lstGdalDrivers->item( i );
-    if ( mypItem->checkState() == Qt::Unchecked )
+    myGdalDriver = GDALGetDriver( i );
+
+    Q_CHECK_PTR( myGdalDriver );
+
+    if ( !myGdalDriver )
     {
-      QgsApplication::skipGdalDriver( mypItem->text() );
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
+    myDrivers << myGdalDriverDescription;
+
+    QgsDebugMsg( QString( "driver #%1 - %2" ).arg( i ).arg( myGdalDriverDescription ) );
+
+    // get driver R/W flags, taken from GDALGeneralCmdLineProcessor()
+    const char *pszRWFlag, *pszVirtualIO;
+    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATE, NULL ) )
+    {
+      myGdalWriteDrivers << myGdalDriverDescription;
+      pszRWFlag = "rw+";
+    }
+    else if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_CREATECOPY,
+                                   NULL ) )
+      pszRWFlag = "rw";
+    else
+      pszRWFlag = "ro";
+    if ( GDALGetMetadataItem( myGdalDriver, GDAL_DCAP_VIRTUALIO, NULL ) )
+      pszVirtualIO = "v";
+    else
+      pszVirtualIO = "";
+    myDriversFlags[myGdalDriverDescription] = QString( "%1%2" ).arg( pszRWFlag ).arg( pszVirtualIO );
+
+    // get driver extensions and long name
+    // the gdal provider can override/add extensions but there is no interface to query this
+    // aside from parsing QgsRasterLayer::buildSupportedRasterFileFilter()
+    myDriversExt[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_EXTENSION", "" ) ).toLower();
+    myDriversLongName[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_LONGNAME", "" ) );
+
+  }
+  // restore GDAL_SKIP just in case
+  CPLSetConfigOption( "GDAL_SKIP", mySkippedDrivers.join( " " ).toUtf8() );
+
+  myDrivers.removeDuplicates();
+  // myDrivers.sort();
+  // sort list case insensitive - no existing function for this!
+  QMap<QString, QString> strMap;
+  foreach( QString str, myDrivers )
+  strMap.insert( str.toLower(), str );
+  myDrivers = strMap.values();
+
+  foreach( QString myName, myDrivers )
+  {
+    QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
+    if ( mySkippedDrivers.contains( myName ) )
+    {
+      mypItem->setCheckState( 0, Qt::Unchecked );
     }
     else
     {
-      QgsApplication::restoreGdalDriver( mypItem->text() );
+      mypItem->setCheckState( 0, Qt::Checked );
+    }
+
+    // add driver metadata
+    mypItem->setText( 1, myDriversExt[myName] );
+    QString myFlags = myDriversFlags[myName];
+    mypItem->setText( 2, myFlags );
+    mypItem->setText( 3, myDriversLongName[myName] );
+    lstGdalDrivers->addTopLevelItem( mypItem );
+  }
+  // adjust column width
+  for ( int i = 0; i < 4; i++ )
+  {
+    lstGdalDrivers->resizeColumnToContents( i );
+    lstGdalDrivers->setColumnWidth( i, lstGdalDrivers->columnWidth( i ) + 5 );
+  }
+
+  // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
+  strMap.clear();
+  foreach( QString str, myGdalWriteDrivers )
+  strMap.insert( str.toLower(), str );
+  myGdalWriteDrivers = strMap.values();
+  myGdalWriteDrivers.removeAll( "Gtiff" );
+  myGdalWriteDrivers.prepend( "GTiff" );
+  cmbEditCreateOptions->clear();
+  foreach( QString myName, myGdalWriteDrivers )
+  {
+    cmbEditCreateOptions->addItem( myName );
+  }
+
+}
+
+void QgsOptions::saveGdalDriverList()
+{
+  for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
+  {
+    QTreeWidgetItem * mypItem = lstGdalDrivers->topLevelItem( i );
+    if ( mypItem->checkState( 0 ) == Qt::Unchecked )
+    {
+      QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
+    }
+    else
+    {
+      QgsApplication::restoreGdalDriver( mypItem->text( 0 ) );
     }
   }
   QSettings mySettings;
   mySettings.setValue( "gdal/skipList", QgsApplication::skippedGdalDrivers().join( " " ) );
+}
+
+void QgsOptions::on_pbnAddScale_clicked()
+{
+  int myScale = QInputDialog::getInt(
+                  this,
+                  tr( "Enter scale" ),
+                  tr( "Scale denominator" ),
+                  -1,
+                  1
+                );
+
+  if ( myScale != -1 )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+    newItem->setText( QString( "1:%1" ).arg( myScale ) );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListGlobalScales->addItem( newItem );
+    mListGlobalScales->setCurrentItem( newItem );
+  }
+}
+
+void QgsOptions::on_pbnRemoveScale_clicked()
+{
+  int currentRow = mListGlobalScales->currentRow();
+  QListWidgetItem* itemToRemove = mListGlobalScales->takeItem( currentRow );
+  delete itemToRemove;
+}
+
+void QgsOptions::on_pbnDefaultScaleValues_clicked()
+{
+  mListGlobalScales->clear();
+
+  QStringList myScalesList = PROJECT_SCALES.split( "," );
+  QStringList::const_iterator scaleIt = myScalesList.constBegin();
+  for ( ; scaleIt != myScalesList.constEnd(); ++scaleIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+    newItem->setText( *scaleIt );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListGlobalScales->addItem( newItem );
+  }
+}
+
+void QgsOptions::on_pbnImportScales_clicked()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QString msg;
+  QStringList myScales;
+  if ( !QgsScaleUtils::loadScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
+
+  QStringList::const_iterator scaleIt = myScales.constBegin();
+  for ( ; scaleIt != myScales.constEnd(); ++scaleIt )
+  {
+    QListWidgetItem* newItem = new QListWidgetItem( mListGlobalScales );
+    newItem->setText( *scaleIt );
+    newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    mListGlobalScales->addItem( newItem );
+  }
+}
+
+void QgsOptions::on_pbnExportScales_clicked()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save scales" ), ".",
+                     tr( "XML files (*.xml *.XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure the user never ommited the extension from the file name
+  if ( !fileName.toLower().endsWith( ".xml" ) )
+  {
+    fileName += ".xml";
+  }
+
+  QStringList myScales;
+  for ( int i = 0; i < mListGlobalScales->count(); ++i )
+  {
+    myScales.append( mListGlobalScales->item( i )->text() );
+  }
+
+  QString msg;
+  if ( !QgsScaleUtils::saveScaleList( fileName, myScales, msg ) )
+  {
+    QgsDebugMsg( msg );
+  }
 }

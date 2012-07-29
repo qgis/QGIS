@@ -878,7 +878,7 @@ int QgsPostgresConn::PQsendQuery( QString query )
 
 qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, int col )
 {
-  qint64 oid;
+  quint64 oid;
   char *p = PQgetvalue( queryResult.result(), row, col );
   size_t s = PQgetlength( queryResult.result(), row, col );
 
@@ -895,15 +895,15 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   switch ( s )
   {
     case 2:
-      oid = *( qint16 * )p;
+      oid = *( quint16 * )p;
       if ( mSwapEndian )
         oid = ntohs( oid );
       break;
 
     case 6:
     {
-      qint64 block  = *( qint32 * ) p;
-      qint64 offset = *( qint16 * )( p + sizeof( qint32 ) );
+      quint64 block  = *( quint32 * ) p;
+      quint64 offset = *( quint16 * )( p + sizeof( quint32 ) );
 
       if ( mSwapEndian )
       {
@@ -917,8 +917,8 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
 
     case 8:
     {
-      qint32 oid0 = *( qint32 * ) p;
-      qint32 oid1 = *( qint32 * )( p + sizeof( qint32 ) );
+      quint32 oid0 = *( quint32 * ) p;
+      quint32 oid1 = *( quint32 * )( p + sizeof( quint32 ) );
 
       if ( mSwapEndian )
       {
@@ -941,7 +941,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
       QgsDebugMsg( QString( "unexpected size %1" ).arg( s ) );
 
     case 4:
-      oid = *( qint32 * )p;
+      oid = *( quint32 * )p;
       if ( mSwapEndian )
         oid = ntohl( oid );
       break;

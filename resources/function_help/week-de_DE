@@ -1,0 +1,19 @@
+<h3>Funktion week()</h3>
+Bestimmt die Woche eines Datums oder die Anzahl der Wochen
+eines <code>Intervalls</code>
+
+<h4>Syntax</h4>
+<code>week(date)</code><br>
+<code>week(Interval)</code><br>
+
+<h4>Argumente</h4>
+<code>date</code> - ist date oder datetime. Das Datum dessen Woche zurückgegeben werden soll.
+<br>
+<code>Interval</code> - ist Interval. Das Intervall dessen Länge in Wochen zurückgegeben werden soll.
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>week('2012-05-12') &rarr; 19</code><br>
+<code>week(tointerval('3 weeks')) &rarr; 3</code><br>
+<code>week(age('2012-01-01','2010-01-01')) &rarr; 104.285...</code><br>
+

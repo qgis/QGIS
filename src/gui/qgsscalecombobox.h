@@ -31,6 +31,9 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     QgsScaleComboBox( QWidget* parent = 0 );
     virtual ~QgsScaleComboBox();
 
+  public slots:
+    void updateScales( const QStringList &scales = QStringList() );
+
   protected:
     void showPopup();
 };

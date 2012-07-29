@@ -132,7 +132,7 @@ static QStringList wildcards = QStringList();
 
 QGISEXTERN int dataCapabilities()
 {
-  return  QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
+  return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;
 }
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )

@@ -81,6 +81,9 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mFrameStyleComboBox_currentIndexChanged( const QString& text );
     void on_mFrameWidthSpinBox_valueChanged( double d );
 
+  protected:
+    void showEvent( QShowEvent * event );
+
   private slots:
 
     /**Sets the GUI elements to the values of mPicture*/
@@ -108,6 +111,9 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMap::GridAnnotationDirection dir );
 
     void updateOverviewSymbolMarker();
+
+    /**Updates the map combo box with the current composer map ids*/
+    void refreshMapComboBox();
 };
 
 #endif

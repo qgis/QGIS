@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleName</key>
+	<string>QGIS Browser</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.qgis.qgis</string>
+	<key>CFBundleExecutable</key>
+	<string>QGIS Browser</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>QGSB</string>
+	<key>CFBundleGetInfoString</key>
+	<string>${QGIS_APP_NAME} Browser ${COMPLETE_VERSION}-${RELEASE_NAME} (${REVISION}), © 2002-2012 QGIS Development Team</string>
+	<key>CFBundleShortVersionString</key>
+	<string>${COMPLETE_VERSION}</string>
+	<key>CFBundleVersion</key>
+	<string>${COMPLETE_VERSION} (${REVISION})</string>
+	<key>CFBundleIconFile</key>
+	<string>qgisb.icns</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CSResourcesFileMapped</key>
+	<true/>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>af</string>
+		<string>ar</string>
+		<string>bg</string>
+		<string>ca_ES</string>
+		<string>cs_CZ</string>
+		<string>da_DK</string>
+		<string>de</string>
+		<string>el_GR</string>
+		<string>es</string>
+		<string>fa</string>
+		<string>fi</string>
+		<string>fr</string>
+		<string>gl_ES</string>
+		<string>he</string>
+		<string>hr_HR</string>
+		<string>hu</string>
+		<string>id</string>
+		<string>is</string>
+		<string>it</string>
+		<string>ja</string>
+		<string>ka_GE</string>
+		<string>ko_KR</string>
+		<string>lo</string>
+		<string>lt</string>
+		<string>lv</string>
+		<string>mn</string>
+		<string>nl</string>
+		<string>no</string>
+		<string>pl_PL</string>
+		<string>pt_BR</string>
+		<string>pt_PT</string>
+		<string>ro</string>
+		<string>ru</string>
+		<string>sk</string>
+		<string>sl_SI</string>
+		<string>sq_AL</string>
+		<string>sr_CS-Latn</string>
+		<string>sv</string>
+		<string>ta</string>
+		<string>th</string>
+		<string>tr</string>
+		<string>uk</string>
+		<string>vi</string>
+		<string>xh</string>
+		<string>zh_CN</string>
+		<string>zh_TW</string>
+	</array>
+</dict>
+</plist>

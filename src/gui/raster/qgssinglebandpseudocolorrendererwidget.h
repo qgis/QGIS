@@ -27,10 +27,10 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 {
     Q_OBJECT
   public:
-    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer );
+    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandPseudoColorRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer ) { return new QgsSingleBandPseudoColorRendererWidget( layer ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
     QgsRasterRenderer* renderer();
 
     void setFromRenderer( const QgsRasterRenderer* r );

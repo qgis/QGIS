@@ -23,13 +23,14 @@
 #include <QString>
 
 class QDomElement;
-class QgsRasterDataProvider;
+//class QgsRasterDataProvider;
+class QgsRasterInterface;
 class QgsRasterLayer;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 
-typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterDataProvider* provider );
-typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer* );
+typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement&, QgsRasterInterface* input );
+typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer*, const QgsRectangle &extent );
 
 struct CORE_EXPORT QgsRasterRendererRegistryEntry
 {
@@ -64,6 +65,7 @@ class CORE_EXPORT QgsRasterRendererRegistry
   private:
     static QgsRasterRendererRegistry* mInstance;
     QHash< QString, QgsRasterRendererRegistryEntry > mEntries;
+    QStringList mSortedEntries;
 
     //read min/max values from
     bool minMaxValuesForBand( int band, QgsRasterDataProvider* provider, double& minValue, double& maxValue ) const;

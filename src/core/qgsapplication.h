@@ -20,8 +20,7 @@
 #include <QStringList>
 
 #include <qgis.h>
-
-#define ABISYM(x)  x ## VERSION_INT
+#include <qgsconfig.h>
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -148,6 +147,16 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! First it tries to use the active theme path, then default theme path
     //! @note Added in 1.5
     static QString iconPath( QString iconFile );
+
+    //! Helper to get a theme icon. It will fall back to the
+    //! default theme if the active theme does not have the required icon.
+    //! @note Added in 2.0
+    static QIcon getThemeIcon( const QString theName );
+
+    //! Helper to get a theme icon as a pixmap. It will fall back to the
+    //! default theme if the active theme does not have the required icon.
+    //! @note Added in 2.0
+    static QPixmap getThemePixmap( const QString theName );
 
     //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();

@@ -26,6 +26,7 @@
 #include "qstring.h"
 
 #include <QMenu>
+#include <QSettings>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QMessageBox>
@@ -89,6 +90,12 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
   currentRuleChanged();
+
+  // store/restore header section widths
+  connect( viewRules->header(), SIGNAL( sectionResized( int, int, int ) ), this, SLOT( saveSectionWidth( int, int, int ) ) );
+
+  restoreSectionWidths();
+
 }
 
 QgsRuleBasedRendererV2Widget::~QgsRuleBasedRendererV2Widget()
@@ -367,6 +374,27 @@ void QgsRuleBasedRendererV2Widget::setRenderingOrder()
   dlg.exec();
 }
 
+void QgsRuleBasedRendererV2Widget::saveSectionWidth( int section, int oldSize, int newSize )
+{
+  Q_UNUSED( oldSize );
+  // skip last section, as it stretches
+  if ( section == 3 )
+    return;
+  QSettings settings;
+  QString path = "/Windows/RuleBasedTree/sectionWidth/" + QString::number( section );
+  settings.setValue( path, newSize );
+}
+
+void QgsRuleBasedRendererV2Widget::restoreSectionWidths()
+{
+  QSettings settings;
+  QString path = "/Windows/RuleBasedTree/sectionWidth/";
+  QHeaderView* head = viewRules->header();
+  head->resizeSection( 0, settings.value( path + QString::number( 0 ), 200 ).toInt() );
+  head->resizeSection( 1, settings.value( path + QString::number( 1 ), 200 ).toInt() );
+  head->resizeSection( 2, settings.value( path + QString::number( 2 ), 100 ).toInt() );
+}
+
 
 ///////////
 
@@ -379,8 +407,10 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   editFilter->setText( mRule->filterExpression() );
+  editFilter->setToolTip( mRule->filterExpression() );
   editLabel->setText( mRule->label() );
   editDescription->setText( mRule->description() );
+  editDescription->setToolTip( mRule->description() );
 
   if ( mRule->dependsOnScale() )
   {
@@ -518,7 +548,7 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
 
   QgsRuleBasedRendererV2::Rule* rule = ruleForIndex( index );
 
-  if ( role == Qt::DisplayRole )
+  if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
   {
     switch ( index.column() )
     {

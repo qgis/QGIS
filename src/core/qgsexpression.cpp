@@ -511,6 +511,36 @@ static QVariant fcnStrpos( const QVariantList& values, QgsFeature* , QgsExpressi
   return string.indexOf( QRegExp( getStringValue( values.at( 1 ), parent ) ) );
 }
 
+static QVariant fcnRight( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int pos = getIntValue( values.at( 1 ), parent );
+  return string.right( pos );
+}
+
+static QVariant fcnLeft( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int pos = getIntValue( values.at( 1 ), parent );
+  return string.left( pos );
+}
+
+static QVariant fcnRPad( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int length = getIntValue( values.at( 1 ), parent );
+  QString fill = getStringValue( values.at( 2 ), parent );
+  return string.rightJustified( length, fill.at( 0 ), true );
+}
+
+static QVariant fcnLPad( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  int length = getIntValue( values.at( 1 ), parent );
+  QString fill = getStringValue( values.at( 2 ), parent );
+  return string.leftJustified( length, fill.at( 0 ), true );
+}
+
 static QVariant fcnNow( const QVariantList&, QgsFeature* , QgsExpression * )
 {
   return QVariant( QDateTime::currentDateTime() );
@@ -755,17 +785,18 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "todate", 1, fcnToDate, QObject::tr( "Conversions" ) )
     << FunctionDef( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
     << FunctionDef( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
-    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conversions" ) )
-    // date/time
-    << FunctionDef( "$now", 0, fcnNow, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "age", 2, fcnAge, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "year", 1, fcnYear, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "month", 1, fcnMonth, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "week", 1, fcnWeek, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "day", 1, fcnDay, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "hour", 1, fcnHour, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "minute", 1, fcnMinute, QObject::tr( "Date/Time" ) )
-    << FunctionDef( "second", 1, fcnSeconds, QObject::tr( "Date/Time" ) )
+    // conditionals
+    << FunctionDef( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
+    // Date and Time
+    << FunctionDef( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "year", 1, fcnYear, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "month", 1, fcnMonth, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "week", 1, fcnWeek, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "day", 1, fcnDay, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "hour", 1, fcnHour, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "minute", 1, fcnMinute, QObject::tr( "Date and Time" ) )
+    << FunctionDef( "second", 1, fcnSeconds, QObject::tr( "Date and Time" ) )
     // string manipulation
     << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
@@ -775,6 +806,11 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
     << FunctionDef( "concat", -1, fcnConcat, QObject::tr( "String" ) )
     << FunctionDef( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
+    << FunctionDef( "left", 2, fcnLeft, QObject::tr( "String" ) )
+    << FunctionDef( "right", 2, fcnRight, QObject::tr( "String" ) )
+    << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
+    << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
+
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )

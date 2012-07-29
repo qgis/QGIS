@@ -98,8 +98,6 @@ SET(QGIS_CORE_SRCS
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
-  qgssearchstring.cpp
-  qgssearchtreenode.cpp
   qgssnapper.cpp
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
@@ -160,11 +158,17 @@ SET(QGIS_CORE_SRCS
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
+  raster/qgsrasterinterface.cpp
+  raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrastertransparency.cpp
+  raster/qgsrasterpipe.cpp
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
 
+  raster/qgsrasterdrawer.cpp
+  raster/qgsrasterfilewriter.cpp
+  raster/qgsrasterresamplefilter.cpp
   raster/qgsrasterrendererregistry.cpp
   raster/qgsrasterrenderer.cpp
   raster/qgsbilinearrasterresampler.cpp
@@ -188,6 +192,7 @@ SET(QGIS_CORE_SRCS
   qgsspatialindex.cpp
 
   qgspaintenginehack.cpp
+  qgsscaleutils.cpp
 )
 
 IF(WIN32)
@@ -244,9 +249,9 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 
-ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy qgsexpressionparser.yy)
+ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
@@ -362,8 +367,6 @@ SET(QGIS_CORE_HDRS
   qgsrendercontext.h
   qgsrunprocess.h
   qgsscalecalculator.h
-  qgssearchstring.h
-  qgssearchtreenode.h
   qgssnapper.h
   qgscoordinatereferencesystem.h
   qgsvectordataprovider.h
@@ -387,8 +390,11 @@ SET(QGIS_CORE_HDRS
   raster/qgspseudocolorshader.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
+  raster/qgsrasterhistogram.h
+  raster/qgsrasterinterface.h
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h
+  raster/qgsrasterpipe.h
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
@@ -430,6 +436,7 @@ SET(QGIS_CORE_HDRS
   qgsspatialindex.h
 
   qgspaintenginehack.h
+  qgsscaleutils.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)

@@ -1,0 +1,12 @@
+<h3>$y function</h3>
+Returns the y coordinate of the current feature.
+
+<h4>Syntax</h4>
+<pre>$y</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre>$y &rarr; 42</pre>
+

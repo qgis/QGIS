@@ -31,6 +31,7 @@ class QgsRasterLayer;
 class QgsMapToolEmitPoint;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
+class QgsRasterHistogramWidget;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -69,8 +70,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnExportTransparentPixelValues_clicked();
     /** \brief auto slot executed when the active page in the main widget stack is changed */
     void on_tabBar_currentChanged( int theTab );
-    /** \brief slot executed when user wishes to refresh raster histogram */
-    void refreshHistogram();
     /** \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
@@ -95,10 +94,11 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_pbnSaveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    /** This slot lets you save the histogram as an image to disk */
-    void on_mSaveAsImageButton_clicked();
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
+
+    /** Update items in pipe list */
+    void pipeItemClicked( QTreeWidgetItem * item, int column );
 
   signals:
     /** emitted when changes to layer were saved to update legend */
@@ -152,7 +152,15 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     qreal mGradientHeight;
     qreal mGradientWidth;
 
+    /** Update pipe tab - interfaces list */
+    void updatePipeList();
+
+    /** Update items in pipe list */
+    void updatePipeItems();
+
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;
+
+    QgsRasterHistogramWidget* mHistogramWidget;
 };
 #endif

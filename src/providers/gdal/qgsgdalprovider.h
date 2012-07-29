@@ -173,8 +173,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
       */
     int capabilities() const;
 
-    int dataType( int bandNo ) const;
-    int srcDataType( int bandNo ) const;
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+    QgsRasterInterface::DataType srcDataType( int bandNo ) const;
+
+    QgsRasterInterface::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -189,6 +191,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+
+    //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
     double noDataValue() const;
     void computeMinMax( int bandNo );
@@ -217,20 +221,31 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QStringList subLayers() const;
     static QStringList subLayers( GDALDatasetH dataset );
 
-    /** \brief If the provider supports it, return band stats for the
-        given band.
-        @note added in QGIS 1.7
-        @note overloads virtual method from QgsRasterProvider::bandStatistics
+    bool hasStatistics( int theBandNo,
+                        int theStats = QgsRasterBandStats::All,
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0 );
 
-    */
-    QgsRasterBandStats bandStatistics( int theBandNo );
+    QgsRasterBandStats bandStatistics( int theBandNo,
+                                       int theStats = QgsRasterBandStats::All,
+                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       int theSampleSize = 0 );
 
-    void populateHistogram( int theBandNoInt,
-                            QgsRasterBandStats & theBandStats,
-                            int theBinCountInt = 256,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false
-                          );
+    bool hasHistogram( int theBandNo,
+                       int theBinCount = 0,
+                       double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                       double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                       const QgsRectangle & theExtent = QgsRectangle(),
+                       int theSampleSize = 0,
+                       bool theIncludeOutOfRange = false );
+
+    QgsRasterHistogram histogram( int theBandNo,
+                                  int theBinCount = 0,
+                                  double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle & theExtent = QgsRectangle(),
+                                  int theSampleSize = 0,
+                                  bool theIncludeOutOfRange = false );
 
     QString buildPyramids( const QList<QgsRasterPyramid> &,
                            const QString &  theResamplingMethod = "NEAREST",
@@ -243,12 +258,34 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
 
+    static QMap<QString, QString> supportedMimes();
+
+    /** Creates a new dataset with mDataSourceURI
+        @return true in case of success*/
+    bool create( const QString& format, int nBands,
+                 QgsRasterDataProvider::DataType type,
+                 int width, int height, double* geoTransform,
+                 const QgsCoordinateReferenceSystem& crs,
+                 QStringList createOptions = QStringList() );
+
+    /**Writes into the provider datasource*/
+    bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    /**Returns the formats supported by create()*/
+    QStringList createFormats() const;
+
+    /**Remove dataset*/
+    bool remove();
+
   signals:
     void statusChanged( QString );
 
   private:
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
+
+    /**Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
+    void initBaseDataset();
 
     /**
     * Flag indicating if the layer data source is a valid layer

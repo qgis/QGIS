@@ -62,6 +62,7 @@ class QgsPalGeometry : public PalGeometry
         , mId( id )
         , mInfo( NULL )
         , mIsDiagram( false )
+        , mIsFrozen( false )
     {
       mStrId = FID_TO_STRING( id ).toAscii();
     }
@@ -112,6 +113,9 @@ class QgsPalGeometry : public PalGeometry
     void setIsDiagram( bool d ) { mIsDiagram = d; }
     bool isDiagram() const { return mIsDiagram; }
 
+    void setIsFrozen( bool f ) { mIsFrozen = f; }
+    bool isFrozen() const { return mIsFrozen; }
+
     void addDiagramAttribute( int index, QVariant value ) { mDiagramAttributes.insert( index, value ); }
     const QgsAttributeMap& diagramAttributes() { return mDiagramAttributes; }
 
@@ -122,6 +126,7 @@ class QgsPalGeometry : public PalGeometry
     QgsFeatureId mId;
     LabelInfo* mInfo;
     bool mIsDiagram;
+    bool mIsFrozen;
     /**Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
@@ -706,6 +711,9 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   {
     lbl->addDataDefinedValue( dIt.key(), f.attributeMap()[dIt.value()] );
   }
+
+  // set geometry's frozen property
+  lbl->setIsFrozen( dataDefinedPosition );
 }
 
 int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c ) const
@@ -1141,7 +1149,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         //for diagrams, remove the additional 'd' at the end of the layer id
         QString layerId = layerNameUtf8;
         layerId.chop( 1 );
-        mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerId, true );
+        mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerId, true, false );
       }
       continue;
     }
@@ -1224,7 +1232,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( mLabelSearchTree )
     {
-      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName() );
+      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), false, palGeometry->isFrozen() );
     }
   }
 
@@ -1264,6 +1272,24 @@ QList<QgsLabelPosition> QgsPalLabeling::labelsAtPosition( const QgsPoint& p )
   if ( mLabelSearchTree )
   {
     mLabelSearchTree->label( p, positionPointers );
+    QList<QgsLabelPosition*>::const_iterator pointerIt = positionPointers.constBegin();
+    for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
+    {
+      positions.push_back( QgsLabelPosition( **pointerIt ) );
+    }
+  }
+
+  return positions;
+}
+
+QList<QgsLabelPosition> QgsPalLabeling::labelsWithinRect( const QgsRectangle& r )
+{
+  QList<QgsLabelPosition> positions;
+
+  QList<QgsLabelPosition*> positionPointers;
+  if ( mLabelSearchTree )
+  {
+    mLabelSearchTree->labelsInRect( r, positionPointers );
     QList<QgsLabelPosition*>::const_iterator pointerIt = positionPointers.constBegin();
     for ( ; pointerIt != positionPointers.constEnd(); ++pointerIt )
     {

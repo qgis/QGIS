@@ -48,7 +48,7 @@ class QgsGdalProviderBase
     static void registerGdalDrivers();
   protected:
 
-    int dataTypeFromGdal( int theGdalDataType ) const;
+    QgsRasterInterface::DataType dataTypeFromGdal( int theGdalDataType ) const;
 
     int colorInterpretationFromGdal( int gdalColorInterpretation ) const;
 

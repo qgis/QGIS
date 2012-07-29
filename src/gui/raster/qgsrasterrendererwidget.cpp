@@ -34,10 +34,13 @@ QString QgsRasterRendererWidget::displayBandName( int band ) const
     return name;
   }
 
-  name = provider->colorInterpretationName( band );
-  if ( name == "Undefined" )
+  name = provider->generateBandName( band );
+
+  QString colorInterp = provider->colorInterpretationName( band );
+  if ( colorInterp != "Undefined" )
   {
-    name = provider->generateBandName( band );
+    name.append( QString( " (%1)" ).arg( colorInterp ) );
   }
   return name;
 }
+

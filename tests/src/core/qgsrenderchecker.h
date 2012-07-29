@@ -16,6 +16,7 @@
 #ifndef QGSRENDERCHECKER_H
 #define QGSRENDERCHECKER_H
 
+#include <QDir>
 #include <QString>
 #include <qgsmaprenderer.h>
 class QImage;
@@ -52,6 +53,10 @@ class QgsRenderChecker
       * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
       */
     void setControlName( const QString theName );
+    /** Prefix where the control images are kept.
+     * This will be appended to controlImagePath
+      */
+    void setControlPathPrefix( const QString theName ) { mControlPathPrefix = theName + QDir::separator(); }
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
 
@@ -79,7 +84,7 @@ class QgsRenderChecker
      * for that by providing a tolerance.
      * @note: make sure to call setExpectedImage and setRenderedImage first.
      */
-    bool compareImages( QString theTestName, unsigned int theMismatchCount = 0 );
+    bool compareImages( QString theTestName, unsigned int theMismatchCount = 0, QString theRenderedImageFile = "" );
     /** Get a list of all teh anomalies. An anomaly is a rendered difference
       * file where there is some red pixel content (indicating a render check
       * mismatch), but where the output was still acceptible. If the render
@@ -100,6 +105,7 @@ class QgsRenderChecker
     int mElapsedTime;
     int mElapsedTimeTarget;
     QgsMapRenderer * mpMapRenderer;
+    QString mControlPathPrefix;
 
 }; // class QgsRenderChecker
 

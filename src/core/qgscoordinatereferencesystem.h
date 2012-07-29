@@ -24,6 +24,8 @@
 //qt includes
 #include <QString>
 #include <QMap>
+#include <QHash>
+
 class QDomNode;
 class QDomDocument;
 
@@ -476,6 +478,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QString mValidationHint;
     mutable QString mWkt;
+
+    static bool loadIDs( QHash<int, QString> &wkts );
+    static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
 
     //!Whether this is a coordinate system has inverted axis
     mutable int mAxisInverted;

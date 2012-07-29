@@ -18,6 +18,7 @@
 #ifndef QGSSINGLEBANDGRAYRENDERERWIDGET_H
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
+#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
 
@@ -25,17 +26,31 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
 {
     Q_OBJECT
   public:
-    QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer );
+    QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandGrayRendererWidget();
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer ) { return new QgsSingleBandGrayRendererWidget( layer ); }
+    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandGrayRendererWidget( layer, theExtent ); }
 
     QgsRasterRenderer* renderer();
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
+    QString min( int index = 0 ) { Q_UNUSED( index ); return mMinLineEdit->text(); }
+    QString max( int index = 0 ) { Q_UNUSED( index ); return mMaxLineEdit->text(); }
+    void setMin( QString value, int index = 0 ) { Q_UNUSED( index ); mMinLineEdit->setText( value ); }
+    void setMax( QString value, int index = 0 ) { Q_UNUSED( index ); mMaxLineEdit->setText( value ); }
+    //QString stdDev( ) { return QString::number( mStdDevSpinBox->value() ); }
+    //void setStdDev( QString value ) { mStdDevSpinBox->setValue( value.toDouble() ); }
+    int selectedBand( int index = 0 ) { Q_UNUSED( index ); return mGrayBandComboBox->currentIndex() + 1; }
+
+  public slots:
+    void loadMinMax( int theBandNo, double theMin, double theMax );
+
   private slots:
-    void on_mLoadPushButton_clicked();
+    void on_mGrayBandComboBox_currentIndexChanged( int index );
+
+  private:
+    QgsRasterMinMaxWidget * mMinMaxWidget;
 };
 
 #endif // QGSSINGLEBANDGRAYRENDERERWIDGET_H

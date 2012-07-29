@@ -1,0 +1,114 @@
+
+
+= Setting up the WCS test server on GNU/Linux =
+
+**Requires:** Ubuntu / Debian derived distro
+
+These notes are for Ubuntu - other versions and Debian derived distros may
+require slight variations in package names.
+
+== Preparation ==
+
+Note the git repo below will change to the default QGIS repo once this work
+is integrated into master.
+
+  git remote add blazek git://github.com/blazek/Quantum-GIS.git
+  git fetch blazek
+  git branch --track wcs2 blazek/wcs2
+  git checkout wcs2
+  cd /var/www/
+  sudo mkdir wcs
+  sudo chown timlinux wcs
+  cd wcs/
+  mkdir cgi-bin
+  cd cgi-bin/
+
+== Setup mapserver ==
+
+```sudo apt-get install cgi-mapserver```
+
+Set the contents of cgi-bin/wcstest-1.9.0 to:
+
+```
+  #! /bin/sh
+  MS_MAPFILE=/var/www/wcs/testdata/qgis-1.9.0/raster/wcs.map
+  export MS_MAPFILE
+  /usr/lib/cgi-bin/mapserv
+```
+
+Then do:
+
+```
+  chmod +x cgi-bin/wcstest-1.9.0
+  mkdir -p /var/www/wcs/testdata/qgis-1.9.0/raster/
+  cd /var/www/wcs/testdata/qgis-1.9.0/raster/
+  cp -r /home/timlinux/Quantum-GIS/tests/testdata/raster/* .
+```
+
+Edit wcs.map and set the shapepath to this:
+
+```
+  SHAPEPATH "/var/www/wcs/testdata/qgis-1.9.0/raster"
+```
+
+Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
+
+```
+  <VirtualHost *:80>
+  ServerName wcs.qgis.org
+  ServerAdmin tim@linfiniti.com
+
+  LogLevel warn
+  LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" \"%{forensic-id}n\"" combined
+  CustomLog /var/log/apache2/wcs_qgis.org/access.log combined
+  ErrorLog /var/log/apache2/wcs_qgis.org/error.log
+
+  DocumentRoot /var/www/wcs/html
+
+  ScriptAlias /cgi-bin/ /var/www/wcs/cgi-bin/
+  <Directory "/var/www/wcs/cgi-bin">
+        AllowOverride None
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+        Order allow,deny
+        Allow from all
+  </Directory>
+
+  RewriteEngine on
+  RewriteRule /1.9.0/wcs /cgi-bin/wcstest-1.9.0 [PT]
+
+  </VirtualHost>
+```
+
+== Create a home page ==
+
+```
+  mkdir html
+  vim html/index.html
+```
+
+Set the contents to:
+
+```
+  This is the test platform for QGIS' wcs client. You can use these services
+  from QGIS directly (to try out WCS for example) by pointing your QGIS to:
+  http://wcs.qgis.org/1.9.0/wcs
+```
+
+
+== Now deploy it ==
+
+```
+  sudo mkdir /var/log/apache2/wcs_qgis.org
+  sudo chown www-data /var/log/apache2/wcs_qgis.org
+  cd /etc/apache2/sites-available/
+  sudo ln -s /var/www/wcs/7-wcs.qgis.org.conf .
+  cd /var/www/wcs/
+  sudo a2ensite 7-wcs.qgis.org.conf
+  sudo /etc/init.d/apache2 reload
+```
+
+== Debugging ==
+
+```
+  sudo tail -f /var/log/apache2/wcs_qgis.org/error.log
+```

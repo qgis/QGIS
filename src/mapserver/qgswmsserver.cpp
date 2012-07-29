@@ -553,34 +553,24 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     generator.setResolution( c->printResolution() ); //because the rendering is done in mm, convert the dpi
 
     QPainter p( &generator );
-    QRectF sourceArea( 0, 0, c->paperWidth(), c->paperHeight() );
-    QRectF targetArea( 0, 0, width, height );
     if ( c->printAsRaster() ) //embed one raster into the svg
     {
-      QImage* img = printCompositionToImage( c );
-      if ( img )
-      {
-        p.drawImage( targetArea, *img, QRectF( 0, 0, img->width(), img->height() ) );
-      }
-      delete img;
+      QImage img = c->printPageAsRaster( 0 );
+      p.drawImage( QRect( 0, 0, width, height ), img, QRectF( 0, 0, img.width(), img.height() ) );
     }
     else
     {
-      c->render( &p, targetArea, sourceArea );
+      c->renderPage( &p, 0 );
     }
     p.end();
   }
   else if ( formatString.compare( "png", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
   {
-    QImage* image = printCompositionToImage( c );
-    if ( image )
-    {
-      ba = new QByteArray();
-      QBuffer buffer( ba );
-      buffer.open( QIODevice::WriteOnly );
-      image->save( &buffer, formatString.toLocal8Bit().data(), -1 );
-    }
-    delete image;
+    QImage image = c->printPageAsRaster( 0 ); //can only return the first page if pixmap is requested
+    ba = new QByteArray();
+    QBuffer buffer( ba );
+    buffer.open( QIODevice::WriteOnly );
+    image.save( &buffer, formatString.toLocal8Bit().data(), -1 );
   }
   else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
   {
@@ -593,33 +583,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
       return 0;
     }
 
-    QPrinter printer;
-    printer.setResolution( c->printResolution() );
-    printer.setFullPage( true );
-    printer.setOutputFormat( QPrinter::PdfFormat );
-    printer.setOutputFileName( tempFile.fileName() );
-    printer.setPaperSize( QSizeF( c->paperWidth(), c->paperHeight() ), QPrinter::Millimeter );
-    QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-    QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-
-    QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
-
-    QPainter p( &printer );
-    if ( c->printAsRaster() ) //embed one raster into the pdf
-    {
-      QImage* img = printCompositionToImage( c );
-      if ( img )
-      {
-        p.drawImage( paperRectPixel, *img, QRectF( 0, 0, img->width(), img->height() ) );
-      }
-      delete img;
-    }
-    else //vector pdf
-    {
-      c->render( &p, paperRectPixel, paperRectMM );
-    }
-    p.end();
-
+    c->exportAsPDF( tempFile.fileName() );
     ba = new QByteArray();
     *ba = tempFile.readAll();
   }
