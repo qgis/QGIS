@@ -595,7 +595,7 @@ bool QgsRasterProjector::checkRows()
 void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QgsDebugMsg( QString( "extent:\n%1" ).arg( extent.toString() ) );
-  QgsDebugMsg( QString( "width = %1 height = %1" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
   if ( !mInput ) return 0;
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
@@ -610,7 +610,7 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
   calc();
 
   QgsDebugMsg( QString( "srcExtent:\n%1" ).arg( srcExtent().toString() ) );
-  QgsDebugMsg( QString( "srcCols = %1 srcRows = %1" ).arg( srcCols() ).arg( srcRows() ) );
+  QgsDebugMsg( QString( "srcCols = %1 srcRows = %2" ).arg( srcCols() ).arg( srcRows() ) );
 
   // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
   if ( srcRows() <= 0 || srcCols() <= 0 )
