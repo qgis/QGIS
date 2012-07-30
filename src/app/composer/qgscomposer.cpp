@@ -1136,15 +1136,6 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   }
   parentNode.appendChild( composerElem );
 
-  //store composer items:
-  QMap<QgsComposerItem*, QWidget*>::const_iterator itemIt = mItemWidgetMap.constBegin();
-  for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
-  {
-    itemIt.key()->writeXML( composerElem, doc );
-  }
-
-  //store composer view
-
   //store composition
   if ( mComposition )
   {

@@ -238,6 +238,28 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
+  //save items except paper items and frame items (they are saved with the corresponding multiframe)
+  QList<QGraphicsItem*> itemList = items();
+  QList<QGraphicsItem*>::const_iterator itemIt = itemList.constBegin();
+  for ( ; itemIt != itemList.constEnd(); ++itemIt )
+  {
+    const QgsComposerItem* composerItem = dynamic_cast<const QgsComposerItem*>( *itemIt );
+    if ( composerItem )
+    {
+      if ( composerItem->type() != QgsComposerItem::ComposerPaper &&  composerItem->type() != QgsComposerItem::ComposerFrame )
+      {
+        composerItem->writeXML( compositionElem, doc );
+      }
+    }
+  }
+
+  //save multiframes
+  QSet<QgsComposerMultiFrame*>::const_iterator multiFrameIt = mMultiFrames.constBegin();
+  for ( ; multiFrameIt != mMultiFrames.constEnd(); ++mMultiFrameIt )
+  {
+    ( *multiFrameIt )->writeXML( compositionElem, doc );
+  }
+
   composerElem.appendChild( compositionElem );
 
   return true;

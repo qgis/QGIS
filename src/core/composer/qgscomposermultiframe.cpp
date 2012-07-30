@@ -148,3 +148,14 @@ void QgsComposerMultiFrame::update()
     ( *frameIt )->update();
   }
 }
+
+bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc ) const
+{
+  elem.setAttribute( "resizeMode", mResizeMode );
+  QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
+  for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
+  {
+    ( *frameIt )->writeXML( elem, doc );
+  }
+  return true;
+}

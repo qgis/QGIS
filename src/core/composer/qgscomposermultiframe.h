@@ -22,6 +22,8 @@
 class QgsComposerFrame;
 class QgsComposerItem;
 class QgsComposition;
+class QDomDocument;
+class QDomElement;
 class QRectF;
 class QPainter;
 
@@ -47,6 +49,9 @@ class QgsComposerMultiFrame: public QObject
 
     void setResizeMode( ResizeMode mode );
     ResizeMode resizeMode() const { return mResizeMode; }
+
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
+    bool _writeXML( QDomElement& elem, QDomDocument& doc ) const;
 
   protected:
     QgsComposition* mComposition;

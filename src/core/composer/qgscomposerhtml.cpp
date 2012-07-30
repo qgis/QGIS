@@ -113,3 +113,12 @@ void QgsComposerHtml::addFrame( QgsComposerFrame* frame )
     mComposition->addComposerHtmlFrame( this, frame );
   }
 }
+
+bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc ) const
+{
+  QDomElement htmlElem = doc.createElement( "ComposerHtml" );
+  htmlElem.setAttribute( "url", mUrl.toString() );
+  bool state = _writeXML( htmlElem, doc );
+  elem.appendChild( htmlElem );
+  return state;
+}
