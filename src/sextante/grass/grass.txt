@@ -24,7 +24,7 @@ Example: ParameterRaster|base|base|False
 
 ParameterVector|[name of GRASS parameter]|[description of parameter to shown]|[A number indicating the type of geometry]|True/False, indicating if the parameter is optional or not
 
-Example: ParameterRaster|points|points|False
+ParameterVector|input|Name of input vector map|-1|False
 
 To indicate the type of geometry, use the following values:
 
@@ -67,11 +67,11 @@ The following types are available
 	-OutputVector
 	-OutputTable
 	-OutputFile (for any file that is not a layer or table of a format supported by QGIS)
-	
+
 
 -Advanced parameters
 
-to tag a parameter as "advanced", just add "*" before its declaration. For instance: 
+to tag a parameter as "advanced", just add "*" before its declaration. For instance:
 
 *ParameterBoolean|-c|-c|True
 
