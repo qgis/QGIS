@@ -35,6 +35,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
   {
     mResizeMode = mode;
     recalculateFrameSizes();
+    emit changed();
   }
 }
 

@@ -70,6 +70,9 @@ class QgsComposerMultiFrame: public QObject
 
   private:
     QgsComposerMultiFrame(); //forbidden
+
+  signals:
+    void changed();
 };
 
 #endif // QGSCOMPOSERMULTIFRAME_H

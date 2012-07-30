@@ -7,8 +7,17 @@
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): mHtml( html ), mFrame( frame )
 {
   setupUi( this );
+
+  blockSignals( true );
   mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsComposerMultiFrame::UseExistingFrames );
   mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsComposerMultiFrame::ExtendToNextPage );
+  blockSignals( false );
+  setGuiElementValues();
+
+  if ( mHtml )
+  {
+    QObject::connect( mHtml, SIGNAL( changed() ), this, SLOT( setGuiElementValues() ) );
+  }
 
   //embed widget for general options
   if ( mFrame )

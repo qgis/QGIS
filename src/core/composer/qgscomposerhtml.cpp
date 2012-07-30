@@ -65,6 +65,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   mSize.setWidth( contentsSize.width() / mHtmlUnitsToMM );
   mSize.setHeight( contentsSize.height() / mHtmlUnitsToMM );
   recalculateFrameSizes();
+  emit changed();
 }
 
 void QgsComposerHtml::frameLoaded( bool ok )
@@ -111,6 +112,7 @@ void QgsComposerHtml::addFrame( QgsComposerFrame* frame )
   if ( mComposition )
   {
     mComposition->addComposerHtmlFrame( this, frame );
+    mComposition->pushAddRemoveCommand( frame, tr( "HTML frame added" ) );
   }
 }
 

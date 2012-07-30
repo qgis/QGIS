@@ -324,12 +324,10 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerHtml* composerHtml = new QgsComposerHtml( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
             mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
-        //composition()->addComposerHtml( composerHtml );
         scene()->removeItem( mRubberBandItem );
         delete mRubberBandItem;
         mRubberBandItem = 0;
         emit actionFinished();
-        //composition()->pushAddRemoveCommand...
       }
     default:
       break;
