@@ -28,13 +28,13 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal wid
   mWebPage = new QWebPage();
   QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
 
-  if ( mComposition )
+  if ( mComposition && width > 0 && height > 0 )
   {
     QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
     addFrame( frame );
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
+    recalculateFrameSizes();
   }
-  recalculateFrameSizes();
 }
 
 QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0 ), mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 )
@@ -121,4 +121,14 @@ bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc ) const
   bool state = _writeXML( htmlElem, doc );
   elem.appendChild( htmlElem );
   return state;
+}
+
+bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+{
+  QString urlString = itemElem.attribute( "url" );
+  if ( !urlString.isEmpty() )
+  {
+    setUrl( QUrl( urlString ) );
+  }
+  return _readXML( itemElem, doc );
 }

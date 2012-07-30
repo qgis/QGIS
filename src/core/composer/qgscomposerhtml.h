@@ -36,6 +36,7 @@ class QgsComposerHtml: public QgsComposerMultiFrame
     void render( QPainter* p, const QRectF& renderExtent );
 
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
   protected:
     void addFrame( QgsComposerFrame* frame );

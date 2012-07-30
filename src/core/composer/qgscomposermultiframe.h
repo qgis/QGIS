@@ -53,6 +53,9 @@ class QgsComposerMultiFrame: public QObject
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
     bool _writeXML( QDomElement& elem, QDomDocument& doc ) const;
 
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
+    bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
   protected:
     QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;

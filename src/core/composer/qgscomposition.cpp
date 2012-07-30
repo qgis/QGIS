@@ -255,7 +255,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
 
   //save multiframes
   QSet<QgsComposerMultiFrame*>::const_iterator multiFrameIt = mMultiFrames.constBegin();
-  for ( ; multiFrameIt != mMultiFrames.constEnd(); ++mMultiFrameIt )
+  for ( ; multiFrameIt != mMultiFrames.constEnd(); ++multiFrameIt )
   {
     ( *multiFrameIt )->writeXML( compositionElem, doc );
   }
@@ -453,6 +453,15 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       pushAddRemoveCommand( newTable, tr( "Table added" ) );
     }
+  }
+  //html
+  QDomNodeList composerHtmlList = elem.elementsByTagName( "ComposerHtml" );
+  for ( int i = 0; i < composerHtmlList.size(); ++i )
+  {
+    QDomElement currentHtmlElem = composerHtmlList.at( i ).toElement();
+    QgsComposerHtml* newHtml = new QgsComposerHtml( this, 0, 0, 0, 0 );
+    newHtml->readXML( currentHtmlElem, doc );
+    this->addMultiFrame( newHtml );
   }
 }
 

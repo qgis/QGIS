@@ -27,12 +27,28 @@ QgsComposerFrame::~QgsComposerFrame()
 
 bool QgsComposerFrame::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
-  return false; //_writeXML( element, doc );
+  QDomElement frameElem = doc.createElement( "ComposerFrame" );
+  frameElem.setAttribute( "sectionX", QString::number( mSection.x() ) );
+  frameElem.setAttribute( "sectionY", QString::number( mSection.y() ) );
+  frameElem.setAttribute( "sectionWidth", QString::number( mSection.width() ) );
+  frameElem.setAttribute( "sectionHeight", QString::number( mSection.height() ) );
+  elem.appendChild( frameElem );
+  return _writeXML( frameElem, doc );
 }
 
 bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
-  return false; //_readXML( element, doc )
+  double x = itemElem.attribute( "sectionX" ).toDouble();
+  double y = itemElem.attribute( "sectionY" ).toDouble();
+  double width = itemElem.attribute( "sectionWidth" ).toDouble();
+  double height = itemElem.attribute( "sectionHeight" ).toDouble();
+  mSection = QRectF( x, y, width, height );
+  QDomElement composerItem = itemElem.firstChildElement( "ComposerItem" );
+  if ( composerItem.isNull() )
+  {
+    return false;
+  }
+  return _readXML( composerItem, doc );
 }
 
 void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )

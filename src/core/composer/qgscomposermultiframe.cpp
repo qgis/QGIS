@@ -159,3 +159,17 @@ bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc ) co
   }
   return true;
 }
+
+bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
+{
+  mResizeMode = ( ResizeMode )itemElem.attribute( "resizeMode", "0" ).toInt();
+  QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );
+  for ( int i = 0; i < frameList.size(); ++i )
+  {
+    QDomElement frameElem = frameList.at( i ).toElement();
+    QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
+    newFrame->readXML( frameElem, doc );
+    addFrame( newFrame );
+  }
+  return true;
+}
