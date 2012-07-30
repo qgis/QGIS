@@ -23,8 +23,13 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
 from sextante.core.WrongHelpFileException import WrongHelpFileException
 from sextante.outputs.OutputFile import OutputFile
+from sextante.parameters.ParameterExtent import ParameterExtent
+from sextante.parameters.ParameterNumber import ParameterNumber
 
 class GrassAlgorithm(GeoAlgorithm):
+
+    GRASS_REGION_EXTENT_PARAMETER = "GRASS_REGION_PARAMETER"
+    GRASS_REGION_CELLSIZE_PARAMETER = "GRASS_REGION_CELLSIZE_PARAMETER"
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
@@ -98,55 +103,67 @@ class GrassAlgorithm(GeoAlgorithm):
                 raise e
         lines.close()
 
-    def calculateRegion(self):
-        auto = SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION)
-        if auto:
-            try:
-                self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
-            except Exception:
-                self.cellsize = 0;
-            first = True;
-            for param in self.parameters:
-                if param.value:
-                    if isinstance(param, (ParameterRaster, ParameterVector)):
-                        if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
-                            layer = param.value
-                        else:
-                            layer = QGisLayers.getObjectFromUri(param.value)
-                        self.addToRegion(layer, first)
-                        first = False
-                    elif isinstance(param, ParameterMultipleInput):
-                        layers = param.value.split(";")
-                        for layername in layers:
-                            layer = QGisLayers.getObjectFromUri(layername, first)
-                            self.addToRegion(layer, first)
-                            first = False
-            if self.cellsize == 0:
-                self.cellsize = 1
-        else:
-            self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
-            self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)
-            self.ymin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMIN)
-            self.ymax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMAX)
-            self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+        #=======================================================================
+        # self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
+        # self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)
+        # self.ymin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMIN)
+        # self.ymax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMAX)
+        # extentString = str(self.xmin) + "," + str(self.xmax) + str(self.xmin) + "," + str(self.xmax)
+        # self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+        #=======================================================================
+        self.addParameter(ParameterExtent(self.GRASS_REGION_EXTENT_PARAMETER, "GRASS region extent"))
+        self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER, "GRASS region cellsize", 0, None, 1))
 
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-            if isinstance(layer, QgsRasterLayer):
-                self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
-            if isinstance(layer, QgsRasterLayer):
-                self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
-
+#===============================================================================
+#    def calculateRegion(self):
+#        auto = SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION)
+#        if auto:
+#            try:
+#                self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+#            except Exception:
+#                self.cellsize = 0;
+#            first = True;
+#            for param in self.parameters:
+#                if param.value:
+#                    if isinstance(param, (ParameterRaster, ParameterVector)):
+#                        if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
+#                            layer = param.value
+#                        else:
+#                            layer = QGisLayers.getObjectFromUri(param.value)
+#                        self.addToRegion(layer, first)
+#                        first = False
+#                    elif isinstance(param, ParameterMultipleInput):
+#                        layers = param.value.split(";")
+#                        for layername in layers:
+#                            layer = QGisLayers.getObjectFromUri(layername, first)
+#                            self.addToRegion(layer, first)
+#                            first = False
+#            if self.cellsize == 0:
+#                self.cellsize = 1
+#        else:
+#            self.xmin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMIN)
+#            self.xmax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_XMAX)
+#            self.ymin = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMIN)
+#            self.ymax = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_YMAX)
+#            self.cellsize = SextanteConfig.getSetting(GrassUtils.GRASS_REGION_CELLSIZE)
+#
+#
+#    def addToRegion(self, layer, first):
+#        if first:
+#            self.xmin = layer.extent().xMinimum()
+#            self.xmax = layer.extent().xMaximum()
+#            self.ymin = layer.extent().yMinimum()
+#            self.ymax = layer.extent().yMaximum()
+#            if isinstance(layer, QgsRasterLayer):
+#                self.cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width()
+#        else:
+#            self.xmin = min(self.xmin, layer.extent().xMinimum())
+#            self.xmax = max(self.xmax, layer.extent().xMaximum())
+#            self.ymin = min(self.ymin, layer.extent().yMinimum())
+#            self.ymax = max(self.ymax, layer.extent().yMaximum())
+#            if isinstance(layer, QgsRasterLayer):
+#                self.cellsize = max(self.cellsize, (layer.extent().xMaximum() - layer.extent().xMinimum())/layer.width())
+#===============================================================================
 
     def processAlgorithm(self, progress):
         if SextanteUtils.isWindows():
@@ -157,15 +174,17 @@ class GrassAlgorithm(GeoAlgorithm):
         commands = []
         self.exportedLayers = {}
 
-        self.calculateRegion()
+        #self.calculateRegion()
+        region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+        regionCoords = region.split(",")
         GrassUtils.createTempMapset();
 
         command = "g.region"
-        command += " n=" + str(self.ymax)
-        command +=" s=" + str(self.ymin)
-        command +=" e=" + str(self.xmax)
-        command +=" w=" + str(self.xmin)
-        command +=" res=" + str(self.cellsize);
+        command += " n=" + str(regionCoords[3])
+        command +=" s=" + str(regionCoords[2])
+        command +=" e=" + str(regionCoords[1])
+        command +=" w=" + str(regionCoords[0])
+        command +=" res=" + str(self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER));
         commands.append(command)
 
         #1: Export layer to grass mapset
@@ -199,6 +218,8 @@ class GrassAlgorithm(GeoAlgorithm):
         command = self.grassName
         for param in self.parameters:
             if param.value == None:
+                continue
+            if param.name == self.GRASS_REGION_CELLSIZE_PARAMETER or param.name == self.GRASS_REGION_EXTENT_PARAMETER:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
@@ -306,15 +327,17 @@ class GrassAlgorithm(GeoAlgorithm):
     def commandLineName(self):
         return "grass:" + self.name[:self.name.find(" ")]
 
-    def checkBeforeOpeningParametersDialog(self):
-        for param in self.parameters:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                return None
-            if isinstance(param, ParameterMultipleInput):
-                if not param.optional:
-                    return None
-
-        if SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION):
-            return "This algorithm cannot be run with the 'auto-region' setting\nPlease set a GRASS region before running it"
-        else:
-            return None
+#===============================================================================
+#    def checkBeforeOpeningParametersDialog(self):
+#        for param in self.parameters:
+#            if isinstance(param, (ParameterRaster, ParameterVector)):
+#                return None
+#            if isinstance(param, ParameterMultipleInput):
+#                if not param.optional:
+#                    return None
+#
+#        if SextanteConfig.getSetting(GrassUtils.GRASS_AUTO_REGION):
+#            return "This algorithm cannot be run with the 'auto-region' setting\nPlease set a GRASS region before running it"
+#        else:
+#            return None
+#===============================================================================

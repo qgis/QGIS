@@ -137,6 +137,12 @@ class ParametersPanel(QtGui.QWidget):
             self.verticalLayout.addStretch(1000)
             self.setLayout(self.verticalLayout)
 
+        #=======================================================================
+        # for param in self.alg.parameters:
+        #    if isinstance(param, ParameterExtent):
+        #        self.widgets[param.name].useMinCovering()
+        #=======================================================================
+
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
@@ -247,7 +253,7 @@ class ParametersPanel(QtGui.QWidget):
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):
-            item = ExtentSelectionPanel(self.parent, param.default)
+            item = ExtentSelectionPanel(self.parent, self.alg, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
         else:

@@ -9,6 +9,7 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.parameters.ParameterExtent import ParameterExtent
 
 
 class ModelerParameterDefinitionDialog(QtGui.QDialog):
@@ -20,11 +21,12 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
     PARAMETER_STRING="String"
     PARAMETER_BOOLEAN="Boolean"
     PARAMETER_TABLE_FIELD="Table field"
+    PARAMETER_EXTENT="Extent"
     #TO ADD
     PARAMETER_MULTIPLE="Multiple input"
     PARAMETER_FIXED_TABLE="Fixed table"
 
-    paramTypes = [PARAMETER_BOOLEAN,PARAMETER_NUMBER, PARAMETER_RASTER,
+    paramTypes = [PARAMETER_BOOLEAN,PARAMETER_NUMBER, PARAMETER_RASTER, PARAMETER_EXTENT,
                   PARAMETER_STRING, PARAMETER_VECTOR, PARAMETER_TABLE, PARAMETER_TABLE_FIELD]
 
     def __init__(self, alg, paramType = None, param = None):
@@ -66,7 +68,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.yesNoCombo.addItem("No")
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
                     or isinstance(self.param, ParameterTableField):
             self.horizontalLayout2.addWidget(QtGui.QLabel("Parent layer"))
             self.parentCombo = QtGui.QComboBox()

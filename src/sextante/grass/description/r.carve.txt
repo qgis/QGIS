@@ -7,4 +7,4 @@ ParameterNumber|width|Stream width (in meters). Default is raster cell width|Non
 ParameterNumber|depth|Additional stream depth (in meters)|None|None|1
 ParameterBoolean|-n|No flat areas allowed in flow direction|False
 OutputRaster|output|Name for output raster map
-OutputVector|points|ame for output vector map for adjusted stream points
+OutputVector|points|Name for output vector map for adjusted stream points

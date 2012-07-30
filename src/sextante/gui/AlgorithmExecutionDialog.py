@@ -105,8 +105,18 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         for param in params:
             if param.hidden:
                 continue
+            if isinstance(param, ParameterExtent):
+                continue
             if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
                 return False
+
+        for param in params:
+            if isinstance(param, ParameterExtent):
+                value = self.paramTable.valueItems[param.name].getValue()
+                if value is not None:
+                    param.value = value
+                else:
+                    return False
 
         for output in outputs:
             if output.hidden:

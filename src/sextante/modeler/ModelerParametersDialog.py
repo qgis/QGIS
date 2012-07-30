@@ -23,6 +23,7 @@ from sextante.outputs.OutputNumber import OutputNumber
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
 from sextante.core.WrongHelpFileException import WrongHelpFileException
+from sextante.parameters.ParameterExtent import ParameterExtent
 
 class ModelerParametersDialog(QtGui.QDialog):
 
@@ -159,6 +160,13 @@ class ModelerParametersDialog(QtGui.QDialog):
 
         return tables
 
+    def getExtents(self):
+        extents = []
+        params = self.model.parameters
+        for param in params:
+            if isinstance(param, ParameterExtent):
+                extents.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
     def getNumbers(self):
         numbers = []
         params = self.model.parameters
@@ -294,6 +302,13 @@ class ModelerParametersDialog(QtGui.QDialog):
             numbers = self.getNumbers()
             for n in numbers:
                 item.addItem(n.name(), n)
+            item.setEditText(str(param.default))
+        elif isinstance(param, ParameterExtent):
+            item = QtGui.QComboBox()
+            item.setEditable(True)
+            extents = self.getExtents()
+            for ex in extents:
+                item.addItem(ex.name(), ex)
             item.setEditText(str(param.default))
         elif isinstance(param, ParameterFile):
             item = QtGui.QComboBox()
@@ -513,6 +528,27 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
         return True
 
+    def setParamExtentValue(self, param, widget):
+        idx = widget.findText(widget.currentText())
+        if idx < 0:
+            name =  self.getSafeNameForHarcodedParameter(param)
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            self.params[param.name] = value
+            s = str(widget.currentText())
+            try:
+                tokens = s.split(",")
+                if len(tokens) != 4:
+                    return False
+                for token in tokens:
+                    float(token)
+            except:
+                return False
+            self.values[name] = s
+        else:
+            value = widget.itemData(widget.currentIndex()).toPyObject()
+            self.params[param.name] = value
+        return True
+
     def setParamValue(self, param, widget):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
             return self.setParamValueLayerOrTable(param, widget)
@@ -522,6 +558,8 @@ class ModelerParametersDialog(QtGui.QDialog):
             return self.setParamStringValue(param, widget)
         elif isinstance(param, ParameterNumber):
             return self.setParamNumberValue(param, widget)
+        elif isinstance(param, ParameterExtent):
+            return self.setParamExtentValue(param, widget)
         elif isinstance(param, ParameterFile):
             return self.setParamFileValue(param, widget)
         elif isinstance(param, ParameterSelection):
@@ -542,7 +580,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
             self.values[name] = ParameterFixedTable.tableToString(widget.table)
             return True
-        if isinstance(param, ParameterTableField):
+        elif isinstance(param, ParameterTableField):
             return self.setParamTableFieldValue(param, widget)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
@@ -558,6 +596,12 @@ class ModelerParametersDialog(QtGui.QDialog):
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
             self.values[name] = ";".join(values)
+            return True
+        else:
+            name =  self.getSafeNameForHarcodedParameter(param)
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+            self.params[param.name] = value
+            self.values[name] = str(widget.getText())
             return True
 
     def getSafeNameForHarcodedParameter(self, param):
