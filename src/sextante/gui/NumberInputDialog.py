@@ -46,7 +46,7 @@ class NumberInputDialog(QtGui.QDialog):
         layers = QGisLayers.getAllLayers()
         for layer in layers:
             layerItem = QtGui.QTreeWidgetItem()
-            layerItem.setText(0, str(layer.name()))
+            layerItem.setText(0, unicode(layer.name()))
             layerItem.addChild(TreeValueItem("Min X", layer.extent().xMinimum()))
             layerItem.addChild(TreeValueItem("Max X", layer.extent().xMaximum()))
             layerItem.addChild(TreeValueItem("Min Y", layer.extent().yMinimum()))
@@ -63,7 +63,7 @@ class NumberInputDialog(QtGui.QDialog):
             for i in range(layer.bandCount()):
                 stats = layer.bandStatistics(i)
                 layerItem = QtGui.QTreeWidgetItem()
-                layerItem.setText(0, str(layer.name()))
+                layerItem.setText(0, unicode(layer.name()))
                 layerItem.addChild(TreeValueItem("Mean", stats.mean))
                 layerItem.addChild(TreeValueItem("Std. deviation", stats.stdDev))
                 layerItem.addChild(TreeValueItem("Max value", stats.maximumValue))
@@ -89,6 +89,7 @@ class NumberInputDialog(QtGui.QDialog):
         extentItem.addChild(TreeValueItem("Min Y", extent.yMinimum()))
         extentItem.addChild(TreeValueItem("Max y", extent.yMaximum()))
         canvasItem.addChild(extentItem)
+
     def addValue(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeValueItem):

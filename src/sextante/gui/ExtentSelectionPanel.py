@@ -108,7 +108,7 @@ class ExtentSelectionPanel(QtGui.QWidget):
         layers = QGisLayers.getAllLayers()
         for layer in layers:
             extents.append(layer.name())
-            extentsDict[str(layer.name())] = layer.extent()
+            extentsDict[layer.name()] = layer.extent()
         item, ok = QtGui.QInputDialog.getItem(self, "Select extent", "Use extent from", extents, False)
         if ok:
             item = str(item)
