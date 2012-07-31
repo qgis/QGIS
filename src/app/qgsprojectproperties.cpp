@@ -207,6 +207,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSContactPhone->setText( QgsProject::instance()->readEntry( "WMSContactPhone", "/", "" ) );
   mWMSAbstract->setPlainText( QgsProject::instance()->readEntry( "WMSServiceAbstract", "/", "" ) );
   mWMSOnlineResourceLineEdit->setText( QgsProject::instance()->readEntry( "WMSOnlineResource", "/", "" ) );
+  mWMSUrlLineEdit->setText( QgsProject::instance()->readEntry( "WMSUrl", "/", "" ) );
 
   bool ok;
   QStringList values;
@@ -489,6 +490,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "WMSContactPhone", "/", mWMSContactPhone->text() );
   QgsProject::instance()->writeEntry( "WMSServiceAbstract", "/", mWMSAbstract->toPlainText() );
   QgsProject::instance()->writeEntry( "WMSOnlineResource", "/", mWMSOnlineResourceLineEdit->text() );
+  QgsProject::instance()->writeEntry( "WMSUrl", "/", mWMSUrlLineEdit->text() );
 
   if ( grpWMSExt->isChecked() )
   {
