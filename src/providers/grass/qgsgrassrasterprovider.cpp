@@ -270,8 +270,11 @@ double  QgsGrassRasterProvider::noDataValue() const
     // limit: 1.7976931348623157e+308
     nul = -1e+300;
   }
-  else if ( mGrassDataType == FCELL_TYPE )
+  else
   {
+    if ( mGrassDataType != FCELL_TYPE )
+      QgsDebugMsg( "unexpected data type" );
+
     // limit: 3.40282347e+38
     nul = -1e+30;
   }
@@ -303,7 +306,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int
   QList<QgsGrass::Color> colors = QgsGrass::colors( mGisdbase, mLocation, mMapset, mMapName );
   QList<QgsGrass::Color>::iterator i;
 
-  double v, r, g, b;
+  double v = 0.0, r = 0.0, g = 0.0, b = 0.0;
   for ( i = colors.begin(); i != colors.end(); ++i )
   {
     if ( ct.count() == 0 || i->value1 != v || i->red1 != r || i->green1 != g || i->blue1 != b )

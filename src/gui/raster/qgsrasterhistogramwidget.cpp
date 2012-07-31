@@ -676,7 +676,9 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
   else if ( actionName.left( 5 ) == "Load " && mRendererWidget )
   {
     QVector<int> myBands;
+#if 0
     double minMaxValues[2];
+#endif
     bool ok = false;
 
     // find which band(s) need updating (all or current)

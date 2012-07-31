@@ -22,6 +22,13 @@
 #include <QList>
 #include <QPair>
 
+#ifdef _MSC_VER
+// qextserialport.h includes windows.h,
+// which defines min()/max() macros w/o NOMINMAX,
+// which in turn breaks limits std::numeric_limits<T>::min()/max()
+#define NOMINMAX
+#endif
+
 #include "qextserialport.h"
 
 class QgsGPSConnection;
