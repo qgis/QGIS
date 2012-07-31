@@ -18,7 +18,7 @@ class DefineGrassRegionFromLayerAction(ToolboxAction):
 
     def execute(self):
         layers = QGisLayers.getAllLayers();
-        layersMap = {layer.name() : layer for layer in layers}
+        layersMap = dict([(layer.name(), layer) for layer in layers])
         layerNames = [layer.name() for layer in layers]
         item, ok = QtGui.QInputDialog.getItem(None, "Select a layer", "Layer selection", layerNames, editable=False)
         if ok:
