@@ -168,6 +168,9 @@ class QgsWMSServer
       @return true if width/height values are okay*/
     bool checkMaximumWidthHeight() const;
 
+    /**Get service address from REQUEST_URI if not specified in the configuration*/
+    QString serviceUrl() const;
+
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

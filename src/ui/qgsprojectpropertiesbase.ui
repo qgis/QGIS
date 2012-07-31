@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>588</height>
+    <width>644</width>
+    <height>530</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -756,9 +756,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>637</width>
-            <height>808</height>
+            <y>-228</y>
+            <width>599</width>
+            <height>696</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -868,6 +868,52 @@
               <string>WMS Capabilitities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                <property name="text">
+                 <string>Add WKT geometry to feature info response</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QGroupBox" name="grpWMSList">
+                <property name="title">
+                 <string>Coordinate Systems Restrictions</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QListWidget" name="mWMSList"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="pbnWMSAddSRS">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
+                   <property name="text">
+                    <string>Remove</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                   <property name="text">
+                    <string>Used</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QGroupBox" name="grpWMSExt">
                 <property name="title">
@@ -971,80 +1017,44 @@
                 </layout>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QGroupBox" name="grpWMSList">
-                <property name="title">
-                 <string>Coordinate Systems Restrictions</string>
+              <item row="3" column="0">
+               <widget class="QLabel" name="mWMSUrlLabel">
+                <property name="text">
+                 <string>Advertised WMS url</string>
                 </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="0" column="0" colspan="3">
-                  <widget class="QListWidget" name="mWMSList"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QPushButton" name="pbnWMSAddSRS">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
-                   <property name="text">
-                    <string>Remove</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                   <property name="text">
-                    <string>Used</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-                <property name="text">
-                 <string>Add WKT geometry to feature info response</string>
-                </property>
-               </widget>
+              <item row="5" column="0" colspan="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QLabel" name="mMaxWidthLabel">
+                  <property name="text">
+                   <string>Maximum width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mMaxHeightLabel">
+                  <property name="text">
+                   <string>Maximum height</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
+                </item>
+               </layout>
+              </item>
+              <item row="4" column="0" colspan="2">
+               <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
               </item>
              </layout>
             </widget>
            </item>
-           <item row="2" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLabel" name="mMaxWidthLabel">
-               <property name="text">
-                <string>Maximum width</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
-             </item>
-             <item>
-              <widget class="QLabel" name="mMaxHeightLabel">
-               <property name="text">
-                <string>Maximum height</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
-             </item>
-            </layout>
-           </item>
-           <item row="3" column="0">
+           <item row="7" column="0">
             <widget class="QGroupBox" name="grpWFSCapabilities">
              <property name="title">
               <string>WFS Capabilitities</string>

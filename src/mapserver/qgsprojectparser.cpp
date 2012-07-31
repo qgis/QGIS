@@ -1479,6 +1479,27 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   parentElement.appendChild( serviceElem );
 }
 
+QString QgsProjectParser::serviceUrl() const
+{
+  QString url;
+
+  if( !mXMLDoc )
+  {
+      return url;
+  }
+
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement wmsUrlElem = propertiesElem.firstChildElement( "WMSUrl" );
+    if ( !wmsUrlElem.isNull() )
+    {
+      url = wmsUrlElem.text();
+    }
+  }
+  return url;
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )
