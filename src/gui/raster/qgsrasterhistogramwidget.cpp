@@ -738,17 +738,19 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
       {
         leHistoMin->clear();
         leHistoMax->clear();
+#if 0
         // TODO - fix gdal provider: changes data type when nodata value is not found
         // this prevents us from getting proper min and max values here
-        // minMaxValues[0] = QgsContrastEnhancement::minimumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
-        //                                                                 mRasterLayer->dataProvider()->dataType( theBandNo ) );
-        // minMaxValues[1] = QgsContrastEnhancement::maximumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
-        //                                                                 mRasterLayer->dataProvider()->dataType( theBandNo ) );
+        minMaxValues[0] = QgsContrastEnhancement::minimumValuePossible(
+                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
+        minMaxValues[1] = QgsContrastEnhancement::maximumValuePossible(
+                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
       }
       else
       {
         leHistoMin->setText( QString::number( minMaxValues[0] ) );
         leHistoMax->setText( QString::number( minMaxValues[1] ) );
+#endif
       }
       applyHistoMin( );
       applyHistoMax( );
