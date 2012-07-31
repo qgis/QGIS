@@ -112,7 +112,6 @@ void QgsComposerHtml::addFrame( QgsComposerFrame* frame )
   if ( mComposition )
   {
     mComposition->addComposerHtmlFrame( this, frame );
-    mComposition->pushAddRemoveCommand( frame, tr( "HTML frame added" ) );
   }
 }
 

@@ -15,6 +15,7 @@
 
 #include "qgscomposermultiframe.h"
 #include "qgscomposerframe.h"
+#include "qgsaddremovemultiframecommand.h"
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c ), mResizeMode( UseExistingFrames )
 {
@@ -124,6 +125,8 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     {
       //schedule this composer multi frame for deletion
       mComposition->removeMultiFrame( this );
+      QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Removed, this, mComposition, tr( "Html removed" ), 0 );
+      mComposition->undoStack()->push( c );
     }
   }
   else

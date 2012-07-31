@@ -1034,10 +1034,15 @@ void QgsComposition::cancelCommand()
   mActiveCommand = 0;
 }
 
+void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
+{
+  mMultiFrames.insert( multiFrame );
+}
+
 void QgsComposition::removeMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.remove( multiFrame );
-  delete multiFrame; //e.v. use deleteLater() in case of stability problems
+  //delete multiFrame; //e.v. use deleteLater() in case of stability problems
 }
 
 void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )

@@ -34,6 +34,7 @@
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
 #include "qgslogger.h"
+#include "qgsaddremovemultiframecommand.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -328,6 +329,9 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         delete mRubberBandItem;
         mRubberBandItem = 0;
         emit actionFinished();
+
+        QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Added, composerHtml, composition(), tr( "HTML added" ), 0 );
+        composition()->undoStack()->push( c );
       }
     default:
       break;

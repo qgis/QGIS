@@ -112,6 +112,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkaccessmanager.cpp
 
   composer/qgsaddremoveitemcommand.cpp
+  composer/qgsaddremovemultiframecommand.cpp
   composer/qgscomposerarrow.cpp
   composer/qgscomposerframe.cpp
   composer/qgscomposeritem.cpp
