@@ -20,6 +20,8 @@ import codecs
 
 class ModelerAlgorithm(GeoAlgorithm):
 
+    CANVAS_SIZE = 4000
+
     def getCopy(self):
         newone = ModelerAlgorithm()
         newone.openModel(self.descriptionFile)
@@ -254,13 +256,26 @@ class ModelerAlgorithm(GeoAlgorithm):
         MARGIN = 20
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
-        return QtCore.QPointF(MARGIN + BOX_WIDTH / 2 + len(self.algPos) * (BOX_WIDTH + MARGIN), BOX_HEIGHT + 2 * MARGIN + BOX_HEIGHT / 2 +  len(self.algs) * (BOX_HEIGHT + MARGIN))
+        if len(self.algPos) != 0:
+            maxX = max([pos.x() for pos in self.algPos])
+            maxY = max([pos.y() for pos in self.algPos])
+            newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE - BOX_HEIGHT)
+        else:
+            newX = MARGIN + BOX_WIDTH / 2
+            newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
+        return QtCore.QPointF(newX, newY)
 
     def getPositionForParameterItem(self):
         MARGIN = 20
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
-        return QtCore.QPointF(MARGIN + BOX_WIDTH / 2 + len(self.paramPos) * (BOX_WIDTH + MARGIN), MARGIN + BOX_HEIGHT / 2)
+        if len(self.paramPos) != 0:
+            maxX = max([pos.x() for pos in self.paramPos])
+            newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
+        else:
+            newX = MARGIN + BOX_WIDTH / 2
+        return QtCore.QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
     def serialize(self):
         s="NAME:" + unicode(self.name) + "\n"

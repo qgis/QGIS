@@ -166,6 +166,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         for param in params:
             if isinstance(param, ParameterExtent):
                 extents.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+        return extents
 
     def getNumbers(self):
         numbers = []
@@ -316,7 +317,6 @@ class ModelerParametersDialog(QtGui.QDialog):
             files = self.getFiles()
             for f in files:
                 item.addItem(f.name(), f)
-            item.setEditText(str(param.default))
         else:
             item = QtGui.QLineEdit()
             try:

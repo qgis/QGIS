@@ -62,6 +62,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                                    "The selected algorithm depends on other currently non-active algorithms.\nActivate them them before trying to activate it.")
 
     def editElement(self):
+        self.model.setPositions(self.scene().getParameterPositions(), self.scene().getAlgorithmPositions())
         if isinstance(self.element, Parameter):
             dlg = ModelerParameterDefinitionDialog(self.model, param = self.element)
             dlg.exec_()

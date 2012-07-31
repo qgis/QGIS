@@ -111,7 +111,6 @@ class ExtentSelectionPanel(QtGui.QWidget):
             extentsDict[layer.name()] = layer.extent()
         item, ok = QtGui.QInputDialog.getItem(self, "Select extent", "Use extent from", extents, False)
         if ok:
-            item = str(item)
             self.setValueFromRect(extentsDict[item])
 
     def selectOnCanvas(self):

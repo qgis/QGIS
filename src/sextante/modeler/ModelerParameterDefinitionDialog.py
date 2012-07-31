@@ -203,7 +203,8 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                return
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description, str(self.defaultTextBox.text()))
-
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or isinstance(self.param, ParameterExtent):
+            self.param = ParameterExtent(name, description)
         self.close()
 
     def cancelPressed(self):

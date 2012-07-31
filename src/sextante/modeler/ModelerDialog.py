@@ -248,7 +248,7 @@ class ModelerDialog(QtGui.QDialog):
 
     def repaintModel(self):
         self.scene = ModelerScene()
-        self.scene.setSceneRect(QtCore.QRectF(0, 0, 4000, 4000))
+        self.scene.setSceneRect(QtCore.QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE, ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
         #self.pythonText.setText(self.alg.getAsPythonCode())
