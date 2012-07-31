@@ -1575,7 +1575,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePoint.png" ) );
   mActionMoveFeature->setIcon( QgsApplication::getThemeIcon( "/mActionMoveFeature.png" ) );
   mActionReshapeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionReshape.png" ) );
-  mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.png" ) );
+  mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionSplitFeatures.svg" ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteSelected.png" ) );
   mActionNodeTool->setIcon( QgsApplication::getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( "/mActionSimplify.png" ) );
@@ -1597,6 +1597,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionTouch->setIcon( QgsApplication::getThemeIcon( "/mActionTouch.png" ) );
 #endif
   mActionPan->setIcon( QgsApplication::getThemeIcon( "/mActionPan.png" ) );
+  mActionPanToSelected->setIcon( QgsApplication::getThemeIcon( "/mActionPanToSelected.svg" ) );
   mActionZoomLast->setIcon( QgsApplication::getThemeIcon( "/mActionZoomLast.png" ) );
   mActionZoomNext->setIcon( QgsApplication::getThemeIcon( "/mActionZoomNext.png" ) );
   mActionZoomToLayer->setIcon( QgsApplication::getThemeIcon( "/mActionZoomToLayer.png" ) );
@@ -1605,7 +1606,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionFeatureAction->setIcon( QgsApplication::getThemeIcon( "/mAction.png" ) );
   mActionSelect->setIcon( QgsApplication::getThemeIcon( "/mActionSelect.png" ) );
   mActionSelectRectangle->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRectangle.png" ) );
-  mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPolygon.png" ) );
+  mActionSelectPolygon->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPolygon.svg" ) );
   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.png" ) );
   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.png" ) );
   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.png" ) );
@@ -1628,7 +1629,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionShowFrozenLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowFrozenLabels.png" ) );
   mActionFreezeLabels->setIcon( QgsApplication::getThemeIcon( "/mActionFreezeLabels.png" ) );
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
-  mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.png" ) );
+  mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.svg" ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );
   mActionDecorationCopyright->setIcon( QgsApplication::getThemeIcon( "/plugins/copyright_label.png" ) );
   mActionDecorationNorthArrow->setIcon( QgsApplication::getThemeIcon( "/plugins/north_arrow.png" ) );

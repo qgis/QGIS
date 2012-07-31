@@ -118,6 +118,7 @@
     <file>themes/default/mActionOptions.png</file>
     <file>themes/default/mActionPan.png</file>
     <file>themes/default/mActionPanToSelected.png</file>
+    <file>themes/default/mActionPanToSelected.svg</file>
     <file>themes/default/mActionShowRasterCalculator.png</file>
     <file>themes/default/mAction.png</file>
     <file>themes/default/mActionProjectProperties.png</file>
@@ -131,6 +132,7 @@
     <file>themes/default/mActionRemoveSelectedFeature.png</file>
     <file>themes/default/mActionReshape.png</file>
     <file>themes/default/mActionRotateLabel.png</file>
+    <file>themes/default/mActionRotateLabel.svg</file>
     <file>themes/default/mActionRotatePointSymbols.png</file>
     <file>themes/default/mActionSaveAsPDF.png</file>
     <file>themes/default/mActionSaveAsSVG.png</file>
@@ -142,6 +144,7 @@
     <file>themes/default/mActionSelectPan.png</file>
     <file>themes/default/mActionSelect.png</file>
     <file>themes/default/mActionSelectPolygon.png</file>
+    <file>themes/default/mActionSelectPolygon.svg</file>
     <file>themes/default/mActionSelectRadius.png</file>
     <file>themes/default/mActionSelectRectangle.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
@@ -150,6 +153,7 @@
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
     <file>themes/default/mActionSplitFeatures.png</file>
+    <file>themes/default/mActionSplitFeatures.svg</file>
     <file>themes/default/mActionTextAnnotation.png</file>
     <file>themes/default/mActionToggleEditing.png</file>
     <file>themes/default/mActionUndo.png</file>
@@ -319,12 +323,14 @@
     <file>themes/gis/mActionOpenTable.png</file>
     <file>themes/gis/mActionPan.png</file>
     <file>themes/gis/mActionPanToSelected.png</file>
+    <file>themes/gis/mActionPanToSelected.svg</file>
     <file>themes/gis/mActionShowRasterCalculator.png</file>
     <file>themes/gis/mActionRaiseItems.png</file>
     <file>themes/gis/mActionRedo.png</file>
     <file>themes/gis/mActionRemoveLayer.png</file>
     <file>themes/gis/mActionReshape.png</file>
     <file>themes/gis/mActionRotateLabel.png</file>
+    <file>themes/gis/mActionRotateLabel.svg</file>
     <file>themes/gis/mActionSaveAsPDF.png</file>
     <file>themes/gis/mActionSaveAsSVG.png</file>
     <file>themes/gis/mActionSaveEdits.png</file>
@@ -335,12 +341,14 @@
     <file>themes/gis/mActionSelectPan.png</file>
     <file>themes/gis/mActionSelect.png</file>
     <file>themes/gis/mActionSelectPolygon.png</file>
+    <file>themes/gis/mActionSelectPolygon.svg</file>
     <file>themes/gis/mActionSelectRadius.png</file>
     <file>themes/gis/mActionSelectRectangle.png</file>
     <file>themes/gis/mActionShowAllLayers.png</file>
     <file>themes/gis/mActionShowBookmarks.png</file>
     <file>themes/gis/mActionSimplify.png</file>
     <file>themes/gis/mActionSplitFeatures.png</file>
+    <file>themes/gis/mActionSplitFeatures.svg</file>
     <file>themes/gis/mActionTextAnnotation.png</file>
     <file>themes/gis/mActionToggleEditing.png</file>
     <file>themes/gis/mActionUndo.png</file>
