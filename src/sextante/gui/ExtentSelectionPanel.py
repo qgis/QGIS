@@ -102,9 +102,10 @@ class ExtentSelectionPanel(QtGui.QWidget):
             self.ymax = max(self.ymax, layer.extent().yMaximum())
 
     def useLayerExtent(self):
+        CANVAS_KEY = QtCore.QString("Use canvas extent")
         extentsDict = {}
-        extentsDict["[Canvas]"] = QGisLayers.iface.mapCanvas().extent()
-        extents = ["[Canvas]"]
+        extentsDict[CANVAS_KEY] = QGisLayers.iface.mapCanvas().extent()
+        extents = [CANVAS_KEY]
         layers = QGisLayers.getAllLayers()
         for layer in layers:
             extents.append(layer.name())
