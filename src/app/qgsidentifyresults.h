@@ -112,6 +112,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void openUrl( const QUrl &url );
+
   private:
     QMenu *mActionPopup;
     QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
