@@ -5025,14 +5025,22 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   }
   else
   {
-    if ( mMapCanvas->mapUnits() == QGis::DegreesMinutesSeconds )
+    if ( mMapCanvas->mapUnits() == QGis::Degrees )
     {
-      mCoordsEdit->setText( p.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
+      QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+
+      if ( format == "DM" )
+        mCoordsEdit->setText( p.toDegreesMinutes( mMousePrecisionDecimalPlaces ) );
+      else if ( format == "DMS" )
+        mCoordsEdit->setText( p.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
+      else
+        mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
     }
     else
     {
       mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
     }
+
     if ( mCoordsEdit->width() > mCoordsEdit->minimumWidth() )
     {
       mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );

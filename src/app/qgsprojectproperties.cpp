@@ -69,7 +69,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   //see if the user wants on the fly projection enabled
   bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
-  btnGrpMapUnits->setEnabled( !myProjectionEnabled );
 
   mProjectSrsId = myRenderer->destinationCrs().srsid();
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
@@ -99,6 +98,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
+
+  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+  if ( format == "DM" )
+    radDM->setChecked( true );
+  else if ( format == "DMS" )
+    radDMS->setChecked( true );
+  else
+    radD->setChecked( true );
 
   //get the color selections and set the button color accordingly
   int myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
@@ -328,22 +335,11 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   {
     unit = QGis::Meters;
   }
-  if ( unit == QGis::Meters )
-  {
-    radMeters->setChecked( true );
-  }
-  else if ( unit == QGis::Feet )
-  {
-    radFeet->setChecked( true );
-  }
-  else if ( unit == QGis::DegreesMinutesSeconds )
-  {
-    radDMS->setChecked( true );
-  }
-  else
-  {
-    radDecimalDegrees->setChecked( true );
-  }
+
+  radMeters->setChecked( unit == QGis::Meters );
+  radFeet->setChecked( unit == QGis::Feet );
+  radDegrees->setChecked( unit == QGis::Degrees );
+
   mMapCanvas->mapRenderer()->setMapUnits( unit );
 }
 
@@ -369,21 +365,17 @@ void QgsProjectProperties::apply()
   // Note. Qt 3.2.3 and greater have a function selectedId() that
   // can be used instead of the two part technique here
   QGis::UnitType mapUnit;
-  if ( radMeters->isChecked() )
+  if ( radDegrees->isChecked() )
   {
-    mapUnit = QGis::Meters;
+    mapUnit = QGis::Degrees;
   }
   else if ( radFeet->isChecked() )
   {
     mapUnit = QGis::Feet;
   }
-  else if ( radDMS->isChecked() )
-  {
-    mapUnit = QGis::DegreesMinutesSeconds;
-  }
   else
   {
-    mapUnit = QGis::Degrees;
+    mapUnit = QGis::Meters;
   }
 
   QgsMapRenderer* myRenderer = mMapCanvas->mapRenderer();
@@ -423,6 +415,9 @@ void QgsProjectProperties::apply()
   // can be used instead of the two part technique here
   QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", radAutomatic->isChecked() );
   QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", spinBoxDP->value() );
+  QgsProject::instance()->writeEntry( "PositionPrecision", "/DegreeFormat",
+                                      QString( radDM->isChecked() ? "DM" : radDMS->isChecked() ? "DMS" : "D" ) );
+
   // Announce that we may have a new display precision setting
   emit displayPrecisionChanged();
 
@@ -609,7 +604,6 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
 
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {
-  btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
   projectionSelector->setEnabled( state == Qt::Checked );
 
   if ( state != Qt::Checked )
@@ -632,23 +626,10 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
     //set radio button to crs map unit type
     QGis::UnitType units = srs.mapUnits();
-    switch ( units )
-    {
-      case QGis::Meters:
-        radMeters->setChecked( true );
-        break;
-      case QGis::Feet:
-        radFeet->setChecked( true );
-        break;
-      case QGis::Degrees:
-        radDecimalDegrees->setChecked( true );
-        break;
-      case QGis::DegreesMinutesSeconds:
-        radDMS->setChecked( true );
-        break;
-      default:
-        break;
-    }
+
+    radMeters->setChecked( units == QGis::Meters );
+    radFeet->setChecked( units == QGis::Feet );
+    radDegrees->setChecked( units == QGis::Degrees );
   }
 }
 

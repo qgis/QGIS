@@ -81,16 +81,19 @@ class CORE_EXPORT QGis
 
     /** Map units that qgis supports
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
+     * @note and QGIS >1.8 returns to that
      */
     enum UnitType
     {
       Meters = 0,
       Feet = 1,
       Degrees = 2, //for 1.0 api backwards compatibility
-      DecimalDegrees = 2,
-      DegreesMinutesSeconds = 4,
-      DegreesDecimalMinutes = 5,
-      UnknownUnit = 3
+      UnknownUnit = 3,
+
+      // for [1.4;1.8] api compatibility
+      DecimalDegrees = 2,         // was 2
+      DegreesMinutesSeconds = 2,  // was 4
+      DegreesDecimalMinutes = 2,  // was 5
     };
 
     //! User defined event types
