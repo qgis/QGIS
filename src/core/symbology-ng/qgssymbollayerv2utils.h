@@ -193,6 +193,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QgsVectorColorRampV2* loadColorRamp( QDomElement& element );
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
+    /**  parse color definition with format "rgb(0,0,0)" or "0,0,0" */
+    static QColor parseColor( QString colorStr );
+
     /**Returns the line width scale factor depending on the unit and the paint device*/
     static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/

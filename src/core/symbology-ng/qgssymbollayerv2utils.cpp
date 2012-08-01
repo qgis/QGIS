@@ -2299,6 +2299,8 @@ QgsVectorColorRampV2* QgsSymbolLayerV2Utils::loadColorRamp( QDomElement& element
     return QgsVectorRandomColorRampV2::create( props );
   else if ( rampType == "colorbrewer" )
     return QgsVectorColorBrewerColorRampV2::create( props );
+  else if ( rampType == "cpt-city" )
+    return QgsCptCityColorRampV2::create( props );
   else
   {
     QgsDebugMsg( "unknown colorramp type " + rampType );
@@ -2315,6 +2317,20 @@ QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRa
 
   QgsSymbolLayerV2Utils::saveProperties( ramp->properties(), doc, rampEl );
   return rampEl;
+}
+
+// parse color definition with format "rgb(0,0,0)" or "0,0,0"
+// should support other formats like FFFFFF
+QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
+{
+  if ( colorStr.startsWith( "rgb(" ) )
+  {
+    colorStr = colorStr.mid( 4, colorStr.size() - 5 ).trimmed();
+  }
+  QStringList p = colorStr.split( QChar( ',' ) );
+  if ( p.count() != 3 )
+    return QColor();
+  return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
 }
 
 double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )

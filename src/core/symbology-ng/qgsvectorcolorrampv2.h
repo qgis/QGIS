@@ -158,4 +158,81 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     QList<QColor> mPalette;
 };
 
+
+#define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
+#define DEFAULT_CPTCITY_VARIANTNAME "05"
+
+class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
+{
+  public:
+    QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
+                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME );
+
+    static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    virtual QColor color( double value ) const;
+
+    virtual QString type() const { return "cpt-city"; }
+
+    virtual QgsVectorColorRampV2* clone() const;
+
+    virtual QgsStringMap properties() const;
+
+    int count() const { return mPalette.count(); }
+
+    QString schemeName() const { return mSchemeName; }
+    QString variantName() const { return mVariantName; }
+
+    /* void setSchemeName( QString schemeName ) { mSchemeName = schemeName; loadPalette(); } */
+    /* void setVariantName( QString variantName ) { mVariantName = variantName; loadPalette(); } */
+    /* lazy loading - have to call loadPalette() explicitly */
+    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; }
+    void setVariantName( QString variantName ) { mVariantName = variantName; }
+    void setName( QString schemeName, QString variantName = "" )
+    { mSchemeName = schemeName; mVariantName = variantName; loadPalette(); }
+
+    void loadPalette();
+    bool isContinuous() const { return mContinuous; }
+
+    QString getFilename() const;
+    bool loadFile( QString filename = "" );
+
+    /* static QList<QColor> listSchemeColors(  QString schemeName, int colors ); */
+    static QList<int> listSchemeVariants( QString schemeName );
+
+    static QString getSchemeBaseDir();
+    static void loadSchemes( QString rootDir = "", bool reset = false );
+    static QStringList listSchemeCollections( QString collectionName = "", bool recursive = false );
+    static QStringList listSchemeNames( QString collectionName );
+    static QgsCptCityColorRampV2* colorRampFromSVGFile( QString svgFile );
+    static QgsCptCityColorRampV2* colorRampFromSVGString( QString svgString );
+
+    static const QMap< QString, QStringList > schemeMap() { return mSchemeMap; }
+    /* static const QMap< QString, int > schemeNumColors() { return mSchemeNumColors; } */
+    static const QMap< QString, QStringList > schemeVariants() { return mSchemeVariants; }
+    static const QMap< QString, QString > collectionNames() { return mCollectionNames; }
+    static const QMap< QString, QStringList > collectionSelections() { return mCollectionSelections; }
+
+  protected:
+
+    typedef QMap<double, QColor> StopsMap;
+
+    QString mSchemeName;
+    /* int mColors; //remove! */
+    QString mVariantName;
+    bool mContinuous;
+    QList< QColor > mPalette;
+    QList< double > mPaletteStops;
+    /* QMap< double, QColor > mPalette; */
+
+    static QStringList mCollections;
+    static QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
+    /* mSchemeNumColors removed, instead read on demand */
+    /* static QMap< QString, int > mSchemeNumColors; //key is scheme, value is # colors (if no variants) */
+    static QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
+    static QMap< QString, QString > mCollectionNames; //key is name, value is description
+    static QMap< QString, QStringList > mCollectionSelections;
+
+};
+
 #endif
