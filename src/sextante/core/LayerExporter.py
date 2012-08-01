@@ -35,7 +35,7 @@ class LayerExporter():
             del writer
             return output
         else:
-            if (not str(layer.source()).endswith("shp")):
+            if (not unicode(layer.source()).endswith("shp")):
                 writer = QgsVectorFileWriter( output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
                 feat = QgsFeature()
                 while provider.nextFeature(feat):
@@ -43,7 +43,7 @@ class LayerExporter():
                 del writer
                 return output
             else:
-                return str(layer.source())
+                return unicode(layer.source())
 
 
 
@@ -58,10 +58,10 @@ class LayerExporter():
         app uses GDAL to read the layer'''
         exts = GdalUtils.getSupportedRasterExtensions()
         for ext in exts:
-            if (str(layer.source()).endswith(ext)):
-                return str(layer.source())
+            if (unicode(layer.source()).endswith(ext)):
+                return unicode(layer.source())
 
         #TODO:Do the conversion here
-        return str(layer.source())
+        return unicode(layer.source())
 
 
