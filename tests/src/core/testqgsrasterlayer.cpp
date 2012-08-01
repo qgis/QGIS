@@ -35,6 +35,7 @@
 #include <qgsmaprenderer.h>
 #include <qgsmaplayerregistry.h>
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsvectorcolorrampv2.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -54,6 +55,8 @@ class TestQgsRasterLayer: public QObject
 
     void isValid();
     void pseudoColor();
+    void colorRamp1();
+    void colorRamp2();
     void landsatBasic();
     void landsatBasic875Qml();
     void checkDimensions();
@@ -63,6 +66,11 @@ class TestQgsRasterLayer: public QObject
   private:
     bool render( QString theFileName );
     bool setQml( QString theType );
+    void populateColorRampShader( QgsColorRampShader* colorRampShader,
+                                  QgsVectorColorRampV2* colorRamp,
+                                  int numberOfEntries );
+    bool testColorRamp( QString name, QgsVectorColorRampV2* colorRamp,
+                        QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries );
     QString mTestDataDir;
     QgsRasterLayer * mpRasterLayer;
     QgsRasterLayer * mpLandsatRasterLayer;
@@ -160,6 +168,87 @@ void TestQgsRasterLayer::pseudoColor()
   mpRasterLayer->setRenderer( r );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster_pseudo" ) );
+}
+
+void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader* colorRampShader,
+    QgsVectorColorRampV2* colorRamp,
+    int numberOfEntries )
+
+{
+  // adapted from QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
+  // and TestQgsRasterLayer::pseudoColor()
+  // would be better to add a more generic function to api that does this
+  int bandNr = 1;
+  QgsRasterBandStats myRasterBandStats = mpRasterLayer->dataProvider()->bandStatistics( bandNr );
+
+  QList<double> entryValues;
+  QList<QColor> entryColors;
+  double currentValue = myRasterBandStats.minimumValue;
+  double intervalDiff;
+  if ( numberOfEntries > 1 )
+  {
+    //because the highest value is also an entry, there are (numberOfEntries - 1)
+    //intervals
+    intervalDiff = ( myRasterBandStats.maximumValue - myRasterBandStats.minimumValue ) /
+                   ( numberOfEntries - 1 );
+  }
+  else
+  {
+    intervalDiff = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
+  }
+
+  for ( int i = 0; i < numberOfEntries; ++i )
+  {
+    entryValues.push_back( currentValue );
+    currentValue += intervalDiff;
+    entryColors.push_back( colorRamp->color((( double ) i ) / numberOfEntries ) );
+  }
+
+  //items to imitate old pseudo color renderer
+  QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+  QList<double>::const_iterator value_it = entryValues.begin();
+  QList<QColor>::const_iterator color_it = entryColors.begin();
+  for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
+  {
+    colorRampItems.append( QgsColorRampShader::ColorRampItem( *value_it, *color_it ) );
+  }
+  colorRampShader->setColorRampItemList( colorRampItems );
+}
+
+bool TestQgsRasterLayer::testColorRamp( QString name, QgsVectorColorRampV2* colorRamp,
+                                        QgsColorRampShader::ColorRamp_TYPE type, int numberOfEntries )
+{
+  QgsRasterShader* rasterShader = new QgsRasterShader();
+  QgsColorRampShader* colorRampShader = new QgsColorRampShader();
+  colorRampShader->setColorRampType( type );
+
+  populateColorRampShader( colorRampShader, colorRamp, numberOfEntries );
+
+  rasterShader->setRasterShaderFunction( colorRampShader );
+  QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( mpRasterLayer->dataProvider(), 1, rasterShader );
+  mpRasterLayer->setRenderer( r );
+  mpMapRenderer->setExtent( mpRasterLayer->extent() );
+  return render( name );
+}
+
+void TestQgsRasterLayer::colorRamp1()
+{
+  // gradient ramp
+  QgsVectorGradientColorRampV2* colorRamp = new QgsVectorGradientColorRampV2( QColor( Qt::red ), QColor( Qt::black ) );
+  QgsVectorGradientColorRampV2::StopsMap stops;
+  stops[ 0.5 ] = QColor( Qt::white );
+  colorRamp->setStops( stops );
+
+  // QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::INTERPOLATED, 5 ) );
+  QVERIFY( testColorRamp( "raster_colorRamp1", colorRamp, QgsColorRampShader::DISCRETE, 10 ) );
+}
+
+void TestQgsRasterLayer::colorRamp2()
+{
+  // ColorBrewer ramp
+  QgsVectorColorBrewerColorRampV2* cb2Ramp = new QgsVectorColorBrewerColorRampV2( "BrBG", 10 );
+
+  QVERIFY( testColorRamp( "raster_colorRamp2", cb2Ramp, QgsColorRampShader::DISCRETE, 10 ) );
 }
 
 void TestQgsRasterLayer::landsatBasic()
