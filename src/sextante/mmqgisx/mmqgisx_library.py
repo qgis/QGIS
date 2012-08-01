@@ -13,6 +13,7 @@
 # --------------------------------------------------------
 
 import csv
+import sys
 import time
 import urllib
 import os.path
@@ -47,7 +48,7 @@ def mmqgisx_is_float(s):
 # Cumbersome function to give backward compatibility before python 2.7
 
 def format_float(value, separator, decimals):
-	formatstring = ("%0." + str(int(decimals)) + "f")
+	formatstring = ("%0." + unicode(int(decimals)) + "f")
 	# print str(value) + ": " + formatstring
 	string = formatstring % value
 	intend = string.find('.')
@@ -209,7 +210,7 @@ def mmqgisx_animate_columns(qgis, layer_name, long_col, lat_col, outdir, frame_c
 	# Iterate Frames
 
 	for frame in range(frame_count + 1):
-		qgis.mainWindow().statusBar().showMessage("Rendering frame " + str(frame))
+		qgis.mainWindow().statusBar().showMessage("Rendering frame " + unicode(frame))
 
 		# Read, move and rewrite features
 
@@ -268,7 +269,7 @@ def mmqgisx_animate_rows(qgis, layer_names, cumulative, outdir):
 
 	# Error Checks
 	if not os.path.isdir(outdir):
-		return "Invalid output directory: " + str(outdir)
+		return "Invalid output directory: " + unicode(outdir)
 
 	layers = []
 	for layer_name in layer_names:
@@ -305,7 +306,7 @@ def mmqgisx_animate_rows(qgis, layer_names, cumulative, outdir):
 	tempnames = [None] * len(layers)
 	templayers = [None] * len(layers)
 	for layer_index in range(len(layers)):
-		tempnames[layer_index] = tempdir + "/mmqgisx_animate" + str(layer_index) + ".shp"
+		tempnames[layer_index] = tempdir + "/mmqgisx_animate" + unicode(layer_index) + ".shp"
 		tempcrs = layers[layer_index].dataProvider().crs()
 		if not tempcrs.isValid():
 			tempcrs.createFromSrid(4326)
@@ -347,7 +348,7 @@ def mmqgisx_animate_rows(qgis, layer_names, cumulative, outdir):
 	# Iterate frames
 
 	for frame in range(int(frame_count + 1)):
-		qgis.mainWindow().statusBar().showMessage("Rendering frame " + str(frame))
+		qgis.mainWindow().statusBar().showMessage("Rendering frame " + unicode(frame))
 
 		for layer_index in range(len(layers)):
 			if frame < layers[layer_index].featureCount():
@@ -429,7 +430,7 @@ def mmqgisx_attribute_export(qgis, outfilename, layername, attribute_names, fiel
 	layer.dataProvider().rewind()
         while layer.dataProvider().nextFeature(feature):
 		qgis.mainWindow().statusBar().showMessage \
-			("Exporting feature " + str(feature.id()) + " of " + str(feature_count))
+			("Exporting feature " + unicode(feature.id()) + " of " + unicode(feature_count))
 		attributes = feature.attributeMap()
 
 		row = []
@@ -442,7 +443,7 @@ def mmqgisx_attribute_export(qgis, outfilename, layername, attribute_names, fiel
 
 	del writer
 
-	qgis.mainWindow().statusBar().showMessage(str(feature_count) + " records exported")
+	qgis.mainWindow().statusBar().showMessage(unicode(feature_count) + " records exported")
 
 	return None
 
@@ -550,8 +551,8 @@ def mmqgisx_attribute_join(qgis, layername, infilename, joinfield, joinattribute
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
 	while layer.dataProvider().nextFeature(feature):
-		qgis.mainWindow().statusBar().showMessage("Joining feature " + str(feature.id()) + \
-				" of " + str(feature_count) + " (" + str(matched_count) + " matched)")
+		qgis.mainWindow().statusBar().showMessage("Joining feature " + unicode(feature.id()) + \
+				" of " + unicode(feature_count) + " (" + unicode(matched_count) + " matched)")
 		attributes = feature.attributeMap()
 		key = unicode(attributes[joinattribute_index].toString()).encode("iso-8859-1").lower()
 
@@ -602,8 +603,8 @@ def mmqgisx_attribute_join(qgis, layername, infilename, joinfield, joinattribute
 	if addlayer:	
 		qgis.addVectorLayer(outfilename, os.path.basename(outfilename), "ogr")
 
-	qgis.mainWindow().statusBar().showMessage(str(matched_count) + " records joined from " + \
-		str(feature_count) + " shape records and " + str(len(csv_data)) + " CSV file records")
+	qgis.mainWindow().statusBar().showMessage(unicode(matched_count) + " records joined from " + \
+		unicode(feature_count) + " shape records and " + unicode(len(csv_data)) + " CSV file records")
 
 	return None
 
@@ -658,8 +659,8 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 		os.write(outfile, "<mContrastEnhancementAlgorithm>StretchToMinimumMaximum</mContrastEnhancementAlgorithm>")
 		os.write(outfile, "<contrastEnhancementMinMaxValues>")
 		os.write(outfile, "<minMaxEntry>")
-		os.write(outfile, "<min>" + str(lowvalue) + "</min>")
-		os.write(outfile, "<max>" + str(highvalue) + "</max>")
+		os.write(outfile, "<min>" + unicode(lowvalue) + "</min>")
+		os.write(outfile, "<max>" + unicode(highvalue) + "</max>")
 		os.write(outfile, "</minMaxEntry>")
 		os.write(outfile, "</contrastEnhancementMinMaxValues>")
 		os.write(outfile, "<mNoDataValue mValidNoDataValue=\"true\" >-1.000000</mNoDataValue>")
@@ -678,19 +679,19 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 			if (interpolate < 0.5):
 				interpolate = interpolate * 2.0;
 				value = lowvalue + ((midvalue - lowvalue) * interpolate)
-				red = str(int(round(lowred + ((midred - lowred) * interpolate))))
-				green = str(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
-				blue = str(int(round(lowblue + ((midblue - lowblue) * interpolate))))
+				red = unicode(int(round(lowred + ((midred - lowred) * interpolate))))
+				green = unicode(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
+				blue = unicode(int(round(lowblue + ((midblue - lowblue) * interpolate))))
 				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue + 
-					"\" green=\"" + green + "\" value=\"" + str(value) + "\" label=\"\"/>\n")
+					"\" green=\"" + green + "\" value=\"" + unicode(value) + "\" label=\"\"/>\n")
 			else:
 				interpolate = (interpolate - 0.5) * 2.0
 				value = midvalue + ((highvalue - midvalue) * interpolate)
-				red = str(int(round(midred + ((highred - midred) * interpolate))))
-				green = str(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
-				blue = str(int(round(midblue + ((highblue - midblue) * interpolate))))
+				red = unicode(int(round(midred + ((highred - midred) * interpolate))))
+				green = unicode(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
+				blue = unicode(int(round(midblue + ((highblue - midblue) * interpolate))))
 				os.write(outfile, "<colorRampEntry red=\"" + red + "\" blue=\"" + blue + 
-					"\" green=\"" + green + "\" value=\"" + str(value) + "\" label=\"\"/>\n")
+					"\" green=\"" + green + "\" value=\"" + unicode(value) + "\" label=\"\"/>\n")
 
 			#print str(x) + ", " + str(interpolate) + ", " + str(value)
 
@@ -722,18 +723,18 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 			interpolate = x / float(steps)
 			if (interpolate < 0.5):
 				interpolate = interpolate * 2.0
-				red = str(int(round(lowred + ((midred - lowred) * interpolate))))
-				green = str(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
-				blue = str(int(round(lowblue + ((midblue - lowblue) * interpolate))))
+				red = unicode(int(round(lowred + ((midred - lowred) * interpolate))))
+				green = unicode(int(round(lowgreen + ((midgreen - lowgreen) * interpolate))))
+				blue = unicode(int(round(lowblue + ((midblue - lowblue) * interpolate))))
 			else:
 				interpolate = (interpolate - 0.5) * 2.0
-				red = str(int(round(midred + ((highred - midred) * interpolate))))
-				green = str(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
-				blue = str(int(round(midblue + ((highblue - midblue) * interpolate))))
+				red = unicode(int(round(midred + ((highred - midred) * interpolate))))
+				green = unicode(int(round(midgreen + ((highgreen - midgreen) * interpolate))))
+				blue = unicode(int(round(midblue + ((highblue - midblue) * interpolate))))
 
 			os.write(outfile, "<symbol>\n")
-			os.write(outfile, "<lowervalue>" + str(values[x]) + "</lowervalue>\n")
-			os.write(outfile, "<uppervalue>" + str(values[x + 1]) + "</uppervalue>\n")
+			os.write(outfile, "<lowervalue>" + unicode(values[x]) + "</lowervalue>\n")
+			os.write(outfile, "<uppervalue>" + unicode(values[x + 1]) + "</uppervalue>\n")
 			os.write(outfile, "<label></label>\n")
 			os.write(outfile, "<pointsymbol>hard:circle</pointsymbol>\n")
 			os.write(outfile, "<pointsize>2</pointsize>\n")
@@ -744,8 +745,8 @@ def mmqgisx_set_color_map(qgis, layername, bandname, lowvalue, midvalue, highval
 			os.write(outfile, "<outlinecolor red=\"128\" blue=\"128\" green=\"128\"/>\n")
 			os.write(outfile, "<outlinestyle>SolidLine</outlinestyle>\n")
 			os.write(outfile, "<outlinewidth>0.26</outlinewidth>\n")
-			os.write(outfile, "<fillcolor red=\"" + str(red) + "\" blue=\"" + 
-					str(blue) + "\" green=\"" + str(green) + "\"/>")
+			os.write(outfile, "<fillcolor red=\"" + unicode(red) + "\" blue=\"" + 
+					unicode(blue) + "\" green=\"" + unicode(green) + "\"/>")
 			os.write(outfile, "<fillpattern>SolidPattern</fillpattern>\n")
 			os.write(outfile, "<texturepath></texturepath>\n")
 			os.write(outfile, "</symbol>\n")
@@ -817,7 +818,7 @@ def mmqgisx_delete_columns(qgis, layername, columns, savename, addlayer):
 
 	while layer.dataProvider().nextFeature(feature):
 		qgis.mainWindow().statusBar().showMessage("Writing feature " + \
-			str(feature.id()) + " of " + str(featurecount))
+			unicode(feature.id()) + " of " + unicode(featurecount))
 
 		attributes = {}
 		for index, field in srcfields.iteritems():
@@ -831,7 +832,7 @@ def mmqgisx_delete_columns(qgis, layername, columns, savename, addlayer):
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(len(columns)) + " columns deleted and written to " + savename)
+	qgis.mainWindow().statusBar().showMessage(unicode(len(columns)) + " columns deleted and written to " + savename)
 
 	return None
 
@@ -875,7 +876,7 @@ def mmqgisx_delete_duplicate_geometries(qgis, layername, savename, addlayer):
 	# NULL duplicate geometries
 	for x in range(0, len(geometries) - 1):
 		if geometries[x] != None:
-			qgis.mainWindow().statusBar().showMessage("Checking feature " + str(x))
+			qgis.mainWindow().statusBar().showMessage("Checking feature " + unicode(x))
 			for y in range(x + 1, len(geometries)):
 				#print "Comparing " + str(x) + ", " + str(y)
 				if geometries[x] == geometries[y]:
@@ -898,8 +899,8 @@ def mmqgisx_delete_duplicate_geometries(qgis, layername, savename, addlayer):
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(writecount) + " of " + \
-		str(layer.dataProvider().featureCount()) + \
+	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " of " + \
+		unicode(layer.dataProvider().featureCount()) + \
 		" unique features written to " + savename)
 
 	return None
@@ -916,7 +917,7 @@ def mmqgisx_float_to_text(qgis, layername, attributes, separator,
 		return "Project has no active vector layer to convert: " + layername
 
 	if decimals < 0:
-		return "Invalid number of decimals: " + str(decimals)
+		return "Invalid number of decimals: " + unicode(decimals)
 
 	if len(savename) <= 0:
 		return "No output filename given"
@@ -959,7 +960,7 @@ def mmqgisx_float_to_text(qgis, layername, attributes, separator,
 	layer.dataProvider().rewind()
 	while layer.dataProvider().nextFeature(feature):
 		qgis.mainWindow().statusBar().showMessage("Writing feature " + \
-			str(feature.id()) + " of " + str(featurecount))
+			unicode(feature.id()) + " of " + unicode(featurecount))
 
 		attributes = feature.attributeMap()
 		for index, field in layer.dataProvider().fields().iteritems():
@@ -978,7 +979,7 @@ def mmqgisx_float_to_text(qgis, layername, attributes, separator,
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(changecount) + " numeric converted to text")
+	qgis.mainWindow().statusBar().showMessage(unicode(changecount) + " numeric converted to text")
 
 	return None
 
@@ -996,14 +997,18 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 	try:
 		dialect = csv.Sniffer().sniff(infile.read(2048))
 	except:
-		return "Bad CSV file - verify that your delimiters are consistent: " + unicode(csvname)
+		return "Failure reading " + unicode(csvname) + ": " + unicode(sys.exc_info()[1])
 
-	infile.seek(0)
-	reader = csv.reader(infile, dialect)
 
 	fields = {}
 	indices = []
-	header = reader.next()
+	try:
+		infile.seek(0)
+		reader = csv.reader(infile, dialect)
+		header = reader.next()
+	except:
+		return "Failure reading " + unicode(csvname) + ": " + unicode(sys.exc_info()[1])
+
 	for x in range(0, len(header)):
 		for y in range(0, len(keys)):
 			if header[x] == keys[y]:
@@ -1046,8 +1051,8 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 		time.sleep(0.5) # to avoid Google rate quota limits
 
 		recordcount += 1	
-		qgis.mainWindow().statusBar().showMessage("Geocoding " + str(recordcount) + 
-			" (" + str(notfoundcount) + " not found)")
+		qgis.mainWindow().statusBar().showMessage("Geocoding " + unicode(recordcount) + 
+			" (" + unicode(notfoundcount) + " not found)")
 
 		address = ""
 		for x in indices:
@@ -1101,7 +1106,7 @@ def mmqgisx_geocode_google(qgis, csvname, shapefilename, notfoundfile, keys, add
 	if addlayer and (recordcount > notfoundcount) and (recordcount > 0):
 		vlayer = qgis.addVectorLayer(shapefilename, os.path.basename(shapefilename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(recordcount - notfoundcount) + " of " + str(recordcount)
+	qgis.mainWindow().statusBar().showMessage(unicode(recordcount - notfoundcount) + " of " + unicode(recordcount)
 		+ " addresses geocoded with Google")
 
 	return None
@@ -1138,9 +1143,9 @@ def mmqgisx_geometry_convert(qgis, layername, newtype, splitnodes, savename, add
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
         while layer.dataProvider().nextFeature(feature):
-		shapeid = str(feature.id()).strip()
+		shapeid = unicode(feature.id()).strip()
 
-		qgis.mainWindow().statusBar().showMessage("Converting feature " + shapeid + " of " + str(feature_count))
+		qgis.mainWindow().statusBar().showMessage("Converting feature " + shapeid + " of " + unicode(feature_count))
 
 		if (feature.geometry().wkbType() == QGis.WKBPoint) or \
 		   (feature.geometry().wkbType() == QGis.WKBPoint25D):
@@ -1332,7 +1337,7 @@ def mmqgisx_geometry_convert(qgis, layername, newtype, splitnodes, savename, add
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 
-	qgis.mainWindow().statusBar().showMessage(str(feature_count) + " features converted")
+	qgis.mainWindow().statusBar().showMessage(unicode(feature_count) + " features converted")
 
 	return None
 
@@ -1379,16 +1384,16 @@ def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_fil
 	layer.dataProvider().select(layer.dataProvider().attributeIndexes())
 	layer.dataProvider().rewind()
         while layer.dataProvider().nextFeature(feature):
-		shapeid = str(feature.id()).strip()
+		shapeid = unicode(feature.id()).strip()
 
-		qgis.mainWindow().statusBar().showMessage("Exporting feature " + shapeid + " of " + str(feature_count))
+		qgis.mainWindow().statusBar().showMessage("Exporting feature " + shapeid + " of " + unicode(feature_count))
 
 		if (feature.geometry() == None):
 			return "Cannot export layer with no shape data"
 
 		elif (feature.geometry().type() == QGis.Point):
 			point = feature.geometry().asPoint()
-			row = [ shapeid, str(point.x()), str(point.y()) ]
+			row = [ shapeid, unicode(point.x()), unicode(point.y()) ]
 			for attindex, attribute in feature.attributeMap().iteritems():
 				row.append(unicode(attribute.toString()).encode("iso-8859-1"))
 			node_writer.writerow(row)
@@ -1398,7 +1403,7 @@ def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_fil
 			polyline = feature.geometry().asPolyline()
 			#for point in polyline.iteritems():
 			for point in polyline:
-				row = [ shapeid, str(point.x()), str(point.y()) ]
+				row = [ shapeid, unicode(point.x()), unicode(point.y()) ]
 				node_writer.writerow(row)
 
 			row = []
@@ -1411,7 +1416,7 @@ def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_fil
 			polygon = feature.geometry().asPolygon()
 			for polyline in polygon:
 				for point in polyline:
-					row = [ shapeid, str(point.x()), str(point.y()) ]
+					row = [ shapeid, unicode(point.x()), unicode(point.y()) ]
 					node_writer.writerow(row)
 
 			row = [shapeid]
@@ -1423,7 +1428,7 @@ def mmqgisx_geometry_export_to_csv(qgis, layername, node_filename, attribute_fil
 	if (layer.geometryType() != QGis.Point):
 		del attributefile
 
-	qgis.mainWindow().statusBar().showMessage(str(feature_count) + " records exported")
+	qgis.mainWindow().statusBar().showMessage(unicode(feature_count) + " records exported")
 
 	return None
 
@@ -1516,7 +1521,7 @@ def mmqgisx_geometry_import_from_csv(qgis, node_filename, long_colname, lat_coln
 		if reading and (len(row) > long_col) and (len(row) > lat_col) and (len(row) > shapeid_col) \
 				and mmqgisx_is_float(row[long_col]) and mmqgisx_is_float(row[lat_col]):
 			node_count += 1
-			qgis.mainWindow().statusBar().showMessage("Importing node " + str(node_count))
+			qgis.mainWindow().statusBar().showMessage("Importing node " + unicode(node_count))
 			point = QgsPoint(float(row[long_col]), float(row[lat_col]))
 		else:
 			point = False
@@ -1577,7 +1582,7 @@ def mmqgisx_geometry_import_from_csv(qgis, node_filename, long_colname, lat_coln
 	if addlayer:
 		qgis.addVectorLayer(shapefile_name, os.path.basename(shapefile_name), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage("Loaded " + str(shape_count) + " shapes (" + str(node_count) + " nodes")
+	qgis.mainWindow().statusBar().showMessage("Loaded " + unicode(shape_count) + " shapes (" + unicode(node_count) + " nodes")
 
 	return None
 
@@ -1590,10 +1595,10 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 		return "No output filename given"
 
 	if (hspacing <= 0) or (vspacing <= 0):
-		return "Invalid grid spacing: " + str(hspacing) + " / " + str(vspacing)
+		return "Invalid grid spacing: " + unicode(hspacing) + " / " + unicode(vspacing)
 	
 	if (width <= hspacing) or (width < vspacing):
-		return "Invalid width / height: " + str(width) + " / " + str(height)
+		return "Invalid width / height: " + unicode(width) + " / " + unicode(height)
 		
 	fields = {
 		0 : QgsField("longitude", QVariant.Double, "real", 24, 16, "Longitude"),
@@ -1751,7 +1756,7 @@ def mmqgisx_grid(qgis, savename, hspacing, vspacing, width, height, originx, ori
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(linecount) + " feature grid shapefile created")
+	qgis.mainWindow().statusBar().showMessage(unicode(linecount) + " feature grid shapefile created")
 
 	return None
 
@@ -1790,7 +1795,7 @@ def mmqgisx_gridify_layer(qgis, layername, hspacing, vspacing, savename, addlaye
 
 	feature = QgsFeature()
         while layer.dataProvider().nextFeature(feature):
-		qgis.mainWindow().statusBar().showMessage("Gridifying feature " + str(feature_number + 1))
+		qgis.mainWindow().statusBar().showMessage("Gridifying feature " + unicode(feature_number + 1))
 
 		geometry = feature.geometry()
 
@@ -1870,8 +1875,8 @@ def mmqgisx_gridify_layer(qgis, layername, hspacing, vspacing, savename, addlaye
 				geometry = geometry.fromMultiPolygon(newmultipolygon)
 
 		else:
-			return "Unknown geometry type " + str(geometry.wkbType()) + \
-				" on feature " + str(feature_number + 1)
+			return "Unknown geometry type " + unicode(geometry.wkbType()) + \
+				" on feature " + unicode(feature_number + 1)
 
 		# print "Closing feature"
 	
@@ -1889,7 +1894,7 @@ def mmqgisx_gridify_layer(qgis, layername, hspacing, vspacing, savename, addlaye
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 			
 	qgis.mainWindow().statusBar().showMessage("Gridified shapefile created (" + \
-		str(deleted_points) + " of " + str(point_count) + " points deleted)")
+		unicode(deleted_points) + " of " + unicode(point_count) + " points deleted)")
 
 	return None
 
@@ -1953,7 +1958,7 @@ def mmqgisx_hub_distance(qgis, sourcename, destname, nameattributename, units, a
 	hubslayer.dataProvider().select(hubslayer.dataProvider().attributeIndexes())
 	hubslayer.dataProvider().rewind()
 	while hubslayer.dataProvider().nextFeature(feature):
-		qgis.mainWindow().statusBar().showMessage("Reading hub " + str(feature.id()))
+		qgis.mainWindow().statusBar().showMessage("Reading hub " + unicode(feature.id()))
 		hubs.append(mmqgisx_hub(feature.geometry().boundingBox().center(), \
 				feature.attributeMap()[nameindex].toString()))
 
@@ -2011,8 +2016,8 @@ def mmqgisx_hub_distance(qgis, sourcename, destname, nameattributename, units, a
 		outfile.addFeature(outfeature)
 
 		writecount += 1
-		qgis.mainWindow().statusBar().showMessage("Writing feature " + str(writecount) +\
-			" of " + str(sourcelayer.dataProvider().featureCount()))
+		qgis.mainWindow().statusBar().showMessage("Writing feature " + unicode(writecount) +\
+			" of " + unicode(sourcelayer.dataProvider().featureCount()))
 
 	del outfile
 
@@ -2077,7 +2082,7 @@ def mmqgisx_hub_lines(qgis, hubname, hubattr, spokename, spokeattr, savename, ad
 		spokex = spokepoint.geometry().boundingBox().center().x()
 		spokey = spokepoint.geometry().boundingBox().center().y()
 		spokeid = unicode(spokepoint.attributeMap()[spokeindex].toString())
-		qgis.mainWindow().statusBar().showMessage("Reading spoke " + str(spokepoint.id()))
+		qgis.mainWindow().statusBar().showMessage("Reading spoke " + unicode(spokepoint.id()))
 
 		# Scan hub points to find first matching hub
 		hubpoint = QgsFeature()
@@ -2112,7 +2117,7 @@ def mmqgisx_hub_lines(qgis, hubname, hubattr, spokename, spokeattr, savename, ad
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 
-	qgis.mainWindow().statusBar().showMessage(str(linecount) + " hub/spoke lines written to " + savename)
+	qgis.mainWindow().statusBar().showMessage(unicode(linecount) + " hub/spoke lines written to " + savename)
 
 	return None
 
@@ -2175,7 +2180,7 @@ def mmqgisx_label_point(qgis, layername, labelattributename, savename, addlayer)
 		readcount += 1
 		if not (readcount % 10):
 			qgis.mainWindow().statusBar().showMessage( \
-				"Reading feature " + str(readcount) + " of " + str(feature_count))
+				"Reading feature " + unicode(readcount) + " of " + unicode(feature_count))
 
 
 
@@ -2201,14 +2206,14 @@ def mmqgisx_label_point(qgis, layername, labelattributename, savename, addlayer)
 		writecount += 1
 		if not (writecount % 10):
 			qgis.mainWindow().statusBar().showMessage( \
-				"Writing feature " + str(writecount) + " of " + str(len(features)))
+				"Writing feature " + unicode(writecount) + " of " + unicode(len(features)))
 
 	del outfile
 
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(writecount) + " label shapefile created from " + layername)
+	qgis.mainWindow().statusBar().showMessage(unicode(writecount) + " label shapefile created from " + layername)
 
 	return None
 
@@ -2292,7 +2297,7 @@ def mmqgisx_merge(qgis, layernames, savename, addlayer):
 			outfile.addFeature(feature)
 			featurecount += 1
 			qgis.mainWindow().statusBar().showMessage("Writing feature " + \
-				str(featurecount) + " of " + str(totalfeaturecount))
+				unicode(featurecount) + " of " + unicode(totalfeaturecount))
 
 	del outfile
 
@@ -2300,7 +2305,7 @@ def mmqgisx_merge(qgis, layernames, savename, addlayer):
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 
-	qgis.mainWindow().statusBar().showMessage(str(featurecount) + " records exported")
+	qgis.mainWindow().statusBar().showMessage(unicode(featurecount) + " records exported")
 
 	return None
 
@@ -2344,8 +2349,8 @@ def mmqgisx_select(qgis, layername, selectattributename, comparisonvalue, compar
 	while layer.dataProvider().nextFeature(feature):
 		if (comparisonname == 'begins with') or (comparisonname == 'contains') or \
 		   (feature.attributeMap()[selectindex].type() == QVariant.String):
-			x = str(feature.attributeMap()[selectindex].toString())
-			y = comparisonvalue
+			x = unicode(feature.attributeMap()[selectindex].toString())
+			y = unicode(comparisonvalue)
 		else:
 			# print feature.attributeMap()[selectindex].typeName()
 			x = float(feature.attributeMap()[selectindex].toString())
@@ -2375,15 +2380,15 @@ def mmqgisx_select(qgis, layername, selectattributename, comparisonvalue, compar
 			writecount += 1
 
 		qgis.mainWindow().statusBar().showMessage("Scanning feature " + \
-			str(readcount) + " of " + str(layer.dataProvider().featureCount()) + \
-			"(" + str(writecount) + " selected)")
+			unicode(readcount) + " of " + unicode(layer.dataProvider().featureCount()) + \
+			"(" + unicode(writecount) + " selected)")
 
 	del outfile
 
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage("Selected " + str(writecount) + " features to " + savename)
+	qgis.mainWindow().statusBar().showMessage("Selected " + unicode(writecount) + " features to " + savename)
 
 	return None
 
@@ -2432,9 +2437,9 @@ def mmqgisx_sort(qgis, layername, sortattributename, savename, direction, addlay
 		elif (featuretype == QVariant.Double):
 			record = feature.id(), feature.attributeMap()[sortindex].toDouble()
 		else:
-			record = feature.id(), str(feature.attributeMap()[sortindex].toString())
+			record = feature.id(), unicode(feature.attributeMap()[sortindex].toString())
 
-		qgis.mainWindow().statusBar().showMessage("Reading feature " + str(feature.id()))
+		qgis.mainWindow().statusBar().showMessage("Reading feature " + unicode(feature.id()))
 		table.append(record)
 
 	if (direction.lower() == "descending"):
@@ -2448,8 +2453,8 @@ def mmqgisx_sort(qgis, layername, sortattributename, savename, direction, addlay
 		layer.featureAtId(record[0], feature)
 		outfile.addFeature(feature)
 		writecount += 1
-		qgis.mainWindow().statusBar().showMessage("Writing feature " + str(writecount) +\
-			" of " + str(len(table)))
+		qgis.mainWindow().statusBar().showMessage("Writing feature " + unicode(writecount) +\
+			" of " + unicode(len(table)))
 
 	del outfile
 
@@ -2566,11 +2571,11 @@ fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundf
 	while layer.dataProvider().nextFeature(feature):
 		if (feature.id() % 20) == 0:
 			qgis.mainWindow().statusBar().showMessage("Searching street " + \
-				str(feature.id()) + " of " + str(feature_count) + \
-				" (" + str(matched_count) + " matched)")
+				unicode(feature.id()) + " of " + unicode(feature_count) + \
+				" (" + unicode(matched_count) + " matched)")
 
 		attributes = feature.attributeMap()
-		key = mmqgisx_searchable_streetname(str(attributes[streetname_attribute].toString()))
+		key = mmqgisx_searchable_streetname(unicode(attributes[streetname_attribute].toString()))
 
 		# Check each address against this feature
 		for row in range(0, len(csv_attributes)):
@@ -2654,8 +2659,8 @@ fromx, fromy, tox, toy, leftfrom, rightfrom, leftto, rightto, setback, notfoundf
 	if matched_count and addlayer:
 		vlayer = qgis.addVectorLayer(shapefilename, os.path.basename(shapefilename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(matched_count) + " of " + str(len(csv_attributes)) \
-		+ " addresses geocoded from " + str(feature_count) + " street records")
+	qgis.mainWindow().statusBar().showMessage(unicode(matched_count) + " of " + unicode(len(csv_attributes)) \
+		+ " addresses geocoded from " + unicode(feature_count) + " street records")
 
 	return None
 
@@ -2748,12 +2753,12 @@ def mmqgisx_text_to_float(qgis, layername, attributes, savename, addlayer):
 	layer.dataProvider().rewind()
 	while layer.dataProvider().nextFeature(feature):
 		qgis.mainWindow().statusBar().showMessage("Writing feature " + \
-			str(feature.id()) + " of " + str(featurecount))
+			unicode(feature.id()) + " of " + unicode(featurecount))
 
 		attributes = feature.attributeMap()
 		for index, field in layer.dataProvider().fields().iteritems():
 			if (field.type() != destfields[index].type()):
-				string = str(attributes[index].toString())
+				string = unicode(attributes[index].toString())
 				multiplier = 1.0
 				if string.find("%") >= 0:
 					multiplier = 1 / 100.0
@@ -2779,7 +2784,7 @@ def mmqgisx_text_to_float(qgis, layername, attributes, savename, addlayer):
 	if addlayer:
 		vlayer = qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 		
-	qgis.mainWindow().statusBar().showMessage(str(changecount) + " text converted to numeric")
+	qgis.mainWindow().statusBar().showMessage(unicode(changecount) + " text converted to numeric")
 
 	return None
 
@@ -2819,7 +2824,7 @@ def mmqgisx_voronoi_diagram(qgis, sourcelayer, savename, addlayer):
 		# Re-read by feature ID because nextFeature() doesn't always seem to read attributes
 		layer.featureAtId(feature.id(), feature)
 		geometry = feature.geometry()
-		qgis.mainWindow().statusBar().showMessage("Reading feature " + str(feature.id()))
+		qgis.mainWindow().statusBar().showMessage("Reading feature " + unicode(feature.id()))
 		# print str(feature.id()) + ": " + str(geometry.wkbType())
 		if geometry.wkbType() == QGis.WKBPoint:
 			points.append( (geometry.asPoint().x(), geometry.asPoint().y(), feature.attributeMap()) )
@@ -2839,7 +2844,7 @@ def mmqgisx_voronoi_diagram(qgis, sourcelayer, savename, addlayer):
 	# for center in [ points[17] ]:
 		# print "\nCenter, " + str(center[0]) + ", " + str(center[1])
 		qgis.mainWindow().statusBar().showMessage("Processing point " + \
-			str(center[0]) + ", " + str(center[1]))
+			unicode(center[0]) + ", " + unicode(center[1]))
 
 		# Borders are tangents to midpoints between all neighbors
 		tangents = []
@@ -2981,7 +2986,7 @@ def mmqgisx_voronoi_diagram(qgis, sourcelayer, savename, addlayer):
 	if addlayer:
 		qgis.addVectorLayer(savename, os.path.basename(savename), "ogr")
 
-	qgis.mainWindow().statusBar().showMessage("Created " + str(len(points)) + " polygon Voronoi diagram")
+	qgis.mainWindow().statusBar().showMessage("Created " + unicode(len(points)) + " polygon Voronoi diagram")
 
 	return None
 
@@ -2993,8 +2998,8 @@ class mmqgisx_voronoi_line:
 		self.distance = 0
 
 	def list(self, title):
-		print title + ", " + str(self.x) + ", " + str(self.y) + \
-			", angle " + str(self.angle * 180 / pi) + ", distance " + str(self.distance)
+		print title + ", " + unicode(self.x) + ", " + unicode(self.y) + \
+			", angle " + unicode(self.angle * 180 / pi) + ", distance " + unicode(self.distance)
 
 	def angleval(self):
 		return self.angle
