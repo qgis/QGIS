@@ -5566,7 +5566,7 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
     return 0;
   }
 
-  bool atLeastTwoIntersections;
+  bool atLeastTwoIntersections = false;
 
   try
   {

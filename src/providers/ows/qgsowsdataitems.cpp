@@ -29,7 +29,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 
   QVector<QgsDataItem*> serviceItems;
 
-  int layerCount;
+  int layerCount = 0;
   // Try to open with WMS,WFS,WCS
   foreach( QString key, QStringList() << "wms" << "WFS" << "gdal" )
   {

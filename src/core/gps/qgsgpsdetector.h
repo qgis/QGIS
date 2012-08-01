@@ -26,7 +26,9 @@
 // qextserialport.h includes windows.h,
 // which defines min()/max() macros w/o NOMINMAX,
 // which in turn breaks limits std::numeric_limits<T>::min()/max()
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #endif
 
 #include "qextserialport.h"

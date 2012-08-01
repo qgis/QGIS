@@ -1821,7 +1821,8 @@ QString QgsPostgresProvider::geomParam( int offset ) const
 {
   QString geometry;
 
-  bool forceMulti;
+  bool forceMulti = false;
+
   switch ( geometryType() )
   {
     case QGis::WKBPoint:
@@ -1844,7 +1845,6 @@ QString QgsPostgresProvider::geomParam( int offset ) const
       forceMulti = true;
       break;
   }
-
 
   if ( forceMulti )
   {

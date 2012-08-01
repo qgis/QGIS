@@ -1598,7 +1598,7 @@ QgsVectorOverlay* QgsSLDParser::vectorOverlayFromDiagramSymbolizer( const QDomEl
   QList<QgsDiagramItem> theItems;
   QList<int> scalingAttributes;
   QgsAttributeList factoryCategoryAttributes;
-  QgsDiagramRenderer::ItemInterpretation interpretation; //discrete or linear
+  QgsDiagramRenderer::ItemInterpretation interpretation = QgsDiagramRenderer::DISCRETE; //discrete or linear
 
   //scale
   double scaleFactor = scaleFactorFromScaleTag( diagramElem.namedItem( "Scale" ).toElement() );

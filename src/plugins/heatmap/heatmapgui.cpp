@@ -283,7 +283,7 @@ void HeatmapGui::updateBBox()
   mBBox = inputLayer->extent();
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
 
-  float radiusInMapUnits;
+  float radiusInMapUnits = 0.0;
   if ( useRadius->isChecked() )
   {
     float maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toFloat();
