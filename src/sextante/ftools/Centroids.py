@@ -1,9 +1,7 @@
 import os.path
-
 from PyQt4 import QtGui
-
+from PyQt4.QtCore import *
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
