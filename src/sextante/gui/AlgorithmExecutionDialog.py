@@ -291,4 +291,4 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     def setText(self, text):
         self.progressLabel.setText(text)
-        self.log(text, false)
+        self.log(text, False)
