@@ -358,17 +358,19 @@ void QgsStyleV2ExportImportDialog::browse()
       return;
     }
     locationLineEdit->setText( mFileName );
+    populateStyles( mTempStyle );
   }
   else if ( type == "official" )
   {
     // TODO set URL
-    downloadStyleXML( QUrl( "http://...." ) );
+    // downloadStyleXML( QUrl( "http://...." ) );
+    QMessageBox::warning( this, tr( "Invalid Selection" ),
+        tr( "Sorry! The official QGIS repository has not been implemented. You cannot use this feature now." ) );
   }
   else
   {
     downloadStyleXML( QUrl( locationLineEdit->text() ) );
   }
-  populateStyles( mTempStyle );
 }
 
 void QgsStyleV2ExportImportDialog::downloadStyleXML( QUrl url )

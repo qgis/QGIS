@@ -1296,7 +1296,7 @@ bool QgsStyleV2::importXML( QString filename )
 
   if( !doc.setContent( &f ) )
   {
-    mErrorString = "Unbale to understand the style file.";
+    mErrorString = QString( "Unable to understand the style file: %1" ).arg( filename );
     QgsDebugMsg( "XML Parsing error" );
     f.close();
     return false;
@@ -1306,7 +1306,7 @@ bool QgsStyleV2::importXML( QString filename )
   QDomElement docEl = doc.documentElement();
   if ( docEl.tagName() != "qgis_style" )
   {
-    mErrorString = "Incoerrect root tag in style: " + docEl.tagName();
+    mErrorString = "Incorrect root tag in style: " + docEl.tagName();
     return false;
   }
 
@@ -1316,8 +1316,6 @@ bool QgsStyleV2::importXML( QString filename )
     mErrorString = "Unknown style file version: " + version;
     return false;
   }
-
-  QgsStyleV2* defStyle = QgsStyleV2::defaultStyle();
 
   // load symbols
   QDomElement symbolsElement = docEl.firstChildElement( "symbols" );
