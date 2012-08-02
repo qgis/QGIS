@@ -87,11 +87,11 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
      * but plugin writers etc can use themeName() as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
-     * @Note A basic test will be carried out to ensure the theme search path
-     * based on the supplied theme name exists. If it does not the theme name will 
+     * @note A basic test will be carried out to ensure the theme search path
+     * based on the supplied theme name exists. If it does not the theme name will
      * be reverted to 'default'.
      */
-    static void setThemeName(const QString theThemeName);
+    static void setThemeName( const QString theThemeName );
 
     /** Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.
@@ -125,7 +125,8 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString translatorsFilePath();
 
     //! Returns the path to the developer image directory.
-    static const QString developerPath();
+    //! @deprecated images are not provided anymore :-P
+    static const QString developerPath() /Deprecated/;
 
     //! Returns the path to the help application.
     static const QString helpAppPath();
@@ -138,7 +139,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     //! Returns the path to the settings directory in user's home dir
     static const QString qgisSettingsDirPath();
-    
+
     //! Returns the path to the user qgis.db file.
     static const QString qgisUserDbFilePath();
 
@@ -151,12 +152,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the srs.db file.
     static const QString srsDbFilePath();
 
-    //! Returns the paths to the svg directories.
+    //! Returns the pathes to svg directories.
     //! @note added in 1.4
     static const QStringList svgPaths();
 
-    //! Returns the path to the applications svg paths
-    //! @deprecated use svgPaths()
+    //! Returns the paths to svg applications svg directory.
+    //! @deprecated since 1.4 - use svgPaths()
     static const QString svgPath() /Deprecated/;
 
     //! Returns the path to the application prefix directory.
@@ -169,15 +170,25 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString pkgDataPath();
 
     //! Returns the path to the currently active theme directory.
-    static const QString activeThemePath(); 
+    static const QString activeThemePath();
 
     //! Returns the path to the default theme directory.
-    static const QString defaultThemePath(); 
-    
+    static const QString defaultThemePath();
+
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
     //! @note Added in 1.5
     static QString iconPath( QString iconFile );
+
+    //! Helper to get a theme icon. It will fall back to the
+    //! default theme if the active theme does not have the required icon.
+    //! @note Added in 2.0
+    static QIcon getThemeIcon( const QString theName );
+
+    //! Helper to get a theme icon as a pixmap. It will fall back to the
+    //! default theme if the active theme does not have the required icon.
+    //! @note Added in 2.0
+    static QPixmap getThemePixmap( const QString theName );
 
     //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
@@ -194,23 +205,23 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath(const QString thePrefixPath, bool useDefaultPaths = FALSE);
-    
+    static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
+
     //! Alters plugin path - used by 3rd party apps
-    static void setPluginPath(const QString thePluginPath);
+    static void setPluginPath( const QString thePluginPath );
 
     //! Alters pkg data path - used by 3rd party apps
-    static void setPkgDataPath(const QString thePkgDataPath);
+    static void setPkgDataPath( const QString thePkgDataPath );
 
     //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
     static void setDefaultSvgPaths( const QStringList& pathList );
-    
+
     //! loads providers
     static void initQgis();
 
     //! deletes provider registry and map layer registry
     static void exitQgis();
-    
+
     /** constants for endian-ness */
     enum endian_t
     {
@@ -231,14 +242,14 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static QString reportStyleSheet();
 
-    /** Convenience function to get a summary of the paths used in this 
+    /** Convenience function to get a summary of the paths used in this
      * application instance useful for debugging mainly.*/
     static QString showSettings();
 
     /** Register OGR drivers ensuring this only happens once.
      * This is a workaround for an issue with older gdal versions that
-     * caused duplicate driver name entries to appear in the list 
-     * of registered drivers when QgsApplication::registerOgrDrivers was called multiple 
+     * caused duplicate driver name entries to appear in the list
+     * of registered drivers when QgsApplication::registerOgrDrivers was called multiple
      * times.
      */
     static void registerOgrDrivers();
@@ -260,26 +271,25 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
         @note added in 2.0 */
     static QString buildOutputPath();
 
-    /** Sets the GDAL_SKIP environment variable to include the specified driver 
+    /** Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
-     * driver name should be the short format of the Gdal driver name e.g. GTiff.
+     * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      * @note added in 2.0
      */
     static void skipGdalDriver( QString theDriver );
 
-    /** Sets the GDAL_SKIP environment variable to exclude the specified driver 
+    /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
-     * driver name should be the short format of the Gdal driver name e.g. GTiff.
+     * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      * @note added in 2.0
      */
     static void restoreGdalDriver( QString theDriver );
 
-
     /** Returns the list of gdal drivers that should be skipped (based on
-     * GDAL_SKIP environment variable) 
+     * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ) const ;
+    static QStringList skippedGdalDrivers( );
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver

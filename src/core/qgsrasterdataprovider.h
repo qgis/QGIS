@@ -117,7 +117,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Add the list of WMS layer names to be rendered by this server
      */
     virtual void addLayers( QStringList const & layers,
-                            QStringList  const & styles = QStringList() ) = 0;
+                            QStringList const & styles = QStringList() ) = 0;
 
     //! get raster image encodings supported by (e.g.) the WMS Server, expressed as MIME types
     virtual QStringList supportedImageEncodings() = 0;
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Set the image encoding (as a MIME type) used in the transfer from (e.g.) the WMS server
      */
-    virtual void setImageEncoding( QString  const & mimeType ) = 0;
+    virtual void setImageEncoding( QString const & mimeType ) = 0;
 
     /**
      * Set the image projection (in WMS CRS format) used in the transfer from (e.g.) the WMS server
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: Document this better.
     /** \brief   Renders the layer as an image
      */
-    virtual QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) = 0;
+    virtual QImage* draw( QgsRectangle const & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether

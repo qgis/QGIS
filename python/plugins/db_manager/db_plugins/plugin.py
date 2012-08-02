@@ -192,21 +192,20 @@ class Database(DbItemObject):
 		from .info_model import DatabaseInfo
 		return DatabaseInfo(self)
 
-
 	def sqlResultModel(self, sql, parent):
 		from .data_model import SqlResultModel
 		return SqlResultModel(self, sql, parent)
 
-
-	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None):
+	def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
 		from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
 		uri = self.uri()
 		uri.setDataSource("", u"(%s\n)" % sql, geomCol, QString(), uniqueCol)
+		if avoidSelectById:
+			uri.disableSelectAtId( True )
 		provider = self.dbplugin().providerName()
 		if layerType == QgsMapLayer.RasterLayer:
 			return QgsRasterLayer(uri.uri(), layerName, provider)
 		return QgsVectorLayer(uri.uri(), layerName, provider)
-
 
 	def registerAllActions(self, mainWindow):
 		self.registerDatabaseActions(mainWindow)

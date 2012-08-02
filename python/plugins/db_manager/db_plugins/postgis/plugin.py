@@ -244,7 +244,6 @@ class PGTable(Table):
 	def tableRulesFactory(self, row, table):
 		return PGTableRule(row, table)
 
-
 	def info(self):
 		from .info_model import PGTableInfo
 		return PGTableInfo(self)
