@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 // QGIS includes
-#include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
+#include "qgsexpression.h"
+#include "qgslogger.h"
 
 // Qt includes
 #include <QPoint>
@@ -91,15 +93,59 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 
   r = mpMapCanvas->mapRenderer()->mapToLayerCoordinates( layer, r );
 
-  int idx = vlayer->fieldNameIndex( vlayer->displayField() );
-  if ( idx < 0 )
-    return "";
-
   QgsFeature feature;
 
-  vlayer->select( QgsAttributeList() << idx, r, true, true );
+  vlayer->select( vlayer->pendingAllAttributesList() , r, true, true );
   if ( !vlayer->nextFeature( feature ) )
     return "";
 
-  return feature.attributeMap().value( idx, "" ).toString();
+  int idx = vlayer->fieldNameIndex( vlayer->displayField() );
+  if ( idx < 0 )
+    return replaceText( vlayer->displayField(), vlayer, feature );
+  else
+    return feature.attributeMap().value( idx, "" ).toString();
+
+}
+
+QString QgsMapTip::replaceText( QString displayText, QgsVectorLayer *layer, QgsFeature &feat )
+{
+  QString expr_action;
+
+  int index = 0;
+  while ( index < displayText.size() )
+  {
+    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+
+    int pos = rx.indexIn( displayText, index );
+    if ( pos < 0 )
+      break;
+
+    int start = index;
+    index = pos + rx.matchedLength();
+
+    QString to_replace = rx.cap( 1 ).trimmed();
+    QgsDebugMsg( "Found expression: " + to_replace );
+
+    QgsExpression exp( to_replace );
+    if ( exp.hasParserError() )
+    {
+      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
+      expr_action += displayText.mid( start, index - start );
+      continue;
+    }
+
+    QVariant result = exp.evaluate( &feat, layer->pendingFields() );
+    if ( exp.hasEvalError() )
+    {
+      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
+      expr_action += displayText.mid( start, index - start );
+      continue;
+    }
+
+    QgsDebugMsg( "Expression result is: " + result.toString() );
+    expr_action += displayText.mid( start, pos - start ) + result.toString();
+  }
+
+  expr_action += displayText.mid( index );
+  return expr_action;
 }

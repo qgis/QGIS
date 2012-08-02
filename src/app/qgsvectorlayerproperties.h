@@ -28,6 +28,7 @@
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
 #include "qgscontexthelp.h"
+#include "qgsexpressionbuilderdialog.h"
 
 class QgsMapLayer;
 
@@ -55,6 +56,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /**Returns the display name entered in the dialog*/
     QString displayName();
     void setRendererDirty( bool ) {}
+
     /**Sets the attribute that is used in the Identify Results dialog box*/
     void setDisplayField( QString name );
 
@@ -69,6 +71,11 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     bool deleteAttribute( int attr );
 
   public slots:
+
+    /** Insert a field in the expression text for the map tip **/
+    void insertField();
+
+    void insertExpression();
 
     void attributeTypeDialog();
 

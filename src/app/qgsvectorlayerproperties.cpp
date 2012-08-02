@@ -95,6 +95,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 
+  connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
+  connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
+
+
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
@@ -481,9 +485,55 @@ void QgsVectorLayerProperties::setLegendType( QString type )
   legendtypecombobox->setItemText( legendtypecombobox->currentIndex(), type );
 }
 
+void QgsVectorLayerProperties::insertField()
+{
+  // Convert the selected field to an expression and
+  // insert it into the action at the cursor position
+
+  if ( !fieldComboBox->currentText().isNull() )
+  {
+    QString field = "[% \"";
+    field += fieldComboBox->currentText();
+    field += "\" %]";
+    htmlMapTip->insertPlainText( field );
+  }
+}
+
+void QgsVectorLayerProperties::insertExpression()
+{
+  QString selText = htmlMapTip->textCursor().selectedText();
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+    selText = selText.mid( 2, selText.size() - 4 );
+
+  // display the expression builder
+  QgsExpressionBuilderDialog dlg( layer , selText, this );
+  dlg.setWindowTitle( tr( "Insert expression" ) );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionBuilder()->expressionText();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
+    {
+      htmlMapTip->insertPlainText( "[%" + expression + "%]" );
+    }
+  }
+}
+
 void QgsVectorLayerProperties::setDisplayField( QString name )
 {
-  displayFieldComboBox->setItemText( displayFieldComboBox->currentIndex(), name );
+  int idx = displayFieldComboBox->findText( name );
+  if ( idx == -1 )
+  {
+    htmlRadio->setChecked( true );
+    htmlMapTip->setPlainText( name );
+  }
+  else
+  {
+    fieldComboRadio->setChecked( true );
+    displayFieldComboBox->setCurrentIndex( idx );
+  }
 }
 
 //! @note in raster props, this method is called sync()
@@ -520,9 +570,10 @@ void QgsVectorLayerProperties::reset( void )
   for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
   {
     displayFieldComboBox->addItem( it->name() );
+    fieldComboBox->addItem( it->name() );
   }
-  displayFieldComboBox->setCurrentIndex( displayFieldComboBox->findText(
-                                           layer->displayField() ) );
+
+  setDisplayField( layer-> displayField() );
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( layer->hasScaleBasedVisibility() );
@@ -633,7 +684,15 @@ void QgsVectorLayerProperties::apply()
   }
 
   // update the display field
-  layer->setDisplayField( displayFieldComboBox->currentText() );
+  if ( htmlRadio->isChecked() )
+  {
+    layer->setDisplayField( htmlMapTip->toPlainText() );
+  }
+
+  if ( fieldComboRadio->isChecked() )
+  {
+    layer->setDisplayField( displayFieldComboBox->currentText() );
+  }
 
   layer->setEditForm( leEditForm->text() );
   layer->setEditFormInit( leEditFormInit->text() );
