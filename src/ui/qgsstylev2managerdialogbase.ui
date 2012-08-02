@@ -247,16 +247,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnExportItems">
+        <widget class="QPushButton" name="btnShare">
          <property name="text">
-          <string>Export</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnImportItems">
-         <property name="text">
-          <string>Import</string>
+          <string>Share</string>
          </property>
         </widget>
        </item>

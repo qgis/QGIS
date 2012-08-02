@@ -42,6 +42,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     void removeItem();
     void exportItems();
     void importItems();
+
     //! adds symbols of some type to list
     void populateList();
 

@@ -36,7 +36,6 @@
 #include <QAction>
 #include <QMenu>
 
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
@@ -66,8 +65,13 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnAddItem, SIGNAL( clicked() ), this, SLOT( addItem() ) );
   connect( btnEditItem, SIGNAL( clicked() ), this, SLOT( editItem() ) );
   connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
-  connect( btnExportItems, SIGNAL( clicked() ), this, SLOT( exportItems() ) );
-  connect( btnImportItems, SIGNAL( clicked() ), this, SLOT( importItems() ) );
+
+  QMenu *shareMenu = new QMenu( "Share Menu", this );
+  QAction *exportAction = shareMenu->addAction( "Export" );
+  QAction *importAction = shareMenu->addAction( "Import" );
+  connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
+  connect( importAction, SIGNAL( triggered() ), this, SLOT( importItems() ) );
+  btnShare->setMenu( shareMenu );
 
   // Set editing mode off by default
   mGrouppingMode = false;
@@ -96,7 +100,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
       this, SLOT( groupRenamed( QStandardItem* ) ) );
 
-  QMenu *groupMenu = new QMenu( "Group Actions" );
+  QMenu *groupMenu = new QMenu( "Group Actions", this );
   QAction *groupSymbols = groupMenu->addAction( "Group Symbols" );
   QAction *editSmartgroup = groupMenu->addAction( "Edit Smart Group" );
   btnManageGroups->setMenu( groupMenu );
@@ -584,14 +588,7 @@ void QgsStyleV2ManagerDialog::exportItems()
 
 void QgsStyleV2ManagerDialog::importItems()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), ".",
-                     tr( "XML files (*.xml *XML)" ) );
-  if ( fileName.isEmpty() )
-  {
-    return;
-  }
-
-  QgsStyleV2ExportImportDialog dlg( mStyle, this, QgsStyleV2ExportImportDialog::Import, fileName );
+  QgsStyleV2ExportImportDialog dlg( mStyle, this, QgsStyleV2ExportImportDialog::Import );
   dlg.exec();
   populateList();
 }
@@ -1219,3 +1216,4 @@ bool QgsStyleV2ManagerDialog::eventFilter( QObject *obj, QEvent *event )
   }
   return false;
 }
+
