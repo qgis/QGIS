@@ -278,9 +278,9 @@ class ParametersPanel(QtGui.QWidget):
     def getFields(self, layer, datatype):
         fieldTypes = []
         if datatype == ParameterTableField.DATA_TYPE_STRING:
-            fieldTypes = [QVariant.String]
+            fieldTypes = [QtCore.QVariant.String]
         elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
-            fieldTypes = [QVariant.Int, QVariant.Double]
+            fieldTypes = [QtCore.QVariant.Int, QtCore.QVariant.Double]
 
         fieldNames = []
         fieldMap = layer.pendingFields()
