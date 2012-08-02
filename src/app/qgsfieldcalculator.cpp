@@ -42,28 +42,42 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
-  // disable creation of new fields if not supported by data provider
-  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  mUpdateExistingGroupBox->setEnabled( vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  mNewFieldGroupBox->setEnabled( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes );
+
+  Q_ASSERT( mNewFieldGroupBox->isEnabled() || mUpdateExistingGroupBox->isEnabled() );
+
+  if ( mNewFieldGroupBox->isEnabled() )
   {
+    mNewFieldGroupBox->setChecked( true );
+  }
+  else
+  {
+    mNewFieldGroupBox->setToolTip( tr( "Not available for layer" ) );
+    mUpdateExistingGroupBox->setChecked( true );
     mUpdateExistingGroupBox->setCheckable( false );
-    mNewFieldGroupBox->setChecked( false );
-    mNewFieldGroupBox->setTitle( mNewFieldGroupBox->title() + tr( " (not supported by provider)" ) );
   }
 
-  if ( vl->selectedFeaturesIds().size() > 0 )
+  if ( mUpdateExistingGroupBox->isEnabled() )
   {
-    mOnlyUpdateSelectedCheckBox->setChecked( true );
+    mUpdateExistingGroupBox->setChecked( !mNewFieldGroupBox->isEnabled() );
   }
+  else
+  {
+    mUpdateExistingGroupBox->setToolTip( tr( "Not available for layer" ) );
+    mNewFieldGroupBox->setChecked( true );
+    mNewFieldGroupBox->setCheckable( false );
+  }
+
+  mOnlyUpdateSelectedCheckBox->setChecked( vl->selectedFeaturesIds().size() > 0 );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
 {
-
 }
 
 void QgsFieldCalculator::accept()
 {
-
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
 
@@ -79,7 +93,7 @@ void QgsFieldCalculator::accept()
   mVectorLayer->beginEditCommand( "Field calculator" );
 
   //update existing field
-  if ( mUpdateExistingGroupBox->isChecked() )
+  if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
   {
     QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
     if ( fieldIt != mFieldMap.end() )
@@ -128,7 +142,7 @@ void QgsFieldCalculator::accept()
   bool calculationSuccess = true;
   QString error;
 
-  bool onlySelected = ( mOnlyUpdateSelectedCheckBox->isChecked() );
+  bool onlySelected = mOnlyUpdateSelectedCheckBox->isChecked();
   QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
 
   // block layerModified signals (that would trigger table update)
@@ -269,18 +283,22 @@ void QgsFieldCalculator::populateFields()
 void QgsFieldCalculator::setOkButtonState()
 {
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  okButton->setToolTip( "" );
 
-  bool emptyFieldName = mOutputFieldNameLineEdit->text().isEmpty();
-  bool expressionValid = builder->isExpressionValid();
-
-  if ( emptyFieldName )
+  if (( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
+      && mOutputFieldNameLineEdit->text().isEmpty() )
+  {
     okButton->setToolTip( tr( "Please enter a field name" ) );
+    okButton->setEnabled( false );
+    return;
+  }
 
-  if ( !expressionValid )
+  if ( !builder->isExpressionValid() )
+  {
     okButton->setToolTip( okButton->toolTip() + tr( "\n The expression is invalid see (more info) for details" ) );
+    okButton->setEnabled( false );
+    return;
+  }
 
-  bool okEnabled = ( !emptyFieldName || mUpdateExistingGroupBox->isChecked() ) && expressionValid;
-
-  okButton->setEnabled( okEnabled );
+  okButton->setToolTip( "" );
+  okButton->setEnabled( true );
 }
