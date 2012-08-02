@@ -199,6 +199,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.algEx.percentageChanged.connect(self.setPercentage)
                 self.algEx.textChanged.connect(self.setText)
                 self.algEx.iterated.connect(self.iterate)
+                self.algEx.infoSet.connect(self.log)
                 self.algEx.start()
                 self.log("Algorithm %s started" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
@@ -274,9 +275,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         except:
             pass
 
-    @pyqtSlot(str, bool)
+    @pyqtSlot(str)
     def log(self, msg, error = False):
-        print "!", msg
         if error:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
             self.logText.append('<b>' + msg + '</b>')

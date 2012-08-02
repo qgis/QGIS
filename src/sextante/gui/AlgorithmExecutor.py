@@ -10,6 +10,7 @@ class AlgorithmExecutor(QThread):
     textChanged = pyqtSignal(QString)
     error = pyqtSignal(str)
     iterated = pyqtSignal(int)
+    infoSet = pyqtSignal(str)
     #started & finished inherited from QThread
 
     def __init__(self, alg, iterParam = None, parent = None):
@@ -24,6 +25,8 @@ class AlgorithmExecutor(QThread):
                 self.algorithmExecutor.textChanged.emit(text)
             def setPercentage(self, p):
                 self.algorithmExecutor.percentageChanged.emit(p)
+            def setInfo(self, info):
+                self.algorithmExecutor.infoSet.emit(info)
         self.progress = Progress(self)
         if self.parameterToIterate:
             self.run = self.runalgIterating
