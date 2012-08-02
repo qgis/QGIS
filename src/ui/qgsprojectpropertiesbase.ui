@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>588</height>
+    <width>644</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -194,7 +194,7 @@
        <item row="1" column="0">
         <widget class="QGroupBox" name="btnGrpMapUnits">
          <property name="title">
-          <string>Layer units (only used when CRS transformation is disabled)</string>
+          <string>Layer units</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_27">
           <item row="0" column="0">
@@ -215,9 +215,32 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QRadioButton" name="radDecimalDegrees">
+           <widget class="QRadioButton" name="radDegrees">
+            <property name="text">
+             <string>Degree</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="btnGrpDegreeDisplay">
+         <property name="title">
+          <string>Degree display</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_30">
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radD">
             <property name="text">
              <string>Decimal degrees</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="radDM">
+            <property name="text">
+             <string>Degrees, Minutes</string>
             </property>
            </widget>
           </item>
@@ -231,7 +254,7 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="btnGrpPrecision">
          <property name="title">
           <string>Precision</string>
@@ -295,7 +318,7 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QGroupBox" name="grpProjectScales">
          <property name="title">
           <string>Project scales</string>
@@ -757,8 +780,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>637</width>
-            <height>808</height>
+            <width>660</width>
+            <height>792</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -868,6 +891,52 @@
               <string>WMS Capabilitities</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_10">
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
+                <property name="text">
+                 <string>Add WKT geometry to feature info response</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QGroupBox" name="grpWMSList">
+                <property name="title">
+                 <string>Coordinate Systems Restrictions</string>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <item row="0" column="0" colspan="3">
+                  <widget class="QListWidget" name="mWMSList"/>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QPushButton" name="pbnWMSAddSRS">
+                   <property name="text">
+                    <string>Add</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
+                   <property name="text">
+                    <string>Remove</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                   <property name="text">
+                    <string>Used</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QGroupBox" name="grpWMSExt">
                 <property name="title">
@@ -971,80 +1040,44 @@
                 </layout>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QGroupBox" name="grpWMSList">
-                <property name="title">
-                 <string>Coordinate Systems Restrictions</string>
+              <item row="3" column="0">
+               <widget class="QLabel" name="mWMSUrlLabel">
+                <property name="text">
+                 <string>Advertised WMS url</string>
                 </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="0" column="0" colspan="3">
-                  <widget class="QListWidget" name="mWMSList"/>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QPushButton" name="pbnWMSAddSRS">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="pbnWMSRemoveSRS">
-                   <property name="text">
-                    <string>Remove</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QPushButton" name="pbnWMSSetUsedSRS">
-                   <property name="text">
-                    <string>Used</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </widget>
               </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="mAddWktGeometryCheckBox">
-                <property name="text">
-                 <string>Add WKT geometry to feature info response</string>
-                </property>
-               </widget>
+              <item row="5" column="0" colspan="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QLabel" name="mMaxWidthLabel">
+                  <property name="text">
+                   <string>Maximum width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mMaxHeightLabel">
+                  <property name="text">
+                   <string>Maximum height</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
+                </item>
+               </layout>
+              </item>
+              <item row="4" column="0" colspan="2">
+               <widget class="QLineEdit" name="mWMSUrlLineEdit"/>
               </item>
              </layout>
             </widget>
            </item>
-           <item row="2" column="0">
-            <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <item>
-              <widget class="QLabel" name="mMaxWidthLabel">
-               <property name="text">
-                <string>Maximum width</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="mMaxWidthLineEdit"/>
-             </item>
-             <item>
-              <widget class="QLabel" name="mMaxHeightLabel">
-               <property name="text">
-                <string>Maximum height</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="mMaxHeightLineEdit"/>
-             </item>
-            </layout>
-           </item>
-           <item row="3" column="0">
+           <item row="7" column="0">
             <widget class="QGroupBox" name="grpWFSCapabilities">
              <property name="title">
               <string>WFS Capabilitities</string>
@@ -1098,7 +1131,6 @@
   <tabstop>cbxAbsolutePath</tabstop>
   <tabstop>radMeters</tabstop>
   <tabstop>radFeet</tabstop>
-  <tabstop>radDecimalDegrees</tabstop>
   <tabstop>radDMS</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
@@ -1133,12 +1165,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>322</y>
+     <x>353</x>
+     <y>407</y>
     </hint>
     <hint type="destinationlabel">
-     <x>418</x>
-     <y>325</y>
+     <x>515</x>
+     <y>408</y>
     </hint>
    </hints>
   </connection>
@@ -1149,12 +1181,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>289</x>
-     <y>322</y>
+     <x>353</x>
+     <y>407</y>
     </hint>
     <hint type="destinationlabel">
-     <x>522</x>
-     <y>320</y>
+     <x>606</x>
+     <y>405</y>
     </hint>
    </hints>
   </connection>
@@ -1165,12 +1197,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>128</x>
-     <y>322</y>
+     <x>154</x>
+     <y>407</y>
     </hint>
     <hint type="destinationlabel">
-     <x>418</x>
-     <y>325</y>
+     <x>515</x>
+     <y>408</y>
     </hint>
    </hints>
   </connection>
@@ -1181,12 +1213,28 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>115</x>
-     <y>322</y>
+     <x>141</x>
+     <y>407</y>
     </hint>
     <hint type="destinationlabel">
-     <x>522</x>
-     <y>320</y>
+     <x>606</x>
+     <y>405</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radDegrees</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnGrpDegreeDisplay</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>443</x>
+     <y>262</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>410</x>
+     <y>304</y>
     </hint>
    </hints>
   </connection>

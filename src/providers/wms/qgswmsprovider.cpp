@@ -2503,9 +2503,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         metersPerUnit = 0.3048;
         break;
 
-      case QGis::DecimalDegrees:
-      case QGis::DegreesMinutesSeconds:
-      case QGis::DegreesDecimalMinutes:
+      case QGis::Degrees:
         metersPerUnit = 111319.49079327358;
         break;
 
@@ -3063,12 +3061,10 @@ bool QgsWmsProvider::calculateExtent()
     }
 
     QgsDebugMsg( "no extent returned" );
-
     return false;
   }
   else
   {
-
     bool firstLayer = true; //flag to know if a layer is the first to be successfully transformed
     for ( QStringList::Iterator it  = mActiveSubLayers.begin();
           it != mActiveSubLayers.end();
@@ -3115,10 +3111,6 @@ bool QgsWmsProvider::calculateExtent()
     QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
     return true;
   }
-
-  QgsDebugMsg( "exiting without extent." );
-  return false;
-
 }
 
 

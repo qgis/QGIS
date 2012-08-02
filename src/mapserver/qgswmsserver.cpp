@@ -127,58 +127,11 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   requestElement.appendChild( elem );
 
   //Prepare url
-  //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
-  QString hrefString;
-  QString requestUrl = getenv( "REQUEST_URI" );
-  QUrl mapUrl( requestUrl );
-  mapUrl.setHost( getenv( "SERVER_NAME" ) );
-
-  //Add non-default ports to url
-  QString portString = getenv( "SERVER_PORT" );
-  if ( !portString.isEmpty() )
+  QString hrefString = mConfigParser->serviceUrl();
+  if ( hrefString.isEmpty() )
   {
-    bool portOk;
-    int portNumber = portString.toInt( &portOk );
-    if ( portOk )
-    {
-      if ( portNumber != 80 )
-      {
-        mapUrl.setPort( portNumber );
-      }
-    }
+    hrefString = serviceUrl();
   }
-
-  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
-  {
-    mapUrl.setScheme( "https" );
-  }
-  else
-  {
-    mapUrl.setScheme( "http" );
-  }
-
-  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
-  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
-  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
-  {
-    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
-    {
-      mapUrl.removeQueryItem( queryIt->first );
-    }
-  }
-  hrefString = mapUrl.toString();
 
 
   // SOAP platform
@@ -201,7 +154,6 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   QDomElement olResourceElement = doc.createElement( "OnlineResource"/*wms:OnlineResource*/ );
   olResourceElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
   olResourceElement.setAttribute( "xlink:type", "simple" );
-  requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
   olResourceElement.setAttribute( "xlink:href", hrefString );
   getElement.appendChild( olResourceElement );
 
@@ -1992,4 +1944,57 @@ bool QgsWMSServer::checkMaximumWidthHeight() const
     }
   }
   return true;
+}
+
+QString QgsWMSServer::serviceUrl() const
+{
+  QUrl mapUrl( getenv( "REQUEST_URI" ) );
+  mapUrl.setHost( getenv( "SERVER_NAME" ) );
+
+  //Add non-default ports to url
+  QString portString = getenv( "SERVER_PORT" );
+  if ( !portString.isEmpty() )
+  {
+    bool portOk;
+    int portNumber = portString.toInt( &portOk );
+    if ( portOk )
+    {
+      if ( portNumber != 80 )
+      {
+        mapUrl.setPort( portNumber );
+      }
+    }
+  }
+
+  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  {
+    mapUrl.setScheme( "https" );
+  }
+  else
+  {
+    mapUrl.setScheme( "http" );
+  }
+
+  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+  for ( ; queryIt != queryItems.constEnd(); ++queryIt )
+  {
+    if ( queryIt->first.compare( "REQUEST", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "VERSION", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "_DC", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+  }
+  return mapUrl.toString();
 }

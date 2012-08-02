@@ -111,7 +111,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
 
   mSaveEditsButton->setEnabled( canChangeAttributes && mLayer->isEditable() );
-  mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
@@ -674,7 +674,7 @@ void QgsAttributeTableDialog::editingToggled()
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
-  mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mOpenFieldCalculator->setEnabled(( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );

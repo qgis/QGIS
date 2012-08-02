@@ -433,7 +433,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     showItem( "layer/group" , item );
 
     int line_x = visualItemRect( item ).left();
-    int line_y;
+    int line_y = 0;
     if ( layer )
     {
       QTreeWidgetItem *lastItem = item->childCount() > 0 && item->isExpanded() ? item->child( item->childCount() - 1 ) : item;

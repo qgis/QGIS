@@ -426,7 +426,7 @@ void QgsVectorLayerProperties::updateButtons()
     int cap = layer->dataProvider()->capabilities();
     mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
     mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
-    mCalculateFieldButton->setEnabled( cap & QgsVectorDataProvider::ChangeAttributeValues );
+    mCalculateFieldButton->setEnabled( cap & ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::AddAttributes ) );
     mToggleEditingButton->setChecked( true );
   }
   else

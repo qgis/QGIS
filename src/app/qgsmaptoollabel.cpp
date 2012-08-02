@@ -230,7 +230,14 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
       QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator sizeIt = ddProperties.find( QgsPalLayerSettings::Size );
       if ( sizeIt != ddProperties.constEnd() )
       {
-        font.setPointSizeF( attributes[*sizeIt].toDouble() );
+        if ( layerSettings.fontSizeInMapUnits )
+        {
+          font.setPixelSize( layerSettings.sizeToPixel( attributes[*sizeIt].toDouble(), QgsRenderContext() ) );
+        }
+        else
+        {
+          font.setPointSizeF( attributes[*sizeIt].toDouble() );
+        }
       }
 
       //family
@@ -273,7 +280,7 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
   return font;
 }
 
-bool QgsMapToolLabel::rotationPoint( QgsPoint& pos )
+bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown )
 {
   QVector<QgsPoint> cornerPoints = mCurrentLabelPos.cornerPoints;
   if ( cornerPoints.size() < 4 )
@@ -281,7 +288,7 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos )
     return false;
   }
 
-  if ( mCurrentLabelPos.upsideDown )
+  if ( mCurrentLabelPos.upsideDown && !ignoreUpsideDown )
   {
     pos = mCurrentLabelPos.cornerPoints.at( 2 );
   }
@@ -336,7 +343,7 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos )
   }
   else
   {
-    double descentRatio = labelFontMetrics.descent() / labelFontMetrics.height();
+    double descentRatio = 1 / labelFontMetrics.ascent() / labelFontMetrics.height();
     if ( valiString.compare( "Base", Qt::CaseInsensitive ) == 0 )
     {
       ydiff = labelSizeY * descentRatio;
@@ -351,7 +358,7 @@ bool QgsMapToolLabel::rotationPoint( QgsPoint& pos )
   double angle = mCurrentLabelPos.rotation;
   double xd = xdiff * cos( angle ) - ydiff * sin( angle );
   double yd = xdiff * sin( angle ) + ydiff * cos( angle );
-  if ( mCurrentLabelPos.upsideDown )
+  if ( mCurrentLabelPos.upsideDown && !ignoreUpsideDown )
   {
     pos.setX( pos.x() - xd );
     pos.setY( pos.y() - yd );
@@ -399,7 +406,65 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
-bool QgsMapToolLabel:: diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const
+{
+  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( layer );
+  if ( !vlayer || !vlayer->isEditable() )
+  {
+    return false;
+  }
+
+  QVariant rotation = layer->customProperty( "labeling/dataDefinedProperty14" );
+  if ( !rotation.isValid() )
+  {
+    return false;
+  }
+
+  bool rotationOk;
+  rotationCol = rotation.toInt( &rotationOk );
+  if ( !rotationOk )
+  {
+    return false;
+  }
+  return true;
+}
+
+bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess )
+{
+  rotationSuccess = false;
+  if ( !vlayer )
+  {
+    return false;
+  }
+
+  int rotationCol;
+  if ( !layerIsRotatable( vlayer, rotationCol ) )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  {
+    return false;
+  }
+
+  QgsAttributeMap attributes = f.attributeMap();
+
+  //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
+  int xCol, yCol;
+  double x, y;
+  bool xSuccess, ySuccess;
+  if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+  {
+    return false;
+  }
+
+  rotation = attributes[rotationCol].toDouble( &rotationSuccess );
+  return true;
+}
+
+bool QgsMapToolLabel::diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
   if ( vlayer && vlayer->diagramRenderer() )

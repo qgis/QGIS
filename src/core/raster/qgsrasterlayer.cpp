@@ -2697,7 +2697,7 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   for ( int myIterator = 1; myIterator < mDataProvider->bandCount(); ++myIterator )
   {
     //find out the name of this band
-    if ( mDataProvider->generateBandName( myIterator ) == theBandName );
+    if ( mDataProvider->generateBandName( myIterator ) == theBandName )
     {
       QgsDebugMsg( "Matching band name found" );
       return theBandName;
