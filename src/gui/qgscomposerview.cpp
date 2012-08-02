@@ -324,14 +324,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       if ( composition() )
       {
         QgsComposerHtml* composerHtml = new QgsComposerHtml( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
-            mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+            mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), true );
         scene()->removeItem( mRubberBandItem );
         delete mRubberBandItem;
         mRubberBandItem = 0;
         emit actionFinished();
-
-        QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Added, composerHtml, composition(), tr( "HTML added" ), 0 );
-        composition()->undoStack()->push( c );
       }
     default:
       break;

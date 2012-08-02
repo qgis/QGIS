@@ -28,6 +28,7 @@ QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( 
 
 QgsComposerMultiFrame::~QgsComposerMultiFrame()
 {
+  //todo: remove all frames from composition and delete them
 }
 
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
@@ -40,7 +41,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
   }
 }
 
-void QgsComposerMultiFrame::recalculateFrameSizes()
+void QgsComposerMultiFrame::recalculateFrameSizes( bool addCommands )
 {
   if ( mFrameItems.size() < 1 )
   {
@@ -67,7 +68,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       {
         for ( int j = mFrameItems.size(); j > i; --j )
         {
-          removeFrame( j - 1 );
+          removeFrame( j - 1, addCommands );
         }
       }
       return;
@@ -100,7 +101,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
       currentY += newFrame->rect().height();
       currentItem = newFrame;
-      addFrame( newFrame );
+      addFrame( newFrame, addCommands );
     }
   }
 }
@@ -125,8 +126,8 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     {
       //schedule this composer multi frame for deletion
       mComposition->removeMultiFrame( this );
-      QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Removed, this, mComposition, tr( "Html removed" ), 0 );
-      mComposition->undoStack()->push( c );
+      // QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Removed, this, mComposition, tr( "Html removed" ), 0 );
+      //  mComposition->undoStack()->push( c );
     }
   }
   else
@@ -135,12 +136,16 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   }
 }
 
-void QgsComposerMultiFrame::removeFrame( int i )
+void QgsComposerMultiFrame::removeFrame( int i, bool addCommand )
 {
   QgsComposerFrame* frameItem = mFrameItems[i];
   if ( mComposition )
   {
     mComposition->removeComposerItem( frameItem );
+    if ( addCommand )
+    {
+      mComposition->pushAddRemoveCommand( frameItem, tr( "Frame removed" ), QgsAddRemoveItemCommand::Removed );
+    }
   }
 }
 

@@ -38,6 +38,8 @@ class QgsComposerFrame: public QgsComposerItem
 
     int type() const { return ComposerFrame; }
 
+    QgsComposerMultiFrame* multiFrame() { return mMultiFrame; }
+
   private:
     QgsComposerFrame(); //forbidden
 

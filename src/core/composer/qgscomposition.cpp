@@ -1260,6 +1260,19 @@ void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
     emit selectedItemChanged( table );
     return;
   }
+  QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( item );
+  if ( frame )
+  {
+    //emit composerFrameAdded( multiframe, frame, );
+    QgsComposerMultiFrame* mf = frame->multiFrame();
+    QgsComposerHtml* html = dynamic_cast<QgsComposerHtml*>( mf );
+    if ( html )
+    {
+      emit composerHtmlFrameAdded( html, frame );
+    }
+    emit selectedItemChanged( frame );
+    return;
+  }
 }
 
 void QgsComposition::updatePaperItems()
