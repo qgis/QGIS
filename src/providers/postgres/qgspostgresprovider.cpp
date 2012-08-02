@@ -68,9 +68,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mRequestedGeomType = mUri.wkbType();
   mIsGeography = false;
 
-  if ( mSchemaName.isEmpty() &&
-       mTableName.startsWith( "(SELECT", Qt::CaseInsensitive ) &&
-       mTableName.endsWith( ")" ) )
+  if ( mSchemaName.isEmpty() && mTableName.startsWith( "(" ) && mTableName.endsWith( ")" ) )
   {
     mIsQuery = true;
     mQuery = mTableName;
@@ -1308,8 +1306,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
   else
   {
     // Check if the sql is a select query
-    if ( !mQuery.startsWith( "(SELECT", Qt::CaseInsensitive ) &&
-         !mQuery.endsWith( ")" ) )
+    if ( !mQuery.startsWith( "(" ) && !mQuery.endsWith( ")" ) )
     {
       QgsMessageLog::logMessage( tr( "The custom query is not a select query." ), tr( "PostGIS" ) );
       return false;
