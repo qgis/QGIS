@@ -399,6 +399,40 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
+bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& r, bool& rSuccess, int& rCol ) const
+{
+  rSuccess = false;
+
+  if ( !vlayer || !vlayer->isEditable() )
+  {
+    return false;
+  }
+
+  bool rColOk;
+
+  QVariant rColumn = vlayer->customProperty( "labeling/dataDefinedProperty14" );
+  if ( !rColumn.isValid() )
+  {
+    return false;
+  }
+  rCol = rColumn.toInt( &rColOk );
+  if ( !rColOk )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  {
+    return false;
+  }
+
+  QgsAttributeMap attributes = f.attributeMap();
+  r = attributes[rCol].toDouble( &rSuccess );
+
+  return true;
+}
+
 bool QgsMapToolLabel:: diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );

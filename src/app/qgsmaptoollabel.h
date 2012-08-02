@@ -100,6 +100,15 @@ class QgsMapToolLabel: public QgsMapTool
       @return false if layer does not have data defined label position enabled*/
     bool dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
 
+    /**Get data defined rotation of a feature
+      @param layerId layer identification string
+      @param featureId feature identification integer
+      @param r out: data defined rotation
+      @param rSuccess out: false if attribute value is NULL
+      @param rCol out: index of the rotation column
+      @return false if layer does not have data defined label rotation enabled*/
+    bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& r, bool& rSuccess, int& rCol ) const;
+
   private:
     QgsPalLayerSettings mInvalidLabelSettings;
 };
