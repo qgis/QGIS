@@ -59,6 +59,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   {
     return;
   }
+  mLoaded = false;
 
   mUrl = url;
   mWebPage->mainFrame()->load( mUrl );
@@ -126,21 +127,21 @@ void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool addCommand )
   }
 }
 
-bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement htmlElem = doc.createElement( "ComposerHtml" );
   htmlElem.setAttribute( "url", mUrl.toString() );
-  bool state = _writeXML( htmlElem, doc );
+  bool state = _writeXML( htmlElem, doc, ignoreFrames );
   elem.appendChild( htmlElem );
   return state;
 }
 
-bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )
   {
     setUrl( QUrl( urlString ) );
   }
-  return _readXML( itemElem, doc );
+  return _readXML( itemElem, doc, ignoreFrames );
 }

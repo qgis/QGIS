@@ -1,6 +1,7 @@
 #include "qgscomposerhtmlwidget.h"
 #include "qgscomposerframe.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposermultiframecommand.h"
 #include "qgscomposerhtml.h"
 #include <QFileDialog>
 
@@ -47,8 +48,19 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 {
   if ( mHtml )
   {
+    QgsComposerMultiFrameCommand* c = new QgsComposerMultiFrameCommand( mHtml, tr( "Change html url" ) );
+    c->savePreviousState();
     mHtml->setUrl( QUrl( mUrlLineEdit->text() ) );
-    mHtml->update();
+    c->saveAfterState();
+    if ( c->containsChange() )
+    {
+      mHtml->composition()->undoStack()->push( c );
+      mHtml->update();
+    }
+    else
+    {
+      delete c;
+    }
   }
 }
 

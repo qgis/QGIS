@@ -50,11 +50,13 @@ class QgsComposerMultiFrame: public QObject
     void setResizeMode( ResizeMode mode );
     ResizeMode resizeMode() const { return mResizeMode; }
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
-    bool _writeXML( QDomElement& elem, QDomDocument& doc ) const;
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
+    bool _writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames = false ) const;
 
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
-    bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
+    bool _readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+
+    QgsComposition* composition() { return mComposition; }
 
   protected:
     QgsComposition* mComposition;

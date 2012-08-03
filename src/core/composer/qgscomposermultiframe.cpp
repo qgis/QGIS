@@ -28,7 +28,12 @@ QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( 
 
 QgsComposerMultiFrame::~QgsComposerMultiFrame()
 {
-  //todo: remove all frames from composition and delete them
+  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
+  for ( ; frameIt != mFrameItems.begin(); ++frameIt )
+  {
+    mComposition->removeComposerItem( *frameIt );
+    delete( *frameIt );
+  }
 }
 
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
@@ -36,7 +41,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
   if ( mode != mResizeMode )
   {
     mResizeMode = mode;
-    recalculateFrameSizes();
+    recalculateFrameSizes( true );
     emit changed();
   }
 }
@@ -126,8 +131,6 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     {
       //schedule this composer multi frame for deletion
       mComposition->removeMultiFrame( this );
-      // QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Removed, this, mComposition, tr( "Html removed" ), 0 );
-      //  mComposition->undoStack()->push( c );
     }
   }
   else
@@ -158,27 +161,33 @@ void QgsComposerMultiFrame::update()
   }
 }
 
-bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc ) const
+bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
 {
   elem.setAttribute( "resizeMode", mResizeMode );
-  QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
-  for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
+  if ( !ignoreFrames )
   {
-    ( *frameIt )->writeXML( elem, doc );
+    QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
+    for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
+    {
+      ( *frameIt )->writeXML( elem, doc );
+    }
   }
   return true;
 }
 
-bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
   mResizeMode = ( ResizeMode )itemElem.attribute( "resizeMode", "0" ).toInt();
-  QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );
-  for ( int i = 0; i < frameList.size(); ++i )
+  if ( !ignoreFrames )
   {
-    QDomElement frameElem = frameList.at( i ).toElement();
-    QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
-    newFrame->readXML( frameElem, doc );
-    addFrame( newFrame );
+    QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );
+    for ( int i = 0; i < frameList.size(); ++i )
+    {
+      QDomElement frameElem = frameList.at( i ).toElement();
+      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
+      newFrame->readXML( frameElem, doc );
+      addFrame( newFrame );
+    }
   }
   return true;
 }
