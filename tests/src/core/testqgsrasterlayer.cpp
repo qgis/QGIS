@@ -57,6 +57,7 @@ class TestQgsRasterLayer: public QObject
     void pseudoColor();
     void colorRamp1();
     void colorRamp2();
+    void colorRamp3();
     void landsatBasic();
     void landsatBasic875Qml();
     void checkDimensions();
@@ -246,9 +247,17 @@ void TestQgsRasterLayer::colorRamp1()
 void TestQgsRasterLayer::colorRamp2()
 {
   // ColorBrewer ramp
-  QgsVectorColorBrewerColorRampV2* cb2Ramp = new QgsVectorColorBrewerColorRampV2( "BrBG", 10 );
+  QVERIFY( testColorRamp( "raster_colorRamp2",
+                          new QgsVectorColorBrewerColorRampV2( "BrBG", 10 ),
+                          QgsColorRampShader::DISCRETE, 10 ) );
+}
 
-  QVERIFY( testColorRamp( "raster_colorRamp2", cb2Ramp, QgsColorRampShader::DISCRETE, 10 ) );
+void TestQgsRasterLayer::colorRamp3()
+{
+  // cpt-city ramp
+  QVERIFY( testColorRamp( "raster_colorRamp3",
+                          new QgsCptCityColorRampV2( "gmt/GMT_panoply", "" ),
+                          QgsColorRampShader::DISCRETE, 10 ) );
 }
 
 void TestQgsRasterLayer::landsatBasic()

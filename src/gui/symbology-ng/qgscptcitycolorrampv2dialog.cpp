@@ -43,7 +43,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   // QgsCptCityColorRampV2::loadSchemes( "cb" );
 
   // show information on how to install cpt-city files if none are found
-  if ( QgsCptCityColorRampV2::schemeMap().isEmpty() )
+  if ( ! QgsCptCityColorRampV2::hasAllSchemes() )
   {
     QTextEdit *edit = new QTextEdit();
     edit->setReadOnly( true );

@@ -200,8 +200,13 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     /* static QList<QColor> listSchemeColors(  QString schemeName, int colors ); */
     static QList<int> listSchemeVariants( QString schemeName );
 
-    static QString getSchemeBaseDir();
-    static void loadSchemes( QString rootDir = "", bool reset = false );
+    static QString getBaseDir();
+    static void setBaseDir( QString dirName ) { mBaseDir = dirName; }
+    static bool loadSchemes( QString rootDir = "", bool reset = false );
+    /** Is the minimal (free to distribute) set of schemes available? Currently returns hasAllSchemes, because we don't have a minimal set yet. */
+    static bool hasBasicSchemes();
+    /** Is the entire archive available? Currently tests that there is at least one scheme. */
+    static bool hasAllSchemes();
     static QStringList listSchemeCollections( QString collectionName = "", bool recursive = false );
     static QStringList listSchemeNames( QString collectionName );
     static QgsCptCityColorRampV2* colorRampFromSVGFile( QString svgFile );
@@ -218,13 +223,13 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     typedef QMap<double, QColor> StopsMap;
 
     QString mSchemeName;
-    /* int mColors; //remove! */
     QString mVariantName;
     bool mContinuous;
     QList< QColor > mPalette;
     QList< double > mPaletteStops;
     /* QMap< double, QColor > mPalette; */
 
+    static QString mBaseDir;
     static QStringList mCollections;
     static QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
     /* mSchemeNumColors removed, instead read on demand */

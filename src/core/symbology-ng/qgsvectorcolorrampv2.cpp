@@ -260,6 +260,7 @@ TODO
 - fix ocal file parsing
 - re-organize and rename colorramp classes and widgets
  */
+QString QgsCptCityColorRampV2::mBaseDir;
 QStringList QgsCptCityColorRampV2::mCollections;
 QMap< QString, QStringList > QgsCptCityColorRampV2::mSchemeMap;
 // QMap< QString, int > QgsCptCityColorRampV2::mSchemeNumColors;
@@ -348,7 +349,7 @@ QgsStringMap QgsCptCityColorRampV2::properties() const
 
 QStringList QgsCptCityColorRampV2::listSchemeCollections( QString collectionName, bool recursive )
 {
-  QDir dir = QDir( QgsCptCityColorRampV2::getSchemeBaseDir() + "/" + collectionName );
+  QDir dir = QDir( QgsCptCityColorRampV2::getBaseDir() + "/" + collectionName );
   if ( ! dir.exists() )
     return QStringList();
 
@@ -376,9 +377,12 @@ QStringList QgsCptCityColorRampV2::listSchemeCollections( QString collectionName
 
 QStringList QgsCptCityColorRampV2::listSchemeNames( QString collectionName )
 {
-  QDir dir = QDir( QgsCptCityColorRampV2::getSchemeBaseDir() + "/" + collectionName );
+  QDir dir = QDir( QgsCptCityColorRampV2::getBaseDir() + "/" + collectionName );
   if ( ! dir.exists() )
+  {
+    QgsDebugMsg( "dir " + dir.dirName() + " does not exist" );
     return QStringList();
+  }
 
   QStringList entries = dir.entryList( QStringList( "*.svg" ), QDir::Files, QDir::Name );
   for ( int i = 0; i < entries.count(); i++ )
@@ -403,10 +407,13 @@ QList<int> QgsCptCityColorRampV2::listSchemeVariants( QString schemeName )
   return variants;
 }
 
-QString QgsCptCityColorRampV2::getSchemeBaseDir()
+QString QgsCptCityColorRampV2::getBaseDir()
 {
   // currently hard-coded, but could be also in QGis install path and/or configurable
-  return QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city";
+  if ( mBaseDir.isNull() )
+    return QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city";
+  else
+    return mBaseDir;
 }
 
 QString QgsCptCityColorRampV2::getFilename() const
@@ -414,7 +421,7 @@ QString QgsCptCityColorRampV2::getFilename() const
   if ( mSchemeName == "" )
     return QString();
   else
-    return QgsCptCityColorRampV2::getSchemeBaseDir() + "/" + mSchemeName +  mVariantName + ".svg";
+    return QgsCptCityColorRampV2::getBaseDir() + "/" + mSchemeName +  mVariantName + ".svg";
 }
 
 bool QgsCptCityColorRampV2::loadFile( QString filename )
@@ -532,11 +539,32 @@ bool QgsCptCityColorRampV2::loadFile( QString filename )
   return true;
 }
 
-void QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
+bool QgsCptCityColorRampV2::hasBasicSchemes()
 {
-  //actually keep the name of the previously loaded, or look at the first element.
+  // Currently returns hasAllSchemes, because we don't have a minimal set yet
+  return hasAllSchemes();
+}
+
+bool QgsCptCityColorRampV2::hasAllSchemes()
+{
+  // if we have no collections loaded yet, just make sure we have at least one collection
+  // ideally we should test for a few schemes we know should be present
+  if ( mCollections.isEmpty() )
+  {
+    return ( !  QgsCptCityColorRampV2::listSchemeCollections( "", false ).isEmpty() );
+  }
+  return true;
+}
+
+// currently this methos takes some time, so it must be explicitly requested
+bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
+{
+  // TODO should keep the name of the previously loaded, or see if the first element is inside rootDir
   if ( ! reset && ! mCollections.isEmpty() )
-    return;
+  {
+    QgsDebugMsg( QString( "not loading schemes, rootDir=%1 reset=%2 empty=%3" ).arg( rootDir ).arg( reset ).arg( mCollections.isEmpty() ) );
+    return true;
+  }
 
   QString curName, prevName, prevPath, curVariant, curSep, schemeName;
   QStringList listVariant;
@@ -556,7 +584,6 @@ void QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
 
   mCollections = listSchemeCollections( rootDir, true );
   qSort( mCollections.begin(), mCollections.end() );
-
 
   foreach( QString path, mCollections )
   {
@@ -752,5 +779,6 @@ void QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
     mCollectionSelections[ viewName ] << curName;
   }
 
+  return ( ! mCollections.isEmpty() );
 }
 
