@@ -1878,7 +1878,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
     myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
   }
 
-  foreach( int myBand, myBands )
+  foreach ( int myBand, myBands )
   {
     if ( myBand != -1 )
     {

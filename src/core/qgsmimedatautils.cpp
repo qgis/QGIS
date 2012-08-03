@@ -68,7 +68,7 @@ QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  foreach( const QgsMimeDataUtils::Uri& u, layers )
+  foreach ( const QgsMimeDataUtils::Uri& u, layers )
   {
     stream << u.data();
   }

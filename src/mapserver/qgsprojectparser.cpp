@@ -98,7 +98,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QgsMapLayer *layer = createLayerFromElement( elem );
     if ( layer )
@@ -150,7 +150,7 @@ void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  foreach( const QDomElement &elem, mProjectLayerElements )
+  foreach ( const QDomElement &elem, mProjectLayerElements )
   {
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
@@ -252,7 +252,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
-          foreach( const QDomElement &elem, embeddedGroupElements )
+          foreach ( const QDomElement &elem, embeddedGroupElements )
           {
             if ( elem.attribute( "name" ) == embeddedGroupName )
             {
@@ -263,7 +263,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
           QMap<QString, QgsMapLayer *> pLayerMap;
           QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
-          foreach( const QDomElement &elem, embeddedProjectLayerElements )
+          foreach ( const QDomElement &elem, embeddedProjectLayerElements )
           {
             pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
@@ -1483,9 +1483,9 @@ QString QgsProjectParser::serviceUrl() const
 {
   QString url;
 
-  if( !mXMLDoc )
+  if ( !mXMLDoc )
   {
-      return url;
+    return url;
   }
 
   QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );

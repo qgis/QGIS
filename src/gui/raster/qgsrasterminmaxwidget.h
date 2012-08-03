@@ -29,9 +29,9 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     QgsRasterMinMaxWidget( QgsRasterLayer* theLayer, QWidget *parent = 0 );
     ~QgsRasterMinMaxWidget();
 
-    void setExtent ( const QgsRectangle & theExtent ) { mExtent = theExtent; }
+    void setExtent( const QgsRectangle & theExtent ) { mExtent = theExtent; }
 
-    void setBands ( const QList<int> & theBands ) { mBands = theBands; }
+    void setBands( const QList<int> & theBands ) { mBands = theBands; }
 
   signals:
     void load( int theBandNo, double theMin, double theMax );
@@ -40,7 +40,7 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     void on_mLoadPushButton_clicked();
 
   private:
-    QgsRasterLayer* mLayer; 
+    QgsRasterLayer* mLayer;
     QList<int> mBands;
     QgsRectangle mExtent;
 };

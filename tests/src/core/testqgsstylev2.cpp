@@ -164,7 +164,7 @@ void TestStyleV2::testLoadColorRamps()
     colorTests.insert( "test_cc2", qMakePair( 0.66, QColor( "#b8e186" ) ) );
   }
 
-  foreach( QString name, colorRampsTest )
+  foreach ( QString name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
@@ -193,7 +193,7 @@ void TestStyleV2::testSaveLoad()
   QStringList colorRamps = mStyle->colorRampNames();
   QStringList colorRampsTest = QStringList() << "test_gradient";
 
-  foreach( QString name, colorRampsTest )
+  foreach ( QString name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );

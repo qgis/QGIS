@@ -230,6 +230,11 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
 		headers.push_back(&AS_ADD);
 		headers.push_back(&AS_REMOVE);
 	}
+
+	if ( fileType == C_TYPE )
+	{
+		headers.push_back(&AS_FOREACH);  // Qt macro
+	}
 }
 
 /**

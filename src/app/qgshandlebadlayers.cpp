@@ -180,7 +180,7 @@ void QgsHandleBadLayers::selectionChanged()
 
   mRows.clear();
 
-  foreach( QTableWidgetItem *item, mLayerList->selectedItems() )
+  foreach ( QTableWidgetItem *item, mLayerList->selectedItems() )
   {
     if ( item->column() != 0 )
       continue;
@@ -246,7 +246,7 @@ void QgsHandleBadLayers::browseClicked()
       return;
     }
 
-    foreach( int i, mRows )
+    foreach ( int i, mRows )
     {
       QTableWidgetItem *fileItem = mLayerList->item( i, 3 );
 

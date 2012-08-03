@@ -220,7 +220,7 @@ int QgsSVGDiagramFactoryWidget::addDirectoryToPreview( const QString& path )
 void QgsSVGDiagramFactoryWidget::addStandardDirectoriesToPreview()
 {
   //list all directories in $prefix/share/qgis/svg
-  foreach( QString path, QgsApplication::svgPaths() )
+  foreach ( QString path, QgsApplication::svgPaths() )
   {
     QDir svgDirectory( path );
     if ( !svgDirectory.exists() || !svgDirectory.isReadable() )

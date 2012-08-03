@@ -387,7 +387,7 @@ void QgsMssqlProvider::loadFields()
           return;
         }
       }
-      foreach( QString pk, pkCandidates )
+      foreach ( QString pk, pkCandidates )
       {
         mQuery.clear();
         mQuery.setForwardOnly( true );

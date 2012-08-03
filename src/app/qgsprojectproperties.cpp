@@ -247,7 +247,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     if ( grpWMSList->isChecked() )
     {
       QStringList list;
-      foreach( QString value, values )
+      foreach ( QString value, values )
       {
         list << QString( "EPSG:%1" ).arg( value );
       }
@@ -689,7 +689,7 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 
 void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
 {
-  foreach( QListWidgetItem *item, mWMSList->selectedItems() )
+  foreach ( QListWidgetItem *item, mWMSList->selectedItems() )
   {
     delete item;
   }

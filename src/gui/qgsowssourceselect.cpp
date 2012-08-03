@@ -386,7 +386,7 @@ void QgsOWSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )
 void QgsOWSSourceSelect::on_mChangeCRSButton_clicked()
 {
   QStringList layers;
-  foreach( QTreeWidgetItem *item, mLayersTreeWidget->selectedItems() )
+  foreach ( QTreeWidgetItem *item, mLayersTreeWidget->selectedItems() )
   {
     QString layer = item->data( 0, Qt::UserRole + 0 ).toString();
     if ( !layer.isEmpty() )

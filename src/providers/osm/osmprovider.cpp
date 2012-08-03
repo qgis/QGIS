@@ -105,7 +105,7 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
       // remove observer from the URI
       // (because otherwise it would be saved into project file and would cause crashes)
       QString newProps;
-      foreach( QString p , props )
+      foreach ( QString p , props )
       {
         if ( !p.startsWith( "observer" ) )
         {

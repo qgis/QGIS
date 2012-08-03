@@ -73,7 +73,7 @@ QgsWMSServer::QgsWMSServer()
 
 void QgsWMSServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats )
 {
-  foreach( QString format, formats )
+  foreach ( QString format, formats )
   {
     QDomElement formatElem = doc.createElement( "Format"/*wms:Format*/ );
     formatElem.appendChild( doc.createTextNode( format ) );
@@ -1673,7 +1673,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
       //we need to find the maplayer objects matching the layer name
       QList<QgsMapLayer*> layersToFilter;
 
-      foreach( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+      foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
       {
         if ( layer && layer->name() == eqSplit.at( 0 ) )
         {
@@ -1681,7 +1681,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
         }
       }
 
-      foreach( QgsMapLayer *filter, layersToFilter )
+      foreach ( QgsMapLayer *filter, layersToFilter )
       {
         QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( filter );
         if ( filteredLayer )
@@ -1859,7 +1859,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
     return layersWithSelections;
   }
 
-  foreach( QString selectionLayer, selectionString.split( ";" ) )
+  foreach ( QString selectionLayer, selectionString.split( ";" ) )
   {
     //separate layer name from id list
     QStringList layerIdSplit = selectionLayer.split( ":" );
@@ -1872,7 +1872,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
     QString layerName = layerIdSplit.at( 0 );
     QgsVectorLayer* vLayer = 0;
 
-    foreach( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
+    foreach ( QgsMapLayer *layer, QgsMapLayerRegistry::instance()->mapLayers() )
     {
       if ( layer && layer->name() == layerName )
       {
@@ -1890,7 +1890,7 @@ QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList )
     QStringList idList = layerIdSplit.at( 1 ).split( "," );
     QgsFeatureIds selectedIds;
 
-    foreach( QString id, idList )
+    foreach ( QString id, idList )
     {
       selectedIds.insert( STRING_TO_FID( id ) );
     }
@@ -1906,7 +1906,7 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
 {
   QMap<QString, QgsMapLayer*>& layerMap = QgsMapLayerRegistry::instance()->mapLayers();
 
-  foreach( QString id, layerIds )
+  foreach ( QString id, layerIds )
   {
     QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( layerMap.value( id, 0 ) );
     if ( !layer )

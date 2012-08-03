@@ -255,7 +255,7 @@ void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected()
 
 void QgsRendererV2DataDefinedMenus::updateMenu( QMenu* menu, QString fieldName )
 {
-  foreach( QAction* a, menu->actions() )
+  foreach ( QAction* a, menu->actions() )
   {
     a->setChecked( a->text() == fieldName );
   }

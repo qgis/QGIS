@@ -109,7 +109,7 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
   if ( theEmitSignal )
     emit layersWillBeRemoved( theLayerIds );
 
-  foreach( const QString &myId, theLayerIds )
+  foreach ( const QString &myId, theLayerIds )
   {
     if ( theEmitSignal )
       emit layerWillBeRemoved( myId );

@@ -1334,7 +1334,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // Find cached
-  foreach( QgsRasterHistogram histogram, mHistograms )
+  foreach ( QgsRasterHistogram histogram, mHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -2091,7 +2091,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  foreach( QgsRasterBandStats stats, mStatistics )
+  foreach ( QgsRasterBandStats stats, mStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -2377,7 +2377,7 @@ void QgsGdalProvider::initBaseDataset()
 char** papszFromStringList( const QStringList& list )
 {
   char **papszRetList = NULL;
-  foreach( QString elem, list )
+  foreach ( QString elem, list )
   {
     papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
   }

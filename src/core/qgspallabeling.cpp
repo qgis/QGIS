@@ -795,7 +795,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     if ( lyrTmp.fieldName.isEmpty() )
       return 0;
     QgsExpression exp( lyrTmp.fieldName );
-    foreach( QString name, exp.referencedColumns() )
+    foreach ( QString name, exp.referencedColumns() )
     {
       QgsDebugMsg( "REFERENCED COLUMN = " + name );
       fldIndex =  layer->fieldNameIndex( name );

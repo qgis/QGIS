@@ -39,7 +39,7 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
   StopsMap stops;
   if ( props.contains( "stops" ) )
   {
-    foreach( QString stop, props["stops"].split( ':' ) )
+    foreach ( QString stop, props["stops"].split( ':' ) )
     {
       int i = stop.indexOf( ';' );
       if ( i == -1 )
@@ -366,7 +366,7 @@ QStringList QgsCptCityColorRampV2::listSchemeCollections( QString collectionName
   if ( recursive )
   {
     QStringList entries2 = entries;
-    foreach( QString entry, entries2 )
+    foreach ( QString entry, entries2 )
     {
       entries.append( listSchemeCollections( entry, true ) );
     }
@@ -396,7 +396,7 @@ QList<int> QgsCptCityColorRampV2::listSchemeVariants( QString schemeName )
 
   QString palette( brewerString );
   QStringList list = palette.split( QChar( '\n' ) );
-  foreach( QString entry, list )
+  foreach ( QString entry, list )
   {
     QStringList items = entry.split( QChar( '-' ) );
     if ( items.count() != 3 || items[0] != schemeName )
@@ -585,7 +585,7 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
   mCollections = listSchemeCollections( rootDir, true );
   qSort( mCollections.begin(), mCollections.end() );
 
-  foreach( QString path, mCollections )
+  foreach ( QString path, mCollections )
   {
     // QgsDebugMsg("================================");
     // QgsDebugMsg("collection = "+path);
@@ -720,7 +720,7 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
   }
 
   // populate mCollectionNames
-  foreach( QString path, mCollections )
+  foreach ( QString path, mCollections )
   {
     QString filename = QgsCptCityColorRampV2::getBaseDir() + "/" + path + "/" + "DESC.xml";
     QFile f( filename );

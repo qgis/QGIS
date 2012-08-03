@@ -191,7 +191,7 @@ void QgsSymbologyV2Conversion::rendererV1toV2( QgsVectorLayer* layer )
     }
 
     QgsRangeList ranges;
-    foreach( const QgsSymbol* sym, gsr->symbols() )
+    foreach ( const QgsSymbol* sym, gsr->symbols() )
     {
       double lowerValue = sym->lowerValue().toDouble();
       double upperValue = sym->upperValue().toDouble();
@@ -233,7 +233,7 @@ void QgsSymbologyV2Conversion::rendererV1toV2( QgsVectorLayer* layer )
     }
 
     QgsCategoryList cats;
-    foreach( QgsSymbol* sym, uvr->symbols() )
+    foreach ( QgsSymbol* sym, uvr->symbols() )
     {
       QVariant value = QVariant( sym->lowerValue() );
       QString label = sym->label();
@@ -295,7 +295,7 @@ void QgsSymbologyV2Conversion::rendererV2toV1( QgsVectorLayer* layer )
 
     r->setClassificationField( layer->fieldNameIndex( gsr2->classAttribute() ) );
 
-    foreach( QgsRendererRangeV2 range, gsr2->ranges() )
+    foreach ( QgsRendererRangeV2 range, gsr2->ranges() )
     {
       QgsSymbol* s = symbolV2toV1( range.symbol() );
       s->setLowerValue( QString::number( range.lowerValue(), 'f', 5 ) );
@@ -314,7 +314,7 @@ void QgsSymbologyV2Conversion::rendererV2toV1( QgsVectorLayer* layer )
 
     r->setClassificationField( layer->fieldNameIndex( csr2->classAttribute() ) );
 
-    foreach( QgsRendererCategoryV2 cat, csr2->categories() )
+    foreach ( QgsRendererCategoryV2 cat, csr2->categories() )
     {
       QgsSymbol* s = symbolV2toV1( cat.symbol() );
       QString val = cat.value().toString();

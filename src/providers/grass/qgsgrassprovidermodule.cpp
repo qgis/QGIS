@@ -44,7 +44,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
   QDir dir( mPath );
 
   QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
-  foreach( QString name, entries )
+  foreach ( QString name, entries )
   {
     QString path = dir.absoluteFilePath( name );
 
@@ -83,7 +83,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   QStringList vectorNames = QgsGrass::vectors( mPath );
 
-  foreach( QString name, vectorNames )
+  foreach ( QString name, vectorNames )
   {
     QStringList layerNames = QgsGrass::vectorLayers( mGisdbase , mLocation, mName, name );
 
@@ -92,7 +92,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QgsDataCollectionItem *map = 0;
     if ( layerNames.size() != 1 )
       map = new QgsDataCollectionItem( this, name );
-    foreach( QString layerName, layerNames )
+    foreach ( QString layerName, layerNames )
     {
       QString uri = mPath + QDir::separator() + name + QDir::separator() + layerName;
       QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
@@ -123,7 +123,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   QStringList rasterNames = QgsGrass::rasters( mPath );
 
-  foreach( QString name, rasterNames )
+  foreach ( QString name, rasterNames )
   {
     QString uri = mPath + QDir::separator() + "cellhd" + QDir::separator() + name;
     QgsDebugMsg( "uri = " + uri );

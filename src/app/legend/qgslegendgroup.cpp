@@ -109,7 +109,7 @@ Qt::CheckState QgsLegendGroup::pendingCheckState()
     return Qt::PartiallyChecked;
 
   Qt::CheckState theState = elements[0]->checkState( 0 );
-  foreach( QgsLegendItem * li, elements )
+  foreach ( QgsLegendItem * li, elements )
   {
     if ( theState != li->checkState( 0 ) )
     {

@@ -44,7 +44,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
 
   valueRelationLayer->clear();
-  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )
@@ -631,7 +631,7 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
   if ( !vl )
     return;
 
-  foreach( const QgsField &f, vl->pendingFields() )
+  foreach ( const QgsField &f, vl->pendingFields() )
   {
     valueRelationKeyColumn->addItem( f.name() );
     valueRelationValueColumn->addItem( f.name() );

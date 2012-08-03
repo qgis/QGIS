@@ -160,7 +160,7 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
     return children;
   }
 
-  foreach( QgsWcsCoverageSummary coverageSummary, mCapabilities.capabilities().contents.coverageSummary )
+  foreach ( QgsWcsCoverageSummary coverageSummary, mCapabilities.capabilities().contents.coverageSummary )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( coverageSummary.orderId ) + " " + coverageSummary.identifier + " " + coverageSummary.title );
@@ -233,7 +233,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
-  foreach( QgsWcsCoverageSummary coverageSummary, mCoverageSummary.coverageSummary )
+  foreach ( QgsWcsCoverageSummary coverageSummary, mCoverageSummary.coverageSummary )
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number( coverageSummary.orderId ) + " " + coverageSummary.identifier + " " + coverageSummary.title );
@@ -278,7 +278,7 @@ QString QgsWCSLayerItem::createUri()
   }
   else
   {
-    foreach( QString f, mimes )
+    foreach ( QString f, mimes )
     {
       if ( mCoverageSummary.supportedFormat.indexOf( f ) >= 0 )
       {
@@ -297,7 +297,7 @@ QString QgsWCSLayerItem::createUri()
   // TODO: prefer project CRS
   // get first known if possible
   QgsCoordinateReferenceSystem testCrs;
-  foreach( QString c, mCoverageSummary.supportedCrs )
+  foreach ( QString c, mCoverageSummary.supportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
     if ( testCrs.isValid() )
@@ -335,7 +335,7 @@ QgsWCSRootItem::~QgsWCSRootItem()
 QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach( QString connName, QgsOWSConnection::connectionList( "WCS" ) )
+  foreach ( QString connName, QgsOWSConnection::connectionList( "WCS" ) )
   {
     //QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName );
     QgsOWSConnection connection( "WCS", connName );
@@ -451,7 +451,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( !extensions.contains( suffix ) )
   {
     bool matches = false;
-    foreach( QString wildcard, wildcards )
+    foreach ( QString wildcard, wildcards )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )

@@ -506,7 +506,7 @@ void QgsIdentifyResults::expandColumnsToFit()
 
 void QgsIdentifyResults::clearHighlights()
 {
-  foreach( QgsHighlight *h, mHighlights )
+  foreach ( QgsHighlight *h, mHighlights )
   {
     delete h;
   }
@@ -528,7 +528,7 @@ void QgsIdentifyResults::clear()
 void QgsIdentifyResults::activate()
 {
 #if 0
-  foreach( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsRubberBand *rb, mRubberBands )
   {
     rb->show();
   }
@@ -544,7 +544,7 @@ void QgsIdentifyResults::activate()
 void QgsIdentifyResults::deactivate()
 {
 #if 0
-  foreach( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsRubberBand *rb, mRubberBands )
   {
     rb->hide();
   }

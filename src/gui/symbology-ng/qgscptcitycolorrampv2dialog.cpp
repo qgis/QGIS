@@ -135,7 +135,7 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
   {
     treeWidget->blockSignals( true );
     treeWidget->clear();
-    foreach( QString collectionName, QgsCptCityColorRampV2::listSchemeCollections() )
+    foreach ( QString collectionName, QgsCptCityColorRampV2::listSchemeCollections() )
     {
       item = makeCollectionItem( collectionName );
       treeWidget->addTopLevelItem( item );
@@ -163,7 +163,7 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
       item->setData( 1, Qt::FontRole, QVariant( font ) );
 
       // add children schemes and collections
-      foreach( QString childPath, it.value() )
+      foreach ( QString childPath, it.value() )
       {
         if ( childPath.endsWith( "/" ) )
         {
@@ -200,7 +200,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
   QString oldVariant = cboVariantName->currentText();
   cboVariantName->clear();
 
-  foreach( QString variant, treeWidget->currentItem()->data( 1, Qt::UserRole ).toString().split( " ", QString::SkipEmptyParts ) )
+  foreach ( QString variant, treeWidget->currentItem()->data( 1, Qt::UserRole ).toString().split( " ", QString::SkipEmptyParts ) )
   {
     QString variantStr = variant;
     if ( variantStr.startsWith( "-" ) || variantStr.startsWith( "_" ) )
@@ -335,14 +335,14 @@ QTreeWidgetItem * QgsCptCityColorRampV2Dialog::makeCollectionItem( const QString
 
   // add children collections
   QTreeWidgetItem *childItem;
-  foreach( QString childPath, QgsCptCityColorRampV2::listSchemeCollections( path ) )
+  foreach ( QString childPath, QgsCptCityColorRampV2::listSchemeCollections( path ) )
   {
     childItem = makeCollectionItem( childPath );
     item->addChild( childItem );
   }
 
   // add children schemes
-  foreach( QString schemeName, QgsCptCityColorRampV2::schemeMap().value( path ) )
+  foreach ( QString schemeName, QgsCptCityColorRampV2::schemeMap().value( path ) )
   {
     makeSchemeItem( item, path, schemeName );
   }

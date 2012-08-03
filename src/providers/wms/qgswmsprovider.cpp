@@ -162,7 +162,7 @@ void QgsWmsProvider::parseUri( QString uriString )
   if ( uri.hasParam( "tileDimensions" ) )
   {
     mTiled = true;
-    foreach( QString param, uri.params( "tileDimensions" ) )
+    foreach ( QString param, uri.params( "tileDimensions" ) )
     {
       QStringList kv = param.split( "=" );
       if ( kv.size() == 1 )
@@ -344,7 +344,7 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
   mActiveSubStyles += styles;
 
   // Set the visibility of these new layers on by default
-  foreach( const QString &layer, layers )
+  foreach ( const QString &layer, layers )
   {
     mActiveSubLayerVisibility[ layer ] = true;
     QgsDebugMsg( "set visibility of layer '" + layer + "' to true." );
@@ -465,7 +465,7 @@ void QgsWmsProvider::setImageCrs( QString const & crs )
       mTileMatrixSet = &mTileMatrixSets[ mTileMatrixSetId ];
       QList<double> keys = mTileMatrixSet->tileMatrices.keys();
       qSort( keys );
-      foreach( double key, keys )
+      foreach ( double key, keys )
       {
         resolutions << key;
       }
@@ -948,7 +948,7 @@ void QgsWmsProvider::tileReplyFinished()
 #endif
 #if defined(QGISDEBUG) && (QT_VERSION >= 0x40700)
   QgsDebugMsgLevel( "raw headers:", 3 );
-  foreach( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
+  foreach ( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
   {
     QgsDebugMsgLevel( QString( " %1:%2" )
                       .arg( QString::fromUtf8( pair.first ) )
@@ -959,7 +959,7 @@ void QgsWmsProvider::tileReplyFinished()
   QNetworkCacheMetaData cmd = QgsNetworkAccessManager::instance()->cache()->metaData( reply->request().url() );
 
   QNetworkCacheMetaData::RawHeaderList hl;
-  foreach( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
+  foreach ( const QNetworkCacheMetaData::RawHeader &h, cmd.rawHeaders() )
   {
     if ( h.first != "Cache-Control" )
       hl.append( h );
@@ -2127,7 +2127,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
-        foreach( QString srs, e1.text().split( QRegExp( "\\s+" ) ) )
+        foreach ( QString srs, e1.text().split( QRegExp( "\\s+" ) ) )
         {
           layerProperty.crs.push_back( srs );
         }
@@ -2418,7 +2418,7 @@ void QgsWmsProvider::parseTileSetProfile( QDomElement const &e )
   m.topLeft = QgsPoint( l.boundingBox.box.xMinimum(), l.boundingBox.box.yMaximum() );
 
   int i = 0;
-  foreach( QString rS, resolutions )
+  foreach ( QString rS, resolutions )
   {
     double r = rS.toDouble();
     m.identifier = QString::number( i );
@@ -2707,7 +2707,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
           bool isValid = false;
           int matrixWidth = -1, matrixHeight = -1;
-          foreach( const QgsWmtsTileMatrix &m, tms.tileMatrices )
+          foreach ( const QgsWmtsTileMatrix &m, tms.tileMatrices )
           {
             isValid = m.identifier == id;
             if ( isValid )
@@ -3140,7 +3140,7 @@ int QgsWmsProvider::capabilities() const
 
   if ( canIdentify )
   {
-    foreach( QString f, mCapabilities.capability.request.getFeatureInfo.format )
+    foreach ( QString f, mCapabilities.capability.request.getFeatureInfo.format )
     {
       if ( mSupportedGetFeatureFormats.contains( f ) )
       {
@@ -3581,7 +3581,7 @@ QString QgsWmsProvider::metadata()
     metadata += "<tr><td>";
     metadata += "<table width=\"100%\">";
 
-    foreach( const QgsWmtsTileLayer &l, mTileLayersSupported )
+    foreach ( const QgsWmtsTileLayer &l, mTileLayersSupported )
     {
       metadata += "<tr><td colspan=\"2\">";
       metadata += l.identifier;
@@ -3624,7 +3624,7 @@ QString QgsWmsProvider::metadata()
         metadata += "</td>";
         metadata += "<td class=\"glossy\">";
         QStringList styles;
-        foreach( const QgsWmtsStyle &style, l.styles )
+        foreach ( const QgsWmtsStyle &style, l.styles )
         {
           styles << style.identifier;
         }
@@ -3650,7 +3650,7 @@ QString QgsWmsProvider::metadata()
       metadata += tr( "Available Tilesets" );
       metadata += "</td><td class=\"glossy\">";
 
-      foreach( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
+      foreach ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
       {
         metadata += setLink.tileMatrixSet + "<br>";
       }
@@ -3833,7 +3833,7 @@ QString QgsWmsProvider::identifyAsHtml( const QgsPoint &point )
 {
   QString format;
 
-  foreach( QString f, mSupportedGetFeatureFormats )
+  foreach ( QString f, mSupportedGetFeatureFormats )
   {
     if ( mCapabilities.capability.request.getFeatureInfo.format.contains( f ) )
     {

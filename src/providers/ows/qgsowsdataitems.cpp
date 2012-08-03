@@ -31,7 +31,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
 
   int layerCount = 0;
   // Try to open with WMS,WFS,WCS
-  foreach( QString key, QStringList() << "wms" << "WFS" << "gdal" )
+  foreach ( QString key, QStringList() << "wms" << "WFS" << "gdal" )
   {
     QgsDebugMsg( "Add connection for provider " + key );
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
@@ -59,13 +59,13 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
     }
   }
 
-  foreach( QgsDataItem* item, serviceItems )
+  foreach ( QgsDataItem* item, serviceItems )
   {
     QgsDebugMsg( QString( "serviceItems.size = %1 layerCount = %2 rowCount = %3" ).arg( serviceItems.size() ).arg( layerCount ).arg( item->rowCount() ) );
     if ( serviceItems.size() == 1 || layerCount <= 30 || item->rowCount() <= 10 )
     {
       // Add layers directly to OWS connection
-      foreach( QgsDataItem* subItem, item->children() )
+      foreach ( QgsDataItem* subItem, item->children() )
       {
         item->removeChildItem( subItem );
         subItem->setParent( this );
@@ -151,9 +151,9 @@ QVector<QgsDataItem*>QgsOWSRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   // Combine all WMS,WFS,WCS connections
   QMap<QString, QStringList> uris;
-  foreach( QString service, QStringList() << "WMS" << "WFS" << "WCS" )
+  foreach ( QString service, QStringList() << "WMS" << "WFS" << "WCS" )
   {
-    foreach( QString connName, QgsOWSConnection::connectionList( service ) )
+    foreach ( QString connName, QgsOWSConnection::connectionList( service ) )
     {
       QgsOWSConnection connection( service, connName );
 
@@ -166,7 +166,7 @@ QVector<QgsDataItem*>QgsOWSRootItem::createChildren()
       uris[encodedUri] = labels;
     }
   }
-  foreach( QString encodedUri, uris.keys() )
+  foreach ( QString encodedUri, uris.keys() )
   {
     QgsDataItem * conn = new QgsOWSConnectionItem( this, uris.value( encodedUri ).join( " / " ), encodedUri );
     connections.append( conn );

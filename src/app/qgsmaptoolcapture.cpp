@@ -115,7 +115,7 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
       while ( !mSnappingMarkers.isEmpty() )
         delete mSnappingMarkers.takeFirst();
 
-      foreach( const QgsSnappingResult &r, snapResults )
+      foreach ( const QgsSnappingResult &r, snapResults )
       {
         QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
         m->setIconType( QgsVertexMarker::ICON_CROSS );

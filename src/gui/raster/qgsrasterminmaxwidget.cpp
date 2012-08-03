@@ -42,7 +42,7 @@ void QgsRasterMinMaxWidget::on_mLoadPushButton_clicked()
 {
   QgsDebugMsg( "Entered." );
 
-  foreach( int myBand, mBands )
+  foreach ( int myBand, mBands )
   {
     QgsDebugMsg( QString( "myBand = %1" ).arg( myBand ) );
     if ( myBand < 1 || myBand > mLayer->dataProvider()->bandCount() )

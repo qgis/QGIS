@@ -278,7 +278,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( myExtensions.indexOf( suffix ) < 0 )
   {
     bool matches = false;
-    foreach( QString wildcard, wildcards() )
+    foreach ( QString wildcard, wildcards() )
     {
       QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
       if ( rx.exactMatch( info.fileName() ) )

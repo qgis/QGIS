@@ -245,7 +245,7 @@ void QgsMapToolFreezeLabels::highlightFrozenLabels()
 void QgsMapToolFreezeLabels::removeFrozenHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
-  foreach( QgsHighlight *h, mHighlights )
+  foreach ( QgsHighlight *h, mHighlights )
   {
     delete h;
   }

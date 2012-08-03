@@ -261,7 +261,7 @@ void QgsAttributeTableModel::loadLayer()
   if ( behaviour == 1 )
   {
     beginInsertRows( QModelIndex(), 0, mLayer->selectedFeatureCount() - 1 );
-    foreach( QgsFeatureId fid, mLayer->selectedFeaturesIds() )
+    foreach ( QgsFeatureId fid, mLayer->selectedFeaturesIds() )
     {
       featureAdded( fid, false );
 

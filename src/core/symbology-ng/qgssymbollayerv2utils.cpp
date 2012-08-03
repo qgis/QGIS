@@ -2278,7 +2278,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString
 
 void QgsSymbolLayerV2Utils::clearSymbolMap( QgsSymbolV2Map& symbols )
 {
-  foreach( QString name, symbols.keys() )
+  foreach ( QString name, symbols.keys() )
   {
     delete symbols.value( name );
   }

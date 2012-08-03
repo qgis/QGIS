@@ -760,7 +760,7 @@ void QgisApp::dropEvent( QDropEvent *event )
   if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
     QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
-    foreach( const QgsMimeDataUtils::Uri& u, lst )
+    foreach ( const QgsMimeDataUtils::Uri& u, lst )
     {
       if ( u.layerType == "vector" )
       {
@@ -1103,7 +1103,7 @@ void QgisApp::setFontSize( int fontSize )
 {
   setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
 
-  foreach( QgsComposer *c, mPrintComposers )
+  foreach ( QgsComposer *c, mPrintComposers )
   {
     c->setFontSize( fontSize );
   }
@@ -1241,7 +1241,7 @@ void QgisApp::createToolBars()
 
   QList<QAction*> toolbarMenuActions;
   // Set action names so that they can be used in customization
-  foreach( QToolBar *toolBar, toolbarMenuToolBars )
+  foreach ( QToolBar *toolBar, toolbarMenuToolBars )
   {
     toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
     toolbarMenuActions << toolBar->toggleViewAction();
@@ -1489,12 +1489,12 @@ void QgisApp::setIconSizes( int size )
 
   //Change all current icon sizes.
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
-  foreach( QToolBar * toolbar, toolbars )
+  foreach ( QToolBar * toolbar, toolbars )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
 
-  foreach( QgsComposer *c, mPrintComposers )
+  foreach ( QgsComposer *c, mPrintComposers )
   {
     c->setIconSizes( size );
   }
@@ -2065,7 +2065,7 @@ void QgisApp::createDecorations()
 
 void QgisApp::renderDecorationItems( QPainter *p )
 {
-  foreach( QgsDecorationItem* item, mDecorationItems )
+  foreach ( QgsDecorationItem* item, mDecorationItems )
   {
     item->render( p );
   }
@@ -2073,7 +2073,7 @@ void QgisApp::renderDecorationItems( QPainter *p )
 
 void QgisApp::projectReadDecorationItems()
 {
-  foreach( QgsDecorationItem* item, mDecorationItems )
+  foreach ( QgsDecorationItem* item, mDecorationItems )
   {
     item->projectRead( );
   }
@@ -2150,7 +2150,7 @@ void QgisApp::updateProjectFromTemplates()
   mProjectFromTemplateMenu->clear();
 
   // Add entries
-  foreach( QString templateFile, templateFiles )
+  foreach ( QString templateFile, templateFiles )
   {
     mProjectFromTemplateMenu->addAction( templateFile );
   }
@@ -2306,7 +2306,7 @@ void QgisApp::addVectorLayer()
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
   QList<QgsMapLayer *> myList;
-  foreach( QString src, theLayerQStringList )
+  foreach ( QString src, theLayerQStringList )
   {
     src = src.trimmed();
     QString base;
@@ -2488,7 +2488,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
 
     if ( chooseSublayersDialog.exec() )
     {
-      foreach( int i, chooseSublayersDialog.getSelectionIndexes() )
+      foreach ( int i, chooseSublayersDialog.getSelectionIndexes() )
       {
         childItems << zipItem->children()[i];
       }
@@ -2496,7 +2496,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   }
 
   // add childItems
-  foreach( QgsDataItem* item, childItems )
+  foreach ( QgsDataItem* item, childItems )
   {
     QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
     QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
@@ -2573,7 +2573,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   if ( chooseSublayersDialog.exec() )
   {
-    foreach( int i, chooseSublayersDialog.getSelectionIndexes() )
+    foreach ( int i, chooseSublayersDialog.getSelectionIndexes() )
     {
       QgsRasterLayer *rlayer = new QgsRasterLayer( sublayers[i], names[i] );
       if ( rlayer && rlayer->isValid() )
@@ -2736,7 +2736,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  foreach( QString layerPath, layerPathList )
+  foreach ( QString layerPath, layerPathList )
   {
     // create the layer
     QgsDataSourceURI uri( layerPath );
@@ -4397,7 +4397,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   const QgsAttributeMap &merged = d.mergedAttributesMap();
 
-  foreach( QgsFeatureId fid, vl->selectedFeaturesIds() )
+  foreach ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
     for ( QgsAttributeMap::const_iterator it = merged.begin(); it != merged.end(); it++ )
     {
@@ -4713,7 +4713,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     const QgsAttributeMap &srcMap = f.attributeMap();
     QgsAttributeMap dstMap;
 
-    foreach( int src, srcMap.keys() )
+    foreach ( int src, srcMap.keys() )
     {
       int dst = remap.value( src, -1 );
       if ( dst < 0 )
@@ -4849,7 +4849,7 @@ void QgisApp::saveEdits()
   if ( mMapCanvas && mMapCanvas->isDrawing() )
     return;
 
-  foreach( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
     saveEdits( layer );
   }
@@ -5131,7 +5131,7 @@ void QgisApp::isInOverview()
 
 void QgisApp::removingLayers( QStringList theLayers )
 {
-  foreach( const QString &layerId, theLayers )
+  foreach ( const QString &layerId, theLayers )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>(
                                QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
@@ -5159,7 +5159,7 @@ void QgisApp::removeLayer()
     return;
   }
 
-  foreach( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  foreach ( QgsMapLayer * layer, mMapLegend->selectedLayers() )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vlayer && vlayer->isEditable() && !toggleEditing( vlayer, true ) )
@@ -7623,7 +7623,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
   bool otherError = false;
   static QSet<QSslError::SslError> ignoreErrors;
 
-  foreach( QSslError error, errors )
+  foreach ( QSslError error, errors )
   {
     QgsDebugMsg( QString( "SSL error %1: %2" ).arg( error.error() ).arg( error.errorString() ) );
 
@@ -7640,7 +7640,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
                              msg,
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
-    foreach( QSslError error, errors )
+    foreach ( QSslError error, errors )
     {
       ignoreErrors << error.error();
     }
@@ -7789,13 +7789,13 @@ QMenu* QgisApp::createPopupMenu()
     }
 
     qSort( panels.begin(), panels.end(), cmpByText_ );
-    foreach( QAction* a, panels )
+    foreach ( QAction* a, panels )
     {
       menu->addAction( a );
     }
     menu->addSeparator();
     qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
-    foreach( QAction* a, toolbars )
+    foreach ( QAction* a, toolbars )
     {
       menu->addAction( a );
     }

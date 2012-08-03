@@ -58,7 +58,7 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
 {
-  foreach( QString name, mMetadata.keys() )
+  foreach ( QString name, mMetadata.keys() )
   {
     delete mMetadata[name];
   }

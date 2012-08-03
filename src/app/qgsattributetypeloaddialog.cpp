@@ -70,7 +70,7 @@ void QgsAttributeTypeLoadDialog::previewButtonPushed()
 void QgsAttributeTypeLoadDialog::fillLayerList()
 {
   layerComboBox->clear();
-  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
     if ( vl )

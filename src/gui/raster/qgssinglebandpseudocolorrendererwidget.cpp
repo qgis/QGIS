@@ -22,7 +22,7 @@
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
 #include "qgsstylev2.h"
 #include "qgsvectorcolorrampv2.h"
- 
+
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -35,7 +35,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   setupUi( this );
 
   mColorRampComboBox->populate( QgsStyleV2::defaultStyle() );
-  
+
   if ( !mRasterLayer )
   {
     return;
@@ -238,26 +238,26 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
   QgsVectorColorRampV2* colorRamp = mColorRampComboBox->currentColorRamp();
   if ( ! colorRamp )
   {
-    //hard code color range from blue -> red (previous default) 
+    //hard code color range from blue -> red (previous default)
     int colorDiff = 0;
     if ( numberOfEntries != 0 )
     {
       colorDiff = ( int )( 255 / numberOfEntries );
     }
-    
+
     for ( int i = 0; i < numberOfEntries; ++i )
     {
       QColor currentColor;
       currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
       entryColors.push_back( currentColor );
-    }   
+    }
   }
   else
   {
     for ( int i = 0; i < numberOfEntries; ++i )
     {
-      entryColors.push_back( colorRamp->color( ( ( double ) i ) / numberOfEntries  ) );
-    }   
+      entryColors.push_back( colorRamp->color((( double ) i ) / numberOfEntries ) );
+    }
   }
 
   mColormapTreeWidget->clear();

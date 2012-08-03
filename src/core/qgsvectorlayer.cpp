@@ -337,7 +337,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     }
     else if ( mRendererV2 )
     {
-      foreach( QString attrName, mRendererV2->usedAttributes() )
+      foreach ( QString attrName, mRendererV2->usedAttributes() )
       {
         int attrNum = fieldNameIndex( attrName );
         attributes.append( attrNum );
@@ -973,7 +973,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     }
 
     QgsAttributeList attributes;
-    foreach( QString attrName, mRendererV2->usedAttributes() )
+    foreach ( QString attrName, mRendererV2->usedAttributes() )
     {
       int attrNum = fieldNameIndex( attrName );
       attributes.append( attrNum );
@@ -1399,7 +1399,7 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   QgsFeature fet;
   if ( mDataProvider->capabilities() & QgsVectorDataProvider::SelectAtId )
   {
-    foreach( QgsFeatureId fid, mSelectedFeatureIds )
+    foreach ( QgsFeatureId fid, mSelectedFeatureIds )
     {
       if ( featureAtId( fid, fet, true, false ) && fet.geometry() )
       {
@@ -1991,7 +1991,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
   const QgsAttributeMap &fa = f.attributeMap();
   const QgsAttributeMap &ca = current.attributeMap();
 
-  foreach( int attr, fa.keys() )
+  foreach ( int attr, fa.keys() )
   {
     if ( fa.contains( attr ) && ca.contains( attr ) && fa[attr] != ca[attr] )
     {
@@ -2415,7 +2415,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
           //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
           QgsAttributeMap newAttributes = select_it->attributeMap();
           QVariant defaultValue;
-          foreach( int j, newAttributes.keys() )
+          foreach ( int j, newAttributes.keys() )
           {
             defaultValue = mDataProvider->defaultValue( j );
             if ( !defaultValue.isNull() )
@@ -3872,7 +3872,7 @@ bool QgsVectorLayer::commitChanges()
       if ( cap & QgsVectorDataProvider::AddFeatures )
       {
         QList<QgsFeatureId> ids;
-        foreach( const QgsFeature &f, mAddedFeatures )
+        foreach ( const QgsFeature &f, mAddedFeatures )
         {
           ids << f.id();
         }
@@ -4047,7 +4047,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;
 
-  foreach( QgsFeatureId fid, mSelectedFeatureIds )
+  foreach ( QgsFeatureId fid, mSelectedFeatureIds )
   {
     features.push_back( QgsFeature() );
     featureAtId( fid, features.back(), geometryType() != QGis::NoGeometry, true );

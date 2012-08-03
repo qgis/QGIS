@@ -268,7 +268,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;
-  foreach( QString name, QgsRasterRendererRegistry::instance()->renderersList() )
+  foreach ( QString name, QgsRasterRendererRegistry::instance()->renderersList() )
   {
     if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
     {

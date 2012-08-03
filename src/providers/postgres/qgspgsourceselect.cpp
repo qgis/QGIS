@@ -51,15 +51,15 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach( QGis::WkbType type,
-             QList<QGis::WkbType>()
-             << QGis::WKBPoint
-             << QGis::WKBLineString
-             << QGis::WKBPolygon
-             << QGis::WKBMultiPoint
-             << QGis::WKBMultiLineString
-             << QGis::WKBMultiPolygon
-             << QGis::WKBNoGeometry )
+    foreach ( QGis::WkbType type,
+              QList<QGis::WkbType>()
+              << QGis::WKBPoint
+              << QGis::WKBLineString
+              << QGis::WKBPolygon
+              << QGis::WKBMultiPoint
+              << QGis::WKBMultiLineString
+              << QGis::WKBMultiPolygon
+              << QGis::WKBNoGeometry )
     {
       cb->addItem( QgsPgTableModel::iconForWkbType( type ), QgsPostgresConn::displayStringForWkbType( type ), type );
     }
@@ -392,7 +392,7 @@ void QgsPgSourceSelect::addTables()
 {
   mSelectedTables.clear();
 
-  foreach( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsPgTableModel::dbtmTable )
       continue;
@@ -449,7 +449,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     if ( conn->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
     {
       // Add the supported layers to the table
-      foreach( QgsPostgresLayerProperty layer, layers )
+      foreach ( QgsPostgresLayerProperty layer, layers )
       {
         QString type = layer.type;
         QString srid = layer.srid;

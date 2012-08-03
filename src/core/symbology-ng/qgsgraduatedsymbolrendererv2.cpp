@@ -1074,7 +1074,7 @@ void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ram
 void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp )
 {
   int i = 0;
-  foreach( QgsRendererRangeV2 range, mRanges )
+  foreach ( QgsRendererRangeV2 range, mRanges )
   {
     QgsSymbolV2* symbol = range.symbol()->clone();
     double colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
@@ -1088,7 +1088,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp )
 void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 {
   int i = 0;
-  foreach( QgsRendererRangeV2 range, mRanges )
+  foreach ( QgsRendererRangeV2 range, mRanges )
   {
     QgsSymbolV2* symbol = sym->clone();
     symbol->setColor( range.symbol()->color() );

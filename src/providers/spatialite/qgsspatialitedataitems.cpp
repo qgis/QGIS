@@ -126,7 +126,7 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
   QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( "'", "\\'" ) );
   QgsDataSourceURI uri( connectionInfo );
 
-  foreach( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
+  foreach ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
     uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
     QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + "/" + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
@@ -186,7 +186,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach( const QgsMimeDataUtils::Uri& u, lst )
+  foreach ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -255,7 +255,7 @@ QgsSLRootItem::~QgsSLRootItem()
 QVector<QgsDataItem*> QgsSLRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach( QString connName, QgsSpatiaLiteConnection::connectionList() )
+  foreach ( QString connName, QgsSpatiaLiteConnection::connectionList() )
   {
     QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + "/" + connName );
     connections.push_back( conn );

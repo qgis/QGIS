@@ -30,7 +30,7 @@ void TestRendererV2GUI::loadLayers()
 {
   // load just first vector layer
   QList<QgsMapCanvasLayer> canvasLayers;
-  foreach( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
+  foreach ( QgsMapLayer* layer, QgsMapLayerRegistry::instance()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
       canvasLayers << QgsMapCanvasLayer( layer );

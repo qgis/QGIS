@@ -44,7 +44,7 @@ void QgsGeomColumnTypeThread::run()
 
   mStopped = false;
 
-  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
+  foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     if ( !mStopped )
     {

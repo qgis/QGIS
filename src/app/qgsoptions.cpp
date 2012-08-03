@@ -80,7 +80,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
-  foreach( QString style, styles )
+  foreach ( QString style, styles )
   {
     cmbStyle->addItem( style );
   }
@@ -458,7 +458,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
   QStringList myI18nList = i18nList();
-  foreach( QString l, myI18nList )
+  foreach ( QString l, myI18nList )
   {
 #if QT_VERSION >= 0x040800
     cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
@@ -1460,11 +1460,11 @@ void QgsOptions::loadGdalDriverList()
   // myDrivers.sort();
   // sort list case insensitive - no existing function for this!
   QMap<QString, QString> strMap;
-  foreach( QString str, myDrivers )
-  strMap.insert( str.toLower(), str );
+  foreach ( QString str, myDrivers )
+    strMap.insert( str.toLower(), str );
   myDrivers = strMap.values();
 
-  foreach( QString myName, myDrivers )
+  foreach ( QString myName, myDrivers )
   {
     QTreeWidgetItem * mypItem = new QTreeWidgetItem( QStringList( myName ) );
     if ( mySkippedDrivers.contains( myName ) )
@@ -1492,13 +1492,13 @@ void QgsOptions::loadGdalDriverList()
 
   // populate cmbEditCreateOptions with gdal write drivers - sorted, GTiff first
   strMap.clear();
-  foreach( QString str, myGdalWriteDrivers )
-  strMap.insert( str.toLower(), str );
+  foreach ( QString str, myGdalWriteDrivers )
+    strMap.insert( str.toLower(), str );
   myGdalWriteDrivers = strMap.values();
   myGdalWriteDrivers.removeAll( "Gtiff" );
   myGdalWriteDrivers.prepend( "GTiff" );
   cmbEditCreateOptions->clear();
-  foreach( QString myName, myGdalWriteDrivers )
+  foreach ( QString myName, myGdalWriteDrivers )
   {
     cmbEditCreateOptions->addItem( myName );
   }

@@ -154,7 +154,7 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
   vlayer->beginEditCommand( tr( "Feature moved" ) );
-  foreach( QgsFeatureId id, mMovedFeatures )
+  foreach ( QgsFeatureId id, mMovedFeatures )
   {
     vlayer->translateFeature( id, dx, dy );
   }
