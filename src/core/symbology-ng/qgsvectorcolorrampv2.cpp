@@ -782,3 +782,7 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
   return ( ! mCollections.isEmpty() );
 }
 
+void QgsCptCityColorRampV2::loadPalette()
+{
+  // TODO: IMPLEMENT ME
+}
