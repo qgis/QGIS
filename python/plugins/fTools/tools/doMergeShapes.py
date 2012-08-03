@@ -127,7 +127,7 @@ class Dialog( QDialog, Ui_Dialog ):
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
-        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
+        QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( self.outFileName ) )
         return
 
     if self.inEncoding == None:
