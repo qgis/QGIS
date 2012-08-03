@@ -410,7 +410,7 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbologyutils.h
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
-  symbology-ng/qgscolorbrewerpalette.h
+  symbology-ng/qgscolorrampv2data.h
   symbology-ng/qgsellipsesymbollayerv2.h
   symbology-ng/qgsfillsymbollayerv2.h
   symbology-ng/qgsgraduatedsymbolrendererv2.h
