@@ -74,3 +74,6 @@ class SilentProgress():
 
     def setPercentage(self, i):
         pass
+
+    def setInfo(self, _):
+        pass

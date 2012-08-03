@@ -69,7 +69,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
-        self.tabWidget.addTab(self.logText, "Log")
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+            self.tabWidget.addTab(self.logText, "Log")
         self.webView = QtWebKit.QWebView()
         cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))
         self.webView.settings().setUserStyleSheetUrl(cssUrl)
@@ -199,10 +200,11 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.algEx.percentageChanged.connect(self.setPercentage)
                 self.algEx.textChanged.connect(self.setText)
                 self.algEx.iterated.connect(self.iterate)
-                self.algEx.infoSet.connect(self.log)
+                self.algEx.infoSet.connect(self.setInfo)
                 self.algEx.start()
-                self.log("Algorithm %s started" % self.alg.name)
+                self.setInfo("Algorithm %s started" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
+                self.tabWidget.setCurrentIndex(1) # log tab
                 self.finish()
             else:
                 keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
@@ -233,7 +235,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     @pyqtSlot()
     def finish(self):
         self.executed = True
-        self.log("Algorithm %s finished correctly" % self.alg.name)
+        self.setInfo("Algorithm %s finished correctly" % self.alg.name)
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
@@ -250,7 +252,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def error(self, msg):
         self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
-        self.log(msg, True)
+        self.setInfo(msg, True)
         QMessageBox.critical(self, "Error", msg)
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
@@ -262,11 +264,11 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot(int)
     def iterate(self, i):
-        self.log("Algorithm %s iteration #%i completed" % (self.alg.name, i))
+        self.setInfo("Algorithm %s iteration #%i completed" % (self.alg.name, i))
 
     @pyqtSlot()
     def cancel(self):
-        self.log("Algorithm %s canceled" % self.alg.name)
+        self.setInfo("Algorithm %s canceled" % self.alg.name)
         try:
             self.algEx.finished.disconnect()
             self.algEx.terminate()
@@ -276,7 +278,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             pass
 
     @pyqtSlot(str)
-    def log(self, msg, error = False):
+    def setInfo(self, msg, error = False):
         if error:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
             self.logText.append('<b>' + msg + '</b>')
@@ -291,4 +293,4 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     def setText(self, text):
         self.progressLabel.setText(text)
-        self.log(text, False)
+        self.setInfo(text, False)
