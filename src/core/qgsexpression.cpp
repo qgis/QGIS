@@ -450,6 +450,17 @@ static QVariant fcnUpper( const QVariantList& values, QgsFeature* , QgsExpressio
   QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
 }
+static QVariant fcnTitle( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QStringList elems = str.split( " " );
+  for ( int i = 0; i < elems.size(); i++ )
+  {
+    if ( elems[i].size() > 1 )
+      elems[i] = elems[i].left( 1 ).toUpper() + elems[i].mid( 1 ).toLower();
+  }
+  return QVariant( elems.join( " " ) );
+}
 static QVariant fcnLength( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -800,6 +811,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     // string manipulation
     << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
+    << FunctionDef( "title", 1, fcnTitle, QObject::tr( "String" ) )
     << FunctionDef( "length", 1, fcnLength, QObject::tr( "String" ) )
     << FunctionDef( "replace", 3, fcnReplace, QObject::tr( "String" ) )
     << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
