@@ -166,7 +166,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot()
     def accept(self):
-        #~ try:
         if self.setParamValues():
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
@@ -205,9 +204,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.setInfo("Algorithm %s started" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
                 self.tabWidget.setCurrentIndex(1) # log tab
-                self.finish()
             else:
-                keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
                 if iterateParam:
                     UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
                 else:
@@ -215,29 +212,17 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                     if command:
                         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
-                        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
-                self.executed = True
-                QApplication.restoreOverrideCursor()
-                if not keepOpen:
-                        self.close()
-                else:
-                    self.progressLabel.setText("")
-                    self.progress.setMaximum(100)
-                    self.progress.setValue(0)
-                    self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-                    self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-                    self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
-
-
+                        self.finish()
         else:
             QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
 
     @pyqtSlot()
     def finish(self):
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
+        SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
         self.executed = True
         self.setInfo("Algorithm %s finished correctly" % self.alg.name)
         QApplication.restoreOverrideCursor()
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         if not keepOpen:
             self.close()
         else:
