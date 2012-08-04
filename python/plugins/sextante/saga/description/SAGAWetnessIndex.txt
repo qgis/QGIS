@@ -1,0 +1,8 @@
+SAGA Wetness Index
+ta_hydrology
+ParameterRaster|DEM|Elevation|False
+ParameterNumber|T|t|None|None|10
+OutputRaster|C|Catchment area
+OutputRaster|GN|Catchment slope
+OutputRaster|CS|Modified catchment area
+OutputRaster|SB|Wetness index

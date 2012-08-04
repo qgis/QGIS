@@ -1,0 +1,6 @@
+r.transect
+r.transect - Outputs raster map layer values lying along user defined transect line(s).
+Raster (r.*)
+ParameterRaster|map|Raster map to be queried|False
+ParameterString|line|Transect definition|0,0,0,100
+ParameterNumber|width|Char string to represent no data cell|None|None|1

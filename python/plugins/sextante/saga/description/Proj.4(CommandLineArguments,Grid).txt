@@ -1,0 +1,10 @@
+Proj.4 (Command Line Arguments, Grid)
+pj_proj4
+ParameterString|SOURCE_PROJ|Source Projection Parameters|
+ParameterString|TARGET_PROJ|Target Projection Parameters|
+ParameterRaster|SOURCE|Source|False
+ParameterSelection|INTERPOLATION|Interpolation|[0] Nearest Neigbhor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
+ParameterSelection|TARGET_TYPE|Target|[0] user defined
+Extent GET_USER_XMIN GET_USER_XMAX GET_USER_YMIN GET_USER_YMAX
+ParameterNumber|GET_USER_SIZE|Cellsize|None|None|1.0
+OutputRaster|GET_USER_GRID|Grid

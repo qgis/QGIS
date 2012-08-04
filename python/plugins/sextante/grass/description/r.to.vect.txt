@@ -1,0 +1,11 @@
+r.to.vect
+r.to.vect - Converts a raster map into a vector map layer.
+Raster (r.*)
+ParameterRaster|input|Name of input raster map|False
+ParameterSelection|feature|Feature type|line;point;area
+ParameterBoolean|-s|Smooth corners of area features|False
+ParameterBoolean|-v|Use raster values as categories instead of unique sequence (CELL only)|False
+ParameterBoolean|-z|Write raster values as z coordinate. Table is not created. Currently supported only for points|False
+ParameterBoolean|-b|Do not build vector topology (use with care for massive point export)|False
+ParameterBoolean|-q|Quiet - Do not show progress|False
+OutputVector|output|Name for output vector map

@@ -1,0 +1,11 @@
+r.mapcalculator
+r.mapcalculator - Calculate new raster map from a r.mapcalc expression.
+Raster (r.*)
+ParameterRaster|amap|amap|False
+ParameterRaster|bmap|bmap|False
+ParameterRaster|cmap|cmap|False
+ParameterRaster|dmap|dmap|False
+ParameterRaster|emap|emap|False
+ParameterRaster|fmap|fmap|False
+ParameterString|formula|Formula (e.g. A-B or A*C+B|
+OutputRaster|outfile|Name for output raster map

@@ -1,0 +1,8 @@
+MultivariateAlterationDetector
+otbcli_MultivariateAlterationDetector
+Multivariate alteration detector
+Feature Extraction
+ParameterRaster|-in1|Input Image 1|False
+ParameterRaster|-in2|Input Image 2|False
+OutputRaster|-out|Change Map
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128

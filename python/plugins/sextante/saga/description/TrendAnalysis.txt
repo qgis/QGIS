@@ -1,0 +1,8 @@
+Trend Analysis
+table_calculus
+ParameterTable|TABLE|Table|False
+ParameterTableField|FIELD_X|X Values|TABLE
+ParameterTableField|FIELD_Y|Y Values|TABLE
+ParameterString|FORMULA|Formula|
+ParameterSelection|FORMULAS|Pre-defined Formulas|[0] Linear: a + b * x;[1] Quadric: a + b * x + c * x^2;[2] Cubic: a + b * x + c * x^2 + d * x^3;[3] Logarithmic: a + b * ln(x);[4] Power: a + b * x^c;[5] a + b / x;[6] a + b * (1 - exp(-x / c));[7] a + b * (1 - exp(-(x / c)^2))
+OutputTable|TREND|Table (with Trend)

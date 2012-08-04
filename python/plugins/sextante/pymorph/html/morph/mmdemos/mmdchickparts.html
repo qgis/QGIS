@@ -1,0 +1,266 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdchickparts</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdcells.html"><tt>mmdcells</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdconcrete.html"><tt>mmdconcrete</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdchickparts
+      <br>
+      <span class="subtitle">Classify chicken parts in breast, legs+tights and wings
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      The input image is a gray-scale image of many different chicken parts. The purpose is to classify them in breast, legs+tights, tights and wings.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The input image is read.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; a = mmreadgray('chickparts.tif');</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(a);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdchickparts_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdchickparts_001.jpg">a</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Thresholding and labeling</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Convert to binary objects by thresholding and then labeling the objects.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; b = mmcmp(a,'&gt;=', uint8(100));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(b);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; c = mmlabel(b);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(c,'border');</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdchickparts_002.jpg"></td>
+                      <td><img width="320" src="../images/img_mmdchickparts_003.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdchickparts_002.jpg">b</a></td>
+                      <td><a href="../images/img_mmdchickparts_003.jpg">c,'border'</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Area measurement</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Measure the area o each object and put this value as the pixel object value. For displaying purpose, overlay the background as red in the right image below.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; d = mmblob(c,'area');</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(d);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(d, mmcmp(d,'==',0));</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdchickparts_004.jpg"></td>
+                      <td><img width="320" src="../images/img_mmdchickparts_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdchickparts_004.jpg">d</a></td>
+                      <td><a href="../images/img_mmdchickparts_005.jpg">d, mmcmp(d,'==',0)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Select the wings and tights</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The wings are detected by finding objects with area  100 and 2500 pixels. The tights are selected as connected objects with area between 2500 and 5500 pixels.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; wings = mmcmp( uint16(100),'&lt;=',d, '&lt;=', uint16(2500));</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint16.
+Warning: Converting input image from int32 to uint16.</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(wings);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; tights = mmcmp( uint16(2500),'&lt;',d, '&lt;=', uint16(5500));</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint16.
+Warning: Converting input image from int32 to uint16.</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(tights);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdchickparts_006.jpg"></td>
+                      <td><img width="320" src="../images/img_mmdchickparts_007.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdchickparts_006.jpg">wings</a></td>
+                      <td><a href="../images/img_mmdchickparts_007.jpg">tights</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Select the legs and breast</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The legs+tights have area larger than 5500 and smaller than 8500 pixels and the breast is the largest connected object with area larger  than 8500 pixels
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; legs = mmcmp( uint16(5500), '&lt;', d, '&lt;=', uint16(8500));</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint16.
+Warning: Converting input image from int32 to uint16.</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(legs);</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; breast = mmcmp( d,'&gt;', uint16(8500));</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(breast);</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdchickparts_008.jpg"></td>
+                      <td><img width="320" src="../images/img_mmdchickparts_009.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdchickparts_008.jpg">legs</a></td>
+                      <td><a href="../images/img_mmdchickparts_009.jpg">breast</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Final display</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Overlay the contour of the detected parts over the original image
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; mmshow(a, mmgradm(wings), mmgradm(tights), mmgradm(legs),mmgradm(breast));</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdchickparts_010.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdchickparts_010.jpg">a, mmgradm(wings), mmgradm(tights), mmgradm(legs),mmgradm(breast)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdcells.html"><tt>mmdcells</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdconcrete.html"><tt>mmdconcrete</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

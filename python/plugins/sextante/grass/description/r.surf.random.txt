@@ -1,0 +1,7 @@
+r.surf.random
+r.surf.random - Produces a raster map of uniform random deviates whose range can be expressed by the user.
+Raster (r.*)
+ParameterNumber|min|Minimum random value|None|None|0
+ParameterNumber|max|Maximum random value|None|None|100
+ParameterBoolean|-i|Create an integer raster map|False
+OutputRaster|output|Name for output raster map

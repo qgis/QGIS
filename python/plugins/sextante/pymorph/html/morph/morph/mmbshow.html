@@ -1,0 +1,217 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmbshow</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmshow.html"><tt>mmshow</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmplot.html"><tt>mmplot</tt></a>]
+              </td>
+        <td class="title">Visualization</td>
+      </tr>
+    </table>
+    <h1>mmbshow
+      <br>
+      <span class="subtitle">Generate a graphical representation of overlaid binary images.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmbshow</span>(
+                  
+          <span class="par">f1</span>, 
+          <span class="par">f2</span> = None, 
+          <span class="par">f3</span> = None, 
+          <span class="par">factor</span> = 17
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f1</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f2</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                                <p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f3</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                                <p>Default: 
+                      <code>None</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">factor</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Expansion factor for the output image. Use odd values above 9.</p><p>Default: 
+                      <code>17</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                          <p>shaded image.</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Generate an expanded binary image as a graphical representation of up to three binary input images. The 1-pixels of the first image are represented by square contours, the pixels of the optional second image are represented by circles and for the third image they are represented by shaded squares. This function is useful to create graphical illustration of small images.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f1=mmtext('b')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f2=mmtext('w')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g2=mmbshow(f1,f2)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g2)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f3=mmtext('x')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g3=mmbshow(f1,f2,f3)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g3);</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="153" src="../images/img_mmbshow_001.jpg"></td>
+                  <td><img width="153" src="../images/img_mmbshow_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmbshow_001.jpg">g2</a></td>
+                  <td><a href="../images/img_mmbshow_002.jpg">g3</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmbshow(f1, f2=None, f3=None, factor=17):
+    from Numeric import NewAxis, zeros, resize, transpose, floor, arange, array
+    if f1.shape == ()    : f1 = array([f1])
+        if len(f1.shape) == 1: f1 = f1[NewAxis,:]
+        if (`f1.shape` != `f2.shape`) or \
+           (`f1.shape` != `f3.shape`) or \
+           (`f2.shape` != `f3.shape`):
+           print 'Different sizes.'
+           return None
+        s = factor
+        if factor &lt; 9: s = 9
+        h,w = f1.shape
+        y = zeros((s*h, s*w))
+        xc = resize(range(s), (s,s))
+        yc = transpose(xc)
+        r  = int(floor((s-8)/2. + 0.5))
+        circle = (xc - s/2)**2 + (yc - s/2)**2 &lt;= r**2
+        r = arange(s) % 2
+        fillrect = resize(array([r, 1-r]), (s,s))
+        fillrect[0  ,:] = 0
+        fillrect[s-1,:] = 0
+        fillrect[:  ,0] = 0
+        fillrect[:  ,s-1] = 0
+        for i in range(h):
+            for j in range(w):
+                m, n = s*i, s*j
+                if f1 and f1[i,j]:
+                    y[m     ,n:n+s] = 1
+                    y[m+s-1 ,n:n+s] = 1
+                    y[m:m+s ,n    ] = 1
+                    y[m:m+s ,n+s-1] = 1
+                if f2 and f2[i,j]:
+                    y[m:m+s, n:n+s] = y[m:m+s, n:n+s] + circle
+                if f3 and f3[i,j]:
+                    y[m:m+s, n:n+s] = y[m:m+s, n:n+s] + fillrect
+        y = y &gt; 0
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmshow.html">mmshow</a></td>
+              <td class="def">Display binary or gray-scale images and optionally overlay it with binary images.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmseshow.html">mmseshow</a></td>
+              <td class="def">Display a structuring element as an image.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmshow.html"><tt>mmshow</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmplot.html"><tt>mmplot</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

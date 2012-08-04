@@ -1,0 +1,9 @@
+VectorDataDSValidation
+otbcli_VectorDataDSValidation
+Vector Data validation
+Feature Extraction
+ParameterVector|-in|Input Vector Data|-1|False
+ParameterFile|-descmod|Descriptors model filename||
+ParameterString|-cri|Criterion|((Belief + Plausibility)/2.)
+ParameterNumber|-thd|Criterion threshold|None|None|0.5
+OutputVector|-out|Output Vector Data

@@ -1,0 +1,243 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdairport</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdarea.html"><tt>mmdarea</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdairport
+      <br>
+      <span class="subtitle">Detecting runways in satellite airport imagery.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      In this example, a satellite image of an airport is processed. The aim is to detect the runways which are characterized by thin, long and straight features. An open top-hat is first used to enhance the runways. A rough thresholding followed by a thinning operator gives most of the thin structures of the image. They can filtered by selecting only closed features with sufficient length. This result is used as a marker to reconstruct the original gray-scale image, giving as output a gray-scale enhanced airport runways, which can be finally thresholded.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The satellite image of the airport is read.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; f = mmreadgray('galeao.jpg')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdairport_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdairport_001.jpg">f</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>First, enhance the runways by an open top-hat.</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The disk of radius 5 (diameter 11) is chosen to detect features  smaller than this size. For visualization, the top-hat image is brightened by 150 gray-levels.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; th=mmopenth(f,mmsedisk(5))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmaddm(th, 150))</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint8.</pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdairport_002.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdairport_002.jpg">mmaddm(th, 150)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Followed by a thresholding.</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        A thresholding is applied to detect the features enhanced by the top-hat. This is a standard top-hat sequence.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; bin=mmthreshad(th,30)</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint8.</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f,bin)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdairport_003.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdairport_003.jpg">f,bin</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Thinning, pruning and area open.</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The thinning (red) and pruning (green) detect closed structures which characterized the runways structure. The area open (blue) selects only very long features, with more than 1000 pixels.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; m1=mmthin(bin)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; m2=mmthin(m1,mmendpoints())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; m=mmareaopen(m2,1000,mmsebox())</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f,m1,m2,m)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdairport_004.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdairport_004.jpg">f,m1,m2,m</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Reconstruction.</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The previous result is a sample of the runway pixels. It is used as a marker for  gray-scale morphological reconstruction. The runways are enhanced in the reconstructed image.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; g=mminfrec(mmgray(m), th)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdairport_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdairport_005.jpg">g</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Final thresholding.</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        A thresholding is applied to the reconstructed image, detecting the airport runways.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; final=mmthreshad(g, 20)</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint8.</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f, final)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdairport_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdairport_006.jpg">f, final</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdarea.html"><tt>mmdarea</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

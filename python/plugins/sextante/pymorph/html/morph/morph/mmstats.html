@@ -1,0 +1,153 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmstats</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmpatspec.html"><tt>mmpatspec</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmglblshow.html"><tt>mmglblshow</tt></a>]
+              </td>
+        <td class="title">Measurements</td>
+      </tr>
+    </table>
+    <h1>mmstats
+      <br>
+      <span class="subtitle">Find global image statistics.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmstats</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">measurement</span>
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">measurement</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Choose the measure to compute: 'max', 'min', 'median', 'mean', 'sum', 'std', 'std1'.</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Compute global image statistics: 'max' - maximum gray-scale value in image; 'min' - minimum gray-scale value in image; 'sum' - sum of all pixel values; 'median' - median value of all pixels in image; 'mean' - mean value of all pixels in image; 'std' - standard deviation of all pixels (normalized by N-1); 'std1' - idem, normalized by N.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmstats001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmstats(f, measurement):
+    from string import upper
+    from Numeric import ravel
+    from MLab import mean, median, std
+    measurement = upper(measurement)
+    if measurement == 'MAX':
+        y = max(ravel(f))
+    elif measurement == 'MIN':
+        y = min(ravel(f))
+    elif measurement == 'MEAN':
+        y = mean(ravel(f))
+    elif measurement == 'MEDIAN':
+        y = median(ravel(f))
+    elif measurement == 'STD':
+        y = std(ravel(f))
+    else:
+        assert 0,'Not a valid measurement'
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmhistogram.html">mmhistogram</a></td>
+              <td class="def">Find the histogram of the image f.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmblob.html">mmblob</a></td>
+              <td class="def">Blob measurements from a labeled image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmgrain.html">mmgrain</a></td>
+              <td class="def">Gray-scale statistics for each labeled region.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmpatspec.html"><tt>mmpatspec</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmglblshow.html"><tt>mmglblshow</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

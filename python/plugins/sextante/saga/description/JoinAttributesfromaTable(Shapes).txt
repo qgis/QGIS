@@ -1,0 +1,8 @@
+Join Attributes from a Table (Shapes)
+table_tools
+ParameterVector|TABLE_A|Shapes|-1|False
+ParameterTable|TABLE_B|Join Table|False
+ParameterTableField|ID_A|Identifier|TABLE_B
+ParameterTableField|ID_B|Identifier|TABLE_B
+ParameterBoolean|KEEPALL      |Keep All|True
+OutputVector|RESULT|Result

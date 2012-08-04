@@ -1,0 +1,181 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmframe</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/uint16.html"><tt>uint16</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmdrawv.html"><tt>mmdrawv</tt></a>]
+              </td>
+        <td class="title">Image Creation</td>
+      </tr>
+    </table>
+    <h1>mmframe
+      <br>
+      <span class="subtitle">Create a frame image.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmframe</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">WT</span> = 1, 
+          <span class="par">HT</span> = 1, 
+          <span class="par">DT</span> = 0, 
+          <span class="par">k1</span> = None, 
+          <span class="par">k2</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Unsigned gray-scale (uint8 or uint16), signed (int32) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">WT</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Positive integer ( width thickness).</p><p>Default: 
+                      <code>1</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">HT</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Positive integer ( height thickness).</p><p>Default: 
+                      <code>1</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">DT</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span><p>Positive integer ( depth thickness).</p><p>Default: 
+                      <code>0</code>
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">k1</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span>      Non-negative integer.
+                          <p>Frame gray-level.</p><p>Default: 
+                      <code>None</code> (Maximum pixel value allowed in f)
+                    </p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">k2</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmDouble.html">Double</a></span>      Non-negative integer.
+                          <p>Background gray level.</p><p>Default: 
+                      <code>None</code> (Minimum pixel value allowed in f)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span><p>image of same type as 
+                      <code>f</code>.
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmframe</span> creates an image 
+          <code>y</code>, with the same dimensions (W,H,D) and same pixel type of the image 
+          <code>f</code>, such that the value of the pixels in the image frame is 
+          <code>k1</code> and the value of the other pixels is 
+          <code>k2</code>. The thickness of the image frame is DT.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmframe001.png">
+          </div>  Where  is the image frame of f, characterized by wt and ht
+                      
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmframe(f, WT=1, HT=1, DT=0, k1=None, k2=None):
+    if k1 is None: k1 = mmlimits(f)[1]
+    if k2 is None: k2 = mmlimits(f)[0]
+    assert len(f.shape)&lt;3,'Supports 2D only'
+    y = mmunion(mmintersec(f,mmlimits(f)[0]),k2)
+    y[:,0:WT] = k1
+    y[:,-WT:] = k1
+    y[0:HT,:] = k1
+    y[-HT:,:] = k1
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmlimits.html">mmlimits</a></td>
+              <td class="def">Get the possible minimum and maximum of an image.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/uint16.html"><tt>uint16</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmdrawv.html"><tt>mmdrawv</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

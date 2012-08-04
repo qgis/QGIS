@@ -1,0 +1,18 @@
+r.topmodel
+r.topmodel - Simulates TOPMODEL which is a physically based hydrologic model.
+Raster (r.*)
+ParameterRaster|basin|Basin map created by r.water.outlet (MASK)|False
+ParameterRaster|elevation|Elevation map|False
+ParameterNumber|nidxclass|Number of topographic index classes|None|None|30.0
+ParameterString|idxstats|Topographic index statistics file|
+ParameterString|parameters|TOPMODEL Parameters file|
+ParameterString|input|Rainfall and potential evapotranspiration data file|
+ParameterString|output|Output file|
+ParameterString|Qobs|OPTIONAL Observed flow file|
+ParameterNumber|timestep|OPTIONAL Output for given time step|None|None|0.0
+ParameterNumber|idxclass|OPTIONAL Output for given topographic index class|None|None|0.0
+ParameterBoolean|-i|-i|False
+OutputRaster|depressionless|Depressionless elevation map
+OutputRaster|direction|Direction map for depressionless elevation map
+OutputRaster|belevation|Basin elevation map (MASK applied)
+OutputRaster|topidx|Topographic index ln(a/tanB) map (MASK applied)

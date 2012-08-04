@@ -1,0 +1,5 @@
+Clip Grid with Polygon
+shapes_grid
+ParameterMultipleInput|INPUT|Input|3.0|False
+ParameterVector|POLYGONS|Polygons|2|False
+OutputRaster|OUTPUT|Output

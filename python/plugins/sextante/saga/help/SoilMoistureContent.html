@@ -1,0 +1,28 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Soil Moisture Content</h1>
+<div class='author'>(c) 2002 by O.Conrad</div>
+<div class='description'>The WEELS (Wind Erosion on European Light Soils) soil moisture model dynamically calculates the soil moisture based on the rules proposed by the DVWK (1996) with input data about:<br/>
+- soil properties (grids: field capacity and permanent wilting point)<br/>
+- land use (grid: crop types)<br/>
+- climate (table: daily values of precipitation, temperature, air humidity)<br/>
+<br/>
+References:<br/>
+- DVWK - Deutscher Verband fuer Wasserwirtschaft und Kulturbau e.V. (1996): 'Ermittlung der Verdunstung von Land- und Wasserflaechen', DVWK Merkblaetter 238/1996, Bonn, 135p.<br/>
+- Boehner, J., Schaefer, W., Conrad, O., Gross, J., Ringeler, A. (2001): 'The WEELS Model: methods, results and limits of wind erosion modelling', In: Catena, Special Issue<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Field Capacity [mm] <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Default <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Permanent Wilting Point [mm] <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Default <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Land Use <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Default <div class='type'>Integer</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Soil Moisture <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Climate Data <div class='type'>Static table</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Crop Coefficients <div class='type'>Static table</div></dt><dd> <div class='constraints'></div></dd>
+</dl>
+</body></html>

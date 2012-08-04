@@ -1,0 +1,358 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The SEXTANTE toolbox &mdash; SEXTANTE for QGIS 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="SEXTANTE for QGIS 1.0 documentation" href="index.html" />
+    <link rel="next" title="The SEXTANTE graphical modeler" href="modeler.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="modeler.html" title="The SEXTANTE graphical modeler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">SEXTANTE for QGIS 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-sextante-toolbox">
+<h1>The SEXTANTE toolbox<a class="headerlink" href="#the-sextante-toolbox" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The <em>Toolbox</em> is the main element of the SEXTANTE GUI, and the one that
+you are more likely to use in your daily work. It shows the list of all
+available algorithms grouped in different blocks, and is the access
+point to run them whether as a single process or as a batch process
+involving several executions of a same algorithm on different sets of
+inputs.</p>
+<img alt="_images/toolbox.png" class="align-center" src="_images/toolbox.png" />
+<p>The toolbox contains all the algorithms available, divided into groups.
+Each group represents a so-called algorithm provider, which is a set of
+algorithms coming from the same source, for instance, from a third-party
+application with geoprocessing capabilities. Some of this groups
+represent algorithms from one of such third-party applications
+(like SAGA, GRASS or R), while other contain algorithms directly coded
+along with SEXTANTE elements, not relying on any additional software.
+Currently, these providers all reuse code from already-existing QGIS
+plugins (more specifically, from the <em>fTools</em> vector library shiped along
+with QGIS and the contributed mmqgis plugin that you can install using
+the plugin manager), making them more useful, since they can be executed
+from elements such as the modeler or the batch processing interface,
+which we will soon describe.</p>
+<p>Additionally, two more providers can be found, namely Models and
+<em>Scripts</em>. This providers include user-created algorithms, and allow you
+to define your own workflows and processing tasks. We will devote a full
+section to them a bit later.</p>
+<p>In the upper part of the toolbox you can find a text box. To reduce the
+number of algorithms shown in the toolbox and make it easier to find the
+one you need, you can enter any word or phrase on the text box. Notice
+that, as you type, the number of algorithms in the toolbox is reduced to
+just those which contain the text you have entered in their names.</p>
+<p>To execute an algorithm, just double-click on its name in the toolbox.</p>
+</div>
+<div class="section" id="the-algorithm-dialog">
+<h2>The algorithm dialog<a class="headerlink" href="#the-algorithm-dialog" title="Permalink to this headline">¶</a></h2>
+<p>Once you double-click on the name of the algorithm that you want to
+execute, a dialog similar to the next one is shown (in this case, the
+dialog corresponds to the <em>SAGA-Convergence index</em> algorithm).</p>
+<div class="figure align-center">
+<img alt="image" src="_images/parameters_dialog.png" />
+</div>
+<p>This dialog is used to set the input values that the algorithm needs to
+be executed. It shows a table where input values and configuration
+parameters are to be set. It, of course, has a different content
+depending on the requirements of the algorithm to be executed, and is
+created automatically based on those requirements. On the left side, the
+name of the parameter is shown. On the right side the value of the
+parameter can be set.</p>
+<p>Although the number and type of parameters depend on the characteristics
+of the algorithm, the structure is similar for all of them. The
+parameters found on the table can be of one of the following types.</p>
+<ul class="simple">
+<li>A raster layer, to select from a list of all the ones available
+(currently opened) in QGIS. The selector contains as well a button on its right-hand side, to let you select filenames that represent layers currently not loaded in QGIS.</li>
+<li>A vector layer, to select from a list of all the ones available in
+the QGIS. Layers not loaded in QGIS can be selected as well, as in the case of raster layers, but only if the algorithm does not require a table field selected from the attributes table of the layer. In that case, only opened layers can be selected, since they need to be open so as to retrieve the list of field names available.</li>
+</ul>
+<blockquote>
+<div>You will see a button by each vector layer selector. If the algorithm contains several of them, you will be able to toggle just one of them. If the button corresponding to a vector input is toggled, the algorithm will be executed iteratively on each one of its features. We will see more about this kind of execution at the end of this section.</div></blockquote>
+<ul>
+<li><p class="first">A table, to select from a list of all the ones available in QGIS.
+Non-spatial tables are loaded into QGIS like vector layers, and in
+fact they are treated as such by the program. Currently, the list of
+available tables that you will see when executing a SEXTANTE
+algorithm that needs one of them is restricted to tables coming from
+files in DBase (.dbf) or Comma-Separated Values (.csv) formats</p>
+</li>
+<li><p class="first">An option, to choose from a selection list of possible options.</p>
+</li>
+<li><p class="first">A numerical value, to be introduced in a text box. You will find a
+button by its side. Clicking on it you will see a dialog that allows
+you to enter a mathematical expression, so you can use it as a handy
+calculator. Some useful variables related to data loaded into QGIS
+can be added to your expression, so you can select a value derived
+from any of this variables such as the cellsize of a layer or the
+northern most coordinate of another one.</p>
+<div class="figure align-center">
+<img alt="image" src="_images/number_selector.png" />
+</div>
+</li>
+<li><p class="first">A range, with min and max values to be introduced in two text boxes.</p>
+</li>
+<li><p class="first">A text string, to be introduced in a text box.</p>
+</li>
+<li><p class="first">A field, to choose from the attributes table of a vector layer or a
+single table selected in another parameter.</p>
+</li>
+<li><p class="first">A Coordinate Reference System. You can type the EPSG code directly in the text box, or select it from the CRS selection dialog that appear when you click on the button on the right-hand size</p>
+</li>
+<li><p class="first">A extent, to be entered by four number representing its xmin, max, ymin, ymax limits. Clicking on the button on the right-hand side of the value selector, a pop-up menu will appear, giving you two option: to select the value from a layer or the current canvas extent, or to define it by dragging directly onto the map canvas.</p>
+<div class="figure align-center">
+<img alt="_images/extent.png" src="_images/extent.png" />
+</div>
+</li>
+</ul>
+<blockquote>
+<div><p>If you select the first option, you will see a window like the next one.</p>
+<blockquote>
+<div><div class="figure align-center">
+<img alt="_images/extent_list.png" src="_images/extent_list.png" />
+</div>
+</div></blockquote>
+<p>If you select the second one, the parameters window will hide itself, so you can click and drag onto the canvas. Once you have defined the selected rectangle, the dialog will reappear, containing the values in the extent text box.</p>
+<blockquote>
+<div><div class="figure align-center">
+<img alt="image" src="_images/extent_drag.png" />
+</div>
+</div></blockquote>
+</div></blockquote>
+<ul>
+<li><p class="first">A list of elements (whether raster layers, vector ones or tables), to
+select from the list of the ones available in QGIS. To make the
+selection, click on the small button on the left side of the
+corresponding row to see a dialog like the following one.</p>
+<div class="figure align-center">
+<img alt="image" src="_images/multiple_selection.png" />
+</div>
+</li>
+<li><p class="first">A small table to be edited by the user. These are used to define
+parameters like lookup tables or convolution kernels, among others.</p>
+<p>Click on the button on the right side to see the table and edit its
+values.</p>
+<div class="figure align-center">
+<img alt="image" src="_images/fixed_table.png" />
+</div>
+<p>Depending on the algorithm, the number of rows can be modified or
+not, using the buttons on the right side of the window.</p>
+<p>You will find a help button in the lower part of the parameters
+dialog. If a help file is available, it will be shown, giving you
+more information about the algorithms and detailed descriptions of
+what each parameter does. Unfortunately, most algorithms lack good
+documentation, but if you feel like contributing to the project, this
+would be a good place to start...</p>
+</li>
+</ul>
+<div class="section" id="a-note-on-projections">
+<h3>A note on projections<a class="headerlink" href="#a-note-on-projections" title="Permalink to this headline">¶</a></h3>
+<p>SEXTANTE -and also most of the external applications whose algorithms
+are available from SEXTANTE- does not perform any reprojection on input
+layers and assumes that all of them are already in a common coordinate
+system and ready to be analized. Whenever you use more than one layer as
+input to an algorithm, whether vector or raster, it is up to you to make
+sure that they are all in the same coordinate system.</p>
+<p>Note that, due to QGIS&#8217;s on-the-fly reprojecting capabilities, although
+two layers might seem to overlap and match, that might not be true if
+their original coordinates are used without reprojecting them onto a
+common coordinate system. That reprojection should be done manually and
+then use the resulting files as input to SEXTANTE. Also note that the
+reprojection process can be performed with SEXTANTE, which incorporates
+tools to do so.</p>
+</div>
+</div>
+<div class="section" id="data-objects-generated-by-sextante-algorithms">
+<h2>Data objects generated by SEXTANTE algorithms<a class="headerlink" href="#data-objects-generated-by-sextante-algorithms" title="Permalink to this headline">¶</a></h2>
+<p>Data objects generated by SEXTANTE can be of any of the following types:</p>
+<ul class="simple">
+<li>A raster layer</li>
+<li>A vector layer</li>
+<li>A table</li>
+<li>An HTML file (used for text and graphical outputs)</li>
+</ul>
+<p>They are all saved to disk (there are no in-memory results), and the
+parameters table will contain a text box corresponding to each one of
+these outputs, where you can type the output channel to use for saving
+it. An output channel contains the information needed to save the
+resulting object somewhere. In the most usual case, you will save it to
+a file, but the architecture of SEXTANTE allows for any other way of
+storing it. For instance, a vector layer can be stored in a database or
+even uploaded to a remote server using a WFS-T service. Although
+solutions like these are not yet implemented, SEXTANTE is prepared to
+handle them, and we expect to add new kinds of output channels in a near
+feature.</p>
+<p>To select an output channel, just click on the button on the right side
+of the text box. That will open a save-file dialog, where you can select
+the desired filepath. Supported file extensions are shown in the file
+format selector of the dialog, depending on the kind of output and the
+algorithm.</p>
+<p>The format of the output is defined by the filename extension. The
+supported formats depend on the ones supported by the algorithm itself.
+To select a format, just select the corresponding file extension (or add
+it if you are directly typing the filepath instead). If the extension of
+the filepath you entered does not match any of the supported ones, a
+default extension (usually <tt class="docutils literal"><span class="pre">dbf</span></tt> for tables, <tt class="docutils literal"><span class="pre">tif</span></tt> for raster layers
+and <tt class="docutils literal"><span class="pre">shp</span></tt> for vector ones) will be appended to the filepath and the
+file format corresponding to that extension will be used to save the
+layer or table.</p>
+<p>If you do not enter any filename, the result will be saved as a
+temporary file and in the corresponding default file format, and will be
+deleted once you exit QGIS (take care with that in case you save your
+project and it contains temporary layers)</p>
+<p>You can set a default folder for output data objects. Go to the
+configuration dialog (you can open it from the SEXTANTE menu), and in
+the <em>General</em> group you will find a parameter named <em>Output folder</em>.
+This output folder is used as the default path in case you type just a
+filename with no path (i.e. <tt class="docutils literal"><span class="pre">myfile.shp</span></tt>) when executing an algorithm.</p>
+<p>Apart from raster layers and tables, SEXTANTE also generates graphics
+and texts as HTML files. These results are shown at the end of the
+algorithm execution in a new dialog. This dialog will keep the results
+produced by SEXTANTE during the current session, and can be shown at any
+time by selecting the <em>SEXTANTE results viewer</em> menu</p>
+<p>Some external applications might have files (with no particular extension restrictions) as output, but they do not belong to any of the categories above. Those outut files will not be processed by QGIS (opened or included into the current QGIS project), since most of the times correspond to file formats or elements not supported by QGIS. This is, for instance, the case with LAS files used for LiDAR data. The files get created, but you won&#8217;t see anything new in your QGIS working session.</p>
+<p>For all the other types of outputs, you will find a check box that you can use to tell SEXTANTE not whether to load the file once it is generated by the algorithm or not. By default, all files are opened.</p>
+<p>SEXTANTE does not support optional outputs, so all outputs are created, but you can uncheck the corresponding check box if you are not interested in a given output, which virtually makes it behave like an optional output (although the layer is created anyway, but if you leave the text box empty, it will be saved to a temporary file and deleted once you exit QGIS)</p>
+</div>
+<div class="section" id="configuring-sextante">
+<h2>Configuring SEXTANTE<a class="headerlink" href="#configuring-sextante" title="Permalink to this headline">¶</a></h2>
+<p>As it has been mentioned, the configuration menu gives access to a new
+dialog where you can configure how SEXTANTE works. Configuration
+parameters are structured in separate blocks that you can select on the
+left-hand side of the dialog.</p>
+<p>Along with the aforementioned <em>Output folder</em> entry, the <em>General</em> block
+contains parameters for setting the default rendering style for SEXTANTE
+layers (that is, layers generated by using algorithms from any of the
+SEXTANTE components). Just create the style you want using QGIS, save it
+to a file, and then enter the path to that file in the settings so
+SEXTANTE can use it. Whenever a layer is loaded by SEXTANTE and added to
+the QGIS canvas, it will be rendered with that style.</p>
+<p>Rendering stlyes can be configured individually for each algorithm and
+each one of its outputs. Just right-click on the name of the algorithm
+in the toolbox and select <em>Edit rendering styles</em>. You will see a dialog
+like the one shown next.</p>
+<div class="figure align-center">
+<img alt="image" src="_images/rendering_styles.png" />
+</div>
+<p>Select the style file (*.qml) that you want for each output and press
+OK.</p>
+<p>Apart from the <em>General</em> block in the settings dialog, you will also
+find one for each algorithm provider. They contain an <em>Activate</em> item
+that you can use to make algorithms appear or not in the toolbox. Also,
+some algorithm providers have their own configuration items, that we
+will explain later when covering particular algorithm providers.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The SEXTANTE toolbox</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#the-algorithm-dialog">The algorithm dialog</a><ul>
+<li><a class="reference internal" href="#a-note-on-projections">A note on projections</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-objects-generated-by-sextante-algorithms">Data objects generated by SEXTANTE algorithms</a></li>
+<li><a class="reference internal" href="#configuring-sextante">Configuring SEXTANTE</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modeler.html"
+                        title="next chapter">The SEXTANTE graphical modeler</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/toolbox.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="modeler.html" title="The SEXTANTE graphical modeler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">SEXTANTE for QGIS 1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Victor Olaya.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
