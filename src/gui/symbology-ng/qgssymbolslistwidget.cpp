@@ -49,6 +49,13 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
     btnAdvanced->show();
   }
 
+  // Populate the symbol groups
+  QStringList groups = style->groupNames();
+  foreach ( QString group, groups )
+  {
+    groupsCombo->addItem( group );
+  }
+
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
@@ -91,11 +98,9 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   // Set symbol color in btnColor
   updateSymbolColor();
-
 }
 
-
-void QgsSymbolsListWidget::populateSymbolView()
+void QgsSymbolsListWidget::populateSymbolView( QStringList names )
 {
   QSize previewSize = viewSymbols->iconSize();
   QPixmap p( previewSize );
@@ -108,7 +113,11 @@ void QgsSymbolsListWidget::populateSymbolView()
   }
   model->clear();
 
-  QStringList names = mStyle->symbolNames();
+  if ( names.isEmpty() )
+  {
+    names = mStyle->symbolNames();
+  }
+
   for ( int i = 0; i < names.count(); i++ )
   {
     QgsSymbolV2* s = mStyle->symbol( names[i] );
@@ -285,3 +294,15 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   emit changed();
 }
 
+void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( const QString &text )
+{
+  int groupid = mStyle->groupId( text );
+  QStringList symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
+  populateSymbolView( symbols );
+}
+
+void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
+{
+  QStringList symbols = mStyle->findSymbols( text );
+  populateSymbolView( symbols );
+}

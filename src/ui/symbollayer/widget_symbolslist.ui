@@ -250,6 +250,13 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QComboBox" name="groupsCombo">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="2" column="0">
