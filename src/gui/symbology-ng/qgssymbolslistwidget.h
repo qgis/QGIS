@@ -54,7 +54,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsSymbolV2* mSymbol;
     QgsStyleV2* mStyle;
 
-    void populateSymbolView( QStringList symbols = QStringList() );
+    void populateSymbolView();
+    void populateSymbols( QStringList symbols );
     void updateSymbolColor();
     void updateSymbolInfo();
 

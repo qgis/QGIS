@@ -51,6 +51,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   // Populate the symbol groups
   QStringList groups = style->groupNames();
+  groupsCombo->addItem( QString( "" ) ); //empty first item
   foreach ( QString group, groups )
   {
     groupsCombo->addItem( group );
@@ -100,7 +101,12 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   updateSymbolColor();
 }
 
-void QgsSymbolsListWidget::populateSymbolView( QStringList names )
+void QgsSymbolsListWidget::populateSymbolView()
+{
+  populateSymbols( mStyle->symbolNames() );
+}
+
+void QgsSymbolsListWidget::populateSymbols( QStringList names )
 {
   QSize previewSize = viewSymbols->iconSize();
   QPixmap p( previewSize );
@@ -112,11 +118,6 @@ void QgsSymbolsListWidget::populateSymbolView( QStringList names )
     return;
   }
   model->clear();
-
-  if ( names.isEmpty() )
-  {
-    names = mStyle->symbolNames();
-  }
 
   for ( int i = 0; i < names.count(); i++ )
   {
@@ -298,11 +299,11 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( const QString &te
 {
   int groupid = mStyle->groupId( text );
   QStringList symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
-  populateSymbolView( symbols );
+  populateSymbols( symbols );
 }
 
 void QgsSymbolsListWidget::on_groupsCombo_editTextChanged( const QString &text )
 {
   QStringList symbols = mStyle->findSymbols( text );
-  populateSymbolView( symbols );
+  populateSymbols( symbols );
 }
