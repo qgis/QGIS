@@ -195,7 +195,6 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
   QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
   model->clear();
 
-  // QStringList symbolNames = mStyle->symbolNames();
   int type = currentItemType();
 
   for ( int i = 0; i < symbolNames.count(); ++i )

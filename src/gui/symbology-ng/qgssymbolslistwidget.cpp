@@ -297,8 +297,17 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
 
 void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( const QString &text )
 {
-  int groupid = mStyle->groupId( text );
-  QStringList symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
+  QStringList symbols;
+  // List all symbols when empty list item is selected
+  if ( text.isEmpty() )
+  {
+    symbols = mStyle->symbolNames();
+  }
+  else
+  {
+    int groupid = mStyle->groupId( text );
+    symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
+  }
   populateSymbols( symbols );
 }
 
