@@ -226,16 +226,27 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
     QDomElement ruleElem = doc.createElement( "se:Rule" );
     element.appendChild( ruleElem );
 
+    //XXX: <se:Name> is the rule identifier, but our the Rule objects
+    // have no properties could be used as identifier. Use the label.
     QDomElement nameElem = doc.createElement( "se:Name" );
     nameElem.appendChild( doc.createTextNode( mLabel ) );
     ruleElem.appendChild( nameElem );
 
-    if ( !mDescription.isEmpty() )
+    if ( !mLabel.isEmpty() || !mDescription.isEmpty() )
     {
       QDomElement descrElem = doc.createElement( "se:Description" );
-      QDomElement abstractElem = doc.createElement( "se:Abstract" );
-      abstractElem.appendChild( doc.createTextNode( mDescription ) );
-      descrElem.appendChild( abstractElem );
+      if ( !mLabel.isEmpty() )
+      {
+        QDomElement titleElem = doc.createElement( "se:Title" );
+        titleElem.appendChild( doc.createTextNode( mLabel ) );
+        descrElem.appendChild( titleElem );
+      }
+      if ( !mDescription.isEmpty() )
+      {
+        QDomElement abstractElem = doc.createElement( "se:Abstract" );
+        abstractElem.appendChild( doc.createTextNode( mDescription ) );
+        descrElem.appendChild( abstractElem );
+      }
       ruleElem.appendChild( descrElem );
     }
 
@@ -477,33 +488,35 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   {
     if ( childElem.localName() == "Name" )
     {
-      label = childElem.firstChild().nodeValue();
+      // <se:Name> tag contains the rule identifier,
+      // so prefer title tag for the label property value
+      if ( label.isEmpty() )
+        label = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName() == "Description" )
     {
       // <se:Description> can contains a title and an abstract
-      // prefer Abstract if available
-      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
       QDomElement titleElem = childElem.firstChildElement( "Title" );
+      if ( !titleElem.isNull() )
+      {
+        label = titleElem.firstChild().nodeValue();
+      }
+
+      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
       if ( !abstractElem.isNull() )
       {
         description = abstractElem.firstChild().nodeValue();
       }
-      else if ( !titleElem.isNull() && description.isEmpty() )
-      {
-        description = titleElem.firstChild().nodeValue();
-      }
     }
     else if ( childElem.localName() == "Abstract" )
     {
-      // <sld:Abstract>
+      // <sld:Abstract> (v1.0)
       description = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName() == "Title" )
     {
-      // <sld:Title>
-      if ( description.isEmpty() )
-        description = childElem.firstChild().nodeValue();
+      // <sld:Title> (v1.0)
+      label = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName() == "Filter" )
     {
