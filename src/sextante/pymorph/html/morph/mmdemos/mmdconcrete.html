@@ -1,0 +1,311 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdconcrete</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdchickparts.html"><tt>mmdchickparts</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdcookies.html"><tt>mmdcookies</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdconcrete
+      <br>
+      <span class="subtitle">Aggregate and anhydrous phase extraction from a concrete section observed by a SEM image.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      This example shows an image analysis technique to detect anhydrous phase and aggregate from a polished concrete section observed by scanning electron microscope (SEM). The anhydrous phase appears as white grains while the aggregate appears in the image as an homogeneous medium-gray grains. This image was kindly provided by Prof. Gladis Camarini from FEC-UNICAMP.
+
+          <br>The steps for this analysis are: i) anhydrous detection by automatic threshold analysis; ii) homogeneous grain detection using watershed technique; iii) aggregate are homogeneous grains that are not from the anhydrous phase. The automatic threshold analysis is done using 1D-signal morphological processing using watershed.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Reading</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The SEM image of a polished concrete section is read. The anhydrous phase are the white pores, while the aggregate are the medium-gray homogeneous pores.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; f = mmreadgray('csample.jpg')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdconcrete_001.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdconcrete_001.jpg">f</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Histogram</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The histogram has a small peak in the white region related to the anhydrous phase.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; h = mmhistogram(f)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmplot([[h]])</pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/plt_mmdconcrete_002.png"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/plt_mmdconcrete_002.png">[[h]]</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Automatic threshold from histogram.</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The threshold value is extracted using the watershed technique. The aim is to detect the middle valley of the histogram. If the histogram is negated, we need to extract the middle peak of the 1D signal. This is accomplished by find proper markers on the valleys. These markers are extracted by detecting the regional minima of the filtered signal (alternating sequential filtering, closing followed by opening of length 5 pixels). To discard the detection of peaks near the limits of the histogram, an intersection is done using the 
+                <span class="fun">mmframe</span> function. For illustrative purpose, a plot of all the signals involved is displayed.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; hf = mmasf(mmneg(h),'co',mmseline(5))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; ws = mmwatershed(hf)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; wsf = mmintersec(mmneg(mmframe(ws,20)),ws)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; t = nonzero(wsf)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print t</pre>
+                  <pre class="computer">[186]</pre>
+                  <pre class="user">&gt;&gt;&gt; mmax = mmstats(h,'max')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; hf_plot = mmneg(hf)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; ws_plot = mmgray(ws, 'uint16', mmax)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; wsf_plot = mmgray(wsf, 'uint16', mmax)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmplot([[hf_plot],[ws_plot],[wsf_plot]])</pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/plt_mmdconcrete_003.png"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/plt_mmdconcrete_003.png">[[hf_plot],[ws_plot],[wsf_plot]]</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Anhydrous using thresholding and filtering</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The threshold value found in the previous step is applied. After, a filter to remove blobs smaller then 20 pixels is applied. For illustrative, the contour of the anhydrous grains are displayed as an overlay on the original image.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; aux = mmthreshad( f, t, 255)</pre>
+                  <pre class="computer">Warning: Converting input image from int32 to uint8.
+Warning: Converting input image from int32 to uint8.</pre>
+                  <pre class="user">&gt;&gt;&gt; anidro = mmareaopen(aux, 20)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow( f, mmgradm(anidro))</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdconcrete_004.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdconcrete_004.jpg">f, mmgradm(anidro)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Homogeneous regions</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The watershed applied on the gradient using the markers from filtered regional minima of the gradient is a standard watershed based technique. In this case the filter was chosen to be a contrast 
+                <span class="fun">mmhmin</span>.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; g=mmgradm(f)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; m=mmregmin(mmhmin(g,10))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; ws=mmcwatershed(g,m)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(ws)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdconcrete_005.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdconcrete_005.jpg">ws</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Aggregate detection</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The result of the watershed in the previous step is the detection of a large number of regions. The larger ones are the aggregate and the anhydrous. So first the regions are filtered out using an area criterion of 300 pixels. Small holes (area &lt;= 50) are closed. The aggregate is obtained by removing the anhydrous phase.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; aux1=mmareaopen(mmneg(ws),300)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; aux2=mmareaclose(aux1,50)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; aggr=mmsubm(aux2,anidro)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f, mmgradm(aggr))</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdconcrete_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdconcrete_006.jpg">f, mmgradm(aggr)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Measurement and display</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        Finally each phase is measured and an illustrative display is constructed. The grains contoured by red are the aggregate and those contoured by green, the anhydrous.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; n = product(shape(f))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; anidro_phase = mmstats(anidro,'sum')/n</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print 'anidro=',anidro_phase</pre>
+                  <pre class="computer">anidro= 0.114593098958</pre>
+                  <pre class="user">&gt;&gt;&gt; aggr_phase = mmstats(aggr,'sum')/n;</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print 'aggr=',aggr_phase</pre>
+                  <pre class="computer">aggr= 0.252001953125</pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow( f, mmgradm(aggr), mmgradm(anidro))</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="320" src="../images/img_mmdconcrete_007.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdconcrete_007.jpg">f, mmgradm(aggr), mmgradm(anidro)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdchickparts.html"><tt>mmdchickparts</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdcookies.html"><tt>mmdcookies</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

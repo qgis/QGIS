@@ -1,0 +1,9 @@
+r.cost
+r.cost - Creates a raster map showing the cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost.
+Raster (r.*)
+ParameterRaster|input|Name of raster map containing grid cell cost information|False
+ParameterVector|start_points|Name of starting vector points map|0|False
+ParameterVector|stop_points|Name of stop vector points map|0|False
+ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
+ParameterBoolean|-n|Keep null values in output raster map|False
+OutputRaster|output|Name for output raster map

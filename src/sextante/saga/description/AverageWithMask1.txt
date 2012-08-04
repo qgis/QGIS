@@ -1,0 +1,8 @@
+Average With Mask 1
+contrib_a_perego
+ParameterRaster|INPUT|Input|False
+ParameterRaster|MASK|Mask Grid|False
+ParameterNumber|V|Mask value|None|None|0.0
+ParameterNumber|RX|Radius X|None|None|3.0
+ParameterNumber|RY|Radius Y|None|None|3.0
+OutputRaster|RESULT|AWM1 Grid

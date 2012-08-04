@@ -1,0 +1,6 @@
+Convert Table to Points
+shapes_points
+ParameterTable|TABLE|Table|False
+ParameterTableField|X|X|TABLE
+ParameterTableField|Y|Y|TABLE
+OutputVector|POINTS|Points

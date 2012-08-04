@@ -1,0 +1,20 @@
+r.walk
+r.walk - Outputs a raster map layer showing the anisotropic cumulative cost of moving based on friction cost.
+Raster (r.*)
+ParameterRaster|elevation|Name of elevation input raster map|False
+ParameterRaster|friction|Name of input raster map containing friction costs|False
+ParameterVector|start_points|Starting points vector map|-1|False
+ParameterVector|stop_points|Stop points vector map|-1|False
+ParameterString|coordinate|The map E and N grid coordinates of a starting point (E,N)|
+ParameterString|stop_coordinate|The map E and N grid coordinates of a stopping point (E,N)|
+ParameterString|max_cost|An optional maximum cumulative cost|0
+ParameterString|null_cost|Cost assigned to null cells. By default, null cells are excluded|
+ParameterString|percent_memory|Percent of map to keep in memory|100
+ParameterString|nseg|Number of the segment to create (segment library)|4
+ParameterString|walk_coeff|Coefficients for walking energy formula parameters a,b,c,d|0.72,6.0,1.9998,-1.9998
+ParameterString|lambda|Lambda coefficients for combining walking energy and friction cost|1.0
+ParameterString|slope_factor|Slope factor determines travel energy cost per height step|-0.2125
+ParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|True
+ParameterBoolean|-n|Keep null values in output map|True
+ParameterBoolean|-r|Start with values in raster map|True
+OutputRaster|output|Name of raster map to contain results

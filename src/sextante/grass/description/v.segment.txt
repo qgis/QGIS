@@ -1,0 +1,7 @@
+v.segment
+v.segment - Creates points/segments from input vector lines and positions.
+Vector (v.*)
+ParameterVector|input|Name of input vector map containing lines|1|False
+ParameterFile|file|Name of file containing segment rules|False
+OutputVector|output|Name for output vector map with segments
+

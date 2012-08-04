@@ -1,0 +1,8 @@
+Grid Proximity Buffer
+grid_tools
+ParameterRaster|SOURCE|Source Grid|False
+ParameterNumber|DIST|Buffer distance|None|None|500.0
+ParameterNumber|IVAL|Equidistance|None|None|100.0
+OutputRaster|DISTANCE|Distance Grid
+OutputRaster|ALLOC|Allocation Grid
+OutputRaster|BUFFER|Buffer Grid

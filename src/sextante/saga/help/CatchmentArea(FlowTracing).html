@@ -1,0 +1,45 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Catchment Area (Flow Tracing)</h1>
+<div class='author'>O.Conrad (c) 2001</div>
+<div class='description'>Flow tracing algorithms for calculations of flow accumulation and related parameters. These algorithms trace the flow of each cell in a DEM separately until it finally leaves the DEM or ends in a sink.<br/>
+<br/>
+References:<br/>
+<br/>
+Rho 8 (this implementation adopted the original algorithm only for the flow routing and will give quite different results):<br/>
+- Fairfield, J. / Leymarie, P. (1991):<br/>
+    'Drainage networks from grid digital elevation models',<br/>
+    Water Resources Research, 27:709-717<br/>
+<br/>
+Kinematic Routing Algorithm:<br/>
+- Lea, N.L. (1992):<br/>
+    'An aspect driven kinematic routing algorithm',<br/>
+    in: Parsons, A.J., Abrahams, A.D. (Eds.), 'Overland Flow: hydraulics and erosion mechanics', London, 147-175<br/>
+<br/>
+DEMON:<br/>
+- Costa-Cabral, M. / Burges, S.J. (1994):<br/>
+    'Digital Elevation Model Networks (DEMON): a model of flow over hillslopes for computation of contributing and dispersal areas',<br/>
+    Water Resources Research, 30:1681-1692<br/>
+<br/>
+</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid system <div class='type'>Grid system</div></dt><dd>Grid system <div class='constraints'></div></dd>
+	<dt>Elevation <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Sink Routes <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Weight <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Material <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Target <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Catchment Area <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Catchment Height <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Catchment Slope <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Total accumulated Material <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Accumulated Material from _left_ side <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Accumulated Material from _right_ side <div class='type'>Output Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Step <div class='type'>Integer</div></dt><dd> <div class='constraints'>Minimum: 1.0</div></dd>
+	<dt>Method <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Rho 8, Kinematic Routing Algorithm, DEMON</div></dd>
+	<dt>DEMON - Min. DQV <div class='type'>Floating point</div></dt><dd>DEMON - Minium Drainage Quota Volume (DQV) for traced flow tubes <div class='constraints'>Maximum: 1.0</div></dd>
+	<dt>Flow Correction <div class='type'>Boolean</div></dt><dd> <div class='constraints'></div></dd>
+</dl>
+</body></html>

@@ -1,0 +1,10 @@
+v.buffer
+v.buffer.distance - Creates a buffer around features of given type.
+Vector (v.*)
+ParameterVector|input|Name for input vector map|-1|False
+ParameterString|distance|Buffer distance in map units|
+ParameterString|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|0.01
+ParameterBoolean|-s|Make outside corners straight|False
+ParameterBoolean|-c|Don't make caps at the ends of polylines|False
+OutputVector|output|Name for output vector map
+

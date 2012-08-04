@@ -1,0 +1,7 @@
+Change Date Format
+table_tools
+ParameterTable|TABLE|Table|False
+ParameterTableField|FIELD|Date Field|TABLE
+ParameterSelection|FMT_IN|Input Format|[0] dd.mm.yy;[1] yy.mm.dd;[2] dd:mm:yy;[3] yy:mm:dd;[4] ddmmyyyy, fix size;[5] yyyymmdd, fix size;[6] ddmmyy, fix size;[7] yymmdd, fix size;[8] Julian Day
+ParameterSelection|FMT_OUT|Output Format|[0] dd.mm.yy;[1] yy.mm.dd;[2] dd:mm:yy;[3] yy:mm:dd;[4] ddmmyyyy, fix size;[5] yyyymmdd, fix size;[6] ddmmyy, fix size;[7] yymmdd, fix size;[8] Julian Day
+OutputTable|OUTPUT|Output

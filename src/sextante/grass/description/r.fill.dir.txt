@@ -1,0 +1,9 @@
+r.fill.dir
+r.fill.dir - Filters and generates a depressionless elevation map and a flow direction map from a given elevation raster map.
+Raster (r.*)
+ParameterRaster|input|Name of existing raster map containing elevation surface|False
+ParameterSelection|type|Output aspect direction format|grass;agnps;answers
+ParameterBoolean|-f|Find unresolved areas only|False
+OutputRaster|elevation|Output elevation raster map after filling
+OutputRaster|direction|Output direction raster map
+OutputRaster|areas|Output raster map of problem areas

@@ -1,0 +1,11 @@
+Shapes to Grid
+grid_gridding
+ParameterVector|INPUT|Shapes|-1|False
+ParameterTableField|FIELD|Attribute|INPUT
+ParameterSelection|MULTIPLE|Method for Multiple Values|[0] first;[1] last;[2] minimum;[3] maximum;[4] mean
+ParameterSelection|LINE_TYPE|Method for Lines|[0] thin;[1] thick
+ParameterSelection|GRID_TYPE|Preferred Target Grid Type|[0] Integer (1 byte);[1] Integer (2 byte);[2] Integer (4 byte);[3] Floating Point (4 byte);[4] Floating Point (8 byte)
+ParameterSelection|TARGET|Target Grid|[0] user defined
+Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
+ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+OutputRaster|USER_GRID|Grid

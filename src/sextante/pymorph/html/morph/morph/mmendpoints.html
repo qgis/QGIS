@@ -1,0 +1,260 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmendpoints</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmskelmrec.html"><tt>mmskelmrec</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmhomothick.html"><tt>mmhomothick</tt></a>]
+              </td>
+        <td class="title">Intervals (hit-or-miss templates)</td>
+      </tr>
+    </table>
+    <h1>mmendpoints
+      <br>
+      <span class="subtitle">Interval to detect end-points.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">Iab = 
+          <span class="fun">mmendpoints</span>(
+                  
+          <span class="par">OPTION</span> = "LOOP"
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">OPTION</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>'LOOP' or 'HOMOTOPIC'</p><p>Default: 
+                      <code>"LOOP"</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">Iab</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmInterval.html">Interval</a></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmendpoints</span> creates an interval that is useful to detect end-points of curves (i.e., one pixel thick connected components) in binary images. It can be used to prune skeletons and to mark objects transforming them in a single pixel or closed loops if they have holes. There are two options available: LOOP, deletes all points but preserves loops if used in 
+          <span class="fun">mmthin</span>; HOMOTOPIC, deletes all points but preserves the last single point or loops.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Interval visualization</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; print mmintershow(mmendpoints())</pre>
+              <pre class="computer">. . . 
+0 1 0 
+0 0 0</pre>
+            </div>
+          </div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; print mmintershow(mmendpoints('HOMOTOPIC'))</pre>
+              <pre class="computer">. 1 . 
+0 1 0 
+0 0 0</pre>
+            </div>
+          </div>
+          <div class="bridge">Pruning</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f = mmreadgray('pcbholes.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f1 = mmthin(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f1)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f2 = mmthin(f1,mmendpoints(),20)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f2)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmendpoints_001.jpg"></td>
+                  <td><img width="256" src="../images/img_mmendpoints_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmendpoints_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmendpoints_002.jpg">f1</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmendpoints_003.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmendpoints_003.jpg">f2</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="bridge">Homotopic marking</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; fn = mmthin(f1,mmendpoints('HOMOTOPIC'))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(mmdil(fn))</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="256" src="../images/img_mmendpoints_004.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmendpoints_004.jpg">mmdil(fn)</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="equation">
+      <H2>Equation</H2>
+      <div class="H2">
+        <p>
+          <div class="eqfig">
+            <img src="../images/eq_mmendpoints001.png">
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmendpoints(OPTION="LOOP"):
+    from string import upper
+    Iab = None
+    OPTION = upper(OPTION)
+    if OPTION == 'LOOP':
+        Iab = mmse2hmt(mmbinary([[0,0,0],
+                                  [0,1,0],
+                                  [0,0,0]]),
+                        mmbinary([[0,0,0],
+                                  [1,0,1],
+                                  [1,1,1]]))
+    elif OPTION == 'HOMOTOPIC':
+        Iab = mmse2hmt(mmbinary([[0,1,0],
+                                  [0,1,0],
+                                  [0,0,0]]),
+                        mmbinary([[0,0,0],
+                                  [1,0,1],
+                                  [1,1,1]]))
+    return Iab
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhomothick.html">mmhomothick</a></td>
+              <td class="def">Interval for homotopic thickening.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmhomothin.html">mmhomothin</a></td>
+              <td class="def">Interval for homotopic thinning.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsupcanon.html">mmsupcanon</a></td>
+              <td class="def">Union of sup-generating or hit-miss operators.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmsupgen.html">mmsupgen</a></td>
+              <td class="def">Sup-generating (hit-miss).</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmthin.html">mmthin</a></td>
+              <td class="def">Image transformation by thinning.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmse2hmt.html">mmse2hmt</a></td>
+              <td class="def">Create a Hit-or-Miss Template (or interval) from a pair of structuring elements.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmintershow.html">mmintershow</a></td>
+              <td class="def">Visualize an interval.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmskelmrec.html"><tt>mmskelmrec</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmhomothick.html"><tt>mmhomothick</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

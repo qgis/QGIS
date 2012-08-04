@@ -1,0 +1,10 @@
+v.perturb
+v.perturb - Random location perturbations of GRASS vector points
+Vector (v.*)
+ParameterVector|input|Vector points to be spatially perturbed|-1|False
+ParameterSelection|distribution|Distribution of perturbation|uniform;normal
+ParameterString|parameters|Parameter(s) of distribution (uniform: maximum; normal: mean and stddev)|
+ParameterNumber|minimum|Minimum deviation in map units|None|None|0.0
+ParameterNumber|seed|Seed for random number generation|None|None|0
+OutputVector|output|Name for output vector map
+

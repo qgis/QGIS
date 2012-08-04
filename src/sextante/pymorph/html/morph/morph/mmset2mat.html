@@ -1,0 +1,176 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmset2mat</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmmat2set.html"><tt>mmmat2set</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmreadgray.html"><tt>mmreadgray</tt></a>]
+              </td>
+        <td class="title">Image Information and Manipulation</td>
+      </tr>
+    </table>
+    <h1>mmset2mat
+      <br>
+      <span class="subtitle">Converts image representation from set to matrix
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">M = 
+          <span class="fun">mmset2mat</span>(
+                  
+          <span class="par">A</span>
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">A</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span><p>Tuple with array of pixel coordinates and optional array of corresponding pixel values</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">M</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span><p>Image in matrix format, origin (0,0) at the matrix center</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Return an image in the matrix format built from a tuple of an array of pixel coordinates and a corresponding array of pixel values
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; coord=int32([
+  [ 0,0],
+  [-1,0],
+  [ 1,1]])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; A=mmset2mat((coord,))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print A</pre>
+              <pre class="computer">[[0 1 0]
+ [0 1 0]
+ [0 0 1]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmdatatype(A)</pre>
+              <pre class="computer">binary</pre>
+              <pre class="user">&gt;&gt;&gt; vu = uint8([1,2,3])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; f=mmset2mat((coord,vu))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print f</pre>
+              <pre class="computer">[[0 2 0]
+ [0 1 0]
+ [0 0 3]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmdatatype(f)</pre>
+              <pre class="computer">uint8</pre>
+              <pre class="user">&gt;&gt;&gt; vi = int32([1,2,3])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmset2mat((coord,vi))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print g</pre>
+              <pre class="computer">[[-2147483647           2 -2147483647]
+ [-2147483647           1 -2147483647]
+ [-2147483647 -2147483647           3]]</pre>
+              <pre class="user">&gt;&gt;&gt; print mmdatatype(g)</pre>
+              <pre class="computer">int32</pre>
+            </div>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmset2mat(A):
+    from MLab import max
+    from Numeric import put, ones, ravel, shape, NewAxis, array, asarray
+    if len(A) == 2:            
+        x, v = A
+        v = asarray(v)
+    elif len(A) == 1:
+        x = A[0]
+        v = ones((len(x),), '1')
+    else:
+        raise TypeError, 'Argument must be a tuple of length 1 or 2'
+    if len(x) == 0:  return array([0]).astype(v.typecode())
+    if len(x.shape) == 1: x = x[NewAxis,:]
+    dh,dw = max(abs(x))
+    h,w = (2*dh)+1, (2*dw)+1 
+    M=ones((h,w)) * mmlimits(v)[0]
+    offset = x[:,0] * w + x[:,1] + (dh*w + dw)
+    put(M,offset,v)
+    M = M.astype(v.typecode())
+    return M
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmmat2set.html">mmmat2set</a></td>
+              <td class="def">Converts image representation from matrix to set</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmmat2set.html"><tt>mmmat2set</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmreadgray.html"><tt>mmreadgray</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+<html>
+<head><link rel="stylesheet" type="text/css" href="help.css" /></head>
+<body>
+<h1 class='module'>Universal Kriging</h1>
+<div class='author'>(c) 2003 by O.Conrad</div>
+<div class='description'>Universal Kriging for grid interpolation from irregular sample points.</div>
+<h2>Parameters</h2>
+<dl class='parameters'>
+	<dt>Grid <div class='type'>Output Data Object</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Variance <div class='type'>Output Data Object</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Points <div class='type'>Input Shapes</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Attribute <div class='type'>Table field</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Create Variance Grid <div class='type'>Boolean</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Target Grid <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: user defined, grid system, grid</div></dd>
+	<dt>Variogram Model <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Spherical Model, Exponential Model, Gaussian Model, Linear Regression, Exponential Regression, Power Function Regression</div></dd>
+	<dt>Block Kriging <div class='type'>Boolean</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Block Size <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Logarithmic Transformation <div class='type'>Boolean</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Nugget <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Sill <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Range <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Additional Parameters <div class='type'>Node</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Linear Regression <div class='type'>Floating point</div></dt><dd>Parameter B for Linear Regression:
+   y = Nugget + B * x <div class='constraints'></div></dd>
+	<dt>Exponential Regression <div class='type'>Floating point</div></dt><dd>Parameter B for Exponential Regression:
+   y = Nugget * e ^ (B * x) <div class='constraints'></div></dd>
+	<dt>Power Function - A <div class='type'>Floating point</div></dt><dd>Parameter A for Power Function Regression:
+   y = A * x ^ B <div class='constraints'></div></dd>
+	<dt>Power Function - B <div class='type'>Floating point</div></dt><dd>Parameter B for Power Function Regression:
+   y = A * x ^ B <div class='constraints'></div></dd>
+	<dt>Grids <div class='type'>Input Grid list</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Grid Interpolation <div class='type'>Choice</div></dt><dd> <div class='constraints'>Available choices: Nearest Neighbor, Bilinear Interpolation, Inverse Distance Interpolation, Bicubic Spline Interpolation, B-Spline Interpolation</div></dd>
+	<dt>Maximum Search Radius (map units) <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Min./Max. Number of m_Points <div class='type'>Value range</div></dt><dd> <div class='constraints'>Minimum: 1.66248030593e-316; Maximum: 1.66243761866e-316</div></dd>
+	<dt>Grid Size <div class='type'>Floating point</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Fit Extent <div class='type'>Boolean</div></dt><dd>Automatically fits the grid to the shapes layers extent. <div class='constraints'></div></dd>
+	<dt>X-Extent <div class='type'>Value range</div></dt><dd> <div class='constraints'>Minimum: 1.66182260575e-316; Maximum: 1.66177122292e-316</div></dd>
+	<dt>Y-Extent <div class='type'>Value range</div></dt><dd> <div class='constraints'>Minimum: 1.66193643847e-316; Maximum: 1.66189849423e-316</div></dd>
+	<dt>Grid System <div class='type'>Grid system</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Grid System <div class='type'>Grid system</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Grid <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+	<dt>Variance <div class='type'>Input Grid</div></dt><dd> <div class='constraints'></div></dd>
+</dl>
+</body></html>

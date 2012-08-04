@@ -1,0 +1,6 @@
+ComputeImagesStatistics
+otbcli_ComputeImagesStatistics
+Compute Images second order statistics
+Learning
+ParameterMultipleInput|-il|Input images|3|False
+OutputFile|-out|Output XML file

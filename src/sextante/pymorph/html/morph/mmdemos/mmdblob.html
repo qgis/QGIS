@@ -1,0 +1,237 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmdblob</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../mmdemos/mmdbeef.html"><tt>mmdbeef</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../mmdemos/mmdbrain.html"><tt>mmdbrain</tt></a>]
+              </td>
+        <td class="title">Demonstrations</td>
+      </tr>
+    </table>
+    <h1>mmdblob
+      <br>
+      <span class="subtitle">Demonstrate blob measurements and display.
+</span>
+    </h1>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      In this example, a binary image with many blobs is processed. The objective is to measure the area of each blob. First the blobs are labeled. To display the correspondent label number of each blob, a trick is used to dilate each labeled centroid by a structuring element formed by the number of the blob label. At final, the area of each blob is plotted against its label number.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="script">
+      <H2>Demo Script</H2>
+      <div class="H2">
+        <div class="slide">
+          <H3>Image reading and labeling</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The binary image is read and then labeled. The number of blobs is measured as the maximum label value. Both images are displayed.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; f  = mmreadgray('blob3.tif')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; fr = mmlabel(f)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(fr,'border')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; nblobs=mmstats(fr,'max')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print nblobs</pre>
+                  <pre class="computer">18.0</pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="128" src="../images/img_mmdblob_001.jpg"></td>
+                      <td><img width="128" src="../images/img_mmdblob_002.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdblob_001.jpg">f</a></td>
+                      <td><a href="../images/img_mmdblob_002.jpg">fr,'border'</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Centroids</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        The centroids are computed from the labeled image. After, the centroid image is labeled, so that each centroid point has a label value varying from 1 to the maximum number of blobs. For display illustration, the centroids are overlayed on the original blob image on the left and the labeled centroids are enlarged and displayed on the right.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; c  = mmblob(fr,'centroid')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; cr = mmlabel(c)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f,c)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmlblshow(mmdil(cr))</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="128" src="../images/img_mmdblob_003.jpg"></td>
+                      <td><img width="128" src="../images/img_mmdblob_004.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdblob_003.jpg">f,c</a></td>
+                      <td><a href="../images/img_mmdblob_004.jpg">mmdil(cr)</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Placing a number on a particular blob</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        To place a particular number on a particular blob, a number image is generated using the 
+                <span class="fun">mmtext</span> function and converted to a structuring element. A particular centroid is selected by comparing the image with the labeled number. This output image is a binary image with a single point at that centroid. Dilating this image by the structuring element will "stamp" the structuring element on the centroid.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; fbin = mmcmp(cr,'==',uint16(5))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; f5   = mmtext('5')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; print f5</pre>
+                  <pre class="computer">[[0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 0 0]
+ [0 1 0 1 1 1 1 0 0]
+ [0 1 1 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 1 0]
+ [0 1 0 0 0 0 0 1 0]
+ [0 0 1 1 1 1 1 0 0]
+ [0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0]]</pre>
+                  <pre class="user">&gt;&gt;&gt; b5   = mmimg2se(f5)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; fb5  = mmdil(fbin,b5)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(mmdil(fbin))</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f,fb5)</pre>
+                  <pre class="computer"></pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="128" src="../images/img_mmdblob_005.jpg"></td>
+                      <td><img width="128" src="../images/img_mmdblob_006.jpg"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdblob_005.jpg">mmdil(fbin)</a></td>
+                      <td><a href="../images/img_mmdblob_006.jpg">f,fb5</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+        <div class="slide">
+          <H3>Placing a label number to each labeled blob</H3>
+          <div class="H3">
+            <p>
+              <p>
+                        To automate the process just described, a loop scans every label value and "stamp" its number in a final image. The stamps are accumulated with the 
+                <span class="fun">mmunion</span> function. The area is computed and plotted against each label blob number.
+                    
+              </p>
+              <div class="example">
+                <div class="listing">
+                  <pre class="user">&gt;&gt;&gt; facc=mmsubm(f,f)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; for i in range(1,nblobs+1):
+  fbin = mmcmp(cr,'==',uint16(i))
+  fi   = mmtext(str(i))
+  bi   = mmimg2se(fi)
+  fbi  = mmdil(fbin,bi)
+  facc = mmunion(facc,fbi)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmshow(f,facc)</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; darea = mmblob(fr,'area','data')</pre>
+                  <pre class="computer"></pre>
+                  <pre class="user">&gt;&gt;&gt; mmplot([[darea]], [['style','impulses']])</pre>
+                </div>
+                <table class="images">
+                  <tbody align="center">
+                    <tr class="image" valign="bottom">
+                      <td><img width="128" src="../images/img_mmdblob_007.jpg"></td>
+                      <td><img width="320" src="../images/plt_mmdblob_008.png"></td>
+                      <td class="spare"></td>
+                    </tr>
+                    <tr class="title" valign="baseline">
+                      <td><a href="../images/img_mmdblob_007.jpg">f,facc</a></td>
+                      <td><a href="../images/plt_mmdblob_008.png">[[darea]], [['style','impulses']]</a></td>
+                      <td class="spare"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../mmdemos/mmdbeef.html"><tt>mmdbeef</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../mmdemos/mmdbrain.html"><tt>mmdbrain</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

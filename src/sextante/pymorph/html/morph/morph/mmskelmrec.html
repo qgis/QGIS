@@ -1,0 +1,176 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmskelmrec</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmskelm.html"><tt>mmskelm</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmendpoints.html"><tt>mmendpoints</tt></a>]
+              </td>
+        <td class="title">Residues</td>
+      </tr>
+    </table>
+    <h1>mmskelmrec
+      <br>
+      <span class="subtitle">Morphological skeleton reconstruction (Inverse Medial Axis Transform).
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmskelmrec</span>(
+                  
+          <span class="par">f</span>, 
+          <span class="par">B</span> = None
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) or binary image.
+                        </td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">B</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmSe.html">Structuring Element</a></span><p>Default: 
+                      <code>None</code> (3x3 elementary cross)
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Binary image.
+                        </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+          <span class="fun">mmskelmrec</span> reconstructs the valued morphological skeleton to recover the original image.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; from Numeric import ones</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; a=mmneg(mmframe(mmbinary(ones((7,9)))))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print a</pre>
+              <pre class="computer">[[0 0 0 0 0 0 0 0 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 0 0 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; b=mmskelm(a,mmsecross(),'value')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print b</pre>
+              <pre class="computer">[[0 0 0 0 0 0 0 0 0]
+ [0 1 0 0 0 0 0 1 0]
+ [0 0 2 0 0 0 2 0 0]
+ [0 0 0 3 3 3 0 0 0]
+ [0 0 2 0 0 0 2 0 0]
+ [0 1 0 0 0 0 0 1 0]
+ [0 0 0 0 0 0 0 0 0]]</pre>
+              <pre class="user">&gt;&gt;&gt; c=mmskelmrec(b,mmsecross())</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; print c</pre>
+              <pre class="computer">[[0 0 0 0 0 0 0 0 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 1 1 1 1 1 1 1 0]
+ [0 0 0 0 0 0 0 0 0]]</pre>
+            </div>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmskelmrec(f, B=None):
+    from Numeric import ravel
+    if B is None: B = mmsecross()
+    y = mmbinary(mmintersec(f, 0))
+    for r in range(max(ravel(f)),1,-1):
+        y = mmdil(mmunion(y,mmbinary(f,r)), B)
+    y = mmunion(y, mmbinary(f,1))
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmfreedom.html">mmfreedom</a></td>
+              <td class="def">Control automatic data type conversion.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmskelm.html">mmskelm</a></td>
+              <td class="def">Morphological skeleton (Medial Axis Transform).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmskelm.html"><tt>mmskelm</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmendpoints.html"><tt>mmendpoints</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

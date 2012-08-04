@@ -1,0 +1,8 @@
+r.regression.line
+r.regression.line - Calculates linear regression from two raster maps: y = a + b*x.
+Raster (r.*)
+ParameterRaster|map1|Map for x coefficient|False
+ParameterRaster|map2|Map for y coefficient|False
+ParameterBoolean|-g|Print in shell script style|False
+ParameterBoolean|-s|Slower but accurate (applies to FP maps only)|False
+OutputFile|output|ASCII file for storing regression coefficients (output to screen if file not specified)

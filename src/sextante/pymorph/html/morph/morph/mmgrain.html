@@ -1,0 +1,265 @@
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>mmgrain</title>
+    <link href="../tbxdok.css" rel="stylesheet">
+  </head>
+  <body>
+    <table class="topNav">
+      <tr>
+        <td class="index">
+                  [<a href="../morph/mmblob.html"><tt>mmblob</tt></a>]
+              
+                  [<a href="index.html">Up</a>]
+                  
+                  [<a href="../morph/mmlabelflat.html"><tt>mmlabelflat</tt></a>]
+              </td>
+        <td class="title">Measurements</td>
+      </tr>
+    </table>
+    <h1>mmgrain
+      <br>
+      <span class="subtitle">Gray-scale statistics for each labeled region.
+</span>
+    </h1>
+    <div class="synopsis">
+      <H2>Synopsis</H2>
+      <div class="H2">
+        <div class="prototype">y = 
+          <span class="fun">mmgrain</span>(
+                  
+          <span class="par">fr</span>, 
+          <span class="par">f</span>, 
+          <span class="par">measurement</span>, 
+          <span class="par">option</span> = "image"
+                  )
+        </div>
+        <p>Implemented in 
+          <b>Python.</b>
+        </p>
+        <div class="input">
+          <H3>Input</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">fr</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                          <p>Labeled image, to define the regions. Label 0 is the background region.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">f</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                          <p>To extract the measuremens.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">measurement</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Choose the measure to compute: 'max', 'min', 'median', 'mean', 'sum', 'std', 'std1'.</p></td>
+                </tr>
+                <tr>
+                  <td class="term"><span class="par">option</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmString.html">String</a></span><p>Output format: 'image': results as a gray-scale mosaic image (uint16); 'data': results a column vector of measurements (double).</p><p>Default: 
+                      <code>"image"</code>
+                    </p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="output">
+          <H3>Output</H3>
+          <div class="H3">
+            <table class="deflist">
+              <tbody valign="baseline">
+                <tr>
+                  <td class="term"><span class="par">y</span></td>
+                  <td class="def"><span class="type"><a href="../mmtypes/mmImage.html">Image</a></span>          Gray-scale (uint8 or uint16) image.
+                          <p>Or a column vector (double) with gray-scale statistics per region.</p></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="descr">
+      <H2>Description</H2>
+      <div class="H2">
+        <p>
+                      Computes gray-scale statistics of each grain in the image. The grains regions are specified by the labeled image 
+          <code>fr</code> and the gray-scale information is specified by the image 
+          <code>f</code>. The statistics to compute is specified by the parameter 
+          <code>measurement</code>, which has the same options as in function 
+          <code><span class="fun">mmstats</span></code>. The parameter 
+          <code>option</code> defines: ('image') if the output is an uint16 image where each label value is changed to the measurement value, or ('data') a double column vector. In this case, the first element (index 1) is the measurement of region 1. The region with label zero is not measure as it is normally the background.
+                  
+        </p>
+      </div>
+    </div>
+    <div class="examples">
+      <H2>Examples</H2>
+      <div class="H2">
+        <p>
+          <div class="bridge">Numerical Example</div>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=uint8([range(6),range(6),range(6)])</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; fr=mmlabelflat(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmgrain(fr,f,'sum','data')</pre>
+              <pre class="computer">array([[  0.],
+       [  3.],
+       [  6.],
+       [  9.],
+       [ 12.],
+       [ 15.]])</pre>
+              <pre class="user">&gt;&gt;&gt; mmgrain(fr,f,'sum')</pre>
+              <pre class="computer">array([[ 0,  3,  6,  9, 12, 15],
+       [ 0,  3,  6,  9, 12, 15],
+       [ 0,  3,  6,  9, 12, 15]],'w')</pre>
+            </div>
+          </div>
+          <div class="bridge">Watershed Mosaic</div>The catchment basins of the watershed of the gradient from markers have all its pixels with the mean gray level within its catchment basin.
+
+          <br>
+          <div class="example">
+            <div class="listing">
+              <pre class="user">&gt;&gt;&gt; f=mmreadgray('astablet.tif')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmgradm(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; marker=mmregmin(mmclose(g))</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; ws=mmcwatershed(g,marker,mmsebox(),'regions')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; g=mmgrain(ws,f,'mean')</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(f)</pre>
+              <pre class="computer"></pre>
+              <pre class="user">&gt;&gt;&gt; mmshow(g)</pre>
+              <pre class="computer"></pre>
+            </div>
+            <table class="images">
+              <tbody align="center">
+                <tr class="image" valign="bottom">
+                  <td><img width="251" src="../images/img_mmgrain_001.jpg"></td>
+                  <td><img width="251" src="../images/img_mmgrain_002.jpg"></td>
+                  <td class="spare"></td>
+                </tr>
+                <tr class="title" valign="baseline">
+                  <td><a href="../images/img_mmgrain_001.jpg">f</a></td>
+                  <td><a href="../images/img_mmgrain_002.jpg">g</a></td>
+                  <td class="spare"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </p>
+      </div>
+    </div>
+    <div class="sourcecode">
+      <H2>Source Code</H2>
+      <div class="H2">
+        <pre class="listing">
+def mmgrain(fr, f, measurement, option="image"):
+    from Numeric import NewAxis, ravel, zeros, sum, nonzero, put, take, array
+    from MLab import mean, std
+    from string import upper
+    measurement = upper(measurement)
+    option      = upper(option)
+    if len(fr.shape) == 1: fr = fr[NewAxis,:]
+    n = max(ravel(fr))
+    if option == 'DATA': y = []
+    else               : y = zeros(fr.shape)
+    if measurement == 'MAX':
+        for i in range(1,n+1):
+            aux = fr==i
+            val = max(ravel(aux*f))
+            if option == 'DATA': y.append(val)
+            else               : put(ravel(y), nonzero(ravel(aux)), val)
+    elif measurement == 'MIN':
+        for i in range(1,n+1):
+            aux = fr==i
+            lin = ravel(aux*f)
+            ind = nonzero(ravel(aux))
+            val = min(take(lin,ind))
+            if option == 'DATA': y.append(val)
+            else               : put(ravel(y), ind, val)
+    elif measurement == 'SUM':
+        for i in range(1,n+1):
+            aux = fr==i
+            val = sum(ravel(aux*f))
+            if option == 'DATA': y.append(val)
+            else               : put(ravel(y), nonzero(ravel(aux)), val)
+    elif measurement == 'MEAN':
+        for i in range(1,n+1):
+            aux = fr==i
+            ind = nonzero(ravel(aux))
+            val = mean(take(ravel(aux*f), ind))
+            if option == 'DATA': y.append(val)
+            else               : put(ravel(y), ind, val)
+    elif measurement == 'STD':
+        for i in range(1,n+1):
+            aux = fr==i
+            ind = nonzero(ravel(aux))
+            v   = take(ravel(aux*f), ind)
+            if len(v) &lt; 2: val = 0
+            else         : val = std(v)
+            if option == 'DATA': y.append(val)
+            else               : put(ravel(y), ind, val)
+    elif measurement == 'STD1':
+        print "'STD1' is not implemented"
+    else:
+        print "Measurement should be 'MAX', 'MIN', 'MEAN', 'SUM', 'STD', 'STD1'."
+    if option == 'DATA':
+        y = array(y)
+        if len(y.shape) == 1: y = y[:,NewAxis]
+    return y
+    </pre>
+      </div>
+    </div>
+    <div class="seealso">
+      <H2>See also</H2>
+      <div class="H2">
+        <table class="deflist">
+          <tbody valign="baseline">
+            <tr>
+              <td class="term"><a href="../morph/mmlabel.html">mmlabel</a></td>
+              <td class="def">Label a binary image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmblob.html">mmblob</a></td>
+              <td class="def">Blob measurements from a labeled image.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmlabelflat.html">mmlabelflat</a></td>
+              <td class="def">Label the flat zones of gray-scale images.</td>
+            </tr>
+            <tr>
+              <td class="term"><a href="../morph/mmstats.html">mmstats</a></td>
+              <td class="def">Find global image statistics.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <center>
+      <table class="botNav">
+        <tr>
+          <td class="index">
+                    [<a href="../morph/mmblob.html"><tt>mmblob</tt></a>]
+                
+                    [<a href="index.html">Up</a>]
+                    
+                    [<a href="../morph/mmlabelflat.html"><tt>mmlabelflat</tt></a>]
+                </td>
+          <td rowspan="2" class="xhtml"><a href="http://www.python.org"><img width="55" alt="Python" height="22" src="../PythonPoweredSmall.gif"></a></td>
+        </tr>
+        <tr>
+          <td class="copyright">Copyright (c) 2003, Roberto A. Lotufo, UNICAMP-University of Campinas; Rubens C. Machado, CenPRA-Renato Archer Research Center.</td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>
