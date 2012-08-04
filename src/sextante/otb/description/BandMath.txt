@@ -1,8 +1,0 @@
-BandMath
-otbcli_BandMath
-Band Math
-Miscellaneous
-ParameterMultipleInput|-il|Input image list|3|False
-OutputRaster|-out|Output Image
-ParameterNumber|-ram|Available RAM (Mb)|None|None|128
-ParameterString|-exp|Expression|

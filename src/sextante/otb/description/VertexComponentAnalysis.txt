@@ -1,8 +1,0 @@
-VertexComponentAnalysis
-otbcli_VertexComponentAnalysis
-Vertex Component Analysis
-Miscellaneous
-ParameterRaster|-in|Input Image|False
-ParameterNumber|-ne|Number of endmembers|None|None|1
-OutputRaster|-outendm|Output Endmembers
-ParameterNumber|-rand|set user defined seed|None|None|0

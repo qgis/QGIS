@@ -1,8 +1,0 @@
-r.spreadpath
-r.spreadpath - Recursively traces the least cost path backwards to cells from which the cumulative cost was determined.
-Raster (r.*)
-ParameterRaster|x_input|x_input|False
-ParameterRaster|y_input|y_input|False
-ParameterString|coordinate|coordinate|0,0
-ParameterBoolean|-v|-v|True
-OutputRaster|output|Name for output raster map

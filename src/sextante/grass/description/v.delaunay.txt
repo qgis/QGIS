@@ -1,8 +1,0 @@
-v.delaunay
-v.delaunay - Creates a Delaunay triangulation from an input vector map containing points or centroids.
-Vector (v.*)
-ParameterVector|input|Name of input vector map|0|False
-ParameterBoolean|-r|Use only points in current region|True
-ParameterBoolean|-l|Output triangulation as a graph (lines), not areas|True
-OutputVector|output|Name for output vector map
-

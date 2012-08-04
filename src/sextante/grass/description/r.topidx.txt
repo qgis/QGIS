@@ -1,5 +1,0 @@
-r.topidx
-r.topidx - Creates topographic index map from elevation raster map.
-Raster (r.*)
-ParameterRaster|input|Input elevation map|False
-OutputRaster|Output topographic index map|output

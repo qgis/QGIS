@@ -1,5 +1,0 @@
-Polygon Centroids
-shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterBoolean|METHOD         |Centroids for each part|True
-OutputVector|CENTROIDS|Centroids

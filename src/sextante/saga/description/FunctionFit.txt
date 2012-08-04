@@ -1,9 +1,0 @@
-Function Fit
-table_calculus
-ParameterTable|SOURCE|Source|False
-ParameterTableField|YFIELD|y - Values|SOURCE
-ParameterSelection|USE_X|Use x -Values|[0] No;[1] Yes
-ParameterTableField|XFIELD|x - Values|SOURCE
-ParameterString|FORMEL|Formula|
-ParameterNumber|ITER|Iterationen|None|None|0
-ParameterNumber|LAMDA|Max Lamda|None|None|0.0

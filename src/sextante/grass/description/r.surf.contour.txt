@@ -1,5 +1,0 @@
-r.surf.contour
-r.surf.contour - Surface generation program from rasterized contours.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-OutputRaster|output|Name for output raster map

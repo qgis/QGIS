@@ -1,5 +1,0 @@
-Fuzzy Intersection (AND)
-grid_calculus
-ParameterMultipleInput|GRIDS|Grids|3|False
-ParameterSelection|TYPE|Operator Type|[0] min(a, b) (non-interactive);[1] a * b;[2] max(0, a + b - 1)
-OutputRaster|AND|Intersection

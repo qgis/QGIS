@@ -1,8 +1,0 @@
-r.contour
-r.contour.step - Create vector contours from raster at specified steps
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|minlevel|Minimum contour level|0
-ParameterString|maxlevel|Maximum contour level|10000
-ParameterString|step|Increment between contour levels|100
-OutputVector|output|Name of output vector map

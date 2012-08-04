@@ -1,8 +1,0 @@
-HyperspectralUnmixing
-otbcli_HyperspectralUnmixing
-Hyperspectral data unmixing
-Miscellaneous
-ParameterRaster|-in|Input Image Filename|False
-OutputRaster|-out|Output Image
-ParameterRaster|-ie|Input endmembers|False
-ParameterSelection|-ua|Unmixing algorithm|ucls;ncls;isra;mdmdnmf|0

@@ -1,8 +1,0 @@
-r.statistics
-r.statistics - Calculates category or object oriented statistics.
-Raster (r.*)
-ParameterRaster|base|Name of base raster map|False
-ParameterRaster|cover|Name of cover raster map|False
-ParameterSelection|method|method|diversity;distribution;average;mode;median;avedev;stddev;variance;skewness;kurtosis;min;max;sum
-ParameterBoolean|-c|Cover values extracted from the category labels of the cover map|False
-OutputRaster|output|Resultant raster map (not used with 'distribution')

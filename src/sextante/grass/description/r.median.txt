@@ -1,6 +1,0 @@
-r.median
-r.median - Finds the median of values in a cover map within areas assigned the same category value in a user-specified base map.
-Raster (r.*)
-ParameterRaster|base|Name of base raster map|False
-ParameterRaster|cover|Name of cover raster map|False
-OutputRaster|output|Name for output raster map

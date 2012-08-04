@@ -1,7 +1,0 @@
-Cluster Analysis
-table_calculus
-ParameterTable|TABLE|Table|False
-ParameterSelection|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing
-ParameterNumber|NCLUSTER|Clusters|None|None|5
-ParameterBoolean|NORMALISE       |Normalise|True
-OutputTable|STATISTICS|Statistics

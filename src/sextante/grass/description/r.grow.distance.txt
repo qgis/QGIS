@@ -1,7 +1,0 @@
-r.grow.distance
-r.grow.distance - Generates a raster map layer of distance to features in input layer.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterSelection|metric|Metric|euclidean;squared;maximum;manhattan
-OutputRaster|distance|Name for distance output map
-OutputRaster|value|Name for value output map

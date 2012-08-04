@@ -1,5 +1,0 @@
-r.surf.area
-r.surf.area - Surface area estimation for rasters.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterNumber|vscale|Vertical scale|None|None|0.0

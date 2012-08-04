@@ -1,9 +1,0 @@
-r.kappa
-r.kappa - Calculate error matrix and kappa parameter for accuracy assessment of classification result.
-Raster (r.*)
-ParameterRaster|classification|Name of raster map containing classification result|False
-ParameterRaster|reference|Name of raster map containing reference classes|False
-ParameterString|title|Title for error matrix and kappa|ACCURACY ASSESSMENT
-ParameterBoolean|-w|Wide report 132 columns (default: 80)|False
-ParameterBoolean|-h|No header in the report|False
-OutputFile|output|Name for output file containing error matrix and kappa

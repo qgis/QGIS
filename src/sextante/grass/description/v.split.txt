@@ -1,8 +1,0 @@
-v.split
-v.split - Split lines to shorter segments.
-Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
-ParameterNumber|length|Maximum segment length|None|None|10.0
-ParameterNumber|vertices|Maximum number of vertices in segment|None|None|10
-OutputVector|output|Name for output vector map
-

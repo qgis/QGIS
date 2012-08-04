@@ -1,8 +1,0 @@
-r.resamp.stats
-r.resamp.stats - Resamples raster map layers to a coarser grid using aggregation.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterSelection|method|Aggregation method|average;median;mode;minimum;maximum;quart1;quart3;perc90;sum;variance;stddev
-ParameterBoolean|-n|Propagate NULLs|False
-ParameterBoolean|-w|Weight according to area (slower)|False
-OutputRaster|output|Name for output raster map

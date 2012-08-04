@@ -1,9 +1,0 @@
-v.clean
-v.clean - Toolset for cleaning topology of vector map.
-Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
-ParameterSelection|tool|Cleaning tool|break;snap;rmdangle;chdangle;rmbridge;chbridge;rmdupl;rmdac;bpol;prune;rmarea;rmline;rmsa
-ParameterNumber|thresh|Threshold|None|None|0
-OutputVector|output|Name for output vector map
-OutputVector|error|Name for output map where errors are written
-

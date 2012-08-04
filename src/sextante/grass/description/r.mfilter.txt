@@ -1,9 +1,0 @@
-r.mfilter
-r.mfilter - Performs raster map matrix filter.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterFile|filter|Filter file|False
-ParameterNumber|repeat|Number of times to repeat the filter|None|None|1
-ParameterString|title|Output raster map title|
-ParameterBoolean|-z|Apply filter only to zero data values|False
-OutputRaster|output|Name for output raster map

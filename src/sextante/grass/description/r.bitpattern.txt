@@ -1,7 +1,0 @@
-r.bitpattern
-r.bitpattern - Compares bit patterns with a raster map.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|pattern|Bit pattern position(s)|
-ParameterString|patval|Bit pattern value|
-OutputRaster|output|Name for output raster map

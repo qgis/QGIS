@@ -1,7 +1,0 @@
-r.fillnulls
-r.fillnulls - Fills no-data areas in raster maps using v.surf.rst splines interpolation or v.surf.bspline interpolation
-Raster (r.*)
-ParameterRaster|input|Name of input raster map in which to fill nulls|False
-ParameterNumber|tension|Spline tension parameter|None|None|40.0
-ParameterNumber|smooth|Spline smoothing parameter|None|None|0.1
-OutputRaster|output|Name for output raster map with nulls filled by interpolation

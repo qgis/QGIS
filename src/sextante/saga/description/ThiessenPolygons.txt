@@ -1,4 +1,0 @@
-Thiessen Polygons
-shapes_points
-ParameterVector|POINTS|Points|0|False
-OutputVector|POLYGONS|Polygons

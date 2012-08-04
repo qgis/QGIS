@@ -1,7 +1,0 @@
-ConcatenateImages
-otbcli_ConcatenateImages
-Images Concatenation
-Image Manipulation
-ParameterMultipleInput|-il|Input images list|3|False
-OutputRaster|-out|Output Image
-ParameterNumber|-ram|Available RAM (Mb)|None|None|128

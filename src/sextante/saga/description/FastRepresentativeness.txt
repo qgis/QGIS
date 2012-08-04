@@ -1,7 +1,0 @@
-Fast Representativeness
-geostatistics_grid
-ParameterRaster|INPUT|Input|False
-ParameterNumber|LOD|Level of Generalisation|None|None|16
-OutputRaster|RESULT|Output
-OutputRaster|RESULT_LOD|Output Lod
-OutputRaster|SEEDS|Output Seeds
