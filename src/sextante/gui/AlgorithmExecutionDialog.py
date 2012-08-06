@@ -206,8 +206,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.algEx.textChanged.connect(self.setText)
                 self.algEx.iterated.connect(self.iterate)
                 self.algEx.infoSet.connect(self.setInfo)
-                self.algEx.commandSet.connect(self.setCommand)
-                self.algEx.debugInfoSet.connect(self.setDebugInfo)
+                if SextanteConfig.getSetting(SextanteConfig.SHOW_DEBUG_IN_DIALOG):
+                    self.algEx.commandSet.connect(self.setCommand)
+                    self.algEx.debugInfoSet.connect(self.setDebugInfo)
                 self.algEx.start()
                 self.setInfo("<b>Algorithm %s started</b>" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
