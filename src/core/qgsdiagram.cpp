@@ -198,12 +198,11 @@ void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext
   {
     QString val = att[ s.categoryIndices.at( i )].toString();
     //find out dimensions
-    double textHeight = fontMetrics.height();
     double textWidth = fontMetrics.width( val );
     mPen.setColor( s.categoryColors.at( i ) );
     p->setPen( mPen );
     QPointF position = textPositions.at( i );
-    p->drawText( QPointF( position.x() - textWidth / 2.0, position.y() + textHeight / 2.0 ), val );
+	p->drawText( QPointF( position.x() - textWidth / 2.0, position.y() + fontMetrics.xHeight() ), val );
   }
 }
 
