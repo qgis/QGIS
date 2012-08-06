@@ -845,6 +845,16 @@ void QgsVectorLayerProperties::apply()
     {
       ds.sizeType = QgsDiagramSettings::MM;
     }
+
+    if ( !tr( "Height" ).compare( mLabelPlacementComboBox->currentText() ) )
+    {
+     ds.labelPlacementMethod = QgsDiagramSettings::Height;
+    }
+    else if ( !tr( "x-height" ).compare( mLabelPlacementComboBox->currentText() ) )
+    {
+     ds.labelPlacementMethod = QgsDiagramSettings::XHeight;
+    }
+
     ds.backgroundColor = mBackgroundColorButton->color();
     ds.penColor = mDiagramPenColorButton->color();
     ds.penWidth = mPenWidthSpinBox->value();
@@ -1306,6 +1316,19 @@ void QgsVectorLayerProperties::handleDiagramItemDoubleClick( QTreeWidgetItem * i
   }
 }
 
+void QgsVectorLayerProperties::handleDiagramTypeChanged( const QString& itemtext )
+{
+  if ( tr( "Text diagram" ) == itemtext )
+  {
+    mLabelPlacementComboBox->show();
+    mLabelPlacementLabel->show();
+  }
+  else {
+    mLabelPlacementComboBox->hide();
+    mLabelPlacementLabel->hide();
+  }
+}
+
 void QgsVectorLayerProperties::useNewSymbology()
 {
   int res = QMessageBox::question( this, tr( "Symbology" ),
@@ -1565,6 +1588,9 @@ void QgsVectorLayerProperties::initDiagramTab()
   mDiagramTypeComboBox->addItem( tr( "Pie chart" ) );
   mDiagramTypeComboBox->addItem( tr( "Text diagram" ) );
 
+  mLabelPlacementComboBox->addItem( tr( "Height" ) );
+  mLabelPlacementComboBox->addItem( tr( "x-height" ) );
+
   //insert all attributes into the combo boxes
   const QgsFieldMap& layerFields = layer->pendingFields();
   QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
@@ -1594,6 +1620,7 @@ void QgsVectorLayerProperties::initDiagramTab()
     mDisplayDiagramsCheckBox->setChecked( false );
     mFixedSizeCheckBox->setChecked( true );
     mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "MM" ) ) );
+    mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "XHeight" ) ) );
     mDiagramSizeSpinBox->setValue( 30 );
     mScaleDependentDiagramVisibilityCheckBox->setChecked( false );
 
@@ -1643,6 +1670,15 @@ void QgsVectorLayerProperties::initDiagramTab()
       else
       {
         mDiagramUnitComboBox->setCurrentIndex( 1 );
+      }
+
+      if ( settingList.at( 0 ).labelPlacementMethod == QgsDiagramSettings::Height )
+      {
+        mLabelPlacementComboBox->setCurrentIndex( 0 );
+      }
+      else
+      {
+        mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
 
 
@@ -1696,5 +1732,10 @@ void QgsVectorLayerProperties::initDiagramTab()
       }
     }
   }
+
+  // Hide/Show diagram specific widgets
+  handleDiagramTypeChanged( mDiagramTypeComboBox->currentText() );
+
   QObject::connect( mDiagramAttributesTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleDiagramItemDoubleClick( QTreeWidgetItem*, int ) ) );
+  QObject::connect( mDiagramTypeComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( handleDiagramTypeChanged( const QString& ) ) );
 }

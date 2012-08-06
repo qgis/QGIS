@@ -65,6 +65,17 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
     sizeType = MapUnits;
   }
 
+  //label placement method
+  if ( elem.attribute( "labelPlacementMethod" ) == "Height" ) 
+  {
+   labelPlacementMethod = Height;
+  }
+  else
+  {
+   labelPlacementMethod = XHeight;
+  }
+
+
   //colors
   categoryColors.clear();
   QStringList colorList = elem.attribute( "colors" ).split( "/" );
@@ -104,6 +115,16 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   {
     categoryElem.setAttribute( "sizeType", "MapUnits" );
   }
+
+  if ( labelPlacementMethod == Height )
+  {
+   categoryElem.setAttribute( "labelPlacementMethod", "Height" );
+  }
+  else
+  {
+   categoryElem.setAttribute( "labelPlacementMethod", "XHeight" );
+  }
+
 
   QString colors;
   for ( int i = 0; i < categoryColors.size(); ++i )

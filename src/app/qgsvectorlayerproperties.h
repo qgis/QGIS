@@ -144,6 +144,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     /**Set color for diagram category*/
     void handleDiagramItemDoubleClick( QTreeWidgetItem * item, int column );
+    void handleDiagramTypeChanged( const QString& itemtext );
 
   signals:
 

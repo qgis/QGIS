@@ -14,7 +14,7 @@
    <string>Layer Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../images/images.qrc">
+   <iconset resource="../../../../Quantum-GIS/images/images.qrc">
     <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
   </property>
   <property name="modal">
@@ -76,7 +76,7 @@
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
       </attribute>
       <attribute name="title">
@@ -186,7 +186,7 @@
      </widget>
      <widget class="QWidget" name="labelingTab">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
       </attribute>
       <attribute name="title">
@@ -250,7 +250,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage3">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
       </attribute>
       <attribute name="title">
@@ -273,7 +273,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../../../../.designer/xpm/new_attribute.png</normaloff>../../../../../.designer/xpm/new_attribute.png</iconset>
+           <normaloff>../../../../../../.designer/xpm/new_attribute.png</normaloff>../../../../../../.designer/xpm/new_attribute.png</iconset>
          </property>
          <property name="shortcut">
           <string>Ctrl+N</string>
@@ -290,7 +290,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../../../../.designer/xpm/delete_attribute.png</normaloff>../../../../../.designer/xpm/delete_attribute.png</iconset>
+           <normaloff>../../../../../../.designer/xpm/delete_attribute.png</normaloff>../../../../../../.designer/xpm/delete_attribute.png</iconset>
          </property>
          <property name="shortcut">
           <string>Ctrl+X</string>
@@ -365,7 +365,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage4">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
       </attribute>
       <attribute name="title">
@@ -737,7 +737,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage5">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
       </attribute>
       <attribute name="title">
@@ -822,7 +822,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage6">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
       </attribute>
       <attribute name="title">
@@ -849,7 +849,7 @@
      </widget>
      <widget class="QWidget" name="mJoinPage">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
       </attribute>
       <attribute name="title">
@@ -883,7 +883,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
                <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
              </property>
             </widget>
@@ -894,7 +894,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../images/images.qrc">
+              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
                <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
              </property>
             </widget>
@@ -942,7 +942,7 @@
      </widget>
      <widget class="QWidget" name="mDiagramPage">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/diagram.png</normaloff>:/images/themes/default/propertyicons/diagram.png</iconset>
       </attribute>
       <attribute name="title">
@@ -1182,6 +1182,199 @@
              </layout>
             </widget>
            </item>
+           <item row="3" column="0" colspan="6">
+            <widget class="QGroupBox" name="mPlacementGroupBox">
+             <property name="title">
+              <string>Position</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <item>
+                 <widget class="QLabel" name="mPlacementLabel">
+                  <property name="text">
+                   <string>Placement</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="mPlacementComboBox"/>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <item>
+                 <widget class="QLabel" name="mLineOptionsLabel">
+                  <property name="text">
+                   <string>Line Options</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="mLineOptionsComboBox"/>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QLabel" name="mDiagramDistanceLabel">
+                  <property name="text">
+                   <string>Distance</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="mDiagramDistanceSpinBox"/>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="mDataDefinedPositionLabel">
+                <property name="text">
+                 <string>Data defined position</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QLabel" name="mXPosColLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>x</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="mDataDefinedXComboBox"/>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QLabel" name="mYPosColLabel">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>y</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="mDataDefinedYComboBox"/>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_14">
+                <item>
+                 <widget class="QLabel" name="mLabelPlacementLabel">
+                  <property name="text">
+                   <string>Label placement:</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="mLabelPlacementComboBox"/>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="mAttributesLabel">
+             <property name="text">
+              <string>Attributes</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1" colspan="2">
+            <widget class="QComboBox" name="mDiagramAttributesComboBox">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>241</width>
+               <height>23</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="4" column="4">
+            <widget class="QPushButton" name="mRemoveCategoryPushButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+               <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="5">
+            <widget class="QPushButton" name="mAddCategoryPushButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+               <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" colspan="6">
+            <widget class="QTreeWidget" name="mDiagramAttributesTreeWidget">
+             <property name="columnCount">
+              <number>2</number>
+             </property>
+             <column>
+              <property name="text">
+               <string>Attribute</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Color</string>
+              </property>
+             </column>
+            </widget>
+           </item>
            <item row="2" column="0" colspan="6">
             <widget class="QGroupBox" name="mSizeGroupBox">
              <property name="title">
@@ -1280,185 +1473,6 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0" colspan="6">
-            <widget class="QGroupBox" name="mPlacementGroupBox">
-             <property name="title">
-              <string>Position</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_11">
-              <item row="0" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_7">
-                <item>
-                 <widget class="QLabel" name="mPlacementLabel">
-                  <property name="text">
-                   <string>Placement</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="mPlacementComboBox"/>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_9">
-                <item>
-                 <widget class="QLabel" name="mLineOptionsLabel">
-                  <property name="text">
-                   <string>Line Options</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="mLineOptionsComboBox"/>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="mDiagramDistanceLabel">
-                  <property name="text">
-                   <string>Distance</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="mDiagramDistanceSpinBox"/>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="mDataDefinedPositionLabel">
-                <property name="text">
-                 <string>Data defined position</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_5">
-                <item>
-                 <widget class="QLabel" name="mXPosColLabel">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>x</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="mDataDefinedXComboBox"/>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_6">
-                <item>
-                 <widget class="QLabel" name="mYPosColLabel">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>y</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="mDataDefinedYComboBox"/>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="mAttributesLabel">
-             <property name="text">
-              <string>Attributes</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="1" colspan="2">
-            <widget class="QComboBox" name="mDiagramAttributesComboBox">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="3">
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>241</width>
-               <height>23</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="4" column="4">
-            <widget class="QPushButton" name="mRemoveCategoryPushButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="5">
-            <widget class="QPushButton" name="mAddCategoryPushButton">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="0" colspan="6">
-            <widget class="QTreeWidget" name="mDiagramAttributesTreeWidget">
-             <property name="columnCount">
-              <number>2</number>
-             </property>
-             <column>
-              <property name="text">
-               <string>Attribute</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>Color</string>
-              </property>
-             </column>
-            </widget>
-           </item>
           </layout>
          </widget>
         </widget>
@@ -1485,7 +1499,7 @@
   <tabstop>pbnQueryBuilder</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../../../Quantum-GIS/images/images.qrc"/>
  </resources>
  <connections>
   <connection>
