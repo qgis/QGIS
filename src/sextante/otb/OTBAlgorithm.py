@@ -142,6 +142,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     "-sizex",    str(sizeX),
                     "-sizey",    str(sizeY)]
             SextanteLog.addToLog(SextanteLog.LOG_INFO, helperCommands)
+            progress.setInfo(helperCommands)
             OTBUtils.executeOtb(helperCommands, progress)
 
         if self.roiRasters:
