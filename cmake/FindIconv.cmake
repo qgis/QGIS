@@ -22,20 +22,13 @@ FIND_PATH(ICONV_INCLUDE_DIR iconv.h
   $ENV{INCLUDE}
   /usr/local/include
   /usr/include
-  #mingw
-  c:/msys/local/include
-  NO_DEFAULT_PATH
   )
-FIND_PATH(ICONV_INCLUDE_DIR iconv.h)
 
 FIND_LIBRARY(ICONV_LIBRARY NAMES iconv libiconv PATHS
   "$ENV{LIB_DIR}/lib"
   $ENV{LIB}
   /usr/local/lib
   /usr/lib
-  #mingw
-  c:/msys/local/lib
-  NO_DEFAULT_PATH
   )
 
 IF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)

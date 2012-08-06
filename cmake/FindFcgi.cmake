@@ -10,20 +10,14 @@ FIND_PATH(FCGI_INCLUDE_DIR
   /usr/include
   /usr/local/include
   /usr/include/fastcgi
-  #MSVC
   "$ENV{LIB_DIR}/include"
   $ENV{INCLUDE}
-  #mingw
-  c:/msys/local/include
   )
 FIND_LIBRARY(FCGI_LIBRARY NAMES fcgi libfcgi PATHS 
   /usr/local/lib 
   /usr/lib 
-  #MSVC
   "$ENV{LIB_DIR}/lib"
-  $ENV{LIB}
-  #mingw
-  c:/msys/local/lib
+  "$ENV{LIB}"
   )
 
 IF (FCGI_INCLUDE_DIR AND FCGI_LIBRARY)
