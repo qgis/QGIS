@@ -18,7 +18,6 @@ from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.parameters.ParameterNumber import ParameterNumber
 
-from sextante.gui.ParametersPanel import ParametersPanel
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.core.SextanteConfig import SextanteConfig
@@ -30,6 +29,7 @@ from sextante.outputs.OutputTable import OutputTable
 from sextante.core.WrongHelpFileException import WrongHelpFileException
 import os
 from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
+from sextante.parameters.ParameterString import ParameterString
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -161,8 +161,14 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             return param.setValue(value)
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs, ParameterExtent)):
             return param.setValue(widget.getValue())
+        elif isinstance(param, ParameterString):
+            if param.multiline:
+                return param.setValue(unicode(widget.toPlainText()))
+            else:
+                return param.setValue(unicode(widget.text()))
+
         else:
-            return param.setValue(str(widget.text()))
+            return param.setValue(unicode(widget.text()))
 
     @pyqtSlot()
     def accept(self):
@@ -213,6 +219,18 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, command)
                     if UnthreadedAlgorithmExecutor.runalg(self.alg, self):
                         self.finish()
+                    else:
+                        QApplication.restoreOverrideCursor()
+                        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
+                        if not keepOpen:
+                            self.close()
+                        else:
+                            self.progressLabel.setText("")
+                            self.progress.setMaximum(100)
+                            self.progress.setValue(0)
+                            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+                            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
+                            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         else:
             QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
 
@@ -231,7 +249,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.progress.setValue(0)
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
 
     @pyqtSlot(str)
     def error(self, msg):
@@ -246,6 +264,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.progressLabel.setText("")
             self.progress.setValue(0)
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
 
     @pyqtSlot(int)
     def iterate(self, i):
@@ -258,6 +277,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.algEx.finished.disconnect()
             self.algEx.terminate()
             QApplication.restoreOverrideCursor()
+            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
             self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         except:
             pass
@@ -265,10 +286,10 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     @pyqtSlot(str)
     def setInfo(self, msg, error = False):
         if error:
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
+            #SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
             self.logText.append('<b>' + msg + '</b>')
         else:
-            SextanteLog.addToLog(SextanteLog.LOG_INFO, msg)
+            #SextanteLog.addToLog(SextanteLog.LOG_INFO, msg)
             self.logText.append(msg)
 
     def setPercentage(self, i):

@@ -4,6 +4,7 @@ from qgis.core import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
+import sys
 
 class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
@@ -55,13 +56,13 @@ class AlgorithmExecutor(QThread):
             self.algorithm.execute(self.progress)
         except GeoAlgorithmExecutionException,e :
             self.error.emit(e.msg)
-        except BaseException,e:
+        except Exception,e:
             self.error.emit(str(e))
             print str(e)
         # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
         # being a separate thread.
         except:
-            print "Error executing " + str(self)
+            self.error.emit("Error executing " + str(self.alg.name) + "\n" + sys.exc_info()[0])
 
     def runalgIterating(self):
         try:

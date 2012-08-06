@@ -29,6 +29,7 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
+from sextante.parameters.ParameterString import ParameterString
 
 class ParametersPanel(QtGui.QWidget):
 
@@ -256,6 +257,17 @@ class ParametersPanel(QtGui.QWidget):
             item = ExtentSelectionPanel(self.parent, self.alg, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
+        elif isinstance(param, ParameterString):
+            if param.multiline:
+                verticalLayout = QtGui.QVBoxLayout()
+                verticalLayout.setSizeConstraint(QtGui.QLayout.SetDefaultConstraint)
+                textEdit = QtGui.QPlainTextEdit()
+                textEdit.setPlainText(param.default)
+                verticalLayout.addWidget(textEdit)
+                item = textEdit
+            else:
+                item = QtGui.QLineEdit()
+                item.setText(str(param.default))
         else:
             item = QtGui.QLineEdit()
             item.setText(str(param.default))
