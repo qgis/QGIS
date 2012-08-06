@@ -168,6 +168,16 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
                            QString variantName = DEFAULT_CPTCITY_VARIANTNAME );
 
+
+    enum GradientType
+    {
+      Discrete, //discrete stops, e.g. Color Brewer
+      Continuous, //continuous, e.g. QgsVectorColorRampV2
+      ContinuousMulti //continuous with 2 values in intermediate stops
+    };
+    typedef QList< QPair < double, QColor > > GradientList;
+
+
     static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() );
 
     virtual QColor color( double value ) const;
@@ -183,27 +193,24 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     QString schemeName() const { return mSchemeName; }
     QString variantName() const { return mVariantName; }
 
-    /* void setSchemeName( QString schemeName ) { mSchemeName = schemeName; loadPalette(); } */
-    /* void setVariantName( QString variantName ) { mVariantName = variantName; loadPalette(); } */
     /* lazy loading - have to call loadPalette() explicitly */
     void setSchemeName( QString schemeName ) { mSchemeName = schemeName; }
     void setVariantName( QString variantName ) { mVariantName = variantName; }
     void setName( QString schemeName, QString variantName = "" )
     { mSchemeName = schemeName; mVariantName = variantName; loadPalette(); }
 
-    void loadPalette();
-    bool isContinuous() const { return mContinuous; }
+    void loadPalette() { loadFile(); }
+    /* bool isContinuous() const { return mContinuous; } */
+    GradientType gradientType() const { return mGradientType; }
 
     QString getFilename() const;
     bool loadFile( QString filename = "" );
 
-    /* static QList<QColor> listSchemeColors(  QString schemeName, int colors ); */
-    static QList<int> listSchemeVariants( QString schemeName );
-
     static QString getBaseDir();
     static void setBaseDir( QString dirName ) { mBaseDir = dirName; }
     static bool loadSchemes( QString rootDir = "", bool reset = false );
-    /** Is the minimal (free to distribute) set of schemes available? Currently returns hasAllSchemes, because we don't have a minimal set yet. */
+    /** Is the minimal (free to distribute) set of schemes available?
+     * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
     static bool hasBasicSchemes();
     /** Is the entire archive available? Currently tests that there is at least one scheme. */
     static bool hasAllSchemes();
@@ -213,27 +220,19 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     static QgsCptCityColorRampV2* colorRampFromSVGString( QString svgString );
 
     static const QMap< QString, QStringList > schemeMap() { return mSchemeMap; }
-    /* static const QMap< QString, int > schemeNumColors() { return mSchemeNumColors; } */
     static const QMap< QString, QStringList > schemeVariants() { return mSchemeVariants; }
     static const QMap< QString, QString > collectionNames() { return mCollectionNames; }
     static const QMap< QString, QStringList > collectionSelections() { return mCollectionSelections; }
 
   protected:
 
-    typedef QMap<double, QColor> StopsMap;
-
     QString mSchemeName;
     QString mVariantName;
-    bool mContinuous;
-    QList< QColor > mPalette;
-    QList< double > mPaletteStops;
-    /* QMap< double, QColor > mPalette; */
-
+    GradientType mGradientType;
+    GradientList mPalette;
     static QString mBaseDir;
     static QStringList mCollections;
     static QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
-    /* mSchemeNumColors removed, instead read on demand */
-    /* static QMap< QString, int > mSchemeNumColors; //key is scheme, value is # colors (if no variants) */
     static QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
     static QMap< QString, QString > mCollectionNames; //key is name, value is description
     static QMap< QString, QStringList > mCollectionSelections;

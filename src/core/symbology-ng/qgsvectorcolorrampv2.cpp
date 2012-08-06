@@ -60,8 +60,9 @@ static QColor _interpolate( QColor c1, QColor c2, double value )
   int r = ( int )( c1.red() + value * ( c2.red() - c1.red() ) );
   int g = ( int )( c1.green() + value * ( c2.green() - c1.green() ) );
   int b = ( int )( c1.blue() + value * ( c2.blue() - c1.blue() ) );
+  int a = ( int )( c1.alpha() + value * ( c2.alpha() - c1.alpha() ) );
 
-  return QColor::fromRgb( r, g, b );
+  return QColor::fromRgb( r, g, b, a );
 }
 
 QColor QgsVectorGradientColorRampV2::color( double value ) const
@@ -269,7 +270,7 @@ QMap< QString, QString > QgsCptCityColorRampV2::mCollectionNames;
 QMap< QString, QStringList > QgsCptCityColorRampV2::mCollectionSelections;
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName )
-    : mSchemeName( schemeName ), mVariantName( variantName ), mContinuous( false )
+    : mSchemeName( schemeName ), mVariantName( variantName ), mGradientType( Continuous )
 {
   // TODO replace this with hard-coded data in the default case
   loadFile();
@@ -289,7 +290,7 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
 }
 
 
-
+#if 0
 QColor QgsCptCityColorRampV2::color( double value ) const
 {
   if ( mPalette.isEmpty() || value < 0 || value > 1 )
@@ -332,6 +333,45 @@ QColor QgsCptCityColorRampV2::color( double value ) const
     c2 = mPalette[ numStops - 1 ];
     return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
   }
+}
+#endif
+
+QColor QgsCptCityColorRampV2::color( double value ) const
+{
+  if ( mPalette.isEmpty() || value < 0 || value > 1 )
+    return QColor( 255, 0, 0 ); // red color as a warning :)
+
+  int numStops = mPalette.count();
+  if ( numStops < 2 )
+    return QColor( 255, 0, 0 ); // red color as a warning :)
+
+  double lower = 0, upper = 0;
+  QColor c1, c2;
+  c1 = mPalette[0].second;
+  for ( int i = 0; i < numStops; i++ )
+  {
+    if ( mPalette[i].first >= value )
+    {
+      if ( mGradientType == Discrete )
+        return c1;
+
+      upper = mPalette[i].first;
+      c2 = mPalette[i].second;
+
+      return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+    }
+
+    lower = mPalette[i].first;
+    c1 = mPalette[i].second;
+  }
+
+  if ( mGradientType == Discrete )
+    return c1;
+
+  upper = 1;
+  c2 = mPalette[ numStops - 1 ].second;
+
+  return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
 }
 
 QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
@@ -390,23 +430,6 @@ QStringList QgsCptCityColorRampV2::listSchemeNames( QString collectionName )
   return entries;
 }
 
-QList<int> QgsCptCityColorRampV2::listSchemeVariants( QString schemeName )
-{
-  QList<int> variants;
-
-  QString palette( brewerString );
-  QStringList list = palette.split( QChar( '\n' ) );
-  foreach ( QString entry, list )
-  {
-    QStringList items = entry.split( QChar( '-' ) );
-    if ( items.count() != 3 || items[0] != schemeName )
-      continue;
-    variants << items[1].toInt();
-  }
-
-  return variants;
-}
-
 QString QgsCptCityColorRampV2::getBaseDir()
 {
   // currently hard-coded, but could be also in QGis install path and/or configurable
@@ -436,7 +459,6 @@ bool QgsCptCityColorRampV2::loadFile( QString filename )
   // QgsDebugMsg("filename= "+filename);
 
   mPalette.clear();
-  mPaletteStops.clear();
 
   QString mErrorString = QString();
 
@@ -478,30 +500,25 @@ bool QgsCptCityColorRampV2::loadFile( QString filename )
     return false;
   }
 
-  // initialize self
-  mContinuous = true; // we will detect later if there are overlapping stops
-  mPalette.clear();
-  mPaletteStops.clear();
-
   // loop for all stop tags
   QDomElement e = rampsElement.firstChildElement();
-  // int i = 0;
-  QMap< double, QColor > map;
+  QMap< double, QPair<QColor, QColor> > map;
+
+  QColor prevColor;
   while ( !e.isNull() )
   {
-    // QgsDebugMsg("read "+e.tagName());
     if ( e.tagName() == "stop" )
     {
       //todo integrate this into symbollayerutils, keep here for now...
       double offset;
       QString offsetStr = e.attribute( "offset" ); // offset="50.00%" | offset="0.5"
+      QString colorStr = e.attribute( "stop-color", "" ); // stop-color="rgb(222,235,247)"
+      QString opacityStr = e.attribute( "stop-opacity", "1.0" ); // stop-opacity="1.0000"
       if ( offsetStr.endsWith( "%" ) )
         offset = offsetStr.remove( offsetStr.size() - 1, 1 ).toDouble() / 100.0;
       else
         offset = offsetStr.toDouble();
 
-      QString colorStr = e.attribute( "stop-color", "" ); // stop-color="rgb(222,235,247)"
-      QString opacityStr = e.attribute( "stop-opacity", "1.0" ); // stop-opacity="1.0000"
       // QColor color( 255, 0, 0 ); // red color as a warning :)
       QColor color = QgsSymbolLayerV2Utils::parseColor( colorStr );
       if ( color != QColor() )
@@ -509,9 +526,12 @@ bool QgsCptCityColorRampV2::loadFile( QString filename )
         int alpha = opacityStr.toDouble() * 255; // test
         color.setAlpha( alpha );
         if ( map.contains( offset ) )
-          mContinuous = false; // assume discrete if at least one stop is repeated
-        map[offset] = color;
+          map[offset].second = color;
+        else
+          map[offset] = qMakePair( color, color );
       }
+      else
+        QgsDebugMsg( QString( "at offset=%1 invalid color" ).arg( offset ) );
     }
     else
     {
@@ -521,18 +541,51 @@ bool QgsCptCityColorRampV2::loadFile( QString filename )
     e = e.nextSiblingElement();
   }
 
-  // if this is a discrete gradient, remove last stop
-  if ( ! mContinuous )
-  {
-    if ( map.contains( 1 ) )
-      map.remove( 1 );
-  }
   // add colors to palette
-  QMap<double, QColor>::const_iterator it = map.constBegin();
+  mPalette.clear();
+  QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
+  // first detect if file is gradient is continuous or dicrete
+  // discrete: stop contains 2 colors and first color is identical to previous second
+  // multi: stop contains 2 colors and no relation with previous stop
+  mGradientType = Continuous;
+  it = prev = map.constBegin();
   while ( it != map.constEnd() )
   {
-    mPaletteStops << it.key();
-    mPalette << it.value();
+    // look for stops that contain multiple values
+    if ( it != map.constBegin() && ( it.value().first != it.value().second ) )
+    {
+      if ( it.value().first == prev.value().second )
+      {
+        mGradientType = Discrete;
+        break;
+      }
+      else
+      {
+        mGradientType = ContinuousMulti;
+        break;
+      }
+    }
+    prev = it;
+    ++it;
+  }
+
+  it = prev = map.constBegin();
+  while ( it != map.constEnd() )
+  {
+    if ( mGradientType == Discrete )
+    {
+      mPalette << qMakePair( it.key(), it.value().second );
+    }
+    else
+    {
+      mPalette << qMakePair( it.key(), it.value().first );
+      if (( mGradientType == ContinuousMulti ) &&
+          ( it.key() != 0.0 && it.key() != 1.0 ) )
+      {
+        mPalette << qMakePair( it.key(), it.value().second );
+      }
+    }
+    prev = it;
     ++it;
   }
 
@@ -782,7 +835,3 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
   return ( ! mCollections.isEmpty() );
 }
 
-void QgsCptCityColorRampV2::loadPalette()
-{
-  // TODO: IMPLEMENT ME
-}
