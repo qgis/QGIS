@@ -206,8 +206,10 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.algEx.textChanged.connect(self.setText)
                 self.algEx.iterated.connect(self.iterate)
                 self.algEx.infoSet.connect(self.setInfo)
+                self.algEx.commandSet.connect(self.setCommand)
+                self.algEx.debugInfoSet.connect(self.setDebugInfo)
                 self.algEx.start()
-                self.setInfo("Algorithm %s started" % self.alg.name)
+                self.setInfo("<b>Algorithm %s started</b>" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
                 self.tabWidget.setCurrentIndex(1) # log tab
             else:
@@ -268,11 +270,11 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
 
     @pyqtSlot(int)
     def iterate(self, i):
-        self.setInfo("Algorithm %s iteration #%i completed" % (self.alg.name, i))
+        self.setInfo("<b>Algorithm %s iteration #%i completed</b>" % (self.alg.name, i))
 
     @pyqtSlot()
     def cancel(self):
-        self.setInfo("Algorithm %s canceled" % self.alg.name)
+        self.setInfo("<b>Algorithm %s canceled</b>" % self.alg.name)
         try:
             self.algEx.finished.disconnect()
             self.algEx.terminate()
@@ -284,13 +286,22 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             pass
 
     @pyqtSlot(str)
+    @pyqtSlot(str, bool)
     def setInfo(self, msg, error = False):
         if error:
             #SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
-            self.logText.append('<b>' + msg + '</b>')
+            self.logText.append('<span style="color:red">' + msg + '</span>')
         else:
             #SextanteLog.addToLog(SextanteLog.LOG_INFO, msg)
             self.logText.append(msg)
+
+    @pyqtSlot(str)
+    def setCommand(self, cmd):
+        self.setInfo('<tt>' + cmd + '<tt>')
+
+    @pyqtSlot(str)
+    def setDebugInfo(self, msg):
+        self.setInfo('<span style="color:blue">' + msg + '</span>')
 
     def setPercentage(self, i):
         if self.progress.maximum() == 0:

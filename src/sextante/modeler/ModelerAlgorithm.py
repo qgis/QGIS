@@ -370,6 +370,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if canExecute:
                         try:
                             alg = alg.getCopy()
+                            progress.setDebugInfo("Prepare algorithm %i: %s" % (iAlg, alg.name))
                             self.prepareAlgorithm(alg, iAlg)
                             progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/"
                                              + str(len(self.algs) - len(self.deactivated)) +"]")
@@ -379,9 +380,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 outputs[out.name] = out.value
                             self.producedOutputs[iAlg] = outputs
                             executed.append(iAlg)
+                            progress.setDebugInfo("OK. %i outputs" % len(outputs))
                         except GeoAlgorithmExecutionException, e :
+                            progress.setDebugInfo("Failed")
                             raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
+                else:
+                    progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
                 iAlg += 1
+        progress.setDebugInfo("Model processed ok. Executed %i algorithms total" % iAlg)
 
     def getOutputType(self, i, outname):
         for out in self.algs[i].outputs:

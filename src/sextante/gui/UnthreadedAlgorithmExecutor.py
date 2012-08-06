@@ -77,3 +77,9 @@ class SilentProgress():
 
     def setInfo(self, _):
         pass
+
+    def setCommand(self, _):
+        pass
+
+    def setDebugInfo(self, _):
+        pass
