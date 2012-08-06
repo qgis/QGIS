@@ -48,7 +48,11 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
     QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                           "Please download the complete collection (in svg format) "
+                           "You have two means of installing them:\n\n"
+                           "1) Install the \"Color Ramp Manager\" python plugin "
+                           "(you must enable Experimental plugins in the plugin manager) "
+                           "and use it to download latest cpt-city package.\n\n"
+                           "2) Download the complete collection (in svg format) "
                            "and unzip it to your QGis settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath()

@@ -432,11 +432,23 @@ QStringList QgsCptCityColorRampV2::listSchemeNames( QString collectionName )
 
 QString QgsCptCityColorRampV2::getBaseDir()
 {
-  // currently hard-coded, but could be also in QGis install path and/or configurable
-  if ( mBaseDir.isNull() )
-    return QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city";
-  else
-    return mBaseDir;
+  // if was set with setBaseDir, return that value
+  QString baseDir = mBaseDir;
+
+  // use CptCity/baseDir setting if set
+  if ( baseDir.isNull() )
+  {
+    QSettings settings;
+    baseDir = settings.value( "CptCity/baseDir", QString() ).toString();
+    if ( ! baseDir.isNull() )
+      baseDir += "/cpt-city";
+  }
+
+  // fallback to user setting dir
+  if ( baseDir.isNull() )
+    baseDir = QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city";
+
+  return baseDir;
 }
 
 QString QgsCptCityColorRampV2::getFilename() const
