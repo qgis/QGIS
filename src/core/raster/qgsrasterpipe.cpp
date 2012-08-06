@@ -28,7 +28,7 @@ QgsRasterPipe::QgsRasterPipe()
 
 QgsRasterPipe::~QgsRasterPipe()
 {
-  foreach( QgsRasterInterface* interface, mInterfaces )
+  foreach ( QgsRasterInterface* interface, mInterfaces )
   {
     delete interface;
   }

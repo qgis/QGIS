@@ -498,7 +498,7 @@ bool QgsRasterDataProvider::hasStatistics( int theBandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  foreach( QgsRasterBandStats stats, mStatistics )
+  foreach ( QgsRasterBandStats stats, mStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -522,7 +522,7 @@ QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  foreach( QgsRasterBandStats stats, mStatistics )
+  foreach ( QgsRasterBandStats stats, mStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -766,7 +766,7 @@ bool QgsRasterDataProvider::hasHistogram( int theBandNo,
   QgsRasterHistogram myHistogram;
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
-  foreach( QgsRasterHistogram histogram, mHistograms )
+  foreach ( QgsRasterHistogram histogram, mHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -790,7 +790,7 @@ QgsRasterHistogram QgsRasterDataProvider::histogram( int theBandNo,
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // Find cached
-  foreach( QgsRasterHistogram histogram, mHistograms )
+  foreach ( QgsRasterHistogram histogram, mHistograms )
   {
     if ( histogram == myHistogram )
     {

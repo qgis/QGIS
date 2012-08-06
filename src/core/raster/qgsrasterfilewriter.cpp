@@ -90,7 +90,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
   }
 
   //Get output map units per pixel
-  int iterLeft, iterTop, iterCols, iterRows;
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
 
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );

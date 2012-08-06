@@ -198,7 +198,7 @@ QDomDocument QgsWFSServer::getCapabilities()
 
   //wfs:FeatureTypeList element
   QDomElement featureTypeListElement = doc.createElement( "FeatureTypeList"/*wfs:FeatureTypeList*/ );
-  capabilityElement.appendChild( featureTypeListElement );
+  wfsCapabilitiesElement.appendChild( featureTypeListElement );
   //wfs:Operations element
   QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
   featureTypeListElement.appendChild( operationsElement );

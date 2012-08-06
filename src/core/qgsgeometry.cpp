@@ -5566,7 +5566,7 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
     return 0;
   }
 
-  bool atLeastTwoIntersections;
+  bool atLeastTwoIntersections = false;
 
   try
   {
@@ -6411,6 +6411,8 @@ QgsGeometry* QgsGeometry::convexHull()
 
 QgsGeometry* QgsGeometry::interpolate( double distance )
 {
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+    ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=2)))
   if ( !mGeos )
   {
     exportWkbToGeos();
@@ -6425,6 +6427,9 @@ QgsGeometry* QgsGeometry::interpolate( double distance )
     return fromGeosGeom( GEOSInterpolate( mGeos, distance ) );
   }
   CATCH_GEOS( 0 )
+#else
+  QgsMessageLog::logMessage( QObject::tr( "GEOS prior to 3.2 doesn't support GEOSInterpolate" ), QObject::tr( "GEOS" ) );
+#endif
 }
 
 QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )

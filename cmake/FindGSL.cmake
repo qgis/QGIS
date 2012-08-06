@@ -23,25 +23,18 @@
 ##
 
 IF(WIN32)
-
-  SET(GSL_MINGW_PREFIX "c:/msys/local" )
-  SET(GSL_MSVC_PREFIX "$ENV{LIB_DIR}")
-
   FIND_PATH(GSL_INCLUDE_DIR gsl/gsl_blas.h 
-    ${GSL_MINGW_PREFIX}/include 
-    ${GSL_MSVC_PREFIX}/include
+    ${LIB_DIR}/include 
     $ENV{INCLUDE}
     )
 
   FIND_LIBRARY(GSL_LIB gsl PATHS 
-    ${GSL_MINGW_PREFIX}/lib 
-    ${GSL_MSVC_PREFIX}/lib
+    ${LIB_DIR}/lib
     $ENV{LIB}
     )
 
   FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
-    ${GSL_MINGW_PREFIX}/lib 
-    ${GSL_MSVC_PREFIX}/lib
+    ${LIB_DIR}/lib
     $ENV{LIB}
   )
 

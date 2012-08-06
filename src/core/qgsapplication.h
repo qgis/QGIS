@@ -67,7 +67,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * but plugin writers etc can use this method as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      */
-    static const QString themeName() ;
+    static const QString themeName();
 
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
@@ -210,9 +210,11 @@ class CORE_EXPORT QgsApplication: public QApplication
      * the gradient fills for backgrounds.
      */
     static QString reportStyleSheet();
+
     /** Convenience function to get a summary of the paths used in this
      * application instance useful for debugging mainly.*/
     static QString showSettings();
+
     /** Register OGR drivers ensuring this only happens once.
      * This is a workaround for an issue with older gdal versions that
      * caused duplicate driver name entries to appear in the list

@@ -604,13 +604,13 @@ void QgsMapToolNodeTool::deactivate()
 void QgsMapToolNodeTool::removeRubberBands()
 {
   // cleanup rubberbands and list
-  foreach( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsRubberBand *rb, mRubberBands )
   {
     delete rb;
   }
   mRubberBands.clear();
 
-  foreach( QgsRubberBand *rb, mTopologyRubberBand )
+  foreach ( QgsRubberBand *rb, mTopologyRubberBand )
   {
     delete rb;
   }

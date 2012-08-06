@@ -27,6 +27,7 @@ symbology-ng/qgssymbolv2selectordialog.cpp
 symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
 symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
+symbology-ng/qgscptcitycolorrampv2dialog.cpp
 symbology-ng/characterwidget.cpp
 symbology-ng/qgsstylev2exportimportdialog.cpp
 symbology-ng/qgsellipsesymbollayerv2widget.cpp
@@ -123,6 +124,7 @@ symbology-ng/qgssymbolv2selectordialog.h
 symbology-ng/qgsvectorgradientcolorrampv2dialog.h
 symbology-ng/qgsvectorrandomcolorrampv2dialog.h
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
+symbology-ng/qgscptcitycolorrampv2dialog.h
 symbology-ng/qgscolorrampcombobox.h
 symbology-ng/characterwidget.h
 symbology-ng/qgspenstylecombobox.h

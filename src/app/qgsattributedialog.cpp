@@ -194,7 +194,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mpWidgets << myWidget;
     }
 
-    foreach( QLineEdit *le, mDialog->findChildren<QLineEdit*>() )
+    foreach ( QLineEdit *le, mDialog->findChildren<QLineEdit*>() )
     {
       if ( !le->objectName().startsWith( "expr_" ) )
         continue;

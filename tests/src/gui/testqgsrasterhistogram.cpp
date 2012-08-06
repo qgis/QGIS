@@ -258,7 +258,7 @@ int TestRasterHistogram::testFile( QString theTestType,
 
   // setup histogram widget
   mHistogramWidget->setRendererWidget( rendererName, rendererWidget );
-  foreach( QString actionName, actionsList )
+  foreach ( QString actionName, actionsList )
   {
     mHistogramWidget->histoAction( actionName );
   }

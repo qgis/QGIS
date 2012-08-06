@@ -1878,7 +1878,7 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
     myBands << myMultiBandRenderer->redBand() << myMultiBandRenderer->greenBand() << myMultiBandRenderer->blueBand();
   }
 
-  foreach( int myBand, myBands )
+  foreach ( int myBand, myBands )
   {
     if ( myBand != -1 )
     {
@@ -2697,7 +2697,7 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   for ( int myIterator = 1; myIterator < mDataProvider->bandCount(); ++myIterator )
   {
     //find out the name of this band
-    if ( mDataProvider->generateBandName( myIterator ) == theBandName );
+    if ( mDataProvider->generateBandName( myIterator ) == theBandName )
     {
       QgsDebugMsg( "Matching band name found" );
       return theBandName;

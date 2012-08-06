@@ -54,7 +54,7 @@ QgsExpression::Interval QgsExpression::Interval::fromString( QString string )
     pos += rx.matchedLength();
   }
 
-  foreach( QString match, list )
+  foreach ( QString match, list )
   {
     QStringList split = match.split( QRegExp( "\\s+" ) );
     bool ok;
@@ -432,7 +432,7 @@ static QVariant fcnToDateTime( const QVariantList& values, QgsFeature* , QgsExpr
 
 static QVariant fcnCoalesce( const QVariantList& values, QgsFeature* , QgsExpression* )
 {
-  foreach( const QVariant &value, values )
+  foreach ( const QVariant &value, values )
   {
     if ( value.isNull() )
       continue;
@@ -449,6 +449,17 @@ static QVariant fcnUpper( const QVariantList& values, QgsFeature* , QgsExpressio
 {
   QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
+}
+static QVariant fcnTitle( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QStringList elems = str.split( " " );
+  for ( int i = 0; i < elems.size(); i++ )
+  {
+    if ( elems[i].size() > 1 )
+      elems[i] = elems[i].left( 1 ).toUpper() + elems[i].mid( 1 ).toLower();
+  }
+  return QVariant( elems.join( " " ) );
 }
 static QVariant fcnLength( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
@@ -498,7 +509,7 @@ static QVariant fcnFeatureId( const QVariantList& , QgsFeature* f, QgsExpression
 static QVariant fcnConcat( const QVariantList& values, QgsFeature* , QgsExpression *parent )
 {
   QString concat;
-  foreach( const QVariant &value, values )
+  foreach ( const QVariant &value, values )
   {
     concat += getStringValue( value, parent );
   }
@@ -800,6 +811,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     // string manipulation
     << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
+    << FunctionDef( "title", 1, fcnTitle, QObject::tr( "String" ) )
     << FunctionDef( "length", 1, fcnLength, QObject::tr( "String" ) )
     << FunctionDef( "replace", 3, fcnReplace, QObject::tr( "String" ) )
     << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
@@ -1123,7 +1135,7 @@ QgsExpression::Node* QgsExpression::Node::createFromOgcFilter( QDomElement &elem
 QString QgsExpression::NodeList::dump() const
 {
   QString msg; bool first = true;
-  foreach( Node* n, mList )
+  foreach ( Node* n, mList )
   {
     if ( !first ) msg += ", "; else first = false;
     msg += n->dump();
@@ -1133,7 +1145,7 @@ QString QgsExpression::NodeList::dump() const
 
 void QgsExpression::NodeList::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
-  foreach( Node* n, mList )
+  foreach ( Node* n, mList )
   {
     n->toOgcFilter( doc, element );
   }
@@ -1645,7 +1657,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
 
   bool listHasNull = false;
 
-  foreach( Node* n, mList->list() )
+  foreach ( Node* n, mList->list() )
   {
     QVariant v2 = n->eval( parent, f );
     ENSURE_NO_EVAL_ERROR;
@@ -1683,7 +1695,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
 bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
 {
   bool res = mNode->prepare( parent, fields );
-  foreach( Node* n, mList->list() )
+  foreach ( Node* n, mList->list() )
   {
     res = res && n->prepare( parent, fields );
   }
@@ -1710,7 +1722,7 @@ void QgsExpression::NodeInOperator::toOgcFilter( QDomDocument &doc, QDomElement 
     parent = &orElem;
   }
 
-  foreach( Node* n, mList->list() )
+  foreach ( Node* n, mList->list() )
   {
     QDomElement eqElem = doc.createElement( "ogc:PropertyIsEqualTo" );
     mNode->toOgcFilter( doc, eqElem );
@@ -1730,7 +1742,7 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
   QVariantList argValues;
   if ( mArgs )
   {
-    foreach( Node* n, mArgs->list() )
+    foreach ( Node* n, mArgs->list() )
     {
       QVariant v = n->eval( parent, f );
       ENSURE_NO_EVAL_ERROR;
@@ -1753,7 +1765,7 @@ bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsField
   bool res = true;
   if ( mArgs )
   {
-    foreach( Node* n, mArgs->list() )
+    foreach ( Node* n, mArgs->list() )
     {
       res = res && n->prepare( parent, fields );
     }
@@ -1944,7 +1956,7 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression* /*parent*/, QgsFeatu
 
 bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFieldMap& fields )
 {
-  foreach( int i, fields.keys() )
+  foreach ( int i, fields.keys() )
   {
     if ( QString::compare( fields[i].name(), mName, Qt::CaseInsensitive ) == 0 )
     {
@@ -1987,7 +1999,7 @@ QgsExpression::Node* QgsExpression::NodeColumnRef::createFromOgcFilter( QDomElem
 
 QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* f )
 {
-  foreach( WhenThen* cond, mConditions )
+  foreach ( WhenThen* cond, mConditions )
   {
     QVariant vWhen = cond->mWhenExp->eval( parent, f );
     TVL tvl = getTVLValue( vWhen, parent );
@@ -2014,7 +2026,7 @@ QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* 
 bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFieldMap& fields )
 {
   bool res;
-  foreach( WhenThen* cond, mConditions )
+  foreach ( WhenThen* cond, mConditions )
   {
     res = cond->mWhenExp->prepare( parent, fields )
           & cond->mThenExp->prepare( parent, fields );
@@ -2030,7 +2042,7 @@ bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFiel
 QString QgsExpression::NodeCondition::dump() const
 {
   QString msg = "CONDITION:\n";
-  foreach( WhenThen* cond, mConditions )
+  foreach ( WhenThen* cond, mConditions )
   {
     msg += QString( "- WHEN %1 THEN %2\n" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
   }
@@ -2048,7 +2060,7 @@ void QgsExpression::NodeCondition::toOgcFilter( QDomDocument &doc, QDomElement &
 QStringList QgsExpression::NodeCondition::referencedColumns() const
 {
   QStringList lst;
-  foreach( WhenThen* cond, mConditions )
+  foreach ( WhenThen* cond, mConditions )
   {
     lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
   }
@@ -2061,7 +2073,7 @@ QStringList QgsExpression::NodeCondition::referencedColumns() const
 
 bool QgsExpression::NodeCondition::needsGeometry() const
 {
-  foreach( WhenThen* cond, mConditions )
+  foreach ( WhenThen* cond, mConditions )
   {
     if ( cond->mWhenExp->needsGeometry() ||
          cond->mThenExp->needsGeometry() )

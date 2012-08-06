@@ -35,7 +35,7 @@
 char** papszFromStringList( const QStringList& list )
 {
   char **papszRetList = NULL;
-  foreach( QString elem, list )
+  foreach ( QString elem, list )
   {
     papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
   }
@@ -108,12 +108,12 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   if (( type == Table ) || ( type == LineEdit ) )
   {
     // hide all controls, except stacked widget
-    foreach( QWidget* widget, widgets )
+    foreach ( QWidget* widget, widgets )
     {
       widget->setVisible( false );
     }
     mOptionsStackedWidget->setVisible( true );
-    foreach( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget *>() )
+    foreach ( QWidget* widget, mOptionsStackedWidget->findChildren<QWidget *>() )
     {
       widget->setVisible( true );
     }
@@ -126,7 +126,7 @@ void QgsRasterFormatSaveOptionsWidget::setType( QgsRasterFormatSaveOptionsWidget
   else
   {
     // show all widgets, except profile buttons (unless Full)
-    foreach( QWidget* widget, widgets )
+    foreach ( QWidget* widget, widgets )
     {
       widget->setVisible( true );
     }
@@ -159,7 +159,7 @@ void QgsRasterFormatSaveOptionsWidget::updateProfiles()
   mOptionsMap.clear();
   mProfileComboBox->blockSignals( true );
   mProfileComboBox->clear();
-  foreach( QString profileKey, profileKeys )
+  foreach ( QString profileKey, profileKeys )
   {
     QString profileName, profileOptions;
     profileOptions = createOptions( profileKey );

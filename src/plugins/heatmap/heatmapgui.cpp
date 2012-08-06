@@ -43,7 +43,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   QgsDebugMsg( QString( "Creating Heatmap Dialog" ) );
 
   // Adding point layers to the mInputVectorCombo
-  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
     if ( !vl || vl->geometryType() != QGis::Point )
@@ -283,7 +283,7 @@ void HeatmapGui::updateBBox()
   mBBox = inputLayer->extent();
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
 
-  float radiusInMapUnits;
+  float radiusInMapUnits = 0.0;
   if ( useRadius->isChecked() )
   {
     float maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toFloat();

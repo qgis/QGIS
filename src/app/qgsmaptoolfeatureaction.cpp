@@ -149,7 +149,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   if ( featList.size() == 0 )
     return false;
 
-  foreach( QgsFeature feat, featList )
+  foreach ( QgsFeature feat, featList )
   {
     int actionIdx = layer->actions()->defaultAction();
 

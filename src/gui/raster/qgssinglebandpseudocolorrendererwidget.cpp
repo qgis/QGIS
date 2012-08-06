@@ -18,6 +18,11 @@
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
+
+// for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
+#include "qgsstylev2.h"
+#include "qgsvectorcolorrampv2.h"
+
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -28,6 +33,8 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
     QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
+
+  mColorRampComboBox->populate( QgsStyleV2::defaultStyle() );
 
   if ( !mRasterLayer )
   {
@@ -213,18 +220,44 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     }
   }
 
+#if 0
   //hard code color range from blue -> red for now. Allow choice of ramps in future
   int colorDiff = 0;
   if ( numberOfEntries != 0 )
   {
     colorDiff = ( int )( 255 / numberOfEntries );
   }
-
   for ( int i = 0; i < numberOfEntries; ++i )
   {
     QColor currentColor;
     currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
     entryColors.push_back( currentColor );
+  }
+#endif
+
+  QgsVectorColorRampV2* colorRamp = mColorRampComboBox->currentColorRamp();
+  if ( ! colorRamp )
+  {
+    //hard code color range from blue -> red (previous default)
+    int colorDiff = 0;
+    if ( numberOfEntries != 0 )
+    {
+      colorDiff = ( int )( 255 / numberOfEntries );
+    }
+
+    for ( int i = 0; i < numberOfEntries; ++i )
+    {
+      QColor currentColor;
+      currentColor.setRgb( colorDiff*i, 0, 255 - colorDiff * i );
+      entryColors.push_back( currentColor );
+    }
+  }
+  else
+  {
+    for ( int i = 0; i < numberOfEntries; ++i )
+    {
+      entryColors.push_back( colorRamp->color((( double ) i ) / numberOfEntries ) );
+    }
   }
 
   mColormapTreeWidget->clear();

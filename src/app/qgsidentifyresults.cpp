@@ -41,6 +41,8 @@
 #include <QMenuBar>
 #include <QPushButton>
 #include <QWebView>
+#include <QDesktopServices>
+#include <QMessageBox>
 
 #include "qgslogger.h"
 
@@ -277,6 +279,8 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
 
     QWebView *wv = new QWebView( attrItem->treeWidget() );
     wv->setHtml( attributes.begin().value() );
+    wv->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+    connect( wv, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
     attrItem->treeWidget()->setItemWidget( attrItem, 1, wv );
   }
   else
@@ -502,7 +506,7 @@ void QgsIdentifyResults::expandColumnsToFit()
 
 void QgsIdentifyResults::clearHighlights()
 {
-  foreach( QgsHighlight *h, mHighlights )
+  foreach ( QgsHighlight *h, mHighlights )
   {
     delete h;
   }
@@ -524,7 +528,7 @@ void QgsIdentifyResults::clear()
 void QgsIdentifyResults::activate()
 {
 #if 0
-  foreach( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsRubberBand *rb, mRubberBands )
   {
     rb->show();
   }
@@ -540,7 +544,7 @@ void QgsIdentifyResults::activate()
 void QgsIdentifyResults::deactivate()
 {
 #if 0
-  foreach( QgsRubberBand *rb, mRubberBands )
+  foreach ( QgsRubberBand *rb, mRubberBands )
   {
     rb->hide();
   }
@@ -979,4 +983,12 @@ void QgsIdentifyResults::copyFeatureAttributes()
 
   QgsDebugMsg( QString( "set clipboard: %1" ).arg( text ) );
   clipboard->setText( text );
+}
+
+void QgsIdentifyResults::openUrl( const QUrl &url )
+{
+  if ( !QDesktopServices::openUrl( url ) )
+  {
+    QMessageBox::warning( this, tr( "Could not open url" ), tr( "Could not open URL '%1'" ).arg( url.toString() ) );
+  }
 }

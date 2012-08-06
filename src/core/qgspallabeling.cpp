@@ -513,7 +513,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     if ( size.isValid() )
     {
       double sizeDouble = size.toDouble();
-      if ( sizeDouble <= 0 )
+      if ( sizeDouble <= 0 || sizeToPixel( sizeDouble, context ) < 1 )
       {
         return;
       }
@@ -795,7 +795,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     if ( lyrTmp.fieldName.isEmpty() )
       return 0;
     QgsExpression exp( lyrTmp.fieldName );
-    foreach( QString name, exp.referencedColumns() )
+    foreach ( QString name, exp.referencedColumns() )
     {
       QgsDebugMsg( "REFERENCED COLUMN = " + name );
       fldIndex =  layer->fieldNameIndex( name );
@@ -859,8 +859,18 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
 
-  lyr.textFont.setPixelSize( lyr.sizeToPixel( lyr.textFont.pointSizeF(), ctx ) );
+  // fix for font size in map units causing font to show pointsize at small map scales
+  int pixelFontSize = lyr.sizeToPixel( lyr.textFont.pointSizeF(), ctx );
 
+  if ( pixelFontSize < 1 )
+  {
+    lyr.textFont.setPixelSize( 1 );
+    lyr.textFont.setPointSize( 1 );
+  }
+  else
+  {
+    lyr.textFont.setPixelSize( pixelFontSize );
+  }
   //raster and vector scale factors
   lyr.vectorScaleFactor = ctx.scaleFactor();
   lyr.rasterCompressFactor = ctx.rasterScaleFactor();

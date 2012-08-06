@@ -20,6 +20,7 @@ class QgsMapCanvas;
 class QPoint;
 class QString;
 
+#include "qgsfeature.h"
 
 /** \ingroup gui
  * A maptip is a class to display a tip on a map canvas
@@ -57,6 +58,9 @@ class GUI_EXPORT QgsMapTip
     QString fetchFeature( QgsMapLayer * thepLayer,
                           QgsPoint & theMapPosition,
                           QgsMapCanvas *thepMapCanvas );
+
+    QString replaceText( QString displayText, QgsVectorLayer *layer, QgsFeature &feat );
+
     // Flag to indicate if a maptip is currently being displayed
     bool mMapTipVisible;
     // Last point on the map canvas when the maptip timer fired. This point is in widget pixel

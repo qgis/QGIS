@@ -58,7 +58,7 @@ QList<int> QgsOGRSublayersDialog::getSelectionIndexes()
 
 void QgsOGRSublayersDialog::populateLayerTable( QStringList theList, QString delim )
 {
-  foreach( QString item, theList )
+  foreach ( QString item, theList )
   {
     layersTable->addTopLevelItem( new QTreeWidgetItem( item.split( delim ) ) );
   }

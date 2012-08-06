@@ -12,7 +12,7 @@ MACRO(FIND_FLEX)
       IF (MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE
                      NAMES flex.exe
-                     PATHS $ENV{LIB_DIR}/bin $ENV{PROGRAMFILES}/GnuWin32/bin
+                     PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
                     )
       ELSE(MSVC)
         FIND_PROGRAM(FLEX_EXECUTABLE flex)

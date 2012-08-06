@@ -114,10 +114,10 @@ void QgsRendererRangeV2::toSld( QDomDocument &doc, QDomElement &element, QgsStri
   ruleElem.appendChild( nameElem );
 
   QDomElement descrElem = doc.createElement( "se:Description" );
-  QDomElement abstractElem = doc.createElement( "se:Abstract" );
+  QDomElement titleElem = doc.createElement( "se:Title" );
   QString descrStr = QString( "range: %1 - %2" ).arg( mLowerValue ).arg( mUpperValue );
-  abstractElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
-  descrElem.appendChild( abstractElem );
+  titleElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
+  descrElem.appendChild( titleElem );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
@@ -1074,7 +1074,7 @@ void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ram
 void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp )
 {
   int i = 0;
-  foreach( QgsRendererRangeV2 range, mRanges )
+  foreach ( QgsRendererRangeV2 range, mRanges )
   {
     QgsSymbolV2* symbol = range.symbol()->clone();
     double colorValue = ( mRanges.count() > 1 ? ( double ) i / ( mRanges.count() - 1 ) : 0 );
@@ -1088,7 +1088,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp )
 void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 {
   int i = 0;
-  foreach( QgsRendererRangeV2 range, mRanges )
+  foreach ( QgsRendererRangeV2 range, mRanges )
   {
     QgsSymbolV2* symbol = sym->clone();
     symbol->setColor( range.symbol()->color() );

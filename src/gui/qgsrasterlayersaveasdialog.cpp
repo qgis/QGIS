@@ -16,7 +16,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
   //only one hardcoded format at the moment
   QStringList myFormats;
   myFormats << "GTiff";
-  foreach( QString myFormat, myFormats )
+  foreach ( QString myFormat, myFormats )
   {
     mFormatComboBox->addItem( myFormat );
   }

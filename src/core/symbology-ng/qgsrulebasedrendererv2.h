@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     struct RenderLevel
     {
       RenderLevel( int z ): zIndex( z ) {}
-      ~RenderLevel() { foreach( RenderJob* j, jobs ) delete j; }
+      ~RenderLevel() { foreach ( RenderJob* j, jobs ) delete j; }
       int zIndex;
       QList<RenderJob*> jobs;
     };

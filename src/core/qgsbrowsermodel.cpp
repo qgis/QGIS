@@ -57,7 +57,7 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  foreach( QFileInfo drive, QDir::drives() )
+  foreach ( QFileInfo drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
     QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );
@@ -69,7 +69,7 @@ void QgsBrowserModel::addRootItems()
   // Add non file top level items
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
   providersList.sort();
-  foreach( QString key, providersList )
+  foreach ( QString key, providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
@@ -108,7 +108,7 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  foreach( QgsDataItem* item, mRootItems )
+  foreach ( QgsDataItem* item, mRootItems )
   {
     delete item;
   }
@@ -357,7 +357,7 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  foreach( const QModelIndex &index, indexes )
+  foreach ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() )
     {

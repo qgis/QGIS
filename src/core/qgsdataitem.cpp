@@ -192,7 +192,7 @@ void QgsDataItem::populate()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QVector<QgsDataItem*> children = createChildren( );
-  foreach( QgsDataItem *child, children )
+  foreach ( QgsDataItem *child, children )
   {
     // initialization, do not refresh! That would result in infinite loop (beginInsertItems->rowCount->populate)
     addChildItem( child );
@@ -306,19 +306,19 @@ void QgsDataItem::refresh()
 
   // Remove no more present items
   QVector<QgsDataItem*> remove;
-  foreach( QgsDataItem *child, mChildren )
+  foreach ( QgsDataItem *child, mChildren )
   {
     if ( findItem( items, child ) >= 0 )
       continue;
     remove.append( child );
   }
-  foreach( QgsDataItem *child, remove )
+  foreach ( QgsDataItem *child, remove )
   {
     deleteChildItem( child );
   }
 
   // Add new items
-  foreach( QgsDataItem *item, items )
+  foreach ( QgsDataItem *item, items )
   {
     // Is it present in childs?
     if ( findItem( mChildren, item ) >= 0 )
@@ -392,7 +392,7 @@ QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name,
 QgsDataCollectionItem::~QgsDataCollectionItem()
 {
   QgsDebugMsg( "Entered" );
-  foreach( QgsDataItem* i, mChildren )
+  foreach ( QgsDataItem* i, mChildren )
   {
     QgsDebugMsg( QString( "delete child = 0x%0" ).arg(( qlonglong )i, 8, 16, QLatin1Char( '0' ) ) );
     delete i;
@@ -456,7 +456,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
   QSettings settings;
 
   QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  foreach( QString subdir, entries )
+  foreach ( QString subdir, entries )
   {
     QString subdirPath = dir.absoluteFilePath( subdir );
     QgsDebugMsg( QString( "creating subdir: %1" ).arg( subdirPath ) );
@@ -468,7 +468,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
   }
 
   QStringList fileEntries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files, QDir::Name );
-  foreach( QString name, fileEntries )
+  foreach ( QString name, fileEntries )
   {
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
@@ -486,7 +486,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
       }
     }
 
-    foreach( QLibrary *library, mLibraries )
+    foreach ( QLibrary *library, mLibraries )
     {
       // we could/should create separate list of providers for each purpose
 
@@ -558,7 +558,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
 
   QDir dir( path );
   QStringList entries = dir.entryList( QDir::AllEntries | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
-  foreach( QString name, entries )
+  foreach ( QString name, entries )
   {
     QFileInfo fi( dir.absoluteFilePath( name ) );
     QStringList texts;
@@ -624,7 +624,7 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
   // hide columns that are not requested
   QSettings settings;
   QList<QVariant> lst = settings.value( "/dataitem/directoryHiddenColumns" ).toList();
-  foreach( QVariant colVariant, lst )
+  foreach ( QVariant colVariant, lst )
   {
     setColumnHidden( colVariant.toInt(), true );
   }
@@ -703,7 +703,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren( )
   QSettings settings;
   QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
 
-  foreach( QString favDir, favDirs )
+  foreach ( QString favDir, favDirs )
   {
     item = new QgsDirectoryItem( this, favDir, favDir );
     if ( item )
@@ -882,7 +882,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   getZipFileList();
 
   // loop over files inside zip
-  foreach( QString fileName, mZipFileList )
+  foreach ( QString fileName, mZipFileList )
   {
     QFileInfo info( fileName );
     tmpPath = mVsiPrefix + path() + "/" + fileName;

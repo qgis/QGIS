@@ -228,8 +228,8 @@ class ObservingObject : public QObject
 
     void storePersistent()
     {
-      foreach( const QModelIndex &idx, m_persistentProxyIndexes )
-      Q_ASSERT( idx.isValid() ); // This is called from layoutAboutToBeChanged. Persistent indexes should be valid
+      foreach ( const QModelIndex &idx, m_persistentProxyIndexes )
+        Q_ASSERT( idx.isValid() ); // This is called from layoutAboutToBeChanged. Persistent indexes should be valid
 
       Q_ASSERT( m_proxy->persistent().isEmpty() );
       storePersistent( QModelIndex() );

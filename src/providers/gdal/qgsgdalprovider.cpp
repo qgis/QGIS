@@ -1172,7 +1172,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   initHistogram( myHistogram, theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
 
   // Find cached
-  foreach( QgsRasterHistogram histogram, mHistograms )
+  foreach ( QgsRasterHistogram histogram, mHistograms )
   {
     if ( histogram == myHistogram )
     {
@@ -1194,11 +1194,15 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   int bApproxOK = false;
   if ( theSampleSize > 0 )
   {
-    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    // cast to double, integer could overflow
+    if ((( double )xSize() * ( double )ySize() / theSampleSize ) > 2 )  // not perfect
     {
+      QgsDebugMsg( "Approx" );
       bApproxOK = true;
     }
   }
+
+  QgsDebugMsg( QString( "xSize() = %1 ySize() = %2 theSampleSize = %3 bApproxOK = %4" ).arg( xSize() ).arg( ySize() ).arg( theSampleSize ).arg( bApproxOK ) );
 
   QgsGdalProgress myProg;
   myProg.type = ProgressHistogram;
@@ -1878,7 +1882,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   int bApproxOK = false;
   if ( theSampleSize > 0 )
   {
-    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    if ((( double )xSize() * ( double )ySize() / theSampleSize ) > 2 )  // not perfect
     {
       bApproxOK = true;
     }
@@ -1923,7 +1927,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
-  foreach( QgsRasterBandStats stats, mStatistics )
+  foreach ( QgsRasterBandStats stats, mStatistics )
   {
     if ( stats.contains( myRasterBandStats ) )
     {
@@ -1955,7 +1959,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   int bApproxOK = false;
   if ( theSampleSize > 0 )
   {
-    if (( xSize() * ySize() / theSampleSize ) > 2 )  // not perfect
+    if ((( double )xSize() * ( double )ySize() / theSampleSize ) > 2 )  // not perfect
     {
       bApproxOK = true;
     }
@@ -2209,7 +2213,7 @@ void QgsGdalProvider::initBaseDataset()
 char** papszFromStringList( const QStringList& list )
 {
   char **papszRetList = NULL;
-  foreach( QString elem, list )
+  foreach ( QString elem, list )
   {
     papszRetList = CSLAddString( papszRetList, elem.toLocal8Bit().constData() );
   }

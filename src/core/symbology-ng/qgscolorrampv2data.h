@@ -26,14 +26,16 @@ class CORE_EXPORT QgsColorBrewerPalette
       QList<QColor> pal;
       QString palette( brewerString );
       QStringList list = palette.split( QChar( '\n' ) );
-      foreach( QString entry, list )
+      foreach ( QString entry, list )
       {
         QStringList items = entry.split( QChar( '-' ) );
         if ( items.count() != 3 || items[0] != schemeName || items[1].toInt() != colors )
           continue;
         QStringList colors = items[2].split( QChar( ' ' ) );
-        foreach( QString clr, colors )
-        pal << parseColor( clr );
+        foreach ( QString clr, colors )
+        {
+          pal << QgsSymbolLayerV2Utils::parseColor( clr );
+        }
       }
       return pal;
     }
@@ -44,7 +46,7 @@ class CORE_EXPORT QgsColorBrewerPalette
 
       QString palette( brewerString );
       QStringList list = palette.split( QChar( '\n' ) );
-      foreach( QString entry, list )
+      foreach ( QString entry, list )
       {
         QStringList items = entry.split( QChar( '-' ) );
         if ( items.count() != 3 )
@@ -61,7 +63,7 @@ class CORE_EXPORT QgsColorBrewerPalette
 
       QString palette( brewerString );
       QStringList list = palette.split( QChar( '\n' ) );
-      foreach( QString entry, list )
+      foreach ( QString entry, list )
       {
         QStringList items = entry.split( QChar( '-' ) );
         if ( items.count() != 3 || items[0] != schemeName )
@@ -70,14 +72,6 @@ class CORE_EXPORT QgsColorBrewerPalette
       }
 
       return variants;
-    }
-
-    static QColor parseColor( QString color )
-    {
-      QStringList p = color.split( QChar( ',' ) );
-      if ( p.count() != 3 )
-        return QColor();
-      return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
     }
 
 };
@@ -358,5 +352,444 @@ const char* brewerString =
   "PuBuGn-7-246,239,247 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,100,80\n"
   "PuBuGn-8-255,247,251 236,226,240 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,100,80\n"
   "PuBuGn-9-255,247,251 236,226,240 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,108,89 1,70,54";
+
+/*
+The following tables were taken from the cpt-city website http://soliton.vm.bytemark.co.uk/pub/cpt-city/
+*/
+
+/*
+Copyright for cpt-city gradients
+
+The gradients on cpt-city are copyrighted by their authors. In all cases the gradients in the archive are included with the permission of the author, either explicitly or where the licence under which they were distributed allows it.
+
+The original gradients are converted to the other formats available on cpt-city — these generated gradients are offered under the same licence as the original.
+
+Please respect the authors' copyright.
+
+Free to use
+
+All gradients in the archive are free for you to download and use in your own maps, illustrations and so on. Some authors request or require that attribution be given.
+
+Free use does not include the further distribution of the gradients, modified or unmodified.
+
+Distribution
+
+You should not distribute the gradients on cpt-city unless the licence permits it: gradients contributed to the public domain, those under GPL, Apache-like, Creative commons or MIT licences allow distribution (under some conditions).
+
+If the author has not specified a licence then you do not have permission to distribute the gradients.
+*/
+
+/* name mappings - by author*/
+static const char* cptCityNames [] =
+{
+#if 0
+// these defs are now in DESC.xml files
+  "bhw", "Art gradients by Blackheartedwolf",
+  "cb", "Colour schemes by Cynthia Brewer",
+  "cl", "Obesity scales from CalorieLab",
+  "colo", "Selected five-colour palettes from COLOURlovers",
+  "cw", "Subtle gradients from Crumblingwalls ",
+  "dca", "Palettes for positive functions by Duncan Agnew",
+  "dg", "Dave Green's cubehelix for astronomical intensity images",
+  "ds", "Gradients by Diane Simoni",
+  "ds9", "DS9 colour scales for astronomical visualisation ",
+  "em", "A DEM palette by Erika Mackay",
+  "erj", "Toning samples by Eric R. Jeschke",
+  "es", "Themed art gradients by ElvenSword",
+  "esdb", "Selected legends from the European Soil Database",
+  "esri", "ESRI colour ramp collection ",
+  "fg", "Vista login button gradients by Fused Graphics",
+  "fme", "The DEM palettes from drawmap, by Fred M. Erickson",
+  "fvl", "Felix von Luschan skin-colour scales",
+  "gery", "A seismic amplitude scheme by Gery",
+  "ggr", "GIMP gradients",
+  "gist", "Palettes from the graphics packages GIST and Yorick",
+  "gmt", "Generic Mapping Tools palettes ",
+  "go2", "Two-colour glossy gradients from GoSquared",
+  "gps", "Gradients from GIMP Paint Studio",
+  "grass", "GRASS colour ramps",
+  "h5", "Colour tables from the h5utils package",
+  "hult", "Spectral gradients by Hult",
+  "ibcao", "The IBCAO scheme for arctic bathymetry",
+  "ing", "Gradients by Ingerlise",
+  "jjg", "Technical gradients by J.J. Green",
+  "jm", "The ShadeMax palettes by Jim Mossman",
+  "jmn", "James McNames' monotonic luminance ColorSpiral",
+  "km", "Diverging colour-maps by Kenneth Moreland",
+  "kst", "KST colour tables",
+  "lb", "Loadboy's gradients for graphic design",
+  "ma", "Gradients by Michele Arnold",
+  "mby", "A topo-bathymetric scheme by M. Burak Yikilmaz",
+  "mjf", "Precipitation palettes by Mark J. Fenbers",
+  "ncl", "Colour maps from NCL (NCAR command language) ",
+  "ncdc", "The NCDC's scheme for probability of a white Christmas ",
+  "nd", "Nevit Dilmen's extra gradients for the GIMP",
+  "neota", "Pixel-art gradients by Neota",
+  "ngdc", "The NGDC's global relief palette for ETOPO1",
+  "njgs", "Legends for geospatial data by the NJGS ",
+  "oc", "Colour scales from NASA's OceanColor site",
+  "ocal", "Gradients from the Open Clip Art Library",
+  "occ", "Digital art gradients by Onecoldcanadian",
+  "os", "Ordnance Survey 1:250,000 elevation scale ",
+  "pd", "Piecrust Design's natural gradients ",
+  "pj", "Gradients by Peggy Jentoft",
+  "pm", "Gnuplot pm3d example scales by Petr Mikulik",
+  "rc", "Gradients from Restless Concepts",
+  "rf", "Rich Franzen's pseudogrey",
+  "saga", "SAGA preset colour tables",
+  "sd", "Web 2.0 gradients from Sarah Davison",
+  "td", "DEM palettes by Thomas Dewez",
+  "tl", "Nonlinear greyscales by Thomas Lotze",
+  "tp", "Tom Patterson's topographic scales",
+  "ukmo", "Meteorological schemes from the UK Met Office",
+  "vh", "Victor Huerfano's Caribbean DEM palette",
+  "wkp", "Wikipedia schemes",
+  "xkcd", "Bathymetry from XKCD 1040",
+#endif
+//views
+  "bath", "Palettes for bathymetry",
+  "blues", "A selection of blues",
+  "topo", "Palettes for topography",
+  "topobath", "Mixed palettes for topography & bathymetry",
+  "temp", "Schemes for temperature",
+  "rain", "Schemes for precipitation",
+  "greys", "Various greys and near-greys",
+  "reds", "A selection of reds",
+  "div", "Schemes for diverging data",
+  "transparency", "Palettes with transparency",
+  "discord", "Gradients of discordance",
+  "popular", "The most popular palettes",
+#if 0
+//views/div
+  "jjg/cbcont/div", "continuous",
+  "jjg/cbac/div", "almost continuous",
+  "jjg/polarity", "polarity",
+#endif
+  NULL, NULL
+};
+
+/* Selections from the archive */
+/* format: "", <section>, <item_1>,...,<item_n>,"",... */
+static const char* cptCitySelections [] =
+{
+  "",
+  "bath",
+  "gmt/GMT_ocean",
+  "gmt/GMT_gebco",
+  "jjg/dem/gebco-shelf",
+  "jm/ad/ad-a",
+  "njgs/njbath",
+  "esri/hypsometry/bath/bath_110",
+  "esri/hypsometry/bath/bath_111",
+  "esri/hypsometry/bath/bath_112",
+  "tp/tpsfhm",
+  "xkcd/xkcd-bath",
+  "",
+  "blues",
+  "es/skywalker/",
+  "es/sea_dreams/",
+  "cb/seq/Blues_09",
+  "cb/seq/GnBu_09",
+  "cb/seq/PuBu_09",
+  "cb/seq/YlGnBu_09",
+  "erj/misc/cyanotype_01",
+  "erj/misc/cyanotype_02",
+  "erj/multiple/cyanotype_01",
+  "ggr/Deep_Sea",
+  "neota/base/sky-blue",
+  "neota/clth/purplish-blue",
+  "neota/clth/jeans",
+  "neota/elem/crisp-ice",
+  "neota/elem/rain",
+  "neota/face/eyes/blue",
+  "neota/liht/twilight",
+  "ocal/blues",
+  "ocal/pastel-purple-blue",
+  "occ/1/occ019",
+  "occ/2/occ079",
+  "",
+  "topo",
+  "td/DEM_poster",
+  "td/DEM_print",
+  "td/DEM_screen",
+  "jjg/dem/c3t1",
+  "jjg/dem/c3t3",
+  "jjg/dem/garish14",
+  "fme/feet/natural",
+  "fme/feet/neutral",
+  "fme/feet/textbook",
+  "jm/tv/tv-a",
+  "jm/o2/o2-a",
+  "jm/db/db-a",
+  "jm/ao/ao-a",
+  "jm/wt/wt-a",
+  "jm/ws/ws-a",
+  "jm/cd/cd-a",
+  "jm/sd/sd-a",
+  "grass/elevation",
+  "njgs/njdem100",
+  "esri/hypsometry/na/palm_springs_4",
+  "esri/hypsometry/na/pnw_1113",
+  "esri/hypsometry/na/utah_1",
+  "esri/hypsometry/eu/europe_3",
+  "esri/hypsometry/eu/iceland",
+  "esri/hypsometry/eu/spain",
+  "os/os250k-feet",
+  "tp/tpushuf",
+  "wkp/schwarzwald/wiki-schwarzwald-cont",
+  "wkp/schwarzwald/wiki-schwarzwald-d050",
+  "wkp/knutux/wiki-knutux",
+  "wkp/tubs/nrwc",
+  "",
+  "topobath",
+  "em/NZ_blue",
+  "wkp/template/wiki-2.0",
+  "wkp/country/wiki-scotland",
+  "wkp/country/wiki-france",
+  "gmt/GMT_globe",
+  "gmt/GMT_relief",
+  /* "gmt/GMT_sealand", */
+  /* "gmt/GMT_topo", */
+  "vh/Caribbean",
+  "grass/etopo2",
+  "grass/srtm",
+  "grass/terrain",
+  "ngdc/ETOPO1",
+  "ibcao/ibcao",
+  "wkp/plumbago/wiki-plumbago",
+  "ncl/topo_15lev",
+  "wkp/encyclopedia/meyers",
+  "wkp/encyclopedia/nordisk-familjebok",
+  "mby/mby",
+  "wkp/lilleskut/afrikakarte",
+  "",
+  "temp",
+  "oc/sst",
+  "jjg/misc/temperature",
+  "grass/celsius",
+  "ukmo/wow/temp-c",
+  "ncl/temp_19lev",
+  "",
+  "rain",
+  "grass/precipitation",
+  "jjg/misc/rainfall",
+  "mjf/departure",
+  "mjf/s3pcpnScale",
+  "ncdc/white-christmas",
+  "wkp/ice/wiki-ice-greenland",
+  "ukmo/wow/rain-mmh",
+  "ukmo/wow/humidity",
+  "ncl/precip_11lev",
+  "wkp/precip/wiki-precip-mm",
+  "",
+  "greys",
+  "tl/",
+  "erj/",
+  "ma/gray/",
+  "es/platinum/",
+  "cb/seq/Greys_09",
+  "cb/div/RdGy_11",
+  "erj/bw/silver_01",
+  "erj/browns/platinum_palladium_01",
+  "erj/browns/selenium_brown_01",
+  "ing/general/ib12",
+  "rf/pseudogrey",
+  "ma/gray/grayscale02",
+  "ma/gray/grayscale02a",
+  "ma/gray/grayscale10",
+  "nd/atmospheric/GreyOClock",
+  "ocal/stripes-six",
+  "tl/power-0.50",
+  "go2/webtwo/grey-g2-3",
+  "es/platinum/es_platinum_16",
+  "",
+  "reds",
+  "nd/red/",
+  "es/rosa/",
+  "cb/seq/Reds_09",
+  "cb/seq/YlOrRd_09",
+  "colo/angelafaye/scent_of_spring",
+  "colo/sugar/Colours_Are_Evil",
+  "colo/sugar/October_Sky",
+  "colo/evad/Sandy_Scars_Aus",
+  "colo/hana/M_a_i_k_o",
+  "colo/katiekat013/Raspberries_Creme",
+  "colo/lightningmccarl/so_close_to_you",
+  "colo/lightningmccarl/you_cheater",
+  "colo/rphnick/Emo_Barbie_Playmate",
+  "colo/rphnick/To_My_1st_100_Loves",
+  "colo/tvr/l_o_v_e",
+  "cw/1/cw1-003",
+  "cw/5/cw5-068",
+  "ds9/red",
+  "ggr/German_flag_smooth",
+  "gist/heat",
+  "gmt/GMT_hot",
+  "jjg/neo10/base/red-pink",
+  "jjg/neo10/clth/pink-red",
+  "jjg/neo10/clth/violent-pink-red",
+  "jjg/neo10/food/red-candy",
+  "ma/gray/grayscale08",
+  "ma/gray/grayscale09",
+  "rc/autumnrose",
+  "",
+  "div",
+  "km/",
+  "cb/div/",
+  "jjg/cbcont/div/",
+  "jjg/cbac/div/",
+  "jjg/polarity/",
+  "bhw/bhw2/bhw2_39",
+  "cb/div/BrBG_11",
+  "cw/1/cw1-002",
+  "es/landscape/es_landscape_90",
+  "es/landscape/es_landscape_76",
+  "esri/events/fire_active_2",
+  "gery/seismic",
+  "ggr/French_flag_smooth",
+  "ggr/Mexican_flag_smooth",
+  "ggr/Romanian_flag_smooth",
+  "grass/curvature",
+  "h5/dkbluered",
+  "jjg/misc/voxpop",
+  "jjg/cbcont/div/cbcBrBG",
+  "jjg/cbac/div/cbacBrBG11",
+  "jjg/polarity/BrBG",
+  "jjg/ccolo/evad/Andy_GIlmore_2",
+  "jjg/ccolo/sugar/Need_I_Say_More",
+  "jjg/ccolo/vredeling/Grand_Boucle",
+  "jjg/ccolo/vredeling/Optimus_Prime",
+  "jjg/ccolo/vredeling/British_Cheer",
+  "/jjg/ccolo/vredeling/Tubular_Bells",
+  "ma/xmas/xmas_22",
+  "ma/postcard/ha_14",
+  "mjf/departure",
+  "nd/vermillion/Split_02",
+  "nd/vermillion/Tertiary_01",
+  "nd/turanj/Analogous_12b",
+  "nd/red/Primary_3",
+  "occ/2/occ100",
+  "occ/2/occ083",
+  "rc/wildwinds",
+  "ncl/temp_19lev",
+  "ncl/sunshine_diff_12lev",
+  "ncl/GreenYellow",
+  "ncl/BlueYellowRed",
+  "ncl/BlueWhiteOrangeRed",
+  "ncl/BlueDarkRed18",
+  "ncl/BlWhRe",
+  "km/blue-tan-d14",
+  "km/cool-warm-d07",
+  "km/green-purple",
+  "",
+  "transparency",
+  "tl/",
+  "ocal/",
+  "ggr/",
+  "es/platinum/es_platinum_01",
+  "es/sea_dreams/es_seadreams_14",
+  "ggr/Aneurism",
+  "ggr/Flare_Glow_Radial_1",
+  "ggr/Radial_Rainbow_Hoop",
+  "nd/other/Neon_Orange",
+  "ocal/beer-lager",
+  "ocal/stripes-three",
+  "ocal/spectrums-rainbow-002",
+  "tl/power-0.80",
+  "gps/GPS-Haze-and-Atmosphere",
+  "gps/GPS-Simple-Smoke",
+  "",
+  "discord",
+  "rc/teabearrose",
+  "pj/3/grand-old-flag",
+  "pj/5/vampirelips",
+  "pj/6/nunoftheabove",
+  "pd/food/curry_house",
+  "ocal/christmas-candy",
+  "nd/strips/Wood_Green",
+  "nd/atmospheric/Sunset_Real",
+  "ing/general2/ib63",
+  "hult/gr41_hult",
+  "ggr/Nauseating_Headache",
+  "ds/rgi/rgi_15",
+  "",
+  "popular",
+  "ngdc/ETOPO1",
+  "ibcao/ibcao",
+  "wkp/template/wiki-2.0",
+  "oc/sst",
+  "td/DEM_print",
+  "em/NZ_blue",
+  "td/DEM_screen",
+  "grass/elevation",
+  "gmt/GMT_globe",
+  "ds9/b",
+  "gmt/GMT_panoply",
+  "gmt/GMT_haxby",
+  "td/DEM_poster",
+  "wkp/schwarzwald/wiki-schwarzwald-d100",
+  "wkp/schwarzwald/wiki-schwarzwald-d050",
+  "gmt/GMT_ocean",
+  "jjg/polarity/RdYlBu",
+  "xkcd/xkcd-bath",
+  "esri/hypsometry/eu/europe_8",
+  "wkp/encyclopedia/nordisk-familjebok",
+  "gmt/GMT_relief",
+  "grass/bgyr",
+  "h5/dkbluered",
+  "grass/bcyr",
+  "jjg/polarity/Spectral",
+  "cl/fs2010",
+  "wkp/country/wiki-scotland",
+  "gist/earth",
+  "bhw/bhw1/bhw1_w00t",
+  "erj/browns/platinum_01",
+  "cb/div/RdBu_11",
+  "cb/seq/Blues_03",
+  "jjg/physics/visspec",
+  "cb/seq/GnBu_04",
+  "esri/hypsometry/eu/spain",
+  "gmt/GMT_polar",
+  "ggr/Full_saturation_spectrum_CW",
+  "km/purple-orange",
+  "cb/seq/YlOrRd_06",
+  "ngdc/ETOPO1-Reed",
+  "wkp/schwarzwald/wiki-schwarzwald-d020",
+  "grass/terrain",
+  "oc/ndvi",
+  "dg/ch05m151010",
+  "dg/ch05m151008",
+  "fme/metres/natural",
+  "km/green-purple",
+  "os/os250k-feet",
+  "ds9/sls",
+  "gmt/GMT_wysiwyg",
+  "wkp/schwarzwald/wiki-schwarzwald-cont",
+  "km/cool-warm",
+  "wkp/encyclopedia/meyers",
+  "gmt/GMT_drywet",
+  "ukmo/wow/humidity",
+  "grass/differences",
+  "jm/cd/cd-a",
+  "esri/hypsometry/eu/europe_4",
+  "ukmo/wow/rain-mmh",
+  "wkp/template/wiki-1.02",
+  "cb/div/Spectral_08",
+  "grass/celsius",
+  "km/cool-warm-d08",
+  "gery/seismic",
+  "oc/rainbow",
+  "wkp/template/wiki-1.03",
+  "km/cool-warm-d07",
+  "jjg/misc/temperature",
+  "km/blue-tan-d10",
+  "km/cyan-mauve-d08",
+  "km/purple-orange-d05",
+  "ds9/red",
+  "cb/seq/OrRd_04",
+  "jjg/dem/c3t3",
+  "km/blue-yellow-d13",
+  NULL, NULL
+};
 
 #endif // QGSCOLORBREWERPALETTE_H

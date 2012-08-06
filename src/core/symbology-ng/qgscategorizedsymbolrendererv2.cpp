@@ -97,10 +97,10 @@ void QgsRendererCategoryV2::toSld( QDomDocument &doc, QDomElement &element, QgsS
   ruleElem.appendChild( nameElem );
 
   QDomElement descrElem = doc.createElement( "se:Description" );
-  QDomElement abstractElem = doc.createElement( "se:Abstract" );
+  QDomElement titleElem = doc.createElement( "se:Title" );
   QString descrStr = QString( "%1 is '%2'" ).arg( attrName ).arg( mValue.toString() );
-  abstractElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
-  descrElem.appendChild( abstractElem );
+  titleElem.appendChild( doc.createTextNode( !mLabel.isEmpty() ? mLabel : descrStr ) );
+  descrElem.appendChild( titleElem );
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range

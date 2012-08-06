@@ -81,16 +81,19 @@ class CORE_EXPORT QGis
 
     /** Map units that qgis supports
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
+     * @note and QGIS >1.8 returns to that
      */
     enum UnitType
     {
       Meters = 0,
       Feet = 1,
       Degrees = 2, //for 1.0 api backwards compatibility
-      DecimalDegrees = 2,
-      DegreesMinutesSeconds = 4,
-      DegreesDecimalMinutes = 5,
-      UnknownUnit = 3
+      UnknownUnit = 3,
+
+      // for [1.4;1.8] api compatibility
+      DecimalDegrees = 2,         // was 2
+      DegreesMinutesSeconds = 2,  // was 4
+      DegreesDecimalMinutes = 2,  // was 5
     };
 
     //! User defined event types
@@ -151,16 +154,16 @@ const QString GEOWKT =
 /** Wkt string that represents a geographic coord sys
  * @note deprecated in 1.8 due to violation of coding conventions (globals
  *  should be in all caps).
-*/
+ */
+#ifndef _MSC_VER
+Q_DECL_DEPRECATED
+#endif
+const QString GEOWkt = GEOWKT;
 
 const QString PROJECT_SCALES =
   "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
   "1:10000,1:5000,1:2500,1:1000,1:500";
 
-#ifndef _MSC_VER
-Q_DECL_DEPRECATED
-#endif
-const QString GEOWkt = GEOWKT;
 /** PROJ4 string that represents a geographic coord sys */
 extern CORE_EXPORT const QString GEOPROJ4;
 /** Magic number for a geographic coord sys in POSTGIS SRID */

@@ -459,7 +459,7 @@ bool QgsCustomizationDialog::catchOn( )
 
 void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions )
 {
-  foreach( QAction* action, actions )
+  foreach ( QAction* action, actions )
   {
     if ( action->menu() )
     {
@@ -498,7 +498,7 @@ void QgsCustomization::createTreeItemMenus( )
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMenuBar* menubar = QgisApp::instance()->menuBar();
-  foreach( QObject* obj, menubar->children() )
+  foreach ( QObject* obj, menubar->children() )
   {
     if ( obj->inherits( "QMenu" ) )
     {
@@ -518,7 +518,7 @@ void QgsCustomization::createTreeItemToolbars( )
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMainWindow* mw = QgisApp::instance();
-  foreach( QObject* obj, mw->children() )
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QToolBar" ) )
     {
@@ -544,7 +544,7 @@ void QgsCustomization::createTreeItemDocks( )
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
   QMainWindow* mw = QgisApp::instance();
-  foreach( QObject* obj, mw->children() )
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
@@ -570,7 +570,7 @@ void QgsCustomization::createTreeItemStatus( )
   topItem->setCheckState( 0, Qt::Checked );
 
   QStatusBar* sb = QgisApp::instance()->statusBar();
-  foreach( QObject* obj, sb->children() )
+  foreach ( QObject* obj, sb->children() )
   {
     if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
     {
@@ -628,7 +628,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
 
   // hide menus and menu actions
 
-  foreach( QObject* obj, menubar->children() )
+  foreach ( QObject* obj, menubar->children() )
   {
     if ( obj->inherits( "QMenu" ) )
     {
@@ -650,7 +650,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   // remove toolbars, toolbar actions
 
   mSettings.beginGroup( "Customization/Toolbars" );
-  foreach( QObject* obj, mw->children() )
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QToolBar" ) )
     {
@@ -666,7 +666,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
       {
         mSettings.beginGroup( tb->objectName() );
         // hide individual toolbar actions
-        foreach( QAction* action, tb->actions() )
+        foreach ( QAction* action, tb->actions() )
         {
           if ( action->objectName().isEmpty() )
           {
@@ -686,7 +686,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
   // remove dock widgets
 
   mSettings.beginGroup( "Customization/Docks" );
-  foreach( QObject* obj, mw->children() )
+  foreach ( QObject* obj, mw->children() )
   {
     if ( obj->inherits( "QDockWidget" ) )
     {
@@ -707,7 +707,7 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
     mSettings.beginGroup( "Customization/StatusBar" );
 
     QStatusBar* sb = mw->statusBar();
-    foreach( QObject* obj, sb->children() )
+    foreach ( QObject* obj, sb->children() )
     {
       if ( obj->inherits( "QWidget" ) )
       {
@@ -737,7 +737,7 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
 {
   settings.beginGroup( menu->objectName() );
   // hide individual menu actions and call recursively on visible submenus
-  foreach( QAction* action, menu->actions() )
+  foreach ( QAction* action, menu->actions() )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
     if ( objName.isEmpty() )

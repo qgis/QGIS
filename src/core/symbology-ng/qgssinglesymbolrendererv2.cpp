@@ -260,11 +260,35 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::createFromSld( QDomElement& ele
   {
     if ( childElem.localName() == "Name" )
     {
-      label = childElem.firstChild().nodeValue();
+      // <se:Name> tag contains the rule identifier,
+      // so prefer title tag for the label property value
+      if ( label.isEmpty() )
+        label = childElem.firstChild().nodeValue();
     }
-    else if ( childElem.localName() == "Description" || childElem.localName() == "Abstract" )
+    else if ( childElem.localName() == "Description" )
     {
+      // <se:Description> can contains a title and an abstract
+      QDomElement titleElem = childElem.firstChildElement( "Title" );
+      if ( !titleElem.isNull() )
+      {
+        label = titleElem.firstChild().nodeValue();
+      }
+
+      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
+      if ( !abstractElem.isNull() )
+      {
+        description = abstractElem.firstChild().nodeValue();
+      }
+    }
+    else if ( childElem.localName() == "Abstract" )
+    {
+      // <sld:Abstract> (v1.0)
       description = childElem.firstChild().nodeValue();
+    }
+    else if ( childElem.localName() == "Title" )
+    {
+      // <sld:Title> (v1.0)
+      label = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName().endsWith( "Symbolizer" ) )
     {

@@ -24,7 +24,7 @@ FIND_LIBRARY(QWT_LIBRARY NAMES qwt qwt5 qwt-qt4 qwt5-qt4 PATHS
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib" 
-  "$ENV{LIB}/lib" 
+  "$ENV{LIB}" 
   )
 
 IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)

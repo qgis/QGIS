@@ -597,9 +597,14 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     setQueryItem( url, "FORMAT", mImageMimeType );
 
     //DPI parameter is accepted by QGIS mapserver (and ignored by the other WMS servers)
+    //map_resolution parameter works for UMN mapserver
+
+    //Different WMS servers have DPI parameters:
     if ( mDpi != -1 )
     {
-      setQueryItem( url, "DPI", QString::number( mDpi ) );
+      setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
+      setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
+      setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
     }
 
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
@@ -2503,9 +2508,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         metersPerUnit = 0.3048;
         break;
 
-      case QGis::DecimalDegrees:
-      case QGis::DegreesMinutesSeconds:
-      case QGis::DegreesDecimalMinutes:
+      case QGis::Degrees:
         metersPerUnit = 111319.49079327358;
         break;
 
@@ -3063,12 +3066,10 @@ bool QgsWmsProvider::calculateExtent()
     }
 
     QgsDebugMsg( "no extent returned" );
-
     return false;
   }
   else
   {
-
     bool firstLayer = true; //flag to know if a layer is the first to be successfully transformed
     for ( QStringList::Iterator it  = mActiveSubLayers.begin();
           it != mActiveSubLayers.end();
@@ -3115,10 +3116,6 @@ bool QgsWmsProvider::calculateExtent()
     QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
     return true;
   }
-
-  QgsDebugMsg( "exiting without extent." );
-  return false;
-
 }
 
 

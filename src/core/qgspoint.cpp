@@ -159,6 +159,25 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
   return rep;
 }
 
+QString QgsPoint::toDegreesMinutes( int thePrecision ) const
+{
+  int myDegreesX = int( qAbs( m_x ) );
+  float myFloatMinutesX = float(( qAbs( m_x ) - myDegreesX ) * 60 );
+
+  int myDegreesY = int( qAbs( m_y ) );
+  float myFloatMinutesY = float(( qAbs( m_y ) - myDegreesY ) * 60 );
+
+  QString myXHemisphere = m_x < 0 ? QObject::tr( "W" ) : QObject::tr( "E" );
+  QString myYHemisphere = m_y < 0 ? QObject::tr( "S" ) : QObject::tr( "N" );
+  QString rep = QString::number( myDegreesX ) + QChar( 176 ) +
+                QString::number( myFloatMinutesX, 'f', thePrecision ) + QString( "'" ) +
+                myXHemisphere + QString( "," ) +
+                QString::number( myDegreesY ) + QChar( 176 ) +
+                QString::number( myFloatMinutesY, 'f', thePrecision ) + QString( "'" ) +
+                myYHemisphere;
+  return rep;
+}
+
 QString QgsPoint::wellKnownText() const
 {
   return QString( "POINT(%1 %2)" ).arg( QString::number( m_x, 'f', 18 ) ).arg( QString::number( m_y, 'f', 18 ) );

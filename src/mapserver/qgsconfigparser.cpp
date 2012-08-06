@@ -41,25 +41,25 @@ QgsConfigParser::QgsConfigParser()
 QgsConfigParser::~QgsConfigParser()
 {
   //remove the external GML datasets
-  foreach( QDomDocument *doc, mExternalGMLDatasets.values() )
+  foreach ( QDomDocument *doc, mExternalGMLDatasets.values() )
   {
     delete doc;
   }
 
   //remove the temporary files
-  foreach( QTemporaryFile *file, mFilesToRemove )
+  foreach ( QTemporaryFile *file, mFilesToRemove )
   {
     delete file;
   }
 
   //and also those the temporary file paths
-  foreach( QString path, mFilePathsToRemove )
+  foreach ( QString path, mFilePathsToRemove )
   {
     QFile::remove( path );
   }
 
   //delete the layers in the list
-  foreach( QgsMapLayer *layer, mLayersToRemove )
+  foreach ( QgsMapLayer *layer, mLayersToRemove )
   {
     delete layer;
   }
@@ -386,7 +386,7 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
   }
   else //no crs constraint
   {
-    foreach( QString crs, crsList )
+    foreach ( QString crs, crsList )
     {
       appendCRSElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }
@@ -420,7 +420,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
   }
 
   //replace composer map parameters
-  foreach( QgsComposerMap* currentMap, composerMaps )
+  foreach ( QgsComposerMap* currentMap, composerMaps )
   {
     if ( !currentMap )
     {
@@ -508,7 +508,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
           styleName = wmsStyleList.at( i );
         }
 
-        foreach( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
+        foreach ( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
         {
           if ( layer )
           {
@@ -527,7 +527,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
   }
 
   //replace label text
-  foreach( QgsComposerLabel *currentLabel, composerLabels )
+  foreach ( QgsComposerLabel *currentLabel, composerLabels )
   {
     QString title = parameterMap.value( currentLabel->id().toUpper() );
 

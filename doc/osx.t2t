@@ -120,6 +120,45 @@ make
 sudo make install
 ```
 
+=== Optional Setup: ccache ===
+
+Setup ccache to significantly speed up compile times after initial build.
+(Switching git branches will again cause longer initial build times unless
+separate build directories are used for each branch.)
+
+Get the latest source release from here:
+
+http://ccache.samba.org/
+
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the
+source folder and:
+
+```
+./configure
+make
+sudo make install
+```
+
+After install, symbolically link compilers to /usr/local/bin/ccache.
+(Note: this differs from instructions at http://ccache.samba.org/manual.html
+Changing the /usr/bin:/usr/local/bin order in PATH is not recommended on OS X.
+
+```
+sudo mkdir /usr/local/bin/compilers && cd /usr/local/bin/compilers
+sudo ln -s ../ccache gcc
+sudo ln -s ../ccache g++
+sudo ln -s ../ccache cc
+sudo ln -s ../ccache c++
+```
+
+Add the following to the end of your ~/.bash_profile (and optionally ~/.bashrc)
+to allow your login shell to discover the symbolically linked compilers before
+/usr/bin compilers and to easily toggle using ccache off, by commenting out the
+line and starting a new login session in Terminal.
+
+```
+export PATH=/usr/local/bin/compilers:$PATH
+```
 
 == Install development frameworks for QGIS dependencies ==
 
@@ -320,7 +359,7 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 ```
 
-__Snow Leopard system Python__
+__Lion system Python__
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
@@ -542,6 +581,8 @@ cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
 -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
+-D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
+-D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
@@ -566,8 +607,10 @@ sudo chmod +x /usr/local/bin/python32
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MinSizeRel -D ENABLE_TESTS=FALSE \
 -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
--D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
--D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+-D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
+-D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
+-D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
 -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
 ..

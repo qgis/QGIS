@@ -24,6 +24,7 @@
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
 #include "qgsvectorcolorbrewercolorrampv2dialog.h"
+#include "qgscptcitycolorrampv2dialog.h"
 #include "qgsstylev2exportimportdialog.h"
 
 #include <QFile>
@@ -302,6 +303,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
   // let the user choose the color ramp type
   QStringList rampTypes;
   rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
+  rampTypes << tr( "cpt-city" ); // todo, only for rasters?
   bool ok;
   QString rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
                      tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
@@ -342,9 +344,23 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
     }
     ramp = brewerRamp;
   }
+  else if ( rampType == tr( "cpt-city" ) )
+  {
+    QgsCptCityColorRampV2* cptCityRamp = new QgsCptCityColorRampV2();
+    QgsCptCityColorRampV2Dialog dlg( cptCityRamp, parent );
+    if ( !dlg.exec() )
+    {
+      delete cptCityRamp;
+      return QString();
+    }
+    ramp = cptCityRamp;
+  }
   else
   {
-    Q_ASSERT( 0 && "invalid ramp type" );
+    // Q_ASSERT( 0 && "invalid ramp type" );
+    // bailing out is rather harsh!
+    QgsDebugMsg( "invalid ramp type " + rampType );
+    return QString();
   }
 
   // get name
@@ -450,6 +466,16 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
   {
     QgsVectorColorBrewerColorRampV2* brewerRamp = static_cast<QgsVectorColorBrewerColorRampV2*>( ramp );
     QgsVectorColorBrewerColorRampV2Dialog dlg( brewerRamp, this );
+    if ( !dlg.exec() )
+    {
+      delete ramp;
+      return false;
+    }
+  }
+  else if ( ramp->type() == "cpt-city" )
+  {
+    QgsCptCityColorRampV2* cptCityRamp = static_cast<QgsCptCityColorRampV2*>( ramp );
+    QgsCptCityColorRampV2Dialog dlg( cptCityRamp, this );
     if ( !dlg.exec() )
     {
       delete ramp;

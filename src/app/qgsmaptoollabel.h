@@ -46,6 +46,9 @@ class QgsMapToolLabel: public QgsMapTool
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
     bool layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    /**Checks if labels in a layer can be rotated
+      @param rotationCol out: attribute column for data defined label rotation*/
+    bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
 
   protected:
     QgsRubberBand* mLabelRubberBand;
@@ -63,8 +66,9 @@ class QgsMapToolLabel: public QgsMapTool
     bool labelAtPosition( QMouseEvent* e, QgsLabelPosition& p );
 
     /**Finds out rotation point of current label position
+      @param ignoreUpsideDown treat label as right-side-up
       @return true in case of success*/
-    bool rotationPoint( QgsPoint& pos );
+    bool rotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false );
 
     /**Creates label / feature / fixpoint rubber bands for the current label position*/
     void createRubberBands();
@@ -90,7 +94,8 @@ class QgsMapToolLabel: public QgsMapTool
     QFont labelFontCurrentFeature();
 
     /**Get data defined position of a feature
-      @param layerId layer identification string
+      @param vlayer vector layer
+      @param featureId feature identification integer
       @param x out: data defined x-coordinate
       @param xSuccess out: false if attribute value is NULL
       @param y out: data defined y-coordinate
@@ -99,6 +104,15 @@ class QgsMapToolLabel: public QgsMapTool
       @param yCol out: index of the y position column
       @return false if layer does not have data defined label position enabled*/
     bool dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
+
+    /**Returns data defined rotation of a feature.
+      @param vlayer vector layer
+      @param featureId feature identification integer
+      @param rotation out: rotation value
+      @param rotationSuccess out: false if rotation value is NULL
+      @return true if data defined rotation is enabled on the layer
+      */
+    bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess );
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;

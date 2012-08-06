@@ -370,8 +370,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>755</width>
-            <height>519</height>
+            <width>740</width>
+            <height>548</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -382,30 +382,13 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
-               <widget class="QLabel" name="textLabel3">
-                <property name="text">
-                 <string>Display name</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="txtDisplayName"/>
-              </item>
-              <item row="0" column="3">
-               <widget class="QComboBox" name="displayFieldComboBox">
-                <property name="whatsThis">
-                 <string>Use this control to set which field is placed at the top level of the Identify Results dialog box.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
                <widget class="QLabel" name="label">
                 <property name="text">
                  <string>Edit UI</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" colspan="2">
+              <item row="0" column="1" colspan="2">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLineEdit" name="leEditForm"/>
@@ -419,21 +402,45 @@
                 </item>
                </layout>
               </item>
-              <item row="1" column="3">
+              <item row="0" column="3">
                <widget class="QPushButton" name="pbnIndex">
                 <property name="text">
                  <string>Create Spatial Index</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="3">
+              <item row="1" column="3">
+               <widget class="QPushButton" name="pbnUpdateExtents">
+                <property name="text">
+                 <string>Update Extents</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <widget class="QLineEdit" name="leEditFormInit"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Init function</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>CRS</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
                <widget class="QLineEdit" name="leSpatialRefSys">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="4" column="3">
+              <item row="2" column="3">
                <widget class="QPushButton" name="pbnChangeSpatialRefSys">
                 <property name="toolTip">
                  <string>Specify the coordinate reference system of the layer's geometry.</string>
@@ -443,36 +450,6 @@
                 </property>
                 <property name="text">
                  <string>Specify CRS</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="textLabel2">
-                <property name="toolTip">
-                 <string>Display field for the Identify Results dialog box</string>
-                </property>
-                <property name="whatsThis">
-                 <string>This sets the display field for the Identify Results dialog box</string>
-                </property>
-                <property name="text">
-                 <string>Display field</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QPushButton" name="pbnUpdateExtents">
-                <property name="text">
-                 <string>Update Extents</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1" colspan="2">
-               <widget class="QLineEdit" name="leEditFormInit"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Init function</string>
                 </property>
                </widget>
               </item>
@@ -590,6 +567,135 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/gis/mActionMapTips.png</normaloff>:/images/themes/gis/mActionMapTips.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Display</string>
+      </attribute>
+      <layout class="QFormLayout" name="formLayout_2">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel3">
+         <property name="text">
+          <string>Legend display text</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="txtDisplayName"/>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Map Tip display text</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="fieldComboRadio">
+            <property name="text">
+             <string>Field</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="displayFieldComboBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="htmlRadio">
+            <property name="text">
+             <string>HTML</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QTextEdit" name="htmlMapTip">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_14">
+            <item>
+             <widget class="QPushButton" name="insertExpressionButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Inserts an expression into the action</string>
+              </property>
+              <property name="text">
+               <string>Insert expression...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QComboBox" name="fieldComboBox">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="toolTip">
+               <string>The valid attribute names for this layer</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="insertFieldButton">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="toolTip">
+               <string>Inserts the selected field into the action</string>
+              </property>
+              <property name="text">
+               <string>Insert field</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabWidgetPage5">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
@@ -615,8 +721,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>733</width>
-            <height>497</height>
+            <width>722</width>
+            <height>530</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -727,8 +833,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>733</width>
-            <height>497</height>
+            <width>722</width>
+            <height>530</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -820,8 +926,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>713</width>
-            <height>637</height>
+            <width>704</width>
+            <height>627</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">
@@ -1333,9 +1439,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>txtDisplayName</tabstop>
-  <tabstop>displayFieldComboBox</tabstop>
-  <tabstop>leSpatialRefSys</tabstop>
   <tabstop>pbnIndex</tabstop>
   <tabstop>leMinimumScale</tabstop>
   <tabstop>leMaximumScale</tabstop>
@@ -1345,5 +1448,86 @@
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>fieldComboRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>displayFieldComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>69</x>
+     <y>128</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>178</x>
+     <y>128</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>htmlRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>htmlMapTip</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>57</x>
+     <y>155</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>149</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>htmlRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>insertFieldButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>152</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>660</x>
+     <y>350</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>htmlRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fieldComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>51</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>306</x>
+     <y>361</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>htmlRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>insertExpressionButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>151</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>349</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

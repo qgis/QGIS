@@ -68,7 +68,7 @@ QString QgsRuleBasedRendererV2::Rule::dump( int offset ) const
                 .arg( mFilterExp ).arg( symbolDump );
 
   QStringList lst;
-  foreach( Rule* rule, mChildren )
+  foreach ( Rule* rule, mChildren )
   {
     lst.append( rule->dump( offset + 2 ) );
   }
@@ -154,8 +154,8 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
   QgsSymbolV2* sym = mSymbol ? mSymbol->clone() : NULL;
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
   // clone children
-  foreach( Rule* rule, mChildren )
-  newrule->appendChild( rule->clone() );
+  foreach ( Rule* rule, mChildren )
+    newrule->appendChild( rule->clone() );
   return newrule;
 }
 
@@ -226,16 +226,27 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
     QDomElement ruleElem = doc.createElement( "se:Rule" );
     element.appendChild( ruleElem );
 
+    //XXX: <se:Name> is the rule identifier, but our the Rule objects
+    // have no properties could be used as identifier. Use the label.
     QDomElement nameElem = doc.createElement( "se:Name" );
     nameElem.appendChild( doc.createTextNode( mLabel ) );
     ruleElem.appendChild( nameElem );
 
-    if ( !mDescription.isEmpty() )
+    if ( !mLabel.isEmpty() || !mDescription.isEmpty() )
     {
       QDomElement descrElem = doc.createElement( "se:Description" );
-      QDomElement abstractElem = doc.createElement( "se:Abstract" );
-      abstractElem.appendChild( doc.createTextNode( mDescription ) );
-      descrElem.appendChild( abstractElem );
+      if ( !mLabel.isEmpty() )
+      {
+        QDomElement titleElem = doc.createElement( "se:Title" );
+        titleElem.appendChild( doc.createTextNode( mLabel ) );
+        descrElem.appendChild( titleElem );
+      }
+      if ( !mDescription.isEmpty() )
+      {
+        QDomElement abstractElem = doc.createElement( "se:Abstract" );
+        abstractElem.appendChild( doc.createTextNode( mDescription ) );
+        descrElem.appendChild( abstractElem );
+      }
       ruleElem.appendChild( descrElem );
     }
 
@@ -353,7 +364,7 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
   if ( mSymbol )
   {
     // add job to the queue: each symbol's zLevel must be added
-    foreach( int normZLevel, mSymbolNormZLevels )
+    foreach ( int normZLevel, mSymbolNormZLevels )
     {
       //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
       renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
@@ -477,33 +488,35 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
   {
     if ( childElem.localName() == "Name" )
     {
-      label = childElem.firstChild().nodeValue();
+      // <se:Name> tag contains the rule identifier,
+      // so prefer title tag for the label property value
+      if ( label.isEmpty() )
+        label = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName() == "Description" )
     {
       // <se:Description> can contains a title and an abstract
-      // prefer Abstract if available
-      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
       QDomElement titleElem = childElem.firstChildElement( "Title" );
+      if ( !titleElem.isNull() )
+      {
+        label = titleElem.firstChild().nodeValue();
+      }
+
+      QDomElement abstractElem = childElem.firstChildElement( "Abstract" );
       if ( !abstractElem.isNull() )
       {
         description = abstractElem.firstChild().nodeValue();
       }
-      else if ( !titleElem.isNull() && description.isEmpty() )
-      {
-        description = titleElem.firstChild().nodeValue();
-      }
     }
     else if ( childElem.localName() == "Abstract" )
     {
-      // <sld:Abstract>
+      // <sld:Abstract> (v1.0)
       description = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName() == "Title" )
     {
-      // <sld:Title>
-      if ( description.isEmpty() )
-        description = childElem.firstChild().nodeValue();
+      // <sld:Title> (v1.0)
+      label = childElem.firstChild().nodeValue();
     }
     else if ( childElem.localName() == "Filter" )
     {
@@ -628,7 +641,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVe
   // and prepare rendering queue
   QMap<int, int> zLevelsToNormLevels;
   int maxNormLevel = -1;
-  foreach( int zLevel, symbolZLevels )
+  foreach ( int zLevel, symbolZLevels )
   {
     zLevelsToNormLevels[zLevel] = ++maxNormLevel;
     mRenderQueue.append( RenderLevel( zLevel ) );
@@ -645,11 +658,11 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
   //
 
   // go through all levels
-  foreach( const RenderLevel& level, mRenderQueue )
+  foreach ( const RenderLevel& level, mRenderQueue )
   {
     //QgsDebugMsg(QString("level %1").arg(level.zIndex));
     // go through all jobs at the level
-    foreach( const RenderJob* job, level.jobs )
+    foreach ( const RenderJob* job, level.jobs )
     {
       //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
       // render feature - but only with symbol layers with specified zIndex
@@ -801,7 +814,7 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::createFromSld( QDomElement& elemen
 
 void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r )
 {
-  foreach( const QgsRendererCategoryV2& cat, r->categories() )
+  foreach ( const QgsRendererCategoryV2& cat, r->categories() )
   {
     QString attr = QgsExpression::quotedColumnRef( r->classAttribute() );
     QString value;
@@ -822,7 +835,7 @@ void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule*
 
 void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r )
 {
-  foreach( const QgsRendererRangeV2& rng, r->ranges() )
+  foreach ( const QgsRendererRangeV2& rng, r->ranges() )
   {
     // due to the loss of precision in double->string conversion we may miss out values at the limit of the range
     // TODO: have a possibility to construct expressions directly as a parse tree to avoid loss of precision
@@ -841,7 +854,7 @@ void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* ini
   int oldScale = initialRule->scaleMinDenom();
   int maxDenom = initialRule->scaleMaxDenom();
   QgsSymbolV2* symbol = initialRule->symbol();
-  foreach( int scale, scales )
+  foreach ( int scale, scales )
   {
     if ( initialRule->scaleMinDenom() >= scale )
       continue; // jump over the first scales out of the interval

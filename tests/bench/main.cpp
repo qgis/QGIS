@@ -450,7 +450,7 @@ int main( int argc, char *argv[] )
   {
     QPainter::RenderHints hints;
     QStringList list = myQuality.split( ',' );
-    foreach( QString q, list )
+    foreach ( QString q, list )
     {
       if ( q == "Antialiasing" ) hints |= QPainter::Antialiasing;
       else if ( q == "TextAntialiasing" ) hints |= QPainter::TextAntialiasing;

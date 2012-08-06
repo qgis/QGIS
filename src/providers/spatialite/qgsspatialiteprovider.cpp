@@ -4280,8 +4280,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     }
     sqlite3_free_table( results );
   }
-  else if ( mQuery.startsWith( "(select", Qt::CaseInsensitive ) &&
-            mQuery.endsWith( ")" ) )
+  else if ( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) )
   {
     // checking if this one is a select query
 

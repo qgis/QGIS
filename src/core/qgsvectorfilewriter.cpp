@@ -138,7 +138,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     {
       QStringList allExts = exts.split( " ", QString::SkipEmptyParts );
       bool found = false;
-      foreach( QString ext, allExts )
+      foreach ( QString ext, allExts )
       {
         if ( vectorFileName.endsWith( "." + ext, Qt::CaseInsensitive ) )
         {
@@ -744,7 +744,7 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   }
 
   bool ok = true;
-  foreach( QString file, dir.entryList( filter ) )
+  foreach ( QString file, dir.entryList( filter ) )
   {
     if ( !QFile::remove( dir.canonicalPath() + "/" + file ) )
     {

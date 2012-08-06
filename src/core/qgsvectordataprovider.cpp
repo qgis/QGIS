@@ -464,7 +464,7 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
 {
   if ( smEncodings.isEmpty() )
   {
-    foreach( QString codec, QTextCodec::availableCodecs() )
+    foreach ( QString codec, QTextCodec::availableCodecs() )
     {
       smEncodings << codec;
     }

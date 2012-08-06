@@ -168,7 +168,7 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
   QgsDebugMsg( QString( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
-  foreach( QItemSelectionRange range, sel )
+  foreach ( QItemSelectionRange range, sel )
   {
     QgsDebugMsg( QString( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
     if ( range.isValid() )
@@ -211,8 +211,8 @@ void QgsRuleBasedRendererV2Widget::refineRule( int type )
   // TODO: set initial rule's symbol to NULL (?)
 
   // show the newly added rules
-  foreach( QModelIndex index, indexlist )
-  viewRules->expand( index );
+  foreach ( QModelIndex index, indexlist )
+    viewRules->expand( index );
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleCategories()
@@ -248,7 +248,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexLis
 
   // create new rules
   QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, r->categories().count() );
@@ -278,7 +278,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
 
   // create new rules
   QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, r->ranges().count() );
@@ -289,7 +289,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& i
 
 void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
 {
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
 
@@ -309,7 +309,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
 
   QList<int> scales;
   bool ok;
-  foreach( QString item, txt.split( ',' ) )
+  foreach ( QString item, txt.split( ',' ) )
   {
     int scale = item.toInt( &ok );
     if ( ok )
@@ -318,7 +318,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& i
       QMessageBox::information( this, tr( "Error" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
   }
 
-  foreach( QModelIndex index, indexList )
+  foreach ( QModelIndex index, indexList )
   {
     QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
     mModel->willAddRules( index, scales.count() + 1 );
@@ -337,7 +337,7 @@ QList<QgsSymbolV2*> QgsRuleBasedRendererV2Widget::selectedSymbols()
   }
 
   QItemSelection sel = viewRules->selectionModel()->selection();
-  foreach( QItemSelectionRange range, sel )
+  foreach ( QItemSelectionRange range, sel )
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRendererV2::Rule* parentRule = mModel->ruleForIndex( parent );
@@ -684,7 +684,7 @@ QMimeData *QgsRuleBasedRendererV2Model::mimeData( const QModelIndexList &indexes
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach( const QModelIndex &index, indexes )
+  foreach ( const QModelIndex &index, indexes )
   {
     // each item consists of several columns - let's add it with just first one
     if ( !index.isValid() || index.column() != 0 )

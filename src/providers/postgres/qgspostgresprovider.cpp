@@ -68,9 +68,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mRequestedGeomType = mUri.wkbType();
   mIsGeography = false;
 
-  if ( mSchemaName.isEmpty() &&
-       mTableName.startsWith( "(SELECT", Qt::CaseInsensitive ) &&
-       mTableName.endsWith( ")" ) )
+  if ( mSchemaName.isEmpty() && mTableName.startsWith( "(" ) && mTableName.endsWith( ")" ) )
   {
     mIsQuery = true;
     mQuery = mTableName;
@@ -180,7 +178,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     case pktFidMap:
     {
       QString delim;
-      foreach( int idx, mPrimaryKeyAttrs )
+      foreach ( int idx, mPrimaryKeyAttrs )
       {
         key += delim + mAttributeFields[ idx ].name();
         delim = ",";
@@ -279,7 +277,7 @@ bool QgsPostgresProvider::declareCursor(
         break;
 
       case pktFidMap:
-        foreach( int idx, mPrimaryKeyAttrs )
+        foreach ( int idx, mPrimaryKeyAttrs )
         {
           query += delim + mConnectionRO->fieldExpression( field( idx ) );
           delim = ",";
@@ -292,7 +290,7 @@ bool QgsPostgresProvider::declareCursor(
         break;
     }
 
-    foreach( int idx, fetchAttributes )
+    foreach ( int idx, fetchAttributes )
     {
       if ( mPrimaryKeyAttrs.contains( idx ) )
         continue;
@@ -458,7 +456,7 @@ bool QgsPostgresProvider::getFeature( QgsPostgresResult &queryResult, int row, b
       {
         QList<QVariant> primaryKeyVals;
 
-        foreach( int idx, mPrimaryKeyAttrs )
+        foreach ( int idx, mPrimaryKeyAttrs )
         {
           const QgsField &fld = field( idx );
 
@@ -484,7 +482,7 @@ bool QgsPostgresProvider::getFeature( QgsPostgresResult &queryResult, int row, b
     QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 4 );
 
     // iterate attributes
-    foreach( int idx, fetchAttributes )
+    foreach ( int idx, fetchAttributes )
     {
       if ( mPrimaryKeyAttrs.contains( idx ) )
         continue;
@@ -1308,8 +1306,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
   else
   {
     // Check if the sql is a select query
-    if ( !mQuery.startsWith( "(SELECT", Qt::CaseInsensitive ) &&
-         !mQuery.endsWith( ")" ) )
+    if ( !mQuery.startsWith( "(" ) && !mQuery.endsWith( ")" ) )
     {
       QgsMessageLog::logMessage( tr( "The custom query is not a select query." ), tr( "PostGIS" ) );
       return false;
@@ -1821,7 +1818,8 @@ QString QgsPostgresProvider::geomParam( int offset ) const
 {
   QString geometry;
 
-  bool forceMulti;
+  bool forceMulti = false;
+
   switch ( geometryType() )
   {
     case QGis::WKBPoint:
@@ -1844,7 +1842,6 @@ QString QgsPostgresProvider::geomParam( int offset ) const
       forceMulti = true;
       break;
   }
-
 
   if ( forceMulti )
   {
@@ -1902,7 +1899,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
-      foreach( int idx, mPrimaryKeyAttrs )
+      foreach ( int idx, mPrimaryKeyAttrs )
       {
         insert += delim + quotedIdentifier( field( idx ).name() );
         values += delim + QString( "$%1" ).arg( defaultValues.size() + offset );
@@ -2077,7 +2074,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           QList<QVariant> primaryKeyVals;
 
-          foreach( int idx, mPrimaryKeyAttrs )
+          foreach ( int idx, mPrimaryKeyAttrs )
           {
             primaryKeyVals << attributevec[ idx ];
           }

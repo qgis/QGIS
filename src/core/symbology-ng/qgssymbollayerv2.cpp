@@ -64,8 +64,8 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   renderPolyline( points, context );
   if ( rings )
   {
-    foreach( const QPolygonF& ring, *rings )
-    renderPolyline( ring, context );
+    foreach ( const QPolygonF& ring, *rings )
+      renderPolyline( ring, context );
   }
 }
 
