@@ -197,12 +197,28 @@ void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext
   for ( int i = 0; i < textPositions.size(); ++i )
   {
     QString val = att[ s.categoryIndices.at( i )].toString();
-    //find out dimensions
+    //find out dimesions
     double textWidth = fontMetrics.width( val );
+    double textHeight = fontMetrics.height();
+
     mPen.setColor( s.categoryColors.at( i ) );
     p->setPen( mPen );
     QPointF position = textPositions.at( i );
-	p->drawText( QPointF( position.x() - textWidth / 2.0, position.y() + fontMetrics.xHeight() ), val );
+    
+    // Calculate vertical placement
+    double xOffset = 0;
+
+    switch( s.labelPlacementMethod )
+    {
+      case QgsDiagramSettings::Height:
+        xOffset = textHeight / 2.0;
+        break;
+
+      case QgsDiagramSettings::XHeight:
+        xOffset = fontMetrics.xHeight();
+        break;
+    }
+    p->drawText( QPointF( position.x() - textWidth / 2.0, position.y() + xOffset ), val );
   }
 }
 

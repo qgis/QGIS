@@ -96,6 +96,12 @@ struct CORE_EXPORT QgsDiagramSettings
     MapUnits
   };
 
+  enum LabelPlacementMethod
+  {
+    Height,
+    XHeight
+  };
+
   QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
   {}
   QFont font;
@@ -106,6 +112,7 @@ struct CORE_EXPORT QgsDiagramSettings
   QColor backgroundColor;
   QColor penColor;
   double penWidth;
+  LabelPlacementMethod labelPlacementMethod;
 
   //scale range (-1 if no lower / upper bound )
   double minScaleDenominator;
