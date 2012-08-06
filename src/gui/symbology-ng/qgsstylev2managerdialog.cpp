@@ -616,11 +616,15 @@ void QgsStyleV2ManagerDialog::populateGroups()
   setBold( projectSymbols );
   model->appendRow( projectSymbols );
 
+  /* TODO
+   *
   QStandardItem *recent = new QStandardItem( "Recently Used" );
   recent->setData( "recent" );
   recent->setEditable( false );
   setBold( recent );
   model->appendRow( recent );
+  *
+  */
 
   QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
   group->setData( "groups" );
@@ -1111,9 +1115,23 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
 {
   QPoint globalPos = groupTree->viewport()->mapToGlobal( point );
 
+  QModelIndex index = groupTree->indexAt( point );
+  QgsDebugMsg( "Now you clicked : " + index.data().toString() );
+
   QMenu groupMenu;
-  groupMenu.addAction( "Add Group" );
-  groupMenu.addAction( "Remove Group" );
+
+  if ( index.parent().isValid() && ( index.data( Qt::UserRole + 1 ).toString() != "ungrouped" ) )
+  {
+    if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
+    {
+      groupMenu.addAction( "Edit Group" );
+    }
+    else // it must be a group
+    {
+      groupMenu.addAction( "Add Group" );
+    }
+    groupMenu.addAction( "Remove Group" );
+  }
 
   QAction* selectedItem = groupMenu.exec( globalPos );
 
@@ -1123,6 +1141,8 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
       addGroup();
     else if ( selectedItem->text() == "Remove Group" )
       removeGroup();
+    else if ( selectedItem->text() == "Edit Group" )
+      editSmartgroupAction();
   }
 }
 
