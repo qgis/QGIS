@@ -338,7 +338,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** Name of memory file for cached data */
     QString mCachedMemFilename;
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
     VSILFILE * mCachedMemFile;
+#else
+    FILE * mCachedMemFile;
+#endif
 
     /** Pointer to cached GDAL dataset */
     GDALDatasetH mCachedGdalDataset;
