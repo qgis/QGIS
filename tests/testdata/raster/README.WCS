@@ -1,0 +1,23 @@
+    WCS test server installation
+    ----------------------------
+WCS test server is based on UMN MapServer running on qgis.org. 
+
+1. Install UMN MapServer (mapserver.org) version 6.0 or higher with WCS support (--with-wcs configure option if compiled from source)
+
+2. Copy test data from qgis source tests/testdata/raster somewhere on server, for example to /var/www/data/test/1.9.0/tests/testdata/raster.
+
+3. Edit WCS mapfile, for example /var/www/data/test/1.9.0/tests/testdata/raster/wcs.map and set SHAPEPATH to the path where data were copied, e.g.:
+    SHAPEPATH "/var/www/data/test/1.9.0/tests/testdata/raster/"
+
+4. Create script in cgi-bin dir where mapfile is specified, e.g. /usr/lib/cgi-bin/wcstest-1.9.0:
+
+    #! /bin/sh
+    MS_MAPFILE=/var/www/data/test/1.9.0/tests/testdata/raster/wcs.map
+    export MS_MAPFILE
+    ./mapserv
+
+5. Configure Web server, for example if Apache is used, add rewrite rule to config file using /test/<version>/wcs path:
+
+    RewriteRule /test/1.9.0/wcs /cgi-bin/wcstest-1.9.0 [PT]
+
+6. WARNING: If possible, don't change WCS server URL for released versions. If the server URL has to be changed for development and future versions, change also the variable TEST_SERVER_URL in tests/src/providers/CMakeLists.txt.

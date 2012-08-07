@@ -2863,7 +2863,7 @@ void QgisApp::addWcsLayer()
   QgsDebugMsg( "about to addWcsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wcss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "gdal" ), this ) );
+  QDialog *wcss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "wcs" ), this ) );
   if ( !wcss )
   {
     QMessageBox::warning( this, tr( "WCS" ), tr( "Cannot get WCS select dialog from provider." ) );

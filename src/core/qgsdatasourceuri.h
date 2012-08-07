@@ -75,6 +75,11 @@ class CORE_EXPORT QgsDataSourceURI
     void setParam( const QString &key, const QString &value );
     void setParam( const QString &key, const QStringList &value );
 
+    //! Remove generic param (generic mode)
+    // \note remove all occurrences of key, returns number of params removed
+    // \note added in 1.9
+    int removeParam( const QString &key );
+
     //! Get generic param (generic mode)
     // \note added in 1.9
     QString param( const QString &key ) const;

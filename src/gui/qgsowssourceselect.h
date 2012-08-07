@@ -124,6 +124,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
     //! Server CRS supported for currently selected layer item(s)
     virtual QStringList selectedLayersCRSs();
 
+    //! List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
+    virtual QStringList selectedLayersTimes();
+
     //virtual QStringList layerCRS( int id );
 
     //! Populate the connection list combo box
@@ -137,6 +140,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! Set supported CRSs
     void populateCRS();
+
+    //! Populate times
+    void populateTimes();
 
     //! Connection name
     QString connName();
@@ -198,6 +204,9 @@ class GUI_EXPORT QgsOWSSourceSelect : public QDialog, public Ui::QgsOWSSourceSel
 
     //! Returns currently selected Crs
     QString selectedCRS();
+
+    //! Returns currently selected time
+    QString selectedTime();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
     QTableWidgetItem* mCurrentTileset;

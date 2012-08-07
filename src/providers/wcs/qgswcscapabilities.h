@@ -20,7 +20,6 @@
 #ifndef QGSWCSCAPABILITIES_H
 #define QGSWCSCAPABILITIES_H
 
-//#include "qgsrasterdataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 
@@ -31,59 +30,9 @@
 #include <QVector>
 #include <QUrl>
 
-class QgsCoordinateTransform;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
-
-/*
- * The following structs reflect the WCS XML schema,
- * as illustrated in ... the Web Coverage Service standard, version x.x xxxx-xx-xx.
- */
-
-/** Get Property structure */
-struct QgsWcsGet
-{
-  QString xlinkHref;
-};
-
-/** HTTP Property structure */
-struct QgsWcsHTTP
-{
-  QgsWcsGet get;
-};
-
-/** DCP Type Property structure */
-struct QgsWcsDCP
-{
-  QgsWcsHTTP http;
-};
-
-/** Version parameter */
-struct QgsWcsVersion
-{
-  QStringList allowedValues;
-};
-
-/** Operation type structure */
-struct QgsWcsOperation
-{
-  QgsWcsVersion version;
-  QgsWcsDCP     dcp;
-};
-
-/** OperationsMetadata */
-struct QgsWcsOperationsMetadata
-{
-  QgsWcsOperation  getCoverage;
-};
-
-/** ServiceerviceIdentification structure */
-struct QgsWcsServiceIdentification
-{
-  QString                            title;
-  QString                            abstract;
-};
 
 /** CoverageSummary structure */
 struct QgsWcsCoverageSummary
@@ -94,36 +43,37 @@ struct QgsWcsCoverageSummary
   QString       abstract;
   QStringList   supportedCrs;
   QStringList   supportedFormat;
-  QgsRectangle  wgs84BoundingBox;
+  QList<double> nullValues;
+  QgsRectangle  wgs84BoundingBox; // almost useless, we need the native
+  QString       nativeCrs;
+  // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
+  QMap<QString, QgsRectangle> boundingBoxes;
+  QgsRectangle  nativeBoundingBox;
+  // timePosition or timePeriod (beginPosition/endPosition[/timeResolution] - used in KVP request)
+  QStringList times;
   QVector<QgsWcsCoverageSummary> coverageSummary;
-  bool          described; // 1.0
+  // non reflecting Capabilities structure:
+  bool valid;
+  bool described;
+  // native size
+  int width;
+  int height;
+  bool hasSize;
 };
-
-/** Contents structure */
-/*
-struct QgsWcsContents
-{
-  QStringList   supportedCrs;
-  QStringList   supportedFormat;
-  QVector<QgsWcsCoverageSummary> coverageSummary;
-};
-*/
 
 /** Capability Property structure */
 struct QgsWcsCapabilitiesProperty
 {
-  QString                       version;
-  QgsWcsServiceIdentification   serviceIdentification;
-  QgsWcsOperationsMetadata      operationsMetadata;
-//  QgsWcsContents                contents;
+  QString                   version;
+  QString                   title;
+  QString                   abstract;
+  QString                   getCoverageGetUrl;
   // using QgsWcsCoverageSummary for contents for simplification
-  QgsWcsCoverageSummary         contents;
+  QgsWcsCoverageSummary     contents;
 };
 
 /**
-
-  \brief Data provider for OGC WCS layers.
-
+  \brief WCS Capabilities.
 */
 class QgsWcsCapabilities : public QObject
 {
@@ -157,14 +107,16 @@ class QgsWcsCapabilities : public QObject
      */
     bool supportedCoverages( QVector<QgsWcsCoverageSummary> &coverageSummary );
 
-
     /**
      * \brief   Returns a map for the hierarchy of layers
      */
     void coverageParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
-    //! Get coverage summare for identifier
-    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+    //! Get coverage summary for identifier
+    QgsWcsCoverageSummary coverage( QString const & theIdentifier );
+
+    //! Get list of all coverage summaries
+    QList<QgsWcsCoverageSummary> coverages();
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -174,7 +126,6 @@ class QgsWcsCapabilities : public QObject
     static QString prepareUri( QString uri );
 
     /**Returns the GetCoverage url
-     * @added in 1.5
      */
     QString getCoverageUrl() const;
 
@@ -187,10 +138,13 @@ class QgsWcsCapabilities : public QObject
     bool describeCoverage( QString const &identifier, bool forceRefresh = false );
 
     bool convertToDom( QByteArray const &xml );
-    bool parseDescribeCoverageDom( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
+    bool parseDescribeCoverageDom10( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
+    bool parseDescribeCoverageDom11( QByteArray const &xml, QgsWcsCoverageSummary *coverage );
 
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
+
+    QString version() const { return mCapabilities.version; }
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -217,6 +171,29 @@ class QgsWcsCapabilities : public QObject
      */
     QString lastErrorFormat();
 
+    //! Get tag name without namespace
+    static QString stripNS( const QString &name );
+
+    //! Get text of first child of specified name, NS is ignored
+    static QString firstChildText( const QDomElement &element, const QString &name );
+
+    //! Get first child of specified name, NS is ignored
+    static QDomElement firstChild( const QDomElement &element, const QString &name );
+
+    /** Find sub elements by path which is string of dot separated tag names.
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+    static QList<QDomElement> domElements( const QDomElement &element, const QString &path );
+
+    /** Find first sub element by path which is string of dot separated tag names.
+     *  NS is ignored. Example path: domainSet.spatialDomain.RectifiedGrid */
+    static QDomElement domElement( const QDomElement &element, const QString &path );
+
+    /** Get text of element specified by path */
+    static QString domElementText( const QDomElement &element, const QString &path );
+
+    /** Get sub elements texts by path */
+    static QStringList domElementsTexts( const QDomElement &element, const QString &path );
+
   signals:
 
     /** \brief emit a signal to notify of a progress event */
@@ -230,22 +207,26 @@ class QgsWcsCapabilities : public QObject
     void capabilitiesReplyProgress( qint64, qint64 );
 
   private:
+    //! Get coverage summary for identifier
+    QgsWcsCoverageSummary * coverageSummary( QString const & theIdentifier, QgsWcsCoverageSummary* parent = 0 );
+
+    // ! Get list of all sub coverages
+    QList<QgsWcsCoverageSummary> coverageSummaries( QgsWcsCoverageSummary* parent = 0 );
+
+    void initCoverageSummary( QgsWcsCoverageSummary &coverageSummary );
+
+    void clear();
+
     void showMessageBox( const QString &title, const QString &text );
 
-    //! Get tag name without namespace
-    QString stripNS( const QString &name );
-
-    //! Get text of first child of specified name, NS is ignored
-    QString firstChildText( const QDomElement &element, const QString &name );
-
-    //! Get first child of specified name, NS is ignored
-    QDomElement firstChild( const QDomElement &element, const QString &name );
-
+    QList<int> parseInts( const QString &text );
+    QList<double> parseDoubles( const QString &text );
+    QString crsUrnToAuthId( const QString &text );
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
-     * \param forceRefresh  if true, ignores any previous response cached in memory
-     *                      and always contact the server for a new copy.
+     * \param preferredVersion - optional version KVP
+     *
      * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
@@ -253,18 +234,15 @@ class QgsWcsCapabilities : public QObject
      *
      * TODO: Make network-timeout tolerant
      */
-    bool retrieveServerCapabilities( bool forceRefresh = false );
+    bool retrieveServerCapabilities( QString preferredVersion );
+
+    /** Retrieve the best WCS version supported by server and QGIS */
+    bool retrieveServerCapabilities( );
 
     //! \return false if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities );
 
     // ------------- 1.0 --------------------
-    //! parse the WCS Service XML element
-    void parseService( QDomElement const &e, QgsWcsServiceIdentification &serviceIdentification );
-
-    //! parse the WCS Capability XML element
-    void parseCapability( QDomElement const &e, QgsWcsOperationsMetadata &operationsMetadata );
-
     //! parse the WCS Layer XML element
     void parseContentMetadata( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary );
 
@@ -273,21 +251,6 @@ class QgsWcsCapabilities : public QObject
                                      QgsWcsCoverageSummary *parent = 0 );
 
     // ------------- 1.1 --------------------
-    //! parse the WCS ServiceIdentificatio XML element
-    void parseServiceIdentification( QDomElement const &e, QgsWcsServiceIdentification &serviceIdentification );
-
-    //! parse the WCS OperationsMetadata XML element
-    void parseOperationsMetadata( QDomElement const &e, QgsWcsOperationsMetadata &operationsMetadata );
-
-    //! parse the WCS GetCoverage
-    void parseOperation( QDomElement const & e, QgsWcsOperation& operation );
-
-    //! parse the WCS HTTP XML element
-    void parseHttp( QDomElement const &e, QgsWcsHTTP &http );
-
-    //! parse the WCS DCPType XML element
-    void parseDcp( QDomElement const &e, QgsWcsDCP &dcp );
-
     //! parse the WCS Layer XML element
     void parseCoverageSummary( QDomElement const &e, QgsWcsCoverageSummary &coverageSummary,
                                QgsWcsCoverageSummary *parent = 0 );

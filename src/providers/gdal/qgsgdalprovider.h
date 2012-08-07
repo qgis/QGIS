@@ -16,14 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H
-
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataitem.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterbandstats.h"
@@ -35,18 +34,6 @@
 #include <QVector>
 
 class QgsRasterPyramid;
-
-#define CPL_SUPRESS_CPLUSPLUS
-#include <gdal.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 
 /** \ingroup core
  * A call back function for showing progress of gdal operations.
@@ -66,7 +53,7 @@ class QgsCoordinateTransform;
   to provide access to spatial data residing in a GDAL layers.
 
 */
-class QgsGdalProvider : public QgsRasterDataProvider
+class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -214,7 +201,6 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
-
     /**
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
@@ -230,9 +216,6 @@ class QgsGdalProvider : public QgsRasterDataProvider
     { Q_UNUSED( mimeType ); }
     void setImageCrs( QString const &crs )
     { Q_UNUSED( crs ); }
-
-    /** \brief ensures that GDAL drivers are registered, but only once */
-    static void registerGdalDrivers();
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;

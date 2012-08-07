@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgslogger.h"
+#include "qgsgdalproviderbase.h"
 #include "qgsgdalprovider.h"
 #include "qgsconfig.h"
 
@@ -31,7 +31,6 @@
 #include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
-#include "qgswcscapabilities.h"
 
 #include <QImage>
 #include <QSettings>
@@ -92,6 +91,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
 QgsGdalProvider::QgsGdalProvider( QString const & uri )
     : QgsRasterDataProvider( uri )
+    , QgsGdalProviderBase()
     , mValid( true )
 {
   QgsDebugMsg( "QgsGdalProvider: constructing with uri '" + uri + "'." );
@@ -100,7 +100,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   mGdalBaseDataset = 0;
   mGdalDataset = 0;
 
-  registerGdalDrivers();
+  QgsGdalProviderBase::registerGdalDrivers();
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
@@ -119,70 +119,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix ).arg( dataSourceUri() ) );
   }
 
-  // The uri is either a file name or encoded parameters for WCS
   QString gdalUri = dataSourceUri();
-  if ( uri.contains( "url=" ) && uri.contains( "identifier=" ) && !QFile::exists( uri ) )
-  {
-    // - GDAL currently (4/2012) supports  WCS 1.0.0 (default) and 1.1.0
-    //   We cannot use 1.1.0 because of wrong longlat bbox send by GDAL
-    //   and impossibility to set GridOffsets.
-
-    // - WCS 1.0.0 does not work with GDAL r24316 2012-04-25 + Mapserver 6.0.2
-    //   1) with geographic CRS
-    //      GDAL sends BOUNDINGBOX=min_long,min_lat,max_lon,max_lat,urn:ogc:def:crs:EPSG::4326
-    //      Mapserver works with min_lat,min_long,max_lon,max_lat
-    //      OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says:
-    //        "The number of axes included, and the order of these axes, shall be as
-    //         specified by the referenced CRS."
-    //      EPSG defines for EPSG:4326 Axes: latitude, longitude
-    //      (don't confuse with OGC:CRS84 with lon,lat order)
-    //      Created a ticket: http://trac.osgeo.org/gdal/ticket/4639
-
-    //   2) Mapserver ignores RangeSubset (not implemented in mapserver)
-    //      and GDAL fails with "Returned tile does not match expected band count"
-    //      because it requested single band but recieved all bands
-    //      Created ticket: https://github.com/mapserver/mapserver/issues/4299
-
-    // Other problems:
-    // - GDAL WCS fails to open 1.1 with space in RangeSubset, there is a ticket about
-    //   it http://trac.osgeo.org/gdal/ticket/1833 without conclusion, Frank suggests
-    //   that ServiceURL should be expected to be escaped while CoverageName should not
-
-    QgsDataSourceURI dsUri;
-    dsUri.setEncodedUri( uri );
-    gdalUri = "<WCS_GDAL>";
-    gdalUri += "<Version>1.0.0</Version>";
-    //gdalUri += "<Version>1.1.0</Version>";
-    // prepareUri adds ? or & if necessary, GDAL fails otherwise
-    gdalUri += "<ServiceURL>" + Qt::escape( QgsWcsCapabilities::prepareUri( dsUri.param( "url" ) ) ) + "</ServiceURL>";
-    gdalUri += "<CoverageName>" + dsUri.param( "identifier" ) + "</CoverageName>";
-
-    if ( dsUri.hasParam( "format" ) )
-    {
-      gdalUri += "<PreferredFormat>" + dsUri.param( "format" ) + "</PreferredFormat>";
-    }
-
-    // - CRS : there is undocumented GDAL CRS tag, but it only overrides CRS param
-    //         in requests but the BBOX is left unchanged and thus results in server error (usually).
-    // 1.0 : RESPONSE_CRS
-    if ( dsUri.hasParam( "crs" ) )
-    {
-      gdalUri += "<GetCoverageExtra>&amp;RESPONSE_CRS=" + dsUri.param( "crs" ) + "</GetCoverageExtra>";
-    }
-    // 1.1 : Required parameters are: GridBaseCRS and GridOffsets (resolution)
-    //       We dont have the GridOffsets here and it should be probably dynamic
-    //       according to requested data (zoom).
-    //       Mapserver 6.0.2 works without the GridOffsets, but other servers may not.
-    //QString crsUrn = "urn:ogc:def:crs:" + dsUri.param("crs").replace(":","::");
-    //gdalUri += "<GetCoverageExtra>&amp;GridBaseCRS=" + crsUrn + "</GetCoverageExtra>";
-
-    if ( dsUri.hasParam( "username" ) && dsUri.hasParam( "password" ) )
-    {
-      gdalUri += "<UserPwd>" + dsUri.param( "username" ) + ":" + dsUri.param( "password" ) + "</UserPwd>";
-    }
-    gdalUri += "</WCS_GDAL>";
-    QgsDebugMsg( "WCS uri: " + gdalUri );
-  }
 
   CPLErrorReset();
   mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
@@ -826,88 +763,7 @@ double  QgsGdalProvider::maximumValue( int theBandNo ) const
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int theBandNumber )const
 {
   QgsDebugMsg( "entered." );
-  QList<QgsColorRampShader::ColorRampItem> ct;
-
-
-  //Invalid band number, segfault prevention
-  if ( 0 >= theBandNumber )
-  {
-    QgsDebugMsg( "Invalid parameter" );
-    return ct;
-  }
-
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNumber );
-  GDALColorTableH myGdalColorTable = GDALGetRasterColorTable( myGdalBand );
-
-  if ( myGdalColorTable )
-  {
-    QgsDebugMsg( "Color table found" );
-    int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
-    GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
-    QgsDebugMsg( "Color Interpretation: " + QString::number(( int )myColorInterpretation ) );
-    GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
-    QgsDebugMsg( "Palette Interpretation: " + QString::number(( int )myPaletteInterpretation ) );
-
-    const GDALColorEntry* myColorEntry = 0;
-    for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
-    {
-      myColorEntry = GDALGetColorEntry( myGdalColorTable, myIterator );
-
-      if ( !myColorEntry )
-      {
-        continue;
-      }
-      else
-      {
-        //Branch on the color interpretation type
-        if ( myColorInterpretation == GCI_GrayIndex )
-        {
-          QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.label = "";
-          myColorRampItem.value = ( double )myIterator;
-          myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
-          ct.append( myColorRampItem );
-        }
-        else if ( myColorInterpretation == GCI_PaletteIndex )
-        {
-          QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.value = ( double )myIterator;
-          myColorRampItem.label = QString::number( myColorRampItem.value );
-          //Branch on palette interpretation
-          if ( myPaletteInterpretation  == GPI_RGB )
-          {
-            myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4 );
-          }
-          else if ( myPaletteInterpretation  == GPI_CMYK )
-          {
-            myColorRampItem.color = QColor::fromCmyk( myColorEntry->c1, myColorEntry->c2, myColorEntry->c3, myColorEntry->c4 );
-          }
-          else if ( myPaletteInterpretation  == GPI_HLS )
-          {
-            myColorRampItem.color = QColor::fromHsv( myColorEntry->c1, myColorEntry->c3, myColorEntry->c2, myColorEntry->c4 );
-          }
-          else
-          {
-            myColorRampItem.color = QColor::fromRgb( myColorEntry->c1, myColorEntry->c1, myColorEntry->c1, myColorEntry->c4 );
-          }
-          ct.append( myColorRampItem );
-        }
-        else
-        {
-          QgsDebugMsg( "Color interpretation type not supported yet" );
-          return ct;
-        }
-      }
-    }
-  }
-  else
-  {
-    QgsDebugMsg( "No color table found for band " + QString::number( theBandNumber ) );
-    return ct;
-  }
-
-  QgsDebugMsg( "Color table loaded successfully" );
-  return ct;
+  return QgsGdalProviderBase::colorTable( mGdalDataset, theBandNumber );
 }
 
 QgsCoordinateReferenceSystem QgsGdalProvider::crs()
@@ -1129,14 +985,14 @@ QgsRasterInterface::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
-  return dataTypeFormGdal( myGdalDataType );
+  return dataTypeFromGdal( myGdalDataType );
 }
 
 QgsRasterInterface::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
   if ( mGdalDataType.size() == 0 ) return QgsRasterDataProvider::UnknownDataType;
 
-  return dataTypeFormGdal( mGdalDataType[bandNo-1] );
+  return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
 
 int QgsGdalProvider::bandCount() const
@@ -1150,26 +1006,8 @@ int QgsGdalProvider::bandCount() const
 int QgsGdalProvider::colorInterpretation( int theBandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  return GDALGetRasterColorInterpretation( myGdalBand );
+  return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
-
-void QgsGdalProvider::registerGdalDrivers()
-{
-  //GDALDestroyDriverManager();
-  GDALAllRegister();
-  QSettings mySettings;
-  QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
-  if ( !myJoinedList.isEmpty() )
-  {
-    QStringList myList = myJoinedList.split( " " );
-    for ( int i = 0; i < myList.size(); ++i )
-    {
-      QgsApplication::skipGdalDriver( myList.at( i ) );
-    }
-    QgsApplication::applyGdalSkippedDrivers();
-  }
-}
-
 
 bool QgsGdalProvider::isValid()
 {
@@ -1753,8 +1591,6 @@ QGISEXTERN bool isProvider()
 void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards )
 {
   QgsDebugMsg( "Entered" );
-  // first get the GDAL driver manager
-  QgsGdalProvider::registerGdalDrivers();
 
   // then iterate through all of the supported drivers, adding the
   // corresponding file filter
@@ -1963,7 +1799,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
 {
   GDALDatasetH myDataset;
 
-  QgsGdalProvider::registerGdalDrivers();
+  QgsGdalProviderBase::registerGdalDrivers();
 
   CPLErrorReset();
 
@@ -2458,34 +2294,3 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
 
-QMap<QString, QString> QgsGdalProvider::supportedMimes()
-{
-  QMap<QString, QString> mimes;
-  GDALAllRegister();
-
-  QgsDebugMsg( QString( "GDAL drivers cont %1" ).arg( GDALGetDriverCount() ) );
-  for ( int i = 0; i < GDALGetDriverCount(); ++i )
-  {
-    GDALDriverH driver = GDALGetDriver( i );
-    Q_CHECK_PTR( driver );
-
-    if ( !driver )
-    {
-      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
-      continue;
-    }
-
-    QString desc = GDALGetDescription( driver );
-
-    QString mimeType = GDALGetMetadataItem( driver, "DMD_MIMETYPE", "" );
-
-    if ( mimeType.isEmpty() ) continue;
-
-    desc = desc.isEmpty() ? mimeType : desc;
-
-    QgsDebugMsg( "add GDAL format " + mimeType + " " + desc );
-
-    mimes[mimeType] = desc;
-  }
-  return mimes;
-}

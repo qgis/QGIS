@@ -1,0 +1,43 @@
+                        WCS URI
+                        -------
+
+Example: url=http://127.0.0.1/wcs&identifier=coverage1
+
+WCS URI is composed of key=value pairs separated by '&'. It is the same format like query string in URL, encoded the same way. QgsDataSourceURI should be used to construct the URI to ensure that special characters are encoded properly.
+
+Parameters:
+
+* url (required) : WCS Server URL. Do not use VERSION in URL, because each version of WCS is using different parameter name for GetCapabilities version, see param version.
+
+* identifier (required) : Coverage name
+
+* time (optional) : time position or time period (beginPosition/endPosition[/timeResolution])
+
+* format (optional) : Supported format name. Default is the first supported format with tif in name or the first supported format.
+
+* crs (optional) : CRS in form AUTHORITY:ID, e.g. EPSG:4326. Default is EPSG:4326 if supported or the first supported CRS.
+
+* username (optional) : Username for basic authentication.
+
+* password (optional) : Password for basic authentication.
+
+* IgnoreGetMapUrl (optional,hack) : If specified (set to 1), ignore GetCoverage URL advertised by GetCapabilities. May be necessary if a server is not configured properly.
+
+* InvertAxisOrientation (optional,hack) : If specified (set to 1), switch axis in GetCoverage request. May be necessary for geographic CRS if a server is using wrong axis order.
+
+* IgnoreAxisOrientation (optional,hack) : If specified (set to 1), do not invert axis orientation according to WCS standard for geographic CRS.
+
+
+Python console example:
+
+from PyQt4.QtCore import QString
+
+uri = QgsDataSourceURI()
+uri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
+uri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
+
+layer = QgsRasterLayer( QString(uri.encodedUri()), "WCS test", "wcs" )
+layer.isValid()
+
+QgsMapLayerRegistry.instance().addMapLayer(layer)
+

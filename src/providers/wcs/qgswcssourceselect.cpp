@@ -19,7 +19,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 
-#include "qgsgdalprovider.h"
+#include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
 #include "qgswcscapabilities.h"
 #include "qgsnumericsortlistviewitem.h"
@@ -131,10 +131,12 @@ void QgsWCSSourceSelect::addClicked( )
   // Set crs only if necessary (multiple offered), so that we can decide in the
   // provider if WCS 1.0 with RESPONSE_CRS has to be used.  Not perfect, they can
   // add more CRS in future and URI will be saved in project without any.
-  if ( selectedLayersCRSs().size() > 1 )
-  {
-    uri.setParam( "crs", selectedCRS() );
-  }
+  // TODO: consider again, currently if crs in url is used to set WCS coverage CRS,
+  //       without that param user is asked for CRS
+  //if ( selectedLayersCRSs().size() > 1 )
+  //{
+  uri.setParam( "crs", selectedCRS() );
+  //}
 
   QgsDebugMsg( "selectedFormat = " +  selectedFormat() );
   if ( !selectedFormat().isEmpty() )
@@ -142,7 +144,13 @@ void QgsWCSSourceSelect::addClicked( )
     uri.setParam( "format", selectedFormat() );
   }
 
-  emit addRasterLayer( uri.encodedUri(), identifier, "gdal" );
+  QgsDebugMsg( "selectedTime = " +  selectedTime() );
+  if ( !selectedTime().isEmpty() )
+  {
+    uri.setParam( "time", selectedTime() );
+  }
+
+  emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
 }
 
 void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
@@ -152,7 +160,9 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
 
-  mCapabilities.describeCoverage( identifier );  // 1.0 get additional info
+  mCapabilities.describeCoverage( identifier );
+
+  populateTimes();
 
   populateFormats();
 
@@ -187,7 +197,7 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
   QgsDebugMsg( "entered" );
   QList<QgsOWSSupportedFormat> formats;
 
-  QMap<QString, QString> mimes = QgsGdalProvider::supportedMimes();
+  QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
   foreach ( QString mime, mimes.keys() )
   {
     QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
@@ -213,11 +223,11 @@ QStringList QgsWCSSourceSelect::selectedLayersFormats()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
 
-  QgsWcsCoverageSummary * c = mCapabilities.coverageSummary( identifier );
-  if ( !c ) { return QStringList(); }
+  QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
+  if ( !c.valid ) { return QStringList(); }
 
-  QgsDebugMsg( "supportedFormat = " + c->supportedFormat.join( "," ) );
-  return c->supportedFormat;
+  QgsDebugMsg( "supportedFormat = " + c.supportedFormat.join( "," ) );
+  return c.supportedFormat;
 }
 
 QStringList QgsWCSSourceSelect::selectedLayersCRSs()
@@ -227,10 +237,24 @@ QStringList QgsWCSSourceSelect::selectedLayersCRSs()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return QStringList(); }
 
-  QgsWcsCoverageSummary * c = mCapabilities.coverageSummary( identifier );
-  if ( !c ) { return QStringList(); }
+  QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
+  if ( !c.valid ) { return QStringList(); }
 
-  return c->supportedCrs;
+  return c.supportedCrs;
+}
+
+QStringList QgsWCSSourceSelect::selectedLayersTimes()
+{
+  QgsDebugMsg( "entered" );
+
+  QString identifier = selectedIdentifier();
+  if ( identifier.isEmpty() ) { return QStringList(); }
+
+  QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
+  if ( !c.valid ) { return QStringList(); }
+
+  QgsDebugMsg( "times = " + c.times.join( "," ) );
+  return c.times;
 }
 
 void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )

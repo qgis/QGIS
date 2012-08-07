@@ -19,6 +19,7 @@
 
 #ifndef QGSWCSSOURCESELECT_H
 #define QGSWCSSOURCESELECT_H
+
 #include "qgsowssourceselect.h"
 #include "qgsdatasourceuri.h"
 #include "qgisgui.h"
@@ -77,6 +78,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QList<QgsOWSSupportedFormat> providerFormats();
     QStringList selectedLayersFormats();
     QStringList selectedLayersCRSs();
+    QStringList selectedLayersTimes();
 };
 #endif // QGSWCSSOURCESELECT_H
 
