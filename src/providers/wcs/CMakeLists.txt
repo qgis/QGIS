@@ -6,8 +6,8 @@ SET (WCS_SRCS
   qgswcssourceselect.cpp 
   qgswcsdataitems.cpp 
 )
+
 SET (WCS_MOC_HDRS  
-  ../gdal/qgsgdalproviderbase.h 
   qgswcsprovider.h 
   qgswcscapabilities.h 
   qgswcssourceselect.h 

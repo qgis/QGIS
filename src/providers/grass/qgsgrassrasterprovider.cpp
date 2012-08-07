@@ -273,7 +273,9 @@ double  QgsGrassRasterProvider::noDataValue() const
   else
   {
     if ( mGrassDataType != FCELL_TYPE )
+    {
       QgsDebugMsg( "unexpected data type" );
+    }
 
     // limit: 3.40282347e+38
     nul = -1e+30;

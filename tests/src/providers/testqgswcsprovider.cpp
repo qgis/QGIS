@@ -298,7 +298,7 @@ double TestQgsWcsProvider::tolerance( double val, int places )
 {
   // float precission is about 7 decimal digits, double about 16
   // default places = 6
-  return 1. * pow( 10, round( log10( qAbs( val ) ) - places ) );
+  return 1. * qPow( 10, qRound( log10( qAbs( val ) ) - places ) );
 }
 
 QString TestQgsWcsProvider::compareHead()
@@ -316,7 +316,7 @@ void TestQgsWcsProvider::compare( QString theParamName, int wcsVal, int gdalVal,
 bool TestQgsWcsProvider::compare( double wcsVal, double gdalVal, double theTolerance )
 {
   // values may be nan
-  return ( std::isnan( wcsVal ) && std::isnan( gdalVal ) ) || ( qAbs( wcsVal - gdalVal ) <= theTolerance );
+  return ( qIsNaN( wcsVal ) && qIsNaN( gdalVal ) ) || ( qAbs( wcsVal - gdalVal ) <= theTolerance );
 }
 
 void TestQgsWcsProvider::compare( QString theParamName, double wcsVal, double gdalVal, QString &theReport, bool &theOk, double theTolerance )

@@ -261,8 +261,8 @@ QWidget * QgsWCSRootItem::paramWidget()
   QgsWCSSourceSelect *select = new QgsWCSSourceSelect( 0, 0, true, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
-  return 0;
 }
+
 void QgsWCSRootItem::connectionsChanged()
 {
   refresh();
