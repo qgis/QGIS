@@ -84,17 +84,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mAntiAliasing( false )
 {
   setObjectName( name );
-  
-  QSettings settings;
-  bool enableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-  //disable the update that leads to the resize crash
-  if ( viewport() && !enableBackbuffer )
-  {
-#ifndef ANDROID
-    viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
-#endif //ANDROID
-  }
-
   mScene = new QGraphicsScene();
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -105,6 +94,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mMapTool = NULL;
   mLastNonZoomMapTool = NULL;
 
+  mBackbufferEnabled = true;
   mDrawing = false;
   mFrozen = false;
   mDirty = true;
@@ -379,6 +369,30 @@ void QgsMapCanvas::refresh()
   // we can't draw again if already drawing...
   if ( mDrawing )
     return;
+
+  QSettings settings;
+  bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
+
+
+  //disable the update that leads to the resize crash
+  if ( viewport() )
+  {
+#ifndef ANDROID
+    if ( enableBackbufferSetting != mBackbufferEnabled )
+    {
+      qDebug() << "Enable back buffering: " << enableBackbufferSetting;
+      if ( enableBackbufferSetting )
+      {
+        viewport()->setAttribute( Qt::WA_PaintOnScreen, false );
+      }
+      else
+      {
+        viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+      }
+      mBackbufferEnabled = enableBackbufferSetting;
+    }
+#endif //ANDROID
+  }
 
   mDrawing = true;
 

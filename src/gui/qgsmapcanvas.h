@@ -432,6 +432,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! map overview widget - it's controlled by QgsMapCanvas
     QgsMapOverviewCanvas* mMapOverview;
 
+    //! If backbuffering is currently enabled
+    bool mBackbufferEnabled;
     //! Flag indicating a map refresh is in progress
     bool mDrawing;
 
