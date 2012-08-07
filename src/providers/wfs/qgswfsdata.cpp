@@ -81,6 +81,7 @@ int QgsWFSData::getWFSData()
   XML_SetUserData( p, this );
   XML_SetElementHandler( p, QgsWFSData::start, QgsWFSData::end );
   XML_SetCharacterDataHandler( p, QgsWFSData::chars );
+  XML_SetUnknownEncodingHandler( p, QgsWFSData::encode, this );
 
   //start with empty extent
   if ( mExtent )
@@ -119,7 +120,10 @@ int QgsWFSData::getWFSData()
     QByteArray readData = reply->readAll();
     if ( readData.size() > 0 )
     {
-      XML_Parse( p, readData.constData(), readData.size(), atEnd );
+      if ( !XML_Parse( p, readData.constData(), readData.size(), atEnd ) )
+      {
+        QgsDebugMsg( QString( "XML parse error at line %1: %2" ).arg( XML_GetCurrentLineNumber(p) ).arg( XML_ErrorString(XML_GetErrorCode(p)) ) );
+      }
     }
     QCoreApplication::processEvents();
   }
@@ -137,6 +141,15 @@ int QgsWFSData::getWFSData()
   }
 
   XML_ParserFree( p );
+  return 0;
+}
+
+int QgsWFSData::encoder( const XML_Char* name, XML_Encoding* info )
+{
+  /*If the callback can provide information about the encoding,
+  it must fill in the XML_Encoding structure, and return 1.
+  Otherwise it must return 0.*/
+  QgsDebugMsg( QString( "Charset %1 unsupported by the expat XML parser" ).arg( name ) );
   return 0;
 }
 
