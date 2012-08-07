@@ -44,7 +44,6 @@ FIND_PATH(SPATIALITE_INCLUDE_DIR spatialite.h
   "$ENV{LIB_DIR}/include/spatialite"
   )
 
-MESSAGE(STATUS "LIB:${LIB} LIB_DIR:${LIB_DIR}")
 FIND_LIBRARY(SPATIALITE_LIBRARY NAMES spatialite spatialite_i PATHS
   $ENV{LIB}
   $ENV{LIB_DIR}/lib
