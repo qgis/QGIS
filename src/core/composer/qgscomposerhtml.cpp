@@ -22,7 +22,7 @@
 #include <QWebFrame>
 #include <QWebPage>
 
-QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height, bool addCommands ): QgsComposerMultiFrame( c ), mWebPage( 0 ),
+QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height ): QgsComposerMultiFrame( c ), mWebPage( 0 ),
     mLoaded( false ), mHtmlUnitsToMM( 1.0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -31,13 +31,8 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal wid
 
   if ( mComposition && width > 0 && height > 0 )
   {
-    if ( addCommands )
-    {
-      QgsAddRemoveMultiFrameCommand* c = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Added, this, mComposition, tr( "HTML added" ), 0 );
-      mComposition->undoStack()->push( c );
-    }
     QgsComposerFrame* frame = new QgsComposerFrame( c, this, x, y, width, height );
-    addFrame( frame, addCommands );
+    addFrame( frame );
     QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
     recalculateFrameSizes();
   }
@@ -110,17 +105,13 @@ double QgsComposerHtml::htmlUnitsToMM()
   return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
 }
 
-void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool addCommand )
+void QgsComposerHtml::addFrame( QgsComposerFrame* frame )
 {
   mFrameItems.push_back( frame );
   QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
   if ( mComposition )
   {
     mComposition->addComposerHtmlFrame( this, frame );
-    if ( addCommand )
-    {
-      mComposition->pushAddRemoveCommand( frame, tr( "Add Html frame" ) );
-    }
   }
 }
 

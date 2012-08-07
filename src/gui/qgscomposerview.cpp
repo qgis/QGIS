@@ -324,7 +324,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       if ( composition() )
       {
         QgsComposerHtml* composerHtml = new QgsComposerHtml( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(),
-            mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), true );
+            mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
         scene()->removeItem( mRubberBandItem );
         delete mRubberBandItem;
         mRubberBandItem = 0;

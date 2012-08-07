@@ -25,7 +25,7 @@ class QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT
   public:
-    QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height, bool addCommands = false );
+    QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height );
     QgsComposerHtml();
     ~QgsComposerHtml();
 
@@ -39,7 +39,7 @@ class QgsComposerHtml: public QgsComposerMultiFrame
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
 
   protected:
-    void addFrame( QgsComposerFrame* frame, bool addCommand = false );
+    void addFrame( QgsComposerFrame* frame );
 
   private slots:
     void frameLoaded( bool ok );

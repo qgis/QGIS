@@ -42,12 +42,12 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
   if ( mode != mResizeMode )
   {
     mResizeMode = mode;
-    recalculateFrameSizes( false );
+    recalculateFrameSizes();
     emit changed();
   }
 }
 
-void QgsComposerMultiFrame::recalculateFrameSizes( bool addCommands )
+void QgsComposerMultiFrame::recalculateFrameSizes()
 {
   if ( mFrameItems.size() < 1 )
   {
@@ -74,7 +74,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes( bool addCommands )
       {
         for ( int j = mFrameItems.size(); j > i; --j )
         {
-          removeFrame( j - 1, addCommands );
+          removeFrame( j - 1 );
         }
       }
       return;
@@ -107,7 +107,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes( bool addCommands )
       newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
       currentY += newFrame->rect().height();
       currentItem = newFrame;
-      addFrame( newFrame, addCommands );
+      addFrame( newFrame );
     }
   }
 }
@@ -140,16 +140,12 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   }
 }
 
-void QgsComposerMultiFrame::removeFrame( int i, bool addCommand )
+void QgsComposerMultiFrame::removeFrame( int i )
 {
   QgsComposerFrame* frameItem = mFrameItems[i];
   if ( mComposition )
   {
     mComposition->removeComposerItem( frameItem );
-    if ( addCommand )
-    {
-      mComposition->pushAddRemoveCommand( frameItem, tr( "Frame removed" ), QgsAddRemoveItemCommand::Removed );
-    }
   }
 }
 

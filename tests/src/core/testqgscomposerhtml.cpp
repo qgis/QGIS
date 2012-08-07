@@ -58,7 +58,7 @@ void TestQgsComposerHtml::cleanup()
 
 void TestQgsComposerHtml::table()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, 0, 0, 100, 200, false );
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, 0, 0, 100, 200 );
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );
   QgsCompositionChecker checker( "Composer html table", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
                                  "control_images" + QDir::separator() + "expected_composerhtml" + QDir::separator() + "composerhtml_table.png" ) );
@@ -70,7 +70,7 @@ void TestQgsComposerHtml::table()
 
 void TestQgsComposerHtml::tableMultiFrame()
 {
-  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, 10, 10, 100, 50, false );
+  QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, 10, 10, 100, 50 );
   htmlItem->setResizeMode( QgsComposerMultiFrame::ExtendToNextPage );
   bool result = true;
   //page1

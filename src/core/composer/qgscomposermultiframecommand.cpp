@@ -63,7 +63,7 @@ void QgsComposerMultiFrameCommand::saveState( QDomDocument& stateDoc )
   {
     stateDoc.clear();
     QDomElement documentElement = stateDoc.createElement( "ComposerMultiFrameState" );
-    mMultiFrame->writeXML( documentElement, stateDoc, true );
+    mMultiFrame->writeXML( documentElement, stateDoc );
     stateDoc.appendChild( documentElement );
   }
 }
@@ -72,7 +72,7 @@ void QgsComposerMultiFrameCommand::restoreState( QDomDocument& stateDoc )
 {
   if ( mMultiFrame )
   {
-    mMultiFrame->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc, true );
+    mMultiFrame->readXML( stateDoc.documentElement().firstChild().toElement(), stateDoc );
   }
 }
 
