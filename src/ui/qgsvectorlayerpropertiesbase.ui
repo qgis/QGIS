@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
+    <width>842</width>
     <height>672</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <string>Layer Properties</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+   <iconset resource="../../images/images.qrc">
     <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
   </property>
   <property name="modal">
@@ -76,7 +76,7 @@
      </property>
      <widget class="QWidget" name="tabWidgetPage1">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
       </attribute>
       <attribute name="title">
@@ -186,7 +186,7 @@
      </widget>
      <widget class="QWidget" name="labelingTab">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
       </attribute>
       <attribute name="title">
@@ -250,7 +250,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage3">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
       </attribute>
       <attribute name="title">
@@ -365,7 +365,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage4">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
       </attribute>
       <attribute name="title">
@@ -391,8 +391,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>740</width>
-            <height>558</height>
+            <width>820</width>
+            <height>540</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -737,7 +737,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage5">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
       </attribute>
       <attribute name="title">
@@ -760,8 +760,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>722</width>
-            <height>540</height>
+            <width>802</width>
+            <height>522</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -822,7 +822,7 @@
      </widget>
      <widget class="QWidget" name="tabWidgetPage6">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
       </attribute>
       <attribute name="title">
@@ -849,7 +849,7 @@
      </widget>
      <widget class="QWidget" name="mJoinPage">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
       </attribute>
       <attribute name="title">
@@ -872,8 +872,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>722</width>
-            <height>540</height>
+            <width>802</width>
+            <height>522</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -883,7 +883,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+              <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
              </property>
             </widget>
@@ -894,7 +894,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+              <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
              </property>
             </widget>
@@ -942,7 +942,7 @@
      </widget>
      <widget class="QWidget" name="mDiagramPage">
       <attribute name="icon">
-       <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/diagram.png</normaloff>:/images/themes/default/propertyicons/diagram.png</iconset>
       </attribute>
       <attribute name="title">
@@ -1284,10 +1284,17 @@
                   <property name="text">
                    <string>Label placement:</string>
                   </property>
+                  <property name="visible">
+                   <bool>false</bool>
+                  </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="mLabelPlacementComboBox"/>
+                 <widget class="QComboBox" name="mLabelPlacementComboBox">
+                  <property name="visible">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </item>
@@ -1336,7 +1343,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+              <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
              </property>
             </widget>
@@ -1353,7 +1360,7 @@
               <string/>
              </property>
              <property name="icon">
-              <iconset resource="../../../../Quantum-GIS/images/images.qrc">
+              <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
              </property>
             </widget>
@@ -1381,6 +1388,16 @@
               <string>Size</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
+              <item row="2" column="0" colspan="4">
+               <widget class="QLabel" name="mLinearlyScalingLabel">
+                <property name="text">
+                 <string>Scale linearly between 0 and the following attribute value / diagram size:</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QCheckBox" name="mFixedSizeCheckBox">
                 <property name="text">
@@ -1408,17 +1425,7 @@
                 </property>
                </spacer>
               </item>
-              <item row="1" column="0" colspan="4">
-               <widget class="QLabel" name="mLinearlyScalingLabel">
-                <property name="text">
-                 <string>Scale linearly between 0 and the following attribute value / diagram size:</string>
-                </property>
-                <property name="wordWrap">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0" colspan="4">
+              <item row="3" column="0" colspan="4">
                <layout class="QHBoxLayout" name="mLinearlyScalingLayout">
                 <item>
                  <widget class="QLabel" name="mSizeAttributeLabel">
@@ -1470,6 +1477,47 @@
                 </item>
                </layout>
               </item>
+              <item row="5" column="0">
+               <widget class="QCheckBox" name="mIncreaseSmallDiagramsCheckBox">
+                <property name="text">
+                 <string>Increase size of small diagrams</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_15">
+                <item>
+                 <widget class="QLabel" name="mIncreaseMinimumSizeLabel">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Minimum size</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="mIncreaseMinimumSizeSpinBox">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="5" column="3">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1499,7 +1547,7 @@
   <tabstop>pbnQueryBuilder</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../../Quantum-GIS/images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -846,13 +846,22 @@ void QgsVectorLayerProperties::apply()
       ds.sizeType = QgsDiagramSettings::MM;
     }
 
-    if ( !tr( "Height" ).compare( mLabelPlacementComboBox->currentText() ) )
+    if ( tr( "Height" ) == mLabelPlacementComboBox->currentText() )
     {
      ds.labelPlacementMethod = QgsDiagramSettings::Height;
     }
-    else if ( !tr( "x-height" ).compare( mLabelPlacementComboBox->currentText() ) )
+    else if ( tr( "x-height" ) == mLabelPlacementComboBox->currentText() )
     {
      ds.labelPlacementMethod = QgsDiagramSettings::XHeight;
+    }
+
+    if ( mIncreaseSmallDiagramsCheckBox->isChecked() )
+    {
+      ds.mMinimumSize = mIncreaseMinimumSizeSpinBox->value();
+    }
+    else
+    {
+      ds.mMinimumSize = 0;
     }
 
     ds.backgroundColor = mBackgroundColorButton->color();
@@ -1329,6 +1338,20 @@ void QgsVectorLayerProperties::handleDiagramTypeChanged( const QString& itemtext
   }
 }
 
+void QgsVectorLayerProperties::on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state )
+{
+  if ( Qt::Checked == state )
+  {
+    mIncreaseMinimumSizeLabel->setEnabled( true );
+    mIncreaseMinimumSizeSpinBox->setEnabled( true );
+  }
+  else
+  {
+    mIncreaseMinimumSizeLabel->setEnabled( false );
+    mIncreaseMinimumSizeSpinBox->setEnabled( false );
+  }
+}
+
 void QgsVectorLayerProperties::useNewSymbology()
 {
   int res = QMessageBox::question( this, tr( "Symbology" ),
@@ -1476,6 +1499,9 @@ void QgsVectorLayerProperties::on_mFixedSizeCheckBox_stateChanged( int state )
 
   //enable / disable all widget in the scaling layout
   mLinearlyScalingLabel->setEnabled( state != Qt::Checked );
+  mIncreaseSmallDiagramsCheckBox->setEnabled( state != Qt::Checked );
+  mIncreaseMinimumSizeLabel->setEnabled( state != Qt::Checked && mIncreaseSmallDiagramsCheckBox->isChecked() == Qt::Checked );
+  mIncreaseMinimumSizeSpinBox->setEnabled( state != Qt::Checked && mIncreaseSmallDiagramsCheckBox->isChecked() == Qt::Checked );
   QWidget* currentWidget = 0;
   for ( int i = 0; i < mLinearlyScalingLayout->count(); ++i )
   {
@@ -1485,6 +1511,7 @@ void QgsVectorLayerProperties::on_mFixedSizeCheckBox_stateChanged( int state )
       currentWidget->setEnabled( state != Qt::Checked );
     }
   }
+
 }
 
 void QgsVectorLayerProperties::on_mScaleDependentDiagramVisibilityCheckBox_stateChanged( int state )
@@ -1681,7 +1708,8 @@ void QgsVectorLayerProperties::initDiagramTab()
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
 
-
+      mIncreaseSmallDiagramsCheckBox->setChecked( settingList.at( 0 ).mMinimumSize != 0 );
+      mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).mMinimumSize );
 
       QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
       QList< int > categoryIndices = settingList.at( 0 ).categoryIndices;
@@ -1734,8 +1762,10 @@ void QgsVectorLayerProperties::initDiagramTab()
   }
 
   // Hide/Show diagram specific widgets
-  handleDiagramTypeChanged( mDiagramTypeComboBox->currentText() );
-
-  QObject::connect( mDiagramAttributesTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleDiagramItemDoubleClick( QTreeWidgetItem*, int ) ) );
-  QObject::connect( mDiagramTypeComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( handleDiagramTypeChanged( const QString& ) ) );
+  // handleDiagramTypeChanged( mDiagramTypeComboBox->currentText() );
+  // Enable / disable small diagram scaling related widgets
+  // on_mFixedSizeCheckBox_stateChanged( mIncreaseSmallDiagramsCheckBox->checkState() );
+  connect( mDiagramAttributesTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleDiagramItemDoubleClick( QTreeWidgetItem*, int ) ) );
+  connect( mDiagramTypeComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( handleDiagramTypeChanged( const QString& ) ) );
+//  connect( mIncreaseSmallDiagramsCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( handleIncreaseSmallDiagramsChanged( int ) ) );
 }
