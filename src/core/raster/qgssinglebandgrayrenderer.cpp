@@ -80,7 +80,7 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
 
   void* alphaData = 0;
   double currentAlpha = mOpacity;
-  int grayVal;
+  double grayVal;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
   if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
