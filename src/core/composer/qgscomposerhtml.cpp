@@ -18,7 +18,6 @@
 #include "qgscomposition.h"
 #include "qgsaddremovemultiframecommand.h"
 #include <QCoreApplication>
-#include <QImage>
 #include <QPainter>
 #include <QWebFrame>
 #include <QWebPage>
@@ -108,9 +107,7 @@ double QgsComposerHtml::htmlUnitsToMM()
     return 1.0;
   }
 
-  QImage img( 1, 1, QImage::Format_ARGB32_Premultiplied );
-  double pixelPerMM = mComposition->printResolution() / 25.4;
-  return ( pixelPerMM / ( img.dotsPerMeterX() / 1000.0 ) );
+  return ( mComposition->printResolution() / 96.0 ); //webkit seems to assume a standard dpi of 96
 }
 
 void QgsComposerHtml::addFrame( QgsComposerFrame* frame, bool addCommand )
