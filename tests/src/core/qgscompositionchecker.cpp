@@ -53,7 +53,7 @@ bool QgsCompositionChecker::testComposition( int page )
   QRectF targetArea( 0, 0, 3507, 2480 );
   mComposition->render( &p, targetArea, sourceArea );
   p.end();
-  outputImage.save( "/tmp/composermap_control.png", "PNG" );
+  outputImage.save( "/tmp/composerhtml_table_control.png", "PNG" );
   return false;
 #endif //0
 
