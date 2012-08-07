@@ -16,6 +16,7 @@ class SextanteConfig():
     KEEP_DIALOG_OPEN = "KEEP_DIALOG_OPEN"
     USE_THREADS = "USE_THREADS"
     SHOW_DEBUG_IN_DIALOG = "SHOW_DEBUG_IN_DIALOG"
+    RECENT_ALGORITHMS = "RECENT_ALGORITHMS"
 
     settings = {}
     settingIcons= {}
@@ -37,6 +38,7 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.RECENT_ALGORITHMS,"Recent algs","", hidden=True))
 
     @staticmethod
     def setGroupIcon(group, icon):
@@ -114,12 +116,13 @@ class SextanteConfig():
 
 class Setting():
     '''A simple config parameter that will appear on the SEXTANTE config dialog'''
-    def __init__(self, group, name, description, default):
+    def __init__(self, group, name, description, default, hidden = False):
         self.group=group
         self.name = name
         self.description = description
         self.default = default
         self.value = default
+        self.hidden = hidden
 
     def __str__(self):
         return self.name + "=" + str(self.value)

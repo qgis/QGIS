@@ -59,6 +59,8 @@ class ConfigDialog(QtGui.QDialog):
             groupItem.setIcon(0, icon)
             #groupItem.setIcon(0,self.groupIcon)
             for setting in settings[group]:
+                if setting.hidden:
+                    continue
                 if text =="" or text.lower() in setting.description.lower():
                     settingItem = TreeSettingItem(setting, icon)
                     self.items[setting]=settingItem
