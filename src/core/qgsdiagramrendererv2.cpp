@@ -343,8 +343,16 @@ QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributeMa
 
   //interpolate size
   double ratio = ( value - mLowerValue ) / ( mUpperValue - mLowerValue );
-  return QSizeF( mUpperSize.width() * ratio + mLowerSize.width() * ( 1 - ratio ),
-                 mUpperSize.height() * ratio + mLowerSize.height() * ( 1 - ratio ) );
+  QSizeF size = QSizeF( mUpperSize.width() * ratio + mLowerSize.width() * ( 1 - ratio ),
+                        mUpperSize.height() * ratio + mLowerSize.height() * ( 1 - ratio ) );
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( size.width() <= mSettings.mMinimumSize && size.height() <= mSettings.mMinimumSize )
+  {
+    size.scale( mSettings.mMinimumSize, mSettings.mMinimumSize, Qt::KeepAspectRatio );
+  }
+
+  return size;
 }
 
 void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem )

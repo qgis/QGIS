@@ -128,6 +128,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_mBackgroundColorButton_clicked();
     void on_mDiagramPenColorButton_clicked();
     void on_pbnUpdateExtents_clicked();
+    void on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state );
 
     void enableLabelOptions( bool theFlag );
     void addAttribute();
@@ -145,6 +146,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /**Set color for diagram category*/
     void handleDiagramItemDoubleClick( QTreeWidgetItem * item, int column );
     void handleDiagramTypeChanged( const QString& itemtext );
+    /** The checkbox for small diagram scaling has been changed*/
+    // void handleIncreaseSmallDiagramsChanged( int state );
 
   signals:
 
