@@ -147,8 +147,16 @@ int QgsWFSData::getWFSData()
 int QgsWFSData::encoder( const XML_Char* name, XML_Encoding* info )
 {
   /*If the callback can provide information about the encoding,
-  it must fill in the XML_Encoding structure, and return 1.
-  Otherwise it must return 0.*/
+  it must fill in the XML_Encoding structure, and return 1.*/
+  if ( strncmp( name, "ISO-8859-", 9 ) == 0 )
+  {
+    int i;
+    for (i = 0; i < 256; ++i)
+      info->map[i] = i;
+
+    return 1;
+  } 
+  /*Otherwise it must return 0.*/
   QgsDebugMsg( QString( "Charset %1 unsupported by the expat XML parser" ).arg( name ) );
   return 0;
 }
