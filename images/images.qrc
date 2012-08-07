@@ -241,6 +241,7 @@
     <file>themes/default/tracking.png</file>
     <file>themes/default/transformed.png</file>
     <file>themes/default/user.png</file>
+    <file>themes/default/mActionAddHtml.png</file>
     <file>themes/gis/mActionAddArrow.png</file>
     <file>themes/gis/mActionAddBasicShape.png</file>
     <file>themes/gis/mActionAddGPSLayer.png</file>
