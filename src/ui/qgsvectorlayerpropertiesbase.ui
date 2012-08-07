@@ -66,7 +66,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="iconSize">
       <size>
@@ -567,7 +567,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="mDisplayPage">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/gis/mActionMapTips.png</normaloff>:/images/themes/gis/mActionMapTips.png</iconset>
@@ -575,10 +575,7 @@
       <attribute name="title">
        <string>Display</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout_2">
-       <property name="fieldGrowthPolicy">
-        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-       </property>
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="textLabel3">
          <property name="text">
@@ -594,7 +591,14 @@
          <property name="title">
           <string>Map Tip display text</string>
          </property>
-         <layout class="QFormLayout" name="formLayout_3">
+         <layout class="QGridLayout" name="gridLayout_18">
+          <item row="1" column="1">
+           <widget class="QTextEdit" name="htmlMapTip">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QRadioButton" name="fieldComboRadio">
             <property name="text">
@@ -602,24 +606,10 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="displayFieldComboBox">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="1" column="0" alignment="Qt::AlignTop">
            <widget class="QRadioButton" name="htmlRadio">
             <property name="text">
              <string>HTML</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QTextEdit" name="htmlMapTip">
-            <property name="enabled">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -690,6 +680,13 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="displayFieldComboBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -926,8 +923,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>704</width>
-            <height>627</height>
+            <width>706</width>
+            <height>626</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">
@@ -1492,8 +1489,8 @@
      <y>152</y>
     </hint>
     <hint type="destinationlabel">
-     <x>660</x>
-     <y>350</y>
+     <x>705</x>
+     <y>571</y>
     </hint>
    </hints>
   </connection>
@@ -1508,8 +1505,8 @@
      <y>157</y>
     </hint>
     <hint type="destinationlabel">
-     <x>306</x>
-     <y>361</y>
+     <x>606</x>
+     <y>571</y>
     </hint>
    </hints>
   </connection>
@@ -1524,8 +1521,8 @@
      <y>151</y>
     </hint>
     <hint type="destinationlabel">
-     <x>142</x>
-     <y>349</y>
+     <x>247</x>
+     <y>571</y>
     </hint>
    </hints>
   </connection>
