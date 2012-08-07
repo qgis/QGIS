@@ -101,7 +101,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes( bool addCommands )
       }
 
       //copy last frame
-      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, currentItem->transform().dy() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
+      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(), currentItem->transform().dy() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
           currentItem->rect().width(), currentItem->rect().height() );
       newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
       currentY += newFrame->rect().height();
