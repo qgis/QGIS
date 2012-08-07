@@ -75,6 +75,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
    labelPlacementMethod = XHeight;
   }
 
+  minimumSize = elem.attribute( "minimumSize" ).toDouble();
 
   //colors
   categoryColors.clear();
@@ -125,6 +126,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
    categoryElem.setAttribute( "labelPlacementMethod", "XHeight" );
   }
 
+  categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
 
   QString colors;
   for ( int i = 0; i < categoryColors.size(); ++i )
@@ -347,9 +349,9 @@ QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributeMa
                         mUpperSize.height() * ratio + mLowerSize.height() * ( 1 - ratio ) );
 
   // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= mSettings.mMinimumSize && size.height() <= mSettings.mMinimumSize )
+  if ( size.width() <= mSettings.minimumSize && size.height() <= mSettings.minimumSize )
   {
-    size.scale( mSettings.mMinimumSize, mSettings.mMinimumSize, Qt::KeepAspectRatio );
+    size.scale( mSettings.minimumSize, mSettings.minimumSize, Qt::KeepAspectRatio );
   }
 
   return size;
