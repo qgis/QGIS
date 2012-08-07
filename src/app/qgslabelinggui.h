@@ -26,12 +26,12 @@ class QgsMapCanvas;
 
 #include "qgspallabeling.h"
 
-class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
+class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
+    QgsLabelingGui( QgsPalLabeling *lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent );
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();

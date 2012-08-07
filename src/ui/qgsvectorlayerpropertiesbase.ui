@@ -66,7 +66,7 @@
    <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="iconSize">
       <size>
@@ -184,13 +184,34 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tabWidgetPage2">
+     <widget class="QWidget" name="labelingTab">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Labels</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_47">
+       <item row="0" column="0">
+        <widget class="QFrame" name="labelingFrame">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage2">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Labels (deprecated)</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
@@ -371,7 +392,7 @@
             <x>0</x>
             <y>0</y>
             <width>740</width>
-            <height>548</height>
+            <height>558</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -739,8 +760,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>98</width>
-            <height>231</height>
+            <width>722</width>
+            <height>540</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -851,8 +872,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>106</width>
-            <height>129</height>
+            <width>722</width>
+            <height>540</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -944,8 +965,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>590</width>
-            <height>626</height>
+            <width>706</width>
+            <height>574</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">

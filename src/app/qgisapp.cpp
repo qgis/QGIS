@@ -1884,6 +1884,12 @@ QgsMapCanvas *QgisApp::mapCanvas()
   return mMapCanvas;
 }
 
+QgsPalLabeling *QgisApp::palLabeling()
+{
+  Q_ASSERT( mLBL );
+  return mLBL;
+}
+
 void QgisApp::initLegend()
 {
   mMapLegend->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
@@ -3842,14 +3848,36 @@ void QgisApp::labeling()
     QMessageBox::warning( this, tr( "Labeling" ), tr( "Please select a vector layer first." ) );
     return;
   }
+
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
 
-  QgsLabelingGui labelGui( mLBL, vlayer, mMapCanvas, this );
+  QDialog *dlg = new QDialog( this );
+  dlg->setWindowTitle( tr( "Layer labeling settings" ) );
+  QgsLabelingGui *labelingGui = new QgsLabelingGui( mLBL, vlayer, mMapCanvas, dlg );
 
-  if ( labelGui.exec() )
+  QVBoxLayout *layout = new QVBoxLayout( dlg );
+  layout->addWidget( labelingGui );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, Qt::Horizontal, dlg );
+  layout->addWidget( buttonBox );
+
+  dlg->setLayout( layout );
+
+  QSettings settings;
+  dlg->restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
+
+  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), dlg, SLOT( accept() ) );
+  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), dlg, SLOT( reject() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), labelingGui, SLOT( apply() ) );
+
+  if ( dlg->exec() )
   {
+    labelingGui->apply();
+
+    settings.setValue( "/Windows/Labeling/geometry", dlg->saveGeometry() );
+
     // alter labeling - save the changes
-    labelGui.layerSettings().writeToLayer( vlayer );
+    labelingGui->layerSettings().writeToLayer( vlayer );
 
     // trigger refresh
     if ( mMapCanvas )
@@ -3857,6 +3885,8 @@ void QgisApp::labeling()
       mMapCanvas->refresh();
     }
   }
+
+  delete dlg;
 
   activateDeactivateLayerRelatedActions( layer );
 }

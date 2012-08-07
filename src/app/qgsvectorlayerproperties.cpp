@@ -32,6 +32,7 @@
 #include "qgsfieldcalculator.h"
 #include "qgsgraduatedsymboldialog.h"
 #include "qgslabeldialog.h"
+#include "qgslabelinggui.h"
 #include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
@@ -98,7 +99,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
 
-
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
   mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
@@ -106,8 +106,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( btnUseNewSymbology, SIGNAL( clicked() ), this, SLOT( useNewSymbology() ) );
 
+  QVBoxLayout *layout = new QVBoxLayout( labelingFrame );
+  layout->setMargin( 0 );
+  labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
+  layout->addWidget( labelingDialog );
+  labelingFrame->setLayout( layout );
+
   // Create the Label dialog tab
-  QVBoxLayout *layout = new QVBoxLayout( labelOptionsFrame );
+  layout = new QVBoxLayout( labelOptionsFrame );
   layout->setMargin( 0 );
   labelDialog = new QgsLabelDialog( layer->label(), labelOptionsFrame );
   layout->addWidget( labelDialog );
@@ -657,6 +663,8 @@ QgsVectorLayer::EditType QgsVectorLayerProperties::editTypeFromButtonText( QStri
 
 void QgsVectorLayerProperties::apply()
 {
+  labelingDialog->apply();
+
   //
   // Set up sql subset query if applicable
   //

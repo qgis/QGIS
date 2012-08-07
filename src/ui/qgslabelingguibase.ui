@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsLabelingGuiBase</class>
- <widget class="QDialog" name="QgsLabelingGuiBase">
+ <widget class="QWidget" name="QgsLabelingGuiBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -62,16 +62,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
    </item>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -473,8 +463,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>451</height>
+            <width>647</width>
+            <height>435</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -935,8 +925,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>658</width>
-            <height>567</height>
+            <width>647</width>
+            <height>507</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1146,45 +1136,10 @@
    <header>qgslabelpreview.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>buttonBox</tabstop>
- </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsLabelingGuiBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>353</x>
-     <y>459</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>309</x>
-     <y>430</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsLabelingGuiBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>353</x>
-     <y>459</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>353</x>
-     <y>430</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>chkEnableLabeling</sender>
    <signal>clicked(bool)</signal>

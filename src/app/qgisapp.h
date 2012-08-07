@@ -161,8 +161,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void openFile( const QString & fileName );
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( QString, QPixmap * );
+
     /** Get the mapcanvas object from the app */
-    QgsMapCanvas * mapCanvas();
+    QgsMapCanvas *mapCanvas();
+
+    /** Get the mapcanvas object from the app */
+    QgsPalLabeling *palLabeling();
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );

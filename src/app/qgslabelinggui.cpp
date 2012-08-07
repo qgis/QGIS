@@ -22,10 +22,10 @@
 #include <qgsvectordataprovider.h>
 #include <qgsmaplayerregistry.h>
 
-#include "qgspallabeling.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -34,15 +34,13 @@
 #include <QMessageBox>
 #include <QSettings>
 
+
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
-    : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
+    : QWidget( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
   if ( !layer ) return;
 
   setupUi( this );
-
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
@@ -206,13 +204,10 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   {
     connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateOptions() ) );
   }
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 }
 
 QgsLabelingGui::~QgsLabelingGui()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/Labeling/geometry", saveGeometry() );
 }
 
 void QgsLabelingGui::apply()

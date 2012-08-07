@@ -37,6 +37,7 @@ class QgsApplyDialog;
 class QgsLabelDialog;
 class QgsVectorLayer;
 class QgsVectorOverlayPlugin;
+class QgsLabelingGui;
 
 class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -185,6 +186,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QDialog* mRendererDialog;
     /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
     //QgsRenderer* bufferRenderer;
+    /**Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
+    QgsLabelingGui *labelingDialog;
     /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelDialog* labelDialog;
     /**Actions dialog. If apply is pressed, the actions are stored for later use */
