@@ -48,7 +48,11 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
     QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                           "Please download the complete collection (in svg format) "
+                           "You have two means of installing them:\n\n"
+                           "1) Install the \"Color Ramp Manager\" python plugin "
+                           "(you must enable Experimental plugins in the plugin manager) "
+                           "and use it to download latest cpt-city package.\n\n"
+                           "2) Download the complete collection (in svg format) "
                            "and unzip it to your QGis settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath()
@@ -60,6 +64,8 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     return;
   }
+
+  treeWidget->setIconSize( QSize( 100, 15 ) );
 
   populateSchemes( "author" );
   treeWidget->setCurrentItem( findPath( ramp->schemeName() ) );
@@ -249,11 +255,19 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_itemExpanded( QTreeWidgetItem * 
   // set color count when item is expanded
   QgsCptCityColorRampV2 ramp( "", "" );
   QTreeWidgetItem* childItem = 0;
-  QString itemPath, itemDesc;
+  QString itemPath, itemDesc, itemVariants;
+  QStringList listVariants;
+  QPixmap blankPixmap( treeWidget->iconSize() );
+  blankPixmap.fill( Qt::white );
+  QIcon blankIcon( blankPixmap );
 
   for ( int i = 0; i < item->childCount(); i++ )
   {
     childItem = item->child( i );
+
+    //skip invalid items or collection items
+    if ( ! childItem || childItem->data( 0, Qt::UserRole ).toString().endsWith( "/" ) )
+      continue;
 
     // items with null description need information, those with "" (i.e. unnamed collections) not be checked
     // TODO set type when there are variants - based on the first file
@@ -262,18 +276,45 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_itemExpanded( QTreeWidgetItem * 
       itemPath = childItem->data( 0, Qt::UserRole ).toString();
       itemDesc = "";
       ramp.setSchemeName( itemPath );
+      ramp.setVariantName( "" );
+
+      // if item has variants, use middle item for preview
+      itemVariants = childItem->data( 1, Qt::UserRole ).toString();
+      if ( ! itemVariants.isNull() )
+      {
+        listVariants = itemVariants.split( " ", QString::SkipEmptyParts );
+        if ( ! listVariants.isEmpty() )
+          ramp.setVariantName( listVariants[ listVariants.count() / 2 ] );
+        else
+          itemVariants = QString();
+      }
+      // load file and set info
       if ( ramp.loadFile() )
       {
-        itemDesc = QString::number( ramp.count() ) + " " + tr( "colors" ) + " - ";
-        QgsCptCityColorRampV2::GradientType type = ramp.gradientType();
-        if ( type == QgsCptCityColorRampV2::Continuous )
-          itemDesc += tr( "continuous" );
-        else if ( type == QgsCptCityColorRampV2::ContinuousMulti )
-          itemDesc += tr( "continuous (multi)" );
-        else if ( type == QgsCptCityColorRampV2::Discrete )
-          itemDesc += tr( "discrete" );
+        if ( itemVariants.isNull() )
+        {
+          itemDesc = QString::number( ramp.count() ) + " " + tr( "colors" ) + " - ";
+          QgsCptCityColorRampV2::GradientType type = ramp.gradientType();
+          if ( type == QgsCptCityColorRampV2::Continuous )
+            itemDesc += tr( "continuous" );
+          else if ( type == QgsCptCityColorRampV2::ContinuousMulti )
+            itemDesc += tr( "continuous (multi)" );
+          else if ( type == QgsCptCityColorRampV2::Discrete )
+            itemDesc += tr( "discrete" );
+        }
+        else
+        {
+          itemDesc = QString::number( listVariants.count() ) + " " + tr( "variants" );
+        }
+        childItem->setText( 1, "   " + itemDesc );
+        QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( &ramp, treeWidget->iconSize() );
+        childItem->setIcon( 1, icon );
       }
-      childItem->setText( 1, "     " + itemDesc );
+      else
+      {
+        childItem->setIcon( 1, blankIcon );
+        childItem->setText( 1, "" );
+      }
     }
   }
 }
@@ -377,17 +418,17 @@ void QgsCptCityColorRampV2Dialog::makeSchemeItem( QTreeWidgetItem *item, const Q
 {
   QString descStr, descData;//, variantStr;
   QString curName, curVariant;
-  QStringList listVariant;
+  QStringList listVariants;
   QTreeWidgetItem *childItem;
 
   // // descStr = schemeName;
-  listVariant = QgsCptCityColorRampV2::schemeVariants().value( path + "/" + schemeName );
+  listVariants = QgsCptCityColorRampV2::schemeVariants().value( path + "/" + schemeName );
 
-  if ( listVariant.count() > 1 )
+  if ( listVariants.count() > 1 )
   {
-    // variantStr = QString::number( listVariant.count() ) + " " + tr( "variants" );
-    descStr = "     " + QString::number( listVariant.count() ) + " " + tr( "variants" );
-    descData = listVariant.join( " " );
+    // variantStr = QString::number( listVariants.count() ) + " " + tr( "variants" );
+    // descStr = "   " + QString::number( listVariants.count() ) + " " + tr( "variants" );
+    descData = listVariants.join( " " );
   }
 
   childItem = new QTreeWidgetItem( QStringList() << schemeName << descStr );
