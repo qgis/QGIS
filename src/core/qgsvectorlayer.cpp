@@ -733,21 +733,22 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       {
         break;
       }
-#if 0 // MK: disable this totally as it breaks QT painting engine (can result in recursive repaint)
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
-      if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
+      if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
       {
-        emit screenUpdateRequested();
-        // emit drawingProgress( featureCount, totalFeatures );
-        qApp->processEvents();
-      }
-      else if ( featureCount % 1000 == 0 )
-      {
-        // emit drawingProgress( featureCount, totalFeatures );
-        qApp->processEvents();
+        if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
+        {
+          emit screenUpdateRequested();
+          // emit drawingProgress( featureCount, totalFeatures );
+          qApp->processEvents();
+        }
+        else if ( featureCount % 1000 == 0 )
+        {
+          // emit drawingProgress( featureCount, totalFeatures );
+          qApp->processEvents();
+        }
       }
 #endif //Q_WS_MAC
-#endif
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
@@ -956,6 +957,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
+  mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
 
   if ( mUsingRendererV2 )
   {

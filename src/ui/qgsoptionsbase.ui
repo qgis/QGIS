@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>526</height>
+    <width>1107</width>
+    <height>843</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="iconSize">
       <size>
@@ -953,46 +953,63 @@
               <string>Rendering behavior</string>
              </property>
              <layout class="QGridLayout">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="chkAddedVisibility">
                 <property name="text">
                  <string>By default new la&amp;yers added to the map should be displayed</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
+              <item row="4" column="0" colspan="3">
                <widget class="QLabel" name="textLabel3">
                 <property name="text">
                  <string>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="2">
+              <item row="5" column="0" colspan="3">
                <widget class="QCheckBox" name="chkUseRenderCaching">
                 <property name="text">
                  <string>Use render caching where possible to speed up redraws</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="textLabel1_6">
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="chkEnableBackbuffer">
                 <property name="text">
-                 <string>Number of features to draw before updating the display</string>
+                 <string>Enable back buffer (Better graphics performance at the cost loosing the possibiliti to cancel rendering and incremental feature drawing)</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QSpinBox" name="spinBoxUpdateThreshold">
-                <property name="toolTip">
-                 <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
-                </property>
-                <property name="maximum">
-                 <number>1000000</number>
-                </property>
-                <property name="value">
-                 <number>1000</number>
-                </property>
-               </widget>
+              <item row="3" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_16">
+                <item>
+                 <widget class="QLabel" name="labelUpdateThreshold">
+                  <property name="text">
+                   <string>Number of features to draw before updating the display</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBoxUpdateThreshold">
+                  <property name="maximumSize">
+                   <size>
+                    <width>200</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Map display will be updated (drawn) after this many features have been read from the data source</string>
+                  </property>
+                  <property name="maximum">
+                   <number>1000000</number>
+                  </property>
+                  <property name="value">
+                   <number>1000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -2693,7 +2710,6 @@
   <tabstop>buttonBox</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>chkAddedVisibility</tabstop>
-  <tabstop>spinBoxUpdateThreshold</tabstop>
   <tabstop>chkUseRenderCaching</tabstop>
   <tabstop>chkAntiAliasing</tabstop>
   <tabstop>chkUseQPixmap</tabstop>

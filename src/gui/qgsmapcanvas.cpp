@@ -84,15 +84,16 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mAntiAliasing( false )
 {
   setObjectName( name );
-
+  
+  QSettings settings;
+  bool enableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
   //disable the update that leads to the resize crash
-  if ( viewport() )
+  if ( viewport() && !enableBackbuffer )
   {
 #ifndef ANDROID
     viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
 #endif //ANDROID
   }
-#endif
 
   mScene = new QGraphicsScene();
   setScene( mScene );

@@ -77,6 +77,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   connect( chkUseStandardDeviation, SIGNAL( stateChanged( int ) ), this, SLOT( toggleStandardDeviation( int ) ) );
 
+  connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
+
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
@@ -226,6 +228,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   index = cmbScanZipInBrowser->findData( settings.value( "/qgis/scanZipInBrowser", "" ) );
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
+
+  // Set the enable backbuffer state
+  chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer" ).toBool() );
+  toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
@@ -720,6 +726,20 @@ void QgsOptions::toggleStandardDeviation( int state )
   }
 }
 
+void QgsOptions::toggleEnableBackbuffer( int state )
+{
+  if ( Qt::Checked == state )
+  {
+    labelUpdateThreshold->setEnabled( false );
+    spinBoxUpdateThreshold->setEnabled( false );
+  }
+  else
+  {
+    labelUpdateThreshold->setEnabled( true );
+    spinBoxUpdateThreshold->setEnabled( true );
+  }
+}
+
 QString QgsOptions::theme()
 {
   // returns the current theme (as selected in the cmbTheme combo box)
@@ -891,6 +911,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
   settings.setValue( "/Raster/cumulativeCutUpper", mRasterCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
 
+  settings.setValue( "/Map/enableBackbuffer", chkEnableBackbuffer->isChecked() );
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no
   //projection defined...
