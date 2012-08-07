@@ -119,7 +119,7 @@ struct CORE_EXPORT QgsDiagramSettings
   double maxScaleDenominator;
 
   //! Scale diagrams smaller than mMinimumSize to mMinimumSize
-  double mMinimumSize;
+  double minimumSize;
 
   void readXML( const QDomElement& elem );
   void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
