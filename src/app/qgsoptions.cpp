@@ -230,8 +230,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbScanZipInBrowser->setCurrentIndex( index );
 
   // Set the enable backbuffer state
+#ifdef Q_WS_X11
   chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer" ).toBool() );
   toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
+#endif
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
@@ -726,6 +728,7 @@ void QgsOptions::toggleStandardDeviation( int state )
   }
 }
 
+#ifdef Q_WS_X11
 void QgsOptions::toggleEnableBackbuffer( int state )
 {
   if ( Qt::Checked == state )
@@ -739,6 +742,7 @@ void QgsOptions::toggleEnableBackbuffer( int state )
     spinBoxUpdateThreshold->setEnabled( true );
   }
 }
+#endif
 
 QString QgsOptions::theme()
 {

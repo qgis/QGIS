@@ -371,8 +371,11 @@ void QgsMapCanvas::refresh()
     return;
 
   QSettings settings;
+#ifdef Q_WS_X11
   bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-
+#else
+  bool enableBackbufferSetting = 0;
+#endif
 
   //disable the update that leads to the resize crash
   if ( viewport() )

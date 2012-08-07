@@ -957,7 +957,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   //set update threshold before each draw to make sure the current setting is picked up
   QSettings settings;
   mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
+#ifdef Q_WS_X11
   mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
+#endif
 
   if ( mUsingRendererV2 )
   {
