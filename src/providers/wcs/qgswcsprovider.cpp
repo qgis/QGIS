@@ -502,6 +502,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 
 void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QString crs )
 {
+  Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
   // delete cached data
   clearCache();
@@ -790,7 +791,7 @@ void QgsWcsProvider::cacheReplyFinished()
       }
       if ( partBodies.size() < 2 )
       {
-        QgsMessageLog::logMessage( tr( "Expected 2 parts, %1 recieved" ).arg( partBodies.size() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Expected 2 parts, %1 received" ).arg( partBodies.size() ), tr( "WCS" ) );
         clearCache();
         mCacheReply->deleteLater();
         mCacheReply = 0;
@@ -799,7 +800,7 @@ void QgsWcsProvider::cacheReplyFinished()
       else if ( partBodies.size() > 2 )
       {
         // We will try the second one
-        QgsMessageLog::logMessage( tr( "More than 2 parts (%1) recieved" ).arg( partBodies.size() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "More than 2 parts (%1) received" ).arg( partBodies.size() ), tr( "WCS" ) );
       }
       mCachedData = partBodies.value( 1 );
     }
@@ -815,13 +816,13 @@ void QgsWcsProvider::cacheReplyFinished()
 
     if ( mCachedData.size() == 0 )
     {
-      QgsMessageLog::logMessage( tr( "No data recieved" ), tr( "WCS" ) );
+      QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
       clearCache();
       mCacheReply->deleteLater();
       mCacheReply = 0;
       return;
     }
-    QgsDebugMsg( QString( "%1 bytes recieved" ).arg( mCachedData.size() ) );
+    QgsDebugMsg( QString( "%1 bytes received" ).arg( mCachedData.size() ) );
 
     mCachedMemFile = VSIFileFromMemBuffer( TO8F( mCachedMemFilename ),
                                            ( GByte* )mCachedData.data(),
@@ -1033,12 +1034,12 @@ void QgsWcsProvider::parseServiceException( QDomElement const & e )
   exceptions["CurrentUpdateSequence"] = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number." );
   exceptions["InvalidUpdateSequence"] = tr( "Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number." );
   // 1.0, 1.1
-  exceptions["MissingParameterValue"] = tr( "Request does not include a parameter value, and the servervice instance did not declare a default value for that dimension." );
+  exceptions["MissingParameterValue"] = tr( "Request does not include a parameter value, and the server instance did not declare a default value for that dimension." );
   exceptions["InvalidParameterValue"] = tr( "Request contains an invalid parameter value." );
   // 1.1
   exceptions["NoApplicableCode"] = tr( "No other exceptionCode specified by this service and server applies to this exception." );
   exceptions["UnsupportedCombination"] = tr( "Operation request contains an output CRS that can not be used within the output format." );
-  exceptions["NotEnoughStorage"] = tr( "Operation request specifies \"store\" the result, but not enough storage is available to do this." );
+  exceptions["NotEnoughStorage"] = tr( "Operation request specifies to \"store\" the result, but not enough storage is available to do this." );
 
   QString seCode;
   QString seText;
