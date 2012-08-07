@@ -37,6 +37,9 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     //! sets the given param
     void setParameter( QString param );
 
+    //! sets the remove button hidden state to 'hide'
+    void hideRemoveButton( bool hide );
+
   public slots:
     void destruct();
 

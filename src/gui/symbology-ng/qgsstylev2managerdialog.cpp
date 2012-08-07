@@ -90,11 +90,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   groupTree->setModel( groupModel );
   groupTree->setHeaderHidden( true );
   populateGroups();
-  int rows = groupModel->rowCount( groupModel->indexFromItem( groupModel->invisibleRootItem() ) );
-  for ( int i = 0; i < rows; i++ )
-  {
-    groupTree->setExpanded( groupModel->indexFromItem( groupModel->item( i )), true );
-  }
   connect( groupTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ),
       this, SLOT( groupChanged( const QModelIndex& ) ) );
   connect( groupModel, SIGNAL( itemChanged( QStandardItem* ) ),
@@ -308,26 +303,43 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // get name
-  bool ok;
-  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
-                                        tr( "Please enter name for new symbol:" ), QLineEdit::Normal, tr( "new symbol" ), &ok );
-  if ( !ok || name.isEmpty() )
-  {
-    delete symbol;
-    return false;
-  }
+  bool nameInvalid = true;
+  QString name;
 
-  // check if there is no symbol with same name
-  if ( mStyle->symbolNames().contains( name ) )
+  while ( nameInvalid )
   {
-    int res = QMessageBox::warning( this, tr( "Save symbol" ),
-                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
-                                    .arg( name ),
-                                    QMessageBox::Yes | QMessageBox::No );
-    if ( res != QMessageBox::Yes )
+    bool ok;
+    name = QInputDialog::getText( this, tr( "Symbol Name"),
+                                  tr( "Please enter a name for new symbol:" ),
+                                  QLineEdit::Normal,
+                                  tr( "new symbol" ),
+                                  &ok );
+    if ( !ok )
     {
       delete symbol;
       return false;
+    }
+    // validate name
+    if ( name.isEmpty() )
+    {
+      QMessageBox::warning( this, tr( "Save symbol" ),
+                            tr( "Cannot save symbol without name. Enter a name." ) );
+    }
+    else if ( mStyle->symbolNames().contains( name ) )
+    {
+      int res = QMessageBox::warning( this, tr( "Save symbol" ),
+                                    tr( "Symbol with name '%1' already exists. Overwrite?" )
+                                    .arg( name ),
+                                    QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        nameInvalid = false;
+      }
+    }
+    else
+    {
+      // valid name
+      nameInvalid = false;
     }
   }
 
@@ -590,6 +602,7 @@ void QgsStyleV2ManagerDialog::importItems()
   QgsStyleV2ExportImportDialog dlg( mStyle, this, QgsStyleV2ExportImportDialog::Import );
   dlg.exec();
   populateList();
+  populateGroups();
 }
 
 void QgsStyleV2ManagerDialog::setBold( QStandardItem* item )
@@ -653,6 +666,12 @@ void QgsStyleV2ManagerDialog::populateGroups()
   }
   model->appendRow( tag );
 
+  // expand things in the grouo tree
+  int rows = model->rowCount( model->indexFromItem( model->invisibleRootItem() ) );
+  for ( int i = 0; i < rows; i++ )
+  {
+    groupTree->setExpanded( model->indexFromItem( model->item( i ) ), true );
+  }
 }
 
 void QgsStyleV2ManagerDialog::buildGroupTree( QStandardItem* &parent )
@@ -1125,11 +1144,16 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
       groupMenu.addAction( "Edit Group" );
+      groupMenu.addAction( "Remove Group" );
     }
-    else // it must be a group
-    {
-      groupMenu.addAction( "Add Group" );
-    }
+  }
+  else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
+  {
+    groupMenu.addAction( "Add Group" );
+  }
+  else
+  {
+    groupMenu.addAction( "Add Group" );
     groupMenu.addAction( "Remove Group" );
   }
 

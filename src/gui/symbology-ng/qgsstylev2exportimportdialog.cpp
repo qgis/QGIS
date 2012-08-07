@@ -21,6 +21,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
 
+#include <QDate>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -59,16 +60,22 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   {
     // populate the import types
     importTypeCombo->addItem( "file specified below", QVariant( "file" ) );
-    importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
+    // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
     importTypeCombo->addItem( "URL specified below", QVariant( "url" ) );
     connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
+
+    QStringList groups = mQgisStyle->groupNames();
+    groupCombo->addItem( "New Default Group", QVariant( "default" ) );
+    foreach ( QString gName, groups )
+    {
+      groupCombo->addItem( gName );
+    }
 
     btnBrowse->setText( "Browse" );
     connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( browse() ) );
 
     label->setText( tr( "Select symbols to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
-    
   }
   else
   {
@@ -78,6 +85,8 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
     importTypeCombo->setHidden( true );
     locationLabel->setHidden( true );
     locationLineEdit->setHidden( true );
+    groupLabel->setHidden( true );
+    groupCombo->setHidden( true );
 
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
     if ( !populateStyles( mQgisStyle ) )
@@ -199,6 +208,26 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   bool isSymbol = true;
   bool prompt = true;
   bool overwrite = true;
+  int groupid = 0;
+
+  // get the groupid when going for import
+  if ( mDialogMode == Import )
+  {
+    QSettings settings;
+    int count = settings.value( "/qgis/style/importcount", 0 ).toInt();
+    int index = groupCombo->currentIndex();
+    if ( groupCombo->itemData( index ).toString() == "default" )
+    {
+      QString groupName = "import-" + QString::number( count );
+      groupid = dst->addGroup( groupName );
+      count++;
+      settings.setValue( "/qgis/style/importcount", count );
+    }
+    else
+    {
+      groupid = dst->groupId( groupCombo->itemText( index ) );
+    }
+  }
 
   for ( int i = 0; i < selection->size(); ++i )
   {
@@ -228,7 +257,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
           case QMessageBox::Yes:
             dst->addSymbol( symbolName, symbol );
             if ( mDialogMode == Import )
-              dst->saveSymbol( symbolName, symbol, 0, QStringList() );
+              dst->saveSymbol( symbolName, symbol, groupid, QStringList() );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -245,7 +274,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       {
         dst->addSymbol( symbolName, symbol );
         if ( mDialogMode == Import )
-          dst->saveSymbol( symbolName, symbol, 0, QStringList() );
+          dst->saveSymbol( symbolName, symbol, groupid, QStringList() );
       }
       else if ( dst->symbolNames().contains( symbolName ) && !overwrite )
       {
@@ -255,7 +284,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       {
         dst->addSymbol( symbolName, symbol );
         if ( mDialogMode == Import )
-          dst->saveSymbol( symbolName, symbol, 0, QStringList() );
+          dst->saveSymbol( symbolName, symbol, groupid, QStringList() );
       }
     }
     else
@@ -275,7 +304,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
           case QMessageBox::Yes:
             dst->addColorRamp( symbolName, ramp );
             if ( mDialogMode == Import )
-              dst->saveColorRamp( symbolName, ramp, 0, QStringList() );
+              dst->saveColorRamp( symbolName, ramp, groupid, QStringList() );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -291,7 +320,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       {
         dst->addColorRamp( symbolName, ramp );
         if ( mDialogMode == Import )
-          dst->saveColorRamp( symbolName, ramp, 0, QStringList() );
+          dst->saveColorRamp( symbolName, ramp, groupid, QStringList() );
       }
       else if ( dst->colorRampNames().contains( symbolName ) && !overwrite )
       {
@@ -301,7 +330,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       {
         dst->addColorRamp( symbolName, ramp );
         if ( mDialogMode == Import )
-          dst->saveColorRamp( symbolName, ramp, 0, QStringList() );
+          dst->saveColorRamp( symbolName, ramp, groupid, QStringList() );
       }
     }
   }
@@ -364,8 +393,6 @@ void QgsStyleV2ExportImportDialog::browse()
   {
     // TODO set URL
     // downloadStyleXML( QUrl( "http://...." ) );
-    QMessageBox::warning( this, tr( "Invalid Selection" ),
-        tr( "Sorry! The official QGIS repository has not been implemented. You cannot use this feature now." ) );
   }
   else
   {
@@ -375,7 +402,7 @@ void QgsStyleV2ExportImportDialog::browse()
 
 void QgsStyleV2ExportImportDialog::downloadStyleXML( QUrl url )
 {
-    // TODO Try to move this code to some core Network interface,
+    // XXX Try to move this code to some core Network interface,
     // HTTP downloading is a generic functionality that might be used elsewhere
 
   mTempFile = new QTemporaryFile();

@@ -89,6 +89,7 @@ class CORE_EXPORT QgsStyleV2
     //! return the id in the style database for the given group name
     int groupId( QString group );
     int tagId( QString tag );
+    int smartgroupId( QString smartgroup );
 
     //! return the all the groups in the style
     QStringList groupNames();
@@ -209,6 +210,8 @@ class CORE_EXPORT QgsStyleV2
     bool runEmptyQuery( char* query );
     //! prepares the complex query for removing a group,so that the children are not abandoned
     char* getGroupRemoveQuery( int id );
+    //! gets the id from the table for the given name from the database, 0 if not found
+    int getId( QString table, QString name );
 };
 
 

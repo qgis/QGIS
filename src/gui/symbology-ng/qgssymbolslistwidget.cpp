@@ -56,6 +56,11 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   {
     groupsCombo->addItem( group );
   }
+  groups = style->smartgroupNames();
+  foreach ( QString group, groups )
+  {
+    groupsCombo->addItem( group, QVariant( "smart" ) );
+  }
 
   QStandardItemModel* model = new QStandardItemModel( viewSymbols );
   viewSymbols->setModel( model );
@@ -295,9 +300,10 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
   emit changed();
 }
 
-void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( const QString &text )
+void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
 {
   QStringList symbols;
+  QString text = groupsCombo->itemText( index );
   // List all symbols when empty list item is selected
   if ( text.isEmpty() )
   {
@@ -305,7 +311,15 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( const QString &te
   }
   else
   {
-    int groupid = mStyle->groupId( text );
+    int groupid;
+    if ( groupsCombo->itemData( index ).toString() == "smart" )
+    {
+      groupid = mStyle->smartgroupId( text );
+    }
+    else
+    {
+      groupid = mStyle->groupId( text );
+    }
     symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
   }
   populateSymbols( symbols );

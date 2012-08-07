@@ -43,6 +43,16 @@
        </property>
       </widget>
      </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="groupLabel">
+       <property name="text">
+        <string>Set Group</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QComboBox" name="groupCombo"/>
+     </item>
     </layout>
    </item>
    <item row="1" column="0">

@@ -67,6 +67,11 @@ void QgsSmartGroupCondition::setParameter( QString param )
   mCondLineEdit->setText( param );
 }
 
+void QgsSmartGroupCondition::hideRemoveButton( bool hide )
+{
+  mRemoveBtn->setVisible( !hide );
+}
+
 
 // ------------------------ //
 // Editor Dialog Functions  //
@@ -85,7 +90,6 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget
   addCondition();
 
   connect( mAddConditionBtn, SIGNAL( clicked() ), this, SLOT( addCondition() ) );
-
 }
 
 QgsSmartGroupEditorDialog::~QgsSmartGroupEditorDialog()
@@ -99,22 +103,35 @@ QString QgsSmartGroupEditorDialog::smartgroupName()
 
 void QgsSmartGroupEditorDialog::addCondition()
 {
+  // enable the remove buttons when 2nd condition is added
+  if ( mConditionMap.count() == 1 )
+  {
+    foreach ( QgsSmartGroupCondition *condition, mConditionMap.values() )
+    {
+      condition->hideRemoveButton( false );
+    }
+  }
   QgsSmartGroupCondition *cond = new QgsSmartGroupCondition( mCondCount, this );
   mLayout->addWidget( cond, mCondCount, 0, 1, 1 );
 
   connect( cond, SIGNAL( removed( int ) ), this, SLOT( removeCondition( int ) ) );
-
+  if ( mConditionMap.count() == 0 )
+  {
+    cond->hideRemoveButton( true );
+  }
   mConditionMap.insert( mCondCount, cond );
   ++mCondCount;
 }
 
 void QgsSmartGroupEditorDialog::removeCondition( int id )
 {
-  if ( mConditionMap.count() == 1 )
+  // hide the remove button of the last condition when 2nd last is removed
+  if ( mConditionMap.count() == 2 )
   {
-    QMessageBox::critical( this, tr( "Invalid Operation" ),
-        tr( "A Smart Group should have at least ONE condition. Cannot remove the only condition." ) );
-    return;
+    foreach( QgsSmartGroupCondition* condition, mConditionMap.values() )
+    {
+      condition->hideRemoveButton( true );
+    }
   }
 
   QgsSmartGroupCondition *cond = mConditionMap.take( id );
