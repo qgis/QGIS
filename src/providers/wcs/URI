@@ -11,7 +11,9 @@ Parameters:
 
 * identifier (required) : Coverage name
 
-* format: (optional) : Supported format name. Default is the first supported format with tif in name or the first supported format.
+* time (optional) : time position or time period (beginPosition/endPosition[/timeResolution])
+
+* format (optional) : Supported format name. Default is the first supported format with tif in name or the first supported format.
 
 * crs (optional) : CRS in form AUTHORITY:ID, e.g. EPSG:4326. Default is EPSG:4326 if supported or the first supported CRS.
 

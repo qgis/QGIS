@@ -357,6 +357,8 @@ bool QgsWcsProvider::parseUri( QString uriString )
 
   mIdentifier = uri.param( "identifier" );
 
+  mTime = uri.param( "time" );
+
   setFormat( uri.param( "format" ) );
 
   if ( !uri.param( "crs" ).isEmpty() )
@@ -561,6 +563,10 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   if ( mCapabilities.version().startsWith( "1.0" ) )
   {
     setQueryItem( url, "COVERAGE", mIdentifier );
+    if ( !mTime.isEmpty() )
+    {
+      setQueryItem( url, "TIME", mTime );
+    }
     setQueryItem( url, "BBOX", bbox );
     setQueryItem( url, "CRS", crs ); // request BBOX CRS
     setQueryItem( url, "RESPONSE_CRS", crs ); // response CRS
@@ -574,6 +580,12 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
     setQueryItem( url, "IDENTIFIER", mIdentifier );
     QString crsUrn = QString( "urn:ogc:def:crs:%1::%2" ).arg( crs.split( ':' ).value( 0 ) ).arg( crs.split( ':' ).value( 1 ) );
     bbox += "," + crsUrn;
+
+    if ( !mTime.isEmpty() )
+    {
+      setQueryItem( url, "TIMESEQUENCE", mTime );
+    }
+
     setQueryItem( url, "BOUNDINGBOX", bbox );
 
     //   GridBaseCRS=urn:ogc:def:crs:SG:6.6:32618
@@ -1292,7 +1304,7 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Coverages" );
   metadata += "</th></tr>";
 
-  foreach( QgsWcsCoverageSummary c, mCapabilities.coverages() )
+  foreach ( QgsWcsCoverageSummary c, mCapabilities.coverages() )
   {
     metadata += coverageMetadata( c );
   }

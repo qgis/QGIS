@@ -196,15 +196,15 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( )
 
   if ( !preferredVersion.isEmpty() )
   {
-    // This is not 
-    if ( preferredVersion.startsWith ( "1.0" ) )
+    // This is not
+    if ( preferredVersion.startsWith( "1.0" ) )
     {
       versions << "VERSION=" + preferredVersion;
     }
-    else if ( preferredVersion.startsWith ( "1.1" ) )
+    else if ( preferredVersion.startsWith( "1.1" ) )
     {
-        // Ignored by UMN Mapserver 6.0.3, see below
-        versions << "AcceptVersions=" + preferredVersion;
+      // Ignored by UMN Mapserver 6.0.3, see below
+      versions << "AcceptVersions=" + preferredVersion;
     }
   }
   else
@@ -214,7 +214,7 @@ bool QgsWcsCapabilities::retrieveServerCapabilities( )
     versions << "AcceptVersions=1.1,1.0" << "VERSION=1.0";
   }
 
-  foreach( QString v, versions )
+  foreach ( QString v, versions )
   {
     if ( retrieveServerCapabilities( v ) )
     {
@@ -427,7 +427,7 @@ bool QgsWcsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapa
     capabilities.abstract = domElementText( docElem, "ServiceIdentification.Abstract" );
 
     QList<QDomElement> operationElements = domElements( docElem, "OperationsMetadata.Operation" );
-    foreach( QDomElement el, operationElements )
+    foreach ( QDomElement el, operationElements )
     {
       if ( el.attribute( "name" ) == "GetCoverage" )
       {
@@ -509,7 +509,7 @@ QStringList QgsWcsCapabilities::domElementsTexts( const QDomElement &element, co
   QStringList list;
   QList<QDomElement> elems = domElements( element, path );
 
-  foreach( QDomElement el, elems )
+  foreach ( QDomElement el, elems )
   {
     list << el.text();
   }
@@ -539,9 +539,8 @@ QString QgsWcsCapabilities::domElementText( const QDomElement &element, const QS
 QList<int> QgsWcsCapabilities::parseInts( const QString &text )
 {
   QList<int> list;
-  foreach( QString s, text.split( " " ) )
+  foreach ( QString s, text.split( " " ) )
   {
-    int i;
     bool ok;
     list.append( s.toInt( &ok ) );
     if ( !ok )
@@ -556,9 +555,8 @@ QList<int> QgsWcsCapabilities::parseInts( const QString &text )
 QList<double> QgsWcsCapabilities::parseDoubles( const QString &text )
 {
   QList<double> list;
-  foreach( QString s, text.split( " " ) )
+  foreach ( QString s, text.split( " " ) )
   {
-    int i;
     bool ok;
     list.append( s.toDouble( &ok ) );
     if ( !ok )
@@ -758,7 +756,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   QgsDebugMsg( QString( "%1 envelopeElements found" ).arg( envelopeElements.size() ) );
 
-  foreach( QDomElement el, envelopeElements )
+  foreach ( QDomElement el, envelopeElements )
   {
     QString srsName = el.attribute( "srsName" );
 
@@ -779,10 +777,30 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     }
   }
 
+  coverage->times = domElementsTexts( coverageOfferingElement, "domainSet.temporalDomain.timePosition" );
+
+  QList<QDomElement> timePeriodElements = domElements( coverageOfferingElement, "domainSet.temporalDomain.timePeriod" );
+
+  QgsDebugMsg( QString( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
+
+  foreach ( QDomElement el, timePeriodElements )
+  {
+    QString beginPosition = domElementText( el, "beginPosition" );
+    QString endPosition = domElementText( el, "endPosition" );
+    QString timeResolution = domElementText( el, "timeResolution" );
+    // Format used in request
+    QString time = beginPosition + "/" + endPosition;
+    if ( !timeResolution.isEmpty() )
+    {
+      time += "/" + timeResolution;
+    }
+    coverage->times << time;
+  }
+
   // Find native bounding box
   if ( !coverage->nativeCrs.isEmpty() )
   {
-    foreach( QString srsName, coverage->boundingBoxes.keys() )
+    foreach ( QString srsName, coverage->boundingBoxes.keys() )
     {
       if ( srsName == coverage->nativeCrs )
       {
@@ -793,7 +811,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
 
   // NULL / no data values
   // TODO: handle multiple range sets
-  foreach( QString text, domElementsTexts( coverageOfferingElement, "rangeSet.RangeSet.nullValue.singleValue" ) )
+  foreach ( QString text, domElementsTexts( coverageOfferingElement, "rangeSet.RangeSet.nullValue.singleValue" ) )
   {
     bool ok;
     double val = text.toDouble( &ok );
@@ -840,7 +858,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
 
   QgsDebugMsg( QString( "%1 BoundingBox found" ).arg( boundingBoxElements.size() ) );
 
-  foreach( QDomElement el, boundingBoxElements )
+  foreach ( QDomElement el, boundingBoxElements )
   {
     QString authid = crsUrnToAuthId( el.attribute( "crs" ) );
     QList<double> low = parseDoubles( domElementText( el, "LowerCorner" ) );
@@ -876,9 +894,29 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom11( QByteArray const &xml, QgsW
     // if urn:ogc:def:crs:OGC::imageCRS BoundingBox was not found
   }
 
+  coverage->times = domElementsTexts( docElem, "CoverageDescription.Domain.TemporalDomain.timePosition" );
+
+  QList<QDomElement> timePeriodElements = domElements( docElem, "CoverageDescription.Domain.TemporalDomain.timePeriod" );
+
+  QgsDebugMsg( QString( "%1 timePeriod found" ).arg( timePeriodElements.size() ) );
+
+  foreach ( QDomElement el, timePeriodElements )
+  {
+    QString beginPosition = domElementText( el, "beginTime" );
+    QString endPosition = domElementText( el, "endTime" );
+    QString timeResolution = domElementText( el, "timeResolution" );
+    // Format used in request
+    QString time = beginPosition + "/" + endPosition;
+    if ( !timeResolution.isEmpty() )
+    {
+      time += "/" + timeResolution;
+    }
+    coverage->times << time;
+  }
+
   // NULL / no data values
   // TODO: handle multiple fields / ranges (?)
-  foreach( QString text, domElementsTexts( docElem, "CoverageDescription.Range.Field.NullValue" ) )
+  foreach ( QString text, domElementsTexts( docElem, "CoverageDescription.Range.Field.NullValue" ) )
   {
     bool ok;
     double val = text.toDouble( &ok );

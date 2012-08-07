@@ -49,6 +49,8 @@ struct QgsWcsCoverageSummary
   // Map of bounding boxes, key is CRS name (srsName), e.g. EPSG:4326
   QMap<QString, QgsRectangle> boundingBoxes;
   QgsRectangle  nativeBoundingBox;
+  // timePosition or timePeriod (beginPosition/endPosition[/timeResolution] - used in KVP request)
+  QStringList times;
   QVector<QgsWcsCoverageSummary> coverageSummary;
   // non reflecting Capabilities structure:
   bool valid;

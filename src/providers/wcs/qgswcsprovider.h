@@ -251,6 +251,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Identifier / coverage / layer name
     QString mIdentifier;
 
+    //! Time (temporalDomain), optional
+    QString mTime;
+
     //! Format of coverage to be used in request
     QString mFormat;
 

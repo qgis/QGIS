@@ -144,6 +144,12 @@ void QgsWCSSourceSelect::addClicked( )
     uri.setParam( "format", selectedFormat() );
   }
 
+  QgsDebugMsg( "selectedTime = " +  selectedTime() );
+  if ( !selectedTime().isEmpty() )
+  {
+    uri.setParam( "time", selectedTime() );
+  }
+
   emit addRasterLayer( uri.encodedUri(), identifier, "wcs" );
 }
 
@@ -154,11 +160,9 @@ void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
   QString identifier = selectedIdentifier();
   if ( identifier.isEmpty() ) { return; }
 
-  if ( mCapabilities.version().startsWith( "1.0" ) )
-  {
-    // 1.0 get additional info
-    mCapabilities.describeCoverage( identifier );
-  }
+  mCapabilities.describeCoverage( identifier );
+
+  populateTimes();
 
   populateFormats();
 
@@ -194,7 +198,7 @@ QList<QgsOWSSupportedFormat> QgsWCSSourceSelect::providerFormats()
   QList<QgsOWSSupportedFormat> formats;
 
   QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  foreach( QString mime, mimes.keys() )
+  foreach ( QString mime, mimes.keys() )
   {
     QgsOWSSupportedFormat format = { mime, mimes.value( mime ) };
 
@@ -237,6 +241,20 @@ QStringList QgsWCSSourceSelect::selectedLayersCRSs()
   if ( !c.valid ) { return QStringList(); }
 
   return c.supportedCrs;
+}
+
+QStringList QgsWCSSourceSelect::selectedLayersTimes()
+{
+  QgsDebugMsg( "entered" );
+
+  QString identifier = selectedIdentifier();
+  if ( identifier.isEmpty() ) { return QStringList(); }
+
+  QgsWcsCoverageSummary c = mCapabilities.coverage( identifier );
+  if ( !c.valid ) { return QStringList(); }
+
+  QgsDebugMsg( "times = " + c.times.join( "," ) );
+  return c.times;
 }
 
 void QgsWCSSourceSelect::enableLayersForCrs( QTreeWidgetItem * )

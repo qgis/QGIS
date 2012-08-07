@@ -160,8 +160,8 @@ void QgsOWSSourceSelect::populateFormats()
   // selectedLayersFormats may come in various forms:
   // image/tiff, GTiff, GeoTIFF, TIFF, geotiff_int16, geotiff_rgb,
   // PNG, GTOPO30, ARCGRID, IMAGEMOSAIC
-  // and even any string defined in server configuration, for example the 
-  // value used in UMN Mapserver for OUTPUTFORMAT->NAME is used in 
+  // and even any string defined in server configuration, for example the
+  // value used in UMN Mapserver for OUTPUTFORMAT->NAME is used in
   // WCS 1.0.0 SupportedFormats/Format
 
   // TODO: It is impossible to cover all possible formats comming from server
@@ -239,6 +239,14 @@ void QgsOWSSourceSelect::populateFormats()
   }
 
   mImageFormatsGroupBox->setEnabled( true );
+}
+
+void QgsOWSSourceSelect::populateTimes()
+{
+  QgsDebugMsg( "entered" );
+  mTimeComboBox->clear();
+  mTimeComboBox->insertItems( 0, selectedLayersTimes() );
+  mTimeComboBox->setEnabled( !selectedLayersTimes().isEmpty() );
 }
 
 void QgsOWSSourceSelect::populateConnectionList()
@@ -436,7 +444,7 @@ void QgsOWSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
 
 void QgsOWSSourceSelect::populateCRS()
 {
-  QgsDebugMsg ("Entered");
+  QgsDebugMsg( "Entered" );
   mSelectedLayersCRSs = selectedLayersCRSs().toSet();
   mCRSGroupBox->setTitle( tr( "Coordinate Reference System (%n available)", "crs count", mSelectedLayersCRSs.count() ) );
 
@@ -474,7 +482,7 @@ void QgsOWSSourceSelect::populateCRS()
     mSelectedCRS = "";
     mSelectedCRSLabel->setText( "" );
   }
-  QgsDebugMsg ("mSelectedCRS = " + mSelectedCRS);
+  QgsDebugMsg( "mSelectedCRS = " + mSelectedCRS );
   mChangeCRSButton->setEnabled( !mSelectedLayersCRSs.isEmpty() );
 }
 
@@ -533,6 +541,11 @@ QString QgsOWSSourceSelect::selectedFormat()
 QString QgsOWSSourceSelect::selectedCRS()
 {
   return mSelectedCRS;
+}
+
+QString QgsOWSSourceSelect::selectedTime()
+{
+  return mTimeComboBox->currentText();
 }
 
 void QgsOWSSourceSelect::setConnectionListPosition()
@@ -801,6 +814,11 @@ QStringList QgsOWSSourceSelect::selectedLayersFormats()
 }
 
 QStringList QgsOWSSourceSelect::selectedLayersCRSs()
+{
+  return QStringList();
+}
+
+QStringList QgsOWSSourceSelect::selectedLayersTimes()
 {
   return QStringList();
 }

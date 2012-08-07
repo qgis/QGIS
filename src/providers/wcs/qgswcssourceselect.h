@@ -78,6 +78,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QList<QgsOWSSupportedFormat> providerFormats();
     QStringList selectedLayersFormats();
     QStringList selectedLayersCRSs();
+    QStringList selectedLayersTimes();
 };
 #endif // QGSWCSSOURCESELECT_H
 
