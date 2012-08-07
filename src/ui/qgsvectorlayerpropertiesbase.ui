@@ -592,28 +592,7 @@
           <string>Map Tip display text</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_18">
-          <item row="1" column="1">
-           <widget class="QTextEdit" name="htmlMapTip">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="fieldComboRadio">
-            <property name="text">
-             <string>Field</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" alignment="Qt::AlignTop">
-           <widget class="QRadioButton" name="htmlRadio">
-            <property name="text">
-             <string>HTML</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
+          <item row="4" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout_14">
             <item>
              <widget class="QPushButton" name="insertExpressionButton">
@@ -681,7 +660,49 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="1">
+          <item row="2" column="2">
+           <widget class="QTextEdit" name="htmlMapTip">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QRadioButton" name="htmlRadio">
+              <property name="text">
+               <string>HTML</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QRadioButton" name="fieldComboRadio">
+              <property name="text">
+               <string>Field</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="2">
            <widget class="QComboBox" name="displayFieldComboBox">
             <property name="enabled">
              <bool>false</bool>
@@ -718,8 +739,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>722</width>
-            <height>530</height>
+            <width>98</width>
+            <height>231</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -830,8 +851,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>722</width>
-            <height>530</height>
+            <width>106</width>
+            <height>129</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -923,7 +944,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>706</width>
+            <width>590</width>
             <height>626</height>
            </rect>
           </property>
