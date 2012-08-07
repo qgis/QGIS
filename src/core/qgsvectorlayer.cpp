@@ -733,7 +733,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       {
         break;
       }
-
+#if 0 // MK: disable this totally as it breaks QT painting engine (can result in recursive repaint)
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
       if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
       {
@@ -747,6 +747,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
         qApp->processEvents();
       }
 #endif //Q_WS_MAC
+#endif
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );

@@ -84,6 +84,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mAntiAliasing( false )
 {
   setObjectName( name );
+
   //disable the update that leads to the resize crash
   if ( viewport() )
   {
@@ -91,6 +92,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
 #endif //ANDROID
   }
+#endif
 
   mScene = new QGraphicsScene();
   setScene( mScene );
