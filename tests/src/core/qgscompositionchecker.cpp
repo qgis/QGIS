@@ -49,9 +49,9 @@ bool QgsCompositionChecker::testComposition( int page )
   outputImage.setDotsPerMeterY( 300 / 25.4 * 1000 );
   outputImage.fill( 0 );
   QPainter p( &outputImage );
-  QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-  QRectF targetArea( 0, 0, 3507, 2480 );
-  mComposition->render( &p, targetArea, sourceArea );
+  //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
+  //QRectF targetArea( 0, 0, 3507, 2480 );
+  mComposition->renderPage( &p, page );
   p.end();
   outputImage.save( "/tmp/composerhtml_table_control.png", "PNG" );
   return false;
