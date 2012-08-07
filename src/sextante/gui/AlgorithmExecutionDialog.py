@@ -209,6 +209,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 if SextanteConfig.getSetting(SextanteConfig.SHOW_DEBUG_IN_DIALOG):
                     self.algEx.commandSet.connect(self.setCommand)
                     self.algEx.debugInfoSet.connect(self.setDebugInfo)
+                    self.algEx.consoleInfoSet.connect(self.setConsoleInfo)
                 self.algEx.start()
                 self.setInfo("<b>Algorithm %s started</b>" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
@@ -303,6 +304,10 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     @pyqtSlot(str)
     def setDebugInfo(self, msg):
         self.setInfo('<span style="color:blue">' + msg + '</span>')
+
+    @pyqtSlot(str)
+    def setConsoleInfo(self, msg):
+        self.setCommand('<span style="color:darkgray">' + msg + '</span>')
 
     def setPercentage(self, i):
         if self.progress.maximum() == 0:

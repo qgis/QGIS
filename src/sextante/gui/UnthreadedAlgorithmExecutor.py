@@ -83,3 +83,6 @@ class SilentProgress():
 
     def setDebugInfo(self, _):
         pass
+
+    def setConsoleInfo(self, _):
+        pass

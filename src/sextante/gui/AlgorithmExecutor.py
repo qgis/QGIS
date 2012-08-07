@@ -14,6 +14,7 @@ class AlgorithmExecutor(QThread):
     infoSet = pyqtSignal(str)
     commandSet = pyqtSignal(str)
     debugInfoSet = pyqtSignal(str)
+    consoleInfoSet = pyqtSignal(str)
     #started & finished inherited from QThread
 
     def __init__(self, alg, iterParam = None, parent = None):
@@ -34,6 +35,8 @@ class AlgorithmExecutor(QThread):
                 self.algorithmExecutor.commandSet.emit(cmd)
             def setDebugInfo(self, info):
                 self.algorithmExecutor.debugInfoSet.emit(info)
+            def setConsoleInfo(self, info):
+                self.algorithmExecutor.consoleInfoSet.emit(info)
         self.progress = Progress(self)
         if self.parameterToIterate:
             self.run = self.runalgIterating
