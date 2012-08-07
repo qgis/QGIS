@@ -39,7 +39,6 @@
 #include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
-#include "qgslogger.h"
 #include "qgspaintenginehack.h"
 
 #include <QImage>
