@@ -40,7 +40,6 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   setupUi( this );
 
   QgsCptCityColorRampV2::loadSchemes( "" );
-  // QgsCptCityColorRampV2::loadSchemes( "cb" );
 
   // show information on how to install cpt-city files if none are found
   if ( ! QgsCptCityColorRampV2::hasAllSchemes() )
@@ -49,7 +48,11 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     edit->setReadOnly( true );
     // not sure if we want this long string to be translated
     QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                           "Please download the complete collection (in svg format) "
+                           "You have two means of installing them:\n\n"
+                           "1) Install the \"Color Ramp Manager\" python plugin "
+                           "(you must enable Experimental plugins in the plugin manager) "
+                           "and use it to download latest cpt-city package.\n\n"
+                           "2) Download the complete collection (in svg format) "
                            "and unzip it to your QGis settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath()
@@ -67,6 +70,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   populateVariants();
   cboVariantName->setCurrentIndex( cboVariantName->findData( ramp->variantName(), Qt::UserRole ) );
   connect( cboVariantName, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setVariantName() ) );
+
   updatePreview();
 }
 
@@ -265,9 +269,12 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_itemExpanded( QTreeWidgetItem * 
       if ( ramp.loadFile() )
       {
         itemDesc = QString::number( ramp.count() ) + " " + tr( "colors" ) + " - ";
-        if ( ramp.isContinuous() )
+        QgsCptCityColorRampV2::GradientType type = ramp.gradientType();
+        if ( type == QgsCptCityColorRampV2::Continuous )
           itemDesc += tr( "continuous" );
-        else
+        else if ( type == QgsCptCityColorRampV2::ContinuousMulti )
+          itemDesc += tr( "continuous (multi)" );
+        else if ( type == QgsCptCityColorRampV2::Discrete )
           itemDesc += tr( "discrete" );
       }
       childItem->setText( 1, "     " + itemDesc );
@@ -295,7 +302,24 @@ void QgsCptCityColorRampV2Dialog::updatePreview()
 {
   QSize size( 300, 40 );
   mRamp->loadFile();
-  lblPreview->setPixmap( QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size ) );
+  // TODO draw checker-board/transparent background
+  // for transparent, add  [ pixmap.fill( Qt::transparent ); ] to QgsSymbolLayerV2Utils::colorRampPreviewPixmap
+
+  QPixmap pixmap = QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size );
+  lblPreview->setPixmap( pixmap );
+
+  // this is for testing purposes only
+  // you need to install a mirror of cpt-city files in $HOME/.qgis/cpt-city-state with just the .png files
+  QString basefile = QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city-site" + "/" + mRamp->schemeName() +  mRamp->variantName() + ".png";
+  QFileInfo info( basefile );
+  QString pngfile = info.path() + "/tn/" + info.fileName();
+  if ( QFile::exists( pngfile ) )
+  {
+    QPixmap pixmap2( pngfile );
+    lblPreview2->setPixmap( pixmap2.scaled( size ) );
+  }
+  lblPreview2->setText( "" );
+
 }
 
 void QgsCptCityColorRampV2Dialog::setSchemeName()

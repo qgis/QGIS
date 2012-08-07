@@ -490,10 +490,12 @@ QIcon QgsSymbolLayerV2Utils::colorRampPreviewIcon( QgsVectorColorRampV2* ramp, Q
 QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ramp, QSize size )
 {
   QPixmap pixmap( size );
+  pixmap.fill( Qt::transparent );
+  // pixmap.fill( Qt::white ); // this makes the background white instead of transparent
   QPainter painter;
   painter.begin( &pixmap );
-  painter.setRenderHint( QPainter::Antialiasing );
-  painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
+  // antialising makes the colors duller, and no point in antialiasing a color ramp
+  // painter.setRenderHint( QPainter::Antialiasing );
   for ( int i = 0; i < size.width(); i++ )
   {
     QPen pen( ramp->color(( double ) i / size.width() ) );

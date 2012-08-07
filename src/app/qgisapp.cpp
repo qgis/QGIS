@@ -1626,8 +1626,8 @@ void QgisApp::setTheme( QString theThemeName )
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.png" ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
-  mActionShowFrozenLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowFrozenLabels.png" ) );
-  mActionFreezeLabels->setIcon( QgsApplication::getThemeIcon( "/mActionFreezeLabels.png" ) );
+  mActionShowFrozenLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowFrozenLabels.svg" ) );
+  mActionFreezeLabels->setIcon( QgsApplication::getThemeIcon( "/mActionFreezeLabels.svg" ) );
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.svg" ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );

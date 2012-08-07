@@ -44,7 +44,6 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     void updatePreview();
     QTreeWidgetItem* findPath( QString path );
     QTreeWidgetItem * makeCollectionItem( const QString& path );
-    // TODO rename Scheme to something else, maybe data
     void makeSchemeItem( QTreeWidgetItem *item, const QString& path, const QString& schemeName );
 
     QgsCptCityColorRampV2* mRamp;

@@ -77,7 +77,7 @@
     <file>themes/default/mActionFileSmall.png</file>
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
-    <file>themes/default/mActionFreezeLabels.png</file>
+    <file>themes/default/mActionFreezeLabels.svg</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
     <file>themes/default/mActionFullCumulativeCutStretch.png</file>
     <file>themes/default/mActionFullHistogramStretch.png</file>
@@ -149,7 +149,7 @@
     <file>themes/default/mActionSelectRectangle.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
-    <file>themes/default/mActionShowFrozenLabels.png</file>
+    <file>themes/default/mActionShowFrozenLabels.svg</file>
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
     <file>themes/default/mActionSplitFeatures.png</file>
@@ -294,6 +294,7 @@
     <file>themes/gis/mActionFileSave.png</file>
     <file>themes/gis/mActionFolder.png</file>
     <file>themes/gis/mActionFormAnnotation.png</file>
+    <file>themes/gis/mActionFreezeLabels.svg</file>
     <file>themes/gis/mActionGroupItems.png</file>
     <file>themes/gis/mActionHelpContents.png</file>
     <file>themes/gis/mActionHideAllLayers.png</file>
@@ -346,6 +347,7 @@
     <file>themes/gis/mActionSelectRectangle.png</file>
     <file>themes/gis/mActionShowAllLayers.png</file>
     <file>themes/gis/mActionShowBookmarks.png</file>
+    <file>themes/gis/mActionShowFrozenLabels.svg</file>
     <file>themes/gis/mActionSimplify.png</file>
     <file>themes/gis/mActionSplitFeatures.png</file>
     <file>themes/gis/mActionSplitFeatures.svg</file>
