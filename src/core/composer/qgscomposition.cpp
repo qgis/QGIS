@@ -60,6 +60,14 @@ QgsComposition::QgsComposition():
 QgsComposition::~QgsComposition()
 {
   removePaperItems();
+
+  QSet<QgsComposerMultiFrame*>::iterator multiFrameIt = mMultiFrames.begin();
+  for ( ; multiFrameIt != mMultiFrames.end(); ++multiFrameIt )
+  {
+    delete *multiFrameIt;
+  }
+  mMultiFrames.clear();
+
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore

@@ -27,13 +27,7 @@ QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( 
 
 QgsComposerMultiFrame::~QgsComposerMultiFrame()
 {
-  setResizeMode( UseExistingFrames );
-  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
-  for ( ; frameIt != mFrameItems.end(); ++frameIt )
-  {
-    mComposition->removeComposerItem( *frameIt );
-    delete( *frameIt );
-  }
+  deleteFrames();
 }
 
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
@@ -152,12 +146,14 @@ void QgsComposerMultiFrame::deleteFrames()
 {
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
+  mComposition->blockSignals( true );
   QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
   for ( ; frameIt != mFrameItems.end(); ++frameIt )
   {
     mComposition->removeComposerItem( *frameIt, false );
     delete *frameIt;
   }
+  mComposition->blockSignals( false );
   mFrameItems.clear();
   mResizeMode = bkResizeMode;
 }

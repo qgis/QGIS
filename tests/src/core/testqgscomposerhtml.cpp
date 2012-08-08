@@ -67,7 +67,7 @@ void TestQgsComposerHtml::table()
                                  "control_images" + QDir::separator() + "expected_composerhtml" + QDir::separator() + "composerhtml_table.png" ) );
   bool result = checker.testComposition();
   mComposition->removeMultiFrame( htmlItem );
-  //delete htmlItem;
+  delete htmlItem;
   QVERIFY( result );
 }
 
@@ -102,6 +102,7 @@ void TestQgsComposerHtml::tableMultiFrame()
   }
 
   mComposition->removeMultiFrame( htmlItem );
+  delete htmlItem;
   QVERIFY( result );
 }
 

@@ -206,6 +206,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text );
     void endMultiFrameCommand();
 
+    /**Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Removes multi frame (but does not delete it)*/
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
