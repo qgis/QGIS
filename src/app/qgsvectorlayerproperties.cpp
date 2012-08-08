@@ -900,6 +900,8 @@ void QgsVectorLayerProperties::apply()
       ds.diagramOrientation = QgsDiagramSettings::Left;
     }
 
+    ds.barWidth = mBarWidthSpinBox->value();
+
     if ( mFixedSizeCheckBox->isChecked() )
     {
       QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
@@ -1748,8 +1750,9 @@ void QgsVectorLayerProperties::initDiagramTab()
         case QgsDiagramSettings::Down:
           mOrientationDownButton->setChecked( true );
           break;
-
       }
+
+      mBarWidthSpinBox->setValue( settingList.at( 0 ).barWidth );
 
       mIncreaseSmallDiagramsCheckBox->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );

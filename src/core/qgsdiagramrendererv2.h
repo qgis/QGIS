@@ -123,6 +123,7 @@ struct CORE_EXPORT QgsDiagramSettings
   double penWidth;
   LabelPlacementMethod labelPlacementMethod;
   DiagramOrientation diagramOrientation;
+  double barWidth;
 
   //scale range (-1 if no lower / upper bound )
   double minScaleDenominator;

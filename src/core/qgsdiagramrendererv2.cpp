@@ -93,6 +93,8 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
     diagramOrientation = Up;
   }
 
+  barWidth = elem.attribute( "barWidth" ).toDouble();
+
   minimumSize = elem.attribute( "minimumSize" ).toDouble();
 
   //colors
@@ -170,6 +172,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
       break;
   }
 
+  categoryElem.setAttribute( "barWidth", QString::number( barWidth ) );
   categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
 
   QString colors;
