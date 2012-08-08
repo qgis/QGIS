@@ -463,8 +463,9 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
     QDomElement currentHtmlElem = composerHtmlList.at( i ).toElement();
-    QgsComposerHtml* newHtml = new QgsComposerHtml( this, true );
+    QgsComposerHtml* newHtml = new QgsComposerHtml( this, false );
     newHtml->readXML( currentHtmlElem, doc );
+    newHtml->setCreateUndoCommands( true );
     this->addMultiFrame( newHtml );
   }
 }
