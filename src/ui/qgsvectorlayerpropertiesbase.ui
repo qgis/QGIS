@@ -1353,6 +1353,20 @@
                 </property>
                </spacer>
               </item>
+              <item row="6" column="0" colspan="3">
+               <layout class="QHBoxLayout" name="mBarWidthLayout">
+                <item>
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>Bar width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="mBarWidthSpinBox"/>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>

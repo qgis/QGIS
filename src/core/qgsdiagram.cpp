@@ -351,7 +351,8 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderCo
     values.push_back( currentVal );
   }
 
-  double currentOffset = 0;
+  double currentOffset = 0 - ( values.size() * s.barWidth ) / 2;
+  double scaledWidth = sizePainterUnits( s.barWidth, s, c );
 
   double baseX = position.x();
   double baseY = position.y();
@@ -359,8 +360,6 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderCo
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
-
-  p->drawPoint( baseX, baseY );
 
   QList<double>::const_iterator valIt = values.constBegin();
   QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
@@ -374,22 +373,22 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderCo
     switch ( s.diagramOrientation )
     {
     case QgsDiagramSettings::Up:
-        p->drawRect( baseX + currentOffset, baseY, 10, 0 - length );
+        p->drawRect( baseX + currentOffset, baseY, scaledWidth, 0 - length );
         break;
 
       case QgsDiagramSettings::Down:
-        p->drawRect( baseX + currentOffset, baseY, 10, length );
+        p->drawRect( baseX + currentOffset, baseY, scaledWidth, length );
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( baseX, baseY + currentOffset, 0 - length, 10 );
+        p->drawRect( baseX, baseY + currentOffset, 0 - length, scaledWidth );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( baseX, baseY + currentOffset, length, 10 );
+        p->drawRect( baseX, baseY + currentOffset, length, scaledWidth );
         break;
     }
 
-    currentOffset += 10;
+    currentOffset += scaledWidth;
   }
 }
