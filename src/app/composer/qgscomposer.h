@@ -167,6 +167,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Add attribute table
     void on_mActionAddTable_triggered();
 
+    void on_mActionAddHtml_triggered();
+
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
 
@@ -244,6 +246,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     /**Adds a composer table to the item/widget map and creates a configuration widget*/
     void addComposerTable( QgsComposerAttributeTable* table );
 
+    /**Adds composer html and creates a configuration widget*/
+    void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
+
     /**Removes item from the item/widget map and deletes the configuration widget. Does not delete the item itself*/
     void deleteItem( QgsComposerItem* item );
 
@@ -284,7 +289,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void writeXML( QDomNode& parentNode, QDomDocument& doc );
 
     //! Removes all the item from the graphics scene and deletes them
-    void deleteItems();
+    void deleteItemWidgets();
 
     //! Restores composer map preview states.
     //! Initially after reading from xml, states are set to rectangle to achieve faster project loading.

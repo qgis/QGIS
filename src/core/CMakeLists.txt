@@ -112,7 +112,10 @@ SET(QGIS_CORE_SRCS
   qgsnetworkaccessmanager.cpp
 
   composer/qgsaddremoveitemcommand.cpp
+  composer/qgsaddremovemultiframecommand.cpp
+  composer/qgscomposermultiframecommand.cpp
   composer/qgscomposerarrow.cpp
+  composer/qgscomposerframe.cpp
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemcommand.cpp
   composer/qgscomposeritemgroup.cpp
@@ -133,6 +136,8 @@ SET(QGIS_CORE_SRCS
   composer/qgsnumericscalebarstyle.cpp
   composer/qgssingleboxscalebarstyle.cpp
   composer/qgsticksscalebarstyle.cpp
+  composer/qgscomposerhtml.cpp
+  composer/qgscomposermultiframe.cpp
   composer/qgscomposition.cpp
 
   pal/costcalculator.cpp
@@ -286,6 +291,8 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
+  composer/qgscomposerhtml.h
+  composer/qgscomposermultiframe.h
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h
@@ -526,6 +533,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTGUI_LIBRARY}
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
+  ${QT_QTWEBKIT_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}

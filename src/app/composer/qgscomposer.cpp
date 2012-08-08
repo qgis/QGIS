@@ -23,6 +23,9 @@
 #include "qgscompositionwidget.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerarrowwidget.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerhtmlwidget.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlabelwidget.h"
 #include "qgscomposerlegend.h"
@@ -136,6 +139,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddEllipse );
   toggleActionGroup->addAction( mActionAddArrow );
   toggleActionGroup->addAction( mActionAddTable );
+  toggleActionGroup->addAction( mActionAddHtml );
   toggleActionGroup->setExclusive( true );
 
 
@@ -295,7 +299,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
 QgsComposer::~QgsComposer()
 {
-  deleteItems();
+  deleteItemWidgets();
 }
 
 void QgsComposer::setupTheme()
@@ -325,6 +329,7 @@ void QgsComposer::setupTheme()
   mActionAddEllipse->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
   mActionAddArrow->setIcon( QgsApplication::getThemeIcon( "/mActionAddArrow.png" ) );
   mActionAddTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
+  mActionAddHtml->setIcon( QgsApplication::getThemeIcon( "/mActionAddHtml.png" ) );
   mActionSelectMoveItem->setIcon( QgsApplication::getThemeIcon( "/mActionSelectPan.png" ) );
   mActionMoveItemContent->setIcon( QgsApplication::getThemeIcon( "/mActionMoveItemContent.png" ) );
   mActionGroupItems->setIcon( QgsApplication::getThemeIcon( "/mActionGroupItems.png" ) );
@@ -367,6 +372,7 @@ void QgsComposer::connectSlots()
 
   connect( mComposition, SIGNAL( selectedItemChanged( QgsComposerItem* ) ), this, SLOT( showItemOptions( QgsComposerItem* ) ) );
   connect( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
+  connect( mComposition, SIGNAL( composerHtmlFrameAdded( QgsComposerHtml*, QgsComposerFrame* ) ), this, SLOT( addComposerHtmlFrame( QgsComposerHtml*, QgsComposerFrame* ) ) );
   connect( mComposition, SIGNAL( composerLabelAdded( QgsComposerLabel* ) ), this, SLOT( addComposerLabel( QgsComposerLabel* ) ) );
   connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( addComposerMap( QgsComposerMap* ) ) );
   connect( mComposition, SIGNAL( composerScaleBarAdded( QgsComposerScaleBar* ) ), this, SLOT( addComposerScaleBar( QgsComposerScaleBar* ) ) );
@@ -821,6 +827,14 @@ void QgsComposer::on_mActionAddTable_triggered()
   }
 }
 
+void QgsComposer::on_mActionAddHtml_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::AddHtml );
+  }
+}
+
 void QgsComposer::on_mActionAddArrow_triggered()
 {
   if ( mView )
@@ -896,7 +910,11 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
     return;
   }
 
-  deleteItems();
+  deleteItemWidgets();
+  if ( mComposition )
+  {
+    mComposition->clear();
+  }
   readXML( templateDocument );
   emit composerAdded( mView );
 }
@@ -1119,15 +1137,6 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   }
   parentNode.appendChild( composerElem );
 
-  //store composer items:
-  QMap<QgsComposerItem*, QWidget*>::const_iterator itemIt = mItemWidgetMap.constBegin();
-  for ( ; itemIt != mItemWidgetMap.constEnd(); ++itemIt )
-  {
-    itemIt.key()->writeXML( composerElem, doc );
-  }
-
-  //store composer view
-
   //store composition
   if ( mComposition )
   {
@@ -1220,13 +1229,12 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   setSelectionTool();
 }
 
-void QgsComposer::deleteItems()
+void QgsComposer::deleteItemWidgets()
 {
   //delete all the items
   QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
   for ( ; it != mItemWidgetMap.end(); ++it )
   {
-    delete it.key();
     delete it.value();
   }
   mItemWidgetMap.clear();
@@ -1326,6 +1334,17 @@ void QgsComposer::addComposerTable( QgsComposerAttributeTable* table )
   }
   QgsComposerTableWidget* tWidget = new QgsComposerTableWidget( table );
   mItemWidgetMap.insert( table, tWidget );
+}
+
+void QgsComposer::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame )
+{
+  if ( !html )
+  {
+    return;
+  }
+
+  QgsComposerHtmlWidget* hWidget = new QgsComposerHtmlWidget( html, frame );
+  mItemWidgetMap.insert( frame, hWidget );
 }
 
 void QgsComposer::deleteItem( QgsComposerItem* item )
