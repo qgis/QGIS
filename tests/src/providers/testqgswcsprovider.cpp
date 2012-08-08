@@ -80,16 +80,16 @@ void TestQgsWcsProvider::initTestCase()
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "raster";
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/raster";
   qDebug() << "mTestDataDir = " << mTestDataDir;
 
-  mUrl =  QString( TEST_SERVER_URL ) + QDir::separator() + "wcs";
+  mUrl =  QString( TEST_SERVER_URL ) + "/wcs";
 }
 
 //runs after all tests
 void TestQgsWcsProvider::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgiswcstest.html";
+  QString myReportFile = QDir::tempPath() + "/qgiswcstest.html";
   QFile myFile( myReportFile );
   //if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   if ( myFile.open( QIODevice::WriteOnly ) )
@@ -122,7 +122,7 @@ void TestQgsWcsProvider::read( )
   {
     foreach ( QString identifier, identifiers )
     {
-      QString filePath = mTestDataDir + QDir::separator() + identifier + ".tif";
+      QString filePath = mTestDataDir + "/" + identifier + ".tif";
 
       QgsDataSourceURI uri;
       uri.setParam( "url", mUrl );
