@@ -302,7 +302,7 @@ namespace pal
        * @param scale map scale is 1:scale
        * @param bbox map extent
        * @param stats A PalStat object (can be NULL)
-       * @param displayAll if true, all feature will be labelled evan though overlaps occurs
+       * @param displayAll if true, all feature will be labelled even though overlaps occur
        *
        * @return A list of label to display on map
        */
@@ -320,7 +320,7 @@ namespace pal
        * @param scale map scale is  '1:scale'
        * @param bbox map extent
        * @param stat will be filled with labelling process statistics, can be NULL
-       * @param displayAll if true, all feature will be labelled evan though overlaps occurs
+       * @param displayAll if true, all feature will be labelled even though overlaps occur
        *
        * @todo UnknownLayer will be ignored ? should throw exception or not ???
        *
