@@ -15,7 +15,6 @@
 
 #include "qgscomposermultiframe.h"
 #include "qgscomposerframe.h"
-#include "qgsaddremovemultiframecommand.h"
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ): mComposition( c ), mResizeMode( UseExistingFrames ), mCreateUndoCommands( createUndoCommands )
 {
@@ -107,7 +106,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
       currentY += newFrame->rect().height();
       currentItem = newFrame;
-      addFrame( newFrame );
+      addFrame( newFrame, false );
     }
   }
 }
@@ -125,16 +124,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     return;
   }
   mFrameItems.removeAt( index );
-
-  if ( mFrameItems.size() < 1 )
-  {
-    if ( mComposition )
-    {
-      //schedule this composer multi frame for deletion
-      mComposition->removeMultiFrame( this );
-    }
-  }
-  else
+  if ( mFrameItems.size() > 0 )
   {
     recalculateFrameSizes();
   }

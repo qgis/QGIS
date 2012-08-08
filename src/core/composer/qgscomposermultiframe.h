@@ -43,6 +43,9 @@ class QgsComposerMultiFrame: public QObject
     virtual ~QgsComposerMultiFrame();
     virtual QSizeF totalSize() const = 0;
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
+
+    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) = 0;
+
     void removeFrame( int i );
 
     void update();
@@ -64,14 +67,14 @@ class QgsComposerMultiFrame: public QObject
     /**Removes and deletes all frames from mComposition*/
     void deleteFrames();
 
+    int nFrames() const { return mFrameItems.size(); }
+
   protected:
     QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
     ResizeMode mResizeMode;
     /**True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )*/
     bool mCreateUndoCommands;
-
-    virtual void addFrame( QgsComposerFrame* frame ) = 0;
 
   protected slots:
     void recalculateFrameSizes();

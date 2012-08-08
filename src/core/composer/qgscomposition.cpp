@@ -27,6 +27,7 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
+#include "qgsaddremovemultiframecommand.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgslogger.h"
 #include "qgspaintenginehack.h"
@@ -462,7 +463,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
     QDomElement currentHtmlElem = composerHtmlList.at( i ).toElement();
-    QgsComposerHtml* newHtml = new QgsComposerHtml( this, 0, 0, 0, 0, true );
+    QgsComposerHtml* newHtml = new QgsComposerHtml( this, true );
     newHtml->readXML( currentHtmlElem, doc );
     this->addMultiFrame( newHtml );
   }
@@ -1069,7 +1070,6 @@ void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
 void QgsComposition::removeMultiFrame( QgsComposerMultiFrame* multiFrame )
 {
   mMultiFrames.remove( multiFrame );
-  //delete multiFrame; //e.v. use deleteLater() in case of stability problems
 }
 
 void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
@@ -1203,10 +1203,13 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createComma
     }
     else
     {
+      bool frameItem = ( item->type() == QgsComposerItem::ComposerFrame );
+      QgsComposerMultiFrame* multiFrame = 0;
       if ( createCommand )
       {
-        if ( item->type() == QgsComposerItem::ComposerFrame ) //multiframe tracks item changes
+        if ( frameItem ) //multiframe tracks item changes
         {
+          multiFrame = static_cast<QgsComposerFrame*>( item )->multiFrame();
           item->beginItemCommand( tr( "Frame deleted" ) );
           emit itemRemoved( item );
           item->endItemCommand();
@@ -1220,6 +1223,25 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createComma
       else
       {
         emit itemRemoved( item );
+      }
+
+      //check if there are frames left. If not, remove the multi frame
+      if ( frameItem && multiFrame )
+      {
+        if ( multiFrame->nFrames() < 1 )
+        {
+          removeMultiFrame( multiFrame );
+          if ( createCommand )
+          {
+            QgsAddRemoveMultiFrameCommand* command = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Removed,
+                multiFrame, this, tr( "Multiframe removed" ) );
+            undoStack()->push( command );
+          }
+          else
+          {
+            delete multiFrame;
+          }
+        }
       }
     }
   }
