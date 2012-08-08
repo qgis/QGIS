@@ -4,6 +4,7 @@
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposerhtml.h"
 #include <QFileDialog>
+#include <QSettings>
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): mHtml( html ), mFrame( frame )
 {
@@ -48,31 +49,35 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
 {
   if ( mHtml )
   {
-    QgsComposerMultiFrameCommand* c = new QgsComposerMultiFrameCommand( mHtml, tr( "Change html url" ) );
-    c->savePreviousState();
-    mHtml->setUrl( QUrl( mUrlLineEdit->text() ) );
-    c->saveAfterState();
-    if ( c->containsChange() )
+    QUrl newUrl( mUrlLineEdit->text() );
+    if ( newUrl == mHtml->url() )
     {
-      mHtml->composition()->undoStack()->push( c );
-      mHtml->update();
+      return;
     }
-    else
+
+    QgsComposition* composition = mHtml->composition();
+    if ( composition )
     {
-      delete c;
+      composition->beginMultiFrameCommand( mHtml, tr( "Change html url" ) );
+      mHtml->setUrl( newUrl );
+      mHtml->update();
+      composition->endMultiFrameCommand();
     }
   }
 }
 
 void QgsComposerHtmlWidget::on_mFileToolButton_clicked()
 {
-  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), QString(), "HTML (*.html)" );
+  QSettings s;
+  QString lastDir = s.value( "/UI/lastHtmlDir", "" ).toString();
+  QString file = QFileDialog::getOpenFileName( this, tr( "Select HTML document" ), lastDir, "HTML (*.html)" );
   if ( !file.isEmpty() )
   {
     QUrl url = QUrl::fromLocalFile( file );
-    mHtml->setUrl( url );
     mUrlLineEdit->setText( url.toString() );
+    on_mUrlLineEdit_editingFinished();
     mHtml->update();
+    s.setValue( "/UI/lastHtmlDir", QFileInfo( file ).absolutePath() );
   }
 }
 
@@ -83,7 +88,13 @@ void QgsComposerHtmlWidget::on_mResizeModeComboBox_currentIndexChanged( int inde
     return;
   }
 
-  mHtml->setResizeMode(( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
+  QgsComposition* composition = mHtml->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mHtml, tr( "Change resize mode" ) );
+    mHtml->setResizeMode(( QgsComposerMultiFrame::ResizeMode )mResizeModeComboBox->itemData( index ).toInt() );
+    composition->endMultiFrameCommand();
+  }
 }
 
 void QgsComposerHtmlWidget::setGuiElementValues()
