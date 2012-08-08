@@ -72,9 +72,9 @@ class CORE_EXPORT QgsRasterFileWriter
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                 const QgsCoordinateReferenceSystem& crs );
+                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
     WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                  const QgsCoordinateReferenceSystem& crs );
+                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 
     //initialize vrt member variables
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );

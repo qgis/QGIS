@@ -56,20 +56,20 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIter
 
   if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 )
   {
-    WriterError e = writeImageRaster( iter, nCols, nRows, outputExtent, crs );
+    WriterError e = writeImageRaster( iter, nCols, nRows, outputExtent, crs, p );
     mProgressDialog = 0;
     return e;
   }
   else
   {
     mProgressDialog = 0;
-    WriterError e = writeDataRaster( iter, nCols, nRows, outputExtent, crs );
+    WriterError e = writeDataRaster( iter, nCols, nRows, outputExtent, crs, p );
     return e;
   }
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-    const QgsCoordinateReferenceSystem& crs )
+    const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
   if ( !iter )
   {
@@ -130,7 +130,18 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
 
   destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  iface->dataType( 1 ) );
 
+  int nParts = 0;
   int fileIndex = 0;
+  if ( p )
+  {
+    int nPartsX = nCols / iter->maximumTileWidth() + 1;
+    int nPartsY = nRows / iter->maximumTileHeight() + 1;
+    nParts = nPartsX * nPartsY;
+    p->setMaximum( nParts );
+    p->show();
+    p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
+  }
+
   while ( true )
   {
     for ( int i = 1; i <= nBands; ++i )
@@ -150,6 +161,17 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
       }
     }
 
+    if ( p && fileIndex < ( nParts - 1 ) )
+    {
+      p->setValue( fileIndex + 1 );
+      p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 2 ).arg( nParts ) );
+      QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
+      if ( p->wasCanceled() )
+      {
+        break;
+      }
+    }
+
     if ( mTiledMode ) //write to file
     {
       delete destProvider;
@@ -162,7 +184,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
         destProvider->write( dataList[i - 1], i, iterCols, iterRows, 0, 0 );
         addToVRT( QString::number( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
       }
-      ++fileIndex;
     }
     else
     {
@@ -172,11 +193,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
         destProvider->write( dataList[i - 1], i, iterCols, iterRows, iterLeft, iterTop );
       }
     }
+    ++fileIndex;
   }
+  return NoError;
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-    const QgsCoordinateReferenceSystem& crs )
+    const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
   if ( !iter )
   {
@@ -219,11 +242,33 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   //iter->select( outputExtent, outputMapUnitsPerPixel );
   iter->startRasterRead( 1, nCols, nRows, outputExtent );
 
+  int nParts = 0;
+  if ( p )
+  {
+    int nPartsX = nCols / iter->maximumTileWidth() + 1;
+    int nPartsY = nRows / iter->maximumTileHeight() + 1;
+    nParts = nPartsX * nPartsY;
+    p->setMaximum( nParts );
+    p->show();
+    p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
+  }
+
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, &data, iterLeft, iterTop ) )
   {
     if ( iterCols <= 5 || iterRows <= 5 ) //some wms servers don't like small values
     {
       continue;
+    }
+
+    if ( p && fileIndex < ( nParts - 1 ) )
+    {
+      p->setValue( fileIndex + 1 );
+      p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 2 ).arg( nParts ) );
+      QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
+      if ( p->wasCanceled() )
+      {
+        break;
+      }
     }
 
     //fill into red/green/blue/alpha channels
@@ -273,6 +318,11 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   }
   delete destProvider;
   CPLFree( data ); CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
+
+  if ( p )
+  {
+    p->setValue( p->maximum() );
+  }
 
   if ( mTiledMode )
   {
