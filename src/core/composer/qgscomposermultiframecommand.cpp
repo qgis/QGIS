@@ -38,7 +38,7 @@ void QgsComposerMultiFrameCommand::undo()
 
 void QgsComposerMultiFrameCommand::redo()
 {
-  if ( !checkFirstRun() )
+  if ( checkFirstRun() )
   {
     return;
   }

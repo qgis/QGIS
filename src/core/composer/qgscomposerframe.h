@@ -46,8 +46,6 @@ class QgsComposerFrame: public QgsComposerItem
 
   private:
     QgsComposerFrame(); //forbidden
-
-    QgsComposition* mComposition;
     QgsComposerMultiFrame* mMultiFrame;
     QRectF mSection;
 };

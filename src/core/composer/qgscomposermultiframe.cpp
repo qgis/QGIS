@@ -160,13 +160,16 @@ void QgsComposerMultiFrame::update()
 
 void QgsComposerMultiFrame::deleteFrames()
 {
+  ResizeMode bkResizeMode = mResizeMode;
+  mResizeMode = UseExistingFrames;
   QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
   for ( ; frameIt != mFrameItems.end(); ++frameIt )
   {
-    mComposition->removeComposerItem( *frameIt );
+    mComposition->removeComposerItem( *frameIt, false );
     delete *frameIt;
   }
   mFrameItems.clear();
+  mResizeMode = bkResizeMode;
 }
 
 bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const

@@ -229,7 +229,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFrame* frame );
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
-    void removeComposerItem( QgsComposerItem* item );
+    void removeComposerItem( QgsComposerItem* item, bool createCommand = true );
 
     /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
     void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );

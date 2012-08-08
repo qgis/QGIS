@@ -1176,7 +1176,7 @@ void QgsComposition::addComposerHtmlFrame( QgsComposerHtml* html, QgsComposerFra
   emit selectedItemChanged( frame );
 }
 
-void QgsComposition::removeComposerItem( QgsComposerItem* item )
+void QgsComposition::removeComposerItem( QgsComposerItem* item, bool createCommand )
 {
   QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
   if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
@@ -1203,14 +1203,23 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item )
     }
     else
     {
-      emit itemRemoved( item );
-      if ( item->type() == QgsComposerItem::ComposerFrame ) //multiframe tracks item changes
+      if ( createCommand )
       {
-
+        if ( item->type() == QgsComposerItem::ComposerFrame ) //multiframe tracks item changes
+        {
+          item->beginItemCommand( tr( "Frame deleted" ) );
+          emit itemRemoved( item );
+          item->endItemCommand();
+        }
+        else
+        {
+          emit itemRemoved( item );
+          pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+        }
       }
       else
       {
-        pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+        emit itemRemoved( item );
       }
     }
   }
