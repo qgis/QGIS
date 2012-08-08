@@ -74,3 +74,43 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+
+#############################################################
+# WCS public servers test:
+# No need to test on all platforms
+IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
+  SET ( WCSTEST_SRCS
+        ../../../src/providers/wcs/qgswcscapabilities.cpp
+        testqgswcspublicservers.cpp
+  )
+  SET ( WCSTEST_MOC_HDRS
+        ../../../src/providers/wcs/qgswcscapabilities.h
+        testqgswcspublicservers.h
+  )
+
+  QT4_WRAP_CPP ( WCSTEST_MOC_SRCS  ${WCSTEST_MOC_HDRS})
+
+  ADD_EXECUTABLE ( qgis_wcstest ${WCSTEST_SRCS} ${WCSTEST_MOC_SRCS} )
+
+  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
+  )
+
+  TARGET_LINK_LIBRARIES(qgis_wcstest
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTNETWORK_LIBRARY}
+    ${QT_QTSVG_LIBRARY}
+    ${QT_QTXML_LIBRARY}
+    ${QT_QTWEBKIT_LIBRARY}
+    ${QT_QTMAIN_LIBRARY}
+    qgis_core
+  )
+
+  INSTALL (TARGETS qgis_wcstest
+    BUNDLE DESTINATION ${QGIS_BIN_DIR}
+    RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  )
+
+ENDIF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
