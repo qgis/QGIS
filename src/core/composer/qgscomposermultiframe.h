@@ -28,7 +28,7 @@ class QRectF;
 class QPainter;
 
 /**Abstract base class for composer entries with the ability to distribute the content to several frames (items)*/
-class QgsComposerMultiFrame: public QObject
+class CORE_EXPORT QgsComposerMultiFrame: public QObject
 {
     Q_OBJECT
   public:

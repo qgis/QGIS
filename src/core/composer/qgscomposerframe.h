@@ -22,7 +22,7 @@ class QgsComposition;
 class QgsComposerMultiFrame;
 
 /**Frame for html, table, text which can be divided onto several frames*/
-class QgsComposerFrame: public QgsComposerItem
+class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 {
   public:
     QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );

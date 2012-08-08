@@ -21,7 +21,7 @@
 
 class QWebPage;
 
-class QgsComposerHtml: public QgsComposerMultiFrame
+class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT
   public:

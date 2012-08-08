@@ -23,7 +23,7 @@
 
 class QgsComposerMultiFrame;
 
-class QgsComposerMultiFrameCommand: public QUndoCommand
+class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
     QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = 0 );

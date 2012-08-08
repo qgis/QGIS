@@ -57,6 +57,9 @@ bool QgsComposerFrame::readXML( const QDomElement& itemElem, const QDomDocument&
 
 void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
+
   if ( !painter )
   {
     return;
