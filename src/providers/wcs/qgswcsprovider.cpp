@@ -49,9 +49,9 @@
 #include <QEventLoop>
 #include <QCoreApplication>
 #include <QTime>
+#include <QFile>
 
 #ifdef QGISDEBUG
-#include <QFile>
 #include <QDir>
 #endif
 
