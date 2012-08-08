@@ -140,6 +140,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
   wrapCharacterEdit->setText( lyr.wrapChar );
+  chkPreserveRotation->setChecked( lyr.preserveRotation );
 
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
   chkScaleBasedVisibility->setChecked( scaleBased );
@@ -323,6 +324,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
   lyr.wrapChar = wrapCharacterEdit->text();
+  if ( chkPreserveRotation->isChecked() )
+  {
+    lyr.preserveRotation = true;
+  }
+  else
+  {
+    lyr.preserveRotation = false;
+  }
 
   //data defined labeling
   setDataDefinedProperty( mSizeAttributeComboBox, QgsPalLayerSettings::Size, lyr );
@@ -600,6 +609,7 @@ void QgsLabelingGui::disableDataDefinedAlignment()
   mVerticalAlignmentComboBox->setEnabled( false );
   mRotationComboBox->setCurrentIndex( mRotationComboBox->findText( "" ) );
   mRotationComboBox->setEnabled( false );
+  chkPreserveRotation->setEnabled( false );
 }
 
 void QgsLabelingGui::enableDataDefinedAlignment()
@@ -607,4 +617,5 @@ void QgsLabelingGui::enableDataDefinedAlignment()
   mHorizontalAlignmentComboBox->setEnabled( true );
   mVerticalAlignmentComboBox->setEnabled( true );
   mRotationComboBox->setEnabled( true );
+  chkPreserveRotation->setEnabled( true );
 }

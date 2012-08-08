@@ -154,22 +154,20 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   vlayer->changeAttributeValue( mCurrentLabelPos.featureId, yCol, yPosNew, false );
 
   // set rotation to that of label, if data-defined and no rotation set yet
-  // handle case of initially set rotation column fields of 0 instead of NULL
+  // honor whether to preserve preexisting data on freeze
   // must come after setting x and y positions
   int rCol;
-  if ( !mCurrentLabelPos.isDiagram && !mCurrentLabelPos.isFrozen
+  if ( !mCurrentLabelPos.isDiagram
+       && !mCurrentLabelPos.isFrozen
+       && !preserveRotation()
        && layerIsRotatable( vlayer, rCol ) )
   {
-    double labelRot = 0;
     double defRot;
     bool rSuccess;
     if ( dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, defRot, rSuccess ) )
     {
-      labelRot = mCurrentLabelPos.rotation * 180 / M_PI;
-      if ( !rSuccess || ( rSuccess && defRot != labelRot ) )
-      {
-        vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rCol, labelRot, false );
-      }
+      double labelRot = mCurrentLabelPos.rotation * 180 / M_PI;
+      vlayer->changeAttributeValue( mCurrentLabelPos.featureId, rCol, labelRot, false );
     }
   }
   vlayer->endEditCommand();

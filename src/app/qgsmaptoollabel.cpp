@@ -280,6 +280,19 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
   return font;
 }
 
+bool QgsMapToolLabel::preserveRotation()
+{
+  bool labelSettingsOk;
+  QgsPalLayerSettings& layerSettings = currentLabelSettings( &labelSettingsOk );
+
+  if ( labelSettingsOk )
+  {
+    return layerSettings.preserveRotation;
+  }
+
+  return true; // default, so there is no accidental data loss
+}
+
 bool QgsMapToolLabel::rotationPoint( QgsPoint& pos, bool ignoreUpsideDown )
 {
   QVector<QgsPoint> cornerPoints = mCurrentLabelPos.cornerPoints;
@@ -429,7 +442,7 @@ bool QgsMapToolLabel::layerIsRotatable( const QgsMapLayer* layer, int& rotationC
   return true;
 }
 
-bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess )
+bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY )
 {
   rotationSuccess = false;
   if ( !vlayer )
@@ -452,12 +465,15 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId
   QgsAttributeMap attributes = f.attributeMap();
 
   //test, if data defined x- and y- values are not null. Otherwise, the position is determined by PAL and the rotation cannot be fixed
-  int xCol, yCol;
-  double x, y;
-  bool xSuccess, ySuccess;
-  if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+  if ( !ignoreXY )
   {
-    return false;
+    int xCol, yCol;
+    double x, y;
+    bool xSuccess, ySuccess;
+    if ( !dataDefinedPosition( vlayer, featureId, x, xSuccess, y, ySuccess, xCol, yCol ) || !xSuccess || !ySuccess )
+    {
+      return false;
+    }
   }
 
   rotation = attributes[rotationCol].toDouble( &rotationSuccess );

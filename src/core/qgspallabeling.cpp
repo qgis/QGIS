@@ -163,6 +163,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   fontSizeInMapUnits = false;
   distInMapUnits = false;
   wrapChar = "";
+  preserveRotation = true;
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -194,6 +195,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
   wrapChar = s.wrapChar;
+  preserveRotation = s.preserveRotation;
 
   dataDefinedProperties = s.dataDefinedProperties;
   fontMetrics = NULL;
@@ -337,6 +339,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
+  preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
   _readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
@@ -376,6 +379,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/wrapChar", wrapChar );
+  layer->setCustomProperty( "labeling/preserveRotation", preserveRotation );
   _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 

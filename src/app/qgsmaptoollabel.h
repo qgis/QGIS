@@ -93,6 +93,9 @@ class QgsMapToolLabel: public QgsMapTool
     /**Returns the font for the current feature (considering default font and data defined properties*/
     QFont labelFontCurrentFeature();
 
+    /**Returns whether to preserve predefined rotation data during label freeze/thaw operations*/
+    bool preserveRotation();
+
     /**Get data defined position of a feature
       @param vlayer vector layer
       @param featureId feature identification integer
@@ -110,9 +113,10 @@ class QgsMapToolLabel: public QgsMapTool
       @param featureId feature identification integer
       @param rotation out: rotation value
       @param rotationSuccess out: false if rotation value is NULL
+      @param ignoreXY ignore that x and y are required to be data-defined
       @return true if data defined rotation is enabled on the layer
       */
-    bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess );
+    bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY = false );
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;

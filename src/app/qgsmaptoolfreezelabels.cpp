@@ -379,50 +379,28 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
     QgsDebugMsg( QString( "Label is diagram, skipping" ) );
     return false;
   }
-  // verify attribute table has proper fields setup
-  bool xColOk, yColOk, rColOk;
-  int xCol, yCol, rCol;
 
-  QVariant xColumn = vlayer->customProperty( "labeling/dataDefinedProperty9" );
-  if ( !xColumn.isValid() )
+  // verify attribute table has x, y fields mapped
+  int xCol, yCol;
+  double xPosOrig, yPosOrig;
+  bool xSuccess, ySuccess;
+
+  if ( !dataDefinedPosition( vlayer, mCurrentLabelPos.featureId, xPosOrig, xSuccess, yPosOrig, ySuccess, xCol, yCol ) )
   {
-    QgsDebugMsg( QString( "X column not set" ) );
-    return false;
-  }
-  xCol = xColumn.toInt( &xColOk );
-  if ( !xColOk )
-  {
-    QgsDebugMsg( QString( "X column not convertible to integer" ) );
+    QgsDebugMsg( QString( "Label X or Y column not mapped, skipping" ) );
     return false;
   }
 
-  QVariant yColumn = vlayer->customProperty( "labeling/dataDefinedProperty10" );
-  if ( !yColumn.isValid() )
-  {
-    QgsDebugMsg( QString( "Y column not set" ) );
-    return false;
-  }
-  yCol = yColumn.toInt( &yColOk );
-  if ( !yColOk )
-  {
-    QgsDebugMsg( QString( "Y column not convertible to integer" ) );
-    return false;
-  }
+  // rotation field is optional, but will be used if available, unless data exists
+  int rCol;
+  bool rSuccess = false;
+  double defRot;
 
-  // rotation field is optional, but will be used if available
-  bool hasRCol = true;
-  QVariant rColumn = vlayer->customProperty( "labeling/dataDefinedProperty14" );
-  if ( !rColumn.isValid() )
-  {
-    QgsDebugMsg( QString( "Rotation column not set" ) );
-    hasRCol = false;
-  }
-  rCol = rColumn.toInt( &rColOk );
-  if ( !rColOk )
-  {
-    QgsDebugMsg( QString( "Rotation column not convertible to integer" ) );
-    hasRCol = false;
-  }
+  bool hasRCol = ( layerIsRotatable( vlayer, rCol )
+                   && dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, defRot, rSuccess, true ) );
+
+  // get whether to preserve predefined rotation data during label freeze/thaw operations
+  bool preserveRot = preserveRotation();
 
   // edit attribute table
   int fid = labelpos.featureId;
@@ -464,7 +442,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
       QgsDebugMsg( failedWrite );
       return false;
     }
-    if ( hasRCol )
+    if ( hasRCol && !preserveRot )
     {
       if ( !vlayer->changeAttributeValue( fid, rCol, labelR, false ) )
       {
@@ -487,7 +465,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
       QgsDebugMsg( failedWrite );
       return false;
     }
-    if ( hasRCol )
+    if ( hasRCol && !preserveRot )
     {
       if ( !vlayer->changeAttributeValue( fid, rCol, QVariant(), false ) )
       {
