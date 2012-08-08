@@ -41,7 +41,8 @@ bool QgsCompositionChecker::testComposition( int page )
     return false;
   }
 
-#if 0 //fake mode to generate expected image
+#if 0
+  //fake mode to generate expected image
   //assume 300 dpi and size of the control image 3507 * 2480
   QImage outputImage( QSize( 3507, 2480 ), QImage::Format_ARGB32 );
   mComposition->setPlotStyle( QgsComposition::Print );

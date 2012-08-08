@@ -74,7 +74,7 @@ void TestQgsComposerHtml::table()
 void TestQgsComposerHtml::tableMultiFrame()
 {
   QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::ExtendToNextPage );
   bool result = true;
