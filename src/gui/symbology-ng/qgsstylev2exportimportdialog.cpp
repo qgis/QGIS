@@ -21,7 +21,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
 
-#include <QDate>
+#include <QInputDialog>
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -65,7 +65,7 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
     connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
 
     QStringList groups = mQgisStyle->groupNames();
-    groupCombo->addItem( "New Default Group", QVariant( "default" ) );
+    groupCombo->addItem( "New Group", QVariant( "new" ) );
     foreach ( QString gName, groups )
     {
       groupCombo->addItem( gName );
@@ -213,15 +213,46 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   // get the groupid when going for import
   if ( mDialogMode == Import )
   {
-    QSettings settings;
-    int count = settings.value( "/qgis/style/importcount", 0 ).toInt();
     int index = groupCombo->currentIndex();
-    if ( groupCombo->itemData( index ).toString() == "default" )
+    if ( groupCombo->itemData( index ).toString() == "new" )
     {
-      QString groupName = "import-" + QString::number( count );
-      groupid = dst->addGroup( groupName );
-      count++;
-      settings.setValue( "/qgis/style/importcount", count );
+      // get name of the group
+      bool nameInvalid = true;
+      QString name;
+      while ( nameInvalid )
+      {
+        bool ok;
+        name = QInputDialog::getText( this, tr( "Group Name"),
+                                  tr( "Please enter a name for new group:" ),
+                                  QLineEdit::Normal,
+                                  tr( "imported" ),
+                                  &ok );
+        if ( !ok )
+        {
+         QMessageBox::warning( this, tr( "New Group"),
+                                tr( "New group cannot be without a name. Kindly enter a name." ) );
+          continue;
+        }
+        // validate name
+        if ( name.isEmpty() )
+        {
+          QMessageBox::warning( this, tr( "New group" ),
+                            tr( "Cannot create a group without name. Enter a name." ) );
+        }
+        else if ( dst->groupNames().contains( name ) )
+        {
+          groupid = dst->groupId( name );
+          break;
+        }
+        else
+        {
+          // valid name
+          nameInvalid = false;
+        }
+      }
+      // check the valid name bool to avoid duplicate group names
+      if ( !nameInvalid )
+        groupid = dst->addGroup( name );
     }
     else
     {
@@ -338,6 +369,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
 
 QgsStyleV2ExportImportDialog::~QgsStyleV2ExportImportDialog()
 {
+  delete mTempFile;
   delete mTempStyle;
 }
 
@@ -453,8 +485,6 @@ void QgsStyleV2ExportImportDialog::httpFinished()
     mTempFile->flush();
     mTempFile->close();
     populateStyles( mTempStyle );
-    delete mTempFile;
-    mTempFile = NULL;
   }
 }
 
