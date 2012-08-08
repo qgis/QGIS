@@ -293,8 +293,8 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
   double w = spu.width();
   double h = spu.height();
 
-  double baseX = position.x() - w / 2;
-  double baseY = position.y() - h / 2;
+  double baseX = position.x();
+  double baseY = position.y() - h;
 
   mPen.setColor( s.penColor );
   setPenWidth( mPen, s, c );
