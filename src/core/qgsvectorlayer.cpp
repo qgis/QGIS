@@ -105,6 +105,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
+    , mValidExtent( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -1461,10 +1462,24 @@ long QgsVectorLayer::updateFeatureCount() const
 
 void QgsVectorLayer::updateExtents()
 {
-  if ( !hasGeometryType() )
-    return;
+  mValidExtent = false;
+}
 
-  mLayerExtent.setMinimal();
+void QgsVectorLayer::setExtent( const QgsRectangle &r )
+{
+  QgsMapLayer::setExtent( r );
+  mValidExtent = true;
+}
+
+QgsRectangle QgsVectorLayer::extent()
+{
+  if ( mValidExtent )
+    return QgsMapLayer::extent();
+
+  QgsRectangle rect;
+
+  if ( !hasGeometryType() )
+    return rect;
 
   if ( !mDataProvider )
   {
@@ -1480,13 +1495,13 @@ void QgsVectorLayer::updateExtents()
     if ( mDataProvider->featureCount() != 0 )
     {
       QgsRectangle r = mDataProvider->extent();
-      mLayerExtent.combineExtentWith( &r );
+      rect.combineExtentWith( &r );
     }
 
     for ( QgsFeatureList::iterator it = mAddedFeatures.begin(); it != mAddedFeatures.end(); it++ )
     {
       QgsRectangle r = it->geometry()->boundingBox();
-      mLayerExtent.combineExtentWith( &r );
+      rect.combineExtentWith( &r );
     }
   }
   else
@@ -1499,19 +1514,23 @@ void QgsVectorLayer::updateExtents()
       if ( fet.geometry() )
       {
         QgsRectangle bb = fet.geometry()->boundingBox();
-        mLayerExtent.combineExtentWith( &bb );
+        rect.combineExtentWith( &bb );
       }
     }
   }
 
-  if ( mLayerExtent.xMinimum() > mLayerExtent.xMaximum() && mLayerExtent.yMinimum() > mLayerExtent.yMaximum() )
+  if ( rect.xMinimum() > rect.xMaximum() && rect.yMinimum() > rect.yMaximum() )
   {
     // special case when there are no features in provider nor any added
-    mLayerExtent = QgsRectangle(); // use rectangle with zero coordinates
+    rect = QgsRectangle(); // use rectangle with zero coordinates
   }
+
+  setExtent( rect );
 
   // Send this (hopefully) up the chain to the map canvas
   emit recalculateExtents();
+
+  return rect;
 }
 
 QString QgsVectorLayer::subsetString()
@@ -2819,10 +2838,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
       QString s = mbr.toString();
       QgsDebugMsg( "Extent of layer: " +  s );
       // store the extent
-      mLayerExtent.setXMaximum( mbr.xMaximum() );
-      mLayerExtent.setXMinimum( mbr.xMinimum() );
-      mLayerExtent.setYMaximum( mbr.yMaximum() );
-      mLayerExtent.setYMinimum( mbr.yMinimum() );
+      setExtent( mbr );
 
       // get and store the feature type
       mWkbType = mDataProvider->geometryType();

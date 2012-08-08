@@ -493,6 +493,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Draws the layer labels using coordinate transformation */
     void drawLabels( QgsRenderContext& rendererContext );
 
+    /** Return the extent of the layer as a QRect */
+    QgsRectangle extent();
+
     /** returns field list in the to-be-committed state */
     const QgsFieldMap &pendingFields() const;
 
@@ -745,6 +748,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void committedAttributeValuesChanges( const QString& layerId, const QgsChangedAttributesMap& changedAttributesValues );
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
+  protected:
+    /** Set the extent */
+    void setExtent( const QgsRectangle &rect );
+
   private:                       // Private methods
 
     /** vector layers are not copyable */
@@ -986,6 +993,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     //stores infos about diagram placement (placement type, priority, position distance)
     QgsDiagramLayerSettings *mDiagramLayerSettings;
+
+    bool mValidExtent;
 };
 
 #endif

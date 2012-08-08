@@ -693,7 +693,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     try
     {
-      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( mLayerExtent );
+      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( extent() );
     }
     catch ( QgsCsException &cs )
     {
@@ -705,7 +705,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   {
     QgsDebugMsg( "coordinateTransform not set" );
     myProjectedViewExtent = rendererContext.extent();
-    myProjectedLayerExtent = mLayerExtent;
+    myProjectedLayerExtent = extent();
   }
 
   QPainter* theQPainter = rendererContext.painter();
@@ -1691,10 +1691,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   QString s = mbr.toString();
   QgsDebugMsg( "Extent of layer: " + s );
   // store the extent
-  mLayerExtent.setXMaximum( mbr.xMaximum() );
-  mLayerExtent.setXMinimum( mbr.xMinimum() );
-  mLayerExtent.setYMaximum( mbr.yMaximum() );
-  mLayerExtent.setYMinimum( mbr.yMinimum() );
+  setExtent( mbr );
 
   mWidth = mDataProvider->xSize();
   mHeight = mDataProvider->ySize();
@@ -1704,9 +1701,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   QgsDebugMsg( "mLayerName: " + name() );
 
   mValidNoDataValue = mDataProvider->isNoDataValueValid();
-  if ( mValidNoDataValue )
-  {
-  }
 
   // set up the raster drawing style
   setDrawingStyle( MultiBandColor );  //sensible default
