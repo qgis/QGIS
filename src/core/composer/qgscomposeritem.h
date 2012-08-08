@@ -190,10 +190,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     const QgsComposition* composition() const {return mComposition;}
 
+    virtual void beginItemCommand( const QString& text ) { beginCommand( text ); }
+
     /**Starts new composer undo command
       @param commandText command title
       @param c context for mergeable commands (unknown for non-mergeable commands*/
     void beginCommand( const QString& commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
+
+    virtual void endItemCommand() { endCommand(); }
     /**Finish current command and push it onto the undo stack */
     void endCommand();
     void cancelCommand();

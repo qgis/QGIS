@@ -22,8 +22,8 @@
 #include <QSet>
 #include <QUndoStack>
 
-#include "qgscomposeritemcommand.h"
 #include "qgsaddremoveitemcommand.h"
+#include "qgscomposeritemcommand.h"
 
 class QgsComposerFrame;
 class QgsComposerItem;
@@ -43,6 +43,7 @@ class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
+class QgsComposerMultiFrameCommand;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -202,6 +203,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
+    void beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text );
+    void endMultiFrameCommand();
+
     void addMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Removes multi frame (but does not delete it)*/
     void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
@@ -283,7 +287,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     QUndoStack mUndoStack;
 
-    QgsComposerItemCommand* mActiveCommand;
+    QgsComposerItemCommand* mActiveItemCommand;
+    QgsComposerMultiFrameCommand* mActiveMultiFrameCommand;
 
     QgsComposition(); //default constructor is forbidden
 

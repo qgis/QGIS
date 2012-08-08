@@ -33,12 +33,16 @@ class QgsComposerFrame: public QgsComposerItem
 
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
+    void beginItemCommand( const QString& text );
+    void endItemCommand();
+
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     int type() const { return ComposerFrame; }
 
     QgsComposerMultiFrame* multiFrame() { return mMultiFrame; }
+
 
   private:
     QgsComposerFrame(); //forbidden

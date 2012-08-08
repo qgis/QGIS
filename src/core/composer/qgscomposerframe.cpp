@@ -21,6 +21,10 @@ QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf
 {
 }
 
+QgsComposerFrame::QgsComposerFrame(): QgsComposerItem( 0, 0, 0, 0, 0 ), mMultiFrame( 0 )
+{
+}
+
 QgsComposerFrame::~QgsComposerFrame()
 {
 }
@@ -68,5 +72,21 @@ void QgsComposerFrame::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   if ( isSelected() )
   {
     drawSelectionBoxes( painter );
+  }
+}
+
+void QgsComposerFrame::beginItemCommand( const QString& text )
+{
+  if ( mComposition )
+  {
+    mComposition->beginMultiFrameCommand( multiFrame(), text );
+  }
+}
+
+void QgsComposerFrame::endItemCommand()
+{
+  if ( mComposition )
+  {
+    mComposition->endMultiFrameCommand();
   }
 }

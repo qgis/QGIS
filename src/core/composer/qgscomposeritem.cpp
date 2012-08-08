@@ -24,6 +24,7 @@
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
+#include "qgscomposerframe.h"
 
 
 #include <limits>
@@ -380,9 +381,9 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
-  beginCommand( tr( "Change item position" ) );
+  beginItemCommand( tr( "Change item position" ) );
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
-  endCommand();
+  endItemCommand();
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::MoveItem;

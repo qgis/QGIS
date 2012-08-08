@@ -27,6 +27,7 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
+#include "qgscomposermultiframecommand.h"
 #include "qgslogger.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
@@ -39,7 +40,7 @@
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
     QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
+    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -50,7 +51,7 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
 
 QgsComposition::QgsComposition():
     QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
+    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 )
 {
   loadSettings();
 }
@@ -62,6 +63,8 @@ QgsComposition::~QgsComposition()
   // this class is deconstructed - to avoid segfaults
   // when composer items access in destructor composition that isn't valid anymore
   clear();
+  delete mActiveItemCommand;
+  delete mActiveMultiFrameCommand;
 }
 
 void QgsComposition::setPaperSize( double width, double height )
@@ -459,7 +462,7 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
   for ( int i = 0; i < composerHtmlList.size(); ++i )
   {
     QDomElement currentHtmlElem = composerHtmlList.at( i ).toElement();
-    QgsComposerHtml* newHtml = new QgsComposerHtml( this, 0, 0, 0, 0 );
+    QgsComposerHtml* newHtml = new QgsComposerHtml( this, 0, 0, 0, 0, true );
     newHtml->readXML( currentHtmlElem, doc );
     this->addMultiFrame( newHtml );
   }
@@ -993,45 +996,69 @@ void QgsComposition::saveSettings()
 
 void QgsComposition::beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c )
 {
-  delete mActiveCommand;
+  delete mActiveItemCommand;
   if ( !item )
   {
-    mActiveCommand = 0;
+    mActiveItemCommand = 0;
     return;
   }
 
   if ( c == QgsComposerMergeCommand::Unknown )
   {
-    mActiveCommand = new QgsComposerItemCommand( item, commandText );
+    mActiveItemCommand = new QgsComposerItemCommand( item, commandText );
   }
   else
   {
-    mActiveCommand = new QgsComposerMergeCommand( c, item, commandText );
+    mActiveItemCommand = new QgsComposerMergeCommand( c, item, commandText );
   }
-  mActiveCommand->savePreviousState();
+  mActiveItemCommand->savePreviousState();
 }
 
 void QgsComposition::endCommand()
 {
-  if ( mActiveCommand )
+  if ( mActiveItemCommand )
   {
-    mActiveCommand->saveAfterState();
-    if ( mActiveCommand->containsChange() ) //protect against empty commands
+    mActiveItemCommand->saveAfterState();
+    if ( mActiveItemCommand->containsChange() ) //protect against empty commands
     {
-      mUndoStack.push( mActiveCommand );
+      mUndoStack.push( mActiveItemCommand );
     }
     else
     {
-      delete mActiveCommand;
+      delete mActiveItemCommand;
     }
-    mActiveCommand = 0;
+    mActiveItemCommand = 0;
   }
 }
 
 void QgsComposition::cancelCommand()
 {
-  delete mActiveCommand;
-  mActiveCommand = 0;
+  delete mActiveItemCommand;
+  mActiveItemCommand = 0;
+}
+
+void QgsComposition::beginMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text )
+{
+  delete mActiveMultiFrameCommand;
+  mActiveMultiFrameCommand = new QgsComposerMultiFrameCommand( multiFrame, text );
+  mActiveMultiFrameCommand->savePreviousState();
+}
+
+void QgsComposition::endMultiFrameCommand()
+{
+  if ( mActiveMultiFrameCommand )
+  {
+    mActiveMultiFrameCommand->saveAfterState();
+    if ( mActiveMultiFrameCommand->containsChange() )
+    {
+      mUndoStack.push( mActiveMultiFrameCommand );
+    }
+    else
+    {
+      delete mActiveMultiFrameCommand;
+    }
+    mActiveMultiFrameCommand = 0;
+  }
 }
 
 void QgsComposition::addMultiFrame( QgsComposerMultiFrame* multiFrame )
@@ -1177,7 +1204,14 @@ void QgsComposition::removeComposerItem( QgsComposerItem* item )
     else
     {
       emit itemRemoved( item );
-      pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+      if ( item->type() == QgsComposerItem::ComposerFrame ) //multiframe tracks item changes
+      {
+
+      }
+      else
+      {
+        pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+      }
     }
   }
 }

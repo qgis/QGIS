@@ -17,7 +17,7 @@
 #include "qgscomposerframe.h"
 #include "qgsaddremovemultiframecommand.h"
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c ): mComposition( c ), mResizeMode( UseExistingFrames )
+QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ): mComposition( c ), mResizeMode( UseExistingFrames ), mCreateUndoCommands( createUndoCommands )
 {
   mComposition->addMultiFrame( this );
 }
@@ -156,6 +156,17 @@ void QgsComposerMultiFrame::update()
   {
     ( *frameIt )->update();
   }
+}
+
+void QgsComposerMultiFrame::deleteFrames()
+{
+  QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
+  for ( ; frameIt != mFrameItems.end(); ++frameIt )
+  {
+    mComposition->removeComposerItem( *frameIt );
+    delete *frameIt;
+  }
+  mFrameItems.clear();
 }
 
 bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const

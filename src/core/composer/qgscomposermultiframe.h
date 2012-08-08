@@ -39,7 +39,7 @@ class QgsComposerMultiFrame: public QObject
       ExtendToNextPage //duplicates last frame to next page to fit the total size
     };
 
-    QgsComposerMultiFrame( QgsComposition* c );
+    QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands );
     virtual ~QgsComposerMultiFrame();
     virtual QSizeF totalSize() const = 0;
     virtual void render( QPainter* p, const QRectF& renderExtent ) = 0;
@@ -58,10 +58,18 @@ class QgsComposerMultiFrame: public QObject
 
     QgsComposition* composition() { return mComposition; }
 
+    bool createUndoCommands() const { return mCreateUndoCommands; }
+    void setCreateUndoCommands( bool enabled ) { mCreateUndoCommands = enabled; }
+
+    /**Removes and deletes all frames from mComposition*/
+    void deleteFrames();
+
   protected:
     QgsComposition* mComposition;
     QList<QgsComposerFrame*> mFrameItems;
     ResizeMode mResizeMode;
+    /**True: creates QgsMultiFrameCommands on internal changes (e.g. changing frames )*/
+    bool mCreateUndoCommands;
 
     virtual void addFrame( QgsComposerFrame* frame ) = 0;
 

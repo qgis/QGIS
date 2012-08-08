@@ -25,7 +25,7 @@ class QgsComposerHtml: public QgsComposerMultiFrame
 {
     Q_OBJECT
   public:
-    QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height );
+    QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height, bool createUndoCommands );
     QgsComposerHtml();
     ~QgsComposerHtml();
 

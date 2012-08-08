@@ -22,8 +22,8 @@
 #include <QWebFrame>
 #include <QWebPage>
 
-QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height ): QgsComposerMultiFrame( c ), mWebPage( 0 ),
-    mLoaded( false ), mHtmlUnitsToMM( 1.0 )
+QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal width, qreal height, bool createUndoCommands ): QgsComposerMultiFrame( c, createUndoCommands ),
+    mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   mWebPage = new QWebPage();
@@ -38,7 +38,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, qreal x, qreal y, qreal wid
   }
 }
 
-QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0 ), mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 )
+QgsComposerHtml::QgsComposerHtml(): QgsComposerMultiFrame( 0, false ), mWebPage( 0 ), mLoaded( false ), mHtmlUnitsToMM( 1.0 )
 {
 }
 
@@ -126,6 +126,7 @@ bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool igno
 
 bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
 {
+  deleteFrames();
   QString urlString = itemElem.attribute( "url" );
   if ( !urlString.isEmpty() )
   {

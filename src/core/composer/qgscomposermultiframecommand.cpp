@@ -19,7 +19,11 @@
 #include "qgscomposermultiframe.h"
 
 QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( false )
+    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mFirstRun( true )
+{
+}
+
+QgsComposerMultiFrameCommand::QgsComposerMultiFrameCommand(): QUndoCommand( "", 0 ), mMultiFrame( 0 ), mFirstRun( false )
 {
 }
 
@@ -43,18 +47,12 @@ void QgsComposerMultiFrameCommand::redo()
 
 void QgsComposerMultiFrameCommand::savePreviousState()
 {
-  if ( mMultiFrame )
-  {
-    saveState( mPreviousState );
-  }
+  saveState( mPreviousState );
 }
 
 void QgsComposerMultiFrameCommand::saveAfterState()
 {
-  if ( mMultiFrame )
-  {
-    saveState( mAfterState );
-  }
+  saveState( mAfterState );
 }
 
 void QgsComposerMultiFrameCommand::saveState( QDomDocument& stateDoc )
@@ -80,7 +78,7 @@ bool QgsComposerMultiFrameCommand::checkFirstRun()
 {
   if ( !mFirstRun )
   {
-    false;
+    return false;
   }
   mFirstRun = false;
   return true;
