@@ -43,6 +43,18 @@ QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSetting
   }
 }
 
+float QgsDiagram::sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c )
+{
+  if ( s.sizeType == QgsDiagramSettings::MM )
+  {
+    return l * c.scaleFactor();
+  }
+  else
+  {
+    return l / c.mapToPixel().mapUnitsPerPixel();
+  }
+}
+
 QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
   QFont f = s.font;
@@ -309,5 +321,75 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
     p->setBrush( mCategoryBrush );
     p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
     totalAngle += currentAngle;
+  }
+}
+
+QgsHistogramDiagram::QgsHistogramDiagram()
+{
+  mCategoryBrush.setStyle( Qt::SolidPattern );
+  mPen.setStyle( Qt::SolidLine );
+}
+
+QgsHistogramDiagram::~QgsHistogramDiagram()
+{
+}
+
+void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+{
+  QPainter* p = c.painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  QList<double> values;
+
+  QList<int>::const_iterator catIt = s.categoryIndices.constBegin();
+  for ( ; catIt != s.categoryIndices.constEnd(); ++catIt )
+  {
+    double currentVal = att[*catIt].toDouble();
+    values.push_back( currentVal );
+  }
+
+  double currentOffset = 0;
+
+  double baseX = position.x();
+  double baseY = position.y();
+
+  mPen.setColor( s.penColor );
+  setPenWidth( mPen, s, c );
+  p->setPen( mPen );
+
+  p->drawPoint( baseX, baseY );
+
+  QList<double>::const_iterator valIt = values.constBegin();
+  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
+  for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
+  {
+    double length = sizePainterUnits( *valIt, s, c );
+    
+    mCategoryBrush.setColor( *colIt );
+    p->setBrush( mCategoryBrush );
+
+    switch ( s.diagramOrientation )
+    {
+    case QgsDiagramSettings::Up:
+        p->drawRect( baseX + currentOffset, baseY, 10, 0 - length );
+        break;
+
+      case QgsDiagramSettings::Down:
+        p->drawRect( baseX + currentOffset, baseY, 10, length );
+        break;
+
+      case QgsDiagramSettings::Right:
+        p->drawRect( baseX, baseY + currentOffset, 0 - length, 10 );
+        break;
+
+      case QgsDiagramSettings::Left:
+        p->drawRect( baseX, baseY + currentOffset, length, 10 );
+        break;
+    }
+
+    currentOffset += 10;
   }
 }
