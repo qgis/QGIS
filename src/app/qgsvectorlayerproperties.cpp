@@ -824,6 +824,10 @@ void QgsVectorLayerProperties::apply()
     {
       diagram = new QgsPieDiagram();
     }
+    else if ( mDiagramTypeComboBox->currentText() == tr( "Histogram" ) )
+    {
+      diagram = new QgsHistogramDiagram();
+    }
 
     QgsDiagramSettings ds;
     ds.font = mDiagramFont;
@@ -857,11 +861,11 @@ void QgsVectorLayerProperties::apply()
 
     if ( mIncreaseSmallDiagramsCheckBox->isChecked() )
     {
-      ds.mMinimumSize = mIncreaseMinimumSizeSpinBox->value();
+      ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
     }
     else
     {
-      ds.mMinimumSize = 0;
+      ds.minimumSize = 0;
     }
 
     ds.backgroundColor = mBackgroundColorButton->color();
@@ -876,6 +880,24 @@ void QgsVectorLayerProperties::apply()
     {
       ds.minScaleDenominator = -1;
       ds.maxScaleDenominator = -1;
+    }
+
+    // Diagram orientation (histogram)
+    if ( tr( "Up" ) == mOrientationButtonGroup->checkedButton()->text() )
+    {
+      ds.diagramOrientation = QgsDiagramSettings::Up;
+    }
+    else if ( tr( "Down" ) == mOrientationButtonGroup->checkedButton()->text() )
+    {
+      ds.diagramOrientation = QgsDiagramSettings::Down;
+    }
+    else if ( tr( "Right" ) == mOrientationButtonGroup->checkedButton()->text() )
+    {
+      ds.diagramOrientation = QgsDiagramSettings::Right;
+    }
+    else if ( tr( "Left" ) == mOrientationButtonGroup->checkedButton()->text() )
+    {
+      ds.diagramOrientation = QgsDiagramSettings::Left;
     }
 
     if ( mFixedSizeCheckBox->isChecked() )
@@ -1500,8 +1522,8 @@ void QgsVectorLayerProperties::on_mFixedSizeCheckBox_stateChanged( int state )
   //enable / disable all widget in the scaling layout
   mLinearlyScalingLabel->setEnabled( state != Qt::Checked );
   mIncreaseSmallDiagramsCheckBox->setEnabled( state != Qt::Checked );
-  mIncreaseMinimumSizeLabel->setEnabled( state != Qt::Checked && mIncreaseSmallDiagramsCheckBox->isChecked() == Qt::Checked );
-  mIncreaseMinimumSizeSpinBox->setEnabled( state != Qt::Checked && mIncreaseSmallDiagramsCheckBox->isChecked() == Qt::Checked );
+  mIncreaseMinimumSizeLabel->setEnabled( state != Qt::Checked && mIncreaseSmallDiagramsCheckBox->isChecked() );
+  mIncreaseMinimumSizeSpinBox->setEnabled( state != Qt::Checked && mIncreaseSmallDiagramsCheckBox->isChecked() );
   QWidget* currentWidget = 0;
   for ( int i = 0; i < mLinearlyScalingLayout->count(); ++i )
   {
@@ -1614,6 +1636,7 @@ void QgsVectorLayerProperties::initDiagramTab()
 
   mDiagramTypeComboBox->addItem( tr( "Pie chart" ) );
   mDiagramTypeComboBox->addItem( tr( "Text diagram" ) );
+  mDiagramTypeComboBox->addItem( tr( "Histogram" ) );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ) );
   mLabelPlacementComboBox->addItem( tr( "x-height" ) );
@@ -1708,8 +1731,28 @@ void QgsVectorLayerProperties::initDiagramTab()
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
 
-      mIncreaseSmallDiagramsCheckBox->setChecked( settingList.at( 0 ).mMinimumSize != 0 );
-      mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).mMinimumSize );
+      switch( settingList.at( 0 ).diagramOrientation )
+      {
+        case QgsDiagramSettings::Left:
+          mOrientationLeftButton->setChecked( true );
+          break;
+
+        case QgsDiagramSettings::Right:
+          mOrientationRightButton->setChecked( true );
+          break;
+
+        case QgsDiagramSettings::Up:
+          mOrientationUpButton->setChecked( true );
+          break;
+
+        case QgsDiagramSettings::Down:
+          mOrientationDownButton->setChecked( true );
+          break;
+
+      }
+
+      mIncreaseSmallDiagramsCheckBox->setChecked( settingList.at( 0 ).minimumSize != 0 );
+      mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );
 
       QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
       QList< int > categoryIndices = settingList.at( 0 ).categoryIndices;
@@ -1757,6 +1800,10 @@ void QgsVectorLayerProperties::initDiagramTab()
       else if ( diagramName == "Pie" )
       {
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Pie chart" ) ) );
+      }
+      else if ( diagramName == "Histogram" )
+      {
+        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Histogram" ) ) );
       }
     }
   }

@@ -273,7 +273,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../../../../../.designer/xpm/new_attribute.png</normaloff>../../../../../../.designer/xpm/new_attribute.png</iconset>
+           <normaloff>M:/../.designer/xpm/new_attribute.png</normaloff>M:/../.designer/xpm/new_attribute.png</iconset>
          </property>
          <property name="shortcut">
           <string>Ctrl+N</string>
@@ -290,7 +290,7 @@
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../../../../../.designer/xpm/delete_attribute.png</normaloff>../../../../../../.designer/xpm/delete_attribute.png</iconset>
+           <normaloff>M:/../.designer/xpm/delete_attribute.png</normaloff>M:/../.designer/xpm/delete_attribute.png</iconset>
          </property>
          <property name="shortcut">
           <string>Ctrl+X</string>
@@ -392,7 +392,7 @@
             <x>0</x>
             <y>0</y>
             <width>820</width>
-            <height>540</height>
+            <height>558</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -761,7 +761,7 @@
             <x>0</x>
             <y>0</y>
             <width>802</width>
-            <height>522</height>
+            <height>540</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -873,7 +873,7 @@
             <x>0</x>
             <y>0</y>
             <width>802</width>
-            <height>522</height>
+            <height>540</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -970,34 +970,7 @@
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_16">
-           <item row="0" column="0" colspan="2">
-            <widget class="QCheckBox" name="mDisplayDiagramsCheckBox">
-             <property name="text">
-              <string>Display diagrams</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <layout class="QHBoxLayout" name="_2">
-             <property name="spacing">
-              <number>6</number>
-             </property>
-             <property name="margin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="mTypeLabel">
-               <property name="text">
-                <string>Diagram type</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="mDiagramTypeComboBox"/>
-             </item>
-            </layout>
-           </item>
-           <item row="0" column="3" colspan="3">
+           <item row="0" column="2" colspan="4">
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
               <widget class="QLabel" name="mPriorityLabel">
@@ -1044,145 +1017,7 @@
              </item>
             </layout>
            </item>
-           <item row="1" column="0" colspan="6">
-            <widget class="QGroupBox" name="mAppearanceGroupBox">
-             <property name="title">
-              <string>Appearance</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_13">
-              <item row="1" column="1">
-               <layout class="QHBoxLayout" name="horizontalLayout_11">
-                <item>
-                 <widget class="QLabel" name="mPenColorLabel">
-                  <property name="text">
-                   <string>Pen color</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QgsColorButton" name="mDiagramPenColorButton">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>25</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="2">
-               <layout class="QHBoxLayout" name="horizontalLayout_16">
-                <item>
-                 <widget class="QLabel" name="mPenWidthLabel">
-                  <property name="text">
-                   <string>Pen width</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
-                  <property name="decimals">
-                   <number>5</number>
-                  </property>
-                  <property name="maximum">
-                   <double>99999.990000000005239</double>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="0" column="0" colspan="4">
-               <layout class="QHBoxLayout" name="horizontalLayout_13">
-                <item>
-                 <widget class="QCheckBox" name="mScaleDependentDiagramVisibilityCheckBox">
-                  <property name="text">
-                   <string>Scale dependent visibility</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="mMinimumDiagramScaleLabel">
-                  <property name="text">
-                   <string>Minimum</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="mMinimumDiagramScaleLineEdit"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="mMaximumDiagramScaleLabel">
-                  <property name="text">
-                   <string>Maximum</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="mMaximumDiagramScaleLineEdit"/>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout_8">
-                <item>
-                 <layout class="QHBoxLayout" name="horizontalLayout_10">
-                  <item>
-                   <widget class="QLabel" name="mBackgroundColorLabel">
-                    <property name="text">
-                     <string>Background color</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QgsColorButton" name="mBackgroundColorButton">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>25</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </item>
-               </layout>
-              </item>
-              <item row="1" column="3">
-               <widget class="QPushButton" name="mDiagramFontButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Font...</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="3" column="0" colspan="6">
+           <item row="7" column="0" colspan="6">
             <widget class="QGroupBox" name="mPlacementGroupBox">
              <property name="title">
               <string>Position</string>
@@ -1281,11 +1116,11 @@
                <layout class="QHBoxLayout" name="horizontalLayout_14">
                 <item>
                  <widget class="QLabel" name="mLabelPlacementLabel">
-                  <property name="text">
-                   <string>Label placement:</string>
-                  </property>
                   <property name="visible">
                    <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Label placement:</string>
                   </property>
                  </widget>
                 </item>
@@ -1301,14 +1136,14 @@
              </layout>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="9" column="0">
             <widget class="QLabel" name="mAttributesLabel">
              <property name="text">
               <string>Attributes</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="1" colspan="2">
+           <item row="9" column="1" colspan="2">
             <widget class="QComboBox" name="mDiagramAttributesComboBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1318,7 +1153,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="3">
+           <item row="9" column="3">
             <spacer name="horizontalSpacer_3">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1331,7 +1166,7 @@
              </property>
             </spacer>
            </item>
-           <item row="4" column="4">
+           <item row="9" column="4">
             <widget class="QPushButton" name="mRemoveCategoryPushButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1348,7 +1183,7 @@
              </property>
             </widget>
            </item>
-           <item row="4" column="5">
+           <item row="9" column="5">
             <widget class="QPushButton" name="mAddCategoryPushButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1365,7 +1200,7 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="0" colspan="6">
+           <item row="10" column="0" colspan="6">
             <widget class="QTreeWidget" name="mDiagramAttributesTreeWidget">
              <property name="columnCount">
               <number>2</number>
@@ -1382,7 +1217,7 @@
              </column>
             </widget>
            </item>
-           <item row="2" column="0" colspan="6">
+           <item row="6" column="0" colspan="6">
             <widget class="QGroupBox" name="mSizeGroupBox">
              <property name="title">
               <string>Size</string>
@@ -1521,6 +1356,267 @@
              </layout>
             </widget>
            </item>
+           <item row="4" column="0" colspan="6">
+            <widget class="QGroupBox" name="groupBox">
+             <property name="title">
+              <string>Visibility</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_18">
+              <item row="1" column="0" colspan="3">
+               <layout class="QHBoxLayout" name="horizontalLayout_13">
+                <item>
+                 <widget class="QCheckBox" name="mScaleDependentDiagramVisibilityCheckBox">
+                  <property name="text">
+                   <string>Scale dependent visibility</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mMinimumDiagramScaleLabel">
+                  <property name="text">
+                   <string>Minimum</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="mMinimumDiagramScaleLineEdit"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="mMaximumDiagramScaleLabel">
+                  <property name="text">
+                   <string>Maximum</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="mMaximumDiagramScaleLineEdit"/>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Collision handling</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QRadioButton" name="radioButton_2">
+                <property name="text">
+                 <string>Hide diagrams</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QRadioButton" name="radioButton">
+                <property name="text">
+                 <string>Raise small diagrams</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0" colspan="6">
+            <widget class="QGroupBox" name="mAppearanceGroupBox">
+             <property name="title">
+              <string>Appearance</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_13">
+              <item row="1" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item>
+                 <widget class="QLabel" name="mPenColorLabel">
+                  <property name="text">
+                   <string>Line color</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QgsColorButton" name="mDiagramPenColorButton">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>25</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_16">
+                <item>
+                 <widget class="QLabel" name="mPenWidthLabel">
+                  <property name="text">
+                   <string>Line width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
+                  <property name="decimals">
+                   <number>5</number>
+                  </property>
+                  <property name="maximum">
+                   <double>99999.990000000005239</double>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_8">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_10">
+                  <item>
+                   <widget class="QLabel" name="mBackgroundColorLabel">
+                    <property name="text">
+                     <string>Background color</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QgsColorButton" name="mBackgroundColorButton">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>25</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="3">
+               <widget class="QPushButton" name="mDiagramFontButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Font...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="2">
+            <layout class="QHBoxLayout" name="horizontalLayout_18">
+             <item>
+              <widget class="QCheckBox" name="mDisplayDiagramsCheckBox">
+               <property name="text">
+                <string>Display diagrams</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="_2">
+               <property name="spacing">
+                <number>6</number>
+               </property>
+               <property name="margin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="mTypeLabel">
+                 <property name="text">
+                  <string>Diagram type</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QComboBox" name="mDiagramTypeComboBox"/>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item row="8" column="0" colspan="6">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Diagram options</string>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+             <layout class="QGridLayout" name="diagramOptionsGroupBox">
+              <item row="1" column="1">
+               <widget class="QRadioButton" name="mOrientationUpButton">
+                <property name="text">
+                 <string>Up</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+                <attribute name="buttonGroup">
+                 <string>mOrientationButtonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item row="1" column="4">
+               <widget class="QRadioButton" name="mOrientationLeftButton">
+                <property name="text">
+                 <string>Left</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string>mOrientationButtonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QRadioButton" name="mOrientationRightButton">
+                <property name="text">
+                 <string>Right</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string>mOrientationButtonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QRadioButton" name="mOrientationDownButton">
+                <property name="text">
+                 <string>Down</string>
+                </property>
+                <attribute name="buttonGroup">
+                 <string>mOrientationButtonGroup</string>
+                </attribute>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Orientation</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1631,4 +1727,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="mOrientationButtonGroup"/>
+ </buttongroups>
 </ui>

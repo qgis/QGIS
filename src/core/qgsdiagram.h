@@ -37,6 +37,7 @@ class CORE_EXPORT QgsDiagram
   protected:
     void setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c );
     QSizeF sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c );
+    float sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c );
     QFont scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c );
 };
 
@@ -86,5 +87,20 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
     QBrush mCategoryBrush;
     QPen mPen;
 };
+
+class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
+{
+  public:
+    QgsHistogramDiagram();
+    ~QgsHistogramDiagram();
+
+    void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    QString diagramName() const { return "Histogram"; }
+
+  private:
+    QBrush mCategoryBrush;
+    QPen   mPen;
+};
+
 
 #endif // QGSDIAGRAM_H

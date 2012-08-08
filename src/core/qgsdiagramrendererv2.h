@@ -102,6 +102,15 @@ struct CORE_EXPORT QgsDiagramSettings
     XHeight
   };
 
+  //! Orientation of histogram
+  enum DiagramOrientation
+  {
+    Up,
+    Down,
+    Left,
+    Right
+  };
+
   QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
   {}
   QFont font;
@@ -113,6 +122,7 @@ struct CORE_EXPORT QgsDiagramSettings
   QColor penColor;
   double penWidth;
   LabelPlacementMethod labelPlacementMethod;
+  DiagramOrientation diagramOrientation;
 
   //scale range (-1 if no lower / upper bound )
   double minScaleDenominator;

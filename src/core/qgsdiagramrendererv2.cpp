@@ -75,6 +75,24 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
    labelPlacementMethod = XHeight;
   }
 
+  // orientation
+  if ( elem.attribute( "diagramOrientation" ) == "Left" )
+  {
+    diagramOrientation = Left;
+  }
+  else if ( elem.attribute( "diagramOrientation" ) == "Right" )
+  {
+    diagramOrientation = Right;
+  }
+  else if ( elem.attribute( "diagramOrientation" ) == "Down" )
+  {
+    diagramOrientation = Down;
+  }
+  else
+  {
+    diagramOrientation = Up;
+  }
+
   minimumSize = elem.attribute( "minimumSize" ).toDouble();
 
   //colors
@@ -108,6 +126,8 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   categoryElem.setAttribute( "penWidth", QString::number( penWidth ) );
   categoryElem.setAttribute( "minScaleDenominator", QString::number( minScaleDenominator ) );
   categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
+
+  // site type (mm vs. map units)
   if ( sizeType == MM )
   {
     categoryElem.setAttribute( "sizeType", "MM" );
@@ -117,6 +137,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
     categoryElem.setAttribute( "sizeType", "MapUnits" );
   }
 
+  // label placement method (text diagram)
   if ( labelPlacementMethod == Height )
   {
    categoryElem.setAttribute( "labelPlacementMethod", "Height" );
@@ -124,6 +145,29 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   else
   {
    categoryElem.setAttribute( "labelPlacementMethod", "XHeight" );
+  }
+
+  // orientation (histogram)
+  switch ( diagramOrientation ) {
+    case Left:
+      categoryElem.setAttribute( "diagramOrientation", "Left" );
+      break;
+
+    case Right:
+      categoryElem.setAttribute( "diagramOrientation", "Right" );
+      break;
+
+    case Down:
+      categoryElem.setAttribute( "diagramOrientation", "Down" );
+      break;
+
+    case Up:
+      categoryElem.setAttribute( "diagramOrientation", "Up" );
+      break;
+
+    default:
+      categoryElem.setAttribute( "diagramOrientation", "Up" );
+      break;
   }
 
   categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
@@ -242,6 +286,10 @@ void QgsDiagramRendererV2::_readXML( const QDomElement& elem )
   else if ( diagramType == "Text" )
   {
     mDiagram = new QgsTextDiagram();
+  }
+  else if ( diagramType == "Histogram" )
+  {
+    mDiagram = new QgsHistogramDiagram();
   }
   else
   {
