@@ -93,8 +93,8 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const Qgs
 
   //interpolate size
   double ratio = ( value - is.lowerValue ) / ( is.upperValue - is.lowerValue );
-  QSizeF size = QSizeF( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ),
-                        is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) );
+  QSizeF size = QSizeF( sqrt( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ) ),
+                        sqrt( is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) ) );
 
   // Scale, if extension is smaller than the specified minimum
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
@@ -314,8 +314,8 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsR
 
   //interpolate size
   double ratio = ( value - is.lowerValue ) / ( is.upperValue - is.lowerValue );
-  QSizeF size = QSizeF( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ),
-                        is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) );
+  QSizeF size = QSizeF( sqrt( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ) ),
+                        sqrt( is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) ) );
 
   // Scale, if extension is smaller than the specified minimum
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
