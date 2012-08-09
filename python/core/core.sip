@@ -14,11 +14,14 @@
 %Include qgsaddremoveitemcommand.sip
 %Include qgsapplication.sip
 %Include qgscomposerattributetable.sip
+%Include qgscomposerframe.sip
+%Include qgscomposerhtml.sip
 %Include qgscomposeritem.sip
 %Include qgscomposeritemcommand.sip
 %Include qgscomposerlabel.sip
 %Include qgscomposerlegend.sip
 %Include qgscomposermap.sip
+%Include qgscomposermultiframe.sip
 %Include qgscomposerpicture.sip
 %Include qgscomposerscalebar.sip
 %Include qgscomposershape.sip
