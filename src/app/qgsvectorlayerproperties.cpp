@@ -1674,6 +1674,7 @@ void QgsVectorLayerProperties::initDiagramTab()
     mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "MM" ) ) );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "XHeight" ) ) );
     mDiagramSizeSpinBox->setValue( 30 );
+    mBarWidthSpinBox->setValue( 5 );
     mScaleDependentDiagramVisibilityCheckBox->setChecked( false );
 
     switch ( layerType )
