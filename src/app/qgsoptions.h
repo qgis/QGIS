@@ -74,9 +74,11 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void toggleStandardDeviation( int );
 
+#ifdef Q_WS_X11
     //! Slot to change backbuffering. This is handled when the user changes
     // the value of the checkbox
     void toggleEnableBackbuffer( int );
+#endif
 
     /**
      * Return the desired state of newly added layers. If a layer

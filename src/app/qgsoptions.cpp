@@ -76,8 +76,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
 
   connect( chkUseStandardDeviation, SIGNAL( stateChanged( int ) ), this, SLOT( toggleStandardDeviation( int ) ) );
-
+#ifdef Q_WS_X11
   connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
+#endif
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
@@ -229,10 +230,19 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   if ( index == -1 ) index = 1;
   cmbScanZipInBrowser->setCurrentIndex( index );
 
-  // Set the enable backbuffer state
+  // Set the enable backbuffer state for X11 (linux) systems only
+  // TODO: remove this when threading is implemented
 #ifdef Q_WS_X11
   chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer" ).toBool() );
   toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
+#elif Q_WS_MAC
+  chkEnableBackbuffer->setChecked( true );
+  chkEnableBackbuffer->setEnabled( false );
+  labelUpdateThreshold->setEnabled( false );
+  spinBoxUpdateThreshold->setEnabled( false );
+#else // Q_WS_WIN32
+  chkEnableBackbuffer->setChecked( true );
+  chkEnableBackbuffer->setEnabled( false );
 #endif
 
   // set the display update threshold

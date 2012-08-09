@@ -734,8 +734,10 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
         break;
       }
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
+#ifdef Q_WS_X11
       if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
       {
+#endif // Q_WS_X11
         if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
         {
           emit screenUpdateRequested();
@@ -747,8 +749,10 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
           // emit drawingProgress( featureCount, totalFeatures );
           qApp->processEvents();
         }
+#ifdef Q_WS_X11
       }
-#endif //Q_WS_MAC
+#endif // Q_WS_X11
+#endif // Q_WS_MAC
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );

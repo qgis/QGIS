@@ -977,7 +977,7 @@
               <item row="2" column="0">
                <widget class="QCheckBox" name="chkEnableBackbuffer">
                 <property name="text">
-                 <string>Enable back buffer (Better graphics performance at the cost loosing the possibiliti to cancel rendering and incremental feature drawing)</string>
+                 <string>Enable back buffer (Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing)</string>
                 </property>
                </widget>
               </item>

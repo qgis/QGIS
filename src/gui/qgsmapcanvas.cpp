@@ -377,10 +377,11 @@ void QgsMapCanvas::refresh()
   bool enableBackbufferSetting = 0;
 #endif
 
-  //disable the update that leads to the resize crash
+#ifdef Q_WS_X11
+#ifndef ANDROID
+  // disable the update that leads to the resize crash on X11 systems
   if ( viewport() )
   {
-#ifndef ANDROID
     if ( enableBackbufferSetting != mBackbufferEnabled )
     {
       qDebug() << "Enable back buffering: " << enableBackbufferSetting;
@@ -394,8 +395,9 @@ void QgsMapCanvas::refresh()
       }
       mBackbufferEnabled = enableBackbufferSetting;
     }
-#endif //ANDROID
   }
+#endif // ANDROID
+#endif // Q_WS_X11
 
   mDrawing = true;
 
