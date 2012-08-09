@@ -74,6 +74,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   setSceneRect( QRectF( x, y, width, height ) );
   setToolTip( tr( "Map %1" ).arg( mId ) );
   mGridPen.setCapStyle( Qt::FlatCap );
+
+  initGridAnnotationFormatFromProject();
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
@@ -101,6 +103,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 
   setToolTip( tr( "Map %1" ).arg( mId ) );
   mGridPen.setCapStyle( Qt::FlatCap );
+
+  initGridAnnotationFormatFromProject();
 }
 
 QgsComposerMap::~QgsComposerMap()
@@ -1071,7 +1075,7 @@ void QgsComposerMap::drawCoordinateAnnotations( QPainter* p, const QList< QPair<
   QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
+    currentAnnotationString = gridAnnotationString( it->first, Latitude );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }
@@ -1079,7 +1083,7 @@ void QgsComposerMap::drawCoordinateAnnotations( QPainter* p, const QList< QPair<
   it = vLines.constBegin();
   for ( ; it != vLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
+    currentAnnotationString =  gridAnnotationString( it->first, Longitude );
     drawCoordinateAnnotation( p, it->second.p1(), currentAnnotationString );
     drawCoordinateAnnotation( p, it->second.p2(), currentAnnotationString );
   }
@@ -1251,6 +1255,42 @@ void QgsComposerMap::drawAnnotation( QPainter* p, const QPointF& pos, int rotati
   p->setPen( QColor( 0, 0, 0 ) );
   drawText( p, 0, 0, annotationText, mGridAnnotationFont );
   p->restore();
+}
+
+QString QgsComposerMap::gridAnnotationString( double value, AnnotationCoordinate coord ) const
+{
+  if ( mGridAnnotationFormat == Decimal )
+  {
+    return QString::number( value, 'f', mGridAnnotationPrecision );
+  }
+
+  QgsPoint p;
+  p.setX( coord == Longitude ? value : 0 );
+  p.setY( coord == Longitude ? 0 : value );
+
+  QString annotationString;
+  if ( mGridAnnotationFormat == DegreeMinute )
+  {
+    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision );
+  }
+  else //DegreeMinuteSecond
+  {
+    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision );
+  }
+
+  QStringList split = annotationString.split( "," );
+  if ( coord == Longitude )
+  {
+    return split.at( 0 );
+  }
+  else
+  {
+    if ( split.size() < 2 )
+    {
+      return "";
+    }
+    return split.at( 1 );
+  }
 }
 
 int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
@@ -1454,12 +1494,10 @@ double QgsComposerMap::maxExtension() const
   QList< QPair< double, QLineF > > xLines;
   QList< QPair< double, QLineF > > yLines;
 
-  if ( xGridLines( xLines ) != 0 )
-  {
-    return 0;
-  }
+  int xGridReturn = xGridLines( xLines );
+  int yGridReturn = yGridLines( yLines );
 
-  if ( yGridLines( yLines ) != 0 )
+  if ( xGridReturn != 0 && yGridReturn != 0 )
   {
     return 0;
   }
@@ -1471,7 +1509,7 @@ double QgsComposerMap::maxExtension() const
   QList< QPair< double, QLineF > >::const_iterator it = xLines.constBegin();
   for ( ; it != xLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
+    currentAnnotationString = gridAnnotationString( it->first, Latitude );
     currentExtension = qMax( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
     maxExtension = qMax( maxExtension, currentExtension );
   }
@@ -1479,7 +1517,7 @@ double QgsComposerMap::maxExtension() const
   it = yLines.constBegin();
   for ( ; it != yLines.constEnd(); ++it )
   {
-    currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
+    currentAnnotationString = gridAnnotationString( it->first, Longitude );
     currentExtension = qMax( textWidthMillimeters( mGridAnnotationFont, currentAnnotationString ), fontAscentMillimeters( mGridAnnotationFont ) );
     maxExtension = qMax( maxExtension, currentExtension );
   }
@@ -1946,6 +1984,23 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
   properties.insert( "style_border", "no" );
   mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );
   mOverviewFrameMapSymbol->setAlpha( 0.3 );
+}
+
+void QgsComposerMap::initGridAnnotationFormatFromProject()
+{
+  QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
+  if ( format == "DM" )
+  {
+    mGridAnnotationFormat = DegreeMinute;
+  }
+  else if ( format == "DMS" )
+  {
+    mGridAnnotationFormat = DegreeMinuteSecond;
+  }
+  else
+  {
+    mGridAnnotationFormat = Decimal;
+  }
 }
 
 void QgsComposerMap::assignFreeId()
