@@ -82,6 +82,34 @@ QgsTextDiagram::~QgsTextDiagram()
 {
 }
 
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+{
+  QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
+  if ( attIt == attributes.constEnd() )
+  {
+    return QSizeF(); //zero size if attribute is missing
+  }
+  double value = attIt.value().toDouble();
+
+  //interpolate size
+  double ratio = ( value - is.lowerValue ) / ( is.upperValue - is.lowerValue );
+  QSizeF size = QSizeF( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ),
+                        is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) );
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
+  {
+    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
+  }
+
+  return size;
+}
+
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+{
+  return s.size;
+}
+
 void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
   QPainter* p = c.painter();
@@ -275,6 +303,34 @@ QgsPieDiagram::~QgsPieDiagram()
 {
 }
 
+QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+{
+  QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
+  if ( attIt == attributes.constEnd() )
+  {
+    return QSizeF(); //zero size if attribute is missing
+  }
+  double value = attIt.value().toDouble();
+
+  //interpolate size
+  double ratio = ( value - is.lowerValue ) / ( is.upperValue - is.lowerValue );
+  QSizeF size = QSizeF( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ),
+                        is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) );
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
+  {
+    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
+  }
+
+  return size;
+}
+
+QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+{
+  return s.size;
+}
+
 void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
   QPainter* p = c.painter();
@@ -328,10 +384,79 @@ QgsHistogramDiagram::QgsHistogramDiagram()
 {
   mCategoryBrush.setStyle( Qt::SolidPattern );
   mPen.setStyle( Qt::SolidLine );
+  mScaleFactor = 0;
 }
 
 QgsHistogramDiagram::~QgsHistogramDiagram()
 {
+}
+
+QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+{
+  QgsAttributeMap::const_iterator attIt = attributes.constBegin();
+  if ( attIt == attributes.constEnd() )
+  {
+    return QSizeF(); //zero size if no attributes
+  }
+
+  double maxValue = attIt.value().toDouble();
+
+  for ( ; attIt != attributes.constEnd(); ++attIt )
+  {
+    maxValue = qMax( attIt.value().toDouble(), maxValue );
+  }
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( maxValue < s.minimumSize )
+  {
+    maxValue = s.minimumSize;
+  }
+
+  mScaleFactor = ( maxValue - is.lowerValue ) / ( is.upperValue - is.lowerValue );
+
+  switch ( s.diagramOrientation )
+  {
+    case QgsDiagramSettings::Up:
+    case QgsDiagramSettings::Down:
+      return QSizeF( s.barWidth * attributes.size(), maxValue );
+
+    case QgsDiagramSettings::Right:
+    case QgsDiagramSettings::Left:
+      return QSizeF( maxValue, s.barWidth * attributes.size() );
+  }
+
+  return QSizeF();
+}
+
+QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+{
+  QgsAttributeMap::const_iterator attIt = attributes.constBegin();
+  if ( attIt == attributes.constEnd() )
+  {
+    return QSizeF(); //zero size if no attributes
+  }
+
+  double maxValue = attIt.value().toDouble();
+
+  for ( ; attIt != attributes.constEnd(); ++attIt )
+  {
+    maxValue = qMax( attIt.value().toDouble(), maxValue );
+  }
+
+  switch ( s.diagramOrientation )
+  {
+    case QgsDiagramSettings::Up:
+    case QgsDiagramSettings::Down:
+      mScaleFactor = maxValue / s.size.height();
+      return QSizeF( s.barWidth * attributes.size(), s.size.height() );
+
+    case QgsDiagramSettings::Right:
+    case QgsDiagramSettings::Left:
+      mScaleFactor = maxValue / s.size.width();
+      return QSizeF( s.size.width(), s.barWidth * attributes.size() );
+  }
+
+  return QSizeF();
 }
 
 void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
@@ -365,14 +490,14 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderCo
   QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
   {
-    double length = sizePainterUnits( *valIt, s, c );
+    double length = sizePainterUnits( *valIt * mScaleFactor, s, c );
     
     mCategoryBrush.setColor( *colIt );
     p->setBrush( mCategoryBrush );
 
     switch ( s.diagramOrientation )
     {
-    case QgsDiagramSettings::Up:
+      case QgsDiagramSettings::Up:
         p->drawRect( baseX + currentOffset, baseY, scaledWidth, 0 - length );
         break;
 

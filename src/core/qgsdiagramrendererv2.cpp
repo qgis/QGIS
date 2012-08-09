@@ -324,6 +324,11 @@ bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsAttributeMap&, 
   return true;
 }
 
+QSizeF QgsSingleCategoryDiagramRenderer::diagramSize(const QgsAttributeMap &attributes, const QgsRenderContext &c)
+{
+  return mDiagram->diagramSize( attributes, c, mSettings );
+}
+
 QList<QgsDiagramSettings> QgsSingleCategoryDiagramRenderer::diagramSettings() const
 {
   QList<QgsDiagramSettings> settingsList;
@@ -377,46 +382,27 @@ bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsAttribute
 QList<int> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
 {
   QList<int> attributes = mSettings.categoryIndices;
-  if ( !attributes.contains( mClassificationAttribute ) )
+  if ( !attributes.contains( mInterpolationSettings.classificationAttribute ) )
   {
-    attributes.push_back( mClassificationAttribute );
+    attributes.push_back( mInterpolationSettings.classificationAttribute );
   }
   return attributes;
 }
 
 QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c )
 {
-  Q_UNUSED( c );
-  QgsAttributeMap::const_iterator attIt = attributes.find( mClassificationAttribute );
-  if ( attIt == attributes.constEnd() )
-  {
-    return QSizeF(); //zero size if attribute is missing
-  }
-  double value = attIt.value().toDouble();
-
-  //interpolate size
-  double ratio = ( value - mLowerValue ) / ( mUpperValue - mLowerValue );
-  QSizeF size = QSizeF( mUpperSize.width() * ratio + mLowerSize.width() * ( 1 - ratio ),
-                        mUpperSize.height() * ratio + mLowerSize.height() * ( 1 - ratio ) );
-
-  // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= mSettings.minimumSize && size.height() <= mSettings.minimumSize )
-  {
-    size.scale( mSettings.minimumSize, mSettings.minimumSize, Qt::KeepAspectRatio );
-  }
-
-  return size;
+  return mDiagram->diagramSize( attributes, c, mSettings, mInterpolationSettings );
 }
 
 void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem )
 {
-  mLowerValue = elem.attribute( "lowerValue" ).toDouble();
-  mUpperValue = elem.attribute( "upperValue" ).toDouble();
-  mLowerSize.setWidth( elem.attribute( "lowerWidth" ).toDouble() );
-  mLowerSize.setHeight( elem.attribute( "lowerHeight" ).toDouble() );
-  mUpperSize.setWidth( elem.attribute( "upperWidth" ).toDouble() );
-  mUpperSize.setHeight( elem.attribute( "upperHeight" ).toDouble() );
-  mClassificationAttribute = elem.attribute( "classificationAttribute" ).toInt();
+  mInterpolationSettings.lowerValue = elem.attribute( "lowerValue" ).toDouble();
+  mInterpolationSettings.upperValue = elem.attribute( "upperValue" ).toDouble();
+  mInterpolationSettings.lowerSize.setWidth( elem.attribute( "lowerWidth" ).toDouble() );
+  mInterpolationSettings.lowerSize.setHeight( elem.attribute( "lowerHeight" ).toDouble() );
+  mInterpolationSettings.upperSize.setWidth( elem.attribute( "upperWidth" ).toDouble() );
+  mInterpolationSettings.upperSize.setHeight( elem.attribute( "upperHeight" ).toDouble() );
+  mInterpolationSettings.classificationAttribute = elem.attribute( "classificationAttribute" ).toInt();
   QDomElement settingsElem = elem.firstChildElement( "DiagramCategory" );
   if ( !settingsElem.isNull() )
   {
@@ -428,13 +414,13 @@ void QgsLinearlyInterpolatedDiagramRenderer::readXML( const QDomElement& elem )
 void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, QDomDocument& doc ) const
 {
   QDomElement rendererElem = doc.createElement( "LinearlyInterpolatedDiagramRenderer" );
-  rendererElem.setAttribute( "lowerValue", QString::number( mLowerValue ) );
-  rendererElem.setAttribute( "upperValue", QString::number( mUpperValue ) );
-  rendererElem.setAttribute( "lowerWidth", QString::number( mLowerSize.width() ) );
-  rendererElem.setAttribute( "lowerHeight", QString::number( mLowerSize.height() ) );
-  rendererElem.setAttribute( "upperWidth", QString::number( mUpperSize.width() ) );
-  rendererElem.setAttribute( "upperHeight", QString::number( mUpperSize.height() ) );
-  rendererElem.setAttribute( "classificationAttribute", mClassificationAttribute );
+  rendererElem.setAttribute( "lowerValue", QString::number( mInterpolationSettings.lowerValue ) );
+  rendererElem.setAttribute( "upperValue", QString::number( mInterpolationSettings.upperValue ) );
+  rendererElem.setAttribute( "lowerWidth", QString::number( mInterpolationSettings.lowerSize.width() ) );
+  rendererElem.setAttribute( "lowerHeight", QString::number( mInterpolationSettings.lowerSize.height() ) );
+  rendererElem.setAttribute( "upperWidth", QString::number( mInterpolationSettings.upperSize.width() ) );
+  rendererElem.setAttribute( "upperHeight", QString::number( mInterpolationSettings.upperSize.height() ) );
+  rendererElem.setAttribute( "classificationAttribute", mInterpolationSettings.classificationAttribute );
   mSettings.writeXML( rendererElem, doc );
   _writeXML( rendererElem, doc );
   layerElem.appendChild( rendererElem );

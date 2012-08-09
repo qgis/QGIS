@@ -22,8 +22,11 @@
 class QPainter;
 class QPointF;
 struct QgsDiagramSettings;
+struct QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
+
+
 
 /**Base class for all diagram types*/
 class CORE_EXPORT QgsDiagram
@@ -33,6 +36,10 @@ class CORE_EXPORT QgsDiagram
     /**Draws the diagram at the given position (in pixel coordinates)*/
     virtual void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) = 0;
     virtual QString diagramName() const = 0;
+    /**Returns the size in map units the diagram will use to render.*/
+    virtual QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) = 0;
+    /**Returns the size in map units the diagram will use to render. Interpolat size*/
+    virtual QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) = 0;
 
   protected:
     void setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c );
@@ -60,6 +67,8 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     QgsTextDiagram();
     ~QgsTextDiagram();
     void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
 
     QString diagramName() const { return "Text"; }
 
@@ -81,6 +90,8 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
     ~QgsPieDiagram();
 
     void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
     QString diagramName() const { return "Pie"; }
 
   private:
@@ -95,11 +106,14 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
     ~QgsHistogramDiagram();
 
     void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
     QString diagramName() const { return "Histogram"; }
 
   private:
     QBrush mCategoryBrush;
     QPen   mPen;
+    double mScaleFactor;
 };
 
 

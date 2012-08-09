@@ -136,6 +136,17 @@ struct CORE_EXPORT QgsDiagramSettings
   void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
 };
 
+//additional diagram settings for interpolated size rendering
+struct CORE_EXPORT QgsDiagramInterpolationSettings
+{
+  QSizeF lowerSize;
+  QSizeF upperSize;
+  double lowerValue;
+  double upperValue;
+  /**Index of the classification attribute*/
+  int classificationAttribute;
+};
+
 /**Returns diagram settings for a feature*/
 class CORE_EXPORT QgsDiagramRendererV2
 {
@@ -210,8 +221,7 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
   protected:
     bool diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c )
-    { Q_UNUSED( attributes ); Q_UNUSED( c ); return mSettings.size; }
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c );
 
   private:
     QgsDiagramSettings mSettings;
@@ -232,20 +242,20 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRende
 
     QString rendererName() const { return "LinearlyInterpolated"; }
 
-    void setLowerValue( double val ) { mLowerValue = val; }
-    double lowerValue() const { return mLowerValue; }
+    void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
+    double lowerValue() const { return mInterpolationSettings.lowerValue; }
 
-    void setUpperValue( double val ) { mUpperValue = val; }
-    double upperValue() const { return mUpperValue; }
+    void setUpperValue( double val ) { mInterpolationSettings.upperValue = val; }
+    double upperValue() const { return mInterpolationSettings.upperValue; }
 
-    void setLowerSize( QSizeF s ) { mLowerSize = s; }
-    QSizeF lowerSize() const { return mLowerSize; }
+    void setLowerSize( QSizeF s ) { mInterpolationSettings.lowerSize = s; }
+    QSizeF lowerSize() const { return mInterpolationSettings.lowerSize; }
 
-    void setUpperSize( QSizeF s ) { mUpperSize = s; }
-    QSizeF upperSize() const { return mUpperSize; }
+    void setUpperSize( QSizeF s ) { mInterpolationSettings.upperSize = s; }
+    QSizeF upperSize() const { return mInterpolationSettings.upperSize; }
 
-    int classificationAttribute() const { return mClassificationAttribute; }
-    void setClassificationAttribute( int index ) { mClassificationAttribute = index; }
+    int classificationAttribute() const { return mInterpolationSettings.classificationAttribute; }
+    void setClassificationAttribute( int index ) { mInterpolationSettings.classificationAttribute = index; }
 
     void readXML( const QDomElement& elem );
     void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
@@ -257,12 +267,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRende
 
   private:
     QgsDiagramSettings mSettings;
-    QSizeF mLowerSize;
-    QSizeF mUpperSize;
-    double mLowerValue;
-    double mUpperValue;
-    /**Index of the classification attribute*/
-    int mClassificationAttribute;
+    QgsDiagramInterpolationSettings mInterpolationSettings;
 };
 
 #endif // QGSDIAGRAMRENDERERV2_H
