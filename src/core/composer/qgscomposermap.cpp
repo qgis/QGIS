@@ -1989,11 +1989,18 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
 void QgsComposerMap::initGridAnnotationFormatFromProject()
 {
   QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
-  if ( format == "DM" )
+
+  bool degreeUnits = true;
+  if ( mMapRenderer )
+  {
+    degreeUnits = ( mMapRenderer->mapUnits() == QGis::Degrees );
+  }
+
+  if ( format == "DM" && degreeUnits )
   {
     mGridAnnotationFormat = DegreeMinute;
   }
-  else if ( format == "DMS" )
+  else if ( format == "DMS" && degreeUnits )
   {
     mGridAnnotationFormat = DegreeMinuteSecond;
   }
