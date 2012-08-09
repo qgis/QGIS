@@ -738,9 +738,9 @@ void QgsOptions::toggleStandardDeviation( int state )
   }
 }
 
-#ifdef Q_WS_X11
 void QgsOptions::toggleEnableBackbuffer( int state )
 {
+#ifdef Q_WS_X11
   if ( Qt::Checked == state )
   {
     labelUpdateThreshold->setEnabled( false );
@@ -751,8 +751,10 @@ void QgsOptions::toggleEnableBackbuffer( int state )
     labelUpdateThreshold->setEnabled( true );
     spinBoxUpdateThreshold->setEnabled( true );
   }
-}
+#else
+  Q_UNUSED( state );
 #endif
+}
 
 QString QgsOptions::theme()
 {
