@@ -2939,6 +2939,11 @@ namespace pal
 //#undef _DEBUG_FULL_
 #endif
 
+  bool Problem::compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 )
+  {
+    return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
+  }
+
   std::list<LabelPosition*> * Problem::getSolution( bool returnInactive )
   {
 
@@ -2946,13 +2951,27 @@ namespace pal
     std::list<LabelPosition*> *solList = new std::list<LabelPosition*>();
 
     if ( nbft == 0 )
+    {
       return solList;
+    }
 
     for ( i = 0; i < nbft; i++ )
+    {
       if ( sol->s[i] != -1 )
+      {
         solList->push_back( labelpositions[sol->s[i]] ); // active labels
+      }
       else if ( returnInactive )
+      {
         solList->push_back( labelpositions[featStartId[i]] ); // unplaced label
+      }
+    }
+
+    // if features collide, order by size, so smaller ones appear on top
+    if ( returnInactive )
+    {
+      solList->sort( compareLabelArea );
+    }
 
     return solList;
   }
