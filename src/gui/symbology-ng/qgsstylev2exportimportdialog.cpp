@@ -415,6 +415,9 @@ void QgsStyleV2ExportImportDialog::browse()
     {
       return;
     }
+    QFileInfo pathInfo( mFileName );
+    QString groupName = pathInfo.fileName().replace( ".xml", "" );
+    groupCombo->setItemText( 0, groupName );
     locationLineEdit->setText( mFileName );
     populateStyles( mTempStyle );
   }
