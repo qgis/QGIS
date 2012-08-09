@@ -106,12 +106,14 @@ def unitTestDataPath(theSubdir=None):
          'hazard' or 'exposure'.
     """
     myPath = __file__
+    tmpPath = os.path.split(os.path.dirname(myPath))
+    myPath = os.path.split(tmpPath[0])
     if theSubdir is not None:
-        myPath = os.path.abspath(os.path.join(myPath,
-                                              'unit_test_data',
+        myPath = os.path.abspath(os.path.join(myPath[0],
+                                              'testdata',
                                               theSubdir))
     else:
-        myPath = os.path.abspath(os.path.join(myPath, 'unit_test_data'))
+        myPath = os.path.abspath(os.path.join(myPath[0], 'testdata'))
     return myPath
 
 def setCanvasCrs(theEpsgId, theOtfpFlag=False):
