@@ -233,7 +233,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // Set the enable backbuffer state for X11 (linux) systems only
   // TODO: remove this when threading is implemented
 #ifdef Q_WS_X11
-  chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer" ).toBool() );
+  chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer", 1 ).toBool() );
   toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
 #elif Q_WS_MAC
   chkEnableBackbuffer->setChecked( true );
