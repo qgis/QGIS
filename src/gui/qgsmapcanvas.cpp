@@ -373,8 +373,6 @@ void QgsMapCanvas::refresh()
   QSettings settings;
 #ifdef Q_WS_X11
   bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
-#else
-  bool enableBackbufferSetting = 0;
 #endif
 
 #ifdef Q_WS_X11
