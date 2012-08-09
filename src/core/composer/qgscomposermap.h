@@ -262,6 +262,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridAnnotationDirection( GridAnnotationDirection d, QgsComposerMap::Border border );
     GridAnnotationDirection gridAnnotationDirection( QgsComposerMap::Border border ) const;
 
+    void setGridAnnotationFormat( GridAnnotationFormat f ) { mGridAnnotationFormat = f; }
+    GridAnnotationFormat gridAnnotationFormat() const { return mGridAnnotationFormat; }
+
     /**Set grid frame style (NoGridFrame or Zebra)
         @note: this function was added in version 1.9*/
     void setGridFrameStyle( GridFrameStyle style ) { mGridFrameStyle = style; }
