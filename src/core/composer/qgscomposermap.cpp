@@ -711,6 +711,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //grid annotation
   QDomElement annotationElem = doc.createElement( "Annotation" );
+  annotationElem.setAttribute( "format", mGridAnnotationFormat );
   annotationElem.setAttribute( "show", mShowGridAnnotation );
   annotationElem.setAttribute( "leftPosition", mLeftGridAnnotationPosition );
   annotationElem.setAttribute( "rightPosition", mRightGridAnnotationPosition );
@@ -849,6 +850,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     {
       QDomElement annotationElem = annotationNodeList.at( 0 ).toElement();
       mShowGridAnnotation = ( annotationElem.attribute( "show", "0" ) != "0" );
+      mGridAnnotationFormat = QgsComposerMap::GridAnnotationFormat( annotationElem.attribute( "format", "0" ).toInt() );
       mLeftGridAnnotationPosition = QgsComposerMap::GridAnnotationPosition( annotationElem.attribute( "leftPosition", "0" ).toInt() );
       mRightGridAnnotationPosition = QgsComposerMap::GridAnnotationPosition( annotationElem.attribute( "rightPosition", "0" ).toInt() );
       mTopGridAnnotationPosition = QgsComposerMap::GridAnnotationPosition( annotationElem.attribute( "topPosition", "0" ).toInt() );
