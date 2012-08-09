@@ -65,7 +65,7 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
     connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
 
     QStringList groups = mQgisStyle->groupNames();
-    groupCombo->addItem( "New Group", QVariant( "new" ) );
+    groupCombo->addItem( "imported", QVariant( "new" ) );
     foreach ( QString gName, groups )
     {
       groupCombo->addItem( gName );
@@ -214,11 +214,11 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   if ( mDialogMode == Import )
   {
     int index = groupCombo->currentIndex();
-    if ( groupCombo->itemData( index ).toString() == "new" )
+    QString name = groupCombo->itemText( index );
+    if ( name.isEmpty() )
     {
       // get name of the group
       bool nameInvalid = true;
-      QString name;
       while ( nameInvalid )
       {
         bool ok;
@@ -239,24 +239,21 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
           QMessageBox::warning( this, tr( "New group" ),
                             tr( "Cannot create a group without name. Enter a name." ) );
         }
-        else if ( dst->groupNames().contains( name ) )
-        {
-          groupid = dst->groupId( name );
-          break;
-        }
         else
         {
           // valid name
           nameInvalid = false;
         }
       }
-      // check the valid name bool to avoid duplicate group names
-      if ( !nameInvalid )
-        groupid = dst->addGroup( name );
+      groupid = dst->addGroup( name );
+    }
+    else if ( dst->groupNames().contains( name ) )
+    {
+      groupid = dst->groupId( name );
     }
     else
     {
-      groupid = dst->groupId( groupCombo->itemText( index ) );
+      groupid = dst->addGroup( name );
     }
   }
 

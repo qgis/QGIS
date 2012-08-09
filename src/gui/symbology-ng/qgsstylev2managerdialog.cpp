@@ -203,6 +203,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
+      item->setToolTip( name );
       // add to model
       model->appendRow( item );
     }
@@ -1139,23 +1140,23 @@ void QgsStyleV2ManagerDialog::grouptreeContextMenu( const QPoint& point )
 
   QMenu groupMenu;
 
-  if ( index.parent().isValid() && ( index.data( Qt::UserRole + 1 ).toString() != "ungrouped" ) )
+  if ( index.parent().isValid() && ( index.data().toString() != "Ungrouped" ) )
   {
     if ( index.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
     {
       groupMenu.addAction( "Edit Group" );
-      groupMenu.addAction( "Remove Group" );
     }
+    else
+    {
+      groupMenu.addAction( "Add Group" );
+    }
+    groupMenu.addAction( "Remove Group" );
   }
   else if ( index.data( Qt::UserRole + 1 ) == "groups" || index.data( Qt::UserRole + 1 ) == "smartgroups" )
   {
     groupMenu.addAction( "Add Group" );
   }
-  else
-  {
-    groupMenu.addAction( "Add Group" );
-    groupMenu.addAction( "Remove Group" );
-  }
+
 
   QAction* selectedItem = groupMenu.exec( globalPos );
 

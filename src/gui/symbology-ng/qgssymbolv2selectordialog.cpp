@@ -182,7 +182,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
 
   updateUi();
 
- // set symbol as active item in the tree
+  // set symbol as active item in the tree
   QModelIndex newIndex = layersTree->model()->index( 0, 0 );
   layersTree->setCurrentIndex( newIndex );
 }

@@ -49,14 +49,10 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
     btnAdvanced->show();
   }
 
-  // Populate the symbol groups
-  QStringList groups = style->groupNames();
-  groupsCombo->addItem( QString( "" ) ); //empty first item
-  foreach ( QString group, groups )
-  {
-    groupsCombo->addItem( group );
-  }
-  groups = style->smartgroupNames();
+  // populate the groups
+  groupsCombo->addItem( "" );
+  populateGroups();
+  QStringList groups = style->smartgroupNames();
   foreach ( QString group, groups )
   {
     groupsCombo->addItem( group, QVariant( "smart" ) );
@@ -104,6 +100,27 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   // Set symbol color in btnColor
   updateSymbolColor();
+}
+
+void QgsSymbolsListWidget::populateGroups( QString parent, QString prepend )
+{
+  QgsSymbolGroupMap groups = mStyle->childGroupNames( parent );
+  QgsSymbolGroupMap::const_iterator i = groups.constBegin();
+  while ( i != groups.constEnd() )
+  {
+    QString text;
+    if ( !prepend.isEmpty() )
+    {
+      text = prepend + "/" + i.value();
+    }
+    else
+    {
+      text = i.value();
+    }
+    groupsCombo->addItem( text, QVariant( i.key() ) );
+    populateGroups( i.value(), text );
+    ++i;
+  }
 }
 
 void QgsSymbolsListWidget::populateSymbolView()
@@ -223,7 +240,7 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   mStyle->addSymbol( name, mSymbol->clone() );
 
   // make sure the symbol is stored
-  mStyle->save();
+  mStyle->saveSymbol( name, mSymbol->clone(), 0, QStringList() );
 
   populateSymbolView();
 }
@@ -315,12 +332,13 @@ void QgsSymbolsListWidget::on_groupsCombo_currentIndexChanged( int index )
     if ( groupsCombo->itemData( index ).toString() == "smart" )
     {
       groupid = mStyle->smartgroupId( text );
+      symbols = mStyle->symbolsOfSmartgroup( SymbolEntity, groupid );
     }
     else
     {
-      groupid = mStyle->groupId( text );
+      groupid = groupsCombo->itemData( index ).toInt();
+      symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
     }
-    symbols = mStyle->symbolsOfGroup( SymbolEntity, groupid );
   }
   populateSymbols( symbols );
 }
