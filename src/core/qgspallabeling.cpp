@@ -1430,6 +1430,7 @@ void QgsPalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& fo
 {
   QPainterPath path;
   path.addText( 0, 0, font, text );
+//   color.setAlpha( 125 );
   QPen pen( color );
   pen.setWidthF( size );
   p->setPen( pen );

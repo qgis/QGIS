@@ -15,6 +15,7 @@
 #include "qgslabelpreview.h"
 
 #include <QPainter>
+#include <QFontMetrics>
 
 #include "qgspallabeling.h"
 
@@ -43,7 +44,10 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
 
   p.setRenderHint( QPainter::Antialiasing );
   p.setFont( font() );
-  p.translate( 10, 20 ); // uhm...
+  QFontMetrics fm( font() );
+  p.translate( 0, fm.ascent() + 4 );
+
+//   mBufferColor.setAlpha( 125 );
 
   if ( mBufferSize != 0 )
     QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor );

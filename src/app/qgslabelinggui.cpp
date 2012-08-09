@@ -42,6 +42,10 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   setupUi( this );
 
+  mRefFont = lblFontPreview->font();
+  mPreviewBackgroundBtn->setColor( Qt::white );
+  connect( mPreviewBackgroundBtn, SIGNAL( clicked() ), this, SLOT( changePreviewBackground( ) ) );
+
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
@@ -277,7 +281,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
 
   lyr.textColor = btnTextColor->color();
-  lyr.textFont = lblFontPreview->font();
+  lyr.textFont = mRefFont;
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
@@ -448,6 +452,18 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mRotationComboBox, s, QgsPalLayerSettings::Rotation );
 }
 
+void QgsLabelingGui::changePreviewBackground()
+{
+  QColor color = QColorDialog::getColor( mPreviewBackgroundBtn->color(), this );
+  if ( !color.isValid() )
+    return;
+
+  mPreviewBackgroundBtn->setColor( color );
+  scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
+                                                                                               QString::number( color.green() ),
+                                                                                               QString::number( color.blue() ) ) );
+}
+
 void QgsLabelingGui::changeTextColor()
 {
   QColor color = QColorDialog::getColor( btnTextColor->color(), this );
@@ -463,36 +479,63 @@ void QgsLabelingGui::changeTextFont()
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+  QFont font = QFontDialog::getFont( &ok, mRefFont, 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font() );
+  QFont font = QFontDialog::getFont( &ok, mRefFont );
 #endif
   if ( ok )
   {
     updateFont( font );
   }
-  mFontSizeSpinBox->setValue( font.pointSizeF() );
+  mFontSizeSpinBox->setValue( mRefFont.pointSizeF() );
 }
 
 void QgsLabelingGui::updateFont( QFont font )
 {
+  // update background reference font
+  if ( font != mRefFont )
+  {
+    mRefFont = font;
+  }
+
   QString fontSizeUnitString = tr( "pt" );
   if ( mFontSizeUnitComboBox->currentIndex() == 1 )
   {
     fontSizeUnitString = tr( "map units" );
   }
-  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSizeF() ).arg( fontSizeUnitString ) );
-  lblFontPreview->setFont( font );
+  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( mRefFont.pointSizeF() ).arg( fontSizeUnitString ) );
+
   updatePreview();
 }
 
 void QgsLabelingGui::updatePreview()
 {
+  scrollPreview();
+  lblFontPreview->setFont( mRefFont );
+  QFont previewFont = lblFontPreview->font();
+  if ( mFontSizeUnitComboBox->currentIndex() == 1 )
+  {
+    // TODO: maybe match current map zoom level instead?
+    previewFont.setPointSize( 24 );
+    groupBox_mPreview->setTitle( tr( "Sample @ 24 pts (using map units)" ) );
+  }
+  else
+  {
+    previewFont.setPointSize( mFontSizeSpinBox->value() );
+    groupBox_mPreview->setTitle( tr( "Sample" ) );
+  }
+  lblFontPreview->setFont( previewFont );
+
   lblFontPreview->setTextColor( btnTextColor->color() );
   if ( chkBuffer->isChecked() )
     lblFontPreview->setBuffer( spinBufferSize->value(), btnBufferColor->color() );
   else
     lblFontPreview->setBuffer( 0, Qt::white );
+}
+
+void QgsLabelingGui::scrollPreview()
+{
+  scrollArea_mPreview->ensureVisible( 0, 0, 0, 0 );
 }
 
 void QgsLabelingGui::showEngineConfigDialog()
@@ -565,16 +608,26 @@ void QgsLabelingGui::updateOptions()
 
 void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
 {
-  QFont font = lblFontPreview->font();
-  font.setPointSizeF( d );
-  lblFontPreview->setFont( font );
-  updateFont( font );
+  mRefFont.setPointSizeF( d );
+  updateFont( mRefFont );
 }
 
 void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
-  updateFont( lblFontPreview->font() );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontWordSpacingSpinBox_valueChanged( double spacing )
+{
+  mRefFont.setWordSpacing( spacing );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
+{
+  mRefFont.setLetterSpacing( QFont::AbsoluteSpacing, spacing );
+  updateFont( mRefFont );
 }
 
 void QgsLabelingGui::on_mXCoordinateComboBox_currentIndexChanged( const QString & text )
@@ -599,6 +652,18 @@ void QgsLabelingGui::on_mYCoordinateComboBox_currentIndexChanged( const QString 
   {
     enableDataDefinedAlignment();
   }
+}
+
+void QgsLabelingGui::on_mPreviewTextEdit_textChanged( const QString & text )
+{
+  lblFontPreview->setText( text );
+  updatePreview();
+}
+
+void QgsLabelingGui::on_mPreviewTextBtn_clicked()
+{
+  mPreviewTextEdit->setText( QString( "Lorem Ipsum" ) );
+  updatePreview();
 }
 
 void QgsLabelingGui::disableDataDefinedAlignment()

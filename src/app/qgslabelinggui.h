@@ -38,6 +38,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
   public slots:
     void apply();
+    void changePreviewBackground();
     void changeTextColor();
     void changeTextFont();
     void showEngineConfigDialog();
@@ -46,12 +47,18 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     void updateUi();
     void updatePreview();
+    void scrollPreview();
     void updateOptions();
 
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mFontWordSpacingSpinBox_valueChanged(double spacing );
+    void on_mFontLetterSpacingSpinBox_valueChanged(double spacing );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
+
+    void on_mPreviewTextEdit_textChanged( const QString & text );
+    void on_mPreviewTextBtn_clicked();
 
   protected:
     void populatePlacementMethods();
@@ -66,6 +73,9 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+
+    // background reference font
+    QFont mRefFont;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();
