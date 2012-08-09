@@ -235,7 +235,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 #ifdef Q_WS_X11
   chkEnableBackbuffer->setChecked( settings.value( "/Map/enableBackbuffer", 1 ).toBool() );
   toggleEnableBackbuffer( chkEnableBackbuffer->checkState() );
-#elif Q_WS_MAC
+#elif defined(Q_WS_MAC)
   chkEnableBackbuffer->setChecked( true );
   chkEnableBackbuffer->setEnabled( false );
   labelUpdateThreshold->setEnabled( false );
