@@ -69,7 +69,9 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
+        useThreads = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
+        if useThreads or keepOpen:
             self.tabWidget.addTab(self.logText, "Log")
         self.webView = QtWebKit.QWebView()
         cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))
@@ -213,8 +215,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 self.algEx.start()
                 self.setInfo("<b>Algorithm %s started</b>" % self.alg.name)
                 self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(True)
-                self.tabWidget.setCurrentIndex(1) # log tab
             else:
+                self.setInfo("<b>Algorithm %s starting...</b>" % self.alg.name)
                 if iterateParam:
                     UnthreadedAlgorithmExecutor.runalgIterating(self.alg, iterateParam, self)
                 else:
@@ -235,6 +237,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
                             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
                             self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+            self.tabWidget.setCurrentIndex(1) # log tab
         else:
             QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
 
@@ -259,13 +262,13 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     def error(self, msg):
         self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
-        self.setInfo(msg, True)
-        QMessageBox.critical(self, "Error", msg)
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        if not keepOpen:
+        self.setInfo(msg, True)
+        if not SextanteConfig.USE_THREADS and not keepOpen:
+            QMessageBox.critical(self, "Error", msg)
             self.close()
         else:
-            self.progressLabel.setText("")
+            self.progressLabel.setText("Error: " + msg)
             self.progress.setValue(0)
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
@@ -291,10 +294,8 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
     @pyqtSlot(str, bool)
     def setInfo(self, msg, error = False):
         if error:
-            #SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
             self.logText.append('<span style="color:red">' + msg + '</span>')
         else:
-            #SextanteLog.addToLog(SextanteLog.LOG_INFO, msg)
             self.logText.append(msg)
 
     @pyqtSlot(str)
