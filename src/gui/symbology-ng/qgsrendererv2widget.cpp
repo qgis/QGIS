@@ -182,6 +182,18 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const
   populateMenu( mRotationMenu, SLOT( rotationFieldSelected() ), rotationField );
   populateMenu( mSizeScaleMenu, SLOT( sizeScaleFieldSelected() ), sizeScaleField );
 
+  mSizeScaleMenu->addSeparator();
+  QAction* aScaleByArea = mSizeScaleMenu->addAction( tr( "Scale area" ), this, SLOT( sizeScaleFieldSelected() ) );
+  QAction* aScaleByDiameter = mSizeScaleMenu->addAction( tr( "Scale diameter" ), this, SLOT( sizeScaleFieldSelected() ) );
+
+  aScaleByArea->setCheckable( true );
+  aScaleByDiameter->setCheckable( true );
+
+  QActionGroup *myGroup = new QActionGroup( mSizeScaleMenu );
+
+  myGroup->addAction( aScaleByArea );
+  myGroup->addAction( aScaleByDiameter );
+
   menu->addMenu( mRotationMenu );
   menu->addMenu( mSizeScaleMenu );
 }
