@@ -36,12 +36,34 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsR
   {
     return QSizeF(); //zero size if attribute is missing
   }
-  double value = attIt.value().toDouble();
+
+  bool scaleByArea = true;
+  
+  double scaledValue = attIt.value().toDouble();
+  double scaledLowerValue = is.lowerValue;
+  double scaledUpperValue = is.upperValue;
+  double scaledLowerSizeWidth = is.lowerSize.width();
+  double scaledLowerSizeHeight = is.lowerSize.height();
+  double scaledUpperSizeWidth = is.upperSize.width();
+  double scaledUpperSizeHeight = is.upperSize.height();
+
+  // interpolate the squared value if scale by area
+  if ( scaleByArea )
+  {
+    scaledValue = sqrt( scaledValue );
+    scaledLowerValue = sqrt( scaledLowerValue );
+    scaledUpperValue = sqrt( scaledUpperValue );
+    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
+    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
+    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
+    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
+  }
 
   //interpolate size
-  double ratio = ( value - is.lowerValue ) / ( is.upperValue - is.lowerValue );
-  QSizeF size = QSizeF( sqrt( is.upperSize.width() * ratio + is.lowerSize.width() * ( 1 - ratio ) ),
-                        sqrt( is.upperSize.height() * ratio + is.lowerSize.height() * ( 1 - ratio ) ) );
+  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
+
+  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
+                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
 
   // Scale, if extension is smaller than the specified minimum
   if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
