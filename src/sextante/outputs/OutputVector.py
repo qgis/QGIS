@@ -33,6 +33,7 @@ class OutputVector(Output):
             v = QgsVectorLayer(types[geomType], self.description, "memory")
             pr = v.dataProvider()
             pr.addAttributes(fields)
+            v.startEditing()
             self.memoryLayer = v #keep a reference to the writer
             return v
         else: #outputChannel is a file path
