@@ -56,11 +56,11 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
-      return QSizeF( s.barWidth * attributes.size(), maxValue );
+      return QSizeF( s.barWidth * attributes.size(), maxValue * mScaleFactor );
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
-      return QSizeF( maxValue, s.barWidth * attributes.size() );
+      return QSizeF( maxValue * mScaleFactor, s.barWidth * attributes.size() );
   }
 
   return QSizeF();
