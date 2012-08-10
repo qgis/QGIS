@@ -1363,6 +1363,17 @@ void QgsVectorLayerProperties::handleDiagramTypeChanged( const QString& itemtext
     mLabelPlacementComboBox->hide();
     mLabelPlacementLabel->hide();
   }
+
+  if ( tr( "Histogram" ) == itemtext )
+  {
+    mDiagramOptionsGroupBox->show();
+    mBarWidthLabel->show();
+  }
+  else
+  {
+    mDiagramOptionsGroupBox->hide();
+    mBarWidthLabel->hide();
+  }
 }
 
 void QgsVectorLayerProperties::on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state )
@@ -1588,6 +1599,21 @@ void QgsVectorLayerProperties::on_mDiagramPenColorButton_clicked()
   }
 }
 
+void QgsVectorLayerProperties::on_mDisplayDiagramsCheckBox_stateChanged( int state )
+{
+  // Set all widget enabled states
+  foreach( QWidget *widget, mDiagramDetailWidgets )
+  {
+    widget->setEnabled( Qt::Checked == state );
+  }
+
+  // if enabled show diagram specific options
+  if ( Qt::Checked == state )
+  {
+    handleDiagramTypeChanged( mDiagramTypeComboBox->currentText() );
+  }
+}
+
 void QgsVectorLayerProperties::initDiagramTab()
 {
   if ( !layer )
@@ -1698,7 +1724,7 @@ void QgsVectorLayerProperties::initDiagramTab()
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
   }
-  else
+  else // already a diagram renderer present
   {
     mDisplayDiagramsCheckBox->setChecked( true );
 
@@ -1813,13 +1839,15 @@ void QgsVectorLayerProperties::initDiagramTab()
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Histogram" ) ) );
       }
     }
-  }
+  } // if ( !dr ), else
 
-  // Hide/Show diagram specific widgets
-  // handleDiagramTypeChanged( mDiagramTypeComboBox->currentText() );
-  // Enable / disable small diagram scaling related widgets
-  // on_mFixedSizeCheckBox_stateChanged( mIncreaseSmallDiagramsCheckBox->checkState() );
+  // Popuplate the widget list with all widgets which should be enabled/disabled when diagrams are
+  // enabled / disabled
+  mDiagramDetailWidgets << mTypeLabel << mDiagramTypeComboBox << mPriorityLabel << mPriorityLowLabel
+    << mPrioritySlider << mPriorityHighLabel << mAppearanceGroupBox << mVisibilityGroupBox << mSizeGroupBox
+    << mPlacementGroupBox << mAttributesLabel << mDiagramAttributesComboBox << mRemoveCategoryPushButton 
+    << mAddCategoryPushButton << mDiagramAttributesTreeWidget << mDiagramOptionsGroupBox;
+
   connect( mDiagramAttributesTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleDiagramItemDoubleClick( QTreeWidgetItem*, int ) ) );
   connect( mDiagramTypeComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( handleDiagramTypeChanged( const QString& ) ) );
-//  connect( mIncreaseSmallDiagramsCheckBox, SIGNAL( stateChanged( int ) ), this, SLOT( handleIncreaseSmallDiagramsChanged( int ) ) );
 }

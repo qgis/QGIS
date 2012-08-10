@@ -127,6 +127,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_mFindMaximumValueButton_clicked();
     void on_mBackgroundColorButton_clicked();
     void on_mDiagramPenColorButton_clicked();
+    void on_mDisplayDiagramsCheckBox_stateChanged( int state );
     void on_pbnUpdateExtents_clicked();
     void on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state );
 
@@ -196,6 +197,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QgsLabelDialog* labelDialog;
     /**Actions dialog. If apply is pressed, the actions are stored for later use */
     QgsAttributeActionDialog* actionDialog;
+
+    /**A list of all widgets to enable/disable when diagrams are enabled / disabled */
+    QList<QWidget *> mDiagramDetailWidgets;
 
     QList<QgsApplyDialog*> mOverlayDialogs;
     QMap<int, QPushButton*> mButtonMap;
