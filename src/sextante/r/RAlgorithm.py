@@ -177,8 +177,10 @@ class RAlgorithm(GeoAlgorithm):
         loglines = []
         loglines.append("R execution commands")
         loglines += self.getFullSetOfRCommands()
+        for line in loglines:
+            progress.setCommand(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
-        RUtils.executeRAlgorithm(self)
+        RUtils.executeRAlgorithm(self, progress)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
             f = open(htmlfilename, "w")
