@@ -21,7 +21,7 @@
 #include "qgslogger.h"
 
 #include <stdlib.h> // for random()
-#include <sys/time.h>
+#include <QTime>
 
 QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2 )
     : mColor1( color1 ), mColor2( color2 )
@@ -763,8 +763,8 @@ bool QgsCptCityColorRampV2::hasAllSchemes()
 // currently this method takes some time, so it must be explicitly requested
 bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
 {
-  struct timeval tv1, tv2;
-  gettimeofday( &tv1, 0 );
+  QTime time;
+  time.start();
 
   // TODO should keep the name of the previously loaded, or see if the first element is inside rootDir
   if ( ! reset && ! mCollections.isEmpty() )
@@ -987,9 +987,7 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
     mCollectionSelections[ viewName ] << curName;
   }
 
-  gettimeofday( &tv2, 0 );
-  QgsDebugMsg( QString( "done in %1.%2 seconds" ).arg( tv2.tv_sec - tv1.tv_sec
-                                                     ).arg(( double )( tv2.tv_usec - tv2.tv_usec ) / 1000000.0 ) );
+  QgsDebugMsg( QString( "done in %1 seconds" ).arg( time.elapsed() / 1000.0 ) );
   return ( ! mCollections.isEmpty() );
 }
 

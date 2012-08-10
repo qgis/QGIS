@@ -22,8 +22,7 @@
 
 #include <QPushButton>
 #include <QTextEdit>
-
-#include <sys/time.h>
+#include <QTime>
 
 /////////
 
@@ -180,8 +179,8 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
   QStringList collections;
   QTreeWidgetItem *item, *childItem;
 
-  struct timeval tv1, tv2;
-  gettimeofday( &tv1, 0 );
+  QTime time;
+  time.start();
 
   treeWidget->blockSignals( true );
   treeWidget->clear();
@@ -238,10 +237,7 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
 
   treeWidget->setColumnWidth( 0, 250 );
 
-  gettimeofday( &tv2, 0 );
-  QgsDebugMsg( QString( "done in %1.%2 seconds" ).arg( tv2.tv_sec - tv1.tv_sec
-                                                     ).arg(( double )( tv2.tv_usec - tv2.tv_usec ) / 1000000.0 ) );
-
+  QgsDebugMsg( QString( "done in %1 seconds" ).arg( time.elapsed() / 1000.0 ) );
 }
 
 void QgsCptCityColorRampV2Dialog::populateVariants()
