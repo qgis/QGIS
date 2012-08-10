@@ -1457,6 +1457,16 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QLabel" name="mScaleDependencyLabel">
+                    <property name="text">
+                     <string>Scale</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="mScaleDependencyComboBox"/>
+                  </item>
                  </layout>
                 </item>
                 <item row="0" column="2">

@@ -862,6 +862,15 @@ void QgsVectorLayerProperties::apply()
      ds.labelPlacementMethod = QgsDiagramSettings::XHeight;
     }
 
+    if ( tr( "Area" ) == mScaleDependencyComboBox->currentText() )
+    {
+      ds.scaleByArea = true;
+    }
+    else
+    {
+      ds.scaleByArea = false;
+    }
+
     if ( mIncreaseSmallDiagramsCheckBox->isChecked() )
     {
       ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
@@ -1374,6 +1383,17 @@ void QgsVectorLayerProperties::handleDiagramTypeChanged( const QString& itemtext
     mDiagramOptionsGroupBox->hide();
     mBarWidthLabel->hide();
   }
+
+  if ( tr( "Text diagram" ) == itemtext || tr( "Pie chart" ) == itemtext )
+  {
+    mScaleDependencyComboBox->show();
+    mScaleDependencyLabel->show();
+  }
+  else
+  {
+    mScaleDependencyComboBox->hide();
+    mScaleDependencyLabel->hide();
+  }
 }
 
 void QgsVectorLayerProperties::on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state )
@@ -1671,6 +1691,9 @@ void QgsVectorLayerProperties::initDiagramTab()
 
   mLabelPlacementComboBox->addItem( tr( "Height" ) );
   mLabelPlacementComboBox->addItem( tr( "x-height" ) );
+
+  mScaleDependencyComboBox->addItem( tr( "Area" ) );
+  mScaleDependencyComboBox->addItem( tr( "Diameter" ) );
 
   //insert all attributes into the combo boxes
   const QgsFieldMap& layerFields = layer->pendingFields();

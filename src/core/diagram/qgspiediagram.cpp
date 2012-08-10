@@ -36,8 +36,6 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsR
   {
     return QSizeF(); //zero size if attribute is missing
   }
-
-  bool scaleByArea = true;
   
   double scaledValue = attIt.value().toDouble();
   double scaledLowerValue = is.lowerValue;
@@ -48,7 +46,7 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsR
   double scaledUpperSizeHeight = is.upperSize.height();
 
   // interpolate the squared value if scale by area
-  if ( scaleByArea )
+  if ( s.scaleByArea )
   {
     scaledValue = sqrt( scaledValue );
     scaledLowerValue = sqrt( scaledLowerValue );
