@@ -30,6 +30,12 @@ class TestQgsGeometry(unittest.TestCase):
                       (QGis.WKBLineString, myLine.type()))
         assert myLine.wkbType() == QGis.WKBLineString, myMessage
 
+    def testFromPolygon(self):
+        myPolygon = QgsGeometry.fromPolygon([[QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(1, 2), QgsPoint(1, 1)]])
+        myMessage = ('Expected:\n%s\nGot:\n%s\n' %
+                      (QGis.WKBPolygon, myPolygon.type()))
+        assert myPolygon.wkbType() == QGis.WKBPolygon, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()
