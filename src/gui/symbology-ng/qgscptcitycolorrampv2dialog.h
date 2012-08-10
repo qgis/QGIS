@@ -37,7 +37,9 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
 
     void on_treeWidget_currentItemChanged( QTreeWidgetItem * current, QTreeWidgetItem * previous );
     void on_treeWidget_itemExpanded( QTreeWidgetItem * item );
-    void on_buttonGroupView_buttonClicked( QAbstractButton * button );
+    /* void on_buttonGroupView_buttonClicked( QAbstractButton * button ); */
+    void on_tabBar_currentChanged( int index );
+    void on_pbtnLicenseDetails_pressed();
 
   protected:
 
@@ -45,8 +47,10 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     QTreeWidgetItem* findPath( QString path );
     QTreeWidgetItem * makeCollectionItem( const QString& path );
     void makeSchemeItem( QTreeWidgetItem *item, const QString& path, const QString& schemeName );
+    bool eventFilter( QObject *obj, QEvent *event );
 
     QgsCptCityColorRampV2* mRamp;
+    QString mCollection;
 };
 
 #endif

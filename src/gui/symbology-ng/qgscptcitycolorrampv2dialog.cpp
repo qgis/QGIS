@@ -18,25 +18,32 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsdialog.h"
 
 #include <QPushButton>
 #include <QTextEdit>
 
-#if 0 // unused
-static void updateColorButton( QAbstractButton* button, QColor color )
-{
-  QPixmap p( 20, 20 );
-  p.fill( color );
-  button->setIcon( QIcon( p ) );
-}
-#endif
+#include <sys/time.h>
 
 /////////
 
+/*
+TODO
+
+- implement as model/view
+- collapse all button
+- show information from dir when selected
+- when browsing by selections, remove dir from scheme name
+- show type when there are variants - based on the first file
+
+- selections:
+  - shorten child names
+  - when collection has only 1 item (e.g. es_skywalker), bring up one level
+
+ */
 QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent )
     : QDialog( parent ), mRamp( ramp )
 {
-
   setupUi( this );
 
   QgsCptCityColorRampV2::loadSchemes( "" );
@@ -61,17 +68,31 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     edit->setText( helpText );
     stackedWidget->addWidget( edit );
     stackedWidget->setCurrentIndex( 1 );
+    tabBar->setVisible( false );
     buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     return;
   }
 
+  // setup ui
+  tabBar->addTab( tr( "Selections by theme" ) );
+  tabBar->addTab( tr( "All by author" ) );
   treeWidget->setIconSize( QSize( 100, 15 ) );
+  cboVariantName->setIconSize( QSize( 100, 15 ) );
+  // treeWidget->header()->setResizeMode( 0, QHeaderView::Stretch );
+  // treeWidget->header()->setResizeMode( 1, QHeaderView::ResizeToContents );
+  lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
 
-  populateSchemes( "author" );
-  treeWidget->setCurrentItem( findPath( ramp->schemeName() ) );
+  // populate tree widget - if item not found in selections collection, look for in authors
+  on_tabBar_currentChanged( 0 );
+  if ( ! treeWidget->currentItem() )
+  {
+    tabBar->setCurrentIndex( 1 );
+    on_tabBar_currentChanged( 1 );
+  }
+
   populateVariants();
-  cboVariantName->setCurrentIndex( cboVariantName->findData( ramp->variantName(), Qt::UserRole ) );
   connect( cboVariantName, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setVariantName() ) );
+  cboVariantName->setCurrentIndex( cboVariantName->findData( ramp->variantName(), Qt::UserRole ) );
 
   updatePreview();
 }
@@ -83,24 +104,44 @@ QTreeWidgetItem* QgsCptCityColorRampV2Dialog::findPath( QString path )
 {
   QTreeWidgetItem *item = 0, *childItem = 0;
   QString itemPath, childPath;
+  bool foundParent, foundChild;
 
   for ( int i = 0; i < treeWidget->topLevelItemCount(); i++ )
   {
     item = treeWidget->topLevelItem( i );
     if ( !item )
       return 0; // an error occurred
-    itemPath = item->data( 0, Qt::UserRole ).toString();
+    foundParent = false;
 
+    itemPath = item->data( 0, Qt::UserRole ).toString();
     if ( itemPath == path )
     {
       QgsDebugMsg( "Arrived " + itemPath );
       return item; // we have found the item we have been looking for
     }
 
-    if ( itemPath.endsWith( "/" ) && path.startsWith( itemPath ) )
+    // if we are using a selection collection, search for target in the mapping in this group
+    if ( mCollection == "selections" )
+    {
+      itemPath = item->text( 0 );
+      foreach ( QString childPath, QgsCptCityColorRampV2::collectionSelections().value( itemPath ) )
+      {
+        if ( childPath == path )
+        {
+          foundParent = true;
+          break;
+        }
+      }
+    }
+    // search for target in parent directory
+    else if ( itemPath.endsWith( "/" ) && path.startsWith( itemPath ) )
+      foundParent = true;
+
+    // search for target in children
+    if ( foundParent )
     {
       // we have found a preceding item: stop searching on this level and go deeper
-      bool foundChild = true;
+      foundChild = true;
 
       while ( foundChild )
       {
@@ -129,6 +170,7 @@ QTreeWidgetItem* QgsCptCityColorRampV2Dialog::findPath( QString path )
       }
       break;
     }
+
   }
   return 0; // not found
 }
@@ -137,22 +179,23 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
 {
   QStringList collections;
   QTreeWidgetItem *item, *childItem;
-  if ( view == "author" )
+
+  struct timeval tv1, tv2;
+  gettimeofday( &tv1, 0 );
+
+  treeWidget->blockSignals( true );
+  treeWidget->clear();
+
+  if ( view == "authors" )
   {
-    treeWidget->blockSignals( true );
-    treeWidget->clear();
     foreach ( QString collectionName, QgsCptCityColorRampV2::listSchemeCollections() )
     {
       item = makeCollectionItem( collectionName );
       treeWidget->addTopLevelItem( item );
     }
-    treeWidget->blockSignals( false );
   }
   else if ( view == "selections" )
   {
-    treeWidget->blockSignals( true );
-    treeWidget->clear();
-
     QMapIterator< QString, QStringList> it( QgsCptCityColorRampV2::collectionSelections() );
     while ( it.hasNext() )
     {
@@ -160,9 +203,10 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
       QString path = it.key();
       QString descStr = QgsCptCityColorRampV2::collectionNames().value( path );
 
-      // TODO shorten child names and fix / at beginning of name
-      // TODO when collection has only 1 item (e.g. es_skywalker), bring up one level
       item = new QTreeWidgetItem( QStringList() << path << descStr << QString() );
+      // item->setData( 0, Qt::UserRole, QString( descStr ) + "/" );  // add / to end to identify it as a collection item
+      // item->setData( 0, Qt::UserRole, QString( path ) );
+
       QFont font;
       font.setBold( true );
       item->setData( 0, Qt::FontRole, QVariant( font ) );
@@ -185,41 +229,68 @@ void QgsCptCityColorRampV2Dialog::populateSchemes( QString view )
       }
       treeWidget->addTopLevelItem( item );
     }
-    treeWidget->blockSignals( false );
   }
   else
   {
     QgsDebugMsg( "invalid view " + view );
-    return;
   }
+  treeWidget->blockSignals( false );
 
   treeWidget->setColumnWidth( 0, 250 );
+
+  gettimeofday( &tv2, 0 );
+  QgsDebugMsg( QString( "done in %1.%2 seconds" ).arg( tv2.tv_sec - tv1.tv_sec
+                                                     ).arg(( double )( tv2.tv_usec - tv2.tv_usec ) / 1000000.0 ) );
+
 }
 
 void QgsCptCityColorRampV2Dialog::populateVariants()
 {
-  if ( ! treeWidget->currentItem() )
-    return;
+  QStringList variantList;
+  if ( treeWidget->currentItem() )
+    variantList = treeWidget->currentItem()->data( 1, Qt::UserRole ).toString().split( " ", QString::SkipEmptyParts );
 
   cboVariantName->blockSignals( true );
-
-  QString oldVariant = cboVariantName->currentText();
   cboVariantName->clear();
 
-  foreach ( QString variant, treeWidget->currentItem()->data( 1, Qt::UserRole ).toString().split( " ", QString::SkipEmptyParts ) )
+  if ( variantList.isEmpty() )
   {
-    QString variantStr = variant;
-    if ( variantStr.startsWith( "-" ) || variantStr.startsWith( "_" ) )
-      variantStr.remove( 0, 1 );
-    cboVariantName->addItem( variantStr );
-    cboVariantName->setItemData( cboVariantName->count() - 1, variant, Qt::UserRole );
+    cboVariantName->setEnabled( false );
+    cboVariantName->setVisible( false );
+    setVariantName();
   }
-
-  cboVariantName->blockSignals( false );
-
-  if ( cboVariantName->count() > 0 )
+  else
   {
+    QString oldVariant = cboVariantName->currentText();
+    QgsCptCityColorRampV2 ramp( mRamp->schemeName(), "" );
+    QPixmap blankPixmap( cboVariantName->iconSize() );
+    blankPixmap.fill( Qt::white );
+    QIcon blankIcon( blankPixmap );
+    QIcon icon;
+    int index;
+
+    foreach ( QString variant, variantList )
+    {
+      QString variantStr = variant;
+      if ( variantStr.startsWith( "-" ) || variantStr.startsWith( "_" ) )
+        variantStr.remove( 0, 1 );
+      cboVariantName->addItem( " " + variantStr );
+      index = cboVariantName->count() - 1;
+      cboVariantName->setItemData( index, variant, Qt::UserRole );
+
+      ramp.setVariantName( variant );
+      if ( ramp.loadFile() )
+        cboVariantName->setItemIcon( index,
+                                     QgsSymbolLayerV2Utils::colorRampPreviewIcon( &ramp, cboVariantName->iconSize() ) );
+      else
+        cboVariantName->setItemIcon( index, blankIcon );
+      cboVariantName->setItemData( index, Qt::AlignHCenter, Qt::TextAlignmentRole );
+    }
+
+    cboVariantName->blockSignals( false );
     cboVariantName->setEnabled( true );
+    cboVariantName->setVisible( true );
+
     // try to set the original variant again (if exists)
     // TODO - is this really necessary?
     int idx = cboVariantName->findText( oldVariant );
@@ -230,11 +301,6 @@ void QgsCptCityColorRampV2Dialog::populateVariants()
     }
     cboVariantName->setCurrentIndex( idx );
   }
-  else
-  {
-    cboVariantName->setEnabled( false );
-    setVariantName();
-  }
 
 }
 
@@ -242,9 +308,11 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_currentItemChanged( QTreeWidgetI
 {
   Q_UNUSED( previous );
   // directories have name data that ends with /
-  if ( ! current->data( 0, Qt::UserRole ).toString().endsWith( "/" ) )
+  QString currentScheme = current->data( 0, Qt::UserRole ).toString();
+  if ( ! currentScheme.isNull() && ! currentScheme.endsWith( "/" ) )
   {
-    lblSchemeName->setText( current->data( 0, Qt::UserRole ).toString() );
+    // lblSchemeName->setText( current->data( 0, Qt::UserRole ).toString() );
+    lblSchemeName->setText( current->text( 0 ) );
     setSchemeName();
     // populateVariants();
   }
@@ -270,7 +338,6 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_itemExpanded( QTreeWidgetItem * 
       continue;
 
     // items with null description need information, those with "" (i.e. unnamed collections) not be checked
-    // TODO set type when there are variants - based on the first file
     if ( childItem && childItem->text( 1 ).isNull() )
     {
       itemPath = childItem->data( 0, Qt::UserRole ).toString();
@@ -293,8 +360,11 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_itemExpanded( QTreeWidgetItem * 
       {
         if ( itemVariants.isNull() )
         {
-          itemDesc = QString::number( ramp.count() ) + " " + tr( "colors" ) + " - ";
+          int count = ramp.count();
           QgsCptCityColorRampV2::GradientType type = ramp.gradientType();
+          if ( type == QgsCptCityColorRampV2::Discrete )
+            count--;
+          itemDesc = QString::number( count ) + " " + tr( "colors" ) + " - ";
           if ( type == QgsCptCityColorRampV2::Continuous )
             itemDesc += tr( "continuous" );
           else if ( type == QgsCptCityColorRampV2::ContinuousMulti )
@@ -319,11 +389,12 @@ void QgsCptCityColorRampV2Dialog::on_treeWidget_itemExpanded( QTreeWidgetItem * 
   }
 }
 
+#if 0
 void QgsCptCityColorRampV2Dialog::on_buttonGroupView_buttonClicked( QAbstractButton * button )
 {
   if ( button->objectName() == "rbtnAuthor" )
   {
-    populateSchemes( "author" );
+    populateSchemes( "authors" );
   }
   else if ( button->objectName() == "rbtnSelections" )
   {
@@ -334,29 +405,114 @@ void QgsCptCityColorRampV2Dialog::on_buttonGroupView_buttonClicked( QAbstractBut
     QgsDebugMsg( "invalid button " + button->objectName() );
   }
 }
+#endif
+
+void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
+{
+  if ( index == 0 )
+    mCollection = "selections";
+  else if ( index == 1 )
+    mCollection = "authors";
+  else
+  {
+    QgsDebugMsg( QString( "invalid index %1" ).arg( index ) );
+    mCollection = QString();
+  }
+  populateSchemes( mCollection );
+
+  // restore selection, if any
+  if ( ! mCollection.isNull() )
+  {
+    lblSchemeName->setText( mRamp->schemeName() );
+    treeWidget->setCurrentItem( findPath( mRamp->schemeName() ) );
+  }
+}
+
+void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
+{
+  // prepare dialog
+  QgsDialog dlg( this, 0, QDialogButtonBox::Close );
+  QVBoxLayout *layout = dlg.layout();
+  QString title = tr( "gradient %1 details" ).arg( mRamp->schemeName() + mRamp->variantName() );
+  dlg.setWindowTitle( title );
+  QTextEdit *textEdit = new QTextEdit( &dlg );
+  textEdit->setReadOnly( true );
+  layout->addWidget( textEdit );
+
+  // add contents of DESC.xml and COPYING.xml
+  QString copyFile = mRamp->copyingFileName();
+  QString copyText;
+  if ( ! copyFile.isNull() )
+  {
+    QFile file( copyFile );
+    if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      copyText = QString( file.readAll() );
+      file.close();
+    }
+  }
+  QString descFile = mRamp->descFileName();
+  QString descText;
+  if ( ! descFile.isNull() )
+  {
+    QFile file( descFile );
+    if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      descText = QString( file.readAll() );
+      file.close();
+    }
+  }
+  textEdit->insertPlainText( "===================" );
+  textEdit->insertPlainText( " copying " );
+  textEdit->insertPlainText( "===================\n" );
+  textEdit->insertPlainText( copyText );
+  textEdit->insertPlainText( "\n" );
+  textEdit->insertPlainText( "==================" );
+  textEdit->insertPlainText( " description " );
+  textEdit->insertPlainText( "==================\n" );
+  textEdit->insertPlainText( descText );
+  textEdit->moveCursor( QTextCursor::Start );
+
+  dlg.resize( 600, 600 );
+  dlg.exec();
+}
 
 void QgsCptCityColorRampV2Dialog::updatePreview()
 {
-  QSize size( 300, 40 );
+  if ( mRamp->schemeName() == "" )
+    return;
+
   mRamp->loadFile();
   // TODO draw checker-board/transparent background
   // for transparent, add  [ pixmap.fill( Qt::transparent ); ] to QgsSymbolLayerV2Utils::colorRampPreviewPixmap
 
+  lblSchemePath->setText( mRamp->schemeName() + mRamp->variantName() );
+
+  // update pixmap
+  QSize size( 300, 50 );
   QPixmap pixmap = QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size );
   lblPreview->setPixmap( pixmap );
 
-  // this is for testing purposes only
-  // you need to install a mirror of cpt-city files in $HOME/.qgis/cpt-city-state with just the .png files
-  QString basefile = QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city-site" + "/" + mRamp->schemeName() +  mRamp->variantName() + ".png";
-  QFileInfo info( basefile );
-  QString pngfile = info.path() + "/tn/" + info.fileName();
-  if ( QFile::exists( pngfile ) )
-  {
-    QPixmap pixmap2( pngfile );
-    lblPreview2->setPixmap( pixmap2.scaled( size ) );
-  }
-  lblPreview2->setText( "" );
-
+  // add copyright information from COPYING.xml file
+  QMap< QString, QString > copyingMap = mRamp->copyingInfo();
+  QString authorStr = copyingMap[ "authors" ];
+  if ( authorStr.length() > 80 )
+    authorStr.replace( authorStr.indexOf( " ", 80 ), 1, "\n" );
+  lblAuthorName->setText( authorStr );
+  QString licenseStr = copyingMap[ "license/informal" ];
+  if ( copyingMap.contains( "license/year" ) )
+    licenseStr += " (" + copyingMap[ "license/year" ] + ")";
+  if ( licenseStr.length() > 80 )
+    licenseStr.replace( licenseStr.indexOf( " ", 80 ), 1, "\n" );
+  if ( copyingMap.contains( "license/url" ) )
+    licenseStr += "\n[ " + copyingMap[ "license/url" ] + " ]";
+  else
+    licenseStr += "\n";
+  lblLicenseName->setText( licenseStr );
+  if ( copyingMap.contains( "src/link" ) )
+    lblSrcLink->setText( copyingMap[ "src/link"] );
+  else
+    lblSrcLink->setText( "" );
 }
 
 void QgsCptCityColorRampV2Dialog::setSchemeName()
@@ -364,12 +520,7 @@ void QgsCptCityColorRampV2Dialog::setSchemeName()
   if ( treeWidget->currentItem() )
   {
     mRamp->setSchemeName( treeWidget->currentItem()->data( 0, Qt::UserRole ).toString() );
-    // setVariantName();
-
-    // populate list of variants
     populateVariants();
-
-    // updatePreview();
   }
 }
 
@@ -416,31 +567,52 @@ QTreeWidgetItem * QgsCptCityColorRampV2Dialog::makeCollectionItem( const QString
 */
 void QgsCptCityColorRampV2Dialog::makeSchemeItem( QTreeWidgetItem *item, const QString& path, const QString& schemeName )
 {
-  QString descStr, descData;//, variantStr;
-  QString curName, curVariant;
+  QString descStr, descData;
   QStringList listVariants;
   QTreeWidgetItem *childItem;
 
-  // // descStr = schemeName;
   listVariants = QgsCptCityColorRampV2::schemeVariants().value( path + "/" + schemeName );
 
   if ( listVariants.count() > 1 )
   {
-    // variantStr = QString::number( listVariants.count() ) + " " + tr( "variants" );
-    // descStr = "   " + QString::number( listVariants.count() ) + " " + tr( "variants" );
     descData = listVariants.join( " " );
   }
 
   childItem = new QTreeWidgetItem( QStringList() << schemeName << descStr );
-  childItem->setData( 0, Qt::UserRole, path + "/" + schemeName );
+  if ( path != "" )
+    childItem->setData( 0, Qt::UserRole, path + "/" + schemeName );
+  else
+    childItem->setData( 0, Qt::UserRole, schemeName );
   if ( ! descData.isNull() )
     childItem->setData( 1, Qt::UserRole, descData );
   item->addChild( childItem );
+}
 
-  // create a preview icon using five color variant
-  // QgsCptCityColorRampV2* r = new QgsCptCityColorRampV2( schemeName, 5 );
-  // QIcon icon = QgsSymbolLayerV2Utils::colorRampPreviewIcon( r, iconSize );
-  // delete r;
-
+// this function if for a svg preview, available if the svg files have been processed with svgx
+// e.g. for f in `ls */*/*/*/*.svg`; do echo $f ; svgx -p -t svg $f > tmp1.svg; mv tmp1.svg $f; done
+// perhaps a future version of the cpt-city svg gradients will have them by default
+bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
+{
+  QSize size( 300, 50 );
+  if ( event->type() == QEvent::MouseButtonPress )
+  {
+    // create preview from svg file if supported - depends on file versions
+    QPixmap pixmap( mRamp->fileName() );
+    if ( ! pixmap.isNull() )
+      lblPreview->setPixmap( pixmap.scaled( size ) );
+    return true;
+  }
+  else if ( event->type() == QEvent::MouseButtonRelease )
+  {
+    // restore preview
+    QPixmap pixmap = QgsSymbolLayerV2Utils::colorRampPreviewPixmap( mRamp, size );
+    lblPreview->setPixmap( pixmap );
+    return true;
+  }
+  else
+  {
+    // standard event processing
+    return QObject::eventFilter( obj, event );
+  }
 }
 

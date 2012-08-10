@@ -203,10 +203,14 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     /* bool isContinuous() const { return mContinuous; } */
     GradientType gradientType() const { return mGradientType; }
 
-    QString getFilename() const;
+    QString fileName() const;
     bool loadFile( QString filename = "" );
 
-    static QString getBaseDir();
+    QString copyingFileName() const;
+    QMap< QString, QString > copyingInfo();
+    QString descFileName() const;
+
+    static QString baseDir();
     static void setBaseDir( QString dirName ) { mBaseDir = dirName; }
     static bool loadSchemes( QString rootDir = "", bool reset = false );
     /** Is the minimal (free to distribute) set of schemes available?
