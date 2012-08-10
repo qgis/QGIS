@@ -37,7 +37,7 @@
 #include <QTime>
 #include <QPainter>
 
-#include "qgsdiagram.h"
+#include "diagram/qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgslabelsearchtree.h"
 #include "qgsexpression.h"

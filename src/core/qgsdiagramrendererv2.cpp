@@ -13,7 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdiagramrendererv2.h"
-#include "qgsdiagram.h"
+#include "diagram/qgstextdiagram.h"
+#include "diagram/qgspiediagram.h"
+#include "diagram/qgshistogramdiagram.h"
 #include "qgsrendercontext.h"
 #include <QDomElement>
 #include <QPainter>
