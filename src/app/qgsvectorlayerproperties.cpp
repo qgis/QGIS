@@ -19,6 +19,10 @@
 #include <memory>
 #include <limits>
 
+#include "diagram/qgshistogramdiagram.h"
+#include "diagram/qgspiediagram.h"
+#include "diagram/qgstextdiagram.h"
+
 #include "qgisapp.h"
 #include "qgsaddjoindialog.h"
 #include "qgsapplication.h"
@@ -27,7 +31,6 @@
 #include "qgscontexthelp.h"
 #include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsfieldcalculator.h"
 #include "qgsgraduatedsymboldialog.h"
