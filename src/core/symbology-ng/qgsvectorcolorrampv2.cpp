@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 
 #include <stdlib.h> // for random()
+#include <sys/time.h>
 
 QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2 )
     : mColor1( color1 ), mColor2( color2 )
@@ -256,11 +257,25 @@ QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
 
 /*
 TODO
-- return a suitable name (scheme_variant)
-- use model/view for the treewidget
-- fix ocal file parsing
+- return a suitable name (scheme_variant) ??
 - re-organize and rename colorramp classes and widgets
  */
+
+/*
+TODO load schemes
+- don't show empty dirs? (e.g. jjg/hatch)
+
+- better grouping:
+  - cl/fs2????
+  - cw
+  - dca
+  - dirs with one scheme ( cl/ es/ ma/ occ/ wkp/
+      jjg/neo10/env/green-crystal jjg/neo10/face/eyes/blue )
+
+- fix rendering:
+  - ibcao
+
+*/
 QString QgsCptCityColorRampV2::mBaseDir;
 QStringList QgsCptCityColorRampV2::mCollections;
 QMap< QString, QStringList > QgsCptCityColorRampV2::mSchemeMap;
@@ -389,7 +404,7 @@ QgsStringMap QgsCptCityColorRampV2::properties() const
 
 QStringList QgsCptCityColorRampV2::listSchemeCollections( QString collectionName, bool recursive )
 {
-  QDir dir = QDir( QgsCptCityColorRampV2::getBaseDir() + "/" + collectionName );
+  QDir dir = QDir( QgsCptCityColorRampV2::baseDir() + "/" + collectionName );
   if ( ! dir.exists() )
     return QStringList();
 
@@ -417,7 +432,7 @@ QStringList QgsCptCityColorRampV2::listSchemeCollections( QString collectionName
 
 QStringList QgsCptCityColorRampV2::listSchemeNames( QString collectionName )
 {
-  QDir dir = QDir( QgsCptCityColorRampV2::getBaseDir() + "/" + collectionName );
+  QDir dir = QDir( QgsCptCityColorRampV2::baseDir() + "/" + collectionName );
   if ( ! dir.exists() )
   {
     QgsDebugMsg( "dir " + dir.dirName() + " does not exist" );
@@ -430,7 +445,7 @@ QStringList QgsCptCityColorRampV2::listSchemeNames( QString collectionName )
   return entries;
 }
 
-QString QgsCptCityColorRampV2::getBaseDir()
+QString QgsCptCityColorRampV2::baseDir()
 {
   // if was set with setBaseDir, return that value
   QString baseDir = mBaseDir;
@@ -451,19 +466,137 @@ QString QgsCptCityColorRampV2::getBaseDir()
   return baseDir;
 }
 
-QString QgsCptCityColorRampV2::getFilename() const
+QString QgsCptCityColorRampV2::fileName() const
 {
   if ( mSchemeName == "" )
     return QString();
   else
-    return QgsCptCityColorRampV2::getBaseDir() + "/" + mSchemeName +  mVariantName + ".svg";
+    return QgsCptCityColorRampV2::baseDir() + "/" + mSchemeName +  mVariantName + ".svg";
+}
+
+QString findFileName( const QString & target, const QString & startDir, const QString & baseDir )
+{
+  if ( startDir == "" || ! startDir.startsWith( baseDir ) )
+    return QString();
+
+  QDir dir = QDir( startDir );
+  //todo test when
+  while ( ! dir.exists( target ) && dir.path() != baseDir )
+  {
+    dir.cdUp();
+  }
+  if ( ! dir.exists( target ) )
+    return QString();
+  else
+    return dir.path() + QDir::separator() + target;
+}
+
+QString QgsCptCityColorRampV2::copyingFileName() const
+{
+  return findFileName( "COPYING.xml", QFileInfo( fileName() ).dir().path(), baseDir() );
+}
+
+QString QgsCptCityColorRampV2::descFileName() const
+{
+  return findFileName( "DESC.xml", QFileInfo( fileName() ).dir().path(), baseDir() );
+}
+
+QMap< QString, QString > QgsCptCityColorRampV2::copyingInfo()
+{
+  QMap< QString, QString > copyingMap;
+
+  // import xml file
+  QString licenseFileName = copyingFileName();
+  if ( licenseFileName.isNull() )
+    return copyingMap;
+  QFile f( licenseFileName );
+  if ( !f.open( QFile::ReadOnly ) )
+  {
+    QgsDebugMsg( "Couldn't open xml file: " + licenseFileName );
+    return copyingMap;
+  }
+
+  // parse the document
+  QDomDocument doc( "license" );
+  if ( !doc.setContent( &f ) )
+  {
+    f.close();
+    QgsDebugMsg( "Couldn't parse xml file: " + licenseFileName );
+    return copyingMap;
+  }
+  f.close();
+
+  // get root element
+  QDomElement docElem = doc.documentElement();
+  if ( docElem.tagName() != "copying" )
+  {
+    QgsDebugMsg( "Incorrect root tag: " + docElem.tagName() );
+    return copyingMap;
+  }
+
+  // load author information
+  QDomElement authorsElement = docElem.firstChildElement( "authors" );
+  if ( authorsElement.isNull() )
+  {
+    QgsDebugMsg( "authors tag missing" );
+  }
+  else
+  {
+    QDomElement e = authorsElement.firstChildElement();
+    QStringList authors;
+    while ( ! e.isNull() )
+    {
+      if ( e.tagName() == "author" )
+      {
+        if ( ! e.firstChildElement( "name" ).isNull() )
+          authors << e.firstChildElement( "name" ).text().simplified();
+        // org???
+      }
+      e = e.nextSiblingElement();
+    }
+    copyingMap[ "authors" ] = authors.join( ", " );
+  }
+
+  // load license information
+  QDomElement licenseElement = docElem.firstChildElement( "license" );
+  if ( licenseElement.isNull() )
+  {
+    QgsDebugMsg( "license tag missing" );
+  }
+  else
+  {
+    QDomElement e = licenseElement.firstChildElement( "informal" );
+    if ( ! e.isNull() )
+      copyingMap[ "license/informal" ] = e.text().simplified();
+    e = licenseElement.firstChildElement( "year" );
+    if ( ! e.isNull() )
+      copyingMap[ "license/year" ] = e.text().simplified();
+    e = licenseElement.firstChildElement( "text" );
+    if ( ! e.isNull() && e.attribute( "href" ) != QString() )
+      copyingMap[ "license/url" ] = e.attribute( "href" );
+  }
+
+  // load src information
+  QDomElement element = docElem.firstChildElement( "src" );
+  if ( element.isNull() )
+  {
+    QgsDebugMsg( "src tag missing" );
+  }
+  else
+  {
+    QDomElement e = element.firstChildElement( "link" );
+    if ( ! e.isNull() && e.attribute( "href" ) != QString() )
+      copyingMap[ "src/link" ] = e.attribute( "href" );
+  }
+
+  return copyingMap;
 }
 
 bool QgsCptCityColorRampV2::loadFile( QString filename )
 {
   if ( filename == "" )
   {
-    filename = getFilename();
+    filename = fileName();
     if ( filename.isNull() )
       return false;
   }
@@ -503,8 +636,14 @@ bool QgsCptCityColorRampV2::loadFile( QString filename )
     return false;
   }
 
-  // load color ramp
+  // load color ramp from first linearGradient node
   QDomElement rampsElement = docElem.firstChildElement( "linearGradient" );
+  if ( rampsElement.isNull() )
+  {
+    QDomNodeList nodeList = docElem.elementsByTagName( "linearGradient" );
+    if ( ! nodeList.isEmpty() )
+      rampsElement = nodeList.at( 0 ).toElement();
+  }
   if ( rampsElement.isNull() )
   {
     mErrorString = "linearGradient tag missing";
@@ -621,9 +760,12 @@ bool QgsCptCityColorRampV2::hasAllSchemes()
   return true;
 }
 
-// currently this methos takes some time, so it must be explicitly requested
+// currently this method takes some time, so it must be explicitly requested
 bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
 {
+  struct timeval tv1, tv2;
+  gettimeofday( &tv1, 0 );
+
   // TODO should keep the name of the previously loaded, or see if the first element is inside rootDir
   if ( ! reset && ! mCollections.isEmpty() )
   {
@@ -787,7 +929,8 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
   // populate mCollectionNames
   foreach ( QString path, mCollections )
   {
-    QString filename = QgsCptCityColorRampV2::getBaseDir() + "/" + path + "/" + "DESC.xml";
+    // TODO parse DESC.xml and COPYING.xml here, and add to CptCityCollection member
+    QString filename = QgsCptCityColorRampV2::baseDir() + "/" + path + "/" + "DESC.xml";
     QFile f( filename );
     if ( ! f.open( QFile::ReadOnly ) )
     {
@@ -844,6 +987,9 @@ bool QgsCptCityColorRampV2::loadSchemes( QString rootDir, bool reset )
     mCollectionSelections[ viewName ] << curName;
   }
 
+  gettimeofday( &tv2, 0 );
+  QgsDebugMsg( QString( "done in %1.%2 seconds" ).arg( tv2.tv_sec - tv1.tv_sec
+                                                     ).arg(( double )( tv2.tv_usec - tv2.tv_usec ) / 1000000.0 ) );
   return ( ! mCollections.isEmpty() );
 }
 

@@ -346,7 +346,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
   }
   else if ( rampType == tr( "cpt-city" ) )
   {
-    QgsCptCityColorRampV2* cptCityRamp = new QgsCptCityColorRampV2();
+    QgsCptCityColorRampV2* cptCityRamp = new QgsCptCityColorRampV2( "", "" );
     QgsCptCityColorRampV2Dialog dlg( cptCityRamp, parent );
     if ( !dlg.exec() )
     {
