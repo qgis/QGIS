@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsdiagram.h
+    qgshistogramdiagram.h
     ---------------------
     begin                : August 2012
     copyright            : (C) 2012 by Matthias Kuhn

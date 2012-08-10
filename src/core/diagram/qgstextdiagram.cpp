@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsdiagram.cpp
+    qgstextdiagram.cpp
     ---------------------
     begin                : March 2011
     copyright            : (C) 2011 by Marco Hugentobler
