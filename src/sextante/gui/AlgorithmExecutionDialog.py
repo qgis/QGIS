@@ -239,12 +239,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                         if not keepOpen:
                             self.close()
                         else:
-                            self.progressLabel.setText("")
-                            self.progress.setMaximum(100)
-                            self.progress.setValue(0)
-                            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-                            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-                            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+                            self.resetGUI()
             self.tabWidget.setCurrentIndex(1) # log tab
         except AlgorithmExecutionDialog.InvalidParameterValue as ex:
             try:
@@ -262,32 +257,26 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         SextantePostprocessing.handleAlgorithmResults(self.alg, not keepOpen)
         self.executed = True
-        self.setInfo("Algorithm %s finished correctly" % self.alg.name)
+        self.setInfo("Algorithm %s finished" % self.alg.name)
         QApplication.restoreOverrideCursor()
         if not keepOpen:
             self.close()
         else:
-            self.progressLabel.setText("")
-            self.progress.setMaximum(100)
-            self.progress.setValue(0)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+            self.resetGUI()
 
     @pyqtSlot(str)
     def error(self, msg):
-        self.algEx.finished.disconnect()
         QApplication.restoreOverrideCursor()
         keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
         self.setInfo(msg, True)
-        if not SextanteConfig.USE_THREADS and not keepOpen:
+        self.algEx.finished.disconnect()
+        if not keepOpen:
             QMessageBox.critical(self, "Error", msg)
             self.close()
         else:
-            self.progressLabel.setText("Error: " + msg)
-            self.progress.setValue(0)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
+            self.resetGUI()
+            self.setInfo(msg, True)
+            self.tabWidget.setCurrentIndex(1) # log tab
 
     @pyqtSlot(int)
     def iterate(self, i):
@@ -299,12 +288,19 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         try:
             self.algEx.finished.disconnect()
             self.algEx.terminate()
-            QApplication.restoreOverrideCursor()
-            self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
-            self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
         except:
             pass
+        self.resetGUI()
+
+    def resetGUI(self):
+        QApplication.restoreOverrideCursor()
+        self.progressLabel.setText("")
+        self.progress.setValue(0)
+        self.progress.setMaximum(100)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(True)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
+        
 
     @pyqtSlot(str)
     @pyqtSlot(str, bool)
