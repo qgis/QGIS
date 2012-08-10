@@ -39,7 +39,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
 
   double maxValue = attIt.value().toDouble();
 
-  for ( ; attIt != attributes.constEnd(); ++attIt )
+  for ( ++attIt; attIt != attributes.constEnd(); ++attIt )
   {
     maxValue = qMax( attIt.value().toDouble(), maxValue );
   }
