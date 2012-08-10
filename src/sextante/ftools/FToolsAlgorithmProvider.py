@@ -78,3 +78,6 @@ class FToolsAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputTableExtensions(self):
         return ["csv"]
+
+    def supportsNonFileBasedOutput(self):
+        return True

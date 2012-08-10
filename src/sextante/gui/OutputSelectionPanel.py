@@ -1,4 +1,6 @@
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 import os.path
 from sextante.core.SextanteConfig import SextanteConfig
 
@@ -22,11 +24,32 @@ class OutputSelectionPanel(QtGui.QWidget):
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QtGui.QPushButton()
         self.pushButton.setText("...")
-        self.pushButton.clicked.connect(self.showSelectionDialog)
+        self.pushButton.clicked.connect(self.buttonPushed)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
 
-    def showSelectionDialog(self):
+    def buttonPushed(self):
+        popupmenu = QMenu()
+        saveToTemporaryFileAction = QtGui.QAction("Save to a temporary file", self.pushButton)
+        saveToTemporaryFileAction.triggered.connect(self.saveToTemporaryFile)
+        popupmenu.addAction(saveToTemporaryFileAction )
+        if (self.alg.provider.supportsNonFileBasedOutput()):
+            saveToMemoryAction= QtGui.QAction("Save to a memory layer...", self.pushButton)
+            saveToMemoryAction.triggered.connect(self.saveToMemory)
+            popupmenu.addAction(saveToMemoryAction)
+        saveToFileAction = QtGui.QAction("Save to file...", self.pushButton)
+        saveToFileAction.triggered.connect(self.saveToFile)
+        popupmenu.addAction(saveToFileAction)
+
+        popupmenu.exec_(QtGui.QCursor.pos())
+
+    def saveToTemporaryFile(self):
+        self.text.setText("")
+
+    def saveToMemory(self):
+        self.text.setText("memory:")
+
+    def saveToFile(self):
         filefilter = self.output.getFileFilter(self.alg)
         settings = QtCore.QSettings()
         if settings.contains("/SextanteQGIS/LastOutputPath"):
@@ -42,6 +65,8 @@ class OutputSelectionPanel(QtGui.QWidget):
         filename = str(self.text.text())
         if filename.strip() == "" or filename == OutputSelectionPanel.SAVE_TO_TEMP_FILE:
             return None
+        if filename.startswith("memory:"):
+            return filename
         else:
             if not os.path.isabs(filename):
                 filename = SextanteConfig.getSetting(SextanteConfig.OUTPUT_FOLDER) + os.sep + filename

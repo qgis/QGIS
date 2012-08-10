@@ -34,3 +34,6 @@ class SextanteAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         self.algs = self.alglist
+
+    def supportsNonFileBasedOutput(self):
+        return True
