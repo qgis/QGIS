@@ -1810,6 +1810,15 @@ void QgsVectorLayerProperties::initDiagramTab()
       mIncreaseSmallDiagramsCheckBox->setChecked( settingList.at( 0 ).minimumSize != 0 );
       mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );
 
+      if ( settingList.at( 0 ).scaleByArea )
+      {
+        mScaleDependencyComboBox->setCurrentIndex( 0 );
+      }
+      else
+      {
+        mScaleDependencyComboBox->setCurrentIndex( 1 );
+      }
+
       QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
       QList< int > categoryIndices = settingList.at( 0 ).categoryIndices;
       QList< int >::const_iterator catIt = categoryIndices.constBegin();

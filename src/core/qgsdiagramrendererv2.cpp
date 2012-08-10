@@ -95,6 +95,16 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
     diagramOrientation = Up;
   }
 
+  // scale dependency
+  if ( elem.attribute( "scaleDependency" ) == "Diameter" )
+  {
+    scaleByArea = false;
+  }
+  else
+  {
+    scaleByArea = true;
+  }
+
   barWidth = elem.attribute( "barWidth" ).toDouble();
 
   minimumSize = elem.attribute( "minimumSize" ).toDouble();
@@ -144,11 +154,20 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   // label placement method (text diagram)
   if ( labelPlacementMethod == Height )
   {
-   categoryElem.setAttribute( "labelPlacementMethod", "Height" );
+    categoryElem.setAttribute( "labelPlacementMethod", "Height" );
   }
   else
   {
-   categoryElem.setAttribute( "labelPlacementMethod", "XHeight" );
+    categoryElem.setAttribute( "labelPlacementMethod", "XHeight" );
+  }
+
+  if ( scaleByArea )
+  {
+    categoryElem.setAttribute( "scaleDependency", "Area" );
+  }
+  else
+  {
+    categoryElem.setAttribute( "scaleDependency", "Diameter" );
   }
 
   // orientation (histogram)
