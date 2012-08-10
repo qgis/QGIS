@@ -37,6 +37,10 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 class AlgorithmExecutionDialog(QtGui.QDialog):
+    class InvalidParameterValue(Exception):
+        def __init__(self, param, widget):
+            self.parameter, self.widget = param, widget
+    
     '''Base class for dialogs that execute algorithms'''
     def __init__(self, alg, mainWidget):
         QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
@@ -114,7 +118,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             if isinstance(param, ParameterExtent):
                 continue
             if not self.setParamValue(param, self.paramTable.valueItems[param.name]):
-                return False
+                raise AlgorithmExecutionDialog.InvalidParameterValue(param, self.paramTable.valueItems[param.name])
 
         for param in params:
             if isinstance(param, ParameterExtent):
@@ -122,7 +126,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 if value is not None:
                     param.value = value
                 else:
-                    return False
+                    raise AlgorithmExecutionDialog.InvalidParameterValue(param, self.paramTable.valueItems[param.name])
 
         for output in outputs:
             if output.hidden:
@@ -168,16 +172,22 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 return param.setValue(unicode(widget.toPlainText()))
             else:
                 return param.setValue(unicode(widget.text()))
-
         else:
             return param.setValue(unicode(widget.text()))
-
+            
     @pyqtSlot()
     def accept(self):
-        if self.setParamValues():
+        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
+        useThread = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
+        try:
+            self.setParamValues()
             msg = self.alg.checkParameterValuesBeforeExecuting()
             if msg:
-                QMessageBox.critical(self, "Unable to execute algorithm", msg)
+                if keepOpen or useThread:
+                    self.setInfo("Unable to execute algorithm: %s" % msg, True)
+                    self.tabWidget.setCurrentIndex(1) # log tab
+                else:
+                    QMessageBox.critical(self, "Unable to execute algorithm", msg)
                 return
             self.buttonBox.button(QtGui.QDialogButtonBox.Ok).setEnabled(False)
             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(False)
@@ -193,7 +203,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
             self.progress.setMaximum(0)
             self.progressLabel.setText("Processing algorithm...")
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-            useThread = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
             if useThread:
                 if iterateParam:
                     self.algEx = AlgorithmExecutor(self.alg, iterateParam)
@@ -227,7 +236,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                         self.finish()
                     else:
                         QApplication.restoreOverrideCursor()
-                        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
                         if not keepOpen:
                             self.close()
                         else:
@@ -238,8 +246,16 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                             self.buttonBox.button(QtGui.QDialogButtonBox.Close).setEnabled(True)
                             self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).setEnabled(False)
             self.tabWidget.setCurrentIndex(1) # log tab
-        else:
-            QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
+        except AlgorithmExecutionDialog.InvalidParameterValue as ex:
+            try:
+                self.buttonBox.accepted.connect(lambda: ex.widget.setPalette(QPalette()))
+                palette = ex.widget.palette()
+                palette.setColor(QPalette.Base, QColor(255, 255, 0))
+                ex.widget.setPalette(palette)
+                self.progressLabel.setText("<b>Missing parameter value</b>")
+                return
+            except:
+                QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
 
     @pyqtSlot()
     def finish(self):
