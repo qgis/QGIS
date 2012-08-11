@@ -168,6 +168,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
       QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
       if ( p->wasCanceled() )
       {
+        for ( int i = 0; i < nBands; ++i )
+        {
+          CPLFree( dataList[i] );
+        }
         break;
       }
     }
@@ -182,6 +186,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
       for ( int i = 1; i <= nBands; ++i )
       {
         destProvider->write( dataList[i - 1], i, iterCols, iterRows, 0, 0 );
+        CPLFree( dataList[i - 1] );
         addToVRT( QString::number( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
       }
     }
@@ -191,8 +196,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
       for ( int i = 1; i <= nBands; ++i )
       {
         destProvider->write( dataList[i - 1], i, iterCols, iterRows, iterLeft, iterTop );
+        CPLFree( dataList[i - 1] );
       }
     }
+
+
+
     ++fileIndex;
   }
   return NoError;
@@ -257,6 +266,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   {
     if ( iterCols <= 5 || iterRows <= 5 ) //some wms servers don't like small values
     {
+      CPLFree( data );
       continue;
     }
 
@@ -267,6 +277,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
       if ( p->wasCanceled() )
       {
+        CPLFree( data );
         break;
       }
     }
@@ -287,6 +298,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       memcpy(( char* )blueData + i, &blue, 1 );
       memcpy(( char* )alphaData + i, &alpha, 1 );
     }
+    CPLFree( data );
 
     //create output file
     if ( mTiledMode )
@@ -317,7 +329,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     ++fileIndex;
   }
   delete destProvider;
-  CPLFree( data ); CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
+  CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
 
   if ( p )
   {
