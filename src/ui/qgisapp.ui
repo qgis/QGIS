@@ -401,8 +401,8 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
-   <addaction name="mActionShowFrozenLabels"/>
-   <addaction name="mActionFreezeLabels"/>
+   <addaction name="mActionShowPinnedLabels"/>
+   <addaction name="mActionPinLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -1707,35 +1707,36 @@
     <string>Creates a scale bar that is displayed on the map canvas</string>
    </property>
   </action>
-  <action name="mActionFreezeLabels">
+  <action name="mActionPinLabels">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFreezeLabels.png</normaloff>:/images/themes/default/mActionFreezeLabels.png</iconset>
+     <normaloff>:/images/themes/default/mActionPinLabels.svg</normaloff>:/images/themes/default/mActionPinLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Freeze or Thaw Labels</string>
+    <string>Pin/Unpin Labels</string>
    </property>
    <property name="toolTip">
-    <string>Freeze or Thaw Labels
-Shift thaws, Ctl (Cmd) toggles, Shift+Ctl (Cmd) hides</string>
+    <string>Pin/Unpin and Hide/Show Labels
+Shift unpins, Ctl (Cmd) toggles pin/unpin
+Shift+Ctl (Cmd) on label hides, Shift+Ctl (Cmd) on feature shows label</string>
    </property>
   </action>
-  <action name="mActionShowFrozenLabels">
+  <action name="mActionShowPinnedLabels">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowFrozenLabels.png</normaloff>:/images/themes/default/mActionShowFrozenLabels.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
    </property>
    <property name="text">
-    <string>Show Frozen Labels</string>
+    <string>Highlight Pinned Labels</string>
    </property>
    <property name="toolTip">
-    <string>Show Frozen Labels</string>
+    <string>Highlight Pinned Labels</string>
    </property>
   </action>
   <action name="mActionNewBlankProject">

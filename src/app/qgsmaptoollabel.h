@@ -45,7 +45,7 @@ class QgsMapToolLabel: public QgsMapTool
         @param xCol out: index of the attribute for data defined x coordinate
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
-    bool layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    bool layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
     /**Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
@@ -93,7 +93,7 @@ class QgsMapToolLabel: public QgsMapTool
     /**Returns the font for the current feature (considering default font and data defined properties*/
     QFont labelFontCurrentFeature();
 
-    /**Returns whether to preserve predefined rotation data during label freeze/thaw operations*/
+    /**Returns whether to preserve predefined rotation data during label pin/unpin operations*/
     bool preserveRotation();
 
     /**Get data defined position of a feature

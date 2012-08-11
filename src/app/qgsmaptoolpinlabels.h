@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmaptoolfreezelabels.h
+                          qgsmaptoolpinlabels.h
                           --------------------
     begin                : 2012-07-12
     copyright            : (C) 2012 by Larry Shaffer
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSMAPTOOLFREEZELABELS_H
-#define QGSMAPTOOLFREEZELABELS_H
+#ifndef QGSMAPTOOLPINLABELS_H
+#define QGSMAPTOOLPINLABELS_H
 
 #include "qgsmaptoollabel.h"
 #include "qgsrectangle.h"
@@ -26,14 +26,14 @@
 class QgsHighlight;
 struct QgsLabelPosition;
 
-/**A map tool for freezing (writing to attribute table) and thawing label positions and rotation*/
-class QgsMapToolFreezeLabels: public QgsMapToolLabel
+/**A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation*/
+class QgsMapToolPinLabels: public QgsMapToolLabel
 {
     Q_OBJECT
 
   public:
-    QgsMapToolFreezeLabels( QgsMapCanvas *canvas );
-    ~QgsMapToolFreezeLabels();
+    QgsMapToolPinLabels( QgsMapCanvas *canvas );
+    ~QgsMapToolPinLabels();
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QMouseEvent * e );
@@ -44,22 +44,22 @@ class QgsMapToolFreezeLabels: public QgsMapToolLabel
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
-    bool isShowingFrozen() const { return mShowFrozen; }
-    void setShowingFrozen( bool showing ) { mShowFrozen = showing; }
+    bool isShowingPinned() const { return mShowPinned; }
+    void setShowingPinned( bool showing ) { mShowPinned = showing; }
 
-    //! Called when Show Frozen Labels tool is toggled, via its qgisapp.cpp slot
-    void showFrozenLabels( bool show );
+    //! Called when Show Pinned Labels tool is toggled, via its qgisapp.cpp slot
+    void showPinnedLabels( bool show );
 
-    //! Remove rectangles from around frozen labels
-    void removeFrozenHighlights();
+    //! Remove rectangles from around pinned labels
+    void removePinnedHighlights();
 
   public slots:
 
-    //! Update frozen label highlights on layer edit mode change
-    void updateFrozenLabels();
+    //! Update pinned label highlights on layer edit mode change
+    void updatePinnedLabels();
 
-    //! Render highlight rectangles around frozen labels
-    void highlightFrozenLabels();
+    //! Render highlight rectangles around pinned labels
+    void highlightPinnedLabels();
 
   protected:
 
@@ -68,8 +68,8 @@ class QgsMapToolFreezeLabels: public QgsMapToolLabel
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
-    //! Flag to indicate whether to draw the highlight for frozen labels
-    bool mShowFrozen;
+    //! Flag to indicate whether to draw the highlight for pinned labels
+    bool mShowPinned;
 
     //! Stores actual select rect
     QRect mSelectRect;
@@ -82,22 +82,22 @@ class QgsMapToolFreezeLabels: public QgsMapToolLabel
     //! Pointer to map renderer
     QgsMapRenderer* mRender;
 
-    //! Highlights a given label relative to whether its frozen and editable
+    //! Highlights a given label relative to whether its pinned and editable
     void highlightLabel( QgsVectorLayer* vlayer,
                          const QgsLabelPosition& labelpos,
                          const QString& id,
                          const QColor& color );
 
-    //! Select valid labels to freeze or thaw
-    void freezeThawLabels( const QgsRectangle& ext, QMouseEvent * e );
+    //! Select valid labels to pin or unpin
+    void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e );
 
-    //! Freeze or thaw label relative to whether its editable
-    bool freezeThawLabel( QgsVectorLayer* vlayer,
-                          const QgsLabelPosition& labelpos,
-                          bool freeze );
+    //! Pin or unpin label relative to whether its editable
+    bool pinUnpinLabel( QgsVectorLayer* vlayer,
+                        const QgsLabelPosition& labelpos,
+                        bool pin );
 
     //! Hide chosen label by setting font size to 0
     bool hideLabel( QgsVectorLayer* vlayer, const QgsLabelPosition& labelpos );
 };
 
-#endif // QGSMAPTOOLFREEZELABELS_H
+#endif // QGSMAPTOOLPINLABELS_H

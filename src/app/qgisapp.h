@@ -314,7 +314,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAbout() { return mActionAbout; }
     QAction *actionSponsors() { return mActionSponsors; }
 
-    QAction *actionShowFrozenLabels() { return mActionShowFrozenLabels; }
+    QAction *actionShowPinnedLabels() { return mActionShowPinnedLabels; }
 
     //! Menus
     QMenu *fileMenu() { return mFileMenu; }
@@ -872,10 +872,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
-    //! Toggles whether to show frozen labels
-    void showFrozenLabels( bool show );
-    //! Activates freeze labels tool
-    void freezeLabels();
+    //! Toggles whether to show pinned labels
+    void showPinnedLabels( bool show );
+    //! Activates pin labels tool
+    void pinLabels();
     //! Activates the move label tool
     void moveLabel();
     //! Activates rotate label tool
@@ -1077,7 +1077,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mTextAnnotation;
-        QgsMapTool* mFreezeLabels;
+        QgsMapTool* mPinLabels;
         QgsMapTool* mMoveLabel;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;

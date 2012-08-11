@@ -531,7 +531,7 @@ bool QgsMapToolLabel::labelMoveable( const QgsMapLayer* ml, int& xCol, int& yCol
   return true;
 }
 
-bool QgsMapToolLabel::layerCanFreeze( const QgsMapLayer* ml, int& xCol, int& yCol ) const
+bool QgsMapToolLabel::layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
   if ( !vlayer || !vlayer->isEditable() )

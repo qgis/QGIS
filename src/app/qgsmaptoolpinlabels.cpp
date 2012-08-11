@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmaptoolfreezelabels.cpp
+                          qgsmaptoolpinlabels.cpp
                           -----------------------
     begin                : 2012-07-12
     copyright            : (C) 2012 by Larry Shaffer
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolfreezelabels.h"
+#include "qgsmaptoolpinlabels.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -30,23 +30,23 @@
 #include <qgslogger.h>
 #include <QMouseEvent>
 
-QgsMapToolFreezeLabels::QgsMapToolFreezeLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
 {
   mRender = 0;
   mRubberBand = 0;
-  mShowFrozen = false;
+  mShowPinned = false;
 
-  connect( QgisApp::instance()->actionToggleEditing(), SIGNAL( triggered() ), this, SLOT( updateFrozenLabels() ) );
-  connect( canvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( highlightFrozenLabels() ) );
+  connect( QgisApp::instance()->actionToggleEditing(), SIGNAL( triggered() ), this, SLOT( updatePinnedLabels() ) );
+  connect( canvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( highlightPinnedLabels() ) );
 }
 
-QgsMapToolFreezeLabels::~QgsMapToolFreezeLabels()
+QgsMapToolPinLabels::~QgsMapToolPinLabels()
 {
   delete mRubberBand;
-  removeFrozenHighlights();
+  removePinnedHighlights();
 }
 
-void QgsMapToolFreezeLabels::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolPinLabels::canvasPressEvent( QMouseEvent * e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
@@ -55,7 +55,7 @@ void QgsMapToolFreezeLabels::canvasPressEvent( QMouseEvent * e )
   mRubberBand = new QgsRubberBand( mCanvas, true );
 }
 
-void QgsMapToolFreezeLabels::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolPinLabels::canvasMoveEvent( QMouseEvent * e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -69,7 +69,7 @@ void QgsMapToolFreezeLabels::canvasMoveEvent( QMouseEvent * e )
   QgsMapToolSelectUtils::setRubberBand( mCanvas, mSelectRect, mRubberBand );
 }
 
-void QgsMapToolFreezeLabels::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolPinLabels::canvasReleaseEvent( QMouseEvent * e )
 {
   //if the user simply clicked without dragging a rect
   //we will fabricate a small 1x1 pix rect and then continue
@@ -101,7 +101,7 @@ void QgsMapToolFreezeLabels::canvasReleaseEvent( QMouseEvent * e )
     QgsGeometry* selectGeom = mRubberBand->asGeometry();
     QgsRectangle ext = selectGeom->boundingBox();
 
-    freezeThawLabels( ext, e );
+    pinUnpinLabels( ext, e );
 
     delete selectGeom;
 
@@ -113,32 +113,32 @@ void QgsMapToolFreezeLabels::canvasReleaseEvent( QMouseEvent * e )
   mDragging = false;
 }
 
-void QgsMapToolFreezeLabels::showFrozenLabels( bool show )
+void QgsMapToolPinLabels::showPinnedLabels( bool show )
 {
-  mShowFrozen = show;
-  if ( mShowFrozen )
+  mShowPinned = show;
+  if ( mShowPinned )
   {
-    QgsDebugMsg( QString( "Toggling on frozen label highlighting" ) );
-    highlightFrozenLabels();
+    QgsDebugMsg( QString( "Toggling on pinned label highlighting" ) );
+    highlightPinnedLabels();
   }
   else
   {
-    QgsDebugMsg( QString( "Toggling off frozen label highlighting" ) );
-    removeFrozenHighlights();
+    QgsDebugMsg( QString( "Toggling off pinned label highlighting" ) );
+    removePinnedHighlights();
   }
 }
 
-// public slot to update frozen label highlights on layer edit mode change
-void QgsMapToolFreezeLabels::updateFrozenLabels()
+// public slot to update pinned label highlights on layer edit mode change
+void QgsMapToolPinLabels::updatePinnedLabels()
 {
-  if ( mShowFrozen )
+  if ( mShowPinned )
   {
     QgsDebugMsg( QString( "Updating highlighting due to layer editing mode change" ) );
     mCanvas->refresh();
   }
 }
 
-void QgsMapToolFreezeLabels::highlightLabel( QgsVectorLayer* vlayer,
+void QgsMapToolPinLabels::highlightLabel( QgsVectorLayer* vlayer,
     const QgsLabelPosition& labelpos,
     const QString& id,
     const QColor& color )
@@ -168,12 +168,12 @@ void QgsMapToolFreezeLabels::highlightLabel( QgsVectorLayer* vlayer,
   }
 }
 
-// public slot to render highlight rectangles around frozen labels
-void QgsMapToolFreezeLabels::highlightFrozenLabels()
+// public slot to render highlight rectangles around pinned labels
+void QgsMapToolPinLabels::highlightPinnedLabels()
 {
-  removeFrozenHighlights();
+  removePinnedHighlights();
 
-  if ( !mShowFrozen )
+  if ( !mShowPinned )
   {
     return;
   }
@@ -188,7 +188,7 @@ void QgsMapToolFreezeLabels::highlightFrozenLabels()
     }
   }
 
-  QgsDebugMsg( QString( "Highlighting frozen labels" ) );
+  QgsDebugMsg( QString( "Highlighting pinned labels" ) );
 
   // get list of all drawn labels from all layers within given extent
   QgsPalLabeling* labelEngine = dynamic_cast<QgsPalLabeling*>( mRender->labelingEngine() );
@@ -209,7 +209,7 @@ void QgsMapToolFreezeLabels::highlightFrozenLabels()
   {
     mCurrentLabelPos = *it;
 
-    if ( mCurrentLabelPos.isFrozen )
+    if ( mCurrentLabelPos.isPinned )
     {
       QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
@@ -242,7 +242,7 @@ void QgsMapToolFreezeLabels::highlightFrozenLabels()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolFreezeLabels::removeFrozenHighlights()
+void QgsMapToolPinLabels::removePinnedHighlights()
 {
   QApplication::setOverrideCursor( Qt::BusyCursor );
   foreach ( QgsHighlight *h, mHighlights )
@@ -253,12 +253,12 @@ void QgsMapToolFreezeLabels::removeFrozenHighlights()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEvent * e )
+void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e )
 {
 
-  bool doThaw = e->modifiers() & Qt::ShiftModifier ? true : false;
-  bool toggleThawOrFreeze = e->modifiers() & Qt::ControlModifier ? true : false;
-  bool doHide = ( doThaw && toggleThawOrFreeze );
+  bool doUnpin = e->modifiers() & Qt::ShiftModifier ? true : false;
+  bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier ? true : false;
+  bool doHide = ( doUnpin && toggleUnpinOrPin );
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
@@ -314,31 +314,31 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
 
     QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
-    // thaw label
-    if ( mCurrentLabelPos.isFrozen && !doHide && ( doThaw  || toggleThawOrFreeze ) )
+    // unpin label
+    if ( mCurrentLabelPos.isPinned && !doHide && ( doUnpin  || toggleUnpinOrPin ) )
     {
-      // thaw previously frozen label (set attribute table fields to NULL)
-      if ( freezeThawLabel( vlayer, mCurrentLabelPos, false ) )
+      // unpin previously pinned label (set attribute table fields to NULL)
+      if ( pinUnpinLabel( vlayer, mCurrentLabelPos, false ) )
       {
         labelChanged = true;
       }
       else
       {
-        QgsDebugMsg( QString( "Thaw failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
+        QgsDebugMsg( QString( "Unpin failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
       }
     }
 
-    // freeze label
-    if ( !mCurrentLabelPos.isFrozen && !doHide && ( !doThaw || toggleThawOrFreeze ) )
+    // pin label
+    if ( !mCurrentLabelPos.isPinned && !doHide && ( !doUnpin || toggleUnpinOrPin ) )
     {
-      // freeze label's location, and optionally rotation, to attribute table
-      if ( freezeThawLabel( vlayer, mCurrentLabelPos, true ) )
+      // pin label's location, and optionally rotation, to attribute table
+      if ( pinUnpinLabel( vlayer, mCurrentLabelPos, true ) )
       {
         labelChanged = true;
       }
       else
       {
-        QgsDebugMsg( QString( "Freeze failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
+        QgsDebugMsg( QString( "Pin failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
       }
     }
 
@@ -361,17 +361,17 @@ void QgsMapToolFreezeLabels::freezeThawLabels( const QgsRectangle& ext, QMouseEv
   {
     mCanvas->refresh();
 
-    if ( !mShowFrozen )
+    if ( !mShowPinned )
     {
-      // toggle it on (freeze-thaw tool doesn't work well without it)
-      QgisApp::instance()->actionShowFrozenLabels()->setChecked( true );
+      // toggle it on (pin-unpin tool doesn't work well without it)
+      QgisApp::instance()->actionShowPinnedLabels()->setChecked( true );
     }
   }
 }
 
-bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
+bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
     const QgsLabelPosition& labelpos,
-    bool freeze )
+    bool pin )
 {
   // skip diagrams
   if ( labelpos.isDiagram )
@@ -399,7 +399,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
   bool hasRCol = ( layerIsRotatable( vlayer, rCol )
                    && dataDefinedRotation( vlayer, mCurrentLabelPos.featureId, defRot, rSuccess, true ) );
 
-  // get whether to preserve predefined rotation data during label freeze/thaw operations
+  // get whether to preserve predefined rotation data during label pin/unpin operations
   bool preserveRot = preserveRotation();
 
   // edit attribute table
@@ -407,7 +407,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
 
   QString failedWrite = QString( "Failed write to attribute table" );
 
-  if ( freeze )
+  if ( pin )
   {
 
 //     QgsPoint labelpoint = labelpos.cornerPoints.at( 0 );
@@ -431,7 +431,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
       labelY = transformedPoint.y();
     }
 
-    vlayer->beginEditCommand( tr( "Label frozen" ) );
+    vlayer->beginEditCommand( tr( "Label pinned" ) );
     if ( !vlayer->changeAttributeValue( fid, xCol, labelX, false ) )
     {
       QgsDebugMsg( failedWrite );
@@ -454,7 +454,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Label thawed" ) );
+    vlayer->beginEditCommand( tr( "Label unpinned" ) );
     if ( !vlayer->changeAttributeValue( fid, xCol, QVariant(), false ) )
     {
       QgsDebugMsg( failedWrite );
@@ -478,7 +478,7 @@ bool QgsMapToolFreezeLabels::freezeThawLabel( QgsVectorLayer* vlayer,
   return true;
 }
 
-bool QgsMapToolFreezeLabels::hideLabel( QgsVectorLayer* vlayer,
+bool QgsMapToolPinLabels::hideLabel( QgsVectorLayer* vlayer,
                                         const QgsLabelPosition& labelpos )
 {
   // skip diagrams

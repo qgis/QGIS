@@ -1113,13 +1113,13 @@
               <item row="6" column="0" colspan="2">
                <widget class="QCheckBox" name="chkPreserveRotation">
                 <property name="toolTip">
-                 <string>Uncheck to write labeling engine derived rotation on freeze and NULL on thaw</string>
+                 <string>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</string>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">margin-left: 12px;</string>
                 </property>
                 <property name="text">
-                 <string>Preserve existing rotation values during label freeze/thaw operations</string>
+                 <string>Preserve existing rotation values during label pin/unpin operations</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>

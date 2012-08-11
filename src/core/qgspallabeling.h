@@ -161,7 +161,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**Stores field indices for data defined layer properties*/
     QMap< DataDefinedProperties, int > dataDefinedProperties;
 
-    bool preserveRotation; // preserve predefined rotation data during label freeze/thaw operations
+    bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
 
     /**Calculates pixel size (considering output size should be in pixel or map units, scale factors and oversampling)
      @param size size to convert

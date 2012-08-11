@@ -62,7 +62,7 @@ class QgsPalGeometry : public PalGeometry
         , mId( id )
         , mInfo( NULL )
         , mIsDiagram( false )
-        , mIsFrozen( false )
+        , mIsPinned( false )
     {
       mStrId = FID_TO_STRING( id ).toAscii();
     }
@@ -113,8 +113,8 @@ class QgsPalGeometry : public PalGeometry
     void setIsDiagram( bool d ) { mIsDiagram = d; }
     bool isDiagram() const { return mIsDiagram; }
 
-    void setIsFrozen( bool f ) { mIsFrozen = f; }
-    bool isFrozen() const { return mIsFrozen; }
+    void setIsPinned( bool f ) { mIsPinned = f; }
+    bool isPinned() const { return mIsPinned; }
 
     void addDiagramAttribute( int index, QVariant value ) { mDiagramAttributes.insert( index, value ); }
     const QgsAttributeMap& diagramAttributes() { return mDiagramAttributes; }
@@ -126,7 +126,7 @@ class QgsPalGeometry : public PalGeometry
     QgsFeatureId mId;
     LabelInfo* mInfo;
     bool mIsDiagram;
-    bool mIsFrozen;
+    bool mIsPinned;
     /**Stores attribute values for data defined properties*/
     QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > mDataDefinedValues;
 
@@ -716,8 +716,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     lbl->addDataDefinedValue( dIt.key(), f.attributeMap()[dIt.value()] );
   }
 
-  // set geometry's frozen property
-  lbl->setIsFrozen( dataDefinedPosition );
+  // set geometry's pinned property
+  lbl->setIsPinned( dataDefinedPosition );
 }
 
 int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c ) const
@@ -1246,7 +1246,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( mLabelSearchTree )
     {
-      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), false, palGeometry->isFrozen() );
+      mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), false, palGeometry->isPinned() );
     }
   }
 
