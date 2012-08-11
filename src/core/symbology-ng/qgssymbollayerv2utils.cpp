@@ -1097,7 +1097,42 @@ bool QgsSymbolLayerV2Utils::needMarkerLine( QDomElement &element )
   return hasWellKnownMark( graphicStrokeElem );
 }
 
-bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element ) { Q_UNUSED( element ); return false; }
+bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element ) {
+  QDomElement fillElem = element.firstChildElement( "Fill" );
+  if ( fillElem.isNull() )
+    return false;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
+  if ( graphicFillElem.isNull() )
+    return false;
+
+  QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
+  if ( graphicElem.isNull() )
+    return false;
+
+  // line pattern fill uses horline wellknown marker with an angle
+
+  QString name;
+  QColor fillColor, borderColor;
+  double size, borderWidth;
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+    return false;
+
+  if ( name != "horline" )
+    return false;
+
+  QString angleFunc;
+  if ( !QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+    return false;
+
+  bool ok;
+  double angle = angleFunc.toDouble( &ok );
+  if ( !ok || angle == 0 )
+    return false;
+
+  return true;
+}
+
 bool QgsSymbolLayerV2Utils::needPointPatternFill( QDomElement &element ) { Q_UNUSED( element ); return false; }
 
 bool QgsSymbolLayerV2Utils::needSvgFill( QDomElement &element )

@@ -863,14 +863,82 @@ void QgsLinePatternFillSymbolLayer::toSld( QDomDocument &doc, QDomElement &eleme
   QgsSymbolLayerV2Utils::createRotationElement( doc, graphicElem, angleFunc );
 
   // <se:Displacement>
-  QPointF lineOffset( qSin( mLineAngle ) * mOffset, qCos( mLineAngle ) * mOffset );
+  QPointF lineOffset( sin( mLineAngle ) * mOffset, cos( mLineAngle ) * mOffset );
   QgsSymbolLayerV2Utils::createDisplacementElement( doc, graphicElem, lineOffset );
+
+  if ( mOutline )
+  {
+    // the outline sub symbol should be stored within the Stroke element,
+    // but it will be stored in a separated LineSymbolizer because it could
+    // have more than one layer
+    mOutline->toSld( doc, element, props );
+  }
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &element )
 {
-  Q_UNUSED( element );
-  return NULL;
+  QgsDebugMsg( "Entered." );
+
+  QString name;
+  QColor fillColor, lineColor;
+  double size, lineWidth;
+
+  QDomElement fillElem = element.firstChildElement( "Fill" );
+  if ( fillElem.isNull() )
+    return NULL;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
+  if ( graphicFillElem.isNull() )
+    return NULL;
+
+  QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
+  if ( graphicElem.isNull() )
+    return NULL;
+
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, lineColor, lineWidth, size ) )
+    return NULL;
+
+  if ( name != "horline" )
+    return NULL;
+
+  double angle = 0.0;
+  QString angleFunc;
+  if ( QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+  {
+    bool ok;
+    double d = angleFunc.toDouble( &ok );
+    if ( ok )
+      angle = d;
+  }
+
+  double offset = 0.0;
+  QPointF vectOffset;
+  if ( QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, vectOffset ) )
+  {
+    offset = sqrt( pow( vectOffset.x(), 2 ) + pow( vectOffset.y(), 2 ) );
+  }
+
+  QgsLinePatternFillSymbolLayer* sl = new QgsLinePatternFillSymbolLayer();
+  sl->setColor( lineColor );
+  sl->setLineWidth( lineWidth );
+  sl->setLineAngle( angle );
+  sl->setOffset( offset );
+  sl->setDistance( size );
+
+  // try to get the outline
+  QDomElement strokeElem = element.firstChildElement( "Stroke" );
+  if ( !strokeElem.isNull() )
+  {
+    QgsSymbolLayerV2 *l = QgsSymbolLayerV2Utils::createLineLayerFromSld( strokeElem );
+    if ( l )
+    {
+      QgsSymbolLayerV2List layers;
+      layers.append( l );
+      sl->setSubSymbol( new QgsLineSymbolV2( layers ) );
+    }
+  }
+
+  return sl;
 }
 
 ////////////////////////
