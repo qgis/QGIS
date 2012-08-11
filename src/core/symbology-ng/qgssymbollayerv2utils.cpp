@@ -1922,7 +1922,7 @@ bool QgsSymbolLayerV2Utils::rotationFromSldElement( QDomElement &element, QStrin
   QDomElement rotationElem = element.firstChildElement( "Rotation" );
   if ( !rotationElem.isNull() )
   {
-    functionFromSldElement( rotationElem, rotationFunc );
+    return functionFromSldElement( rotationElem, rotationFunc );
   }
   return true;
 }
@@ -1943,7 +1943,7 @@ bool QgsSymbolLayerV2Utils::opacityFromSldElement( QDomElement &element, QString
   QDomElement opacityElem = element.firstChildElement( "Opacity" );
   if ( !opacityElem.isNull() )
   {
-    functionFromSldElement( opacityElem, alphaFunc );
+    return functionFromSldElement( opacityElem, alphaFunc );
   }
   return true;
 }
@@ -2086,7 +2086,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   if ( !expr )
     return false;
 
-  bool valid = expr->hasParserError();
+  bool valid = !expr->hasParserError();
   if ( !valid )
   {
     QgsDebugMsg( "parser error: " + expr->parserErrorString() );
