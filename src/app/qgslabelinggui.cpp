@@ -353,6 +353,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mVerticalAlignmentComboBox, QgsPalLayerSettings::Vali, lyr );
   setDataDefinedProperty( mLabelDistanceComboBox, QgsPalLayerSettings::LabelDistance, lyr );
   setDataDefinedProperty( mRotationComboBox, QgsPalLayerSettings::Rotation, lyr );
+  setDataDefinedProperty( mShowLabelAttributeComboBox, QgsPalLayerSettings::Show, lyr );
 
   return lyr;
 }
@@ -417,6 +418,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mVerticalAlignmentComboBox;
   comboList << mLabelDistanceComboBox;
   comboList << mRotationComboBox;
+  comboList << mShowLabelAttributeComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -450,6 +452,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mVerticalAlignmentComboBox, s, QgsPalLayerSettings::Vali );
   setCurrentComboValue( mLabelDistanceComboBox, s, QgsPalLayerSettings::LabelDistance );
   setCurrentComboValue( mRotationComboBox, s, QgsPalLayerSettings::Rotation );
+  setCurrentComboValue( mShowLabelAttributeComboBox, s, QgsPalLayerSettings::Show );
 }
 
 void QgsLabelingGui::changePreviewBackground()

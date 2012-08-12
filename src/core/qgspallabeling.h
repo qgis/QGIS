@@ -80,6 +80,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MapOrientation = 8
     };
 
+    // increment iterator in _writeDataDefinedPropertyMap() when adding more
     enum DataDefinedProperties
     {
       Size = 0,
@@ -96,7 +97,8 @@ class CORE_EXPORT QgsPalLayerSettings
       Hali, //horizontal alignment for data defined label position (Left, Center, Right)
       Vali, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       LabelDistance,
-      Rotation //data defined rotation (only useful in connection with data defined position)
+      Rotation, //data defined rotation (only useful in connection with data defined position)
+      Show
     };
 
     QString fieldName;

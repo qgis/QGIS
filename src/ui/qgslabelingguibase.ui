@@ -2071,7 +2071,7 @@
               <item row="0" column="1">
                <widget class="QComboBox" name="mShowLabelAttributeComboBox">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>

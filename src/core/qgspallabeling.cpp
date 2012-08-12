@@ -245,8 +245,7 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
   {
     return;
   }
-
-  for ( int i = 0; i < 15; ++i )
+  for ( int i = 0; i < 16; ++i )
   {
     QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
     QVariant propertyValue;
@@ -295,12 +294,13 @@ static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLaye
   _readDataDefinedProperty( layer, QgsPalLayerSettings::Family, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferSize, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferColor, propertyMap );
-  _readDataDefinedProperty( layer,  QgsPalLayerSettings::PositionX, propertyMap );
-  _readDataDefinedProperty( layer,  QgsPalLayerSettings::PositionY, propertyMap );
-  _readDataDefinedProperty( layer,  QgsPalLayerSettings::Hali, propertyMap );
-  _readDataDefinedProperty( layer,  QgsPalLayerSettings::Vali, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::PositionX, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::PositionY, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Hali, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Vali, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::LabelDistance, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::Rotation, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::Show, propertyMap );
 }
 
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
@@ -470,6 +470,22 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
+  // data defined show label? defaults to show label if not 0
+  QMap< DataDefinedProperties, int >::const_iterator showIt = dataDefinedProperties.find( QgsPalLayerSettings::Show );
+  if ( showIt != dataDefinedProperties.constEnd() )
+  {
+    QVariant showValue = f.attributeMap().value( *showIt );
+    if ( showValue.isValid() )
+    {
+      bool conversionOk;
+      int showLabel = showValue.toInt( &conversionOk );
+      if ( conversionOk && showLabel == 0 )
+      {
+        return;
+      }
+    }
+  }
+
   QString labelText;
   // Check to see if we are a expression string.
   if ( isExpression )
