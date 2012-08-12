@@ -124,6 +124,7 @@
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
+#include "qgshtmlannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgslabelinggui.h"
@@ -217,6 +218,7 @@
 #include "qgsmaptooldeletevertex.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolformannotation.h"
+#include "qgsmaptoolhtmlannotation.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
@@ -728,6 +730,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMeasureAngle;
   delete mMapTools.mTextAnnotation;
   delete mMapTools.mFormAnnotation;
+  delete mMapTools.mHtmlAnnotation;
   delete mMapTools.mAnnotation;
   delete mMapTools.mAddFeature;
   delete mMapTools.mMoveFeature;
@@ -931,6 +934,7 @@ void QgisApp::createActions()
   connect( mActionDraw, SIGNAL( triggered() ), this, SLOT( refreshMapCanvas() ) );
   connect( mActionTextAnnotation, SIGNAL( triggered() ), this, SLOT( addTextAnnotation() ) );
   connect( mActionFormAnnotation, SIGNAL( triggered() ), this, SLOT( addFormAnnotation() ) );
+  connect( mActionHtmlAnnotation, SIGNAL( triggered() ), this, SLOT( addHtmlAnnotation() ) );
   connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
   connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
 
@@ -1354,6 +1358,7 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
+  bt->addAction( mActionHtmlAnnotation );
   bt->addAction( mActionAnnotation );
 
   QAction* defAnnotationAction = mActionTextAnnotation;
@@ -1362,6 +1367,7 @@ void QgisApp::createToolBars()
     case 0: defAnnotationAction = mActionTextAnnotation; break;
     case 1: defAnnotationAction = mActionFormAnnotation; break;
     case 2: defAnnotationAction =  mActionAnnotation; break;
+    case 3: defAnnotationAction =  mActionHtmlAnnotation; break;
   }
   bt->setDefaultAction( defAnnotationAction );
   QAction* annotationAction = mAttributesToolBar->addWidget( bt );
@@ -1665,6 +1671,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
+  mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.png" ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowPinnedLabels.svg" ) );
@@ -1793,6 +1800,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mTextAnnotation->setAction( mActionTextAnnotation );
   mMapTools.mFormAnnotation = new QgsMapToolFormAnnotation( mMapCanvas );
   mMapTools.mFormAnnotation->setAction( mActionFormAnnotation );
+  mMapTools.mHtmlAnnotation = new QgsMapToolHtmlAnnotation( mMapCanvas );
+  mMapTools.mHtmlAnnotation->setAction( mActionHtmlAnnotation );
   mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
   mMapTools.mAnnotation->setAction( mActionAnnotation );
   mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas );
@@ -3904,6 +3913,11 @@ void QgisApp::addFormAnnotation()
   mMapCanvas->setMapTool( mMapTools.mFormAnnotation );
 }
 
+void QgisApp::addHtmlAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mHtmlAnnotation );
+}
+
 void QgisApp::addTextAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools.mTextAnnotation );
@@ -4430,6 +4444,13 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   {
     QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
     newFormItem->readXML( doc, formItemList.at( i ).toElement() );
+  }
+
+  QDomNodeList htmlItemList = doc.elementsByTagName( "HtmlAnnotationItem" );
+  for ( int i = 0; i < htmlItemList.size(); ++i )
+  {
+    QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
+    newHtmlItem->readXML( doc, htmlItemList.at( i ).toElement() );
   }
   return true;
 }
@@ -7945,6 +7966,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/annotationTool", 1 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 2 );
+  else if ( action == mActionHtmlAnnotation )
+    settings.setValue( "/UI/annotationTool", 3 );
 
   bt->setDefaultAction( action );
 }

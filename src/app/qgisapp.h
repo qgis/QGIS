@@ -816,6 +816,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //annotations
     void addFormAnnotation();
     void addTextAnnotation();
+    void addHtmlAnnotation();
     void modifyAnnotation();
 
     //! shows label settings dialog (for labeling-ng)
@@ -1084,6 +1085,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mRotatePointSymbolsTool;
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
+        QgsMapTool* mHtmlAnnotation;
         QgsMapTool* mTextAnnotation;
         QgsMapTool* mPinLabels;
         QgsMapTool* mShowHideLabels;

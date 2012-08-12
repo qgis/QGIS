@@ -59,6 +59,7 @@ qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
+qgshtmlannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgsmanageconnectionsdialog.cpp
 qgsmapcanvas.cpp
@@ -156,6 +157,7 @@ qgisinterface.h
 qgsencodingfiledialog.h
 qgsfieldvalidator.h
 qgsformannotationitem.h
+qgshtmlannotationitem.h
 qgsgenericprojectionselector.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
