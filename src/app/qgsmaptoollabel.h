@@ -46,6 +46,9 @@ class QgsMapToolLabel: public QgsMapTool
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if layer fields set up and exist*/
     bool layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    /**Returns true if layer has attribute field set up
+      @param showCol out: attribute column for data defined label showing*/
+    bool layerCanShowHide( const QgsMapLayer* layer, int& showCol ) const;
     /**Checks if labels in a layer can be rotated
       @param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
@@ -117,6 +120,16 @@ class QgsMapToolLabel: public QgsMapTool
       @return true if data defined rotation is enabled on the layer
       */
     bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY = false );
+
+    /**Returns data defined show/hide of a feature.
+      @param vlayer vector layer
+      @param featureId feature identification integer
+      @param show out: show/hide value
+      @param showSuccess out: false if show/hide value is NULL
+      @param showCol out: index of the show label column
+      @return true if data defined show/hide is enabled on the layer
+      */
+    bool dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId, int& show, bool& showSuccess, int& showCol );
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;

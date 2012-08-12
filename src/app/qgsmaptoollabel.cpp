@@ -480,6 +480,31 @@ bool QgsMapToolLabel::dataDefinedRotation( QgsVectorLayer* vlayer, int featureId
   return true;
 }
 
+bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId, int& show, bool& showSuccess, int& showCol )
+{
+  showSuccess = false;
+  if ( !vlayer )
+  {
+    return false;
+  }
+
+  if ( !layerCanShowHide( vlayer, showCol ) )
+  {
+    return false;
+  }
+
+  QgsFeature f;
+  if ( !vlayer->featureAtId( featureId, f, false, true ) )
+  {
+    return false;
+  }
+
+  QgsAttributeMap attributes = f.attributeMap();
+
+  show = attributes[showCol].toInt( &showSuccess );
+  return true;
+}
+
 bool QgsMapToolLabel::diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
@@ -559,6 +584,30 @@ bool QgsMapToolLabel::layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol )
   }
   yCol = yColumn.toInt( &yColOk );
   if ( !yColOk )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsMapToolLabel::layerCanShowHide( const QgsMapLayer* ml, int& showCol ) const
+{
+  const QgsVectorLayer* vlayer = dynamic_cast<const QgsVectorLayer*>( ml );
+  if ( !vlayer || !vlayer->isEditable() )
+  {
+    return false;
+  }
+
+  bool showColOk;
+
+  QVariant showColumn = ml->customProperty( "labeling/dataDefinedProperty15" );
+  if ( !showColumn.isValid() )
+  {
+    return false;
+  }
+  showCol = showColumn.toInt( &showColOk );
+  if ( !showColOk )
   {
     return false;
   }

@@ -876,6 +876,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void showPinnedLabels( bool show );
     //! Activates pin labels tool
     void pinLabels();
+    //! Activates show/hide labels tool
+    void showHideLabels();
     //! Activates the move label tool
     void moveLabel();
     //! Activates rotate label tool
@@ -1078,6 +1080,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mTextAnnotation;
         QgsMapTool* mPinLabels;
+        QgsMapTool* mShowHideLabels;
         QgsMapTool* mMoveLabel;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;

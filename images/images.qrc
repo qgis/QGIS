@@ -77,7 +77,6 @@
     <file>themes/default/mActionFileSmall.png</file>
     <file>themes/default/mActionFolder.png</file>
     <file>themes/default/mActionFormAnnotation.png</file>
-    <file>themes/default/mActionPinLabels.svg</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
     <file>themes/default/mActionFullCumulativeCutStretch.png</file>
     <file>themes/default/mActionFullHistogramStretch.png</file>
@@ -119,6 +118,7 @@
     <file>themes/default/mActionPan.png</file>
     <file>themes/default/mActionPanToSelected.png</file>
     <file>themes/default/mActionPanToSelected.svg</file>
+    <file>themes/default/mActionPinLabels.svg</file>
     <file>themes/default/mActionShowRasterCalculator.png</file>
     <file>themes/default/mAction.png</file>
     <file>themes/default/mActionProjectProperties.png</file>
@@ -149,6 +149,7 @@
     <file>themes/default/mActionSelectRectangle.png</file>
     <file>themes/default/mActionShowAllLayers.png</file>
     <file>themes/default/mActionShowBookmarks.png</file>
+    <file>themes/default/mActionShowHideLabels.svg</file>
     <file>themes/default/mActionShowPinnedLabels.svg</file>
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
@@ -295,7 +296,6 @@
     <file>themes/gis/mActionFileSave.png</file>
     <file>themes/gis/mActionFolder.png</file>
     <file>themes/gis/mActionFormAnnotation.png</file>
-    <file>themes/gis/mActionPinLabels.svg</file>
     <file>themes/gis/mActionGroupItems.png</file>
     <file>themes/gis/mActionHelpContents.png</file>
     <file>themes/gis/mActionHideAllLayers.png</file>
@@ -326,6 +326,7 @@
     <file>themes/gis/mActionPan.png</file>
     <file>themes/gis/mActionPanToSelected.png</file>
     <file>themes/gis/mActionPanToSelected.svg</file>
+    <file>themes/gis/mActionPinLabels.svg</file>
     <file>themes/gis/mActionShowRasterCalculator.png</file>
     <file>themes/gis/mActionRaiseItems.png</file>
     <file>themes/gis/mActionRedo.png</file>
@@ -348,6 +349,7 @@
     <file>themes/gis/mActionSelectRectangle.png</file>
     <file>themes/gis/mActionShowAllLayers.png</file>
     <file>themes/gis/mActionShowBookmarks.png</file>
+    <file>themes/gis/mActionShowHideLabels.svg</file>
     <file>themes/gis/mActionShowPinnedLabels.svg</file>
     <file>themes/gis/mActionSimplify.png</file>
     <file>themes/gis/mActionSplitFeatures.png</file>

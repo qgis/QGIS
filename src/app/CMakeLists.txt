@@ -56,6 +56,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolpinlabels.cpp
+  qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
@@ -206,6 +207,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooldeletevertex.h
   qgsmaptoolfeatureaction.h
   qgsmaptoolpinlabels.h
+  qgsmaptoolshowhidelabels.h
   qgsmaptoolidentify.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h

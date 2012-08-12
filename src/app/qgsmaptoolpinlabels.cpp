@@ -203,7 +203,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
 
   QList<QgsLabelPosition> labelPosList = labelEngine->labelsWithinRect( ext );
 
-  QApplication::setOverrideCursor( Qt::BusyCursor );
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   QList<QgsLabelPosition>::const_iterator it;
   for ( it = labelPosList.constBegin() ; it != labelPosList.constEnd(); ++it )
   {
@@ -479,7 +479,7 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
 }
 
 bool QgsMapToolPinLabels::hideLabel( QgsVectorLayer* vlayer,
-                                        const QgsLabelPosition& labelpos )
+                                     const QgsLabelPosition& labelpos )
 {
   // skip diagrams
   if ( labelpos.isDiagram )

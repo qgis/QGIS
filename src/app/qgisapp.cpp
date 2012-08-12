@@ -235,6 +235,7 @@
 #include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
 #include "qgsmaptoolpinlabels.h"
+#include "qgsmaptoolshowhidelabels.h"
 #include "qgsmaptoolmovelabel.h"
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
@@ -715,6 +716,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mNodeTool;
   delete mMapTools.mRotatePointSymbolsTool;
   delete mMapTools.mPinLabels;
+  delete mMapTools.mShowHideLabels;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
@@ -984,6 +986,7 @@ void QgisApp::createActions()
 
   connect( mActionShowPinnedLabels, SIGNAL( toggled( bool ) ), this, SLOT( showPinnedLabels( bool ) ) );
   connect( mActionPinLabels, SIGNAL( triggered() ), this, SLOT( pinLabels() ) );
+  connect( mActionShowHideLabels, SIGNAL( triggered() ), this, SLOT( showHideLabels() ) );
   connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
   connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
   connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
@@ -1094,6 +1097,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionNodeTool );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
   mMapToolGroup->addAction( mActionPinLabels );
+  mMapToolGroup->addAction( mActionShowHideLabels );
   mMapToolGroup->addAction( mActionMoveLabel );
   mMapToolGroup->addAction( mActionRotateLabel );
   mMapToolGroup->addAction( mActionChangeLabelProperties );
@@ -1628,6 +1632,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowPinnedLabels.svg" ) );
   mActionPinLabels->setIcon( QgsApplication::getThemeIcon( "/mActionPinLabels.svg" ) );
+  mActionShowHideLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowHideLabels.svg" ) );
   mActionMoveLabel->setIcon( QgsApplication::getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( QgsApplication::getThemeIcon( "/mActionRotateLabel.svg" ) );
   mActionChangeLabelProperties->setIcon( QgsApplication::getThemeIcon( "/mActionChangeLabelProperties.png" ) );
@@ -1796,6 +1801,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
   mMapTools.mPinLabels = new QgsMapToolPinLabels( mMapCanvas );
   mMapTools.mPinLabels->setAction( mActionPinLabels );
+  mMapTools.mShowHideLabels = new QgsMapToolShowHideLabels( mMapCanvas );
+  mMapTools.mShowHideLabels->setAction( mActionShowHideLabels );
   mMapTools.mMoveLabel = new QgsMapToolMoveLabel( mMapCanvas );
   mMapTools.mMoveLabel->setAction( mActionMoveLabel );
   mMapTools.mRotateLabel = new QgsMapToolRotateLabel( mMapCanvas );
@@ -4319,6 +4326,11 @@ void QgisApp::pinLabels()
   mMapCanvas->setMapTool( mMapTools.mPinLabels );
 }
 
+void QgisApp::showHideLabels()
+{
+  mMapCanvas->setMapTool( mMapTools.mShowHideLabels );
+}
+
 void QgisApp::moveLabel()
 {
   mMapCanvas->setMapTool( mMapTools.mMoveLabel );
@@ -6668,7 +6680,7 @@ void QgisApp::legendLayerSelectionChanged( void )
 
 void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 {
-  bool enableMove = false, enableRotate = false, enablePin = false, enableChange = false;
+  bool enableMove = false, enableRotate = false, enablePin = false, enableShowHide = false, enableChange = false;
 
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   for ( QMap<QString, QgsMapLayer*>::iterator it = layers.begin(); it != layers.end(); it++ )
@@ -6678,11 +6690,16 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
          ( !vlayer->diagramRenderer() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
       continue;
 
-    int colX, colY, colAng;
+    int colX, colY, colShow, colAng;
     enablePin =
       enablePin ||
       ( qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels ) &&
         qobject_cast<QgsMapToolPinLabels*>( mMapTools.mPinLabels )->layerCanPin( vlayer, colX, colY ) );
+
+    enableShowHide =
+      enableShowHide ||
+      ( qobject_cast<QgsMapToolShowHideLabels*>( mMapTools.mShowHideLabels ) &&
+        qobject_cast<QgsMapToolShowHideLabels*>( mMapTools.mShowHideLabels )->layerCanShowHide( vlayer, colShow ) );
 
     enableMove =
       enableMove ||
@@ -6698,11 +6715,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     enableChange = true;
 
-    if ( enablePin && enableMove && enableRotate && enableChange )
+    if ( enablePin && enableShowHide && enableMove && enableRotate && enableChange )
       break;
   }
 
   mActionPinLabels->setEnabled( enablePin );
+  mActionShowHideLabels->setEnabled( enableShowHide );
   mActionMoveLabel->setEnabled( enableMove );
   mActionRotateLabel->setEnabled( enableRotate );
   mActionChangeLabelProperties->setEnabled( enableChange );
@@ -6750,6 +6768,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionRotatePointSymbols->setEnabled( false );
 
     mActionPinLabels->setEnabled( false );
+    mActionShowHideLabels->setEnabled( false );
     mActionMoveLabel->setEnabled( false );
     mActionRotateLabel->setEnabled( false );
     mActionChangeLabelProperties->setEnabled( false );

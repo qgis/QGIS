@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -403,6 +403,7 @@
    <addaction name="mActionLabeling"/>
    <addaction name="mActionShowPinnedLabels"/>
    <addaction name="mActionPinLabels"/>
+   <addaction name="mActionShowHideLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -1719,9 +1720,10 @@
     <string>Pin/Unpin Labels</string>
    </property>
    <property name="toolTip">
-    <string>Pin/Unpin and Hide/Show Labels
-Shift unpins, Ctl (Cmd) toggles pin/unpin
-Shift+Ctl (Cmd) on label hides, Shift+Ctl (Cmd) on feature shows label</string>
+    <string>Pin/Unpin Labels
+Click or marquee on label to pin
+Hold Shift to unpin
+Hold Ctl (Cmd) to toggle pin/unpin state</string>
    </property>
   </action>
   <action name="mActionShowPinnedLabels">
@@ -1773,6 +1775,23 @@ Shift+Ctl (Cmd) on label hides, Shift+Ctl (Cmd) on feature shows label</string>
    </property>
    <property name="toolTip">
     <string>Cumulative cut stretch using full dataset extent, default limits and estimated values.</string>
+   </property>
+  </action>
+  <action name="mActionShowHideLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowHideLabels.svg</normaloff>:/images/themes/default/mActionShowHideLabels.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show/Hide Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Show/Hide Labels
+Click or marquee on feature to show label
+Hold Shift+click or marquee on label to hide it</string>
    </property>
   </action>
  </widget>
