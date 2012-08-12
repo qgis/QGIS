@@ -83,8 +83,7 @@ void TestStyleV2::initTestCase()
   // mStyle->clear();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
-  QgsCptCityColorRampV2::setBaseDir( mTestDataDir + "cpt-city" );
-  QgsCptCityColorRampV2::loadSchemes( "" );
+  QgsCptCityCollection::initCollection( DEFAULT_CPTCITY_COLLECTION, mTestDataDir + "cpt-city" );
 }
 
 void TestStyleV2::cleanupTestCase()

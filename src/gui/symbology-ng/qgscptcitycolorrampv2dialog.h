@@ -21,6 +21,8 @@
 #include "ui_qgscptcitycolorrampv2dialogbase.h"
 
 class QgsCptCityColorRampV2;
+class QgsCptCityCollection;
+class QgsCptCityBrowserModel;
 
 class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCptCityColorRampV2DialogBase
 {
@@ -29,28 +31,35 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
   public:
     QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent = NULL );
 
-  public slots:
-    void setSchemeName();
-    void setVariantName();
-    void populateSchemes( QString view = "author" );
-    void populateVariants();
+    QString selectedName() const { return lblSchemeName->text() + cboVariantName->currentText(); }
 
-    void on_treeWidget_currentItemChanged( QTreeWidgetItem * current, QTreeWidgetItem * previous );
-    void on_treeWidget_itemExpanded( QTreeWidgetItem * item );
-    /* void on_buttonGroupView_buttonClicked( QAbstractButton * button ); */
+  public slots:
+    void populateVariants( QString newVariant = QString() );
+
+    void on_mBrowserView_clicked( const QModelIndex & );
     void on_tabBar_currentChanged( int index );
     void on_pbtnLicenseDetails_pressed();
+    void on_cboVariantName_currentIndexChanged( int index );
+    /* void refresh(); */
 
   protected:
 
     void updatePreview();
-    QTreeWidgetItem* findPath( QString path );
-    QTreeWidgetItem * makeCollectionItem( const QString& path );
-    void makeSchemeItem( QTreeWidgetItem *item, const QString& path, const QString& schemeName );
+    void updateCopyingInfo( const QMap< QString, QString >& copyingMap );
     bool eventFilter( QObject *obj, QEvent *event );
 
     QgsCptCityColorRampV2* mRamp;
-    QString mCollection;
+    QgsCptCityCollection* mCollection;
+    QString mCollectionGroup;
+
+    /* void refreshModel( const QModelIndex& index ); */
+    /* void showEvent( QShowEvent * event ); */
+
+    QgsCptCityBrowserModel* mModel;
+    QgsCptCityBrowserModel* mAuthorsModel;
+    QgsCptCityBrowserModel* mSelectionsModel;
+
 };
+
 
 #endif

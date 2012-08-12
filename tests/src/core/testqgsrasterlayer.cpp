@@ -255,7 +255,7 @@ void TestQgsRasterLayer::colorRamp2()
 void TestQgsRasterLayer::colorRamp3()
 {
   // cpt-city ramp, small selection available in <testdir>/cpt-city
-  QgsCptCityColorRampV2::setBaseDir( mTestDataDir + "cpt-city" );
+  QgsCptCityCollection::initCollection( DEFAULT_CPTCITY_COLLECTION, mTestDataDir + "cpt-city" );
   QVERIFY( testColorRamp( "raster_colorRamp3",
                           new QgsCptCityColorRampV2( "gmt/GMT_panoply", "" ),
                           QgsColorRampShader::DISCRETE, 10 ) );

@@ -19,6 +19,7 @@
 #include <QColor>
 
 #include "qgssymbollayerv2.h" // for QgsStringMap
+#include "qgslogger.h"
 
 class CORE_EXPORT QgsVectorColorRampV2
 {
@@ -158,6 +159,61 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     QList<QColor> mPalette;
 };
 
+#define DEFAULT_CPTCITY_COLLECTION "default"
+
+class CORE_EXPORT QgsCptCityCollection
+{
+  public:
+    QgsCptCityCollection( QString collectionName = DEFAULT_CPTCITY_COLLECTION,
+                          QString baseDir = QString() );
+    ~QgsCptCityCollection();
+
+    QString baseDir() const;
+    static QString baseDir( QString collectionName );
+    static QString defaultBaseDir();
+    void setBaseDir( QString dirName ) { mBaseDir = dirName; }
+    bool loadSchemes( QString rootDir = "", bool reset = false );
+    /** Is the minimal (free to distribute) set of schemes available?
+     * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
+    bool hasBasicSchemes();
+    /** Is the entire archive available? Currently tests that there is at least one scheme. */
+    bool hasAllSchemes();
+    QStringList listSchemeCollections( QString collectionName = "", bool recursive = false );
+    QStringList listSchemeNames( QString collectionName );
+    QgsCptCityCollection* colorRampFromSVGFile( QString svgFile );
+    QgsCptCityCollection* colorRampFromSVGString( QString svgString );
+
+    QString copyingFileName( const QString& dirName ) const;
+    QString descFileName( const QString& dirName ) const;
+    static QMap< QString, QString > copyingInfo( const QString& copyingFileName );
+
+    QString collectionName() const { return mCollectionName; }
+    QMap< QString, QStringList > schemeMap() const { return mSchemeMap; }
+    QMap< QString, QStringList > schemeVariants() const { return mSchemeVariants; }
+    QMap< QString, QString > collectionNames() const { return mCollectionNames; }
+    QMap< QString, QStringList > collectionSelections() const { return mCollectionSelections; }
+
+    static void initCollection( QString collectionName = DEFAULT_CPTCITY_COLLECTION,
+                                QString collectionBaseDir = baseDir( DEFAULT_CPTCITY_COLLECTION ) );
+    static void initCollections( ) { initCollection(); }
+    static void initCollections( QMap< QString, QString > collectionsDefs );
+    static QgsCptCityCollection* defaultCollection();
+    static QMap< QString, QgsCptCityCollection* > collectionRegistry();
+
+  protected:
+
+    QString mCollectionName;
+    QString mBaseDir;
+    QStringList mCollections;
+    QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
+    QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
+    QMap< QString, QString > mCollectionNames; //key is name, value is description
+    QMap< QString, QStringList > mCollectionSelections;
+    static QgsCptCityCollection* mDefaultCollection;
+    static QMap< QString, QgsCptCityCollection* > mCollectionRegistry;
+    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap; // mapping of copyinginfo, key is fileName
+};
+
 
 #define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
 #define DEFAULT_CPTCITY_VARIANTNAME "05"
@@ -166,7 +222,8 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 {
   public:
     QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME );
+                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
+                           QString collectionName = DEFAULT_CPTCITY_COLLECTION );
 
 
     enum GradientType
@@ -192,55 +249,40 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 
     QString schemeName() const { return mSchemeName; }
     QString variantName() const { return mVariantName; }
+    QStringList variantList() const { return mVariantList; }
+    /* QgsCptCityCollection* collection() const { return mCollection; } */
+    QString collectionName() const { return mCollectionName; }
+    QgsCptCityCollection* collection() const
+    { return QgsCptCityCollection::collectionRegistry().value( mCollectionName ); }
 
     /* lazy loading - have to call loadPalette() explicitly */
-    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; }
-    void setVariantName( QString variantName ) { mVariantName = variantName; }
+    void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
+    void setVariantName( QString variantName ) { mVariantName = variantName; mFileLoaded = false; }
     void setName( QString schemeName, QString variantName = "" )
-    { mSchemeName = schemeName; mVariantName = variantName; loadPalette(); }
+    { mSchemeName = schemeName; mVariantName = variantName; mFileLoaded = false; }
 
     void loadPalette() { loadFile(); }
     /* bool isContinuous() const { return mContinuous; } */
     GradientType gradientType() const { return mGradientType; }
 
     QString fileName() const;
-    bool loadFile( QString filename = "" );
+    bool loadFile();
 
     QString copyingFileName() const;
-    QMap< QString, QString > copyingInfo();
     QString descFileName() const;
-
-    static QString baseDir();
-    static void setBaseDir( QString dirName ) { mBaseDir = dirName; }
-    static bool loadSchemes( QString rootDir = "", bool reset = false );
-    /** Is the minimal (free to distribute) set of schemes available?
-     * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
-    static bool hasBasicSchemes();
-    /** Is the entire archive available? Currently tests that there is at least one scheme. */
-    static bool hasAllSchemes();
-    static QStringList listSchemeCollections( QString collectionName = "", bool recursive = false );
-    static QStringList listSchemeNames( QString collectionName );
-    static QgsCptCityColorRampV2* colorRampFromSVGFile( QString svgFile );
-    static QgsCptCityColorRampV2* colorRampFromSVGString( QString svgString );
-
-    static const QMap< QString, QStringList > schemeMap() { return mSchemeMap; }
-    static const QMap< QString, QStringList > schemeVariants() { return mSchemeVariants; }
-    static const QMap< QString, QString > collectionNames() { return mCollectionNames; }
-    static const QMap< QString, QStringList > collectionSelections() { return mCollectionSelections; }
+    QMap< QString, QString > copyingInfo() const;
 
   protected:
 
     QString mSchemeName;
     QString mVariantName;
+    QString mCollectionName;
+    /* QgsCptCityCollection* mCollection; */
     GradientType mGradientType;
     GradientList mPalette;
-    static QString mBaseDir;
-    static QStringList mCollections;
-    static QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
-    static QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
-    static QMap< QString, QString > mCollectionNames; //key is name, value is description
-    static QMap< QString, QStringList > mCollectionSelections;
-
+    QStringList mVariantList;
+    bool mFileLoaded;
 };
+
 
 #endif
