@@ -44,11 +44,17 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
 
+  //alignment combo box
   mAlignmentComboBox->insertItem( 0, tr( "Left" ) );
   mAlignmentComboBox->insertItem( 1, tr( "Middle" ) );
   mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
-  blockMemberSignals( false );
 
+  //units combo box
+  mUnitsComboBox->insertItem( 0, tr( "Map units" ), 0 );
+  mUnitsComboBox->insertItem( 1, tr( "Meters" ), 1 );
+  mUnitsComboBox->insertItem( 2, tr( "Feet" ), 2 );
+
+  blockMemberSignals( false );
   setGuiElements(); //set the GUI elements to the state of scaleBar
 }
 
@@ -177,6 +183,9 @@ void QgsComposerScaleBarWidget::setGuiElements()
   //alignment
   mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
   blockMemberSignals( false );
+
+  //units
+  mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData(( int )mComposerScaleBar->units() ) );
 }
 
 //slots
@@ -399,6 +408,24 @@ void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int i
   mComposerScaleBar->endCommand();
 }
 
+void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QVariant unitData = mUnitsComboBox->itemData( index );
+  if ( unitData.type() == QVariant::Invalid )
+  {
+    return;
+  }
+  mComposerScaleBar->beginCommand( tr( "Scalebar unit changed" ) );
+  mComposerScaleBar->setUnits(( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
+  mComposerScaleBar->update();
+  mComposerScaleBar->endCommand();
+}
+
 void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
 {
   mSegmentSizeSpinBox->blockSignals( block );
@@ -413,4 +440,5 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
   mAlignmentComboBox->blockSignals( block );
+  mUnitsComboBox->blockSignals( block );
 }

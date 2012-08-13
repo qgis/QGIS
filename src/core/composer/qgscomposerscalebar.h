@@ -40,6 +40,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       Right
     };
 
+    /**Added in version 1.9*/
+    enum ScaleBarUnits
+    {
+      MapUnits = 0,
+      Meters,
+      Feet
+    };
+
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
@@ -95,6 +103,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /**@note: this method was added in version 1.8*/
     void setAlignment( Alignment a ) { mAlignment = a; }
+
+    /**@note: this method was added in version 1.9*/
+    ScaleBarUnits units() const { return mUnits; }
+
+    /**@note: this method was added in version 1.9*/
+    void setUnits( ScaleBarUnits u );
 
     /**Apply default settings*/
     void applyDefaultSettings();
@@ -179,8 +193,13 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     Alignment mAlignment;
 
+    ScaleBarUnits mUnits;
+
     /**Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
     void refreshSegmentMillimeters();
+
+    /**Returns diagonal of composer map in selected units (map units / meters / feet)*/
+    double mapDiagonal() const;
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H
