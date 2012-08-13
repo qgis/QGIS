@@ -1087,6 +1087,9 @@
    <property name="text">
     <string>Labeling</string>
    </property>
+   <property name="toolTip">
+    <string>Layer Labeling Options</string>
+   </property>
   </action>
   <action name="mActionNewVectorLayer">
    <property name="icon">
@@ -1475,6 +1478,9 @@
    <property name="text">
     <string>Move Label</string>
    </property>
+   <property name="toolTip">
+    <string>Move Label</string>
+   </property>
   </action>
   <action name="mActionRotateLabel">
    <property name="checkable">
@@ -1486,6 +1492,10 @@
    </property>
    <property name="text">
     <string>Rotate Label</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Label
+Ctl (Cmd) increments by 15 deg.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1722,8 +1732,8 @@
    <property name="toolTip">
     <string>Pin/Unpin Labels
 Click or marquee on label to pin
-Hold Shift to unpin
-Hold Ctl (Cmd) to toggle pin/unpin state</string>
+Shift unpins, Ctl (Cmd) toggles state
+Acts on all editable layers</string>
    </property>
   </action>
   <action name="mActionShowPinnedLabels">
@@ -1791,7 +1801,8 @@ Hold Ctl (Cmd) to toggle pin/unpin state</string>
    <property name="toolTip">
     <string>Show/Hide Labels
 Click or marquee on feature to show label
-Hold Shift+click or marquee on label to hide it</string>
+Shift+click or marquee on label to hide it
+Acts on currently active editable layer</string>
    </property>
   </action>
  </widget>

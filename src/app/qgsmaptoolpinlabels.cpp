@@ -258,7 +258,6 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
 
   bool doUnpin = e->modifiers() & Qt::ShiftModifier ? true : false;
   bool toggleUnpinOrPin = e->modifiers() & Qt::ControlModifier ? true : false;
-  bool doHide = ( doUnpin && toggleUnpinOrPin );
 
   // get list of all drawn labels from all layers within, or touching, chosen extent
   bool labelChanged = false;
@@ -315,7 +314,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
     QString labelStringID = QString( "%0|%1" ).arg( mCurrentLabelPos.layerID, QString::number( mCurrentLabelPos.featureId ) );
 
     // unpin label
-    if ( mCurrentLabelPos.isPinned && !doHide && ( doUnpin  || toggleUnpinOrPin ) )
+    if ( mCurrentLabelPos.isPinned && ( doUnpin  || toggleUnpinOrPin ) )
     {
       // unpin previously pinned label (set attribute table fields to NULL)
       if ( pinUnpinLabel( vlayer, mCurrentLabelPos, false ) )
@@ -329,7 +328,7 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
     }
 
     // pin label
-    if ( !mCurrentLabelPos.isPinned && !doHide && ( !doUnpin || toggleUnpinOrPin ) )
+    if ( !mCurrentLabelPos.isPinned && ( !doUnpin || toggleUnpinOrPin ) )
     {
       // pin label's location, and optionally rotation, to attribute table
       if ( pinUnpinLabel( vlayer, mCurrentLabelPos, true ) )
@@ -339,20 +338,6 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
       else
       {
         QgsDebugMsg( QString( "Pin failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
-      }
-    }
-
-    // hide label
-    if ( doHide )
-    {
-      // write 0 font size to attribute table
-      if ( hideLabel( vlayer, mCurrentLabelPos ) )
-      {
-        labelChanged = true;
-      }
-      else
-      {
-        QgsDebugMsg( QString( "Hide failed for layer, label: %0, %1" ).arg( labellyr, labeltxt ) );
       }
     }
   }
@@ -475,44 +460,5 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
     }
     vlayer->endEditCommand();
   }
-  return true;
-}
-
-bool QgsMapToolPinLabels::hideLabel( QgsVectorLayer* vlayer,
-                                     const QgsLabelPosition& labelpos )
-{
-  // skip diagrams
-  if ( labelpos.isDiagram )
-  {
-    QgsDebugMsg( QString( "Label is diagram, skipping" ) );
-    return false;
-  }
-  // verify attribute table has proper fields setup
-  bool sizeColOk;
-  int sizeCol;
-
-  QVariant sizeColumn = vlayer->customProperty( "labeling/dataDefinedProperty0" );
-  if ( !sizeColumn.isValid() )
-  {
-    QgsDebugMsg( QString( "Size column not set" ) );
-    return false;
-  }
-  sizeCol = sizeColumn.toInt( &sizeColOk );
-  if ( !sizeColOk )
-  {
-    QgsDebugMsg( QString( "Size column not convertible to integer" ) );
-    return false;
-  }
-
-  // edit attribute table
-  int fid = labelpos.featureId;
-
-  vlayer->beginEditCommand( tr( "Label hidden" ) );
-  if ( !vlayer->changeAttributeValue( fid, sizeCol, 0, false ) )
-  {
-    QgsDebugMsg( QString( "Failed write to attribute table" ) );
-    return false;
-  }
-  vlayer->endEditCommand();
   return true;
 }

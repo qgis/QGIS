@@ -95,9 +95,6 @@ class QgsMapToolPinLabels: public QgsMapToolLabel
     bool pinUnpinLabel( QgsVectorLayer* vlayer,
                         const QgsLabelPosition& labelpos,
                         bool pin );
-
-    //! Hide chosen label by setting font size to 0
-    bool hideLabel( QgsVectorLayer* vlayer, const QgsLabelPosition& labelpos );
 };
 
 #endif // QGSMAPTOOLPINLABELS_H
