@@ -969,7 +969,7 @@ void QgsWcsProvider::cacheReplyFinished()
     }
     QgsDebugMsg( QString( "%1 bytes received" ).arg( mCachedData.size() ) );
 
-#if 1
+#if 0
     QFile myFile( "/tmp/qgiswcscache.dat" );
     if ( myFile.open( QIODevice::WriteOnly ) )
     {
