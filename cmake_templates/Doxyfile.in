@@ -601,8 +601,8 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
                          @CMAKE_SOURCE_DIR@/src/core/gps \
                          @CMAKE_SOURCE_DIR@/src/gui \
-                         @CMAKE_SOURCE_DIR@/src/attributetable \
-                         @CMAKE_SOURCE_DIR@/src/raster \
+                         @CMAKE_SOURCE_DIR@/src/gui/attributetable \
+                         @CMAKE_SOURCE_DIR@/src/gui/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/interpolation \
                          @CMAKE_SOURCE_DIR@/src/analysis/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/vector \
