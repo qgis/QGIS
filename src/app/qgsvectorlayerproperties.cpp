@@ -1377,11 +1377,13 @@ void QgsVectorLayerProperties::handleDiagramTypeChanged( const QString& itemtext
   {
     mDiagramOptionsGroupBox->show();
     mBarWidthLabel->show();
+    mBarWidthSpinBox->show();
   }
   else
   {
     mDiagramOptionsGroupBox->hide();
     mBarWidthLabel->hide();
+    mBarWidthSpinBox->hide();
   }
 
   if ( tr( "Text diagram" ) == itemtext || tr( "Pie chart" ) == itemtext )
@@ -1871,7 +1873,7 @@ void QgsVectorLayerProperties::initDiagramTab()
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Histogram" ) ) );
       }
     }
-  } // if ( !dr ), else
+  } // if ( !dr )
 
   // Popuplate the widget list with all widgets which should be enabled/disabled when diagrams are
   // enabled / disabled
@@ -1879,6 +1881,9 @@ void QgsVectorLayerProperties::initDiagramTab()
     << mPrioritySlider << mPriorityHighLabel << mAppearanceGroupBox << mVisibilityGroupBox << mSizeGroupBox
     << mPlacementGroupBox << mAttributesLabel << mDiagramAttributesComboBox << mRemoveCategoryPushButton 
     << mAddCategoryPushButton << mDiagramAttributesTreeWidget << mDiagramOptionsGroupBox;
+
+  // Trigger a clicked event, so all the items get properly enabled and disabled
+  on_mDisplayDiagramsCheckBox_stateChanged( mDisplayDiagramsCheckBox->checkState() );
 
   connect( mDiagramAttributesTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleDiagramItemDoubleClick( QTreeWidgetItem*, int ) ) );
   connect( mDiagramTypeComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( handleDiagramTypeChanged( const QString& ) ) );
