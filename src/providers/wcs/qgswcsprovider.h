@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
+#include <QNetworkRequest>
 #include <QVector>
 #include <QUrl>
 
@@ -412,6 +413,13 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsCoordinateReferenceSystem mCrs;
 
+    // Fix for servers using bbox 1 px bigger
+    bool mFixBox;
+
+    // Fix for rasters rotated by GeoServer
+    bool mFixRotate;
+
+    QNetworkRequest::CacheLoadControl mGetCoverageCacheLoadControl;
 };
 
 

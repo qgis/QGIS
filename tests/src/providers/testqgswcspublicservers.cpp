@@ -40,11 +40,13 @@ void TestQgsWcsPublicServers::init()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsDebugMsg( "Entered" );
 
+  mMaxCoverages = 2;
+
   mCacheDir = QDir( "./wcstestcache" );
   if ( !mCacheDir.exists() )
   {
     QDir myDir = QDir::root();
-    if ( !myDir.mkpath ( mCacheDir.absolutePath() ) )
+    if ( !myDir.mkpath( mCacheDir.absolutePath() ) )
     {
       QgsDebugMsg( "Cannot create cache dir " + mCacheDir.absolutePath() );
       QCoreApplication::exit( 1 );
@@ -65,43 +67,52 @@ void TestQgsWcsPublicServers::init()
 void TestQgsWcsPublicServers::test( )
 {
   QStringList versions;
-  versions << "" << "1.0" << "1.1"; // empty for default
-
+  // It may happen that server supports 1.1.1, but does not accept 1.1 (http://zeus.pin.unifi.it/gi-wcs/http)
+  versions << "" << "1.0.0" << "1.1.0"; // empty for default
   QStringList servers;
   servers << "http://argon.geogr.uni-jena.de:8080/geoserver/ows";
+  servers << "http://demo.geonode.org/geoserver/wcs";
   servers << "http://demo.mapserver.org/cgi-bin/wcs";
+  servers << "http://demo.opengeo.org/geoserver/wcs";
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem";
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/ows8/wcseo";
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/wcs110";
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/wcs-all";
   servers << "http://iceds.ge.ucl.ac.uk/cgi-bin/icedswcs";
   servers << "http://motherlode.ucar.edu:8080/thredds/wcs/fmrc/NCEP/DGEX/Alaska_12km/NCEP-DGEX-Alaska_12km_best.ncd";
+  servers << "http://navigator.state.or.us/ArcGIS/services/Framework/Imagery_Mosaic2009/ImageServer/WCSServer";
   servers << "http://nsidc.org/cgi-bin/atlas_north";
   servers << "http://sedac.ciesin.columbia.edu/geoserver/wcs";
-  servers << "http://webmap.ornl.gov/ogcbroker/wcs";
+  // Big and slow
+  //servers << "http://webmap.ornl.gov/ogcbroker/wcs";
   servers << "http://ws.csiss.gmu.edu/cgi-bin/wcs-t";
-  servers << "http://ws.laits.gmu.edu/cgi-bin/wcs-all";
-  servers << "http://zeus.pin.unifi.it/gi-wcs/http";
+  // Big and slow
+  //servers << "http://ws.laits.gmu.edu/cgi-bin/wcs-all";
+  // Currently very slow or down
+  //servers << "http://www.sogeo.ch/geoserver/wcs";
+  // Slow and erroneous
+  //servers << "http://zeus.pin.unifi.it/gi-wcs/http";
 
   foreach ( QString server, servers )
   {
     QStringList myServerLog;
     myServerLog << "server:" + server;
     QString myServerDirName = server;
-    myServerDirName.replace( QRegExp("[:/]+"), "." );
-    myServerDirName.replace( QRegExp("\\.$"), "" );
+    myServerDirName.replace( QRegExp( "[:/]+" ), "." );
+    myServerDirName.replace( QRegExp( "\\.$" ), "" );
     QgsDebugMsg( "myServerDirName = " + myServerDirName );
 
-    QDir myServerDir ( mCacheDir.absolutePath() + QDir::separator() + myServerDirName );
+    QDir myServerDir( mCacheDir.absolutePath() + QDir::separator() + myServerDirName );
     QString myServerLogPath = myServerDir.absolutePath() + QDir::separator() + "server.log";
-    if ( QFileInfo(myServerLogPath).exists() ) {
-      QgsDebugMsg( "cache exists " + myServerDir.absolutePath() );      
+    if ( QFileInfo( myServerLogPath ).exists() )
+    {
+      QgsDebugMsg( "cache exists " + myServerDir.absolutePath() );
       continue;
     }
 
     if ( !myServerDir.exists() )
     {
-      mCacheDir.mkdir ( myServerDirName );
+      mCacheDir.mkdir( myServerDirName );
     }
 
     foreach ( QString version, versions )
@@ -122,7 +133,7 @@ void TestQgsWcsPublicServers::test( )
       if ( !myCapabilities.lastError().isEmpty() )
       {
         QgsDebugMsg( myCapabilities.lastError() );
-        myServerLog << "error:" + myCapabilities.lastError();
+        myServerLog << "error: (version: " + version + ") " +  myCapabilities.lastError().replace( "\n", " " );
         continue;
       }
 
@@ -130,18 +141,30 @@ void TestQgsWcsPublicServers::test( )
       if ( !myCapabilities.supportedCoverages( myCoverages ) )
       {
         QgsDebugMsg( "Cannot get list of coverages" );
-        myServerLog << "error:Cannot get list of coverages";
+        myServerLog << "error: (version: " + version + ") Cannot get list of coverages";
         continue;
       }
 
+      int myCoverageCount = 0;
       foreach ( QgsWcsCoverageSummary myCoverage, myCoverages )
       {
         QgsDebugMsg( "coverage: " + myCoverage.identifier );
-        QString myPath = myServerDir.absolutePath() + QDir::separator() + myCoverage.identifier; 
+        myCoverageCount++;
+        if ( myCoverageCount > mMaxCoverages ) continue;
+        QString myPath = myServerDir.absolutePath() + QDir::separator() + myCoverage.identifier;
+
         if ( !version.isEmpty() )
         {
           myPath += "-" + version;
         }
+        QString myLogPath = myPath + ".log";
+
+        if ( QFileInfo( myLogPath ).exists() )
+        {
+          QMap<QString, QString> log = readLog( myLogPath );
+          if ( !log.value( "identifier" ).isEmpty() && log.value( "error" ).isEmpty() ) continue;
+        }
+
         QStringList myLog;
         myLog << "identifier:" + myCoverage.identifier;
         myCapabilities.describeCoverage( myCoverage.identifier );
@@ -150,7 +173,7 @@ void TestQgsWcsPublicServers::test( )
         myUri.setParam( "identifier", myCoverage.identifier );
         if ( myCoverage.times.size() > 0 )
         {
-          myUri.setParam( "time", myCoverage.times.value(0) );
+          myUri.setParam( "time", myCoverage.times.value( 0 ) );
         }
         myLog << "version:" + version;
         myLog << "uri:" + myUri.encodedUri();
@@ -159,9 +182,9 @@ void TestQgsWcsPublicServers::test( )
         int myHeight = 100;
         if ( myCoverage.hasSize )
         {
-          myHeight = static_cast<int>( qRound( 1.0 * myWidth * myCoverage.height / myCoverage.width ) ); 
+          myHeight = static_cast<int>( qRound( 1.0 * myWidth * myCoverage.height / myCoverage.width ) );
         }
-        myLog << QString("hasSize:%1").arg( myCoverage.hasSize );
+        myLog << QString( "hasSize:%1" ).arg( myCoverage.hasSize );
 
         QgsRasterLayer * myLayer = new QgsRasterLayer( myUri.encodedUri(), myCoverage.identifier, "wcs", true );
         if ( myLayer->isValid() )
@@ -170,7 +193,7 @@ void TestQgsWcsPublicServers::test( )
           myLog << "bandCount:" + QString::number( myBandCount );
           if ( myBandCount > 0 )
           {
-            myLog << "srcType:" + QString::number( myLayer->dataProvider()->srcDataType(1) );
+            myLog << "srcType:" + QString::number( myLayer->dataProvider()->srcDataType( 1 ) );
 
             QgsRasterBandStats myStats = myLayer->dataProvider()->bandStatistics( 1, QgsRasterBandStats::All, QgsRectangle(), myWidth * myHeight );
             myLog << "min:" + QString::number( myStats.minimumValue );
@@ -180,7 +203,7 @@ void TestQgsWcsPublicServers::test( )
           QgsMapRenderer myMapRenderer;
           QList<QgsMapLayer *> myLayersList;
 
-          myLayersList.append ( myLayer );
+          myLayersList.append( myLayer );
           QgsMapLayerRegistry::instance()->addMapLayers( myLayersList, false );
 
           QMap<QString, QgsMapLayer*> myLayersMap = QgsMapLayerRegistry::instance()->mapLayers();
@@ -188,7 +211,6 @@ void TestQgsWcsPublicServers::test( )
           myMapRenderer.setLayerSet( myLayersMap.keys() );
 
           myMapRenderer.setExtent( myLayer->extent() );
-
 
           QImage myImage( myWidth, myHeight, QImage::Format_ARGB32_Premultiplied );
           myImage.fill( 0 );
@@ -213,15 +235,15 @@ void TestQgsWcsPublicServers::test( )
             {
               for ( int col = 0; col < myWidth; col++ )
               {
-                double value = myLayer->dataProvider()->readValue( myData, myType, row*myWidth + col );
-                QString valueStr = QString::number(value);
-                if ( !myValues.contains ( valueStr ) ) myValues.insert( valueStr );
+                double value = myLayer->dataProvider()->readValue( myData, myType, row * myWidth + col );
+                QString valueStr = QString::number( value );
+                if ( !myValues.contains( valueStr ) ) myValues.insert( valueStr );
               }
             }
-            free(myData);
+            free( myData );
           }
-          QgsDebugMsg( QString("%1 values").arg( myValues.size() ) );
-          myLog << QString("valuesCount:%1").arg( myValues.size() );
+          QgsDebugMsg( QString( "%1 values" ).arg( myValues.size() ) );
+          myLog << QString( "valuesCount:%1" ).arg( myValues.size() );
 
           // Verify image colors
           QSet<QRgb> myColors;
@@ -229,33 +251,32 @@ void TestQgsWcsPublicServers::test( )
           {
             for ( int col = 0; col < myWidth; col++ )
             {
-              QRgb color = myImage.pixel ( col, row );
-              if ( !myColors.contains ( color ) ) myColors.insert(color);
+              QRgb color = myImage.pixel( col, row );
+              if ( !myColors.contains( color ) ) myColors.insert( color );
             }
           }
-          QgsDebugMsg( QString("%1 colors").arg( myColors.size() ) );
-          myLog << QString("colorsCount:%1").arg( myColors.size() );
+          QgsDebugMsg( QString( "%1 colors" ).arg( myColors.size() ) );
+          myLog << QString( "colorsCount:%1" ).arg( myColors.size() );
         }
         else
         {
-          QgsDebugMsg( "Layer is not valid");
+          QgsDebugMsg( "Layer is not valid" );
           myLog << "error:Layer is not valid";
         }
-  
-        QString myLogPath = myPath + ".log";
+
         QFile myLogFile( myLogPath );
-        myLogFile.open(QIODevice::WriteOnly | QIODevice::Text);
-        QTextStream myStream(&myLogFile);
-        myStream << myLog.join("\n");
+        myLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+        QTextStream myStream( &myLogFile );
+        myStream << myLog.join( "\n" );
 
         myLogFile.close();
         QgsMapLayerRegistry::instance()->removeAllMapLayers();
       }
     }
     QFile myServerLogFile( myServerLogPath );
-    myServerLogFile.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream myStream(&myServerLogFile);
-    myStream << myServerLog.join("\n");
+    myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+    QTextStream myStream( &myServerLogFile );
+    myStream << myServerLog.join( "\n" );
     myServerLogFile.close();
   }
 }
@@ -270,7 +291,7 @@ void TestQgsWcsPublicServers::writeReport( QString theReport )
     myStream << theReport;
     myFile.close();
   }
-  QgsDebugMsg ( "Report written to " + myReportFile );
+  QgsDebugMsg( "Report written to " + myReportFile );
 }
 
 void TestQgsWcsPublicServers::report()
@@ -289,25 +310,29 @@ void TestQgsWcsPublicServers::report()
     int myErrCount = 0;
     int myWarnCount = 0;
     myServerCount++;
-    QDir myDir ( mCacheDir.absolutePath() + QDir::separator() + myDirName );
+    QDir myDir( mCacheDir.absolutePath() + QDir::separator() + myDirName );
     QString myServerLogPath = myDir.absolutePath() + QDir::separator() + "server.log";
-    QMap<QString,QString> myServerLog = readLog ( myServerLogPath ); 
+    QMap<QString, QString> myServerLog = readLog( myServerLogPath );
 
-    myReport += QString( "<h2>%1</h2>" ).arg( myServerLog.value("server") );
+    myReport += QString( "<h2>%1</h2>" ).arg( myServerLog.value( "server" ) );
     QString myServerReport;
 
-    if ( !myServerLog.value( "error").isEmpty() )
+    if ( !myServerLog.value( "error" ).isEmpty() )
     {
-      myServerReport += error( myServerLog.value( "error") );
-      myServerErrCount++; 
+      // Server may have more errors, for each version
+      foreach ( QString err, myServerLog.values( "error" ) )
+      {
+        myServerReport += error( err );
+      }
+      myServerErrCount++;
     }
     else
     {
       myServerReport += "<table class='tab'>";
-      myServerReport += row(mHead);
+      myServerReport += row( mHead );
       QStringList filters;
       filters << "*.log";
-      myDir.setNameFilters(filters);
+      myDir.setNameFilters( filters );
       foreach ( QString myLogFileName, myDir.entryList( QDir::Files ) )
       {
         if ( myLogFileName == "server.log" ) continue;
@@ -315,16 +340,16 @@ void TestQgsWcsPublicServers::report()
         myCoverageCount++;
 
         QString myLogPath = myDir.absolutePath() + QDir::separator() + myLogFileName;
-        QMap<QString,QString>myLog = readLog ( myLogPath ); 
+        QMap<QString, QString>myLog = readLog( myLogPath );
         QStringList myValues;
         myValues << myLog.value( "identifier" );
         myValues << myLog.value( "version" );
-        QString imgPath = myDirName + QDir::separator() + QFileInfo(myLogPath).completeBaseName() + ".png"; 
+        QString imgPath = myDirName + QDir::separator() + QFileInfo( myLogPath ).completeBaseName() + ".png";
 
-        if ( !myLog.value( "error").isEmpty() )
+        if ( !myLog.value( "error" ).isEmpty() )
         {
-          myValues << myLog.value( "error");
-          myServerReport += row(myValues, "cellerr" );
+          myValues << myLog.value( "error" );
+          myServerReport += row( myValues, "cellerr" );
           myErrCount++;
           myCoverageErrCount++;
         }
@@ -339,10 +364,10 @@ void TestQgsWcsPublicServers::report()
           myValues << myLog.value( "colorsCount" );
           myValues << myLog.value( "hasSize" );
 
-          QString cls;    
+          QString cls;
           int myValuesCount = myLog.value( "valuesCount" ).toInt();
           int myColorsCount = myLog.value( "colorsCount" ).toInt();
-          if ( myValuesCount < 4 ) 
+          if ( myValuesCount < 4 )
           {
             cls = "cellerr";
             myErrCount++;
@@ -355,15 +380,15 @@ void TestQgsWcsPublicServers::report()
             myCoverageWarnCount++;
           }
 
-          myServerReport += row(myValues, cls );
+          myServerReport += row( myValues, cls );
         }
       }
       myServerReport += "</table>";
       // prepend counts
-      myServerReport.prepend ( QString( "<b>Coverages: %1</b><br>" ).arg( myCount ) +
-                               QString( "<b>Errors: %1</b><br>" ).arg( myErrCount ) +
-                               QString( "<b>Warnings: %1</b><br><br>" ).arg( myWarnCount ) );
-    } 
+      myServerReport.prepend( QString( "<b>Coverages: %1</b><br>" ).arg( myCount ) +
+                              QString( "<b>Errors: %1</b><br>" ).arg( myErrCount ) +
+                              QString( "<b>Warnings: %1</b><br><br>" ).arg( myWarnCount ) );
+    }
     myReport += myServerReport;
   }
 
@@ -382,6 +407,7 @@ void TestQgsWcsPublicServers::report()
   myRep += ".errmsg { color: #ff0000; }";
   myRep += "</style>";
 
+  myRep += QString( "<p>Tested first %1 coverages for each server/version</p>" ).arg( mMaxCoverages );
   myRep += QString( "<b>Servers: %1</b><br>" ).arg( myServerCount );
   myRep += QString( "<b>Servers failed: %1</b><br>" ).arg( myServerErrCount );
   myRep += QString( "<b>Coverages: %1</b><br>" ).arg( myCoverageCount );
@@ -393,21 +419,22 @@ void TestQgsWcsPublicServers::report()
   writeReport( myRep );
 }
 
-QMap<QString,QString> TestQgsWcsPublicServers::readLog ( QString theFileName )
+QMap<QString, QString> TestQgsWcsPublicServers::readLog( QString theFileName )
 {
-  QMap<QString,QString> myMap;
+  QMap<QString, QString> myMap;
 
   QFile myFile( theFileName );
   if ( myFile.open( QIODevice::ReadOnly ) )
   {
     QTextStream myStream( &myFile );
-    foreach ( QString row, myStream.readAll().split("\n") )
+    foreach ( QString row, myStream.readAll().split( "\n" ) )
     {
-      int sepIdx = row.indexOf ( ":" );
-      myMap.insert ( row.left(sepIdx), row.mid(sepIdx+1) );
+      int sepIdx = row.indexOf( ":" );
+      myMap.insert( row.left( sepIdx ), row.mid( sepIdx + 1 ) );
     }
+    myFile.close();
   }
-  return myMap; 
+  return myMap;
 }
 
 QString TestQgsWcsPublicServers::error( QString theMessage )
@@ -423,11 +450,11 @@ QString TestQgsWcsPublicServers::row( QStringList theValues, QString theClass )
   QString myRow = "<tr>";
   for ( int i = 0; i < theValues.size(); i++ )
   {
-    QString val = theValues.value(i);
+    QString val = theValues.value( i );
     QString colspan;
-    if ( theValues.size() < mHead.size() && i == (theValues.size() - 1) )
+    if ( theValues.size() < mHead.size() && i == ( theValues.size() - 1 ) )
     {
-      colspan = QString("colspan=%1").arg ( mHead.size() - theValues.size() + 1 ) ;
+      colspan = QString( "colspan=%1" ).arg( mHead.size() - theValues.size() + 1 ) ;
     }
     myRow += QString( "<td class='cell %1' %2>%3</td>" ).arg( theClass ).arg( colspan ).arg( val );
   }
@@ -437,7 +464,7 @@ QString TestQgsWcsPublicServers::row( QStringList theValues, QString theClass )
 
 int main( int argc, char *argv[] )
 {
-  QgsApplication myApp( argc, argv, false);
+  QgsApplication myApp( argc, argv, false );
   QgsApplication::init( QString() );
   QgsApplication::initQgis();
 

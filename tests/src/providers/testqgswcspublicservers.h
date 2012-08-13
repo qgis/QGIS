@@ -24,9 +24,9 @@
 #include <qgsrasterdataprovider.h>
 #include <qgsrasterlayer.h>
 
-/** 
+/**
  * This class tries to get samples of coverages from public WCS servers,
- * cache results and write report. 
+ * cache results and write report.
  */
 class TestQgsWcsPublicServers: public QObject
 {
@@ -40,9 +40,11 @@ class TestQgsWcsPublicServers: public QObject
     QString error( QString theMessage );
     void writeReport( QString theReport );
 
-    QMap<QString,QString> readLog ( QString theFileName );
+    QMap<QString, QString> readLog( QString theFileName );
 
     QDir mCacheDir;
     QString mReport;
     QStringList mHead;
+    // Max coverages to test per server/version
+    int mMaxCoverages;
 };
