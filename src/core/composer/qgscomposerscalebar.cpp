@@ -16,8 +16,10 @@
 
 #include "qgscomposerscalebar.h"
 #include "qgscomposermap.h"
+#include "qgsdistancearea.h"
 #include "qgsscalebarstyle.h"
 #include "qgsdoubleboxscalebarstyle.h"
+#include "qgsmaprenderer.h"
 #include "qgsnumericscalebarstyle.h"
 #include "qgssingleboxscalebarstyle.h"
 #include "qgsticksscalebarstyle.h"
@@ -26,6 +28,7 @@
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QSettings>
 #include <cmath>
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
@@ -35,6 +38,7 @@ QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     , mStyle( 0 )
     , mSegmentMillimeters( 0.0 )
     , mAlignment( Left )
+    , mUnits( MapUnits )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -164,8 +168,44 @@ void QgsComposerScaleBar::refreshSegmentMillimeters()
     QRectF composerItemRect = mComposerMap->rect();
 
     //calculate size depending on mNumUnitsPerSegment
-    mSegmentMillimeters = composerItemRect.width() / composerMapRect.width() * mNumUnitsPerSegment;
+    double itemDiagonal = sqrt( composerItemRect.width() * composerItemRect.width() + composerItemRect.height() * composerItemRect.height() );
+    mSegmentMillimeters = itemDiagonal / mapDiagonal() * mNumUnitsPerSegment;
   }
+}
+
+double QgsComposerScaleBar::mapDiagonal() const
+{
+  if ( !mComposerMap )
+  {
+    return 0.0;
+  }
+
+  QgsRectangle composerMapRect = mComposerMap->extent();
+  if ( mUnits == MapUnits )
+  {
+    return sqrt( composerMapRect.width() * composerMapRect.width() + composerMapRect.height() * composerMapRect.height() );
+  }
+  else
+  {
+    QgsDistanceArea da;
+    da.setProjectionsEnabled( true );
+    da.setSourceCrs( mComposerMap->mapRenderer()->destinationCrs().srsid() );
+    QSettings s;
+    da.setEllipsoid( s.value( "/qgis/measure/ellipsoid", "WGS84" ).toString() );
+    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMaximum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
+    if ( mUnits == Feet )
+    {
+      measure /= 0.3048;
+    }
+    return measure;
+  }
+}
+
+void QgsComposerScaleBar::setUnits( ScaleBarUnits u )
+{
+  mUnits = u;
+  refreshSegmentMillimeters();
+  emit itemChanged();
 }
 
 void QgsComposerScaleBar::applyDefaultSettings()
@@ -358,6 +398,7 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "font", mFont.toString() );
   composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
+  composerScaleBarElem.setAttribute( "units", mUnits );
 
   //style
   if ( mStyle )
@@ -427,6 +468,8 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
       connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
     }
   }
+
+  mUnits = ( ScaleBarUnits )itemElem.attribute( "units" ).toInt();
 
   refreshSegmentMillimeters();
 

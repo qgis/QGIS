@@ -158,7 +158,7 @@ class QgsMapRenderer : QObject
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! returns CRS of destination coordinate reference system
-    const QgsCoordinateReferenceSystem& destinationCrs();
+    const QgsCoordinateReferenceSystem& destinationCrs() const;
 
     void setOutputUnits( OutputUnits u );
 

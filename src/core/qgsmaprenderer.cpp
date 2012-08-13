@@ -704,7 +704,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   }
 }
 
-const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationCrs()
+const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationCrs() const
 {
   QgsDebugMsgLevel( "* Returning destCRS", 3 );
   QgsDebugMsgLevel( "* DestCRS.srsid() = " + QString::number( mDestCRS->srsid() ), 3 );
