@@ -624,22 +624,6 @@ void QgsStyleV2ManagerDialog::populateGroups()
   setBold( allSymbols );
   model->appendRow( allSymbols );
 
-  QStandardItem *projectSymbols = new QStandardItem( "Project Symbols" );
-  projectSymbols->setData( "project" );
-  projectSymbols->setEditable( false );
-  setBold( projectSymbols );
-  model->appendRow( projectSymbols );
-
-  /* TODO
-   *
-  QStandardItem *recent = new QStandardItem( "Recently Used" );
-  recent->setData( "recent" );
-  recent->setEditable( false );
-  setBold( recent );
-  model->appendRow( recent );
-  *
-  */
-
   QStandardItem *group = new QStandardItem( "" ); //require empty name to get first order groups
   group->setData( "groups" );
   group->setEditable( false );
@@ -711,19 +695,7 @@ void QgsStyleV2ManagerDialog::groupChanged( const QModelIndex& index  )
     }
     symbolNames = currentItemType() < 3 ? mStyle->symbolNames() : mStyle->colorRampNames();
   }
-  else if (  category == "recent" )
-  {
-    // TODO add session symbols
-    enableGroupInputs( false );
-    symbolNames = QStringList();
-  }
-  else if ( category == "project" )
-  {
-    // TODO add project symbols
-    enableGroupInputs( false );
-    symbolNames = QStringList();
-  }
-  else
+ else
   {
     //determine groups and tags
     if ( index.parent().data( Qt::UserRole + 1 ) == "smartgroups" )
@@ -769,8 +741,7 @@ void QgsStyleV2ManagerDialog::addGroup()
 
   // Violation 1: Creating sub-groups of system defined groups
   QString parentData = parentIndex.data( Qt::UserRole + 1 ).toString();
-  if ( parentData == "all" || parentData == "recent" || parentData == "project" || 
-      ( parentIndex.data() == "Ungrouped" && parentData == "0" ) )
+  if ( parentData == "all" || ( parentIndex.data() == "Ungrouped" && parentData == "0" ) )
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
         tr( "The parent group you have selected is not user editable.\n"
@@ -832,7 +803,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
 
   // Violation: removing system groups
   QString data = index.data( Qt::UserRole + 1 ).toString();
-  if ( data == "all" || data == "recent" || data == "project" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
+  if ( data == "all" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
   {
     int err = QMessageBox::critical( this, tr( "Invalid slection" ),
         tr( "Cannot delete system defined categories.\n"
