@@ -98,7 +98,9 @@ class CORE_EXPORT QgsPalLayerSettings
       Vali, //vertical alignment for data defined label position (Bottom, Base, Half, Cap, Top)
       LabelDistance,
       Rotation, //data defined rotation (only useful in connection with data defined position)
-      Show
+      Show,
+      MinScale,
+      MaxScale
     };
 
     QString fieldName;

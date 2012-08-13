@@ -245,7 +245,7 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
   {
     return;
   }
-  for ( int i = 0; i < 16; ++i )
+  for ( int i = 0; i < 18; ++i )
   {
     QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
     QVariant propertyValue;
@@ -301,6 +301,8 @@ static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLaye
   _readDataDefinedProperty( layer, QgsPalLayerSettings::LabelDistance, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::Rotation, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::Show, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::MinScale, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::MaxScale, propertyMap );
 }
 
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
@@ -480,6 +482,40 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       bool conversionOk;
       int showLabel = showValue.toInt( &conversionOk );
       if ( conversionOk && showLabel == 0 )
+      {
+        return;
+      }
+    }
+  }
+
+  // data defined min scale?
+  QMap< DataDefinedProperties, int >::const_iterator minScaleIt = dataDefinedProperties.find( QgsPalLayerSettings::MinScale );
+  if ( minScaleIt != dataDefinedProperties.constEnd() )
+  {
+    QVariant minScaleValue = f.attributeMap().value( *minScaleIt );
+    if ( minScaleValue.isValid() )
+    {
+      bool conversionOk;
+      int minScale = minScaleValue.toInt( &conversionOk );
+      // TODO: occasional floating point issues?
+      if ( conversionOk && int( context.rendererScale() ) < minScale  )
+      {
+        return;
+      }
+    }
+  }
+
+  // data defined max scale?
+  QMap< DataDefinedProperties, int >::const_iterator maxScaleIt = dataDefinedProperties.find( QgsPalLayerSettings::MaxScale );
+  if ( maxScaleIt != dataDefinedProperties.constEnd() )
+  {
+    QVariant maxScaleValue = f.attributeMap().value( *maxScaleIt );
+    if ( maxScaleValue.isValid() )
+    {
+      bool conversionOk;
+      int maxScale = maxScaleValue.toInt( &conversionOk );
+      // TODO: occasional floating point issues?
+      if ( conversionOk && int( context.rendererScale() ) > maxScale )
       {
         return;
       }

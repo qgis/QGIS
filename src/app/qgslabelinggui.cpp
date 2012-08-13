@@ -354,6 +354,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mLabelDistanceComboBox, QgsPalLayerSettings::LabelDistance, lyr );
   setDataDefinedProperty( mRotationComboBox, QgsPalLayerSettings::Rotation, lyr );
   setDataDefinedProperty( mShowLabelAttributeComboBox, QgsPalLayerSettings::Show, lyr );
+  setDataDefinedProperty( mMinScaleAttributeComboBox, QgsPalLayerSettings::MinScale, lyr );
+  setDataDefinedProperty( mMaxScaleAttributeComboBox, QgsPalLayerSettings::MaxScale, lyr );
 
   return lyr;
 }
@@ -419,6 +421,8 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mLabelDistanceComboBox;
   comboList << mRotationComboBox;
   comboList << mShowLabelAttributeComboBox;
+  comboList << mMinScaleAttributeComboBox;
+  comboList << mMaxScaleAttributeComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -453,6 +457,8 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mLabelDistanceComboBox, s, QgsPalLayerSettings::LabelDistance );
   setCurrentComboValue( mRotationComboBox, s, QgsPalLayerSettings::Rotation );
   setCurrentComboValue( mShowLabelAttributeComboBox, s, QgsPalLayerSettings::Show );
+  setCurrentComboValue( mMinScaleAttributeComboBox, s, QgsPalLayerSettings::MinScale );
+  setCurrentComboValue( mMaxScaleAttributeComboBox, s, QgsPalLayerSettings::MaxScale );
 }
 
 void QgsLabelingGui::changePreviewBackground()
