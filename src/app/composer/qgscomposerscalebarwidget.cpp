@@ -182,10 +182,11 @@ void QgsComposerScaleBarWidget::setGuiElements()
 
   //alignment
   mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
-  blockMemberSignals( false );
 
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData(( int )mComposerScaleBar->units() ) );
+
+  blockMemberSignals( false );
 }
 
 //slots
@@ -420,6 +421,7 @@ void QgsComposerScaleBarWidget::on_mUnitsComboBox_currentIndexChanged( int index
   {
     return;
   }
+
   mComposerScaleBar->beginCommand( tr( "Scalebar unit changed" ) );
   mComposerScaleBar->setUnits(( QgsComposerScaleBar::ScaleBarUnits )unitData.toInt() );
   mComposerScaleBar->update();
