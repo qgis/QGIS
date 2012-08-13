@@ -66,9 +66,10 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
   mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
-      mRenderer->rotationField(), mRenderer->sizeScaleField() );
+    mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
   connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
+  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
 }
 
 QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
@@ -100,6 +101,11 @@ void QgsSingleSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
 void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+}
+
+void QgsSingleSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mRenderer->setScaleMethod( scaleMethod );
 }
 
 void QgsSingleSymbolRendererV2Widget::showSymbolLevels()

@@ -90,6 +90,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodeSldUom( QgsSymbolV2::OutputUnit unit, double *scaleFactor );
     static QgsSymbolV2::OutputUnit decodeSldUom( QString str, double *scaleFactor );
 
+    static QString encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    static QgsSymbolV2::ScaleMethod decodeScaleMethod( QString str );
+
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );

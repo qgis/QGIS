@@ -448,6 +448,38 @@ QVector<qreal> QgsSymbolLayerV2Utils::decodeSldRealVector( const QString& s )
   return resultVector;
 }
 
+QString QgsSymbolLayerV2Utils::encodeScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  QString encodedValue;
+
+  switch( scaleMethod )
+  {
+    case QgsSymbolV2::ScaleDiameter:
+      encodedValue = "diameter";
+      break;
+    case QgsSymbolV2::ScaleArea:
+      encodedValue = "area";
+      break;
+  }
+  return encodedValue;
+}
+
+QgsSymbolV2::ScaleMethod QgsSymbolLayerV2Utils::decodeScaleMethod( QString str )
+{
+  QgsSymbolV2::ScaleMethod scaleMethod;
+
+  if ( str == "diameter" )
+  {
+    scaleMethod = QgsSymbolV2::ScaleDiameter;
+  }
+  else
+  {
+    scaleMethod = QgsSymbolV2::ScaleArea;
+  }
+
+  return scaleMethod;
+}
+
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
 {
   return QIcon( symbolPreviewPixmap( symbol, size ) );

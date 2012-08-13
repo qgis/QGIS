@@ -48,7 +48,7 @@ static QPointF _rotatedOffset( const QPointF& offset, double angle )
 
 //////
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle )
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
 {
   mName = name;
   mColor = color;
@@ -56,6 +56,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
+  mScaleMethod = scaleMethod;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& props )
@@ -65,6 +66,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
   double angle = DEFAULT_SIMPLEMARKER_ANGLE;
+  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;  
 
   if ( props.contains( "name" ) )
     name = props["name"];
@@ -76,8 +78,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
     size = props["size"].toDouble();
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
+  if ( props.contains( "scale_method" ) )
+    scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
 
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle, scaleMethod );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   return m;
@@ -402,6 +406,14 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     if ( hasDataDefinedSize )
     {
       double scaledSize = context.outputLineWidth( mSize );
+      
+      switch( mScaleMethod )
+      {
+        case QgsSymbolV2::ScaleArea: 
+          scaledSize = sqrt( scaledSize );
+          break;
+      }
+      
       double half = scaledSize / 2.0;
       transform.scale( half, half );
     }
@@ -432,12 +444,13 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["size"] = QString::number( mSize );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
   return map;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod );
   m->setOffset( mOffset );
   return m;
 }
