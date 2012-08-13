@@ -10,6 +10,7 @@ class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
     textChanged = pyqtSignal(QString)
     error = pyqtSignal(str)
+    internalError = pyqtSignal(BaseException)
     iterated = pyqtSignal(int)
     infoSet = pyqtSignal(str)
     commandSet = pyqtSignal(str)
@@ -59,19 +60,24 @@ class AlgorithmExecutor(QThread):
                 del writer
         else:
             self.run = self.runalg
+        self.internalError.connect(self.raiseInternalError)
+
+    def raiseInternalError(self, error):
+        raise error
 
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
-        except GeoAlgorithmExecutionException,e :
+        except GeoAlgorithmExecutionException as e :
             self.error.emit(e.msg)
-        except Exception,e:
-            self.error.emit(str(e))
-            print str(e)
+        except BaseException as e:
+            self.internalError.emit(e)
         # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
         # being a separate thread.
         except:
-            self.error.emit("Error executing " + str(self.alg.name) + "\n" + sys.exc_info()[0])
+            msg = "Error executing " + str(self.alg.name) + "\n" + sys.exc_info()[0]
+            print msg
+            self.internalError.emit(msg)
 
     def runalgIterating(self):
         try:

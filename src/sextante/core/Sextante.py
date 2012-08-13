@@ -293,7 +293,7 @@ class Sextante:
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS) and onFinish:
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()
             progress.setWindowTitle(alg.name)
