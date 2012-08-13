@@ -252,17 +252,39 @@ void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 
 void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
 {
+  QString path, title, copyFile, descFile;
+
+  // get basic information, depending on if is color ramp or directory
+  QgsCptCityDataItem *item =
+    dynamic_cast< QgsCptCityDataItem* >( mModel->dataItem( mBrowserView->currentIndex() ) );
+  if ( item && item->type() == QgsCptCityDataItem::Directory )
+  {
+    path = item->path();
+    title = tr( "%1 directory details" ).arg( item->name() );
+    copyFile = mCollection->copyingFileName( path );
+    descFile = mCollection->descFileName( path );
+  }
+  else if ( item )
+  {
+    path = mRamp->schemeName() + mRamp->variantName();
+    title = tr( "%1 gradient details" ).arg( path );
+    copyFile = mRamp->copyingFileName();
+    descFile = mRamp->descFileName();
+  }
+  else
+  {
+    return;
+  }
+
   // prepare dialog
   QgsDialog dlg( this, 0, QDialogButtonBox::Close );
   QVBoxLayout *layout = dlg.layout();
-  QString title = tr( "gradient %1 details" ).arg( mRamp->schemeName() + mRamp->variantName() );
   dlg.setWindowTitle( title );
   QTextEdit *textEdit = new QTextEdit( &dlg );
   textEdit->setReadOnly( true );
   layout->addWidget( textEdit );
 
   // add contents of DESC.xml and COPYING.xml
-  QString copyFile = mRamp->copyingFileName();
   QString copyText;
   if ( ! copyFile.isNull() )
   {
@@ -273,7 +295,6 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
       file.close();
     }
   }
-  QString descFile = mRamp->descFileName();
   QString descText;
   if ( ! descFile.isNull() )
   {
@@ -284,6 +305,7 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
       file.close();
     }
   }
+  textEdit->insertPlainText( title + "\n\n" );
   textEdit->insertPlainText( "===================" );
   textEdit->insertPlainText( " copying " );
   textEdit->insertPlainText( "===================\n" );
