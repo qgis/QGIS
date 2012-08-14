@@ -36,7 +36,7 @@
 #include "qgssymbolv2.h"
 #include "qgsstylev2managerdialog.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbolv2selectordialog.h"
 
 //qt includes
 #include <QColorDialog>
@@ -932,7 +932,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
   }
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, 0, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
