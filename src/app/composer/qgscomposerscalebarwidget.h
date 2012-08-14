@@ -61,6 +61,9 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     void refreshMapComboBox();
     /**Enables/disables the signals of the input gui elements*/
     void blockMemberSignals( bool enable );
+
+    void connectUpdateSignal();
+    void disconnectUpdateSignal();
 };
 
 #endif //QGSCOMPOSERSCALEBARWIDGET_H
