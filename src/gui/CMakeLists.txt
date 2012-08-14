@@ -14,7 +14,6 @@ symbology-ng/qgscolorrampcombobox.cpp
 symbology-ng/qgsdashspacedialog.cpp
 symbology-ng/qgspenstylecombobox.cpp
 symbology-ng/qgssymbollayerv2widget.cpp
-symbology-ng/qgssymbolv2propertiesdialog.cpp
 symbology-ng/qgsrendererv2widget.cpp
 symbology-ng/qgssinglesymbolrendererv2widget.cpp
 symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
@@ -33,6 +32,9 @@ symbology-ng/qgsstylev2exportimportdialog.cpp
 symbology-ng/qgsellipsesymbollayerv2widget.cpp
 symbology-ng/qgspointdisplacementrendererwidget.cpp
 symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
+symbology-ng/qgssymbolslistwidget.cpp
+symbology-ng/qgslayerpropertieswidget.cpp
+symbology-ng/qgssmartgroupeditordialog.cpp
 
 attributetable/qgsattributetablemodel.cpp
 attributetable/qgsattributetablememorymodel.cpp
@@ -111,7 +113,6 @@ raster/qgsrasterhistogramwidget.h
 
 symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
-symbology-ng/qgssymbolv2propertiesdialog.h
 symbology-ng/qgssinglesymbolrendererv2widget.h
 symbology-ng/qgscategorizedsymbolrendererv2widget.h
 symbology-ng/qgsgraduatedsymbolrendererv2widget.h
@@ -133,6 +134,9 @@ symbology-ng/qgsstylev2exportimportdialog.h
 symbology-ng/qgsellipsesymbollayerv2widget.h
 symbology-ng/qgspointdisplacementrendererwidget.h
 symbology-ng/qgsvectorfieldsymbollayerwidget.h
+symbology-ng/qgssymbolslistwidget.h
+symbology-ng/qgslayerpropertieswidget.h
+symbology-ng/qgssmartgroupeditordialog.h
 
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablemodel.h

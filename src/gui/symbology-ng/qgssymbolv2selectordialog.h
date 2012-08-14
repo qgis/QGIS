@@ -20,11 +20,17 @@
 
 #include "ui_qgssymbolv2selectordialogbase.h"
 
+#include <QStandardItemModel>
+
 class QgsStyleV2;
 class QgsSymbolV2;
+class QgsSymbolLayerV2;
 class QgsVectorLayer;
 
 class QMenu;
+class QWidget;
+
+class SymbolLayerItem;
 
 class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymbolV2SelectorDialogBase
 {
@@ -37,39 +43,57 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     QMenu* advancedMenu();
 
   protected:
-    void populateSymbolView();
-    void updateSymbolPreview();
-    void updateSymbolColor();
-    void updateSymbolInfo();
-
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );
 
-  private:
-    /**Displays alpha value as transparency in mTransparencyLabel*/
-    void displayTransparency( double alpha );
+    void loadSymbol();
+    void loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem* parent );
 
-  public slots:
-    void changeSymbolProperties();
-    void setSymbolFromStyle( const QModelIndex & index );
-    void setSymbolColor();
-    void setMarkerAngle( double angle );
-    void setMarkerSize( double size );
-    void setLineWidth( double width );
-    void addSymbolToStyle();
-    void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
-    void on_mTransparencySlider_valueChanged( int value );
+    void populateLayerTypes( QgsSymbolV2* symbol );
 
-    void openStyleManager();
+    void updateUi();
+
+    void updateLockButton();
+
+    SymbolLayerItem* currentLayerItem();
+    QgsSymbolLayerV2* currentLayer();
+
+    void moveLayerByOffset( int offset );
+
+    void setWidget( QWidget* widget );
 
   signals:
     void symbolModified();
 
-  protected:
+  public slots:
+    void moveLayerDown();
+    void moveLayerUp();
+
+    void addLayer();
+    void removeLayer();
+
+    void lockLayer();
+
+    void layerChanged();
+
+    void updateLayerPreview();
+    void updatePreview();
+
+    //! Slot to update tree when a new symbol from style
+    void symbolChanged();
+    //! alters tree and sets proper widget when Layer Type is changed
+    //! @note: The layer is recieved from the LayerPropertiesWidget
+    void changeLayer( QgsSymbolLayerV2* layer );
+
+
+  protected: // data
     QgsStyleV2* mStyle;
     QgsSymbolV2* mSymbol;
     QMenu* mAdvancedMenu;
     const QgsVectorLayer* mVectorLayer;
+
+    QStandardItemModel* model;
+    QWidget *mPresentWidget;
 };
 
 #endif

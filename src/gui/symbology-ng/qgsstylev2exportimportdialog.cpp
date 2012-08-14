@@ -13,24 +13,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
-
-#include <QCloseEvent>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QStandardItemModel>
-
 #include "qgsstylev2exportimportdialog.h"
 
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgslogger.h"
 
-QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent, Mode mode, QString fileName )
+#include <QInputDialog>
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QStandardItemModel>
+
+QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent, Mode mode )
     : QDialog( parent )
-    , mFileName( fileName )
     , mDialogMode( mode )
     , mQgisStyle( style )
 {
@@ -50,18 +49,45 @@ QgsStyleV2ExportImportDialog::QgsStyleV2ExportImportDialog( QgsStyleV2* style, Q
   listItems->setModel( model );
 
   mTempStyle = new QgsStyleV2();
+  // TODO validate
+  mFileName = "";
+  mProgressDlg = NULL;
+  mTempFile = NULL;
+  mNetManager = new QNetworkAccessManager( this );
+  mNetReply = NULL;
 
   if ( mDialogMode == Import )
   {
+    // populate the import types
+    importTypeCombo->addItem( "file specified below", QVariant( "file" ) );
+    // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
+    importTypeCombo->addItem( "URL specified below", QVariant( "url" ) );
+    connect( importTypeCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( importTypeChanged( int ) ) );
+
+    QStringList groups = mQgisStyle->groupNames();
+    groupCombo->addItem( "imported", QVariant( "new" ) );
+    foreach ( QString gName, groups )
+    {
+      groupCombo->addItem( gName );
+    }
+
+    btnBrowse->setText( "Browse" );
+    connect( btnBrowse, SIGNAL( clicked() ), this, SLOT( browse() ) );
+
     label->setText( tr( "Select symbols to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
-    if ( !populateStyles( mTempStyle ) )
-    {
-      QApplication::postEvent( this, new QCloseEvent() );
-    }
   }
   else
   {
+    // hide import specific controls when exporting
+    btnBrowse->setHidden( true );
+    fromLabel->setHidden( true );
+    importTypeCombo->setHidden( true );
+    locationLabel->setHidden( true );
+    locationLineEdit->setHidden( true );
+    groupLabel->setHidden( true );
+    groupCombo->setHidden( true );
+
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Export" ) );
     if ( !populateStyles( mQgisStyle ) )
     {
@@ -102,7 +128,7 @@ void QgsStyleV2ExportImportDialog::doExportImport()
     mFileName = fileName;
 
     moveStyles( &selection, mQgisStyle, mTempStyle );
-    if ( !mTempStyle->save( mFileName ) )
+    if ( !mTempStyle->exportXML( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Export/import error" ),
                             tr( "Error when saving selected symbols to file:\n%1" )
@@ -113,7 +139,6 @@ void QgsStyleV2ExportImportDialog::doExportImport()
   else // import
   {
     moveStyles( &selection, mTempStyle, mQgisStyle );
-    mQgisStyle->save();
 
     // clear model
     QStandardItemModel* model = qobject_cast<QStandardItemModel*>( listItems->model() );
@@ -130,10 +155,11 @@ bool QgsStyleV2ExportImportDialog::populateStyles( QgsStyleV2* style )
   // load symbols and color ramps from file
   if ( mDialogMode == Import )
   {
-    if ( !mTempStyle->load( mFileName ) )
+    // NOTE mTempStyle is style here
+    if ( !style->importXML( mFileName ) )
     {
       QMessageBox::warning( this, tr( "Import error" ),
-                            tr( "An error occured during import:\n%1" ).arg( mTempStyle->errorString() ) );
+                            tr( "An error occured during import:\n%1" ).arg( style->errorString() ) );
       return false;
     }
   }
@@ -182,6 +208,54 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
   bool isSymbol = true;
   bool prompt = true;
   bool overwrite = true;
+  int groupid = 0;
+
+  // get the groupid when going for import
+  if ( mDialogMode == Import )
+  {
+    int index = groupCombo->currentIndex();
+    QString name = groupCombo->itemText( index );
+    if ( name.isEmpty() )
+    {
+      // get name of the group
+      bool nameInvalid = true;
+      while ( nameInvalid )
+      {
+        bool ok;
+        name = QInputDialog::getText( this, tr( "Group Name"),
+                                  tr( "Please enter a name for new group:" ),
+                                  QLineEdit::Normal,
+                                  tr( "imported" ),
+                                  &ok );
+        if ( !ok )
+        {
+         QMessageBox::warning( this, tr( "New Group"),
+                                tr( "New group cannot be without a name. Kindly enter a name." ) );
+          continue;
+        }
+        // validate name
+        if ( name.isEmpty() )
+        {
+          QMessageBox::warning( this, tr( "New group" ),
+                            tr( "Cannot create a group without name. Enter a name." ) );
+        }
+        else
+        {
+          // valid name
+          nameInvalid = false;
+        }
+      }
+      groupid = dst->addGroup( name );
+    }
+    else if ( dst->groupNames().contains( name ) )
+    {
+      groupid = dst->groupId( name );
+    }
+    else
+    {
+      groupid = dst->addGroup( name );
+    }
+  }
 
   for ( int i = 0; i < selection->size(); ++i )
   {
@@ -210,6 +284,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
             continue;
           case QMessageBox::Yes:
             dst->addSymbol( symbolName, symbol );
+            if ( mDialogMode == Import )
+              dst->saveSymbol( symbolName, symbol, groupid, QStringList() );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -225,6 +301,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       if ( dst->symbolNames().contains( symbolName ) && overwrite )
       {
         dst->addSymbol( symbolName, symbol );
+        if ( mDialogMode == Import )
+          dst->saveSymbol( symbolName, symbol, groupid, QStringList() );
       }
       else if ( dst->symbolNames().contains( symbolName ) && !overwrite )
       {
@@ -233,6 +311,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       else
       {
         dst->addSymbol( symbolName, symbol );
+        if ( mDialogMode == Import )
+          dst->saveSymbol( symbolName, symbol, groupid, QStringList() );
       }
     }
     else
@@ -251,6 +331,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
             continue;
           case QMessageBox::Yes:
             dst->addColorRamp( symbolName, ramp );
+            if ( mDialogMode == Import )
+              dst->saveColorRamp( symbolName, ramp, groupid, QStringList() );
             continue;
           case QMessageBox::YesToAll:
             prompt = false;
@@ -265,6 +347,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       if ( dst->colorRampNames().contains( symbolName ) && overwrite )
       {
         dst->addColorRamp( symbolName, ramp );
+        if ( mDialogMode == Import )
+          dst->saveColorRamp( symbolName, ramp, groupid, QStringList() );
       }
       else if ( dst->colorRampNames().contains( symbolName ) && !overwrite )
       {
@@ -273,6 +357,8 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       else
       {
         dst->addColorRamp( symbolName, ramp );
+        if ( mDialogMode == Import )
+          dst->saveColorRamp( symbolName, ramp, groupid, QStringList() );
       }
     }
   }
@@ -280,6 +366,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
 
 QgsStyleV2ExportImportDialog::~QgsStyleV2ExportImportDialog()
 {
+  delete mTempFile;
   delete mTempStyle;
 }
 
@@ -291,4 +378,130 @@ void QgsStyleV2ExportImportDialog::selectAll()
 void QgsStyleV2ExportImportDialog::clearSelection()
 {
   listItems->clearSelection();
+}
+
+void QgsStyleV2ExportImportDialog::importTypeChanged( int index )
+{
+  QString type = importTypeCombo->itemData( index ).toString();
+
+  locationLineEdit->setText( "" );
+
+  if ( type == "file" )
+  {
+    locationLineEdit->setEnabled( true );
+    btnBrowse->setText( "Browse" );
+  }
+  else if ( type == "official" )
+  {
+    btnBrowse->setText( "Fetch Symbols" );
+    locationLineEdit->setEnabled( false );
+  }
+  else
+  {
+    btnBrowse->setText( "Fetch Symbols" );
+    locationLineEdit->setEnabled( true );
+  }
+}
+
+void QgsStyleV2ExportImportDialog::browse()
+{
+  QString type = importTypeCombo->itemData( importTypeCombo->currentIndex() ).toString();
+
+  if ( type == "file" )
+  {
+    mFileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), ".",
+                     tr( "XML files (*.xml *XML)" ) );
+    if ( mFileName.isEmpty() )
+    {
+      return;
+    }
+    QFileInfo pathInfo( mFileName );
+    QString groupName = pathInfo.fileName().replace( ".xml", "" );
+    groupCombo->setItemText( 0, groupName );
+    locationLineEdit->setText( mFileName );
+    populateStyles( mTempStyle );
+  }
+  else if ( type == "official" )
+  {
+    // TODO set URL
+    // downloadStyleXML( QUrl( "http://...." ) );
+  }
+  else
+  {
+    downloadStyleXML( QUrl( locationLineEdit->text() ) );
+  }
+}
+
+void QgsStyleV2ExportImportDialog::downloadStyleXML( QUrl url )
+{
+    // XXX Try to move this code to some core Network interface,
+    // HTTP downloading is a generic functionality that might be used elsewhere
+
+  mTempFile = new QTemporaryFile();
+  if ( mTempFile->open() )
+  {
+    mFileName = mTempFile->fileName();
+
+    if ( mProgressDlg )
+    {
+      QProgressDialog *dummy = mProgressDlg;
+      mProgressDlg = NULL;
+      delete dummy;
+    }
+    mProgressDlg = new QProgressDialog();
+    mProgressDlg->setLabelText( tr( "Downloading style ... " ) );
+    mProgressDlg->setAutoClose( true );
+
+    connect( mProgressDlg, SIGNAL( canceled() ), this, SLOT( downloadCanceled() ) );
+
+    // open the network connection and connect the respective slots
+    if ( mNetReply )
+    {
+      QNetworkReply *dummyReply = mNetReply;
+      mNetReply = NULL;
+      delete dummyReply;
+    }
+    mNetReply = mNetManager->get( QNetworkRequest( url ) );
+
+    connect( mNetReply, SIGNAL( finished() ), this, SLOT( httpFinished() ) );
+    connect( mNetReply, SIGNAL( readyRead() ), this, SLOT( fileReadyRead() ) );
+    connect( mNetReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( updateProgress( qint64, qint64 ) ) );
+  }
+}
+
+void QgsStyleV2ExportImportDialog::httpFinished()
+{
+  if ( mNetReply->error() )
+  {
+    mTempFile->remove();
+    mFileName = "";
+    mProgressDlg->hide();
+    QMessageBox::information( this, tr( "HTTP Error!" ),
+        tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
+    return;
+  }
+  else
+  {
+    mTempFile->flush();
+    mTempFile->close();
+    populateStyles( mTempStyle );
+  }
+}
+
+void QgsStyleV2ExportImportDialog::fileReadyRead()
+{
+  mTempFile->write( mNetReply->readAll() );
+}
+
+void QgsStyleV2ExportImportDialog::updateProgress( qint64 bytesRead, qint64 bytesTotal )
+{
+  mProgressDlg->setMaximum( bytesTotal );
+  mProgressDlg->setValue( bytesRead );
+}
+
+void QgsStyleV2ExportImportDialog::downloadCanceled()
+{
+  mNetReply->abort();
+  mTempFile->remove();
+  mFileName = "";
 }

@@ -1265,7 +1265,7 @@ class QgsSymbolLayerV2Utils
 
     static QgsSymbolV2* loadSymbol( QDomElement& element ) /Factory/;
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element ) /Factory/;
-    static QDomElement saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols = NULL );
+    static QDomElement saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc );
 
     static QgsStringMap parseProperties( QDomElement& element );
     static void saveProperties( QgsStringMap props, QDomDocument& doc, QDomElement& element );

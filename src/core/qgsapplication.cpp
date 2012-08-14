@@ -557,12 +557,12 @@ const QString QgsApplication::svgPath()
 
 const QString QgsApplication::userStyleV2Path()
 {
-  return qgisSettingsDirPath() + QString( "symbology-ng-style.xml" );
+  return qgisSettingsDirPath() + QString( "symbology-ng-style.db" );
 }
 
 const QString QgsApplication::defaultStyleV2Path()
 {
-  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.xml" );
+  return ABISYM( mPkgDataPath ) + QString( "/resources/symbology-ng-style.db" );
 }
 
 const QString QgsApplication::libraryPath()

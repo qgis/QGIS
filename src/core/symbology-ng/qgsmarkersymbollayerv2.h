@@ -109,6 +109,9 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     //! Return a list of all available svg files
     static QStringList listSvgFiles();
 
+    //! Return a list of svg files at the specified directory
+    static QStringList listSvgFilesAt( QString directory );
+
     //! Get symbol's path from its name
     static QString symbolNameToPath( QString name );
 

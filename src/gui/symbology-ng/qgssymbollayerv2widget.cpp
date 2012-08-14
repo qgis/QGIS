@@ -22,10 +22,14 @@
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
-#include "qgssymbolv2propertiesdialog.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
 
+#include "qgsstylev2.h" //for symbol selector dialog
+
 #include "qgsapplication.h"
+
+#include "qgslogger.h"
 
 #include <QAbstractButton>
 #include <QColorDialog>
@@ -415,7 +419,6 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVec
   setupUi( this );
 
   connect( spinInterval, SIGNAL( valueChanged( double ) ), this, SLOT( setInterval( double ) ) );
-  connect( btnChangeMarker, SIGNAL( clicked() ), this, SLOT( setMarker() ) );
   connect( chkRotateMarker, SIGNAL( clicked() ), this, SLOT( setRotate() ) );
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( radInterval, SIGNAL( clicked() ), this, SLOT( setPlacement() ) );
@@ -447,7 +450,6 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     radCentralPoint->setChecked( true );
   else
     radVertexFirst->setChecked( true );
-  updateMarker();
   setPlacement(); // update gui
 }
 
@@ -462,16 +464,6 @@ void QgsMarkerLineSymbolLayerV2Widget::setInterval( double val )
   emit changed();
 }
 
-void QgsMarkerLineSymbolLayerV2Widget::setMarker()
-{
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == 0 )
-    return;
-  updateMarker();
-
-  emit changed();
-}
-
 void QgsMarkerLineSymbolLayerV2Widget::setRotate()
 {
   mLayer->setRotateMarker( chkRotateMarker->isChecked() );
@@ -482,13 +474,6 @@ void QgsMarkerLineSymbolLayerV2Widget::setOffset()
 {
   mLayer->setOffset( spinOffset->value() );
   emit changed();
-}
-
-
-void QgsMarkerLineSymbolLayerV2Widget::updateMarker()
-{
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), btnChangeMarker->iconSize() );
-  btnChangeMarker->setIcon( icon );
 }
 
 void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
@@ -519,10 +504,12 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
   mLayer = NULL;
 
   setupUi( this );
+  viewGroups->setHeaderHidden( true );
 
   populateList();
 
   connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
+  connect( viewGroups->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
@@ -532,6 +519,7 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
 #include <QTime>
 #include <QAbstractListModel>
 #include <QPixmapCache>
+#include <QStyle>
 
 class QgsSvgListModel : public QAbstractListModel
 {
@@ -539,6 +527,12 @@ class QgsSvgListModel : public QAbstractListModel
     QgsSvgListModel( QObject* parent ) : QAbstractListModel( parent )
     {
       mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+    }
+
+    // Constructor to create model for icons in a specific path
+    QgsSvgListModel( QObject* parent, QString path ) : QAbstractListModel( parent )
+    {
+      mSvgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( path );
     }
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const
@@ -581,11 +575,84 @@ class QgsSvgListModel : public QAbstractListModel
     QStringList mSvgFiles;
 };
 
+class QgsSvgGroupsModel : public QStandardItemModel
+{
+  public:
+    QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
+    {
+      QStringList svgPaths = QgsApplication::svgPaths();
+      QStandardItem *parentItem = invisibleRootItem();
+
+      for ( int i = 0; i < svgPaths.size(); i++ )
+      {
+        QDir dir( svgPaths[i] );
+        QStandardItem *baseGroup;
+
+        if ( dir.path().contains( QgsApplication::pkgDataPath() ) )
+        {
+          baseGroup = new QStandardItem( QString( "App Symbols" ) );
+        }
+        else if ( dir.path().contains( QgsApplication::qgisSettingsDirPath() ) )
+        {
+          baseGroup = new QStandardItem( QString( "User Symbols" ) );
+        }
+        else
+        {
+          baseGroup = new QStandardItem( dir.dirName() );
+        }
+        baseGroup->setData( QVariant( svgPaths[i] ) );
+        baseGroup->setEditable( false );
+        baseGroup->setCheckable( false );
+        baseGroup->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+        baseGroup->setToolTip( dir.path() );
+        parentItem->appendRow( baseGroup );
+        createTree( baseGroup );
+        QgsDebugMsg( QString( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ) );
+      }
+    }
+  private:
+    void createTree( QStandardItem* &parentGroup )
+    {
+      QDir parentDir( parentGroup->data().toString() );
+      foreach( QString item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+      {
+        QStandardItem* group = new QStandardItem( item );
+        group->setData( QVariant( parentDir.path() + "/" + item ) );
+        group->setEditable( false );
+        group->setCheckable( false );
+        group->setToolTip( parentDir.path() + "/" + item );
+        group->setIcon( QgsApplication::style()->standardIcon( QStyle::SP_DirIcon ) );
+        parentGroup->appendRow( group );
+        createTree( group );
+      }
+    }
+};
+
 void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 {
-  QgsSvgListModel* m = new QgsSvgListModel( viewImages );
+  QgsSvgGroupsModel* g = new QgsSvgGroupsModel( viewGroups );
+  viewGroups->setModel( g );
+  // Set the tree expanded at the first level
+  int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
+  for ( int i = 0; i < rows; i++ )
+  {
+    viewGroups->setExpanded( g->indexFromItem( g->item( i ) ), true );
+  }
 
+  // Initally load the icons in the List view without any grouping
+  QgsSvgListModel* m = new QgsSvgListModel( viewImages );
   viewImages->setModel( m );
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::populateIcons( const QModelIndex& idx )
+{
+  QString path = idx.data( Qt::UserRole + 1 ).toString();
+
+  QgsSvgListModel* m = new QgsSvgListModel( viewImages, path );
+  viewImages->setModel( m );
+
+  connect( viewImages->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setName( const QModelIndex& ) ) );
+  emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer )
@@ -611,6 +678,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLaye
   mBorderWidthSpinBox->blockSignals( true );
   mBorderWidthSpinBox->setValue( layer->outlineWidth() );
   mBorderWidthSpinBox->blockSignals( false );
+
 }
 
 
@@ -816,10 +884,12 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* 
 {
   mLayer = 0;
   setupUi( this );
+  mSvgTreeView->setHeaderHidden( true );
   insertIcons();
   updateOutlineIcon();
 
   connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
+  connect( mSvgTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( populateIcons( const QModelIndex& ) ) );
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -895,13 +965,33 @@ void QgsSVGFillSymbolLayerWidget::setFile( const QModelIndex& item )
 
 void QgsSVGFillSymbolLayerWidget::insertIcons()
 {
+  QgsSvgGroupsModel* g = new QgsSvgGroupsModel( mSvgTreeView );
+  mSvgTreeView->setModel( g );
+  // Set the tree expanded at the first level
+  int rows = g->rowCount( g->indexFromItem( g->invisibleRootItem() ) );
+  for ( int i = 0; i < rows; i++ )
+  {
+    mSvgTreeView->setExpanded( g->indexFromItem( g->item( i ) ), true );
+  }
+
   QgsSvgListModel* m = new QgsSvgListModel( mSvgListView );
   mSvgListView->setModel( m );
 }
 
+void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex& idx )
+{
+  QString path = idx.data( Qt::UserRole + 1 ).toString();
+
+  QgsSvgListModel* m = new QgsSvgListModel( mSvgListView, path );
+  mSvgListView->setModel( m );
+
+  connect( mSvgListView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( setFile( const QModelIndex& ) ) );
+  emit changed();
+}
+
 void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
 {
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
+  QgsSymbolV2SelectorDialog dlg( mLayer->subSymbol(), QgsStyleV2::defaultStyle(), mVectorLayer, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     return;
@@ -1062,7 +1152,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOutlinePushButton_clicked()
 {
   if ( mLayer )
   {
-    QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
+    QgsSymbolV2SelectorDialog dlg( mLayer->subSymbol(), QgsStyleV2::defaultStyle(), mVectorLayer, this );
     if ( dlg.exec() == QDialog::Rejected )
     {
       return;
@@ -1079,7 +1169,6 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( cons
     QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )
 {
   setupUi( this );
-  updateMarkerIcon();
 }
 
 
@@ -1095,21 +1184,11 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* lay
   mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
   mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
   mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
-  updateMarkerIcon();
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
 {
   return mLayer;
-}
-
-void QgsPointPatternFillSymbolLayerWidget::updateMarkerIcon()
-{
-  if ( mLayer )
-  {
-    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeMarkerButton->iconSize() );
-    mChangeMarkerButton->setIcon( icon );
-  }
 }
 
 void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDistanceSpinBox_valueChanged( double d )
@@ -1146,23 +1225,6 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_value
     mLayer->setDisplacementY( d );
     emit changed();
   }
-}
-
-void QgsPointPatternFillSymbolLayerWidget::on_mChangeMarkerButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  updateMarkerIcon();
-  emit changed();
 }
 
 /////////////
@@ -1274,8 +1336,6 @@ QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( const Qg
   mLayer = NULL;
 
   setupUi( this );
-
-  connect( btnChangeMarker, SIGNAL( clicked() ), this, SLOT( setMarker() ) );
 }
 
 void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -1285,9 +1345,6 @@ void QgsCentroidFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
 
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsCentroidFillSymbolLayerV2*>( layer );
-
-  // set values
-  updateMarker();
 }
 
 QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
@@ -1295,18 +1352,3 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
   return mLayer;
 }
 
-void QgsCentroidFillSymbolLayerV2Widget::setMarker()
-{
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
-  if ( dlg.exec() == 0 )
-    return;
-  updateMarker();
-
-  emit changed();
-}
-
-void QgsCentroidFillSymbolLayerV2Widget::updateMarker()
-{
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), btnChangeMarker->iconSize() );
-  btnChangeMarker->setIcon( icon );
-}

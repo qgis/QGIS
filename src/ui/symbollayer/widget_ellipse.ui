@@ -7,13 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>326</height>
+    <height>336</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="margin">
+    <number>1</number>
+   </property>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -106,7 +109,7 @@
        <item row="6" column="0" colspan="2">
         <widget class="QListWidget" name="mShapeListWidget">
          <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
+          <enum>QAbstractItemView::NoDragDrop</enum>
          </property>
          <property name="iconSize">
           <size>

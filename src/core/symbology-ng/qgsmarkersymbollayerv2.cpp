@@ -794,6 +794,32 @@ QStringList QgsSvgMarkerSymbolLayerV2::listSvgFiles()
   return list;
 }
 
+// Stripped down version of listSvgFiles() for specified directory
+QStringList QgsSvgMarkerSymbolLayerV2::listSvgFilesAt( QString directory )
+{
+  // TODO anything that applies for the listSvgFiles() applies this also
+
+  QStringList list;
+  QStringList svgPaths;
+  svgPaths.append( directory );
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    foreach( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    {
+      svgPaths.insert( i + 1, dir.path() + "/" + item );
+    }
+
+    foreach( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    {
+      list.append( dir.path() + "/" + item );
+    }
+  }
+  return list;
+
+}
+
 QString QgsSvgMarkerSymbolLayerV2::symbolNameToPath( QString name )
 {
   // copied from QgsSymbol::setNamedPointSymbol - TODO: unify

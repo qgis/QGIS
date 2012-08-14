@@ -99,7 +99,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     static QgsSymbolV2* loadSymbol( QDomElement& element );
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
-    static QDomElement saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols = NULL );
+    static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 
     static bool createSymbolLayerV2ListFromSld( QDomElement& element, QGis::GeometryType geomType, QgsSymbolLayerV2List &layers );
 

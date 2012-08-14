@@ -638,8 +638,20 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
       else
       {
         QgsSymbolLayerV2* layer = loadSymbolLayer( e );
+
         if ( layer != NULL )
+        {
+          // Dealing with sub-symbols nested into a layer
+          QDomElement s = e.firstChildElement( "symbol" );
+          if ( !s.isNull() )
+          {
+            QgsSymbolV2* subSymbol = loadSymbol( s );
+            bool res = layer->setSubSymbol( subSymbol );
+            if ( !res )
+              QgsDebugMsg( "symbol layer refused subsymbol: " + s.attribute( "name" ) );
+          }
           layers.append( layer );
+        }
       }
     }
     layerNode = layerNode.nextSibling();
@@ -707,16 +719,16 @@ static QString _nameForSymbolType( QgsSymbolV2::SymbolType type )
   }
 }
 
-QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc, QgsSymbolV2Map* subSymbols )
+QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol, QDomDocument& doc )
 {
   Q_ASSERT( symbol );
-
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
   symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
   symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
+
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
     QgsSymbolLayerV2* layer = symbol->symbolLayer( i );
@@ -725,14 +737,13 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
     layerEl.setAttribute( "class", layer->layerType() );
     layerEl.setAttribute( "locked", layer->isLocked() );
     layerEl.setAttribute( "pass", layer->renderingPass() );
-
-    if ( subSymbols != NULL && layer->subSymbol() != NULL )
+    saveProperties( layer->properties(), doc, layerEl );
+    if ( layer->subSymbol() != NULL )
     {
       QString subname = QString( "@%1@%2" ).arg( name ).arg( i );
-      subSymbols->insert( subname, layer->subSymbol() );
+      QDomElement subEl = saveSymbol( subname, layer->subSymbol(), doc );
+      layerEl.appendChild( subEl );
     }
-
-    saveProperties( layer->properties(), doc, layerEl );
     symEl.appendChild( layerEl );
   }
 
@@ -2177,6 +2188,7 @@ void QgsSymbolLayerV2Utils::saveProperties( QgsStringMap props, QDomDocument& do
   }
 }
 
+// XXX Not used by QgStyleV2 anymore, But renderers use it still
 QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
 {
   // go through symbols one-by-one and load them
@@ -2259,20 +2271,11 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbols( QgsSymbolV2Map& symbols, QString
 {
   QDomElement symbolsElem = doc.createElement( tagName );
 
-  QMap<QString, QgsSymbolV2*> subSymbols;
-
   // save symbols
   for ( QMap<QString, QgsSymbolV2*>::iterator its = symbols.begin(); its != symbols.end(); ++its )
   {
-    QDomElement symEl = saveSymbol( its.key(), its.value(), doc, &subSymbols );
+    QDomElement symEl = saveSymbol( its.key(), its.value(), doc );
     symbolsElem.appendChild( symEl );
-  }
-
-  // add subsymbols, don't allow subsymbols for them (to keep things simple)
-  for ( QMap<QString, QgsSymbolV2*>::iterator itsub = subSymbols.begin(); itsub != subSymbols.end(); ++itsub )
-  {
-    QDomElement subsymEl = saveSymbol( itsub.key(), itsub.value(), doc );
-    symbolsElem.appendChild( subsymEl );
   }
 
   return symbolsElem;
