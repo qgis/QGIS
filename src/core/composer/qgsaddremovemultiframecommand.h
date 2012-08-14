@@ -25,7 +25,7 @@ class QgsComposition;
 
 class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
 {
-    public:
+  public:
 
     enum State
     {
@@ -33,22 +33,22 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
       Removed
     };
 
-        QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
-        ~QgsAddRemoveMultiFrameCommand();
-        void redo();
-        void undo();
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
+    ~QgsAddRemoveMultiFrameCommand();
+    void redo();
+    void undo();
 
-    private:
-        QgsAddRemoveMultiFrameCommand();
+  private:
+    QgsAddRemoveMultiFrameCommand();
 
-        //changes between added / removed state
-        void switchState();
-        bool checkFirstRun();
+    //changes between added / removed state
+    void switchState();
+    bool checkFirstRun();
 
-        QgsComposerMultiFrame* mMultiFrame;
-        QgsComposition* mComposition;
-        State mState;
-        bool mFirstRun;
+    QgsComposerMultiFrame* mMultiFrame;
+    QgsComposition* mComposition;
+    State mState;
+    bool mFirstRun;
 };
 
 #endif // QGSADDREMOVEMULTIFRAMECOMMAND_H

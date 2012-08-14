@@ -21,7 +21,7 @@
 
 
 QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mComposition( c ), mState(s), mFirstRun( true )
+    QUndoCommand( text, parent ), mMultiFrame( multiFrame ), mComposition( c ), mState( s ), mFirstRun( true )
 {
 }
 
@@ -31,56 +31,56 @@ QgsAddRemoveMultiFrameCommand::QgsAddRemoveMultiFrameCommand(): mMultiFrame( 0 )
 
 QgsAddRemoveMultiFrameCommand::~QgsAddRemoveMultiFrameCommand()
 {
-    if( mState == Removed )
-    {
-        delete mMultiFrame;
-    }
+  if ( mState == Removed )
+  {
+    delete mMultiFrame;
+  }
 }
 
 void QgsAddRemoveMultiFrameCommand::redo()
 {
-    if( checkFirstRun() )
-    {
-        return;
-    }
-    switchState();
+  if ( checkFirstRun() )
+  {
+    return;
+  }
+  switchState();
 }
 
 void QgsAddRemoveMultiFrameCommand::undo()
 {
-    if( checkFirstRun() )
-    {
-        return;
-    }
-    switchState();
+  if ( checkFirstRun() )
+  {
+    return;
+  }
+  switchState();
 }
 
 void QgsAddRemoveMultiFrameCommand::switchState()
 {
-    if( mComposition )
+  if ( mComposition )
+  {
+    if ( mState == Added )
     {
-        if( mState == Added )
-        {
-            mComposition->removeMultiFrame( mMultiFrame );
-            mState = Removed;
-        }
-        else
-        {
-            mComposition->addMultiFrame( mMultiFrame );
-            mState = Added;
-        }
+      mComposition->removeMultiFrame( mMultiFrame );
+      mState = Removed;
     }
+    else
+    {
+      mComposition->addMultiFrame( mMultiFrame );
+      mState = Added;
+    }
+  }
 }
 
 bool QgsAddRemoveMultiFrameCommand::checkFirstRun()
 {
-    if( mFirstRun )
-    {
-        mFirstRun = false;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+  if ( mFirstRun )
+  {
+    mFirstRun = false;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

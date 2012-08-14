@@ -107,7 +107,7 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
     // counter for the number of conditions
     int mCondCount;
     // map tracking the condition widget and the ids
-    QMap<int,QgsSmartGroupCondition*> mConditionMap;
+    QMap<int, QgsSmartGroupCondition*> mConditionMap;
 };
 
 #endif // QGSSMARTGROUPEDITORDIALOG_H

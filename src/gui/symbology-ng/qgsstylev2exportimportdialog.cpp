@@ -222,14 +222,14 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
       while ( nameInvalid )
       {
         bool ok;
-        name = QInputDialog::getText( this, tr( "Group Name"),
-                                  tr( "Please enter a name for new group:" ),
-                                  QLineEdit::Normal,
-                                  tr( "imported" ),
-                                  &ok );
+        name = QInputDialog::getText( this, tr( "Group Name" ),
+                                      tr( "Please enter a name for new group:" ),
+                                      QLineEdit::Normal,
+                                      tr( "imported" ),
+                                      &ok );
         if ( !ok )
         {
-         QMessageBox::warning( this, tr( "New Group"),
+          QMessageBox::warning( this, tr( "New Group" ),
                                 tr( "New group cannot be without a name. Kindly enter a name." ) );
           continue;
         }
@@ -237,7 +237,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
         if ( name.isEmpty() )
         {
           QMessageBox::warning( this, tr( "New group" ),
-                            tr( "Cannot create a group without name. Enter a name." ) );
+                                tr( "Cannot create a group without name. Enter a name." ) );
         }
         else
         {
@@ -410,7 +410,7 @@ void QgsStyleV2ExportImportDialog::browse()
   if ( type == "file" )
   {
     mFileName = QFileDialog::getOpenFileName( this, tr( "Load styles" ), ".",
-                     tr( "XML files (*.xml *XML)" ) );
+                tr( "XML files (*.xml *XML)" ) );
     if ( mFileName.isEmpty() )
     {
       return;
@@ -434,8 +434,8 @@ void QgsStyleV2ExportImportDialog::browse()
 
 void QgsStyleV2ExportImportDialog::downloadStyleXML( QUrl url )
 {
-    // XXX Try to move this code to some core Network interface,
-    // HTTP downloading is a generic functionality that might be used elsewhere
+  // XXX Try to move this code to some core Network interface,
+  // HTTP downloading is a generic functionality that might be used elsewhere
 
   mTempFile = new QTemporaryFile();
   if ( mTempFile->open() )
@@ -477,7 +477,7 @@ void QgsStyleV2ExportImportDialog::httpFinished()
     mFileName = "";
     mProgressDlg->hide();
     QMessageBox::information( this, tr( "HTTP Error!" ),
-        tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
+                              tr( "Download failed: %1." ).arg( mNetReply->errorString() ) );
     return;
   }
   else

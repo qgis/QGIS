@@ -77,7 +77,7 @@ void QgsSmartGroupCondition::hideRemoveButton( bool hide )
 // Editor Dialog Functions  //
 // ------------------------ //
 QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent )
-  : QDialog( parent ), mStyle( style )
+    : QDialog( parent ), mStyle( style )
 {
   setupUi( this );
 
@@ -128,7 +128,7 @@ void QgsSmartGroupEditorDialog::removeCondition( int id )
   // hide the remove button of the last condition when 2nd last is removed
   if ( mConditionMap.count() == 2 )
   {
-    foreach( QgsSmartGroupCondition* condition, mConditionMap.values() )
+    foreach ( QgsSmartGroupCondition* condition, mConditionMap.values() )
     {
       condition->hideRemoveButton( true );
     }
@@ -142,7 +142,7 @@ QgsSmartConditionMap QgsSmartGroupEditorDialog::conditionMap()
 {
   QgsSmartConditionMap conditions;
 
-  foreach( QgsSmartGroupCondition* condition, mConditionMap.values() )
+  foreach ( QgsSmartGroupCondition* condition, mConditionMap.values() )
   {
     conditions.insert( condition->constraint(), condition->parameter() );
   }
@@ -161,7 +161,7 @@ void QgsSmartGroupEditorDialog::setConditionMap( QgsSmartConditionMap map )
   constraints << "tag" << "group" << "name" << "!tag" << "!group" << "!name" ;
 
   // clear any defaults
-  foreach( int id, mConditionMap.keys() )
+  foreach ( int id, mConditionMap.keys() )
   {
     QgsSmartGroupCondition *cond = mConditionMap.take( id );
     delete cond;

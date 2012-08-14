@@ -64,7 +64,7 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     //! edit the selected smart group
     void editSmartgroupAction();
 
-    //! symbol changed from one group 
+    //! symbol changed from one group
     void regrouped( QStandardItem* );
 
     //! filter the symbols based on input search term

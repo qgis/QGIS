@@ -115,7 +115,7 @@ class SymbolLayerItem : public QStandardItem
           return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
         else
         {
-          switch( mSymbol->type() )
+          switch ( mSymbol->type() )
           {
             case QgsSymbolV2::Marker : return "Symbol: Marker";
             case QgsSymbolV2::Fill   : return "Symbol: Fill";
@@ -230,7 +230,7 @@ void QgsSymbolV2SelectorDialog::loadSymbol( QgsSymbolV2* symbol, SymbolLayerItem
       loadSymbol( symbol->symbolLayer( i )->subSymbol(), layerItem );
     }
   }
-  layersTree->setExpanded( symbolItem->index(), true);
+  layersTree->setExpanded( symbolItem->index(), true );
 }
 
 
@@ -254,7 +254,7 @@ void QgsSymbolV2SelectorDialog::updateUi()
     btnRemoveLayer->setEnabled( false );
     btnLock->setEnabled( false );
     btnAddLayer->setEnabled( true );
-   return;
+    return;
   }
 
   int rowCount = item->parent()->rowCount();
@@ -322,7 +322,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   if ( currentItem->isLayer() )
   {
     SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( currentItem->parent() );
-    QWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer);
+    QWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     setWidget( layerProp );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
     // This connection when layer type is changed
@@ -330,7 +330,7 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   }
   else
   {
-    // then it must be a symbol 
+    // then it must be a symbol
     // Now populate symbols of that type using the symbols list widget:
     QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu );
     setWidget( symbolsList );
@@ -398,7 +398,7 @@ void QgsSymbolV2SelectorDialog::addLayer()
   SymbolLayerItem *item = static_cast<SymbolLayerItem*>( model->itemFromIndex( idx ) );
   if ( item->isLayer() )
   {
-    QMessageBox::critical( this, tr( "Invalid Selection!" ), tr( "Kindly select a symbol to add layer.") );
+    QMessageBox::critical( this, tr( "Invalid Selection!" ), tr( "Kindly select a symbol to add layer." ) );
     return;
   }
 
@@ -450,7 +450,7 @@ void QgsSymbolV2SelectorDialog::moveLayerUp()
 void QgsSymbolV2SelectorDialog::moveLayerByOffset( int offset )
 {
   SymbolLayerItem *item = currentLayerItem();
-  if( item == NULL )
+  if ( item == NULL )
     return;
   int row = item->row();
 

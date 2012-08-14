@@ -78,7 +78,7 @@ static void _initWidgetFunctions()
 
 
 QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
-  : QWidget( parent )
+    : QWidget( parent )
 {
 
   mLayer = layer;

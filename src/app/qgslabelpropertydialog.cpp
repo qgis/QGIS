@@ -248,7 +248,7 @@ void QgsLabelPropertyDialog::on_mMinScaleSpinBox_valueChanged( int i )
   insertChangedValue( QgsPalLayerSettings::MinScale, i );
 }
 
-void QgsLabelPropertyDialog::on_mMaxScaleSpinBox_valueChanged(int i )
+void QgsLabelPropertyDialog::on_mMaxScaleSpinBox_valueChanged( int i )
 {
   insertChangedValue( QgsPalLayerSettings::MaxScale, i );
 }

@@ -614,7 +614,7 @@ class QgsSvgGroupsModel : public QStandardItemModel
     void createTree( QStandardItem* &parentGroup )
     {
       QDir parentDir( parentGroup->data().toString() );
-      foreach( QString item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+      foreach ( QString item, parentDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
       {
         QStandardItem* group = new QStandardItem( item );
         group->setData( QVariant( parentDir.path() + "/" + item ) );

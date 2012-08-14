@@ -508,7 +508,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       bool conversionOk;
       int minScale = minScaleValue.toInt( &conversionOk );
       // TODO: occasional floating point issues?
-      if ( conversionOk && int( context.rendererScale() ) < minScale  )
+      if ( conversionOk && int( context.rendererScale() ) < minScale )
       {
         return;
       }
@@ -1266,7 +1266,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         fontTransp = ft;
       }
     }
-    fontColor.setAlphaF( ( 100.0 - (double)(fontTransp) ) / 100.0 );
+    fontColor.setAlphaF(( 100.0 - ( double )( fontTransp ) ) / 100.0 );
 
     //font bold
     QVariant dataDefinedBold = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Bold );
@@ -1326,7 +1326,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         bufferTransp = bt;
       }
     }
-    bufferColor.setAlphaF( ( 100.0 - (double)(bufferTransp) ) / 100.0 );
+    bufferColor.setAlphaF(( 100.0 - ( double )( bufferTransp ) ) / 100.0 );
 
     if ( lyr.bufferSize != 0 )
       drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferSize, bufferColor, true );

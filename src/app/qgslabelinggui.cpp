@@ -479,8 +479,8 @@ void QgsLabelingGui::changePreviewBackground()
 
   mPreviewBackgroundBtn->setColor( color );
   scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
-                                                                                               QString::number( color.green() ),
-                                                                                               QString::number( color.blue() ) ) );
+      QString::number( color.green() ),
+      QString::number( color.blue() ) ) );
 }
 
 void QgsLabelingGui::changeTextColor()
@@ -546,12 +546,12 @@ void QgsLabelingGui::updatePreview()
   lblFontPreview->setFont( previewFont );
 
   QColor prevColor = btnTextColor->color();
-  prevColor.setAlphaF( ( 100.0 - (double)(mFontTranspSpinBox->value()) ) / 100.0 );
+  prevColor.setAlphaF(( 100.0 - ( double )( mFontTranspSpinBox->value() ) ) / 100.0 );
   lblFontPreview->setTextColor( prevColor );
   if ( chkBuffer->isChecked() )
   {
     QColor buffColor = btnBufferColor->color();
-    buffColor.setAlphaF( ( 100.0 - (double)(mBufferTranspSpinBox->value()) ) / 100.0 );
+    buffColor.setAlphaF(( 100.0 - ( double )( mBufferTranspSpinBox->value() ) ) / 100.0 );
     lblFontPreview->setBuffer( spinBufferSize->value(), buffColor );
   }
   else

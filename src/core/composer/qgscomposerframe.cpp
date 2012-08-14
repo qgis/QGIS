@@ -17,14 +17,14 @@
 #include "qgscomposermultiframe.h"
 
 QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height )
-  : QgsComposerItem( x, y, width, height, c )
-  , mMultiFrame( mf )
+    : QgsComposerItem( x, y, width, height, c )
+    , mMultiFrame( mf )
 {
 }
 
 QgsComposerFrame::QgsComposerFrame()
-  : QgsComposerItem( 0, 0, 0, 0, 0 )
-  , mMultiFrame( 0 )
+    : QgsComposerItem( 0, 0, 0, 0, 0 )
+    , mMultiFrame( 0 )
 {
 }
 
