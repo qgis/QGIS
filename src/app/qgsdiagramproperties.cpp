@@ -165,6 +165,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
+      mTransparencySlider->setValue( settingList.at( 0 ).transparency * 100 / 256 );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
@@ -281,7 +282,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       else
       {
         QMessageBox::warning( this, tr( "Unknown diagram type." ),
-          tr( "The diagram type '%s' is unknown. A default type is selected for you." ).arg( diagramName ), QMessageBox::Ok );
+          tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( diagramName ), QMessageBox::Ok );
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Pie chart" ) ) );
       }
     }
@@ -337,7 +338,6 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
   }
 }
 
-
 void QgsDiagramProperties::on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state )
 {
   if ( Qt::Checked == state )
@@ -352,6 +352,10 @@ void QgsDiagramProperties::on_mIncreaseSmallDiagramsCheckBox_stateChanged( int s
   }
 }
 
+void QgsDiagramProperties::on_mTransparencySlider_valueChanged( int value )
+{
+  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg( value ) );
+}
 
 void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 {
@@ -527,7 +531,13 @@ void QgsDiagramProperties::apply()
     }
 
     ds.backgroundColor = mBackgroundColorButton->color();
+    ds.transparency = mTransparencySlider->value() * 255 / 100;
+    foreach( QColor col, ds.categoryColors )
+    {
+      col.setAlpha( 255 - ds.transparency );
+    }
     ds.penColor = mDiagramPenColorButton->color();
+    ds.penColor.setAlpha( 255 - ds.transparency );
     ds.penWidth = mPenWidthSpinBox->value();
     if ( mVisibilityGroupBox->isChecked() )
     {

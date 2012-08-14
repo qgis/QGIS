@@ -124,6 +124,7 @@ struct CORE_EXPORT QgsDiagramSettings
   LabelPlacementMethod labelPlacementMethod;
   DiagramOrientation diagramOrientation;
   double barWidth;
+  int transparency; // 0 - 100
   bool scaleByArea;
 
   //scale range (-1 if no lower / upper bound )
