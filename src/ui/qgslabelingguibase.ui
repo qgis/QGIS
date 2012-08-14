@@ -470,7 +470,7 @@
                  <item>
                   <widget class="QSlider" name="mBufferTranspSlider">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -499,9 +499,9 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSpinBox" name="spinBox_2">
+                  <widget class="QSpinBox" name="mBufferTranspSpinBox">
                    <property name="enabled">
-                    <bool>false</bool>
+                    <bool>true</bool>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1009,7 +1009,7 @@
                    <item>
                     <widget class="QSlider" name="mFontTranspSlider">
                      <property name="enabled">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                      <property name="minimumSize">
                       <size>
@@ -1034,7 +1034,7 @@
                    <item>
                     <widget class="QSpinBox" name="mFontTranspSpinBox">
                      <property name="enabled">
-                      <bool>false</bool>
+                      <bool>true</bool>
                      </property>
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -1933,7 +1933,7 @@
               <item row="2" column="1">
                <widget class="QComboBox" name="mBufferTranspAttributeComboBox">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2211,7 +2211,7 @@
               <item row="2" column="1">
                <widget class="QComboBox" name="mTranspAttributeComboBox">
                 <property name="enabled">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -2417,7 +2417,7 @@
   <connection>
    <sender>mBufferTranspSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>spinBox_2</receiver>
+   <receiver>mBufferTranspSpinBox</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -2431,7 +2431,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>spinBox_2</sender>
+   <sender>mBufferTranspSpinBox</sender>
    <signal>valueChanged(int)</signal>
    <receiver>mBufferTranspSlider</receiver>
    <slot>setValue(int)</slot>

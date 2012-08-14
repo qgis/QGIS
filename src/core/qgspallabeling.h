@@ -100,7 +100,9 @@ class CORE_EXPORT QgsPalLayerSettings
       Rotation, //data defined rotation (only useful in connection with data defined position)
       Show,
       MinScale,
-      MaxScale
+      MaxScale,
+      FontTransp,
+      BufferTransp
     };
 
     QString fieldName;
@@ -117,6 +119,7 @@ class CORE_EXPORT QgsPalLayerSettings
     unsigned int placementFlags;
     QFont textFont;
     QColor textColor;
+    int textTransp;
     bool enabled;
     int priority; // 0 = low, 10 = high
     bool obstacle; // whether it's an obstacle
@@ -126,6 +129,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int scaleMin, scaleMax; // disabled if both are zero
     double bufferSize; //buffer size (in mm)
     QColor bufferColor;
+    int bufferTransp;
     bool formatNumbers;
     int decimals;
     bool plusSign;

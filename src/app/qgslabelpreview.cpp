@@ -47,8 +47,6 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   QFontMetrics fm( font() );
   p.translate( 0, fm.ascent() + 4 );
 
-//   mBufferColor.setAlpha( 125 );
-
   if ( mBufferSize != 0 )
     QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor );
 

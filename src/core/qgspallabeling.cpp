@@ -143,6 +143,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   placementFlags = 0;
   //textFont = QFont();
   textColor = Qt::black;
+  textTransp = 0;
   enabled = false;
   priority = 5;
   obstacle = true;
@@ -151,6 +152,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   scaleMax = 0;
   bufferSize = 1;
   bufferColor = Qt::white;
+  bufferTransp = 0;
   formatNumbers = false;
   decimals = 3;
   plusSign = false;
@@ -175,6 +177,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   placementFlags = s.placementFlags;
   textFont = s.textFont;
   textColor = s.textColor;
+  textTransp = s.textTransp;
   enabled = s.enabled;
   priority = s.priority;
   obstacle = s.obstacle;
@@ -183,6 +186,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   scaleMax = s.scaleMax;
   bufferSize = s.bufferSize;
   bufferColor = s.bufferColor;
+  bufferTransp = s.bufferTransp;
   formatNumbers = s.formatNumbers;
   decimals = s.decimals;
   plusSign = s.plusSign;
@@ -245,7 +249,7 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
   {
     return;
   }
-  for ( int i = 0; i < 18; ++i )
+  for ( int i = 0; i < 20; ++i )
   {
     QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator it = propertyMap.find(( QgsPalLayerSettings::DataDefinedProperties )i );
     QVariant propertyValue;
@@ -303,6 +307,8 @@ static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLaye
   _readDataDefinedProperty( layer, QgsPalLayerSettings::Show, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::MinScale, propertyMap );
   _readDataDefinedProperty( layer, QgsPalLayerSettings::MaxScale, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::FontTransp, propertyMap );
+  _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferTransp, propertyMap );
 }
 
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
@@ -323,6 +329,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textColor = _readColor( layer, "labeling/textColor" );
+  textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
   enabled = layer->customProperty( "labeling/enabled" ).toBool();
   priority = layer->customProperty( "labeling/priority" ).toInt();
   obstacle = layer->customProperty( "labeling/obstacle" ).toBool();
@@ -331,6 +338,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   scaleMax = layer->customProperty( "labeling/scaleMax" ).toInt();
   bufferSize = layer->customProperty( "labeling/bufferSize" ).toDouble();
   bufferColor = _readColor( layer, "labeling/bufferColor" );
+  bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
   formatNumbers = layer->customProperty( "labeling/formatNumbers" ).toBool();
   decimals = layer->customProperty( "labeling/decimals" ).toInt();
   plusSign = layer->customProperty( "labeling/plussign" ).toInt();
@@ -363,6 +371,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fontUnderline", textFont.underline() );
 
   _writeColor( layer, "labeling/textColor", textColor );
+  layer->setCustomProperty( "labeling/textTransp", textTransp );
   layer->setCustomProperty( "labeling/enabled", enabled );
   layer->setCustomProperty( "labeling/priority", priority );
   layer->setCustomProperty( "labeling/obstacle", obstacle );
@@ -371,6 +380,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/scaleMax", scaleMax );
   layer->setCustomProperty( "labeling/bufferSize", bufferSize );
   _writeColor( layer, "labeling/bufferColor", bufferColor );
+  layer->setCustomProperty( "labeling/bufferTransp", bufferTransp );
   layer->setCustomProperty( "labeling/formatNumbers", formatNumbers );
   layer->setCustomProperty( "labeling/decimals", decimals );
   layer->setCustomProperty( "labeling/plussign", plusSign );
@@ -1223,8 +1233,10 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     const QgsPalLayerSettings& lyr = layer( layerNameUtf8 );
     QFont fontForLabel = lyr.textFont;
     QColor fontColor = lyr.textColor;
+    int fontTransp = lyr.textTransp;
     double bufferSize = lyr.bufferSize;
     QColor bufferColor = lyr.bufferColor;
+    int bufferTransp = lyr.bufferTransp;
 
     //apply data defined settings for the label
     //font size
@@ -1243,6 +1255,19 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         fontColor = lyr.textColor;
       }
     }
+    //font transparency
+    QVariant dataDefinedFontTransp = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::FontTransp );
+    if ( dataDefinedFontTransp.isValid() )
+    {
+      bool ftOk = false;
+      int ft = dataDefinedFontTransp.toInt( &ftOk );
+      if ( ftOk && ft >= 0 && ft <= 100 )
+      {
+        fontTransp = ft;
+      }
+    }
+    fontColor.setAlphaF( ( 100.0 - (double)(fontTransp) ) / 100.0 );
+
     //font bold
     QVariant dataDefinedBold = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::Bold );
     if ( dataDefinedBold.isValid() )
@@ -1290,6 +1315,18 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         bufferColor = lyr.bufferColor;
       }
     }
+    //buffer transparency
+    QVariant dataDefinedBufTransp = palGeometry->dataDefinedValues().value( QgsPalLayerSettings::BufferTransp );
+    if ( dataDefinedBufTransp.isValid() )
+    {
+      bool btOk = false;
+      int bt = dataDefinedBufTransp.toInt( &btOk );
+      if ( btOk && bt >= 0 && bt <= 100 )
+      {
+        bufferTransp = bt;
+      }
+    }
+    bufferColor.setAlphaF( ( 100.0 - (double)(bufferTransp) ) / 100.0 );
 
     if ( lyr.bufferSize != 0 )
       drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferSize, bufferColor, true );
@@ -1482,10 +1519,11 @@ void QgsPalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& fo
 {
   QPainterPath path;
   path.addText( 0, 0, font, text );
-//   color.setAlpha( 125 );
   QPen pen( color );
   pen.setWidthF( size );
   p->setPen( pen );
+  // TODO: make pref for whether to fill buffer
+//  color.setAlpha( 0 );
   p->setBrush( color );
   p->drawPath( path );
 }

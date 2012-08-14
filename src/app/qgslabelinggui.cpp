@@ -160,7 +160,9 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     spinBufferSize->setValue( lyr.bufferSize );
 
   btnTextColor->setColor( lyr.textColor );
+  mFontTranspSpinBox->setValue( lyr.textTransp );
   btnBufferColor->setColor( lyr.bufferColor );
+  mBufferTranspSpinBox->setValue( lyr.bufferTransp );
 
   bool formattedNumbers = lyr.formatNumbers;
   bool plusSign = lyr.plusSign;
@@ -282,6 +284,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.textColor = btnTextColor->color();
   lyr.textFont = mRefFont;
+  lyr.textTransp = mFontTranspSpinBox->value();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
@@ -300,6 +303,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     lyr.bufferSize = spinBufferSize->value();
     lyr.bufferColor = btnBufferColor->color();
+    lyr.bufferTransp = mBufferTranspSpinBox->value();
   }
   else
   {
@@ -356,6 +360,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mShowLabelAttributeComboBox, QgsPalLayerSettings::Show, lyr );
   setDataDefinedProperty( mMinScaleAttributeComboBox, QgsPalLayerSettings::MinScale, lyr );
   setDataDefinedProperty( mMaxScaleAttributeComboBox, QgsPalLayerSettings::MaxScale, lyr );
+  setDataDefinedProperty( mTranspAttributeComboBox, QgsPalLayerSettings::FontTransp, lyr );
+  setDataDefinedProperty( mBufferTranspAttributeComboBox, QgsPalLayerSettings::BufferTransp, lyr );
 
   return lyr;
 }
@@ -423,6 +429,8 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   comboList << mShowLabelAttributeComboBox;
   comboList << mMinScaleAttributeComboBox;
   comboList << mMaxScaleAttributeComboBox;
+  comboList << mTranspAttributeComboBox;
+  comboList << mBufferTranspAttributeComboBox;
 
   QList<QComboBox*>::iterator comboIt = comboList.begin();
   for ( ; comboIt != comboList.end(); ++comboIt )
@@ -459,6 +467,8 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mShowLabelAttributeComboBox, s, QgsPalLayerSettings::Show );
   setCurrentComboValue( mMinScaleAttributeComboBox, s, QgsPalLayerSettings::MinScale );
   setCurrentComboValue( mMaxScaleAttributeComboBox, s, QgsPalLayerSettings::MaxScale );
+  setCurrentComboValue( mTranspAttributeComboBox, s, QgsPalLayerSettings::FontTransp );
+  setCurrentComboValue( mBufferTranspAttributeComboBox, s, QgsPalLayerSettings::BufferTransp );
 }
 
 void QgsLabelingGui::changePreviewBackground()
@@ -535,11 +545,19 @@ void QgsLabelingGui::updatePreview()
   }
   lblFontPreview->setFont( previewFont );
 
-  lblFontPreview->setTextColor( btnTextColor->color() );
+  QColor prevColor = btnTextColor->color();
+  prevColor.setAlphaF( ( 100.0 - (double)(mFontTranspSpinBox->value()) ) / 100.0 );
+  lblFontPreview->setTextColor( prevColor );
   if ( chkBuffer->isChecked() )
-    lblFontPreview->setBuffer( spinBufferSize->value(), btnBufferColor->color() );
+  {
+    QColor buffColor = btnBufferColor->color();
+    buffColor.setAlphaF( ( 100.0 - (double)(mBufferTranspSpinBox->value()) ) / 100.0 );
+    lblFontPreview->setBuffer( spinBufferSize->value(), buffColor );
+  }
   else
+  {
     lblFontPreview->setBuffer( 0, Qt::white );
+  }
 }
 
 void QgsLabelingGui::scrollPreview()
@@ -627,6 +645,12 @@ void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
   updateFont( mRefFont );
 }
 
+void QgsLabelingGui::on_mFontTranspSpinBox_valueChanged( int i )
+{
+  Q_UNUSED( i );
+  updateFont( mRefFont );
+}
+
 void QgsLabelingGui::on_mFontWordSpacingSpinBox_valueChanged( double spacing )
 {
   mRefFont.setWordSpacing( spacing );
@@ -636,6 +660,12 @@ void QgsLabelingGui::on_mFontWordSpacingSpinBox_valueChanged( double spacing )
 void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
 {
   mRefFont.setLetterSpacing( QFont::AbsoluteSpacing, spacing );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mBufferTranspSpinBox_valueChanged( int i )
+{
+  Q_UNUSED( i );
   updateFont( mRefFont );
 }
 
