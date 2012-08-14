@@ -924,7 +924,7 @@ void QgsWcsProvider::cacheReplyFinished()
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Map request error (Response: %2; URL:%3)" )
+          QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL:%2)" )
                                      .arg( QString::fromUtf8( partBodies.value( 1 ) ) )
                                      .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
         }

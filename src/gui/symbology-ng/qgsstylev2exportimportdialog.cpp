@@ -230,7 +230,7 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
         if ( !ok )
         {
           QMessageBox::warning( this, tr( "New Group" ),
-                                tr( "New group cannot be without a name. Kindly enter a name." ) );
+                                tr( "New group cannot be created without a name. Kindly enter a name." ) );
           continue;
         }
         // validate name

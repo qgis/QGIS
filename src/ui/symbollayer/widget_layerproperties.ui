@@ -48,7 +48,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string> This layer doesn't have any editbale properties</string>
+          <string>This layer doesn't have any editable properties</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

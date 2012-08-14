@@ -771,7 +771,7 @@ void QgsStyleV2ManagerDialog::addGroup()
   {
     int err = QMessageBox::critical( this, tr( "Invalid Selection" ),
                                      tr( "The parent group you have selected is not user editable.\n"
-                                         "Kindly select a user defined Group." ) );
+                                         "Kindly select a user defined group." ) );
     if ( err )
       return;
   }
@@ -780,7 +780,7 @@ void QgsStyleV2ManagerDialog::addGroup()
   if ( parentIndex.parent().data( Qt::UserRole + 1 ).toString() == "smartgroups" )
   {
     int err = QMessageBox::critical( this, tr( "Operation Not Allowed" ),
-                                     tr( "Creation of nested Smart Groups are not allowed\n"
+                                     tr( "Creation of nested smart groups are not allowed\n"
                                          "Select the 'Smart Group' to create a new group." ) );
     if ( err )
       return;
@@ -831,7 +831,7 @@ void QgsStyleV2ManagerDialog::removeGroup()
   QString data = index.data( Qt::UserRole + 1 ).toString();
   if ( data == "all" || data == "groups" || data == "smartgroups" || index.data() == "Ungrouped" )
   {
-    int err = QMessageBox::critical( this, tr( "Invalid slection" ),
+    int err = QMessageBox::critical( this, tr( "Invalid selection" ),
                                      tr( "Cannot delete system defined categories.\n"
                                          "Kindly select a group or smart group you might want to delete." ) );
     if ( err )
@@ -1238,7 +1238,7 @@ void QgsStyleV2ManagerDialog::editSmartgroupAction()
   if ( !id )
   {
     QMessageBox::critical( this, tr( "Database Error!" ),
-                           tr( "There was some error in editing the smart group." ) );
+                           tr( "There was some error while editing the smart group." ) );
     return;
   }
   item->setText( dlg.smartgroupName() );
