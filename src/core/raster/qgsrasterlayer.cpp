@@ -2016,8 +2016,14 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   QgsDebugMsg( "myKey = " + myKey );
 
   QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + myKey, myDefault ).toString();
+  QgsDebugMsg( "myAlgorithmString = " + myAlgorithmString );
 
   QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( myAlgorithmString );
+
+  if ( myAlgorithm == QgsContrastEnhancement::NoEnhancement )
+  {
+    return;
+  }
 
   QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
   ContrastEnhancementLimits myLimits = contrastEnhancementLimitsFromString( myLimitsString );
