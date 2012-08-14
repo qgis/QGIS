@@ -1121,12 +1121,6 @@ void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreview
 
 void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 {
-  //take first available map
-  QList<const QgsComposerMap*> mapItemList = composerMapItems();
-  if ( mapItemList.size() > 0 )
-  {
-    scaleBar->setComposerMap( mapItemList.at( 0 ) );
-  }
   addItem( scaleBar );
   emit composerScaleBarAdded( scaleBar );
   clearSelection();
