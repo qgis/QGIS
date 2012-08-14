@@ -128,7 +128,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mDisplayDiagramsGroupBox->setChecked( false );
     mFixedSizeCheckBox->setChecked( true );
     mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "mm" ) ) );
-    mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "XHeight" ) ) );
+    mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setValue( 30 );
     mBarWidthSpinBox->setValue( 5 );
     mVisibilityGroupBox->setChecked( false );
@@ -277,6 +277,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       else if ( diagramName == "Histogram" )
       {
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Histogram" ) ) );
+      }
+      else
+      {
+        QMessageBox::warning( this, tr( "Unknown diagram type." ),
+          tr( "The diagram type '%s' is unknown. A default type is selected for you." ).arg( diagramName ), QMessageBox::Ok );
+        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Pie chart" ) ) );
       }
     }
   } // if ( !dr )
