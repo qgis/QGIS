@@ -171,6 +171,9 @@ class QgsWMSServer
     /**Get service address from REQUEST_URI if not specified in the configuration*/
     QString serviceUrl() const;
 
+    /**Add '<?xml version="1.0" ?>'. Some clients need an xml declaration (though it is not strictly required)*/
+    void addXMLDeclaration( QDomDocument& doc ) const;
+
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

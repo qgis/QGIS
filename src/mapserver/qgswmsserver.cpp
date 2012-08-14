@@ -90,10 +90,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   if ( version == "1.1.1" )
   {
     doc = QDomDocument( "WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'" );  //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
+    addXMLDeclaration( doc );
     wmsCapabilitiesElement = doc.createElement( "WMT_MS_Capabilities"/*wms:WMS_Capabilities*/ );
   }
   else // 1.3.0 as default
   {
+    addXMLDeclaration( doc );
     wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
     wmsCapabilitiesElement.setAttribute( "xmlns", "http://www.opengis.net/wms" );
     wmsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
@@ -1997,4 +1999,10 @@ QString QgsWMSServer::serviceUrl() const
     }
   }
   return mapUrl.toString();
+}
+
+void QgsWMSServer::addXMLDeclaration( QDomDocument& doc ) const
+{
+  QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\"" );
+  doc.appendChild( xmlDeclaration );
 }
