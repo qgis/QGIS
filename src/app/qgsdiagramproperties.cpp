@@ -83,8 +83,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
   else
   {
-    mLineOptionsComboBox->setEnabled( false );
-    mLineOptionsLabel->setEnabled( false );
+    mLineOptionsComboBox->setVisible( false );
+    mLineOptionsLabel->setVisible( false );
   }
 
   mDiagramTypeComboBox->addItem( tr( "Pie chart" ) );
@@ -255,9 +255,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mPrioritySlider->setValue( dls->priority );
       mDataDefinedXComboBox->setCurrentIndex( mDataDefinedXComboBox->findData( dls->xPosColumn ) );
       mDataDefinedYComboBox->setCurrentIndex( mDataDefinedYComboBox->findData( dls->yPosColumn ) );
-      if ( dls->xPosColumn == -1 && dls->yPosColumn == -1 )
+      if ( dls->xPosColumn != -1 || dls->yPosColumn != -1 )
       {
-        mDataDefinedPositionGroupBox->setChecked( false );
+        mDataDefinedPositionGroupBox->setChecked( true );
       }
       mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement ) );
       mLineOptionsComboBox->setCurrentIndex( mLineOptionsComboBox->findData( dls->placementFlags ) );
@@ -455,7 +455,7 @@ void QgsDiagramProperties::apply()
     if ( 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
       QMessageBox::warning( this, tr( "No attributes added." ),
-        tr( "You did not add any attributes to this diagram layer. Please specify the attributes to show on the diagrams." ), QMessageBox::Ok );
+        tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ), QMessageBox::Ok );
     }
 
     QgsDiagram* diagram = 0;
@@ -497,7 +497,7 @@ void QgsDiagramProperties::apply()
     {
      ds.labelPlacementMethod = QgsDiagramSettings::Height;
     }
-    else if ( tr( "x-height" ) == mLabelPlacementComboBox->currentText() )
+    else
     {
      ds.labelPlacementMethod = QgsDiagramSettings::XHeight;
     }
