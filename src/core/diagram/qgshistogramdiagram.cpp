@@ -144,11 +144,11 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderCo
         break;
 
       case QgsDiagramSettings::Right:
-        p->drawRect( baseX, baseY + currentOffset, 0 - length, scaledWidth );
+        p->drawRect( baseX, baseY + currentOffset, length, scaledWidth );
         break;
 
       case QgsDiagramSettings::Left:
-        p->drawRect( baseX, baseY + currentOffset, length, scaledWidth );
+        p->drawRect( baseX, baseY + currentOffset, 0 - length, scaledWidth );
         break;
     }
 
