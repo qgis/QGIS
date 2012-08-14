@@ -70,10 +70,14 @@ void TestQgsWcsPublicServers::test( )
   // It may happen that server supports 1.1.1, but does not accept 1.1 (http://zeus.pin.unifi.it/gi-wcs/http)
   versions << "" << "1.0.0" << "1.1.0"; // empty for default
   QStringList servers;
+  // Some (first) coverages do not advertize any supportedCRS and sever gives
+  // error both with native CRS (EPSG::561005) and EPSG:4326
+  // MOD* coverages work OK
   servers << "http://argon.geogr.uni-jena.de:8080/geoserver/ows";
   servers << "http://demo.geonode.org/geoserver/wcs";
   servers << "http://demo.mapserver.org/cgi-bin/wcs";
   servers << "http://demo.opengeo.org/geoserver/wcs";
+  // geobrain.laits.gmu.edu servers are quite slow
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/gbwcs-dem";
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/ows8/wcseo";
   servers << "http://geobrain.laits.gmu.edu/cgi-bin/wcs110";
@@ -146,11 +150,25 @@ void TestQgsWcsPublicServers::test( )
       }
 
       int myCoverageCount = 0;
+      int myStep = myCoverages.size() / mMaxCoverages;
+      int myStepCount = -1;
       foreach ( QgsWcsCoverageSummary myCoverage, myCoverages )
       {
         QgsDebugMsg( "coverage: " + myCoverage.identifier );
+        // Go in steps to get more success/errors
+        if ( myStepCount == -1 || myStepCount > myStep )
+        {
+          myStepCount = 0;
+        }
+        else
+        {
+          myStepCount++;
+          continue;
+        }
+
         myCoverageCount++;
-        if ( myCoverageCount > mMaxCoverages ) continue;
+        if ( myCoverageCount > mMaxCoverages ) break;
+
         QString myPath = myServerDir.absolutePath() + QDir::separator() + myCoverage.identifier;
 
         if ( !version.isEmpty() )

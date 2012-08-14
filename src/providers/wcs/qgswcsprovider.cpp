@@ -166,8 +166,10 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     }
   }
   QgsDebugMsg( "mCoverageCrs = " + mCoverageCrs );
-  // We cannot continue without CRS
-  if ( mCoverageCrs.isEmpty() ) return;
+
+  // It may happen that coverage CRS is not given or it is unknown
+  // in that case we continue without CRS and user is asked for it
+  //if ( mCoverageCrs.isEmpty() ) return;
 
   mWidth = mCoverageSummary.width;
   mHeight = mCoverageSummary.height;
@@ -1460,12 +1462,19 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Coverages" );
   metadata += "</th></tr>";
 
+  // Dialog takes too long to open if there are too many coverages (1000 for example)
+  int count = 0;
   foreach ( QgsWcsCoverageSummary c, mCapabilities.coverages() )
   {
     metadata += coverageMetadata( c );
+    count++;
+    if ( count >= 100 ) break;
   }
-
   metadata += "</table>";
+  if ( count < mCapabilities.coverages().size() )
+  {
+    metadata += tr( "And %1 more coverages" ).arg( mCapabilities.coverages().size() - count );
+  }
 
   QgsDebugMsg( "exiting with '"  + metadata  + "'." );
 

@@ -750,6 +750,12 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     gridElement = domElement( coverageOfferingElement, "domainSet.spatialDomain.Grid" );
   }
 
+  // If supportedCRSs.nativeCRSs is not defined we try to get it from RectifiedGrid
+  if ( coverage->nativeCrs.isEmpty() )
+  {
+    coverage->nativeCrs = gridElement.attribute( "srsName" );
+  }
+
   if ( !gridElement.isNull() )
   {
     QList<int> low = parseInts( domElementText( gridElement, "limits.GridEnvelope.low" ) );
