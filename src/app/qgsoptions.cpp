@@ -75,7 +75,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
 
-  connect( chkUseStandardDeviation, SIGNAL( stateChanged( int ) ), this, SLOT( toggleStandardDeviation( int ) ) );
 #ifdef Q_WS_X11
   connect( chkEnableBackbuffer, SIGNAL( stateChanged( int ) ), this, SLOT( toggleEnableBackbuffer( int ) ) );
 #endif
@@ -384,33 +383,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   spnGreen->setValue( settings.value( "/Raster/defaultGreenBand", 2 ).toInt() );
   spnBlue->setValue( settings.value( "/Raster/defaultBlueBand", 3 ).toInt() );
 
-  //add items to the color enhanceContrast combo box
-  cboxContrastEnhancementAlgorithm->addItem( tr( "No Stretch" ) );
-  cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch To MinMax" ) );
-  cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch And Clip To MinMax" ) );
-  cboxContrastEnhancementAlgorithm->addItem( tr( "Clip To MinMax" ) );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, "singleBand", "StretchToMinimumMaximum" );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, "multiBandSingleByte", "NoEnhancement" );
+  initContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, "multiBandMultiByte", "StretchToMinimumMaximum" );
 
-  QString contrastEnchacement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
-  if ( contrastEnchacement == "NoEnhancement" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "No Stretch" ) ) );
-  }
-  if ( contrastEnchacement == "StretchToMinimumMaximum" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch To MinMax" ) ) );
-  }
-  else if ( contrastEnchacement == "StretchAndClipToMinimumMaximum" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch And Clip To MinMax" ) ) );
-  }
-  else if ( contrastEnchacement == "ClipToMinimumMaximum" )
-  {
-    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Clip To MinMax" ) ) );
-  }
+  QString cumulativeCutText = tr( "Cumulative pixel count cut" );
+  cboxContrastEnhancementLimits->addItem( tr( "Cumulative pixel count cut" ), "CumulativeCut" );
+  cboxContrastEnhancementLimits->addItem( tr( "Minimum / maximum" ), "MinMax" );
+  cboxContrastEnhancementLimits->addItem( tr( "Mean +/- standard deviation" ), "StdDev" );
 
-  chkUseStandardDeviation->setChecked( settings.value( "/Raster/useStandardDeviation", false ).toBool() );
+  QString contrastEnchacementLimits = settings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
+
+  cboxContrastEnhancementLimits->setCurrentIndex( cboxContrastEnhancementLimits->findData( contrastEnchacementLimits ) );
+
   spnThreeBandStdDev->setValue( settings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
-  toggleStandardDeviation( chkUseStandardDeviation->checkState() );
 
   mRasterCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutLower", QString::number( QgsRasterLayer::CUMULATIVE_CUT_LOWER ) ).toDouble() );
   mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * settings.value( "/Raster/cumulativeCutUpper", QString::number( QgsRasterLayer::CUMULATIVE_CUT_UPPER ) ).toDouble() );
@@ -726,18 +712,6 @@ void QgsOptions::fontSizeChanged( const QString &fontSize )
   QgisApp::instance()->setFontSize( fontSize.toInt() );
 }
 
-void QgsOptions::toggleStandardDeviation( int state )
-{
-  if ( Qt::Checked == state )
-  {
-    spnThreeBandStdDev->setEnabled( true );
-  }
-  else
-  {
-    spnThreeBandStdDev->setEnabled( false );
-  }
-}
-
 void QgsOptions::toggleEnableBackbuffer( int state )
 {
 #ifdef Q_WS_X11
@@ -904,24 +878,13 @@ void QgsOptions::saveOptions()
   settings.setValue( "/Raster/defaultGreenBand", spnGreen->value() );
   settings.setValue( "/Raster/defaultBlueBand", spnBlue->value() );
 
-  if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "No Stretch" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" );
-  }
-  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch To MinMax" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "StretchToMinimumMaximum" );
-  }
-  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch And Clip To MinMax" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "StretchAndClipToMinimumMaximum" );
-  }
-  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Clip To MinMax" ) )
-  {
-    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "ClipToMinimumMaximum" );
-  }
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmSingleBand, "singleBand" );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandSingleByte, "multiBandSingleByte" );
+  saveContrastEnhancement( cboxContrastEnhancementAlgorithmMultiBandMultiByte, "multiBandMultiByte" );
 
-  settings.setValue( "/Raster/useStandardDeviation", chkUseStandardDeviation->isChecked() );
+  QString contrastEnhancementLimits = cboxContrastEnhancementLimits->itemData( cboxContrastEnhancementLimits->currentIndex() ).toString();
+  settings.setValue( "/Raster/defaultContrastEnhancementLimits", contrastEnhancementLimits );
+
   settings.setValue( "/Raster/defaultStandardDeviation", spnThreeBandStdDev->value() );
 
   settings.setValue( "/Raster/cumulativeCutLower", mRasterCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
@@ -1654,4 +1617,25 @@ void QgsOptions::on_pbnExportScales_clicked()
   {
     QgsDebugMsg( msg );
   }
+}
+
+void QgsOptions::initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal )
+{
+  QSettings settings;
+
+  //add items to the color enhanceContrast combo box
+  cbox->addItem( tr( "No Stretch" ), "NoEnhancement" );
+  cbox->addItem( tr( "Stretch To MinMax" ), "StretchToMinimumMaximum" );
+  cbox->addItem( tr( "Stretch And Clip To MinMax" ), "StretchAndClipToMinimumMaximum" );
+  cbox->addItem( tr( "Clip To MinMax" ), "ClipToMinimumMaximum" );
+
+  QString contrastEnchacement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
+  cbox->setCurrentIndex( cbox->findData( contrastEnchacement ) );
+}
+
+void QgsOptions::saveContrastEnhancement( QComboBox *cbox, QString name )
+{
+  QSettings settings;
+  QString value = cbox->itemData( cbox->currentIndex() ).toString();
+  settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm/" + name, value );
 }

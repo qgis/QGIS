@@ -128,14 +128,18 @@ QgsRasterLayer::QgsRasterLayer(
 {
   QgsDebugMsg( "Entered" );
 
-  // TODO, call constructor with provider key for now
+  // TODO, call constructor with provider key
   init();
   setDataProvider( "gdal" );
 
+  bool defaultLoadedFlag = false;
   if ( mValid && loadDefaultStyleFlag )
   {
-    bool defaultLoadedFlag = false;
     loadDefaultStyle( defaultLoadedFlag );
+  }
+  if ( !defaultLoadedFlag )
+  {
+    setDefaultContrastEnhancement();
   }
   return;
 } // QgsRasterLayer ctor
@@ -164,12 +168,15 @@ QgsRasterLayer::QgsRasterLayer( const QString & uri,
   init();
   setDataProvider( providerKey );
 
-  // load default style if provider is gdal and if no style was given
-  // this should be an argument like in the other constructor
-  if ( mValid && providerKey == "gdal" && loadDefaultStyleFlag )
+  // load default style
+  bool defaultLoadedFlag = false;
+  if ( mValid && loadDefaultStyleFlag )
   {
-    bool defaultLoadedFlag = false;
     loadDefaultStyle( defaultLoadedFlag );
+  }
+  if ( !defaultLoadedFlag )
+  {
+    setDefaultContrastEnhancement();
   }
 
   // Default for the popup menu
@@ -1972,6 +1979,86 @@ void QgsRasterLayer::setContrastEnhancementFunction( QgsContrastEnhancementFunct
       ++myIterator;
     }
   }
+}
+
+void QgsRasterLayer::setDefaultContrastEnhancement()
+{
+  QgsDebugMsg( QString( "mDrawingStyle = %1" ).arg( mDrawingStyle ) );
+
+  QSettings mySettings;
+
+  QString myKey;
+  QString myDefault;
+
+  if ( mDrawingStyle == SingleBandGray || mDrawingStyle == MultiBandSingleBandGray )
+  {
+    myKey = "singleBand";
+    myDefault = "StretchToMinimumMaximum";
+  }
+  else if ( mDrawingStyle == MultiBandColor )
+  {
+    if ( dataProvider()->typeSize( dataProvider()->srcDataType( 1 ) ) == 8 )
+    {
+      myKey = "multiBandSingleByte";
+      myDefault = "NoEnhancement";
+    }
+    else
+    {
+      myKey = "multiBandMultiByte";
+      myDefault = "StretchToMinimumMaximum";
+    }
+  }
+
+  if ( myKey.isEmpty() )
+  {
+    QgsDebugMsg( "No default contrast enhancement for this drawing style" );
+  }
+  QgsDebugMsg( "myKey = " + myKey );
+
+  QString myAlgorithmString = mySettings.value( "/Raster/defaultContrastEnhancementAlgorithm/" + myKey, myDefault ).toString();
+
+  QgsContrastEnhancement::ContrastEnhancementAlgorithm myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( myAlgorithmString );
+
+  QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
+  ContrastEnhancementLimits myLimits = contrastEnhancementLimitsFromString( myLimitsString );
+
+  setContrastEnhancementAlgorithm( myAlgorithm, myLimits );
+}
+
+QString QgsRasterLayer::contrastEnhancementLimitsAsString( ContrastEnhancementLimits theLimits )
+{
+  switch ( theLimits )
+  {
+    case QgsRasterLayer::ContrastEnhancementMinMax:
+      return "MinMax";
+      break;
+    case QgsRasterLayer::ContrastEnhancementStdDev:
+      return "StdDev";
+      break;
+    case QgsRasterLayer::ContrastEnhancementCumulativeCut:
+      return "CumulativeCut";
+      break;
+    default:
+      break;
+  }
+  return "None";
+}
+
+QgsRasterLayer::ContrastEnhancementLimits QgsRasterLayer::contrastEnhancementLimitsFromString( QString theLimits )
+{
+  if ( theLimits == "MinMax" )
+  {
+    return ContrastEnhancementMinMax;
+  }
+  else if ( theLimits == "StdDev" )
+  {
+    return ContrastEnhancementStdDev;
+  }
+  else if ( theLimits == "CumulativeCut" )
+  {
+    return ContrastEnhancementCumulativeCut;
+  }
+  return ContrastEnhancementNone;
 }
 
 /**

@@ -69,7 +69,6 @@ class CORE_EXPORT QgsRasterRendererRegistry
 
     //read min/max values from
     bool minMaxValuesForBand( int band, QgsRasterDataProvider* provider, double& minValue, double& maxValue ) const;
-    static int contrastEnhancementFromString( const QString& contrastEnhancementString );
 };
 
 #endif // QGSRASTERRENDERERREGISTRY_H

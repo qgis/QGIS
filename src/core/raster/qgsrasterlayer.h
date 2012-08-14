@@ -257,6 +257,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Contrast enhancement limits */
     enum ContrastEnhancementLimits
     {
+      ContrastEnhancementNone,
       ContrastEnhancementMinMax,
       ContrastEnhancementStdDev,
       ContrastEnhancementCumulativeCut
@@ -565,6 +566,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator for color shader algorithm */
     Q_DECL_DEPRECATED void setColorShadingAlgorithm( QString theShaderAlgorithm );
 
+    static QString contrastEnhancementLimitsAsString( QgsRasterLayer::ContrastEnhancementLimits theLimits );
+    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
+
     /** \brief Mutator for contrast enhancement algorithm using min/max */
     // TODO: remove in 2.0, replaced by following
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
@@ -589,6 +593,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Mutator for contrast enhancement function */
     void setContrastEnhancementFunction( QgsContrastEnhancementFunction* theFunction );
+
+    /** \brief Set default contrast enhancement */
+    void setDefaultContrastEnhancement();
 
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
     void setDrawingStyle( const QString & theDrawingStyleQString );

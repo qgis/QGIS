@@ -154,12 +154,16 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
     {
       int grayBand = 1;
       renderer = new QgsSingleBandGrayRenderer( provider, grayBand );
+
       QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
             provider->dataType( grayBand ) ) );
 
+// Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
+// TODO: reconsider moving contrast setting of enhancement somwhere down from QgsRasterLayer
+#if 0
       QSettings s;
       QgsContrastEnhancement::ContrastEnhancementAlgorithm ceAlgorithm;
-      ceAlgorithm = ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )QgsRasterRendererRegistry::contrastEnhancementFromString(
+      ceAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString(
                       s.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
       ce->setContrastEnhancementAlgorithm( ceAlgorithm );
 
@@ -171,6 +175,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
         ce->setMinimumValue( minValue );
         ce->setMaximumValue( maxValue );
       }
+#endif
       (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( ce );
       break;
     }
@@ -179,6 +184,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       int bandNo = 1;
       double minValue = 0;
       double maxValue = 0;
+      // TODO: avoid calculating statistics if not necessary (default style loaded)
       minMaxValuesForBand( bandNo, provider, minValue, maxValue );
       QgsRasterShader* shader = new QgsRasterShader( minValue, maxValue );
       renderer = new QgsSingleBandPseudoColorRenderer( provider, bandNo, shader );
@@ -187,13 +193,15 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
     case QgsRasterLayer::MultiBandColor:
     {
       QSettings s;
+#if 0
       QgsContrastEnhancement::ContrastEnhancementAlgorithm ceAlgorithm;
-      ceAlgorithm = ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )QgsRasterRendererRegistry::contrastEnhancementFromString(
+      ceAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString(
                       s.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
 
       QgsContrastEnhancement* redEnhancement = 0;
       QgsContrastEnhancement* greenEnhancement = 0;
       QgsContrastEnhancement* blueEnhancement = 0;
+#endif
 
       int redBand = s.value( "/Raster/defaultRedBand", 1 ).toInt();
       if ( redBand < 0 || redBand > provider->bandCount() )
@@ -211,6 +219,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
         blueBand = -1;
       }
 
+#if 0
       double minValue = 0;
       double maxValue = 0;
       if ( ceAlgorithm !=  QgsContrastEnhancement::NoEnhancement )
@@ -248,6 +257,8 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
 
       renderer = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand,
           redEnhancement, greenEnhancement, blueEnhancement );
+#endif
+      renderer = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand );
       break;
     }
     case QgsRasterLayer::SingleBandColorDataStyle:
@@ -341,25 +352,3 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
   }
   return true;
 }
-
-int QgsRasterRendererRegistry::contrastEnhancementFromString( const QString& contrastEnhancementString )
-{
-  if ( contrastEnhancementString == "StretchToMinimumMaximum" )
-  {
-    return ( int )QgsContrastEnhancement::StretchToMinimumMaximum;
-  }
-  else if ( contrastEnhancementString == "StretchAndClipToMinimumMaximum" )
-  {
-    return ( int )QgsContrastEnhancement::StretchAndClipToMinimumMaximum;
-  }
-  else if ( contrastEnhancementString == "ClipToMinimumMaximum" )
-  {
-    return ( int )QgsContrastEnhancement::ClipToMinimumMaximum;
-  }
-  else
-  {
-    return ( int )QgsContrastEnhancement::NoEnhancement;
-  }
-}
-
-

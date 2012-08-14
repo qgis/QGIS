@@ -395,3 +395,23 @@ void QgsContrastEnhancement::readXML( const QDomElement& elem )
     setContrastEnhancementAlgorithm(( ContrastEnhancementAlgorithm )( algorithmElem.text().toInt() ) );
   }
 }
+
+QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString )
+{
+  if ( contrastEnhancementString == "StretchToMinimumMaximum" )
+  {
+    return StretchToMinimumMaximum;
+  }
+  else if ( contrastEnhancementString == "StretchAndClipToMinimumMaximum" )
+  {
+    return StretchAndClipToMinimumMaximum;
+  }
+  else if ( contrastEnhancementString == "ClipToMinimumMaximum" )
+  {
+    return ClipToMinimumMaximum;
+  }
+  else
+  {
+    return NoEnhancement;
+  }
+}
