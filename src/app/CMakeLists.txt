@@ -31,6 +31,7 @@ SET(QGIS_APP_SRCS
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
+  qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsgraduatedsymboldialog.cpp
@@ -182,6 +183,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdecorationgrid.h
   qgsdecorationgriddialog.h
   qgsdelattrdialog.h
+  qgsdiagramproperties.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h
   qgsfeatureaction.h
