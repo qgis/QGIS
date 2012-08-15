@@ -36,8 +36,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>742</width>
-           <height>559</height>
+           <width>720</width>
+           <height>614</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -189,7 +189,7 @@
                    </size>
                   </property>
                   <property name="maximum">
-                   <number>100</number>
+                   <number>255</number>
                   </property>
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -701,7 +701,7 @@
                     <bool>true</bool>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -711,7 +711,7 @@
                     <string>Down</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -721,7 +721,7 @@
                     <string>Right</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -731,7 +731,7 @@
                     <string>Left</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string>mOrientationButtonGroup</string>
+                    <string notr="true">mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>

@@ -105,6 +105,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
     newItem->setText( 0, fieldIt.value().name() );
     newItem->setData( 0, Qt::UserRole, fieldIt.key() );
+    newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
     if ( fieldIt.value().type() != QVariant::String )
     {
       mSizeAttributeComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
@@ -165,7 +166,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
-      mTransparencySlider->setValue( settingList.at( 0 ).transparency * 100 / 256 );
+      mTransparencySlider->setValue( settingList.at( 0 ).transparency );
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue(( size.width() + size.height() ) / 2.0 );
@@ -340,7 +341,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
 
 void QgsDiagramProperties::on_mTransparencySlider_valueChanged( int value )
 {
-  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg( value ) );
+  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg( value * 100 / 255 ) );
 }
 
 void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
@@ -470,11 +471,15 @@ void QgsDiagramProperties::apply()
 
     QgsDiagramSettings ds;
     ds.font = mDiagramFont;
+    ds.transparency = mTransparencySlider->value();
+
     QList<QColor> categoryColors;
     QList<int> categoryAttributes;
     for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
     {
-      categoryColors.append( mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color() );
+      QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
+      color.setAlpha( 255 - ds.transparency );
+      categoryColors.append( color );
       categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toInt() );
     }
     ds.categoryColors = categoryColors;
@@ -517,11 +522,6 @@ void QgsDiagramProperties::apply()
     }
 
     ds.backgroundColor = mBackgroundColorButton->color();
-    ds.transparency = mTransparencySlider->value() * 255 / 100;
-    foreach( QColor col, ds.categoryColors )
-    {
-      col.setAlpha( 255 - ds.transparency );
-    }
     ds.penColor = mDiagramPenColorButton->color();
     ds.penColor.setAlpha( 255 - ds.transparency );
     ds.penWidth = mPenWidthSpinBox->value();

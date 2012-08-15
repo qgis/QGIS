@@ -119,9 +119,7 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
   for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
   {
     currentAngle =  *valIt / valSum * 360 * 16;
-    QColor col = *colIt;
-    col.setAlpha( 255 - s.transparency );
-    mCategoryBrush.setColor( col );
+    mCategoryBrush.setColor( *colIt );
     p->setBrush( mCategoryBrush );
     p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
     totalAngle += currentAngle;
