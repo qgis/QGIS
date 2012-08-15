@@ -106,6 +106,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
       mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
   connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
+  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
   btnAdvanced->setMenu( advMenu );
 }
 
@@ -215,6 +216,10 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     QMessageBox::critical( this, tr( "Error" ), tr( "Renderer creation has failed." ) );
     return;
   }
+
+  r->setSizeScaleField( mRenderer->sizeScaleField() );
+  r->setRotationField( mRenderer->rotationField() );
+  r->setScaleMethod( mRenderer->scaleMethod() );
 
   delete mRenderer;
   mRenderer = r;
@@ -381,6 +386,11 @@ void QgsGraduatedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
 void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+}
+
+void QgsGraduatedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mRenderer->setScaleMethod( scaleMethod );
 }
 
 QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()

@@ -140,6 +140,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mMode( Custom ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
+    mScaleMethod( QgsSymbolV2::ScaleArea ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -201,6 +202,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
       markerSymbol->setAngle( rotation );
     if ( mSizeScaleFieldIdx != -1 )
       markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -332,6 +334,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
+  r->setScaleMethod( scaleMethod() );
   return r;
 }
 

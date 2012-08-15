@@ -122,6 +122,7 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     mCategories( categories ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
+    mScaleMethod( QgsSymbolV2::ScaleArea ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -216,6 +217,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
       markerSymbol->setAngle( rotation );
     if ( mSizeScaleFieldIdx != -1 )
       markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -374,6 +376,7 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone()
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
+  r->setScaleMethod( scaleMethod() );
   return r;
 }
 
