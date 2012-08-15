@@ -114,14 +114,24 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
 
-  QList<double>::const_iterator valIt = values.constBegin();
-  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
-  for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
+  // draw empty circle if no values are defined at all
+  if ( valSum > 0 )
   {
-    currentAngle =  *valIt / valSum * 360 * 16;
-    mCategoryBrush.setColor( *colIt );
+    QList<double>::const_iterator valIt = values.constBegin();
+    QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
+    for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
+    {
+      currentAngle =  *valIt / valSum * 360 * 16;
+      mCategoryBrush.setColor( *colIt );
+      p->setBrush( mCategoryBrush );
+      p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
+      totalAngle += currentAngle;
+    }
+  }
+  else // valSum > 0
+  {
+    mCategoryBrush.setColor( Qt::transparent );
     p->setBrush( mCategoryBrush );
-    p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
-    totalAngle += currentAngle;
+    p->drawEllipse( baseX, baseY, w, h );
   }
 }
