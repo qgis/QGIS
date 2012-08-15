@@ -21,9 +21,6 @@ class   Union(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/union.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(Union.OUTPUT)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Union.INPUT))
         vlayerB = QGisLayers.getObjectFromUri(self.getParameterValue(Union.INPUT2))
         GEOS_EXCEPT = True
@@ -47,7 +44,7 @@ class   Union(GeoAlgorithm):
         longNames = ftools_utils.checkFieldNameLength( fields )
         if not longNames.isEmpty():
             raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
-        writer = QgsVectorFileWriter( output, systemEncoding, fields, vproviderA.geometryType(), vproviderA.crs() )
+        writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()

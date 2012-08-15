@@ -23,9 +23,6 @@ class SumLines(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/sum_lines.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(SumLines.OUTPUT)
         inField = self.getParameterValue(SumLines.FIELD)
         lineLayer = QGisLayers.getObjectFromUri(self.getParameterValue(SumLines.LINES))
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(SumLines.POLYGONS))
@@ -54,12 +51,7 @@ class SumLines(GeoAlgorithm):
         lineProvider.rewind()
         start = 15.00
         add = 85.00 / polyProvider.featureCount()
-        check = QFile(output)
-        if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(output):
-                raise GeoAlgorithmExecutionException("Could not delete existing output file")
-        writer = QgsVectorFileWriter(output, systemEncoding, fieldList, polyProvider.geometryType(), sRs)
-        #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
+        writer = self.getOutputFromName(SumLines.OUTPUT).getVectorWriter(fieldList, polyProvider.geometryType(), sRs)
         spatialIndex = ftools_utils.createIndex( lineProvider )
         while polyProvider.nextFeature(inFeat):
             inGeom = QgsGeometry(inFeat.geometry())

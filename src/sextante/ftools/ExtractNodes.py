@@ -18,15 +18,12 @@ class ExtractNodes(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/extract_nodes.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(ExtractNodes.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(ExtractNodes.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
-        writer = QgsVectorFileWriter( output, systemEncoding, fields, QGis.WKBPoint, vprovider.crs() )
+        writer = self.getOutputFromName(ExtractNodes.OUTPUT).getVectorWriter(fields, QGis.WKBPoint, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

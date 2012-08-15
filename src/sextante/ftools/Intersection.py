@@ -24,9 +24,6 @@ class Intersection(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/intersect.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(Intersection.OUTPUT)
         useSelection = self.getParameterValue(Intersection.USE_SELECTED)
         useSelection2 = self.getParameterValue(Intersection.USE_SELECTED2)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Intersection.INPUT))
@@ -51,7 +48,7 @@ class Intersection(GeoAlgorithm):
         longNames = ftools_utils.checkFieldNameLength( fields )
         if not longNames.isEmpty():
             raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
-        writer = QgsVectorFileWriter( output, systemEncoding, fields, vproviderA.geometryType(), vproviderA.crs() )
+        writer = self.getOutputFromName(Intersection.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()

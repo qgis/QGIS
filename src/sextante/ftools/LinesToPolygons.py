@@ -17,15 +17,12 @@ class LinesToPolygons(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/to_lines.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(LinesToPolygons.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(LinesToPolygons.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
-        writer = QgsVectorFileWriter( output, systemEncoding, fields, QGis.WKBPolygon, vprovider.crs() )
+        writer = self.getOutputFromName(LinesToPolygons.OUTPUT).getVectorWriter(fields, QGis.WKBPolygon, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

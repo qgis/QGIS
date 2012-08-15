@@ -24,9 +24,6 @@ class Difference(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/difference.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(Difference.OUTPUT)
         useSelection = self.getParameterValue(Difference.USE_SELECTED)
         useSelection2 = self.getParameterValue(Difference.USE_SELECTED2)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Difference.INPUT))
@@ -48,7 +45,7 @@ class Difference(GeoAlgorithm):
         else:
             if not crsA != crsB:
                 SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Difference. Non-matching CRSs. Results might be unexpected")
-        writer = QgsVectorFileWriter(output, systemEncoding, fields, vproviderA.geometryType(), vproviderA.crs() )
+        writer = self.getOutputFromName(Difference.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()

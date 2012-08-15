@@ -17,15 +17,12 @@ class ExportGeometryInfo(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/export_geometry.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(ExportGeometryInfo.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(ExportGeometryInfo.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         ( fields, index1, index2 ) = self.checkGeometryFields(vlayer)
-        writer = QgsVectorFileWriter( output, systemEncoding,fields, vprovider.geometryType(), vprovider.crs() )
+        writer = self.getOutputFromName(ExportGeometryInfo.OUTPUT).getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

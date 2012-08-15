@@ -25,13 +25,17 @@ class VariableDistanceBuffer(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/buffer.png")
 
     def processAlgorithm(self, progress):
-        output = self.getOutputValue(VariableDistanceBuffer.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(VariableDistanceBuffer.INPUT))
+        vprovider = vlayer.dataProvider()
+        allAttrs = vprovider.attributeIndexes()
+        vprovider.select(allAttrs)
+        writer = self.getOutputFromName(VariableDistanceBuffer.OUTPUT).getVectorWriter(vprovider.fields(), QGis.WKBPolygon, vprovider.crs() )
         useSelection = self.getParameterValue(VariableDistanceBuffer.USE_SELECTED)
         dissolve = self.getParameterValue(VariableDistanceBuffer.DISSOLVE)
         field = self.getParameterValue(VariableDistanceBuffer.FIELD)
         segments = int(self.getParameterValue(VariableDistanceBuffer.SEGMENTS))
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(VariableDistanceBuffer.INPUT))
-        buff.buffering(progress, output, 0, field, useSelection, True, layer, dissolve, segments)
+        buff.buffering(progress, writer, 0, field, useSelection, True, layer, dissolve, segments)
 
     def defineCharacteristics(self):
         self.name = "Variable distance buffer"

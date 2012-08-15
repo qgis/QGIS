@@ -22,9 +22,6 @@ class MeanCoords(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/mean.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(MeanCoords.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(MeanCoords.POINTS))
         weightField = self.getParameterValue(MeanCoords.WEIGHT)
         uniqueField = self.getParameterValue(MeanCoords.UID)
@@ -42,7 +39,7 @@ class MeanCoords(GeoAlgorithm):
             uniqueValues = [QVariant(1)]
             single = True
         fieldList = { 0 : QgsField("MEAN_X", QVariant.Double), 1 : QgsField("MEAN_Y", QVariant.Double), 2 : QgsField("UID", QVariant.String)  }
-        writer = QgsVectorFileWriter(output, systemEncoding, fieldList, QGis.WKBPoint, sRs)
+        writer = self.getOutputFromName(MeanCoords.OUTPUT).getVectorWriter(fieldList, QGis.WKBPoint, sRs)
         outfeat = QgsFeature()
         points = []
         weights = []

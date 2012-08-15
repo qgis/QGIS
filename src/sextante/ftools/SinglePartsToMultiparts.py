@@ -21,17 +21,13 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/single_to_multi.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SinglePartsToMultiparts.INPUT))
-        output = self.getOutputValue(SinglePartsToMultiparts.OUTPUT)
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         geomType = self.singleToMultiGeom(vprovider.geometryType())
-        writer = QgsVectorFileWriter( output, systemEncoding,
-            fields, geomType, vprovider.crs() )
+        writer = self.getOutputFromName(SinglePartsToMultiparts.OUTPUT).getVectorWriter(fields, geomType, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
@@ -60,7 +56,6 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 feature_list = self.extractAsMulti( inGeom )
                 multi_feature.extend( feature_list )
               nElement += 1
-              #self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
             outFeat.setAttributeMap( atts )
             outGeom = QgsGeometry( self.convertGeometry(multi_feature, vType) )
             outFeat.setGeometry(outGeom)

@@ -23,9 +23,6 @@ class PointsInPolygon(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(PointsInPolygon.OUTPUT)
         inField = self.getParameterValue(PointsInPolygon.FIELD)
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(PointsInPolygon.POLYGONS))
         pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(PointsInPolygon.POINTS))
@@ -45,11 +42,7 @@ class PointsInPolygon(GeoAlgorithm):
             field = QgsField(unicode(inField), QVariant.Double, "real", 24, 15, "point count field")
             fieldList[index] = field
         sRs = polyProvider.crs()
-        check = QFile(output)
-        if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(output):
-                raise GeoAlgorithmExecutionException("could not delete file: " + output)
-        writer = QgsVectorFileWriter(output, systemEncoding, fieldList, polyProvider.geometryType(), sRs)
+        writer = self.getOutputFromName(PointsInPolygon.OUTPUT).getVectorWriter(fieldList, polyProvider.geometryType(), sRs)
         inFeat = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()

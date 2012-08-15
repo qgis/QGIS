@@ -1,6 +1,7 @@
 from sextante.outputs.Output import Output
 from qgis.core import *
 from PyQt4.QtCore import *
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 class OutputVector(Output):
 
@@ -19,7 +20,7 @@ class OutputVector(Output):
         '''Returns a suitable writer to which features can be added as a result of the algorithm.
         Use this to transparently handle output values instead of creating your own method.
         Parameters:
-        -field: an array with the fields of the attributes table
+        -field: an array with the fields of the attributes table or dict of int-QgsField
         -geomType: A suitable geometry type, as it would be passed to a QgsVectorFileWriter constructor
         -crs: the crs of the layer to create.
         Executing this method might modify the object, adding additional information to it, so the writer
@@ -28,6 +29,8 @@ class OutputVector(Output):
         thus rendering a previously obtained writer useless'''
 
         if self.value.startswith(self.MEMORY_LAYER_PREFIX):
+            if isinstance(fields, dict):
+                fields = fields.values()
             types = { QGis.WKBPoint : "Point", QGis.WKBLineString : "Point", QGis.WKBPolygon : "Polygon",
                      QGis.WKBMultiPoint : "MultiPoint", QGis.WKBMultiLineString : "MultiLineString", QGis.WKBMultiPolygon : "MultiPolygon",}
             v = QgsVectorLayer(types[geomType], self.description, "memory")
@@ -38,6 +41,10 @@ class OutputVector(Output):
             return v
         else: #outputChannel is a file path
             #TODO: Add support for encodings
+            check = QFile(self.value)
+            if check.exists():
+                if not QgsVectorFileWriter.deleteShapeFile(self.value):
+                    raise GeoAlgorithmExecutionException("Could not delete existing output file")
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}
             for key,value in formats.items():
@@ -45,11 +52,14 @@ class OutputVector(Output):
                 extension = extension[extension.find('*.') + 2:]
                 extension = extension[:extension.find(" ")]
                 OGRCodes[extension] = value
-            fieldsDict = {}
-            i = 0
-            for field in fields:
-                fieldsDict[i] = field
-                i += 1
+            if isinstance(fields, dict):
+                fieldsDict = fields
+            else:
+                fieldsDict = {}
+                i = 0
+                for field in fields:
+                    fieldsDict[i] = field
+                    i += 1
             settings = QSettings()
             systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
             extension = self.value[self.value.find(".")+1:]

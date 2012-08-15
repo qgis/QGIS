@@ -4,9 +4,7 @@ from qgis.core import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteLog import SextanteLog
 
-def buffering(progress, output, distance, field, useSelection, useField, layer, dissolve, segments ):
-    settings = QSettings()
-    systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+def buffering(progress, writer, distance, field, useSelection, useField, layer, dissolve, segments ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
     vproviderA = layer.dataProvider()
@@ -15,10 +13,6 @@ def buffering(progress, output, distance, field, useSelection, useField, layer, 
     fields = vproviderA.fields()
     if useField:
         field = vproviderA.fieldNameIndex(field)
-    writer = QgsVectorFileWriter(output, systemEncoding,  fields, QGis.WKBPolygon, vproviderA.crs() )
-    # check if writer was created properly, if not, return with error
-    if writer.hasError():
-      raise GeoAlgorithmExecutionException("Could not create output file");
     outFeat = QgsFeature()
     inFeat = QgsFeature()
     inGeom = QgsGeometry()
@@ -64,9 +58,9 @@ def buffering(progress, output, distance, field, useSelection, useField, layer, 
         for inFeat in selectionA:
           atMap = inFeat.attributeMap()
           if useField:
-            value = atMap[ self.myParam ].toDouble()[ 0 ]
+            value = atMap[ field ].toDouble()[ 0 ]
           else:
-            value = self.myParam
+            value = distance
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
             outGeom = inGeom.buffer( float( value ), segments )

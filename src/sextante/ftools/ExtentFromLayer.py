@@ -17,9 +17,6 @@ class ExtentFromLayer(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/layer_extent.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(ExtentFromLayer.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(ExtentFromLayer.INPUT))
         fields = {
             0 : QgsField( "MINX", QVariant.Double ),
@@ -33,7 +30,7 @@ class ExtentFromLayer(GeoAlgorithm):
             8 : QgsField( "HEIGHT", QVariant.Double ),
             9 : QgsField( "WIDTH", QVariant.Double ) }
 
-        writer = QgsVectorFileWriter(output, systemEncoding, fields, QGis.WKBPolygon, vlayer.crs() )
+        writer = self.getOutputFromName(ExtentFromLayer.OUTPUT).getVectorWriter(fields, QGis.WKBPolygon, vlayer.crs() )
         rect = vlayer.extent()
         minx = rect.xMinimum()
         miny = rect.yMinimum()
