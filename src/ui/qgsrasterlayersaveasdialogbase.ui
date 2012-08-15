@@ -6,129 +6,367 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>319</width>
-    <height>475</height>
+    <width>518</width>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Save raster layer as...</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mFormatComboBox"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mFormatLabel">
-     <property name="text">
-      <string>Format</string>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
-     <property name="buddy">
-      <cstring>mFormatComboBox</cstring>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mSaveAsLabel">
-     <property name="text">
-      <string>Save as</string>
-     </property>
-     <property name="buddy">
-      <cstring>mSaveAsLineEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="mSaveAsLineEdit">
-     <property name="enabled">
+     <property name="widgetResizable">
       <bool>true</bool>
      </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>510</width>
+        <height>551</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="mFormatLabel">
+           <property name="text">
+            <string>Format</string>
+           </property>
+           <property name="buddy">
+            <cstring>mFormatComboBox</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mFormatComboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="mSaveAsLabel">
+           <property name="text">
+            <string>Save as</string>
+           </property>
+           <property name="buddy">
+            <cstring>mSaveAsLineEdit</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="mSaveAsLineEdit">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="mBrowseButton">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>CRS</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mCrsComboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="mChangeCrsPushButton">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Change ...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mExtentGroupBox">
+         <property name="title">
+          <string>Extent</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="1" column="0">
+             <widget class="QLabel" name="mXMinLabel">
+              <property name="text">
+               <string>X min</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="mXMinLineEdit"/>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="mXMaxLabel">
+              <property name="text">
+               <string>X max</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="mXMaxLineEdit"/>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="mYMaxLabel">
+              <property name="text">
+               <string>Y max</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLineEdit" name="mYMaxLineEdit">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="mYMinLabel">
+              <property name="text">
+               <string>Y min</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QLineEdit" name="mYMinLineEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mCurrentExtentButton">
+              <property name="text">
+               <string>Map view extent</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mOriginalExtentButton">
+              <property name="text">
+               <string>Layer extent</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mResolutionGroupBox">
+         <property name="title">
+          <string>Resolution</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
+             <widget class="QRadioButton" name="mResolutionRadioButton">
+              <property name="text">
+               <string>Horizontal</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="mXResolutionLineEdit"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QRadioButton" name="mSizeRadioButton">
+              <property name="text">
+               <string>Columns</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="mColumnsLineEdit"/>
+            </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="mRowsLabel">
+              <property name="text">
+               <string>Rows</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLineEdit" name="mYResolutionLineEdit"/>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLineEdit" name="mRowsLineEdit"/>
+            </item>
+            <item row="0" column="4">
+             <widget class="QPushButton" name="mOriginalResolutionPushButton">
+              <property name="text">
+               <string>Layer resolution</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QPushButton" name="mOriginalSizePushButton">
+              <property name="text">
+               <string>Layer size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Vertical</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Create Options</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QgsRasterFormatSaveOptionsWidget" name="mOptionsWidget" native="true">
+            <zorder></zorder>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QGroupBox" name="mTilesGroupBox">
+            <property name="title">
+             <string>Tiles</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="mMaximumSizeXLineEdit"/>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mMaximumSizeXLabel">
+               <property name="text">
+                <string>Maximum Size X:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="mMaximumSizeYLineEdit"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mMaximumSizeYLabel">
+               <property name="text">
+                <string>Maximum size Y:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QCheckBox" name="mTileModeCheckBox">
+               <property name="text">
+                <string>Create VRT</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
-   <item row="5" column="0" colspan="3">
-    <widget class="QGroupBox" name="mExtentGroupBox">
-     <property name="title">
-      <string>Extent</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0" colspan="4">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QPushButton" name="mCurrentExtentButton">
-          <property name="text">
-           <string>Current Extent</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="mProviderExtentButton">
-          <property name="text">
-           <string>Provider extent</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mXMinLabel">
-        <property name="text">
-         <string>X min</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="mXMinLineEdit"/>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="mXMaxLabel">
-        <property name="text">
-         <string>X max</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QLineEdit" name="mXMaxLineEdit"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="mYMinLabel">
-        <property name="text">
-         <string>Y min</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="mYMinLineEdit"/>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLabel" name="mYMaxLabel">
-        <property name="text">
-         <string>Y max</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <widget class="QLineEdit" name="mYMaxLineEdit">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="3">
+   <item>
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -136,91 +374,6 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="mBrowseButton">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>Browse...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="mColumnsLabel">
-       <property name="text">
-        <string>Columns</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mColumnsLineEdit"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="mRowsLabel">
-       <property name="text">
-        <string>Rows</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mRowsLineEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="QGroupBox" name="mTilesGroupBox">
-     <property name="title">
-      <string>Tiles</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="mMaximumSizeXLineEdit"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="mMaximumSizeXLabel">
-        <property name="text">
-         <string>Maximum Size X:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="mMaximumSizeYLineEdit"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="mMaximumSizeYLabel">
-        <property name="text">
-         <string>Maximum size Y:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="mTileModeCheckBox">
-        <property name="text">
-         <string>Create VRT</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="3">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Create Options</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_5">
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QgsRasterFormatSaveOptionsWidget" name="mOptionsWidget" native="true"/>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>

@@ -3924,7 +3924,7 @@ void QgisApp::saveAsRasterFile()
     return;
   }
 
-  QgsRasterLayerSaveAsDialog d( rasterLayer->dataProvider(),  mMapCanvas->extent() );
+  QgsRasterLayerSaveAsDialog d( rasterLayer->dataProvider(),  mMapCanvas->extent(), mMapCanvas->mapRenderer()->destinationCrs() );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsRasterFileWriter fileWriter( d.outputFileName() );
@@ -3950,7 +3950,7 @@ void QgisApp::saveAsRasterFile()
     }
     fileWriter.setCreateOptions( d.createOptions() );
 
-    fileWriter.writeRaster( &iterator, d.nColumns(), nRows, d.outputRectangle(), rasterLayer->crs(), &pd );
+    fileWriter.writeRaster( &iterator, d.nColumns(), nRows, d.outputRectangle(), d.outputCrs(), &pd );
   }
 }
 
