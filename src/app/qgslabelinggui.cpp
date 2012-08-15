@@ -43,14 +43,18 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   setupUi( this );
 
   mRefFont = lblFontPreview->font();
-  mPreviewBackgroundBtn->setColor( Qt::white );
-  connect( mPreviewBackgroundBtn, SIGNAL( clicked() ), this, SLOT( changePreviewBackground( ) ) );
+  mPreviewSize = 24;
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
+  connect( mFontSizeUnitComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
   connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferJoinStyleComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( mBufferTranspFillChbx, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
   connect( btnExpression, SIGNAL( clicked() ), this, SLOT( showExpressionDialog() ) );
 
@@ -146,6 +150,9 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   wrapCharacterEdit->setText( lyr.wrapChar );
   chkPreserveRotation->setChecked( lyr.preserveRotation );
 
+  mPreviewBackgroundBtn->setColor( lyr.previewBkgrdColor );
+  setPreviewBackground( lyr.previewBkgrdColor );
+
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
   chkScaleBasedVisibility->setChecked( scaleBased );
   if ( scaleBased )
@@ -157,12 +164,24 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   bool buffer = ( lyr.bufferSize != 0 );
   chkBuffer->setChecked( buffer );
   if ( buffer )
+  {
     spinBufferSize->setValue( lyr.bufferSize );
+    if ( lyr.bufferSizeInMapUnits )
+    {
+      mBufferUnitComboBox->setCurrentIndex( 1 );
+    }
+    else
+    {
+      mBufferUnitComboBox->setCurrentIndex( 0 );
+    }
+    btnBufferColor->setColor( lyr.bufferColor );
+    mBufferTranspSpinBox->setValue( lyr.bufferTransp );
+    mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
+    mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
+  }
 
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
-  btnBufferColor->setColor( lyr.bufferColor );
-  mBufferTranspSpinBox->setValue( lyr.bufferTransp );
 
   bool formattedNumbers = lyr.formatNumbers;
   bool plusSign = lyr.plusSign;
@@ -176,7 +195,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   {
     chkPlusSign->setChecked( plusSign );
   }
-
 
   if ( lyr.fontSizeInMapUnits )
   {
@@ -285,6 +303,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.textColor = btnTextColor->color();
   lyr.textFont = mRefFont;
   lyr.textTransp = mFontTranspSpinBox->value();
+  lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
@@ -304,6 +323,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.bufferSize = spinBufferSize->value();
     lyr.bufferColor = btnBufferColor->color();
     lyr.bufferTransp = mBufferTranspSpinBox->value();
+    lyr.bufferSizeInMapUnits = ( mBufferUnitComboBox->currentIndex() == 1 );
+    lyr.bufferJoinStyle = mBufferJoinStyleComboBox->penJoinStyle();
+    lyr.bufferNoFill = !mBufferTranspFillChbx->isChecked();
   }
   else
   {
@@ -438,6 +460,7 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
     ( *comboIt )->addItem( "", QVariant() );
   }
 
+  // TODO: don't add field that aren't of appropriate type for the data defined property
   const QgsFieldMap& fields = mLayer->dataProvider()->fields();
   for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); it++ )
   {
@@ -471,18 +494,6 @@ void QgsLabelingGui::populateDataDefinedCombos( QgsPalLayerSettings& s )
   setCurrentComboValue( mBufferTranspAttributeComboBox, s, QgsPalLayerSettings::BufferTransp );
 }
 
-void QgsLabelingGui::changePreviewBackground()
-{
-  QColor color = QColorDialog::getColor( mPreviewBackgroundBtn->color(), this );
-  if ( !color.isValid() )
-    return;
-
-  mPreviewBackgroundBtn->setColor( color );
-  scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
-      QString::number( color.green() ),
-      QString::number( color.blue() ) ) );
-}
-
 void QgsLabelingGui::changeTextColor()
 {
   QColor color = QColorDialog::getColor( btnTextColor->color(), this );
@@ -504,9 +515,17 @@ void QgsLabelingGui::changeTextFont()
 #endif
   if ( ok )
   {
+    if ( mFontSizeUnitComboBox->currentIndex() == 1 )
+    {
+      // don't override map units size with selected size from font dialog
+      font.setPointSizeF( mFontSizeSpinBox->value() );
+    }
+    else
+    {
+      mFontSizeSpinBox->setValue( font.pointSizeF() );
+    }
     updateFont( font );
   }
-  mFontSizeSpinBox->setValue( mRefFont.pointSizeF() );
 }
 
 void QgsLabelingGui::updateFont( QFont font )
@@ -517,12 +536,14 @@ void QgsLabelingGui::updateFont( QFont font )
     mRefFont = font;
   }
 
-  QString fontSizeUnitString = tr( "pt" );
-  if ( mFontSizeUnitComboBox->currentIndex() == 1 )
-  {
-    fontSizeUnitString = tr( "map units" );
-  }
-  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( mRefFont.pointSizeF() ).arg( fontSizeUnitString ) );
+  lblFontName->setText( QString( "%1" ).arg( font.family() ) );
+
+  // update font name with font face
+//  QString dupFont = font.toString();
+//  QFont lblFont = lblFontName->font();
+//  lblFont.fromString( dupFont );
+//  lblFont.setPointSizeF( 14 );
+//  lblFontName->setFont(lblFont);
 
   updatePreview();
 }
@@ -532,37 +553,68 @@ void QgsLabelingGui::updatePreview()
   scrollPreview();
   lblFontPreview->setFont( mRefFont );
   QFont previewFont = lblFontPreview->font();
+  double fontSize = mFontSizeSpinBox->value();
+  double bufferSize = spinBufferSize->value();
   if ( mFontSizeUnitComboBox->currentIndex() == 1 )
   {
     // TODO: maybe match current map zoom level instead?
-    previewFont.setPointSize( 24 );
-    groupBox_mPreview->setTitle( tr( "Sample @ 24 pts (using map units)" ) );
+    previewFont.setPointSize( mPreviewSize );
+    mPreviewSizeSlider->setEnabled( true );
+    if ( mBufferUnitComboBox->currentIndex() == 1 )
+    {
+      groupBox_mPreview->setTitle( tr( "Sample @ %1 pts (using map units)" ).arg( mPreviewSize ) );
+      bufferSize = ( mPreviewSize / fontSize ) * bufferSize / 2.5;
+    }
+    else
+    {
+      groupBox_mPreview->setTitle( tr( "Sample @ %1 pts (using map units, STROKE IN mm)" ).arg( mPreviewSize ) );
+    }
   }
   else
   {
-    previewFont.setPointSize( mFontSizeSpinBox->value() );
-    groupBox_mPreview->setTitle( tr( "Sample" ) );
+    mPreviewSizeSlider->setEnabled( false );
+    if ( mBufferUnitComboBox->currentIndex() == 1 )
+    {
+      groupBox_mPreview->setTitle( tr( "Sample (stroke in map units, NOT SHOWN)" ) );
+      bufferSize = 0;
+    }
+    else
+    {
+      previewFont.setPointSize( fontSize );
+      groupBox_mPreview->setTitle( tr( "Sample" ) );
+    }
   }
   lblFontPreview->setFont( previewFont );
 
   QColor prevColor = btnTextColor->color();
   prevColor.setAlphaF(( 100.0 - ( double )( mFontTranspSpinBox->value() ) ) / 100.0 );
   lblFontPreview->setTextColor( prevColor );
+
+  bool bufferNoFill = false;
   if ( chkBuffer->isChecked() )
   {
     QColor buffColor = btnBufferColor->color();
     buffColor.setAlphaF(( 100.0 - ( double )( mBufferTranspSpinBox->value() ) ) / 100.0 );
-    lblFontPreview->setBuffer( spinBufferSize->value(), buffColor );
+
+    bufferNoFill = !mBufferTranspFillChbx->isChecked();
+    lblFontPreview->setBuffer( bufferSize, buffColor, mBufferJoinStyleComboBox->penJoinStyle(), bufferNoFill );
   }
   else
   {
-    lblFontPreview->setBuffer( 0, Qt::white );
+    lblFontPreview->setBuffer( 0, Qt::white, Qt::BevelJoin, bufferNoFill );
   }
 }
 
 void QgsLabelingGui::scrollPreview()
 {
   scrollArea_mPreview->ensureVisible( 0, 0, 0, 0 );
+}
+
+void QgsLabelingGui::setPreviewBackground( QColor color )
+{
+  scrollArea_mPreview->widget()->setStyleSheet( QString( "background: rgb(%1, %2, %3);" ).arg( QString::number( color.red() ),
+      QString::number( color.green() ),
+      QString::number( color.blue() ) ) );
 }
 
 void QgsLabelingGui::showEngineConfigDialog()
@@ -593,6 +645,9 @@ void QgsLabelingGui::updateUi()
   bool buf = chkBuffer->isChecked();
   spinBufferSize->setEnabled( buf );
   btnBufferColor->setEnabled( buf );
+  mBufferUnitComboBox->setEnabled( buf );
+  mBufferTranspSlider->setEnabled( buf );
+  mBufferTranspSpinBox->setEnabled( buf );
 
   bool scale = chkScaleBasedVisibility->isChecked();
   spinScaleMin->setEnabled( scale );
@@ -633,21 +688,15 @@ void QgsLabelingGui::updateOptions()
   }
 }
 
+void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
+{
+  mPreviewSize = i;
+  updatePreview();
+}
+
 void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
 {
   mRefFont.setPointSizeF( d );
-  updateFont( mRefFont );
-}
-
-void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
-{
-  Q_UNUSED( index );
-  updateFont( mRefFont );
-}
-
-void QgsLabelingGui::on_mFontTranspSpinBox_valueChanged( int i )
-{
-  Q_UNUSED( i );
   updateFont( mRefFont );
 }
 
@@ -663,9 +712,10 @@ void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
   updateFont( mRefFont );
 }
 
-void QgsLabelingGui::on_mBufferTranspSpinBox_valueChanged( int i )
+void QgsLabelingGui::on_mBufferUnitComboBox_currentIndexChanged( int index )
 {
-  Q_UNUSED( i );
+  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
+  spinBufferSize->setSingleStep( singleStep );
   updateFont( mRefFont );
 }
 
@@ -703,6 +753,16 @@ void QgsLabelingGui::on_mPreviewTextBtn_clicked()
 {
   mPreviewTextEdit->setText( QString( "Lorem Ipsum" ) );
   updatePreview();
+}
+
+void QgsLabelingGui::on_mPreviewBackgroundBtn_clicked()
+{
+  QColor color = QColorDialog::getColor( mPreviewBackgroundBtn->color(), this );
+  if ( !color.isValid() )
+    return;
+
+  mPreviewBackgroundBtn->setColor( color );
+  setPreviewBackground( color );
 }
 
 void QgsLabelingGui::disableDataDefinedAlignment()

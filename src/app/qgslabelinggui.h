@@ -38,7 +38,6 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
   public slots:
     void apply();
-    void changePreviewBackground();
     void changeTextColor();
     void changeTextFont();
     void showEngineConfigDialog();
@@ -50,17 +49,17 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void scrollPreview();
     void updateOptions();
 
+    void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
-    void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
-    void on_mFontTranspSpinBox_valueChanged( int i );
     void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
     void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
-    void on_mBufferTranspSpinBox_valueChanged( int i );
+    void on_mBufferUnitComboBox_currentIndexChanged( int index );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
 
     void on_mPreviewTextEdit_textChanged( const QString & text );
     void on_mPreviewTextBtn_clicked();
+    void on_mPreviewBackgroundBtn_clicked();
 
   protected:
     void populatePlacementMethods();
@@ -78,6 +77,8 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     // background reference font
     QFont mRefFont;
+    int mPreviewSize;
+    void setPreviewBackground( QColor color );
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

@@ -144,6 +144,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   //textFont = QFont();
   textColor = Qt::black;
   textTransp = 0;
+  previewBkgrdColor = Qt::white;
   enabled = false;
   priority = 5;
   obstacle = true;
@@ -153,6 +154,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   bufferSize = 1;
   bufferColor = Qt::white;
   bufferTransp = 0;
+  bufferNoFill = false;
+  bufferJoinStyle = Qt::BevelJoin;
   formatNumbers = false;
   decimals = 3;
   plusSign = false;
@@ -163,6 +166,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   rasterCompressFactor = 1.0;
   addDirectionSymbol = false;
   fontSizeInMapUnits = false;
+  bufferSizeInMapUnits = false;
   distInMapUnits = false;
   wrapChar = "";
   preserveRotation = true;
@@ -178,6 +182,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   textFont = s.textFont;
   textColor = s.textColor;
   textTransp = s.textTransp;
+  previewBkgrdColor = s.previewBkgrdColor;
   enabled = s.enabled;
   priority = s.priority;
   obstacle = s.obstacle;
@@ -187,6 +192,8 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   bufferSize = s.bufferSize;
   bufferColor = s.bufferColor;
   bufferTransp = s.bufferTransp;
+  bufferJoinStyle = s.bufferJoinStyle;
+  bufferNoFill = s.bufferNoFill;
   formatNumbers = s.formatNumbers;
   decimals = s.decimals;
   plusSign = s.plusSign;
@@ -197,6 +204,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   rasterCompressFactor = s.rasterCompressFactor;
   addDirectionSymbol = s.addDirectionSymbol;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
+  bufferSizeInMapUnits = s.bufferSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
   wrapChar = s.wrapChar;
   preserveRotation = s.preserveRotation;
@@ -330,6 +338,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textColor = _readColor( layer, "labeling/textColor" );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
+  previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", "#ffffff" ).toString() );
   enabled = layer->customProperty( "labeling/enabled" ).toBool();
   priority = layer->customProperty( "labeling/priority" ).toInt();
   obstacle = layer->customProperty( "labeling/obstacle" ).toBool();
@@ -339,6 +348,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   bufferSize = layer->customProperty( "labeling/bufferSize" ).toDouble();
   bufferColor = _readColor( layer, "labeling/bufferColor" );
   bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
+  bufferJoinStyle = ( Qt::PenJoinStyle ) layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt();
+  bufferNoFill = layer->customProperty( "labeling/bufferNoFill", QVariant( false ) ).toBool();
   formatNumbers = layer->customProperty( "labeling/formatNumbers" ).toBool();
   decimals = layer->customProperty( "labeling/decimals" ).toInt();
   plusSign = layer->customProperty( "labeling/plussign" ).toInt();
@@ -347,6 +358,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
+  bufferSizeInMapUnits = layer->customProperty( "labeling/bufferSizeInMapUnits" ).toBool();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
@@ -372,6 +384,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
 
   _writeColor( layer, "labeling/textColor", textColor );
   layer->setCustomProperty( "labeling/textTransp", textTransp );
+  layer->setCustomProperty( "labeling/previewBkgrdColor", previewBkgrdColor.name() );
   layer->setCustomProperty( "labeling/enabled", enabled );
   layer->setCustomProperty( "labeling/priority", priority );
   layer->setCustomProperty( "labeling/obstacle", obstacle );
@@ -381,6 +394,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/bufferSize", bufferSize );
   _writeColor( layer, "labeling/bufferColor", bufferColor );
   layer->setCustomProperty( "labeling/bufferTransp", bufferTransp );
+  layer->setCustomProperty( "labeling/bufferJoinStyle", ( unsigned int )bufferJoinStyle );
+  layer->setCustomProperty( "labeling/bufferNoFill", bufferNoFill );
   layer->setCustomProperty( "labeling/formatNumbers", formatNumbers );
   layer->setCustomProperty( "labeling/decimals", decimals );
   layer->setCustomProperty( "labeling/plussign", plusSign );
@@ -389,6 +404,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
+  layer->setCustomProperty( "labeling/bufferSizeInMapUnits", bufferSizeInMapUnits );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/wrapChar", wrapChar );
   layer->setCustomProperty( "labeling/preserveRotation", preserveRotation );
@@ -508,7 +524,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       bool conversionOk;
       int minScale = minScaleValue.toInt( &conversionOk );
       // TODO: occasional floating point issues?
-      if ( conversionOk && int( context.rendererScale() ) < minScale )
+      if ( conversionOk && ( int )( context.rendererScale() ) < minScale )
       {
         return;
       }
@@ -525,7 +541,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       bool conversionOk;
       int maxScale = maxScaleValue.toInt( &conversionOk );
       // TODO: occasional floating point issues?
-      if ( conversionOk && int( context.rendererScale() ) > maxScale )
+      if ( conversionOk && ( int )( context.rendererScale() ) > maxScale )
       {
         return;
       }
@@ -782,17 +798,18 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   lbl->setIsPinned( dataDefinedPosition );
 }
 
-int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c ) const
+int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c, bool buffer ) const
 {
   double pixelSize;
-  if ( fontSizeInMapUnits )
+  if (( !buffer && fontSizeInMapUnits ) || ( buffer && bufferSizeInMapUnits ) )
   {
     pixelSize = size / c.mapToPixel().mapUnitsPerPixel() * c.rasterScaleFactor();
   }
-  else //font size in points
+  else //font size in points, or buffer in mm
   {
+    double ptsTomm = buffer ? 1 : 0.3527;
     // set font size from points to output size
-    pixelSize = 0.3527 * size * c.scaleFactor() * c.rasterScaleFactor();
+    pixelSize = ptsTomm * size * c.scaleFactor() * c.rasterScaleFactor();
   }
   return ( int )( pixelSize + 0.5 );
 }
@@ -1329,7 +1346,10 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     bufferColor.setAlphaF(( 100.0 - ( double )( bufferTransp ) ) / 100.0 );
 
     if ( lyr.bufferSize != 0 )
-      drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferSize, bufferColor, true );
+    {
+      int bufferPixelSize = lyr.sizeToPixel( bufferSize, context, true );
+      drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferPixelSize, bufferColor, true );
+    }
 
     drawLabel( *it, painter, fontForLabel, fontColor, xform );
 
@@ -1448,7 +1468,7 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
     drawLabelCandidateRect( lp->getNextPart(), painter, xform );
 }
 
-void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize,
+void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferPixelSize,
                                 const QColor& bufferColor, bool drawBuffer )
 {
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
@@ -1496,7 +1516,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     if ( drawBuffer )
     {
       // we're drawing buffer
-      drawLabelBuffer( painter, multiLineList.at( i ), f, bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , bufferColor );
+      //drawLabelBuffer( painter, multiLineList.at( i ), f, bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , bufferColor );
+      drawLabelBuffer( painter, multiLineList.at( i ), f,  bufferPixelSize , bufferColor, lyr.bufferJoinStyle, lyr.bufferNoFill );
     }
     else
     {
@@ -1510,20 +1531,24 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
     painter->restore();
 
     if ( label->getNextPart() )
-      drawLabel( label->getNextPart(), painter, f, c, xform, bufferSize, bufferColor, drawBuffer );
+      drawLabel( label->getNextPart(), painter, f, c, xform, bufferPixelSize, bufferColor, drawBuffer );
   }
 }
 
 
-void QgsPalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color )
+void QgsPalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color, Qt::PenJoinStyle joinstyle, bool noFill )
 {
   QPainterPath path;
   path.addText( 0, 0, font, text );
   QPen pen( color );
   pen.setWidthF( size );
+  pen.setJoinStyle( joinstyle );
   p->setPen( pen );
-  // TODO: make pref for whether to fill buffer
-//  color.setAlpha( 0 );
+  // honor pref for whether to fill buffer
+  if ( noFill )
+  {
+    color.setAlpha( 0 );
+  }
   p->setBrush( color );
   p->drawPath( path );
 }
