@@ -338,20 +338,6 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
   }
 }
 
-void QgsDiagramProperties::on_mIncreaseSmallDiagramsCheckBox_stateChanged( int state )
-{
-  if ( Qt::Checked == state )
-  {
-    mIncreaseMinimumSizeLabel->setEnabled( true );
-    mIncreaseMinimumSizeSpinBox->setEnabled( true );
-  }
-  else
-  {
-    mIncreaseMinimumSizeLabel->setEnabled( false );
-    mIncreaseMinimumSizeSpinBox->setEnabled( false );
-  }
-}
-
 void QgsDiagramProperties::on_mTransparencySlider_valueChanged( int value )
 {
   mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg( value ) );
