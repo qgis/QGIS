@@ -17,7 +17,7 @@
 
 #include <QWidget>
 #include <QMenu>
-#include "QgsSymbolV2.h"
+#include "qgssymbolv2.h"
 
 class QgsVectorLayer;
 class QgsStyleV2;
