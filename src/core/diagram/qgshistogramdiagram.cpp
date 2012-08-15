@@ -31,6 +31,7 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
+  Q_UNUSED( c );
   QgsAttributeMap::const_iterator attIt = attributes.constBegin();
   if ( attIt == attributes.constEnd() )
   {
@@ -50,16 +51,16 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
     maxValue = s.minimumSize;
   }
 
-  mScaleFactor = ( maxValue - is.lowerValue ) / ( is.upperValue - is.lowerValue );
-
   switch ( s.diagramOrientation )
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
+      mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
       return QSizeF( s.barWidth * attributes.size(), maxValue * mScaleFactor );
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
+      mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
       return QSizeF( maxValue * mScaleFactor, s.barWidth * attributes.size() );
   }
 
@@ -68,6 +69,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
+  Q_UNUSED( c );
   QgsAttributeMap::const_iterator attIt = attributes.constBegin();
   if ( attIt == attributes.constEnd() )
   {
