@@ -467,7 +467,10 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
+  {
     r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
+    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  }
 
   // TODO: symbol levels
   return r;
@@ -527,6 +530,7 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   sizeScaleElem.setAttribute( "field", mSizeScaleField );
+  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   return rendererElem;
