@@ -19,7 +19,9 @@
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgstextdiagram.h"
 
+#include "qgisapp.h"
 #include "qgsdiagramproperties.h"
+#include "qgslabelengineconfigdialog.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsvectordataprovider.h"
@@ -439,6 +441,12 @@ void QgsDiagramProperties::on_mDiagramAttributesTreeWidget_itemDoubleClicked( QT
       item->setBackground( 1, QBrush( newColor ) );
     }
   }
+}
+
+void QgsDiagramProperties::on_mEngineSettingsButton_clicked()
+{
+  QgsLabelEngineConfigDialog dlg( QgisApp::instance()->palLabeling(), this );
+  dlg.exec();
 }
 
 void QgsDiagramProperties::apply()

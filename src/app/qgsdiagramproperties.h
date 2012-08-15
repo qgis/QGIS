@@ -44,6 +44,7 @@ class QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBas
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
+    void on_mEngineSettingsButton_clicked();
 
   protected:
     QFont mDiagramFont;
