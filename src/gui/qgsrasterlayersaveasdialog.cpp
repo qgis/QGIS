@@ -387,6 +387,7 @@ void QgsRasterLayerSaveAsDialog::on_mChangeCrsPushButton_clicked()
   if ( selector->exec() )
   {
     mUserCrs.createFromId( selector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+    mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( UserCrs ) );
   }
   delete selector;
   crsChanged();
@@ -454,8 +455,6 @@ void QgsRasterLayerSaveAsDialog::updateCrsGroup()
 
   mCrsComboBox->setItemText( mCrsComboBox->findData( UserCrs ),
                              tr( "Selected" ) + " (" + mUserCrs.description() + ", " + mUserCrs.authid() + ")" );
-
-  mChangeCrsPushButton->setEnabled( mCrsComboBox->findData( UserCrs ) == mCrsComboBox->currentIndex() );
 }
 
 QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()
