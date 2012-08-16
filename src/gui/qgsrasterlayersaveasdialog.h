@@ -61,23 +61,23 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mCurrentExtentButton_clicked();
     void on_mOriginalExtentButton_clicked();
     void on_mFormatComboBox_currentIndexChanged( const QString& text );
-    void on_mResolutionRadioButton_toggled( bool checked ) { toggleResolutionSize(); }
+    void on_mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
     void on_mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
-    void on_mXResolutionLineEdit_textEdited( const QString & text ) { mResolutionState = UserResolution; recalcSize(); }
-    void on_mYResolutionLineEdit_textEdited( const QString & text ) { mResolutionState = UserResolution; recalcSize(); }
+    void on_mXResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
+    void on_mYResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
 
     void on_mOriginalSizePushButton_clicked() { setOriginalSize(); }
-    void on_mColumnsLineEdit_textEdited( const QString & text ) { mResolutionState = UserResolution; recalcResolution(); }
-    void on_mRowsLineEdit_textEdited( const QString & text ) { mResolutionState = UserResolution; recalcResolution(); }
+    void on_mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
+    void on_mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
 
-    void on_mXMinLineEdit_textEdited( const QString & text ) { mExtentState = UserExtent; extentChanged(); }
-    void on_mXMaxLineEdit_textEdited( const QString & text ) { mExtentState = UserExtent; extentChanged(); }
-    void on_mYMinLineEdit_textEdited( const QString & text ) { mExtentState = UserExtent; extentChanged(); }
-    void on_mYMaxLineEdit_textEdited( const QString & text ) { mExtentState = UserExtent; extentChanged(); }
+    void on_mXMinLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
+    void on_mXMaxLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
+    void on_mYMinLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
+    void on_mYMaxLineEdit_textEdited( const QString & ) { mExtentState = UserExtent; extentChanged(); }
 
     void on_mChangeCrsPushButton_clicked();
 
-    void on_mCrsComboBox_currentIndexChanged( int index ) { crsChanged(); }
+    void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
   private:
     QgsRasterDataProvider* mDataProvider;

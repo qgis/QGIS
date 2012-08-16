@@ -499,7 +499,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
   if ( !retrieveServerCapabilities() )
   {
-    return false;
+    return 0;
   }
 
   // Can we reuse the previously cached image?
