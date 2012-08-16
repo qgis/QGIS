@@ -62,19 +62,19 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   if ( layerType == QGis::Point || layerType == QGis::Polygon )
   {
-    mPlacementComboBox->addItem( tr( "AroundPoint" ), 0 );
-    mPlacementComboBox->addItem( tr( "OverPoint" ), 1 );
+    mPlacementComboBox->addItem( tr( "Around Point" ), QgsDiagramLayerSettings::AroundPoint );
+    mPlacementComboBox->addItem( tr( "Over Point" ), QgsDiagramLayerSettings::OverPoint );
   }
 
   if ( layerType == QGis::Line || layerType == QGis::Polygon )
   {
-    mPlacementComboBox->addItem( tr( "Line" ), 2 );
-    mPlacementComboBox->addItem( tr( "Horizontal" ), 3 );
+    mPlacementComboBox->addItem( tr( "Line" ), QgsDiagramLayerSettings::Line );
+    mPlacementComboBox->addItem( tr( "Horizontal" ), QgsDiagramLayerSettings::Horizontal );
   }
 
   if ( layerType == QGis::Polygon )
   {
-    mPlacementComboBox->addItem( tr( "Free" ), 4 );
+    mPlacementComboBox->addItem( tr( "Free" ), QgsDiagramLayerSettings::Free );
   }
 
   if ( layerType == QGis::Line )
@@ -90,8 +90,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mLineOptionsLabel->setVisible( false );
   }
 
-  mDiagramTypeComboBox->addItem( tr( "Pie chart" ), "Pie" );
-  mDiagramTypeComboBox->addItem( tr( "Text diagram" ), "Text");
+  mDiagramTypeComboBox->addItem( tr( "Pie chart" ), DIAGRAM_NAME_PIE );
+  mDiagramTypeComboBox->addItem( tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
   mDiagramTypeComboBox->addItem( tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );

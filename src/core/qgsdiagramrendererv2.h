@@ -35,7 +35,7 @@ struct CORE_EXPORT QgsDiagramLayerSettings
   //avoid inclusion of QgsPalLabeling
   enum Placement
   {
-    AroundPoint, // Point / Polygon
+    AroundPoint = 0, // Point / Polygon
     OverPoint, // Point / Polygon
     Line, // Line / Polygon
     Curved, // Line
