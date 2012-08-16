@@ -3,8 +3,9 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * new development version 1.9 after branch of 1.8
   * include ows provider
   * include wcs provider
+  * symbology-ng-style now in sqlite3
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 08 Aug 2012 08:49:52 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 16 Aug 2012 09:47:52 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

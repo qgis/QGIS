@@ -97,9 +97,6 @@
      <property name="text">
       <string/>
      </property>
-     <property name="placeholderText">
-      <string>Type here to filter symbols ...</string>
-     </property>
     </widget>
    </item>
    <item row="1" column="1" colspan="2">

@@ -53,6 +53,11 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 #if QT_VERSION >= 0x40500
   tabItemType->setDocumentMode( true );
 #endif
+#if QT_VERSION >= 0x40700
+  searchBox->setPlaceholderText( tr( "Type here to filter symbols ..." ) );
+#else
+  searchBox->setToolTip( tr( "Type here to filter symbols ..." ) );
+#endif
 
   // setup icons
   btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
