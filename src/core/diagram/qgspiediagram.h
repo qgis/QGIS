@@ -15,6 +15,8 @@
 #ifndef QGSPIEDIAGRAM_H
 #define QGSPIEDIAGRAM_H
 
+#define DIAGRAM_NAME_PIE "Pie"
+
 #include "qgsdiagram.h"
 #include "qgsfeature.h"
 #include <QPen>
@@ -36,7 +38,7 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
     void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
     QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
     QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    QString diagramName() const { return "Pie"; }
+    QString diagramName() const { return DIAGRAM_NAME_PIE; }
 
   private:
     QBrush mCategoryBrush;

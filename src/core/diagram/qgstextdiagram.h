@@ -15,6 +15,8 @@
 #ifndef QGSTEXTDIAGRAM_H
 #define QGSTEXTDIAGRAM_H
 
+#define DIAGRAM_NAME_TEXT "Text"
+
 #include "qgsdiagram.h"
 #include "qgsfeature.h"
 #include <QPen>
@@ -50,7 +52,7 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
     QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
 
-    QString diagramName() const { return "Text"; }
+    QString diagramName() const { return DIAGRAM_NAME_TEXT; }
 
   private:
     Orientation mOrientation;

@@ -16,6 +16,8 @@
 #ifndef QGSHISTOGRAMDIAGRAM_H
 #define QGSHISTOGRAMDIAGRAM_H
 
+#define DIAGRAM_NAME_HISTOGRAM "Histogram"
+
 #include "qgsdiagram.h"
 #include "qgsfeature.h"
 #include <QPen>
@@ -38,7 +40,7 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
     void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
     QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
     QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    QString diagramName() const { return "Histogram"; }
+    QString diagramName() const { return DIAGRAM_NAME_HISTOGRAM; }
 
   private:
     QBrush mCategoryBrush;

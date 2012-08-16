@@ -48,8 +48,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mMinimumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMinimumDiagramScaleLineEdit ) );
   mMaximumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMaximumDiagramScaleLineEdit ) );
 
-  mDiagramUnitComboBox->insertItem( 0, tr( "mm" ) );
-  mDiagramUnitComboBox->insertItem( 1, tr( "Map units" ) );
+  mDiagramUnitComboBox->insertItem( 0, tr( "mm" ), QgsDiagramSettings::MM );
+  mDiagramUnitComboBox->insertItem( 1, tr( "Map units" ), QgsDiagramSettings::MapUnits );
 
   QGis::GeometryType layerType = layer->geometryType();
   if ( layerType == QGis::UnknownGeometry || layerType == QGis::NoGeometry )
@@ -79,10 +79,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   if ( layerType == QGis::Line )
   {
-    mLineOptionsComboBox->addItem( tr( "On line" ), 1 );
-    mLineOptionsComboBox->addItem( tr( "Above line" ), 2 );
-    mLineOptionsComboBox->addItem( tr( "Below Line" ), 4 );
-    mLineOptionsComboBox->addItem( tr( "Map orientation" ), 8 );
+    mLineOptionsComboBox->addItem( tr( "On line" ), QgsDiagramLayerSettings::OnLine );
+    mLineOptionsComboBox->addItem( tr( "Above line" ), QgsDiagramLayerSettings::AboveLine );
+    mLineOptionsComboBox->addItem( tr( "Below Line" ), QgsDiagramLayerSettings::BelowLine );
+    mLineOptionsComboBox->addItem( tr( "Map orientation" ), QgsDiagramLayerSettings::MapOrientation );
   }
   else
   {
@@ -90,15 +90,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mLineOptionsLabel->setVisible( false );
   }
 
-  mDiagramTypeComboBox->addItem( tr( "Pie chart" ) );
-  mDiagramTypeComboBox->addItem( tr( "Text diagram" ) );
-  mDiagramTypeComboBox->addItem( tr( "Histogram" ) );
+  mDiagramTypeComboBox->addItem( tr( "Pie chart" ), "Pie" );
+  mDiagramTypeComboBox->addItem( tr( "Text diagram" ), "Text");
+  mDiagramTypeComboBox->addItem( tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
 
-  mLabelPlacementComboBox->addItem( tr( "Height" ) );
-  mLabelPlacementComboBox->addItem( tr( "x-height" ) );
+  mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
+  mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
 
-  mScaleDependencyComboBox->addItem( tr( "Area" ) );
-  mScaleDependencyComboBox->addItem( tr( "Diameter" ) );
+  mScaleDependencyComboBox->addItem( tr( "Area" ), true );
+  mScaleDependencyComboBox->addItem( tr( "Diameter" ), false );
 
   //insert all attributes into the combo boxes
   const QgsFieldMap& layerFields = layer->pendingFields();
@@ -195,6 +195,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
 
+      mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
+      mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
+      mOrientationUpButton->setProperty( "direction", QgsDiagramSettings::Up );
+      mOrientationDownButton->setProperty( "direction", QgsDiagramSettings::Down );
       switch( settingList.at( 0 ).diagramOrientation )
       {
         case QgsDiagramSettings::Left:
@@ -274,19 +278,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     if ( dr->diagram() )
     {
       QString diagramName = dr->diagram()->diagramName();
-      if ( diagramName == "Text" )
-      {
-        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Text diagram" ) ) );
-      }
-      else if ( diagramName == "Pie" )
-      {
-        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Pie chart" ) ) );
-      }
-      else if ( diagramName == "Histogram" )
-      {
-        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Histogram" ) ) );
-      }
-      else
+      mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( diagramName ) );
+      if ( mDiagramTypeComboBox->currentIndex() == -1 )
       {
         QMessageBox::warning( this, tr( "Unknown diagram type." ),
           tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( diagramName ), QMessageBox::Ok );
@@ -468,15 +461,15 @@ void QgsDiagramProperties::apply()
     }
 
     QgsDiagram* diagram = 0;
-    if ( mDiagramTypeComboBox->currentText() == tr( "Text diagram" ) )
+    if ( mDiagramTypeComboBox->itemData( mDiagramTypeComboBox->currentIndex() ) == DIAGRAM_NAME_TEXT )
     {
       diagram = new QgsTextDiagram();
     }
-    else if ( mDiagramTypeComboBox->currentText() == tr( "Pie chart" ) )
+    else if ( mDiagramTypeComboBox->itemData( mDiagramTypeComboBox->currentIndex() ) == DIAGRAM_NAME_PIE )
     {
       diagram = new QgsPieDiagram();
     }
-    else if ( mDiagramTypeComboBox->currentText() == tr( "Histogram" ) )
+    else if ( mDiagramTypeComboBox->itemData( mDiagramTypeComboBox->currentIndex() ) == DIAGRAM_NAME_HISTOGRAM )
     {
       diagram = new QgsHistogramDiagram();
     }
@@ -497,33 +490,10 @@ void QgsDiagramProperties::apply()
     ds.categoryColors = categoryColors;
     ds.categoryIndices = categoryAttributes;
     ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
-    if ( mDiagramUnitComboBox->currentText() == tr( "Map units" ) )
-    {
-      ds.sizeType = QgsDiagramSettings::MapUnits;
-    }
-    else
-    {
-      ds.sizeType = QgsDiagramSettings::MM;
-    }
-
-    if ( tr( "Height" ) == mLabelPlacementComboBox->currentText() )
-    {
-     ds.labelPlacementMethod = QgsDiagramSettings::Height;
-    }
-    else
-    {
-     ds.labelPlacementMethod = QgsDiagramSettings::XHeight;
-    }
-
-    if ( tr( "Area" ) == mScaleDependencyComboBox->currentText() )
-    {
-      ds.scaleByArea = true;
-    }
-    else
-    {
-      ds.scaleByArea = false;
-    }
-
+    ds.sizeType = static_cast<QgsDiagramSettings::SizeType> ( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
+    ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
+    ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
+    
     if ( mIncreaseSmallDiagramsGroupBox->isChecked() )
     {
       ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
@@ -549,22 +519,7 @@ void QgsDiagramProperties::apply()
     }
 
     // Diagram orientation (histogram)
-    if ( tr( "Up" ) == mOrientationButtonGroup->checkedButton()->text() )
-    {
-      ds.diagramOrientation = QgsDiagramSettings::Up;
-    }
-    else if ( tr( "Down" ) == mOrientationButtonGroup->checkedButton()->text() )
-    {
-      ds.diagramOrientation = QgsDiagramSettings::Down;
-    }
-    else if ( tr( "Right" ) == mOrientationButtonGroup->checkedButton()->text() )
-    {
-      ds.diagramOrientation = QgsDiagramSettings::Right;
-    }
-    else if ( tr( "Left" ) == mOrientationButtonGroup->checkedButton()->text() )
-    {
-      ds.diagramOrientation = QgsDiagramSettings::Left;
-    }
+    ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation> ( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
     ds.barWidth = mBarWidthSpinBox->value();
 
@@ -604,7 +559,7 @@ void QgsDiagramProperties::apply()
     dls.placement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt();
     if ( mLineOptionsComboBox->isEnabled() )
     {
-      dls.placementFlags = ( QgsDiagramLayerSettings::LinePlacementFlags )mLineOptionsComboBox->itemData( mLineOptionsComboBox->currentIndex() ).toInt();
+      dls.placementFlags = static_cast<QgsDiagramLayerSettings::LinePlacementFlags>( mLineOptionsComboBox->itemData( mLineOptionsComboBox->currentIndex() ).toInt() );
     }
     mLayer->setDiagramLayerSettings( dls );
   }
