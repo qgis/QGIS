@@ -32,7 +32,7 @@ class QgsLabelPreview : public QLabel
     void paintEvent( QPaintEvent* e );
 
   private:
-    int mBufferSize;
+    double mBufferSize;
     QColor mBufferColor;
     Qt::PenJoinStyle mBufferJoinStyle;
     bool mBufferNoFill;

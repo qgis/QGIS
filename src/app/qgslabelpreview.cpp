@@ -48,6 +48,10 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   p.setFont( font() );
   QFontMetrics fm( font() );
 
+  // otherwise thin buffers don't look like those on canvas
+  if ( mBufferSize != 0 && mBufferSize < 1 )
+    mBufferSize = 1;
+
   double xtrans = 0;
   if ( mBufferSize != 0 )
     xtrans = mBufferSize / 4;
