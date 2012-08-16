@@ -26,6 +26,13 @@ QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( QgsContrastEnhan
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
 }
 
+QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f )
+{
+  mQgsRasterDataType = f.mQgsRasterDataType;
+  mMaximumValue = f.mMaximumValue;
+  mMinimumValue = f.mMinimumValue;
+  mMinimumMaximumRange = f.mMinimumMaximumRange;
+}
 
 int QgsContrastEnhancementFunction::enhance( double theValue )
 {

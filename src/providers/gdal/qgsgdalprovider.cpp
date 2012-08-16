@@ -136,6 +136,13 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   initBaseDataset();
 }
 
+QgsRasterInterface * QgsGdalProvider::clone() const
+{
+  QgsDebugMsg( "Entered" );
+  QgsGdalProvider * provider = new QgsGdalProvider( dataSourceUri() );
+  return provider;
+}
+
 bool QgsGdalProvider::crsFromWkt( const char *wkt )
 {
   void *hCRS = OSRNewSpatialReference( NULL );

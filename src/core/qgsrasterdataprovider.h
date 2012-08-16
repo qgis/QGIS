@@ -108,7 +108,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     virtual ~QgsRasterDataProvider() {};
 
-    QgsRasterInterface * srcInput() { return this; }
+    virtual QgsRasterInterface * clone() const = 0;
 
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface* input ) { Q_UNUSED( input ); return false; }

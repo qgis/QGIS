@@ -89,6 +89,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     //! Destructor
     ~QgsGrassRasterProvider();
 
+    QgsRasterInterface * clone() const;
+
     /** \brief   Renders the layer as an image
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight );

@@ -66,6 +66,13 @@ QgsRasterProjector::QgsRasterProjector()
   QgsDebugMsg( "Entered" );
 }
 
+QgsRasterInterface * QgsRasterProjector::clone() const
+{
+  QgsDebugMsg( "Entered" );
+  QgsRasterProjector * projector = new QgsRasterProjector( mSrcCRS, mDestCRS, mMaxSrcXRes, mMaxSrcYRes, mExtent );
+  return projector;
+}
+
 QgsRasterProjector::~QgsRasterProjector()
 {
   delete[] pHelperTop;
@@ -104,6 +111,8 @@ void QgsRasterProjector::calc()
   pHelperBottom = 0;
 
   // Get max source resolution if possible
+  mMaxSrcXRes = 0;
+  mMaxSrcYRes = 0;
   if ( mInput )
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
@@ -622,8 +631,7 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
 
   if ( !inputData ) return 0;
 
-  // ARGB32 only for now
-  int pixelSize = 4;
+  int pixelSize = mInput->typeSize( mInput->dataType( bandNo ) ) / 8;
 
   int inputSize = pixelSize * srcCols() * srcRows();
 

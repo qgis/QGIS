@@ -12,6 +12,11 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 {
     Q_OBJECT
   public:
+    enum Mode
+    {
+      RawDataMode,
+      RenderedImageMode
+    };
     enum CrsState
     {
       OriginalCrs,
@@ -33,6 +38,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs, QWidget* parent = 0, Qt::WindowFlags f = 0 );
     ~QgsRasterLayerSaveAsDialog();
 
+    Mode mode() const;
     int nColumns() const;
     int nRows() const;
     double xResolution() const;

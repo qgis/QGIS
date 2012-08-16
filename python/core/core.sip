@@ -63,6 +63,7 @@
 %Include qgsproviderregistry.sip
 %Include qgsrasterbandstats.sip
 %Include qgsrasterdataprovider.sip
+%Include qgsrasterinterface.sip
 %Include qgsrasterlayer.sip
 %Include qgsrasterpyramid.sip
 %Include qgsrasterrenderer.sip

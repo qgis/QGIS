@@ -3937,20 +3937,59 @@ void QgisApp::saveAsRasterFile()
 
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     pd.setWindowModality( Qt::WindowModal );
-    QgsRasterDataProvider* provider = rasterLayer->dataProvider();
-    if ( !provider )
+
+    // TODO: show error dialogs
+    // TODO: this code should go somewhere else, but probably not into QgsRasterFileWriter
+    // clone pipe/provider is not really necessary, ready for threads
+    QgsRasterPipe* pipe = 0;
+
+    if ( d.mode() == QgsRasterLayerSaveAsDialog::RawDataMode )
     {
+      QgsDebugMsg( "Writing raw data" );
+      //QgsDebugMsg( QString( "Writing raw data" ).arg( pos ) );
+      pipe = new QgsRasterPipe();
+      if ( !pipe->set( rasterLayer->dataProvider()->clone() ) )
+      {
+        QgsDebugMsg( "Cannot set pipe provider" );
+        return;
+      }
+      // add projector if necessary
+      if ( d.outputCrs() != rasterLayer->dataProvider()->crs() )
+      {
+        QgsRasterProjector * projector = new QgsRasterProjector;
+        projector->setCRS( rasterLayer->dataProvider()->crs(), d.outputCrs() );
+        if ( !pipe->set( projector ) )
+        {
+          QgsDebugMsg( "Cannot set pipe projector" );
+          return;
+        }
+      }
+    }
+    else // RenderedImageMode
+    {
+      // clone the whole pipe
+      QgsDebugMsg( "Writing rendered image" );
+      pipe = new QgsRasterPipe( *rasterLayer->pipe() );
+      QgsRasterProjector *projector = pipe->projector();
+      if ( !projector )
+      {
+        QgsDebugMsg( "Cannot get pipe projector" );
+        delete pipe;
+        return;
+      }
+      projector->setCRS( rasterLayer->dataProvider()->crs(), d.outputCrs() );
+    }
+
+    if ( !pipe->last() )
+    {
+      delete pipe;
       return;
     }
-    QgsRasterIterator iterator( provider );
-    int nRows = -1; //calculate number of rows such that pixels are squares
-    if ( provider->capabilities() & QgsRasterDataProvider::ExactResolution )
-    {
-      nRows = d.nRows();
-    }
+    QgsRasterIterator iterator( pipe->last() );
     fileWriter.setCreateOptions( d.createOptions() );
 
-    fileWriter.writeRaster( &iterator, d.nColumns(), nRows, d.outputRectangle(), d.outputCrs(), &pd );
+    fileWriter.writeRaster( &iterator, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+    delete pipe;
   }
 }
 

@@ -47,16 +47,12 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
       setOriginalResolution();
       int xSize = mDataProvider->xSize();
       int ySize = mDataProvider->ySize();
-      //mColumnsLineEdit->setText( QString::number( xSize ) );
-      //mRowsLineEdit->setText( QString::number( ySize ) );
       mMaximumSizeXLineEdit->setText( QString::number( xSize ) );
       mMaximumSizeYLineEdit->setText( QString::number( ySize ) );
     }
-    else //wms
+    else //wms, sometimes wcs
     {
       mTileModeCheckBox->setChecked( true );
-      mColumnsLineEdit->setText( QString::number( 6000 ) );
-      mRowsLineEdit->setText( QString::number( 6000 ) );
       mMaximumSizeXLineEdit->setText( QString::number( 2000 ) );
       mMaximumSizeYLineEdit->setText( QString::number( 2000 ) );
     }
@@ -245,19 +241,31 @@ void QgsRasterLayerSaveAsDialog::hideOutput()
 
 void QgsRasterLayerSaveAsDialog::toggleResolutionSize()
 {
+  bool hasResolution = mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution;
+
   bool on = mResolutionRadioButton->isChecked();
   mXResolutionLineEdit->setEnabled( on );
   mYResolutionLineEdit->setEnabled( on );
-  mOriginalResolutionPushButton->setEnabled( on );
+  mOriginalResolutionPushButton->setEnabled( on && hasResolution );
   mColumnsLineEdit->setEnabled( !on );
   mRowsLineEdit->setEnabled( !on );
-  mOriginalSizePushButton->setEnabled( !on );
+  mOriginalSizePushButton->setEnabled( !on && hasResolution );
 }
 
 void QgsRasterLayerSaveAsDialog::setOriginalResolution()
 {
-  double xRes = mDataProvider->extent().width() / mDataProvider->xSize();
-  double yRes = mDataProvider->extent().height() / mDataProvider->ySize();
+  double xRes, yRes;
+
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
+  {
+    xRes = mDataProvider->extent().width() / mDataProvider->xSize();
+    yRes = mDataProvider->extent().height() / mDataProvider->ySize();
+  }
+  else
+  {
+    // Init to something if no original resolution is available
+    xRes = yRes = mDataProvider->extent().width() / 100;
+  }
   setResolution( xRes, yRes, mDataProvider->crs() );
   mResolutionState = OriginalResolution;
   recalcSize();
@@ -469,4 +477,10 @@ QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()
     return mCurrentCrs;
   }
   return mUserCrs;
+}
+
+QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
+{
+  if ( mRenderedModeRadioButton->isChecked() ) return RenderedImageMode;
+  return RawDataMode;
 }

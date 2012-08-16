@@ -10,6 +10,7 @@ class QgsRasterDataProvider : QgsDataProvider
 {
 %TypeHeaderCode
 #include <qgsrasterdataprovider.h>
+#include <qgsrasterinterface.h>
 %End
 
   public:
@@ -28,6 +29,8 @@ class QgsRasterDataProvider : QgsDataProvider
     QgsRasterDataProvider( const QString & uri );
 
     virtual ~QgsRasterDataProvider();
+
+    virtual QgsRasterInterface * clone() const = 0;
 
     /**
      * Add the list of WMS layer names to be rendered by this server

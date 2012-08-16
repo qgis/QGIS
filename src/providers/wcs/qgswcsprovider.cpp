@@ -435,6 +435,12 @@ QgsWcsProvider::~QgsWcsProvider()
   }
 }
 
+QgsRasterInterface * QgsWcsProvider::clone() const
+{
+  QgsWcsProvider * provider = new QgsWcsProvider( dataSourceUri() );
+  return provider;
+}
+
 QString QgsWcsProvider::baseUrl() const
 {
   return mBaseUrl;

@@ -32,6 +32,16 @@ QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
   delete mContrastEnhancement;
 }
 
+QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
+{
+  QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
+  if ( mContrastEnhancement )
+  {
+    renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );
+  }
+  return renderer;
+}
+
 QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, QgsRasterInterface* input )
 {
   if ( elem.isNull() )

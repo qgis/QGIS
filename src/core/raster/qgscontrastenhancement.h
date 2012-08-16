@@ -73,6 +73,7 @@ class CORE_EXPORT QgsContrastEnhancement
     };
 
     QgsContrastEnhancement( QgsContrastEnhancement::QgsRasterDataType theDatatype = QGS_Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement& ce );
     ~QgsContrastEnhancement();
 
     /*

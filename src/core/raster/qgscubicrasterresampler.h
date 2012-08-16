@@ -26,6 +26,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
   public:
     QgsCubicRasterResampler();
     ~QgsCubicRasterResampler();
+    QgsRasterResampler * clone() const;
     void resample( const QImage& srcImage, QImage& dstImage );
     QString type() const { return "cubic"; }
 

@@ -108,6 +108,12 @@ QgsGrassRasterProvider::~QgsGrassRasterProvider()
   QgsDebugMsg( "QgsGrassRasterProvider: deconstructing." );
 }
 
+QgsRasterInterface * QgsGrassRasterProvider::clone() const
+{
+  QgsGrassRasterProvider * provider = new QgsGrassRasterProvider( dataSourceUri() );
+  return provider;
+}
+
 QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
 {
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );

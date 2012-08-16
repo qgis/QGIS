@@ -17,6 +17,7 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterpipe.h"
 #include "qgsrectangle.h"
 #include <QDomDocument>
 #include <QDomElement>

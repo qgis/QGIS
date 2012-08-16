@@ -36,6 +36,56 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="mModeLabel">
+           <property name="text">
+            <string>Output mode</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="mRawModeRadioButton">
+           <property name="toolTip">
+            <string>Write out raw raster layer data. Optionaly user defined no data values may be applied.</string>
+           </property>
+           <property name="text">
+            <string>Raw data</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="mRenderedModeRadioButton">
+           <property name="toolTip">
+            <string>Write out 3 bands RGB image rendered using current layer style.</string>
+           </property>
+           <property name="text">
+            <string>Rendered image</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="mFormatLabel">
@@ -75,6 +125,9 @@
           <widget class="QLineEdit" name="mSaveAsLineEdit">
            <property name="enabled">
             <bool>true</bool>
+           </property>
+           <property name="text">
+            <string/>
            </property>
           </widget>
          </item>

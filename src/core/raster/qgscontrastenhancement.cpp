@@ -52,6 +52,35 @@ QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
 
 }
 
+QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce )
+{
+  mLookupTable = 0;
+  mEnhancementDirty = ce.mEnhancementDirty;
+  mContrastEnhancementAlgorithm = ce.mContrastEnhancementAlgorithm;
+  mRasterDataType = ce.mRasterDataType;
+
+  mMinimumValue = ce.mMinimumValue;
+  mMaximumValue = ce.mMaximumValue;
+  mRasterDataTypeRange = ce.mRasterDataTypeRange;
+
+  mLookupTableOffset = ce.mLookupTableOffset;
+
+  mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
+
+  //If the data type is larger than 16-bit do not generate a lookup table
+  if ( mRasterDataTypeRange <= 65535.0 )
+  {
+    mLookupTable = new int[static_cast <int>( mRasterDataTypeRange+1 )];
+    if ( !ce.mEnhancementDirty )
+    {
+      for ( int myIterator = 0; myIterator <= mRasterDataTypeRange; myIterator++ )
+      {
+        mLookupTable[myIterator] = ce.mLookupTable[myIterator];
+      }
+    }
+  }
+}
+
 QgsContrastEnhancement::~QgsContrastEnhancement()
 {
 }

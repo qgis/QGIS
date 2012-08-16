@@ -45,6 +45,7 @@ class CORE_EXPORT QgsRasterPipe
     };
 
     QgsRasterPipe( );
+    QgsRasterPipe( const QgsRasterPipe& thePipe );
 
     virtual ~QgsRasterPipe();
 
@@ -77,9 +78,9 @@ class CORE_EXPORT QgsRasterPipe
     /** Remove and delete interface from pipe if possible */
     bool remove( QgsRasterInterface * theInterface );
 
-    int size() { return mInterfaces.size(); }
-    QgsRasterInterface * at( int idx ) { return mInterfaces.at( idx ); }
-    QgsRasterInterface * last() { return mInterfaces.last(); }
+    int size() const { return mInterfaces.size(); }
+    QgsRasterInterface * at( int idx ) const { return mInterfaces.at( idx ); }
+    QgsRasterInterface * last() const { return mInterfaces.last(); }
 
     /** Set interface at index on/off
      *  Returns true on success */

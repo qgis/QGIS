@@ -27,6 +27,7 @@ class QgsRasterRenderer
   public:
     QgsRasterRenderer( QgsRasterDataProvider* provider, const QString& type );
     virtual ~QgsRasterRenderer();
+    virtual QgsRasterInterface * clone() const = 0;
 
     virtual QString type() const;
     virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
@@ -63,6 +64,7 @@ class QgsPalettedRasterRenderer: QgsRasterRenderer
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber, QColor* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
+    QgsRasterInterface * clone();
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
     void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
@@ -87,6 +89,7 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
                                QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
                                QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
@@ -123,6 +126,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
     /**Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
@@ -145,6 +149,7 @@ class QgsSingleBandGrayRenderer: QgsRasterRenderer
   public:
     QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 
@@ -169,6 +174,7 @@ class QgsSingleBandColorDataRenderer: QgsRasterRenderer
   public:
     QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
     ~QgsSingleBandColorDataRenderer();
+    QgsRasterInterface * clone();
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider );
 

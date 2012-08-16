@@ -29,6 +29,7 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
+    QgsRasterInterface * clone() const;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );

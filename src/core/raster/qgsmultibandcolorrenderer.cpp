@@ -40,6 +40,24 @@ QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
   delete mBlueContrastEnhancement;
 }
 
+QgsRasterInterface * QgsMultiBandColorRenderer::clone() const
+{
+  QgsMultiBandColorRenderer * renderer = new QgsMultiBandColorRenderer( 0, mRedBand, mGreenBand, mBlueBand );
+  if ( mRedContrastEnhancement )
+  {
+    renderer->setRedContrastEnhancement( new QgsContrastEnhancement( *mRedContrastEnhancement ) );
+  }
+  if ( mGreenContrastEnhancement )
+  {
+    renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( *mGreenContrastEnhancement ) );
+  }
+  if ( mBlueContrastEnhancement )
+  {
+    renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( *mBlueContrastEnhancement ) );
+  }
+  return renderer;
+}
+
 void QgsMultiBandColorRenderer::setRedContrastEnhancement( QgsContrastEnhancement* ce )
 {
   delete mRedContrastEnhancement; mRedContrastEnhancement = ce;

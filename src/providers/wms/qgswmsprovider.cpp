@@ -236,6 +236,11 @@ QgsWmsProvider::~QgsWmsProvider()
   }
 }
 
+QgsRasterInterface * QgsWmsProvider::clone() const
+{
+  QgsWmsProvider * provider = new QgsWmsProvider( dataSourceUri() );
+  return provider;
+}
 
 bool QgsWmsProvider::supportedLayers( QVector<QgsWmsLayerProperty> &layers )
 {
@@ -491,6 +496,11 @@ void QgsWmsProvider::setQueryItem( QUrl &url, QString item, QString value )
 QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight )
 {
   QgsDebugMsg( "Entering." );
+
+  if ( !retrieveServerCapabilities() )
+  {
+    return false;
+  }
 
   // Can we reuse the previously cached image?
   if ( mCachedImage &&

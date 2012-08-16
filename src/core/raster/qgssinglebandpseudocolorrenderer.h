@@ -29,6 +29,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /**Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
+    QgsRasterInterface * clone() const;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 

@@ -28,6 +28,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
   public:
     QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand );
     ~QgsSingleBandGrayRenderer();
+    QgsRasterInterface * clone() const;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 

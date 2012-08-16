@@ -459,6 +459,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Destructor
     virtual ~QgsWmsProvider();
 
+    QgsRasterInterface * clone() const;
+
     virtual QgsWmsCapabilitiesProperty capabilitiesProperty() { return mCapabilities; }
 
     /**

@@ -33,6 +33,17 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
   delete mShader;
 }
 
+QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
+{
+  QgsRasterShader *shader = 0;
+  if ( mShader )
+  {
+    shader = new QgsRasterShader( mShader->minimumValue(), mShader->maximumValue() );
+  }
+  QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( 0, mBand, shader );
+  return renderer;
+}
+
 void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
 {
   delete mShader;

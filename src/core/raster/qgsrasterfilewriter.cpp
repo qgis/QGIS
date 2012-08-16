@@ -41,6 +41,7 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
+  QgsDebugMsg( "Entered" );
   if ( !iter )
   {
     return SourceProviderError;
@@ -52,9 +53,16 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIter
     return SourceProviderError;
   }
 
+  if ( !iface->srcInput() )
+  {
+    QgsDebugMsg( "iface->srcInput() == 0" );
+    return SourceProviderError;
+  }
+
   mProgressDialog = p;
 
-  if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 )
+  if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 ||
+       iface->dataType( 1 ) == QgsRasterInterface::ARGB32_Premultiplied )
   {
     WriterError e = writeImageRaster( iter, nCols, nRows, outputExtent, crs, p );
     mProgressDialog = 0;
@@ -71,6 +79,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIter
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
+  QgsDebugMsg( "Entered" );
   if ( !iter )
   {
     return SourceProviderError;
@@ -79,6 +88,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
   const QgsRasterInterface* iface = iter->input();
   if ( !iface )
   {
+    return SourceProviderError;
+  }
+
+  const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  if ( !srcProvider )
+  {
+    QgsDebugMsg( "Cannot get source data provider" );
     return SourceProviderError;
   }
 
@@ -112,10 +128,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
 
   //check if all the bands have the same data type size, otherwise we cannot write it to the provider
   //(at least not with the current interface)
-  int dataTypeSize = iface->typeSize( iface->dataType( 1 ) );
+  int dataTypeSize = srcProvider->typeSize( srcProvider->srcDataType( 1 ) );
   for ( int i = 2; i <= nBands; ++i )
   {
-    if ( iface->typeSize( iface->dataType( 1 ) ) != dataTypeSize )
+    if ( srcProvider->typeSize( srcProvider->srcDataType( 1 ) ) != dataTypeSize )
     {
       return DestProviderError;
     }
@@ -128,7 +144,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
     dataList.push_back( VSIMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
   }
 
-  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  iface->dataType( 1 ) );
+  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  srcProvider->srcDataType( 1 ) );
 
   int nParts = 0;
   int fileIndex = 0;
@@ -210,13 +226,15 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
 {
+  QgsDebugMsg( "Entered" );
   if ( !iter )
   {
     return SourceProviderError;
   }
 
   const QgsRasterInterface* iface = iter->input();
-  if ( !iface ||  iface->dataType( 1 ) != QgsRasterInterface::ARGB32 )
+  if ( !iface || ( iface->dataType( 1 ) != QgsRasterInterface::ARGB32 &&
+                   iface->dataType( 1 ) != QgsRasterInterface::ARGB32_Premultiplied ) )
   {
     return SourceProviderError;
   }
@@ -231,7 +249,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  void* data = VSIMalloc( iface->typeSize( QgsRasterInterface::ARGB32 ) * mMaxTileWidth * mMaxTileHeight );
+  void* data = VSIMalloc( iface->typeSize( iface->dataType( 1 ) ) / 8 * mMaxTileWidth * mMaxTileHeight );
   void* redData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* greenData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );
   void* blueData = VSIMalloc( mMaxTileWidth * mMaxTileHeight );

@@ -26,6 +26,27 @@ QgsRasterPipe::QgsRasterPipe()
 {
 }
 
+QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe& thePipe )
+{
+  for ( int i = 0; i < thePipe.size(); i++ )
+  {
+    QgsRasterInterface* interface = thePipe.at( i );
+    QgsRasterInterface* clone = interface->clone();
+
+    Role role = interfaceRole( clone );
+    QgsDebugMsg( QString( "cloned inerface with role %1" ).arg( role ) );
+    if ( i > 0 )
+    {
+      clone->setInput( mInterfaces.at( i - 1 ) );
+    }
+    mInterfaces.append( clone );
+    if ( role != UnknownRole )
+    {
+      mRoleMap.insert( role, i );
+    }
+  }
+}
+
 QgsRasterPipe::~QgsRasterPipe()
 {
   foreach ( QgsRasterInterface* interface, mInterfaces )

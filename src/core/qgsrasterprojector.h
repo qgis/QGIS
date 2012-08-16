@@ -61,6 +61,8 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief The destructor */
     ~QgsRasterProjector();
 
+    QgsRasterInterface * clone() const;
+
     int bandCount() const;
 
     QgsRasterInterface::DataType dataType( int bandNo ) const;

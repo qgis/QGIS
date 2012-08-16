@@ -27,6 +27,11 @@ QgsCubicRasterResampler::~QgsCubicRasterResampler()
 {
 }
 
+QgsRasterResampler * QgsCubicRasterResampler::clone() const
+{
+  return new QgsCubicRasterResampler();
+}
+
 void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage )
 {
   int nCols = srcImage.width();

@@ -94,6 +94,9 @@ class CORE_EXPORT QgsRasterInterface
       }
     }
 
+    /** Clone itself, create deep copy */
+    virtual QgsRasterInterface *clone() const = 0;
+
     int dataTypeSize( int bandNo ) const
     {
       return typeSize( dataType( bandNo ) );
@@ -152,7 +155,8 @@ class CORE_EXPORT QgsRasterInterface
      *  It may be used to get info about original data, e.g. resolution to decide
      *  resampling etc.
      */
-    virtual QgsRasterInterface * srcInput() { return mInput ? mInput->srcInput() : 0; }
+    virtual const QgsRasterInterface * srcInput() const { return mInput ? mInput->srcInput() : this; }
+    virtual QgsRasterInterface * srcInput() { return mInput ? mInput->srcInput() : this; }
 
     /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.
