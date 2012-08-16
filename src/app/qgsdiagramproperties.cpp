@@ -90,9 +90,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mLineOptionsLabel->setVisible( false );
   }
 
-  mDiagramTypeComboBox->addItem( tr( "Pie chart" ), DIAGRAM_NAME_PIE );
-  mDiagramTypeComboBox->addItem( tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
-  mDiagramTypeComboBox->addItem( tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
+  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ) );
+  pix = QgsApplication::getThemePixmap( "text" );
+  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ) );
+  pix = QgsApplication::getThemePixmap( "histogram" );
+  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ) );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
