@@ -295,9 +295,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   on_mDisplayDiagramsGroupBox_toggled( mDisplayDiagramsGroupBox->isChecked() );
 }
 
-void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QString& itemtext )
+void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  if ( tr( "Text diagram" ) == itemtext )
+  QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
+
+  if ( DIAGRAM_NAME_TEXT == diagramType )
   {
     mLabelPlacementComboBox->show();
     mLabelPlacementLabel->show();
@@ -307,7 +309,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
     mLabelPlacementLabel->hide();
   }
 
-  if ( tr( "Histogram" ) == itemtext )
+  if ( DIAGRAM_NAME_HISTOGRAM == diagramType )
   {
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
@@ -320,7 +322,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
     mOrientationFrame->hide();
   }
 
-  if ( tr( "Histogram" ) == itemtext || tr( "Text diagram" ) == itemtext )
+  if ( DIAGRAM_NAME_HISTOGRAM == diagramType || DIAGRAM_NAME_TEXT == diagramType )
   {
     mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
   }
@@ -329,7 +331,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
     mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
   }
 
-  if ( tr( "Text diagram" ) == itemtext || tr( "Pie chart" ) == itemtext )
+  if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
   {
     mScaleDependencyComboBox->show();
     mScaleDependencyLabel->show();
@@ -419,7 +421,7 @@ void QgsDiagramProperties::on_mDisplayDiagramsGroupBox_toggled( bool checked )
   // if enabled show diagram specific options
   if ( checked )
   {
-    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentText() );
+    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
     // Update enabled/disabled state
   }
 }

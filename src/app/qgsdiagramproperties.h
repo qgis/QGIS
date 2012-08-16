@@ -34,7 +34,7 @@ class QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBas
 
   public slots:
     void apply();
-    void on_mDiagramTypeComboBox_currentIndexChanged( const QString& itemtext );
+    void on_mDiagramTypeComboBox_currentIndexChanged( int index );
     void on_mTransparencySlider_valueChanged( int value );
     void on_mAddCategoryPushButton_clicked();
     void on_mBackgroundColorButton_clicked();
