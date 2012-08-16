@@ -40,7 +40,7 @@ QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCit
                                         QString name, QString path, QString info )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
   : QObject(), mType( type ), mParent( parent ), mPopulated( false ), 
-    mName( name ), mPath( path ), mInfo( info )
+    mName( name ), mPath( path ), mInfo( info ), mValid( true )
 {
 }
 
@@ -252,6 +252,13 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     mRamp.setVariantName( variantList[ variantList.count() / 2 ] );
     mRamp.loadFile();
   }
+
+  // is this item valid? this might fail when there are variants, check
+  if ( ! QFile::exists( mRamp.fileName() ) )
+    mValid = false;
+  else
+    mValid = true;
+
   // load file and set info
   if ( mRamp.count() > 0 )
   {
@@ -325,6 +332,9 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
   : QgsCptCityCollectionItem( parent, name, path, info, collectionName )
 {
   mType = Directory;
+  mValid = QDir( QgsCptCityCollection::baseDir( mCollectionName ) + "/" + mPath ).exists();
+  if ( ! mValid )
+    QgsDebugMsg( "created invalid dir item, path = " + QgsCptCityCollection::baseDir( mCollectionName ) + "/" + mPath );
   // populate();
 }
 
@@ -335,24 +345,36 @@ QgsCptCityDirectoryItem::~QgsCptCityDirectoryItem()
 QVector<QgsCptCityDataItem*> QgsCptCityDirectoryItem::createChildren( )
 {
   QgsCptCityCollection* collection = QgsCptCityCollection::collectionRegistry().value( mCollectionName );
+  QgsCptCityDataItem* item = 0;
   QVector<QgsCptCityDataItem*> children;
+
+  if ( ! mValid )
+    return children;
 
   QgsDebugMsg( "name= " + mName + " path= " + mPath );
 
-  // add children collections
+  // add children dirs
   foreach ( QString childPath, collection->listSchemeCollections( mPath ) )
   {
     QgsDebugMsg( "childPath = " + childPath + " name= " + QFileInfo( childPath ).baseName() );
-    children << new QgsCptCityDirectoryItem( this, QFileInfo( childPath ).baseName(), childPath, 
-                                             collection->collectionNames().value( childPath ),
-                                             mCollectionName );
+    item = new QgsCptCityDirectoryItem( this, QFileInfo( childPath ).baseName(), childPath, 
+                                        collection->collectionNames().value( childPath ),
+                                        mCollectionName );
+    if ( item->isValid() )
+      children << item;
+    else
+      delete item;
   }
 
   // add children schemes
   foreach ( QString schemeName, collection->schemeMap().value( mPath ) )
   {
     // QgsDebugMsg( "schemeName = " + schemeName );
-    children << new QgsCptCityColorRampItem( this, schemeName, mPath + "/" + schemeName );
+    item = new QgsCptCityColorRampItem( this, schemeName, mPath + "/" + schemeName );
+    if ( item->isValid() )
+      children << item;
+    else
+      delete item;
   }
 
   return children;
@@ -385,6 +407,7 @@ QgsCptCityCategoryItem::~QgsCptCityCategoryItem()
 QVector<QgsCptCityDataItem*> QgsCptCityCategoryItem::createChildren( )
 {
   QgsCptCityCollection* collection = QgsCptCityCollection::collectionRegistry().value( mCollectionName );
+  QgsCptCityDataItem* item = 0;
   QVector<QgsCptCityDataItem*> children;
   
   QgsDebugMsg( "name= " + mName + " path= " + mPath );
@@ -396,13 +419,21 @@ QVector<QgsCptCityDataItem*> QgsCptCityCategoryItem::createChildren( )
     if ( childPath.endsWith( "/" ) )
     {
       childPath.chop( 1 );
-      children << new QgsCptCityDirectoryItem( this, childPath, childPath, 
-                                               collection->collectionNames().value( childPath ),
-                                               mCollectionName );
+      item = new QgsCptCityDirectoryItem( this, childPath, childPath, 
+                                          collection->collectionNames().value( childPath ),
+                                          mCollectionName );
+      if ( item->isValid() )
+        children << item;
+      else
+        delete item;
     }
     else
     {
-      children << new QgsCptCityColorRampItem( this, childPath, childPath );
+      item = new QgsCptCityColorRampItem( this, childPath, childPath );
+      if ( item->isValid() )
+        children << item;
+      else
+        delete item;
     }
   }
 
@@ -451,16 +482,22 @@ void QgsCptCityBrowserModel::addRootItems( )
   
   if ( mViewName == "authors" )
   {
+    QgsCptCityDirectoryItem* item = 0;
     foreach ( QString path, collection->listSchemeCollections() )
     {
       QgsDebugMsg( "path= " + path );
-      mRootItems << new QgsCptCityDirectoryItem( NULL, QFileInfo( path ).baseName(), path, 
-                                                 collection->collectionNames().value( path ),
-                                                 mCollectionName );
+      item = new QgsCptCityDirectoryItem( NULL, QFileInfo( path ).baseName(), path, 
+                                          collection->collectionNames().value( path ),
+                                          mCollectionName );
+      if ( item->isValid() )
+        mRootItems << item;
+      else 
+        delete item;
     }
   }
   else if ( mViewName == "selections" )
   {
+    QgsCptCityCategoryItem* item = 0;
     QMapIterator< QString, QStringList> it( collection->collectionSelections() );
     while ( it.hasNext() )
     {
@@ -468,7 +505,11 @@ void QgsCptCityBrowserModel::addRootItems( )
       QString path = it.key();
       QString info = collection->collectionNames().value( path );
       QgsDebugMsg( "path= " + path + " info= " + info);
-      mRootItems << new QgsCptCityCategoryItem( NULL, path, path, info, mCollectionName );
+      item = new QgsCptCityCategoryItem( NULL, path, path, info, mCollectionName );
+      if ( item->isValid() )
+        mRootItems << item;
+      else 
+        delete item;
     }
   }
 

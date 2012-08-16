@@ -104,6 +104,8 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     void setToolTip( QString msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
+    bool isValid() { return mValid; }
+
   protected:
 
     Type mType;
@@ -115,6 +117,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     QString mInfo;
     QString mToolTip;
     QIcon mIcon;
+    bool mValid;
 
   public slots:
     void emitBeginInsertItems( QgsCptCityDataItem* parent, int first, int last );
