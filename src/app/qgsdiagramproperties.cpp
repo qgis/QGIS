@@ -91,11 +91,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
 
   QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ) );
+  mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
   pix = QgsApplication::getThemePixmap( "text" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ) );
+  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram", DIAGRAM_NAME_TEXT ) );
   pix = QgsApplication::getThemePixmap( "histogram" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ) );
+  mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
