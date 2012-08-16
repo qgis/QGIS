@@ -20,6 +20,7 @@
 #include "diagram/qgstextdiagram.h"
 
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsvectorlayerproperties.h"
@@ -236,7 +237,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
         newItem->setText( 0, layer->pendingFields()[*catIt].name() );
         newItem->setData( 0, Qt::UserRole, *catIt );
-        newItem->setBackground( 1, QBrush( *coIt ) );
+        newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
+        QColor col( *coIt );
+        col.setAlpha( 255 );
+        newItem->setBackground( 1, QBrush( col ) );
       }
     }
 
