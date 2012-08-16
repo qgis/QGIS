@@ -522,9 +522,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     if ( minScaleValue.isValid() )
     {
       bool conversionOk;
-      int minScale = minScaleValue.toInt( &conversionOk );
-      // TODO: occasional floating point issues?
-      if ( conversionOk && ( int )( context.rendererScale() ) < minScale )
+      double minScale = minScaleValue.toDouble( &conversionOk );
+      if ( conversionOk && context.rendererScale() < minScale )
       {
         return;
       }
@@ -539,9 +538,8 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     if ( maxScaleValue.isValid() )
     {
       bool conversionOk;
-      int maxScale = maxScaleValue.toInt( &conversionOk );
-      // TODO: occasional floating point issues?
-      if ( conversionOk && ( int )( context.rendererScale() ) > maxScale )
+      double maxScale = maxScaleValue.toDouble( &conversionOk );
+      if ( conversionOk && context.rendererScale() > maxScale )
       {
         return;
       }
