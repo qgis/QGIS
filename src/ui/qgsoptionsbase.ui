@@ -529,6 +529,13 @@
                </widget>
               </item>
               <item>
+               <widget class="QCheckBox" name="cbxIgnoreShapeEncoding">
+                <property name="text">
+                 <string>Ignore shapefile encoding</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_5">
                 <item>
                  <widget class="QLabel" name="textLabel1_7">
