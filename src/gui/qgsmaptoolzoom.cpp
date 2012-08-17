@@ -128,7 +128,8 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
       {
         sf = extent.height() / r.height();
       }
-      r.expand( sf );
+      sf = sf / 2.0;
+      r.scale( sf );
 
       QgsDebugMsg( QString( "Extent scaled by %1 to %2" ).arg( sf ).arg( r.toString().toLocal8Bit().constData() ) );
       QgsDebugMsg( QString( "Center of currentExtent after scaling is %1" ).arg( r.center().toString().toLocal8Bit().constData() ) );
