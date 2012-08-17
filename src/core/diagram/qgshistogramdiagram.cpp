@@ -32,6 +32,7 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
+  QSize size;
   QgsAttributeMap::const_iterator attIt = attributes.constBegin();
   if ( attIt == attributes.constEnd() )
   {
