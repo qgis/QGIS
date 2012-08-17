@@ -33,8 +33,6 @@ class OutputVector(Output):
         @return writer  instance of the vectoe writer class
         '''
 
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-        w = SextanteVectorWriter(self.value, encoding, fields, geomType, crs, options)
+        w = SextanteVectorWriter(self.value, self.encoding, fields, geomType, crs, options)
         self.memoryLayer = w.memLayer
         return w
