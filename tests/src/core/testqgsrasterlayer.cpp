@@ -83,7 +83,7 @@ class TestQgsRasterLayer: public QObject
 void TestQgsRasterLayer::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init( QString() );
+  QgsApplication::init();
   QgsApplication::initQgis();
   // disable any PAM stuff to make sure stats are consistent
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );

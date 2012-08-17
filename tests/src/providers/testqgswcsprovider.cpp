@@ -62,7 +62,7 @@ class TestQgsWcsProvider: public QObject
 void TestQgsWcsProvider::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init( QString() );
+  QgsApplication::init();
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />" );

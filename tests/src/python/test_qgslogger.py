@@ -26,6 +26,7 @@ class TestQgsLogger(unittest.TestCase):
             #myLogger.fatal('Aaaargh...fatal');  #kills QGIS not testable
             myFile = open(myFilename, 'rt')
             myText = myFile.readlines()
+            myFile.close()
             myExpectedText = ['QGIS Logger Unit Test\n', 
                               'This is a debug\n',
                               'This is a warning\n', 

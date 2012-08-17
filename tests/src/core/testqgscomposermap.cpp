@@ -48,7 +48,7 @@ class TestQgsComposerMap: public QObject
 
 void TestQgsComposerMap::initTestCase()
 {
-  QgsApplication::init( QString() );
+  QgsApplication::init();
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
