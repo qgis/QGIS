@@ -255,20 +255,24 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       double x = cos( p1.y() ) * sin( p2.y() ) -
                  sin( p1.y() ) * cos( p2.y() ) * cos( p2.x() - p1.x() );
 
+      // Use TOL to decide if the quotient is big enough.
+      // Both x and y can be very small, if heavily zoomed
+      // For small y/x, we set directly angle 0. Not sure
+      // if this is needed.
       if ( y > 0.0 )
       {
-        if ( x > TOL )
+        if ( x > 0.0 && ( y / x ) > TOL )
           angle = atan( y / x );
-        else if ( x < -TOL )
+        else if ( x < 0.0 && ( y / x ) < -TOL )
           angle = PI - atan( -y / x );
         else
           angle = 0.5 * PI;
       }
       else if ( y < 0.0 )
       {
-        if ( x > TOL )
+        if ( x > 0.0 && ( y / x ) < -TOL )
           angle = -atan( -y / x );
-        else if ( x < -TOL )
+        else if ( x < 0.0 && ( y / x ) > TOL )
           angle = atan( y / x ) - PI;
         else
           angle = 1.5 * PI;
