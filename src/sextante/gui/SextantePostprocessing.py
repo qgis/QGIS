@@ -22,9 +22,6 @@ class SextantePostprocessing:
                 try:
                     if out.value.startswith("memory:"):
                         layer = out.memoryLayer
-                        layer.updateFieldMap()
-                        layer.commitChanges()
-                        layer.updateExtents()
                         QgsMapLayerRegistry.instance().addMapLayer(layer)
                     else:
                         if SextanteConfig.getSetting(SextanteConfig.USE_FILENAME_AS_LAYER_NAME):
