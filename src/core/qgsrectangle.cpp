@@ -106,29 +106,6 @@ void QgsRectangle::scale( double scaleFactor, const QgsPoint * cp )
   ymax = centerY + newHeight / 2.0;
 }
 
-void QgsRectangle::expand( double scaleFactor, const QgsPoint * cp )
-{
-  // scale from the center
-  double centerX, centerY;
-  if ( cp )
-  {
-    centerX = cp->x();
-    centerY = cp->y();
-  }
-  else
-  {
-    centerX = xmin + width() / 2;
-    centerY = ymin + height() / 2;
-  }
-
-  double newWidth = width() * scaleFactor;
-  double newHeight = height() * scaleFactor;
-  xmin = centerX - newWidth;
-  xmax = centerX + newWidth;
-  ymin = centerY - newHeight;
-  ymax = centerY + newHeight;
-}
-
 QgsRectangle QgsRectangle::intersect( const QgsRectangle * rect ) const
 {
   QgsRectangle intersection = QgsRectangle();

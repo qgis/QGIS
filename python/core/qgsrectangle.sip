@@ -56,7 +56,8 @@ class QgsRectangle
     //! Scale the rectangle around its center point
     void scale(double, const QgsPoint *c =0);
     //! Expand the rectangle to support zoom out scaling
-    void expand(double, const QgsPoint *c = 0);
+    // @deprecated use scale instead
+    void expand(double, const QgsPoint *c = 0) /Deprecated/;
     //! return the intersection with the given rectangle
     QgsRectangle intersect(const QgsRectangle *rect);
     //! returns true when rectangle intersects with other rectangle
