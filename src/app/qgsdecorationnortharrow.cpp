@@ -203,7 +203,15 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
   bool goodDirn = false;
 
-  if ( mapCanvas->layerCount() > 0 )
+  // Get the shown extent...
+  QgsRectangle canvasExtent = mapCanvas->extent();
+  // ... and all layers extent, ...
+  QgsRectangle fullExtent = mapCanvas->fullExtent();
+  // ... and combine
+  QgsRectangle extent = canvasExtent.intersect( & fullExtent );
+
+  // If no layers are added or shown, we can't get any direction
+  if ( mapCanvas->layerCount() > 0 && ! extent.isEmpty() )
   {
     QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapRenderer()->destinationCrs();
 
@@ -216,7 +224,6 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );
 
-      QgsRectangle extent = mapCanvas->extent();
       QgsPoint p1( extent.center() );
       // A point a bit above p1. XXX assumes that y increases up!!
       // May need to involve the maptopixel transform if this proves
