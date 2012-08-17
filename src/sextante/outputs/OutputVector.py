@@ -5,6 +5,8 @@ from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 
 class OutputVector(Output):
 
+    encoding = None
+
     def getFileFilter(self,alg):
         exts = alg.provider.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
@@ -32,6 +34,10 @@ class OutputVector(Output):
 
         @return writer  instance of the vectoe writer class
         '''
+
+        if self.encoding is None:
+            settings = QSettings()
+            self.encoding = settings.value("/SextanteQGIS/encoding", "System").toString()
 
         w = SextanteVectorWriter(self.value, self.encoding, fields, geomType, crs, options)
         self.memoryLayer = w.memLayer
