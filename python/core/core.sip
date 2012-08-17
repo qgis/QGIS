@@ -72,7 +72,7 @@
 %Include qgsrastershaderfunction.sip
 %Include qgsrastertransparency.sip
 %Include qgsrasterviewport.sip
-%Include qgsrect.sip
+%Include qgsrectangle.sip
 %Include qgsrendercontext.sip
 %Include qgsrenderer.sip
 %Include qgsrunprocess.sip

@@ -866,7 +866,7 @@ void QgsIdentifyResults::zoomToFeature()
   {
     QgsPoint c = rect.center();
     rect = mCanvas->extent();
-    rect.expand( 0.25, &c );
+    rect.scale( 0.5, &c );
   }
 
   mCanvas->setExtent( rect );
