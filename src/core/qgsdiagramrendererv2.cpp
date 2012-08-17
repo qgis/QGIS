@@ -54,8 +54,10 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
   size.setHeight( elem.attribute( "height" ).toDouble() );
   transparency = elem.attribute( "transparency", "0" ).toInt();
   penColor.setNamedColor( elem.attribute( "penColor" ) );
-  penColor.setAlpha( 255 - transparency );
+  int penAlpha = elem.attribute( "penAlpha", "255" ).toInt();
+  penColor.setAlpha( penAlpha );
   penWidth = elem.attribute( "penWidth" ).toDouble();
+
   minScaleDenominator = elem.attribute( "minScaleDenominator", "-1" ).toDouble();
   maxScaleDenominator = elem.attribute( "maxScaleDenominator", "-1" ).toDouble();
 
@@ -141,6 +143,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
   categoryElem.setAttribute( "width", QString::number( size.width() ) );
   categoryElem.setAttribute( "height", QString::number( size.height() ) );
   categoryElem.setAttribute( "penColor", penColor.name() );
+  categoryElem.setAttribute( "penAlpha", penColor.alpha() );
   categoryElem.setAttribute( "penWidth", QString::number( penWidth ) );
   categoryElem.setAttribute( "minScaleDenominator", QString::number( minScaleDenominator ) );
   categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
