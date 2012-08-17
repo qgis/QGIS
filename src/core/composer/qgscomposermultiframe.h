@@ -82,6 +82,8 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
     void recalculateFrameSizes();
     /**Called before a frame is going to be removed (update frame list)*/
     void handleFrameRemoval( QgsComposerItem* item );
+    /**Adapts to changed number of pages if resize type is RepeatOnEveryPage*/
+    void handlePageChange();
 
   private:
     QgsComposerMultiFrame(); //forbidden
