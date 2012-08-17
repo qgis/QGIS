@@ -128,7 +128,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
       {
         sf = extent.height() / r.height();
       }
-      sf = sf / 2.0;
+      sf = sf * 2.0;
       r.scale( sf );
 
       QgsDebugMsg( QString( "Extent scaled by %1 to %2" ).arg( sf ).arg( r.toString().toLocal8Bit().constData() ) );
