@@ -36,7 +36,9 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
     enum ResizeMode
     {
       UseExistingFrames = 0,
-      ExtendToNextPage //duplicates last frame to next page to fit the total size
+      ExtendToNextPage, //uses the next page(s) until the content has been printed
+      RepeatOnEveryPage, //repeats the same frame on every page
+      RepeatUntilFinished //duplicates last frame to next page to fit the total size
     };
 
     QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands );

@@ -63,7 +63,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   {
     if ( currentY >= totalHeight )
     {
-      if ( mResizeMode == ExtendToNextPage ) //remove unneeded frames in extent mode
+      if ( mResizeMode == RepeatUntilFinished || mResizeMode == ExtendToNextPage ) //remove unneeded frames in extent mode
       {
         for ( int j = mFrameItems.size(); j > i; --j )
         {
@@ -81,7 +81,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   }
 
   //at end of frames but there is  still content left. Add other pages if ResizeMode ==
-  if ( mResizeMode == ExtendToNextPage )
+  if ( mResizeMode == RepeatUntilFinished || mResizeMode == ExtendToNextPage )
   {
     while ( currentY < totalHeight )
     {
@@ -94,11 +94,20 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
         mComposition->setNumPages( page + 2 );
       }
 
-      //copy last frame
-      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(), currentItem->transform().dy() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
-          currentItem->rect().width(), currentItem->rect().height() );
+      double frameHeight = 0;
+      if ( mResizeMode == RepeatUntilFinished )
+      {
+        frameHeight = currentItem->rect().height();
+      }
+      else //mResizeMode == ExtendToNextPage
+      {
+        frameHeight = ( currentY + mComposition->paperHeight() ) > totalHeight ?  totalHeight - currentY : mComposition->paperHeight();
+      }
+      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(),
+          ( mComposition->numPages() - 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ),
+          currentItem->rect().width(), frameHeight );
       newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
-      currentY += newFrame->rect().height();
+      currentY += frameHeight;
       currentItem = newFrame;
       addFrame( newFrame, false );
     }
