@@ -69,13 +69,17 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsR
     size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
   }
 
-  return size;
+  QSizeF scaledSize = sizeForPAL( size, s, c );
+  return scaledSize;
 }
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
-  return s.size;
+  QSizeF scaledSize = sizeForPAL( s.size, s, c );
+  return scaledSize;
 }
+
+int  QgsPieDiagram::sCount = 0;
 
 void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {

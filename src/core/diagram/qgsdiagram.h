@@ -44,6 +44,7 @@ class CORE_EXPORT QgsDiagram
   protected:
     void setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c );
     QSizeF sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c );
+    QSizeF sizeForPAL(  const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c );
     float sizePainterUnits( float l, const QgsDiagramSettings& s, const QgsRenderContext& c );
     QFont scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c );
 };
