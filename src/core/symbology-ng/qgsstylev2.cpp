@@ -102,7 +102,7 @@ bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QSt
   QDomElement symEl = QgsSymbolLayerV2Utils::saveSymbol( name, symbol, doc );
   if ( symEl.isNull() )
   {
-    QgsDebugMsg( "Couldnot convert symbol to valid XML!" );
+    QgsDebugMsg( "Couldn't convert symbol to valid XML!" );
     return false;
   }
 
@@ -115,7 +115,7 @@ bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QSt
 
   if ( !runEmptyQuery( query ) )
   {
-    QgsDebugMsg( "Couldnot insert symbol into the Database!" );
+    QgsDebugMsg( "Couldn't insert symbol into the database!" );
     return false;
   }
   return true;
@@ -181,6 +181,7 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp )
   if ( mColorRamps.contains( name ) )
     delete mColorRamps.value( name );
 
+  QgsDebugMsg( "Inserted " + name );
   mColorRamps.insert( name, colorRamp );
   return true;
 }
@@ -195,7 +196,7 @@ bool QgsStyleV2::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int gr
   QDomElement rampEl = QgsSymbolLayerV2Utils::saveColorRamp( name, ramp, doc );
   if ( rampEl.isNull() )
   {
-    QgsDebugMsg( "Couldnot convert color ramp to valid XML!" );
+    QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );
     return false;
   }
 
@@ -208,7 +209,7 @@ bool QgsStyleV2::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int gr
 
   if ( !runEmptyQuery( query ) )
   {
-    QgsDebugMsg( "Couldnot insert colorramp into the Database!" );
+    QgsDebugMsg( "Couldn't insert colorramp into the database!" );
     return false;
   }
 
@@ -264,7 +265,7 @@ bool QgsStyleV2::openDB( QString filename )
   rc = sqlite3_open( namearray.constData(), &mCurrentDB );
   if ( rc )
   {
-    mErrorString = "Couldn't open the style Database: " + QString( sqlite3_errmsg( mCurrentDB ) );
+    mErrorString = "Couldn't open the style database: " + QString( sqlite3_errmsg( mCurrentDB ) );
     sqlite3_close( mCurrentDB );
     return false;
   }
@@ -335,8 +336,8 @@ bool QgsStyleV2::save( QString filename )
     filename = mFileName;
 
   // TODO evaluate the requirement of this function and change implementation accordingly
-
-  /*
+  // TODO enable save TestStyleV2::testSaveLoad()
+#if 0
   QDomDocument doc( "qgis_style" );
   QDomElement root = doc.createElement( "qgis_style" );
   root.setAttribute( "version", STYLE_CURRENT_VERSION );
@@ -366,7 +367,7 @@ bool QgsStyleV2::save( QString filename )
   QTextStream ts( &f );
   doc.save( ts, 2 );
   f.close();
-  */
+#endif
 
   mFileName = filename;
   return true;
@@ -970,7 +971,7 @@ int QgsStyleV2::addSmartgroup( QString name, QString op, QgsSmartConditionMap co
 
   if ( !runEmptyQuery( query ) )
   {
-    QgsDebugMsg( "Couldnot insert symbol into the Database!" );
+    QgsDebugMsg( "Couldn't insert symbol into the database!" );
   }
   else
   {

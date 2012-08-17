@@ -27,58 +27,54 @@ class TestQgsRectangle: public QObject
   private slots:
     void manipulate();
     void regression6194();
-  private:
-    QgsRectangle mRect1;
-    QgsRectangle mRect2;
-    QgsRectangle mRect3;
-    QgsRectangle mRect4;
-    QgsPoint     mPoint1;
-    QgsPoint     mPoint2;
 };
 
 void TestQgsRectangle::manipulate()
 {
   // Set up two intersecting rectangles and normalize
-  mRect1.set( 4.0, 5.0, 1.0, 2.0 );
-  mRect2.set( 3.0, 3.0, 7.0, 1.0 );
+  QgsRectangle rect1, rect2, rect3;
+  rect1.set( 4.0, 5.0, 1.0, 2.0 );
+  rect2.set( 3.0, 3.0, 7.0, 1.0 );
   // Check intersection
-  QVERIFY( mRect2.intersects( mRect1 ) );
+  QVERIFY( rect2.intersects( rect1 ) );
   // Create intersection
-  mRect3 = mRect2.intersect( & mRect1 );
+  rect3 = rect2.intersect( &rect1 );
   // Check width and height (real numbers, careful)
-  QCOMPARE( mRect3.width(), 1.0 );
-  QCOMPARE( mRect3.height(), 1.0 );
+  QCOMPARE( rect3.width(), 1.0 );
+  QCOMPARE( rect3.height(), 1.0 );
   // And check that the result is contained in both
-  QVERIFY( mRect1.contains( mRect3 ) );
-  QVERIFY( mRect2.contains( mRect3 ) );
-  QVERIFY( ! mRect2.contains( mRect1 ) );
+  QVERIFY( rect1.contains( rect3 ) );
+  QVERIFY( rect2.contains( rect3 ) );
+  QVERIFY( ! rect2.contains( rect1 ) );
 
   // Create the union
-  mRect3.unionRect( mRect1 );
-  mRect3.unionRect( mRect2 );
+  rect3.unionRect( rect1 );
+  rect3.unionRect( rect2 );
   // Check union
-  QVERIFY( mRect3 == QgsRectangle( 1.0, 1.0, 7.0, 5.0 ) );
+  QVERIFY( rect3 == QgsRectangle( 1.0, 1.0, 7.0, 5.0 ) );
 };
 
 void TestQgsRectangle::regression6194()
 {
   // 100 wide, 200 high
-  mRect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
+  QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
 
   // 250 wide, 500 high
-  mRect2.setXMinimum( 10.0 );
-  mRect2.setYMinimum( 20.0 );
-  mRect2.setXMaximum( 260.0 );
-  mRect2.setYMaximum( 520.0 );
+  QgsRectangle rect2;
+  rect2.setXMinimum( 10.0 );
+  rect2.setYMinimum( 20.0 );
+  rect2.setXMaximum( 260.0 );
+  rect2.setYMaximum( 520.0 );
 
   // Scale by 2.5, keeping bottom left as is.
-  mRect1.scale( 2.5, & QgsPoint( 135.0, 270.0 ) );
+  QgsPoint p( 135.0, 270.0 );
+  rect1.scale( 2.5, &p );
 
-  QVERIFY( mRect2.xMinimum() == mRect1.xMinimum() );
-  QVERIFY( mRect2.yMinimum() == mRect1.yMinimum() );
-  QVERIFY( mRect2.xMaximum() == mRect1.xMaximum() );
-  QVERIFY( mRect2.yMaximum() == mRect1.yMaximum() );
-  QVERIFY( mRect1 == mRect2 );
+  QVERIFY( rect2.xMinimum() == rect1.xMinimum() );
+  QVERIFY( rect2.yMinimum() == rect1.yMinimum() );
+  QVERIFY( rect2.xMaximum() == rect1.xMaximum() );
+  QVERIFY( rect2.yMaximum() == rect1.yMaximum() );
+  QVERIFY( rect1 == rect2 );
 };
 
 QTEST_MAIN( TestQgsRectangle )
