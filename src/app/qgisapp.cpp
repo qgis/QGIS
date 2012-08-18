@@ -1395,8 +1395,8 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setWhatsThis( tr( "Shows the map coordinates at the "
                                  "current cursor position. The display is continuously updated "
                                  "as the mouse is moved. It also allows editing to set the canvas "
-                                 "center to a given position." ) );
-  mCoordsEdit->setToolTip( tr( "Current map coordinate (formatted as x,y)" ) );
+                                 "center to a given position. The format is lat,lon or east,north" ) );
+  mCoordsEdit->setToolTip( tr( "Current map coordinate (lat,lon or east,north)" ) );
   statusBar()->addPermanentWidget( mCoordsEdit, 0 );
   connect( mCoordsEdit, SIGNAL( editingFinished() ), this, SLOT( userCenter() ) );
 
