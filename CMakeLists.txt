@@ -289,6 +289,8 @@ ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo
 IF(MSVC)
   SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DQGISDEBUG=1")
   SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DQGISDEBUG=1")
+  # disable macros that offend std::numeric_limits<T>::min()/max()
+  ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
 
 #############################################################

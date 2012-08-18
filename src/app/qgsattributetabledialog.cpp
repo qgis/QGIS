@@ -707,7 +707,7 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );\
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
     columnBoxInit();
   }
 }

@@ -82,14 +82,6 @@ email                : tim at linfiniti.com
 typedef void buildsupportedrasterfilefilter_t( QString & theFileFiltersString );
 typedef bool isvalidrasterfilename_t( QString const & theFileNameQString, QString & retErrMsg );
 
-// workaround for MSVC compiler which already has defined macro max
-// that interferes with calling std::numeric_limits<int>::max
-#ifdef _MSC_VER
-# ifdef max
-#  undef max
-# endif
-#endif
-
 // Comparison value for equality; i.e., we shouldn't directly compare two
 // floats so it's better to take their difference and see if they're within
 // a certain range -- in this case twenty times the smallest value that
@@ -339,6 +331,7 @@ int QgsRasterLayer::bandNumber( QString const & theBandName ) const
   return 0;                     //no band was found
 }
 
+#if 0
 /**
  * Private method to calculate statistics for a band. Populates rasterStatsMemArray.
  * Calculates:
@@ -358,7 +351,6 @@ int QgsRasterLayer::bandNumber( QString const & theBandName ) const
  * @sa RasterBandStats
  * @note This is a cpu intensive and slow task!
  */
-/*
 const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
 {
   QgsDebugMsg( "theBandNo = " + QString::number( theBandNo ) );
@@ -431,7 +423,7 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBand
 
   return QgsRasterBandStats();     // return a null one
 }
-*/
+#endif
 
 QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyramidList,
                                        QString const & theResamplingMethod, bool theTryInternalFlag )
@@ -2234,8 +2226,8 @@ void QgsRasterLayer::setRenderer( QgsRasterRenderer* theRenderer )
   mPipe.set( theRenderer );
 }
 
+#if 0
 // not sure if we want it
-/*
 void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter )
 {
   QgsDebugMsg( "Entered" );
@@ -2246,7 +2238,8 @@ void QgsRasterLayer::setResampleFilter( QgsRasterResampleFilter* resampleFilter 
     QgsDebugMsg( "Cannot set resample filter." );
   }
 }
-*/
+#endif
+
 void QgsRasterLayer::showProgress( int theValue )
 {
   emit progressUpdate( theValue );
