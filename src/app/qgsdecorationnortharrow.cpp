@@ -203,7 +203,15 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
   bool goodDirn = false;
 
-  if ( mapCanvas->layerCount() > 0 )
+  // Get the shown extent...
+  QgsRectangle canvasExtent = mapCanvas->extent();
+  // ... and all layers extent, ...
+  QgsRectangle fullExtent = mapCanvas->fullExtent();
+  // ... and combine
+  QgsRectangle extent = canvasExtent.intersect( & fullExtent );
+
+  // If no layers are added or shown, we can't get any direction
+  if ( mapCanvas->layerCount() > 0 && ! extent.isEmpty() )
   {
     QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapRenderer()->destinationCrs();
 
@@ -216,7 +224,6 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );
 
-      QgsRectangle extent = mapCanvas->extent();
       QgsPoint p1( extent.center() );
       // A point a bit above p1. XXX assumes that y increases up!!
       // May need to involve the maptopixel transform if this proves
@@ -255,20 +262,24 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       double x = cos( p1.y() ) * sin( p2.y() ) -
                  sin( p1.y() ) * cos( p2.y() ) * cos( p2.x() - p1.x() );
 
+      // Use TOL to decide if the quotient is big enough.
+      // Both x and y can be very small, if heavily zoomed
+      // For small y/x, we set directly angle 0. Not sure
+      // if this is needed.
       if ( y > 0.0 )
       {
-        if ( x > TOL )
+        if ( x > 0.0 && ( y / x ) > TOL )
           angle = atan( y / x );
-        else if ( x < -TOL )
+        else if ( x < 0.0 && ( y / x ) < -TOL )
           angle = PI - atan( -y / x );
         else
           angle = 0.5 * PI;
       }
       else if ( y < 0.0 )
       {
-        if ( x > TOL )
+        if ( x > 0.0 && ( y / x ) < -TOL )
           angle = -atan( -y / x );
-        else if ( x < -TOL )
+        else if ( x < 0.0 && ( y / x ) > TOL )
           angle = atan( y / x ) - PI;
         else
           angle = 1.5 * PI;
