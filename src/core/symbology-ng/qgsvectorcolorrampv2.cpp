@@ -362,7 +362,7 @@ QColor QgsCptCityColorRampV2::color( double value ) const
   c1 = mPalette[0].second;
   for ( int i = 0; i < numStops; i++ )
   {
-    if ( mPalette[i].first >= value )
+    if ( mPalette[i].first > value )
     {
       if ( mGradientType == Discrete )
         return c1;

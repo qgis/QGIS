@@ -473,8 +473,9 @@ static const char* cptCityNames [] =
 static const char* cptCitySelectionsMin [] =
 {
   "",
-  "cb",
+  "test",
   "cb/",
+  "grass/",
   NULL, NULL
 };
 

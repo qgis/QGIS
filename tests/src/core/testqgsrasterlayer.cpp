@@ -58,6 +58,7 @@ class TestQgsRasterLayer: public QObject
     void colorRamp1();
     void colorRamp2();
     void colorRamp3();
+    void colorRamp4();
     void landsatBasic();
     void landsatBasic875Qml();
     void checkDimensions();
@@ -254,10 +255,19 @@ void TestQgsRasterLayer::colorRamp2()
 
 void TestQgsRasterLayer::colorRamp3()
 {
-  // cpt-city ramp, small selection available in <testdir>/cpt-city
-  QgsCptCityCollection::initCollection( DEFAULT_CPTCITY_COLLECTION, mTestDataDir + "cpt-city" );
+  // cpt-city ramp, discrete
+  QgsCptCityCollection::initCollections();
   QVERIFY( testColorRamp( "raster_colorRamp3",
-                          new QgsCptCityColorRampV2( "gmt/GMT_panoply", "" ),
+                          new QgsCptCityColorRampV2( "cb/div/BrBG", "_10" ),
+                          QgsColorRampShader::DISCRETE, 10 ) );
+}
+
+void TestQgsRasterLayer::colorRamp4()
+{
+  // cpt-city ramp, continuous
+  QgsCptCityCollection::initCollections();
+  QVERIFY( testColorRamp( "raster_colorRamp4",
+                          new QgsCptCityColorRampV2( "grass/elevation", "" ),
                           QgsColorRampShader::DISCRETE, 10 ) );
 }
 

@@ -83,7 +83,7 @@ void TestStyleV2::initTestCase()
   // mStyle->clear();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
-  QgsCptCityCollection::initCollection( DEFAULT_CPTCITY_COLLECTION, mTestDataDir + "cpt-city" );
+  QgsCptCityCollection::initCollections();
 }
 
 void TestStyleV2::cleanupTestCase()
@@ -124,17 +124,15 @@ void TestStyleV2::testCreateColorRamps()
   QgsVectorColorBrewerColorRampV2* cb2Ramp = new QgsVectorColorBrewerColorRampV2( "RdYlGn", 6 );
   QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp ) );
 
-  // if ( QgsCptCityColorRampV2::hasBasicSchemes() )
-  // {
-  QgsCptCityColorRampV2* cc1Ramp = new QgsCptCityColorRampV2( "jjg/misc/temperature", "" );
+  // discrete ramp with no variant
+  QgsCptCityColorRampV2* cc1Ramp = new QgsCptCityColorRampV2( "cb/seq/PuBuGn_06", "" );
   QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp ) );
+  // discrete ramp with variant
   QgsCptCityColorRampV2* cc2Ramp = new QgsCptCityColorRampV2( "cb/div/PiYG", "_10" );
   QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp ) );
-  // }
-  // else
-  // {
-  //   QWARN( "cpt-city support files not found - skipping cpt-city color ramp tests" );
-  // }
+  // continuous ramp
+  QgsCptCityColorRampV2* cc3Ramp = new QgsCptCityColorRampV2( "grass/byr", "" );
+  QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp ) );
 }
 
 void TestStyleV2::testLoadColorRamps()
@@ -155,15 +153,15 @@ void TestStyleV2::testLoadColorRamps()
   colorTests.insert( "test_cb2", qMakePair( 0.66, QColor( "#d9ef8b" ) ) );
 
   // cpt-city
-  // if ( QgsCptCityColorRampV2::hasAllSchemes() )
-  // {
   colorRampsTest << "test_cc1";
-  colorTests.insert( "test_cc1", qMakePair( 0.25, QColor( "#466fcf" ) ) );
-  colorTests.insert( "test_cc1", qMakePair( 0.66, QColor( "#dbc85b" ) ) );
+  colorTests.insert( "test_cc1", qMakePair( 0.25, QColor( "#d0d1e6" ) ) );
+  colorTests.insert( "test_cc1", qMakePair( 0.66, QColor( "#67a9cf" ) ) );
   colorRampsTest << "test_cc2";
   colorTests.insert( "test_cc2", qMakePair( 0.25, QColor( "#de77ae" ) ) );
   colorTests.insert( "test_cc2", qMakePair( 0.66, QColor( "#b8e186" ) ) );
-  // }
+  colorRampsTest << "test_cc3";
+  colorTests.insert( "test_cc3", qMakePair( 0.25, QColor( "#7f7f7f" ) ) );
+  colorTests.insert( "test_cc3", qMakePair( 0.66, QColor( "#ffad00" ) ) );
 
   foreach ( QString name, colorRampsTest )
   {
@@ -187,7 +185,7 @@ void TestStyleV2::testLoadColorRamps()
 
 void TestStyleV2::testSaveLoad()
 {
-#if 0
+  //#if 0
   mStyle->save();
   mStyle->clear();
   mStyle->load( QgsApplication::userStyleV2Path() );
@@ -204,7 +202,9 @@ void TestStyleV2::testSaveLoad()
     if ( ramp )
       delete ramp;
   }
-#endif
+  // test color ramps again
+  testLoadColorRamps();
+  //#endif
 }
 
 
