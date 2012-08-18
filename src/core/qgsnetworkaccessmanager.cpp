@@ -20,6 +20,7 @@
  ***************************************************************************/
 
 #include <qgsnetworkaccessmanager.h>
+#include <qgsmessagelog.h>
 #include <qgslogger.h>
 
 #include <QUrl>
@@ -132,9 +133,23 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
 
   // abort request, when network timeout happens
   QTimer *timer = new QTimer( reply );
+  connect( timer, SIGNAL( timeout() ), this, SLOT( abortRequest() ) );
 
   QSettings s;
-  timer->singleShot( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt(), reply, SLOT( abort() ) );
+  timer->start( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt() );
 
   return reply;
+}
+
+void QgsNetworkAccessManager::abortRequest()
+{
+  QTimer *timer = qobject_cast<QTimer *>( sender() );
+  Q_ASSERT( timer );
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply *>( timer->parent() );
+  Q_ASSERT( reply );
+
+  QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
+
+  reply->abort();
 }

@@ -76,6 +76,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
 
+  private slots:
+    void abortRequest();
+
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0 );
 
