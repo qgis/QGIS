@@ -20,6 +20,56 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 
+/*   SqlGeometry serialization format
+
+Simple Point (SerializationProps & IsSinglePoint)
+  [SRID][0x01][SerializationProps][Point]
+
+Simple Line Segment (SerializationProps & IsSingleLineSegment)
+  [SRID][0x01][SerializationProps][Point][Point]
+
+Complex Geometries
+  [SRID][0x01][SerializationProps][NumPoints][Point]..[Point]
+  [NumFigures][Figure]..[Figure][NumShapes][Shape]..[Shape]
+
+SRID
+  Spatial Reference Id (4 bytes)
+
+SerializationProps (bitmask) 1 byte
+  0x01 = HasZValues
+  0x02 = HasMValues
+  0x04 = IsValid
+  0x08 = IsSinglePoint
+  0x10 = IsSingleLineSegment
+  0x20 = IsWholeGlobe
+
+Point (2-4)x8 bytes, size depends on SerializationProps & HasZValues & HasMValues
+  [x][y][z][m]                  - SqlGeometry
+  [latitude][longitude][z][m]   - SqlGeography
+
+Figure
+  [FigureAttribute][PointOffset]
+
+FigureAttribute (1 byte)
+  0x00 = Interior Ring
+  0x01 = Stroke
+  0x02 = Exterior Ring
+
+Shape
+  [ParentFigureOffset][FigureOffset][ShapeType]
+
+ShapeType (1 byte)
+  0x00 = Unknown
+  0x01 = Point
+  0x02 = LineString
+  0x03 = Polygon
+  0x04 = MultiPoint
+  0x05 = MultiLineString
+  0x06 = MultiPolygon
+  0x07 = GeometryCollection
+
+*/
+
 /************************************************************************/
 /*                         Geometry parser macros                       */
 /************************************************************************/
@@ -179,10 +229,8 @@ void QgsMssqlGeometryParser::ReadPoint( int iShape )
 
 void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
 {
-  int iFigure, iPoint, iNextPoint, iCount;
-  iFigure = FigureOffset( iShape );
-  iNextPoint = NextPointOffset( iFigure );
-  iCount = iNextPoint - PointOffset( iFigure );
+  int i, iCount;
+  iCount = nNumShapes - iShape - 1;
   if ( iCount <= 0 )
     return;
   // copy byte order
@@ -197,9 +245,13 @@ void QgsMssqlGeometryParser::ReadMultiPoint( int iShape )
   // copy point count
   CopyBytes( &iCount, 4 );
   // copy points
-  for ( iPoint = PointOffset( iFigure ); iPoint < iNextPoint; iPoint++ )
+  for ( i = iShape + 1; i < nNumShapes; i++ )
   {
-    CopyPoint( iShape );
+    if ( ParentOffset( i ) == ( unsigned int )iShape )
+    {
+      if ( ShapeType( i ) == ST_POINT )
+        ReadPoint( i );
+    }
   }
 }
 
