@@ -981,6 +981,13 @@ void QgsWmsProvider::tileReplyFinished()
   }
   cmd.setRawHeaders( hl );
 
+  QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+  if( cmd.expirationDate().isNull() )
+  {
+    QSettings s;
+    cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );
+  }
+
   QgsNetworkAccessManager::instance()->cache()->updateMetaData( cmd );
 
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();

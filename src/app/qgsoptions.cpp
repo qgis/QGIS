@@ -136,6 +136,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   //Network timeout
   mNetworkTimeoutSpinBox->setValue( settings.value( "/qgis/networkAndProxy/networkTimeout", "60000" ).toInt() );
 
+  // WMS/WMS-C tile expiry time
+  mDefaultTileExpirySpinBox->setValue( settings.value( "/qgis/defaultTileExpiry", "24" ).toInt() );
+
   //Web proxy settings
   grpProxy->setChecked( settings.value( "proxy/proxyEnabled", "0" ).toBool() );
   leProxyHost->setText( settings.value( "proxy/proxyHost", "" ).toString() );
@@ -767,6 +770,9 @@ void QgsOptions::saveOptions()
 
   //Network timeout
   settings.setValue( "/qgis/networkAndProxy/networkTimeout", mNetworkTimeoutSpinBox->value() );
+
+  // WMS/WMS-C tile expiry time
+  settings.setValue( "/qgis/defaultTileExpiry", mDefaultTileExpirySpinBox->value() );
 
   //Web proxy settings
   settings.setValue( "proxy/proxyEnabled", grpProxy->isChecked() );

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>807</width>
-    <height>673</height>
+    <width>810</width>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>773</width>
-            <height>938</height>
+            <width>784</width>
+            <height>1099</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -948,9 +948,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-169</y>
-            <width>938</width>
-            <height>785</height>
+            <y>0</y>
+            <width>1201</width>
+            <height>850</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -1464,8 +1464,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>773</width>
-            <height>718</height>
+            <width>646</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1834,8 +1834,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>791</width>
-            <height>599</height>
+            <width>317</width>
+            <height>91</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1915,8 +1915,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>791</width>
-            <height>599</height>
+            <width>679</width>
+            <height>642</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -2291,8 +2291,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>791</width>
-            <height>599</height>
+            <width>745</width>
+            <height>431</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -2478,8 +2478,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>791</width>
-            <height>599</height>
+            <width>519</width>
+            <height>575</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -2575,8 +2575,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>791</width>
-            <height>599</height>
+            <width>589</width>
+            <height>582</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -2768,7 +2768,7 @@
              </item>
             </layout>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QLabel" name="mNetworkTimeoutLabel">
@@ -2779,6 +2779,24 @@
              </item>
              <item>
               <widget class="QSpinBox" name="mNetworkTimeoutSpinBox">
+               <property name="maximum">
+                <number>100000000</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="5" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_17">
+             <item>
+              <widget class="QLabel" name="label_32">
+               <property name="text">
+                <string>Default expiration period for WMS-C/WMTS tiles (hours)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="mDefaultTileExpirySpinBox">
                <property name="maximum">
                 <number>100000000</number>
                </property>

@@ -23,6 +23,9 @@
 #include <qgslogger.h>
 
 #include <QUrl>
+#include <QSettings>
+#include <QTimer>
+#include <QNetworkReply>
 
 #if QT_VERSION >= 0x40500
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
@@ -126,5 +129,12 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   emit requestAboutToBeCreated( op, req, outgoingData );
   QNetworkReply *reply = QNetworkAccessManager::createRequest( op, req, outgoingData );
   emit requestCreated( reply );
+
+  // abort request, when network timeout happens
+  QTimer *timer = new QTimer( reply );
+
+  QSettings s;
+  timer->singleShot( s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt(), reply, SLOT( abort() ) );
+
   return reply;
 }
