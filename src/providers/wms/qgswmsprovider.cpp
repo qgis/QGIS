@@ -2430,8 +2430,6 @@ void QgsWmsProvider::parseTileSetProfile( QDomElement const &e )
   l.setLinks.insert( ms.identifier, sl );
   mTileLayersSupported.append( l );
 
-  m.topLeft = QgsPoint( l.boundingBox.box.xMinimum(), l.boundingBox.box.yMaximum() );
-
   int i = 0;
   foreach ( QString rS, resolutions )
   {
@@ -2439,6 +2437,7 @@ void QgsWmsProvider::parseTileSetProfile( QDomElement const &e )
     m.identifier = QString::number( i );
     m.matrixWidth  = ceil( l.boundingBox.box.width() / m.tileWidth / r );
     m.matrixHeight = ceil( l.boundingBox.box.height() / m.tileHeight / r );
+    m.topLeft = QgsPoint( l.boundingBox.box.xMinimum(), l.boundingBox.box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     ms.tileMatrices.insert( r, m );
     i++;
   }
