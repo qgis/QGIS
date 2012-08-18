@@ -159,7 +159,7 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     QList<QColor> mPalette;
 };
 
-#define DEFAULT_CPTCITY_COLLECTION "default"
+#define DEFAULT_CPTCITY_COLLECTION "cpt-city-qgis-min"
 
 class CORE_EXPORT QgsCptCityCollection
 {
@@ -175,11 +175,13 @@ class CORE_EXPORT QgsCptCityCollection
     bool loadSchemes( QString rootDir = "", bool reset = false );
     /** Is the minimal (free to distribute) set of schemes available?
      * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
-    bool hasBasicSchemes();
+    /* bool hasBasicSchemes(); */
     /** Is the entire archive available? Currently tests that there is at least one scheme. */
-    bool hasAllSchemes();
-    QStringList listSchemeCollections( QString collectionName = "", bool recursive = false );
-    QStringList listSchemeNames( QString collectionName );
+    /* bool hasAllSchemes(); */
+    bool isEmpty();
+
+    QStringList listDirNames( QString dirName = "", bool recursive = false );
+    QStringList listSchemeNames( QString dirName );
     QgsCptCityCollection* colorRampFromSVGFile( QString svgFile );
     QgsCptCityCollection* colorRampFromSVGString( QString svgString );
 
@@ -190,26 +192,26 @@ class CORE_EXPORT QgsCptCityCollection
     QString collectionName() const { return mCollectionName; }
     QMap< QString, QStringList > schemeMap() const { return mSchemeMap; }
     QMap< QString, QStringList > schemeVariants() const { return mSchemeVariants; }
-    QMap< QString, QString > collectionNames() const { return mCollectionNames; }
-    QMap< QString, QStringList > collectionSelections() const { return mCollectionSelections; }
+    QMap< QString, QString > dirNamesMap() const { return mDirNamesMap; }
+    QMap< QString, QStringList > selectionsMap() const { return mSelectionsMap; }
 
-    static void initCollection( QString collectionName = DEFAULT_CPTCITY_COLLECTION,
-                                QString collectionBaseDir = baseDir( DEFAULT_CPTCITY_COLLECTION ) );
-    static void initCollections( ) { initCollection(); }
-    static void initCollections( QMap< QString, QString > collectionsDefs );
+    static void initCollections( bool loadAll = false );
+    static void initCollection( QString collectionName, QString collectionBaseDir );
+    static void clearCollections();
     static QgsCptCityCollection* defaultCollection();
+    static QString defaultCollectionName();
     static QMap< QString, QgsCptCityCollection* > collectionRegistry();
 
   protected:
 
     QString mCollectionName;
     QString mBaseDir;
-    QStringList mCollections;
+    QStringList mDirNames;
     QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
     QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
-    QMap< QString, QString > mCollectionNames; //key is name, value is description
-    QMap< QString, QStringList > mCollectionSelections;
-    static QgsCptCityCollection* mDefaultCollection;
+    QMap< QString, QString > mDirNamesMap; //key is name, value is description
+    QMap< QString, QStringList > mSelectionsMap;
+    static QString mDefaultCollectionName;
     static QMap< QString, QgsCptCityCollection* > mCollectionRegistry;
     static QMap< QString, QMap< QString, QString > > mCopyingInfoMap; // mapping of copyinginfo, key is fileName
 };
@@ -222,8 +224,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 {
   public:
     QgsCptCityColorRampV2( QString schemeName = DEFAULT_CPTCITY_SCHEMENAME,
-                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME,
-                           QString collectionName = DEFAULT_CPTCITY_COLLECTION );
+                           QString variantName = DEFAULT_CPTCITY_VARIANTNAME );
 
 
     enum GradientType
@@ -251,9 +252,9 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
     QString variantName() const { return mVariantName; }
     QStringList variantList() const { return mVariantList; }
     /* QgsCptCityCollection* collection() const { return mCollection; } */
-    QString collectionName() const { return mCollectionName; }
-    QgsCptCityCollection* collection() const
-    { return QgsCptCityCollection::collectionRegistry().value( mCollectionName ); }
+    /* QString collectionName() const { return mCollectionName; } */
+    /* QgsCptCityCollection* collection() const */
+    /* { return QgsCptCityCollection::collectionRegistry().value( mCollectionName ); } */
 
     /* lazy loading - have to call loadPalette() explicitly */
     void setSchemeName( QString schemeName ) { mSchemeName = schemeName; mFileLoaded = false; }
@@ -276,7 +277,7 @@ class CORE_EXPORT QgsCptCityColorRampV2 : public QgsVectorColorRampV2
 
     QString mSchemeName;
     QString mVariantName;
-    QString mCollectionName;
+    /* QString mCollectionName; */
     /* QgsCptCityCollection* mCollection; */
     GradientType mGradientType;
     GradientList mPalette;

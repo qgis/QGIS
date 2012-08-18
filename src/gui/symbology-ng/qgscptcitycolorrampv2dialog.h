@@ -53,7 +53,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     QString mCollectionGroup;
 
     /* void refreshModel( const QModelIndex& index ); */
-    /* void showEvent( QShowEvent * event ); */
+    void showEvent( QShowEvent * event );
 
     QgsCptCityBrowserModel* mModel;
     QgsCptCityBrowserModel* mAuthorsModel;

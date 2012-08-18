@@ -24,6 +24,7 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTime>
+#include <QErrorMessage>
 
 /////////
 
@@ -45,80 +46,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     : QDialog( parent ), mRamp( ramp )
 {
   setupUi( this );
-
-  if ( QgsCptCityCollection::collectionRegistry().isEmpty() )
-    QgsCptCityCollection::initCollections( );
-  mCollection = QgsCptCityCollection::collectionRegistry()[ DEFAULT_CPTCITY_COLLECTION ];
-  if ( ! mCollection )
-    return;
-
-  // show information on how to install cpt-city files if none are found
-  if ( ! mCollection->hasAllSchemes() )
-  {
-    QTextEdit *edit = new QTextEdit();
-    edit->setReadOnly( true );
-    // not sure if we want this long string to be translated
-    QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
-                           "You have two means of installing them:\n\n"
-                           "1) Install the \"Color Ramp Manager\" python plugin "
-                           "(you must enable Experimental plugins in the plugin manager) "
-                           "and use it to download latest cpt-city package.\n\n"
-                           "2) Download the complete collection (in svg format) "
-                           "and unzip it to your QGis settings directory [%1] .\n\n"
-                           "This file can be found at [%2]\nand current file is [%3]"
-                         ).arg( QgsApplication::qgisSettingsDirPath()
-                              ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
-                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.02.zip" );
-    edit->setText( helpText );
-    stackedWidget->addWidget( edit );
-    stackedWidget->setCurrentIndex( 2 );
-    tabBar->setVisible( false );
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-    return;
-  }
-
-  // model / view
-  mAuthorsModel = new QgsCptCityBrowserModel( mBrowserView, DEFAULT_CPTCITY_COLLECTION, "authors" );
-  mSelectionsModel = new QgsCptCityBrowserModel( mBrowserView, DEFAULT_CPTCITY_COLLECTION, "selections" );
-  mModel = mSelectionsModel;
-  mBrowserView->setModel( mModel );
-  mBrowserView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mBrowserView->setIconSize( QSize( 100, 15 ) );
-  // provide a horizontal scroll bar instead of using ellipse (...) for longer items
-  // mBrowserView->setTextElideMode( Qt::ElideNone );
-  // mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-  mBrowserView->header()->resizeSection( 0, 250 );
-  mBrowserView->header()->setStretchLastSection( true );
-
-  // setup ui
-  tabBar->blockSignals( true );
-  tabBar->addTab( tr( "Selections by theme" ) );
-  tabBar->addTab( tr( "All by author" ) );
-  cboVariantName->setIconSize( QSize( 100, 15 ) );
-  lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
-
-  // populate tree widget - if item not found in selections collection, look for in authors
-  // try to apply selection to view
-  QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
-  if ( modelIndex == QModelIndex() )
-  {
-    modelIndex = mAuthorsModel->findPath( mRamp->schemeName() );
-    if ( modelIndex != QModelIndex() )
-    {
-      tabBar->setCurrentIndex( 1 );
-      mModel = mAuthorsModel;
-      mBrowserView->setModel( mModel );
-    }
-  }
-  if ( modelIndex != QModelIndex() )
-  {
-    lblSchemeName->setText( mRamp->schemeName() );
-    mBrowserView->setCurrentIndex( modelIndex );
-    mBrowserView->scrollTo( modelIndex, QAbstractItemView::PositionAtCenter );
-    populateVariants( mRamp->variantName() );
-    // updatePreview();
-  }
-  tabBar->blockSignals( false );
+  mAuthorsModel = mSelectionsModel = 0;
 }
 
 
@@ -142,7 +70,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
   else
   {
     QString oldVariant = cboVariantName->currentText();
-    QgsCptCityColorRampV2 ramp( mRamp->schemeName(), QString(), mRamp->collectionName() );
+    QgsCptCityColorRampV2 ramp( mRamp->schemeName(), QString() );
     QPixmap blankPixmap( cboVariantName->iconSize() );
     blankPixmap.fill( Qt::white );
     QIcon blankIcon( blankPixmap );
@@ -195,7 +123,6 @@ void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
 
 void QgsCptCityColorRampV2Dialog::on_mBrowserView_clicked( const QModelIndex &index )
 {
-  QgsDebugMsg( "Entered" );
   QgsCptCityDataItem *item = mModel->dataItem( index );
   if ( ! item )
     return;
@@ -217,7 +144,6 @@ void QgsCptCityColorRampV2Dialog::on_mBrowserView_clicked( const QModelIndex &in
 
 void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 {
-  QgsDebugMsg( QString( "index = %1" ).arg( index ) );
   if ( index == 0 )
   {
     mCollectionGroup = "selections";
@@ -407,34 +333,123 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
   }
 }
 
-// TODO - delay initialization, but is this necessary?
-#if 0
+// delay initialization and update collection if it has changed
 void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
 {
-  // delayed initialization of the model
-  if ( mModel == NULL )
+  // setup collections
+  if ( QgsCptCityCollection::collectionRegistry().isEmpty() )
   {
-    mModel = new QgsCptCityBrowserModel( mBrowserView );
-    mBrowserView->setModel( mModel );
-
-    // provide a horizontal scroll bar instead of using ellipse (...) for longer items
-    mBrowserView->setTextElideMode( Qt::ElideNone );
-    mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-    mBrowserView->header()->setStretchLastSection( false );
-
-    // // find root favourites item
-    // for ( int i = 0; i < mModel->rowCount(); i++ )
-    // {
-    //   QModelIndex index = mModel->index( i, 0 );
-    //   QgsCptCityDataItem* item = mModel->dataItem( index );
-    //   if ( item && item->type() == QgsCptCityDataItem::Favourites )
-    //     mBrowserView->expand( index );
-    // }
+    QgsCptCityCollection::initCollections( true );
+  }
+  mCollection = QgsCptCityCollection::defaultCollection();
+  // if empty collection, try loading again - this may happen after installing new package
+  if ( ! mCollection || mCollection->isEmpty() )
+  {
+    QgsCptCityCollection::initCollections( true );
+    mCollection = QgsCptCityCollection::defaultCollection();
   }
 
+  // show information on how to install cpt-city files if none are found
+  if ( ! mCollection || mCollection->isEmpty() )
+  {
+    // QgsDialog dlg( this );
+    // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
+    QTextEdit *edit = new QTextEdit( 0 );
+    edit->setReadOnly( true );
+    // not sure if we want this long string to be translated
+    QString helpText = tr( "Error - cpt-city gradient files not found.\n\n"
+                           "You have two means of installing them:\n\n"
+                           "1) Install the \"Color Ramp Manager\" python plugin "
+                           "(you must enable Experimental plugins in the plugin manager) "
+                           "and use it to download latest cpt-city package.\n"
+                           "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
+                           "2) Download the complete collection (in svg format) "
+                           "and unzip it to your QGis settings directory [%1] .\n\n"
+                           "This file can be found at [%2]\nand current file is [%3]"
+                         ).arg( QgsApplication::qgisSettingsDirPath()
+                              ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
+                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.02.zip" );
+    edit->setText( helpText );
+    stackedWidget->addWidget( edit );
+    stackedWidget->setCurrentIndex( 1 );
+    tabBar->setVisible( false );
+    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+    // dlg.layout()->addWidget( edit );
+    // dlg.resize(500,400);
+    // dlg.exec();
+    return;
+  }
+
+  if ( ! mCollection )
+    return;
+  QgsDebugMsg( "collection: " + mCollection->collectionName() );
+
+  // model / view
+  QgsDebugMsg( "loading model/view objects" );
+  if ( mAuthorsModel )
+    delete mAuthorsModel;
+  mAuthorsModel = new QgsCptCityBrowserModel( mBrowserView, mCollection, "authors" );
+  if ( mSelectionsModel )
+    delete mSelectionsModel;
+  mSelectionsModel = new QgsCptCityBrowserModel( mBrowserView, mCollection, "selections" );
+  mModel = mSelectionsModel;
+  mBrowserView->setModel( mModel );
+  mBrowserView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mBrowserView->setIconSize( QSize( 100, 15 ) );
+  // provide a horizontal scroll bar instead of using ellipse (...) for longer items
+  // mBrowserView->setTextElideMode( Qt::ElideNone );
+  // mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+  mBrowserView->header()->resizeSection( 0, 250 );
+  mBrowserView->header()->setStretchLastSection( true );
+
+  // setup ui
+  tabBar->blockSignals( true );
+  tabBar->addTab( tr( "Selections by theme" ) );
+  tabBar->addTab( tr( "All by author" ) );
+  cboVariantName->setIconSize( QSize( 100, 15 ) );
+  lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
+
+  // populate tree widget - if item not found in selections collection, look for in authors
+  // try to apply selection to view
+  QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
+  if ( modelIndex == QModelIndex() )
+  {
+    modelIndex = mAuthorsModel->findPath( mRamp->schemeName() );
+    if ( modelIndex != QModelIndex() )
+    {
+      tabBar->setCurrentIndex( 1 );
+      mModel = mAuthorsModel;
+      mBrowserView->setModel( mModel );
+    }
+  }
+  if ( modelIndex != QModelIndex() )
+  {
+    lblSchemeName->setText( mRamp->schemeName() );
+    mBrowserView->setCurrentIndex( modelIndex );
+    mBrowserView->scrollTo( modelIndex, QAbstractItemView::PositionAtCenter );
+    populateVariants( mRamp->variantName() );
+    // updatePreview();
+  }
+  tabBar->blockSignals( false );
+  if ( mCollection->collectionName() == DEFAULT_CPTCITY_COLLECTION )
+    tabBar->setCurrentIndex( 1 );
+
   QDialog::showEvent( e );
+
+  // show error message to use color ramp manager to get more gradients
+  if ( mCollection->collectionName() == DEFAULT_CPTCITY_COLLECTION &&
+       QgsCptCityCollection::collectionRegistry().count() == 1 )
+  {
+    QString helpText = tr( "You can download a more complete set of cpt-city gradients "
+                           "by installing the \"Color Ramp Manager\" plugin "
+                           "(you must enable Experimental plugins in the plugin manager).\n\n"
+                         );
+    QErrorMessage* msg = new QErrorMessage( this );
+    msg->showMessage( helpText, "cpt-city" );
+  }
 }
 
+#if 0
 void QgsCptCityColorRampV2Dialog::refresh()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -444,7 +459,6 @@ void QgsCptCityColorRampV2Dialog::refresh()
 
 void QgsCptCityColorRampV2Dialog::refreshModel( const QModelIndex& index )
 {
-  QgsDebugMsg( "Entered" );
   if ( index.isValid() )
   {
     QgsCptCityDataItem *item = mModel->dataItem( index );

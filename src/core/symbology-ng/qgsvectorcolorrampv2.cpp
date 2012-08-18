@@ -277,13 +277,13 @@ TODO load schemes
 
 */
 
-QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName,
-    QString collectionName )
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName )
     : mSchemeName( schemeName ), mVariantName( variantName ),
-    mCollectionName( collectionName ), mGradientType( Continuous ), mFileLoaded( false )
+    mGradientType( Continuous ), mFileLoaded( false )
 {
-  if ( collection() )
-    mVariantList = collection()->schemeVariants().value( schemeName );
+  QgsCptCityCollection* collection = QgsCptCityCollection::defaultCollection();
+  if ( collection )
+    mVariantList = collection->schemeVariants().value( schemeName );
 
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -295,18 +295,13 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
 {
   QString schemeName = DEFAULT_CPTCITY_SCHEMENAME;
   QString variantName = DEFAULT_CPTCITY_VARIANTNAME;
-  QString collectionName = DEFAULT_CPTCITY_COLLECTION;
 
   if ( props.contains( "schemeName" ) )
     schemeName = props["schemeName"];
   if ( props.contains( "variantName" ) )
     variantName = props["variantName"];
-  if ( props.contains( "collectionName" ) )
-    collectionName = props["collectionName"];
 
-  QgsDebugMsg( QString( "schemeName= %1 variantName= %2 collectionName= %3" ).arg( schemeName ).arg( variantName ).arg( collectionName ) );
-
-  return new QgsCptCityColorRampV2( schemeName, variantName, collectionName );
+  return new QgsCptCityColorRampV2( schemeName, variantName );
 }
 
 
@@ -393,7 +388,7 @@ QColor QgsCptCityColorRampV2::color( double value ) const
 
 QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
 {
-  return new QgsCptCityColorRampV2( mSchemeName, mVariantName, mCollectionName );
+  return new QgsCptCityColorRampV2( mSchemeName, mVariantName );
 }
 
 QgsStringMap QgsCptCityColorRampV2::properties() const
@@ -401,13 +396,11 @@ QgsStringMap QgsCptCityColorRampV2::properties() const
   QgsStringMap map;
   map["schemeName"] = mSchemeName;
   map["variantName"] = mVariantName;
-  map["collectionName"] = mCollectionName;
   return map;
 }
 
 
-QgsCptCityCollection* QgsCptCityCollection::mDefaultCollection = 0;
-QgsCptCityCollection* QgsCptCityCollection::defaultCollection() { return mDefaultCollection; }
+QString QgsCptCityCollection::mDefaultCollectionName;
 QMap< QString, QgsCptCityCollection* > QgsCptCityCollection::mCollectionRegistry;
 QMap< QString, QgsCptCityCollection* > QgsCptCityCollection::collectionRegistry() { return mCollectionRegistry; }
 QMap< QString, QMap< QString, QString > > QgsCptCityCollection::mCopyingInfoMap;
@@ -420,18 +413,18 @@ QgsCptCityCollection::QgsCptCityCollection( QString collectionName, QString base
 QgsCptCityCollection::~QgsCptCityCollection( )
 {}
 
-QStringList QgsCptCityCollection::listSchemeCollections( QString collectionName, bool recursive )
+QStringList QgsCptCityCollection::listDirNames( QString dirName, bool recursive )
 {
-  QDir dir = QDir( baseDir() + "/" + collectionName );
+  QDir dir = QDir( baseDir() + QDir::separator() + dirName );
   if ( ! dir.exists() )
     return QStringList();
 
   QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
-  if ( collectionName != "" )
+  if ( dirName != "" )
   {
     for ( int i = 0; i < entries.count(); i++ )
     {
-      entries[i] = collectionName + "/" + entries[i];
+      entries[i] = dirName + QDir::separator() + entries[i];
     }
   }
 
@@ -441,16 +434,16 @@ QStringList QgsCptCityCollection::listSchemeCollections( QString collectionName,
     QStringList entries2 = entries;
     foreach ( QString entry, entries2 )
     {
-      entries.append( listSchemeCollections( entry, true ) );
+      entries.append( listDirNames( entry, true ) );
     }
   }
 
   return entries;
 }
 
-QStringList QgsCptCityCollection::listSchemeNames( QString path )
+QStringList QgsCptCityCollection::listSchemeNames( QString dirName )
 {
-  QDir dir = QDir( mBaseDir + "/" + path );
+  QDir dir = QDir( mBaseDir + QDir::separator() + dirName );
   if ( ! dir.exists() )
   {
     QgsDebugMsg( "dir " + dir.dirName() + " does not exist" );
@@ -486,19 +479,16 @@ QString QgsCptCityCollection::baseDir( QString collectionName )
 
 QString QgsCptCityCollection::defaultBaseDir()
 {
-  QString baseDir;
-
-  // use CptCity/baseDir setting if set
+  QString baseDir, collectionName;
   QSettings settings;
-  baseDir = settings.value( "CptCity/baseDir", QString() ).toString();
-  if ( ! baseDir.isNull() )
-    baseDir += "/cpt-city";
 
-  // fallback to user setting dir
-  if ( baseDir.isNull() )
-    baseDir = QgsApplication::qgisSettingsDirPath() + "/" + "cpt-city";
+  // use CptCity/baseDir setting if set, default is user dir
+  baseDir = settings.value( "CptCity/baseDir",
+                            QgsApplication::pkgDataPath() + "/resources" ).toString();
+  // sub-dir defaults to cpt-city
+  collectionName = settings.value( "CptCity/collectionName", DEFAULT_CPTCITY_COLLECTION ).toString();
 
-  return baseDir;
+  return baseDir + QDir::separator() + collectionName;
 }
 
 QString QgsCptCityColorRampV2::fileName() const
@@ -507,7 +497,7 @@ QString QgsCptCityColorRampV2::fileName() const
     return QString();
   else
   {
-    return QgsCptCityCollection::baseDir( mCollectionName ) + "/" + mSchemeName + mVariantName + ".svg";
+    return QgsCptCityCollection::defaultBaseDir() + QDir::separator() + mSchemeName + mVariantName + ".svg";
   }
 }
 
@@ -534,13 +524,13 @@ QString findFileName( const QString & target, const QString & startDir, const QS
 QString QgsCptCityColorRampV2::copyingFileName() const
 {
   return findFileName( "COPYING.xml", QFileInfo( fileName() ).dir().path(),
-                       QgsCptCityCollection::baseDir( mCollectionName ) );
+                       QgsCptCityCollection::defaultBaseDir() );
 }
 
 QString QgsCptCityColorRampV2::descFileName() const
 {
   return findFileName( "DESC.xml", QFileInfo( fileName() ).dir().path(),
-                       QgsCptCityCollection::baseDir( mCollectionName ) );
+                       QgsCptCityCollection::defaultBaseDir() );
 }
 
 QMap< QString, QString > QgsCptCityColorRampV2::copyingInfo( ) const
@@ -550,12 +540,12 @@ QMap< QString, QString > QgsCptCityColorRampV2::copyingInfo( ) const
 
 QString QgsCptCityCollection::copyingFileName( const QString& path ) const
 {
-  return findFileName( "COPYING.xml", baseDir() + "/" + path, baseDir() );
+  return findFileName( "COPYING.xml", baseDir() + QDir::separator() + path, baseDir() );
 }
 
 QString QgsCptCityCollection::descFileName( const QString& path ) const
 {
-  return findFileName( "DESC.xml", baseDir() + "/" + path, baseDir() );
+  return findFileName( "DESC.xml", baseDir() + QDir::separator() + path, baseDir() );
 }
 
 QMap< QString, QString > QgsCptCityCollection::copyingInfo( const QString& copyingFileName )
@@ -813,21 +803,26 @@ bool QgsCptCityColorRampV2::loadFile()
   return true;
 }
 
-bool QgsCptCityCollection::hasBasicSchemes()
-{
-  // Currently returns hasAllSchemes, because we don't have a minimal set yet
-  return hasAllSchemes();
-}
+// bool QgsCptCityCollection::hasBasicSchemes()
+// {
+//   // Currently returns hasAllSchemes, because we don't have a minimal set yet
+//   return hasAllSchemes();
+// }
 
-bool QgsCptCityCollection::hasAllSchemes()
+// bool QgsCptCityCollection::hasAllSchemes()
+// {
+//   // if we have no collections loaded yet, just make sure we have at least one collection
+//   // ideally we should test for a few schemes we know should be present
+//   if ( mDirNames.isEmpty() )
+//   {
+//     return ( ! listDirNames( "", false ).isEmpty() );
+//   }
+//   return true;
+// }
+
+bool QgsCptCityCollection::isEmpty()
 {
-  // if we have no collections loaded yet, just make sure we have at least one collection
-  // ideally we should test for a few schemes we know should be present
-  if ( mCollections.isEmpty() )
-  {
-    return ( ! listSchemeCollections( "", false ).isEmpty() );
-  }
-  return true;
+  return ( mDirNames.isEmpty() );
 }
 
 // currently this method takes some time, so it must be explicitly requested
@@ -835,28 +830,29 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
 {
   QgsDebugMsg( "mColectionName= " + mCollectionName + " mBaseDir= " + mBaseDir + " rootDir = " + rootDir );
 
+  int schemeCount = 0;
   QTime time;
   time.start();
 
   // TODO should keep the name of the previously loaded, or see if the first element is inside rootDir
-  if ( ! reset && ! mCollections.isEmpty() )
+  if ( ! reset && ! mDirNames.isEmpty() )
   {
-    QgsDebugMsg( QString( "not loading schemes, rootDir=%1 reset=%2 empty=%3" ).arg( rootDir ).arg( reset ).arg( mCollections.isEmpty() ) );
+    QgsDebugMsg( QString( "not loading schemes, rootDir=%1 reset=%2 empty=%3" ).arg( rootDir ).arg( reset ).arg( mDirNames.isEmpty() ) );
     return true;
   }
 
   if ( reset )
   {
-    mCollections.clear();
+    mDirNames.clear();
     mSchemeMap.clear();
     // mSchemeNumColors.clear();
     mSchemeVariants.clear();
-    mCollectionNames.clear();
-    mCollectionSelections.clear();
+    mDirNamesMap.clear();
+    mSelectionsMap.clear();
   }
 
-  mCollections = listSchemeCollections( rootDir, true );
-  qSort( mCollections.begin(), mCollections.end() );
+  mDirNames = listDirNames( rootDir, true );
+  qSort( mDirNames.begin(), mDirNames.end() );
 
   QString curName, prevName, prevPath, curVariant, curSep, schemeName;
   QStringList listVariant;
@@ -864,7 +860,7 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
   int num;
   bool ok, prevAdd, curAdd;
 
-  foreach ( QString path, mCollections )
+  foreach ( QString path, mDirNames )
   {
     // QgsDebugMsg("================================");
     // QgsDebugMsg("collection = "+path);
@@ -971,7 +967,7 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
         }
         else
         {
-          mSchemeVariants[ path + "/" + prevName ] = listVariant;
+          mSchemeVariants[ path + QDir::separator() + prevName ] = listVariant;
           schemeNames << prevName;
         }
         listVariant.clear();
@@ -993,21 +989,21 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
     }
     // add schemes to collection
     mSchemeMap[ path ] = schemeNames;
+    schemeCount += schemeName.count();
     schemeNames.clear();
     listVariant.clear();
     prevName = "";
 
   }
 
-  gettimeofday( &tv2, 0 );
-  QgsDebugMsg( QString( "loaded schemes in %1.%2 seconds" ).arg( tv2.tv_sec - tv1.tv_sec
-                                                               ).arg(( double )( tv2.tv_usec - tv2.tv_usec ) / 1000000.0 ) );
+  QgsDebugMsg( QString( "loaded %1 schemes and %2 dirs in %3 seconds" ).arg( \
+               mDirNames.count() ).arg( schemeCount ).arg( time.elapsed() / 1000.0 ) );
 
-  // populate mCollectionNames
-  foreach ( QString path, mCollections )
+  // populate mDirNames
+  foreach ( QString path, mDirNames )
   {
     // TODO parse DESC.xml and COPYING.xml here, and add to CptCityCollection member
-    QString filename = baseDir() + "/" + path + "/" + "DESC.xml";
+    QString filename = baseDir() + QDir::separator() + path + QDir::separator() + "DESC.xml";
     QFile f( filename );
     if ( ! f.open( QFile::ReadOnly ) )
     {
@@ -1042,60 +1038,104 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
     }
 
     // add info to mapping
-    mCollectionNames[ path ] = nameElement.text();
+    mDirNamesMap[ path ] = nameElement.text();
   }
   // add any elements that are missing from DESC.xml (views)
   for ( int i = 0; cptCityNames[i] != NULL; i = i + 2 )
   {
-    mCollectionNames[ cptCityNames[i] ] = cptCityNames[i+1];
+    mDirNamesMap[ cptCityNames[i] ] = cptCityNames[i+1];
   }
 
-  // populate mCollectionSelections
+  // populate mSelections
   QString viewName;
-  for ( int i = 0; cptCitySelections[i] != NULL; i++ )
+  const char** selections;
+  if ( mCollectionName == DEFAULT_CPTCITY_COLLECTION )
+    selections = cptCitySelectionsMin;
+  else
+    selections = cptCitySelections;
+  for ( int i = 0; selections[i] != NULL; i++ )
   {
-    curName = QString( cptCitySelections[i] );
+    curName = QString( selections[i] );
     if ( curName == "" )
     {
-      viewName = QString( cptCitySelections[i+1] );
-      curName = QString( cptCitySelections[i+2] );
+      viewName = QString( selections[i+1] );
+      curName = QString( selections[i+2] );
       i = i + 2;
     }
-    mCollectionSelections[ viewName ] << curName;
+    mSelectionsMap[ viewName ] << curName;
   }
 
   QgsDebugMsg( QString( "done in %1 seconds" ).arg( time.elapsed() / 1000.0 ) );
-  return ( ! mCollections.isEmpty() );
+  return ( ! mDirNames.isEmpty() );
 }
 
+// static functions
+
+QgsCptCityCollection* QgsCptCityCollection::defaultCollection()
+{
+  QSettings settings;
+  mDefaultCollectionName = settings.value( "CptCity/collectionName", DEFAULT_CPTCITY_COLLECTION ).toString();
+
+  if ( QgsCptCityCollection::mCollectionRegistry.contains( mDefaultCollectionName ) )
+    return QgsCptCityCollection::mCollectionRegistry.value( mDefaultCollectionName );
+  else
+    return NULL;
+}
 
 void QgsCptCityCollection::initCollection( QString collectionName, QString collectionBaseDir )
 {
   QgsDebugMsg( "collectionName = " + collectionName + " collectionBaseDir = " + collectionBaseDir );
-  QMap< QString, QString > collections;
-  collections[ collectionName ] = collectionBaseDir;
-  initCollections( collections );
+  QgsCptCityCollection *collection = new QgsCptCityCollection( collectionName, collectionBaseDir );
+  collection->loadSchemes();
+  if ( mCollectionRegistry.contains( collectionName ) )
+    delete mCollectionRegistry[ collectionName ];
+  mCollectionRegistry[ collectionName ] = collection;
+  // mDefaultCollectionName = collectionName;
 }
 
-void QgsCptCityCollection::initCollections( QMap< QString, QString > collections )
+void QgsCptCityCollection::initCollections( bool loadAll )
+{
+  QMap< QString, QString > collectionsMap;
+  QString baseDir, defCollectionName;
+  QSettings settings;
+
+  // use CptCity/baseDir setting if set, default is user dir
+  baseDir = settings.value( "CptCity/baseDir",
+                            QgsApplication::pkgDataPath() + "/resources" ).toString();
+  // sub-dir defaults to
+  defCollectionName = settings.value( "CptCity/collectionName", DEFAULT_CPTCITY_COLLECTION ).toString();
+
+  QgsDebugMsg( "baseDir= " + baseDir + " defCollectionName= " + defCollectionName );
+  if ( loadAll )
+  {
+    QDir dir( baseDir );
+    foreach ( QString entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
+    {
+      if ( QFile::exists( baseDir + QDir::separator() + entry + "/VERSION.xml" ) )
+        collectionsMap[ entry ] = baseDir + QDir::separator() + entry;
+    }
+  }
+  else
+  {
+    collectionsMap[ defCollectionName ] = baseDir + QDir::separator() + defCollectionName;
+  }
+
+  for ( QMap< QString, QString >::iterator it = collectionsMap.begin();
+        it != collectionsMap.end(); ++it )
+  {
+    if ( QDir( it.value() ).exists() )
+      QgsCptCityCollection::initCollection( it.key(), it.value() );
+    else
+      QgsDebugMsg( QString( "not loading collection [%1] because dir %2 does not exist " ).arg( it.key() ).arg( it.value() ) );
+  }
+  mDefaultCollectionName = defCollectionName;
+}
+
+void QgsCptCityCollection::clearCollections()
 {
   for ( QMap< QString, QgsCptCityCollection* >::iterator it = mCollectionRegistry.begin();
         it != mCollectionRegistry.end(); ++it )
     delete it.value();
   mCollectionRegistry.clear();
-
-  if ( ! collections.contains( DEFAULT_CPTCITY_COLLECTION ) )
-    collections[ DEFAULT_CPTCITY_COLLECTION ] = QString();
-
-  for ( QMap< QString, QString >::iterator it = collections.begin();
-        it != collections.end(); ++it )
-  {
-    QgsDebugMsg( "Collection " + it.key() + " path " + it.value() );
-    QgsCptCityCollection *collection = new QgsCptCityCollection( it.key(), it.value() );
-    collection->loadSchemes();
-    mCollectionRegistry[ it.key()] = collection;
-    if ( it.key() == DEFAULT_CPTCITY_COLLECTION )
-      mDefaultCollection = collection;
-  }
 }
 

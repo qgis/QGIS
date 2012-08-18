@@ -470,6 +470,14 @@ static const char* cptCityNames [] =
 
 /* Selections from the archive */
 /* format: "", <section>, <item_1>,...,<item_n>,"",... */
+static const char* cptCitySelectionsMin [] =
+{
+  "",
+  "cb",
+  "cb/",
+  NULL, NULL
+};
+
 static const char* cptCitySelections [] =
 {
   "",

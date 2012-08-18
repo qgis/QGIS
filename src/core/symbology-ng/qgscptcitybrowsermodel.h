@@ -3,7 +3,7 @@
     ---------------------
     begin                : August 2012
     copyright            : (C) 2009 by Martin Dobias
-    copyright            : (C) 2012 by Etienne Tourigny 
+    copyright            : (C) 2012 by Etienne Tourigny
     email                : etourigny.dev at gmail.com
  ***************************************************************************
  *                                                                         *
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
       Category
     };
 
-    QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent, 
+    QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
                         QString name, QString path, QString info );
     virtual ~QgsCptCityDataItem();
 
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     // try to process the data dropped on this item
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
-     // static methods
+    // static methods
 
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsCptCityDataItem*> items, QgsCptCityDataItem * item );
@@ -138,8 +138,8 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
     Q_OBJECT
   public:
 
-    QgsCptCityColorRampItem( QgsCptCityDataItem* parent, 
-                             QString name, QString path, QString info = QString(), 
+    QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
+                             QString name, QString path, QString info = QString(),
                              QString variantName = QString() );
 
     // --- reimplemented from QgsCptCityDataItem ---
@@ -161,16 +161,12 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
 {
     Q_OBJECT
   public:
-    QgsCptCityCollectionItem( QgsCptCityDataItem* parent, 
-                              QString name, QString path, QString info,
-                              QString collectionName = DEFAULT_CPTCITY_COLLECTION );
+    QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
+                              QString name, QString path, QString info );
     ~QgsCptCityCollectionItem();
 
     void setPopulated() { mPopulated = true; }
     void addChild( QgsCptCityDataItem *item ) { mChildren.append( item ); }
-
-   protected:
-    QString mCollectionName;
 
 };
 
@@ -179,9 +175,8 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
   public:
-    QgsCptCityDirectoryItem( QgsCptCityDataItem* parent, 
-                             QString name, QString path, QString info = QString(), 
-                             QString collectionName = DEFAULT_CPTCITY_COLLECTION );
+    QgsCptCityDirectoryItem( QgsCptCityDataItem* parent,
+                             QString name, QString path, QString info = QString() );
     ~QgsCptCityDirectoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -195,8 +190,7 @@ class CORE_EXPORT QgsCptCityCategoryItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
   public:
-    QgsCptCityCategoryItem( QgsCptCityDataItem* parent, QString name, QString path, QString info,
-                            QString collectionName = DEFAULT_CPTCITY_COLLECTION );
+    QgsCptCityCategoryItem( QgsCptCityDataItem* parent, QString name, QString path, QString info );
     ~QgsCptCityCategoryItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
@@ -211,8 +205,8 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    explicit QgsCptCityBrowserModel( QObject *parent = 0, 
-                                     QString collectionName = DEFAULT_CPTCITY_COLLECTION,
+    explicit QgsCptCityBrowserModel( QObject *parent = 0,
+                                     QgsCptCityCollection* collection = QgsCptCityCollection::defaultCollection(),
                                      QString viewName = "authors" );
     ~QgsCptCityBrowserModel();
 
@@ -298,7 +292,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     void removeRootItems();
 
     QVector<QgsCptCityDataItem*> mRootItems;
-    QString mCollectionName;
+    QgsCptCityCollection* mCollection;
     QString mViewName;
 };
 
