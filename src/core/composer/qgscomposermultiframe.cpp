@@ -89,21 +89,29 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   }
 
   //at end of frames but there is  still content left. Add other pages if ResizeMode ==
-  if ( mResizeMode == RepeatUntilFinished || mResizeMode == ExtendToNextPage )
+  if ( mResizeMode != UseExistingFrames )
   {
-    while ( currentY < totalHeight )
+    while (( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
       int page = currentItem->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
-
-      //add new pages if necessary
-      if ( mComposition->numPages() < ( page + 2 ) )
+      if ( mResizeMode == RepeatOnEveryPage )
       {
-        mComposition->setNumPages( page + 2 );
+        if ( page > mComposition->numPages() - 2 )
+        {
+          break;
+        }
+      }
+      else
+      {
+        if ( mComposition->numPages() < ( page + 2 ) )
+        {
+          mComposition->setNumPages( page + 2 );
+        }
       }
 
       double frameHeight = 0;
-      if ( mResizeMode == RepeatUntilFinished )
+      if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
       {
         frameHeight = currentItem->rect().height();
       }
@@ -111,10 +119,23 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       {
         frameHeight = ( currentY + mComposition->paperHeight() ) > totalHeight ?  totalHeight - currentY : mComposition->paperHeight();
       }
+
+      double newFrameY = ( page + 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
+      {
+        newFrameY += currentItem->transform().dy() - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      }
       QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(),
-          ( mComposition->numPages() - 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ),
+          newFrameY,
           currentItem->rect().width(), frameHeight );
-      newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
+      if ( mResizeMode == RepeatOnEveryPage )
+      {
+        newFrame->setContentSection( QRectF( 0, 0, newFrame->rect().width(), newFrame->rect().height() ) );
+      }
+      else
+      {
+        newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
+      }
       currentY += frameHeight;
       currentItem = newFrame;
       addFrame( newFrame, false );
