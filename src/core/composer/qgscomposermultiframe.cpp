@@ -154,7 +154,7 @@ void QgsComposerMultiFrame::handlePageChange()
   }
 
   //remove items beginning on non-existing pages
-  for ( int i = 0; i < mFrameItems.size(); ++i )
+  for ( int i = mFrameItems.size() - 1; i >= 0; --i )
   {
     QgsComposerFrame* frame = mFrameItems[i];
     int page = frame->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
