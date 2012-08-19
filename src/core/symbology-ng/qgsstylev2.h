@@ -35,7 +35,7 @@ typedef QMap<QString, QgsVectorColorRampV2* > QgsVectorColorRampV2Map;
 typedef QMap<int, QString> QgsSymbolGroupMap;
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 
-// Enumeraters representing sqlite DB  columns
+// enumerators representing sqlite DB columns
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolGroupId };
 enum SymgroupTable { SymgroupId, SymgroupName, SymgroupParent };
 enum TagTable { TagId, TagName };
@@ -203,12 +203,14 @@ class CORE_EXPORT QgsStyleV2
 
     static QgsStyleV2* mDefaultStyle;
 
-    //! Convinence function to open the DB and return a sqlite3 object
+    //! convenience function to open the DB and return a sqlite3 object
     bool openDB( QString filename );
-    //! Convinence function that would run queries which donot generate return values
-    //! it returns sucess result
-    bool runEmptyQuery( char* query );
-    //! prepares the complex query for removing a group,so that the children are not abandoned
+    //! convenience function that would run queries which don't generate return values
+    //! @param query query to run
+    //! @param freeQuery release query memory
+    //! @return success true on success
+    bool runEmptyQuery( char* query, bool freeQuery = true );
+    //! prepares the complex query for removing a group, so that the children are not abandoned
     char* getGroupRemoveQuery( int id );
     //! gets the id from the table for the given name from the database, 0 if not found
     int getId( QString table, QString name );
