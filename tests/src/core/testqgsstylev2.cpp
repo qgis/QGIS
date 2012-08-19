@@ -188,7 +188,8 @@ void TestStyleV2::testLoadColorRamps()
 
 void TestStyleV2::testSaveLoad()
 {
-#if 0
+  QEXPECT_FAIL("", "save() currently disabled in core", Abort);
+
   mStyle->save();
   mStyle->clear();
   mStyle->load( QgsApplication::userStyleV2Path() );
@@ -205,7 +206,6 @@ void TestStyleV2::testSaveLoad()
     if ( ramp )
       delete ramp;
   }
-#endif
 }
 
 

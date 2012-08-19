@@ -336,7 +336,7 @@ bool QgsStyleV2::save( QString filename )
     filename = mFileName;
 
   // TODO evaluate the requirement of this function and change implementation accordingly
-  // TODO enable save TestStyleV2::testSaveLoad()
+  // TODO remove QEXPECT_FAIL from TestStyleV2::testSaveLoad() when done
 #if 0
   QDomDocument doc( "qgis_style" );
   QDomElement root = doc.createElement( "qgis_style" );
