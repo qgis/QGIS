@@ -19,6 +19,7 @@
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ): mComposition( c ), mResizeMode( UseExistingFrames ), mCreateUndoCommands( createUndoCommands )
 {
   mComposition->addMultiFrame( this );
+  connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame(): mComposition( 0 ), mResizeMode( UseExistingFrames )
@@ -61,9 +62,9 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
   for ( int i = 0; i < mFrameItems.size(); ++i )
   {
-    if ( currentY >= totalHeight )
+    if ( mResizeMode != RepeatOnEveryPage && currentY >= totalHeight )
     {
-      if ( mResizeMode == ExtendToNextPage ) //remove unneeded frames in extent mode
+      if ( mResizeMode == RepeatUntilFinished || mResizeMode == ExtendToNextPage ) //remove unneeded frames in extent mode
       {
         for ( int j = mFrameItems.size(); j > i; --j )
         {
@@ -75,30 +76,67 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
     currentItem = mFrameItems.value( i );
     currentHeight = currentItem->rect().height();
-    currentItem->setContentSection( QRectF( 0, currentY, currentItem->rect().width(), currentHeight ) );
+    if ( mResizeMode == RepeatOnEveryPage )
+    {
+      currentItem->setContentSection( QRectF( 0, 0, currentItem->rect().width(), currentHeight ) );
+    }
+    else
+    {
+      currentItem->setContentSection( QRectF( 0, currentY, currentItem->rect().width(), currentHeight ) );
+    }
     currentItem->update();
     currentY += currentHeight;
   }
 
   //at end of frames but there is  still content left. Add other pages if ResizeMode ==
-  if ( mResizeMode == ExtendToNextPage )
+  if ( mResizeMode != UseExistingFrames )
   {
-    while ( currentY < totalHeight )
+    while (( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
       int page = currentItem->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
-
-      //add new pages if necessary
-      if ( mComposition->numPages() < ( page + 2 ) )
+      if ( mResizeMode == RepeatOnEveryPage )
       {
-        mComposition->setNumPages( page + 2 );
+        if ( page > mComposition->numPages() - 2 )
+        {
+          break;
+        }
+      }
+      else
+      {
+        if ( mComposition->numPages() < ( page + 2 ) )
+        {
+          mComposition->setNumPages( page + 2 );
+        }
       }
 
-      //copy last frame
-      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(), currentItem->transform().dy() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
-          currentItem->rect().width(), currentItem->rect().height() );
-      newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
-      currentY += newFrame->rect().height();
+      double frameHeight = 0;
+      if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
+      {
+        frameHeight = currentItem->rect().height();
+      }
+      else //mResizeMode == ExtendToNextPage
+      {
+        frameHeight = ( currentY + mComposition->paperHeight() ) > totalHeight ?  totalHeight - currentY : mComposition->paperHeight();
+      }
+
+      double newFrameY = ( page + 1 ) * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      if ( mResizeMode == RepeatUntilFinished || mResizeMode == RepeatOnEveryPage )
+      {
+        newFrameY += currentItem->transform().dy() - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      }
+      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, currentItem->transform().dx(),
+          newFrameY,
+          currentItem->rect().width(), frameHeight );
+      if ( mResizeMode == RepeatOnEveryPage )
+      {
+        newFrame->setContentSection( QRectF( 0, 0, newFrame->rect().width(), newFrame->rect().height() ) );
+      }
+      else
+      {
+        newFrame->setContentSection( QRectF( 0, currentY, newFrame->rect().width(), newFrame->rect().height() ) );
+      }
+      currentY += frameHeight;
       currentItem = newFrame;
       addFrame( newFrame, false );
     }
@@ -124,6 +162,47 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
   }
 }
 
+void QgsComposerMultiFrame::handlePageChange()
+{
+  if ( mComposition->numPages() < 1 )
+  {
+    return;
+  }
+
+  if ( mResizeMode != RepeatOnEveryPage )
+  {
+    return;
+  }
+
+  //remove items beginning on non-existing pages
+  for ( int i = mFrameItems.size() - 1; i >= 0; --i )
+  {
+    QgsComposerFrame* frame = mFrameItems[i];
+    int page = frame->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+    if ( page > ( mComposition->numPages() - 1 ) )
+    {
+      removeFrame( i );
+    }
+  }
+
+  //page number of the last item
+  QgsComposerFrame* lastFrame = mFrameItems.last();
+  int lastItemPage = lastFrame->transform().dy() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+
+  for ( int i = lastItemPage + 1; i < mComposition->numPages(); ++i )
+  {
+    //copy last frame to current page
+    QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, lastFrame->transform().dx(),
+        lastFrame->transform().dy() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
+        lastFrame->rect().width(), lastFrame->rect().height() );
+    addFrame( newFrame, false );
+    lastFrame = newFrame;
+  }
+
+  recalculateFrameSizes();
+  update();
+}
+
 void QgsComposerMultiFrame::removeFrame( int i )
 {
   QgsComposerFrame* frameItem = mFrameItems[i];
@@ -131,6 +210,7 @@ void QgsComposerMultiFrame::removeFrame( int i )
   {
     mComposition->removeComposerItem( frameItem );
   }
+  mFrameItems.removeAt( i );
 }
 
 void QgsComposerMultiFrame::update()

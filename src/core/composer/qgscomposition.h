@@ -311,6 +311,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
   signals:
     void paperSizeChanged();
+    void nPagesChanged();
 
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
