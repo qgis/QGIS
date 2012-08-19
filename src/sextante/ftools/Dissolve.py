@@ -35,8 +35,6 @@ class Dissolve(GeoAlgorithm):
         allAttrsA = vproviderA.attributeIndexes()
         fields = vproviderA.fields()
         writer = self.getOutputFromName(Dissolve.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
-        if writer.hasError():
-          raise GeoAlgorithmExecutionException("Could not create output file");
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         vproviderA.rewind()

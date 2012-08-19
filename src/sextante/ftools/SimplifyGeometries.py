@@ -53,7 +53,7 @@ class SimplifyGeometries(GeoAlgorithm):
         else:
             return None
 
-    def generalize( self, inputLayer, useSelection, tolerance, shapePath, shapeEncoding ):
+    def generalize( self, inputLayer, useSelection, tolerance):
         self.inputLayer = inputLayer
         self.useSelection = useSelection
         self.tolerance = tolerance

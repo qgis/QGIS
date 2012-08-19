@@ -32,7 +32,8 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
-        index = int(self.getParameterValue(SinglePartsToMultiparts.FIELD))
+        field = self.getParameterValue(SinglePartsToMultiparts.FIELD)
+        index = vprovider.fieldNameIndex(field)
         unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
         nFeat = vprovider.featureCount() * len( unique )
         nElement = 0
