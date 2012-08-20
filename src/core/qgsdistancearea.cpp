@@ -878,3 +878,42 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
 
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
 }
+
+void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea )
+{
+  // Helper for converting between meters and feet
+  // The parameters measure and measureUnits are in/out
+
+  if (( measureUnits == QGis::Degrees || measureUnits == QGis::Feet ) &&
+      mEllipsoid != "NONE" &&
+      mEllipsoidalEnabled )
+  {
+    // Measuring on an ellipsoid returned meters. Force!
+    measureUnits = QGis::Meters;
+    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
+  }
+
+  // Only convert between meters and feet
+  if ( measureUnits == QGis::Meters && displayUnits == QGis::Feet )
+  {
+    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
+    measure /= 0.3048;
+    if ( isArea )
+    {
+      measure /= 0.3048;
+    }
+    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Feet;
+  }
+  if ( measureUnits == QGis::Feet && displayUnits == QGis::Meters )
+  {
+    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
+    measure *= 0.3048;
+    if ( isArea )
+    {
+      measure *= 0.3048;
+    }
+    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Meters;
+  }
+}

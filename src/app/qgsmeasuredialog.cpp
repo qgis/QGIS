@@ -257,45 +257,25 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   // Helper for converting between meters and feet
   // The parameter &u is out only...
 
+  // Get the canvas units
   QGis::UnitType myUnits = mTool->canvas()->mapUnits();
-  QgsDebugMsg( QString( "Canvas units are %1" ).arg( QgsDistanceArea::textUnit( 1.0, 1, myUnits, false, true ) ) );
-  if (( myUnits == QGis::Degrees || myUnits == QGis::Feet )  &&
-      mcbProjectionEnabled->isChecked() )
-  {
-    // Measuring on an ellipsoid returns meters, and so does using projections???
-    myUnits = QGis::Meters;
-    QgsDebugMsg( "We were measuring on an ellipsoid, the calculation returned meters" );
-    QgsDebugMsg( QString( "Set new units to %1" ).arg( QgsDistanceArea::textUnit( 1.0, 1, myUnits, false, true ) ) );
-  }
 
   // Get the units for display
   QSettings settings;
   QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
   QgsDebugMsg( QString( "Preferred display units are %1" ).arg( myDisplayUnitsTxt ) );
-  // Only convert between meters and feet
-  if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
+
+  QGis::UnitType displayUnits;
+  if ( myDisplayUnitsTxt == "feet" )
   {
-    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
-    measure /= 0.3048;
-    if ( isArea )
-    {
-      measure /= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Feet;
+    displayUnits = QGis::Feet;
   }
-  if ( myUnits == QGis::Feet && myDisplayUnitsTxt == "meters" )
+  else
   {
-    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
-    measure *= 0.3048;
-    if ( isArea )
-    {
-      measure *= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Meters;
+    displayUnits = QGis::Meters;
   }
 
+  mDa.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;
 }
 

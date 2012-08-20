@@ -387,43 +387,23 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
   // Helper for converting between meters and feet
   // The parameter &u is out only...
 
+  // Get the canvas units
   QGis::UnitType myUnits = mCanvas->mapUnits();
-  if (( myUnits == QGis::Degrees || myUnits == QGis::Feet ) &&
-      calc.ellipsoid() != "NONE" &&
-      calc.hasCrsTransformEnabled() )
-  {
-    // Measuring on an ellipsoid returns meters, and so does using projections???
-    myUnits = QGis::Meters;
-    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
-  }
 
   // Get the units for display
   QSettings settings;
   QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
 
-  // Only convert between meters and feet
-  if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
+  QGis::UnitType displayUnits;
+  if ( myDisplayUnitsTxt == "feet" )
   {
-    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
-    measure /= 0.3048;
-    if ( isArea )
-    {
-      measure /= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Feet;
+    displayUnits = QGis::Feet;
   }
-  if ( myUnits == QGis::Feet && myDisplayUnitsTxt == "meters" )
+  else
   {
-    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
-    measure *= 0.3048;
-    if ( isArea )
-    {
-      measure *= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Meters;
+    displayUnits = QGis::Meters;
   }
 
+  calc.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;
 }

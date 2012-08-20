@@ -69,4 +69,7 @@ class QgsDistanceArea
 
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
+    //! Helper for conversion between physical units
+    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::displayUnits, bool isArea );
+
 };

@@ -95,6 +95,9 @@ class CORE_EXPORT QgsDistanceArea
 
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
+    //! Helper for conversion between physical units
+    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea );
+
   protected:
     //! measures line distance, line points are extracted from WKB
     unsigned char* measureLine( unsigned char* feature, double* area, bool hasZptr = false );
