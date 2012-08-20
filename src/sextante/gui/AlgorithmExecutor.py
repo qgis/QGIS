@@ -68,9 +68,9 @@ class AlgorithmExecutor(QThread):
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
-        except GeoAlgorithmExecutionException as e :
+        except GeoAlgorithmExecutionException, e :
             self.error.emit(e.msg)
-        except BaseException as e:
+        except BaseException, e:
             self.internalError.emit(e)
         # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
         # being a separate thread.

@@ -16,16 +16,14 @@ class AutoincrementalField(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.getOutputFromName(self.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField("AUTO", QVariant.Int)
-        writer = QgsVectorFileWriter( output, systemEncoding,fields, vprovider.geometryType(), vprovider.crs() )
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

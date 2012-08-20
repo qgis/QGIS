@@ -17,16 +17,13 @@ class Explode(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
-        writer = QgsVectorFileWriter( output, systemEncoding,
-            fields, QGis.WKBLineString, vprovider.crs() )
+        writer = output.getVectorWriter(fields, QGis.WKBLineString, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

@@ -18,7 +18,6 @@ class FieldsPyculator(GeoAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
     USE_SELECTED = "USE_SELECTED"
     FIELD_NAME = "FIELD_NAME"
-    #USE_GLOBAL = "USE_GLOBAL"
     GLOBAL = "GLOBAL"
     FORMULA = "FORMULA"
     OUTPUT_LAYER ="OUTPUT_LAYER"
@@ -33,7 +32,6 @@ class FieldsPyculator(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterBoolean(self.USE_SELECTED, "Use only selected features", False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
-        #self.addParameter(ParameterBoolean(self.USE_GLOBAL, "Use global expression", False))
         self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True))
         self.addParameter(ParameterString(self.FORMULA, "Formula", "value = ", multiline = True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
@@ -43,18 +41,17 @@ class FieldsPyculator(GeoAlgorithm):
         fieldname = self.getParameterValue(self.FIELD_NAME)
         code = self.getParameterValue(self.FORMULA)
         globalExpression = self.getParameterValue(self.GLOBAL)
-        #useGlobal = self.getParameterValue(self.USE_GLOBAL)
         useSelected = self.getParameterValue(self.USE_SELECTED)
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(self.OUTPUT_LAYER)
+        output = self.getOutputFromName(self.OUTPUT_LAYER)
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = layer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField(fieldname, QVariant.Double)
-        writer = QgsVectorFileWriter( output, systemEncoding,fields, vprovider.geometryType(), vprovider.crs() )
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         outFeat = QgsFeature()
         nFeatures = vprovider.featureCount()
         nElement = 0
