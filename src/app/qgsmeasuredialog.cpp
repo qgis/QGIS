@@ -365,5 +365,5 @@ void QgsMeasureDialog::configureDistanceArea()
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  mDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+  mDa.setEllipsoidalEnabled( mcbProjectionEnabled->isChecked() );
 }

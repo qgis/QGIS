@@ -664,7 +664,7 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
   {
     mProjectionsEnabled = enabled;
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
-    mDistArea->setProjectionsEnabled( enabled );
+    mDistArea->setEllipsoidalEnabled( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
     emit hasCrsTransformEnabled( enabled );

@@ -15,9 +15,11 @@ class QgsDistanceArea
     
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setProjectionsEnabled(bool flag);
+    void setEllipsoidalEnabled(bool flag) /Deprecated/;
 
     //! returns projections enabled flag
-    bool hasCrsTransformEnabled();
+    bool ellipsoidalEnabled();
+    bool hasCrsTransformEnabled() /Deprecated/;
     
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs(long srsid);

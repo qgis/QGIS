@@ -41,10 +41,12 @@ class CORE_EXPORT QgsDistanceArea
     ~QgsDistanceArea();
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
-    void setProjectionsEnabled( bool flag );
+    void setEllipsoidalEnabled( bool flag );
+    Q_DECL_DEPRECATED void QgsDistanceArea::setProjectionsEnabled( bool flag ) { setEllipsoidalEnabled( flag ); };
 
     //! returns projections enabled flag
-    bool hasCrsTransformEnabled() { return mProjectionsEnabled; }
+    bool ellipsoidalEnabled() { return mEllipsoidalEnabled; }
+    Q_DECL_DEPRECATED bool hasCrsTransformEnabled() { return mEllipsoidalEnabled; }
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
@@ -134,7 +136,7 @@ class CORE_EXPORT QgsDistanceArea
     QgsCoordinateTransform* mCoordTransform;
 
     //! indicates whether we will transform coordinates
-    bool mProjectionsEnabled;
+    bool mEllipsoidalEnabled;
 
     //! id of the source spatial reference system
     long mSourceRefSys;
