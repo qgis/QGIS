@@ -23,6 +23,7 @@
 #include <QDomDocument>
 
 #include "qgsfield.h"
+#include "qgsvectorlayer.h"
 
 class QgsDistanceArea;
 class QgsFeature;
@@ -131,6 +132,17 @@ class CORE_EXPORT QgsExpression
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
     QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
+
+    /** This function currently replaces each expression between [% and %]
+       in the string with the result of its evaluation on the feature
+       passed as argument.
+
+       Additional substitutions can be passed through the substitutionMap
+       parameter
+    */
+    static QString replaceExpressionText( QString action, QgsFeature &feat,
+                                          QgsVectorLayer* layer,
+                                          const QMap<QString, QVariant> *substitutionMap = 0 );
 
     //
 

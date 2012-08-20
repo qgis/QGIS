@@ -999,6 +999,7 @@ QString QgsExpression::dump() const
   return mRootNode->dump();
 }
 
+
 void QgsExpression::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
   if ( !mRootNode )
@@ -1046,6 +1047,57 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
 {
   if ( mRootNode )
     mRootNode->accept( v );
+}
+
+QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
+    QgsVectorLayer* layer,
+    const QMap<QString, QVariant> *substitutionMap )
+{
+  QString expr_action;
+
+  int index = 0;
+  while ( index < action.size() )
+  {
+    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+
+    int pos = rx.indexIn( action, index );
+    if ( pos < 0 )
+      break;
+
+    int start = index;
+    index = pos + rx.matchedLength();
+
+    QString to_replace = rx.cap( 1 ).trimmed();
+    QgsDebugMsg( "Found expression: " + to_replace );
+
+    if ( substitutionMap && substitutionMap->contains( to_replace ) )
+    {
+      expr_action += action.mid( start, pos - start ) + substitutionMap->value( to_replace ).toString();
+      continue;
+    }
+
+    QgsExpression exp( to_replace );
+    if ( exp.hasParserError() )
+    {
+      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
+      expr_action += action.mid( start, index - start );
+      continue;
+    }
+
+    QVariant result = exp.evaluate( &feat, layer->pendingFields() );
+    if ( exp.hasEvalError() )
+    {
+      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
+      expr_action += action.mid( start, index - start );
+      continue;
+    }
+
+    QgsDebugMsg( "Expression result is: " + result.toString() );
+    expr_action += action.mid( start, pos - start ) + result.toString();
+  }
+
+  expr_action += action.mid( index );
+  return expr_action;
 }
 
 

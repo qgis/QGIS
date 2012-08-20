@@ -42,7 +42,7 @@ QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
   mWidgetContainer = new QGraphicsProxyWidget( this );
   mWidgetContainer->setWidget( mWebView );
 
-  QObject::connect( mWebView->page()->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(javascript()));
+  QObject::connect( mWebView->page()->mainFrame(), SIGNAL( javaScriptWindowObjectCleared() ), this, SLOT( javascript() ) );
 
   if ( mVectorLayer && mMapCanvas )
   {
@@ -86,36 +86,36 @@ void QgsHtmlAnnotationItem::setMapPosition( const QgsPoint& pos )
 
 void QgsHtmlAnnotationItem::paint( QPainter * painter )
 {
-    Q_UNUSED( painter );
+  Q_UNUSED( painter );
 }
 
 void QgsHtmlAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );
-    if ( !painter || !mWidgetContainer )
-    {
-      return;
-    }
+  if ( !painter || !mWidgetContainer )
+  {
+    return;
+  }
 
-    drawFrame( painter );
-    if ( mMapPositionFixed )
-    {
-      drawMarkerSymbol( painter );
-    }
+  drawFrame( painter );
+  if ( mMapPositionFixed )
+  {
+    drawMarkerSymbol( painter );
+  }
 
-    mWidgetContainer->setGeometry( QRectF( mOffsetFromReferencePoint.x() + mFrameBorderWidth / 2.0, mOffsetFromReferencePoint.y()
-                                           + mFrameBorderWidth / 2.0, mFrameSize.width() - mFrameBorderWidth, mFrameSize.height()
-                                           - mFrameBorderWidth ) );
-    if (data(1).toString() == "composer")
-    {
-        mWidgetContainer->widget()->render( painter, mOffsetFromReferencePoint.toPoint());
-    }
+  mWidgetContainer->setGeometry( QRectF( mOffsetFromReferencePoint.x() + mFrameBorderWidth / 2.0, mOffsetFromReferencePoint.y()
+                                         + mFrameBorderWidth / 2.0, mFrameSize.width() - mFrameBorderWidth, mFrameSize.height()
+                                         - mFrameBorderWidth ) );
+  if ( data( 1 ).toString() == "composer" )
+  {
+    mWidgetContainer->widget()->render( painter, mOffsetFromReferencePoint.toPoint() );
+  }
 
-    if ( isSelected() )
-    {
-      drawSelectionBoxes( painter );
-    }
+  if ( isSelected() )
+  {
+    drawSelectionBoxes( painter );
+  }
 }
 
 QSizeF QgsHtmlAnnotationItem::minimumFrameSize() const
@@ -167,7 +167,7 @@ void QgsHtmlAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
   }
   mHasAssociatedFeature = itemElem.attribute( "hasFeature", "0" ).toInt();
   mFeatureId = itemElem.attribute( "feature", "0" ).toInt();
-  mHtmlFile = itemElem.attribute( "htmlfile", "");
+  mHtmlFile = itemElem.attribute( "htmlfile", "" );
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {
@@ -210,7 +210,7 @@ void QgsHtmlAnnotationItem::setFeatureForMapPosition()
   mFeatureId = currentFeatureId;
   mFeature = currentFeature;
 
-  QString newtext = replaceText( mHtmlSource, vectorLayer(), mFeature );
+  QString newtext = QgsExpression::replaceExpressionText( mHtmlSource, mFeature, vectorLayer() );
   mWebView->setHtml( newtext );
 
 }
@@ -227,51 +227,8 @@ void QgsHtmlAnnotationItem::updateVisibility()
 
 void QgsHtmlAnnotationItem::javascript()
 {
-    QWebFrame *frame = mWebView->page()->mainFrame();
-    frame->addToJavaScriptWindowObject("canvas", mMapCanvas  );
-}
-
-QString QgsHtmlAnnotationItem::replaceText( QString displayText, QgsVectorLayer *layer, QgsFeature &feat )
-{
-  QString expr_action;
-
-  int index = 0;
-  while ( index < displayText.size() )
-  {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
-
-    int pos = rx.indexIn( displayText, index );
-    if ( pos < 0 )
-      break;
-
-    int start = index;
-    index = pos + rx.matchedLength();
-
-    QString to_replace = rx.cap( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + to_replace );
-
-    QgsExpression exp( to_replace );
-    if ( exp.hasParserError() )
-    {
-      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += displayText.mid( start, index - start );
-      continue;
-    }
-
-    QVariant result = exp.evaluate( &feat, layer->pendingFields() );
-    if ( exp.hasEvalError() )
-    {
-      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += displayText.mid( start, index - start );
-      continue;
-    }
-
-    QgsDebugMsg( "Expression result is: " + result.toString() );
-    expr_action += displayText.mid( start, pos - start ) + result.toString();
-  }
-
-  expr_action += displayText.mid( index );
-  return expr_action;
+  QWebFrame *frame = mWebView->page()->mainFrame();
+  frame->addToJavaScriptWindowObject( "canvas", mMapCanvas );
 }
 
 
