@@ -531,6 +531,31 @@ void QgsProjectFileTransform::transform1800to1900()
     }
   }
 
+  // SimpleFill symbol layer v2: avoid double transparency
+  // replacing alpha value of symbol layer's color with 255 (the
+  // transparency value is already stored as symbol transparency).
+  QDomNodeList rendererList = mDom.elementsByTagName( "renderer-v2" );
+  for ( int i = 0; i < rendererList.size(); ++i )
+  {
+    QDomNodeList layerList = rendererList.at( i ).toElement().elementsByTagName( "layer" );
+    for ( int j = 0; j < layerList.size(); ++j )
+    {
+      QDomElement layerElem = layerList.at( j ).toElement();
+      if ( layerElem.attribute( "class" ) == "SimpleFill" )
+      {
+        QDomNodeList propList = layerElem.elementsByTagName( "prop" );
+        for ( int k = 0; k < propList.size(); ++k )
+        {
+          QDomElement propElem = propList.at( k ).toElement();
+          if ( propElem.attribute( "k" ) == "color" || propElem.attribute( "k" ) == "color_border" )
+          {
+            propElem.setAttribute( "v", propElem.attribute( "v" ).section( ",", 0, 2 ) + ",255" );
+          }
+        }
+      }
+    }
+  }
+
   QgsDebugMsg( mDom.toString() );
 }
 
