@@ -94,7 +94,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
               return QGis.WKBMultiPolygon
           else:
               return QGis.WKBUnknown
-      except Exception, err:
+        except Exception, err:
           print str(err)
 
     def convertGeometry( self, geom_list, vType ):
