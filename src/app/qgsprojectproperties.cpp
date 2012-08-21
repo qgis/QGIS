@@ -311,6 +311,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mStyle = QgsStyleV2::defaultStyle();
   populateStyles();
 
+  // Project macros
+  QString pythonMacros = QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null );
+  grpPythonMacros->setChecked( !pythonMacros.isEmpty() );
+  if ( !pythonMacros.isEmpty() )
+  {
+    ptePythonMacros->setPlainText( pythonMacros );
+  }
+  else
+  {
+    resetPythonMacros();
+  }
+
   restoreState();
 }
 
@@ -564,6 +576,19 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", 255 - mTransparencySlider->value() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
+
+  // store project macros
+  QString pythonMacros;
+  if ( grpPythonMacros->isChecked() )
+  {
+    pythonMacros = ptePythonMacros->toPlainText();
+  }
+  else
+  {
+    pythonMacros = QString::null;
+    resetPythonMacros();
+  }
+  QgsProject::instance()->writeEntry( "Macros", "/pythonCode", pythonMacros );
 
   //todo XXX set canvas color
   emit refresh();
@@ -947,4 +972,10 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
   cbo->setItemIcon( cbo->currentIndex(), icon );
 }
 
-
+void QgsProjectProperties::resetPythonMacros()
+{
+  grpPythonMacros->setChecked( false );
+  ptePythonMacros->setPlainText( "def openProject():\n  pass\n\n" \
+                                 "def saveProject():\n  pass\n\n" \
+                                 "def closeProject():\n  pass\n" );
+}

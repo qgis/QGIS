@@ -71,6 +71,7 @@ class QgsGPSInformationWidget;
 class QgsDecorationItem;
 
 class QgsMessageLogViewer;
+class QgsMessageBar;
 
 class QgsScaleComboBox;
 
@@ -888,6 +889,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void renderDecorationItems( QPainter *p );
     void projectReadDecorationItems( );
 
+    //! clear out any stuff from project
+    void closeProject();
+
+    //! trust and load project macros
+    void enableProjectMacros();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -971,7 +978,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
-
 
     void saveAsVectorFileGeneral( bool saveOnlySelection );
 
@@ -1227,6 +1233,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool cmpByText( QAction* a, QAction* b );
 
     QString mOldScale;
+
+    //! the user has trusted the project macros
+    bool mTrustedMacros;
+
+    //! a bar to display warnings in a non-blocker manner
+    QgsMessageBar *mInfoBar;
+    QWidget *mMacrosWarn;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

@@ -139,6 +139,7 @@
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsmessagebar.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -455,18 +456,41 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QSettings settings;
   setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
 
+  QWidget *centralWidget = this->centralWidget();
+  QGridLayout *centralLayout = new QGridLayout( centralWidget );
+  centralWidget->setLayout( centralLayout );
+
   // "theMapCanvas" used to find this canonical instance later
-  mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
+  mMapCanvas = new QgsMapCanvas( centralWidget, "theMapCanvas" );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+
   // set canvas color right away
   int myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
-  setCentralWidget( mMapCanvas );
+
+  centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
+
   //set the focus to the map canvas
   mMapCanvas->setFocus();
+
+  // a bar to warn the user with non-blocking messages
+  mInfoBar = new QgsMessageBar( centralWidget );
+  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
+
+  mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
+                                              tr( "macros have been disabled." ),
+                                              QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                                              mInfoBar );
+
+  QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
+  btnEnableMacros->setText( tr( "Enable" ) );
+  connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
+  connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
+  mMacrosWarn->layout()->addWidget( btnEnableMacros );
 
   // "theMapLegend" used to find this canonical instance later
   mMapLegend = new QgsLegend( mMapCanvas, this, "theMapLegend" );
@@ -628,6 +652,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
 
   mMapTipsVisible = false;
+  mTrustedMacros = false;
 
   // setup drag drop
   setAcceptDrops( true );
@@ -2949,10 +2974,7 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
-    deletePrintComposers();
-    removeAnnotationItems();
-    mMapCanvas->freeze( true );
-    removeAllLayers();
+    closeProject();
     qApp->exit( 0 );
   }
 }
@@ -2999,11 +3021,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     }
   }
 
-  deletePrintComposers();
-  removeAnnotationItems();
-
-  mMapCanvas->freeze( true );
-  removeAllLayers();
+  closeProject();
   mMapCanvas->clear();
 
   QgsProject* prj = QgsProject::instance();
@@ -3185,6 +3203,8 @@ void QgisApp::fileOpen()
       return;
     }
 
+    closeProject();
+
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
@@ -3192,12 +3212,6 @@ void QgisApp::fileOpen()
     QString myPath = myFI.path();
     // Persist last used project dir
     settings.setValue( "/UI/lastProjectDir", myPath );
-
-    deletePrintComposers();
-    removeAnnotationItems();
-    // clear out any stuff from previous project
-    mMapCanvas->freeze( true );
-    removeAllLayers();
 
     QgsProject::instance()->setFileName( fullPath );
 
@@ -3219,6 +3233,19 @@ void QgisApp::fileOpen()
       mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
     }
 
+    // does the project have any macros?
+    if ( mPythonUtils && mPythonUtils->isEnabled() )
+    {
+      if ( settings.value( "/qgis/enable_macros", false ).toBool() )
+      {
+        enableProjectMacros();
+      }
+      else
+      {
+        mInfoBar->pushWidget( mMacrosWarn, 2 );
+      }
+    }
+
     emit projectRead();     // let plug-ins know that we've read in a new
     // project so that they can check any project
     // specific plug-in state
@@ -3230,6 +3257,14 @@ void QgisApp::fileOpen()
     mMapCanvas->refresh();
   }
 } // QgisApp::fileOpen
+
+void QgisApp::enableProjectMacros()
+{
+  mTrustedMacros = true;
+
+  // load macros
+  QgsPythonRunner::run( "qgis.utils.reloadProjectMacros()" );
+}
 
 
 /**
@@ -3370,6 +3405,13 @@ bool QgisApp::fileSave()
                            QgsProject::instance()->error() );
     return false;
   }
+
+  // run the saved project macro
+  if ( mTrustedMacros )
+  {
+    QgsPythonRunner::run( "qgis.utils.saveProjectMacro();" );
+  }
+
   return true;
 } // QgisApp::fileSave
 
@@ -5872,6 +5914,26 @@ bool QgisApp::saveDirty()
 
   return answer != QMessageBox::Cancel;
 } // QgisApp::saveDirty()
+
+void QgisApp::closeProject()
+{
+  // unload the project macros before changing anything
+  if ( mTrustedMacros )
+  {
+    QgsPythonRunner::run( "qgis.utils.unloadProjectMacros();" );
+  }
+
+  // remove the warning message from the bar if present
+  mInfoBar->popWidget( mMacrosWarn );
+
+  mTrustedMacros = false;
+
+  deletePrintComposers();
+  removeAnnotationItems();
+  // clear out any stuff from project
+  mMapCanvas->freeze( true );
+  removeAllLayers();
+}
 
 
 void QgisApp::changeEvent( QEvent* event )

@@ -296,6 +296,57 @@ def pluginDirectory(packageName):
   """ return directory where the plugin resides. Plugin must be loaded already """
   return os.path.dirname(sys.modules[packageName].__file__)
 
+def reloadProjectMacros():
+  # unload old macros
+  unloadProjectMacros()
+
+  from qgis.core import QgsProject
+  code, ok = QgsProject.instance().readEntry("Macros", "/pythonCode")
+  if not ok or code.isEmpty():
+    return
+
+  # create a new empty python module
+  import imp
+  mod = imp.new_module("proj_macros_mod")
+
+  # set the module code and store it sys.modules
+  exec unicode(code) in mod.__dict__
+  sys.modules["proj_macros_mod"] = mod
+
+  # load new macros
+  openProjectMacro()
+
+def unloadProjectMacros():
+  if "proj_macros_mod" not in sys.modules:
+    return
+  # unload old macros
+  closeProjectMacro()
+  # destroy the reference to the module
+  del sys.modules["proj_macros_mod"]
+
+
+def openProjectMacro():
+  if "proj_macros_mod" not in sys.modules:
+    return
+  mod = sys.modules["proj_macros_mod"]
+  if hasattr(mod, 'openProject'):
+    mod.openProject()
+
+def saveProjectMacro():
+  if "proj_macros_mod" not in sys.modules:
+    return
+  mod = sys.modules["proj_macros_mod"]
+  if hasattr(mod, 'saveProject'):
+    mod.saveProject()
+
+def closeProjectMacro():
+  if "proj_macros_mod" not in sys.modules:
+    return
+  mod = sys.modules["proj_macros_mod"]
+  if hasattr(mod, 'closeProject'):
+    mod.closeProject()
+
+
 #######################
 # IMPORT wrapper
 
