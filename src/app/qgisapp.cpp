@@ -477,22 +477,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
-  // a bar to warn the user with non-blocking messages
-  mInfoBar = new QgsMessageBar( centralWidget );
-  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
-
-  mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
-                                              tr( "macros have been disabled." ),
-                                              QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                                              mInfoBar );
-
-  QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
-  btnEnableMacros->setText( tr( "Enable" ) );
-  connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
-  connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
-  mMacrosWarn->layout()->addWidget( btnEnableMacros );
-
   // "theMapLegend" used to find this canonical instance later
   mMapLegend = new QgsLegend( mMapCanvas, this, "theMapLegend" );
 
@@ -517,6 +501,24 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateRecentProjectPaths();
   updateProjectFromTemplates();
   activateDeactivateLayerRelatedActions( NULL );
+
+  // a bar to warn the user with non-blocking messages
+  mInfoBar = new QgsMessageBar( centralWidget );
+  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
+
+  mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
+                                              tr( "macros have been disabled." ),
+                                              QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                                              mInfoBar );
+
+  QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
+  btnEnableMacros->setText( tr( "Enable" ) );
+  btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0);text-decoration: underline;" );
+  btnEnableMacros->setCursor( Qt::PointingHandCursor );
+  connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
+  connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
+  mMacrosWarn->layout()->addWidget( btnEnableMacros );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();

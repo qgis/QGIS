@@ -43,8 +43,10 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding ), 0, 1, 1, 1 );
 
   mCloseBtn = new QToolButton( this );
-  mCloseBtn->setText( tr( "Close" ) );
-  mCloseBtn->setIcon( QgsApplication::getThemeIcon( "mIconClose.png" ) );
+  mCloseBtn->setText( tr( "" ) );
+  mCloseBtn->setStyleSheet( "background-color: rgba(255, 255, 255, 0);" );
+  mCloseBtn->setCursor( Qt::PointingHandCursor );
+  mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
   connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
   mLayout->addWidget( mCloseBtn, 0, 2, 1, 1 );
 
