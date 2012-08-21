@@ -62,8 +62,8 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! Show the help for the dialog
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-  private slots:
-    //! on change state projection enable
+
+    //! on change state projection/ellipsoid enable
     void changeProjectionEnabledState();
 
   private:

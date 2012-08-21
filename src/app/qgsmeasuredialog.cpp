@@ -59,6 +59,12 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
 
   connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
            this, SLOT( changeProjectionEnabledState() ) );
+  // Update when project wide transformation has changed
+  connect( mTool->canvas()->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ),
+           this, SLOT( changeProjectionEnabledState() ) );
+  // Update when project CRS has changed
+  connect( mTool->canvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( changeProjectionEnabledState() ) );
 
   updateUi();
 }
@@ -215,7 +221,63 @@ QString QgsMeasureDialog::formatArea( double area, int decimalPlaces )
 
 void QgsMeasureDialog::updateUi()
 {
+  // Only enable checkbox when project wide transformation is on
+  mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
+
+  configureDistanceArea();
+
   QSettings settings;
+
+  // Set tooltip to indicate how we calculate measurments
+  QGis::UnitType mapUnits = mTool->canvas()->mapUnits();
+  QString mapUnitsTxt;
+  switch ( mapUnits )
+  {
+    case QGis::Meters:
+      mapUnitsTxt = "meters";
+      break;
+    case QGis::Feet:
+      mapUnitsTxt = "feet";
+      break;
+    case QGis::Degrees:
+      mapUnitsTxt = "degrees";
+      break;
+    case QGis::UnknownUnit:
+      mapUnitsTxt = "-";
+  }
+
+  QString toolTip = QString( "The calculations are based on:" );
+  if ( ! mTool->canvas()->hasCrsTransformEnabled() )
+  {
+    toolTip += QString( "%1 Project CRS transformation is turned off, canvas units setting" ).arg( "<br> *" );
+    toolTip += QString( "is taken from project properties setting (%1)." ).arg( mapUnitsTxt );
+    toolTip += QString( "%1 Ellipsoidal calculation is not possible, as project CRS is undefined." ).arg( "<br> *" );
+  }
+  else
+  {
+    if ( mDa.ellipsoidalEnabled() )
+    {
+      toolTip += QString( "%1  Project CRS transformation is turned on and ellipsoidal calculation is selected. " ).arg( "<br> *" );
+      toolTip += QString( "The coordinates are transformed to the chosen ellipsoid (%1) and the result is in meters" ).arg( mDa.ellipsoid() );
+    }
+    else
+    {
+      toolTip += QString( "%1 Project CRS transformation is turned on but ellipsoidal calculation is not selected. " ).arg( "<br> *" );
+      toolTip += QString( "The canvas units setting is taken from the project CRS (%1)." ).arg( mapUnitsTxt );
+    }
+  }
+  if ( mapUnits == QGis::Meters && settings.value( "/qgis/measure/displayunits", "meters" ).toString() == "feet" )
+  {
+    toolTip += QString( "%1 Finally, the value is converted from meters to feet." ).arg( "<br> *" );
+  }
+  else if ( mapUnits == QGis::Feet && settings.value( "/qgis/measure/displayunits", "meters" ).toString() == "meters" )
+  {
+    toolTip += QString( "%1 Finally, the value is converted from feet to meters." ).arg( "<br> *" );
+  }
+
+  editTotal->setToolTip( toolTip );
+  mTable->setToolTip( toolTip );
+
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
   double dummy = 1.0;
@@ -248,8 +310,6 @@ void QgsMeasureDialog::updateUi()
     mTable->show();
     editTotal->setText( formatDistance( 0, decimalPlaces ) );
   }
-
-  configureDistanceArea();
 }
 
 void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, bool isArea )
@@ -284,9 +344,13 @@ void QgsMeasureDialog::changeProjectionEnabledState()
   // store value
   QSettings settings;
   if ( mcbProjectionEnabled->isChecked() )
+  {
     settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+  }
   else
+  {
     settings.setValue( "/qgis/measure/projectionEnabled", 0 );
+  }
 
   // clear interface
   mTable->clear();
@@ -345,5 +409,6 @@ void QgsMeasureDialog::configureDistanceArea()
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  mDa.setEllipsoidalEnabled( mcbProjectionEnabled->isChecked() );
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  mDa.setEllipsoidalEnabled( mcbProjectionEnabled->isChecked() && mTool->canvas()->hasCrsTransformEnabled() );
 }
