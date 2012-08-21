@@ -34,6 +34,7 @@ void QgsGeomColumnTypeThread::addGeometryColumn( QgsPostgresLayerProperty layerP
 
 void QgsGeomColumnTypeThread::stop()
 {
+  mConn->cancel();
   mStopped = true;
 }
 
@@ -50,7 +51,8 @@ void QgsGeomColumnTypeThread::run()
     {
       mConn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
     }
-    else
+
+    if ( mStopped )
     {
       layerProperty.type = "";
       layerProperty.srid = "";
