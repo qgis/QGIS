@@ -46,7 +46,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     {
       mDa.setSourceCrs( mCrs.srsid() );
       mDa.setEllipsoid( ellipsoidID );
-      mDa.setEllipsoidalEnabled( ctfEnabled );
+      mDa.setEllipsoidalMode( ctfEnabled );
     }
 
     //! Destructor

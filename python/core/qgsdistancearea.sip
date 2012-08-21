@@ -14,8 +14,8 @@ class QgsDistanceArea
     ~QgsDistanceArea();
     
     //! sets whether coordinates must be projected to ellipsoid before measuring
-    void setProjectionsEnabled(bool flag);
-    void setEllipsoidalEnabled(bool flag) /Deprecated/;
+    void setEllipsoidalMode(bool flag);
+    void setProjectionsEnabled(bool flag) /Deprecated/;
 
     //! returns projections enabled flag
     bool ellipsoidalEnabled();
@@ -70,6 +70,6 @@ class QgsDistanceArea
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
     //! Helper for conversion between physical units
-    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::displayUnits, bool isArea );
+    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea );
 
 };

@@ -41,7 +41,7 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
-  mEllipsoidalEnabled = false;
+  mEllipsoidalMode = false;
   mCoordTransform = new QgsCoordinateTransform;
   setSourceCrs( GEOCRS_ID ); // WGS 84
   setEllipsoid( "WGS84" );
@@ -53,9 +53,9 @@ QgsDistanceArea::~QgsDistanceArea()
   delete mCoordTransform;
 }
 
-void QgsDistanceArea::setEllipsoidalEnabled( bool flag )
+void QgsDistanceArea::setEllipsoidalMode( bool flag )
 {
-  mEllipsoidalEnabled = flag;
+  mEllipsoidalMode = flag;
 }
 
 void QgsDistanceArea::setSourceCrs( long srsid )
@@ -337,14 +337,14 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint>& points )
 
   try
   {
-    if ( mEllipsoidalEnabled && ( mEllipsoid != "NONE" ) )
+    if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
       p1 = mCoordTransform->transform( points[0] );
     else
       p1 = points[0];
 
     for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
     {
-      if ( mEllipsoidalEnabled && ( mEllipsoid != "NONE" ) )
+      if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
       {
         p2 = mCoordTransform->transform( *i );
         total += computeDistanceBearing( p1, p2 );
@@ -378,7 +378,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
     QgsPoint pp1 = p1, pp2 = p2;
 
     QgsDebugMsg( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ) ).arg( p2.toString( 4 ) ) );
-    if ( mEllipsoidalEnabled && ( mEllipsoid != "NONE" ) )
+    if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
     {
       QgsDebugMsg( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ) );
       QgsDebugMsg( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ) );
@@ -447,7 +447,7 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
         pnt = QgsPoint( x, y );
 
-        if ( mEllipsoidalEnabled && ( mEllipsoid != "NONE" ) )
+        if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
         {
           pnt = mCoordTransform->transform( pnt );
         }
@@ -499,7 +499,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
 
   try
   {
-    if ( mEllipsoidalEnabled && ( mEllipsoid != "NONE" ) )
+    if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
     {
       QList<QgsPoint> pts;
       for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
@@ -527,7 +527,7 @@ double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 )
   QgsPoint pp1 = p1, pp2 = p2;
   double bearing;
 
-  if ( mEllipsoidalEnabled && ( mEllipsoid != "NONE" ) )
+  if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
   {
     pp1 = mCoordTransform->transform( p1 );
     pp2 = mCoordTransform->transform( p2 );
@@ -689,7 +689,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points )
   double area;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
-  if (( ! mEllipsoidalEnabled ) || ( mEllipsoid == "NONE" ) )
+  if (( ! mEllipsoidalMode ) || ( mEllipsoid == "NONE" ) )
   {
     return computePolygonFlatArea( points );
   }
@@ -886,7 +886,7 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
 
   if (( measureUnits == QGis::Degrees || measureUnits == QGis::Feet ) &&
       mEllipsoid != "NONE" &&
-      mEllipsoidalEnabled )
+      mEllipsoidalMode )
   {
     // Measuring on an ellipsoid returned meters. Force!
     measureUnits = QGis::Meters;

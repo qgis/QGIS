@@ -184,7 +184,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setProjectionsEnabled( bool enabled );
 
     //! returns true if projections are enabled for this layer set
-    bool hasCrsTransformEnabled();
+    bool hasCrsTransformEnabled() const;
 
     /** sets destination coordinate reference system
      * @note deprecated by qgis 1.7

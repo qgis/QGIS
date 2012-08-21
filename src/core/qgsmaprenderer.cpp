@@ -73,7 +73,6 @@ QgsMapRenderer::~QgsMapRenderer()
   delete mCachedTr;
 }
 
-
 QgsRectangle QgsMapRenderer::extent() const
 {
   return mExtent;
@@ -664,14 +663,14 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
   {
     mProjectionsEnabled = enabled;
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
-    mDistArea->setEllipsoidalEnabled( enabled );
+    mDistArea->setEllipsoidalMode( enabled );
     updateFullExtent();
     mLastExtent.setMinimal();
     emit hasCrsTransformEnabled( enabled );
   }
 }
 
-bool QgsMapRenderer::hasCrsTransformEnabled()
+bool QgsMapRenderer::hasCrsTransformEnabled() const
 {
   return mProjectionsEnabled;
 }

@@ -410,5 +410,5 @@ void QgsMeasureDialog::configureDistanceArea()
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
-  mDa.setEllipsoidalEnabled( mcbProjectionEnabled->isChecked() && mTool->canvas()->hasCrsTransformEnabled() );
+  mDa.setEllipsoidalMode( mcbProjectionEnabled->isChecked() && mTool->canvas()->hasCrsTransformEnabled() );
 }
