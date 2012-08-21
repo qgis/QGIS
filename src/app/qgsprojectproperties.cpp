@@ -578,12 +578,8 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   // store project macros
-  QString pythonMacros;
-  if ( grpPythonMacros->isChecked() )
-  {
-    pythonMacros = ptePythonMacros->toPlainText();
-  }
-  else
+  QString pythonMacros = ptePythonMacros->toPlainText();
+  if ( !grpPythonMacros->isChecked() || pythonMacros.isEmpty() )
   {
     pythonMacros = QString::null;
     resetPythonMacros();
