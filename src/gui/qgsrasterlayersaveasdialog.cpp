@@ -9,11 +9,13 @@
 #include <QSettings>
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
+    const QgsCoordinateReferenceSystem& layerCrs,
     const QgsCoordinateReferenceSystem& currentCrs,
     QWidget* parent, Qt::WindowFlags f ):
     QDialog( parent, f )
     , mDataProvider( sourceProvider )
     , mCurrentExtent( currentExtent )
+    , mLayerCrs( layerCrs )
     , mCurrentCrs( currentCrs )
     , mExtentState( OriginalExtent )
     , mResolutionState( OriginalResolution )
@@ -40,7 +42,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
   if ( mDataProvider )
   {
     //extent
-    setOutputExtent( mDataProvider->extent(), mDataProvider->crs(), OriginalExtent );
+    setOutputExtent( mDataProvider->extent(), mLayerCrs, OriginalExtent );
 
     if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
     {
@@ -130,7 +132,7 @@ void QgsRasterLayerSaveAsDialog::on_mOriginalExtentButton_clicked()
 {
   if ( mDataProvider )
   {
-    setOutputExtent( mDataProvider->extent(), mDataProvider->crs(), OriginalExtent );
+    setOutputExtent( mDataProvider->extent(), mLayerCrs, OriginalExtent );
   }
 }
 
@@ -266,7 +268,7 @@ void QgsRasterLayerSaveAsDialog::setOriginalResolution()
     // Init to something if no original resolution is available
     xRes = yRes = mDataProvider->extent().width() / 100;
   }
-  setResolution( xRes, yRes, mDataProvider->crs() );
+  setResolution( xRes, yRes, mLayerCrs );
   mResolutionState = OriginalResolution;
   recalcSize();
 }
@@ -414,7 +416,7 @@ void QgsRasterLayerSaveAsDialog::crsChanged()
     if ( mExtentState == OriginalExtent )
     {
       previousExtent = mDataProvider->extent();
-      previousCrs = mDataProvider->crs();
+      previousCrs = mLayerCrs;
     }
     else if ( mExtentState == CurrentExtent )
     {
@@ -456,7 +458,7 @@ void QgsRasterLayerSaveAsDialog::updateCrsGroup()
   QgsDebugMsg( "Entered" );
 
   mCrsComboBox->setItemText( mCrsComboBox->findData( OriginalCrs ),
-                             tr( "Layer" ) + " (" + mDataProvider->crs().description() + ", " + mDataProvider->crs().authid() + ")" );
+                             tr( "Layer" ) + " (" + mLayerCrs.description() + ", " + mLayerCrs.authid() + ")" );
 
   mCrsComboBox->setItemText( mCrsComboBox->findData( CurrentCrs ),
                              tr( "Project" ) + " (" + mCurrentCrs.description() + ", " + mCurrentCrs.authid() + ")" );
@@ -470,7 +472,7 @@ QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()
   int state = mCrsComboBox->itemData( mCrsComboBox->currentIndex() ).toInt();
   if ( state == OriginalCrs )
   {
-    return mDataProvider->crs();
+    return mLayerCrs;
   }
   else if ( state == CurrentCrs )
   {
