@@ -31,6 +31,7 @@
 
 #include <cmath>
 
+#include <QApplication>
 #include <QByteArray>
 #include <QString>
 #include <QFontMetrics>
@@ -142,6 +143,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   placement = AroundPoint;
   placementFlags = 0;
   //textFont = QFont();
+  textNamedStyle = QString( "" );
   textColor = Qt::black;
   textTransp = 0;
   previewBkgrdColor = Qt::white;
@@ -180,6 +182,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   placement = s.placement;
   placementFlags = s.placementFlags;
   textFont = s.textFont;
+  textNamedStyle = s.textNamedStyle;
   textColor = s.textColor;
   textTransp = s.textTransp;
   previewBkgrdColor = s.previewBkgrdColor;
@@ -319,6 +322,18 @@ static void _readDataDefinedPropertyMap( QgsVectorLayer* layer, QMap< QgsPalLaye
   _readDataDefinedProperty( layer, QgsPalLayerSettings::BufferTransp, propertyMap );
 }
 
+void QgsPalLayerSettings::updateFontViaStyle( const QString & fontstyle )
+{
+  if ( !fontstyle.isEmpty() )
+  {
+    QFont styledfont = mFontDB.font( textFont.family(), fontstyle, textFont.pointSizeF() );
+    if ( QApplication::font().toString() != styledfont.toString() )
+    {
+      textFont = styledfont;
+    }
+  }
+}
+
 void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
@@ -333,9 +348,11 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
   bool fontItalic = layer->customProperty( "labeling/fontItalic" ).toBool();
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
+  textFont.setPointSizeF( fontSize ); //double precision needed because of map units
+  textNamedStyle = layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString();
+  updateFontViaStyle( textNamedStyle );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
-  textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textColor = _readColor( layer, "labeling/textColor" );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
   previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", "#ffffff" ).toString() );
@@ -376,6 +393,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/placementFlags", ( unsigned int )placementFlags );
 
   layer->setCustomProperty( "labeling/fontFamily", textFont.family() );
+  layer->setCustomProperty( "labeling/namedStyle", textNamedStyle );
   layer->setCustomProperty( "labeling/fontSize", textFont.pointSizeF() );
   layer->setCustomProperty( "labeling/fontWeight", textFont.weight() );
   layer->setCustomProperty( "labeling/fontItalic", textFont.italic() );
