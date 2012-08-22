@@ -495,6 +495,7 @@ void QgsCptCityBrowserModel::addRootItems( )
       QString info = mCollection->dirNamesMap().value( path );
       QgsDebugMsg( "path= " + path + " info= " + info );
       item = new QgsCptCityCategoryItem( NULL, path, path, info );
+      //TODO remove item if there are no children (e.g. esri in qgis-sel)
       if ( item->isValid() )
         mRootItems << item;
       else

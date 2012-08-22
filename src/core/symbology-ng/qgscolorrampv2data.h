@@ -353,6 +353,9 @@ const char* brewerString =
   "PuBuGn-8-255,247,251 236,226,240 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,100,80\n"
   "PuBuGn-9-255,247,251 236,226,240 208,209,230 166,189,219 103,169,207 54,144,192 2,129,138 1,108,89 1,70,54";
 
+#if 0
+// not used anymore
+
 /*
 The following tables were taken from the cpt-city website http://soliton.vm.bytemark.co.uk/pub/cpt-city/
 */
@@ -382,7 +385,6 @@ If the author has not specified a licence then you do not have permission to dis
 /* name mappings - by author*/
 static const char* cptCityNames [] =
 {
-#if 0
 // these defs are now in DESC.xml files
   "bhw", "Art gradients by Blackheartedwolf",
   "cb", "Colour schemes by Cynthia Brewer",
@@ -445,8 +447,8 @@ static const char* cptCityNames [] =
   "vh", "Victor Huerfano's Caribbean DEM palette",
   "wkp", "Wikipedia schemes",
   "xkcd", "Bathymetry from XKCD 1040",
-#endif
 //views
+// these defs are now in selection .xml files
   "bath", "Palettes for bathymetry",
   "blues", "A selection of blues",
   "topo", "Palettes for topography",
@@ -459,12 +461,10 @@ static const char* cptCityNames [] =
   "transparency", "Palettes with transparency",
   "discord", "Gradients of discordance",
   "popular", "The most popular palettes",
-#if 0
 //views/div
   "jjg/cbcont/div", "continuous",
   "jjg/cbac/div", "almost continuous",
   "jjg/polarity", "polarity",
-#endif
   NULL, NULL
 };
 
@@ -800,5 +800,6 @@ static const char* cptCitySelections [] =
   "km/blue-yellow-d13",
   NULL, NULL
 };
+#endif
 
 #endif // QGSCOLORBREWERPALETTE_H

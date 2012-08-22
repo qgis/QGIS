@@ -1003,6 +1003,9 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
   foreach ( QString path, mDirNames )
   {
     // TODO parse DESC.xml and COPYING.xml here, and add to CptCityCollection member
+    // skip "selections" dir which contains selections
+    if ( path == "selections" )
+      continue;
     QString filename = baseDir() + QDir::separator() + path + QDir::separator() + "DESC.xml";
     QFile f( filename );
     if ( ! f.open( QFile::ReadOnly ) )
@@ -1040,29 +1043,74 @@ bool QgsCptCityCollection::loadSchemes( QString rootDir, bool reset )
     // add info to mapping
     mDirNamesMap[ path ] = nameElement.text();
   }
-  // add any elements that are missing from DESC.xml (views)
-  for ( int i = 0; cptCityNames[i] != NULL; i = i + 2 )
-  {
-    mDirNamesMap[ cptCityNames[i] ] = cptCityNames[i+1];
-  }
 
   // populate mSelections
-  QString viewName;
-  const char** selections;
-  if ( mCollectionName == DEFAULT_CPTCITY_COLLECTION )
-    selections = cptCitySelectionsMin;
-  else
-    selections = cptCitySelections;
-  for ( int i = 0; selections[i] != NULL; i++ )
+  QDir seldir( baseDir() + QDir::separator() + rootDir + QDir::separator() + "selections" );
+  QgsDebugMsg( "populating selection from " + seldir.path() );
+  foreach ( QString selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
   {
-    curName = QString( selections[i] );
-    if ( curName == "" )
+    QString filename = seldir.path() + QDir::separator() + selfile;
+    QgsDebugMsg( "reading file " + filename );
+
+    QFile f( filename );
+    if ( ! f.open( QFile::ReadOnly ) )
     {
-      viewName = QString( selections[i+1] );
-      curName = QString( selections[i+2] );
-      i = i + 2;
+      QgsDebugMsg( filename + " does not exist" );
+      continue;
     }
-    mSelectionsMap[ viewName ] << curName;
+
+    // parse the document
+    QString errMsg;
+    QDomDocument doc( "selection" );
+    if ( !doc.setContent( &f, &errMsg ) )
+    {
+      f.close();
+      QgsDebugMsg( "Couldn't parse file " + filename + " : " + errMsg );
+      continue;
+    }
+    f.close();
+
+    // read description
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() != "selection" )
+    {
+      QgsDebugMsg( "Incorrect root tag: " + docElem.tagName() );
+      continue;
+    }
+    QDomElement e = docElem.firstChildElement( "name" );
+    // QString selname = QFileInfo( selfile ).baseName();
+    QString selname = ( e.isNull() || e.text().isNull() ) ? QFileInfo( selfile ).baseName() : e.text();
+    QString description = docElem.firstChildElement( "description" ).text().simplified();
+    if ( description.endsWith( "." ) )
+      description.chop( 1 );
+    mDirNamesMap[ selname ] = description;
+
+    // get collections
+    QDomElement collectsElem = docElem.firstChildElement( "seealsocollects" );
+    e = collectsElem.firstChildElement( "collect" );
+    while ( ! e.isNull() )
+    {
+      if ( ! e.attribute( "dir" ).isNull() )
+      {
+        QgsDebugMsg( "add " + e.attribute( "dir" ) + "/ to " + selname );
+        // TODO parse description and use that, instead of default collection name
+        mSelectionsMap[ selname ] << e.attribute( "dir" ) + "/";
+      }
+      e = e.nextSiblingElement();
+    }
+    // get individual gradients
+    QDomElement gradientsElem = docElem.firstChildElement( "gradients" );
+    e = gradientsElem.firstChildElement( "gradient" );
+    while ( ! e.isNull() )
+    {
+      if ( ! e.attribute( "dir" ).isNull() )
+      {
+        QgsDebugMsg( "add " + e.attribute( "dir" ) + "/" + e.attribute( "file" ) + " to " + selname );
+        // TODO parse description and save elsewhere
+        mSelectionsMap[ selname ] << e.attribute( "dir" ) + "/" + e.attribute( "file" );
+      }
+      e = e.nextSiblingElement();
+    }
   }
 
   QgsDebugMsg( QString( "done in %1 seconds" ).arg( time.elapsed() / 1000.0 ) );
