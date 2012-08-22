@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>510</width>
-        <height>543</height>
+        <y>-118</y>
+        <width>492</width>
+        <height>661</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -354,6 +354,84 @@
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="mNoDataGroupBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="toolTip">
+          <string>Additional no data values. The specified values will be set to no data in output raster.</string>
+         </property>
+         <property name="title">
+          <string>No data values (not yet implemented)</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QTableWidget" name="mNoDataTableWidget"/>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <widget class="QToolButton" name="mAddNoDataManuallyToolButton">
+              <property name="toolTip">
+               <string>Add values manually</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mLoadTransparentNoDataToolButton">
+              <property name="toolTip">
+               <string>Load user defined fully transparent (100%) values </string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../../images/themes/default/mActionCopySelected.png</normaloff>../../images/themes/default/mActionCopySelected.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mRemoveSelectedNoDataToolButton">
+              <property name="toolTip">
+               <string>Remove selected row</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mRemoveAllNoDataToolButton">
+              <property name="toolTip">
+               <string>Clear all</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>../../images/themes/default/mActionRemove.png</normaloff>../../images/themes/default/mActionRemove.png</iconset>
               </property>
              </widget>
             </item>

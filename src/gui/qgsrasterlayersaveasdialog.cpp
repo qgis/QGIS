@@ -1,3 +1,4 @@
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayersaveasdialog.h"
@@ -21,6 +22,12 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
     , mResolutionState( OriginalResolution )
 {
   setupUi( this );
+  mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mLoadTransparentNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCopySelected.png" ) );
+  mRemoveSelectedNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mRemoveAllNoDataToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.png" ) );
+  mNoDataGroupBox->setEnabled( false ); // not yet implemented
+
   setValidators();
   // Translated labels + EPSG are updated later
   mCrsComboBox->addItem( "Layer", OriginalCrs );

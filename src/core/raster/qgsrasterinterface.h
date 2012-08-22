@@ -115,6 +115,9 @@ class CORE_EXPORT QgsRasterInterface
       return UnknownDataType;
     }
 
+    /** For given data type returns wider type and sets no data value */
+    static DataType typeWithNoDataValue( DataType dataType, double *noDataValue );
+
     /** Get number of bands */
     virtual int bandCount() const
     {

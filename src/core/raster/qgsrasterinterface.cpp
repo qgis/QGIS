@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <limits>
 #include <typeinfo>
 
 #include <QByteArray>
@@ -84,6 +85,39 @@ bool QgsRasterInterface::typeIsColor( DataType dataType ) const
       return false;
   }
   return false;
+}
+
+QgsRasterInterface::DataType QgsRasterInterface::typeWithNoDataValue( DataType dataType, double *noDataValue )
+{
+  DataType newDataType;
+
+  switch ( dataType )
+  {
+    case QgsRasterInterface::Byte:
+      *noDataValue = -32768.0;
+      newDataType = QgsRasterInterface::Int16;
+      break;
+    case QgsRasterInterface::Int16:
+      *noDataValue = -2147483648.0;
+      newDataType = QgsRasterInterface::Int32;
+      break;
+    case QgsRasterInterface::UInt16:
+      *noDataValue = -2147483648.0;
+      newDataType = QgsRasterInterface::Int32;
+      break;
+    case QgsRasterInterface::UInt32:
+    case QgsRasterInterface::Int32:
+    case QgsRasterInterface::Float32:
+    case QgsRasterInterface::Float64:
+      *noDataValue = std::numeric_limits<double>::max() * -1.0;
+      newDataType = QgsRasterInterface::Float64;
+    default:
+      QgsDebugMsg( QString( "Unknow data type %1" ).arg( dataType ) );
+      return UnknownDataType;
+      break;
+  }
+  QgsDebugMsg( QString( "newDataType = %1 noDataValue = %2" ).arg( newDataType ).arg( *noDataValue ) );
+  return newDataType;
 }
 
 // To give to an image preallocated memory is the only way to avoid memcpy

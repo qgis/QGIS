@@ -35,7 +35,9 @@ class CORE_EXPORT QgsRasterFileWriter
       SourceProviderError = 1,
       DestProviderError = 2,
       CreateDatasourceError = 3,
-      WriteError = 4
+      WriteError = 4,
+      // Internal error if a value used for 'no data' was found in input
+      NoDataConflict = 5
     };
 
     QgsRasterFileWriter( const QString& outputUrl );
@@ -48,7 +50,8 @@ class CORE_EXPORT QgsRasterFileWriter
         @param outputExtent extent to output
         @param crs crs to reproject to
         @param p dialog to show progress in */
-    WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
+    //WriterError writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
+    WriterError writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
                              const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
 
     void setOutputFormat( const QString& format ) { mOutputFormat = format; }
@@ -72,10 +75,24 @@ class CORE_EXPORT QgsRasterFileWriter
 
   private:
     QgsRasterFileWriter(); //forbidden
-    WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
+    //WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
+    WriterError writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
+                                 const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
+
+    // Helper method used by previous one
+    WriterError writeDataRaster( const QgsRasterPipe* pipe,
+                                 QgsRasterIterator* iter,
+                                 int nCols, int nRows,
+                                 const QgsRectangle& outputExtent,
+                                 const QgsCoordinateReferenceSystem& crs,
+                                 QgsRasterInterface::DataType destDataType,
+                                 QList<bool> destHasNoDataValueList,
+                                 QList<double> destNoDataValueList,
+                                 QgsRasterDataProvider* destProvider,
+                                 QProgressDialog* progressDialog );
+
     WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* p = 0 );
+                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
 
     //initialize vrt member variables
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );

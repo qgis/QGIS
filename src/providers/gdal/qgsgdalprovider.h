@@ -196,6 +196,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
 
+    bool srcHasNoDataValue( int bandNo ) const;
     double noDataValue() const;
     void computeMinMax( int bandNo );
     double minimumValue( int bandNo ) const;
@@ -272,6 +273,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /**Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    bool setNoDataValue( int bandNo, double noDataValue );
 
     /**Returns the formats supported by create()*/
     QStringList createFormats() const;

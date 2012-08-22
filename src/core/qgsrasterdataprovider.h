@@ -279,6 +279,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /* Read a value from a data block at a given index. */
     virtual double readValue( void *data, int type, int index );
 
+    /* Return true if source band has no data value */
+    virtual bool srcHasNoDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return false; }
+
     /** value representing null data */
     virtual double noDataValue() const { return 0; }
 
@@ -521,6 +524,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( createOptions );
       return false;
     }
+
+    /** Set no data value on created dataset */
+    virtual bool setNoDataValue( int bandNo, double noDataValue ) { return false; }
 
     /**Returns the formats supported by create()*/
     virtual QStringList createFormats() const { return QStringList(); }

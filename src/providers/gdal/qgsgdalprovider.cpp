@@ -722,6 +722,21 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 }
 #endif
 
+bool QgsGdalProvider::srcHasNoDataValue( int bandNo ) const
+{
+  if ( mGdalDataset )
+  {
+    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+    if ( myGdalBand )
+    {
+      int ok;
+      GDALGetRasterNoDataValue( myGdalBand, &ok );
+      return ok;
+    }
+  }
+  return false;
+}
+
 double  QgsGdalProvider::noDataValue() const
 {
   if ( mNoDataValue.size() > 0 )
@@ -2274,6 +2289,21 @@ bool QgsGdalProvider::write( void* data, int band, int width, int height, int xO
   return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
 }
 
+bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
+{
+  if ( !mGdalDataset ) return false;
+
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  CPLErrorReset();
+  CPLErr err = GDALSetRasterNoDataValue( rasterBand, noDataValue );
+  if ( err != CPLE_None )
+  {
+    QgsDebugMsg( "Cannot set no data value" );
+    return false;
+  }
+  return true;
+}
+
 QStringList QgsGdalProvider::createFormats() const
 {
   return QStringList();
@@ -2281,6 +2311,23 @@ QStringList QgsGdalProvider::createFormats() const
 
 bool QgsGdalProvider::remove()
 {
+  if ( mGdalDataset )
+  {
+    GDALDriverH driver = GDALGetDatasetDriver( mGdalDataset );
+    GDALClose( mGdalDataset );
+    mGdalDataset = 0;
+
+    CPLErrorReset();
+    CPLErr err = GDALDeleteDataset( driver, TO8F( dataSourceUri() ) );
+    if ( err != CPLE_None )
+    {
+      QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      return false;
+    }
+    QgsDebugMsg( "Raster dataset dataSourceUri() successfully deleted" );
+    return true;
+  }
   return false;
 }
 
