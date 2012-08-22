@@ -20,6 +20,7 @@
 
 #include <QEvent>
 #include <QString>
+#include <QMetaType>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -95,9 +96,13 @@ class CORE_EXPORT QGis
       DegreesMinutesSeconds = 2,  // was 4
       DegreesDecimalMinutes = 2,  // was 5
     };
-    // Converters for the above type
-    static QString toString( QGis::UnitType unit );
-    static UnitType fromString( QString unitTxt, QGis::UnitType defaultType = UnknownUnit );
+
+    // Provides the canonical name of the type value
+    static QString toLiteral( QGis::UnitType unit );
+    // Converts from the canonical name to the type value
+    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    // Provides translated version of the type value
+    static QString tr( QGis::UnitType unit );
 
     //! User defined event types
     enum UserEvent

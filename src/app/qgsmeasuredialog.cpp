@@ -230,49 +230,32 @@ void QgsMeasureDialog::updateUi()
 
   // Set tooltip to indicate how we calculate measurments
   QGis::UnitType mapUnits = mTool->canvas()->mapUnits();
-  QString mapUnitsTxt;
-  switch ( mapUnits )
-  {
-    case QGis::Meters:
-      mapUnitsTxt = "meters";
-      break;
-    case QGis::Feet:
-      mapUnitsTxt = "feet";
-      break;
-    case QGis::Degrees:
-      mapUnitsTxt = "degrees";
-      break;
-    case QGis::UnknownUnit:
-      mapUnitsTxt = "-";
-  }
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 
-  QString toolTip = QString( "The calculations are based on:" );
+  QString toolTip = tr( "The calculations are based on:" );
   if ( ! mTool->canvas()->hasCrsTransformEnabled() )
   {
-    toolTip += QString( "%1 Project CRS transformation is turned off, canvas units setting" ).arg( "<br> *" );
-    toolTip += QString( "is taken from project properties setting (%1)." ).arg( mapUnitsTxt );
-    toolTip += QString( "%1 Ellipsoidal calculation is not possible, as project CRS is undefined." ).arg( "<br> *" );
+    toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + " ";
+    toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QGis::tr( mapUnits ) );
+    toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible, as project CRS is undefined." );
   }
   else
   {
     if ( mDa.ellipsoidalEnabled() )
     {
-      toolTip += QString( "%1  Project CRS transformation is turned on and ellipsoidal calculation is selected. " ).arg( "<br> *" );
-      toolTip += QString( "The coordinates are transformed to the chosen ellipsoid (%1) and the result is in meters" ).arg( mDa.ellipsoid() );
+      toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + " ";
+      toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the result is in meters" ).arg( mDa.ellipsoid() );
     }
     else
     {
-      toolTip += QString( "%1 Project CRS transformation is turned on but ellipsoidal calculation is not selected. " ).arg( "<br> *" );
-      toolTip += QString( "The canvas units setting is taken from the project CRS (%1)." ).arg( mapUnitsTxt );
+      toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." ).arg( "<br> *" );
+      toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QGis::tr( mapUnits ) );
     }
   }
-  if ( mapUnits == QGis::Meters && settings.value( "/qgis/measure/displayunits", "meters" ).toString() == "feet" )
+
+  if (( mapUnits == QGis::Meters && displayUnits == QGis::Feet ) || ( mapUnits == QGis::Feet && displayUnits == QGis::Meters ) )
   {
-    toolTip += QString( "%1 Finally, the value is converted from meters to feet." ).arg( "<br> *" );
-  }
-  else if ( mapUnits == QGis::Feet && settings.value( "/qgis/measure/displayunits", "meters" ).toString() == "meters" )
-  {
-    toolTip += QString( "%1 Finally, the value is converted from feet to meters." ).arg( "<br> *" );
+    toolTip += "<br> * " + tr( "Finally, the value is converted from %2 to %3." ).arg( QGis::tr( mapUnits ) ).arg( QGis::tr( displayUnits ) );
   }
 
   editTotal->setToolTip( toolTip );
@@ -280,25 +263,7 @@ void QgsMeasureDialog::updateUi()
 
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
-  double dummy = 1.0;
-  QGis::UnitType myDisplayUnits;
-  // The dummy distance is ignored
-  convertMeasurement( dummy, myDisplayUnits, false );
-
-  switch ( myDisplayUnits )
-  {
-    case QGis::Meters:
-      mTable->setHeaderLabels( QStringList( tr( "Segments (in meters)" ) ) );
-      break;
-    case QGis::Feet:
-      mTable->setHeaderLabels( QStringList( tr( "Segments (in feet)" ) ) );
-      break;
-    case QGis::Degrees:
-      mTable->setHeaderLabels( QStringList( tr( "Segments (in degrees)" ) ) );
-      break;
-    case QGis::UnknownUnit:
-      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
-  }
+  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QGis::tr( displayUnits ) ) ) );
 
   if ( mMeasureArea )
   {
@@ -322,18 +287,9 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
 
   // Get the units for display
   QSettings settings;
-  QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-  QgsDebugMsg( QString( "Preferred display units are %1" ).arg( myDisplayUnitsTxt ) );
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 
-  QGis::UnitType displayUnits;
-  if ( myDisplayUnitsTxt == "feet" )
-  {
-    displayUnits = QGis::Feet;
-  }
-  else
-  {
-    displayUnits = QGis::Meters;
-  }
+  QgsDebugMsg( QString( "Preferred display units are %1" ).arg( QGis::toLiteral( displayUnits ) ) );
 
   mDa.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;

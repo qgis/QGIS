@@ -19,7 +19,7 @@
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
-
+#include <QCoreApplication>
 #include "qgsconfig.h"
 
 #include <ogr_api.h>
@@ -74,20 +74,20 @@ const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 // Order must match enum indices
 const char* QGis::qgisUnitTypes[] =
 {
-  "meters",
-  "feet",
-  "degrees",
-  "<unknown>",
-  "degrees",
-  "degrees",
-  "degrees"
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "meters" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "feet" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "<unknown>" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" ),
+  QT_TRANSLATE_NOOP( "QGis::UnitType", "degrees" )
 };
 
-QGis::UnitType QGis::fromString( QString unitTxt, QGis::UnitType defaultType )
+QGis::UnitType QGis::fromLiteral( QString literal, QGis::UnitType defaultType )
 {
-  for ( int i = 0; i < sizeof( qgisUnitTypes ); i++ )
+  for ( unsigned int i = 0; i < sizeof( qgisUnitTypes ); i++ )
   {
-    if ( unitTxt == qgisUnitTypes[ i ] )
+    if ( literal == qgisUnitTypes[ i ] )
     {
       return static_cast<UnitType>( i );
     }
@@ -95,7 +95,12 @@ QGis::UnitType QGis::fromString( QString unitTxt, QGis::UnitType defaultType )
   return defaultType;
 }
 
-QString QGis::toString( QGis::UnitType unit )
+QString QGis::toLiteral( QGis::UnitType unit )
 {
-  return QString( qgisUnitTypes[ static_cast<int>( unit ) ] );
+  return QString( qgisUnitTypes[ static_cast<int>( unit )] );
+}
+
+QString QGis::tr( QGis::UnitType unit )
+{
+  return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
