@@ -43,7 +43,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->addItem( new QSpacerItem( 20, 20, QSizePolicy::Expanding ), 0, 1, 1, 1 );
 
   mCloseBtn = new QToolButton( this );
-  mCloseBtn->setText( tr( "" ) );
+  mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setStyleSheet( "background-color: rgba(255, 255, 255, 0);" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
@@ -163,7 +163,7 @@ void QgsMessageBar::pushWidget( QWidget *widget, int level )
   {
     stylesheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } QLabel { color: black; }";
   }
-  else if ( level == 0 )
+  else if ( level <= 0 )
   {
     stylesheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } QLabel { color: #2554a1; }";
   }
