@@ -95,6 +95,9 @@ class CORE_EXPORT QGis
       DegreesMinutesSeconds = 2,  // was 4
       DegreesDecimalMinutes = 2,  // was 5
     };
+    // Converters for the above type
+    static QString toString( QGis::UnitType unit );
+    static UnitType fromString( QString unitTxt, QGis::UnitType defaultType = UnknownUnit );
 
     //! User defined event types
     enum UserEvent
@@ -109,6 +112,11 @@ class CORE_EXPORT QGis
     };
 
     static const double DEFAULT_IDENTIFY_RADIUS;
+
+  private:
+    // String representation of unit types (set in qgis.cpp)
+    static const char *qgisUnitTypes[];
+
 };
 
 // hack to workaround warnings when casting void pointers
