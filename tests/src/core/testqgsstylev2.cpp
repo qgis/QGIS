@@ -24,6 +24,7 @@
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgscptcityarchive.h"
 
 #include "qgsstylev2.h"
 
@@ -83,7 +84,7 @@ void TestStyleV2::initTestCase()
   // mStyle->clear();
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
-  QgsCptCityCollection::initCollections();
+  QgsCptCityArchive::initArchives();
 }
 
 void TestStyleV2::cleanupTestCase()
@@ -163,6 +164,8 @@ void TestStyleV2::testLoadColorRamps()
   colorTests.insert( "test_cc3", qMakePair( 0.25, QColor( "#7f7f7f" ) ) );
   colorTests.insert( "test_cc3", qMakePair( 0.66, QColor( "#ffad00" ) ) );
 
+  QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
+
   foreach ( QString name, colorRampsTest )
   {
     QgsDebugMsg( "colorRamp " + name );
@@ -191,6 +194,8 @@ void TestStyleV2::testSaveLoad()
   mStyle->load( QgsApplication::userStyleV2Path() );
 
   QStringList colorRamps = mStyle->colorRampNames();
+  QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
+
   QStringList colorRampsTest = QStringList() << "test_gradient";
 
   foreach ( QString name, colorRampsTest )

@@ -21,7 +21,7 @@
 #include "ui_qgscptcitycolorrampv2dialogbase.h"
 
 class QgsCptCityColorRampV2;
-class QgsCptCityCollection;
+class QgsCptCityArchive;
 class QgsCptCityBrowserModel;
 
 class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCptCityColorRampV2DialogBase
@@ -49,8 +49,8 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     bool eventFilter( QObject *obj, QEvent *event );
 
     QgsCptCityColorRampV2* mRamp;
-    QgsCptCityCollection* mCollection;
-    QString mCollectionGroup;
+    QgsCptCityArchive* mArchive;
+    QString mArchiveGroup;
 
     /* void refreshModel( const QModelIndex& index ); */
     void showEvent( QShowEvent * event );

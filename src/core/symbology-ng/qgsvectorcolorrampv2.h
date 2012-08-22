@@ -159,63 +159,6 @@ class CORE_EXPORT QgsVectorColorBrewerColorRampV2 : public QgsVectorColorRampV2
     QList<QColor> mPalette;
 };
 
-#define DEFAULT_CPTCITY_COLLECTION "cpt-city-qgis-min"
-
-class CORE_EXPORT QgsCptCityCollection
-{
-  public:
-    QgsCptCityCollection( QString collectionName = DEFAULT_CPTCITY_COLLECTION,
-                          QString baseDir = QString() );
-    ~QgsCptCityCollection();
-
-    QString baseDir() const;
-    static QString baseDir( QString collectionName );
-    static QString defaultBaseDir();
-    void setBaseDir( QString dirName ) { mBaseDir = dirName; }
-    bool loadSchemes( QString rootDir = "", bool reset = false );
-    /** Is the minimal (free to distribute) set of schemes available?
-     * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
-    /* bool hasBasicSchemes(); */
-    /** Is the entire archive available? Currently tests that there is at least one scheme. */
-    /* bool hasAllSchemes(); */
-    bool isEmpty();
-
-    QStringList listDirNames( QString dirName = "", bool recursive = false );
-    QStringList listSchemeNames( QString dirName );
-    QgsCptCityCollection* colorRampFromSVGFile( QString svgFile );
-    QgsCptCityCollection* colorRampFromSVGString( QString svgString );
-
-    QString copyingFileName( const QString& dirName ) const;
-    QString descFileName( const QString& dirName ) const;
-    static QMap< QString, QString > copyingInfo( const QString& copyingFileName );
-
-    QString collectionName() const { return mCollectionName; }
-    QMap< QString, QStringList > schemeMap() const { return mSchemeMap; }
-    QMap< QString, QStringList > schemeVariants() const { return mSchemeVariants; }
-    QMap< QString, QString > dirNamesMap() const { return mDirNamesMap; }
-    QMap< QString, QStringList > selectionsMap() const { return mSelectionsMap; }
-
-    static void initCollections( bool loadAll = false );
-    static void initCollection( QString collectionName, QString collectionBaseDir );
-    static void clearCollections();
-    static QgsCptCityCollection* defaultCollection();
-    static QString defaultCollectionName();
-    static QMap< QString, QgsCptCityCollection* > collectionRegistry();
-
-  protected:
-
-    QString mCollectionName;
-    QString mBaseDir;
-    QStringList mDirNames;
-    QMap< QString, QStringList > mSchemeMap; //key is collection, value is schemes
-    QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
-    QMap< QString, QString > mDirNamesMap; //key is name, value is description
-    QMap< QString, QStringList > mSelectionsMap;
-    static QString mDefaultCollectionName;
-    static QMap< QString, QgsCptCityCollection* > mCollectionRegistry;
-    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap; // mapping of copyinginfo, key is fileName
-};
-
 
 #define DEFAULT_CPTCITY_SCHEMENAME "cb/div/BrBG_" //change this
 #define DEFAULT_CPTCITY_VARIANTNAME "05"

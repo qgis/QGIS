@@ -35,7 +35,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsrulebasedrendererv2.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
-  symbology-ng/qgscptcitybrowsermodel.cpp
+  symbology-ng/qgscptcityarchive.cpp
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
@@ -307,7 +307,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qextserialport/qextserialport.h
   gps/qextserialport/qextserialenumerator.h
 
-  symbology-ng/qgscptcitybrowsermodel.h
+  symbology-ng/qgscptcityarchive.h
 )
 
 
@@ -439,7 +439,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgssymbologyv2conversion.h
   symbology-ng/qgssymbolv2.h
   symbology-ng/qgsvectorcolorrampv2.h
-  symbology-ng/qgscptcitybrowsermodel.h
+  symbology-ng/qgscptcityarchive.h
   symbology-ng/qgsvectorfieldsymbollayer.h
 
   qgsdiagramrendererv2.h

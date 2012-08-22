@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscptcitybrowsermodel.h
+    qgscptcityarchive.h
     ---------------------
     begin                : August 2012
     copyright            : (C) 2009 by Martin Dobias
@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCPTCITYBROWSERMODEL_H
-#define QGSCPTCITYBROWSERMODEL_H
+#ifndef QGSCPTCITYARCHIVE_H
+#define QGSCPTCITYARCHIVE_H
 
 #include "qgsvectorcolorrampv2.h"
 
@@ -25,6 +25,77 @@
 #include <QAction>
 
 class QgsCptCityColorRampV2;
+class QgsCptCityDataItem;
+class QgsCptCitySelectionItem;
+
+#define DEFAULT_CPTCITY_ARCHIVE "cpt-city-qgis-min"
+
+class CORE_EXPORT QgsCptCityArchive
+{
+  public:
+    QgsCptCityArchive( QString archiveName = DEFAULT_CPTCITY_ARCHIVE,
+                       QString baseDir = QString() );
+    ~QgsCptCityArchive();
+
+    QString baseDir() const;
+    static QString baseDir( QString archiveName );
+    static QString defaultBaseDir();
+    void setBaseDir( QString dirName ) { mBaseDir = dirName; }
+    bool loadSchemes( QString rootDir = "", bool reset = false );
+    /** Is the minimal (free to distribute) set of schemes available?
+     * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
+    /* bool hasBasicSchemes(); */
+    /** Is the entire archive available? Currently tests that there is at least one scheme. */
+    /* bool hasAllSchemes(); */
+    bool isEmpty();
+
+    QStringList listDirNames( QString dirName = "", bool recursive = false );
+    QStringList listSchemeNames( QString dirName );
+    QgsCptCityArchive* colorRampFromSVGFile( QString svgFile );
+    QgsCptCityArchive* colorRampFromSVGString( QString svgString );
+
+    QString copyingFileName( const QString& dirName ) const;
+    QString descFileName( const QString& dirName ) const;
+    static QString findFileName( const QString & target, const QString & startDir, const QString & baseDir );
+    static QMap< QString, QString > copyingInfo( const QString& copyingFileName );
+
+    QString archiveName() const { return mArchiveName; }
+    QMap< QString, QStringList > schemeMap() const { return mSchemeMap; }
+    QMap< QString, QStringList > schemeVariants() const { return mSchemeVariants; }
+    QMap< QString, QString > dirNamesMap() const { return mDirNamesMap; }
+    QMap< QString, QStringList > selectionsMap() const { return mSelectionsMap; }
+    QVector< QgsCptCityDataItem* > rootItems() const { return mRootItems; } 
+    QVector<QgsCptCityDataItem*> selectionItems() const { return mSelectionItems; }
+
+    static void initArchives( bool loadAll = false );
+    static void initArchive( QString archiveName, QString archiveBaseDir );
+    static void clearArchives();
+    static QgsCptCityArchive* defaultArchive();
+    static QString defaultArchiveName();
+    static QMap< QString, QgsCptCityArchive* > archiveRegistry();
+
+  protected:
+
+    QString mArchiveName;
+    QString mBaseDir;
+    QStringList mDirNames;
+    QMap< QString, QStringList > mSchemeMap; //key is archive, value is schemes
+    QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
+    QMap< QString, QString > mDirNamesMap; //key is name, value is description
+    QMap< QString, QStringList > mSelectionsMap;
+    static QString mDefaultArchiveName;
+    static QMap< QString, QgsCptCityArchive* > mArchiveRegistry;
+    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap; // mapping of copyinginfo, key is fileName
+
+    // new stuff
+
+    // root items, namely directories at root of archive
+    QVector< QgsCptCityDataItem* > mRootItems;
+    // map of selections, each one corresponds to an .xml file
+    /* QMap< QString, QVector<QgsCptCitySelectionItem*> > mSelections; */
+    QVector<QgsCptCityDataItem*> mSelectionItems;
+
+};
 
 /** base class for all items in the model */
 class CORE_EXPORT QgsCptCityDataItem : public QObject
@@ -185,13 +256,13 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 
 };
 
-/** A category: contains subdirectories and color ramps */
-class CORE_EXPORT QgsCptCityCategoryItem : public QgsCptCityCollectionItem
+/** A selection: contains subdirectories and color ramps */
+class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 {
     Q_OBJECT
   public:
-    QgsCptCityCategoryItem( QgsCptCityDataItem* parent, QString name, QString path, QString info );
-    ~QgsCptCityCategoryItem();
+    QgsCptCitySelectionItem( QgsCptCityDataItem* parent, QString name, QString path, QString info );
+    ~QgsCptCitySelectionItem();
 
     QVector<QgsCptCityDataItem*> createChildren();
 
@@ -206,7 +277,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
 
   public:
     explicit QgsCptCityBrowserModel( QObject *parent = 0,
-                                     QgsCptCityCollection* collection = QgsCptCityCollection::defaultCollection(),
+                                     QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
                                      QString viewName = "authors" );
     ~QgsCptCityBrowserModel();
 
@@ -292,7 +363,7 @@ class CORE_EXPORT QgsCptCityBrowserModel : public QAbstractItemModel
     void removeRootItems();
 
     QVector<QgsCptCityDataItem*> mRootItems;
-    QgsCptCityCollection* mCollection;
+    QgsCptCityArchive* mArchive;
     QString mViewName;
 };
 

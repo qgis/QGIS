@@ -15,7 +15,7 @@
 
 #include "qgscptcitycolorrampv2dialog.h"
 
-#include "qgscptcitybrowsermodel.h"
+#include "qgscptcityarchive.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
@@ -138,7 +138,7 @@ void QgsCptCityColorRampV2Dialog::on_mBrowserView_clicked( const QModelIndex &in
     // lblSchemeName->setText( "" );
     populateVariants();
     lblSchemePath->setText( item->path() );
-    updateCopyingInfo( mCollection->copyingInfo( mCollection->copyingFileName( item->path() ) ) );
+    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
   }
 }
 
@@ -146,19 +146,19 @@ void QgsCptCityColorRampV2Dialog::on_tabBar_currentChanged( int index )
 {
   if ( index == 0 )
   {
-    mCollectionGroup = "selections";
+    mArchiveGroup = "selections";
     mModel = mSelectionsModel;
   }
   else if ( index == 1 )
   {
     mModel = mAuthorsModel;
-    mCollectionGroup = "authors";
+    mArchiveGroup = "authors";
   }
   else
   {
     QgsDebugMsg( QString( "invalid index %1" ).arg( index ) );
     mModel = mAuthorsModel;
-    mCollectionGroup = "authors";
+    mArchiveGroup = "authors";
   }
 
   // set model
@@ -187,8 +187,8 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   {
     path = item->path();
     title = tr( "%1 directory details" ).arg( item->name() );
-    copyFile = mCollection->copyingFileName( path );
-    descFile = mCollection->descFileName( path );
+    copyFile = mArchive->copyingFileName( path );
+    descFile = mArchive->descFileName( path );
   }
   else if ( item )
   {
@@ -333,24 +333,24 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
   }
 }
 
-// delay initialization and update collection if it has changed
+// delay initialization and update archive if it has changed
 void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
 {
-  // setup collections
-  if ( QgsCptCityCollection::collectionRegistry().isEmpty() )
+  // setup archives
+  if ( QgsCptCityArchive::archiveRegistry().isEmpty() )
   {
-    QgsCptCityCollection::initCollections( true );
+    QgsCptCityArchive::initArchives( true );
   }
-  mCollection = QgsCptCityCollection::defaultCollection();
-  // if empty collection, try loading again - this may happen after installing new package
-  if ( ! mCollection || mCollection->isEmpty() )
+  mArchive = QgsCptCityArchive::defaultArchive();
+  // if empty archive, try loading again - this may happen after installing new package
+  if ( ! mArchive || mArchive->isEmpty() )
   {
-    QgsCptCityCollection::initCollections( true );
-    mCollection = QgsCptCityCollection::defaultCollection();
+    QgsCptCityArchive::initArchives( true );
+    mArchive = QgsCptCityArchive::defaultArchive();
   }
 
   // show information on how to install cpt-city files if none are found
-  if ( ! mCollection || mCollection->isEmpty() )
+  if ( ! mArchive || mArchive->isEmpty() )
   {
     // QgsDialog dlg( this );
     // dlg.setWindowTitle( tr( "cpt-city gradient files not found" ) );
@@ -363,7 +363,7 @@ void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
                            "(you must enable Experimental plugins in the plugin manager) "
                            "and use it to download latest cpt-city package.\n"
                            "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
-                           "2) Download the complete collection (in svg format) "
+                           "2) Download the complete archive (in svg format) "
                            "and unzip it to your QGis settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath()
@@ -380,18 +380,18 @@ void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
     return;
   }
 
-  if ( ! mCollection )
+  if ( ! mArchive )
     return;
-  QgsDebugMsg( "collection: " + mCollection->collectionName() );
+  QgsDebugMsg( "archive: " + mArchive->archiveName() );
 
   // model / view
   QgsDebugMsg( "loading model/view objects" );
   if ( mAuthorsModel )
     delete mAuthorsModel;
-  mAuthorsModel = new QgsCptCityBrowserModel( mBrowserView, mCollection, "authors" );
+  mAuthorsModel = new QgsCptCityBrowserModel( mBrowserView, mArchive, "authors" );
   if ( mSelectionsModel )
     delete mSelectionsModel;
-  mSelectionsModel = new QgsCptCityBrowserModel( mBrowserView, mCollection, "selections" );
+  mSelectionsModel = new QgsCptCityBrowserModel( mBrowserView, mArchive, "selections" );
   mModel = mSelectionsModel;
   mBrowserView->setModel( mModel );
   mBrowserView->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -409,7 +409,7 @@ void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
   cboVariantName->setIconSize( QSize( 100, 15 ) );
   lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
 
-  // populate tree widget - if item not found in selections collection, look for in authors
+  // populate tree widget - if item not found in selections archive, look for in authors
   // try to apply selection to view
   QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
   if ( modelIndex == QModelIndex() )
@@ -431,14 +431,14 @@ void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
     // updatePreview();
   }
   tabBar->blockSignals( false );
-  if ( mCollection->collectionName() == DEFAULT_CPTCITY_COLLECTION )
+  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
     tabBar->setCurrentIndex( 1 );
 
   QDialog::showEvent( e );
 
   // show error message to use color ramp manager to get more gradients
-  if ( mCollection->collectionName() == DEFAULT_CPTCITY_COLLECTION &&
-       QgsCptCityCollection::collectionRegistry().count() == 1 )
+  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE &&
+       QgsCptCityArchive::archiveRegistry().count() == 1 )
   {
     QString helpText = tr( "You can download a more complete set of cpt-city gradients "
                            "by installing the \"Color Ramp Manager\" plugin "

@@ -36,6 +36,7 @@
 #include <qgsmaplayerregistry.h>
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgscptcityarchive.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -256,7 +257,7 @@ void TestQgsRasterLayer::colorRamp2()
 void TestQgsRasterLayer::colorRamp3()
 {
   // cpt-city ramp, discrete
-  QgsCptCityCollection::initCollections();
+  QgsCptCityArchive::initArchives();
   QVERIFY( testColorRamp( "raster_colorRamp3",
                           new QgsCptCityColorRampV2( "cb/div/BrBG", "_10" ),
                           QgsColorRampShader::DISCRETE, 10 ) );
@@ -265,7 +266,6 @@ void TestQgsRasterLayer::colorRamp3()
 void TestQgsRasterLayer::colorRamp4()
 {
   // cpt-city ramp, continuous
-  QgsCptCityCollection::initCollections();
   QVERIFY( testColorRamp( "raster_colorRamp4",
                           new QgsCptCityColorRampV2( "grass/elevation", "" ),
                           QgsColorRampShader::DISCRETE, 10 ) );
