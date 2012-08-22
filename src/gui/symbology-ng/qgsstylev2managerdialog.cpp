@@ -490,7 +490,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   }
 
   // by adding symbol to style with the same name the old effectively gets overwritten
-  mStyle->addSymbol( symbolName, symbol );
+  mStyle->addSymbol( symbolName, symbol, true );
   mModified = true;
   return true;
 }
@@ -548,7 +548,7 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
     Q_ASSERT( 0 && "invalid ramp type" );
   }
 
-  mStyle->addColorRamp( name, ramp );
+  mStyle->addColorRamp( name, ramp, true );
   mModified = true;
   return true;
 }

@@ -79,7 +79,14 @@ class CORE_EXPORT QgsStyleV2
     ~QgsStyleV2();
 
     //! add color ramp to style. takes ramp's ownership
-    bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp );
+    /*!
+     *  \note Adding a color ramp with the name of existing one replaces it.
+     *  \param name is the name of the color ramp being added or updated
+     *  \param colorRamp is the Vector color ramp
+     *  \param update set to true when the style DB has to be updated, by default it is false
+     *  \return sucess status of the operation
+     */
+    bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bool update = false );
 
     //! adds a new group and returns the group's id
     /*!
@@ -98,7 +105,14 @@ class CORE_EXPORT QgsStyleV2
     int addSmartgroup( QString name, QString op, QgsSmartConditionMap conditions );
 
     //! add symbol to style. takes symbol's ownership
-    bool addSymbol( QString name, QgsSymbolV2* symbol );
+    /*!
+     *  \note Adding a symbol with the name of existing one replaces it.
+     *  \param name is the name of the symbol being added or updated
+     *  \param symbol is the Vector symbol
+     *  \param update set to true when the style DB has to be updated, by default it is false
+     *  \return sucess status of the operation
+     */
+    bool addSymbol( QString name, QgsSymbolV2* symbol, bool update = false );
 
     //! adds a new tag and returns the tag's id
     /*!
@@ -107,7 +121,7 @@ class CORE_EXPORT QgsStyleV2
      */
     int addTag( QString tagName );
 
-    //! return a map of groupid and names for the given parent
+    //! return a map of groupid and names for the given parent group
     QgsSymbolGroupMap childGroupNames( QString parent = "" );
 
     //! remove all contents of the style
@@ -323,6 +337,15 @@ class CORE_EXPORT QgsStyleV2
 
     //! gets the id from the table for the given name from the database, 0 if not found
     int getId( QString table, QString name );
+
+    //! updates the properties of an existing symbol/colorramp
+    /*!
+     *  \note This should not be called seperately, only called through addSymbol or addColorRamp
+     *  \param type is either SymbolEntity or ColorrampEntity
+     *  \param name is the name of an existing symbol or a color ramp
+     *  \return Success state of the update operation
+     */
+    bool updateSymbol( StyleEntity type, QString name );
 };
 
 
