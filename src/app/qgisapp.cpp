@@ -474,6 +474,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
 
+  // a bar to warn the user with non-blocking messages
+  mInfoBar = new QgsMessageBar( centralWidget );
+  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
+
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
@@ -502,11 +507,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateProjectFromTemplates();
   activateDeactivateLayerRelatedActions( NULL );
 
-  // a bar to warn the user with non-blocking messages
-  mInfoBar = new QgsMessageBar( centralWidget );
-  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
-
+  // create the notification widget for macros
   mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
                                               tr( "macros have been disabled." ),
                                               QgsApplication::getThemeIcon( "/mIconWarn.png" ),
@@ -514,7 +515,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
   btnEnableMacros->setText( tr( "Enable" ) );
-  btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0);text-decoration: underline;" );
+  btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
   btnEnableMacros->setCursor( Qt::PointingHandCursor );
   connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
   connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
@@ -841,6 +842,13 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
+
+  // this is a new session! reset enable macros value to "ask"
+  // whether set to "just for this session"
+  if ( settings.value( "/qgis/enableMacros", 1 ).toInt() == 2 )
+  {
+    settings.setValue( "/qgis/enableMacros", 1 );
+  }
 }
 
 
@@ -3239,13 +3247,20 @@ void QgisApp::fileOpen()
     // does the project have any macros?
     if ( mPythonUtils && mPythonUtils->isEnabled() )
     {
-      if ( settings.value( "/qgis/enable_macros", false ).toBool() )
+      if ( !QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null ).isEmpty() )
       {
-        enableProjectMacros();
-      }
-      else if ( !QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null ).isEmpty() )
-      {
-        mInfoBar->pushWidget( mMacrosWarn, 1 );
+        int enableMacros = settings.value( "/qgis/enableMacros", 1 ).toInt();
+        // 0 = never, 1 = ask, 2 = just for this session, 3 = always
+
+        if ( enableMacros == 3 || enableMacros == 2 )
+        {
+          enableProjectMacros();
+        }
+        else if ( enableMacros == 1 ) // ask
+        {
+          // display the macros notification widget
+          mInfoBar->pushWidget( mMacrosWarn, 1 );
+        }
       }
     }
 
