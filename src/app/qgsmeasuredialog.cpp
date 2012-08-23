@@ -57,7 +57,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   else
     mcbProjectionEnabled->setCheckState( Qt::Unchecked );
 
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
+  // Update whenever the canvas has refreshed. Maybe more often than needed,
+  // but at least every time any settings changes 
+  connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
            this, SLOT( changeProjectionEnabledState() ) );
 
   updateUi();
@@ -298,6 +300,7 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
 
 void QgsMeasureDialog::changeProjectionEnabledState()
 {
+  QgsDebugMsg( "Entering!" );
   // store value
   QSettings settings;
   if ( mcbProjectionEnabled->isChecked() )
@@ -354,6 +357,7 @@ void QgsMeasureDialog::changeProjectionEnabledState()
       b = false;
     }
   }
+  QgsDebugMsg( "Exiting!" );
 }
 
 void QgsMeasureDialog::configureDistanceArea()

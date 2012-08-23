@@ -427,6 +427,10 @@ void QgsMapCanvas::refresh()
   }
 
   mDrawing = false;
+
+  // Done refreshing
+  emit mapCanvasRefreshed();
+
 } // refresh
 
 void QgsMapCanvas::updateMap()
