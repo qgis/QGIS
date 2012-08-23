@@ -79,6 +79,8 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
+    void groupBoxExpanded( QWidget * widget ) { mScrollArea->ensureWidgetVisible( widget ); }
+
   private:
     QgsRasterDataProvider* mDataProvider;
     QgsRectangle mCurrentExtent;
@@ -105,4 +107,44 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void updateCrsGroup();
 };
 
+
 #endif // QGSRASTERLAYERSAVEASDIALOG_H
+
+
+// this widget class will go into its separate file
+#ifndef GROUPBOX_H
+#define GROUPBOX_H
+
+#include <QGroupBox>
+
+class GroupBox : public QGroupBox
+{
+	Q_OBJECT
+
+public:
+	GroupBox( QWidget *parent = 0 );
+	GroupBox( const QString &title, QWidget *parent = 0 );
+
+	bool isCollapsed();
+
+ signals:
+    void collapsed( QWidget* );
+    void expanded( QWidget* );
+
+public slots: 
+	void setToggled( bool toggled ) { setCollapsed( ! toggled ); }
+	void setCollapsed( bool collapsed );
+
+protected:
+	/* void mousePressEvent( QMouseEvent *e ); */
+	/* void mouseReleaseEvent( QMouseEvent *e ); */
+	/* void paintEvent( QPaintEvent * ); */
+    void showEvent( QShowEvent * event );
+
+private:
+	QPoint	clickPos;
+	bool	m_collapsed;
+    QMargins margins;
+};
+
+#endif

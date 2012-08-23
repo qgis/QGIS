@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>518</width>
+    <width>550</width>
     <height>580</height>
    </rect>
   </property>
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QScrollArea" name="mScrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-118</y>
-        <width>492</width>
-        <height>661</height>
+        <y>0</y>
+        <width>514</width>
+        <height>686</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -167,7 +167,7 @@
          <item>
           <widget class="QComboBox" name="mCrsComboBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -190,9 +190,12 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="mExtentGroupBox">
+        <widget class="GroupBox" name="mExtentGroupBox">
          <property name="title">
           <string>Extent</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
@@ -256,43 +259,89 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mCurrentExtentButton">
-              <property name="text">
-               <string>Map view extent</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mOriginalExtentButton">
-              <property name="text">
-               <string>Layer extent</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QWidget" name="widget_2" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout_8">
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="mOriginalExtentButton">
+               <property name="minimumSize">
+                <size>
+                 <width>140</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Layer extent</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="mCurrentExtentButton">
+               <property name="minimumSize">
+                <size>
+                 <width>140</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>Map view extent</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mResolutionGroupBox">
+        <widget class="GroupBox" name="mResolutionGroupBox">
          <property name="title">
           <string>Resolution</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
@@ -363,9 +412,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="mNoDataGroupBox">
+        <widget class="GroupBox" name="mNoDataGroupBox">
          <property name="enabled">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="toolTip">
           <string>Additional no data values. The specified values will be set to no data in output raster.</string>
@@ -373,13 +422,26 @@
          <property name="title">
           <string>No data values (not yet implemented)</string>
          </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QTableWidget" name="mNoDataTableWidget"/>
+           <widget class="QTableWidget" name="mNoDataTableWidget">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="1" column="0">
              <widget class="QToolButton" name="mAddNoDataManuallyToolButton">
               <property name="toolTip">
                <string>Add values manually</string>
@@ -393,7 +455,7 @@
               </property>
              </widget>
             </item>
-            <item>
+            <item row="2" column="0">
              <widget class="QToolButton" name="mLoadTransparentNoDataToolButton">
               <property name="toolTip">
                <string>Load user defined fully transparent (100%) values </string>
@@ -407,7 +469,7 @@
               </property>
              </widget>
             </item>
-            <item>
+            <item row="1" column="1">
              <widget class="QToolButton" name="mRemoveSelectedNoDataToolButton">
               <property name="toolTip">
                <string>Remove selected row</string>
@@ -421,7 +483,7 @@
               </property>
              </widget>
             </item>
-            <item>
+            <item row="2" column="1">
              <widget class="QToolButton" name="mRemoveAllNoDataToolButton">
               <property name="toolTip">
                <string>Clear all</string>
@@ -441,9 +503,15 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="GroupBox" name="mCreateOptionsGroupBox">
          <property name="title">
           <string>Create Options</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <property name="margin">
@@ -452,58 +520,83 @@
           <item row="0" column="0">
            <widget class="QgsRasterFormatSaveOptionsWidget" name="mOptionsWidget" native="true"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QGroupBox" name="mTilesGroupBox">
-            <property name="title">
-             <string>Tiles</string>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="GroupBox" name="mTilesGroupBox">
+         <property name="title">
+          <string>Tiles</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <property name="margin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mMaximumSizeXLabel">
+            <property name="toolTip">
+             <string>Maximum number of columns in one tile.</string>
             </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_5">
-             <item>
-              <widget class="QLabel" name="mMaximumSizeXLabel">
-               <property name="toolTip">
-                <string>Maximum number of columns in one tile.</string>
-               </property>
-               <property name="text">
-                <string>Max columns</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="mMaximumSizeXLineEdit">
-               <property name="toolTip">
-                <string>Maximum number of columns in one tile.</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="mMaximumSizeYLabel">
-               <property name="toolTip">
-                <string>Maximum number of rows in one tile.</string>
-               </property>
-               <property name="text">
-                <string>Max rows</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="mMaximumSizeYLineEdit">
-               <property name="toolTip">
-                <string>Maximum number of rows in one tile.</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="mTileModeCheckBox">
-               <property name="text">
-                <string>Create VRT</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <property name="text">
+             <string>Max columns</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="mMaximumSizeXLineEdit">
+            <property name="toolTip">
+             <string>Maximum number of columns in one tile.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="mMaximumSizeYLabel">
+            <property name="toolTip">
+             <string>Maximum number of rows in one tile.</string>
+            </property>
+            <property name="text">
+             <string>Max rows</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="mMaximumSizeYLineEdit">
+            <property name="toolTip">
+             <string>Maximum number of rows in one tile.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mTileModeCheckBox">
+            <property name="text">
+             <string>Create VRT</string>
+            </property>
            </widget>
           </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -526,6 +619,12 @@
    <class>QgsRasterFormatSaveOptionsWidget</class>
    <extends>QWidget</extends>
    <header>qgsrasterformatsaveoptionswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgsrasterlayersaveasdialog.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
