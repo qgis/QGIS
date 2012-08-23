@@ -2409,7 +2409,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
   }
 
-  // make sure at least one layer was succesfully added
+  // make sure at least one layer was successfully added
   if ( myList.count() == 0 )
   {
     return false;
@@ -3954,10 +3954,10 @@ void QgisApp::saveAsRasterFile()
         return;
       }
       // add projector if necessary
-      if ( d.outputCrs() != rasterLayer->dataProvider()->crs() )
+      if ( d.outputCrs() != rasterLayer->crs() )
       {
         QgsRasterProjector * projector = new QgsRasterProjector;
-        projector->setCRS( rasterLayer->dataProvider()->crs(), d.outputCrs() );
+        projector->setCRS( rasterLayer->crs(), d.outputCrs() );
         if ( !pipe->set( projector ) )
         {
           QgsDebugMsg( "Cannot set pipe projector" );
@@ -3977,7 +3977,7 @@ void QgisApp::saveAsRasterFile()
         delete pipe;
         return;
       }
-      projector->setCRS( rasterLayer->dataProvider()->crs(), d.outputCrs() );
+      projector->setCRS( rasterLayer->crs(), d.outputCrs() );
     }
 
     if ( !pipe->last() )
@@ -3985,10 +3985,9 @@ void QgisApp::saveAsRasterFile()
       delete pipe;
       return;
     }
-    QgsRasterIterator iterator( pipe->last() );
     fileWriter.setCreateOptions( d.createOptions() );
 
-    fileWriter.writeRaster( &iterator, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+    fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
     delete pipe;
   }
 }
@@ -7361,7 +7360,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
     else
     {
       // Issue message box warning unless we are loading from cmd line since
-      // non-rasters are passed to this function first and then sucessfully
+      // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
 
       if ( guiWarning )

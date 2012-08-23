@@ -100,6 +100,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** Update items in pipe list */
     void pipeItemClicked( QTreeWidgetItem * item, int column );
 
+    /** Transparency cell changed */
+    void transparencyCellTextEdited( const QString & text );
+
   signals:
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
@@ -137,8 +140,15 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     QgsRasterRendererWidget* mRendererWidget;
 
+    void setupTransparencyTable( int nBands );
+
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
     void populateTransparencyTable( QgsRasterRenderer* renderer );
+
+    void setTransparencyCell( int row, int column, double value );
+    void setTransparencyCellValue( int row, int column, double value );
+    double transparencyCellValue( int row, int column );
+    void setTransparencyToEdited( int row );
 
     void setRendererWidget( const QString& rendererName );
 
@@ -162,5 +172,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QgsMapToolEmitPoint* mPixelSelectorTool;
 
     QgsRasterHistogramWidget* mHistogramWidget;
+
+    QVector<bool> mTransparencyToEdited;
 };
 #endif

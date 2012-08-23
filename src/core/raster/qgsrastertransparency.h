@@ -45,7 +45,8 @@ class CORE_EXPORT QgsRasterTransparency
 
     struct TransparentSingleValuePixel
     {
-      double pixelValue;
+      double min;
+      double max;
       double percentTransparent;
     };
 

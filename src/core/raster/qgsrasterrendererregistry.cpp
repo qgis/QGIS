@@ -275,21 +275,27 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
   if ( bandCount == 1 )
   {
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleList;
+    // No need to set no data value in transparency list, I think
+#if 0
     QgsRasterTransparency::TransparentSingleValuePixel singleEntry;
-    singleEntry.pixelValue = provider->noDataValue();
+    singleEntry.min = provider->noDataValue();
+    singleEntry.max = provider->noDataValue();
     singleEntry.percentTransparent = 100;
     transparentSingleList.push_back( singleEntry );
+#endif
     tr->setTransparentSingleValuePixelList( transparentSingleList );
   }
   else if ( bandCount == 3 )
   {
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
+#if 0
     QgsRasterTransparency::TransparentThreeValuePixel threeValueEntry;
     threeValueEntry.red = provider->noDataValue();
     threeValueEntry.green = provider->noDataValue();
     threeValueEntry.blue = provider->noDataValue();
     threeValueEntry.percentTransparent = 100;
     transparentThreeValueList.push_back( threeValueEntry );
+#endif
     tr->setTransparentThreeValuePixelList( transparentThreeValueList );
   }
   renderer->setRasterTransparency( tr );
