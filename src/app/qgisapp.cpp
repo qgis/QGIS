@@ -2409,7 +2409,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
   }
 
-  // make sure at least one layer was succesfully added
+  // make sure at least one layer was successfully added
   if ( myList.count() == 0 )
   {
     return false;
@@ -7360,7 +7360,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
     else
     {
       // Issue message box warning unless we are loading from cmd line since
-      // non-rasters are passed to this function first and then sucessfully
+      // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
 
       if ( guiWarning )

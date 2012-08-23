@@ -261,6 +261,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   QgsRasterDataProvider* destProvider,
   QProgressDialog* progressDialog )
 {
+  Q_UNUSED( pipe );
+  Q_UNUSED( destHasNoDataValueList );
   QgsDebugMsg( "Entered" );
 
   const QgsRasterInterface* iface = iter->input();

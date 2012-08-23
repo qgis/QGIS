@@ -84,7 +84,7 @@ void QgsMapCanvasMap::render()
 
     paint.end();
 
-    // convert QImage to QPixmap to acheive faster drawing on screen
+    // convert QImage to QPixmap to achieve faster drawing on screen
     mPixmap = QPixmap::fromImage( mImage );
   }
   else

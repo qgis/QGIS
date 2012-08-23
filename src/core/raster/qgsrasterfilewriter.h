@@ -44,7 +44,7 @@ class CORE_EXPORT QgsRasterFileWriter
     ~QgsRasterFileWriter();
 
     /**Write raster file
-        @param iter raster iterator
+        @param pipe raster pipe
         @param nCols number of output columns
         @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
         @param outputExtent extent to output

@@ -106,7 +106,7 @@ class CORE_EXPORT QgsStyleV2
     //! adds a new tag and returns the tag's id
     int addTag( QString tagName );
 
-    //! applies the specifed group to the symbol or colorramp specified by StyleEntity
+    //! applies the specified group to the symbol or colorramp specified by StyleEntity
     bool group( StyleEntity type, QString name, int groupid );
 
     //! rename the given entity with the specified id

@@ -177,7 +177,7 @@ void QgsOWSSourceSelect::populateFormats()
   formatsMap.insert( "jpg", "jpeg" );
   formatsMap.insert( "png", "png" );
 
-  int prefered = -1;
+  int preferred = -1;
   int firstEnabled = -1;
   QStringList layersFormats = selectedLayersFormats();
   for ( int i = 0; i < layersFormats.size(); i++ )
@@ -213,9 +213,9 @@ void QgsOWSSourceSelect::populateFormats()
       if ( firstEnabled < 0 ) { firstEnabled = i; }
       if ( simpleFormat.contains( "tif" ) ) // prefer *tif*
       {
-        if ( prefered < 0 || simpleFormat.startsWith( "g" ) ) // prefere geotiff
+        if ( preferred < 0 || simpleFormat.startsWith( "g" ) ) // prefer geotiff
         {
-          prefered = i;
+          preferred = i;
         }
       }
     }
@@ -230,12 +230,12 @@ void QgsOWSSourceSelect::populateFormats()
     btn->setText( label );
     btn->setToolTip( tip );
   }
-  // Set prefered
+  // Set preferred
   // TODO: all enabled for now, see above
-  prefered = prefered >= 0 ? prefered : firstEnabled;
-  if ( prefered >= 0 )
+  preferred = preferred >= 0 ? preferred : firstEnabled;
+  if ( preferred >= 0 )
   {
-    mImageFormatGroup->button( prefered )->setChecked( true );
+    mImageFormatGroup->button( preferred )->setChecked( true );
   }
 
   mImageFormatsGroupBox->setEnabled( true );
