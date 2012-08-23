@@ -90,7 +90,7 @@ class CORE_EXPORT QgsStyleV2
 
     //! adds a new group and returns the group's id
     /*!
-     *  \param groupname the name of the new group as QString
+     *  \param groupName the name of the new group as QString
      *  \param parent is the id of the parent group when a subgrouo is to be created. By default it is 0 indicating it is not a sub-group
      *  \return returns an int, which is the DB id of the new group created, 0 if the group couldn't be created
      */

@@ -85,12 +85,21 @@ bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol, bool update )
   if ( !symbol || name.isEmpty() )
     return false;
 
-  delete mSymbols.value( name );
-
-  mSymbols.insert( name, symbol );
-
-  if ( update )
-    updateSymbol( SymbolEntity, name );
+  // delete previous symbol (if any)
+  if ( mSymbols.contains( name ) )
+  {
+    // TODO remove groups and tags?
+    delete mSymbols.value( name );
+    mSymbols.insert( name, symbol );
+    if ( update )
+      updateSymbol( SymbolEntity, name );
+  }
+  else
+  {
+    mSymbols.insert( name, symbol );
+    if ( update )
+      saveSymbol( name, symbol, 0, QStringList() );
+  }
 
   return true;
 }
@@ -179,12 +188,20 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bo
     return false;
 
   // delete previous symbol (if any)
-  delete mColorRamps.value( name );
-
-  mColorRamps.insert( name, colorRamp );
-
-  if ( update )
-    updateSymbol( ColorrampEntity, name );
+  if ( mSymbols.contains( name ) )
+  {
+    // TODO remove groups and tags?
+    delete mColorRamps.value( name );
+    mColorRamps.insert( name, colorRamp );
+    if ( update )
+      updateSymbol( ColorrampEntity, name );
+  }
+  else
+  {
+    mColorRamps.insert( name, colorRamp );
+    if ( update )
+      saveColorRamp( name, colorRamp, 0, QStringList() );
+  }
 
   return true;
 }
@@ -1398,7 +1415,7 @@ bool QgsStyleV2::updateSymbol( StyleEntity type, QString name )
     // check if it is an existing symbol
     if ( !symbolNames().contains( name ) )
     {
-      QgsDebugMsg( "Update request recieved for unavailable symbol" );
+      QgsDebugMsg( "Update request received for unavailable symbol" );
       return false;
     }
 
@@ -1410,7 +1427,7 @@ bool QgsStyleV2::updateSymbol( StyleEntity type, QString name )
     }
     symEl.save( stream, 4 );
     query = sqlite3_mprintf( "UPDATE symbol SET xml='%q' WHERE name='%q';",
-                                 xmlArray.constData(), name.toUtf8().constData() );
+                             xmlArray.constData(), name.toUtf8().constData() );
   }
   else if ( type == ColorrampEntity )
   {
@@ -1428,7 +1445,7 @@ bool QgsStyleV2::updateSymbol( StyleEntity type, QString name )
     }
     symEl.save( stream, 4 );
     query = sqlite3_mprintf( "UPDATE colorramp SET xml='%q' WHERE name='%q';",
-                                 xmlArray.constData(), name.toUtf8().constData() );
+                             xmlArray.constData(), name.toUtf8().constData() );
   }
   else
   {

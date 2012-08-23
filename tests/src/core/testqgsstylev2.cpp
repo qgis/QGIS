@@ -113,24 +113,24 @@ void TestStyleV2::testCreateColorRamps()
   QgsVectorGradientColorRampV2::StopsMap stops;
   stops[ 0.5 ] = QColor( Qt::white );
   gradientRamp->setStops( stops );
-  QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp ) );
+  QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp, true ) );
 
   // random ramp
   QgsVectorRandomColorRampV2* randomRamp = new QgsVectorRandomColorRampV2();
-  QVERIFY( mStyle->addColorRamp( "test_random", randomRamp ) );
+  QVERIFY( mStyle->addColorRamp( "test_random", randomRamp, true ) );
 
   // color brewer ramp
   QgsVectorColorBrewerColorRampV2* cb1Ramp = new QgsVectorColorBrewerColorRampV2();
-  QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp, true ) );
   QgsVectorColorBrewerColorRampV2* cb2Ramp = new QgsVectorColorBrewerColorRampV2( "RdYlGn", 6 );
-  QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp, true ) );
 
   // if ( QgsCptCityColorRampV2::hasBasicSchemes() )
   // {
   QgsCptCityColorRampV2* cc1Ramp = new QgsCptCityColorRampV2( "jjg/misc/temperature", "" );
-  QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp, true ) );
   QgsCptCityColorRampV2* cc2Ramp = new QgsCptCityColorRampV2( "cb/div/PiYG", "_10" );
-  QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp, true ) );
   // }
   // else
   // {
@@ -188,12 +188,12 @@ void TestStyleV2::testLoadColorRamps()
 
 void TestStyleV2::testSaveLoad()
 {
-  QEXPECT_FAIL("", "save() currently disabled in core", Abort);
-
-  mStyle->save();
+  // save not needed anymore, because used update=true in addColorRamp()
+  // mStyle->save();
   mStyle->clear();
   mStyle->load( QgsApplication::userStyleV2Path() );
 
+  // basic test to see that ramp is present
   QStringList colorRamps = mStyle->colorRampNames();
   QStringList colorRampsTest = QStringList() << "test_gradient";
 
@@ -206,6 +206,9 @@ void TestStyleV2::testSaveLoad()
     if ( ramp )
       delete ramp;
   }
+
+  // test content again
+  testLoadColorRamps();
 }
 
 
