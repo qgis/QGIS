@@ -168,12 +168,11 @@ void QgsComposerScaleBar::refreshSegmentMillimeters()
     QRectF composerItemRect = mComposerMap->rect();
 
     //calculate size depending on mNumUnitsPerSegment
-    double itemDiagonal = sqrt( composerItemRect.width() * composerItemRect.width() + composerItemRect.height() * composerItemRect.height() );
-    mSegmentMillimeters = itemDiagonal / mapDiagonal() * mNumUnitsPerSegment;
+    mSegmentMillimeters = composerItemRect.width() / mapWidth() * mNumUnitsPerSegment;
   }
 }
 
-double QgsComposerScaleBar::mapDiagonal() const
+double QgsComposerScaleBar::mapWidth() const
 {
   if ( !mComposerMap )
   {
@@ -183,7 +182,7 @@ double QgsComposerScaleBar::mapDiagonal() const
   QgsRectangle composerMapRect = mComposerMap->extent();
   if ( mUnits == MapUnits )
   {
-    return sqrt( composerMapRect.width() * composerMapRect.width() + composerMapRect.height() * composerMapRect.height() );
+    return composerMapRect.width();
   }
   else
   {
@@ -192,7 +191,7 @@ double QgsComposerScaleBar::mapDiagonal() const
     da.setSourceCrs( mComposerMap->mapRenderer()->destinationCrs().srsid() );
     QSettings s;
     da.setEllipsoid( s.value( "/qgis/measure/ellipsoid", "WGS84" ).toString() );
-    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMaximum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
+    double measure = da.measureLine( QgsPoint( composerMapRect.xMinimum(), composerMapRect.yMinimum() ), QgsPoint( composerMapRect.xMaximum(), composerMapRect.yMinimum() ) );
     if ( mUnits == Feet )
     {
       measure /= 0.3048;

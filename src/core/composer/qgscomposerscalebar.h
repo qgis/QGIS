@@ -199,7 +199,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void refreshSegmentMillimeters();
 
     /**Returns diagonal of composer map in selected units (map units / meters / feet)*/
-    double mapDiagonal() const;
+    double mapWidth() const;
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H
