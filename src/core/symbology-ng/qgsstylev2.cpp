@@ -80,7 +80,7 @@ void QgsStyleV2::clear()
     sqlite3_close( mCurrentDB );
 }
 
-bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol )
+bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol, bool update )
 {
   if ( !symbol || name.isEmpty() )
     return false;
@@ -88,6 +88,9 @@ bool QgsStyleV2::addSymbol( QString name, QgsSymbolV2* symbol )
   delete mSymbols.value( name );
 
   mSymbols.insert( name, symbol );
+
+  if ( update )
+    updateSymbol( SymbolEntity, name );
 
   return true;
 }
@@ -108,7 +111,7 @@ bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QSt
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
   symEl.save( stream, 4 );
-  char *query = sqlite3_mprintf( "INSERT INTO symbol VALUES (NULL, '%q', '%q', %d)",
+  char *query = sqlite3_mprintf( "INSERT INTO symbol VALUES (NULL, '%q', '%q', %d);",
                                  name.toUtf8().constData(), xmlArray.constData(), groupid );
 
   if ( !runEmptyQuery( query ) )
@@ -170,7 +173,7 @@ QStringList QgsStyleV2::symbolNames()
 }
 
 
-bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp )
+bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bool update )
 {
   if ( !colorRamp || name.isEmpty() )
     return false;
@@ -178,8 +181,10 @@ bool QgsStyleV2::addColorRamp( QString name, QgsVectorColorRampV2* colorRamp )
   // delete previous symbol (if any)
   delete mColorRamps.value( name );
 
-  QgsDebugMsg( "Inserted " + name );
   mColorRamps.insert( name, colorRamp );
+
+  if ( update )
+    updateSymbol( ColorrampEntity, name );
 
   return true;
 }
@@ -201,7 +206,7 @@ bool QgsStyleV2::saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int gr
   QByteArray xmlArray;
   QTextStream stream( &xmlArray );
   rampEl.save( stream, 4 );
-  char *query = sqlite3_mprintf( "INSERT INTO colorramp VALUES (NULL, '%q', '%q', %d)",
+  char *query = sqlite3_mprintf( "INSERT INTO colorramp VALUES (NULL, '%q', '%q', %d);",
                                  name.toUtf8().constData(), xmlArray.constData(), groupid );
 
   if ( !runEmptyQuery( query ) )
@@ -1376,5 +1381,66 @@ bool QgsStyleV2::importXML( QString filename )
   }
 
   mFileName = filename;
+  return true;
+}
+
+bool QgsStyleV2::updateSymbol( StyleEntity type, QString name )
+{
+  QDomDocument doc( "dummy" );
+  QDomElement symEl;
+  QByteArray xmlArray;
+  QTextStream stream( &xmlArray );
+
+  char *query;
+
+  if ( type == SymbolEntity )
+  {
+    // check if it is an existing symbol
+    if ( !symbolNames().contains( name ) )
+    {
+      QgsDebugMsg( "Update request recieved for unavailable symbol" );
+      return false;
+    }
+
+    symEl = QgsSymbolLayerV2Utils::saveSymbol( name, symbol( name ), doc );
+    if ( symEl.isNull() )
+    {
+      QgsDebugMsg( "Couldn't convert symbol to valid XML!" );
+      return false;
+    }
+    symEl.save( stream, 4 );
+    query = sqlite3_mprintf( "UPDATE symbol SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+  }
+  else if ( type == ColorrampEntity )
+  {
+    if ( !colorRampNames().contains( name ) )
+    {
+      QgsDebugMsg( "Update requested for unavailable color ramp." );
+      return false;
+    }
+
+    symEl = QgsSymbolLayerV2Utils::saveColorRamp( name, colorRamp( name ), doc );
+    if ( symEl.isNull() )
+    {
+      QgsDebugMsg( "Couldn't convert color ramp to valid XML!" );
+      return false;
+    }
+    symEl.save( stream, 4 );
+    query = sqlite3_mprintf( "UPDATE colorramp SET xml='%q' WHERE name='%q';",
+                                 xmlArray.constData(), name.toUtf8().constData() );
+  }
+  else
+  {
+    QgsDebugMsg( "Updating the unsupported StyleEntity" );
+    return false;
+  }
+
+
+  if ( !runEmptyQuery( query ) )
+  {
+    QgsDebugMsg( "Couldn't insert symbol into the database!" );
+    return false;
+  }
   return true;
 }
