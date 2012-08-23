@@ -158,7 +158,7 @@ void QgsDecorationGrid::projectRead()
     // set default symbol : cross with width=20
     QgsSymbolLayerV2List symbolList;
     symbolList << new QgsSimpleMarkerSymbolLayerV2( "cross", DEFAULT_SIMPLEMARKER_COLOR,
-        DEFAULT_SIMPLEMARKER_BORDERCOLOR, 20, 0 );
+        DEFAULT_SIMPLEMARKER_STYLE , DEFAULT_SIMPLEMARKER_BORDERCOLOR, 20, 0 );
     mMarkerSymbol = new QgsMarkerSymbolV2( symbolList );
     // mMarkerSymbol = new QgsMarkerSymbolV2();
   }

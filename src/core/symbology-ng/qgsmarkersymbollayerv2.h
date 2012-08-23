@@ -20,6 +20,7 @@
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
+#define DEFAULT_SIMPLEMARKER_STYLE        Qt::SolidPattern
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor(0,0,0)
 #define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
@@ -35,6 +36,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
   public:
     QgsSimpleMarkerSymbolLayerV2( QString name = DEFAULT_SIMPLEMARKER_NAME,
                                   QColor color = DEFAULT_SIMPLEMARKER_COLOR,
+                                  Qt::BrushStyle style = DEFAULT_SIMPLEMARKER_STYLE,
                                   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
                                   double angle = DEFAULT_SIMPLEMARKER_ANGLE );
@@ -57,6 +59,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
+
+    Qt::BrushStyle brushStyle() const { return mBrushStyle; }
+    void setBrushStyle( Qt::BrushStyle style ) { mBrushStyle = style; }
 
     void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -81,6 +86,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QPolygonF mPolygon;
     QPainterPath mPath;
     QString mName;
+    Qt::BrushStyle mBrushStyle;
     QImage mCache;
     QPen mSelPen;
     QBrush mSelBrush;

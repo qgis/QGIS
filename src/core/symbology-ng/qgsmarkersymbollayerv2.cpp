@@ -48,12 +48,13 @@ static QPointF _rotatedOffset( const QPointF& offset, double angle )
 
 //////
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle )
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, Qt::BrushStyle style, QColor borderColor, double size, double angle )
 {
   mName = name;
   mColor = color;
   mBorderColor = borderColor;
   mSize = size;
+  mBrushStyle = style;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
 }
@@ -62,6 +63,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
 {
   QString name = DEFAULT_SIMPLEMARKER_NAME;
   QColor color = DEFAULT_SIMPLEMARKER_COLOR;
+  Qt::BrushStyle style = DEFAULT_SIMPLEMARKER_STYLE;
   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
   double angle = DEFAULT_SIMPLEMARKER_ANGLE;
@@ -70,6 +72,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
     name = props["name"];
   if ( props.contains( "color" ) )
     color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
+  if ( props.contains( "style" ) )
+    style = QgsSymbolLayerV2Utils::decodeBrushStyle( props["style"] );
   if ( props.contains( "color_border" ) )
     borderColor = QgsSymbolLayerV2Utils::decodeColor( props["color_border"] );
   if ( props.contains( "size" ) )
@@ -77,7 +81,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
 
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, style, borderColor, size, angle );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   return m;
@@ -93,25 +97,34 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 {
   QColor brushColor = mColor;
   QColor penColor = mBorderColor;
+  QColor selColor = context.selectionColor();
+  QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
   if ( context.alpha() < 1 )
   {
-    penColor.setAlphaF( context.alpha() );
     brushColor.setAlphaF( context.alpha() );
+    penColor.setAlphaF( context.alpha() );
+    if ( ! selectionIsOpaque ) 
+	  {
+		  selColor.setAlphaF( context.alpha() );
+		  // N.B. this doesn't work right if transparency is set to 100%.  But then why would you use 100% transparency?
+		  selPenColor.setAlphaF( context.alpha() );
+	  }
   }
-  mBrush = QBrush( brushColor );
+   // Alister - Sunil used `QBrush ( mColor, mBrushStyle )` whereas previously it was `QBrush( brushColor)`
+  // What are the implications of using brushColor vs using mColor?
+  mBrush = QBrush( brushColor, mBrushStyle );
   mPen = QPen( penColor );
+  mSelBrush = QBrush( selColor );
+  mSelPen = QPen( selPenColor );
   mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
 
-  QColor selBrushColor = context.selectionColor();
-  QColor selPenColor = selBrushColor == mColor ? selBrushColor : mBorderColor;
-  if ( context.alpha() < 1 )
-  {
-    selBrushColor.setAlphaF( context.alpha() );
-    selPenColor.setAlphaF( context.alpha() );
-  }
-  mSelBrush = QBrush( selBrushColor );
-  mSelPen = QPen( selPenColor );
   mSelPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
+
+  // N.B. unless a "selection line colour" is implemented in addition to the "selection colour" option
+  // this would mean symbols with "no fill" look the same whether or not they are selected...
+  // except, at the moment it doesn't work right if fill style is set to "no fill" :)
+  // e.g. if the symbol is a circle, it and the square area it fits in are filled with the selection colour
+  if ( selectFillStyle )  mSelBrush.setStyle( mBrushStyle );
 
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
@@ -131,7 +144,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
       // For these set the selected border color to the selected color
 
       if ( mName != "circle" )
-        mSelPen.setColor( selBrushColor );
+        mSelPen.setColor( selColor );
     }
     else
     {
@@ -428,6 +441,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   QgsStringMap map;
   map["name"] = mName;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  map["style"] = QgsSymbolLayerV2Utils::encodeBrushStyle( mBrushStyle );
   map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["size"] = QString::number( mSize );
   map["angle"] = QString::number( mAngle );
@@ -437,7 +451,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBrushStyle,mBorderColor, mSize, mAngle );
   m->setOffset( mOffset );
   return m;
 }
@@ -496,8 +510,9 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
   QPointF offset;
   QgsSymbolLayerV2Utils::displacementFromSldElement( graphicElem, offset );
 
-  QgsMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size );
-  m->setAngle( angle );
+  //Does SLD support marker symbol fill styles?  If so then we'll need more work to import them.
+  //But I guess they wouldn't match the QT fill patterns anyway.
+  QgsMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( name, color, DEFAULT_SIMPLEMARKER_STYLE, borderColor, size);
   m->setOffset( offset );
   return m;
 }

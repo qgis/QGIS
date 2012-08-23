@@ -192,9 +192,10 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   names << "circle" << "rectangle" << "diamond" << "pentagon" << "cross" << "cross2" << "triangle"
   << "equilateral_triangle" << "star" << "regular_star" << "arrow" << "line" << "arrowhead" << "filled_arrowhead";
   double markerSize = DEFAULT_POINT_SIZE * 2;
+  Qt::BrushStyle brushStyle =   DEFAULT_SIMPLEFILL_STYLE ;
   for ( int i = 0; i < names.count(); ++i )
   {
-    QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( names[i], QColor( 200, 200, 200 ), QColor( 0, 0, 0 ), markerSize );
+    QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( names[i], QColor( 200, 200, 200 ), brushStyle, QColor( 0, 0, 0 ), markerSize );
     QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsSymbolV2::MM, size );
     QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, names[i] );
@@ -206,6 +207,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   connect( btnChangeColorFill, SIGNAL( clicked() ), this, SLOT( setColorFill() ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle() ) );
+   connect( cboFillStyleMarker,SIGNAL( currentIndexChanged( int ) ), this, SLOT( setBrushStyle() )) ;
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
 }
@@ -232,6 +234,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   btnChangeColorFill->setColor( mLayer->color() );
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
+  cboFillStyleMarker->setBrushStyle( mLayer->brushStyle() );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -284,6 +287,12 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
     return;
   mLayer->setColor( color );
   btnChangeColorFill->setColor( mLayer->color() );
+  emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::setBrushStyle()
+{
+  mLayer->setBrushStyle( cboFillStyleMarker->brushStyle() );
   emit changed();
 }
 
