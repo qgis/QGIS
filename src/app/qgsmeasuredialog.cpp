@@ -248,7 +248,7 @@ void QgsMeasureDialog::updateUi()
     }
     else
     {
-      toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." ).arg( "<br> *" );
+      toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." );
       toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QGis::tr( mapUnits ) );
     }
   }
