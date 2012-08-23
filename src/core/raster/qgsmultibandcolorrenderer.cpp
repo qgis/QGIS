@@ -234,22 +234,42 @@ void * QgsMultiBandColorRenderer::readBlock( int bandNo, QgsRectangle  const & e
         redVal = readValue( redData, redType, currentRasterPos );
         greenVal = readValue( greenData, greenType, currentRasterPos );
         blueVal = readValue( blueData, blueType, currentRasterPos );
-        imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+        if ( mInput->isNoDataValue( mRedBand, redVal ) ||
+             mInput->isNoDataValue( mGreenBand, greenVal ) ||
+             mInput->isNoDataValue( mBlueBand, blueVal ) )
+        {
+          imageScanLine[j] = defaultColor;
+        }
+        else
+        {
+          imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+        }
+
         ++currentRasterPos;
         continue;
       }
 
+      bool isNoData = false;
       if ( mRedBand > 0 )
       {
         redVal = readValue( redData, redType, currentRasterPos );
+        if ( mInput->isNoDataValue( mRedBand, redVal ) ) isNoData = true;
       }
       if ( mGreenBand > 0 )
       {
         greenVal = readValue( greenData, greenType, currentRasterPos );
+        if ( mInput->isNoDataValue( mGreenBand, greenVal ) ) isNoData = true;
       }
       if ( mBlueBand > 0 )
       {
         blueVal = readValue( blueData, blueType, currentRasterPos );
+        if ( mInput->isNoDataValue( mBlueBand, blueVal ) ) isNoData = true;
+      }
+      if ( isNoData )
+      {
+        imageScanLine[j] = defaultColor;
+        ++currentRasterPos;
+        continue;
       }
 
       //apply default color if red, green or blue not in displayable range

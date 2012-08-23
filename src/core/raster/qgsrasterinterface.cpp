@@ -120,6 +120,18 @@ QgsRasterInterface::DataType QgsRasterInterface::typeWithNoDataValue( DataType d
   return newDataType;
 }
 
+inline bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
+{
+  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
+  // not important and slower
+  if ( qIsNaN( value ) ||
+       doubleNear( value, noDataValue( bandNo ) ) )
+  {
+    return true;
+  }
+  return false;
+}
+
 // To give to an image preallocated memory is the only way to avoid memcpy
 // when we want to keep data but delete QImage
 QImage * QgsRasterInterface::createImage( int width, int height, QImage::Format format )
