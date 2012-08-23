@@ -125,7 +125,21 @@ class CORE_EXPORT QgsRasterInterface
     }
 
     /** Retruns value representing 'no data' (NULL) */
+    // TODO: Q_DECL_DEPRECATED
     virtual double noDataValue() const { return 0; }
+
+    /** Return no data value for specific band. Each band/provider must have
+     * no data value, if there is no one set in original data, provider decides one
+     * possibly using wider data type.
+     * @param bandNo band number
+     * @return No data value */
+    virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return noDataValue(); }
+
+    /** Test if value is nodata for specific band
+     * @param bandNo band number
+     * @param value tested value
+     * @return true if value is nodata */
+    virtual bool isNoDataValue( int bandNo, double value ) const ;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.

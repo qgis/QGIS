@@ -1298,9 +1298,9 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
     mRasterLayer->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ), myPixelMap );
 
     QList<int> bands = renderer->usesBands();
-    tableTransparency->insertRow( tableTransparency->rowCount() );
-    setTransparencyCell( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, 100 );
+    delete renderer;
 
+    QList<double> values;
     for ( int i = 0; i < bands.size(); ++i )
     {
       QMap< int, QString >::const_iterator pixelResult = myPixelMap.find( bands.at( i ) );
@@ -1309,20 +1309,31 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
         QString value = pixelResult.value();
         if ( value != tr( "out of extent" ) )
         {
-          setTransparencyCell( tableTransparency->rowCount() - 1, i, value.toDouble() );
+          QgsDebugMsg( QString( "Is it %1 of band %2 nodata?" ).arg( value ).arg( bands.at( i ) ) );
+          if ( value == tr( "null (no data)" ) || // Very bad! TODO: improve identify
+               mRasterLayer->dataProvider()->isNoDataValue( bands.at( i ), value.toDouble() ) )
+          {
+            return; // Dont add nodata, transparent anyway
+          }
+          values.append( value.toDouble() );
         }
       }
     }
     if ( bands.size() == 1 )
     {
       // Set 'to'
-      setTransparencyCell( tableTransparency->rowCount() - 1, 1, transparencyCellValue( tableTransparency->rowCount() - 1, 0 ) );
+      values.insert( 1, values.value( 0 ) );
     }
+    tableTransparency->insertRow( tableTransparency->rowCount() );
+    for ( int i = 0; i < values.size(); i++ )
+    {
+      setTransparencyCell( tableTransparency->rowCount() - 1, i, values.value( i ) );
+    }
+    setTransparencyCell( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, 100 );
   }
 
   tableTransparency->resizeColumnsToContents();
   tableTransparency->resizeRowsToContents();
-  delete renderer;
 }
 
 void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )

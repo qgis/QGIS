@@ -178,11 +178,17 @@ bool QgsRasterTransparency::isEmpty( double nodataValue ) const
 {
   return (
            ( mTransparentSingleValuePixelList.isEmpty() ||
-             ( mTransparentSingleValuePixelList.size() == 1 && doubleNear( mTransparentSingleValuePixelList.at( 0 ).min, nodataValue ) && doubleNear( mTransparentSingleValuePixelList.at( 0 ).max, nodataValue ) ) )
+             ( mTransparentSingleValuePixelList.size() == 1 &&
+               ( doubleNear( mTransparentSingleValuePixelList.at( 0 ).min, nodataValue ) ||
+                 doubleNear( mTransparentSingleValuePixelList.at( 0 ).max, nodataValue ) ||
+                 ( nodataValue > mTransparentSingleValuePixelList.at( 0 ).min &&
+                   nodataValue < mTransparentSingleValuePixelList.at( 0 ).max ) ) ) )
            &&
            ( mTransparentThreeValuePixelList.isEmpty() ||
-             ( mTransparentThreeValuePixelList.size() < 4 && doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
-               doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) && doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
+             ( mTransparentThreeValuePixelList.size() == 1 &&
+               doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
+               doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) &&
+               doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
 }
 
 void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
