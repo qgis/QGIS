@@ -256,6 +256,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QgsCoordinateReferenceSystem mCrs;
 
     QgsGrassRasterValue mRasterValue;
+
+    double mNoDataValue;
 };
 
 #endif
