@@ -80,12 +80,16 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   }
 
   QColor selColor = context.selectionColor();
-  // selColor.setAlphaF( context.alpha() );
+  QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
+  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
+  // N.B. unless a "selection line colour" is implemented in addition to the "selection colour" option
+  // this would mean symbols with "no fill" look the same whether or not they are selected
   if ( selectFillStyle )
     mSelBrush.setStyle( mBrushStyle );
   mBorderColor.setAlphaF( context.alpha() );
   mPen = QPen( mBorderColor );
+  mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
 }
@@ -105,6 +109,7 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
 
   p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->setPen( mPen );
+  p->setPen( context.selected() ? mSelPen : mPen );
 
   if ( !mOffset.isNull() )
     p->translate( mOffset );
@@ -213,8 +218,9 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   if ( context.selected() )
   {
     QColor selColor = context.selectionColor();
-    if ( ! selectionIsOpaque )
-      selColor.setAlphaF( context.alpha() );
+    // Alister - this doesn't seem to work here
+    //if ( ! selectionIsOpaque )
+    //  selColor.setAlphaF( context.alpha() );
     p->setBrush( QBrush( selColor ) );
     _renderPolygon( p, points, rings );
   }
