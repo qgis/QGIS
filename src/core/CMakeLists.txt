@@ -166,6 +166,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
+  raster/qgsrasternuller.cpp
   raster/qgsrastertransparency.cpp
   raster/qgsrasterpipe.cpp
   raster/qgsrastershader.cpp

@@ -163,6 +163,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsrasternuller.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
@@ -3924,7 +3925,7 @@ void QgisApp::saveAsRasterFile()
     return;
   }
 
-  QgsRasterLayerSaveAsDialog d( rasterLayer->dataProvider(),  mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
+  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),  mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsRasterFileWriter fileWriter( d.outputFileName() );
@@ -3953,12 +3954,21 @@ void QgisApp::saveAsRasterFile()
         QgsDebugMsg( "Cannot set pipe provider" );
         return;
       }
+
+      QgsRasterNuller *nuller = new QgsRasterNuller();
+      nuller->setNoData( d.noData() );
+      if ( !pipe->insert( 1, nuller ) )
+      {
+        QgsDebugMsg( "Cannot set pipe nuller" );
+        return;
+      }
+
       // add projector if necessary
       if ( d.outputCrs() != rasterLayer->crs() )
       {
         QgsRasterProjector * projector = new QgsRasterProjector;
         projector->setCRS( rasterLayer->crs(), d.outputCrs() );
-        if ( !pipe->set( projector ) )
+        if ( !pipe->insert( 2, projector ) )
         {
           QgsDebugMsg( "Cannot set pipe projector" );
           return;

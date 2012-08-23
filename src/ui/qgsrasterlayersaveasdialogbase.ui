@@ -420,7 +420,7 @@
           <string>Additional no data values. The specified values will be set to no data in output raster.</string>
          </property>
          <property name="title">
-          <string>No data values (not yet implemented)</string>
+          <string>No data values</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -457,6 +457,9 @@
             </item>
             <item row="2" column="0">
              <widget class="QToolButton" name="mLoadTransparentNoDataToolButton">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
               <property name="toolTip">
                <string>Load user defined fully transparent (100%) values </string>
               </property>
