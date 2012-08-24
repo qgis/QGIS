@@ -85,7 +85,7 @@ const char* QGis::qgisUnitTypes[] =
 
 QGis::UnitType QGis::fromLiteral( QString literal, QGis::UnitType defaultType )
 {
-  for ( unsigned int i = 0; i < sizeof( qgisUnitTypes ); i++ )
+  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
   {
     if ( literal == qgisUnitTypes[ i ] )
     {
