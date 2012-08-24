@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 
 #include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdialog.h"
 
 #include <QInputDialog>
@@ -1118,15 +1119,26 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   QLabel *label = new QLabel( title, &dlg );
   label->setAlignment( Qt::AlignHCenter );
   layout->addWidget( label );
-  QgsRasterFormatSaveOptionsWidget* optionsWidget =
-    new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
-                                          QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
-  layout->addWidget( optionsWidget );
 
-  if ( dlg.exec() == QDialog::Accepted )
+  if ( driverName == "_pyramids" )
   {
-    optionsWidget->apply();
+    QgsRasterPyramidsOptionsWidget* optionsWidget =
+      new QgsRasterPyramidsOptionsWidget( &dlg, "gdal" );
+    layout->addWidget( optionsWidget );
+    dlg.resize( 400, 400 );
+    if ( dlg.exec() == QDialog::Accepted )
+      optionsWidget->apply();
   }
+  else
+  {
+    QgsRasterFormatSaveOptionsWidget* optionsWidget =
+      new QgsRasterFormatSaveOptionsWidget( &dlg, driverName,
+                                            QgsRasterFormatSaveOptionsWidget::Full, "gdal" );
+    layout->addWidget( optionsWidget );
+    if ( dlg.exec() == QDialog::Accepted )
+      optionsWidget->apply();
+  }
+
 }
 
 // Return state of the visibility flag for newly added layers. If

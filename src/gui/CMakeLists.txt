@@ -83,6 +83,7 @@ qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrasterlayersaveasdialog.cpp
 qgsrasterformatsaveoptionswidget.cpp
+qgsrasterpyramidsoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
 qgstextannotationitem.cpp
@@ -93,6 +94,7 @@ qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
 qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
+qgscollapsiblegroupbox.cpp
 )
 
 IF (WITH_TOUCH)
@@ -168,6 +170,7 @@ qgsprojectionselector.h
 qgsquickprint.h
 qgsrasterlayersaveasdialog.h
 qgsrasterformatsaveoptionswidget.h
+qgsrasterpyramidsoptionswidget.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
@@ -176,6 +179,7 @@ qgsscalecombobox.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsquerybuilder.h
+qgscollapsiblegroupbox.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -213,6 +217,7 @@ qgsfieldvalidator.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
 qgsexpressionhighlighter.h
+qgscollapsiblegroupbox.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetablememorymodel.h

@@ -37,7 +37,10 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer, QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs, QWidget* parent = 0, Qt::WindowFlags f = 0 );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
+                                QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
+                                const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
+                                QWidget* parent = 0, Qt::WindowFlags f = 0 );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;
@@ -125,41 +128,3 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
 #endif // QGSRASTERLAYERSAVEASDIALOG_H
 
-
-// this widget class will go into its separate file
-#ifndef GROUPBOX_H
-#define GROUPBOX_H
-
-#include <QGroupBox>
-
-class GroupBox : public QGroupBox
-{
-	Q_OBJECT
-
-public:
-	GroupBox( QWidget *parent = 0 );
-	GroupBox( const QString &title, QWidget *parent = 0 );
-
-	bool isCollapsed();
-
- signals:
-    void collapsed( QWidget* );
-    void expanded( QWidget* );
-
-public slots: 
-	void setToggled( bool toggled ) { setCollapsed( ! toggled ); }
-	void setCollapsed( bool collapsed );
-
-protected:
-	/* void mousePressEvent( QMouseEvent *e ); */
-	/* void mouseReleaseEvent( QMouseEvent *e ); */
-	/* void paintEvent( QPaintEvent * ); */
-    void showEvent( QShowEvent * event );
-
-private:
-	QPoint	clickPos;
-	bool	m_collapsed;
-    QMargins margins;
-};
-
-#endif

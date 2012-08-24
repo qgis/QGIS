@@ -210,6 +210,8 @@
     <file>themes/default/mIconWarn.png</file>
     <file>themes/default/mIconZoom.png</file>
     <file>themes/default/mIconZip.png</file>
+    <file>themes/default/mIconCollapse.png</file>
+    <file>themes/default/mIconExpand.png</file>
     <file>themes/default/mMapserverExport.png</file>
     <file>themes/default/plugin.png</file>
     <file>themes/default/propertyicons/action.png</file>

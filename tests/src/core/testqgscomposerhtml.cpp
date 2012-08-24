@@ -61,6 +61,7 @@ void TestQgsComposerHtml::table()
 {
   QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
   QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
+  htmlFrame->setFrame( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );
   QgsCompositionChecker checker( "Composer html table", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
@@ -77,6 +78,12 @@ void TestQgsComposerHtml::tableMultiFrame()
   QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+  int nFrames = htmlItem->nFrames();
+  for ( int i = 0; i < nFrames; ++i )
+  {
+    htmlItem->frame( i )->setFrame( true );
+  }
+
   bool result = true;
   //page1
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );

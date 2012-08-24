@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-239</y>
         <width>514</width>
-        <height>686</height>
+        <height>784</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -190,7 +190,7 @@
         </layout>
        </item>
        <item>
-        <widget class="GroupBox" name="mExtentGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox">
          <property name="title">
           <string>Extent</string>
          </property>
@@ -336,7 +336,7 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mResolutionGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox">
          <property name="title">
           <string>Resolution</string>
          </property>
@@ -412,7 +412,103 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mNoDataGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox">
+         <property name="title">
+          <string>Create Options</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <property name="margin">
+           <number>9</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QgsRasterFormatSaveOptionsWidget" name="mCreateOptionsWidget" native="true"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox">
+         <property name="title">
+          <string>Tiles</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <property name="margin">
+           <number>9</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="mMaximumSizeXLabel">
+            <property name="toolTip">
+             <string>Maximum number of columns in one tile.</string>
+            </property>
+            <property name="text">
+             <string>Max columns</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="mMaximumSizeXLineEdit">
+            <property name="toolTip">
+             <string>Maximum number of columns in one tile.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="mMaximumSizeYLabel">
+            <property name="toolTip">
+             <string>Maximum number of rows in one tile.</string>
+            </property>
+            <property name="text">
+             <string>Max rows</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="mMaximumSizeYLineEdit">
+            <property name="toolTip">
+             <string>Maximum number of rows in one tile.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mTileModeCheckBox">
+            <property name="text">
+             <string>Create VRT</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -506,9 +602,9 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mCreateOptionsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox">
          <property name="title">
-          <string>Create Options</string>
+          <string>Pyramids (not yet implemented)</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -516,90 +612,22 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QgsRasterFormatSaveOptionsWidget" name="mOptionsWidget" native="true"/>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QCheckBox" name="cbxPyramidsBuild">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>Build pyramids</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsRasterPyramidsOptionsWidget" name="mPyramidsOptionsWidget" native="true"/>
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <widget class="GroupBox" name="mTilesGroupBox">
-         <property name="title">
-          <string>Tiles</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <property name="spacing">
-           <number>6</number>
-          </property>
-          <property name="margin">
-           <number>9</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="mMaximumSizeXLabel">
-            <property name="toolTip">
-             <string>Maximum number of columns in one tile.</string>
-            </property>
-            <property name="text">
-             <string>Max columns</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="mMaximumSizeXLineEdit">
-            <property name="toolTip">
-             <string>Maximum number of columns in one tile.</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="mMaximumSizeYLabel">
-            <property name="toolTip">
-             <string>Maximum number of rows in one tile.</string>
-            </property>
-            <property name="text">
-             <string>Max rows</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="mMaximumSizeYLineEdit">
-            <property name="toolTip">
-             <string>Maximum number of rows in one tile.</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="mTileModeCheckBox">
-            <property name="text">
-             <string>Create VRT</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -625,9 +653,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>GroupBox</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgsrasterlayersaveasdialog.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterPyramidsOptionsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsrasterpyramidsoptionswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

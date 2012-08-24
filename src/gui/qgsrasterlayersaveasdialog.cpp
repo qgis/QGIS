@@ -10,119 +10,15 @@
 #include <QFileDialog>
 #include <QSettings>
 
-// this widget class will go into its separate file
 
-// #include <QMouseEvent>
-// #include <QStyleOptionGroupBox>
-// #include <QStylePainter>
-
-GroupBox::GroupBox( QWidget *parent )
-  : QGroupBox( parent ), m_collapsed( false ) 
-{
-  connect( this, SIGNAL( toggled ( bool ) ), this, SLOT( setToggled( bool ) ) );
-  //setToggled( isChecked() );
-}
-
-GroupBox::GroupBox( const QString &title, QWidget *parent )
-  : QGroupBox(title, parent ), m_collapsed( false ) 
-{}
-
-bool GroupBox::isCollapsed() { return m_collapsed; }
-
-// void GroupBox::mousePressEvent( QMouseEvent *e )
-// {
-//   QgsDebugMsg("press event");
-// 	if( e->button() == Qt::LeftButton )
-// 	{
-//   QgsDebugMsg("left but");
-// 		QStyleOptionGroupBox option;
-// 		initStyleOption( &option );
-// 		QRect buttonArea( 0, 0, 16, 16 );
-// 		buttonArea.moveTopRight( option.rect.adjusted( 0, 0, -10, 0 
-// ).topRight() );
-// 		if( buttonArea.contains( e->pos() ) )
-// 		{
-// 			clickPos = e->pos();
-// 			return;
-// 		}
-// 	}
-// 	QGroupBox::mousePressEvent( e );
-// }
-
-// void GroupBox::mouseReleaseEvent( QMouseEvent *e )
-// {
-//   QgsDebugMsg("release");
-// 	if( e->button() == Qt::LeftButton && clickPos == e->pos() )
-// 		setCollapse( !isCollapsed() );
-// }
-
-// void GroupBox::paintEvent( QPaintEvent * )
-// {
-//   QgsDebugMsg("paint event");
-
-//      QStylePainter paint( this );
-// 	QStyleOptionGroupBox option;
-// 	initStyleOption( &option );
-// 	paint.drawComplexControl( QStyle::CC_GroupBox, option );
-// 	paint.drawItemPixmap(
-// 		option.rect.adjusted( 0, 0, -10, 0 ),
-// 		Qt::AlignTop | Qt::AlignRight,
-// 		QPixmap( m_collapsed ?
-// 			":/images/images/navigate_down2_16x16.png" :
-// 			":/images/images/navigate_up2_16x16.png" ) );
-// }
-
-void GroupBox::showEvent( QShowEvent * event )
-{
-  // QgsDebugMsg(QString("%1 showEvent %2 %3").arg(objectName()).arg(isChecked()).arg(isCollapsed()));
-  QGroupBox::showEvent( event );
-  if ( ! isChecked() && ! isCollapsed() )
-    setCollapsed( true );
-}
-
-void GroupBox::setCollapsed( bool collapse )
-{
-  if ( ! isVisible() )
-    return;
-  // QgsDebugMsg(QString("%1 setcollapse %2").arg(objectName()).arg(collapse));
-
-  // minimize layout margins, restore later 
-  if ( collapse )
-  {
-    if ( layout() )
-    {      
-      margins = layout()->contentsMargins();
-      layout()->setContentsMargins(1,1,1,1);
-    }
-  }
-  else
-  {
-    if ( layout() )
-    {
-      layout()->setContentsMargins( margins );
-    }
-  }
-  m_collapsed = collapse;
-  foreach( QWidget *widget, findChildren<QWidget*>() )
-    widget->setHidden( collapse );
-  
-  if ( m_collapsed )
-    emit collapsed( this );
-  else
-    emit expanded( this );
-}
-
-QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer, QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
-    const QgsCoordinateReferenceSystem& layerCrs,
-    const QgsCoordinateReferenceSystem& currentCrs,
-    QWidget* parent, Qt::WindowFlags f ):
+QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
+    QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
+    const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
+    QWidget* parent, Qt::WindowFlags f ) :
     QDialog( parent, f )
-    , mRasterLayer( rasterLayer )
-    , mDataProvider( sourceProvider )
-    , mCurrentExtent( currentExtent )
-    , mLayerCrs( layerCrs )
-    , mCurrentCrs( currentCrs )
-    , mExtentState( OriginalExtent )
+    , mRasterLayer( rasterLayer ), mDataProvider( sourceProvider )
+    , mCurrentExtent( currentExtent ), mLayerCrs( layerCrs )
+    , mCurrentCrs( currentCrs ), mExtentState( OriginalExtent )
     , mResolutionState( OriginalResolution )
 {
   setupUi( this );
@@ -175,12 +71,14 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
       mMaximumSizeYLineEdit->setText( QString::number( 2000 ) );
     }
 
-    mOptionsWidget->setProvider( mDataProvider->name() );
+    mCreateOptionsWidget->setProvider( mDataProvider->name() );
     if ( mDataProvider->name() == "gdal" )
     {
-      mOptionsWidget->setFormat( myFormats[0] );
+      mCreateOptionsWidget->setFormat( myFormats[0] );
     }
-    mOptionsWidget->update();
+    mCreateOptionsWidget->update();
+
+    mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
   }
   updateCrsGroup();
@@ -191,9 +89,10 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     okButton->setEnabled( false );
   }
 
+
   // this should scroll down to make widget visible, but it's not happening
   // (at least part of it is visible)...
-  connect( mCreateOptionsGroupBox, SIGNAL( expanded( QWidget* ) ), 
+  connect( mCreateOptionsGroupBox, SIGNAL( expanded( QWidget* ) ),
            this, SLOT( groupBoxExpanded( QWidget* ) ) );
 
 }
@@ -263,8 +162,8 @@ void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const Q
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == "gdal" )
   {
-    mOptionsWidget->setFormat( text );
-    mOptionsWidget->update();
+    mCreateOptionsWidget->setFormat( text );
+    mCreateOptionsWidget->update();
   }
 }
 
@@ -315,7 +214,7 @@ QString QgsRasterLayerSaveAsDialog::outputFormat() const
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 {
-  return mOptionsWidget ? mOptionsWidget->options() : QStringList();
+  return mCreateOptionsWidget ? mCreateOptionsWidget->options() : QStringList();
 }
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
@@ -690,6 +589,8 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
 void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString & text )
 {
+  Q_UNUSED( text );
+
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
   if ( !lineEdit ) return;
   int row = -1;
