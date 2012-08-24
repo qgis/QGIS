@@ -43,4 +43,5 @@ public:
     void deleteFrames();
 
     int nFrames() const;
+    QgsComposerFrame* frame( int i );
 };

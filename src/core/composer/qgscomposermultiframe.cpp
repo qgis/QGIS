@@ -238,6 +238,15 @@ void QgsComposerMultiFrame::deleteFrames()
   mResizeMode = bkResizeMode;
 }
 
+QgsComposerFrame* QgsComposerMultiFrame::frame( int i )
+{
+  if ( i >= mFrameItems.size() )
+  {
+    return 0;
+  }
+  return mFrameItems.at( i );
+}
+
 bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
 {
   elem.setAttribute( "resizeMode", mResizeMode );
