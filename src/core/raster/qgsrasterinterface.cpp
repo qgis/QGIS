@@ -209,3 +209,4 @@ double QgsRasterInterface::time( bool cumulative )
   }
   return t;
 }
+

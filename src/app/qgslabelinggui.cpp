@@ -180,9 +180,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
   }
 
-  btnTextColor->setColor( lyr.textColor );
-  mFontTranspSpinBox->setValue( lyr.textTransp );
-
   bool formattedNumbers = lyr.formatNumbers;
   bool plusSign = lyr.plusSign;
 
@@ -205,9 +202,14 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mFontSizeUnitComboBox->setCurrentIndex( 0 );
   }
 
-  QFont textFont = lyr.textFont;
-  updateFont( textFont );
-  mFontSizeSpinBox->setValue( textFont.pointSizeF() );
+  mRefFont = lyr.textFont;
+  mFontSizeSpinBox->setValue( mRefFont.pointSizeF() );
+  btnTextColor->setColor( lyr.textColor );
+  mFontTranspSpinBox->setValue( lyr.textTransp );
+
+  updateFontViaStyle( lyr.textNamedStyle );
+  updateFont( mRefFont );
+
   updateUi();
 
   updateOptions();
@@ -302,6 +304,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   lyr.textColor = btnTextColor->color();
   lyr.textFont = mRefFont;
+  lyr.textNamedStyle = mFontStyleComboBox->currentText();
   lyr.textTransp = mFontTranspSpinBox->value();
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
   lyr.enabled = chkEnableLabeling->isChecked();
@@ -528,6 +531,40 @@ void QgsLabelingGui::changeTextFont()
   }
 }
 
+void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
+{
+  QFont styledfont;
+  bool foundmatch = false;
+  if ( !fontstyle.isEmpty() )
+  {
+    styledfont = mFontDB.font( mRefFont.family(), fontstyle, mRefFont.pointSizeF() );
+    if ( QApplication::font().toString() != styledfont.toString() )
+    {
+      foundmatch = true;
+    }
+  }
+  if ( !foundmatch )
+  {
+    foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
+    {
+      styledfont = mFontDB.font( mRefFont.family(), style, mRefFont.pointSizeF() );
+      styledfont = styledfont.resolve( mRefFont );
+      if ( mRefFont.toString() == styledfont.toString() )
+      {
+        foundmatch = true;
+        break;
+      }
+    }
+  }
+  if ( foundmatch )
+  {
+    styledfont.setUnderline( mRefFont.underline() );
+    styledfont.setStrikeOut( mRefFont.strikeOut() );
+    mRefFont = styledfont;
+  }
+  // if no match, style combobox will be left blank, which should not affect engine labeling
+}
+
 void QgsLabelingGui::updateFont( QFont font )
 {
   // update background reference font
@@ -536,16 +573,47 @@ void QgsLabelingGui::updateFont( QFont font )
     mRefFont = font;
   }
 
-  lblFontName->setText( QString( "%1" ).arg( font.family() ) );
+  // test if font is actually available
+  QString missingtxt = QString( "" );
+  bool missing = false;
+  if ( QApplication::font().toString() != mRefFont.toString() )
+  {
+    QFont testfont = mFontDB.font( mRefFont.family(), mFontDB.styleString( mRefFont ), mRefFont.pointSizeF() );
+    if ( QApplication::font().toString() == testfont.toString() )
+    {
+      missing = true;
+    }
+  }
+  if ( missing )
+  {
+    missingtxt = tr( " (not found!)" );
+    lblFontName->setStyleSheet( "color: #990000;" );
+  }
+  else
+  {
+    lblFontName->setStyleSheet( "color: #000000;" );
+  }
+
+  lblFontName->setText( QString( "%1%2" ).arg( mRefFont.family() ).arg( missingtxt ) );
+
+  blockFontChangeSignals( true );
+  populateFontStyleComboBox();
+  mFontUnderlineBtn->setChecked( mRefFont.underline() );
+  mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
+  blockFontChangeSignals( false );
 
   // update font name with font face
-//  QString dupFont = font.toString();
-//  QFont lblFont = lblFontName->font();
-//  lblFont.fromString( dupFont );
-//  lblFont.setPointSizeF( 14 );
-//  lblFontName->setFont(lblFont);
+//  font.setPixelSize( 18 );
+//  lblFontName->setFont( QFont( font ) );
 
   updatePreview();
+}
+
+void QgsLabelingGui::blockFontChangeSignals( bool blk )
+{
+  mFontStyleComboBox->blockSignals( blk );
+  mFontUnderlineBtn->blockSignals( blk );
+  mFontStrikethroughBtn->blockSignals( blk );
 }
 
 void QgsLabelingGui::updatePreview()
@@ -554,44 +622,57 @@ void QgsLabelingGui::updatePreview()
   lblFontPreview->setFont( mRefFont );
   QFont previewFont = lblFontPreview->font();
   double fontSize = mFontSizeSpinBox->value();
-  double bufferSize = spinBufferSize->value();
-  if ( mFontSizeUnitComboBox->currentIndex() == 1 )
+  double bufferSize = 0.0;
+  QString grpboxtitle;
+
+  if ( mFontSizeUnitComboBox->currentIndex() == 1 ) // map units
   {
     // TODO: maybe match current map zoom level instead?
     previewFont.setPointSize( mPreviewSize );
     mPreviewSizeSlider->setEnabled( true );
-    if ( mBufferUnitComboBox->currentIndex() == 1 )
+    grpboxtitle = tr( "Sample @ %1 pts (using map units)" ).arg( mPreviewSize );
+
+    if ( chkBuffer->isChecked() )
     {
-      groupBox_mPreview->setTitle( tr( "Sample @ %1 pts (using map units)" ).arg( mPreviewSize ) );
-      bufferSize = ( mPreviewSize / fontSize ) * bufferSize / 2.5;
-    }
-    else
-    {
-      groupBox_mPreview->setTitle( tr( "Sample @ %1 pts (using map units, STROKE IN mm)" ).arg( mPreviewSize ) );
+      if ( mBufferUnitComboBox->currentIndex() == 1 ) // map units
+      {
+        bufferSize = ( mPreviewSize / fontSize ) * spinBufferSize->value() / 2.5;
+      }
+      else // millimeters
+      {
+        grpboxtitle = tr( "Sample @ %1 pts (using map units, BUFFER IN MILLIMETERS)" ).arg( mPreviewSize );
+        bufferSize = spinBufferSize->value();
+      }
     }
   }
-  else
+  else // in points
   {
+    previewFont.setPointSize( fontSize );
     mPreviewSizeSlider->setEnabled( false );
-    if ( mBufferUnitComboBox->currentIndex() == 1 )
+    grpboxtitle = tr( "Sample" );
+
+    if ( chkBuffer->isChecked() )
     {
-      groupBox_mPreview->setTitle( tr( "Sample (stroke in map units, NOT SHOWN)" ) );
-      bufferSize = 0;
-    }
-    else
-    {
-      previewFont.setPointSize( fontSize );
-      groupBox_mPreview->setTitle( tr( "Sample" ) );
+      if ( mBufferUnitComboBox->currentIndex() == 0 ) // millimeters
+      {
+        bufferSize = spinBufferSize->value();
+      }
+      else // map units
+      {
+        grpboxtitle = tr( "Sample (BUFFER NOT SHOWN, in map units)" );
+      }
     }
   }
+
   lblFontPreview->setFont( previewFont );
+  groupBox_mPreview->setTitle( grpboxtitle );
 
   QColor prevColor = btnTextColor->color();
   prevColor.setAlphaF(( 100.0 - ( double )( mFontTranspSpinBox->value() ) ) / 100.0 );
   lblFontPreview->setTextColor( prevColor );
 
   bool bufferNoFill = false;
-  if ( chkBuffer->isChecked() )
+  if ( chkBuffer->isChecked() && bufferSize != 0.0 )
   {
     QColor buffColor = btnBufferColor->color();
     buffColor.setAlphaF(( 100.0 - ( double )( mBufferTranspSpinBox->value() ) ) / 100.0 );
@@ -688,6 +769,16 @@ void QgsLabelingGui::updateOptions()
   }
 }
 
+void QgsLabelingGui::populateFontStyleComboBox()
+{
+  mFontStyleComboBox->clear();
+  foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
+  {
+    mFontStyleComboBox->addItem( style );
+  }
+  mFontStyleComboBox->setCurrentIndex( mFontStyleComboBox->findText( mFontDB.styleString( mRefFont ) ) );
+}
+
 void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
 {
   mPreviewSize = i;
@@ -697,6 +788,24 @@ void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
 void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
 {
   mRefFont.setPointSizeF( d );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontStyleComboBox_currentIndexChanged( const QString & text )
+{
+  updateFontViaStyle( text );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontUnderlineBtn_toggled( bool ckd )
+{
+  mRefFont.setUnderline( ckd );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontStrikethroughBtn_toggled( bool ckd )
+{
+  mRefFont.setStrikeOut( ckd );
   updateFont( mRefFont );
 }
 

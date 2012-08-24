@@ -19,6 +19,7 @@
 #define QgsLabelingGUI_H
 
 #include <QDialog>
+#include <QFontDatabase>
 #include <ui_qgslabelingguibase.h>
 
 class QgsVectorLayer;
@@ -51,6 +52,9 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
+    void on_mFontStyleComboBox_currentIndexChanged( const QString & text );
+    void on_mFontUnderlineBtn_toggled( bool ckd );
+    void on_mFontStrikethroughBtn_toggled( bool ckd );
     void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
     void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
     void on_mBufferUnitComboBox_currentIndexChanged( int index );
@@ -62,6 +66,10 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mPreviewBackgroundBtn_clicked();
 
   protected:
+    void blockFontChangeSignals( bool blk );
+    void setPreviewBackground( QColor color );
+    void updateFontViaStyle( const QString & fontstyle );
+    void populateFontStyleComboBox();
     void populatePlacementMethods();
     void populateFieldNames();
     void populateDataDefinedCombos( QgsPalLayerSettings& s );
@@ -74,11 +82,11 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
+    QFontDatabase mFontDB;
 
     // background reference font
     QFont mRefFont;
     int mPreviewSize;
-    void setPreviewBackground( QColor color );
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

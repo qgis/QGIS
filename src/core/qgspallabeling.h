@@ -32,6 +32,7 @@ struct QgsDiagramLayerSettings;
 
 #include <QString>
 #include <QFont>
+#include <QFontDatabase>
 #include <QColor>
 #include <QHash>
 #include <QList>
@@ -118,6 +119,7 @@ class CORE_EXPORT QgsPalLayerSettings
     Placement placement;
     unsigned int placementFlags;
     QFont textFont;
+    QString textNamedStyle;
     QColor textColor;
     int textTransp;
     QColor previewBkgrdColor;
@@ -187,6 +189,10 @@ class CORE_EXPORT QgsPalLayerSettings
     @return true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
     QgsExpression* expression;
+
+    QFontDatabase mFontDB;
+    /**Updates layer font with one of its named styles */
+    void updateFontViaStyle( const QString & fontstyle );
 };
 
 class CORE_EXPORT QgsLabelCandidate

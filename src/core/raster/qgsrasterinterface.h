@@ -22,6 +22,8 @@
 
 #include "qgsrectangle.h"
 
+#include "gdal.h"
+
 /** \ingroup core
  * Base class for processing modules.
  */
@@ -196,6 +198,9 @@ class CORE_EXPORT QgsRasterInterface
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
+    inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
+    inline void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
+
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
     QVector<double> mTime;
@@ -203,6 +208,84 @@ class CORE_EXPORT QgsRasterInterface
     // Collect statistics
     int mStatsOn;
 };
+
+inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::DataType type, int index )
+{
+  if ( !mInput )
+  {
+    return 0;
+  }
+
+  if ( !data )
+  {
+    return mInput->noDataValue();
+  }
+
+  switch ( type )
+  {
+    case QgsRasterInterface::Byte:
+      return ( double )(( GByte * )data )[index];
+      break;
+    case QgsRasterInterface::UInt16:
+      return ( double )(( GUInt16 * )data )[index];
+      break;
+    case QgsRasterInterface::Int16:
+      return ( double )(( GInt16 * )data )[index];
+      break;
+    case QgsRasterInterface::UInt32:
+      return ( double )(( GUInt32 * )data )[index];
+      break;
+    case QgsRasterInterface::Int32:
+      return ( double )(( GInt32 * )data )[index];
+      break;
+    case QgsRasterInterface::Float32:
+      return ( double )(( float * )data )[index];
+      break;
+    case QgsRasterInterface::Float64:
+      return ( double )(( double * )data )[index];
+      break;
+    default:
+      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
+      break;
+  }
+
+  // TODO: noDataValue is per band
+  return mInput->noDataValue();
+}
+
+inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::DataType type, int index, double value )
+{
+  if ( !mInput ) return;
+  if ( !data ) return;
+
+  switch ( type )
+  {
+    case QgsRasterInterface::Byte:
+      (( GByte * )data )[index] = ( GByte ) value;
+      break;
+    case QgsRasterInterface::UInt16:
+      (( GUInt16 * )data )[index] = ( GUInt16 ) value;
+      break;
+    case QgsRasterInterface::Int16:
+      (( GInt16 * )data )[index] = ( GInt16 ) value;
+      break;
+    case QgsRasterInterface::UInt32:
+      (( GUInt32 * )data )[index] = ( GUInt32 ) value;
+      break;
+    case QgsRasterInterface::Int32:
+      (( GInt32 * )data )[index] = ( GInt32 ) value;
+      break;
+    case QgsRasterInterface::Float32:
+      (( float * )data )[index] = ( float ) value;
+      break;
+    case QgsRasterInterface::Float64:
+      (( double * )data )[index] = value;
+      break;
+    default:
+      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
+      break;
+  }
+}
 
 #endif
 

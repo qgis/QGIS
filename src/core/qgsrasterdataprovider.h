@@ -525,8 +525,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return false;
     }
 
-    /** Set no data value on created dataset */
-    virtual bool setNoDataValue( int, double ) { return false; }
+    /** Set no data value on created dataset
+     *  @param bandNo band number
+     *  @param noDataValue no data value
+     */
+    virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ); Q_UNUSED( noDataValue ); return false; }
 
     /**Returns the formats supported by create()*/
     virtual QStringList createFormats() const { return QStringList(); }

@@ -70,6 +70,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QObject
     void deleteFrames();
 
     int nFrames() const { return mFrameItems.size(); }
+    QgsComposerFrame* frame( int i );
 
   protected:
     QgsComposition* mComposition;
