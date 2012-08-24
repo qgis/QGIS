@@ -190,7 +190,7 @@
         </layout>
        </item>
        <item>
-        <widget class="GroupBox" name="mExtentGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mExtentGroupBox">
          <property name="title">
           <string>Extent</string>
          </property>
@@ -336,7 +336,7 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mResolutionGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mResolutionGroupBox">
          <property name="title">
           <string>Resolution</string>
          </property>
@@ -412,7 +412,7 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mNoDataGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mNoDataGroupBox">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -503,7 +503,7 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mCreateOptionsGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mCreateOptionsGroupBox">
          <property name="title">
           <string>Create Options</string>
          </property>
@@ -524,7 +524,7 @@
         </widget>
        </item>
        <item>
-        <widget class="GroupBox" name="mTilesGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mTilesGroupBox">
          <property name="title">
           <string>Tiles</string>
          </property>
@@ -622,9 +622,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>GroupBox</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
-   <header>qgsrasterlayersaveasdialog.h</header>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
