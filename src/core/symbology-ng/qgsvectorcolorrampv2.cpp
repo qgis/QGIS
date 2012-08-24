@@ -282,9 +282,18 @@ QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString varian
     : mSchemeName( schemeName ), mVariantName( variantName ),
     mGradientType( Continuous ), mFileLoaded( false )
 {
-  QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive();
-  if ( archive )
-    mVariantList = archive->schemeVariants().value( schemeName );
+  // TODO replace this with hard-coded data in the default case
+  // don't load file if variant is missing
+  if ( variantName != QString() || mVariantList.isEmpty() )
+    loadFile();
+}
+
+QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
+    QString variantName )
+    : mSchemeName( schemeName ), mVariantName( variantName ),
+    mGradientType( Continuous ), mFileLoaded( false )
+{
+  mVariantList = variantList;
 
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -304,53 +313,6 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
 
   return new QgsCptCityColorRampV2( schemeName, variantName );
 }
-
-
-#if 0
-QColor QgsCptCityColorRampV2::color( double value ) const
-{
-  if ( mPalette.isEmpty() || value < 0 || value > 1 )
-    return QColor( 255, 0, 0 ); // red color as a warning :)
-
-  if ( ! mContinuous )
-  {
-    int paletteEntry = ( int )( value * mPalette.count() );
-    if ( paletteEntry >= mPalette.count() )
-      paletteEntry = mPalette.count() - 1;
-
-    return mPalette.at( paletteEntry );
-  }
-  else
-  {
-    int numStops = mPalette.count();
-    if ( numStops < 2 )
-      return QColor( 255, 0, 0 ); // red color as a warning :)
-
-    StopsMap mStops; // TODO integrate in main class
-    for ( int i = 0; i < numStops; i++ )
-      mStops[ mPaletteStops[i] ] = mPalette[i];
-
-    double lower = 0, upper;
-    QColor c1 = mPalette[1], c2;
-    for ( StopsMap::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
-    {
-      if ( it.key() >= value )
-      {
-        upper = it.key();
-        c2 = it.value();
-
-        return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
-      }
-      lower = it.key();
-      c1 = it.value();
-    }
-
-    upper = 1;
-    c2 = mPalette[ numStops - 1 ];
-    return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
-  }
-}
-#endif
 
 QColor QgsCptCityColorRampV2::color( double value ) const
 {
@@ -446,102 +408,23 @@ bool QgsCptCityColorRampV2::loadFile()
 
   QgsDebugMsg( QString( "filename= %1 loaded=%2" ).arg( filename ).arg( mFileLoaded ) );
 
-  mFileLoaded = false;
-  mPalette.clear();
-
-  // import xml file
-  QFile f( filename );
-  if ( !f.open( QFile::ReadOnly ) )
-  {
-    QgsDebugMsg( "Couldn't open SVG file: " + filename );
-    return false;
-  }
-
-  // parse the document
-  QDomDocument doc( "gradient" );
-  if ( !doc.setContent( &f ) )
-  {
-    f.close();
-    QgsDebugMsg( "Couldn't parse SVG file: " + filename );
-    return false;
-  }
-  f.close();
-
-  QDomElement docElem = doc.documentElement();
-
-  if ( docElem.tagName() != "svg" )
-  {
-    QgsDebugMsg( "Incorrect root tag: " + docElem.tagName() );
-    return false;
-  }
-
-  // load color ramp from first linearGradient node
-  QDomElement rampsElement = docElem.firstChildElement( "linearGradient" );
-  if ( rampsElement.isNull() )
-  {
-    QDomNodeList nodeList = docElem.elementsByTagName( "linearGradient" );
-    if ( ! nodeList.isEmpty() )
-      rampsElement = nodeList.at( 0 ).toElement();
-  }
-  if ( rampsElement.isNull() )
-  {
-    QgsDebugMsg( "linearGradient tag missing" );
-    return false;
-  }
-
-  // loop for all stop tags
-  QDomElement e = rampsElement.firstChildElement();
-  QMap< double, QPair<QColor, QColor> > map;
-
-  QColor prevColor;
-  while ( !e.isNull() )
-  {
-    if ( e.tagName() == "stop" )
-    {
-      //todo integrate this into symbollayerutils, keep here for now...
-      double offset;
-      QString offsetStr = e.attribute( "offset" ); // offset="50.00%" | offset="0.5"
-      QString colorStr = e.attribute( "stop-color", "" ); // stop-color="rgb(222,235,247)"
-      QString opacityStr = e.attribute( "stop-opacity", "1.0" ); // stop-opacity="1.0000"
-      if ( offsetStr.endsWith( "%" ) )
-        offset = offsetStr.remove( offsetStr.size() - 1, 1 ).toDouble() / 100.0;
-      else
-        offset = offsetStr.toDouble();
-
-      // QColor color( 255, 0, 0 ); // red color as a warning :)
-      QColor color = QgsSymbolLayerV2Utils::parseColor( colorStr );
-      if ( color != QColor() )
-      {
-        int alpha = opacityStr.toDouble() * 255; // test
-        color.setAlpha( alpha );
-        if ( map.contains( offset ) )
-          map[offset].second = color;
-        else
-          map[offset] = qMakePair( color, color );
-      }
-      else
-        QgsDebugMsg( QString( "at offset=%1 invalid color" ).arg( offset ) );
-    }
-    else
-    {
-      QgsDebugMsg( "unknown tag: " + e.tagName() );
-    }
-
-    e = e.nextSiblingElement();
-  }
+  // get color ramp from svg file
+  QMap< double, QPair<QColor, QColor> > colorMap =
+    QgsCptCityArchive::gradientColorMap( filename );
 
   // add colors to palette
+  mFileLoaded = false;
   mPalette.clear();
   QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
   // first detect if file is gradient is continuous or dicrete
   // discrete: stop contains 2 colors and first color is identical to previous second
   // multi: stop contains 2 colors and no relation with previous stop
   mGradientType = Continuous;
-  it = prev = map.constBegin();
-  while ( it != map.constEnd() )
+  it = prev = colorMap.constBegin();
+  while ( it != colorMap.constEnd() )
   {
     // look for stops that contain multiple values
-    if ( it != map.constBegin() && ( it.value().first != it.value().second ) )
+    if ( it != colorMap.constBegin() && ( it.value().first != it.value().second ) )
     {
       if ( it.value().first == prev.value().second )
       {
@@ -558,8 +441,8 @@ bool QgsCptCityColorRampV2::loadFile()
     ++it;
   }
 
-  it = prev = map.constBegin();
-  while ( it != map.constEnd() )
+  it = prev = colorMap.constBegin();
+  while ( it != colorMap.constEnd() )
   {
     if ( mGradientType == Discrete )
     {

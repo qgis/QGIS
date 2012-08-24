@@ -33,7 +33,6 @@ TODO
 
 - try to keep file reads at a minimum -> when selecting an item in the browser copy its ramp over to mRamp
 - collapse all button
-- show information from dir when selected
 - when browsing by selections, remove dir from scheme name
 - show type when there are variants - based on the first file
 
@@ -42,13 +41,13 @@ TODO
   - when collection has only 1 item (e.g. es_skywalker), bring up one level
 
  */
+
 QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent )
     : QDialog( parent ), mRamp( ramp )
 {
   setupUi( this );
   mAuthorsModel = mSelectionsModel = 0;
 }
-
 
 void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
 {
@@ -70,7 +69,7 @@ void QgsCptCityColorRampV2Dialog::populateVariants( QString newVariant )
   else
   {
     QString oldVariant = cboVariantName->currentText();
-    QgsCptCityColorRampV2 ramp( mRamp->schemeName(), QString() );
+    QgsCptCityColorRampV2 ramp( mRamp->schemeName(), mRamp->variantList(), QString() );
     QPixmap blankPixmap( cboVariantName->iconSize() );
     blankPixmap.fill( Qt::white );
     QIcon blankIcon( blankPixmap );
@@ -129,7 +128,7 @@ void QgsCptCityColorRampV2Dialog::on_mBrowserView_clicked( const QModelIndex &in
   if ( item->type() == QgsCptCityDataItem::ColorRamp )
   {
     lblSchemeName->setText( item->name() );
-    mRamp->setSchemeName( item->path() );
+    mRamp->setName( item->path() );
     populateVariants();
   }
   else if ( item->type() == QgsCptCityDataItem::Directory )
@@ -139,6 +138,7 @@ void QgsCptCityColorRampV2Dialog::on_mBrowserView_clicked( const QModelIndex &in
     populateVariants();
     lblSchemePath->setText( item->path() );
     updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
+    // updateCopyingInfo( item->copyingInfo() );
   }
 }
 
@@ -183,24 +183,21 @@ void QgsCptCityColorRampV2Dialog::on_pbtnLicenseDetails_pressed()
   // get basic information, depending on if is color ramp or directory
   QgsCptCityDataItem *item =
     dynamic_cast< QgsCptCityDataItem* >( mModel->dataItem( mBrowserView->currentIndex() ) );
+  path = item->path();
   if ( item && item->type() == QgsCptCityDataItem::Directory )
   {
-    path = item->path();
     title = tr( "%1 directory details" ).arg( item->name() );
-    copyFile = mArchive->copyingFileName( path );
-    descFile = mArchive->descFileName( path );
   }
   else if ( item )
   {
-    path = mRamp->schemeName() + mRamp->variantName();
     title = tr( "%1 gradient details" ).arg( path );
-    copyFile = mRamp->copyingFileName();
-    descFile = mRamp->descFileName();
   }
   else
   {
     return;
   }
+  copyFile = mArchive->copyingFileName( path );
+  descFile = mArchive->descFileName( path );
 
   // prepare dialog
   QgsDialog dlg( this, 0, QDialogButtonBox::Close );

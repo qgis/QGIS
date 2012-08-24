@@ -37,36 +37,23 @@ class CORE_EXPORT QgsCptCityArchive
                        QString baseDir = QString() );
     ~QgsCptCityArchive();
 
+    // basic dir info
     QString baseDir() const;
     static QString baseDir( QString archiveName );
     static QString defaultBaseDir();
     void setBaseDir( QString dirName ) { mBaseDir = dirName; }
-    bool loadSchemes( QString rootDir = "", bool reset = false );
-    /** Is the minimal (free to distribute) set of schemes available?
-     * Currently returns hasAllSchemes, because we don't have a minimal set yet. */
-    /* bool hasBasicSchemes(); */
-    /** Is the entire archive available? Currently tests that there is at least one scheme. */
-    /* bool hasAllSchemes(); */
-    bool isEmpty();
 
-    QStringList listDirNames( QString dirName = "", bool recursive = false );
-    QStringList listSchemeNames( QString dirName );
-    QgsCptCityArchive* colorRampFromSVGFile( QString svgFile );
-    QgsCptCityArchive* colorRampFromSVGString( QString svgString );
-
+    // collection + selection info
     QString copyingFileName( const QString& dirName ) const;
     QString descFileName( const QString& dirName ) const;
     static QString findFileName( const QString & target, const QString & startDir, const QString & baseDir );
-    static QMap< QString, QString > copyingInfo( const QString& copyingFileName );
+    static QMap< QString, QString > copyingInfo( const QString& fileName );
+    static QMap< QString, QString > description( const QString& fileName );
+    static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString& fileName );
 
+    // archive management
+    bool isEmpty();
     QString archiveName() const { return mArchiveName; }
-    QMap< QString, QStringList > schemeMap() const { return mSchemeMap; }
-    QMap< QString, QStringList > schemeVariants() const { return mSchemeVariants; }
-    QMap< QString, QString > dirNamesMap() const { return mDirNamesMap; }
-    QMap< QString, QStringList > selectionsMap() const { return mSelectionsMap; }
-    QVector< QgsCptCityDataItem* > rootItems() const { return mRootItems; } 
-    QVector<QgsCptCityDataItem*> selectionItems() const { return mSelectionItems; }
-
     static void initArchives( bool loadAll = false );
     static void initArchive( QString archiveName, QString archiveBaseDir );
     static void clearArchives();
@@ -74,26 +61,21 @@ class CORE_EXPORT QgsCptCityArchive
     static QString defaultArchiveName();
     static QMap< QString, QgsCptCityArchive* > archiveRegistry();
 
+    // items
+    QVector< QgsCptCityDataItem* > rootItems() const { return mRootItems; }
+    QVector<QgsCptCityDataItem*> selectionItems() const { return mSelectionItems; }
+
   protected:
 
     QString mArchiveName;
     QString mBaseDir;
-    QStringList mDirNames;
-    QMap< QString, QStringList > mSchemeMap; //key is archive, value is schemes
-    QMap< QString, QStringList > mSchemeVariants; //key is scheme, value is variants
-    QMap< QString, QString > mDirNamesMap; //key is name, value is description
-    QMap< QString, QStringList > mSelectionsMap;
     static QString mDefaultArchiveName;
     static QMap< QString, QgsCptCityArchive* > mArchiveRegistry;
-    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap; // mapping of copyinginfo, key is fileName
-
-    // new stuff
-
     // root items, namely directories at root of archive
     QVector< QgsCptCityDataItem* > mRootItems;
-    // map of selections, each one corresponds to an .xml file
-    /* QMap< QString, QVector<QgsCptCitySelectionItem*> > mSelections; */
     QVector<QgsCptCityDataItem*> mSelectionItems;
+    // mapping of copyinginfo, key is fileName
+    static QMap< QString, QMap< QString, QString > > mCopyingInfoMap;
 
 };
 
@@ -107,7 +89,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
       ColorRamp,
       Collection,
       Directory,
-      Category
+      Selection
     };
 
     QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
@@ -213,6 +195,10 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
                              QString name, QString path, QString info = QString(),
                              QString variantName = QString() );
 
+    QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
+                             QString name, QString path, QString info,
+                             QStringList variantList );
+
     // --- reimplemented from QgsCptCityDataItem ---
 
     virtual bool equal( const QgsCptCityDataItem *other );
@@ -222,6 +208,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 
   protected:
 
+    void init();
     QgsCptCityColorRampV2 mRamp;
     QIcon mIcon;
 };
@@ -254,6 +241,8 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
+  protected:
+    QMap< QString, QStringList > gradientsMap();
 };
 
 /** A selection: contains subdirectories and color ramps */
@@ -267,6 +256,12 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
     QVector<QgsCptCityDataItem*> createChildren();
 
     virtual bool equal( const QgsCptCityDataItem *other );
+
+    QStringList selectionsList() const { return mSelectionsList; }
+
+  protected:
+    void parseXML();
+    QStringList mSelectionsList;
 };
 
 
