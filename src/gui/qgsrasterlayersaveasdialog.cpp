@@ -11,17 +11,14 @@
 #include <QSettings>
 
 
-QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
-    const QgsCoordinateReferenceSystem& layerCrs,
-    const QgsCoordinateReferenceSystem& currentCrs,
-    QWidget* parent, Qt::WindowFlags f ):
+QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
+    QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
+    const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
+    QWidget* parent, Qt::WindowFlags f ) :
     QDialog( parent, f )
-    , mRasterLayer( rasterLayer )
-    , mDataProvider( sourceProvider )
-    , mCurrentExtent( currentExtent )
-    , mLayerCrs( layerCrs )
-    , mCurrentCrs( currentCrs )
-    , mExtentState( OriginalExtent )
+    , mRasterLayer( rasterLayer ), mDataProvider( sourceProvider )
+    , mCurrentExtent( currentExtent ), mLayerCrs( layerCrs )
+    , mCurrentCrs( currentCrs ), mExtentState( OriginalExtent )
     , mResolutionState( OriginalResolution )
 {
   setupUi( this );

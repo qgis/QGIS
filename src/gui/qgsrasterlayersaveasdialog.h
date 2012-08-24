@@ -37,7 +37,10 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer, QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs, QWidget* parent = 0, Qt::WindowFlags f = 0 );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
+                                QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
+                                const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
+                                QWidget* parent = 0, Qt::WindowFlags f = 0 );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;
