@@ -118,6 +118,7 @@ void QgsComposition::setNumPages( int pages )
       mPages.removeLast();
     }
   }
+  emit nPagesChanged();
 }
 
 int QgsComposition::numPages() const

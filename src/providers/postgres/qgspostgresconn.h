@@ -133,6 +133,9 @@ class QgsPostgresConn : public QObject
     PGresult *PQprepare( QString stmtName, QString query, int nParams, const Oid *paramTypes );
     PGresult *PQexecPrepared( QString stmtName, const QStringList &params );
 
+    // cancel running query
+    bool cancel();
+
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( QString ident, bool isGeography = false );

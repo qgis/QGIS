@@ -722,6 +722,21 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 }
 #endif
 
+bool QgsGdalProvider::srcHasNoDataValue( int bandNo ) const
+{
+  if ( mGdalDataset )
+  {
+    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+    if ( myGdalBand )
+    {
+      int ok;
+      GDALGetRasterNoDataValue( myGdalBand, &ok );
+      return ok;
+    }
+  }
+  return false;
+}
+
 double  QgsGdalProvider::noDataValue() const
 {
   if ( mNoDataValue.size() > 0 )
@@ -829,15 +844,31 @@ bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& resu
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
       GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
-      double value;
+      double data[4];
 
-      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-                                 &value, 1, 1, GDT_Float64, 0, 0 );
+      // GDAL ECW driver reads whole row if single pixel (nYSize == 1) is requested
+      // and it makes identify very slow -> use 2x2 matrix
+      int r = 0;
+      int c = 0;
+      if ( col == mWidth - 1 && mWidth > 1 )
+      {
+        col--;
+        c++;
+      }
+      if ( row == mHeight - 1 && mHeight > 1 )
+      {
+        row--;
+        r++;
+      }
+
+      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 2, 2,
+                                 data, 2, 2, GDT_Float64, 0, 0 );
 
       if ( err != CPLE_None )
       {
         QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       }
+      double value = data[r*2+c];
 
       //double value = readValue( data, type, 0 );
       // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
@@ -863,62 +894,12 @@ bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& resu
 
 bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
-  // QgsDebugMsg( "Entered" );
-  if ( !mExtent.contains( thePoint ) )
+  QMap<int, QString> results;
+  identify( thePoint, results );
+  for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
   {
-    // Outside the raster
-    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
-    {
-      theResults[ generateBandName( i )] = tr( "out of extent" );
-    }
+    theResults[ generateBandName( i )] = results.value( i );
   }
-  else
-  {
-    double x = thePoint.x();
-    double y = thePoint.y();
-
-    // Calculate the row / column where the point falls
-    double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
-    double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
-
-    // Offset, not the cell index -> flor
-    int col = ( int ) floor(( x - mExtent.xMinimum() ) / xres );
-    int row = ( int ) floor(( mExtent.yMaximum() - y ) / yres );
-
-    // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
-
-    for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
-    {
-      GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
-      double value;
-
-      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-                                 &value, 1, 1, GDT_Float64, 0, 0 );
-
-      if ( err != CPLE_None )
-      {
-        QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      }
-
-      //double value = readValue( data, type, 0 );
-      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
-      QString v;
-
-      if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
-      {
-        v = tr( "null (no data)" );
-      }
-      else
-      {
-        v.setNum( value );
-      }
-
-      theResults[ generateBandName( i )] = v;
-
-      //CPLFree( data );
-    }
-  }
-
   return true;
 }
 
@@ -2274,6 +2255,21 @@ bool QgsGdalProvider::write( void* data, int band, int width, int height, int xO
   return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
 }
 
+bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
+{
+  if ( !mGdalDataset ) return false;
+
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  CPLErrorReset();
+  CPLErr err = GDALSetRasterNoDataValue( rasterBand, noDataValue );
+  if ( err != CPLE_None )
+  {
+    QgsDebugMsg( "Cannot set no data value" );
+    return false;
+  }
+  return true;
+}
+
 QStringList QgsGdalProvider::createFormats() const
 {
   return QStringList();
@@ -2281,6 +2277,23 @@ QStringList QgsGdalProvider::createFormats() const
 
 bool QgsGdalProvider::remove()
 {
+  if ( mGdalDataset )
+  {
+    GDALDriverH driver = GDALGetDatasetDriver( mGdalDataset );
+    GDALClose( mGdalDataset );
+    mGdalDataset = 0;
+
+    CPLErrorReset();
+    CPLErr err = GDALDeleteDataset( driver, TO8F( dataSourceUri() ) );
+    if ( err != CPLE_None )
+    {
+      QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      QgsDebugMsg( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
+      return false;
+    }
+    QgsDebugMsg( "Raster dataset dataSourceUri() successfully deleted" );
+    return true;
+  }
   return false;
 }
 

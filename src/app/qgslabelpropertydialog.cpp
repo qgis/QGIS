@@ -298,6 +298,7 @@ void QgsLabelPropertyDialog::on_mFontPushButton_clicked()
     insertChangedValue( QgsPalLayerSettings::Bold, mLabelFont.bold() );
     insertChangedValue( QgsPalLayerSettings::Italic, mLabelFont.italic() );
     insertChangedValue( QgsPalLayerSettings::Underline, mLabelFont.underline() );
+    insertChangedValue( QgsPalLayerSettings::Strikeout, mLabelFont.strikeOut() );
   }
 }
 

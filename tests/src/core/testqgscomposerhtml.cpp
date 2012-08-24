@@ -76,7 +76,7 @@ void TestQgsComposerHtml::tableMultiFrame()
   QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
   QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
   htmlItem->addFrame( htmlFrame );
-  htmlItem->setResizeMode( QgsComposerMultiFrame::ExtendToNextPage );
+  htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
   bool result = true;
   //page1
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "html_table.html" ) ) );

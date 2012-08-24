@@ -113,17 +113,17 @@ void TestStyleV2::testCreateColorRamps()
   QgsVectorGradientColorRampV2::StopsMap stops;
   stops[ 0.5 ] = QColor( Qt::white );
   gradientRamp->setStops( stops );
-  QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp ) );
+  QVERIFY( mStyle->addColorRamp( "test_gradient", gradientRamp, true ) );
 
   // random ramp
   QgsVectorRandomColorRampV2* randomRamp = new QgsVectorRandomColorRampV2();
-  QVERIFY( mStyle->addColorRamp( "test_random", randomRamp ) );
+  QVERIFY( mStyle->addColorRamp( "test_random", randomRamp, true ) );
 
   // color brewer ramp
   QgsVectorColorBrewerColorRampV2* cb1Ramp = new QgsVectorColorBrewerColorRampV2();
-  QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cb1", cb1Ramp, true ) );
   QgsVectorColorBrewerColorRampV2* cb2Ramp = new QgsVectorColorBrewerColorRampV2( "RdYlGn", 6 );
-  QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cb2", cb2Ramp, true ) );
 
   // discrete ramp with no variant
   QgsCptCityColorRampV2* cc1Ramp = new QgsCptCityColorRampV2( "cb/seq/PuBuGn_06", "" );
@@ -188,11 +188,12 @@ void TestStyleV2::testLoadColorRamps()
 
 void TestStyleV2::testSaveLoad()
 {
-  //#if 0
-  mStyle->save();
+  // save not needed anymore, because used update=true in addColorRamp()
+  // mStyle->save();
   mStyle->clear();
   mStyle->load( QgsApplication::userStyleV2Path() );
 
+  // basic test to see that ramp is present
   QStringList colorRamps = mStyle->colorRampNames();
   QgsDebugMsg( "loaded colorRamps: " + colorRamps.join( " " ) );
 
@@ -207,9 +208,8 @@ void TestStyleV2::testSaveLoad()
     if ( ramp )
       delete ramp;
   }
-  // test color ramps again
+  // test content again
   testLoadColorRamps();
-  //#endif
 }
 
 

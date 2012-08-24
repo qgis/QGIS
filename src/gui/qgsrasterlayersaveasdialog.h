@@ -4,7 +4,9 @@
 #include "ui_qgsrasterlayersaveasdialogbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrasternuller.h"
 
+class QgsRasterLayer;
 class QgsRasterDataProvider;
 class QgsRasterFormatOptionsWidget;
 
@@ -35,7 +37,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& currentCrs, QWidget* parent = 0, Qt::WindowFlags f = 0 );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer, QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent, const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs, QWidget* parent = 0, Qt::WindowFlags f = 0 );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;
@@ -51,11 +53,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
     QgsRectangle outputRectangle() const;
+    QList<QgsRasterNuller::NoData> noData() const;
 
     void hideFormat();
     void hideOutput();
 
   private slots:
+    void on_mRawModeRadioButton_toggled( bool );
     void on_mBrowseButton_clicked();
     void on_mSaveAsLineEdit_textChanged( const QString& text );
     void on_mCurrentExtentButton_clicked();
@@ -79,14 +83,24 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
+    void groupBoxExpanded( QWidget * widget ) { mScrollArea->ensureWidgetVisible( widget ); }
+    void on_mAddNoDataManuallyToolButton_clicked();
+    void on_mLoadTransparentNoDataToolButton_clicked();
+    void on_mRemoveSelectedNoDataToolButton_clicked();
+    void on_mRemoveAllNoDataToolButton_clicked();
+    void noDataCellTextEdited( const QString & text );
+
   private:
+    QgsRasterLayer* mRasterLayer;
     QgsRasterDataProvider* mDataProvider;
     QgsRectangle mCurrentExtent;
+    QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
     QgsCoordinateReferenceSystem mUserCrs;
     QgsCoordinateReferenceSystem mPreviousCrs;
     ExtentState mExtentState;
     ResolutionState mResolutionState;
+    QVector<bool> mNoDataToEdited;
 
     void setValidators();
     void setOutputExtent( const QgsRectangle& r, const QgsCoordinateReferenceSystem& srcCrs, ExtentState state );
@@ -102,6 +116,50 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void recalcResolutionSize();
     void crsChanged();
     void updateCrsGroup();
+
+    void addNoDataRow( double min, double max );
+    void setNoDataToEdited( int row );
+    double noDataCellValue( int row, int column ) const;
 };
 
+
 #endif // QGSRASTERLAYERSAVEASDIALOG_H
+
+
+// this widget class will go into its separate file
+#ifndef GROUPBOX_H
+#define GROUPBOX_H
+
+#include <QGroupBox>
+
+class GroupBox : public QGroupBox
+{
+	Q_OBJECT
+
+public:
+	GroupBox( QWidget *parent = 0 );
+	GroupBox( const QString &title, QWidget *parent = 0 );
+
+	bool isCollapsed();
+
+ signals:
+    void collapsed( QWidget* );
+    void expanded( QWidget* );
+
+public slots: 
+	void setToggled( bool toggled ) { setCollapsed( ! toggled ); }
+	void setCollapsed( bool collapsed );
+
+protected:
+	/* void mousePressEvent( QMouseEvent *e ); */
+	/* void mouseReleaseEvent( QMouseEvent *e ); */
+	/* void paintEvent( QPaintEvent * ); */
+    void showEvent( QShowEvent * event );
+
+private:
+	QPoint	clickPos;
+	bool	m_collapsed;
+    QMargins margins;
+};
+
+#endif

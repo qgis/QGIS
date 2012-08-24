@@ -117,6 +117,12 @@ void * QgsSingleBandPseudoColorRenderer::readBlock( int bandNo, QgsRectangle  co
     for ( int j = 0; j < width; ++j )
     {
       val = readValue( rasterData, rasterType, currentRasterPos );
+      if ( mInput->isNoDataValue( mBand, val ) )
+      {
+        imageScanLine[j] = myDefaultColor;
+        ++currentRasterPos;
+        continue;
+      }
       if ( !mShader->shade( val, &red, &green, &blue ) )
       {
         imageScanLine[j] = myDefaultColor;

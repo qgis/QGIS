@@ -361,6 +361,7 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
   {
     mColumnTypeThread->stop();
     mColumnTypeThread->wait();
+    finishList();
   }
 
   QSettings settings;

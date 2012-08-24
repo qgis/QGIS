@@ -39,13 +39,6 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
 
-
-# In Windef.h there are min() and max() macros that interfere with the usage
-# of std::numeric_limits<T>::min() and :max() in qgsrasterbands.h.
-IF(MSVC)
-  ADD_DEFINITIONS(-DNOMINMAX)
-ENDIF(MSVC)
-
 IF(PYQT4_VERSION_NUM LESS 263680)	# 0x040600
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} PROXY_FACTORY)
 ENDIF(PYQT4_VERSION_NUM LESS 263680)

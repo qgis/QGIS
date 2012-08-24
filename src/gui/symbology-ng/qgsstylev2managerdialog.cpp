@@ -351,9 +351,8 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // add new symbol to style and re-populate the list
-  mStyle->addSymbol( name, symbol );
+  mStyle->addSymbol( name, symbol, true );
   // TODO groups and tags
-  mStyle->saveSymbol( name, symbol, 0, QStringList() );
   mModified = true;
   return true;
 }
@@ -436,7 +435,8 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
   }
 
   // add new symbol to style and re-populate the list
-  style->addColorRamp( name, ramp );
+  style->addColorRamp( name, ramp, true );
+  // TODO groups and tags
   return name;
 }
 
@@ -491,7 +491,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   }
 
   // by adding symbol to style with the same name the old effectively gets overwritten
-  mStyle->addSymbol( symbolName, symbol );
+  mStyle->addSymbol( symbolName, symbol, true );
   mModified = true;
   return true;
 }
@@ -549,7 +549,7 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
     Q_ASSERT( 0 && "invalid ramp type" );
   }
 
-  mStyle->addColorRamp( name, ramp );
+  mStyle->addColorRamp( name, ramp, true );
   mModified = true;
   return true;
 }

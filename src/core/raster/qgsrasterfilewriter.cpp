@@ -17,6 +17,7 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterprojector.h"
 #include <QCoreApplication>
 #include <QProgressDialog>
 #include <QTextStream>
@@ -38,16 +39,20 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
-    const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
+//QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
+    const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
   QgsDebugMsg( "Entered" );
-  if ( !iter )
+
+  //if ( !iter )
+  if ( !pipe )
   {
     return SourceProviderError;
   }
 
-  const QgsRasterInterface* iface = iter->input();
+  //const QgsRasterInterface* iface = iter->input();
+  const QgsRasterInterface* iface = pipe->last();
   if ( !iface )
   {
     return SourceProviderError;
@@ -59,25 +64,27 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIter
     return SourceProviderError;
   }
 
-  mProgressDialog = p;
+  mProgressDialog = progressDialog;
+
+  QgsRasterIterator iter( pipe->last() );
 
   if ( iface->dataType( 1 ) == QgsRasterInterface::ARGB32 ||
        iface->dataType( 1 ) == QgsRasterInterface::ARGB32_Premultiplied )
   {
-    WriterError e = writeImageRaster( iter, nCols, nRows, outputExtent, crs, p );
+    WriterError e = writeImageRaster( &iter, nCols, nRows, outputExtent, crs, progressDialog );
     mProgressDialog = 0;
     return e;
   }
   else
   {
     mProgressDialog = 0;
-    WriterError e = writeDataRaster( iter, nCols, nRows, outputExtent, crs, p );
+    WriterError e = writeDataRaster( pipe, &iter, nCols, nRows, outputExtent, crs, progressDialog );
     return e;
   }
 }
 
-QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-    const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
+    const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
   QgsDebugMsg( "Entered" );
   if ( !iter )
@@ -85,13 +92,16 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
     return SourceProviderError;
   }
 
-  const QgsRasterInterface* iface = iter->input();
+  //const QgsRasterInterface* iface = iter->input();
+  const QgsRasterInterface* iface = pipe->last();
   if ( !iface )
   {
     return SourceProviderError;
   }
 
-  const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  //const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  //QgsRasterDataProvider* srcProvider = dynamic_cast<QgsRasterDataProvider*>( iface->srcInput() );
+  QgsRasterDataProvider* srcProvider = const_cast<QgsRasterDataProvider*>( dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() ) );
   if ( !srcProvider )
   {
     QgsDebugMsg( "Cannot get source data provider" );
@@ -104,12 +114,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
   {
     destDir.mkdir( mOutputUrl );
   }
-
-  //Get output map units per pixel
-  int iterLeft = 0;
-  int iterTop = 0;
-  int iterCols = 0;
-  int iterRows = 0;
 
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
@@ -137,25 +141,159 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
     }
   }
 
+  // Output data type - source data type is preferred but it may happen that we need
+  // to set 'no data' value (which was not set on source data) if output extent
+  // is larger than source extent (with or without reprojection) and there is no 'free'
+  // (not used) value available
+  QList<bool> destHasNoDataValueList;
+  QList<double> destNoDataValueList;
+  QList<QgsRasterInterface::DataType> destDataTypeList;
+  for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
+  {
+
+    bool srcHasNoDataValue = srcProvider->srcHasNoDataValue( bandNo );
+    bool destHasNoDataValue = false;
+    double destNoDataValue;
+    QgsRasterInterface::DataType destDataType = srcProvider->srcDataType( bandNo );
+    if ( srcHasNoDataValue )
+    {
+      // If source has no data value, it is used by provider
+      // TODO: this is not realy source no data, we would need srcNoDataValue() but it
+      //       can be safely used I think
+      destNoDataValue = srcProvider->noDataValue();
+      destHasNoDataValue = true;
+    }
+#if 0
+    else if ( )
+      // TODO: see if nuller has user defined aditional values, in that case use one as no data value
+
+    }
+#endif
+  else
+  {
+    // Verify if we realy need no data value, i.e.
+    QgsRectangle srcExtent = outputExtent;
+    QgsRasterProjector *projector = pipe->projector();
+    if ( projector && projector->destCrs() != projector->srcCrs() )
+    {
+      QgsCoordinateTransform ct( projector->destCrs(), projector->srcCrs() );
+      srcExtent = ct.transformBoundingBox( outputExtent );
+    }
+    if ( !srcProvider->extent().contains( srcExtent ) )
+    {
+      // Destination extent is larger than source extent, we need destination no data values
+      // Get src sample statistics (estimation from sample)
+      QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
+
+      // Test if we have free (not used) values
+      double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+      double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+      if ( stats.minimumValue > typeMinValue )
+      {
+        destNoDataValue = typeMinValue;
+      }
+      else if ( stats.maximumValue < typeMaxValue )
+      {
+        destNoDataValue = typeMaxValue;
+      }
+      else
+      {
+        // We have to use wider type
+        destDataType = QgsRasterInterface::typeWithNoDataValue( destDataType, &destNoDataValue );
+      }
+      destHasNoDataValue = true;
+    }
+  }
+  QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
+  destDataTypeList.append( destDataType );
+  destHasNoDataValueList.append( destHasNoDataValue );
+  destNoDataValueList.append( destNoDataValue );
+}
+
+
+QgsRasterInterface::DataType destDataType = destDataTypeList.value( 0 );
+// Currently write API supports one output type for dataset only -> find the widest
+for ( int i = 1; i < nBands; i++ )
+{
+  if ( destDataTypeList.value( i ) > destDataType )
+  {
+    destDataType = destDataTypeList.value( i );
+    // no data value may be left per band (for future)
+  }
+}
+
+destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
+
+WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
+
+if ( error == NoDataConflict )
+{
+  // The value used for no data was found in source data, we must use wider data type
+  destProvider->remove();
+  delete destProvider;
+
+  // But we dont know which band -> wider all
+  for ( int i = 0; i < nBands; i++ )
+  {
+    double destNoDataValue;
+    QgsRasterInterface::DataType destDataType = QgsRasterInterface::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
+    destDataTypeList.replace( i, destDataType );
+    destNoDataValueList.replace( i, destNoDataValue );
+  }
+
+  // Try again
+  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
+  error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
+}
+
+return error;
+}
+
+QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
+  const QgsRasterPipe* pipe,
+  QgsRasterIterator* iter,
+  int nCols, int nRows,
+  const QgsRectangle& outputExtent,
+  const QgsCoordinateReferenceSystem& crs,
+  QgsRasterInterface::DataType destDataType,
+  QList<bool> destHasNoDataValueList,
+  QList<double> destNoDataValueList,
+  QgsRasterDataProvider* destProvider,
+  QProgressDialog* progressDialog )
+{
+  Q_UNUSED( pipe );
+  Q_UNUSED( destHasNoDataValueList );
+  QgsDebugMsg( "Entered" );
+
+  const QgsRasterInterface* iface = iter->input();
+  const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  int nBands = iface->bandCount();
+
+  //Get output map units per pixel
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+
+  int dataTypeSize = srcProvider->typeSize( srcProvider->srcDataType( 1 ) );
   QList<void*> dataList;
   for ( int i = 1; i <= nBands; ++i )
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
     dataList.push_back( VSIMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
+    destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
   }
-
-  destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  srcProvider->srcDataType( 1 ) );
 
   int nParts = 0;
   int fileIndex = 0;
-  if ( p )
+  if ( progressDialog )
   {
     int nPartsX = nCols / iter->maximumTileWidth() + 1;
     int nPartsY = nRows / iter->maximumTileHeight() + 1;
     nParts = nPartsX * nPartsY;
-    p->setMaximum( nParts );
-    p->show();
-    p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
+    progressDialog->setMaximum( nParts );
+    progressDialog->show();
+    progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
   }
 
   while ( true )
@@ -175,14 +313,15 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
 
         return NoError; //reached last tile, bail out
       }
+      // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
     }
 
-    if ( p && fileIndex < ( nParts - 1 ) )
+    if ( progressDialog && fileIndex < ( nParts - 1 ) )
     {
-      p->setValue( fileIndex + 1 );
-      p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 2 ).arg( nParts ) );
+      progressDialog->setValue( fileIndex + 1 );
+      progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 2 ).arg( nParts ) );
       QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
-      if ( p->wasCanceled() )
+      if ( progressDialog->wasCanceled() )
       {
         for ( int i = 0; i < nBands; ++i )
         {
@@ -196,7 +335,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
     {
       delete destProvider;
       destProvider = createPartProvider( outputExtent, nCols, iterCols, iterRows,
-                                         iterLeft, iterTop, mOutputUrl, fileIndex, nBands, iface->dataType( 1 ), crs );
+                                         iterLeft, iterTop, mOutputUrl, fileIndex, nBands, destDataType, crs );
 
       //write data to output file. todo: loop over the data list
       for ( int i = 1; i <= nBands; ++i )
@@ -215,16 +354,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( QgsRaster
         CPLFree( dataList[i - 1] );
       }
     }
-
-
-
     ++fileIndex;
   }
   return NoError;
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
-    const QgsCoordinateReferenceSystem& crs, QProgressDialog* p )
+    const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
   QgsDebugMsg( "Entered" );
   if ( !iter )
@@ -270,14 +406,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->startRasterRead( 1, nCols, nRows, outputExtent );
 
   int nParts = 0;
-  if ( p )
+  if ( progressDialog )
   {
     int nPartsX = nCols / iter->maximumTileWidth() + 1;
     int nPartsY = nRows / iter->maximumTileHeight() + 1;
     nParts = nPartsX * nPartsY;
-    p->setMaximum( nParts );
-    p->show();
-    p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
+    progressDialog->setMaximum( nParts );
+    progressDialog->show();
+    progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
   }
 
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, &data, iterLeft, iterTop ) )
@@ -288,12 +424,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       continue;
     }
 
-    if ( p && fileIndex < ( nParts - 1 ) )
+    if ( progressDialog && fileIndex < ( nParts - 1 ) )
     {
-      p->setValue( fileIndex + 1 );
-      p->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 2 ).arg( nParts ) );
+      progressDialog->setValue( fileIndex + 1 );
+      progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 2 ).arg( nParts ) );
       QCoreApplication::processEvents( QEventLoop::AllEvents, 1000 );
-      if ( p->wasCanceled() )
+      if ( progressDialog->wasCanceled() )
       {
         CPLFree( data );
         break;
@@ -349,9 +485,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   delete destProvider;
   CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
 
-  if ( p )
+  if ( progressDialog )
   {
-    p->setValue( p->maximum() );
+    progressDialog->setValue( progressDialog->maximum() );
   }
 
   if ( mTiledMode )
@@ -462,16 +598,16 @@ int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMes
 {
   Q_UNUSED( pszMessage );
   GDALTermProgress( dfComplete, 0, 0 );
-  QProgressDialog* p = static_cast<QProgressDialog*>( pData );
-  if ( pData && p->wasCanceled() )
+  QProgressDialog* progressDialog = static_cast<QProgressDialog*>( pData );
+  if ( pData && progressDialog->wasCanceled() )
   {
     return 0;
   }
 
   if ( pData )
   {
-    p->setRange( 0, 100 );
-    p->setValue( dfComplete * 100 );
+    progressDialog->setRange( 0, 100 );
+    progressDialog->setValue( dfComplete * 100 );
   }
   return 1;
 }

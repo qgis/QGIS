@@ -90,6 +90,35 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   mGrassDataType = mInfo["TYPE"].toInt();
   QgsDebugMsg( "mGrassDataType = " + QString::number( mGrassDataType ) );
 
+  // TODO: avoid showing these strange numbers in GUI
+  // TODO: don't save no data values in project file, add a flag if value was defined by user
+  if ( mGrassDataType == CELL_TYPE )
+  {
+    //limit: -2147483647;
+    mNoDataValue = -2000000000;
+  }
+  else if ( mGrassDataType == DCELL_TYPE )
+  {
+    // Don't use numeric limits, raster layer is using
+    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
+    // if the mNoDataValue would be a limit, the subtraction could overflow.
+    // No data value is shown in GUI, use some nice number.
+    // Choose values with small representation error.
+    // limit: 1.7976931348623157e+308
+    mNoDataValue = -1e+300;
+  }
+  else
+  {
+    if ( mGrassDataType != FCELL_TYPE )
+    {
+      QgsDebugMsg( "unexpected data type" );
+    }
+
+    // limit: 3.40282347e+38
+    mNoDataValue = -1e+30;
+  }
+  QgsDebugMsg( QString( "mNoDataValue = %1" ).arg( mNoDataValue ) );
+
   // TODO: refresh mRows and mCols if raster was rewritten
   // We have to decide some reasonable block size, not to big to occupate too much
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
@@ -258,36 +287,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
 
 double  QgsGrassRasterProvider::noDataValue() const
 {
-  double nul;
-  // TODO: avoid showing these strange numbers in GUI
-  // TODO: don't save no data values in project file, add a flag if value was defined by user
-  if ( mGrassDataType == CELL_TYPE )
-  {
-    //limit: -2147483647;
-    nul = -2000000000;
-  }
-  else if ( mGrassDataType == DCELL_TYPE )
-  {
-    // Don't use numeric limits, raster layer is using
-    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
-    // if the mNoDataValue would be a limit, the subtraction could overflow.
-    // No data value is shown in GUI, use some nice number.
-    // Choose values with small representation error.
-    // limit: 1.7976931348623157e+308
-    nul = -1e+300;
-  }
-  else
-  {
-    if ( mGrassDataType != FCELL_TYPE )
-    {
-      QgsDebugMsg( "unexpected data type" );
-    }
-
-    // limit: 3.40282347e+38
-    nul = -1e+30;
-  }
-  QgsDebugMsg( QString( "noDataValue = %1" ).arg( nul ) );
-  return nul;
+  return mNoDataValue;
 }
 
 double  QgsGrassRasterProvider::minimumValue( int bandNo ) const

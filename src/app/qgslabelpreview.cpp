@@ -61,6 +61,12 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   if ( mBufferSize != 0 )
     QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor, mBufferJoinStyle, mBufferNoFill );
 
-  p.setPen( mTextColor );
-  p.drawText( 0, 0, text() );
+  QPainterPath path;
+  path.addText( 0, 0, font(), text() );
+  p.setPen( Qt::NoPen );
+  p.setBrush( mTextColor );
+  p.drawPath( path );
+
+//  p.setPen( mTextColor );
+//  p.drawText( 0, 0, text() );
 }

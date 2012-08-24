@@ -118,6 +118,13 @@ void * QgsSingleBandGrayRenderer::readBlock( int bandNo, QgsRectangle  const & e
     {
       grayVal = readValue( rasterData, rasterType, currentRasterPos );
 
+      if ( mInput->isNoDataValue( mGrayBand, grayVal ) )
+      {
+        imageScanLine[j] = myDefaultColor;
+        ++currentRasterPos;
+        continue;
+      }
+
       //alpha
       currentAlpha = mOpacity;
       if ( mRasterTransparency )

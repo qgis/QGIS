@@ -564,7 +564,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   QSettings s;
   bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
 
-  if ( !mTiled )
+  if ( !mTiled && !mMaxWidth && !mMaxHeight )
   {
     // Calculate active layers that are also visible.
 
@@ -655,33 +655,53 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   {
     mTileReqNo++;
 
-    Q_ASSERT( mTileLayer );
-    Q_ASSERT( mTileMatrixSet );
-    Q_ASSERT( mTileMatrixSet->tileMatrices.size() > 0 );
-
     double vres = viewExtent.width() / pixelWidth;
     double tres = vres;
 
-    QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
+    const QgsWmtsTileMatrix *tm = 0;
+    enum QgsTileMode tileMode;
 
-    // find nearest resolution
-    QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
-    while ( it != m.constEnd() && it.key() < vres )
+    if ( mTiled )
     {
-      QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
-      prev = it;
-      it++;
-    }
+      Q_ASSERT( mTileLayer );
+      Q_ASSERT( mTileMatrixSet );
+      Q_ASSERT( mTileMatrixSet->tileMatrices.size() > 0 );
 
-    if ( it == m.constEnd() ||
-         ( it != m.constBegin() && vres - prev.key() < it.key() - vres ) )
+      QMap<double, QgsWmtsTileMatrix> &m =  mTileMatrixSet->tileMatrices;
+
+      // find nearest resolution
+      QMap<double, QgsWmtsTileMatrix>::const_iterator prev, it = m.constBegin();
+      while ( it != m.constEnd() && it.key() < vres )
+      {
+        QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
+        prev = it;
+        it++;
+      }
+
+      if ( it == m.constEnd() ||
+           ( it != m.constBegin() && vres - prev.key() < it.key() - vres ) )
+      {
+        QgsDebugMsg( "back to previous res" );
+        it = prev;
+      }
+
+      tres = it.key();
+      tm = &it.value();
+
+      tileMode = mTileLayer->tileMode;
+    }
+    else
     {
-      QgsDebugMsg( "back to previous res" );
-      it = prev;
-    }
+      static QgsWmtsTileMatrix tempTm;
+      tempTm.topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
+      tempTm.tileWidth    = mMaxWidth;
+      tempTm.tileHeight   = mMaxHeight;
+      tempTm.matrixWidth  = ceil( mLayerExtent.width() / mMaxWidth / vres );
+      tempTm.matrixHeight = ceil( mLayerExtent.height() / mMaxHeight / vres );
+      tm = &tempTm;
 
-    tres = it.key();
-    const QgsWmtsTileMatrix *tm = &it.value();
+      tileMode = WMSC;
+    }
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
                  .arg( mLayerExtent.xMinimum(), 0, 'f' )
@@ -715,7 +735,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     int minTileRow = 0;
     int maxTileRow = tm->matrixHeight - 1;
 
-    if ( mTileLayer->setLinks.contains( mTileMatrixSet->identifier ) &&
+
+    if ( mTileLayer &&
+         mTileLayer->setLinks.contains( mTileMatrixSet->identifier ) &&
          mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits.contains( tm->identifier ) )
     {
       const QgsWmtsTileMatrixLimits &tml = mTileLayer->setLinks[ mTileMatrixSet->identifier ].limits[ tm->identifier ];
@@ -745,7 +767,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 #endif
 
-    switch ( mTileLayer->tileMode )
+    switch ( tileMode )
     {
       case WMSC:
       {
@@ -760,7 +782,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         setQueryItem( url, "STYLES", mActiveSubStyles.join( "," ) );
         setQueryItem( url, "FORMAT", mImageMimeType );
         setQueryItem( url, crsKey, mImageCrs );
-        setQueryItem( url, "TILED", "true" );
+        if ( mTiled )
+          setQueryItem( url, "TILED", "true" );
 
         int i = 0;
         for ( int row = row0; row <= row1; row++ )
@@ -982,7 +1005,7 @@ void QgsWmsProvider::tileReplyFinished()
   cmd.setRawHeaders( hl );
 
   QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
-  if( cmd.expirationDate().isNull() )
+  if ( cmd.expirationDate().isNull() )
   {
     QSettings s;
     cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( "/qgis/defaultTileExpiry", "24" ).toInt() * 60 * 60 ) );

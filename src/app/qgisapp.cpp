@@ -163,6 +163,7 @@
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsrasternuller.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
@@ -1395,8 +1396,8 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setWhatsThis( tr( "Shows the map coordinates at the "
                                  "current cursor position. The display is continuously updated "
                                  "as the mouse is moved. It also allows editing to set the canvas "
-                                 "center to a given position." ) );
-  mCoordsEdit->setToolTip( tr( "Current map coordinate (formatted as x,y)" ) );
+                                 "center to a given position. The format is lat,lon or east,north" ) );
+  mCoordsEdit->setToolTip( tr( "Current map coordinate (lat,lon or east,north)" ) );
   statusBar()->addPermanentWidget( mCoordsEdit, 0 );
   connect( mCoordsEdit, SIGNAL( editingFinished() ), this, SLOT( userCenter() ) );
 
@@ -2409,7 +2410,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 
   }
 
-  // make sure at least one layer was succesfully added
+  // make sure at least one layer was successfully added
   if ( myList.count() == 0 )
   {
     return false;
@@ -3924,7 +3925,7 @@ void QgisApp::saveAsRasterFile()
     return;
   }
 
-  QgsRasterLayerSaveAsDialog d( rasterLayer->dataProvider(),  mMapCanvas->extent(), mMapCanvas->mapRenderer()->destinationCrs() );
+  QgsRasterLayerSaveAsDialog d( rasterLayer, rasterLayer->dataProvider(),  mMapCanvas->extent(), rasterLayer->crs(), mMapCanvas->mapRenderer()->destinationCrs() );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsRasterFileWriter fileWriter( d.outputFileName() );
@@ -3953,12 +3954,21 @@ void QgisApp::saveAsRasterFile()
         QgsDebugMsg( "Cannot set pipe provider" );
         return;
       }
+
+      QgsRasterNuller *nuller = new QgsRasterNuller();
+      nuller->setNoData( d.noData() );
+      if ( !pipe->insert( 1, nuller ) )
+      {
+        QgsDebugMsg( "Cannot set pipe nuller" );
+        return;
+      }
+
       // add projector if necessary
-      if ( d.outputCrs() != rasterLayer->dataProvider()->crs() )
+      if ( d.outputCrs() != rasterLayer->crs() )
       {
         QgsRasterProjector * projector = new QgsRasterProjector;
-        projector->setCRS( rasterLayer->dataProvider()->crs(), d.outputCrs() );
-        if ( !pipe->set( projector ) )
+        projector->setCRS( rasterLayer->crs(), d.outputCrs() );
+        if ( !pipe->insert( 2, projector ) )
         {
           QgsDebugMsg( "Cannot set pipe projector" );
           return;
@@ -3977,7 +3987,7 @@ void QgisApp::saveAsRasterFile()
         delete pipe;
         return;
       }
-      projector->setCRS( rasterLayer->dataProvider()->crs(), d.outputCrs() );
+      projector->setCRS( rasterLayer->crs(), d.outputCrs() );
     }
 
     if ( !pipe->last() )
@@ -3985,10 +3995,9 @@ void QgisApp::saveAsRasterFile()
       delete pipe;
       return;
     }
-    QgsRasterIterator iterator( pipe->last() );
     fileWriter.setCreateOptions( d.createOptions() );
 
-    fileWriter.writeRaster( &iterator, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
+    fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
     delete pipe;
   }
 }
@@ -7361,7 +7370,7 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
     else
     {
       // Issue message box warning unless we are loading from cmd line since
-      // non-rasters are passed to this function first and then sucessfully
+      // non-rasters are passed to this function first and then successfully
       // loaded afterwards (see main.cpp)
 
       if ( guiWarning )

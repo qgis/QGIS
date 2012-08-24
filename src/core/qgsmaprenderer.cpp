@@ -504,7 +504,6 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         mRenderContext.painter()->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
       }
 
-
       if ( !ml->draw( mRenderContext ) )
       {
         emit drawError( ml );
