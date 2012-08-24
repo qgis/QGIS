@@ -265,6 +265,7 @@ class GrassUtils:
                     pass
             else:
                 loglines.append(line)
+                progress.setConsoleInfo(line)
         if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         shutil.rmtree(GrassUtils.grassMapsetFolder(), True)

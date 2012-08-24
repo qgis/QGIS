@@ -1,6 +1,7 @@
 from sextante.core.SextanteConfig import Setting, SextanteConfig
 import os
 from PyQt4 import QtGui
+from qgis.core import *
 
 class AlgorithmProvider():
     '''this is the base class for algorithms providers.
@@ -67,7 +68,19 @@ class AlgorithmProvider():
         return ["tif"]
 
     def getSupportedOutputVectorLayerExtensions(self):
-        return ["shp"]
+        formats = QgsVectorFileWriter.supportedFiltersAndFormats()
+        extensions = ["shp"]#shp is the default, should be the first
+        for extension in formats.keys():
+            extension = str(extension)
+            extension = extension[extension.find('*.') + 2:]
+            extension = extension[:extension.find(" ")]
+            if extension.lower() != "shp":
+                extensions.append(extension)
+        return extensions
+        #return ["shp"]
 
     def getSupportedOutputTableExtensions(self):
         return ["dbf"]
+
+    def supportsNonFileBasedOutput(self):
+        return False

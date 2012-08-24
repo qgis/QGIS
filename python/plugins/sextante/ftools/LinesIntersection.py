@@ -23,9 +23,6 @@ class LinesIntersection(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/intersections.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(LinesIntersection.OUTPUT)
         layer1 = QGisLayers.getObjectFromUri(self.getParameterValue(LinesIntersection.INPUT1))
         layer2 = QGisLayers.getObjectFromUri(self.getParameterValue(LinesIntersection.INPUT2))
         field1 = self.getParameterValue(LinesIntersection.FIELD1)
@@ -46,11 +43,7 @@ class LinesIntersection(GeoAlgorithm):
         field2.setName(unicode(field2.name()) + "_2")
         fieldList = {0:field1, 1:field2}
         sRs = provider1.crs()
-        check = QFile(output)
-        if check.exists():
-            if not QgsVectorFileWriter.deleteShapeFile(output):
-                raise GeoAlgorithmExecutionException("Could not delete existing output file")
-        writer = QgsVectorFileWriter(output, systemEncoding, fieldList, QGis.WKBPoint, sRs)
+        writer = self.getOutputFromName(LinesIntersection.OUTPUT).getVectorWriter(fieldList, QGis.WKBPoint, sRs)
         #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, QGis.WKBPoint, sRs)
         inFeat = QgsFeature()
         inFeatB = QgsFeature()

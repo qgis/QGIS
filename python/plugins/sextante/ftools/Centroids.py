@@ -28,14 +28,9 @@ class Centroids(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(Centroids.INPUT_LAYER))
 
-        outFileName = self.getOutputValue(Centroids.OUTPUT_LAYER)
-
         provider = layer.dataProvider()
 
-        settings = QSettings()
-        encoding = settings.value( "/UI/encoding", "System" ).toString()
-
-        writer = QgsVectorFileWriter(outFileName, encoding, provider.fields(),
+        writer = self.getOutputFromName(Centroids.OUTPUT_LAYER).getVectorWriter(provider.fields(),
                                      QGis.WKBPoint, provider.crs())
 
         allAttrs = provider.attributeIndexes()

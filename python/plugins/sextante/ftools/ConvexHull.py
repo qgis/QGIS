@@ -27,9 +27,6 @@ class ConvexHull(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/convex_hull.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(ConvexHull.OUTPUT)
         useSelection = self.getParameterValue(ConvexHull.USE_SELECTED)
         useField = (self.getParameterValue(ConvexHull.METHOD) == 1)
         field = self.getParameterValue(ConvexHull.FIELD)
@@ -39,19 +36,22 @@ class ConvexHull(GeoAlgorithm):
         vproviderA = vlayerA.dataProvider()
         allAttrsA = vproviderA.attributeIndexes()
         vproviderA.select(allAttrsA)
-        fields = vproviderA.fields()
-        writer = QgsVectorFileWriter(output, systemEncoding, fields, QGis.WKBPolygon, vproviderA.crs() )
+        fields = { 0 : QgsField("ID", QVariant.Int),
+                    1 : QgsField("Area",  QVariant.Double),
+                    2 : QgsField("Perim", QVariant.Double) }
+        writer = self.getOutputFromName(ConvexHull.OUTPUT).getVectorWriter(fields, QGis.WKBPolygon, vproviderA.crs())
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         nElement = 0
+        index = vproviderA.fieldNameIndex(field)
         # there is selection in input layer
         if useSelection:
           nFeat = vlayerA.selectedFeatureCount()
           selectionA = vlayerA.selectedFeatures()
           if useField:
-            unique = ftools_utils.getUniqueValues( vproviderA, field )
+            unique = ftools_utils.getUniqueValues( vproviderA, index )
             nFeat = nFeat * len( unique )
             for i in unique:
               hull = []
@@ -59,7 +59,7 @@ class ConvexHull(GeoAlgorithm):
               outID = 0
               for inFeat in selectionA:
                 atMap = inFeat.attributeMap()
-                idVar = atMap[ self.myParam ]
+                idVar = atMap[ index ]
                 if idVar.toString().trimmed() == i.toString().trimmed():
                   if first:
                     outID = idVar
@@ -102,7 +102,7 @@ class ConvexHull(GeoAlgorithm):
           rect = vlayerA.extent()
           nFeat = vproviderA.featureCount()
           if useField:
-            unique = ftools_utils.getUniqueValues( vproviderA, self.myParam )
+            unique = ftools_utils.getUniqueValues( vproviderA, index )
             nFeat = nFeat * len( unique )
             for i in unique:
               hull = []
@@ -112,7 +112,7 @@ class ConvexHull(GeoAlgorithm):
               #vproviderA.rewind()
               while vproviderA.nextFeature( inFeat ):
                 atMap = inFeat.attributeMap()
-                idVar = atMap[ self.myParam ]
+                idVar = atMap[ index ]
                 if idVar.toString().trimmed() == i.toString().trimmed():
                   if first:
                     outID = idVar

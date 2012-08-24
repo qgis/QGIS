@@ -274,6 +274,7 @@ class GrassAlgorithm(GeoAlgorithm):
         loglines = []
         loglines.append("GRASS execution commands")
         for line in commands:
+            progress.setCommand(line)
             loglines.append(line)
         if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_COMMANDS):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)

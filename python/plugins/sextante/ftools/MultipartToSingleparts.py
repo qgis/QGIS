@@ -18,17 +18,13 @@ class MultipartToSingleparts(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/multi_to_single.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
-        output = self.getOutputValue(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         geomType = self.multiToSingleGeom(vprovider.geometryType())
-        writer = QgsVectorFileWriter( output, systemEncoding,
-            fields, geomType, vprovider.crs() )
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, geomType, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

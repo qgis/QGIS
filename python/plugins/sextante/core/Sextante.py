@@ -287,24 +287,21 @@ class Sextante:
 
         msg = alg.checkParameterValuesBeforeExecuting()
         if msg:
-            try:
-                QMessageBox.critical(None, "Unable to execute algorithm", msg)
-                return
-            except:
                 print ("Unable to execute algorithm\n" + msg)
                 return
 
         SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS) and onFinish:
+        if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             algEx = AlgorithmExecutor(alg)
             progress = QProgressDialog()
             progress.setWindowTitle(alg.name)
             progress.setLabelText("Executing %s..." % alg.name)
             def finish():
                 QApplication.restoreOverrideCursor()
-                onFinish(alg)
+                if onFinish is not None:
+                    onFinish(alg)
                 progress.close()
             def error(msg):
                 QApplication.restoreOverrideCursor()
@@ -323,8 +320,8 @@ class Sextante:
             algEx.start()
             algEx.wait()
         else:
-            UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
-            if onFinish:
+            ret = UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress())
+            if onFinish is not None and ret:
                 onFinish(alg)
             QApplication.restoreOverrideCursor()
         return alg

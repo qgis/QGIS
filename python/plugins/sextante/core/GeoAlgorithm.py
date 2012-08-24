@@ -4,6 +4,8 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from PyQt4 import QtGui
+from PyQt4.QtCore import *
+from qgis.core import *
 import os.path
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
@@ -117,20 +119,27 @@ class GeoAlgorithm:
         except GeoAlgorithmExecutionException, gaee:
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, gaee.msg)
             raise gaee
-        except Exception, e:
+        except:
             #if something goes wrong and is not caught in the algorithm,
             #we catch it here and wrap it
-            lines = []
-            lines.append(str(e))
-            lines.append(traceback.format_exc().replace("\n", "|"))
+            lines = ["Uncaught error while executing algorithm"]
+            errstring = traceback.format_exc()
+            newline = errstring.find("\n")
+            if newline != -1:
+                lines.append(errstring[:newline])
+            else:
+                lines.append(errstring)
+            lines.append(errstring.replace("\n", "|"))
             SextanteLog.addToLog(SextanteLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(str(e))
+            raise GeoAlgorithmExecutionException(errstring)
 
     def checkOutputFileExtensions(self):
         '''Checks if the values of outputs are correct and have one of the supported output extensions.
         If not, it adds the first one of the supported extensions, which is assumed to be the default one'''
         for out in self.outputs:
             if (not out.hidden) and out.value != None:
+                if not os.path.isabs(out.value):
+                    continue
                 if isinstance(out, OutputRaster):
                     exts = self.provider.getSupportedOutputRasterLayerExtensions()
                 elif isinstance(out, OutputVector):
@@ -263,3 +272,5 @@ class GeoAlgorithm:
                 s+=out.getValueAsCommandLineParameter() + ","
         s= s[:-1] + ")"
         return s
+
+

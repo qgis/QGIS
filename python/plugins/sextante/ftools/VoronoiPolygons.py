@@ -15,14 +15,11 @@ class VoronoiPolygons(GeoAlgorithm):
     OUTPUT = "OUTPUT"
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(VoronoiPolygons.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(VoronoiPolygons.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
-        writer = QgsVectorFileWriter( output, systemEncoding, vprovider.fields(), QGis.WKBPolygon, vprovider.crs() )
+        writer = self.getOutputFromName(VoronoiPolygons.OUTPUT).getVectorWriter(vprovider.fields(), QGis.WKBPolygon, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         extent = vlayer.extent()

@@ -18,28 +18,22 @@ class PolygonsToLines(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/to_lines.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(PolygonsToLines.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(PolygonsToLines.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
-        writer = QgsVectorFileWriter( output, systemEncoding,fields, QGis.WKBLineString, vprovider.crs() )
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields, QGis.WKBLineString, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        #self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
-        #self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         while vprovider.nextFeature(inFeat):
           multi = False
           nElement += 1
           progress.setPercentage(int(nElement/nFeat * 100))
-          #self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
           inGeom = inFeat.geometry()
           if inGeom.isMultipart():
             multi = True

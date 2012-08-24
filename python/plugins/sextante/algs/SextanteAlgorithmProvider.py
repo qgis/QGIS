@@ -6,13 +6,14 @@ from sextante.algs.FieldsCalculator import FieldsCalculator
 from sextante.algs.SaveSelectedFeatures import SaveSelectedFeatures
 from sextante.algs.Explode import Explode
 from sextante.algs.AutoincrementalField import AutoincrementalField
+from sextante.algs.FieldPyculator import FieldsPyculator
 
 class SextanteAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(),
-                        AutoincrementalField(), Explode()]
+                        AutoincrementalField(), Explode(), FieldsPyculator()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
@@ -33,3 +34,6 @@ class SextanteAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         self.algs = self.alglist
+
+    def supportsNonFileBasedOutput(self):
+        return True

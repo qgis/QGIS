@@ -79,6 +79,7 @@ class SagaUtils:
                 line = line.strip()
                 if line!="/" and line!="-" and line !="\\" and line!="|":
                     loglines.append(line)
+                    progress.setConsoleInfo(line)
         if SextanteConfig.getSetting(SagaUtils.SAGA_LOG_CONSOLE):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 

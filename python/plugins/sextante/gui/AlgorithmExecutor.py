@@ -4,13 +4,18 @@ from qgis.core import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
+import sys
 
 class AlgorithmExecutor(QThread):
     percentageChanged = pyqtSignal(int)
     textChanged = pyqtSignal(QString)
     error = pyqtSignal(str)
+    internalError = pyqtSignal(BaseException)
     iterated = pyqtSignal(int)
     infoSet = pyqtSignal(str)
+    commandSet = pyqtSignal(str)
+    debugInfoSet = pyqtSignal(str)
+    consoleInfoSet = pyqtSignal(str)
     #started & finished inherited from QThread
 
     def __init__(self, alg, iterParam = None, parent = None):
@@ -27,6 +32,12 @@ class AlgorithmExecutor(QThread):
                 self.algorithmExecutor.percentageChanged.emit(p)
             def setInfo(self, info):
                 self.algorithmExecutor.infoSet.emit(info)
+            def setCommand(self, cmd):
+                self.algorithmExecutor.commandSet.emit(cmd)
+            def setDebugInfo(self, info):
+                self.algorithmExecutor.debugInfoSet.emit(info)
+            def setConsoleInfo(self, info):
+                self.algorithmExecutor.consoleInfoSet.emit(info)
         self.progress = Progress(self)
         if self.parameterToIterate:
             self.run = self.runalgIterating
@@ -49,19 +60,24 @@ class AlgorithmExecutor(QThread):
                 del writer
         else:
             self.run = self.runalg
+        self.internalError.connect(self.raiseInternalError)
+
+    def raiseInternalError(self, error):
+        raise error
 
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
-        except GeoAlgorithmExecutionException,e :
+        except GeoAlgorithmExecutionException, e :
             self.error.emit(e.msg)
-        except BaseException,e:
-            self.error.emit(str(e))
-            print str(e)
+        except BaseException, e:
+            self.internalError.emit(e)
         # catch *all* errors, because QGIS tries to handle them in the GUI, which is fatal, this
         # being a separate thread.
         except:
-            print "Error executing " + str(self)
+            msg = "Error executing " + str(self.alg.name) + "\n" + sys.exc_info()[0]
+            print msg
+            self.internalError.emit(msg)
 
     def runalgIterating(self):
         try:

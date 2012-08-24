@@ -47,7 +47,7 @@ class RUtils:
 
 
     @staticmethod
-    def executeRAlgorithm(alg):
+    def executeRAlgorithm(alg, progress):
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
@@ -64,6 +64,8 @@ class RUtils:
         loglines = []
         loglines.append("R execution console output")
         loglines += RUtils.allConsoleResults
+        for line in loglines:
+            progress.setConsoleInfo(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
     @staticmethod

@@ -21,27 +21,22 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/single_to_multi.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SinglePartsToMultiparts.INPUT))
-        output = self.getOutputValue(SinglePartsToMultiparts.OUTPUT)
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         geomType = self.singleToMultiGeom(vprovider.geometryType())
-        writer = QgsVectorFileWriter( output, systemEncoding,
-            fields, geomType, vprovider.crs() )
+        writer = self.getOutputFromName(SinglePartsToMultiparts.OUTPUT).getVectorWriter(fields, geomType, vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
-        index = int(self.getParameterValue(SinglePartsToMultiparts.FIELD))
+        field = self.getParameterValue(SinglePartsToMultiparts.FIELD)
+        index = vprovider.fieldNameIndex(field)
         unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
         nFeat = vprovider.featureCount() * len( unique )
         nElement = 0
-        #self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-        #        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         if not len( unique ) == vlayer.featureCount():
           for i in unique:
             vprovider.rewind()
@@ -60,7 +55,6 @@ class SinglePartsToMultiparts(GeoAlgorithm):
                 feature_list = self.extractAsMulti( inGeom )
                 multi_feature.extend( feature_list )
               nElement += 1
-              #self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
             outFeat.setAttributeMap( atts )
             outGeom = QgsGeometry( self.convertGeometry(multi_feature, vType) )
             outFeat.setGeometry(outGeom)
@@ -69,8 +63,26 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         else:
           raise GeoAlgorithmExecutionException("Invalid unique ID Field")
 
+    def extractAsMulti( self, geom ):
+        temp_geom = []
+        if geom.type() == 0:
+          if geom.isMultipart():
+            return geom.asMultiPoint()
+          else:
+            return [ geom.asPoint() ]
+        elif geom.type() == 1:
+          if geom.isMultipart():
+            return geom.asMultiPolyline()
+          else:
+            return [ geom.asPolyline() ]
+        else:
+          if geom.isMultipart():
+            return geom.asMultiPolygon()
+          else:
+            return [ geom.asPolygon() ]
+
     def singleToMultiGeom(self, wkbType):
-      try:
+        try:
           if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
                          QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
               return QGis.WKBMultiPoint
@@ -82,8 +94,17 @@ class SinglePartsToMultiparts(GeoAlgorithm):
               return QGis.WKBMultiPolygon
           else:
               return QGis.WKBUnknown
-      except Exception, err:
+        except Exception, err:
           print str(err)
+
+    def convertGeometry( self, geom_list, vType ):
+        if vType == 0:
+          return QgsGeometry().fromMultiPoint( geom_list )
+        elif vType == 1:
+          return QgsGeometry().fromMultiPolyline( geom_list )
+        else:
+          return QgsGeometry().fromMultiPolygon( geom_list )
+
 
     def defineCharacteristics(self):
         self.name = "Singleparts to multipart"

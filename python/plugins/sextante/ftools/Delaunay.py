@@ -19,9 +19,6 @@ class Delaunay(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/delaunay.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(Delaunay.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(Delaunay.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
@@ -30,7 +27,7 @@ class Delaunay(GeoAlgorithm):
                   0 : QgsField( "POINTA", QVariant.Double ),
                   1 : QgsField( "POINTB", QVariant.Double ),
                   2 : QgsField( "POINTC", QVariant.Double ) }
-        writer = QgsVectorFileWriter( output, systemEncoding, fields, QGis.WKBPolygon, vprovider.crs() )
+        writer = self.getOutputFromName(Delaunay.OUTPUT).getVectorWriter(fields, QGis.WKBPolygon, vprovider.crs() )
         inFeat = QgsFeature()
         c = voronoi.Context()
         pts = []

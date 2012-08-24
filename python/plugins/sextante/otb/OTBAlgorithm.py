@@ -142,6 +142,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     "-sizex",    str(sizeX),
                     "-sizey",    str(sizeY)]
             SextanteLog.addToLog(SextanteLog.LOG_INFO, helperCommands)
+            progress.setCommand(helperCommands)
             OTBUtils.executeOtb(helperCommands, progress)
 
         if self.roiRasters:
@@ -154,6 +155,7 @@ class OTBAlgorithm(GeoAlgorithm):
                         "-io.out",          roiFile,
                         "-elev.dem.path",   OTBUtils.otbSRTMPath()]
                 SextanteLog.addToLog(SextanteLog.LOG_INFO, helperCommands)
+                progress.setCommand(helperCommands)
                 OTBUtils.executeOtb(helperCommands, progress)
 
         loglines = []
@@ -161,6 +163,6 @@ class OTBAlgorithm(GeoAlgorithm):
         for line in commands:
             loglines.append(line)
 
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        progress.setCommand(loglines)
         OTBUtils.executeOtb(commands, progress)
-
-

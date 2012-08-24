@@ -65,6 +65,7 @@ class OTBUtils:
                     progress.setPercentage(perc)
             else:
                 loglines.append(line)
+                progress.setConsoleInfo(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 

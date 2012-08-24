@@ -2,10 +2,11 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterString(Parameter):
 
-    def __init__(self, name="", description="", default=""):
+    def __init__(self, name="", description="", default="", multiline = False):
         Parameter.__init__(self, name, description)
         self.default = default
         self.value = None
+        self.multiline = multiline
 
     def setValue(self, obj):
         if obj is None:

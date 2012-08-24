@@ -50,7 +50,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         #the first thing to do is retrieve the values of the parameters
         #entered by the user
         inputFilename = self.getParameterValue(self.INPUT_LAYER)
-        output = self.getOutputValue(self.OUTPUT_LAYER)
+        output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         #input layers values are always a string with its location.
         #That string can be converted into a QGIS object (a QgsVectorLayer in this case))
@@ -60,12 +60,10 @@ class SaveSelectedFeatures(GeoAlgorithm):
         #And now we can process
 
         #First we create the output layer.
-        #The output value entered by the user is a string containing a filename,
-        #so we can use it directly
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
+        #To do so, we call the getVectorWriter method in the Output object.
+        #That will give as a SextanteVectorWriter, that we can later use to add features.
         provider = vectorLayer.dataProvider()
-        writer = QgsVectorFileWriter( output, systemEncoding, provider.fields(), provider.geometryType(), provider.crs() )
+        writer = output.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs() )
 
         #Now we take the selected features and add them to the output layer
         selection = vectorLayer.selectedFeatures()

@@ -25,13 +25,17 @@ class FixedDistanceBuffer(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/buffer.png")
 
     def processAlgorithm(self, progress):
-        output = self.getOutputValue(FixedDistanceBuffer.OUTPUT)
+        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(FixedDistanceBuffer.INPUT))
+        vprovider = vlayer.dataProvider()
+        allAttrs = vprovider.attributeIndexes()
+        vprovider.select(allAttrs)
+        writer = self.getOutputFromName(FixedDistanceBuffer.OUTPUT).getVectorWriter(vprovider.fields(), QGis.WKBPolygon, vprovider.crs() )
         useSelection = self.getParameterValue(FixedDistanceBuffer.USE_SELECTED)
         distance = self.getParameterValue(FixedDistanceBuffer.DISTANCE)
         dissolve = self.getParameterValue(FixedDistanceBuffer.DISSOLVE)
         segments = int(self.getParameterValue(FixedDistanceBuffer.SEGMENTS))
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(FixedDistanceBuffer.INPUT))
-        buff.buffering(progress, output, distance, None, useSelection, False, layer, dissolve, segments)
+        buff.buffering(progress, writer, distance, None, useSelection, False, layer, dissolve, segments)
 
     def defineCharacteristics(self):
         self.name = "Fixed distance buffer"

@@ -177,8 +177,10 @@ class RAlgorithm(GeoAlgorithm):
         loglines = []
         loglines.append("R execution commands")
         loglines += self.getFullSetOfRCommands()
+        for line in loglines:
+            progress.setCommand(line)
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
-        RUtils.executeRAlgorithm(self)
+        RUtils.executeRAlgorithm(self, progress)
         if self.showPlots:
             htmlfilename = self.getOutputValue(RAlgorithm.RPLOTS)
             f = open(htmlfilename, "w")
@@ -225,6 +227,13 @@ class RAlgorithm(GeoAlgorithm):
 
     def getImportCommands(self):
         commands = []
+        # if rgdal is not available, try to install it
+        # just use US mirror
+        commands.append('options("repos"="http://cran.us.r-project.org")')
+        rLibDir = "%s/rlibs" % SextanteUtils.userFolder()
+        if not os.path.isdir(rLibDir): os.mkdir(rLibDir)
+        commands.append(
+            'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
         for param in self.parameters:
             if isinstance(param, ParameterRaster):

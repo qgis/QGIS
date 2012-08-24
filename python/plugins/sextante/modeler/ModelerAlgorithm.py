@@ -17,6 +17,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.gui.Help2Html import Help2Html
 import codecs
+import time
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -370,18 +371,30 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if canExecute:
                         try:
                             alg = alg.getCopy()
+                            progress.setDebugInfo("Prepare algorithm %i: %s" % (iAlg, alg.name))
                             self.prepareAlgorithm(alg, iAlg)
                             progress.setText("Running " + alg.name + " [" + str(iAlg+1) + "/"
                                              + str(len(self.algs) - len(self.deactivated)) +"]")
                             outputs = {}
+                            progress.setDebugInfo("Parameters: " +
+                                ', '.join([str(p).strip() + "=" + str(p.value) for p in alg.parameters]))
+                            t0 = time.time()
                             alg.execute(progress)
+                            dt = time.time() - t0
                             for out in alg.outputs:
                                 outputs[out.name] = out.value
+                            progress.setDebugInfo("Outputs: " +
+                                ', '.join([str(out).strip() + "=" + str(outputs[out.name]) for out in alg.outputs]))
                             self.producedOutputs[iAlg] = outputs
                             executed.append(iAlg)
+                            progress.setDebugInfo("OK. Execution took %0.3f ms (%i outputs)." % (dt, len(outputs)))
                         except GeoAlgorithmExecutionException, e :
+                            progress.setDebugInfo("Failed")
                             raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
+                else:
+                    progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
                 iAlg += 1
+        progress.setDebugInfo("Model processed ok. Executed %i algorithms total" % iAlg)
 
     def getOutputType(self, i, outname):
         for out in self.algs[i].outputs:

@@ -24,9 +24,6 @@ class Dissolve(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/icons/dissolve.png")
 
     def processAlgorithm(self, progress):
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(Dissolve.OUTPUT)
         useSelection = self.getParameterValue(Dissolve.USE_SELECTED)
         useField = not self.getParameterValue(Dissolve.USE_SELECTED)
         fieldname = self.getParameterValue(Dissolve.FIELD)
@@ -37,9 +34,7 @@ class Dissolve(GeoAlgorithm):
         vproviderA = vlayerA.dataProvider()
         allAttrsA = vproviderA.attributeIndexes()
         fields = vproviderA.fields()
-        writer = QgsVectorFileWriter( output, systemEncoding, fields, vproviderA.geometryType(), vproviderA.crs() )
-        if writer.hasError():
-          raise GeoAlgorithmExecutionException("Could not create output file");
+        writer = self.getOutputFromName(Dissolve.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         vproviderA.rewind()

@@ -24,13 +24,10 @@ class SimplifyGeometries(GeoAlgorithm):
     def processAlgorithm(self, progress):
         self.processedFeatures = 0
         self.progress = progress
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(SimplifyGeometries.OUTPUT)
         tolerance =self.getParameterValue(SimplifyGeometries.TOLERANCE)
         useSelection = self.getParameterValue(SimplifyGeometries.USE_SELECTION)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(SimplifyGeometries.INPUT))
-        self.generalize(vlayer, useSelection, tolerance, output, systemEncoding)
+        self.generalize(vlayer, useSelection, tolerance)
 
 
     def defineCharacteristics(self):
@@ -56,16 +53,12 @@ class SimplifyGeometries(GeoAlgorithm):
         else:
             return None
 
-    def generalize( self, inputLayer, useSelection, tolerance, shapePath, shapeEncoding ):
+    def generalize( self, inputLayer, useSelection, tolerance):
         self.inputLayer = inputLayer
         self.useSelection = useSelection
         self.tolerance = tolerance
-        self.outputFileName = shapePath
-        self.outputEncoding = shapeEncoding
-        self.shapeFileWriter = None
         self.pointsBefore = 0
         self.pointsAfter = 0
-        shapeFileWriter = None
         vProvider = self.inputLayer.dataProvider()
         allAttrs = vProvider.attributeIndexes()
         vProvider.select( allAttrs )
@@ -74,7 +67,7 @@ class SimplifyGeometries(GeoAlgorithm):
         wkbType = self.inputLayer.wkbType()
         if not crs.isValid():
             crs = None
-        shapeFileWriter = QgsVectorFileWriter( self.outputFileName, self.outputEncoding, shapeFields, wkbType, crs )
+        shapeFileWriter = self.getOutputFromName(SimplifyGeometries.OUTPUT).getVectorWriter(shapeFields, wkbType, crs )
         featureId = 0
         if self.useSelection:
             selection = self.inputLayer.selectedFeatures()

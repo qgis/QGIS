@@ -19,16 +19,14 @@ class AutoincrementalField(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         field_index = self.getParameterValue(self.FIELD)
-        settings = QSettings()
-        systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = self.getOutputValue(self.OUTPUT)
+        output = self.getOutputFromName(self.OUTPUT)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
         allAttrs = vprovider.attributeIndexes()
         vprovider.select( allAttrs )
         fields = vprovider.fields()
         fields[len(fields)] = QgsField("NUM_FIELD", QVariant.Int)
-        writer = QgsVectorFileWriter( output, systemEncoding,fields, vprovider.geometryType(), vprovider.crs() )
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

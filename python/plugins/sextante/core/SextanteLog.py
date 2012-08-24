@@ -1,6 +1,7 @@
 import datetime
 import os
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.core.SextanteConfig import SextanteConfig
 import codecs
 from PyQt4 import QtGui
 class SextanteLog():
@@ -47,6 +48,8 @@ class SextanteLog():
                algname = algname[:algname.index("\"")]
                if algname not in SextanteLog.recentAlgs:
                    SextanteLog.recentAlgs.append(algname)
+                   recentAlgsString = ';'.join(SextanteLog.recentAlgs[-6:])
+                   SextanteConfig.setSettingValue(SextanteConfig.RECENT_ALGORITHMS, recentAlgsString)
         except:
             pass
 
@@ -86,6 +89,11 @@ class SextanteLog():
 
     @staticmethod
     def getRecentAlgorithms():
+        recentAlgsSetting = SextanteConfig.getSetting(SextanteConfig.RECENT_ALGORITHMS)
+        try:
+            SextanteLog.recentAlgs = recentAlgsSetting.split(';')
+        except:
+            pass
         return SextanteLog.recentAlgs
 
 
