@@ -17,14 +17,14 @@
 // #include <QStylePainter>
 
 GroupBox::GroupBox( QWidget *parent )
-  : QGroupBox( parent ), m_collapsed( false ) 
+    : QGroupBox( parent ), m_collapsed( false )
 {
-  connect( this, SIGNAL( toggled ( bool ) ), this, SLOT( setToggled( bool ) ) );
+  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( setToggled( bool ) ) );
   //setToggled( isChecked() );
 }
 
 GroupBox::GroupBox( const QString &title, QWidget *parent )
-  : QGroupBox(title, parent ), m_collapsed( false ) 
+    : QGroupBox( title, parent ), m_collapsed( false )
 {}
 
 bool GroupBox::isCollapsed() { return m_collapsed; }
@@ -32,28 +32,28 @@ bool GroupBox::isCollapsed() { return m_collapsed; }
 // void GroupBox::mousePressEvent( QMouseEvent *e )
 // {
 //   QgsDebugMsg("press event");
-// 	if( e->button() == Qt::LeftButton )
-// 	{
+//  if( e->button() == Qt::LeftButton )
+//  {
 //   QgsDebugMsg("left but");
-// 		QStyleOptionGroupBox option;
-// 		initStyleOption( &option );
-// 		QRect buttonArea( 0, 0, 16, 16 );
-// 		buttonArea.moveTopRight( option.rect.adjusted( 0, 0, -10, 0 
+//    QStyleOptionGroupBox option;
+//    initStyleOption( &option );
+//    QRect buttonArea( 0, 0, 16, 16 );
+//    buttonArea.moveTopRight( option.rect.adjusted( 0, 0, -10, 0
 // ).topRight() );
-// 		if( buttonArea.contains( e->pos() ) )
-// 		{
-// 			clickPos = e->pos();
-// 			return;
-// 		}
-// 	}
-// 	QGroupBox::mousePressEvent( e );
+//    if( buttonArea.contains( e->pos() ) )
+//    {
+//      clickPos = e->pos();
+//      return;
+//    }
+//  }
+//  QGroupBox::mousePressEvent( e );
 // }
 
 // void GroupBox::mouseReleaseEvent( QMouseEvent *e )
 // {
 //   QgsDebugMsg("release");
-// 	if( e->button() == Qt::LeftButton && clickPos == e->pos() )
-// 		setCollapse( !isCollapsed() );
+//  if( e->button() == Qt::LeftButton && clickPos == e->pos() )
+//    setCollapse( !isCollapsed() );
 // }
 
 // void GroupBox::paintEvent( QPaintEvent * )
@@ -61,15 +61,15 @@ bool GroupBox::isCollapsed() { return m_collapsed; }
 //   QgsDebugMsg("paint event");
 
 //      QStylePainter paint( this );
-// 	QStyleOptionGroupBox option;
-// 	initStyleOption( &option );
-// 	paint.drawComplexControl( QStyle::CC_GroupBox, option );
-// 	paint.drawItemPixmap(
-// 		option.rect.adjusted( 0, 0, -10, 0 ),
-// 		Qt::AlignTop | Qt::AlignRight,
-// 		QPixmap( m_collapsed ?
-// 			":/images/images/navigate_down2_16x16.png" :
-// 			":/images/images/navigate_up2_16x16.png" ) );
+//  QStyleOptionGroupBox option;
+//  initStyleOption( &option );
+//  paint.drawComplexControl( QStyle::CC_GroupBox, option );
+//  paint.drawItemPixmap(
+//    option.rect.adjusted( 0, 0, -10, 0 ),
+//    Qt::AlignTop | Qt::AlignRight,
+//    QPixmap( m_collapsed ?
+//      ":/images/images/navigate_down2_16x16.png" :
+//      ":/images/images/navigate_up2_16x16.png" ) );
 // }
 
 void GroupBox::showEvent( QShowEvent * event )
@@ -86,13 +86,13 @@ void GroupBox::setCollapsed( bool collapse )
     return;
   // QgsDebugMsg(QString("%1 setcollapse %2").arg(objectName()).arg(collapse));
 
-  // minimize layout margins, restore later 
+  // minimize layout margins, restore later
   if ( collapse )
   {
     if ( layout() )
-    {      
+    {
       margins = layout()->contentsMargins();
-      layout()->setContentsMargins(1,1,1,1);
+      layout()->setContentsMargins( 1, 1, 1, 1 );
     }
   }
   else
@@ -103,9 +103,9 @@ void GroupBox::setCollapsed( bool collapse )
     }
   }
   m_collapsed = collapse;
-  foreach( QWidget *widget, findChildren<QWidget*>() )
+  foreach ( QWidget *widget, findChildren<QWidget*>() )
     widget->setHidden( collapse );
-  
+
   if ( m_collapsed )
     emit collapsed( this );
   else
@@ -193,7 +193,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
 
   // this should scroll down to make widget visible, but it's not happening
   // (at least part of it is visible)...
-  connect( mCreateOptionsGroupBox, SIGNAL( expanded( QWidget* ) ), 
+  connect( mCreateOptionsGroupBox, SIGNAL( expanded( QWidget* ) ),
            this, SLOT( groupBoxExpanded( QWidget* ) ) );
 
 }
@@ -690,6 +690,8 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
 
 void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString & text )
 {
+  Q_UNUSED( text );
+
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( sender() );
   if ( !lineEdit ) return;
   int row = -1;
