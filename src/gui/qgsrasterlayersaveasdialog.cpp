@@ -67,12 +67,14 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
       mMaximumSizeYLineEdit->setText( QString::number( 2000 ) );
     }
 
-    mOptionsWidget->setProvider( mDataProvider->name() );
+    mCreateOptionsWidget->setProvider( mDataProvider->name() );
     if ( mDataProvider->name() == "gdal" )
     {
-      mOptionsWidget->setFormat( myFormats[0] );
+      mCreateOptionsWidget->setFormat( myFormats[0] );
     }
-    mOptionsWidget->update();
+    mCreateOptionsWidget->update();
+
+    mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
   }
   updateCrsGroup();
@@ -82,6 +84,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterDataProvider* s
   {
     okButton->setEnabled( false );
   }
+
 
   // this should scroll down to make widget visible, but it's not happening
   // (at least part of it is visible)...
@@ -155,8 +158,8 @@ void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const Q
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == "gdal" )
   {
-    mOptionsWidget->setFormat( text );
-    mOptionsWidget->update();
+    mCreateOptionsWidget->setFormat( text );
+    mCreateOptionsWidget->update();
   }
 }
 
@@ -207,7 +210,7 @@ QString QgsRasterLayerSaveAsDialog::outputFormat() const
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 {
-  return mOptionsWidget ? mOptionsWidget->options() : QStringList();
+  return mCreateOptionsWidget ? mCreateOptionsWidget->options() : QStringList();
 }
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const

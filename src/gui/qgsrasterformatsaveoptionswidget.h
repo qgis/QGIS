@@ -35,7 +35,8 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
       Default, // everything except profile buttons (save as dlg)
       Full, // everything (options dlg)
       Table, // just table
-      LineEdit // just the line edit
+      LineEdit, // just the line edit
+      ProfileLineEdit // Profile + LineEdit
     };
 
     QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff",
@@ -53,6 +54,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void apply();
     void helpOptions();
     bool validateOptions( bool gui = true );
+    void updateProfiles();
 
   private slots:
 
@@ -82,7 +84,6 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void setCreateOptions( QString profile, QString options );
     void setCreateOptions( QString profile, QStringList list );
     QStringList profiles() const;
-    void updateProfiles();
     bool eventFilter( QObject *obj, QEvent *event );
 
 };

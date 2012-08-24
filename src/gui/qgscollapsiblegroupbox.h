@@ -52,6 +52,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
   private:
     bool mCollapsed;
     QMargins mMargins;
+    QList< QWidget* > mHiddenWidgets;
 };
 
 #endif

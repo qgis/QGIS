@@ -83,6 +83,7 @@ qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrasterlayersaveasdialog.cpp
 qgsrasterformatsaveoptionswidget.cpp
+qgsrasterpyramidsoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
 qgstextannotationitem.cpp
@@ -169,6 +170,7 @@ qgsprojectionselector.h
 qgsquickprint.h
 qgsrasterlayersaveasdialog.h
 qgsrasterformatsaveoptionswidget.h
+qgsrasterpyramidsoptionswidget.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h

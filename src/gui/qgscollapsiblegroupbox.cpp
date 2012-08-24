@@ -76,6 +76,8 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   if ( ! isVisible() )
     return;
 
+  mCollapsed = collapse;
+
   // minimize layout margins and save for subsequent restore
   if ( collapse )
   {
@@ -93,9 +95,29 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
     }
   }
 
-  mCollapsed = collapse;
+  // if we are collapsing, save hidden widgets in a list
+  if ( collapse )
+  {
+    mHiddenWidgets.clear();
+    foreach ( QWidget *widget, findChildren<QWidget*>() )
+    {
+      if ( widget->isHidden() )
+        mHiddenWidgets << widget;
+    }
+  }
+
+  // show/hide widgets
   foreach ( QWidget *widget, findChildren<QWidget*>() )
     widget->setHidden( collapse );
+
+  // if we are expanding, re-hide saved hidden widgets
+  if ( ! collapse )
+  {
+    foreach ( QWidget *widget, mHiddenWidgets )
+    {
+      widget->setHidden( true );
+    }
+  }
 
   if ( mCollapsed )
     emit collapsed( this );
