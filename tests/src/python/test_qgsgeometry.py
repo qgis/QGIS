@@ -1,6 +1,8 @@
 import unittest
 
 from qgis.core import (QgsGeometry,
+                       QgsVectorLayer,
+                       QgsFeature,
                        QgsPoint,
                        QGis)
 
