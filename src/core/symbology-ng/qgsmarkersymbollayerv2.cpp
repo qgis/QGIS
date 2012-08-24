@@ -513,6 +513,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &elem
   //Does SLD support marker symbol fill styles?  If so then we'll need more work to import them.
   //But I guess they wouldn't match the QT fill patterns anyway.
   QgsMarkerSymbolLayerV2 *m = new QgsSimpleMarkerSymbolLayerV2( name, color, DEFAULT_SIMPLEMARKER_STYLE, borderColor, size);
+  m->setAngle( angle );
   m->setOffset( offset );
   return m;
 }
