@@ -56,9 +56,9 @@ class CORE_EXPORT QgsCptCityArchive
     QString archiveName() const { return mArchiveName; }
     static void initArchives( bool loadAll = false );
     static void initArchive( QString archiveName, QString archiveBaseDir );
+    static void initDefaultArchive();
     static void clearArchives();
     static QgsCptCityArchive* defaultArchive();
-    static QString defaultArchiveName();
     static QMap< QString, QgsCptCityArchive* > archiveRegistry();
 
     // items

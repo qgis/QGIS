@@ -334,17 +334,20 @@ bool QgsCptCityColorRampV2Dialog::eventFilter( QObject *obj, QEvent *event )
 void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
 {
   // setup archives
-  if ( QgsCptCityArchive::archiveRegistry().isEmpty() )
-  {
-    QgsCptCityArchive::initArchives( true );
-  }
+  // if ( QgsCptCityArchive::archiveRegistry().isEmpty() )
+  // {
+  //   QgsCptCityArchive::initArchives( true );
+  // }
+  // mArchive = QgsCptCityArchive::defaultArchive();
+  // // if empty archive, try loading again - this may happen after installing new package
+  // if ( ! mArchive || mArchive->isEmpty() )
+  // {
+  //   QgsCptCityArchive::initArchives( true );
+  //   mArchive = QgsCptCityArchive::defaultArchive();
+  // }
+
+  QgsCptCityArchive::initDefaultArchive();
   mArchive = QgsCptCityArchive::defaultArchive();
-  // if empty archive, try loading again - this may happen after installing new package
-  if ( ! mArchive || mArchive->isEmpty() )
-  {
-    QgsCptCityArchive::initArchives( true );
-    mArchive = QgsCptCityArchive::defaultArchive();
-  }
 
   // show information on how to install cpt-city files if none are found
   if ( ! mArchive || mArchive->isEmpty() )
@@ -406,28 +409,34 @@ void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
   cboVariantName->setIconSize( QSize( 100, 15 ) );
   lblPreview->installEventFilter( this ); // mouse click on preview label shows svg render
 
-  // populate tree widget - if item not found in selections archive, look for in authors
-  // try to apply selection to view
-  QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
-  if ( modelIndex == QModelIndex() )
+  // look for item, if not found in selections archive, look for in authors
+  // TODO fix when ramp has a variant
+  if ( mRamp->schemeName() != "" )
   {
-    modelIndex = mAuthorsModel->findPath( mRamp->schemeName() );
+    QModelIndex modelIndex = mModel->findPath( mRamp->schemeName() );
+    if ( modelIndex == QModelIndex() )
+    {
+      modelIndex = mAuthorsModel->findPath( mRamp->schemeName() );
+      if ( modelIndex != QModelIndex() )
+      {
+        tabBar->setCurrentIndex( 1 );
+        mModel = mAuthorsModel;
+        mBrowserView->setModel( mModel );
+    }
+    }
     if ( modelIndex != QModelIndex() )
     {
-      tabBar->setCurrentIndex( 1 );
-      mModel = mAuthorsModel;
-      mBrowserView->setModel( mModel );
+      lblSchemeName->setText( mRamp->schemeName() );
+      mBrowserView->setCurrentIndex( modelIndex );
+      mBrowserView->scrollTo( modelIndex, QAbstractItemView::PositionAtCenter );
+      populateVariants( mRamp->variantName() );
+      // updatePreview();
     }
   }
-  if ( modelIndex != QModelIndex() )
-  {
-    lblSchemeName->setText( mRamp->schemeName() );
-    mBrowserView->setCurrentIndex( modelIndex );
-    mBrowserView->scrollTo( modelIndex, QAbstractItemView::PositionAtCenter );
-    populateVariants( mRamp->variantName() );
-    // updatePreview();
-  }
+
   tabBar->blockSignals( false );
+
+  // TODO - remove this when basic archive is complete
   if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
     tabBar->setCurrentIndex( 1 );
 

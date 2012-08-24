@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="test">Test</name>
+  <synopsis>
+    Test test
+  </synopsis>
+  <description>
+    Test test
+  </description>
+  <seealsocollects>
+    <collect dir="cb">Cynthia Brewer</collect>
+    <collect dir="grass">Grass></collect>
+  </seealsocollects>
+  <gradients>
+    <gradient file="BrBG_11" dir="cb/div"/>
+    <gradient file="Blues_06" dir="cb/seq"/>
+    <gradient file="etopo2" dir="grass"/>
+    <gradient file="terrain" dir="grass"/>
+  </gradients>
+</selection>

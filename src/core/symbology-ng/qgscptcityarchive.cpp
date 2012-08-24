@@ -45,10 +45,13 @@ QMap< QString, QMap< QString, QString > > QgsCptCityArchive::mCopyingInfoMap;
 QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
     : mArchiveName( archiveName ), mBaseDir( baseDir )
 {
+  QgsDebugMsg( "archiveName = " + archiveName + " baseDir = " + baseDir );
   // make root items
   QgsCptCityDirectoryItem* dirItem = 0;
   foreach ( QString path, QDir( mBaseDir ).entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name ) )
   {
+    if ( path == "selections" )
+      continue;
     QgsDebugMsg( "path= " + path );
     dirItem = new QgsCptCityDirectoryItem( NULL, QFileInfo( path ).baseName(), path );
     if ( dirItem->isValid() )
@@ -76,7 +79,14 @@ QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
 }
 
 QgsCptCityArchive::~QgsCptCityArchive( )
-{}
+{
+  foreach ( QgsCptCityDataItem* item, mRootItems )
+    delete item;
+  foreach ( QgsCptCityDataItem* item, mSelectionItems )
+    delete item;
+  mRootItems.clear();
+  mSelectionItems.clear();
+}
 
 QString QgsCptCityArchive::baseDir() const
 {
@@ -402,6 +412,19 @@ void QgsCptCityArchive::initArchive( QString archiveName, QString archiveBaseDir
   if ( mArchiveRegistry.contains( archiveName ) )
     delete mArchiveRegistry[ archiveName ];
   mArchiveRegistry[ archiveName ] = archive;
+}
+
+void QgsCptCityArchive::initDefaultArchive()
+{
+  QSettings settings;
+  // use CptCity/baseDir setting if set, default is user dir
+  QString baseDir = settings.value( "CptCity/baseDir",
+                                    QgsApplication::pkgDataPath() + "/resources" ).toString();
+  // sub-dir defaults to
+  QString defArchiveName = settings.value( "CptCity/archiveName", DEFAULT_CPTCITY_ARCHIVE ).toString();
+
+  if ( ! mArchiveRegistry.contains( defArchiveName ) )
+    initArchive( defArchiveName, baseDir + QDir::separator() + defArchiveName );
 }
 
 void QgsCptCityArchive::initArchives( bool loadAll )
@@ -1135,18 +1158,19 @@ void QgsCptCityBrowserModel::addRootItems( )
   {
     mRootItems = mArchive->selectionItems();
   }
+  QgsDebugMsg( QString( "added %1 root items" ).arg( mRootItems.size() ) );
 }
 
 void QgsCptCityBrowserModel::removeRootItems()
 {
-  foreach ( QgsCptCityDataItem* item, mRootItems )
-  {
-    delete item;
-  }
+  // don't remove root items, they belong to the QgsCptCityArchive
+  // foreach ( QgsCptCityDataItem* item, mRootItems )
+  // {
+  //   delete item;
+  // }
 
   mRootItems.clear();
 }
-
 
 Qt::ItemFlags QgsCptCityBrowserModel::flags( const QModelIndex & index ) const
 {
