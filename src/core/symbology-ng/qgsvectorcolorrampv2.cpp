@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorcolorrampv2.h"
-#include "qgscolorrampv2data.h"
+#include "qgscolorbrewerpalette.h"
 #include "qgscptcityarchive.h"
 
 #include "qgssymbollayerv2utils.h"
