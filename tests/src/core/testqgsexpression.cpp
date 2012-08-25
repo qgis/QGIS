@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QString>
 #include <QObject>
+#include <qgsapplication.h>
 //header for class being tested
 #include <qgsexpression.h>
 #include <qgsfeature.h>
@@ -30,6 +31,17 @@ class TestQgsExpression: public QObject
 {
     Q_OBJECT;
   private slots:
+
+    void initTestCase()
+    {
+      //
+      // Runs once before any tests are run
+      //
+      // init QGIS's paths - true means that all path will be inited from prefix
+      QgsApplication::init();
+      QgsApplication::initQgis();
+      QgsApplication::showSettings();
+    }
 
     void parsing_data()
     {
