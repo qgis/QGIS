@@ -336,7 +336,7 @@ float HeatmapGui::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCr
   da.setEllipsoid( layerCrs.ellipsoidAcronym() );
   if ( da.geographic() )
   {
-    da.setProjectionsEnabled( true );
+    da.setEllipsoidalMode( true );
   }
   double unitDistance = da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
   QgsDebugMsg( QString( "Converted %1 meters to %2 mapunits" ).arg( meters ).arg( meters / unitDistance ) );

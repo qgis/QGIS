@@ -307,7 +307,7 @@ float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
   da.setEllipsoid( layerCrs.ellipsoidAcronym() );
   if ( da.geographic() )
   {
-    da.setProjectionsEnabled( true );
+    da.setEllipsoidalMode( true );
   }
   return meters / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
 }

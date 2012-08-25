@@ -41,10 +41,12 @@ class CORE_EXPORT QgsDistanceArea
     ~QgsDistanceArea();
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
-    void setProjectionsEnabled( bool flag );
+    void setEllipsoidalMode( bool flag );
+    Q_DECL_DEPRECATED void setProjectionsEnabled( bool flag ) { setEllipsoidalMode( flag ); };
 
     //! returns projections enabled flag
-    bool hasCrsTransformEnabled() { return mProjectionsEnabled; }
+    bool ellipsoidalEnabled() const { return mEllipsoidalMode; }
+    Q_DECL_DEPRECATED bool hasCrsTransformEnabled() { return mEllipsoidalMode; }
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
@@ -93,6 +95,9 @@ class CORE_EXPORT QgsDistanceArea
 
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
+    //! Helper for conversion between physical units
+    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea );
+
   protected:
     //! measures line distance, line points are extracted from WKB
     unsigned char* measureLine( unsigned char* feature, double* area, bool hasZptr = false );
@@ -134,7 +139,7 @@ class CORE_EXPORT QgsDistanceArea
     QgsCoordinateTransform* mCoordTransform;
 
     //! indicates whether we will transform coordinates
-    bool mProjectionsEnabled;
+    bool mEllipsoidalMode;
 
     //! id of the source spatial reference system
     long mSourceRefSys;

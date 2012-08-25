@@ -20,6 +20,7 @@
 
 #include <QEvent>
 #include <QString>
+#include <QMetaType>
 #include <cfloat>
 #include <cmath>
 #include <qnumeric.h>
@@ -96,6 +97,13 @@ class CORE_EXPORT QGis
       DegreesDecimalMinutes = 2,  // was 5
     };
 
+    // Provides the canonical name of the type value
+    static QString toLiteral( QGis::UnitType unit );
+    // Converts from the canonical name to the type value
+    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
+    // Provides translated version of the type value
+    static QString tr( QGis::UnitType unit );
+
     //! User defined event types
     enum UserEvent
     {
@@ -109,6 +117,11 @@ class CORE_EXPORT QGis
     };
 
     static const double DEFAULT_IDENTIFY_RADIUS;
+
+  private:
+    // String representation of unit types (set in qgis.cpp)
+    static const char *qgisUnitTypes[];
+
 };
 
 // hack to workaround warnings when casting void pointers
