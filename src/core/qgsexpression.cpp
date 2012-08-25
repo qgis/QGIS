@@ -913,7 +913,7 @@ bool QgsExpression::needsGeometry()
 void QgsExpression::initGeomCalculator()
 {
   mCalc = new QgsDistanceArea;
-  mCalc->setProjectionsEnabled( false );
+  mCalc->setEllipsoidalMode( false );
   QSettings settings;
   QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
   mCalc->setEllipsoid( ellipsoid );

@@ -187,7 +187,7 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setProjectionsEnabled( true );
+    da.setEllipsoidalMode( mComposerMap->mapRenderer()->hasCrsTransformEnabled() );
     da.setSourceCrs( mComposerMap->mapRenderer()->destinationCrs().srsid() );
     QSettings s;
     da.setEllipsoid( s.value( "/qgis/measure/ellipsoid", "WGS84" ).toString() );

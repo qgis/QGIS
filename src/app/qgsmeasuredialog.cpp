@@ -59,6 +59,12 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
 
   connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
            this, SLOT( changeProjectionEnabledState() ) );
+  // Update when project wide transformation has changed
+  connect( mTool->canvas()->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ),
+           this, SLOT( changeProjectionEnabledState() ) );
+  // Update when project CRS has changed
+  connect( mTool->canvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( changeProjectionEnabledState() ) );
 
   updateUi();
 }
@@ -118,6 +124,7 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
     convertMeasurement( d, myDisplayUnits, false );
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
+    QgsDebugMsg( QString( "Final result is %1" ).arg( item->text( 0 ) ) );
   }
 }
 
@@ -214,28 +221,49 @@ QString QgsMeasureDialog::formatArea( double area, int decimalPlaces )
 
 void QgsMeasureDialog::updateUi()
 {
+  // Only enable checkbox when project wide transformation is on
+  mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
+
+  configureDistanceArea();
+
   QSettings settings;
+
+  // Set tooltip to indicate how we calculate measurments
+  QGis::UnitType mapUnits = mTool->canvas()->mapUnits();
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+
+  QString toolTip = tr( "The calculations are based on:" );
+  if ( ! mTool->canvas()->hasCrsTransformEnabled() )
+  {
+    toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + " ";
+    toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QGis::tr( mapUnits ) );
+    toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible, as project CRS is undefined." );
+  }
+  else
+  {
+    if ( mDa.ellipsoidalEnabled() )
+    {
+      toolTip += "<br> * " + tr( "Project CRS transformation is turned on and ellipsoidal calculation is selected." ) + " ";
+      toolTip += "<br> * " + tr( "The coordinates are transformed to the chosen ellipsoid (%1), and the result is in meters" ).arg( mDa.ellipsoid() );
+    }
+    else
+    {
+      toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." );
+      toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QGis::tr( mapUnits ) );
+    }
+  }
+
+  if (( mapUnits == QGis::Meters && displayUnits == QGis::Feet ) || ( mapUnits == QGis::Feet && displayUnits == QGis::Meters ) )
+  {
+    toolTip += "<br> * " + tr( "Finally, the value is converted from %2 to %3." ).arg( QGis::tr( mapUnits ) ).arg( QGis::tr( displayUnits ) );
+  }
+
+  editTotal->setToolTip( toolTip );
+  mTable->setToolTip( toolTip );
+
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
-  double dummy = 1.0;
-  QGis::UnitType myDisplayUnits;
-  // The dummy distance is ignored
-  convertMeasurement( dummy, myDisplayUnits, false );
-
-  switch ( myDisplayUnits )
-  {
-    case QGis::Meters:
-      mTable->setHeaderLabels( QStringList( tr( "Segments (in meters)" ) ) );
-      break;
-    case QGis::Feet:
-      mTable->setHeaderLabels( QStringList( tr( "Segments (in feet)" ) ) );
-      break;
-    case QGis::Degrees:
-      mTable->setHeaderLabels( QStringList( tr( "Segments (in degrees)" ) ) );
-      break;
-    case QGis::UnknownUnit:
-      mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
-  }
+  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QGis::tr( displayUnits ) ) ) );
 
   if ( mMeasureArea )
   {
@@ -247,8 +275,6 @@ void QgsMeasureDialog::updateUi()
     mTable->show();
     editTotal->setText( formatDistance( 0, decimalPlaces ) );
   }
-
-  configureDistanceArea();
 }
 
 void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, bool isArea )
@@ -256,43 +282,16 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   // Helper for converting between meters and feet
   // The parameter &u is out only...
 
+  // Get the canvas units
   QGis::UnitType myUnits = mTool->canvas()->mapUnits();
-  if (( myUnits == QGis::Degrees || myUnits == QGis::Feet )  &&
-      mcbProjectionEnabled->isChecked() )
-  {
-    // Measuring on an ellipsoid returns meters, and so does using projections???
-    myUnits = QGis::Meters;
-    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
-  }
 
   // Get the units for display
   QSettings settings;
-  QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 
-  // Only convert between meters and feet
-  if ( myUnits == QGis::Meters && myDisplayUnitsTxt == "feet" )
-  {
-    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
-    measure /= 0.3048;
-    if ( isArea )
-    {
-      measure /= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Feet;
-  }
-  if ( myUnits == QGis::Feet && myDisplayUnitsTxt == "meters" )
-  {
-    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
-    measure *= 0.3048;
-    if ( isArea )
-    {
-      measure *= 0.3048;
-    }
-    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
-    myUnits = QGis::Meters;
-  }
+  QgsDebugMsg( QString( "Preferred display units are %1" ).arg( QGis::toLiteral( displayUnits ) ) );
 
+  mDa.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;
 }
 
@@ -301,9 +300,13 @@ void QgsMeasureDialog::changeProjectionEnabledState()
   // store value
   QSettings settings;
   if ( mcbProjectionEnabled->isChecked() )
+  {
     settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+  }
   else
+  {
     settings.setValue( "/qgis/measure/projectionEnabled", 0 );
+  }
 
   // clear interface
   mTable->clear();
@@ -362,5 +365,6 @@ void QgsMeasureDialog::configureDistanceArea()
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  mDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  mDa.setEllipsoidalMode( mcbProjectionEnabled->isChecked() && mTool->canvas()->hasCrsTransformEnabled() );
 }
