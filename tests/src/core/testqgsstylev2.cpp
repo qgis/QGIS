@@ -127,13 +127,13 @@ void TestStyleV2::testCreateColorRamps()
 
   // discrete ramp with no variant
   QgsCptCityColorRampV2* cc1Ramp = new QgsCptCityColorRampV2( "cb/seq/PuBuGn_06", "" );
-  QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cc1", cc1Ramp, true ) );
   // discrete ramp with variant
   QgsCptCityColorRampV2* cc2Ramp = new QgsCptCityColorRampV2( "cb/div/PiYG", "_10" );
-  QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cc2", cc2Ramp, true ) );
   // continuous ramp
   QgsCptCityColorRampV2* cc3Ramp = new QgsCptCityColorRampV2( "grass/byr", "" );
-  QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp ) );
+  QVERIFY( mStyle->addColorRamp( "test_cc3", cc3Ramp, true ) );
 }
 
 void TestStyleV2::testLoadColorRamps()
