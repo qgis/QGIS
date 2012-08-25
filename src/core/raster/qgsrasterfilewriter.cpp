@@ -232,7 +232,7 @@ if ( error == NoDataConflict )
   destProvider->remove();
   delete destProvider;
 
-  // But we dont know which band -> wider all
+  // But we don't know which band -> wider all
   for ( int i = 0; i < nBands; i++ )
   {
     double destNoDataValue;

@@ -374,7 +374,7 @@ void QgsRasterLayerSaveAsDialog::updateResolutionStateMsg()
     default:
       break;
   }
-  msg = tr( "Resolution" ) + " (" + tr( "current" ) + ": " + msg + ")";
+  msg = tr( "Resolution (current: %1)" ).arg( msg );
   mResolutionGroupBox->setTitle( msg );
 }
 
@@ -406,7 +406,7 @@ void QgsRasterLayerSaveAsDialog::updateExtentStateMsg()
     default:
       break;
   }
-  msg = tr( "Extent" ) + " (" + tr( "current" ) + ": " + msg + ")";
+  msg = tr( "Extent (current: %1)" ).arg( msg );
   mExtentGroupBox->setTitle( msg );
 }
 
@@ -479,13 +479,13 @@ void QgsRasterLayerSaveAsDialog::updateCrsGroup()
   QgsDebugMsg( "Entered" );
 
   mCrsComboBox->setItemText( mCrsComboBox->findData( OriginalCrs ),
-                             tr( "Layer" ) + " (" + mLayerCrs.description() + ", " + mLayerCrs.authid() + ")" );
+                             tr( "Layer (%1, %2)" ).arg( mLayerCrs.description() ).arg( mLayerCrs.authid() ) );
 
   mCrsComboBox->setItemText( mCrsComboBox->findData( CurrentCrs ),
-                             tr( "Project" ) + " (" + mCurrentCrs.description() + ", " + mCurrentCrs.authid() + ")" );
+                             tr( "Project (%1, %2)" ).arg( mCurrentCrs.description() ).arg( mCurrentCrs.authid() ) );
 
   mCrsComboBox->setItemText( mCrsComboBox->findData( UserCrs ),
-                             tr( "Selected" ) + " (" + mUserCrs.description() + ", " + mUserCrs.authid() + ")" );
+                             tr( "Selected (%1, %2)" ).arg( mUserCrs.description() ).arg( mUserCrs.authid() ) );
 }
 
 QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()

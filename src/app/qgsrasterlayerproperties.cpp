@@ -948,7 +948,7 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
   {
     if ( mRasterLayer->isNoDataValueValid() )
     {
-      // I dont think that noDataValue should be added to transparency list
+      // I don't think that noDataValue should be added to transparency list
 #if 0
       tableTransparency->insertRow( tableTransparency->rowCount() );
       setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
@@ -1313,7 +1313,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
           if ( value == tr( "null (no data)" ) || // Very bad! TODO: improve identify
                mRasterLayer->dataProvider()->isNoDataValue( bands.at( i ), value.toDouble() ) )
           {
-            return; // Dont add nodata, transparent anyway
+            return; // Don't add nodata, transparent anyway
           }
           values.append( value.toDouble() );
         }
@@ -1578,13 +1578,15 @@ void QgsRasterLayerProperties::updatePipeList()
     texts << QString( "%1 ms" ).arg( interface->time() );
     QTreeWidgetItem *item = new QTreeWidgetItem( texts );
 
+#if 0
     // Switching on/off would be possible but problematic - drawer is not pipe
-    // memer so we dont know required output format
-    // Checkobxes are very usefel however for QgsRasterPipe debugging.
-    //bool on = interface->on();
-    //item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
+    // memer so we don't know required output format
+    // Checkboxes are very useful however for QgsRasterPipe debugging.
+    bool on = interface->on();
+    item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
 
-    //Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+#endif
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
     item->setFlags( flags );
 

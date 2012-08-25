@@ -47,7 +47,7 @@
          <item>
           <widget class="QRadioButton" name="mRawModeRadioButton">
            <property name="toolTip">
-            <string>Write out raw raster layer data. Optionaly user defined no data values may be applied.</string>
+            <string>Write out raw raster layer data. Optionally user defined no data values may be applied.</string>
            </property>
            <property name="text">
             <string>Raw data</string>

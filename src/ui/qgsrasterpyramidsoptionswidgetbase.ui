@@ -85,7 +85,7 @@
    <item row="4" column="2">
     <widget class="QLineEdit" name="lePyramidResolutions">
      <property name="toolTip">
-      <string>Pyramid resolutions correspnoding to levels given</string>
+      <string>Pyramid resolutions corresponding to levels given</string>
      </property>
      <property name="text">
       <string>to be done</string>

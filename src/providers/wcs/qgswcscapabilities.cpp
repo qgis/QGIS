@@ -771,7 +771,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
         coverage->hasSize = true;
       }
     }
-    // RectifiedGrid has also gml:origin which we dont need I think (attention however
+    // RectifiedGrid has also gml:origin which we don't need I think (attention however
     // it should contain gml:Point but mapserver 6.0.3 / WCS 1.0.0 is using gml:pos instead)
     // RectifiedGrid also contains 2 gml:offsetVector which could be used to get resolution
     // but it should be sufficient to calc resolution from size

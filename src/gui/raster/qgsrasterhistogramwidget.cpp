@@ -672,7 +672,7 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
     return;
   }
   // Load actions
-  // TODO - seperate calculations from rendererwidget so we can do them without
+  // TODO - separate calculations from rendererwidget so we can do them without
   else if ( actionName.left( 5 ) == "Load " && mRendererWidget )
   {
     QVector<int> myBands;

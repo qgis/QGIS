@@ -186,7 +186,7 @@
        <item>
         <widget class="QLineEdit" name="mOptionsLineEdit">
          <property name="toolTip">
-          <string>Insert KEY=VALUE pairs seperated by spaces</string>
+          <string>Insert KEY=VALUE pairs separated by spaces</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

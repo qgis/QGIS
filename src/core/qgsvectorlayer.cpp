@@ -2440,7 +2440,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
 
         if ( mDataProvider )
         {
-          //use default value where possible (primary key issue), otherwise the value from the original (splitted) feature
+          //use default value where possible (primary key issue), otherwise the value from the original (split) feature
           QgsAttributeMap newAttributes = select_it->attributeMap();
           QVariant defaultValue;
           foreach ( int j, newAttributes.keys() )
