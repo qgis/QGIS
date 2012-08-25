@@ -48,6 +48,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 
 QgsMeasureTool::~QgsMeasureTool()
 {
+  delete mDialog;
   delete mRubberBand;
 }
 
