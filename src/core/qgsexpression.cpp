@@ -29,6 +29,13 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 
+//non qt includes
+#include <cmath>
+
+#ifdef _MSC_VER
+#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
+#endif
+
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
 
@@ -768,6 +775,13 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
   return QVariant( calc->measurePerimeter( f->geometry() ) );
 }
 
+static QVariant fcnRound( const QVariantList& values , QgsFeature* f, QgsExpression* parent )
+{
+  double number = getDoubleValue( values.at( 0 ), parent );
+  double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
+  return QVariant( round( number * scaler ) / scaler );
+}
+
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
 
 const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
@@ -788,6 +802,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "ln", 1, fcnLn, QObject::tr( "Math" ) )
     << FunctionDef( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
     << FunctionDef( "log", 2, fcnLog, QObject::tr( "Math" ) )
+    << FunctionDef( "round", 2, fcnRound, QObject::tr( "Math" ) )
     // casts
     << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
