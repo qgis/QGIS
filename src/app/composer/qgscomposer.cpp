@@ -911,10 +911,6 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
   }
 
   deleteItemWidgets();
-  if ( mComposition )
-  {
-    mComposition->clear();
-  }
   readXML( templateDocument );
   emit composerAdded( mView );
 }
