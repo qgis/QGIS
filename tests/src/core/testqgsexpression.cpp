@@ -248,6 +248,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
       QTest::newRow( "round(1234.557,2) - round up" ) << "round(1234.557,2)" << false << QVariant( 1234.56 );
       QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
+      QTest::newRow( "round(1234.6) - round up to int" ) << "round(1234.6)" << false << QVariant( 1235 );
+      QTest::newRow( "round(1234.6) - round down to int" ) << "round(1234.4)" << false << QVariant( 1234 );
 
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );

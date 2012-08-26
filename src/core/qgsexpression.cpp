@@ -777,9 +777,20 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
 
 static QVariant fcnRound( const QVariantList& values , QgsFeature* f, QgsExpression* parent )
 {
-  double number = getDoubleValue( values.at( 0 ), parent );
-  double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
-  return QVariant( round( number * scaler ) / scaler );
+  if ( values.length() == 2 )
+  {
+      double number = getDoubleValue( values.at( 0 ), parent );
+      double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
+      return QVariant( round( number * scaler ) / scaler );
+  }
+
+  if ( values.length() == 1 )
+  {
+      double number = getIntValue( values.at( 0 ), parent );
+      return QVariant( round( number) ).toInt();
+  }
+
+  return QVariant();
 }
 
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
@@ -802,7 +813,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "ln", 1, fcnLn, QObject::tr( "Math" ) )
     << FunctionDef( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
     << FunctionDef( "log", 2, fcnLog, QObject::tr( "Math" ) )
-    << FunctionDef( "round", 2, fcnRound, QObject::tr( "Math" ) )
+    << FunctionDef( "round", -1, fcnRound, QObject::tr( "Math" ) )
     // casts
     << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
