@@ -82,6 +82,6 @@ MACRO(ADD_PYTHON_COMPILEALL_TEST DIRNAME)
   GET_FILENAME_COMPONENT(temp_path "${PYTHON_LIBRARIES}" PATH)
   # Find the python script:
   GET_FILENAME_COMPONENT(PYTHON_COMPILE_ALL_PY "${temp_path}/../compileall.py" ABSOLUTE)
-  # add test, use DIRNAME to create uniq name for the test:
+  # add test, use DIRNAME to create unique name for the test:
   ADD_TEST(COMPILE_ALL-${DIRNAME} ${PYTHON_EXECUTABLE} "${PYTHON_COMPILE_ALL_PY}" -q ${DIRNAME})
 ENDMACRO(ADD_PYTHON_COMPILEALL_TEST)
