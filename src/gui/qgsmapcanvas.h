@@ -185,7 +185,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Read property of QColor bgColor. */
     virtual QColor canvasColor() const;
 
-    /** Emits signal scalChanged to update scale in main window */
+    /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
     /** Updates the full extent */
