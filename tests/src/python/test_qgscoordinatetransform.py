@@ -21,12 +21,13 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         myUtmCrs.createFromId(32756, QgsCoordinateReferenceSystem.EpsgCrsId)
         myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs)
         myProjectedExtent = myXForm.transformBoundingBox(myExtent)
-        myExpectedExtent = ''
+        myExpectedExtent = ('150.1509239873580270,-35.7176936443908772 : '
+                            '150.1964384662953194,-35.6971885216629090')
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                       ( myExpectedExtent,
                         myProjectedExtent.toString()))
                       
-        assert myExpectedExtent == myProjectedExtent, myMessage
+        self.assertEquals(myExpectedExtent, myProjectedExtent.toString(), myMessage)
 
 if __name__ == '__main__':
     unittest.main()
