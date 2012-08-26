@@ -63,16 +63,19 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Show the help for the dialog
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    //! on change state projection/ellipsoid enable
-    void changeProjectionEnabledState();
+    //! When the ellipsoidal button is pressed/toggled.
+    void ellipsoidalButton();
+
+    //! When any external settings change
+    void updateSettings();
 
   private:
 
     //! formats distance to most appropriate units
-    QString formatDistance( double distance, int decimalPlaces );
+    QString formatDistance( double distance );
 
     //! formats area to most appropriate units
-    QString formatArea( double area, int decimalPlaces );
+    QString formatArea( double area );
 
     //! shows/hides table, shows correct units
     void updateUi();
@@ -87,7 +90,20 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;
+    
+    //! indicates whether user wants ellipsoidal or flat
+    bool mEllipsoidal;
 
+    //! Number of decimal places we want.
+    int mDecimalPlaces;
+
+    //! Current unit for input values
+    QGis::UnitType mCanvasUnits;
+
+    //! Current unit for output values
+    QGis::UnitType mDisplayUnits;
+
+    //! Our measurement object
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog

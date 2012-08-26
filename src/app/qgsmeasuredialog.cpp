@@ -48,32 +48,73 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   item->setTextAlignment( 0, Qt::AlignRight );
   mTable->addTopLevelItem( item );
 
-  //mTable->setHeaderLabels(QStringList() << tr("Segments (in meters)") << tr("Total") << tr("Azimuth") );
-
-  QSettings settings;
-  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
-  if ( s == 2 )
-    mcbProjectionEnabled->setCheckState( Qt::Checked );
-  else
-    mcbProjectionEnabled->setCheckState( Qt::Unchecked );
-
   // Update when the ellipsoidal button has changed state.
   connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SLOT( changeProjectionEnabledState() ) );
+           this, SLOT( ellipsoidalButton() ) );
   // Update whenever the canvas has refreshed. Maybe more often than needed,
-  // but at least every time any settings changes
+  // but at least every time any canvas related settings changes
   connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
-           this, SLOT( changeProjectionEnabledState() ) );
-  // Update when project wide transformation has changed
-  connect( mTool->canvas()->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ),
-           this, SLOT( changeProjectionEnabledState() ) );
-  // Update when project CRS has changed
-  connect( mTool->canvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ),
-           this, SLOT( changeProjectionEnabledState() ) );
+           this, SLOT( updateSettings() ) );
+//   // Update when project wide transformation has changed
+//   connect( mTool->canvas()->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ),
+//            this, SLOT( changeProjectionEnabledState() ) );
+//   // Update when project CRS has changed
+//   connect( mTool->canvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+//            this, SLOT( changeProjectionEnabledState() ) );
 
-  updateUi();
+  updateSettings();
 }
 
+void QgsMeasureDialog::ellipsoidalButton()
+{
+  QSettings settings;
+
+  if ( mcbProjectionEnabled->isChecked() )
+  {
+    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+  }
+  else
+  {
+    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
+  }
+  updateSettings();
+}
+
+void QgsMeasureDialog::updateSettings()
+{
+  QSettings settings;
+
+  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
+  if ( s == 2 )
+  {
+    mEllipsoidal = true;
+  }
+  else
+  {
+    mEllipsoidal = false;
+  }
+
+  mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();  
+  mCanvasUnits = mTool->canvas()->mapUnits();
+  mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+
+  QgsDebugMsg( "****************" );
+  QgsDebugMsg( QString( "Ellipsoidal: %1" ).arg( mEllipsoidal ? "true" : "false" ) );
+  QgsDebugMsg( QString( "Decimalpla.: %1" ).arg( mDecimalPlaces ) );
+  QgsDebugMsg( QString( "Display u. : %1" ).arg( QGis::toLiteral( mDisplayUnits ) ) );
+  QgsDebugMsg( QString( "Canvas u.  : %1" ).arg( QGis::toLiteral( mCanvasUnits ) ) );
+  
+  configureDistanceArea();
+
+  // clear interface
+  mTable->clear();
+  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( QString::number( 0, 'f', 1 ) ) );
+  item->setTextAlignment( 0, Qt::AlignRight );
+  mTable->addTopLevelItem( item );
+  mTotal = 0;
+  updateUi();
+
+}
 
 void QgsMeasureDialog::restart()
 {
@@ -86,7 +127,6 @@ void QgsMeasureDialog::restart()
   item->setTextAlignment( 0, Qt::AlignRight );
   mTable->addTopLevelItem( item );
   mTotal = 0.;
-
   updateUi();
 }
 
@@ -105,9 +145,6 @@ void QgsMeasureDialog::mousePress( QgsPoint &point )
 
 void QgsMeasureDialog::mouseMove( QgsPoint &point )
 {
-  QSettings settings;
-  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
-
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
@@ -116,19 +153,19 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
     double area = mDa.measurePolygon( tmpPoints );
-    editTotal->setText( formatArea( area, decimalPlaces ) );
+    editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
   {
     QgsPoint p1( mTool->points().last() ), p2( point );
 
     double d = mDa.measureLine( p1, p2 );
-    editTotal->setText( formatDistance( mTotal + d, decimalPlaces ) );
+    editTotal->setText( formatDistance( mTotal + d ) );
     QGis::UnitType myDisplayUnits;
     // Ignore units
     convertMeasurement( d, myDisplayUnits, false );
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-    item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
+    item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
     QgsDebugMsg( QString( "Final result is %1" ).arg( item->text( 0 ) ) );
   }
 }
@@ -137,14 +174,11 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
 {
   Q_UNUSED( p );
 
-  QSettings settings;
-  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
-
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
     double area = mDa.measurePolygon( mTool->points() );
-    editTotal->setText( formatArea( area, decimalPlaces ) );
+    editTotal->setText( formatArea( area ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
   {
@@ -155,16 +189,16 @@ void QgsMeasureDialog::addPoint( QgsPoint &p )
     double d = mDa.measureLine( p1, p2 );
 
     mTotal += d;
-    editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
+    editTotal->setText( formatDistance( mTotal ) );
 
     QGis::UnitType myDisplayUnits;
     // Ignore units
     convertMeasurement( d, myDisplayUnits, false );
 
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-    item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
+    item->setText( 0, QLocale::system().toString( d, 'f' ) );
 
-    item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', decimalPlaces ) ) );
+    item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f' ) ) );
     item->setTextAlignment( 0, Qt::AlignRight );
     mTable->addTopLevelItem( item );
     mTable->scrollToItem( item );
@@ -204,44 +238,38 @@ void QgsMeasureDialog::saveWindowLocation()
   settings.setValue( key, height() );
 }
 
-QString QgsMeasureDialog::formatDistance( double distance, int decimalPlaces )
+QString QgsMeasureDialog::formatDistance( double distance )
 {
   QSettings settings;
   bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
 
-  QGis::UnitType myDisplayUnits;
-  convertMeasurement( distance, myDisplayUnits, false );
-  return QgsDistanceArea::textUnit( distance, decimalPlaces, myDisplayUnits, false, baseUnit );
+  QGis::UnitType newDisplayUnits;
+  convertMeasurement( distance, newDisplayUnits, false );
+  return QgsDistanceArea::textUnit( distance, mDecimalPlaces, newDisplayUnits, false, baseUnit );
 }
 
-QString QgsMeasureDialog::formatArea( double area, int decimalPlaces )
+QString QgsMeasureDialog::formatArea( double area )
 {
   QSettings settings;
   bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
 
-  QGis::UnitType myDisplayUnits;
-  convertMeasurement( area, myDisplayUnits, true );
-  return QgsDistanceArea::textUnit( area, decimalPlaces, myDisplayUnits, true, baseUnit );
+  QGis::UnitType newDisplayUnits;
+  convertMeasurement( area, newDisplayUnits, true );
+  return QgsDistanceArea::textUnit( area, mDecimalPlaces, newDisplayUnits, true, baseUnit );
 }
 
 void QgsMeasureDialog::updateUi()
 {
-  // Only enable checkbox when project wide transformation is on
+  // If project wide transformation is off, disbale checkbox and unmark it.
+  // When on, enable checbox and mark with saved value.
   mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
 
-  configureDistanceArea();
-
-  QSettings settings;
-
   // Set tooltip to indicate how we calculate measurments
-  QGis::UnitType mapUnits = mTool->canvas()->mapUnits();
-  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
-
   QString toolTip = tr( "The calculations are based on:" );
   if ( ! mTool->canvas()->hasCrsTransformEnabled() )
   {
     toolTip += "<br> * " + tr( "Project CRS transformation is turned off." ) + " ";
-    toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QGis::tr( mapUnits ) );
+    toolTip += tr( "Canvas units setting is taken from project properties setting (%1)." ).arg( QGis::tr( mCanvasUnits ) );
     toolTip += "<br> * " + tr( "Ellipsoidal calculation is not possible, as project CRS is undefined." );
   }
   else
@@ -254,74 +282,19 @@ void QgsMeasureDialog::updateUi()
     else
     {
       toolTip += "<br> * " + tr( "Project CRS transformation is turned on but ellipsoidal calculation is not selected." );
-      toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QGis::tr( mapUnits ) );
+      toolTip += "<br> * " + tr( "The canvas units setting is taken from the project CRS (%1)." ).arg( QGis::tr( mCanvasUnits ) );
     }
   }
 
-  if (( mapUnits == QGis::Meters && displayUnits == QGis::Feet ) || ( mapUnits == QGis::Feet && displayUnits == QGis::Meters ) )
+  if (( mCanvasUnits == QGis::Meters && mDisplayUnits == QGis::Feet ) || ( mCanvasUnits == QGis::Feet && mDisplayUnits == QGis::Meters ) )
   {
-    toolTip += "<br> * " + tr( "Finally, the value is converted from %2 to %3." ).arg( QGis::tr( mapUnits ) ).arg( QGis::tr( displayUnits ) );
+    toolTip += "<br> * " + tr( "Finally, the value is converted from %2 to %3." ).arg( QGis::tr( mCanvasUnits ) ).arg( QGis::tr( mDisplayUnits ) );
   }
 
   editTotal->setToolTip( toolTip );
   mTable->setToolTip( toolTip );
 
-  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
-
-  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QGis::tr( displayUnits ) ) ) );
-
-  if ( mMeasureArea )
-  {
-    mTable->hide();
-    editTotal->setText( formatArea( 0, decimalPlaces ) );
-  }
-  else
-  {
-    mTable->show();
-    editTotal->setText( formatDistance( 0, decimalPlaces ) );
-  }
-}
-
-void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, bool isArea )
-{
-  // Helper for converting between meters and feet
-  // The parameter &u is out only...
-
-  // Get the canvas units
-  QGis::UnitType myUnits = mTool->canvas()->mapUnits();
-
-  // Get the units for display
-  QSettings settings;
-  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
-
-  QgsDebugMsg( QString( "Preferred display units are %1" ).arg( QGis::toLiteral( displayUnits ) ) );
-
-  mDa.convertMeasurement( measure, myUnits, displayUnits, isArea );
-  u = myUnits;
-}
-
-void QgsMeasureDialog::changeProjectionEnabledState()
-{
-  // store value
-  QSettings settings;
-  if ( mcbProjectionEnabled->isChecked() )
-  {
-    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
-  }
-  else
-  {
-    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
-  }
-
-  // clear interface
-  mTable->clear();
-  QTreeWidgetItem* item = new QTreeWidgetItem( QStringList( QString::number( 0, 'f', 1 ) ) );
-  item->setTextAlignment( 0, Qt::AlignRight );
-  mTable->addTopLevelItem( item );
-  mTotal = 0;
-  updateUi();
-
-  int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QGis::tr( mDisplayUnits ) ) ) );
 
   if ( mMeasureArea )
   {
@@ -330,7 +303,7 @@ void QgsMeasureDialog::changeProjectionEnabledState()
     {
       area = mDa.measurePolygon( mTool->points() );
     }
-    editTotal->setText( formatArea( area, decimalPlaces ) );
+    editTotal->setText( formatArea( area ) );
   }
   else
   {
@@ -346,14 +319,14 @@ void QgsMeasureDialog::changeProjectionEnabledState()
       {
         double d  = mDa.measureLine( p1, p2 );
         mTotal += d;
-        editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
+        editTotal->setText( formatDistance( mTotal ) );
         QGis::UnitType myDisplayUnits;
 
         convertMeasurement( d, myDisplayUnits, false );
 
         QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-        item->setText( 0, QLocale::system().toString( d, 'f', decimalPlaces ) );
-        item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', decimalPlaces ) ) );
+        item->setText( 0, QLocale::system().toString( d, 'f' ) );
+        item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
         mTable->addTopLevelItem( item );
         mTable->scrollToItem( item );
@@ -364,6 +337,20 @@ void QgsMeasureDialog::changeProjectionEnabledState()
   }
 }
 
+void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, bool isArea )
+{
+  // Helper for converting between meters and feet
+  // The parameter &u is out only...
+
+  // Get the canvas units
+  QGis::UnitType myUnits = mCanvasUnits;
+
+  QgsDebugMsg( QString( "Preferred display units are %1" ).arg( QGis::toLiteral( mDisplayUnits ) ) );
+
+  mDa.convertMeasurement( measure, myUnits, mDisplayUnits, isArea );
+  u = myUnits;
+}
+
 void QgsMeasureDialog::configureDistanceArea()
 {
   QSettings settings;
@@ -371,5 +358,5 @@ void QgsMeasureDialog::configureDistanceArea()
   mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
-  mDa.setEllipsoidalMode( mcbProjectionEnabled->isChecked() && mTool->canvas()->hasCrsTransformEnabled() );
+  mDa.setEllipsoidalMode( mEllipsoidal && mTool->canvas()->hasCrsTransformEnabled() );
 }
