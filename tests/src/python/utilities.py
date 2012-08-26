@@ -67,11 +67,8 @@ def getQgisTestApp():
 
     if QGISAPP is None:
         myGuiFlag = True  # All test will run qgis in gui mode
+
         QGISAPP = QgsApplication(sys.argv, myGuiFlag)
-        if 'QGIS_PREFIX_PATH' in os.environ:
-            myPath = os.environ['QGIS_PREFIX_PATH']
-            myUseDefaultPathFlag = True
-            QGISAPP.setPrefixPath(myPath, myUseDefaultPathFlag)
 
         if sys.platform.startswith('darwin'):
             # override resource paths, otherwise looks for Resources in app

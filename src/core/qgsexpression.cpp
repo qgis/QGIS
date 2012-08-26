@@ -775,8 +775,9 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
   return QVariant( calc->measurePerimeter( f->geometry() ) );
 }
 
-static QVariant fcnRound( const QVariantList& values , QgsFeature* f, QgsExpression* parent )
+static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpression* parent )
 {
+  Q_UNUSED( f );
   if ( values.length() == 2 )
   {
       double number = getDoubleValue( values.at( 0 ), parent );
