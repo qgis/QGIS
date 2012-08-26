@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>351</width>
-    <height>195</height>
+    <width>366</width>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,48 +17,15 @@
    <property name="margin">
     <number>1</number>
    </property>
-   <item row="3" column="2">
-    <widget class="QLineEdit" name="lePyramidsLevels">
-     <property name="toolTip">
-      <string>Insert positive integer values separated by spaces</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="3">
-    <widget class="QLabel" name="label_4">
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="cbxPyramidsLevelsCustom">
      <property name="text">
-      <string>Create Options</string>
+      <string>Custom levels</string>
      </property>
     </widget>
-   </item>
-   <item row="8" column="0" colspan="3">
-    <widget class="QgsRasterFormatSaveOptionsWidget" name="mPyramidsOptionsWidget" native="true"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Overview format</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>10</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="0" column="2">
-    <widget class="QComboBox" name="cboPyramidsFormat">
+    <widget class="QComboBox" name="cbxPyramidsFormat">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -67,12 +34,12 @@
      </property>
      <item>
       <property name="text">
-       <string>Internal (if possible)</string>
+       <string>External</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>External (GTiff)</string>
+       <string>Internal (if possible)</string>
       </property>
      </item>
      <item>
@@ -82,44 +49,10 @@
      </item>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QLineEdit" name="lePyramidResolutions">
+   <item row="3" column="2">
+    <widget class="QLineEdit" name="lePyramidsLevels">
      <property name="toolTip">
-      <string>Pyramid resolutions corresponding to levels given</string>
-     </property>
-     <property name="text">
-      <string>to be done</string>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Custom levels</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Resolutions</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="textLabel4_2">
-     <property name="text">
-      <string>Resampling method</string>
+      <string>Insert positive integer values separated by spaces</string>
      </property>
     </widget>
    </item>
@@ -137,6 +70,23 @@
      </item>
     </widget>
    </item>
+   <item row="2" column="2">
+    <layout class="QHBoxLayout" name="layoutPyramidsLevels"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Overview format</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="3">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Create Options</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label_5">
      <property name="text">
@@ -144,8 +94,38 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="2">
-    <layout class="QHBoxLayout" name="layoutPyramidLevels"/>
+   <item row="6" column="0" colspan="3">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel4_2">
+     <property name="text">
+      <string>Resampling method</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0" colspan="3">
+    <widget class="QgsRasterFormatSaveOptionsWidget" name="mPyramidsOptionsWidget" native="true"/>
+   </item>
+   <item row="3" column="1">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>10</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

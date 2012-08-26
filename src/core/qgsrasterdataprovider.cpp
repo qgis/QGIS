@@ -272,6 +272,26 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   return ba;
 }
 
+bool QgsRasterDataProvider::hasPyramids()
+{
+  QList<QgsRasterPyramid> myPyramidList = buildPyramidList();
+
+  if ( myPyramidList.isEmpty() )
+    return false;
+
+  QList<QgsRasterPyramid>::iterator myRasterPyramidIterator;
+  for ( myRasterPyramidIterator = myPyramidList.begin();
+        myRasterPyramidIterator != myPyramidList.end();
+        ++myRasterPyramidIterator )
+  {
+    if ( myRasterPyramidIterator->exists )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 #if 0
 QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 {

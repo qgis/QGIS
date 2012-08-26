@@ -30,6 +30,7 @@
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
+#include <qgsrasterpyramid.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
@@ -339,24 +340,21 @@ void TestQgsRasterLayer::buildExternalOverviews()
   // Ok now we can go on to test
   //
 
-  bool myInternalFlag = false;
-  QgsRasterLayer::RasterPyramidList myPyramidList = mypLayer->buildPyramidList();
+  QgsRasterDataProvider::RasterPyramidsFormat myFormatFlag = QgsRasterDataProvider::PyramidsGTiff;
+  QList< QgsRasterPyramid > myPyramidList = mypLayer->dataProvider()->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided
     myPyramidList[myCounterInt].build = true;
   }
   //now actually make the pyramids
-  QString myResult = mypLayer->buildPyramids(
-                       myPyramidList,
-                       "NEAREST",
-                       myInternalFlag
-                     );
+  QString myResult =
+    mypLayer->dataProvider()->buildPyramids( myPyramidList, "NEAREST", myFormatFlag );
   qDebug( "%s", myResult.toLocal8Bit().constData() );
   //
   // Lets verify we have pyramids now...
   //
-  myPyramidList = mypLayer->buildPyramidList();
+  myPyramidList = mypLayer->dataProvider()->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
   {
     //mark to be pyramided

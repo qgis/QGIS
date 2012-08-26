@@ -77,10 +77,32 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
       mCreateOptionsWidget->setFormat( myFormats[0] );
     }
     mCreateOptionsWidget->update();
+  }
 
+  // Only do pyramids if dealing directly with GDAL.
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::BuildPyramids )
+  {
     mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
+    // init. pyramids button group
+    for ( int i = -2, j = 0 ; i >= -4 ; i--, j++ )
+      mPyramidsButtonGroup->setId( mPyramidsButtonGroup->button( i ), j );
+    // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
+    // if ( ! mDataProvider->hasPyramids() )
+    //   mPyramidsButtonGroup->button( QgsRasterDataProvider::CopyExisting )->setEnabled( false );
+    mPyramidsButtonGroup->button( QgsRasterDataProvider::CopyExisting )->setEnabled( false );
+    mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagNo )->click();
+    mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagNo )->setChecked( true );
+
+    populatePyramidsLevels();
+    connect( mPyramidsOptionsWidget, SIGNAL( overviewListChanged() ),
+             this, SLOT( populatePyramidsLevels() ) );
   }
+  else
+  {
+    mPyramidsGroupBox->setEnabled( false );
+  }
+
   updateCrsGroup();
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
@@ -625,6 +647,75 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString & text )
   {
     setNoDataToEdited( row );
   }
+}
+
+void QgsRasterLayerSaveAsDialog::on_mTileModeCheckBox_toggled( bool toggled )
+{
+  if ( toggled )
+  {
+    // enable pyramids
+    if ( ! mPyramidsGroupBox->isChecked() )
+      mPyramidsGroupBox->setChecked( true );
+    if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::PyramidsFlagNo )
+    {
+      mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagYes )->click();
+      mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagYes )->setChecked( true );
+    }
+    mPyramidsOptionsWidget->checkAllLevels( true );
+  }
+}
+
+void QgsRasterLayerSaveAsDialog::on_mPyramidsButtonGroup_buttonClicked( int id )
+{
+  if ( id == QgsRasterDataProvider::PyramidsFlagNo  || id == QgsRasterDataProvider::CopyExisting )
+  {
+    mPyramidsOptionsWidget->setEnabled( false );
+    mPyramidResolutionsLabel->setEnabled( false );
+    mPyramidResolutionsLineEdit->setEnabled( false );
+  }
+  else if ( id == QgsRasterDataProvider::PyramidsFlagYes )
+  {
+    mPyramidsOptionsWidget->setEnabled( true );
+    mPyramidResolutionsLabel->setEnabled( true );
+    mPyramidResolutionsLineEdit->setEnabled( true );
+  }
+  else
+    QgsDebugMsg( QString( "invalid button id %1" ).arg( id ) );
+  populatePyramidsLevels();
+}
+
+void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
+{
+  // if selection != "Build pyramids", get pyramids from actual layer
+  QString text;
+
+  if ( mPyramidsButtonGroup->checkedId() != QgsRasterDataProvider::PyramidsFlagNo )
+  {
+    QList<QgsRasterPyramid> myPyramidList;
+    if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::CopyExisting )
+    {
+      myPyramidList = mDataProvider->buildPyramidList();
+    }
+    else if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::PyramidsFlagYes )
+    {
+      if ( ! mPyramidsOptionsWidget->overviewList().isEmpty() )
+        myPyramidList = mDataProvider->buildPyramidList( mPyramidsOptionsWidget->overviewList() );
+    }
+    QList<QgsRasterPyramid>::iterator myRasterPyramidIterator;
+    for ( myRasterPyramidIterator = myPyramidList.begin();
+          myRasterPyramidIterator != myPyramidList.end();
+          ++myRasterPyramidIterator )
+    {
+      if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::PyramidsFlagYes
+           || myRasterPyramidIterator->exists )
+      {
+        text += QString::number( myRasterPyramidIterator->xDim ) + QString( "x" ) +
+                QString::number( myRasterPyramidIterator->yDim ) + " ";
+      }
+    }
+  }
+
+  mPyramidResolutionsLineEdit->setText( text.trimmed() );
 }
 
 void QgsRasterLayerSaveAsDialog::setNoDataToEdited( int row )

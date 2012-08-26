@@ -6,7 +6,7 @@
 class QgsRasterLayer : QgsMapLayer
 {
 %TypeHeaderCode
-#include <qgsrasterpyramid.h>
+// #include <qgsrasterpyramid.h>
 #include <qgsrasterlayer.h>
 #include <qgscontrastenhancement.h>
 #include <qgsrastertransparency.h>
@@ -91,7 +91,7 @@ public:
      * to be added to the list. Each time a RasterPyramid is created
      * we will check to see if a pyramid matching these dimensions already exists
      * in the raster layer, and if so mark the exists flag as true */
-    typedef QList<QgsRasterPyramid> RasterPyramidList;
+    // typedef QList<QgsRasterPyramid> RasterPyramidList;
 
     /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while every RasterBandStats element will have the name and number of its associated
@@ -151,7 +151,7 @@ public:
     //QString greenBandName() const; //removed with raster redesign
 
     /** \brief Accessor for mHasPyramids (READ ONLY) */
-    bool hasPyramids();
+    // bool hasPyramids();
 
     /** \brief Accessor for mUserDefinedGrayMinimumMaximum */
     bool hasUserDefinedGrayMinimumMaximum() const;
@@ -248,7 +248,7 @@ public:
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    RasterPyramidList buildPyramidList();
+    // RasterPyramidList buildPyramidList();
 
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
@@ -470,9 +470,9 @@ public:
 
   public slots:
     /** \brief Create GDAL pyramid overviews */
-    QString buildPyramids( const RasterPyramidList &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
+    // QString buildPyramids( const RasterPyramidList &,
+    //                        const QString &  theResamplingMethod = "NEAREST",
+    //                        bool theTryInternalFlag = false );
 
     void showStatusMessage( const QString & theMessage );
 

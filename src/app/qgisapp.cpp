@@ -3997,6 +3997,11 @@ void QgisApp::saveAsRasterFile()
     }
     fileWriter.setCreateOptions( d.createOptions() );
 
+    fileWriter.setBuildPyramidsFlag( d.buildPyramidsFlag() );
+    fileWriter.setPyramidsList( d.overviewList() );
+    fileWriter.setPyramidsResampling( d.pyramidsResampling() );
+    fileWriter.setPyramidsFormat( d.pyramidsFormat() );
+
     fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
     delete pipe;
   }

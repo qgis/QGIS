@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
+    <width>575</width>
     <height>580</height>
    </rect>
   </property>
@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-239</y>
-        <width>514</width>
-        <height>784</height>
+        <y>-293</y>
+        <width>539</width>
+        <height>831</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -278,7 +278,7 @@
               <widget class="QPushButton" name="mOriginalExtentButton">
                <property name="minimumSize">
                 <size>
-                 <width>140</width>
+                 <width>150</width>
                  <height>0</height>
                 </size>
                </property>
@@ -307,7 +307,7 @@
               <widget class="QPushButton" name="mCurrentExtentButton">
                <property name="minimumSize">
                 <size>
-                 <width>140</width>
+                 <width>150</width>
                  <height>0</height>
                 </size>
                </property>
@@ -452,6 +452,9 @@
           </property>
           <item>
            <widget class="QLabel" name="mMaximumSizeXLabel">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="toolTip">
              <string>Maximum number of columns in one tile.</string>
             </property>
@@ -462,6 +465,9 @@
           </item>
           <item>
            <widget class="QLineEdit" name="mMaximumSizeXLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="toolTip">
              <string>Maximum number of columns in one tile.</string>
             </property>
@@ -469,6 +475,9 @@
           </item>
           <item>
            <widget class="QLabel" name="mMaximumSizeYLabel">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="toolTip">
              <string>Maximum number of rows in one tile.</string>
             </property>
@@ -479,6 +488,9 @@
           </item>
           <item>
            <widget class="QLineEdit" name="mMaximumSizeYLineEdit">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="toolTip">
              <string>Maximum number of rows in one tile.</string>
             </property>
@@ -486,6 +498,9 @@
           </item>
           <item>
            <widget class="QCheckBox" name="mTileModeCheckBox">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>Create VRT</string>
             </property>
@@ -554,7 +569,7 @@
             <item row="2" column="0">
              <widget class="QToolButton" name="mLoadTransparentNoDataToolButton">
               <property name="enabled">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="toolTip">
                <string>Load user defined fully transparent (100%) values </string>
@@ -604,7 +619,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mPyramidsGroupBox">
          <property name="title">
-          <string>Pyramids (not yet implemented)</string>
+          <string>Pyramids</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -612,19 +627,100 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QCheckBox" name="cbxPyramidsBuild">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="3" column="0">
+           <widget class="QgsRasterPyramidsOptionsWidget" name="mPyramidsOptionsWidget" native="true">
             <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="text">
-             <string>Build pyramids</string>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QgsRasterPyramidsOptionsWidget" name="mPyramidsOptionsWidget" native="true"/>
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QRadioButton" name="radioButton">
+              <property name="text">
+               <string>No pyramids</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mPyramidsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButton_2">
+              <property name="text">
+               <string>Build pyramids</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mPyramidsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButton_3">
+              <property name="text">
+               <string>Use existing</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mPyramidsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QLabel" name="mPyramidResolutionsLabel">
+              <property name="text">
+               <string>Resolutions</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>10</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mPyramidResolutionsLineEdit">
+              <property name="toolTip">
+               <string>Pyramid resolutions corresponding to levels given</string>
+              </property>
+              <property name="autoFillBackground">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="frame">
+               <bool>false</bool>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -700,4 +796,7 @@
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="mPyramidsButtonGroup"/>
+ </buttongroups>
 </ui>

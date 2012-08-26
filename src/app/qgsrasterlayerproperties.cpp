@@ -117,13 +117,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     return;
   }
+
   QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
 
   // Only do pyramids if dealing directly with GDAL.
   if ( provider->capabilities() & QgsRasterDataProvider::BuildPyramids )
   {
-    QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildPyramidList();
-    QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
+    // initialize resampling methods
+    cboResamplingMethod->clear();
+    foreach ( QString method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+      cboResamplingMethod->addItem( method );
+
+    // build pyramid list
+    QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
+    QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
 
     for ( myRasterPyramidIterator = myPyramidList.begin();
           myRasterPyramidIterator != myPyramidList.end();
@@ -762,13 +769,14 @@ void QgsRasterLayerProperties::apply()
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
 
-  connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  connect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
   //
   // Go through the list marking any files that are selected in the listview
   // as true so that we can generate pyramids for them.
   //
-  QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildPyramidList();
+  QList< QgsRasterPyramid> myPyramidList = provider->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
     QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
@@ -781,15 +789,14 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  bool myBuildInternalFlag = cbxInternalPyramids->isChecked();
-  QString res = mRasterLayer->buildPyramids(
+  QString res = provider->buildPyramids(
                   myPyramidList,
                   cboResamplingMethod->currentText(),
-                  myBuildInternalFlag );
+                  ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
-  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  disconnect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
   if ( !res.isNull() )
   {
     if ( res == "ERROR_WRITE_ACCESS" )
@@ -821,17 +828,16 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   }
 
-
   //
   // repopulate the pyramids list
   //
   lbxPyramidResolutions->clear();
   // Need to rebuild list as some or all pyramids may have failed to build
-  myPyramidList = mRasterLayer->buildPyramidList();
+  myPyramidList = provider->buildPyramidList();
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.png" ) );
 
-  QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
+  QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator = myPyramidList.begin();
         myRasterPyramidIterator != myPyramidList.end();
         ++myRasterPyramidIterator )

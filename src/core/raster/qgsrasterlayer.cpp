@@ -23,9 +23,7 @@ email                : tim at linfiniti.com
 #include "qgsmaptopixel.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
-#include "qgsrasterbandstats.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterpyramid.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -423,7 +421,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBand
 
   return QgsRasterBandStats();     // return a null one
 }
-#endif
 
 QString QgsRasterLayer::buildPyramids( RasterPyramidList const & theRasterPyramidList,
                                        QString const & theResamplingMethod, bool theTryInternalFlag )
@@ -436,6 +433,7 @@ QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildPyramidList()
 {
   return mDataProvider->buildPyramidList();
 }
+#endif
 
 QString QgsRasterLayer::colorShadingAlgorithmAsString() const
 {
@@ -1558,7 +1556,6 @@ void QgsRasterLayer::init()
   setDrawingStyle( QgsRasterLayer::UndefinedDrawingStyle );
 
   mBandCount = 0;
-  mHasPyramids = false;
   mNoDataValue = -9999.0;
   mValidNoDataValue = false;
 
@@ -1822,12 +1819,7 @@ void QgsRasterLayer::closeDataProvider()
   mValid = false;
   mPipe.remove( mDataProvider );
   mDataProvider = 0;
-
-  //mRasterStatsList.clear();
   mContrastEnhancementList.clear();
-
-  mHasPyramids = false;
-  mPyramidList.clear();
 }
 
 void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm )
