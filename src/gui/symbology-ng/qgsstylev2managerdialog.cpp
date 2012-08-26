@@ -425,18 +425,49 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
   }
 
   // get name
-  QString name = QInputDialog::getText( parent, tr( "Color ramp name" ),
-                                        tr( "Please enter name for new color ramp:" ), QLineEdit::Normal, tr( "new color ramp" ), &ok );
-  if ( !ok || name.isEmpty() )
+  bool nameInvalid = true;
+  QString name;
+
+  while ( nameInvalid )
   {
-    if ( ramp )
+    bool ok;
+    name = QInputDialog::getText( parent, tr( "Color Ramp Name" ),
+                                  tr( "Please enter a name for new color ramp:" ),
+                                  QLineEdit::Normal,
+                                  tr( "new ramp" ),
+                                  &ok );
+    if ( !ok )
+    {
       delete ramp;
-    return QString();
+      return QString();
+    }
+    // validate name
+    if ( name.isEmpty() )
+    {
+      QMessageBox::warning( parent, tr( "Save Color Ramp" ),
+                            tr( "Cannot save color ramp without name. Enter a name." ) );
+    }
+    else if ( style->colorRampNames().contains( name ) )
+    {
+      int res = QMessageBox::warning( parent, tr( "Save color ramp" ),
+                                      tr( "Color ramp with name '%1' already exists. Overwrite?" )
+                                      .arg( name ),
+                                      QMessageBox::Yes | QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+      {
+        nameInvalid = false;
+      }
+    }
+    else
+    {
+      // valid name
+      nameInvalid = false;
+    }
   }
 
   // add new symbol to style and re-populate the list
   style->addColorRamp( name, ramp, true );
-  // TODO groups and tags
+  // TODO groups and tags, using saveColorRamp
   return name;
 }
 
