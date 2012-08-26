@@ -57,8 +57,11 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   else
     mcbProjectionEnabled->setCheckState( Qt::Unchecked );
 
+  // Update when the ellipsoidal button has changed state.
+  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
+           this, SLOT( changeProjectionEnabledState() ) );
   // Update whenever the canvas has refreshed. Maybe more often than needed,
-  // but at least every time any settings changes 
+  // but at least every time any settings changes
   connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
            this, SLOT( changeProjectionEnabledState() ) );
   // Update when project wide transformation has changed
@@ -299,7 +302,6 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
 
 void QgsMeasureDialog::changeProjectionEnabledState()
 {
-  QgsDebugMsg( "Entering!" );
   // store value
   QSettings settings;
   if ( mcbProjectionEnabled->isChecked() )
@@ -360,7 +362,6 @@ void QgsMeasureDialog::changeProjectionEnabledState()
       b = false;
     }
   }
-  QgsDebugMsg( "Exiting!" );
 }
 
 void QgsMeasureDialog::configureDistanceArea()
