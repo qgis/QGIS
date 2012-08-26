@@ -40,6 +40,10 @@ class QgsMeasureTool : public QgsMapTool
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
 
+    //! When we hvae added our last point, and not following 
+    // Added in 2.0
+    bool done() { return mDone; }
+
     //! Reset and start new
     void restart();
 
@@ -83,7 +87,7 @@ class QgsMeasureTool : public QgsMapTool
     bool mMeasureArea;
 
     //! indicates whether we've just done a right mouse click
-    bool mRightMouseClicked;
+    bool mDone;
 
     //! indicates whether we've recently warned the user about having the wrong
     // project projection

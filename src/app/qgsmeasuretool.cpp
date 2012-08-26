@@ -40,7 +40,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
-  mRightMouseClicked = false;
+  mDone = false;
 
   mDialog = new QgsMeasureDialog( this );
   mSnapper.setMapCanvas( canvas );
@@ -101,7 +101,7 @@ void QgsMeasureTool::restart()
   // re-read settings
   updateSettings();
 
-  mRightMouseClicked = false;
+  mDone = false;
   mWrongProjectProjection = false;
 
 }
@@ -127,7 +127,7 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
 {
   if ( e->button() == Qt::LeftButton )
   {
-    if ( mRightMouseClicked )
+    if ( mDone )
       mDialog->restart();
 
     QgsPoint idPoint = snapPoint( e->pos() );
@@ -137,7 +137,7 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
 
 void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
 {
-  if ( !mRightMouseClicked )
+  if ( ! mDone )
   {
     QgsPoint point = snapPoint( e->pos() );
 
@@ -153,10 +153,17 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
 
   if ( e->button() == Qt::RightButton && ( e->buttons() & Qt::LeftButton ) == 0 ) // restart
   {
-    if ( mRightMouseClicked )
+    if ( mDone )
+    {
       mDialog->restart();
+    }
     else
-      mRightMouseClicked = true;
+    {
+      // The figure is finished, store last point.
+      mDone = true;
+      addPoint( point );
+      mDialog->show();
+    }
   }
   else if ( e->button() == Qt::LeftButton )
   {
@@ -180,7 +187,10 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
 
 
   mRubberBand->addPoint( point );
-  mDialog->addPoint( point );
+  if ( ! mDone )
+  {
+    mDialog->addPoint( point );
+  }
 }
 
 QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
