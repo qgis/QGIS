@@ -68,16 +68,21 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
 void QgsMeasureDialog::ellipsoidalButton()
 {
   QSettings settings;
-
-  if ( mcbProjectionEnabled->isChecked() )
+  
+  // We set check state to Unchecked and button to Disabled when disabling CRS,
+  // which generates an call here. Ignore that event!
+  if ( mcbProjectionEnabled->isEnabled() )
   {
-    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+    if ( mcbProjectionEnabled->isChecked() )
+    {
+      settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+    }
+    else
+    {
+      settings.setValue( "/qgis/measure/projectionEnabled", 0 );
+    }
+    updateSettings();
   }
-  else
-  {
-    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
-  }
-  updateSettings();
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -139,8 +144,10 @@ void QgsMeasureDialog::mousePress( QgsPoint &point )
     show();
   }
   raise();
-
-  mouseMove( point );
+  if ( ! mTool->done() )
+  {
+    mouseMove( point );
+  }
 }
 
 void QgsMeasureDialog::mouseMove( QgsPoint &point )
@@ -263,6 +270,7 @@ void QgsMeasureDialog::updateUi()
   // If project wide transformation is off, disbale checkbox and unmark it.
   // When on, enable checbox and mark with saved value.
   mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
+  mcbProjectionEnabled->setCheckState( mTool->canvas()->hasCrsTransformEnabled() && mEllipsoidal ? Qt::Checked : Qt::Unchecked );
 
   // Set tooltip to indicate how we calculate measurments
   QString toolTip = tr( "The calculations are based on:" );
@@ -325,7 +333,7 @@ void QgsMeasureDialog::updateUi()
         convertMeasurement( d, myDisplayUnits, false );
 
         QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-        item->setText( 0, QLocale::system().toString( d, 'f' ) );
+        item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
         item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
         mTable->addTopLevelItem( item );
