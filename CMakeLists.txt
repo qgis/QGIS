@@ -463,17 +463,14 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
 # if run from the build directory QGIS will detect it and alter the paths
 FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/path.txt "${CMAKE_SOURCE_DIR}\n${QGIS_OUTPUT_DIRECTORY}")
 
-# symlink provider plugins dir for Mac unit tests
+# symlink extra provider plugin frameworks for Mac unit tests
 IF (APPLE AND ENABLE_TESTS)
   EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_CURRENT_BINARY_DIR}/Plugins"
-    "${CMAKE_CURRENT_BINARY_DIR}/output/Plugins")
+    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgisgrass.framework"
+    "${CMAKE_BINARY_DIR}/output/lib/qgisgrass.framework")
   EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_CURRENT_BINARY_DIR}/Plugins/qgis/qgisgrass.framework"
-    "${CMAKE_CURRENT_BINARY_DIR}/output/lib/qgisgrass.framework")
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-    "${CMAKE_CURRENT_BINARY_DIR}/Plugins/qgis/qgissqlanyconnection.framework"
-    "${CMAKE_CURRENT_BINARY_DIR}/output/lib/qgissqlanyconnection.framework")
+    "${CMAKE_BINARY_DIR}/Plugins/qgis/qgissqlanyconnection.framework"
+    "${CMAKE_BINARY_DIR}/output/lib/qgissqlanyconnection.framework")
 ENDIF (APPLE AND ENABLE_TESTS)
 
 # manual page - makes sense only on unix systems

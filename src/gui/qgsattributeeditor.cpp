@@ -600,15 +600,16 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     if ( editType == QgsVectorLayer::ValueRelation )
     {
       text = '{';
-      for ( int i = 0; i < lw->count(); i++ )
+      for ( int i = 0, n = 0; i < lw->count(); i++ )
       {
         if ( lw->item( i )->checkState() == Qt::Checked )
         {
-          if ( i > 0 )
+          if ( n > 0 )
           {
             text.append( ',' );
           }
           text.append( lw->item( i )->data( Qt::UserRole ).toString() );
+          n++;
         }
       }
       text.append( '}' );
