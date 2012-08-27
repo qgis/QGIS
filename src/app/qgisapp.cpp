@@ -2509,6 +2509,12 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     }
   }
 
+  if ( childItems.isEmpty() )
+  {
+    // return true so dialog doesn't popup again (#6225) - hopefully this doesn't create other trouble
+    ok = true;
+  }
+  
   // add childItems
   foreach ( QgsDataItem* item, childItems )
   {
