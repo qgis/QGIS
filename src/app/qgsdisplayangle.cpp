@@ -14,23 +14,27 @@
  ***************************************************************************/
 
 #include "qgsdisplayangle.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+
 #include <QSettings>
 #include <cmath>
 
-QgsDisplayAngle::QgsDisplayAngle( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WFlags f )
+    : QDialog( tool->canvas()->topLevelWidget(), f ), mTool( tool )
 {
   setupUi( this );
   QSettings settings;
-  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
-  if ( s == 2 )
-    mcbProjectionEnabled->setCheckState( Qt::Checked );
-  else
-    mcbProjectionEnabled->setCheckState( Qt::Unchecked );
 
+  // Update when the ellipsoidal button has changed state.
   connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SLOT( changeState() ) );
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SIGNAL( changeProjectionEnabledState() ) );
+           this, SLOT( ellipsoidalButton() ) );
+  // Update whenever the canvas has refreshed. Maybe more often than needed,
+  // but at least every time any canvas related settings changes
+  connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
+           this, SLOT( updateSettings() ) );
+
+  updateSettings();
 }
 
 QgsDisplayAngle::~QgsDisplayAngle()
@@ -45,27 +49,75 @@ bool QgsDisplayAngle::projectionEnabled()
 
 void QgsDisplayAngle::setValueInRadians( double value )
 {
+  mValue = value;
+  updateUi();
+}
+
+void QgsDisplayAngle::ellipsoidalButton()
+{
   QSettings settings;
-  QString unitString = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
-  if ( unitString == "degrees" )
+
+  // We set check state to Unchecked and button to Disabled when disabling CRS,
+  // which generates a call here. Ignore that event!
+  if ( mcbProjectionEnabled->isEnabled() )
   {
-    mAngleLineEdit->setText( tr( "%1 degrees" ).arg( value * 180 / M_PI ) );
-  }
-  else if ( unitString == "radians" )
-  {
-    mAngleLineEdit->setText( tr( "%1 radians" ).arg( value ) );
-  }
-  else if ( unitString == "gon" )
-  {
-    mAngleLineEdit->setText( tr( "%1 gon" ).arg( value / M_PI * 200 ) );
+    if ( mcbProjectionEnabled->isChecked() )
+    {
+      settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+    }
+    else
+    {
+      settings.setValue( "/qgis/measure/projectionEnabled", 0 );
+    }
+    updateSettings();
   }
 }
 
-void QgsDisplayAngle::changeState()
+void QgsDisplayAngle::updateSettings()
 {
   QSettings settings;
-  if ( mcbProjectionEnabled->isChecked() )
-    settings.setValue( "/qgis/measure/projectionEnabled", 2 );
+
+  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
+  if ( s == 2 )
+  {
+    mEllipsoidal = true;
+  }
   else
-    settings.setValue( "/qgis/measure/projectionEnabled", 0 );
+  {
+    mEllipsoidal = false;
+  }
+  QgsDebugMsg( "****************" );
+  QgsDebugMsg( QString( "Ellipsoidal: %1" ).arg( mEllipsoidal ? "true" : "false" ) );
+
+  updateUi();
+  emit changeProjectionEnabledState();
+
+}
+
+void QgsDisplayAngle::updateUi()
+{
+  mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
+  mcbProjectionEnabled->setCheckState( mTool->canvas()->hasCrsTransformEnabled()
+                                       && mEllipsoidal ? Qt::Checked : Qt::Unchecked );
+
+  QSettings settings;
+  QString unitString = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
+  int decimals = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+
+  if ( unitString == "degrees" )
+  {
+    mAngleLineEdit->setText( tr( "%1 degrees" ).arg( QLocale::system().toString( mValue * 180 / M_PI ),
+                             'f', decimals ) );
+  }
+  else if ( unitString == "radians" )
+  {
+    mAngleLineEdit->setText( tr( "%1 radians" ).arg( QLocale::system().toString( mValue ),
+                             'f', decimals ) );
+
+  }
+  else if ( unitString == "gon" )
+  {
+    mAngleLineEdit->setText( tr( "%1 gon" ).arg( QLocale::system().toString( mValue / M_PI * 200 ),
+                             'f', decimals ) );
+  }
 }
