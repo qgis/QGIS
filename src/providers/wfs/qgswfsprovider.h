@@ -217,7 +217,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
     int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
-    int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes ) const;
+    int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes, QGis::WkbType& geomType ) const;
 
     /**Copies feature attributes / geometry from f to feature*/
     void copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes );
