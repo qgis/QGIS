@@ -19,6 +19,7 @@
 
 #include <QWidget>
 
+#define DEFAULT_SIMPLEFILL_STYLE        Qt::SolidPattern
 class QgsSymbolLayerV2;
 class QgsVectorLayer;
 
@@ -99,6 +100,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void setName();
     void setColorBorder();
     void setColorFill();
+    void setBrushStyle();
     void setSize();
     void setAngle();
     void setOffset();

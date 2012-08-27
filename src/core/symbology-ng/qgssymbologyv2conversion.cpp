@@ -46,7 +46,8 @@ QgsSymbolV2* QgsSymbologyV2Conversion::symbolV1toV2( const QgsSymbol* s )
         QColor color = s->fillColor();
         QColor borderColor = s->color();
         QString name = symbolName.mid( 5 );
-        sl = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle );
+        Qt::BrushStyle brushStyle = s->brush().style();
+        sl = new QgsSimpleMarkerSymbolLayerV2( name, color, brushStyle, borderColor, size, angle );
       }
       else
       {
