@@ -41,6 +41,8 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
 
   mDone = false;
+  // Append point we will move
+  mPoints.append( QgsPoint (0, 0) );
 
   mDialog = new QgsMeasureDialog( this );
   mSnapper.setMapCanvas( canvas );
@@ -96,6 +98,9 @@ void QgsMeasureTool::deactivate()
 void QgsMeasureTool::restart()
 {
   mPoints.clear();
+  // Append point we will move
+  mPoints.append( QgsPoint (0, 0) );
+
   mRubberBand->reset( mMeasureArea );
 
   // re-read settings
@@ -105,10 +110,6 @@ void QgsMeasureTool::restart()
   mWrongProjectProjection = false;
 
 }
-
-
-
-
 
 void QgsMeasureTool::updateSettings()
 {
@@ -128,10 +129,11 @@ void QgsMeasureTool::canvasPressEvent( QMouseEvent * e )
   if ( e->button() == Qt::LeftButton )
   {
     if ( mDone )
+    {
       mDialog->restart();
-
+    }
     QgsPoint idPoint = snapPoint( e->pos() );
-    mDialog->mousePress( idPoint );
+    // mDialog->mousePress( idPoint );
   }
 }
 
@@ -142,7 +144,13 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
     QgsPoint point = snapPoint( e->pos() );
 
     mRubberBand->movePoint( point );
-    mDialog->mouseMove( point );
+    if( ! mPoints.isEmpty() )
+    {
+      // Update last point
+      mPoints.removeLast();
+      mPoints.append( point ) ;
+      mDialog->mouseMove( point );
+    }
   }
 }
 
@@ -159,9 +167,8 @@ void QgsMeasureTool::canvasReleaseEvent( QMouseEvent * e )
     }
     else
     {
-      // The figure is finished, store last point.
+      // The figure is finished
       mDone = true;
-      addPoint( point );
       mDialog->show();
     }
   }
@@ -178,13 +185,14 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
 {
   QgsDebugMsg( "point=" + point.toString() );
 
+  int last = mPoints.size() - 1;
   // don't add points with the same coordinates
-  if ( mPoints.size() > 0 && point == mPoints[0] )
+  if ( mPoints.size() > 1 && mPoints[ last ] == mPoints[ last - 1 ] )
     return;
 
   QgsPoint pnt( point );
+  // Append point that we will be moving.
   mPoints.append( pnt );
-
 
   mRubberBand->addPoint( point );
   if ( ! mDone )
