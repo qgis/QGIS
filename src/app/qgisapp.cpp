@@ -2456,7 +2456,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     return false;
 
   zipItem->populate();
-  QgsDebugMsg( QString( "Got zipitem with %1 children" ).arg( zipItem->rowCount() ) );
+  QgsDebugMsg( QString( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
   if ( zipItem->rowCount() <= 1 )
@@ -2487,7 +2487,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     {
       QgsDataItem *item = zipItem->children()[i];
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-      QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+      QgsDebugMsgLevel( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
       if ( layerItem && layerItem->providerKey() == "gdal" )
       {
         layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
@@ -2514,7 +2514,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     // return true so dialog doesn't popup again (#6225) - hopefully this doesn't create other trouble
     ok = true;
   }
-  
+
   // add childItems
   foreach ( QgsDataItem* item, childItems )
   {

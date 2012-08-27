@@ -137,7 +137,10 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  QgsDebugMsg( "thePath = " + thePath );
+  if ( thePath.isEmpty() )
+    return 0;
+
+  QgsDebugMsgLevel( "thePath = " + thePath, 2 );
 
   // zip settings + info
   QSettings settings;
@@ -157,8 +160,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   info.setFile( thePath );
   QString name = info.fileName();
 
-  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name
-               + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix );
+  QgsDebugMsgLevel( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name
+                    + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && vsiPrefix == "" )
@@ -168,8 +171,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( extensions.isEmpty() )
   {
     buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
-    QgsDebugMsg( "extensions: " + extensions.join( " " ) );
-    QgsDebugMsg( "wildcards: " + wildcards.join( " " ) );
+    QgsDebugMsgLevel( "extensions: " + extensions.join( " " ), 2 );
+    QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
   }
 
   // skip *.aux.xml files (GDAL auxilary metadata files)
@@ -225,7 +228,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
       CPLErrorReset();
       if ( ! GDALIdentifyDriver( thePath.toLocal8Bit().constData(), 0 ) )
       {
-        QgsDebugMsg( "Skipping VRT file because root is not a GDAL VRT" );
+        QgsDebugMsgLevel( "Skipping VRT file because root is not a GDAL VRT", 2 );
         CPLPopErrorHandler();
         return 0;
       }
@@ -233,7 +236,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     }
     // add the item
     QStringList sublayers;
-    QgsDebugMsg( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ) );
+    QgsDebugMsgLevel( QString( "adding item name=%1 thePath=%2" ).arg( name ).arg( thePath ), 2 );
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath, &sublayers );
     if ( item )
       return item;
@@ -257,7 +260,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   GDALClose( hDS );
 
-  QgsDebugMsg( "GdalDataset opened " + thePath );
+  QgsDebugMsgLevel( "GdalDataset opened " + thePath, 2 );
 
   QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, thePath,
       &sublayers );
