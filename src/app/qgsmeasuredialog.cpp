@@ -278,7 +278,10 @@ void QgsMeasureDialog::updateUi()
   editTotal->setToolTip( toolTip );
   mTable->setToolTip( toolTip );
 
-  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QGis::tr( mDisplayUnits ) ) ) );
+  QGis::UnitType newDisplayUnits;
+  double dummy = 1.0;
+  convertMeasurement( dummy, newDisplayUnits, true );
+  mTable->setHeaderLabels( QStringList( tr( "Segments [%1]" ).arg( QGis::tr( newDisplayUnits ) ) ) );
 
   if ( mMeasureArea )
   {
