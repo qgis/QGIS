@@ -42,7 +42,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 
   mDone = false;
   // Append point we will move
-  mPoints.append( QgsPoint (0, 0) );
+  mPoints.append( QgsPoint( 0, 0 ) );
 
   mDialog = new QgsMeasureDialog( this );
   mSnapper.setMapCanvas( canvas );
@@ -91,6 +91,7 @@ void QgsMeasureTool::activate()
 void QgsMeasureTool::deactivate()
 {
   mDialog->close();
+  mRubberBand->reset();
   QgsMapTool::deactivate();
 }
 
@@ -99,7 +100,7 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
   // Append point we will move
-  mPoints.append( QgsPoint (0, 0) );
+  mPoints.append( QgsPoint( 0, 0 ) );
 
   mRubberBand->reset( mMeasureArea );
 
@@ -144,7 +145,7 @@ void QgsMeasureTool::canvasMoveEvent( QMouseEvent * e )
     QgsPoint point = snapPoint( e->pos() );
 
     mRubberBand->movePoint( point );
-    if( ! mPoints.isEmpty() )
+    if ( ! mPoints.isEmpty() )
     {
       // Update last point
       mPoints.removeLast();
