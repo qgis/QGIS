@@ -79,8 +79,32 @@ class QgsRasterDataProvider : QgsDataProvider
 
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
+    // TODO: add other missing bindings (histo, pyramids and others)
 
-    /**
+     /** If the provider supports it, return band stats for the
+        given band. Default behaviour is to blockwise read the data
+        and generate the stats unless the provider overloads this function. */
+    //virtual QgsRasterBandStats bandStatistics( int theBandNo );
+
+    /** \brief Get band statistics.
+     * @param theBandNo The band (number).
+     * @param theStats Requested statistics
+     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
+     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
+     * @return Band statistics.
+     */
+    virtual QgsRasterBandStats bandStatistics( int theBandNo,
+        int theStats = QgsRasterBandStats::All,
+        const QgsRectangle & theExtent = QgsRectangle(),
+        int theSampleSize = 0 );
+
+    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
+    virtual bool hasStatistics( int theBandNo,
+                                int theStats = QgsRasterBandStats::All,
+                                const QgsRectangle & theExtent = QgsRectangle(),
+                                int theSampleSize = 0 );
+
+   /**
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */

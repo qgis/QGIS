@@ -96,7 +96,7 @@ public:
     /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while every RasterBandStats element will have the name and number of its associated
      * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef QList<QgsRasterBandStats> RasterStatsList;
+    // typedef QList<QgsRasterBandStats> RasterStatsList;
 
 
 
