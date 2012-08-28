@@ -48,9 +48,6 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   item->setTextAlignment( 0, Qt::AlignRight );
   mTable->addTopLevelItem( item );
 
-  // Update when the ellipsoidal button has changed state.
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SLOT( ellipsoidalButton() ) );
   // Update whenever the canvas has refreshed. Maybe more often than needed,
   // but at least every time any canvas related settings changes
   connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
@@ -59,51 +56,32 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WFlags f )
   updateSettings();
 }
 
-void QgsMeasureDialog::ellipsoidalButton()
-{
-  QSettings settings;
-  
-  // We set check state to Unchecked and button to Disabled when disabling CRS,
-  // which generates an call here. Ignore that event!
-  if ( mcbProjectionEnabled->isEnabled() )
-  {
-    if ( mcbProjectionEnabled->isChecked() )
-    {
-      settings.setValue( "/qgis/measure/projectionEnabled", 2 );
-    }
-    else
-    {
-      settings.setValue( "/qgis/measure/projectionEnabled", 0 );
-    }
-    updateSettings();
-  }
-}
-
 void QgsMeasureDialog::updateSettings()
 {
   QSettings settings;
 
-  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
-  if ( s == 2 )
+  mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
+  mCanvasUnits = mTool->canvas()->mapUnits();
+  mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  // Configure QgsDistanceArea
+  mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
+  mDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  if ( mTool->canvas()->mapRenderer()->hasCrsTransformEnabled() )
   {
-    mEllipsoidal = true;
+    mDa.setEllipsoidalMode( true );
   }
   else
   {
-    mEllipsoidal = false;
+    mDa.setEllipsoidalMode( false );
   }
 
-  mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();  
-  mCanvasUnits = mTool->canvas()->mapUnits();
-  mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
-
   QgsDebugMsg( "****************" );
-  QgsDebugMsg( QString( "Ellipsoidal: %1" ).arg( mEllipsoidal ? "true" : "false" ) );
-  QgsDebugMsg( QString( "Decimalpla.: %1" ).arg( mDecimalPlaces ) );
-  QgsDebugMsg( QString( "Display u. : %1" ).arg( QGis::toLiteral( mDisplayUnits ) ) );
-  QgsDebugMsg( QString( "Canvas u.  : %1" ).arg( QGis::toLiteral( mCanvasUnits ) ) );
-  
-  configureDistanceArea();
+  QgsDebugMsg( QString( "Ellipsoid ID : %1" ).arg( mDa.ellipsoid() ) );
+  QgsDebugMsg( QString( "Ellipsoidal  : %1" ).arg( mDa.ellipsoidalEnabled() ? "true" : "false" ) );
+  QgsDebugMsg( QString( "Decimalplaces: %1" ).arg( mDecimalPlaces ) );
+  QgsDebugMsg( QString( "Display units: %1" ).arg( QGis::toLiteral( mDisplayUnits ) ) );
+  QgsDebugMsg( QString( "Canvas units : %1" ).arg( QGis::toLiteral( mCanvasUnits ) ) );
 
   // clear interface
   mTable->clear();
@@ -243,11 +221,6 @@ QString QgsMeasureDialog::formatArea( double area )
 
 void QgsMeasureDialog::updateUi()
 {
-  // If project wide transformation is off, disbale checkbox and unmark it.
-  // When on, enable checbox and mark with saved value.
-  mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
-  mcbProjectionEnabled->setCheckState( mTool->canvas()->hasCrsTransformEnabled() && mEllipsoidal ? Qt::Checked : Qt::Unchecked );
-
   // Set tooltip to indicate how we calculate measurments
   QString toolTip = tr( "The calculations are based on:" );
   if ( ! mTool->canvas()->hasCrsTransformEnabled() )
@@ -337,12 +310,3 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   u = myUnits;
 }
 
-void QgsMeasureDialog::configureDistanceArea()
-{
-  QSettings settings;
-  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
-  mDa.setEllipsoid( ellipsoidId );
-  // Only use ellipsoidal calculation when project wide transformation is enabled.
-  mDa.setEllipsoidalMode( mEllipsoidal && mTool->canvas()->hasCrsTransformEnabled() );
-}

@@ -180,17 +180,17 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QSettings settings;
-  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
   mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
-  if ( s == 2 )
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() )
   {
-    mDa.setEllipsoidalMode( mResultDisplay->projectionEnabled() );
+    mDa.setEllipsoidalMode( true );
   }
   else
   {
-    mDa.setEllipsoidalMode( mResultDisplay->projectionEnabled() );
+    mDa.setEllipsoidalMode( false );
   }
 }
 
