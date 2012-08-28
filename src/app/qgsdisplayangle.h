@@ -31,16 +31,10 @@ class QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
       be converted to degrees / gon automatically if necessary*/
     void setValueInRadians( double value );
 
-    bool projectionEnabled();
-
-
   signals:
     void changeProjectionEnabledState();
 
   private slots:
-
-    //! When the ellipsoidal button is pressed/toggled.
-    void ellipsoidalButton();
 
     //! When any external settings change
     void updateSettings();
@@ -48,9 +42,6 @@ class QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
   private:
     //! pointer to tool which owns this dialog
     QgsMapToolMeasureAngle * mTool;
-
-    //! Holds what the user last set ellipsoid button to.
-    bool mEllipsoidal;
 
     //! The value we're showing
     double mValue;

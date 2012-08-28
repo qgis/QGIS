@@ -63,9 +63,6 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Show the help for the dialog
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    //! When the ellipsoidal button is pressed/toggled.
-    void ellipsoidalButton();
-
     //! When any external settings change
     void updateSettings();
 
@@ -83,16 +80,10 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! Converts the measurement, depending on settings in options and current transformation
     void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
 
-    //! Configures distance area objects with ellipsoid / output crs
-    void configureDistanceArea();
-
     double mTotal;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;
-    
-    //! indicates whether user wants ellipsoidal or flat
-    bool mEllipsoidal;
 
     //! Number of decimal places we want.
     int mDecimalPlaces;

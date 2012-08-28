@@ -26,9 +26,6 @@ QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WFlags f )
   setupUi( this );
   QSettings settings;
 
-  // Update when the ellipsoidal button has changed state.
-  connect( mcbProjectionEnabled, SIGNAL( stateChanged( int ) ),
-           this, SLOT( ellipsoidalButton() ) );
   // Update whenever the canvas has refreshed. Maybe more often than needed,
   // but at least every time any canvas related settings changes
   connect( mTool->canvas(), SIGNAL( mapCanvasRefreshed() ),
@@ -42,10 +39,6 @@ QgsDisplayAngle::~QgsDisplayAngle()
 
 }
 
-bool QgsDisplayAngle::projectionEnabled()
-{
-  return mcbProjectionEnabled->isChecked();
-}
 
 void QgsDisplayAngle::setValueInRadians( double value )
 {
@@ -53,52 +46,13 @@ void QgsDisplayAngle::setValueInRadians( double value )
   updateUi();
 }
 
-void QgsDisplayAngle::ellipsoidalButton()
-{
-  QSettings settings;
-
-  // We set check state to Unchecked and button to Disabled when disabling CRS,
-  // which generates a call here. Ignore that event!
-  if ( mcbProjectionEnabled->isEnabled() )
-  {
-    if ( mcbProjectionEnabled->isChecked() )
-    {
-      settings.setValue( "/qgis/measure/projectionEnabled", 2 );
-    }
-    else
-    {
-      settings.setValue( "/qgis/measure/projectionEnabled", 0 );
-    }
-    updateSettings();
-  }
-}
-
 void QgsDisplayAngle::updateSettings()
 {
-  QSettings settings;
-
-  int s = settings.value( "/qgis/measure/projectionEnabled", "2" ).toInt();
-  if ( s == 2 )
-  {
-    mEllipsoidal = true;
-  }
-  else
-  {
-    mEllipsoidal = false;
-  }
-  QgsDebugMsg( "****************" );
-  QgsDebugMsg( QString( "Ellipsoidal: %1" ).arg( mEllipsoidal ? "true" : "false" ) );
-
-  updateUi();
   emit changeProjectionEnabledState();
-
 }
 
 void QgsDisplayAngle::updateUi()
 {
-  mcbProjectionEnabled->setEnabled( mTool->canvas()->hasCrsTransformEnabled() );
-  mcbProjectionEnabled->setCheckState( mTool->canvas()->hasCrsTransformEnabled()
-                                       && mEllipsoidal ? Qt::Checked : Qt::Unchecked );
 
   QSettings settings;
   QString unitString = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
