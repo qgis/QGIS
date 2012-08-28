@@ -283,7 +283,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   getEllipsoidList();
   // Pre-select current ellipsoid
-  QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
   cmbEllipsoid->setCurrentIndex( cmbEllipsoid->findText( getEllipsoidName( myEllipsoidId ), Qt::MatchExactly ) );
   // Check if CRS transformation is on, or else turn combobox off
   if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )

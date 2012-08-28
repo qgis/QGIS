@@ -773,15 +773,15 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
   Q_UNUSED( f );
   if ( values.length() == 2 )
   {
-      double number = getDoubleValue( values.at( 0 ), parent );
-      double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
-      return QVariant( qRound( number * scaler ) / scaler );
+    double number = getDoubleValue( values.at( 0 ), parent );
+    double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
+    return QVariant( round( number * scaler ) / scaler );
   }
 
   if ( values.length() == 1 )
   {
-      double number = getIntValue( values.at( 0 ), parent );
-      return QVariant( qRound( number) ).toInt();
+    double number = getIntValue( values.at( 0 ), parent );
+    return QVariant( round( number ) ).toInt();
   }
 
   return QVariant();
@@ -933,10 +933,10 @@ bool QgsExpression::needsGeometry()
 void QgsExpression::initGeomCalculator()
 {
   mCalc = new QgsDistanceArea;
-  mCalc->setEllipsoidalMode( false );
   QSettings settings;
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
   mCalc->setEllipsoid( ellipsoid );
+  mCalc->setEllipsoidalMode( false );
 }
 
 bool QgsExpression::prepare( const QgsFieldMap& fields )
