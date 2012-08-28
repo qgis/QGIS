@@ -172,89 +172,88 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
 #if 0
     else if ( )
+    {
       // TODO: see if nuller has user defined aditional values, in that case use one as no data value
 
     }
 #endif
-  else
-  {
-    // Verify if we realy need no data value, i.e.
-    QgsRectangle srcExtent = outputExtent;
-    QgsRasterProjector *projector = pipe->projector();
-    if ( projector && projector->destCrs() != projector->srcCrs() )
+    else
     {
-      QgsCoordinateTransform ct( projector->destCrs(), projector->srcCrs() );
-      srcExtent = ct.transformBoundingBox( outputExtent );
+      // Verify if we realy need no data value, i.e.
+      QgsRectangle srcExtent = outputExtent;
+      QgsRasterProjector *projector = pipe->projector();
+      if ( projector && projector->destCrs() != projector->srcCrs() )
+      {
+        QgsCoordinateTransform ct( projector->destCrs(), projector->srcCrs() );
+        srcExtent = ct.transformBoundingBox( outputExtent );
+      }
+      if ( !srcProvider->extent().contains( srcExtent ) )
+      {
+        // Destination extent is larger than source extent, we need destination no data values
+        // Get src sample statistics (estimation from sample)
+        QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
+
+        // Test if we have free (not used) values
+        double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+        if ( stats.minimumValue > typeMinValue )
+        {
+          destNoDataValue = typeMinValue;
+        }
+        else if ( stats.maximumValue < typeMaxValue )
+        {
+          destNoDataValue = typeMaxValue;
+        }
+        else
+        {
+          // We have to use wider type
+          destDataType = QgsRasterInterface::typeWithNoDataValue( destDataType, &destNoDataValue );
+        }
+        destHasNoDataValue = true;
+      }
     }
-    if ( !srcProvider->extent().contains( srcExtent ) )
+    QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
+    destDataTypeList.append( destDataType );
+    destHasNoDataValueList.append( destHasNoDataValue );
+    destNoDataValueList.append( destNoDataValue );
+  }
+
+  QgsRasterInterface::DataType destDataType = destDataTypeList.value( 0 );
+  // Currently write API supports one output type for dataset only -> find the widest
+  for ( int i = 1; i < nBands; i++ )
+  {
+    if ( destDataTypeList.value( i ) > destDataType )
     {
-      // Destination extent is larger than source extent, we need destination no data values
-      // Get src sample statistics (estimation from sample)
-      QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
-
-      // Test if we have free (not used) values
-      double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
-      double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
-      if ( stats.minimumValue > typeMinValue )
-      {
-        destNoDataValue = typeMinValue;
-      }
-      else if ( stats.maximumValue < typeMaxValue )
-      {
-        destNoDataValue = typeMaxValue;
-      }
-      else
-      {
-        // We have to use wider type
-        destDataType = QgsRasterInterface::typeWithNoDataValue( destDataType, &destNoDataValue );
-      }
-      destHasNoDataValue = true;
+      destDataType = destDataTypeList.value( i );
+      // no data value may be left per band (for future)
     }
   }
-  QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
-  destDataTypeList.append( destDataType );
-  destHasNoDataValueList.append( destHasNoDataValue );
-  destNoDataValueList.append( destNoDataValue );
-}
 
-// TODO - what is this code doing here in the middle of the file, outside of a function???
-
-QgsRasterInterface::DataType destDataType = destDataTypeList.value( 0 );
-// Currently write API supports one output type for dataset only -> find the widest
-for ( int i = 1; i < nBands; i++ )
-{
-  if ( destDataTypeList.value( i ) > destDataType )
-  {
-    destDataType = destDataTypeList.value( i );
-    // no data value may be left per band (for future)
-  }
-}
-
-destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
-
-WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
-
-if ( error == NoDataConflict )
-{
-  // The value used for no data was found in source data, we must use wider data type
-  destProvider->remove();
-  delete destProvider;
-
-  // But we don't know which band -> wider all
-  for ( int i = 0; i < nBands; i++ )
-  {
-    double destNoDataValue;
-    QgsRasterInterface::DataType destDataType = QgsRasterInterface::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
-    destDataTypeList.replace( i, destDataType );
-    destNoDataValueList.replace( i, destNoDataValue );
-  }
-
-  // Try again
   destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
-  error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
-}
 
-return error;
+  WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
+
+  if ( error == NoDataConflict )
+  {
+    // The value used for no data was found in source data, we must use wider data type
+    destProvider->remove();
+    delete destProvider;
+
+    // But we don't know which band -> wider all
+    for ( int i = 0; i < nBands; i++ )
+    {
+      double destNoDataValue;
+      QgsRasterInterface::DataType destDataType = QgsRasterInterface::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
+      destDataTypeList.replace( i, destDataType );
+      destNoDataValueList.replace( i, destNoDataValue );
+    }
+
+    // Try again
+    destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
+    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
+  }
+
+  return error;
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(

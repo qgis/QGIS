@@ -434,8 +434,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  @param splitLine line that splits the layer features
      *  @param topologicalEditing true if topological editing is enabled
      *  @return
-     *    0 in case of success,
-     *	  4 if there is a selection but no feature split
+     *   0 in case of success,
+     *   4 if there is a selection but no feature split
      */
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
@@ -473,7 +473,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void enableLabels( bool on );
 
     /** Label is on */
-    bool hasLabelsEnabled( void ) const;
+    bool hasLabelsEnabled() const;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -717,7 +717,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @param index column index for attribute
       @param uniqueValues out: result list
       @param limit maximum number of values to return (-1 if unlimited)
-      @note this method was added in version 1.7*/
+      @note this method was added in version 1.7 */
     void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /**Returns minimum value for an attribute column or invalid variant in case of error

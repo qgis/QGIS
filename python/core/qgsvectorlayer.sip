@@ -152,9 +152,9 @@ class QgsVectorLayer : QgsMapLayer
     /** Get the label object associated with this layer */
     QgsLabel *label();
 
-    const QgsLabel *label() const;
+    // const QgsLabel *label() const;
 
-  QgsAttributeAction *actions();
+    QgsAttributeAction *actions();
 
     /** The number of features that are selected in this layer */
     int selectedFeatureCount();
@@ -380,8 +380,8 @@ class QgsVectorLayer : QgsMapLayer
      *  @param splitLine line that splits the layer features
      *  @param topologicalEditing true if topological editing is enabled
      *  @return
-     *    0 in case of success,
-     *	  4 if there is a selection but no feature split
+     *   0 in case of success,
+     *   4 if there is a selection but no feature split
      */
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
@@ -419,7 +419,7 @@ class QgsVectorLayer : QgsMapLayer
     void enableLabels( bool on );
 
     /** Label is on */
-    bool hasLabelsEnabled( void ) const;
+    bool hasLabelsEnabled() const;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -492,7 +492,7 @@ class QgsVectorLayer : QgsMapLayer
       @note added in version 1.2 */
     bool changeGeometry( qint64 fid, QgsGeometry* geom );
 
-    /** changed an attribute value (but does not commit it */
+    /** changed an attribute value (but does not commit it) */
     bool changeAttributeValue( qint64 fid, int field, QVariant value, bool emitSignal = true );
 
     /** add an attribute field (but does not commit it)
@@ -556,19 +556,16 @@ class QgsVectorLayer : QgsMapLayer
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
 
-    /** return string representing 'true' for a checkbox (added in 1.4) */
+    /** return string representing 'true' for a checkbox (added in 1.4)
      * @note not available in python bindings
      * FIXME: need SIP binding for QPair<QString, QString>
+     */
     // QPair<QString, QString> checkedState( int idx );
 
-    /** get edit form
-      @note added in 1.4
-     */
+    /** get edit form (added in 1.4) */
     QString editForm();
 
-    /** set edit form
-      @note added in 1.4
-     */
+    /** set edit form (added in 1.4) */
     void setEditForm( QString ui );
 
     /** get annotation form (added in 1.5)*/
@@ -667,7 +664,7 @@ class QgsVectorLayer : QgsMapLayer
       @param index column index for attribute
       @param uniqueValues out: result list
       @param limit maximum number of values to return (-1 if unlimited)
-      @note this method was added in version 1.7*/
+      @note this method was added in version 1.7 */
     void uniqueValues( int index, QList<QVariant> &uniqueValues /Out/, int limit = -1 );
 
     /**Returns minimum value for an attribute column or invalid variant in case of error
