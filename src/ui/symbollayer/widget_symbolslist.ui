@@ -279,6 +279,9 @@
        <verstretch>2</verstretch>
       </sizepolicy>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
      <property name="iconSize">
       <size>
        <width>48</width>
@@ -294,11 +297,17 @@
      <property name="spacing">
       <number>5</number>
      </property>
+     <property name="gridSize">
+      <size>
+       <width>75</width>
+       <height>83</height>
+      </size>
+     </property>
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
      </property>
      <property name="uniformItemSizes">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
@@ -310,13 +319,6 @@
      <property name="topMargin">
       <number>2</number>
      </property>
-     <item>
-      <widget class="QLabel" name="lblSymbolName">
-       <property name="text">
-        <string>Symbol Name</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
