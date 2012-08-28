@@ -3160,7 +3160,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
           bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
-          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti );
+          QString filterAttributeColumn= editTypeElement.attribute( "filterAttributeColumn", QString::null );
+          QString filterAttributeValue = editTypeElement.attribute( "filterAttributeValue", QString::null );
+          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti, filterAttributeColumn, filterAttributeValue );
         }
         break;
 
@@ -3382,6 +3384,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
             editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
             editTypeElement.setAttribute( "allowMulti", data.mAllowMulti ? "true" : "false" );
+            if ( !data.mFilterAttributeColumn.isNull() )
+              editTypeElement.setAttribute( "filterAttributeColumn", data.mFilterAttributeColumn );
+            if ( !data.mFilterAttributeValue.isNull() )
+              editTypeElement.setAttribute( "filterAttributeValue", data.mFilterAttributeValue );
           }
           break;
 

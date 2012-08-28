@@ -52,6 +52,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   }
 
   connect( valueRelationLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateLayerColumns( int ) ) );
+  connect( valueRelationFilterColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateFilterColumn( int ) ) );
   valueRelationLayer->setCurrentIndex( -1 );
 }
 
@@ -606,6 +607,16 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
       mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
       mValueRelationData.mAllowMulti = valueRelationAllowMulti->isChecked();
+      if( valueRelationFilterColumn->currentIndex() == 0 )
+      {
+        mValueRelationData.mFilterAttributeColumn = QString::null;
+        mValueRelationData.mFilterAttributeValue = QString::null;
+      }
+      else
+      {
+        mValueRelationData.mFilterAttributeColumn = valueRelationFilterColumn->currentText();
+        mValueRelationData.mFilterAttributeValue = valueRelationFilterValue->currentText();
+      }
       break;
     case 13:
       mEditType = QgsVectorLayer::UuidGenerator;
@@ -631,12 +642,51 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
   if ( !vl )
     return;
 
-  foreach ( const QgsField &f, vl->pendingFields() )
+  valueRelationFilterColumn->addItem( tr( "No filter" ), -1 );
+
+  const QgsFieldMap &fields = vl->pendingFields();
+  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
-    valueRelationKeyColumn->addItem( f.name() );
-    valueRelationValueColumn->addItem( f.name() );
+    valueRelationKeyColumn->addItem( it->name() );
+    valueRelationValueColumn->addItem( it->name() );
+    valueRelationFilterColumn->addItem( it->name(), it.key() );
   }
 
   valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
   valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
+
+  if( mValueRelationData.mFilterAttributeColumn.isNull() )
+  {
+    valueRelationFilterColumn->setCurrentIndex( 0 );
+  }
+  else
+  {
+    valueRelationFilterColumn->setCurrentIndex( valueRelationFilterColumn->findText( mValueRelationData.mFilterAttributeColumn ) );
+  }
+}
+
+void QgsAttributeTypeDialog::updateFilterColumn( int idx )
+{
+  valueRelationFilterValue->clear();
+  valueRelationFilterValue->setEnabled( idx > 0 );
+  if ( idx == 0 )
+    return;
+
+  QString id = valueRelationLayer->itemData( valueRelationLayer->currentIndex() ).toString();
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  if ( !vl )
+    return;
+
+  int fidx = valueRelationFilterColumn->itemData( idx ).toInt();
+
+  QList<QVariant> uniqueValues;
+  vl->uniqueValues( fidx, uniqueValues );
+
+  foreach( const QVariant &v, uniqueValues )
+  {
+    valueRelationFilterValue->addItem( v.toString(), v );
+  }
+
+  valueRelationFilterValue->setCurrentIndex( valueRelationFilterValue->findText( mValueRelationData.mFilterAttributeValue ) );
 }

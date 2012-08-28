@@ -64,7 +64,9 @@ struct CORE_EXPORT QgsVectorJoinInfo
   int joinField;
   /**True if the join is cached in virtual memory*/
   bool memoryCache;
-  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)*/
+  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
+    @note not available in python bindings
+    */
   QHash< QString, QgsAttributeMap> cachedAttributes;
 };
 
@@ -99,7 +101,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       CheckBox,      /* added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,     /* The attribute value should not be changed in the attribute form*/
+      Immutable,     /* The attribute value should not be changed in the attribute form */
       Hidden,        /* The attribute value should not be shown in the attribute form @added in 1.4 */
       TextEdit,      /* multiline edit @added in 1.4*/
       Calendar,      /* calendar widget @added in 1.5 */
@@ -122,12 +124,25 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     struct ValueRelationData
     {
       ValueRelationData() {}
-      ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue, bool allowMulti = false )
-          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ), mOrderByValue( orderByValue ), mAllowMulti( allowMulti ) {}
+      ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue,
+                         bool allowMulti = false,
+                         QString filterAttributeColumn = QString::null,
+                         QString filterAttributeValue = QString::null )
+          : mLayer( layer )
+          , mKey( key )
+          , mValue( value )
+          , mFilterAttributeColumn( filterAttributeColumn )
+          , mFilterAttributeValue( filterAttributeValue )
+          , mAllowNull( allowNull )
+          , mOrderByValue( orderByValue )
+          , mAllowMulti( allowMulti )
+      {}
 
       QString mLayer;
       QString mKey;
       QString mValue;
+      QString mFilterAttributeColumn;
+      QString mFilterAttributeValue;
       bool mAllowNull;
       bool mOrderByValue;
       bool mAllowMulti;  /* allow selection of multiple keys @added in 1.9 */
@@ -158,7 +173,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the data provider */
     QgsVectorDataProvider* dataProvider();
 
-    /** Returns the data provider in a const-correct manner */
+    /** Returns the data provider in a const-correct manner
+        @note not available in python bindings
+      */
     const QgsVectorDataProvider* dataProvider() const;
 
     /** Sets the textencoding of the data provider */
@@ -184,7 +201,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     const QgsLabel *label() const;
 
-    QgsAttributeAction* actions() { return mActions; }
+    QgsAttributeAction *actions() { return mActions; }
 
     /** The number of features that are selected in this layer */
     int selectedFeatureCount();
@@ -202,10 +219,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsFeatureList selectedFeatures();
 
     /** Return reference to identifiers of selected features */
-    const QgsFeatureIds& selectedFeaturesIds() const;
+    const QgsFeatureIds &selectedFeaturesIds() const;
 
     /** Change selection to the new set of features */
-    void setSelectedFeatures( const QgsFeatureIds& ids );
+    void setSelectedFeatures( const QgsFeatureIds &ids );
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
@@ -259,7 +276,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QGis::GeometryType geometryType() const;
 
     /** Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
-      @note added in 1.7*/
+     * @note added in 1.7
+     */
     bool hasGeometryType() const;
 
     /**Returns the WKBType or WKBUnknown in case of error*/
@@ -279,10 +297,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
     /** Read the symbology for the current layer from the Dom node supplied.
-    * @param node node that will contain the symbology definition for this layer.
-    * @param errorMessage reference to string that will be updated with any error messages
-    * @return true in case of success.
-    */
+     * @param node node that will contain the symbology definition for this layer.
+     * @param errorMessage reference to string that will be updated with any error messages
+     * @return true in case of success.
+     */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
     /** Write the symbology for the layer into the docment provided.
@@ -308,7 +326,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** This function does nothing useful, it's kept only for compatibility.
      * @todo to be removed
      */
-    virtual long updateFeatureCount() const;
+    Q_DECL_DEPRECATED virtual long updateFeatureCount() const;
 
     /**
      * Set the string (typically sql) used to define a subset of the layer
@@ -413,37 +431,42 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
     /**Splits features cut by the given line
-       @param splitLine line that splits the layer features
-       @param topologicalEditing true if topological editing is enabled
-       @return 0 in case of success, 4 if there is a selection but no feature split*/
+     *  @param splitLine line that splits the layer features
+     *  @param topologicalEditing true if topological editing is enabled
+     *  @return
+     *    0 in case of success,
+     *	  4 if there is a selection but no feature split
+     */
     int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
 
     /**Changes the specified geometry such that it has no intersections with other
-       polygon (or multipolygon) geometries in this vector layer
-    @param geom geometry to modify
-    @return 0 in case of success*/
+     *  polygon (or multipolygon) geometries in this vector layer
+     *  @param geom geometry to modify
+     *  @return 0 in case of success
+     */
     int removePolygonIntersections( QgsGeometry* geom );
 
     /** Adds topological points for every vertex of the geometry.
-    @param geom the geometry where each vertex is added to segments of other features
-    @note geom is not going to be modified by the function
-    @return 0 in case of success
-    @see addTopologicalPoints
-    */
+     * @param geom the geometry where each vertex is added to segments of other features
+     * @note geom is not going to be modified by the function
+     * @return 0 in case of success
+     */
     int addTopologicalPoints( QgsGeometry* geom );
 
-    /**Adds a vertex to segments which intersect point p but don't
-     already have a vertex there. If a feature already has a vertex at position p,
-     no additional vertex is inserted. This method is useful for topological
-     editing.
-    @param p position of the vertex
-    @return 0 in case of success*/
+    /** Adds a vertex to segments which intersect point p but don't
+     * already have a vertex there. If a feature already has a vertex at position p,
+     * no additional vertex is inserted. This method is useful for topological
+     * editing.
+     * @param p position of the vertex
+     * @return 0 in case of success
+     */
     int addTopologicalPoints( const QgsPoint& p );
 
     /**Inserts vertices to the snapped segments.
-    This is useful for topological editing if snap to segment is enabled.
-    @param snapResults results collected from the snapping operation
-    @return 0 in case of success*/
+     * This is useful for topological editing if snap to segment is enabled.
+     * @param snapResults results collected from the snapping operation
+     * @return 0 in case of success
+     */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
     /** Set labels on */
@@ -456,26 +479,28 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual bool isEditable() const;
 
     /** Returns true if the provider is in read-only mode
-     * @note added in 1.6 */
+     * @note added in 1.6
+     */
     virtual bool isReadOnly() const;
 
     /** Returns true if the provider has been modified since the last commit */
     virtual bool isModified() const;
 
     /**Snaps a point to the closest vertex if there is one within the snapping tolerance
-       @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
-       If there is no point within this tolerance, point is left unchanged.
-       @param tolerance   The snapping tolerance
-       @return true if point has been snapped, false if no vertex within search tolerance*/
+     *  @param point       The point which is set to the position of a vertex if there is one within the snapping tolerance.
+     *  If there is no point within this tolerance, point is left unchanged.
+     *  @param tolerance   The snapping tolerance
+     *  @return true if the point has been snapped, false if no vertex within search tolerance
+     */
     bool snapPoint( QgsPoint& point, double tolerance );
 
     /**Snaps to segment or vertex within given tolerance
-       @param startPoint point to snap (in layer coordinates)
-       @param snappingTolerance distance tolerance for snapping
-       @param snappingResults snapping results. Key is the distance between startPoint and snapping target
-       @param snap_to to segment / to vertex
-       @return 0 in case of success
-    */
+     * @param startPoint point to snap (in layer coordinates)
+     * @param snappingTolerance distance tolerance for snapping
+     * @param snappingResults snapping results. Key is the distance between startPoint and snapping target
+     * @param snap_to to segment / to vertex
+     * @return 0 in case of success
+     */
     int snapWithContext( const QgsPoint& startPoint,
                          double snappingTolerance,
                          QMultiMap < double, QgsSnappingResult > &snappingResults,
@@ -585,7 +610,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** set string representing 'true' for a checkbox (added in 1.4) */
     void setCheckedState( int idx, QString checked, QString notChecked );
 
-    /** return string representing 'true' for a checkbox (added in 1.4) */
+    /** return string representing 'true' for a checkbox (added in 1.4)
+     * @note not available in python bindings
+     */
     QPair<QString, QString> checkedState( int idx );
 
     /** get edit form (added in 1.4) */
@@ -650,10 +677,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
 
-    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
+    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand.
+     * @note not available in python bindings
+     */
     void undoEditCommand( QgsUndoCommand* cmd );
 
-    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
+    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand.
+     * @note not available in python bindings
+     */
     void redoEditCommand( QgsUndoCommand* cmd );
 
     /** Returns the index of a field name or -1 if the field does not exist
@@ -690,7 +721,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /**Returns minimum value for an attribute column or invalid variant in case of error
-         @note added in 1.7*/
+      @note added in 1.7*/
     QVariant minimumValue( int index );
 
     /**Returns maximum value for an attribute column or invalid variant in case of error
@@ -755,7 +786,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   private:                       // Private methods
 
     /** vector layers are not copyable */
-    QgsVectorLayer( QgsVectorLayer const & rhs );
+    QgsVectorLayer( const QgsVectorLayer & rhs );
 
     /** vector layers are not copyable */
     QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
