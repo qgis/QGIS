@@ -233,6 +233,7 @@ void QgsStyleV2ManagerDialog::populateColorRamps( QStringList colorRamps, bool c
     item->setIcon( icon );
     item->setData( name ); // used to find out original name when user edited the name
     item->setCheckable( check );
+    item->setToolTip( name );
     model->appendRow( item );
     delete ramp;
   }
@@ -285,16 +286,20 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 {
   // create new symbol with current type
   QgsSymbolV2* symbol;
+  QString name = tr( "new symbol" );
   switch ( currentItemType() )
   {
     case QgsSymbolV2::Marker:
       symbol = new QgsMarkerSymbolV2();
+      name = tr( "new marker" );
       break;
     case QgsSymbolV2::Line:
       symbol = new QgsLineSymbolV2();
+      name = tr( "new line" );
       break;
     case QgsSymbolV2::Fill:
       symbol = new QgsFillSymbolV2();
+      name = tr( "new fill symbol" );
       break;
     default:
       Q_ASSERT( 0 && "unknown symbol type" );
@@ -309,18 +314,15 @@ bool QgsStyleV2ManagerDialog::addSymbol()
     return false;
   }
 
-  // get name
+  // get unique name
   bool nameInvalid = true;
-  QString name;
 
   while ( nameInvalid )
   {
     bool ok;
     name = QInputDialog::getText( this, tr( "Symbol Name" ),
                                   tr( "Please enter a name for new symbol:" ),
-                                  QLineEdit::Normal,
-                                  tr( "new symbol" ),
-                                  &ok );
+                                  QLineEdit::Normal, name, &ok );
     if ( !ok )
     {
       delete symbol;
@@ -370,6 +372,8 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
   if ( !ok || rampType.isEmpty() )
     return QString();
 
+  QString name = tr( "new ramp" );
+
   QgsVectorColorRampV2 *ramp = NULL;
   if ( rampType == tr( "Gradient" ) )
   {
@@ -381,6 +385,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
       return QString();
     }
     ramp = gradRamp;
+    name = tr( "new gradient ramp" );
   }
   else if ( rampType == tr( "Random" ) )
   {
@@ -392,6 +397,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
       return QString();
     }
     ramp = randRamp;
+    name = tr( "new random ramp" );
   }
   else if ( rampType == tr( "ColorBrewer" ) )
   {
@@ -403,6 +409,7 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
       return QString();
     }
     ramp = brewerRamp;
+    name = brewerRamp->schemeName() + QString::number( brewerRamp->colors() );
   }
   else if ( rampType == tr( "cpt-city" ) )
   {
@@ -411,10 +418,11 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
     if ( !dlg.exec() )
     {
       delete cptCityRamp;
-      // return QString();
-      return dlg.selectedName();
+      return QString();
     }
     ramp = cptCityRamp;
+    // name = dlg.selectedName();
+    name = QFileInfo( cptCityRamp->schemeName() ).baseName() + cptCityRamp->variantName();
   }
   else
   {
@@ -424,18 +432,15 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
     return QString();
   }
 
-  // get name
+  // get unique name
   bool nameInvalid = true;
-  QString name;
 
   while ( nameInvalid )
   {
     bool ok;
     name = QInputDialog::getText( parent, tr( "Color Ramp Name" ),
                                   tr( "Please enter a name for new color ramp:" ),
-                                  QLineEdit::Normal,
-                                  tr( "new ramp" ),
-                                  &ok );
+                                  QLineEdit::Normal, name, &ok );
     if ( !ok )
     {
       delete ramp;
