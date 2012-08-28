@@ -15,7 +15,6 @@
 
 #include "qgsmaptoolfeatureaction.h"
 
-#include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -111,7 +110,6 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   // load identify radius from settings
   QSettings settings;
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
 
   if ( identifyValue <= 0.0 )
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
