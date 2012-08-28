@@ -72,7 +72,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( saveStyle, SIGNAL( triggered() ), this, SLOT( addSymbolToStyle() ) );
   btnStyle->setMenu( styleMenu );
 
-  lblSymbolName->setText( "" );
   populateSymbolView();
 
   if ( mSymbol )
@@ -150,8 +149,8 @@ void QgsSymbolsListWidget::populateSymbols( QStringList names )
       continue;
     }
     QStandardItem* item = new QStandardItem( names[i] );
-    item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
-    item->setText( "" ); //set the text to nothing and show in label when clicked rather
+    item->setText( names[i] );
+    item->setToolTip( names[i] );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     // create preview icon
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
@@ -298,7 +297,6 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )
 {
   QString symbolName = index.data( Qt::UserRole ).toString();
-  lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
   QgsSymbolV2* s = mStyle->symbol( symbolName );
   // remove all symbol layers from original symbol
