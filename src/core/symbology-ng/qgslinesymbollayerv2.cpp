@@ -779,8 +779,11 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::createFromSld( QDomElement &elemen
     marker = new QgsMarkerSymbolV2( layers );
   }
 
+  if ( !marker )
+    return NULL;
+
   double interval = 0.0;
-  QDomElement gapElem = element.firstChildElement( "Gap" );
+  QDomElement gapElem = graphicStrokeElem.firstChildElement( "Gap" );
   if ( !gapElem.isNull() )
   {
     bool ok;
@@ -790,7 +793,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::createFromSld( QDomElement &elemen
   }
 
   double offset = 0.0;
-  QDomElement perpOffsetElem = element.firstChildElement( "PerpendicularOffset" );
+  QDomElement perpOffsetElem = graphicStrokeElem.firstChildElement( "PerpendicularOffset" );
   if ( !perpOffsetElem.isNull() )
   {
     bool ok;
@@ -801,12 +804,9 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::createFromSld( QDomElement &elemen
 
   QgsMarkerLineSymbolLayerV2* x = new QgsMarkerLineSymbolLayerV2( rotateMarker );
   x->setPlacement( placement );
-  if ( !doubleNear( interval, 0.0 ) && interval > 0 )
-    x->setInterval( interval );
-  if ( marker )
-    x->setSubSymbol( marker );
-  if ( !doubleNear( offset, 0.0 ) )
-    x->setOffset( offset );
+  x->setInterval( interval );
+  x->setSubSymbol( marker );
+  x->setOffset( offset );
   return x;
 }
 

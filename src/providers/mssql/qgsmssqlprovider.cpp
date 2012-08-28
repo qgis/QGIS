@@ -520,7 +520,7 @@ bool QgsMssqlProvider::nextFeature( QgsFeature& feature )
 
     if ( mFidCol >= 0 )
     {
-      feature.setFeatureId( mQuery.value( col ).toInt() );
+      feature.setFeatureId( mQuery.value( col ).toLongLong() );
       col++;
     }
 

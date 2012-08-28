@@ -184,13 +184,7 @@ void QgsDiagramRendererV2::convertSizeToMapUnits( QSizeF& size, const QgsRenderC
     return;
   }
 
-  int dpi = dpiPaintDevice( context.constPainter() );
-  if ( dpi < 0 )
-  {
-    return;
-  }
-
-  double pixelToMap = dpi / 25.4 * context.mapToPixel().mapUnitsPerPixel();
+  double pixelToMap = context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
   size.rwidth() *= pixelToMap;
   size.rheight() *= pixelToMap;
 }

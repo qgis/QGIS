@@ -171,7 +171,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
       break;
   }
 
-  QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
+  QgsDebugMsgLevel( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ), 2 );
 
   QString layerUri = path;
 
@@ -186,7 +186,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
     path += "/" + name;
   }
 
-  QgsDebugMsg( "OGR layer uri : " + layerUri );
+  QgsDebugMsgLevel( "OGR layer uri : " + layerUri, 2 );
 
   return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType );
 }
@@ -235,7 +235,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   if ( thePath.isEmpty() )
     return 0;
 
-  QgsDebugMsg( "thePath: " + thePath );
+  QgsDebugMsgLevel( "thePath: " + thePath, 2 );
 
   // zip settings + info
   QSettings settings;
@@ -255,8 +255,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   info.setFile( thePath );
   QString name = info.fileName();
 
-  QgsDebugMsg( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name
-               + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix );
+  QgsDebugMsgLevel( "thePath= " + thePath + " tmpPath= " + tmpPath + " name= " + name
+                    + " suffix= " + suffix + " vsiPrefix= " + vsiPrefix, 3 );
 
   // allow only normal files or VSIFILE items to continue
   if ( !info.isFile() && vsiPrefix == "" )
@@ -334,7 +334,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         CPLPopErrorHandler();
         if ( ! hDataSource )
         {
-          QgsDebugMsg( "Skipping VRT file because root is not a OGR VRT" );
+          QgsDebugMsgLevel( "Skipping VRT file because root is not a OGR VRT", 2 );
           return 0;
         }
         OGR_DS_Destroy( hDataSource );
@@ -363,7 +363,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   }
 
   QString  driverName = OGR_Dr_GetName( hDriver );
-  QgsDebugMsg( "OGR Driver : " + driverName );
+  QgsDebugMsgLevel( "OGR Driver : " + driverName, 2 );
 
   int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
@@ -371,12 +371,12 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   if ( numLayers == 1 )
   {
-    QgsDebugMsg( QString( "using name = %1" ).arg( name ) );
+    QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
     item = dataItemForLayer( parentItem, name, thePath, hDataSource, 0 );
   }
   else if ( numLayers > 1 )
   {
-    QgsDebugMsg( QString( "using name = %1" ).arg( name ) );
+    QgsDebugMsgLevel( QString( "using name = %1" ).arg( name ), 2 );
     item = new QgsOgrDataCollectionItem( parentItem, name, thePath );
   }
 

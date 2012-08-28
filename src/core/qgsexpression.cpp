@@ -1948,12 +1948,20 @@ QgsExpression::Node* QgsExpression::NodeLiteral::createFromOgcFilter( QDomElemen
     }
     else
     {
-      // probably a text/CDATA node, convert its content to string
-      operand = new QgsExpression::NodeLiteral( childNode.nodeValue() );
-    }
+      // probably a text/CDATA node
+      QVariant value = childNode.nodeValue();
 
-    if ( !operand )
-      continue;
+      // try to convert the node content to number if possible,
+      // otherwise let's use it as string
+      bool ok;
+      double d = value.toDouble( &ok );
+      if ( ok )
+        value = d;
+
+      operand = new QgsExpression::NodeLiteral( value );
+      if ( !operand )
+        continue;
+    }
 
     // use the concat operator to merge the ogc:Literal children
     if ( !root )

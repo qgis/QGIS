@@ -125,6 +125,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+
+  QString startuppath = homePythonPath() + " + \"/startup.py\"";
+  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
 }
 
 void QgsPythonUtilsImpl::exitPython()
