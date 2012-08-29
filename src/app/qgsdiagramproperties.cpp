@@ -93,7 +93,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
   mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
   pix = QgsApplication::getThemePixmap( "text" );
-  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram", DIAGRAM_NAME_TEXT ) );
+  mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
   pix = QgsApplication::getThemePixmap( "histogram" );
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
 
@@ -286,7 +286,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       {
         QMessageBox::warning( this, tr( "Unknown diagram type." ),
           tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( diagramName ), QMessageBox::Ok );
-        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findText( tr( "Pie chart" ) ) );
+        mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
       }
     }
   } // if ( !dr )
@@ -295,9 +295,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   on_mDisplayDiagramsGroupBox_toggled( mDisplayDiagramsGroupBox->isChecked() );
 }
 
-void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QString& itemtext )
+void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
 {
-  if ( tr( "Text diagram" ) == itemtext )
+  QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
+  if ( diagramType == DIAGRAM_NAME_TEXT )
   {
     mLabelPlacementComboBox->show();
     mLabelPlacementLabel->show();
@@ -307,7 +308,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
     mLabelPlacementLabel->hide();
   }
 
-  if ( tr( "Histogram" ) == itemtext )
+  if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
   {
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
@@ -320,7 +321,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
     mOrientationFrame->hide();
   }
 
-  if ( tr( "Histogram" ) == itemtext || tr( "Text diagram" ) == itemtext )
+  if ( diagramType == DIAGRAM_NAME_HISTOGRAM || diagramType == DIAGRAM_NAME_TEXT )
   {
     mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
   }
@@ -329,7 +330,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( const QS
     mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
   }
 
-  if ( tr( "Text diagram" ) == itemtext || tr( "Pie chart" ) == itemtext )
+  if ( diagramType == DIAGRAM_NAME_TEXT || diagramType == DIAGRAM_NAME_PIE )
   {
     mScaleDependencyComboBox->show();
     mScaleDependencyLabel->show();
@@ -419,7 +420,7 @@ void QgsDiagramProperties::on_mDisplayDiagramsGroupBox_toggled( bool checked )
   // if enabled show diagram specific options
   if ( checked )
   {
-    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentText() );
+    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
     // Update enabled/disabled state
   }
 }
@@ -464,15 +465,17 @@ void QgsDiagramProperties::apply()
     }
 
     QgsDiagram* diagram = 0;
-    if ( mDiagramTypeComboBox->itemData( mDiagramTypeComboBox->currentIndex() ) == DIAGRAM_NAME_TEXT )
+    int index = mDiagramTypeComboBox->currentIndex();
+    QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
+    if ( diagramType == DIAGRAM_NAME_TEXT )
     {
       diagram = new QgsTextDiagram();
     }
-    else if ( mDiagramTypeComboBox->itemData( mDiagramTypeComboBox->currentIndex() ) == DIAGRAM_NAME_PIE )
+    else if ( diagramType == DIAGRAM_NAME_PIE )
     {
       diagram = new QgsPieDiagram();
     }
-    else if ( mDiagramTypeComboBox->itemData( mDiagramTypeComboBox->currentIndex() ) == DIAGRAM_NAME_HISTOGRAM )
+    else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
     {
       diagram = new QgsHistogramDiagram();
     }
