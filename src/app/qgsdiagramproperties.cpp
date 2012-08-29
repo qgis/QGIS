@@ -511,7 +511,6 @@ void QgsDiagramProperties::apply()
 
     ds.backgroundColor = mBackgroundColorButton->color();
     ds.penColor = mDiagramPenColorButton->color();
-    ds.penColor.setAlpha( 255 - ds.transparency );
     ds.penWidth = mPenWidthSpinBox->value();
     if ( mVisibilityGroupBox->isChecked() )
     {

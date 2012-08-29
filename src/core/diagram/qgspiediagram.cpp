@@ -89,6 +89,7 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
   QList<double> values;
   double currentVal = 0;
   double valSum = 0;
+  int valCount = 0;
 
   QList<int>::const_iterator catIt = s.categoryIndices.constBegin();
   for ( ; catIt != s.categoryIndices.constEnd(); ++catIt )
@@ -96,6 +97,7 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
     currentVal = att[*catIt].toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
+    if ( currentVal ) valCount++;
   }
 
   //draw the slices
@@ -114,7 +116,7 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
   setPenWidth( mPen, s, c );
   p->setPen( mPen );
 
-  // draw empty circle if no values are defined at all
+  // there are some values > 0 available
   if ( valSum > 0 )
   {
     QList<double>::const_iterator valIt = values.constBegin();
@@ -124,12 +126,21 @@ void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext&
       currentAngle =  *valIt / valSum * 360 * 16;
       mCategoryBrush.setColor( *colIt );
       p->setBrush( mCategoryBrush );
-      p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
+      // if only 1 value is > 0, draw a circle
+      if ( valCount == 1 )
+      {
+        p->drawEllipse( baseX, baseY, w, h );
+      }
+      else
+      {
+        p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
+      }
       totalAngle += currentAngle;
     }
   }
   else // valSum > 0
   {
+    // draw empty circle if no values are defined at all
     mCategoryBrush.setColor( Qt::transparent );
     p->setBrush( mCategoryBrush );
     p->drawEllipse( baseX, baseY, w, h );
