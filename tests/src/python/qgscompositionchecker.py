@@ -47,14 +47,8 @@ class QgsCompositionChecker:
         diffFilePath = QDir.tempPath() + QDir.separator() + QFileInfo( mExpectedImageFile ).baseName() + "_diff_python.png"
         testResult = self.compareImages( expectedImage, outputImage, diffFilePath )
         
-#        myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\"
-#                                  " type=\"image/png\">" + renderedFilePath +
-#                                  "</DartMeasurementFile>"
-#                                  "<DartMeasurementFile name=\"Expected Image " + mTestName + "\" type=\"image/png\">" +
-#                                  mExpectedImageFile + "</DartMeasurementFile>"
-#                                  "<DartMeasurementFile name=\"Difference Image " + mTestName + "\" type=\"image/png\">" +
-#                                  diffFilePath + "</DartMeasurementFile>"
-        
+        myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\"" + " type=\"image/png\">" + renderedFilePath + "</DartMeasurementFile>" + "\n" + "<DartMeasurementFile name=\"Expected Image " + mTestName + "\"" + " type=\"image/png\">" + mExpectedImageFile + "</DartMeasurementFile>" + "\n" + "<DartMeasurementFile name=\"Difference Image " + mTestName + "\"" + " type=\"image/png\">" + diffFilePath + "</DartMeasurementFile>"
+        qDebug( myDashMessage )
         return testResult
 
     def compareImages( self,  imgExpected, imgRendered, differenceImagePath ):
