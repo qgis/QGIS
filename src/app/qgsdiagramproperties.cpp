@@ -298,7 +298,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
 {
   QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
-  if ( diagramType == DIAGRAM_NAME_TEXT )
+
+  if ( DIAGRAM_NAME_TEXT == diagramType )
   {
     mLabelPlacementComboBox->show();
     mLabelPlacementLabel->show();
@@ -308,7 +309,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mLabelPlacementLabel->hide();
   }
 
-  if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
+  if ( DIAGRAM_NAME_HISTOGRAM == diagramType )
   {
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
@@ -321,7 +322,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mOrientationFrame->hide();
   }
 
-  if ( diagramType == DIAGRAM_NAME_HISTOGRAM || diagramType == DIAGRAM_NAME_TEXT )
+  if ( DIAGRAM_NAME_HISTOGRAM == diagramType || DIAGRAM_NAME_TEXT == diagramType )
   {
     mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
   }
@@ -330,7 +331,7 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
   }
 
-  if ( diagramType == DIAGRAM_NAME_TEXT || diagramType == DIAGRAM_NAME_PIE )
+  if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
   {
     mScaleDependencyComboBox->show();
     mScaleDependencyLabel->show();
