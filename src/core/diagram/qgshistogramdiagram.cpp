@@ -125,7 +125,7 @@ void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderCo
     values.push_back( currentVal );
   }
 
-  double currentOffset = 0 - ( values.size() * s.barWidth ) / 2;
+  double currentOffset = 0;
   double scaledWidth = sizePainterUnits( s.barWidth, s, c );
 
   double baseX = position.x();
