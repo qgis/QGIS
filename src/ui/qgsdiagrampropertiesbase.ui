@@ -36,8 +36,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>720</width>
-           <height>614</height>
+           <width>742</width>
+           <height>559</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -117,7 +117,7 @@
           <item>
            <widget class="QTabWidget" name="mDiagramPropertiesTabWidget">
             <property name="currentIndex">
-             <number>2</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="tab">
              <attribute name="title">
@@ -216,7 +216,14 @@
                  </widget>
                 </item>
                 <item row="1" column="2">
-                 <widget class="QDoubleSpinBox" name="mBarWidthSpinBox"/>
+                 <widget class="QDoubleSpinBox" name="mBarWidthSpinBox">
+                  <property name="minimum">
+                   <double>0.010000000000000</double>
+                  </property>
+                  <property name="value">
+                   <double>5.000000000000000</double>
+                  </property>
+                 </widget>
                 </item>
                 <item row="4" column="2">
                  <widget class="QgsColorButton" name="mDiagramPenColorButton">
@@ -708,7 +715,7 @@
                     <bool>true</bool>
                    </property>
                    <attribute name="buttonGroup">
-                    <string notr="true">mOrientationButtonGroup</string>
+                    <string>mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -718,7 +725,7 @@
                     <string>Down</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string notr="true">mOrientationButtonGroup</string>
+                    <string>mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -728,7 +735,7 @@
                     <string>Right</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string notr="true">mOrientationButtonGroup</string>
+                    <string>mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
@@ -738,7 +745,7 @@
                     <string>Left</string>
                    </property>
                    <attribute name="buttonGroup">
-                    <string notr="true">mOrientationButtonGroup</string>
+                    <string>mOrientationButtonGroup</string>
                    </attribute>
                   </widget>
                  </item>
