@@ -50,10 +50,6 @@
 //other includes
 #include <cmath>
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
 QgsQuickPrint::QgsQuickPrint()
 {
   mPageSize = QPrinter::A4;
@@ -813,7 +809,7 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
   if ( mySnappingFlag )
   {
     double scaler = pow( 10.0, myPowerOf10 );
-    myActualSize = round( myActualSize / scaler ) * scaler;
+    myActualSize = qRound( myActualSize / scaler ) * scaler;
     myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
   }
 
