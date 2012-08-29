@@ -52,6 +52,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
+    void on_mFontCapitalsComboBox_currentIndexChanged( int index );
     void on_mFontStyleComboBox_currentIndexChanged( const QString & text );
     void on_mFontUnderlineBtn_toggled( bool ckd );
     void on_mFontStrikethroughBtn_toggled( bool ckd );
@@ -69,6 +70,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void blockFontChangeSignals( bool blk );
     void setPreviewBackground( QColor color );
     void updateFontViaStyle( const QString & fontstyle );
+    void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void populatePlacementMethods();
     void populateFieldNames();

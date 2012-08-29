@@ -85,6 +85,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   lyr.readFromLayer( layer );
   populateFieldNames();
   populateDataDefinedCombos( lyr );
+  populateFontCapitalsComboBox();
 
   chkEnableLabeling->setChecked( lyr.enabled );
   mTabWidget->setEnabled( lyr.enabled );
@@ -509,6 +510,9 @@ void QgsLabelingGui::changeTextColor()
 
 void QgsLabelingGui::changeTextFont()
 {
+  // store properties of QFont that might be stripped by font dialog
+  QFont::Capitalization captials = mRefFont.capitalization();
+
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
@@ -527,6 +531,10 @@ void QgsLabelingGui::changeTextFont()
     {
       mFontSizeSpinBox->setValue( font.pointSizeF() );
     }
+
+    // reassign possibly stripped QFont properties
+    font.setCapitalization( captials );
+
     updateFont( font );
   }
 }
@@ -558,6 +566,7 @@ void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
   }
   if ( foundmatch )
   {
+    styledfont.setCapitalization( mRefFont.capitalization() );
     styledfont.setUnderline( mRefFont.underline() );
     styledfont.setStrikeOut( mRefFont.strikeOut() );
     mRefFont = styledfont;
@@ -598,12 +607,14 @@ void QgsLabelingGui::updateFont( QFont font )
 
   blockFontChangeSignals( true );
   populateFontStyleComboBox();
+  int idx = mFontCapitalsComboBox->findData( QVariant(( unsigned int ) mRefFont.capitalization() ) );
+  mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
   blockFontChangeSignals( false );
 
   // update font name with font face
-//  font.setPixelSize( 18 );
+//  font.setPixelSize( 24 );
 //  lblFontName->setFont( QFont( font ) );
 
   updatePreview();
@@ -769,6 +780,17 @@ void QgsLabelingGui::updateOptions()
   }
 }
 
+void QgsLabelingGui::populateFontCapitalsComboBox()
+{
+  mFontCapitalsComboBox->addItem( tr( "Mixed Case" ), QVariant( 0 ) );
+  mFontCapitalsComboBox->addItem( tr( "All Uppercase" ), QVariant( 1 ) );
+  mFontCapitalsComboBox->addItem( tr( "All Lowercase" ), QVariant( 2 ) );
+  // Small caps doesn't work right with QPainterPath::addText()
+  // https://bugreports.qt-project.org/browse/QTBUG-13965
+//  mFontCapitalsComboBox->addItem( tr( "Small Caps" ), QVariant( 3 ) );
+  mFontCapitalsComboBox->addItem( tr( "Title Case" ), QVariant( 4 ) );
+}
+
 void QgsLabelingGui::populateFontStyleComboBox()
 {
   mFontStyleComboBox->clear();
@@ -788,6 +810,13 @@ void QgsLabelingGui::on_mPreviewSizeSlider_valueChanged( int i )
 void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
 {
   mRefFont.setPointSizeF( d );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontCapitalsComboBox_currentIndexChanged( int index )
+{
+  int capitalsindex = mFontCapitalsComboBox->itemData( index ).toUInt();
+  mRefFont.setCapitalization(( QFont::Capitalization ) capitalsindex );
   updateFont( mRefFont );
 }
 
