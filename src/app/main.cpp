@@ -421,7 +421,7 @@ int main( int argc, char *argv[] )
           break;
 
         case 'o':
-          optionspath = optarg;
+          optionpath = optarg;
           break;
 
         case 'c':
