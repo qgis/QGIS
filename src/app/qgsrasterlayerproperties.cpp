@@ -651,45 +651,49 @@ void QgsRasterLayerProperties::apply()
 
   //transparency settings
   QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
-  rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
-
-  //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
-  QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
-  if ( tableTransparency->columnCount() == 4 )
+  if ( rasterRenderer )
   {
-    QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
-    for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+    rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
+
+    //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
+    QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
+    if ( tableTransparency->columnCount() == 4 )
     {
-      myTransparentPixel.red = transparencyCellValue( myListRunner, 0 );
-      myTransparentPixel.green = transparencyCellValue( myListRunner, 1 );
-      myTransparentPixel.blue = transparencyCellValue( myListRunner, 2 );
-      myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 3 );
-      myTransparentThreeValuePixelList.append( myTransparentPixel );
+      QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
+      QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
+      for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+      {
+        myTransparentPixel.red = transparencyCellValue( myListRunner, 0 );
+        myTransparentPixel.green = transparencyCellValue( myListRunner, 1 );
+        myTransparentPixel.blue = transparencyCellValue( myListRunner, 2 );
+        myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 3 );
+        myTransparentThreeValuePixelList.append( myTransparentPixel );
+      }
+      rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
     }
-    rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
-  }
-  else if ( tableTransparency->columnCount() == 3 )
-  {
-    QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
-    for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+    else if ( tableTransparency->columnCount() == 3 )
     {
-      myTransparentPixel.min = transparencyCellValue( myListRunner, 0 );
-      myTransparentPixel.max = transparencyCellValue( myListRunner, 1 );
-      myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 2 );
+      QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
+      QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+      for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+      {
+        myTransparentPixel.min = transparencyCellValue( myListRunner, 0 );
+        myTransparentPixel.max = transparencyCellValue( myListRunner, 1 );
+        myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 2 );
 
-      myTransparentSingleValuePixelList.append( myTransparentPixel );
+        myTransparentSingleValuePixelList.append( myTransparentPixel );
+      }
+      rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
     }
-    rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
+
+    rasterRenderer->setRasterTransparency( rasterTransparency );
+
+    //set global transparency
+    rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
+
+    //invert color map
+    rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
   }
-  rasterRenderer->setRasterTransparency( rasterTransparency );
-
-  //set global transparency
-  rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
-
-  //invert color map
-  rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
 
   QgsDebugMsg( "processing general tab" );
   /*
