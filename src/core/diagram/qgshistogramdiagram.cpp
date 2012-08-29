@@ -32,6 +32,7 @@ QgsHistogramDiagram::~QgsHistogramDiagram()
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
   Q_UNUSED( c );
+  QSize size;
   QgsAttributeMap::const_iterator attIt = attributes.constBegin();
   if ( attIt == attributes.constEnd() )
   {
@@ -56,20 +57,24 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
-      return QSizeF( s.barWidth * attributes.size(), maxValue * mScaleFactor );
+      size.scale( s.barWidth * attributes.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
+      break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
-      return QSizeF( maxValue * mScaleFactor, s.barWidth * attributes.size() );
+      size.scale( maxValue * mScaleFactor, s.barWidth * attributes.size(), Qt::IgnoreAspectRatio );
+      break;
   }
 
-  return QSizeF();
+  QSizeF scaledSize = sizeForPAL( size, s, c );
+  return scaledSize;
 }
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
-  Q_UNUSED( c );
+  QSizeF size;
+
   QgsAttributeMap::const_iterator attIt = attributes.constBegin();
   if ( attIt == attributes.constEnd() )
   {
@@ -88,15 +93,19 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = maxValue / s.size.height();
-      return QSizeF( s.barWidth * attributes.size(), s.size.height() );
+      size.scale( s.barWidth * attributes.size(), s.size.height(), Qt::IgnoreAspectRatio );
+      break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
+    default: // just in case...
       mScaleFactor = maxValue / s.size.width();
-      return QSizeF( s.size.width(), s.barWidth * attributes.size() );
+      size.scale( s.size.width(), s.barWidth * attributes.size(), Qt::IgnoreAspectRatio );
+      break;
   }
 
-  return QSizeF();
+  QSizeF scaledSize = sizeForPAL( size, s, c );
+  return scaledSize;
 }
 
 void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )

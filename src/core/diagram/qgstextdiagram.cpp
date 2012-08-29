@@ -70,12 +70,14 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const Qgs
     size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
   }
 
-  return size;
+  QSizeF scaledSize = sizeForPAL( size, s, c );
+  return scaledSize;
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
-  return s.size;
+  QSizeF scaledSize = sizeForPAL( s.size, s, c );
+  return scaledSize;
 }
 
 void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )

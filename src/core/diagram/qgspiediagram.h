@@ -43,6 +43,8 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
   private:
     QBrush mCategoryBrush;
     QPen mPen;
+
+    static int sCount;
 };
 
 #endif // QGSPIEDIAGRAM_H

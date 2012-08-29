@@ -30,12 +30,24 @@ void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsR
   }
 }
 
+QSizeF QgsDiagram::sizeForPAL( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
+{
+  if ( s.sizeType == QgsDiagramSettings::MM )
+  {
+    return QSizeF( size.width() / c.rasterScaleFactor(), size.height() / c.rasterScaleFactor() );
+  }
+  else
+  {
+    return QSizeF( size );
+  }
+}
+
 QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
   Q_UNUSED( size );
   if ( s.sizeType == QgsDiagramSettings::MM )
   {
-    return QSizeF( s.size.width() * c.scaleFactor(), s.size.height() * c.scaleFactor() );
+    return QSizeF( s.size.width() * c.scaleFactor() * c.rasterScaleFactor(), s.size.height() * c.scaleFactor() * c.rasterScaleFactor());
   }
   else
   {
