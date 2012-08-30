@@ -71,6 +71,7 @@ qgsmaptool.cpp
 qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
+qgsmessagebar.cpp
 qgsmessageviewer.cpp
 qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
@@ -160,6 +161,7 @@ qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
+qgsmessagebar.h
 qgsmessageviewer.h
 qgsmessagelogviewer.h
 qgsnewhttpconnection.h
@@ -203,6 +205,7 @@ qgsmaptool.h
 qgsmaptoolemitpoint.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
+qgsmessagebar.h
 qgsmessageviewer.h
 qgscredentialdialog.h
 qgsowssourceselect.h
