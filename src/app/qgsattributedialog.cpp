@@ -17,7 +17,7 @@
 #include "qgsattributedialog.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
-
+#include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsuniquevaluerenderer.h"
@@ -177,6 +177,14 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   }
   else
   {
+
+    QgsDistanceArea myDa;
+    QSettings settings;
+
+    myDa.setSourceCrs( vl->crs().srsid() );
+    myDa.setEllipsoidalMode(QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+    myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+
     for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )
     {
       QWidget *myWidget = mDialog->findChild<QWidget*>( it->name() );
@@ -216,6 +224,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
           mFeature->setGeometry( *f.geometry() );
         }
       }
+
+      exp.setGeomCalculator( myDa );
 
       QVariant value = exp.evaluate( mFeature, vl->pendingFields() );
 

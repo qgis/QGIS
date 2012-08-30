@@ -536,6 +536,14 @@ void QgsAttributeTableDialog::updateSelectionFromLayer()
 
 void QgsAttributeTableDialog::doSearch( QString searchString )
 {
+
+  QgsDistanceArea myDa;
+  QSettings settings;
+
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode(QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+
   // parse search string and build parsed tree
   QgsExpression search( searchString );
   if ( search.hasParserError() )
@@ -556,6 +564,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mSelectedFeatures.clear();
 
+  search.setGeomCalculator( myDa );
   if ( cbxSearchSelectedOnly->isChecked() )
   {
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
