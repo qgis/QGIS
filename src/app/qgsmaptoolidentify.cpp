@@ -392,17 +392,7 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
 
   // Get the units for display
   QSettings settings;
-  QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-
-  QGis::UnitType displayUnits;
-  if ( myDisplayUnitsTxt == "feet" )
-  {
-    displayUnits = QGis::Feet;
-  }
-  else
-  {
-    displayUnits = QGis::Meters;
-  }
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 
   calc.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;
