@@ -787,6 +787,11 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
   return QVariant();
 }
 
+static QVariant fcnScale( const QVariantList&, QgsFeature*, QgsExpression* parent )
+{
+    return QVariant( parent->scale() );
+}
+
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
 
 const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
@@ -854,6 +859,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     // special columns
     << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
+    << FunctionDef( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
     ;
   }
 

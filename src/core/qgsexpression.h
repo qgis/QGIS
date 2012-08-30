@@ -121,6 +121,10 @@ class CORE_EXPORT QgsExpression
     //! Return the number used for $rownum special column
     int currentRowNumber() { return mRowNumber; }
 
+    void setScale( double scale ) { mScale = scale; }
+
+    int scale() {return mScale; }
+
     //! Return the parsed expression as a string - useful for debugging
     QString dump() const;
 
@@ -510,6 +514,7 @@ class CORE_EXPORT QgsExpression
     QString mEvalErrorString;
 
     int mRowNumber;
+    double mScale;
 
     void initGeomCalculator();
     QgsDistanceArea* mCalc;

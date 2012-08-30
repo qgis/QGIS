@@ -567,6 +567,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
   }
 
   QString labelText;
+
   // Check to see if we are a expression string.
   if ( isExpression )
   {
@@ -576,6 +577,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
       return;
     }
+    exp->setScale( context.rendererScale() );
     QVariant result = exp->evaluate( &f, layer->pendingFields() );
     if ( exp->hasEvalError() )
     {
