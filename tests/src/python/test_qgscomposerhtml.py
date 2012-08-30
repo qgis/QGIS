@@ -45,9 +45,6 @@ class TestQgsComposerMap(unittest.TestCase):
         assert result == True
         
     def tableMultiFrame(self):
-        
-        assert 1 == 1 # soon...
-        '''
         TEST_DATA_DIR = unitTestDataPath()
         htmlItem = QgsComposerHtml( self.mComposition,  False )
         htmlFrame = QgsComposerFrame( self.mComposition,  htmlItem,  10,  10,  100,  50 )
@@ -56,29 +53,28 @@ class TestQgsComposerMap(unittest.TestCase):
     
         htmlItem.setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir.separator() +  "html_table.html" )  ) )
         nFrames = htmlItem.nFrames()
-        for i in nFrames:
+        for i in range( nFrames ):
             htmlItem.frame( i ).setFrameEnabled( True )
     
         result = True
 
         #page 1
-        checker1 = QgsCompositionChecker( "Composer html table", self.mComposition, QString( QString( TEST_DATA_DIR ) + QDir.separator() + "control_images" + QDir.separator() + "expected_composerhtml" + QDir.separator() + "composerhtml_table_multiframe1.png" ) )
-        if not checker1.testComposition( 0 ):
+        checker1 = QgsCompositionChecker(  )
+        if not checker1.testComposition( "Composer html table", self.mComposition, QString( QString( TEST_DATA_DIR ) + QDir.separator() + "control_images" + QDir.separator() + "expected_composerhtml" + QDir.separator() + "composerhtml_table_multiframe1.png" ),  0 ):
             result = False
             
-        checker2 = QgsCompositionChecker( "Composer html table", self.mComposition, QString( QString( TEST_DATA_DIR ) + QDir.separator() + "control_images" + QDir.separator() + "expected_composerhtml" + QDir.separator() + "composerhtml_table_multiframe2.png" ) )
-        if not checker2.testComposition( 1 ):
+        checker2 = QgsCompositionChecker( )
+        if not checker2.testComposition( "Composer html table", self.mComposition, QString( QString( TEST_DATA_DIR ) + QDir.separator() + "control_images" + QDir.separator() + "expected_composerhtml" + QDir.separator() + "composerhtml_table_multiframe2.png" ) ,  1 ):
             result = False
             
-        checker3 = QgsCompositionChecker( "Composer html table", self.mComposition, QString( QString( TEST_DATA_DIR ) + QDir.separator() + "control_images" + QDir.separator() + "expected_composerhtml" + QDir.separator() + "composerhtml_table_multiframe3.png" ) )
-        if not checker3.testComposition( 2 ):
+        checker3 = QgsCompositionChecker(  )
+        if not checker3.testComposition( "Composer html table", self.mComposition, QString( QString( TEST_DATA_DIR ) + QDir.separator() + "control_images" + QDir.separator() + "expected_composerhtml" + QDir.separator() + "composerhtml_table_multiframe3.png" ),  2 ):
             result = False
             
         self.mComposition.removeMultiFrame( htmlItem )
         del htmlItem
         
         assert result == True
-        '''
         
 if __name__ == '__main__':
     unittest.main()
