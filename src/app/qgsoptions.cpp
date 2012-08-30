@@ -298,8 +298,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   }
 
   // Set the units for measuring
-  QString myUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-  if ( myUnitsTxt == "feet" )
+  QString myUnitsTxt = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  if ( myUnitsTxt == QGis::Feet )
   {
     radFeet->setChecked( true );
   }
@@ -944,11 +944,11 @@ void QgsOptions::saveOptions()
 
   if ( radFeet->isChecked() )
   {
-    settings.setValue( "/qgis/measure/displayunits", "feet" );
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
   }
   else
   {
-    settings.setValue( "/qgis/measure/displayunits", "meters" );
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
   }
 
   QString angleUnitString = "degrees";
