@@ -787,18 +787,6 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
   return QVariant();
 }
 
-static QVariant fcnScale( const QVariantList&, QgsFeature*, QgsExpression* parent )
-{
-    return QVariant( parent->scale() );
-}
-
-static QVariant fcnFormatNumber( const QVariantList& values, QgsFeature*, QgsExpression* parent )
-{
-    double value = getDoubleValue( values.at(0), parent );
-    int places = getIntValue( values.at(1), parent );
-    return QString( "%L1" ).arg( value, 0, 'f', places );
-}
-
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
 
 const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
@@ -854,7 +842,6 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "right", 2, fcnRight, QObject::tr( "String" ) )
     << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
     << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
-    << FunctionDef( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
 
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
@@ -867,7 +854,6 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     // special columns
     << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
     << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
-    << FunctionDef( "$scale", 0, fcnScale, QObject::tr( "Record" ) )
     ;
   }
 
@@ -901,8 +887,10 @@ QgsExpression::QgsExpression( const QString& expr )
     : mExpression( expr )
     , mRowNumber( 0 )
     , mScale( 0 )
-    , mCalc( NULL )
+   
 {
+  initGeomCalculator();
+
   mRootNode = ::parseExpression( mExpression, mParserErrorString );
 
   if ( mParserErrorString.isNull() )
@@ -949,11 +937,16 @@ bool QgsExpression::needsGeometry()
 
 void QgsExpression::initGeomCalculator()
 {
-  mCalc = new QgsDistanceArea;
-  QSettings settings;
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
-  mCalc->setEllipsoid( ellipsoid );
-  mCalc->setEllipsoidalMode( false );
+  // Use planimetric as default
+  mCalc.setEllipsoidalMode( false );
+}
+
+void QgsExpression::setGeomCalculator( QgsDistanceArea& calc )
+{
+  // Copy from supplied calculator
+  mCalc.setEllipsoid( calc.ellipsoid() );
+  mCalc.setEllipsoidalMode( calc.ellipsoidalEnabled() );
+  mCalc.setSourceCrs( calc.sourceCrs() );
 }
 
 bool QgsExpression::prepare( const QgsFieldMap& fields )
@@ -998,7 +991,6 @@ QString QgsExpression::dump() const
 
   return mRootNode->dump();
 }
-
 
 void QgsExpression::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 {
@@ -1047,57 +1039,6 @@ void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
 {
   if ( mRootNode )
     mRootNode->accept( v );
-}
-
-QString QgsExpression::replaceExpressionText( QString action, QgsFeature &feat,
-    QgsVectorLayer* layer,
-    const QMap<QString, QVariant> *substitutionMap )
-{
-  QString expr_action;
-
-  int index = 0;
-  while ( index < action.size() )
-  {
-    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
-
-    int pos = rx.indexIn( action, index );
-    if ( pos < 0 )
-      break;
-
-    int start = index;
-    index = pos + rx.matchedLength();
-
-    QString to_replace = rx.cap( 1 ).trimmed();
-    QgsDebugMsg( "Found expression: " + to_replace );
-
-    if ( substitutionMap && substitutionMap->contains( to_replace ) )
-    {
-      expr_action += action.mid( start, pos - start ) + substitutionMap->value( to_replace ).toString();
-      continue;
-    }
-
-    QgsExpression exp( to_replace );
-    if ( exp.hasParserError() )
-    {
-      QgsDebugMsg( "Expression parser error: " + exp.parserErrorString() );
-      expr_action += action.mid( start, index - start );
-      continue;
-    }
-
-    QVariant result = exp.evaluate( &feat, layer->pendingFields() );
-    if ( exp.hasEvalError() )
-    {
-      QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );
-      expr_action += action.mid( start, index - start );
-      continue;
-    }
-
-    QgsDebugMsg( "Expression result is: " + result.toString() );
-    expr_action += action.mid( start, pos - start ) + result.toString();
-  }
-
-  expr_action += action.mid( index );
-  return expr_action;
 }
 
 

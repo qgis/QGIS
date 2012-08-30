@@ -24,8 +24,8 @@
 
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
+#include "qgsdistancearea.h"
 
-class QgsDistanceArea;
 class QgsFeature;
 class QDomElement;
 
@@ -131,7 +131,11 @@ class CORE_EXPORT QgsExpression
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
+    QgsDistanceArea* geomCalculator() { return & mCalc; }
+
+    //! Sets the geometry calculator used in evaluation of expressions,
+    // instead of the default.
+    void setGeomCalculator( QgsDistanceArea& calc );
 
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature
@@ -143,8 +147,6 @@ class CORE_EXPORT QgsExpression
     static QString replaceExpressionText( QString action, QgsFeature &feat,
                                           QgsVectorLayer* layer,
                                           const QMap<QString, QVariant> *substitutionMap = 0 );
-
-    //
 
     enum UnaryOperator
     {
@@ -517,7 +519,7 @@ class CORE_EXPORT QgsExpression
 
   protected:
     // internally used to create an empty expression
-    QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ), mCalc( NULL ) {}
+    QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ) {}
 
     void initGeomCalculator();
 
@@ -530,7 +532,8 @@ class CORE_EXPORT QgsExpression
     int mRowNumber;
     double mScale;
 
-    QgsDistanceArea* mCalc;
+    void initGeomCalculator();
+    QgsDistanceArea mCalc;
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval )
