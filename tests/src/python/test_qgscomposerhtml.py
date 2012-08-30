@@ -52,9 +52,7 @@ class TestQgsComposerMap(unittest.TestCase):
         htmlItem.setResizeMode( QgsComposerMultiFrame.RepeatUntilFinished )
     
         htmlItem.setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir.separator() +  "html_table.html" )  ) )
-        nFrames = htmlItem.nFrames()
-        for i in range( nFrames ):
-            htmlItem.frame( i ).setFrameEnabled( True )
+        htmlItem.frame( 0 ).setFrameEnabled( True )
     
         result = True
 
