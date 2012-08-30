@@ -890,7 +890,7 @@ int QgsExpression::functionCount()
 
 
 QgsExpression::QgsExpression( const QString& expr )
-    : mExpression( expr ), mRowNumber( 0 ), mCalc( NULL )
+    : mExpression( expr ), mRowNumber( 0 ), mCalc( NULL ), mScale( 0 )
 {
   mRootNode = ::parseExpression( mExpression, mParserErrorString );
 
