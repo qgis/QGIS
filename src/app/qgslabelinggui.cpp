@@ -47,7 +47,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
-  connect( mFontSizeUnitComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( mFontTranspSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
@@ -512,6 +511,8 @@ void QgsLabelingGui::changeTextFont()
 {
   // store properties of QFont that might be stripped by font dialog
   QFont::Capitalization captials = mRefFont.capitalization();
+  double wordspacing = mRefFont.wordSpacing();
+  double letterspacing = mRefFont.letterSpacing();
 
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
@@ -534,6 +535,8 @@ void QgsLabelingGui::changeTextFont()
 
     // reassign possibly stripped QFont properties
     font.setCapitalization( captials );
+    font.setWordSpacing( wordspacing );
+    font.setLetterSpacing( QFont::AbsoluteSpacing, letterspacing );
 
     updateFont( font );
   }
@@ -569,6 +572,8 @@ void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
     styledfont.setCapitalization( mRefFont.capitalization() );
     styledfont.setUnderline( mRefFont.underline() );
     styledfont.setStrikeOut( mRefFont.strikeOut() );
+    styledfont.setWordSpacing( mRefFont.wordSpacing() );
+    styledfont.setLetterSpacing( QFont::AbsoluteSpacing, mRefFont.letterSpacing() );
     mRefFont = styledfont;
   }
   // if no match, style combobox will be left blank, which should not affect engine labeling
@@ -611,6 +616,8 @@ void QgsLabelingGui::updateFont( QFont font )
   mFontCapitalsComboBox->setCurrentIndex( idx == -1 ? 0 : idx );
   mFontUnderlineBtn->setChecked( mRefFont.underline() );
   mFontStrikethroughBtn->setChecked( mRefFont.strikeOut() );
+  mFontWordSpacingSpinBox->setValue( mRefFont.wordSpacing() );
+  mFontLetterSpacingSpinBox->setValue( mRefFont.letterSpacing() );
   blockFontChangeSignals( false );
 
   // update font name with font face
@@ -633,6 +640,7 @@ void QgsLabelingGui::updatePreview()
   lblFontPreview->setFont( mRefFont );
   QFont previewFont = lblFontPreview->font();
   double fontSize = mFontSizeSpinBox->value();
+  double previewRatio = mPreviewSize / fontSize;
   double bufferSize = 0.0;
   QString grpboxtitle;
 
@@ -643,11 +651,14 @@ void QgsLabelingGui::updatePreview()
     mPreviewSizeSlider->setEnabled( true );
     grpboxtitle = tr( "Sample @ %1 pts (using map units)" ).arg( mPreviewSize );
 
+    previewFont.setWordSpacing( previewRatio * mFontWordSpacingSpinBox->value() );
+    previewFont.setLetterSpacing( QFont::AbsoluteSpacing, previewRatio * mFontLetterSpacingSpinBox->value() );
+
     if ( chkBuffer->isChecked() )
     {
       if ( mBufferUnitComboBox->currentIndex() == 1 ) // map units
       {
-        bufferSize = ( mPreviewSize / fontSize ) * spinBufferSize->value() / 2.5;
+        bufferSize = previewRatio * spinBufferSize->value() / 3.527;
       }
       else // millimeters
       {
@@ -847,6 +858,15 @@ void QgsLabelingGui::on_mFontWordSpacingSpinBox_valueChanged( double spacing )
 void QgsLabelingGui::on_mFontLetterSpacingSpinBox_valueChanged( double spacing )
 {
   mRefFont.setLetterSpacing( QFont::AbsoluteSpacing, spacing );
+  updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
+{
+  double singleStep = ( index == 1 ) ? 10.0 : 1.0 ; //10 for map units, 1 for mm
+  mFontSizeSpinBox->setSingleStep( singleStep );
+  mFontWordSpacingSpinBox->setSingleStep( singleStep );
+  mFontLetterSpacingSpinBox->setSingleStep( singleStep / 10 );
   updateFont( mRefFont );
 }
 

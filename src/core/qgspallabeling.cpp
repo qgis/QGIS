@@ -354,6 +354,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setCapitalization(( QFont::Capitalization ) layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
+  textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( "labeling/fontLetterSpacing", QVariant( 0.0 ) ).toDouble() );
+  textFont.setWordSpacing( layer->customProperty( "labeling/fontWordSpacing", QVariant( 0.0 ) ).toDouble() );
   textColor = _readColor( layer, "labeling/textColor" );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
   previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", "#ffffff" ).toString() );
@@ -401,6 +403,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/fontItalic", textFont.italic() );
   layer->setCustomProperty( "labeling/fontStrikeout", textFont.strikeOut() );
   layer->setCustomProperty( "labeling/fontUnderline", textFont.underline() );
+  layer->setCustomProperty( "labeling/fontLetterSpacing", textFont.letterSpacing() );
+  layer->setCustomProperty( "labeling/fontWordSpacing", textFont.wordSpacing() );
 
   _writeColor( layer, "labeling/textColor", textColor );
   layer->setCustomProperty( "labeling/textTransp", textTransp );
@@ -974,6 +978,16 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   {
     lyr.textFont.setPixelSize( pixelFontSize );
   }
+
+  if ( lyr.fontSizeInMapUnits )
+  {
+    double spacingPixelSize = lyr.textFont.wordSpacing() / ctx.mapToPixel().mapUnitsPerPixel() * ctx.rasterScaleFactor();
+    lyr.textFont.setWordSpacing( spacingPixelSize );
+
+    spacingPixelSize = lyr.textFont.letterSpacing() / ctx.mapToPixel().mapUnitsPerPixel() * ctx.rasterScaleFactor();
+    lyr.textFont.setLetterSpacing( QFont::AbsoluteSpacing, spacingPixelSize );
+  }
+
   //raster and vector scale factors
   lyr.vectorScaleFactor = ctx.scaleFactor();
   lyr.rasterCompressFactor = ctx.rasterScaleFactor();
