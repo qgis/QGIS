@@ -36,7 +36,7 @@ _symbol = "CREATE TABLE symbol("\
 
 _colorramp = "CREATE TABLE colorramp("\
         "id INTEGER PRIMARY KEY,"\
-        "name TEXT,"\
+        "name TEXT UNIQUE,"\
         "xml TEXT,"\
         "groupid INTEGER)"
 
