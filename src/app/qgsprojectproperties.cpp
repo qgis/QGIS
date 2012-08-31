@@ -971,7 +971,7 @@ void QgsProjectProperties::editSymbol( QComboBox* cbo )
 void QgsProjectProperties::resetPythonMacros()
 {
   grpPythonMacros->setChecked( false );
-  ptePythonMacros->setPlainText( "def openProject():\n  pass\n\n" \
-                                 "def saveProject():\n  pass\n\n" \
-                                 "def closeProject():\n  pass\n" );
+  ptePythonMacros->setPlainText( "def openProject():\n    pass\n\n" \
+                                 "def saveProject():\n    pass\n\n" \
+                                 "def closeProject():\n    pass\n" );
 }
