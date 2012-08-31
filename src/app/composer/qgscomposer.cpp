@@ -179,6 +179,17 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addSeparator();
   viewMenu->addAction( mActionRefreshView );
 
+  // Panel and toolbar submenus
+  mPanelMenu = new QMenu( tr( "Panels" ), this );
+  mPanelMenu->setObjectName( "mPanelMenu" );
+  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
+  mToolbarMenu->setObjectName( "mToolbarMenu" );
+  viewMenu->addSeparator();
+  viewMenu->addMenu( mPanelMenu );
+  viewMenu->addMenu( mToolbarMenu );
+  // toolBar already exists, add other widgets as they are created
+  mToolbarMenu->addAction( toolBar->toggleViewAction() );
+
   QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
   layoutMenu->addAction( mActionUndo );
   layoutMenu->addAction( mActionRedo );
@@ -244,10 +255,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
   mGeneralDock = new QDockWidget( tr( "Composition" ), this );
   mGeneralDock->setObjectName( "CompositionDock" );
+  mPanelMenu->addAction( mGeneralDock->toggleViewAction() );
   mItemDock = new QDockWidget( tr( "Item Properties" ), this );
   mItemDock->setObjectName( "ItemDock" );
+  mPanelMenu->addAction( mItemDock->toggleViewAction() );
   mUndoDock = new QDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );
+  mPanelMenu->addAction( mUndoDock->toggleViewAction() );
 
   mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
