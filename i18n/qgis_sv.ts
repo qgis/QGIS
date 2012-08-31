@@ -689,81 +689,81 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="99"/>
         <source>Take summary of intersecting features</source>
-        <translation type="unfinished"></translation>
+        <translation>Ta summan av överlappande objekt</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="89"/>
         <source>Mean</source>
-        <translation type="unfinished">Medel</translation>
+        <translation>Medel</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="109"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="139"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="119"/>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation>Summa</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="129"/>
         <source>Median</source>
-        <translation type="unfinished">Median</translation>
+        <translation>Median</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="14"/>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Slumpmässigt val från subset</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="39"/>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation>Subsetfält (unikt-ID fält)</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Välj efter plats</translation>
+        <translation>Välj efter plats</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Summa linjelängd i polygoner</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="27"/>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Fältnamn för den summerade längden</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="34"/>
         <source>LENGTH</source>
-        <translation type="unfinished"></translation>
+        <translation>Längd</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Linjevektorlager med indata</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="26"/>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutnätets utsträckning</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera utsträckning från lager</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Uppdatera utsträckning från kartblad</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="169"/>
@@ -1213,7 +1213,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Please select a raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Väl ett raster-lager</translation>
     </message>
     <message>
         <source>Unable to compute extents aligned on selected raster layer</source>
@@ -6787,7 +6787,7 @@ Vill du specificera sökväg (GISBASE) till installationen av GRASS?</translatio
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="500"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="204"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="207"/>
         <source>Python error</source>
         <translation>Pythonfel</translation>
     </message>
@@ -7316,50 +7316,50 @@ Vill du specificera sökväg (GISBASE) till installationen av GRASS?</translatio
         <translation type="obsolete">Konverterar vektorlager mellan format som OGR-biblioteket stöder</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="89"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
         <source>Couldn&apos;t load SIP module.</source>
         <translation>Kunde inte läsa in SIP-modul.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="89"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="97"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="104"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="112"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="100"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="107"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="115"/>
         <source>Python support will be disabled.</source>
         <translation>Pythonstöd stängs av.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="97"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="100"/>
         <source>Couldn&apos;t load PyQt4.</source>
         <translation>Kunde inte ladda PyQt4.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="104"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="107"/>
         <source>Couldn&apos;t load PyQGIS.</source>
         <translation>Kunde inte ladda PyQGIS.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="112"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="115"/>
         <source>Couldn&apos;t load QGIS utils.</source>
         <translation>Kunde inte ladda qgis.utils.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="198"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="201"/>
         <source>Python version:</source>
         <translation>Python version:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="199"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="202"/>
         <source>QGIS version:</source>
         <translation>QGIS version:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="200"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="203"/>
         <source>Python path:</source>
         <translation>Python sökväg:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="187"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="190"/>
         <source>An error occured during execution of following code:</source>
         <translation>Ett fel inträffade vid exekvernig av följande kod:</translation>
     </message>
@@ -8131,7 +8131,7 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/main.cpp" line="476"/>
+        <location filename="../src/app/main.cpp" line="475"/>
         <source>QGIS starting in non-interactive mode not supported.
 You are seeing this message most likely because you have no DISPLAY environment variable set.
 </source>
@@ -9704,13 +9704,13 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3154"/>
         <source>Calculating...</source>
-        <translation type="unfinished"></translation>
+        <translation>Beräknar...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3154"/>
         <location filename="../src/app/qgisapp.cpp" line="3945"/>
         <source>Abort...</source>
-        <translation type="unfinished"></translation>
+        <translation>Avbryt...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3180"/>
@@ -9736,7 +9736,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5618"/>
         <source>No Raster Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget rasterlager valt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5738"/>
@@ -9903,12 +9903,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="510"/>
         <source>GPS Information</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS Information</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6568"/>
         <source>Extents:</source>
-        <translation type="unfinished">Utsträckning:</translation>
+        <translation>Utsträckning:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7527"/>
@@ -10143,7 +10143,7 @@ Kontakta utvecklarna.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1050"/>
         <source>Failed to open Python console:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunde inte öppna python-konsolen:</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -10209,45 +10209,48 @@ Kontakta utvecklarna.
         <source>
 
 Always ignore these errors?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Ignorera alltid dessa fel?</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="7747"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n SSL-fel inträffade</numerusform>
+            <numerusform>%n SSL-fel inträffade</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2561"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj rasterlager att lägga till...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="521"/>
         <source>Log Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Loggmeddelande</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="544"/>
         <source>QGIS starting...</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS startar...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1193"/>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fönster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1211"/>
         <source>Vect&amp;or</source>
-        <translation type="unfinished"></translation>
+        <translation>Vekt&amp;or</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1214"/>
         <source>&amp;Web</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Web</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1396"/>
@@ -10257,13 +10260,13 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1400"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuell koordinat (lat/lon eller nord/ost)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1908"/>
         <location filename="../src/app/qgisapp.cpp" line="1911"/>
         <source>Control rendering order</source>
-        <translation type="unfinished"></translation>
+        <translation>Styr renderingsordning</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1931"/>
@@ -10273,7 +10276,7 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1932"/>
         <source>Layer order</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagerordning</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1972"/>
@@ -10290,58 +10293,58 @@ Always ignore these errors?</source>
         <location filename="../src/app/qgisapp.cpp" line="2174"/>
         <location filename="../src/app/qgisapp.cpp" line="3099"/>
         <source>&lt; Blank &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; Blank &gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2238"/>
         <source>QGIS version</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS-version</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2239"/>
         <source>QGIS code revision</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS kodrevision</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2243"/>
         <source>Compiled against Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompilerad för Qt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2244"/>
         <source>Running against Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Kör med Qt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2253"/>
         <source>GEOS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>GEOS-version</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2254"/>
         <source>PostgreSQL Client Version</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL-klientversion</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2258"/>
         <location filename="../src/app/qgisapp.cpp" line="2268"/>
         <source>No support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inget stöd.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2264"/>
         <source>SpatiaLite Version</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite-version</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2273"/>
         <source>QWT Version</source>
-        <translation type="unfinished"></translation>
+        <translation>QWT-version</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2276"/>
         <source>This copy of QGIS writes debugging output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Den här kopian av Qgis skriver ut felsökningsinformation.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2483"/>
@@ -10351,22 +10354,22 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2497"/>
         <source>Vector</source>
-        <translation type="unfinished">Vektor</translation>
+        <translation>Vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2589"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2665"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj vektorlager att lägga till...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2728"/>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2728"/>
@@ -10381,7 +10384,7 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2819"/>
         <source>SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2819"/>
@@ -10391,12 +10394,12 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2844"/>
         <source>MSSQL</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2868"/>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2868"/>
@@ -10406,7 +10409,7 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2889"/>
         <source>WCS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2889"/>
@@ -10416,7 +10419,7 @@ Always ignore these errors?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2916"/>
         <source>WFS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2916"/>
@@ -10428,7 +10431,7 @@ Always ignore these errors?</source>
         <location filename="../src/app/qgisapp.cpp" line="3338"/>
         <location filename="../src/app/qgisapp.cpp" line="3390"/>
         <source>QGis files</source>
-        <translation type="unfinished"></translation>
+        <translation>QGis-filer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3505"/>
@@ -11212,22 +11215,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="14"/>
         <source>Add vector join</source>
-        <translation type="unfinished"></translation>
+        <translation>Lägg till ihopslagning av vektor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="20"/>
         <source>Join layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Slå ihop lager</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="30"/>
         <source>Join field</source>
-        <translation type="unfinished">Slå ihop fält</translation>
+        <translation>Slå ihop fält</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="40"/>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation>Målfält</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddjoindialogbase.ui" line="60"/>
@@ -11626,17 +11629,17 @@ User DB Path:	%8
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="204"/>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
+        <translation>Fel</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="237"/>
         <source>Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Fel: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="248"/>
         <source>Attributes - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut - %1</translation>
     </message>
 </context>
 <context>
@@ -11644,17 +11647,17 @@ User DB Path:	%8
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="61"/>
         <source>Select a file</source>
-        <translation>Välj en fil</translation>
+        <translation>Välj fil</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="83"/>
         <source>Select a date</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj datum</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="213"/>
         <source>(no selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ej valt)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="515"/>
@@ -11712,13 +11715,13 @@ User DB Path:	%8
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="149"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Stigande</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="71"/>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="77"/>
         <source>Descending</source>
-        <translation type="unfinished"></translation>
+        <translation>Avtagande</translation>
     </message>
 </context>
 <context>
@@ -11726,42 +11729,42 @@ User DB Path:	%8
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="14"/>
         <source>Select attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj attribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="160"/>
         <source>&lt;b&gt;Attribute&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Attribut&gt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="173"/>
         <source>&lt;b&gt;Alias&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Alias&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="20"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Välj alla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="27"/>
         <source>Clear</source>
-        <translation type="unfinished">Radera</translation>
+        <translation>Radera</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="47"/>
         <source>Sorting</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="108"/>
         <source>Column</source>
-        <translation type="unfinished">Kolumn</translation>
+        <translation>Kolumn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeselectiondialogbase.ui" line="113"/>
         <source>Ascending</source>
-        <translation type="unfinished"></translation>
+        <translation>Stigande</translation>
     </message>
 </context>
 <context>
@@ -11769,7 +11772,7 @@ User DB Path:	%8
     <message>
         <location filename="../src/app/qgsattributetabledialog.cpp" line="855"/>
         <source>Attributes changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut ändrades</translation>
     </message>
 </context>
 <context>
@@ -11777,7 +11780,7 @@ User DB Path:	%8
     <message>
         <location filename="../src/gui/attributetable/qgsattributetabledelegate.cpp" line="111"/>
         <source>Attribute changed</source>
-        <translation type="unfinished">Attribut ändrats</translation>
+        <translation>Attribut ändrades</translation>
     </message>
 </context>
 <context>
@@ -23903,7 +23906,7 @@ Detta kan vara ett problem med din nätverksanslutning eller WMS-servern.</numer
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="444"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zooma till objekt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="445"/>
@@ -43656,6 +43659,7 @@ Försökte med URL: %1</translation>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation type="unfinished">
+            <numerusform>(och %1 till)</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
