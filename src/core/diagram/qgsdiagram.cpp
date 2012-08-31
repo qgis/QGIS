@@ -30,17 +30,6 @@ void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsR
   }
 }
 
-QSizeF QgsDiagram::sizeForPAL( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
-{
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    return QSizeF( size.width() / c.rasterScaleFactor(), size.height() / c.rasterScaleFactor() );
-  }
-  else
-  {
-    return QSizeF( size );
-  }
-}
 
 QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {

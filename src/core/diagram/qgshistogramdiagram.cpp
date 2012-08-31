@@ -67,8 +67,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
       break;
   }
 
-  QSizeF scaledSize = sizeForPAL( size, s, c );
-  return scaledSize;
+  return size;
 }
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
@@ -104,8 +103,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
       break;
   }
 
-  QSizeF scaledSize = sizeForPAL( size, s, c );
-  return scaledSize;
+  return size;
 }
 
 void QgsHistogramDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
