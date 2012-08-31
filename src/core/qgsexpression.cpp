@@ -792,6 +792,13 @@ static QVariant fcnScale( const QVariantList&, QgsFeature*, QgsExpression* paren
     return QVariant( parent->scale() );
 }
 
+static QVariant fcnFormatNumber( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+    double value = getDoubleValue( values.at(0), parent );
+    int places = getIntValue( values.at(1), parent );
+    return QString( "%L1" ).arg( value, 0, 'f', places );
+}
+
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
 
 const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
@@ -847,6 +854,7 @@ const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
     << FunctionDef( "right", 2, fcnRight, QObject::tr( "String" ) )
     << FunctionDef( "rpad", 3, fcnRPad, QObject::tr( "String" ) )
     << FunctionDef( "lpad", 3, fcnLPad, QObject::tr( "String" ) )
+    << FunctionDef( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
 
     // geometry accessors
     << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
