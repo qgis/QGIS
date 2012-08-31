@@ -87,6 +87,7 @@ void TestQgsComposerScaleBar::initTestCase()
     mComposerScaleBar->setNumUnitsPerSegment( 2000 );
     mComposerScaleBar->setNumSegmentsLeft( 0 );
     mComposerScaleBar->setNumSegments( 2 );
+    mComposerScaleBar->setHeight( 5 );
 };
 
 void TestQgsComposerScaleBar::cleanupTestCase()

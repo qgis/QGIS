@@ -218,7 +218,7 @@ void QgsComposerScaleBar::applyDefaultSettings()
   delete mStyle;
   mStyle = new QgsSingleBoxScaleBarStyle( this );
 
-  mHeight = 5;
+  mHeight = 3;
 
   mPen = QPen( QColor( 0, 0, 0 ) );
   mPen.setWidthF( 1.0 );
@@ -237,14 +237,24 @@ void QgsComposerScaleBar::applyDefaultSize()
 {
   if ( mComposerMap )
   {
-    //calculate mNumUnitsPerSegment
-    QgsRectangle composerMapRect = mComposerMap->extent();
+    setUnits( Meters );
+    double widthMeter = mapWidth();
+    int nUnitsPerSegment =  widthMeter / 10.0; //default scalebar width equals half the map width
+    setNumUnitsPerSegment( nUnitsPerSegment );
 
-    double proposedScaleBarLength = composerMapRect.width() / 4;
-    int powerOf10 = int ( pow( 10.0, int ( log( proposedScaleBarLength ) / log( 10.0 ) ) ) ); // from scalebar plugin
-    int nPow10 = proposedScaleBarLength / powerOf10;
-    mNumSegments = 2;
-    mNumUnitsPerSegment = ( nPow10 / 2 ) * powerOf10;
+    if( nUnitsPerSegment > 1000 )
+    {
+        setNumUnitsPerSegment( (int)( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
+        setUnitLabeling( tr("km") );
+        setNumMapUnitsPerScaleBarUnit( 1000 );
+    }
+    else
+    {
+        setUnitLabeling( tr("m") );
+    }
+
+    setNumSegments( 4 );
+    setNumSegmentsLeft( 2 );
   }
 
   refreshSegmentMillimeters();
