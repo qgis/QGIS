@@ -118,6 +118,11 @@ class CORE_EXPORT QgsPalLayerSettings
 
     Placement placement;
     unsigned int placementFlags;
+    // offset labels of point/centroid features default to center
+    // move label to quadrant: left/down, don't move, right/up (-1, 0, 1)
+    int xQuadOffset, yQuadOffset;
+    double xOffset, yOffset; // offset from point in mm or map units
+    double angleOffset; // rotation applied to offset labels
     QFont textFont;
     QString textNamedStyle;
     QColor textColor;
@@ -146,6 +151,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool addDirectionSymbol;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
+    bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QString wrapChar;
     // called from register feature hook

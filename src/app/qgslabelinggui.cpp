@@ -97,6 +97,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   // placement
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
+  mXQuadOffset = lyr.xQuadOffset;
+  mYQuadOffset = lyr.yQuadOffset;
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -104,11 +106,27 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       radAroundCentroid->setChecked( true );
       spinDistPoint->setValue( lyr.dist );
       mPointDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
-      //spinAngle->setValue(lyr.angle);
+      //spinAngle->setValue( lyr.angle );
       break;
     case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
+
+      mPointOffsetRadioAboveLeft->setChecked( mXQuadOffset == -1 && mYQuadOffset == 1 );
+      mPointOffsetRadioAbove->setChecked( mXQuadOffset == 0 && mYQuadOffset == 1 );
+      mPointOffsetRadioAboveRight->setChecked( mXQuadOffset == 1 && mYQuadOffset == 1 );
+      mPointOffsetRadioLeft->setChecked( mXQuadOffset == -1 && mYQuadOffset == 0 );
+      mPointOffsetRadioOver->setChecked( mXQuadOffset == 0 && mYQuadOffset == 0 );
+      mPointOffsetRadioRight->setChecked( mXQuadOffset == 1 && mYQuadOffset == 0 );
+      mPointOffsetRadioBelowLeft->setChecked( mXQuadOffset == -1 && mYQuadOffset == -1 );
+      mPointOffsetRadioBelow->setChecked( mXQuadOffset == 0 && mYQuadOffset == -1 );
+      mPointOffsetRadioBelowRight->setChecked( mXQuadOffset == 1 && mYQuadOffset == -1 );
+
+      mPointOffsetXOffsetSpinBox->setValue( lyr.xOffset );
+      mPointOffsetYOffsetSpinBox->setValue( lyr.yOffset );
+      mPointOffsetUnitsComboBox->setCurrentIndex( lyr.labelOffsetInMapUnits ? 1 : 0 );
+      mPointOffsetAngleSpinBox->setValue( lyr.angleOffset );
+
       break;
     case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
@@ -231,6 +249,18 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   {
     connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateOptions() ) );
   }
+
+  // setup connections for label quadrant offsets
+  QRadioButton* quadrantRadios[] =
+  {
+    mPointOffsetRadioAboveLeft, mPointOffsetRadioAbove, mPointOffsetRadioAboveRight,
+    mPointOffsetRadioLeft, mPointOffsetRadioOver, mPointOffsetRadioRight,
+    mPointOffsetRadioBelowLeft, mPointOffsetRadioBelow, mPointOffsetRadioBelowRight
+  };
+  for ( unsigned int i = 0; i < sizeof( quadrantRadios ) / sizeof( QRadioButton* ); i++ )
+  {
+    connect( quadrantRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateQuadrant() ) );
+  }
 }
 
 QgsLabelingGui::~QgsLabelingGui()
@@ -270,6 +300,13 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
            || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
+
+    lyr.xQuadOffset = mXQuadOffset;
+    lyr.yQuadOffset = mYQuadOffset;
+    lyr.xOffset = mPointOffsetXOffsetSpinBox->value();
+    lyr.yOffset = mPointOffsetYOffsetSpinBox->value();
+    lyr.labelOffsetInMapUnits = ( mPointOffsetUnitsComboBox->currentIndex() == 1 );
+    lyr.angleOffset = mPointOffsetAngleSpinBox->value();
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -779,6 +816,11 @@ void QgsLabelingGui::updateOptions()
   {
     stackedOptions->setCurrentWidget( pageOptionsPoint );
   }
+  else if (( stackedPlacement->currentWidget() == pagePoint && radOverPoint->isChecked() )
+           || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
+  {
+    stackedOptions->setCurrentWidget( pageOptionsPointOffset );
+  }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )
            || ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() ) )
@@ -789,6 +831,21 @@ void QgsLabelingGui::updateOptions()
   {
     stackedOptions->setCurrentWidget( pageOptionsEmpty );
   }
+}
+
+void QgsLabelingGui::updateQuadrant()
+{
+  if ( mPointOffsetRadioAboveLeft->isChecked() ) { mXQuadOffset = -1; mYQuadOffset = 1; };
+  if ( mPointOffsetRadioAbove->isChecked() ) { mXQuadOffset = 0; mYQuadOffset = 1; };
+  if ( mPointOffsetRadioAboveRight->isChecked() ) { mXQuadOffset = 1; mYQuadOffset = 1; };
+
+  if ( mPointOffsetRadioLeft->isChecked() ) { mXQuadOffset = -1; mYQuadOffset = 0; };
+  if ( mPointOffsetRadioOver->isChecked() ) { mXQuadOffset = 0; mYQuadOffset = 0; };
+  if ( mPointOffsetRadioRight->isChecked() ) { mXQuadOffset = 1; mYQuadOffset = 0; };
+
+  if ( mPointOffsetRadioBelowLeft->isChecked() ) { mXQuadOffset = -1; mYQuadOffset = -1; };
+  if ( mPointOffsetRadioBelow->isChecked() ) { mXQuadOffset = 0; mYQuadOffset = -1; };
+  if ( mPointOffsetRadioBelowRight->isChecked() ) { mXQuadOffset = 1; mYQuadOffset = -1; };
 }
 
 void QgsLabelingGui::populateFontCapitalsComboBox()
@@ -875,6 +932,13 @@ void QgsLabelingGui::on_mBufferUnitComboBox_currentIndexChanged( int index )
   double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
   spinBufferSize->setSingleStep( singleStep );
   updateFont( mRefFont );
+}
+
+void QgsLabelingGui::on_mPointOffsetUnitsComboBox_currentIndexChanged( int index )
+{
+  double singleStep = ( index == 1 ) ? 1.0 : 0.1 ; //1.0 for map units, 0.1 for mm
+  mPointOffsetXOffsetSpinBox->setSingleStep( singleStep );
+  mPointOffsetYOffsetSpinBox->setSingleStep( singleStep );
 }
 
 void QgsLabelingGui::on_mXCoordinateComboBox_currentIndexChanged( const QString & text )

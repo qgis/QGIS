@@ -49,6 +49,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updatePreview();
     void scrollPreview();
     void updateOptions();
+    void updateQuadrant();
 
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
@@ -60,6 +61,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
     void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
     void on_mBufferUnitComboBox_currentIndexChanged( int index );
+    void on_mPointOffsetUnitsComboBox_currentIndexChanged( int index );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
 
@@ -90,6 +92,9 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     // background reference font
     QFont mRefFont;
     int mPreviewSize;
+
+    int mXQuadOffset;
+    int mYQuadOffset;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

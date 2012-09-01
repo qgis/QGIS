@@ -1521,6 +1521,9 @@
                 </item>
                 <item>
                  <widget class="QDoubleSpinBox" name="mMinSizeSpinBox">
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
                   <property name="suffix">
                    <string> mm</string>
                   </property>
@@ -1618,6 +1621,12 @@
            </item>
            <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -1650,7 +1659,7 @@
                   <item>
                    <widget class="QRadioButton" name="radAroundPoint">
                     <property name="text">
-                     <string>around point</string>
+                     <string>Around point</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1660,7 +1669,7 @@
                   <item>
                    <widget class="QRadioButton" name="radOverPoint">
                     <property name="text">
-                     <string>over point</string>
+                     <string>Offset from point</string>
                     </property>
                    </widget>
                   </item>
@@ -1671,7 +1680,7 @@
                   <item>
                    <widget class="QRadioButton" name="radLineParallel">
                     <property name="text">
-                     <string>parallel</string>
+                     <string>Parallel</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1681,14 +1690,14 @@
                   <item>
                    <widget class="QRadioButton" name="radLineCurved">
                     <property name="text">
-                     <string>curved</string>
+                     <string>Curved</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radLineHorizontal">
                     <property name="text">
-                     <string>horizontal</string>
+                     <string>Horizontal</string>
                     </property>
                    </widget>
                   </item>
@@ -1699,7 +1708,7 @@
                   <item>
                    <widget class="QRadioButton" name="radOverCentroid">
                     <property name="text">
-                     <string>over centroid</string>
+                     <string>Offset from centroid</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1709,28 +1718,28 @@
                   <item>
                    <widget class="QRadioButton" name="radAroundCentroid">
                     <property name="text">
-                     <string>around centroid</string>
+                     <string>Around centroid</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radPolygonHorizontal">
                     <property name="text">
-                     <string>horizontal (slow)</string>
+                     <string>Horizontal (slow)</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radPolygonFree">
                     <property name="text">
-                     <string>free (slow)</string>
+                     <string>Free (slow)</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QRadioButton" name="radPolygonPerimeter">
                     <property name="text">
-                     <string>using perimeter</string>
+                     <string>Using perimeter</string>
                     </property>
                    </widget>
                   </item>
@@ -1748,7 +1757,7 @@
               <item>
                <widget class="QStackedWidget" name="stackedOptions">
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="pageOptionsPoint">
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -1817,7 +1826,7 @@
                   <item>
                    <widget class="QCheckBox" name="chkLineAbove">
                     <property name="text">
-                     <string>above line</string>
+                     <string>Above line</string>
                     </property>
                     <property name="checked">
                      <bool>true</bool>
@@ -1827,14 +1836,14 @@
                   <item>
                    <widget class="QCheckBox" name="chkLineOn">
                     <property name="text">
-                     <string>on line</string>
+                     <string>On line</string>
                     </property>
                    </widget>
                   </item>
                   <item>
                    <widget class="QCheckBox" name="chkLineBelow">
                     <property name="text">
-                     <string>below line</string>
+                     <string>Below line</string>
                     </property>
                    </widget>
                   </item>
@@ -1895,6 +1904,192 @@
                  </layout>
                 </widget>
                 <widget class="QWidget" name="pageOptionsEmpty"/>
+                <widget class="QWidget" name="pageOptionsPointOffset">
+                 <layout class="QGridLayout" name="gridLayout_20">
+                  <item row="1" column="0">
+                   <widget class="QDoubleSpinBox" name="mPointOffsetXOffsetSpinBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="prefix">
+                     <string>X </string>
+                    </property>
+                    <property name="suffix">
+                     <string/>
+                    </property>
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>9999999.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QLabel" name="label_27">
+                    <property name="text">
+                     <string>degrees</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="mPointOffsetUnitsComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <item>
+                     <property name="text">
+                      <string>mm</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>map units</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QDoubleSpinBox" name="mPointOffsetYOffsetSpinBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="prefix">
+                     <string>Y </string>
+                    </property>
+                    <property name="suffix">
+                     <string/>
+                    </property>
+                    <property name="decimals">
+                     <number>4</number>
+                    </property>
+                    <property name="minimum">
+                     <double>-9999999.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>9999999.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_25">
+                    <property name="text">
+                     <string>Rotation</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="3">
+                   <layout class="QGridLayout" name="gridLayout_19">
+                    <property name="verticalSpacing">
+                     <number>8</number>
+                    </property>
+                    <item row="1" column="2">
+                     <widget class="QRadioButton" name="mPointOffsetRadioRight">
+                      <property name="text">
+                       <string>Right</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <widget class="QRadioButton" name="mPointOffsetRadioAboveRight">
+                      <property name="text">
+                       <string>Above Right</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QRadioButton" name="mPointOffsetRadioAboveLeft">
+                      <property name="text">
+                       <string>Above Left</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QRadioButton" name="mPointOffsetRadioOver">
+                      <property name="text">
+                       <string>Over</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QRadioButton" name="mPointOffsetRadioAbove">
+                      <property name="text">
+                       <string>Above</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QRadioButton" name="mPointOffsetRadioLeft">
+                      <property name="text">
+                       <string>Left</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QRadioButton" name="mPointOffsetRadioBelowLeft">
+                      <property name="text">
+                       <string>Below Left</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QRadioButton" name="mPointOffsetRadioBelow">
+                      <property name="text">
+                       <string>Below</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="2">
+                     <widget class="QRadioButton" name="mPointOffsetRadioBelowRight">
+                      <property name="text">
+                       <string>Below Right</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QDoubleSpinBox" name="mPointOffsetAngleSpinBox">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="minimum">
+                     <double>-360.000000000000000</double>
+                    </property>
+                    <property name="maximum">
+                     <double>360.000000000000000</double>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
                </widget>
               </item>
              </layout>
