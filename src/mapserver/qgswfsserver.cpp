@@ -39,7 +39,6 @@
 #include "qgsrenderer.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
-#include "qgslogger.h"
 #include "qgsrequesthandler.h"
 #include <QImage>
 #include <QPainter>

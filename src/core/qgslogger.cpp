@@ -35,7 +35,7 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   const char* dfile = debugFile();
   if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
   {
-    if ( !file || strcmp( dfile, file ) != 0 )
+    if ( !file || strncmp( dfile, file, strlen( dfile ) ) != 0 )
     {
       return;
     }
@@ -82,7 +82,7 @@ void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* 
   const char* dfile = debugFile();
   if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
   {
-    if ( !file || strcmp( dfile, file ) != 0 )
+    if ( !file || strncmp( dfile, file, strlen( dfile ) ) != 0 )
     {
       return;
     }
@@ -123,7 +123,7 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
   const char* dfile = debugFile();
   if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
   {
-    if ( !file || strcmp( dfile, file ) != 0 )
+    if ( !file || strncmp( dfile, file, strlen( dfile ) ) != 0 )
     {
       return;
     }
