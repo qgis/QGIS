@@ -229,6 +229,7 @@ void QgsHtmlAnnotationItem::javascript()
 {
   QWebFrame *frame = mWebView->page()->mainFrame();
   frame->addToJavaScriptWindowObject( "canvas", mMapCanvas );
+  frame->addToJavaScriptWindowObject( "layer", mVectorLayer );
 }
 
 
