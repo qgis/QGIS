@@ -13,6 +13,12 @@ class QgsDistanceArea
     //! Destructor
     ~QgsDistanceArea();
     
+   //! Copy constructor
+    QgsDistanceArea(const QgsDistanceArea & origDA );
+
+    //! Assignment operator
+    operator=(const QgsDistanceArea & origDA );
+
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode(bool flag);
     void setProjectionsEnabled(bool flag) /Deprecated/;

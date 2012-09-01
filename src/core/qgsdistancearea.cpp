@@ -48,9 +48,39 @@ QgsDistanceArea::QgsDistanceArea()
 }
 
 
+//! Copy constructor
+QgsDistanceArea::QgsDistanceArea(const QgsDistanceArea & origDA )
+{
+  _copy( origDA );
+}
+
 QgsDistanceArea::~QgsDistanceArea()
 {
   delete mCoordTransform;
+}
+
+//! Assignment operator
+QgsDistanceArea & QgsDistanceArea::operator=(const QgsDistanceArea & origDA )
+{
+  if (this == & origDA )
+  {
+    // Do not copy unto self
+    return *this;
+  }
+  _copy( origDA );
+  return *this;
+}
+
+//! Copy helper. Avoid Sqlite3 accesses.
+void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
+{
+  mEllipsoidalMode = origDA.mEllipsoidalMode;
+  mEllipsoid = origDA.mEllipsoid;
+  mSemiMajor = origDA.mSemiMajor;
+  mSemiMinor = origDA.mSemiMinor;
+  mInvFlattening = origDA.mInvFlattening;
+  mSourceRefSys = origDA.mSourceRefSys;
+  mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
 }
 
 void QgsDistanceArea::setEllipsoidalMode( bool flag )
