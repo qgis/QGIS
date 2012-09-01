@@ -507,6 +507,8 @@ class CORE_EXPORT QgsExpression
     // internally used to create an empty expression
     QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ), mCalc( NULL ) {}
 
+    void initGeomCalculator();
+
     QString mExpression;
     Node* mRootNode;
 
@@ -516,7 +518,6 @@ class CORE_EXPORT QgsExpression
     int mRowNumber;
     double mScale;
 
-    void initGeomCalculator();
     QgsDistanceArea* mCalc;
 };
 
