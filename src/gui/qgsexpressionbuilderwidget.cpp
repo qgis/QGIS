@@ -231,6 +231,12 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
+void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
+{
+  Q_UNUSED( da );
+   // TODO! FIXME!!!
+}
+
 QString QgsExpressionBuilderWidget::expressionText()
 {
   return txtExpressionString->toPlainText();
@@ -257,12 +263,25 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     return;
   }
 
+
+
   QgsExpression exp( text );
 
   // TODO We could do this without a layer.
   // Maybe just calling exp.evaluate()?
   if ( mLayer )
   {
+    // Only set ellipsoid if we have layer...
+    QgsDistanceArea myDa;
+    QSettings settings;
+
+    myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
+    myDa.setSourceCrs( mLayer->crs().srsid() );
+    // myDa.setEllipsoidalMode(QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+    myDa.setEllipsoidalMode( false );
+
+    exp.setGeomCalculator( myDa );
+
     if ( !mFeature.isValid() )
     {
       mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), mLayer->geometryType() != QGis::NoGeometry && exp.needsGeometry() );

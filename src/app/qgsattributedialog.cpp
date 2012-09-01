@@ -182,7 +182,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QSettings settings;
 
     myDa.setSourceCrs( vl->crs().srsid() );
-    myDa.setEllipsoidalMode(QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+    myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
     myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
 
     for ( QgsFieldMap::const_iterator it = theFieldMap.begin(); it != theFieldMap.end(); ++it )

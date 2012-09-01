@@ -541,7 +541,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   QSettings settings;
 
   myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode(QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
   myDa.setEllipsoid( settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString() );
 
   // parse search string and build parsed tree

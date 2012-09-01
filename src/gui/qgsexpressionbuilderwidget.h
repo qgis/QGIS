@@ -20,6 +20,7 @@
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressionhighlighter.h"
+#include "qgsdistancearea.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
@@ -121,6 +122,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadFieldNames();
 
     void loadFieldNames( QgsFieldMap fields );
+
+    /** Sets geometry calculator in order to get the measurements correct.
+      */
+    void setGeomCalculator( const QgsDistanceArea & da );
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
