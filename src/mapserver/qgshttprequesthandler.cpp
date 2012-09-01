@@ -29,7 +29,6 @@
 #include <QStringList>
 #include <QUrl>
 #include <fcgi_stdio.h>
-#include "qgslogger.h"
 
 QgsHttpRequestHandler::QgsHttpRequestHandler(): QgsRequestHandler()
 {
