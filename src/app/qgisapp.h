@@ -166,6 +166,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /** Get the mapcanvas object from the app */
     QgsMapCanvas *mapCanvas();
 
+    QgsMessageBar* messageBar();
+
     /** Get the mapcanvas object from the app */
     QgsPalLabeling *palLabeling();
 

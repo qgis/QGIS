@@ -1943,6 +1943,12 @@ QgsPalLabeling *QgisApp::palLabeling()
   return mLBL;
 }
 
+QgsMessageBar* QgisApp::messageBar()
+{
+  Q_ASSERT( mInfoBar );
+  return mInfoBar;
+}
+
 void QgisApp::initLegend()
 {
   mMapLegend->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
