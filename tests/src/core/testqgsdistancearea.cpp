@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include <QtTest>
+#include <QFile>
+#include <QTextStream>
 #include <QObject>
 #include <QString>
-#include <QObject>
+#include <QStringList>
 #include <qgsapplication.h>
 //header for class being tested
 #include <qgsdistancearea.h>
@@ -48,7 +50,7 @@ void TestQgsDistanceArea::basic()
 {
   QgsPoint p1( 1.0, 3.0 ), p2(-2.0, -1.0 ); 
   QgsDistanceArea daA;
-  double resultA, resultB;
+  double resultA, resultB, resultC;
 
   daA.setEllipsoid( "NONE" );
   resultA = daA.measureLine( p1, p2 );
@@ -72,14 +74,60 @@ void TestQgsDistanceArea::basic()
   QVERIFY( ! qFuzzyCompare( resultA, resultB ) );
 
   // Test assignment
-  daA = daB;
-  resultA = daA.measureLine( p1, p2 );
-  QCOMPARE( resultA, resultB );
+  QgsDistanceArea * daC;
+  daC = new QgsDistanceArea;
+  *daC = daB;
+  resultC = daC->measureLine( p1, p2 );
+  QCOMPARE( resultB, resultC );
+  delete daC;
 
 };
 
 void TestQgsDistanceArea::test_distances()
 {
+  // Read the file of Geod data
+  // Column 0 (first) is latitude point 1
+  // Column 1 is longitude point 1
+  // Column 3 is latitude point 2
+  // Column 4 is longitude point 3
+  // Column 6 is the resulting distance in meters on the WGS84 ellipsoid
+  // Note: lat is north/south, so the QgsPoint should be ( long, lat )
+  // See http://geographiclib.sourceforge.net/html/geodesic.html#testgeod
+
+  // Set up DA
+  QgsDistanceArea myDa;
+  myDa.setSourceAuthId( "EPSG:4030" );
+  myDa.setEllipsoidalMode ( true );
+  myDa.setEllipsoid( "WGS84" );
+
+  QString myFileName = QString( TEST_DATA_DIR ) + QDir::separator() + "GeodTest-nano.dat";
+
+  QFile myFile( myFileName );  
+  if ( ! myFile.open( QIODevice::ReadOnly | QIODevice::Text))
+  {
+    QFAIL( "Couldn't open file" );
+    return;
+  }
+  QTextStream in( & myFile );
+  while (!in.atEnd()) {
+    QString line = in.readLine();
+    // Some test points (antipodal) does not converge with the chosen algorithm!
+    // See calcaulator at http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+    // These are commented out.
+    if (line[0] != '#' )
+    {
+      QStringList myLineList = line.split(' '); // Split fields on space.
+      // Create points
+      QgsPoint p1( myLineList[1].toDouble(), myLineList[0].toDouble() );
+      QgsPoint p2( myLineList[4].toDouble(), myLineList[3].toDouble() );
+      double result = myDa.measureLine( p1, p2 );
+      // QgsDebugMsg( QString( "Distance from %1 to %2 is %3" ).arg( p1.toString( 15 ) ).arg( p2.toString( 15 ) ).arg( result, 0, 'g', 15 ) );
+      // QgsDebugMsg( QString( "Distance should be %1" ).arg( myLineList[6] ) );
+      // Check result is less than 0.5mm from expected.
+      QVERIFY ( qAbs( result -  myLineList[6].toDouble() ) < 0.0005 );
+    }
+  }
+  
 };
 
 void TestQgsDistanceArea::unit_conversions()
