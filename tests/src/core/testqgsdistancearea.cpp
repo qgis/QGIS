@@ -81,6 +81,10 @@ void TestQgsDistanceArea::basic()
   QCOMPARE( resultB, resultC );
   delete daC;
 
+  // Use parameter setting of ellipsoid radii (from WGS72 )
+  daA.setEllipsoid( 6378135.0, 6378135.0 - ( 6378135.0 / 298.26 ) );
+  resultA = daA.measureLine( p1, p2 );
+  QCOMPARE( resultA, resultB );
 };
 
 void TestQgsDistanceArea::test_distances()
