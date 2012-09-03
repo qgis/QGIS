@@ -48,9 +48,42 @@ QgsDistanceArea::QgsDistanceArea()
 }
 
 
+//! Copy constructor
+QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
+{
+  _copy( origDA );
+}
+
 QgsDistanceArea::~QgsDistanceArea()
 {
   delete mCoordTransform;
+}
+
+//! Assignment operator
+QgsDistanceArea & QgsDistanceArea::operator=( const QgsDistanceArea & origDA )
+{
+  if ( this == & origDA )
+  {
+    // Do not copy unto self
+    return *this;
+  }
+  _copy( origDA );
+  return *this;
+}
+
+//! Copy helper. Avoid Sqlite3 accesses.
+void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
+{
+  mEllipsoidalMode = origDA.mEllipsoidalMode;
+  mEllipsoid = origDA.mEllipsoid;
+  mSemiMajor = origDA.mSemiMajor;
+  mSemiMinor = origDA.mSemiMinor;
+  mInvFlattening = origDA.mInvFlattening;
+  // Some calculations and trig. Should not be TOO time consuming.
+  // Alternatively we could copy the temp vars?
+  computeAreaInit();
+  mSourceRefSys = origDA.mSourceRefSys;
+  mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
 }
 
 void QgsDistanceArea::setEllipsoidalMode( bool flag )
@@ -174,6 +207,22 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   mEllipsoid = ellipsoid;
   return true;
 }
+
+//! Sets ellipsoid by supplied radii
+// Inverse flattening is calculated with invf = a/(a-b)
+// Also, b = a-(a/invf)
+bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
+{
+  mEllipsoid = "PARAMETER";
+  mSemiMajor = semiMajor;
+  mSemiMinor = semiMinor;
+  mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
+
+  computeAreaInit();
+
+  return true;
+}
+
 
 
 double QgsDistanceArea::measure( QgsGeometry* geometry )
