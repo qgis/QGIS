@@ -45,6 +45,10 @@ class QgsDistanceArea
     //! sets ellipsoid by its acronym
     bool setEllipsoid(const QString& ellipsoid);
     
+    //! Sets ellipsoid by supplied radii
+    // Inverse flattening is calculated with invf = a/(a-b)
+    bool setEllipsoid( double semiMajor, double semiMinor );
+
     //! returns ellipsoid's acronym
     const QString& ellipsoid();
     
