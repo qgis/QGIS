@@ -214,19 +214,20 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString driver, QString host, QStrin
 #ifdef WIN32
     connectionString = "driver={SQL Server}";
 #else
-    connectionString = "driver={FreeTDS}";
+    connectionString = "driver={FreeTDS};port=1433";
 #endif
-    if ( !host.isEmpty() )
-      connectionString += ";server=" + host;
-
-    if ( !database.isEmpty() )
-      connectionString += ";database=" + database;
-
-    if ( password.isEmpty() )
-      connectionString += ";trusted_connection=yes";
-    else
-      connectionString += ";uid=" + username + ";pwd=" + password;
   }
+
+  if ( !host.isEmpty() )
+    connectionString += ";server=" + host;
+
+  if ( !database.isEmpty() )
+    connectionString += ";database=" + database;
+
+  if ( password.isEmpty() )
+    connectionString += ";trusted_connection=yes";
+  else
+    connectionString += ";uid=" + username + ";pwd=" + password;
 
   if ( !username.isEmpty() )
     db.setUserName( username );
