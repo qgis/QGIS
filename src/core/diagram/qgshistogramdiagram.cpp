@@ -72,6 +72,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
 
 QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
+  Q_UNUSED( c );
   QSizeF size;
 
   QgsAttributeMap::const_iterator attIt = attributes.constBegin();
@@ -92,14 +93,14 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributeMap& attributes, cons
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
       mScaleFactor = maxValue / s.size.height();
-      size.scale( s.barWidth * attributes.size(), s.size.height(), Qt::IgnoreAspectRatio );
+      size.scale( s.barWidth * s.categoryColors.size(), s.size.height(), Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
     default: // just in case...
       mScaleFactor = maxValue / s.size.width();
-      size.scale( s.size.width(), s.barWidth * attributes.size(), Qt::IgnoreAspectRatio );
+      size.scale( s.size.width(), s.barWidth * s.categoryColors.size(), Qt::IgnoreAspectRatio );
       break;
   }
 
