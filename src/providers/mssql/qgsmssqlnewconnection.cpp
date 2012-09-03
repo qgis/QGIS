@@ -169,8 +169,13 @@ void QgsMssqlNewConnection::testConnection()
   }
   else
   {
+    QString dbName = txtDatabase->text();
+    if ( dbName.isEmpty() )
+    {
+      dbName = txtService->text();
+    }
     QMessageBox::information( this,
                               tr( "Test connection" ),
-                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
+                              tr( "Connection to %1 was successful" ).arg( dbName ) );
   }
 }

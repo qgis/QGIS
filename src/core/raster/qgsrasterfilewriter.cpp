@@ -18,13 +18,20 @@
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
+
 #include <QCoreApplication>
 #include <QProgressDialog>
 #include <QTextStream>
+#include <QMessageBox>
+
 #include "gdal.h"
 
-QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ): mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ), mTiledMode( false ),
-    mMaxTileWidth( 500 ), mMaxTileHeight( 500 ), mProgressDialog( 0 )
+QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
+    mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ),
+    mTiledMode( false ), mMaxTileWidth( 500 ), mMaxTileHeight( 500 ),
+    mBuildPyramidsFlag( QgsRasterDataProvider::PyramidsFlagNo ),
+    mPyramidsFormat( QgsRasterDataProvider::PyramidsGTiff ),
+    mProgressDialog( 0 )
 {
 
 }
@@ -165,88 +172,88 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
 #if 0
     else if ( )
+    {
       // TODO: see if nuller has user defined aditional values, in that case use one as no data value
 
     }
 #endif
-  else
-  {
-    // Verify if we realy need no data value, i.e.
-    QgsRectangle srcExtent = outputExtent;
-    QgsRasterProjector *projector = pipe->projector();
-    if ( projector && projector->destCrs() != projector->srcCrs() )
+    else
     {
-      QgsCoordinateTransform ct( projector->destCrs(), projector->srcCrs() );
-      srcExtent = ct.transformBoundingBox( outputExtent );
+      // Verify if we realy need no data value, i.e.
+      QgsRectangle srcExtent = outputExtent;
+      QgsRasterProjector *projector = pipe->projector();
+      if ( projector && projector->destCrs() != projector->srcCrs() )
+      {
+        QgsCoordinateTransform ct( projector->destCrs(), projector->srcCrs() );
+        srcExtent = ct.transformBoundingBox( outputExtent );
+      }
+      if ( !srcProvider->extent().contains( srcExtent ) )
+      {
+        // Destination extent is larger than source extent, we need destination no data values
+        // Get src sample statistics (estimation from sample)
+        QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
+
+        // Test if we have free (not used) values
+        double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+        if ( stats.minimumValue > typeMinValue )
+        {
+          destNoDataValue = typeMinValue;
+        }
+        else if ( stats.maximumValue < typeMaxValue )
+        {
+          destNoDataValue = typeMaxValue;
+        }
+        else
+        {
+          // We have to use wider type
+          destDataType = QgsRasterInterface::typeWithNoDataValue( destDataType, &destNoDataValue );
+        }
+        destHasNoDataValue = true;
+      }
     }
-    if ( !srcProvider->extent().contains( srcExtent ) )
+    QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
+    destDataTypeList.append( destDataType );
+    destHasNoDataValueList.append( destHasNoDataValue );
+    destNoDataValueList.append( destNoDataValue );
+  }
+
+  QgsRasterInterface::DataType destDataType = destDataTypeList.value( 0 );
+  // Currently write API supports one output type for dataset only -> find the widest
+  for ( int i = 1; i < nBands; i++ )
+  {
+    if ( destDataTypeList.value( i ) > destDataType )
     {
-      // Destination extent is larger than source extent, we need destination no data values
-      // Get src sample statistics (estimation from sample)
-      QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
-
-      // Test if we have free (not used) values
-      double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
-      double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
-      if ( stats.minimumValue > typeMinValue )
-      {
-        destNoDataValue = typeMinValue;
-      }
-      else if ( stats.maximumValue < typeMaxValue )
-      {
-        destNoDataValue = typeMaxValue;
-      }
-      else
-      {
-        // We have to use wider type
-        destDataType = QgsRasterInterface::typeWithNoDataValue( destDataType, &destNoDataValue );
-      }
-      destHasNoDataValue = true;
+      destDataType = destDataTypeList.value( i );
+      // no data value may be left per band (for future)
     }
   }
-  QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
-  destDataTypeList.append( destDataType );
-  destHasNoDataValueList.append( destHasNoDataValue );
-  destNoDataValueList.append( destNoDataValue );
-}
 
-
-QgsRasterInterface::DataType destDataType = destDataTypeList.value( 0 );
-// Currently write API supports one output type for dataset only -> find the widest
-for ( int i = 1; i < nBands; i++ )
-{
-  if ( destDataTypeList.value( i ) > destDataType )
-  {
-    destDataType = destDataTypeList.value( i );
-    // no data value may be left per band (for future)
-  }
-}
-
-destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
-
-WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
-
-if ( error == NoDataConflict )
-{
-  // The value used for no data was found in source data, we must use wider data type
-  destProvider->remove();
-  delete destProvider;
-
-  // But we dont know which band -> wider all
-  for ( int i = 0; i < nBands; i++ )
-  {
-    double destNoDataValue;
-    QgsRasterInterface::DataType destDataType = QgsRasterInterface::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
-    destDataTypeList.replace( i, destDataType );
-    destNoDataValueList.replace( i, destNoDataValue );
-  }
-
-  // Try again
   destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
-  error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
-}
 
-return error;
+  WriterError error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
+
+  if ( error == NoDataConflict )
+  {
+    // The value used for no data was found in source data, we must use wider data type
+    destProvider->remove();
+    delete destProvider;
+
+    // But we don't know which band -> wider all
+    for ( int i = 0; i < nBands; i++ )
+    {
+      double destNoDataValue;
+      QgsRasterInterface::DataType destDataType = QgsRasterInterface::typeWithNoDataValue( destDataTypeList.value( i ), &destNoDataValue );
+      destDataTypeList.replace( i, destDataType );
+      destNoDataValueList.replace( i, destNoDataValue );
+    }
+
+    // Try again
+    destProvider = initOutput( nCols, nRows, crs, geoTransform, nBands,  destDataType );
+    error = writeDataRaster( pipe, iter, nCols, nRows, outputExtent, crs, destDataType, destHasNoDataValueList, destNoDataValueList, destProvider, progressDialog );
+  }
+
+  return error;
 }
 
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
@@ -281,6 +288,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
     dataList.push_back( VSIMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
+    // TODO - fix segfault here when using tiles+vrt (reported by Etienne)
     destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
   }
 
@@ -296,6 +304,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
     progressDialog->setLabelText( QObject::tr( "Reading raster part %1 of %2" ).arg( fileIndex + 1 ).arg( nParts ) );
   }
 
+  // hmm why is there a while( true ) here ..
+  // not good coding practice IMHO, it might be better to use [ for() and break ] or  [ while (test) ]
   while ( true )
   {
     for ( int i = 1; i <= nBands; ++i )
@@ -310,7 +320,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
           writeVRT( vrtFilePath );
           buildPyramids( vrtFilePath );
         }
+        else
+        {
+          if ( mBuildPyramidsFlag == QgsRasterDataProvider::PyramidsFlagYes )
+            buildPyramids( mOutputUrl );
+        }
 
+        QgsDebugMsg( "Done" );
         return NoError; //reached last tile, bail out
       }
       // TODO: verify if NoDataConflict happened, to do that we need the whole pipe or nuller interface
@@ -356,6 +372,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
     }
     ++fileIndex;
   }
+
+  QgsDebugMsg( "Done" );
   return NoError;
 }
 
@@ -482,6 +500,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
 
     ++fileIndex;
   }
+
   delete destProvider;
   CPLFree( redData ); CPLFree( greenData ); CPLFree( blueData ); CPLFree( alphaData );
 
@@ -496,6 +515,11 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     QString vrtFilePath( mOutputUrl + "/" + outputInfo.baseName() + ".vrt" );
     writeVRT( vrtFilePath );
     buildPyramids( vrtFilePath );
+  }
+  else
+  {
+    if ( mBuildPyramidsFlag == QgsRasterDataProvider::PyramidsFlagYes )
+      buildPyramids( mOutputUrl );
   }
   return NoError;
 }
@@ -565,6 +589,7 @@ void QgsRasterFileWriter::addToVRT( const QString& filename, int band, int xSize
   bandElem.appendChild( simpleSourceElem );
 }
 
+#if 0
 void QgsRasterFileWriter::buildPyramids( const QString& filename )
 {
   GDALDatasetH dataSet;
@@ -592,6 +617,67 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
     mProgressDialog->show();
   }*/
   GDALBuildOverviews( dataSet, "AVERAGE", 6, overviewList, 0, 0, /*pyramidsProgress*/ 0, /*mProgressDialog*/ 0 );
+}
+#endif
+
+void QgsRasterFileWriter::buildPyramids( const QString& filename )
+{
+  // open new dataProvider so we can build pyramids with it
+  QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, filename );
+  if ( !destProvider )
+  {
+    return;
+  }
+
+  // TODO progress report
+  // TODO test mTiledMode - not tested b/c segfault at line # 289
+  // connect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  QList< QgsRasterPyramid> myPyramidList;
+  if ( ! mPyramidsList.isEmpty() )
+    myPyramidList = destProvider->buildPyramidList( mPyramidsList );
+  for ( int myCounterInt = 0; myCounterInt < myPyramidList.count(); myCounterInt++ )
+  {
+    myPyramidList[myCounterInt].build = true;
+  }
+
+  QgsDebugMsg( QString( "building pyramids : %1 pyramids, %2 resampling, %3 format" ).arg( myPyramidList.count() ).arg( mPyramidsResampling ).arg( mPyramidsFormat ) );
+  // QApplication::setOverrideCursor( Qt::WaitCursor );
+  QString res = destProvider->buildPyramids( myPyramidList, mPyramidsResampling, mPyramidsFormat );
+  // QApplication::restoreOverrideCursor();
+
+  // TODO put this in provider or elsewhere
+  if ( !res.isNull() )
+  {
+    QString title, message;
+    if ( res == "ERROR_WRITE_ACCESS" )
+    {
+      title = QObject::tr( "Building pyramids failed - write access denied" );
+      message = QObject::tr( "Write access denied. Adjust the file permissions and try again." );
+    }
+    else if ( res == "ERROR_WRITE_FORMAT" )
+    {
+      title = QObject::tr( "Building pyramids failed." );
+      message = QObject::tr( "The file was not writable. Some formats do not "
+                             "support pyramid overviews. Consult the GDAL documentation if in doubt." );
+    }
+    else if ( res == "FAILED_NOT_SUPPORTED" )
+    {
+      title = QObject::tr( "Building pyramids failed." );
+      message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
+    }
+    else if ( res == "ERROR_JPEG_COMPRESSION" )
+    {
+      title = QObject::tr( "Building pyramids failed." );
+      message = QObject::tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." );
+    }
+    else if ( res == "ERROR_VIRTUAL" )
+    {
+      title = QObject::tr( "Building pyramids failed." );
+      message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
+    }
+    QMessageBox::warning( 0, title, message );
+    QgsDebugMsg( res + " - " + message );
+  }
 }
 
 int QgsRasterFileWriter::pyramidsProgress( double dfComplete, const char *pszMessage, void* pData )
@@ -743,6 +829,11 @@ QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, co
     {
       return 0;
     }
+
+    // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
+    // should this belong in provider? should also test that source provider is gdal
+    // if ( mBuildPyramidsFlag == -4 && mOutputProviderKey == "gdal" && mOutputFormat.toLower() == "gtiff" )
+    //   mCreateOptions << "COPY_SRC_OVERVIEWS=YES";
 
     if ( !destProvider->create( mOutputFormat, nBands, type, nCols, nRows, geoTransform,
                                 crs, mCreateOptions ) )

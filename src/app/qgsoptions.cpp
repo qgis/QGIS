@@ -429,6 +429,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
+  cmbEnableMacros->setCurrentIndex( settings.value( "/qgis/enableMacros", 1 ).toInt() );
 
   // templates
   cbxProjectDefaultNew->setChecked( settings.value( "/qgis/newProjectDefault", QVariant( false ) ).toBool() );
@@ -843,6 +844,7 @@ void QgsOptions::saveOptions()
     settings.setValue( "/qgis/projectTemplateDir", leTemplateFolder->text() );
     QgisApp::instance()->updateProjectFromTemplates();
   }
+  settings.setValue( "/qgis/enableMacros", cmbEnableMacros->currentIndex() );
 
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );

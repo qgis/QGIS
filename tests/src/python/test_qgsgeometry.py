@@ -84,20 +84,9 @@ class TestQgsGeometry(unittest.TestCase):
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                       (QGis.Polygon, bufferGeom.type()))
         assert bufferGeom.wkbType() == QGis.WKBPolygon, myMessage
+        myTestPoint = QgsGeometry.fromPoint(QgsPoint(3, 3))
+        assert bufferGeom.intersects(myTestPoint)
         
-        layer = QgsVectorLayer("Polygon", "buffer", "memory")
-        assert layer.isValid(), "Failed to create valid polygon memory layer"
-        
-        provider = layer.dataProvider()
-                
-        ft = QgsFeature()
-        ft.setGeometry(bufferGeom)
-        provider.addFeatures([ft])
-        
-        myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (1, layer.featureCount()))
-        assert layer.featureCount() == 1, myMessage
-
     def testContains(self):
         myPoly = QgsGeometry.fromPolygon([[QgsPoint(0, 0),QgsPoint(2, 0),QgsPoint(2, 2),QgsPoint(0, 2), QgsPoint(0, 0)]])
         myPoint = QgsGeometry.fromPoint(QgsPoint(1, 1))

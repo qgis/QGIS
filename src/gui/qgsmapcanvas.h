@@ -185,7 +185,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /** Read property of QColor bgColor. */
     virtual QColor canvasColor() const;
 
-    /** Emits signal scalChanged to update scale in main window */
+    /** Emits signal scaleChanged to update scale in main window */
     void updateScale();
 
     /** Updates the full extent */
@@ -334,6 +334,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     */
     void renderComplete( QPainter * );
+
+    /** Emitted when canvas finished a refresh request.
+	\note Added in 2.0 */
+    void mapCanvasRefreshed();
 
     /** Emitted when the canvas is about to be rendered.
       \note Added in 1.5 */

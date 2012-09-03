@@ -80,6 +80,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     Qt::PenStyle mBorderStyle;
     double mBorderWidth;
     QPen mPen;
+    QPen mSelPen;
 
     QPointF mOffset;
 };

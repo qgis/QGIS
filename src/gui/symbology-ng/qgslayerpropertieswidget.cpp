@@ -86,8 +86,8 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, con
   mVectorLayer = vl;
 
   setupUi( this );
-  // initalize the sub-widgets
-  // XXX Should this thing be here this way? Initalize all th widgets just for the sake of one layer?
+  // initialize the sub-widgets
+  // XXX Should this thing be here this way? Initialize all the widgets just for the sake of one layer?
   // TODO Make this on demand creation
   _initWidgetFunctions();
 

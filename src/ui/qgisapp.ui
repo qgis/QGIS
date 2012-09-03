@@ -1788,7 +1788,7 @@ Acts on all editable layers</string>
    </property>
   </action>
   <action name="mActionShowHideLabels">
-   <property name="checkable">
+  <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
@@ -1803,6 +1803,19 @@ Acts on all editable layers</string>
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
 Acts on currently active editable layer</string>
+    </property>
+  </action>
+  <action name="mActionHtmlAnnotation">
+  <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png
+     </iconset>
+   </property>
+   <property name="text">
+    <string>Html Annotation</string>
+   </property>
+   <property name="toolTip">
+    <string>Html Annotation</string>
    </property>
   </action>
  </widget>

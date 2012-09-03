@@ -43,10 +43,6 @@ email                : tim@linfiniti.com
 #include <cassert>
 
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
 const double QgsDecorationNorthArrow::PI = 3.14159265358979323846;
 //  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
 const double QgsDecorationNorthArrow::TOL = 1e-8;
@@ -298,7 +294,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       }
       // And set the angle of the north arrow. Perhaps do something
       // different if goodDirn = false.
-      mRotationInt = static_cast<int>( round( fmod( 360.0 - angle * 180.0 / PI, 360.0 ) ) );
+      mRotationInt = qRound( fmod( 360.0 - angle * 180.0 / PI, 360.0 ) );
     }
     else
     {

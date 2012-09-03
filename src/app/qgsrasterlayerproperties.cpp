@@ -117,13 +117,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     return;
   }
+
   QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
 
   // Only do pyramids if dealing directly with GDAL.
   if ( provider->capabilities() & QgsRasterDataProvider::BuildPyramids )
   {
-    QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildPyramidList();
-    QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
+    // initialize resampling methods
+    cboResamplingMethod->clear();
+    foreach ( QString method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+      cboResamplingMethod->addItem( method );
+
+    // build pyramid list
+    QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
+    QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
 
     for ( myRasterPyramidIterator = myPyramidList.begin();
           myRasterPyramidIterator != myPyramidList.end();
@@ -644,45 +651,49 @@ void QgsRasterLayerProperties::apply()
 
   //transparency settings
   QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
-  rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
-
-  //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
-  QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
-  if ( tableTransparency->columnCount() == 4 )
+  if ( rasterRenderer )
   {
-    QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
-    QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
-    for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+    rasterRenderer->setAlphaBand( cboxTransparencyBand->itemData( cboxTransparencyBand->currentIndex() ).toInt() );
+
+    //Walk through each row in table and test value. If not valid set to 0.0 and continue building transparency list
+    QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
+    if ( tableTransparency->columnCount() == 4 )
     {
-      myTransparentPixel.red = transparencyCellValue( myListRunner, 0 );
-      myTransparentPixel.green = transparencyCellValue( myListRunner, 1 );
-      myTransparentPixel.blue = transparencyCellValue( myListRunner, 2 );
-      myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 3 );
-      myTransparentThreeValuePixelList.append( myTransparentPixel );
+      QgsRasterTransparency::TransparentThreeValuePixel myTransparentPixel;
+      QList<QgsRasterTransparency::TransparentThreeValuePixel> myTransparentThreeValuePixelList;
+      for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+      {
+        myTransparentPixel.red = transparencyCellValue( myListRunner, 0 );
+        myTransparentPixel.green = transparencyCellValue( myListRunner, 1 );
+        myTransparentPixel.blue = transparencyCellValue( myListRunner, 2 );
+        myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 3 );
+        myTransparentThreeValuePixelList.append( myTransparentPixel );
+      }
+      rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
     }
-    rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
-  }
-  else if ( tableTransparency->columnCount() == 3 )
-  {
-    QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
-    QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
-    for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+    else if ( tableTransparency->columnCount() == 3 )
     {
-      myTransparentPixel.min = transparencyCellValue( myListRunner, 0 );
-      myTransparentPixel.max = transparencyCellValue( myListRunner, 1 );
-      myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 2 );
+      QgsRasterTransparency::TransparentSingleValuePixel myTransparentPixel;
+      QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
+      for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
+      {
+        myTransparentPixel.min = transparencyCellValue( myListRunner, 0 );
+        myTransparentPixel.max = transparencyCellValue( myListRunner, 1 );
+        myTransparentPixel.percentTransparent = transparencyCellValue( myListRunner, 2 );
 
-      myTransparentSingleValuePixelList.append( myTransparentPixel );
+        myTransparentSingleValuePixelList.append( myTransparentPixel );
+      }
+      rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
     }
-    rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
+
+    rasterRenderer->setRasterTransparency( rasterTransparency );
+
+    //set global transparency
+    rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
+
+    //invert color map
+    rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
   }
-  rasterRenderer->setRasterTransparency( rasterTransparency );
-
-  //set global transparency
-  rasterRenderer->setOpacity(( 255 - sliderTransparency->value() ) / 255.0 );
-
-  //invert color map
-  rasterRenderer->setInvertColor( mInvertColorMapCheckBox->isChecked() );
 
   QgsDebugMsg( "processing general tab" );
   /*
@@ -762,13 +773,14 @@ void QgsRasterLayerProperties::apply()
 
 void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 {
+  QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
 
-  connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  connect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
   //
   // Go through the list marking any files that are selected in the listview
   // as true so that we can generate pyramids for them.
   //
-  QgsRasterLayer::RasterPyramidList myPyramidList = mRasterLayer->buildPyramidList();
+  QList< QgsRasterPyramid> myPyramidList = provider->buildPyramidList();
   for ( int myCounterInt = 0; myCounterInt < lbxPyramidResolutions->count(); myCounterInt++ )
   {
     QListWidgetItem *myItem = lbxPyramidResolutions->item( myCounterInt );
@@ -781,15 +793,14 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   // let the user know we're going to possibly be taking a while
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  bool myBuildInternalFlag = cbxInternalPyramids->isChecked();
-  QString res = mRasterLayer->buildPyramids(
+  QString res = provider->buildPyramids(
                   myPyramidList,
                   cboResamplingMethod->currentText(),
-                  myBuildInternalFlag );
+                  ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
-  disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
+  disconnect( provider, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
   if ( !res.isNull() )
   {
     if ( res == "ERROR_WRITE_ACCESS" )
@@ -821,17 +832,16 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
 
   }
 
-
   //
   // repopulate the pyramids list
   //
   lbxPyramidResolutions->clear();
   // Need to rebuild list as some or all pyramids may have failed to build
-  myPyramidList = mRasterLayer->buildPyramidList();
+  myPyramidList = provider->buildPyramidList();
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.png" ) );
 
-  QgsRasterLayer::RasterPyramidList::iterator myRasterPyramidIterator;
+  QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
   for ( myRasterPyramidIterator = myPyramidList.begin();
         myRasterPyramidIterator != myPyramidList.end();
         ++myRasterPyramidIterator )
@@ -948,7 +958,7 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
   {
     if ( mRasterLayer->isNoDataValueValid() )
     {
-      // I dont think that noDataValue should be added to transparency list
+      // I don't think that noDataValue should be added to transparency list
 #if 0
       tableTransparency->insertRow( tableTransparency->rowCount() );
       setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
@@ -1313,7 +1323,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
           if ( value == tr( "null (no data)" ) || // Very bad! TODO: improve identify
                mRasterLayer->dataProvider()->isNoDataValue( bands.at( i ), value.toDouble() ) )
           {
-            return; // Dont add nodata, transparent anyway
+            return; // Don't add nodata, transparent anyway
           }
           values.append( value.toDouble() );
         }
@@ -1578,13 +1588,15 @@ void QgsRasterLayerProperties::updatePipeList()
     texts << QString( "%1 ms" ).arg( interface->time() );
     QTreeWidgetItem *item = new QTreeWidgetItem( texts );
 
+#if 0
     // Switching on/off would be possible but problematic - drawer is not pipe
-    // memer so we dont know required output format
-    // Checkobxes are very usefel however for QgsRasterPipe debugging.
-    //bool on = interface->on();
-    //item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
+    // memer so we don't know required output format
+    // Checkboxes are very useful however for QgsRasterPipe debugging.
+    bool on = interface->on();
+    item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
 
-    //Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+#endif
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
     item->setFlags( flags );
 

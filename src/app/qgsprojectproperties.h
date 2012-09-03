@@ -163,6 +163,11 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      */
     void restoreState();
 
+    /*!
+     * Reset the python macros
+     */
+    void resetPythonMacros();
+
     long mProjectSrsId;
     long mLayerSrsId;
 };

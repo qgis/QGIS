@@ -41,22 +41,54 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
-  mProjectionsEnabled = false;
+  mEllipsoidalMode = false;
   mCoordTransform = new QgsCoordinateTransform;
   setSourceCrs( GEOCRS_ID ); // WGS 84
   setEllipsoid( "WGS84" );
 }
 
 
+//! Copy constructor
+QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
+{
+  _copy( origDA );
+}
+
 QgsDistanceArea::~QgsDistanceArea()
 {
   delete mCoordTransform;
 }
 
-
-void QgsDistanceArea::setProjectionsEnabled( bool flag )
+//! Assignment operator
+QgsDistanceArea & QgsDistanceArea::operator=( const QgsDistanceArea & origDA )
 {
-  mProjectionsEnabled = flag;
+  if ( this == & origDA )
+  {
+    // Do not copy unto self
+    return *this;
+  }
+  _copy( origDA );
+  return *this;
+}
+
+//! Copy helper. Avoid Sqlite3 accesses.
+void QgsDistanceArea::_copy( const QgsDistanceArea & origDA )
+{
+  mEllipsoidalMode = origDA.mEllipsoidalMode;
+  mEllipsoid = origDA.mEllipsoid;
+  mSemiMajor = origDA.mSemiMajor;
+  mSemiMinor = origDA.mSemiMinor;
+  mInvFlattening = origDA.mInvFlattening;
+  // Some calculations and trig. Should not be TOO time consuming.
+  // Alternatively we could copy the temp vars?
+  computeAreaInit();
+  mSourceRefSys = origDA.mSourceRefSys;
+  mCoordTransform = new QgsCoordinateTransform( origDA.mCoordTransform->sourceCrs(), origDA.mCoordTransform->destCRS() );
+}
+
+void QgsDistanceArea::setEllipsoidalMode( bool flag )
+{
+  mEllipsoidalMode = flag;
 }
 
 void QgsDistanceArea::setSourceCrs( long srsid )
@@ -175,6 +207,22 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   mEllipsoid = ellipsoid;
   return true;
 }
+
+//! Sets ellipsoid by supplied radii
+// Inverse flattening is calculated with invf = a/(a-b)
+// Also, b = a-(a/invf)
+bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
+{
+  mEllipsoid = "PARAMETER";
+  mSemiMajor = semiMajor;
+  mSemiMinor = semiMinor;
+  mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
+
+  computeAreaInit();
+
+  return true;
+}
+
 
 
 double QgsDistanceArea::measure( QgsGeometry* geometry )
@@ -338,14 +386,14 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint>& points )
 
   try
   {
-    if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
+    if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
       p1 = mCoordTransform->transform( points[0] );
     else
       p1 = points[0];
 
     for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
     {
-      if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
+      if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
       {
         p2 = mCoordTransform->transform( *i );
         total += computeDistanceBearing( p1, p2 );
@@ -372,26 +420,37 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint>& points )
 
 double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
 {
+  double result;
+
   try
   {
     QgsPoint pp1 = p1, pp2 = p2;
-    if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
+
+    QgsDebugMsg( QString( "Measuring from %1 to %2" ).arg( p1.toString( 4 ) ).arg( p2.toString( 4 ) ) );
+    if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
     {
+      QgsDebugMsg( QString( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ) );
+      QgsDebugMsg( QString( "From proj4 : %1" ).arg( mCoordTransform->sourceCrs().toProj4() ) );
+      QgsDebugMsg( QString( "To   proj4 : %1" ).arg( mCoordTransform->destCRS().toProj4() ) );
       pp1 = mCoordTransform->transform( p1 );
       pp2 = mCoordTransform->transform( p2 );
-      return computeDistanceBearing( pp1, pp2 );
+      QgsDebugMsg( QString( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ) ).arg( pp2.toString( 4 ) ) );
+      result = computeDistanceBearing( pp1, pp2 );
     }
     else
     {
-      return sqrt(( p2.x() - p1.x() )*( p2.x() - p1.x() ) + ( p2.y() - p1.y() )*( p2.y() - p1.y() ) );
+      QgsDebugMsg( "Cartesian calculation on canvas coordinates" );
+      result = sqrt(( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
     }
   }
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
     QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
-    return 0.0;
+    result = 0.0;
   }
+  QgsDebugMsg( QString( "The result was %1" ).arg( result ) );
+  return result;
 }
 
 
@@ -437,7 +496,7 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
         pnt = QgsPoint( x, y );
 
-        if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
+        if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
         {
           pnt = mCoordTransform->transform( pnt );
         }
@@ -489,7 +548,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
 
   try
   {
-    if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
+    if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
     {
       QList<QgsPoint> pts;
       for ( QList<QgsPoint>::const_iterator i = points.begin(); i != points.end(); ++i )
@@ -517,7 +576,7 @@ double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 )
   QgsPoint pp1 = p1, pp2 = p2;
   double bearing;
 
-  if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
+  if ( mEllipsoidalMode && ( mEllipsoid != "NONE" ) )
   {
     pp1 = mCoordTransform->transform( p1 );
     pp2 = mCoordTransform->transform( p2 );
@@ -679,7 +738,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points )
   double area;
 
   QgsDebugMsgLevel( "Ellipsoid: " + mEllipsoid, 3 );
-  if (( ! mProjectionsEnabled ) || ( mEllipsoid == "NONE" ) )
+  if (( ! mEllipsoidalMode ) || ( mEllipsoid == "NONE" ) )
   {
     return computePolygonFlatArea( points );
   }
@@ -867,4 +926,43 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
 
 
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
+}
+
+void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea )
+{
+  // Helper for converting between meters and feet
+  // The parameters measure and measureUnits are in/out
+
+  if (( measureUnits == QGis::Degrees || measureUnits == QGis::Feet ) &&
+      mEllipsoid != "NONE" &&
+      mEllipsoidalMode )
+  {
+    // Measuring on an ellipsoid returned meters. Force!
+    measureUnits = QGis::Meters;
+    QgsDebugMsg( "We're measuring on an ellipsoid or using projections, the system is returning meters" );
+  }
+
+  // Only convert between meters and feet
+  if ( measureUnits == QGis::Meters && displayUnits == QGis::Feet )
+  {
+    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
+    measure /= 0.3048;
+    if ( isArea )
+    {
+      measure /= 0.3048;
+    }
+    QgsDebugMsg( QString( "to %1 feet" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Feet;
+  }
+  if ( measureUnits == QGis::Feet && displayUnits == QGis::Meters )
+  {
+    QgsDebugMsg( QString( "Converting %1 feet" ).arg( QString::number( measure ) ) );
+    measure *= 0.3048;
+    if ( isArea )
+    {
+      measure *= 0.3048;
+    }
+    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Meters;
+  }
 }

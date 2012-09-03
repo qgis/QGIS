@@ -23,6 +23,7 @@
 #include <QDomDocument>
 
 #include "qgsfield.h"
+#include "qgsvectorlayer.h"
 
 class QgsDistanceArea;
 class QgsFeature;
@@ -121,12 +122,27 @@ class CORE_EXPORT QgsExpression
     //! Return the number used for $rownum special column
     int currentRowNumber() { return mRowNumber; }
 
+    void setScale( double scale ) { mScale = scale; }
+
+    int scale() {return mScale; }
+
     //! Return the parsed expression as a string - useful for debugging
     QString dump() const;
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
     QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
+
+    /** This function currently replaces each expression between [% and %]
+       in the string with the result of its evaluation on the feature
+       passed as argument.
+
+       Additional substitutions can be passed through the substitutionMap
+       parameter
+    */
+    static QString replaceExpressionText( QString action, QgsFeature &feat,
+                                          QgsVectorLayer* layer,
+                                          const QMap<QString, QVariant> *substitutionMap = 0 );
 
     //
 
@@ -503,6 +519,8 @@ class CORE_EXPORT QgsExpression
     // internally used to create an empty expression
     QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ), mCalc( NULL ) {}
 
+    void initGeomCalculator();
+
     QString mExpression;
     Node* mRootNode;
 
@@ -510,8 +528,8 @@ class CORE_EXPORT QgsExpression
     QString mEvalErrorString;
 
     int mRowNumber;
+    double mScale;
 
-    void initGeomCalculator();
     QgsDistanceArea* mCalc;
 };
 

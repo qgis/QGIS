@@ -194,7 +194,7 @@ void QgsRasterInterface::setStatsOn( bool on )
 double QgsRasterInterface::time( bool cumulative )
 {
   // We can calculate total time only, because we have to subtract time of previous
-  // interface(s) and we dont know how to assign bands to each other
+  // interface(s) and we don't know how to assign bands to each other
   double t = 0;
   for ( int i = 1; i < mTime.size(); i++ )
   {

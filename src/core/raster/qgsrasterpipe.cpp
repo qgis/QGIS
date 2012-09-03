@@ -152,7 +152,7 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
 
   Role role = interfaceRole( theInterface );
 
-  // We dont know where to place unknown interface
+  // We don't know where to place unknown interface
   if ( role == UnknownRole ) return false;
 
   //if ( mInterfacesMap.value ( role ) )

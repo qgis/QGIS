@@ -71,6 +71,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   QStringList pluginpaths;
   foreach ( QString p, extraPluginsPaths() )
   {
+#ifdef Q_OS_WIN
+    p = p.replace( '\\', "\\\\" );
+#endif
     pluginpaths << '"' + p + '"';
   }
   pluginpaths << homePluginsPath();
@@ -125,6 +128,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+
+  QString startuppath = homePythonPath() + " + \"/startup.py\"";
+  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
 }
 
 void QgsPythonUtilsImpl::exitPython()

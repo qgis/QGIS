@@ -272,6 +272,26 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   return ba;
 }
 
+bool QgsRasterDataProvider::hasPyramids()
+{
+  QList<QgsRasterPyramid> myPyramidList = buildPyramidList();
+
+  if ( myPyramidList.isEmpty() )
+    return false;
+
+  QList<QgsRasterPyramid>::iterator myRasterPyramidIterator;
+  for ( myRasterPyramidIterator = myPyramidList.begin();
+        myRasterPyramidIterator != myPyramidList.end();
+        ++myRasterPyramidIterator )
+  {
+    if ( myRasterPyramidIterator->exists )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 #if 0
 QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
 {
@@ -767,7 +787,7 @@ bool QgsRasterDataProvider::hasHistogram( int theBandNo,
 {
   QgsDebugMsg( QString( "theBandNo = %1 theBinCount = %2 theMinimum = %3 theMaximum = %4 theSampleSize = %5" ).arg( theBandNo ).arg( theBinCount ).arg( theMinimum ).arg( theMaximum ).arg( theSampleSize ) );
   // histogramDefaults() needs statistics if theMinimum or theMaximum is NaN ->
-  // do other checks which dont need statistics before histogramDefaults()
+  // do other checks which don't need statistics before histogramDefaults()
   if ( mHistograms.size() == 0 ) return false;
 
   QgsRasterHistogram myHistogram;

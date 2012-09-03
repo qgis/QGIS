@@ -51,10 +51,6 @@
 #include <cmath>
 
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
 
@@ -808,7 +804,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double* values, bool useXAxis )
     int factor =  pow( 10, floor( log10( interval ) ) );
     if ( factor != 0 )
     {
-      interval2 = round( interval / factor ) * factor;
+      interval2 = qRound( interval / factor ) * factor;
       QgsDebugMsg( QString( "interval2: %1" ).arg( interval2 ) );
       if ( interval2 != 0 )
         interval = interval2;

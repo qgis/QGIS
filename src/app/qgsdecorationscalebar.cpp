@@ -48,11 +48,6 @@ email                : sbr00pwb@users.sourceforge.net
 #include <cmath>
 
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
-
 QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
     : QgsDecorationItem( parent )
 {
@@ -164,7 +159,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     if ( mSnapping )
     {
       double scaler = pow( 10.0, myPowerOf10 );
-      myActualSize = round( myActualSize / scaler ) * scaler;
+      myActualSize = qRound( myActualSize / scaler ) * scaler;
       myScaleBarWidth = myActualSize / myMapUnitsPerPixelDouble;
     }
 

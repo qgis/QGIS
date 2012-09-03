@@ -168,6 +168,7 @@
     <file>themes/default/mActionZoomOut.png</file>
     <file>themes/default/mActionZoomToLayer.png</file>
     <file>themes/default/mActionZoomToSelected.png</file>
+    <file>themes/default/mIconClose.png</file>
     <file>themes/default/mIconConnect.png</file>
     <file>themes/default/mIconDbSchema.png</file>
     <file>themes/default/mIconDelete.png</file>
@@ -369,6 +370,7 @@
     <file>themes/gis/mActionZoomOut.png</file>
     <file>themes/gis/mActionZoomToLayer.png</file>
     <file>themes/gis/mActionZoomToSelected.png</file>
+    <file>themes/gis/mIconClose.png</file>
     <file>themes/gis/mIconEditable.png</file>
     <file>themes/gis/mIconLineLayer.png</file>
     <file>themes/gis/mIconPointLayer.png</file>
@@ -400,6 +402,7 @@
     <file>themes/gis/mIconWcs.png</file>
     <file>themes/gis/mIconWms.png</file>
     <file>themes/gis/mIconWfs.png</file>
+    <file>themes/gis/mIconWarn.png</file>
     <file>themes/gis/mIconSpatialite.png</file>
     <file>themes/gis/mIconRaster.png</file>
     <file>themes/gis/mIconPostgis.png</file>

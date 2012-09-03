@@ -1097,7 +1097,42 @@ bool QgsSymbolLayerV2Utils::needMarkerLine( QDomElement &element )
   return hasWellKnownMark( graphicStrokeElem );
 }
 
-bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element ) { Q_UNUSED( element ); return false; }
+bool QgsSymbolLayerV2Utils::needLinePatternFill( QDomElement &element ) {
+  QDomElement fillElem = element.firstChildElement( "Fill" );
+  if ( fillElem.isNull() )
+    return false;
+
+  QDomElement graphicFillElem = fillElem.firstChildElement( "GraphicFill" );
+  if ( graphicFillElem.isNull() )
+    return false;
+
+  QDomElement graphicElem = graphicFillElem.firstChildElement( "Graphic" );
+  if ( graphicElem.isNull() )
+    return false;
+
+  // line pattern fill uses horline wellknown marker with an angle
+
+  QString name;
+  QColor fillColor, borderColor;
+  double size, borderWidth;
+  if ( !QgsSymbolLayerV2Utils::wellKnownMarkerFromSld( graphicElem, name, fillColor, borderColor, borderWidth, size ) )
+    return false;
+
+  if ( name != "horline" )
+    return false;
+
+  QString angleFunc;
+  if ( !QgsSymbolLayerV2Utils::rotationFromSldElement( graphicElem, angleFunc ) )
+    return false;
+
+  bool ok;
+  double angle = angleFunc.toDouble( &ok );
+  if ( !ok || angle == 0 )
+    return false;
+
+  return true;
+}
+
 bool QgsSymbolLayerV2Utils::needPointPatternFill( QDomElement &element ) { Q_UNUSED( element ); return false; }
 
 bool QgsSymbolLayerV2Utils::needSvgFill( QDomElement &element )
@@ -1478,11 +1513,12 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
                                        const QVector<qreal> *customDashPattern, double dashOffset )
 {
   QVector<qreal> dashPattern;
+  const QVector<qreal> *pattern = &dashPattern;
+
   if ( penStyle == Qt::CustomDashLine && !customDashPattern )
   {
     element.appendChild( doc.createComment( "WARNING: Custom dash pattern required but not provided. Using default dash pattern." ) );
     penStyle = Qt::DashLine;
-    customDashPattern = &dashPattern;
   }
 
   switch ( penStyle )
@@ -1518,6 +1554,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
 
     case Qt::CustomDashLine:
       Q_ASSERT( customDashPattern );
+      pattern = customDashPattern;
       break;
 
     default:
@@ -1538,9 +1575,9 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
   if ( penCapStyle )
     element.appendChild( createSvgParameterElement( doc, "stroke-linecap", encodeSldLineCapStyle( *penCapStyle ) ) );
 
-  if ( customDashPattern && customDashPattern->size() > 0 )
+  if ( pattern->size() > 0 )
   {
-    element.appendChild( createSvgParameterElement( doc, "stroke-dasharray", encodeSldRealVector( *customDashPattern ) ) );
+    element.appendChild( createSvgParameterElement( doc, "stroke-dasharray", encodeSldRealVector( *pattern ) ) );
     if ( !doubleNear( dashOffset, 0.0 ) )
       element.appendChild( createSvgParameterElement( doc, "stroke-dashoffset", QString::number( dashOffset ) ) );
   }
@@ -1601,49 +1638,49 @@ bool QgsSymbolLayerV2Utils::lineFromSld( QDomElement &element,
     {
       *penCapStyle = decodeSldLineCapStyle( it.value() );
     }
-    else if ( it.key() == "stroke-dasharray" && customDashPattern )
+    else if ( it.key() == "stroke-dasharray" )
     {
-      *customDashPattern = decodeSldRealVector( it.value() );
-      if ( customDashPattern->size() > 0 )
+      QVector<qreal> dashPattern = decodeSldRealVector( it.value() );
+      if ( dashPattern.size() > 0 )
       {
         // convert the dasharray to one of the QT pen style,
         // if no match is found then set pen style to CustomDashLine
         bool dashPatternFound = false;
 
-        if ( customDashPattern->count() == 2 )
+        if ( dashPattern.count() == 2 )
         {
-          if ( customDashPattern->at( 0 ) == 4.0 &&
-               customDashPattern->at( 1 ) == 2.0 )
+          if ( dashPattern.at( 0 ) == 4.0 &&
+               dashPattern.at( 1 ) == 2.0 )
           {
             penStyle = Qt::DashLine;
             dashPatternFound = true;
           }
-          else if ( customDashPattern->at( 0 ) == 1.0 &&
-                    customDashPattern->at( 1 ) == 2.0 )
+          else if ( dashPattern.at( 0 ) == 1.0 &&
+                    dashPattern.at( 1 ) == 2.0 )
           {
             penStyle = Qt::DotLine;
             dashPatternFound = true;
           }
         }
-        else if ( customDashPattern->count() == 4 )
+        else if ( dashPattern.count() == 4 )
         {
-          if ( customDashPattern->at( 0 ) == 4.0 &&
-               customDashPattern->at( 1 ) == 2.0 &&
-               customDashPattern->at( 2 ) == 1.0 &&
-               customDashPattern->at( 3 ) == 2.0 )
+          if ( dashPattern.at( 0 ) == 4.0 &&
+               dashPattern.at( 1 ) == 2.0 &&
+               dashPattern.at( 2 ) == 1.0 &&
+               dashPattern.at( 3 ) == 2.0 )
           {
             penStyle = Qt::DashDotLine;
             dashPatternFound = true;
           }
         }
-        else if ( customDashPattern->count() == 6 )
+        else if ( dashPattern.count() == 6 )
         {
-          if ( customDashPattern->at( 0 ) == 4.0 &&
-               customDashPattern->at( 1 ) == 2.0 &&
-               customDashPattern->at( 2 ) == 1.0 &&
-               customDashPattern->at( 3 ) == 2.0 &&
-               customDashPattern->at( 4 ) == 1.0 &&
-               customDashPattern->at( 5 ) == 2.0 )
+          if ( dashPattern.at( 0 ) == 4.0 &&
+               dashPattern.at( 1 ) == 2.0 &&
+               dashPattern.at( 2 ) == 1.0 &&
+               dashPattern.at( 3 ) == 2.0 &&
+               dashPattern.at( 4 ) == 1.0 &&
+               dashPattern.at( 5 ) == 2.0 )
           {
             penStyle = Qt::DashDotDotLine;
             dashPatternFound = true;
@@ -1653,7 +1690,16 @@ bool QgsSymbolLayerV2Utils::lineFromSld( QDomElement &element,
         // default case: set pen style to CustomDashLine
         if ( !dashPatternFound )
         {
-          penStyle = Qt::CustomDashLine;
+          if ( customDashPattern )
+          {
+            penStyle = Qt::CustomDashLine;
+            *customDashPattern = dashPattern;
+          }
+          else
+          {
+            QgsDebugMsg( "custom dash pattern required but not provided. Using default dash pattern." );
+            penStyle = Qt::DashLine;
+          }
         }
       }
     }
@@ -1887,7 +1933,7 @@ bool QgsSymbolLayerV2Utils::rotationFromSldElement( QDomElement &element, QStrin
   QDomElement rotationElem = element.firstChildElement( "Rotation" );
   if ( !rotationElem.isNull() )
   {
-    functionFromSldElement( rotationElem, rotationFunc );
+    return functionFromSldElement( rotationElem, rotationFunc );
   }
   return true;
 }
@@ -1908,7 +1954,7 @@ bool QgsSymbolLayerV2Utils::opacityFromSldElement( QDomElement &element, QString
   QDomElement opacityElem = element.firstChildElement( "Opacity" );
   if ( !opacityElem.isNull() )
   {
-    functionFromSldElement( opacityElem, alphaFunc );
+    return functionFromSldElement( opacityElem, alphaFunc );
   }
   return true;
 }
@@ -1939,7 +1985,7 @@ bool QgsSymbolLayerV2Utils::displacementFromSldElement( QDomElement &element, QP
   if ( displacementElem.isNull() )
     return true;
 
-  QDomElement dispXElem = element.firstChildElement( "DisplacementX" );
+  QDomElement dispXElem = displacementElem.firstChildElement( "DisplacementX" );
   if ( !dispXElem.isNull() )
   {
     bool ok;
@@ -1948,7 +1994,7 @@ bool QgsSymbolLayerV2Utils::displacementFromSldElement( QDomElement &element, QP
       offset.setX( offsetX );
   }
 
-  QDomElement dispYElem = element.firstChildElement( "DisplacementY" );
+  QDomElement dispYElem = displacementElem.firstChildElement( "DisplacementY" );
   if ( !dispYElem.isNull() )
   {
     bool ok;
@@ -2051,7 +2097,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   if ( !expr )
     return false;
 
-  bool valid = expr->hasParserError();
+  bool valid = !expr->hasParserError();
   if ( !valid )
   {
     QgsDebugMsg( "parser error: " + expr->parserErrorString() );

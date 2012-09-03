@@ -30,6 +30,7 @@ SET(QGIS_APP_SRCS
   qgsdecorationgriddialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
+  qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
@@ -55,6 +56,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
+  qgsmaptoolhtmlannotation.cpp
   qgsmaptoolpinlabels.cpp
   qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentify.cpp
@@ -188,6 +190,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h
+  qgshtmlannotationdialog.h
   qgsgraduatedsymboldialog.h
   qgsidentifyresults.h
   qgslabeldialog.h

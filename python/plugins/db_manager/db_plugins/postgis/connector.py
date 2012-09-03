@@ -906,5 +906,17 @@ class PostGisDBConnector(DBConnector):
 
 	def getSqlDictionary(self):
 		from .sql_dictionary import getSqlDictionary
-		return getSqlDictionary()
+		sql_dict = getSqlDictionary()
+
+		# get schemas, tables and field names
+		items = []
+		sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' 
+UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r') 
+UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
+		c = self._execute(None, sql)
+		for row in c.fetchall():
+			items.append( row[0] )
+
+		sql_dict["identifier"] = items
+		return sql_dict
 

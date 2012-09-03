@@ -338,6 +338,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;
     QDockWidget* mGeneralDock;
+
+    QMenu* mPanelMenu;
+    QMenu* mToolbarMenu;
 };
 
 #endif

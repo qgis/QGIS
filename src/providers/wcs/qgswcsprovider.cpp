@@ -1367,38 +1367,40 @@ QString QgsWcsProvider::coverageMetadata( QgsWcsCoverageSummary coverage )
   metadata += htmlRow( tr( "Name (identifier)" ), coverage.identifier );
   metadata += htmlRow( tr( "Title" ), coverage.title );
   metadata += htmlRow( tr( "Abstract" ), coverage.abstract );
-  // We dont have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
-  //metadata += htmlRow ( tr( "Fixed Width" ), QString::number( coverage.width ) );
-  //metadata += htmlRow ( tr( "Fixed Height" ), QString::number( coverage.height ) );
-  //metadata += htmlRow ( tr( "Native CRS" ), coverage.nativeCrs );
-  //metadata += htmlRow ( tr( "Native Bounding Box" ), coverage.nativeBoundingBox.toString() );
+#if 0
+  // We don't have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
+  metadata += htmlRow( tr( "Fixed Width" ), QString::number( coverage.width ) );
+  metadata += htmlRow( tr( "Fixed Height" ), QString::number( coverage.height ) );
+  metadata += htmlRow( tr( "Native CRS" ), coverage.nativeCrs );
+  metadata += htmlRow( tr( "Native Bounding Box" ), coverage.nativeBoundingBox.toString() );
+#endif
 
   metadata += htmlRow( tr( "WGS 84 Bounding Box" ), coverage.wgs84BoundingBox.toString() );
 
   // Layer Coordinate Reference Systems
   // TODO(?): supportedCrs and supportedFormat are not available in 1.0
   // until coverage is described - it would be confusing to show it only if available
-  /*
+#if 0
   for ( int j = 0; j < qMin( coverage.supportedCrs.size(), 10 ); j++ )
   {
-    metadata += htmlRow ( tr( "Available in CRS" ), coverage.supportedCrs.value(j) );
+    metadata += htmlRow( tr( "Available in CRS" ), coverage.supportedCrs.value( j ) );
   }
 
   if ( coverage.supportedCrs.size() > 10 )
   {
-    metadata += htmlRow ( tr( "Available in CRS" ), tr( "(and %n more)", "crs", coverage.supportedCrs.size() - 10 ) );
+    metadata += htmlRow( tr( "Available in CRS" ), tr( "(and %n more)", "crs", coverage.supportedCrs.size() - 10 ) );
   }
 
   for ( int j = 0; j < qMin( coverage.supportedFormat.size(), 10 ); j++ )
   {
-    metadata += htmlRow ( tr( "Available in format" ), coverage.supportedFormat.value(j) );
+    metadata += htmlRow( tr( "Available in format" ), coverage.supportedFormat.value( j ) );
   }
 
   if ( coverage.supportedFormat.size() > 10 )
   {
-    metadata += htmlRow ( tr( "Available in format" ), tr( "(and %n more)", "crs", coverage.supportedFormat.size() - 10 ) );
+    metadata += htmlRow( tr( "Available in format" ), tr( "(and %n more)", "crs", coverage.supportedFormat.size() - 10 ) );
   }
-  */
+#endif
 
   // Close the nested table
   metadata += "</table>";
@@ -1417,11 +1419,13 @@ QString QgsWcsProvider::metadata()
   metadata += tr( "Coverages" );
   metadata += "</a>";
 
+#if 0
 #if QT_VERSION >= 0x40500
   // TODO
-  //metadata += "<a href=\"#cachestats\">";
-  //metadata += tr( "Cache Stats" );
-  //metadata += "</a> ";
+  metadata += "<a href=\"#cachestats\">";
+  metadata += tr( "Cache Stats" );
+  metadata += "</a> ";
+#endif
 #endif
 
   metadata += "</td></tr>";
@@ -1446,17 +1450,19 @@ QString QgsWcsProvider::metadata()
   metadata += htmlRow(( "WCS Version" ), mCapabilities.version() );
   metadata += htmlRow( tr( "Title" ), mCapabilities.capabilities().title );
   metadata +=  htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
+#if 0
   // TODO: probably apply stylesheet in QgsWcsCapabilities and save as html
-  //metadata += htmlRow ( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
-  //metadata += htmlRow (  tr( "Online Resource" ), "-" );
-  //metadata += htmlRow (  tr( "Contact Person" ),
-  //  mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson
-  //    + "<br />" + mCapabilities.service.contactInformation.contactPosition;
-  //    + "<br />" + mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization );
-  //metadata += htmlRow ( tr( "Fees" ), mCapabilities.service.fees );
-  //metadata += htmlRow ( tr( "Access Constraints" ), mCapabilities.service.accessConstraints );
-  //metadata += htmlRow ( tr( "Image Formats" ), mCapabilities.capability.request.getMap.format.join( "<br />" ) );
-  //metadata += htmlRow (  tr( "GetCapabilitiesUrl" ), mBaseUrl );
+  metadata += htmlRow( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
+  metadata += htmlRow( tr( "Online Resource" ), "-" );
+  metadata += htmlRow( tr( "Contact Person" ),
+                       mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson
+                       + "<br />" + mCapabilities.service.contactInformation.contactPosition;
+                       + "<br />" + mCapabilities.service.contactInformation.contactPersonPrimary.contactOrganization );
+  metadata += htmlRow( tr( "Fees" ), mCapabilities.service.fees );
+  metadata += htmlRow( tr( "Access Constraints" ), mCapabilities.service.accessConstraints );
+  metadata += htmlRow( tr( "Image Formats" ), mCapabilities.capability.request.getMap.format.join( "<br />" ) );
+  metadata += htmlRow( tr( "GetCapabilitiesUrl" ), mBaseUrl );
+#endif
   metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.getCoverageUrl() + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" ) );
 
   // Close the nested table

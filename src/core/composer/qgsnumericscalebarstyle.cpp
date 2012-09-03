@@ -91,9 +91,9 @@ QString QgsNumericScaleBarStyle::scaleText() const
     if ( composerMap )
     {
       scaleDenominator = composerMap->scale();
-      scaleBarText = "1:" + QString::number( scaleDenominator, 'f', 0 );
+      scaleBarText = "1:" + QString( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
     }
-    scaleBarText = "1:" + QString::number( scaleDenominator, 'f', 0 );
+    scaleBarText = "1:" + QString( "%L1" ).arg( scaleDenominator, 0, 'f', 0 );
   }
   return scaleBarText;
 }

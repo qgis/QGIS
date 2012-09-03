@@ -84,7 +84,7 @@ class CORE_EXPORT QgsStyleV2
      *  \param name is the name of the color ramp being added or updated
      *  \param colorRamp is the Vector color ramp
      *  \param update set to true when the style DB has to be updated, by default it is false
-     *  \return sucess status of the operation
+     *  \return success status of the operation
      */
     bool addColorRamp( QString name, QgsVectorColorRampV2* colorRamp, bool update = false );
 
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsStyleV2
      *  \param name is the name of the symbol being added or updated
      *  \param symbol is the Vector symbol
      *  \param update set to true when the style DB has to be updated, by default it is false
-     *  \return sucess status of the operation
+     *  \return success status of the operation
      */
     bool addSymbol( QString name, QgsSymbolV2* symbol, bool update = false );
 
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsStyleV2
      *  \param type is either SymbolEntity or ColorrampEntity
      *  \param symbol is the name of the symbol or colorramp
      *  \param tags is the list of tags that are to be removed as QStringList
-     *  \return returns the sucess state of the operation
+     *  \return returns the success state of the operation
      */
     bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
 
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsStyleV2
      *  \param symbol is the pointer to the new QgsSymbolV2 being saved
      *  \param groupid is the id of the group to which the symbol belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
-     *  \return returns the sucess state of the save operation
+     *  \return returns the success state of the save operation
      */
     bool saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QStringList tags );
 
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsStyleV2
      *  \param ramp is the pointer to the new QgsVectorColorRampV2 being saved
      *  \param groupid is the id of the group to which the Color Ramp belongs. Pass 0 if it doesn't belong to any group or not known.
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
-     *  \return returns the sucess state of the save operation
+     *  \return returns the success state of the save operation
      */
     bool saveColorRamp( QString name, QgsVectorColorRampV2* ramp, int groupid, QStringList tags );
 

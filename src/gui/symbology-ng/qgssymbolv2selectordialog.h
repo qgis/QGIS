@@ -82,7 +82,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     //! Slot to update tree when a new symbol from style
     void symbolChanged();
     //! alters tree and sets proper widget when Layer Type is changed
-    //! @note: The layer is recieved from the LayerPropertiesWidget
+    //! @note: The layer is received from the LayerPropertiesWidget
     void changeLayer( QgsSymbolLayerV2* layer );
 
 

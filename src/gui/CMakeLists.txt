@@ -59,6 +59,7 @@ qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
+qgshtmlannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgsmanageconnectionsdialog.cpp
 qgsmapcanvas.cpp
@@ -71,6 +72,7 @@ qgsmaptool.cpp
 qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
+qgsmessagebar.cpp
 qgsmessageviewer.cpp
 qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
@@ -155,11 +157,13 @@ qgisinterface.h
 qgsencodingfiledialog.h
 qgsfieldvalidator.h
 qgsformannotationitem.h
+qgshtmlannotationitem.h
 qgsgenericprojectionselector.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
+qgsmessagebar.h
 qgsmessageviewer.h
 qgsmessagelogviewer.h
 qgsnewhttpconnection.h
@@ -203,6 +207,7 @@ qgsmaptool.h
 qgsmaptoolemitpoint.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
+qgsmessagebar.h
 qgsmessageviewer.h
 qgscredentialdialog.h
 qgsowssourceselect.h

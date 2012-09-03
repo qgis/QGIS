@@ -124,6 +124,7 @@
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
+#include "qgshtmlannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgslabelinggui.h"
@@ -139,6 +140,7 @@
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsmessagebar.h"
 #include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
 #include "qgsmultibandcolorrenderer.h"
@@ -216,6 +218,7 @@
 #include "qgsmaptooldeletevertex.h"
 #include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolformannotation.h"
+#include "qgsmaptoolhtmlannotation.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
@@ -455,16 +458,29 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QSettings settings;
   setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
 
+  QWidget *centralWidget = this->centralWidget();
+  QGridLayout *centralLayout = new QGridLayout( centralWidget );
+  centralWidget->setLayout( centralLayout );
+  centralLayout->setContentsMargins( 0, 0, 0, 0 );
+
   // "theMapCanvas" used to find this canonical instance later
-  mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
+  mMapCanvas = new QgsMapCanvas( centralWidget, "theMapCanvas" );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
+
   // set canvas color right away
   int myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
-  setCentralWidget( mMapCanvas );
+
+  centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
+
+  // a bar to warn the user with non-blocking messages
+  mInfoBar = new QgsMessageBar( centralWidget );
+  mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
+
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
@@ -492,6 +508,20 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   updateRecentProjectPaths();
   updateProjectFromTemplates();
   activateDeactivateLayerRelatedActions( NULL );
+
+  // create the notification widget for macros
+  mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
+                                              tr( "macros have been disabled." ),
+                                              QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                                              mInfoBar );
+
+  QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
+  btnEnableMacros->setText( tr( "Enable" ) );
+  btnEnableMacros->setStyleSheet( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" );
+  btnEnableMacros->setCursor( Qt::PointingHandCursor );
+  connect( btnEnableMacros, SIGNAL( clicked() ), mInfoBar, SLOT( popWidget() ) );
+  connect( btnEnableMacros, SIGNAL( clicked() ), this, SLOT( enableProjectMacros() ) );
+  mMacrosWarn->layout()->addWidget( btnEnableMacros );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
@@ -628,6 +658,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
 
   mMapTipsVisible = false;
+  mTrustedMacros = false;
 
   // setup drag drop
   setAcceptDrops( true );
@@ -699,6 +730,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMeasureAngle;
   delete mMapTools.mTextAnnotation;
   delete mMapTools.mFormAnnotation;
+  delete mMapTools.mHtmlAnnotation;
   delete mMapTools.mAnnotation;
   delete mMapTools.mAddFeature;
   delete mMapTools.mMoveFeature;
@@ -813,6 +845,13 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
+
+  // this is a new session! reset enable macros value to "ask"
+  // whether set to "just for this session"
+  if ( settings.value( "/qgis/enableMacros", 1 ).toInt() == 2 )
+  {
+    settings.setValue( "/qgis/enableMacros", 1 );
+  }
 }
 
 
@@ -895,6 +934,7 @@ void QgisApp::createActions()
   connect( mActionDraw, SIGNAL( triggered() ), this, SLOT( refreshMapCanvas() ) );
   connect( mActionTextAnnotation, SIGNAL( triggered() ), this, SLOT( addTextAnnotation() ) );
   connect( mActionFormAnnotation, SIGNAL( triggered() ), this, SLOT( addFormAnnotation() ) );
+  connect( mActionHtmlAnnotation, SIGNAL( triggered() ), this, SLOT( addHtmlAnnotation() ) );
   connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
   connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
 
@@ -1318,6 +1358,7 @@ void QgisApp::createToolBars()
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
+  bt->addAction( mActionHtmlAnnotation );
   bt->addAction( mActionAnnotation );
 
   QAction* defAnnotationAction = mActionTextAnnotation;
@@ -1326,6 +1367,7 @@ void QgisApp::createToolBars()
     case 0: defAnnotationAction = mActionTextAnnotation; break;
     case 1: defAnnotationAction = mActionFormAnnotation; break;
     case 2: defAnnotationAction =  mActionAnnotation; break;
+    case 3: defAnnotationAction =  mActionHtmlAnnotation; break;
   }
   bt->setDefaultAction( defAnnotationAction );
   QAction* annotationAction = mAttributesToolBar->addWidget( bt );
@@ -1629,6 +1671,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddToOverview->setIcon( QgsApplication::getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
+  mActionHtmlAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionFormAnnotation.png" ) );
   mActionTextAnnotation->setIcon( QgsApplication::getThemeIcon( "/mActionTextAnnotation.png" ) );
   mActionLabeling->setIcon( QgsApplication::getThemeIcon( "/mActionLabeling.png" ) );
   mActionShowPinnedLabels->setIcon( QgsApplication::getThemeIcon( "/mActionShowPinnedLabels.svg" ) );
@@ -1757,6 +1800,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mTextAnnotation->setAction( mActionTextAnnotation );
   mMapTools.mFormAnnotation = new QgsMapToolFormAnnotation( mMapCanvas );
   mMapTools.mFormAnnotation->setAction( mActionFormAnnotation );
+  mMapTools.mHtmlAnnotation = new QgsMapToolHtmlAnnotation( mMapCanvas );
+  mMapTools.mHtmlAnnotation->setAction( mActionHtmlAnnotation );
   mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
   mMapTools.mAnnotation->setAction( mActionAnnotation );
   mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas );
@@ -2456,7 +2501,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     return false;
 
   zipItem->populate();
-  QgsDebugMsg( QString( "Got zipitem with %1 children" ).arg( zipItem->rowCount() ) );
+  QgsDebugMsg( QString( "Path= %1 got zipitem with %2 children" ).arg( path ).arg( zipItem->rowCount() ) );
 
   // if 1 or 0 child found, exit so a normal item is created by gdal or ogr provider
   if ( zipItem->rowCount() <= 1 )
@@ -2487,7 +2532,7 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     {
       QgsDataItem *item = zipItem->children()[i];
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-      QgsDebugMsg( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ) );
+      QgsDebugMsgLevel( QString( "item path=%1 provider=" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
       if ( layerItem && layerItem->providerKey() == "gdal" )
       {
         layers << QString( "%1|%2| |%3" ).arg( i ).arg( item->name() ).arg( "Raster" );
@@ -2507,6 +2552,12 @@ bool QgisApp::askUserForZipItemLayers( QString path )
         childItems << zipItem->children()[i];
       }
     }
+  }
+
+  if ( childItems.isEmpty() )
+  {
+    // return true so dialog doesn't popup again (#6225) - hopefully this doesn't create other trouble
+    ok = true;
   }
 
   // add childItems
@@ -2943,10 +2994,7 @@ void QgisApp::fileExit()
 
   if ( saveDirty() )
   {
-    deletePrintComposers();
-    removeAnnotationItems();
-    mMapCanvas->freeze( true );
-    removeAllLayers();
+    closeProject();
     qApp->exit( 0 );
   }
 }
@@ -2993,11 +3041,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     }
   }
 
-  deletePrintComposers();
-  removeAnnotationItems();
-
-  mMapCanvas->freeze( true );
-  removeAllLayers();
+  closeProject();
   mMapCanvas->clear();
 
   QgsProject* prj = QgsProject::instance();
@@ -3179,6 +3223,8 @@ void QgisApp::fileOpen()
       return;
     }
 
+    closeProject();
+
     // Fix by Tim - getting the dirPath from the dialog
     // directly truncates the last node in the dir path.
     // This is a workaround for that
@@ -3186,12 +3232,6 @@ void QgisApp::fileOpen()
     QString myPath = myFI.path();
     // Persist last used project dir
     settings.setValue( "/UI/lastProjectDir", myPath );
-
-    deletePrintComposers();
-    removeAnnotationItems();
-    // clear out any stuff from previous project
-    mMapCanvas->freeze( true );
-    removeAllLayers();
 
     QgsProject::instance()->setFileName( fullPath );
 
@@ -3213,6 +3253,26 @@ void QgisApp::fileOpen()
       mScaleEdit->updateScales( QgsProject::instance()->readListEntry( "Scales", "/ScalesList" ) );
     }
 
+    // does the project have any macros?
+    if ( mPythonUtils && mPythonUtils->isEnabled() )
+    {
+      if ( !QgsProject::instance()->readEntry( "Macros", "/pythonCode", QString::null ).isEmpty() )
+      {
+        int enableMacros = settings.value( "/qgis/enableMacros", 1 ).toInt();
+        // 0 = never, 1 = ask, 2 = just for this session, 3 = always
+
+        if ( enableMacros == 3 || enableMacros == 2 )
+        {
+          enableProjectMacros();
+        }
+        else if ( enableMacros == 1 ) // ask
+        {
+          // display the macros notification widget
+          mInfoBar->pushWidget( mMacrosWarn, 1 );
+        }
+      }
+    }
+
     emit projectRead();     // let plug-ins know that we've read in a new
     // project so that they can check any project
     // specific plug-in state
@@ -3224,6 +3284,14 @@ void QgisApp::fileOpen()
     mMapCanvas->refresh();
   }
 } // QgisApp::fileOpen
+
+void QgisApp::enableProjectMacros()
+{
+  mTrustedMacros = true;
+
+  // load macros
+  QgsPythonRunner::run( "qgis.utils.reloadProjectMacros()" );
+}
 
 
 /**
@@ -3364,6 +3432,13 @@ bool QgisApp::fileSave()
                            QgsProject::instance()->error() );
     return false;
   }
+
+  // run the saved project macro
+  if ( mTrustedMacros )
+  {
+    QgsPythonRunner::run( "qgis.utils.saveProjectMacro();" );
+  }
+
   return true;
 } // QgisApp::fileSave
 
@@ -3838,6 +3913,11 @@ void QgisApp::addFormAnnotation()
   mMapCanvas->setMapTool( mMapTools.mFormAnnotation );
 }
 
+void QgisApp::addHtmlAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mHtmlAnnotation );
+}
+
 void QgisApp::addTextAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools.mTextAnnotation );
@@ -3996,6 +4076,11 @@ void QgisApp::saveAsRasterFile()
       return;
     }
     fileWriter.setCreateOptions( d.createOptions() );
+
+    fileWriter.setBuildPyramidsFlag( d.buildPyramidsFlag() );
+    fileWriter.setPyramidsList( d.overviewList() );
+    fileWriter.setPyramidsResampling( d.pyramidsResampling() );
+    fileWriter.setPyramidsFormat( d.pyramidsFormat() );
 
     fileWriter.writeRaster( pipe, d.nColumns(), d.nRows(), d.outputRectangle(), d.outputCrs(), &pd );
     delete pipe;
@@ -4359,6 +4444,13 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
   {
     QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
     newFormItem->readXML( doc, formItemList.at( i ).toElement() );
+  }
+
+  QDomNodeList htmlItemList = doc.elementsByTagName( "HtmlAnnotationItem" );
+  for ( int i = 0; i < htmlItemList.size(); ++i )
+  {
+    QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
+    newHtmlItem->readXML( doc, htmlItemList.at( i ).toElement() );
   }
   return true;
 }
@@ -5861,6 +5953,26 @@ bool QgisApp::saveDirty()
 
   return answer != QMessageBox::Cancel;
 } // QgisApp::saveDirty()
+
+void QgisApp::closeProject()
+{
+  // unload the project macros before changing anything
+  if ( mTrustedMacros )
+  {
+    QgsPythonRunner::run( "qgis.utils.unloadProjectMacros();" );
+  }
+
+  // remove the warning message from the bar if present
+  mInfoBar->popWidget( mMacrosWarn );
+
+  mTrustedMacros = false;
+
+  deletePrintComposers();
+  removeAnnotationItems();
+  // clear out any stuff from project
+  mMapCanvas->freeze( true );
+  removeAllLayers();
+}
 
 
 void QgisApp::changeEvent( QEvent* event )
@@ -7854,6 +7966,8 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/annotationTool", 1 );
   else if ( action == mActionAnnotation )
     settings.setValue( "/UI/annotationTool", 2 );
+  else if ( action == mActionHtmlAnnotation )
+    settings.setValue( "/UI/annotationTool", 3 );
 
   bt->setDefaultAction( action );
 }

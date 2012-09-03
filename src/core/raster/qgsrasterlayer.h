@@ -51,8 +51,6 @@
 //
 class QgsMapToPixel;
 class QgsRectangle;
-class QgsRasterBandStats;
-class QgsRasterPyramid;
 class QgsRasterRenderer;
 class QImage;
 class QPixmap;
@@ -273,12 +271,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * to be added to the list. Each time a RasterPyramid is created
      * we will check to see if a pyramid matching these dimensions already exists
      * in the raster layer, and if so mark the exists flag as true */
-    typedef QList<QgsRasterPyramid> RasterPyramidList;
+    /* typedef QList<QgsRasterPyramid> RasterPyramidList; */
 
     /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
      * Note that while every RasterBandStats element will have the name and number of its associated
      * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef QList<QgsRasterBandStats> RasterStatsList;
+    /* typedef QList<QgsRasterBandStats> RasterStatsList; */
 
     //
     // Static methods:
@@ -332,7 +330,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     DrawingStyle drawingStyle() { return mDrawingStyle; }
 
     /** \brief Accessor for mHasPyramids (READ ONLY) */
-    bool hasPyramids() { return mHasPyramids; }
+    /* bool hasPyramids() { return dataProvider() != NULL ? dataProvider()->hasPyramids() : false ; } */
 
     /** \brief Accessor for mUserDefinedGrayMinimumMaximum */
     bool hasUserDefinedGrayMinimumMaximum() const { return mUserDefinedGrayMinimumMaximum; }
@@ -414,7 +412,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    RasterPyramidList buildPyramidList();
+    // RasterPyramidList buildPyramidList();
 
     /** \brief Accessor for color shader algorithm */
     QString colorShadingAlgorithmAsString() const;
@@ -677,9 +675,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   public slots:
     /** \brief Create GDAL pyramid overviews */
-    QString buildPyramids( const RasterPyramidList &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
+    // QString buildPyramids( const RasterPyramidList &,
+    //                        const QString &  theResamplingMethod = "NEAREST",
+    //                        bool theTryInternalFlag = false );
 
     void showStatusMessage( const QString & theMessage );
 
@@ -853,9 +851,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
     double mGeoTransform[6];
 
-    /** \brief Whether this raster has overviews / pyramids or not */
-    bool mHasPyramids;
-
     /** \brief  Raster width */
     int mWidth;
 
@@ -880,7 +875,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString mProviderKey;
 
     /** \brief This list holds a series of RasterPyramid structs which store information for each potential pyramid level */
-    RasterPyramidList mPyramidList;
+    /* RasterPyramidList mPyramidList; */
 
     /** \brief A collection of stats - one for each band in the layer */
     //RasterStatsList mRasterStatsList;

@@ -694,8 +694,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   QFileInfo myInfo( myDatabaseFileName );
   if ( !myInfo.exists() )
   {
-    QgsDebugMsg( "failed : " + myDatabaseFileName +
-                 " does not exist!" );
+    QgsDebugMsg( "failed : " + myDatabaseFileName + " does not exist!" );
     return myMap;
   }
 
@@ -719,8 +718,18 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
       myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
       myMap[myFieldName] = myFieldValue;
     }
+    if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+    {
+      QgsDebugMsg( "Multiple records found in srs.db" );
+      myMap.clear();
+    }
   }
   else
+  {
+    QgsDebugMsg( "failed :  " + theSql );
+  }
+
+  if ( myMap.empty() )
   {
     QgsDebugMsg( "trying user qgis.db" );
     sqlite3_finalize( myPreparedStatement );
@@ -754,11 +763,16 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
         myFieldValue = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, myColNo ) );
         myMap[myFieldName] = myFieldValue;
       }
+
+      if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+      {
+        QgsDebugMsg( "Multiple records found in srs.db" );
+        myMap.clear();
+      }
     }
     else
     {
       QgsDebugMsg( "failed :  " + theSql );
-
     }
   }
   sqlite3_finalize( myPreparedStatement );

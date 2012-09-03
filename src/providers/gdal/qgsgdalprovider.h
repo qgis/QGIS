@@ -252,14 +252,15 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString buildPyramids( const QList<QgsRasterPyramid> &,
                            const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
-    QList<QgsRasterPyramid> buildPyramidList();
+                           RasterPyramidsFormat theFormat = PyramidsGTiff );
+    QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 
     /** \brief Close data set and release related data */
     void closeDataset();
 
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
+    void emitProgressUpdate( int theProgress );
 
     static QMap<QString, QString> supportedMimes();
 

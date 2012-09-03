@@ -102,6 +102,20 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       ProgressStatistics = 2
     };
 
+    enum RasterBuildPyramids
+    {
+      PyramidsFlagNo = 0,
+      PyramidsFlagYes = 1,
+      CopyExisting = 2
+    };
+
+    enum RasterPyramidsFormat
+    {
+      PyramidsGTiff = 0,
+      PyramidsInternal = 1,
+      PyramidsErdas = 2
+    };
+
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( QString const & uri );
@@ -345,15 +359,24 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
                                    const QString &  theResamplingMethod = "NEAREST",
-                                   bool theTryInternalFlag = false )
-    { Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod ); Q_UNUSED( theTryInternalFlag ); return "FAILED_NOT_SUPPORTED"; };
+                                   RasterPyramidsFormat theFormat = PyramidsGTiff )
+    {
+      Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod ); Q_UNUSED( theFormat );
+      return "FAILED_NOT_SUPPORTED";
+    };
 
-    /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
+    /** \brief Accessor for ths raster layers pyramid list.
+     * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
+     * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
      * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
      * list.
      */
-    virtual QList<QgsRasterPyramid> buildPyramidList() { return QList<QgsRasterPyramid>(); };
+    virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() )
+    { Q_UNUSED( overviewList ); return QList<QgsRasterPyramid>(); };
+
+    /** \brief Returns true if raster has at least one populated histogram. */
+    bool hasPyramids();
 
     /** If the provider supports it, return band stats for the
         given band. Default behaviour is to blockwise read the data
@@ -537,13 +560,21 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Remove dataset*/
     virtual bool remove() { return false; }
 
+    static QStringList pyramidResamplingMethods( QString providerKey )
+    {
+      return providerKey == "gdal" ?
+             QStringList() << tr( "Average" ) << tr( "Nearest Neighbour" ) << tr( "Gauss" ) <<
+             tr( "Cubic" ) << tr( "Mode" ) << tr( "None" ) : QStringList();
+    }
+
   signals:
     /** Emit a signal to notify of the progress event.
       * Emited theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, QString theMessage );
+    void progressUpdate( int theProgress );
 
   protected:
-    /**Dots per intch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
+    /**Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
     are suited for printing. A value of -1 means it has not been set
     @note: this member has been added in version 1.2*/
     int mDpi;

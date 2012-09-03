@@ -67,24 +67,8 @@ def getQgisTestApp():
 
     if QGISAPP is None:
         myGuiFlag = True  # All test will run qgis in gui mode
+
         QGISAPP = QgsApplication(sys.argv, myGuiFlag)
-        if 'QGISPATH' in os.environ:
-            myPath = os.environ['QGISPATH']
-            myUseDefaultPathFlag = True
-            QGISAPP.setPrefixPath(myPath, myUseDefaultPathFlag)
-
-        if sys.platform.startswith('darwin'):
-            # override resource paths, otherwise looks for Resources in app
-            if 'QGIS_MAC_PKGDATA_DIR' in os.environ:
-                myPkgPath = os.environ['QGIS_MAC_PKGDATA_DIR']
-                QGISAPP.setPkgDataPath(myPkgPath)
-            if 'QGIS_MAC_SVG_DIR'  in os.environ:
-                mySVGPath = os.environ['QGIS_MAC_SVG_DIR']
-                mySVGPaths = QGISAPP.svgPaths()
-                # doesn't get rid of incorrect path, just adds correct one
-                mySVGPaths.prepend(mySVGPath)
-                QGISAPP.setDefaultSvgPaths(mySVGPaths)
-
         QGISAPP.initQgis()
         s = QGISAPP.showSettings()
         print s

@@ -155,6 +155,10 @@ class QgsComposition: QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
+    /**Adds multiframe. The object is owned by QgsComposition until removeMultiFrame is called*/
+    void addMultiFrame( QgsComposerMultiFrame* multiFrame );
+    /**Removes multi frame (but does not delete it)*/
+    void removeMultiFrame( QgsComposerMultiFrame* multiFrame );
     /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
     //void addComposerArrow( QgsComposerArrow* arrow );
     /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/

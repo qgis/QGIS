@@ -43,6 +43,7 @@ class TestQgsComposerMap(unittest.TestCase):
         mComposition = QgsComposition( mMapRenderer )
         mComposition.setPaperSize( 297, 210 )
         mComposerMap = QgsComposerMap( mComposition, 20, 20, 200, 100 )
+        mComposerMap.setFrameEnabled( True )
         mComposition.addComposerMap( mComposerMap )
         self.grid(mComposerMap,  mComposition,  TEST_DATA_DIR)
         self.overviewMap(mComposerMap,  mComposition,  TEST_DATA_DIR)
@@ -65,12 +66,12 @@ class TestQgsComposerMap(unittest.TestCase):
         testResult = checker.testComposition( "Composer map grid", mComposition,  TEST_DATA_DIR  + QDir().separator().toAscii() +  "control_images" + QDir().separator().toAscii() + "expected_composermap" + QDir().separator().toAscii() + "composermap_landsat_grid.png" )
         mComposerMap.setGridEnabled( False )
         mComposerMap.setShowGridAnnotation( False )
-        mTestName = "gaga"
-#        myMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\" type=\"image/png\">" + renderedFilePath +  "</DartMeasurementFile> <DartMeasurementFile name=\"Expected Image " + mTestName + "\" type=\"image/png\">" +  mExpectedImageFile + "</DartMeasurementFile> <DartMeasurementFile name=\"Difference Image " + mTestName + "\" type=\"image/png\">" +  diffFilePath + "</DartMeasurementFile>"
-        assert testResult == True #,  myMessage
+        
+        assert testResult == True
         
     def overviewMap(self,  mComposerMap,  mComposition,  TEST_DATA_DIR):
         overviewMap = QgsComposerMap( mComposition, 20, 130, 70, 70 )
+        overviewMap.setFrameEnabled( True )
         mComposition.addComposerMap( overviewMap )
         # zoom in
         mComposerMap.setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) )

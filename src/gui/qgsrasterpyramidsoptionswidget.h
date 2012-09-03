@@ -19,6 +19,7 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
+#include "qgsrasterdataprovider.h"
 
 class QCheckBox;
 
@@ -32,31 +33,38 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
 
   public:
 
-  QgsRasterPyramidsOptionsWidget( QWidget* parent = 0, QString provider = "gdal" );
+    QgsRasterPyramidsOptionsWidget( QWidget* parent = 0, QString provider = "gdal" );
     ~QgsRasterPyramidsOptionsWidget();
 
     void setProvider( QString provider );
     QStringList createOptions() const { return mPyramidsOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget* createOptionsWidget() { return mPyramidsOptionsWidget; }
+    const QList<int> overviewList() const { return mOverviewList; }
+    QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const
+    { return ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex(); }
+    QString resamplingMethod() const;
 
   public slots:
 
     void apply();
+    void checkAllLevels( bool checked );
 
   private slots:
 
-    void on_lePyramidsLevels_editingFinished();
-    void on_cboPyramidsFormat_currentIndexChanged( int index )
+    void on_cbxPyramidsLevelsCustom_toggled( bool toggled );
+    void on_cbxPyramidsFormat_currentIndexChanged( int index )
     { mPyramidsOptionsWidget->setEnabled( index != 2 ); }
+    void setOverviewList();
+
+  signals:
+    void overviewListChanged();
 
   private:
 
     void updateUi();
-    
+
     QString mProvider;
-    bool mInternal;
-	QString mResamplingMethod;
-    QList<int> mOverviewList;
+    QList< int > mOverviewList;
     QMap< int, QCheckBox* > mOverviewCheckBoxes;
 };
 
