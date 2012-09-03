@@ -58,6 +58,7 @@ class CORE_EXPORT QgsDistanceArea
     void setSourceCrs( long srsid );
 
     //! sets source spatial reference system (by EpsgCrsId)
+    // @deprecated use setSourceAuthid()
     Q_DECL_DEPRECATED void setSourceEpsgCrsId( long epsgId );
 
     //! sets source spatial reference system by authid
