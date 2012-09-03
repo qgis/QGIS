@@ -33,14 +33,13 @@ void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsR
 
 QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
-  Q_UNUSED( size );
   if ( s.sizeType == QgsDiagramSettings::MM )
   {
-    return QSizeF( s.size.width() * c.scaleFactor() * c.rasterScaleFactor(), s.size.height() * c.scaleFactor() * c.rasterScaleFactor());
+    return QSizeF( size.width() * c.scaleFactor() * c.rasterScaleFactor(), size.height() * c.scaleFactor() * c.rasterScaleFactor());
   }
   else
   {
-    return QSizeF( s.size.width() / c.mapToPixel().mapUnitsPerPixel(), s.size.height() / c.mapToPixel().mapUnitsPerPixel() );
+    return QSizeF( size.width() / c.mapToPixel().mapUnitsPerPixel(), size.height() / c.mapToPixel().mapUnitsPerPixel() );
   }
 }
 

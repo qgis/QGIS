@@ -50,8 +50,8 @@ class CORE_EXPORT QgsDiagram
     void setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c );
 
     /** Calculates a size to match the current settings and rendering context
-     *  @param size Unused
-     *  @param s    The settings that specify the diagram size
+     *  @param size The size to convert
+     *  @param s    The settings that specify the size type
      *  @param c    The rendering specifying the proper scale units for pixel conversion
      *
      *  @return The converted size for rendering
