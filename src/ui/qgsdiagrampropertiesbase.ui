@@ -948,7 +948,40 @@
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mFixedSizeCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mDiagramSizeSpinBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>118</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>158</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mFixedSizeCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mLinearScaleFrame</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>75</x>
+     <y>118</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>390</x>
+     <y>222</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
  <buttongroups>
   <buttongroup name="mOrientationButtonGroup"/>
  </buttongroups>
