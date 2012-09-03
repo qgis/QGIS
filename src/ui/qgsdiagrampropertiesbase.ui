@@ -784,7 +784,7 @@
                <item>
                 <widget class="QTreeWidget" name="mAttributesTreeWidget">
                  <property name="selectionMode">
-                  <enum>QAbstractItemView::ContiguousSelection</enum>
+                  <enum>QAbstractItemView::ExtendedSelection</enum>
                  </property>
                  <property name="indentation">
                   <number>0</number>
