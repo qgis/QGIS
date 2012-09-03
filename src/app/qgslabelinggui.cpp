@@ -221,7 +221,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   }
 
   mRefFont = lyr.textFont;
-  mFontSizeSpinBox->setValue( mRefFont.pointSizeF() );
+  mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
 
@@ -583,9 +583,11 @@ void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
 {
   QFont styledfont;
   bool foundmatch = false;
+  int fontSize = 12; // QFontDatabase::font() needs an integer for size
   if ( !fontstyle.isEmpty() )
   {
-    styledfont = mFontDB.font( mRefFont.family(), fontstyle, mRefFont.pointSizeF() );
+    styledfont = mFontDB.font( mRefFont.family(), fontstyle, fontSize );
+    styledfont.setPointSizeF( mRefFont.pointSizeF() );
     if ( QApplication::font().toString() != styledfont.toString() )
     {
       foundmatch = true;
@@ -595,7 +597,8 @@ void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
   {
     foreach ( const QString &style, mFontDB.styles( mRefFont.family() ) )
     {
-      styledfont = mFontDB.font( mRefFont.family(), style, mRefFont.pointSizeF() );
+      styledfont = mFontDB.font( mRefFont.family(), style, fontSize );
+      styledfont.setPointSizeF( mRefFont.pointSizeF() );
       styledfont = styledfont.resolve( mRefFont );
       if ( mRefFont.toString() == styledfont.toString() )
       {
@@ -606,6 +609,7 @@ void QgsLabelingGui::updateFontViaStyle( const QString & fontstyle )
   }
   if ( foundmatch )
   {
+//    styledfont.setPointSizeF( mRefFont.pointSizeF() );
     styledfont.setCapitalization( mRefFont.capitalization() );
     styledfont.setUnderline( mRefFont.underline() );
     styledfont.setStrikeOut( mRefFont.strikeOut() );
@@ -629,7 +633,7 @@ void QgsLabelingGui::updateFont( QFont font )
   bool missing = false;
   if ( QApplication::font().toString() != mRefFont.toString() )
   {
-    QFont testfont = mFontDB.font( mRefFont.family(), mFontDB.styleString( mRefFont ), mRefFont.pointSizeF() );
+    QFont testfont = mFontDB.font( mRefFont.family(), mFontDB.styleString( mRefFont ), 12 );
     if ( QApplication::font().toString() == testfont.toString() )
     {
       missing = true;
@@ -667,8 +671,11 @@ void QgsLabelingGui::updateFont( QFont font )
 void QgsLabelingGui::blockFontChangeSignals( bool blk )
 {
   mFontStyleComboBox->blockSignals( blk );
+  mFontCapitalsComboBox->blockSignals( blk );
   mFontUnderlineBtn->blockSignals( blk );
   mFontStrikethroughBtn->blockSignals( blk );
+  mFontWordSpacingSpinBox->blockSignals( blk );
+  mFontLetterSpacingSpinBox->blockSignals( blk );
 }
 
 void QgsLabelingGui::updatePreview()

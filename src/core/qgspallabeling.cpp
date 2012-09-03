@@ -338,7 +338,8 @@ void QgsPalLayerSettings::updateFontViaStyle( const QString & fontstyle )
 {
   if ( !fontstyle.isEmpty() )
   {
-    QFont styledfont = mFontDB.font( textFont.family(), fontstyle, textFont.pointSizeF() );
+    QFont styledfont = mFontDB.font( textFont.family(), fontstyle, 12 );
+    styledfont.setPointSizeF( textFont.pointSizeF() );
     if ( QApplication::font().toString() != styledfont.toString() )
     {
       textFont = styledfont;
@@ -367,7 +368,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont = QFont( fontFamily, fontSize, fontWeight, fontItalic );
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textNamedStyle = layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString();
-  updateFontViaStyle( textNamedStyle );
+  updateFontViaStyle( textNamedStyle ); // must come after textFont.setPointSizeF()
   textFont.setCapitalization(( QFont::Capitalization ) layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
