@@ -40,6 +40,12 @@ class CORE_EXPORT QgsDistanceArea
     //! Destructor
     ~QgsDistanceArea();
 
+    //! Copy constructor
+    QgsDistanceArea( const QgsDistanceArea & origDA );
+
+    //! Assignment operator
+    QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
+
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode( bool flag );
     Q_DECL_DEPRECATED void setProjectionsEnabled( bool flag ) { setEllipsoidalMode( flag ); };
@@ -64,6 +70,10 @@ class CORE_EXPORT QgsDistanceArea
 
     //! sets ellipsoid by its acronym
     bool setEllipsoid( const QString& ellipsoid );
+
+    //! Sets ellipsoid by supplied radii
+    // Inverse flattening is calculated with invf = a/(a-b)
+    bool setEllipsoid( double semiMajor, double semiMinor );
 
     //! returns ellipsoid's acronym
     const QString& ellipsoid() { return mEllipsoid; }
@@ -134,6 +144,8 @@ class CORE_EXPORT QgsDistanceArea
     void computeAreaInit();
 
   private:
+    //! Copy helper
+    void _copy( const QgsDistanceArea & origDA );
 
     //! used for transforming coordinates from source CRS to ellipsoid's coordinates
     QgsCoordinateTransform* mCoordTransform;
