@@ -116,7 +116,15 @@
           </item>
           <item>
            <widget class="QToolBox" name="mDiagramPropertiesToolBox">
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage1" native="true">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage1">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>708</width>
+               <height>278</height>
+              </rect>
+             </property>
              <attribute name="label">
               <string>Appearance</string>
              </attribute>
@@ -318,7 +326,15 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage2" native="true">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage2">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>708</width>
+               <height>239</height>
+              </rect>
+             </property>
              <attribute name="label">
               <string>Size</string>
              </attribute>
@@ -357,6 +373,9 @@
                <widget class="QDoubleSpinBox" name="mDiagramSizeSpinBox">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="decimals">
+                 <number>5</number>
                 </property>
                 <property name="maximum">
                  <double>9999999.990000000223517</double>
@@ -496,7 +515,15 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage3" native="true">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage3">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>165</width>
+               <height>220</height>
+              </rect>
+             </property>
              <attribute name="label">
               <string>Position</string>
              </attribute>
@@ -650,7 +677,15 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage4" native="true">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage4">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>109</width>
+               <height>151</height>
+              </rect>
+             </property>
              <attribute name="label">
               <string>Options</string>
              </attribute>
