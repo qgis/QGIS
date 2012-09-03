@@ -49,7 +49,7 @@ QgsDistanceArea::QgsDistanceArea()
 
 
 //! Copy constructor
-QgsDistanceArea::QgsDistanceArea(const QgsDistanceArea & origDA )
+QgsDistanceArea::QgsDistanceArea( const QgsDistanceArea & origDA )
 {
   _copy( origDA );
 }
@@ -60,9 +60,9 @@ QgsDistanceArea::~QgsDistanceArea()
 }
 
 //! Assignment operator
-QgsDistanceArea & QgsDistanceArea::operator=(const QgsDistanceArea & origDA )
+QgsDistanceArea & QgsDistanceArea::operator=( const QgsDistanceArea & origDA )
 {
-  if (this == & origDA )
+  if ( this == & origDA )
   {
     // Do not copy unto self
     return *this;

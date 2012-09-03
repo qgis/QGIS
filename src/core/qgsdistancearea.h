@@ -41,10 +41,10 @@ class CORE_EXPORT QgsDistanceArea
     ~QgsDistanceArea();
 
     //! Copy constructor
-    QgsDistanceArea(const QgsDistanceArea & origDA );
+    QgsDistanceArea( const QgsDistanceArea & origDA );
 
     //! Assignment operator
-    QgsDistanceArea & operator=(const QgsDistanceArea & origDA );
+    QgsDistanceArea & operator=( const QgsDistanceArea & origDA );
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode( bool flag );
