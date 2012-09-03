@@ -532,7 +532,6 @@ class CORE_EXPORT QgsExpression
     int mRowNumber;
     double mScale;
 
-    void initGeomCalculator();
     QgsDistanceArea mCalc;
 };
 
