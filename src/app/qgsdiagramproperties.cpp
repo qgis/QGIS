@@ -324,11 +324,11 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType || DIAGRAM_NAME_TEXT == diagramType )
   {
-    mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
+    mDiagramPropertiesToolBox->setItemEnabled( 3, true );
   }
   else
   {
-    mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
+    mDiagramPropertiesToolBox->setItemEnabled( 3, false );
   }
 
   if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )

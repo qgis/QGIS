@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>782</width>
-    <height>612</height>
+    <height>663</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -37,7 +37,7 @@
            <x>0</x>
            <y>0</y>
            <width>742</width>
-           <height>559</height>
+           <height>610</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -115,12 +115,9 @@
            <layout class="QHBoxLayout" name="appearanceLayout"/>
           </item>
           <item>
-           <widget class="QTabWidget" name="mDiagramPropertiesTabWidget">
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <widget class="QWidget" name="tab">
-             <attribute name="title">
+           <widget class="QToolBox" name="mDiagramPropertiesToolBox">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage1" native="true">
+             <attribute name="label">
               <string>Appearance</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -321,8 +318,8 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="tab_2">
-             <attribute name="title">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage2" native="true">
+             <attribute name="label">
               <string>Size</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -499,8 +496,8 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="tab_3">
-             <attribute name="title">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage3" native="true">
+             <attribute name="label">
               <string>Position</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_2">
@@ -653,8 +650,8 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mOptionsTab">
-             <attribute name="title">
+            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage4" native="true">
+             <attribute name="label">
               <string>Options</string>
              </attribute>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -951,40 +948,7 @@
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mFixedSizeCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mDiagramSizeSpinBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>75</x>
-     <y>118</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>158</x>
-     <y>118</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mFixedSizeCheckBox</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mLinearScaleFrame</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>75</x>
-     <y>118</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>390</x>
-     <y>222</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <buttongroups>
   <buttongroup name="mOrientationButtonGroup"/>
  </buttongroups>
