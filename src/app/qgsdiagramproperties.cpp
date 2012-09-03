@@ -465,6 +465,14 @@ void QgsDiagramProperties::apply()
         tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ), QMessageBox::Ok );
     }
 
+    bool scaleAttributeValueIsNumeric;
+    mValueLineEdit->text().toDouble( &scaleAttributeValueIsNumeric );
+    if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueIsNumeric ) 
+    {
+      QMessageBox::warning( this, tr( "No attribute value specified" ),
+        tr( "You did not specify a maximum value for the diagram size. Please specify the the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
+    }
+
     QgsDiagram* diagram = 0;
     int index = mDiagramTypeComboBox->currentIndex();
     QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
