@@ -847,23 +847,34 @@ bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& resu
       GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
       double data[4];
 
-      // GDAL ECW driver reads whole row if single pixel (nYSize == 1) is requested
-      // and it makes identify very slow -> use 2x2 matrix
       int r = 0;
       int c = 0;
-      if ( col == mWidth - 1 && mWidth > 1 )
-      {
-        col--;
-        c++;
-      }
-      if ( row == mHeight - 1 && mHeight > 1 )
-      {
-        row--;
-        r++;
-      }
+      int width = 1;
+      int height = 1;
 
-      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 2, 2,
-                                 data, 2, 2, GDT_Float64, 0, 0 );
+      // GDAL ECW driver in GDAL <  1.9.2 read whole row if single pixel (nYSize == 1)
+      // was requested which made identify very slow -> use 2x2 matrix
+      // but other drivers may be optimised for 1x1 -> conditional
+#if !defined(GDAL_VERSION_NUM) || GDAL_VERSION_NUM < 1920
+      if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "ECW" ) == 0 )
+      {
+        width = 2;
+        height = 2;
+        if ( col == mWidth - 1 && mWidth > 1 )
+        {
+          col--;
+          c++;
+        }
+        if ( row == mHeight - 1 && mHeight > 1 )
+        {
+          row--;
+          r++;
+        }
+      }
+#endif
+
+      CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, width, height,
+                                 data, width, height, GDT_Float64, 0, 0 );
 
       if ( err != CPLE_None )
       {
