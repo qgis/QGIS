@@ -76,18 +76,15 @@ void * QgsSingleBandColorDataRenderer::readBlock( int bandNo, QgsRectangle  cons
     }
     else
     {
+      QRgb pixelColor;
+      double alpha = 255.0;
       for ( int j = 0; j < width; ++j )
       {
-        QRgb pixelColor;
-        double alpha = 255.0;
-        for ( int j = 0; j < width; ++j )
-        {
-          QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
-          alpha = qAlpha( c );
-          pixelColor = qRgba( qRed( c ), qGreen( c ), qBlue( c ), mOpacity * alpha );
-          memcpy( &( scanLine[j*4] ), &pixelColor, 4 );
-          ++currentRasterPos;
-        }
+        QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
+        alpha = qAlpha( c );
+        pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
+        memcpy( &( scanLine[j*4] ), &pixelColor, 4 );
+        ++currentRasterPos;
       }
     }
   }
@@ -118,4 +115,25 @@ QList<int> QgsSingleBandColorDataRenderer::usesBands() const
     bandList << mBand;
   }
   return bandList;
+}
+
+bool QgsSingleBandColorDataRenderer::setInput( QgsRasterInterface* input )
+{
+  // Renderer can only work with numerical values in at least 1 band
+  if ( !input ) return false;
+
+  if ( !mOn )
+  {
+    // In off mode we can connect to anything
+    mInput = input;
+    return true;
+  }
+
+  if ( input->dataType( 1 ) == QgsRasterInterface::ARGB32 ||
+       input->dataType( 1 ) == QgsRasterInterface::ARGB32_Premultiplied )
+  {
+    mInput = input;
+    return true;
+  }
+  return false;
 }

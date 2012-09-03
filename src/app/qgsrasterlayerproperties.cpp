@@ -282,7 +282,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     if ( QgsRasterRendererRegistry::instance()->rendererData( name, entry ) )
     {
-      mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
+      if (( mRasterLayer->rasterType() != QgsRasterLayer::ColorLayer && entry.name != "singlebandcolordata" ) ||
+          ( mRasterLayer->rasterType() == QgsRasterLayer::ColorLayer && entry.name == "singlebandcolordata" ) )
+      {
+        mRenderTypeComboBox->addItem( entry.visibleName, entry.name );
+      }
     }
   }
 
@@ -296,6 +300,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     }
 
     //prevent change between singleband color renderer and the other renderers
+    // No more necessary, combo entries according to layer type
+#if 0
     if ( rendererType == "singlebandcolordata" )
     {
       mRenderTypeComboBox->setEnabled( false );
@@ -304,6 +310,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     {
       mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
     }
+#endif
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
 
@@ -425,6 +432,7 @@ void QgsRasterLayerProperties::populateTransparencyTable( QgsRasterRenderer* ren
 
 void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
 {
+  QgsDebugMsg( "rendererName = " + rendererName );
   QgsRasterRendererWidget* oldWidget = mRendererWidget;
 
   QgsRasterRendererRegistryEntry rendererEntry;
@@ -432,6 +440,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
   {
     if ( rendererEntry.widgetCreateFunction ) //single band color data renderer e.g. has no widget
     {
+      QgsDebugMsg( "renderer has widgetCreateFunction" );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer, myExtent );

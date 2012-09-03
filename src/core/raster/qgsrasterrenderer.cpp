@@ -74,13 +74,13 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
 
   for ( int i = 1; i <= input->bandCount(); i++ )
   {
-    if ( typeIsNumeric( input->dataType( i ) ) )
+    if ( !typeIsNumeric( input->dataType( i ) ) )
     {
-      mInput = input;
-      return true;
+      return false;
     }
   }
-  return false;
+  mInput = input;
+  return true;
 }
 
 bool QgsRasterRenderer::usesTransparency( ) const

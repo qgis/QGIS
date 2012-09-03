@@ -1699,7 +1699,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   mValidNoDataValue = mDataProvider->isNoDataValueValid();
 
   // set up the raster drawing style
-  setDrawingStyle( MultiBandColor );  //sensible default
+  // Do not set any 'sensible' style here, the style is set later
+  // setDrawingStyle( MultiBandColor );  //sensible default
 
   // Setup source CRS
   setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
