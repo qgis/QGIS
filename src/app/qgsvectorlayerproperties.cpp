@@ -1401,7 +1401,7 @@ void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
 
 void QgsVectorLayerProperties::on_tabWidget_currentChanged( int index )
 {
-  if ( index != 4 || mMetadataFilled )
+  if ( index != 6 || mMetadataFilled )
     return;
 
   //set the metadata contents (which can be expensive)
