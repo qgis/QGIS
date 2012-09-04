@@ -29,9 +29,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-293</y>
-        <width>539</width>
-        <height>831</height>
+        <y>-263</y>
+        <width>549</width>
+        <height>806</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -527,6 +527,12 @@
          <property name="enabled">
           <bool>true</bool>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>150</height>
+          </size>
+         </property>
          <property name="toolTip">
           <string>Additional no data values. The specified values will be set to no data in output raster.</string>
          </property>
@@ -568,9 +574,6 @@
             </item>
             <item row="2" column="0">
              <widget class="QToolButton" name="mLoadTransparentNoDataToolButton">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
               <property name="toolTip">
                <string>Load user defined fully transparent (100%) values </string>
               </property>
@@ -643,7 +646,7 @@
                <string>No pyramids</string>
               </property>
               <attribute name="buttonGroup">
-               <string notr="true">mPyramidsButtonGroup</string>
+               <string>mPyramidsButtonGroup</string>
               </attribute>
              </widget>
             </item>
@@ -653,7 +656,7 @@
                <string>Build pyramids</string>
               </property>
               <attribute name="buttonGroup">
-               <string notr="true">mPyramidsButtonGroup</string>
+               <string>mPyramidsButtonGroup</string>
               </attribute>
              </widget>
             </item>
@@ -663,7 +666,7 @@
                <string>Use existing</string>
               </property>
               <attribute name="buttonGroup">
-               <string notr="true">mPyramidsButtonGroup</string>
+               <string>mPyramidsButtonGroup</string>
               </attribute>
              </widget>
             </item>

@@ -589,7 +589,7 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
         lineEdit->setValidator( new QDoubleValidator( 0 ) );
         if ( !qIsNaN( value ) )
         {
-          valueString = QString::number( value, 'f' );
+          valueString = QgsRasterInterface::printValue( value );
         }
         break;
       default:
@@ -602,6 +602,8 @@ void QgsRasterLayerSaveAsDialog::addNoDataRow( double min, double max )
     }
     lineEdit->setText( valueString );
     mNoDataTableWidget->setCellWidget( mNoDataTableWidget->rowCount() - 1, i, lineEdit );
+
+    adjustNoDataCellWidth( mNoDataTableWidget->rowCount() - 1, i );
 
     connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( noDataCellTextEdited( const QString & ) ) );
   }
@@ -735,6 +737,17 @@ double QgsRasterLayerSaveAsDialog::noDataCellValue( int row, int column ) const
     std::numeric_limits<double>::quiet_NaN();
   }
   return lineEdit->text().toDouble();
+}
+
+void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
+{
+  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( mNoDataTableWidget->cellWidget( row, column ) );
+  if ( !lineEdit ) return;
+
+  int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  width = qMax( width, mNoDataTableWidget->columnWidth( column ) );
+
+  lineEdit->setFixedWidth( width );
 }
 
 QList<QgsRasterNuller::NoData> QgsRasterLayerSaveAsDialog::noData() const

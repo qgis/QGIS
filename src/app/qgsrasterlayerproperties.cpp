@@ -256,10 +256,17 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       cboxTransparencyBand->addItem( bandName, i );
     }
 
+// Alpha band is set in sync()
+#if 0
     if ( renderer )
     {
-      cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
+      QgsDebugMsg( QString( "alphaBand = %1" ).arg( renderer->alphaBand() ) );
+      if ( renderer->alphaBand() > 0 )
+      {
+        cboxTransparencyBand->setCurrentIndex( cboxTransparencyBand->findData( renderer->alphaBand() ) );
+      }
     }
+#endif
   }
 
   // create histogram widget
