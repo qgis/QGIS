@@ -194,6 +194,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
+
+    static const char * GEO_NONE_DESC;
 };
 
 #endif // #ifndef QGSOPTIONS_H

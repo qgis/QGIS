@@ -97,11 +97,14 @@ class CORE_EXPORT QGis
       DegreesDecimalMinutes = 2,  // was 5
     };
 
-    // Provides the canonical name of the type value
+    //! Provides the canonical name of the type value
+    // Added in version 2.0
     static QString toLiteral( QGis::UnitType unit );
-    // Converts from the canonical name to the type value
+    //! Converts from the canonical name to the type value
+    // Added in version 2.0
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
-    // Provides translated version of the type value
+    //! Provides translated version of the type value
+    // Added in version 2.0
     static QString tr( QGis::UnitType unit );
 
     //! User defined event types
@@ -196,6 +199,10 @@ const int LAT_PREFIX_LEN = 7;
 /** Magick number that determines whether a projection crsid is a system (srs.db)
  *  or user (~/.qgis.qgis.db) defined projection. */
 const int USER_CRS_START_ID = 100000;
+
+//! Constant that holds the string representation for "No ellips/No CRS"
+// Added in version 2.0
+const QString GEO_NONE = "NONE";
 
 //
 // Constants for point symbols

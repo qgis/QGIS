@@ -23,6 +23,7 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include "qgsdecorationscalebardialog.h"
 
+#include "qgis.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -119,6 +120,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
   double myMapUnitsPerPixelDouble = qAbs( canvas->mapUnitsPerPixel() );
+  double myActualSize = mPreferredSize;
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount = canvas->layerCount();
@@ -131,9 +133,25 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     // Hard coded sizes
     int myMajorTickSize = 8;
     int myTextOffsetX = 3;
-    double myActualSize = mPreferredSize;
     int myMargin = 20;
 
+    QSettings settings;
+    QGis::UnitType myPreferredUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+    QGis::UnitType myMapUnits = canvas->mapUnits();
+
+    // Adjust units meter/feet or vice versa
+    if ( myMapUnits == QGis::Meters && myPreferredUnits == QGis::Feet )
+    {
+      // From meter to feet
+      myMapUnits = QGis::Feet;
+      myMapUnitsPerPixelDouble /= 0.3084;
+    }
+    else if ( myMapUnits == QGis::Feet && myPreferredUnits == QGis::Meters )
+    {
+      // From feet to meter
+      myMapUnits = QGis::Meters;
+      myMapUnitsPerPixelDouble *= 0.3084;
+    }
     //Calculate size of scale bar for preferred number of map units
     double myScaleBarWidth = mPreferredSize / myMapUnitsPerPixelDouble;
 
@@ -164,7 +182,6 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     }
 
     //Get type of map units and set scale bar unit label text
-    QGis::UnitType myMapUnits = canvas->mapUnits();
     QString myScaleBarUnitLabel;
     switch ( myMapUnits )
     {

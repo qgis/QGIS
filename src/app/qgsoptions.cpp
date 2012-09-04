@@ -19,6 +19,8 @@
 #include "qgsoptions.h"
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgstolerance.h"
@@ -47,8 +49,6 @@
 #include <limits>
 #include <sqlite3.h>
 #include "qgslogger.h"
-#define ELLIPS_FLAT "NONE"
-#define ELLIPS_FLAT_DESC "None / Planimetric"
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
@@ -56,6 +56,7 @@
 #include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
+const char * QgsOptions::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
 /**
  * \class QgsOptions - Set user options and preferences
@@ -278,13 +279,27 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
 
   // populate combo box with ellipsoids
+  QgsDebugMsg( "Setting upp ellipsoid" );
+
   getEllipsoidList();
-  QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  cmbEllipsoid->setItemText( cmbEllipsoid->currentIndex(), getEllipsoidName( myEllipsoidId ) );
+  // Pre-select current ellipsoid
+  QString myEllipsoidId = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
+  cmbEllipsoid->setCurrentIndex( cmbEllipsoid->findText( getEllipsoidName( myEllipsoidId ), Qt::MatchExactly ) );
+  // Check if CRS transformation is on, or else turn combobox off
+  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    cmbEllipsoid->setEnabled( true );
+    cmbEllipsoid->setToolTip( "" );
+  }
+  else
+  {
+    cmbEllipsoid->setEnabled( false );
+    cmbEllipsoid->setToolTip( "Can only use ellipsoidal calculations when CRS transformation is enabled" );
+  }
 
   // Set the units for measuring
-  QString myUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-  if ( myUnitsTxt == "feet" )
+  QGis::UnitType myDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  if ( myDisplayUnits == QGis::Feet )
   {
     radFeet->setChecked( true );
   }
@@ -929,13 +944,12 @@ void QgsOptions::saveOptions()
 
   if ( radFeet->isChecked() )
   {
-    settings.setValue( "/qgis/measure/displayunits", "feet" );
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
   }
   else
   {
-    settings.setValue( "/qgis/measure/displayunits", "meters" );
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) );
   }
-  settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
 
   QString angleUnitString = "degrees";
   if ( mRadiansRadioButton->isChecked() )
@@ -1163,7 +1177,7 @@ void QgsOptions::getEllipsoidList()
   int           myResult;
 
 
-  cmbEllipsoid->addItem( ELLIPS_FLAT_DESC );
+  cmbEllipsoid->addItem( tr( GEO_NONE_DESC ) );
   //check the db is available
   myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult )
@@ -1196,7 +1210,8 @@ QString QgsOptions::getEllipsoidAcronym( QString theEllipsoidName )
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  QString       myName( ELLIPS_FLAT );
+  QString       myName = GEO_NONE;
+
   //check the db is available
   myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult )
@@ -1228,7 +1243,9 @@ QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  QString       myName( ELLIPS_FLAT_DESC );
+  QString       myName;
+
+  myName = tr( GEO_NONE_DESC );
   //check the db is available
   myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult )
