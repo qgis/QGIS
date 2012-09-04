@@ -226,14 +226,14 @@ void QgsComposerMultiFrame::deleteFrames()
 {
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
-  mComposition->blockSignals( true );
+  QObject::disconnect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
   QList<QgsComposerFrame*>::iterator frameIt = mFrameItems.begin();
   for ( ; frameIt != mFrameItems.end(); ++frameIt )
   {
     mComposition->removeComposerItem( *frameIt, false );
     delete *frameIt;
   }
-  mComposition->blockSignals( false );
+  QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
   mFrameItems.clear();
   mResizeMode = bkResizeMode;
 }

@@ -316,12 +316,25 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
 bool QgsComposition::loadFromTemplate( const QDomDocument& doc, bool addUndoCommands )
 {
-  //delete multiframes and its items
   deleteAndRemoveMultiFrames();
 
-  //delete all other items
-  clear();
+  //delete all items and emit itemRemoved signal
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIter = itemList.begin();
+  for ( ; itemIter != itemList.end(); ++itemIter )
+  {
+    QgsComposerItem* cItem = dynamic_cast<QgsComposerItem*>( *itemIter );
+    if ( cItem )
+    {
+      removeItem( cItem );
+      emit itemRemoved( cItem );
+      delete cItem;
+    }
+  }
+  mItemZList.clear();
+
   mPages.clear();
+  mUndoStack.clear();
 
   //read general settings
   QDomElement compositionElem = doc.documentElement().firstChildElement( "Composition" );
