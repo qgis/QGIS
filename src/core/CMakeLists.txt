@@ -96,6 +96,7 @@ SET(QGIS_CORE_SRCS
   qgsrasterprojector.cpp
   qgsrasterdataprovider.cpp
   qgsrendercontext.cpp
+  qgsrenderchecker.cpp
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
@@ -376,6 +377,7 @@ SET(QGIS_CORE_HDRS
   qgsrasterdataprovider.h
   qgsrectangle.h
   qgsrendercontext.h
+  qgsrenderchecker.h
   qgsrunprocess.h
   qgsscalecalculator.h
   qgssnapper.h
@@ -492,6 +494,9 @@ ELSE (WIN32)
     ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
 ENDIF (WIN32)
 
+# Test data dir for QgsRenderChecker
+ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+
 #############################################################
 # qgis_core library
 
@@ -581,3 +586,4 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+

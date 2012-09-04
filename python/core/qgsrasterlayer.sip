@@ -81,6 +81,15 @@ public:
       Multiband
     } ;
 
+    /** \brief Contrast enhancement limits */
+    enum ContrastEnhancementLimits
+    {
+      ContrastEnhancementNone,
+      ContrastEnhancementMinMax,
+      ContrastEnhancementStdDev,
+      ContrastEnhancementCumulativeCut
+    };
+
     /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
     typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
 

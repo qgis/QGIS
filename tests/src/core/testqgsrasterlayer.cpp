@@ -114,7 +114,7 @@ void TestQgsRasterLayer::initTestCase()
 
   QFileInfo myFloat32RasterFileInfo( myFloat32FileName );
   mpFloat32RasterLayer = new QgsRasterLayer( myFloat32RasterFileInfo.filePath(),
-                                      myFloat32RasterFileInfo.completeBaseName() );
+      myFloat32RasterFileInfo.completeBaseName() );
   qDebug() << "float32raster metadata: " << mpFloat32RasterLayer->dataProvider()->metadata();
 
   // Register the layer with the registry
@@ -443,9 +443,12 @@ bool TestQgsRasterLayer::setQml( QString theType )
 void TestQgsRasterLayer::transparency()
 {
   QVERIFY( mpFloat32RasterLayer->isValid() );
-  QgsSingleBandGrayRenderer* r = new QgsSingleBandGrayRenderer( mpRasterLayer->dataProvider(), 1 );
-  mpFloat32RasterLayer->setRenderer( r );
+  QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( mpRasterLayer->dataProvider(), 1 );
+  mpFloat32RasterLayer->setRenderer( renderer );
   mpFloat32RasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterLayer::ContrastEnhancementMinMax );
+
+  qDebug( "contrastEnhancement.minimumValue = %.17g", renderer->contrastEnhancement()->minimumValue() );
+  qDebug( "contrastEnhancement.maximumValue = %.17g", renderer->contrastEnhancement()->maximumValue() );
 
   QList<QgsRasterTransparency::TransparentSingleValuePixel> myTransparentSingleValuePixelList;
   QgsRasterTransparency* rasterTransparency = new QgsRasterTransparency();
@@ -470,7 +473,7 @@ void TestQgsRasterLayer::transparency()
   QStringList myLayers;
   myLayers << mpFloat32RasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
-  
+
   mpMapRenderer->setExtent( mpFloat32RasterLayer->extent() );
   QVERIFY( render( "raster_transparency" ) );
 }
