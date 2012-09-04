@@ -314,7 +314,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   return true;
 }
 
-bool QgsComposition::loadFromTemplate( const QDomDocument& doc, bool addUndoCommands )
+bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap, bool addUndoCommands )
 {
   deleteAndRemoveMultiFrames();
 
@@ -336,21 +336,37 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, bool addUndoComm
   mPages.clear();
   mUndoStack.clear();
 
+  QDomDocument importDoc;
+  if ( substitutionMap )
+  {
+    QString xmlString = doc.toString();
+    QMap<QString, QString>::const_iterator sIt = substitutionMap->constBegin();
+    for ( ; sIt != substitutionMap->constEnd(); ++sIt )
+    {
+      xmlString = xmlString.replace( "[" + sIt.key() + "]", sIt.value() );
+    }
+    importDoc.setContent( xmlString );
+  }
+  else
+  {
+    importDoc = doc;
+  }
+
   //read general settings
-  QDomElement compositionElem = doc.documentElement().firstChildElement( "Composition" );
+  QDomElement compositionElem = importDoc.documentElement().firstChildElement( "Composition" );
   if ( compositionElem.isNull() )
   {
     return false;
   }
 
-  bool ok = readXML( compositionElem, doc );
+  bool ok = readXML( compositionElem, importDoc );
   if ( !ok )
   {
     return false;
   }
 
   //addItemsFromXML
-  addItemsFromXML( doc.documentElement(), doc, 0, addUndoCommands, 0 );
+  addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
   return true;
 }
 

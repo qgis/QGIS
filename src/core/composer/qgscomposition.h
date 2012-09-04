@@ -153,7 +153,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
 
-    bool loadFromTemplate( const QDomDocument& doc, bool addUndoCommands = false );
+    bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0, bool addUndoCommands = false );
 
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
