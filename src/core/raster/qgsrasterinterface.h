@@ -191,6 +191,12 @@ class CORE_EXPORT QgsRasterInterface
      * returned. */
     double time( bool cumulative = false );
 
+    /** \brief Print double value with all necessary significant digits.
+     *         It is ensured that conversion back to double gives the same number.
+     *  @param value the value to be printed
+     *  @return string representing the value*/
+    static QString printValue( double value );
+
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
@@ -255,7 +261,6 @@ inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::Dat
 
 inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::DataType type, int index, double value )
 {
-  if ( !mInput ) return;
   if ( !data ) return;
 
   switch ( type )

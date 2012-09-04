@@ -202,6 +202,7 @@ QString QgsRasterDataProvider::capabilitiesString() const
   return abilitiesList.join( ", " );
 }
 
+#if 0
 bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   Q_UNUSED( thePoint );
@@ -214,6 +215,41 @@ bool QgsRasterDataProvider::identify( const QgsPoint & point, QMap<int, QString>
   Q_UNUSED( point );
   results.clear();
   return false;
+}
+#endif
+
+QMap<int, void *> QgsRasterDataProvider::identify( const QgsPoint & point )
+{
+  QMap<int, void *> results;
+
+  QgsRectangle myExtent = extent();
+
+  for ( int i = 1; i <= bandCount(); i++ )
+  {
+    double x = point.x();
+    double y = point.y();
+
+    // Calculate the row / column where the point falls
+    double xres = ( myExtent.xMaximum() - myExtent.xMinimum() ) / xSize();
+    double yres = ( myExtent.yMaximum() - myExtent.yMinimum() ) / ySize();
+
+    int col = ( int ) floor(( x - myExtent.xMinimum() ) / xres );
+    int row = ( int ) floor(( myExtent.yMaximum() - y ) / yres );
+
+    double xMin = myExtent.xMinimum() + col * xres;
+    double xMax = xMin + xres;
+    double yMax = myExtent.yMaximum() - row * yres;
+    double yMin = yMax - yres;
+    QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
+
+    void * data = block( i, pixelExtent, 1, 2 );
+
+    if ( data )
+    {
+      results.insert( i, data );
+    }
+  }
+  return results;
 }
 
 QString QgsRasterDataProvider::lastErrorFormat()

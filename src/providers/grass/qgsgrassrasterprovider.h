@@ -141,7 +141,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     bool isValid();
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    QMap<int, void *> identify( const QgsPoint & thePoint );
 
     /**
      * \brief Identify details from a GRASS layer from the last screen update

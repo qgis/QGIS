@@ -103,6 +103,10 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   QgsGdalProviderBase::registerGdalDrivers();
 
+  // GDAL tends to open AAIGrid as Float32 which results in lost precision
+  // and confusing values shown to users, force Float64
+  CPLSetConfigOption( "AAIGRID_DATATYPE", "Float64" );
+
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
   {
@@ -816,15 +820,18 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
-bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& results )
+QMap<int, void *> QgsGdalProvider::identify( const QgsPoint & point )
 {
-  // QgsDebugMsg( "Entered" );
+  QgsDebugMsg( "Entered" );
+  QMap<int, void *> results;
   if ( !mExtent.contains( point ) )
   {
     // Outside the raster
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
-      results[ i ] = tr( "out of extent" );
+      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+      writeValue( data, dataType( i ), 0, noDataValue() );
+      results.insert( i, data );
     }
   }
   else
@@ -845,7 +852,6 @@ bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& resu
     for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); i++ )
     {
       GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
-      double data[4];
 
       int r = 0;
       int c = 0;
@@ -872,38 +878,29 @@ bool QgsGdalProvider::identify( const QgsPoint & point, QMap<int, QString>& resu
         }
       }
 #endif
+      int typeSize = dataTypeSize( i ) / 8;
+      void * tmpData = VSIMalloc( typeSize * width * height );
 
       CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, width, height,
-                                 data, width, height, GDT_Float64, 0, 0 );
+                                 tmpData, width, height,
+                                 ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
 
       if ( err != CPLE_None )
       {
         QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
       }
-      double value = data[r*2+c];
+      void * data = VSIMalloc( typeSize );
+      memcpy( data, ( void* )(( char* )tmpData + ( r*width + c )*typeSize ), typeSize );
+      results.insert( i, data );
 
-      //double value = readValue( data, type, 0 );
-      // QgsDebugMsg( QString( "value=%1" ).arg( value ) );
-      QString v;
-
-      if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
-      {
-        v = tr( "null (no data)" );
-      }
-      else
-      {
-        v.setNum( value );
-      }
-
-      results[ i ] = v;
-
-      //CPLFree( data );
+      CPLFree( tmpData );
     }
   }
 
-  return true;
+  return results;
 }
 
+#if 0
 bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   QMap<int, QString> results;
@@ -914,6 +911,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
   }
   return true;
 }
+#endif
 
 int QgsGdalProvider::capabilities() const
 {

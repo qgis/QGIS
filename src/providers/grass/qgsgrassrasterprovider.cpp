@@ -364,25 +364,35 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-bool QgsGrassRasterProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+QMap<int, void *> QgsGrassRasterProvider::identify( const QgsPoint & thePoint )
 {
   QgsDebugMsg( "Entered" );
-  //theResults["Error"] = tr( "Out of extent" );
+  QMap<int, void *> results;
+
+  // TODO: use doubles instead of strings
   //theResults = QgsGrass::query( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, thePoint.x(), thePoint.y() );
-  QString value = mRasterValue.value( thePoint.x(), thePoint.y() );
-  theResults.clear();
+  QString strValue = mRasterValue.value( thePoint.x(), thePoint.y() );
   // attention, value tool does his own tricks with grass identify() so it stops to refresh values outside extent or null values e.g.
-  if ( value == "out" )
+
+  double value = noDataValue();
+
+  if ( strValue != "out" && strValue != "null" )
   {
-    value = tr( "Out of extent" );
+    bool ok;
+    value = strValue.toDouble( & ok );
+    if ( !ok )
+    {
+      value = 999999999;
+      QgsDebugMsg( "Cannot convert string to double" );
+    }
   }
-  if ( value == "null" )
-  {
-    value = tr( "null (no data)" );
-  }
-  theResults["value"] = value;
-  QgsDebugMsg( "value = " + value );
-  return true;
+  void * data = malloc( dataTypeSize( 1 ) / 8 );
+  writeValue( data, dataType( 1 ), 0, value );
+
+  results.insert( 1, data );
+  QgsDebugMsg( "strValue = " + strValue );
+
+  return results;
 }
 
 int QgsGrassRasterProvider::capabilities() const

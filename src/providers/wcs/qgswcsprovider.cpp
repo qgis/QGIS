@@ -1503,19 +1503,21 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+QMap<int, void *> QgsWcsProvider::identify( const QgsPoint & thePoint )
 {
   QgsDebugMsg( "Entered" );
-  theResults.clear();
+  QMap<int, void *> results;
 
   if ( !extent().contains( thePoint ) )
   {
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      theResults[ generateBandName( i )] = tr( "out of extent" );
+      void * data = VSIMalloc( dataTypeSize( i ) / 8 );
+      writeValue( data, dataType( i ), 0, noDataValue() );
+      results.insert( i, data );
     }
-    return true;
+    return results;
   }
 
   // It would be nice to use last cached block if possible, unfortunately we don't know
@@ -1556,7 +1558,7 @@ bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   if ( !mCachedGdalDataset ||
        !mCachedViewExtent.contains( thePoint ) )
   {
-    return false; // should not happen
+    return results; // should not happen
   }
 
   double x = thePoint.x();
@@ -1575,31 +1577,20 @@ bool QgsWcsProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   for ( int i = 1; i <= GDALGetRasterCount( mCachedGdalDataset ); i++ )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
-    double value;
 
+    void * data = VSIMalloc( dataTypeSize( i ) / 8 );
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
-                               &value, 1, 1, GDT_Float64, 0, 0 );
+                               data, 1, 1, ( GDALDataType ) mGdalDataType[i-1], 0, 0 );
 
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
     }
 
-    QString v;
-
-    if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
-    {
-      v = tr( "null (no data)" );
-    }
-    else
-    {
-      v.setNum( value );
-    }
-
-    theResults[ generateBandName( i )] = v;
+    results.insert( i, data );
   }
 
-  return true;
+  return results;
 }
 
 QString QgsWcsProvider::identifyAsText( const QgsPoint &point )

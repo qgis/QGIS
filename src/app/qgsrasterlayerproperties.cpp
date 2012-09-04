@@ -996,6 +996,7 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 
 void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double value )
 {
+  QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
   QgsRasterDataProvider* provider = mRasterLayer->dataProvider();
   if ( !provider ) return;
 
@@ -1026,7 +1027,7 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
         lineEdit->setValidator( new QDoubleValidator( 0 ) );
         if ( !qIsNaN( value ) )
         {
-          valueString = QString::number( value, 'f' );
+          valueString = QgsRasterInterface::printValue( value );
         }
         break;
       default:
@@ -1040,18 +1041,23 @@ void QgsRasterLayerProperties::setTransparencyCell( int row, int column, double 
     lineEdit->setText( valueString );
   }
   tableTransparency->setCellWidget( row, column, lineEdit );
+  adjustTransparencyCellWidth( row, column );
 
   if ( nBands == 1 && ( column == 0 || column == 1 ) )
   {
     connect( lineEdit, SIGNAL( textEdited( const QString & ) ), this, SLOT( transparencyCellTextEdited( const QString & ) ) );
   }
+  tableTransparency->resizeColumnsToContents();
 }
 
 void QgsRasterLayerProperties::setTransparencyCellValue( int row, int column, double value )
 {
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
-  lineEdit->setText( QString::number( value, 'f' ) );
+  lineEdit->setText( QgsRasterInterface::printValue( value ) );
+  lineEdit->adjustSize();
+  adjustTransparencyCellWidth( row, column );
+  tableTransparency->resizeColumnsToContents();
 }
 
 double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
@@ -1062,6 +1068,17 @@ double QgsRasterLayerProperties::transparencyCellValue( int row, int column )
     std::numeric_limits<double>::quiet_NaN();
   }
   return lineEdit->text().toDouble();
+}
+
+void QgsRasterLayerProperties::adjustTransparencyCellWidth( int row, int column )
+{
+  QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
+  if ( !lineEdit ) return;
+
+  int width = qMax( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  width = qMax( width, tableTransparency->columnWidth( column ) );
+
+  lineEdit->setFixedWidth( width );
 }
 
 void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
@@ -1312,30 +1329,27 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
   //Get the pixel values and add a new entry to the transparency table
   if ( mMapCanvas && mPixelSelectorTool )
   {
-    QMap< int, QString > myPixelMap;
     mMapCanvas->unsetMapTool( mPixelSelectorTool );
-    mRasterLayer->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ), myPixelMap );
+    QMap< int, void *> myPixelMap = mRasterLayer->dataProvider()->identify( mMapCanvas->mapRenderer()->mapToLayerCoordinates( mRasterLayer, canvasPoint ) );
 
     QList<int> bands = renderer->usesBands();
-    delete renderer;
 
+    QgsRasterDataProvider * provider = mRasterLayer->dataProvider();
     QList<double> values;
     for ( int i = 0; i < bands.size(); ++i )
     {
-      QMap< int, QString >::const_iterator pixelResult = myPixelMap.find( bands.at( i ) );
-      if ( pixelResult != myPixelMap.constEnd() )
+      int bandNo = bands.value( i );
+      if ( myPixelMap.count( bandNo ) == 1 )
       {
-        QString value = pixelResult.value();
-        if ( value != tr( "out of extent" ) )
+        void * data = myPixelMap.value( bandNo );
+        double value = provider->readValue( data, provider->dataType( bandNo ), 0 );
+        QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
+
+        if ( provider->isNoDataValue( bandNo, value ) )
         {
-          QgsDebugMsg( QString( "Is it %1 of band %2 nodata?" ).arg( value ).arg( bands.at( i ) ) );
-          if ( value == tr( "null (no data)" ) || // Very bad! TODO: improve identify
-               mRasterLayer->dataProvider()->isNoDataValue( bands.at( i ), value.toDouble() ) )
-          {
-            return; // Don't add nodata, transparent anyway
-          }
-          values.append( value.toDouble() );
+          return; // Don't add nodata, transparent anyway
         }
+        values.append( value );
       }
     }
     if ( bands.size() == 1 )
@@ -1350,6 +1364,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
     }
     setTransparencyCell( tableTransparency->rowCount() - 1, tableTransparency->columnCount() - 1, 100 );
   }
+  delete renderer;
 
   tableTransparency->resizeColumnsToContents();
   tableTransparency->resizeRowsToContents();

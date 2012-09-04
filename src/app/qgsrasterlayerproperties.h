@@ -149,6 +149,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void setTransparencyCellValue( int row, int column, double value );
     double transparencyCellValue( int row, int column );
     void setTransparencyToEdited( int row );
+    void adjustTransparencyCellWidth( int row, int column );
 
     void setRendererWidget( const QString& rendererName );
 

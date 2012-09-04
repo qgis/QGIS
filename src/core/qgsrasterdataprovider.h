@@ -414,9 +414,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QString metadata() = 0;
 
     /** \brief Identify raster value(s) found on the point position */
-    virtual bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //virtual bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
-    virtual bool identify( const QgsPoint & point, QMap<int, QString>& results );
+    //virtual bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
+    /** \brief Identify raster value(s) found on the point position
+     * @param point coordinates in data source CRS
+     * @return list of pointers to data blocks for all bands,
+     *         caller is responsible to free the allocated memory,
+     *         readValue() may be used to get values
+     */
+    // TODO: Consider QVariant or similar instead of void*
+    virtual QMap<int, void *> identify( const QgsPoint & point );
 
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update

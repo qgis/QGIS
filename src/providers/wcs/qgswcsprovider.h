@@ -153,7 +153,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const;
     int ySize() const;
     QString metadata();
-    bool identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults );
+    //bool identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults );
+    QMap<int, void *> identify( const QgsPoint & thePoint );
     QString identifyAsHtml( const QgsPoint& point );
     QString identifyAsText( const QgsPoint& point );
     QString lastErrorTitle();

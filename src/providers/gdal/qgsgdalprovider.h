@@ -122,9 +122,11 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool isValid();
 
     /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
-    bool identify( const QgsPoint & point, QMap<int, QString>& results );
+    //bool identify( const QgsPoint & point, QMap<int, QString>& results );
+
+    QMap<int, void *> identify( const QgsPoint & point );
 
     /**
      * \brief Identify details from a GDAL layer from the last screen update

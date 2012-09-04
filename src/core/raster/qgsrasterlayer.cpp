@@ -957,21 +957,61 @@ bool QgsRasterLayer::hasStatistics( int theBandNo )
 bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
   theResults.clear();
-  // QgsDebugMsg( "identify provider : " + mProviderKey ) ;
-  return ( mDataProvider->identify( thePoint, theResults ) );
-}
 
-bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& results )
-{
-  if ( !mDataProvider )
+  if ( !mDataProvider ) return false;
+
+  QMap<int, QString> results;
+  if ( ! identify( thePoint, results ) ) return false;
+
+  foreach ( int bandNo, results.keys() )
   {
-    return false;
+    theResults[ mDataProvider->generateBandName( bandNo )] = results.value( bandNo );
   }
-
-  results.clear();
-  return mDataProvider->identify( point, results );
+  return true;
 }
 
+bool QgsRasterLayer::identify( const QgsPoint & point, QMap<int, QString>& theResults )
+{
+  if ( !mDataProvider ) return false;
+
+  theResults.clear();
+  //return mDataProvider->identify( point, theResults );
+
+  QMap<int, void *> dataMap = mDataProvider->identify( point );
+  foreach ( int bandNo, dataMap.keys() )
+  {
+    QgsRasterInterface::DataType dataType = mDataProvider->dataType( bandNo );
+    void * data = dataMap.value( bandNo );
+    QString str;
+    if ( !data )
+    {
+      str = tr( "Cannot read data" );
+    }
+    else
+    {
+      if ( mDataProvider->typeIsNumeric( dataType ) )
+      {
+        double value = mDataProvider->readValue( data, dataType, 0 );
+        if ( mDataProvider->isNoDataValue( bandNo, value ) )
+        {
+          str = tr( "null (no data)" );
+        }
+        else
+        {
+          str.setNum( value );
+        }
+      }
+      else
+      {
+        QRgb c((( uint* )data )[0] );
+        str = QString( "%1,%2,%3,%4" ).arg( qRed( c ) ).arg( qGreen( c ) ).arg( qBlue( c ) ).arg( qAlpha( c ) );
+      }
+      free( data );
+    }
+    theResults[ bandNo ] = str;
+  }
+  return true;
+}
 
 /**
  * @note  The arbitraryness of the returned document is enforced by WMS standards up to at least v1.3.0
