@@ -920,7 +920,7 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
     QDomDocument templateDoc;
     if ( templateDoc.setContent( &templateFile ) )
     {
-      mComposition->loadFromTemplate( templateDoc, true );
+      mComposition->loadFromTemplate( templateDoc, false );
     }
   }
 }
