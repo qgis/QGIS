@@ -204,7 +204,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   // load identify radius from settings
   QSettings settings;
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
-  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", GEO_NONE ).toString();
 
   if ( identifyValue <= 0.0 )
     identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
@@ -392,17 +392,7 @@ void QgsMapToolIdentify::convertMeasurement( QgsDistanceArea &calc, double &meas
 
   // Get the units for display
   QSettings settings;
-  QString myDisplayUnitsTxt = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-
-  QGis::UnitType displayUnits;
-  if ( myDisplayUnitsTxt == "feet" )
-  {
-    displayUnits = QGis::Feet;
-  }
-  else
-  {
-    displayUnits = QGis::Meters;
-  }
+  QGis::UnitType displayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
 
   calc.convertMeasurement( measure, myUnits, displayUnits, isArea );
   u = myUnits;

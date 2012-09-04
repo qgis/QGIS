@@ -52,7 +52,7 @@ void TestQgsDistanceArea::basic()
   QgsDistanceArea daA;
   double resultA, resultB, resultC;
 
-  daA.setEllipsoid( "NONE" );
+  daA.setEllipsoid( GEO_NONE );
   resultA = daA.measureLine( p1, p2 );
   QCOMPARE( resultA, 5.0 );
 
@@ -139,7 +139,7 @@ void TestQgsDistanceArea::unit_conversions()
 {
   // Do some very simple test of conversion and units
   QgsDistanceArea myDa;
-  myDa.setEllipsoidalMode( "NONE" );
+  myDa.setEllipsoidalMode( false );
 
   double inputValue;
   QGis::UnitType inputUnit;
