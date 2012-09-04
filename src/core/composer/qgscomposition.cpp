@@ -60,13 +60,7 @@ QgsComposition::QgsComposition():
 QgsComposition::~QgsComposition()
 {
   removePaperItems();
-
-  QSet<QgsComposerMultiFrame*>::iterator multiFrameIt = mMultiFrames.begin();
-  for ( ; multiFrameIt != mMultiFrames.end(); ++multiFrameIt )
-  {
-    delete *multiFrameIt;
-  }
-  mMultiFrames.clear();
+  deleteAndRemoveMultiFrames();
 
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
@@ -317,6 +311,33 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
   updatePaperItems();
+  return true;
+}
+
+bool QgsComposition::loadFromTemplate( const QDomDocument& doc, bool addUndoCommands )
+{
+  //delete multiframes and its items
+  deleteAndRemoveMultiFrames();
+
+  //delete all other items
+  clear();
+  mPages.clear();
+
+  //read general settings
+  QDomElement compositionElem = doc.documentElement().firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    return false;
+  }
+
+  bool ok = readXML( compositionElem, doc );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  //addItemsFromXML
+  addItemsFromXML( doc.documentElement(), doc, 0, addUndoCommands, 0 );
   return true;
 }
 
@@ -1372,6 +1393,16 @@ void QgsComposition::removePaperItems()
     delete mPages.at( i );
   }
   mPages.clear();
+}
+
+void QgsComposition::deleteAndRemoveMultiFrames()
+{
+  QSet<QgsComposerMultiFrame*>::iterator multiFrameIt = mMultiFrames.begin();
+  for ( ; multiFrameIt != mMultiFrames.end(); ++multiFrameIt )
+  {
+    delete *multiFrameIt;
+  }
+  mMultiFrames.clear();
 }
 
 void QgsComposition::exportAsPDF( const QString& file )

@@ -107,6 +107,8 @@ class QgsComposition: QGraphicsScene
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
 
+    bool loadFromTemplate( const QDomDocument& doc, bool addUndoCommands = false );
+
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. <Composer> or <ComposerItemClipboard>
       @param doc xml document
