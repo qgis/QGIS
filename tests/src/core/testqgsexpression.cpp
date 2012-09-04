@@ -410,6 +410,17 @@ class TestQgsExpression: public QObject
       QCOMPARE( v2.toInt(), 101 );
     }
 
+    void eval_scale()
+    {
+      QgsExpression exp( "$scale" );
+      QVariant v1 = exp.evaluate();
+      QCOMPARE( v1.toInt(), 0 );
+
+      exp.setScale( 100.00 );
+      QVariant v2 = exp.evaluate();
+      QCOMPARE( v2.toDouble(), 100.00 );
+    }
+
     void eval_feature_id()
     {
       QgsFeature f( 100 );
