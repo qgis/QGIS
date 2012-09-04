@@ -2951,7 +2951,7 @@ namespace pal
     for ( i = 0; i < nbft; i++ )
       if ( sol->s[i] != -1 )
         solList->push_back( labelpositions[sol->s[i]] ); // active labels
-      else if ( returnInactive )
+      else if ( returnInactive || labelpositions[featStartId[i]]->getFeaturePart()->getLayer()->getDisplayAll() )
         solList->push_back( labelpositions[featStartId[i]] ); // unplaced label
 
     return solList;

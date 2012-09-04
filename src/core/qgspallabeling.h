@@ -144,6 +144,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int decimals;
     bool plusSign;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
+    bool displayAll;  // if true, all features will be labelled even though overlaps occur
     bool mergeLines;
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring

@@ -162,6 +162,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   sliderPriority->setValue( lyr.priority );
   chkNoObstacle->setChecked( !lyr.obstacle );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
+  mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
@@ -348,6 +349,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.priority = sliderPriority->value();
   lyr.obstacle = !chkNoObstacle->isChecked();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
+  lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();
   if ( chkScaleBasedVisibility->isChecked() )
   {

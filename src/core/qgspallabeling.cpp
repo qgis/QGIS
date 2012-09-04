@@ -167,6 +167,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   decimals = 3;
   plusSign = false;
   labelPerPart = false;
+  displayAll = false;
   mergeLines = false;
   minFeatureSize = 0.0;
   vectorScaleFactor = 1.0;
@@ -212,6 +213,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   decimals = s.decimals;
   plusSign = s.plusSign;
   labelPerPart = s.labelPerPart;
+  displayAll = s.displayAll;
   mergeLines = s.mergeLines;
   minFeatureSize = s.minFeatureSize;
   vectorScaleFactor = s.vectorScaleFactor;
@@ -392,6 +394,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   decimals = layer->customProperty( "labeling/decimals" ).toInt();
   plusSign = layer->customProperty( "labeling/plussign" ).toInt();
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
+  displayAll = layer->customProperty( "labeling/displayAll", QVariant( false ) ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
@@ -448,6 +451,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/decimals", decimals );
   layer->setCustomProperty( "labeling/plussign", plusSign );
   layer->setCustomProperty( "labeling/labelPerPart", labelPerPart );
+  layer->setCustomProperty( "labeling/displayAll", displayAll );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
@@ -1114,7 +1118,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
   Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
                              min_scale, max_scale, arrangement,
-                             METER, priority, lyr.obstacle, true, true );
+                             METER, priority, lyr.obstacle, true, true,
+                             lyr.displayAll );
 
   if ( lyr.placementFlags )
     l->setArrangementFlags( lyr.placementFlags );
