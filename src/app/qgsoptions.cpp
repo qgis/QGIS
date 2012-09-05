@@ -1207,8 +1207,8 @@ void QgsOptions::populateEllipsoidList()
 
   myItem.acronym = GEO_NONE;
   myItem.description =  tr( GEO_NONE_DESC );
-  myItem.semiMajor = 1 / 0.0; // Should return +Inf
-  myItem.semiMinor = 1 / 0.0; // Should reutrn +Inf;
+  myItem.semiMajor = 0.0;
+  myItem.semiMinor = 0.0;
   mEllipsoidList.append( myItem );
 
   myItem.acronym = QString( "PARAMETER:6370997:6370997" );
@@ -1256,7 +1256,7 @@ void QgsOptions::populateEllipsoidList()
       else if ( para2.left( 3 ) == "rf=" )
       {
         double invFlattening = para2.mid( 3 ).toDouble();
-        if ( invFlattening > 0.0 )
+        if ( invFlattening != 0.0 )
         {
           myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );
         }
