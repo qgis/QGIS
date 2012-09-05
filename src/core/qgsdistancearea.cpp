@@ -130,6 +130,28 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
     return true;
   }
 
+  // Check if we have a custom projection, and set from text string.
+  // Format is "PARAMETER:<semi-major axis>:<semi minor axis>
+  // Numbers must be with (optional) decimal point and no other separators (C locale)
+  // Distances in meters.  Flattening is calculated.
+  if ( ellipsoid.startsWith( "PARAMETER" ) )
+  {
+    QStringList paramList = ellipsoid.split( ":" );
+    bool semiMajorOk, semiMinorOk;
+    double semiMajor = paramList[1].toDouble( & semiMajorOk );
+    double semiMinor = paramList[2].toDouble( & semiMinorOk );
+    if ( semiMajorOk && semiMinorOk )
+    {
+      return setEllipsoid( semiMajor, semiMinor );
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  // Continue with PROJ.4 list of ellipsoids.
+
   //check the db is available
   myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
   if ( myResult )
@@ -213,7 +235,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 // Also, b = a-(a/invf)
 bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
 {
-  mEllipsoid = "PARAMETER";
+  mEllipsoid = QString( "PARAMETER:%1:%2" ).arg( semiMajor ).arg( semiMinor );
   mSemiMajor = semiMajor;
   mSemiMinor = semiMinor;
   mInvFlattening = mSemiMajor / ( mSemiMajor - mSemiMinor );
