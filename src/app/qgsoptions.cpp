@@ -1706,6 +1706,8 @@ void QgsOptions::updateEllipsoidUI( int newIndex )
   mEllipsoidIndex = newIndex;
   leSemiMajor->setEnabled( false );
   leSemiMinor->setEnabled( false );
+  leSemiMajor->setText( "" );
+  leSemiMinor->setText( "" );
   if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
   {
     cmbEllipsoid->setEnabled( true );
@@ -1721,13 +1723,15 @@ void QgsOptions::updateEllipsoidUI( int newIndex )
       leSemiMinor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
     }
     cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
+    if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
+    {
+      leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
+      leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
+    }
   }
   else
   {
     cmbEllipsoid->setEnabled( false );
     cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
   }
-  leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
-  leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
-
 }
