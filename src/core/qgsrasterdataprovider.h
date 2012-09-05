@@ -76,7 +76,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     {
       UndefinedColorInterpretation = 0,
       /*! Greyscale */                                      GrayIndex = 1,
-      /*! Paletted (see associated color table) */          PaletteIndex = 2,
+      /*! Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
       /*! Red band of RGBA image */                         RedBand = 3,
       /*! Green band of RGBA image */                       GreenBand = 4,
       /*! Blue band of RGBA image */                        BlueBand = 5,
@@ -91,7 +91,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       /*! Y Luminance */                                    YCbCr_YBand = 14,
       /*! Cb Chroma */                                      YCbCr_CbBand = 15,
       /*! Cr Chroma */                                      YCbCr_CrBand = 16,
-      /*! Max current value */                              ColorInterpretationMax = 16
+      /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17,
+      /*! Max current value */                              ColorInterpretationMax = 17
     };
 
     // Progress types

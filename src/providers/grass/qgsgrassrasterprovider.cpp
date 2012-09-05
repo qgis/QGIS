@@ -493,7 +493,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   QList<QgsColorRampShader::ColorRampItem> ct = colorTable( bandNo );
   if ( ct.size() > 0 )
   {
-    return QgsRasterDataProvider::PaletteIndex;
+    return QgsRasterDataProvider::ContinuousPalette;
   }
   return QgsRasterDataProvider::GrayIndex;
 }
