@@ -26,7 +26,7 @@ class QImage;
  * write an image and compare it to an expected result
  * or render time.
  */
-class QgsRenderChecker
+class CORE_EXPORT QgsRenderChecker
 {
   public:
 

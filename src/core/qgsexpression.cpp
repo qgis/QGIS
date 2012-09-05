@@ -775,13 +775,13 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
   {
     double number = getDoubleValue( values.at( 0 ), parent );
     double scaler = pow( 10.0, getIntValue( values.at( 1 ), parent ) );
-    return QVariant( round( number * scaler ) / scaler );
+    return QVariant( qRound( number * scaler ) / scaler );
   }
 
   if ( values.length() == 1 )
   {
     double number = getIntValue( values.at( 0 ), parent );
-    return QVariant( round( number ) ).toInt();
+    return QVariant( qRound( number ) ).toInt();
   }
 
   return QVariant();
