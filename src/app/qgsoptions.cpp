@@ -1207,8 +1207,8 @@ void QgsOptions::populateEllipsoidList()
 
   myItem.acronym = GEO_NONE;
   myItem.description =  tr( GEO_NONE_DESC );
-  myItem.semiMajor = 0.0;
-  myItem.semiMinor = 0.0;
+  myItem.semiMajor = 1 / 0.0; // Should return +Inf
+  myItem.semiMinor = 1 / 0.0; // Should reutrn +Inf;
   mEllipsoidList.append( myItem );
 
   myItem.acronym = QString( "PARAMETER:6370997:6370997" );
@@ -1275,115 +1275,6 @@ void QgsOptions::populateEllipsoidList()
   {
     cmbEllipsoid->addItem( i.description );
   }
-}
-
-void QgsOptions::getEllipsoidList()
-{
-  // (copied from qgscustomprojectiondialog.cpp)
-
-  //
-  // Populate the ellipsoid combo
-  //
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-
-
-  cmbEllipsoid->addItem( tr( GEO_NONE_DESC ) );
-  cmbEllipsoid->addItem( tr( "Parameters:" ) );
-
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select * from tbl_ellipsoid order by name";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      cmbEllipsoid->addItem(( const char * )sqlite3_column_text( myPreparedStatement, 1 ) );
-    }
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-}
-
-QString QgsOptions::getEllipsoidAcronym( QString theEllipsoidName )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName = GEO_NONE;
-
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString(( const char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-
-QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-
-  myName = tr( GEO_NONE_DESC );
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == 0 );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString(( const char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
 }
 
 QStringList QgsOptions::i18nList()
@@ -1830,13 +1721,13 @@ void QgsOptions::updateEllipsoidUI( int newIndex )
       leSemiMinor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
     }
     cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
-    leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
-    leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
   }
   else
   {
     cmbEllipsoid->setEnabled( false );
     cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
   }
+  leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
+  leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
 
 }

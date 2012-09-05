@@ -184,15 +184,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     /* Update ComboBox accorindg to the selected new index
      * Also sets the new selected Ellipsoid.
      * @note added in 2.0
-     */     
+     */
     void updateEllipsoidUI( int newIndex );
-
-  protected:
-    //! Populates combo box with ellipsoids
-    void getEllipsoidList();
-
-    QString getEllipsoidAcronym( QString theEllipsoidName );
-    QString getEllipsoidName( QString theEllipsoidAcronym );
 
   private:
     QStringList i18nList();
@@ -203,7 +196,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     bool mLoadedGdalDriverList;
 
     // List for all ellispods, also None and Custom
-    struct EllipsoidDefs {
+    struct EllipsoidDefs
+    {
       QString acronym;
       QString description;
       double semiMajor;
@@ -214,7 +208,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
-    
+
     static const char * GEO_NONE_DESC;
 };
 
