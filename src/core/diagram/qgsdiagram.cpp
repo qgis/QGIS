@@ -35,7 +35,7 @@ QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSetting
 {
   if ( s.sizeType == QgsDiagramSettings::MM )
   {
-    return QSizeF( size.width() * c.scaleFactor() * c.rasterScaleFactor(), size.height() * c.scaleFactor() * c.rasterScaleFactor() );
+    return QSizeF( size.width() * c.scaleFactor(), size.height() * c.scaleFactor() );
   }
   else
   {
