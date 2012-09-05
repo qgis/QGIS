@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>810</width>
+    <width>808</width>
     <height>674</height>
    </rect>
   </property>
@@ -33,7 +33,7 @@
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <property name="iconSize">
       <size>
@@ -66,7 +66,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>772</width>
+            <width>770</width>
             <height>1062</height>
            </rect>
           </property>
@@ -1003,7 +1003,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>1012</width>
+            <width>1010</width>
             <height>815</height>
            </rect>
           </property>
@@ -1518,8 +1518,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>772</width>
-            <height>724</height>
+            <width>770</width>
+            <height>757</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1585,131 +1585,6 @@
              </layout>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QGroupBox" name="groupBox_6">
-             <property name="title">
-              <string>Measure tool</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_21">
-              <item row="1" column="0">
-               <widget class="QLabel" name="textLabel1_8">
-                <property name="text">
-                 <string>Ellipsoid for distance calculations</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="cmbEllipsoid"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="textLabel1_10">
-                <property name="text">
-                 <string>Rubberband color</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QgsColorButton" name="pbnMeasureColor">
-                <property name="minimumSize">
-                 <size>
-                  <width>100</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2" colspan="2">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>191</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="textLabel1_11">
-                <property name="text">
-                 <string>Preferred measurements units</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QRadioButton" name="radMeters">
-                <property name="text">
-                 <string>Meters</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="2">
-               <widget class="QRadioButton" name="radFeet">
-                <property name="text">
-                 <string>Feet</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="mAngleUnitsLabel">
-                <property name="text">
-                 <string>Preferred angle units</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QRadioButton" name="mDegreesRadioButton">
-                <property name="text">
-                 <string>Degrees</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="2">
-               <widget class="QRadioButton" name="mRadiansRadioButton">
-                <property name="text">
-                 <string>Radians</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="3">
-               <widget class="QRadioButton" name="mGonRadioButton">
-                <property name="text">
-                 <string>Gon</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Decimal places</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="mDecimalPlacesSpinBox"/>
-              </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_13">
-                <property name="text">
-                 <string>Keep base unit</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item row="2" column="0">
             <widget class="QGroupBox" name="groupBox_10">
              <property name="title">
@@ -1719,30 +1594,6 @@
               <property name="margin">
                <number>11</number>
               </property>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="cmbWheelAction">
-                <item>
-                 <property name="text">
-                  <string>Zoom</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Zoom and recenter</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Zoom to mouse cursor</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Nothing</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_3">
                 <property name="text">
@@ -1768,6 +1619,30 @@
                 <property name="value">
                  <double>2.000000000000000</double>
                 </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="cmbWheelAction">
+                <item>
+                 <property name="text">
+                  <string>Zoom</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zoom and recenter</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Zoom to mouse cursor</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Nothing</string>
+                 </property>
+                </item>
                </widget>
               </item>
              </layout>
@@ -1857,6 +1732,151 @@
              </layout>
             </widget>
            </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="title">
+              <string>Measure tool</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_21">
+              <item row="2" column="3">
+               <widget class="QLabel" name="label_42">
+                <property name="text">
+                 <string>Semi-minor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="textLabel1_10">
+                <property name="text">
+                 <string>Rubberband color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QgsColorButton" name="pbnMeasureColor">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="textLabel1_11">
+                <property name="text">
+                 <string>Preferred measurements units</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QRadioButton" name="radMeters">
+                <property name="text">
+                 <string>Meters</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2">
+               <widget class="QRadioButton" name="radFeet">
+                <property name="text">
+                 <string>Feet</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="0">
+               <widget class="QLabel" name="mAngleUnitsLabel">
+                <property name="text">
+                 <string>Preferred angle units</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QRadioButton" name="mDegreesRadioButton">
+                <property name="text">
+                 <string>Degrees</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="2">
+               <widget class="QRadioButton" name="mRadiansRadioButton">
+                <property name="text">
+                 <string>Radians</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Decimal places</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QSpinBox" name="mDecimalPlacesSpinBox"/>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Keep base unit</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QCheckBox" name="mKeepBaseUnitCheckBox">
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLineEdit" name="leSemiMajor"/>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="label_41">
+                <property name="text">
+                 <string>Semi-major</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="3">
+               <widget class="QRadioButton" name="mGonRadioButton">
+                <property name="text">
+                 <string>Gon</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="QLineEdit" name="leSemiMinor"/>
+              </item>
+              <item row="1" column="1" colspan="4">
+               <widget class="QComboBox" name="cmbEllipsoid"/>
+              </item>
+              <item row="1" column="0" rowspan="2">
+               <widget class="QLabel" name="textLabel1_8">
+                <property name="text">
+                 <string>Ellipsoid for distance calculations</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2" colspan="3">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>191</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1888,7 +1908,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>788</width>
+            <width>786</width>
             <height>585</height>
            </rect>
           </property>
@@ -1969,7 +1989,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>772</width>
+            <width>770</width>
             <height>606</height>
            </rect>
           </property>
@@ -2345,7 +2365,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>788</width>
+            <width>786</width>
             <height>585</height>
            </rect>
           </property>
@@ -2532,7 +2552,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>788</width>
+            <width>786</width>
             <height>585</height>
            </rect>
           </property>
@@ -2629,7 +2649,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>788</width>
+            <width>786</width>
             <height>585</height>
            </rect>
           </property>
@@ -2920,9 +2940,6 @@
   <tabstop>radFeet</tabstop>
   <tabstop>mDegreesRadioButton</tabstop>
   <tabstop>mRadiansRadioButton</tabstop>
-  <tabstop>mGonRadioButton</tabstop>
-  <tabstop>cmbWheelAction</tabstop>
-  <tabstop>spinZoomFactor</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mOverlayAlgorithmComboBox</tabstop>
   <tabstop>scrollArea_5</tabstop>
