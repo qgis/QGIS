@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsdiagram.cpp
+    qgstextdiagram.cpp
     ---------------------
     begin                : March 2011
     copyright            : (C) 2011 by Marco Hugentobler
@@ -12,51 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdiagram.h"
+#include "qgstextdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsrendercontext.h"
 
 #include <QPainter>
-
-void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsRenderContext& c )
-{
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    pen.setWidthF( s.penWidth * c.scaleFactor() );
-  }
-  else
-  {
-    pen.setWidthF( s.penWidth / c.mapToPixel().mapUnitsPerPixel() );
-  }
-}
-
-QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
-{
-  Q_UNUSED( size );
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    return QSizeF( s.size.width() * c.scaleFactor(), s.size.height() * c.scaleFactor() );
-  }
-  else
-  {
-    return QSizeF( s.size.width() / c.mapToPixel().mapUnitsPerPixel(), s.size.height() / c.mapToPixel().mapUnitsPerPixel() );
-  }
-}
-
-QFont QgsDiagram::scaledFont( const QgsDiagramSettings& s, const QgsRenderContext& c )
-{
-  QFont f = s.font;
-  if ( s.sizeType == QgsDiagramSettings::MM )
-  {
-    f.setPixelSize( s.font.pointSizeF() * 0.376 * c.scaleFactor() );
-  }
-  else
-  {
-    f.setPixelSize( s.font.pointSizeF() / c.mapToPixel().mapUnitsPerPixel() );
-  }
-
-  return f;
-}
 
 QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
 {
@@ -68,6 +28,54 @@ QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
 
 QgsTextDiagram::~QgsTextDiagram()
 {
+}
+
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+{
+    QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
+  if ( attIt == attributes.constEnd() )
+  {
+    return QSizeF(); //zero size if attribute is missing
+  }
+  
+  double scaledValue = attIt.value().toDouble();
+  double scaledLowerValue = is.lowerValue;
+  double scaledUpperValue = is.upperValue;
+  double scaledLowerSizeWidth = is.lowerSize.width();
+  double scaledLowerSizeHeight = is.lowerSize.height();
+  double scaledUpperSizeWidth = is.upperSize.width();
+  double scaledUpperSizeHeight = is.upperSize.height();
+
+  // interpolate the squared value if scale by area
+  if ( s.scaleByArea )
+  {
+    scaledValue = sqrt( scaledValue );
+    scaledLowerValue = sqrt( scaledLowerValue );
+    scaledUpperValue = sqrt( scaledUpperValue );
+    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
+    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
+    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
+    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
+  }
+
+  //interpolate size
+  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
+
+  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
+                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
+
+  // Scale, if extension is smaller than the specified minimum
+  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
+  {
+    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
+  }
+
+  return size;
+}
+
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+{
+  return s.size;
 }
 
 void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
@@ -197,13 +205,28 @@ void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext
   for ( int i = 0; i < textPositions.size(); ++i )
   {
     QString val = att[ s.categoryIndices.at( i )].toString();
-    //find out dimensions
-    double textHeight = fontMetrics.height();
+    //find out dimesions
     double textWidth = fontMetrics.width( val );
+    double textHeight = fontMetrics.height();
+
     mPen.setColor( s.categoryColors.at( i ) );
     p->setPen( mPen );
     QPointF position = textPositions.at( i );
-    p->drawText( QPointF( position.x() - textWidth / 2.0, position.y() + textHeight / 2.0 ), val );
+    
+    // Calculate vertical placement
+    double xOffset = 0;
+
+    switch( s.labelPlacementMethod )
+    {
+      case QgsDiagramSettings::Height:
+        xOffset = textHeight / 2.0;
+        break;
+
+      case QgsDiagramSettings::XHeight:
+        xOffset = fontMetrics.xHeight();
+        break;
+    }
+    p->drawText( QPointF( position.x() - textWidth / 2.0, position.y() + xOffset ), val );
   }
 }
 
@@ -235,64 +258,5 @@ void QgsTextDiagram::lineEllipseIntersection( const QPointF& lineStart, const QP
     {
       result.push_back( QPointF( lineStart.x() + x21 * u2, lineStart.y() + y21 * u2 ) );
     }
-  }
-}
-
-QgsPieDiagram::QgsPieDiagram()
-{
-  mCategoryBrush.setStyle( Qt::SolidPattern );
-  mPen.setStyle( Qt::SolidLine );
-}
-
-QgsPieDiagram::~QgsPieDiagram()
-{
-}
-
-void QgsPieDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
-{
-  QPainter* p = c.painter();
-  if ( !p )
-  {
-    return;
-  }
-
-  //get sum of values
-  QList<double> values;
-  double currentVal = 0;
-  double valSum = 0;
-
-  QList<int>::const_iterator catIt = s.categoryIndices.constBegin();
-  for ( ; catIt != s.categoryIndices.constEnd(); ++catIt )
-  {
-    currentVal = att[*catIt].toDouble();
-    values.push_back( currentVal );
-    valSum += currentVal;
-  }
-
-  //draw the slices
-  double totalAngle = 0;
-  double currentAngle;
-
-  //convert from mm / map units to painter units
-  QSizeF spu = sizePainterUnits( s.size, s, c );
-  double w = spu.width();
-  double h = spu.height();
-
-  double baseX = position.x();
-  double baseY = position.y() - h;
-
-  mPen.setColor( s.penColor );
-  setPenWidth( mPen, s, c );
-  p->setPen( mPen );
-
-  QList<double>::const_iterator valIt = values.constBegin();
-  QList< QColor >::const_iterator colIt = s.categoryColors.constBegin();
-  for ( ; valIt != values.constEnd(); ++valIt, ++colIt )
-  {
-    currentAngle =  *valIt / valSum * 360 * 16;
-    mCategoryBrush.setColor( *colIt );
-    p->setBrush( mCategoryBrush );
-    p->drawPie( baseX, baseY, w, h, totalAngle, currentAngle );
-    totalAngle += currentAngle;
   }
 }

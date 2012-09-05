@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>298</height>
+    <width>435</width>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -207,14 +207,14 @@
    <item>
     <widget class="QCheckBox" name="chkShowAllLabels">
      <property name="text">
-      <string>Show all labels for all layers (with collisions)</string>
+      <string>Show all labels and features (i.e. including colliding objects)</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="chkShowCandidates">
      <property name="text">
-      <string>Show label candidates (for debugging)</string>
+      <string>Show candidates (for debugging)</string>
      </property>
     </widget>
    </item>

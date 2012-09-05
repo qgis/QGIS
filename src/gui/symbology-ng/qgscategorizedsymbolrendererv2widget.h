@@ -48,6 +48,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
+    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
     void showSymbolLevels();
 

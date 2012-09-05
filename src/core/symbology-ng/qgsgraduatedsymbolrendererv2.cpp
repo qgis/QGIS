@@ -140,6 +140,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     mMode( Custom ),
     mSourceSymbol( NULL ),
     mSourceColorRamp( NULL ),
+    mScaleMethod( QgsSymbolV2::ScaleArea ),
     mRotationFieldIdx( -1 ),
     mSizeScaleFieldIdx( -1 )
 {
@@ -201,6 +202,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
       markerSymbol->setAngle( rotation );
     if ( mSizeScaleFieldIdx != -1 )
       markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
+    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -332,6 +334,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone()
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
+  r->setScaleMethod( scaleMethod() );
   return r;
 }
 
@@ -926,7 +929,10 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
+  {
     r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
+    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  }
 
   // TODO: symbol levels
   return r;
@@ -1006,6 +1012,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   sizeScaleElem.setAttribute( "field", mSizeScaleField );
+  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   return rendererElem;

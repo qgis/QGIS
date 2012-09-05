@@ -23,6 +23,7 @@
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor(0,0,0)
 #define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
+#define DEFAULT_SCALE_METHOD              QgsSymbolV2::ScaleArea
 
 #include <QPen>
 #include <QBrush>
@@ -37,7 +38,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
                                   QColor color = DEFAULT_SIMPLEMARKER_COLOR,
                                   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR,
                                   double size = DEFAULT_SIMPLEMARKER_SIZE,
-                                  double angle = DEFAULT_SIMPLEMARKER_ANGLE );
+                                  double angle = DEFAULT_SIMPLEMARKER_ANGLE,
+                                  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 
     // static stuff
 
