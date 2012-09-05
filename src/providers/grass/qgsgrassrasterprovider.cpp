@@ -301,16 +301,31 @@ double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
   return mInfo["MAX_VALUE"].toDouble();
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
 {
+  QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
   QgsRasterBandStats myRasterBandStats;
-  myRasterBandStats.bandName = generateBandName( theBandNo );
-  myRasterBandStats.bandNumber = theBandNo;
+  initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
+
+  foreach ( QgsRasterBandStats stats, mStatistics )
+  {
+    if ( stats.contains( myRasterBandStats ) )
+    {
+      QgsDebugMsg( "Using cached statistics." );
+      return stats;
+    }
+  }
+
+  QgsRectangle extent = myRasterBandStats.extent;
+
+  int sampleRows = myRasterBandStats.height;
+  int sampleCols = myRasterBandStats.width;
 
   // With stats we have to be careful about timeout, empirical value,
   // 0.001 / cell should be sufficient using 0.005 to be sure + constant (ms)
   int timeout = 30000 + 0.005 * xSize() * ySize();
-  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, "stats", timeout );
+
+  QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, mMapset, mMapName, QgsGrass::Raster, "stats", extent, sampleRows, sampleCols, timeout );
 
   if ( info.isEmpty() )
   {
@@ -319,18 +334,24 @@ QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo )
 
   myRasterBandStats.sum = info["SUM"].toDouble();
   myRasterBandStats.elementCount = info["COUNT"].toInt();
-  myRasterBandStats.minimumValue = minimumValue( theBandNo );
-  myRasterBandStats.maximumValue = maximumValue( theBandNo );
-  myRasterBandStats.range = maximumValue( theBandNo ) - minimumValue( theBandNo );
+  myRasterBandStats.minimumValue = info["MIN"].toDouble();
+  myRasterBandStats.maximumValue = info["MAX"].toDouble();
+  myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
   myRasterBandStats.sumOfSquares = info["SQSUM"].toDouble();
   myRasterBandStats.mean = info["MEAN"].toDouble();
   myRasterBandStats.stdDev = info["STDEV"].toDouble();
 
-  QgsDebugMsg( QString( "sum = %1" ).arg( myRasterBandStats.sum ) );
+  QgsDebugMsg( QString( "min = %1" ).arg( myRasterBandStats.minimumValue ) );
+  QgsDebugMsg( QString( "max = %1" ).arg( myRasterBandStats.maximumValue ) );
   QgsDebugMsg( QString( "count = %1" ).arg( myRasterBandStats.elementCount ) );
   QgsDebugMsg( QString( "stdev = %1" ).arg( myRasterBandStats.stdDev ) );
 
-  myRasterBandStats.statsGathered = true;
+  myRasterBandStats.statsGathered = QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                                    QgsRasterBandStats::Range | QgsRasterBandStats::Mean |
+                                    QgsRasterBandStats::Sum | QgsRasterBandStats::SumOfSquares |
+                                    QgsRasterBandStats::StdDev;
+
+  mStatistics.append( myRasterBandStats );
   return myRasterBandStats;
 }
 

@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <float.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
@@ -35,7 +36,7 @@
 int main( int argc, char **argv )
 {
   struct GModule *module;
-  struct Option *info_opt, *rast_opt, *vect_opt, *coor_opt;
+  struct Option *info_opt, *rast_opt, *vect_opt, *coor_opt, *north_opt, *south_opt, *east_opt, *west_opt, *rows_opt, *cols_opt;
   struct Cell_head window;
 
   /* Initialize the GIS calls */
@@ -62,6 +63,30 @@ int main( int argc, char **argv )
   coor_opt->key = "coor";
   coor_opt->type = TYPE_DOUBLE;
   coor_opt->multiple = YES;
+
+  north_opt = G_define_option();
+  north_opt->key = "north";
+  north_opt->type = TYPE_STRING;
+
+  south_opt = G_define_option();
+  south_opt->key = "south";
+  south_opt->type = TYPE_STRING;
+
+  east_opt = G_define_option();
+  east_opt->key = "east";
+  east_opt->type = TYPE_STRING;
+
+  west_opt = G_define_option();
+  west_opt->key = "west";
+  west_opt->type = TYPE_STRING;
+
+  rows_opt = G_define_option();
+  rows_opt->key = "rows";
+  rows_opt->type = TYPE_INTEGER;
+
+  cols_opt = G_define_option();
+  cols_opt->key = "cols";
+  cols_opt->type = TYPE_INTEGER;
 
   if ( G_parser( argc, argv ) )
     exit( EXIT_FAILURE );
@@ -249,6 +274,8 @@ int main( int argc, char **argv )
       int row, col;
       void *ptr;
       double val;
+      double min = DBL_MAX;
+      double max = -DBL_MAX;
       double sum = 0; // sum of values
       int count = 0; // count of non null values
       double mean = 0;
@@ -256,6 +283,13 @@ int main( int argc, char **argv )
       double stdev = 0; // standard deviation
 
       G_get_cellhd( rast_opt->answer, "", &window );
+      window.north = atof( north_opt->answer );
+      window.south = atof( south_opt->answer );
+      window.east = atof( east_opt->answer );
+      window.west = atof( west_opt->answer );
+      window.rows = ( int ) atoi( rows_opt->answer );
+      window.cols = ( int ) atoi( cols_opt->answer );
+
       G_set_window( &window );
       fd = G_open_cell_old( rast_opt->answer, "" );
 
@@ -306,6 +340,8 @@ int main( int argc, char **argv )
           }
           if ( ! G_is_null_value( ptr, rast_type ) )
           {
+            if ( val < min ) min = val;
+            if ( val > max ) max = val;
             sum += val;
             count++;
             squares_sum += pow( val, 2 );
@@ -316,11 +352,13 @@ int main( int argc, char **argv )
       squares_sum -= count * pow( mean, 2 );
       stdev = sqrt( squares_sum / ( count - 1 ) );
 
-      fprintf( stdout, "SUM:%e\n", sum );
-      fprintf( stdout, "MEAN:%e\n", mean );
+      fprintf( stdout, "MIN:%.17e\n", min );
+      fprintf( stdout, "MAX:%.17e\n", max );
+      fprintf( stdout, "SUM:%.17e\n", sum );
+      fprintf( stdout, "MEAN:%.17e\n", mean );
       fprintf( stdout, "COUNT:%d\n", count );
-      fprintf( stdout, "STDEV:%e\n", stdev );
-      fprintf( stdout, "SQSUM:%e\n", squares_sum );
+      fprintf( stdout, "STDEV:%.17e\n", stdev );
+      fprintf( stdout, "SQSUM:%.17e\n", squares_sum );
 
       G_close_cell( fd );
     }

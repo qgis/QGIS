@@ -25,6 +25,7 @@ extern "C"
 
 #include <stdexcept>
 #include "qgsexception.h"
+#include <qgsrectangle.h>
 #include <QProcess>
 #include <QString>
 #include <QMap>
@@ -192,9 +193,21 @@ class QgsGrass
     // ! Run a GRASS module in any gisdbase/location
     static GRASS_LIB_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments, int timeOut = 30000 );
 
-    // ! Get info string from qgis.g.info module
+    /** \brief Get info string from qgis.g.info module
+     * @param info info type
+     * @gisdbase GISBASE path
+     * @location location name
+     * @mapset mapset name
+     * @map map name
+     * @type map type
+     * @x x coordinate for query
+     * @y y coordinate for query
+     * @extent extent for statistics
+     * @sampleSize sample size for statistics
+     * @timeOut timeout
+     */
     static GRASS_LIB_EXPORT QString getInfo( QString info, QString gisdbase,
-        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0, int timeOut = 30000 );
+        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0, QgsRectangle extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
 
     // ! Get location projection
     static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
@@ -211,8 +224,9 @@ class QgsGrass
                                        QString mapset, QString map, int *cols, int *rows );
 
     // ! Get raster info, info is either 'info' or 'stats'
+    //   extent and sampleSize are stats options
     static GRASS_LIB_EXPORT QHash<QString, QString> info( QString gisdbase, QString location,
-        QString mapset, QString map, MapType type, QString info = "info", int timeOut = 30000 );
+        QString mapset, QString map, MapType type, QString info = "info", QgsRectangle extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
 
     // ! List of Color
     static GRASS_LIB_EXPORT QList<QgsGrass::Color> colors( QString gisdbase, QString location,
