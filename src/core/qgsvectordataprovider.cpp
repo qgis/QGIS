@@ -460,6 +460,11 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value
   return v;
 }
 
+static bool _compareEncodings( const QString& s1, const QString& s2 )
+{
+  return s1.toLower() < s2.toLower();
+}
+
 const QStringList &QgsVectorDataProvider::availableEncodings()
 {
   if ( smEncodings.isEmpty() )
@@ -468,7 +473,6 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
     {
       smEncodings << codec;
     }
-    qSort( smEncodings );
 #if 0
     smEncodings << "BIG5";
     smEncodings << "BIG5-HKSCS";
@@ -517,6 +521,9 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
     smEncodings << "System";
 #endif
   }
+
+  // Do case-insensitive sorting of encodings
+  qSort( smEncodings.begin(), smEncodings.end(), _compareEncodings );
 
   return smEncodings;
 }
