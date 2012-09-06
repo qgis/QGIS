@@ -79,7 +79,6 @@ TARGET_LINK_LIBRARIES(qgis.d.rast
   ${GRASS_LIBRARY_gis}
   ${GRASS_LIBRARY_datetime}
   ${GDAL_LIBRARY}
-  m
 )
 
 #
