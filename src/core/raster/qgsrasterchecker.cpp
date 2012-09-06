@@ -37,7 +37,7 @@ QgsRasterChecker::QgsRasterChecker( ) :
   mErrMsgStyle = "color: #ff0000;";
 }
 
-bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri, 
+bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
                                 QString theExpectedKey, QString theExpectedUri )
 {
   bool ok = true;
@@ -46,14 +46,14 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   QgsRasterDataProvider* verifiedProvider = QgsRasterLayer::loadProvider( theVerifiedKey, theVerifiedUri );
   if ( !verifiedProvider || !verifiedProvider->isValid() )
   {
-    error( QString( "Cannot load provider %1 with URI: %2" ).arg( theVerifiedKey).arg( theVerifiedUri), mReport );
+    error( QString( "Cannot load provider %1 with URI: %2" ).arg( theVerifiedKey ).arg( theVerifiedUri ), mReport );
     ok = false;
   }
 
   QgsRasterDataProvider* expectedProvider = QgsRasterLayer::loadProvider( theExpectedKey, theExpectedUri );
   if ( !expectedProvider || !expectedProvider->isValid() )
   {
-    error( QString( "Cannot load provider %1 with URI: %2" ).arg( theExpectedKey).arg( theExpectedUri ), mReport );
+    error( QString( "Cannot load provider %1 with URI: %2" ).arg( theExpectedKey ).arg( theExpectedUri ), mReport );
     ok = false;
   }
 
@@ -63,7 +63,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   mReport += QString( "Expected URI: %1<br>" ).arg( theExpectedUri.replace( "&", "&amp;" ) );
 
   mReport += "<br>";
-  mReport += QString("<table style='%1'>\n").arg( mTabStyle );
+  mReport += QString( "<table style='%1'>\n" ).arg( mTabStyle );
   mReport += compareHead();
 
   compare( "Band count", verifiedProvider->bandCount(), expectedProvider->bandCount(), mReport, ok );
@@ -86,7 +86,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   {
     bool bandOk = true;
     mReport += QString( "<h3>Band %1</h3>\n" ).arg( band );
-    mReport += QString("<table style='%1'>\n").arg( mTabStyle );
+    mReport += QString( "<table style='%1'>\n" ).arg( mTabStyle );
     mReport += compareHead();
 
     // Data types may differ (?)
@@ -132,9 +132,9 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
     mReport += "<table><tr>";
     mReport += "<td>Data comparison</td>";
-    mReport += QString( "<td style='%1 %2 border: 1px solid'>correct&nbsp;value</td>" ).arg( mCellStyle).arg( mOkStyle );
+    mReport += QString( "<td style='%1 %2 border: 1px solid'>correct&nbsp;value</td>" ).arg( mCellStyle ).arg( mOkStyle );
     mReport += "<td></td>";
-    mReport += QString( "<td style='%1 %2 border: 1px solid'>wrong&nbsp;value<br>expected value</td></tr>").arg( mCellStyle).arg( mErrStyle );
+    mReport += QString( "<td style='%1 %2 border: 1px solid'>wrong&nbsp;value<br>expected value</td></tr>" ).arg( mCellStyle ).arg( mErrStyle );
     mReport += "</tr></table>";
     mReport += "<br>";
 
@@ -148,7 +148,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
     verifiedProvider->readBlock( band, expectedProvider->extent(), width, height, verifiedData );
 
     // compare data values
-    QString htmlTable = QString("<table style='%1'>").arg( mTabStyle );
+    QString htmlTable = QString( "<table style='%1'>" ).arg( mTabStyle );
     for ( int row = 0; row < height; row ++ )
     {
       htmlTable += "<tr>";
@@ -169,7 +169,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
           allOk = false;
           valStr = QString( "%1<br>%2" ).arg( verifiedVal ).arg( expectedVal );
         }
-        htmlTable += QString( "<td style='%1 %2'>%3</td>" ).arg( mCellStyle).arg( cellOk ? mOkStyle : mErrStyle ).arg( valStr );
+        htmlTable += QString( "<td style='%1 %2'>%3</td>" ).arg( mCellStyle ).arg( cellOk ? mOkStyle : mErrStyle ).arg( valStr );
       }
       htmlTable += "</tr>";
     }
@@ -187,7 +187,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
 void QgsRasterChecker::error( QString theMessage, QString &theReport )
 {
-  theReport += QString( "<font style='%1'>Error: ").arg(mErrMsgStyle);
+  theReport += QString( "<font style='%1'>Error: " ).arg( mErrMsgStyle );
   theReport += theMessage;
   theReport += "</font>";
 }
@@ -202,7 +202,7 @@ double QgsRasterChecker::tolerance( double val, int places )
 QString QgsRasterChecker::compareHead()
 {
   QString html;
-  html += QString( "<tr><th style='%1'>Param name</th><th style='%1'>Verified value</th><th style='%1'>Eexpected value</th><th style='%1'>Difference</th><th style='%1'>Tolerance</th></tr>").arg( mCellStyle );
+  html += QString( "<tr><th style='%1'>Param name</th><th style='%1'>Verified value</th><th style='%1'>Eexpected value</th><th style='%1'>Difference</th><th style='%1'>Tolerance</th></tr>" ).arg( mCellStyle );
   return html;
 }
 
@@ -229,8 +229,8 @@ void QgsRasterChecker::compare( QString theParamName, double verifiedVal, double
 void QgsRasterChecker::compareRow( QString theParamName, QString verifiedVal, QString expectedVal, QString &theReport, bool theOk, QString theDifference, QString theTolerance )
 {
   theReport += "<tr>\n";
-  theReport += QString( "<td style='%1'>%2</td><td style='%1 %3'>%4</td><td style='%1'>%5</td>\n" ).arg(mCellStyle).arg( theParamName ).arg( theOk ? mOkStyle : mErrStyle ).arg( verifiedVal ).arg( expectedVal );
-  theReport += QString( "<td style='%1'>%2</td>\n" ).arg(mCellStyle).arg( theDifference );
-  theReport += QString( "<td style='%1'>%2</td>\n" ).arg(mCellStyle).arg( theTolerance );
+  theReport += QString( "<td style='%1'>%2</td><td style='%1 %3'>%4</td><td style='%1'>%5</td>\n" ).arg( mCellStyle ).arg( theParamName ).arg( theOk ? mOkStyle : mErrStyle ).arg( verifiedVal ).arg( expectedVal );
+  theReport += QString( "<td style='%1'>%2</td>\n" ).arg( mCellStyle ).arg( theDifference );
+  theReport += QString( "<td style='%1'>%2</td>\n" ).arg( mCellStyle ).arg( theTolerance );
   theReport += "</tr>";
 }

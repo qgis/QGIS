@@ -412,6 +412,8 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
         case QgsSymbolV2::ScaleArea:
           scaledSize = sqrt( scaledSize );
           break;
+        case QgsSymbolV2::ScaleDiameter:
+          break;
       }
 
       double half = scaledSize / 2.0;

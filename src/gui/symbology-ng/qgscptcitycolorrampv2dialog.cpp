@@ -422,7 +422,7 @@ void QgsCptCityColorRampV2Dialog::showEvent( QShowEvent * e )
         tabBar->setCurrentIndex( 1 );
         mModel = mAuthorsModel;
         mBrowserView->setModel( mModel );
-    }
+      }
     }
     if ( modelIndex != QModelIndex() )
     {

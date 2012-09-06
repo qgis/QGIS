@@ -40,7 +40,7 @@ class QgsMeasureTool : public QgsMapTool
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
 
-    //! When we hvae added our last point, and not following 
+    //! When we have added our last point, and not following
     // Added in 2.0
     bool done() { return mDone; }
 

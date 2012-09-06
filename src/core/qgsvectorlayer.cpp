@@ -3160,7 +3160,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
           bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
           bool allowMulti = editTypeElement.attribute( "allowMulti", "false" ) == "true";
-          QString filterAttributeColumn= editTypeElement.attribute( "filterAttributeColumn", QString::null );
+          QString filterAttributeColumn = editTypeElement.attribute( "filterAttributeColumn", QString::null );
           QString filterAttributeValue = editTypeElement.attribute( "filterAttributeValue", QString::null );
           mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue, allowMulti, filterAttributeColumn, filterAttributeValue );
         }

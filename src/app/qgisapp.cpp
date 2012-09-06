@@ -511,9 +511,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // create the notification widget for macros
   mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
-                                              tr( "macros have been disabled." ),
-                                              QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                                              mInfoBar );
+                tr( "macros have been disabled." ),
+                QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                mInfoBar );
 
   QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
   btnEnableMacros->setText( tr( "Enable" ) );

@@ -242,15 +242,15 @@ void QgsComposerScaleBar::applyDefaultSize()
     int nUnitsPerSegment =  widthMeter / 10.0; //default scalebar width equals half the map width
     setNumUnitsPerSegment( nUnitsPerSegment );
 
-    if( nUnitsPerSegment > 1000 )
+    if ( nUnitsPerSegment > 1000 )
     {
-        setNumUnitsPerSegment( (int)( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
-        setUnitLabeling( tr("km") );
-        setNumMapUnitsPerScaleBarUnit( 1000 );
+      setNumUnitsPerSegment(( int )( numUnitsPerSegment() / 1000.0 + 0.5 ) * 1000 );
+      setUnitLabeling( tr( "km" ) );
+      setNumMapUnitsPerScaleBarUnit( 1000 );
     }
     else
     {
-        setUnitLabeling( tr("m") );
+      setUnitLabeling( tr( "m" ) );
     }
 
     setNumSegments( 4 );

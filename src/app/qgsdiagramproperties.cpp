@@ -376,6 +376,7 @@ void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 
 void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
 {
+  Q_UNUSED( column );
   addAttribute( item );
 }
 
