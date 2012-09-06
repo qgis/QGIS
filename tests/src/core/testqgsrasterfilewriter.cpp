@@ -47,8 +47,8 @@ class TestQgsRasterFileWriter: public QObject
     void writeTest();
   private:
     bool writeTest( QString rasterName );
-    void log ( QString msg );
-    void logError ( QString msg );
+    void log( QString msg );
+    void logError( QString msg );
     QString mTestDataDir;
     QString mReport;
 };
@@ -85,7 +85,7 @@ void TestQgsRasterFileWriter::cleanupTestCase()
 void TestQgsRasterFileWriter::writeTest()
 {
   QDir dir( mTestDataDir + "/raster" );
-  
+
   QStringList filters;
   filters << "*.tif";
   QStringList rasterNames = dir.entryList( filters, QDir::Files );
@@ -108,7 +108,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   QFileInfo myRasterFileInfo( myFileName );
 
   QgsRasterLayer * mpRasterLayer =  new QgsRasterLayer( myRasterFileInfo.filePath(),
-                                                myRasterFileInfo.completeBaseName() );
+      myRasterFileInfo.completeBaseName() );
   qDebug() << theRasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
 
   if ( !mpRasterLayer->isValid() ) return false;
@@ -122,7 +122,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   QString tmpName =  tmpFile.fileName();
   tmpFile.close();
   // do not remove when class is destroyd so that we can read the file and see difference
-  tmpFile.setAutoRemove ( false );
+  tmpFile.setAutoRemove( false );
   qDebug() << "temporary output file: " << tmpName;
   mReport += "temporary output file: " + tmpName + "<br>";
 
@@ -130,7 +130,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   QgsRasterPipe* pipe = new QgsRasterPipe();
   if ( !pipe->set( provider->clone() ) )
   {
-    logError ( "Cannot set pipe provider" );
+    logError( "Cannot set pipe provider" );
     return false;
   }
   qDebug() << "provider set";
@@ -145,7 +145,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   }
   qDebug() << "nuller set";
 
-  // Reprojection not really done 
+  // Reprojection not really done
   QgsRasterProjector *projector = new QgsRasterProjector;
   projector->setCRS( provider->crs(), provider->crs() );
   if ( !pipe->insert( 2, projector ) )
@@ -155,26 +155,26 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   }
   qDebug() << "projector set";
 
-  fileWriter.writeRaster( pipe, provider->xSize() + 1, provider->ySize(), provider->extent(), provider->crs() );
+  fileWriter.writeRaster( pipe, provider->xSize(), provider->ySize(), provider->extent(), provider->crs() );
 
   delete pipe;
 
   QgsRasterChecker checker;
-  bool ok = checker.runTest( "gdal", tmpName, "gdal", myRasterFileInfo.filePath() ); 
+  bool ok = checker.runTest( "gdal", tmpName, "gdal", myRasterFileInfo.filePath() );
   mReport += checker.report();
 
   // All OK, we can delete the file
-  tmpFile.setAutoRemove ( ok );
+  tmpFile.setAutoRemove( ok );
 
   return true;
 }
 
-void TestQgsRasterFileWriter::log ( QString msg )
+void TestQgsRasterFileWriter::log( QString msg )
 {
   mReport += msg + "<br>";
 }
 
-void TestQgsRasterFileWriter::logError ( QString msg )
+void TestQgsRasterFileWriter::logError( QString msg )
 {
   mReport += "Error:<font color='red'>" + msg + "</font><br>";
   qDebug() << msg;

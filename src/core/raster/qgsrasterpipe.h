@@ -47,11 +47,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterPipe( );
     QgsRasterPipe( const QgsRasterPipe& thePipe );
 
-    virtual ~QgsRasterPipe();
-
-    /** \brief Try to connect interfaces in pipe and to the provider at beginning.
-        Returns true if connected or false if connection failed */
-    bool connect( QVector<QgsRasterInterface*> theInterfaces );
+    ~QgsRasterPipe();
 
     /** Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
@@ -68,9 +64,6 @@ class CORE_EXPORT QgsRasterPipe
      * where it should be inserted using insert() method.
      */
     bool set( QgsRasterInterface * theInterface );
-
-    /** Get known interface by role */
-    QgsRasterInterface * iface( Role role ) const;
 
     /** Remove and delete interface at given index if possible */
     bool remove( int idx );
@@ -115,6 +108,13 @@ class CORE_EXPORT QgsRasterPipe
 
     // Check if index is in bounds
     bool checkBounds( int idx ) const;
+
+    /** Get known interface by role */
+    QgsRasterInterface * interface( Role role ) const;
+
+    /** \brief Try to connect interfaces in pipe and to the provider at beginning.
+        Returns true if connected or false if connection failed */
+    bool connect( QVector<QgsRasterInterface*> theInterfaces );
 };
 
 #endif
