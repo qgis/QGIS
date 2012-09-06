@@ -87,7 +87,7 @@ int QgsProjectParser::numberOfLayers() const
   return mProjectLayerElements.size();
 }
 
-void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
+void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
 
@@ -133,7 +133,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
 
-  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers );
+  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, fullProjectSettings );
 
   parentElement.appendChild( layerParentElem );
   combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
@@ -216,7 +216,8 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
                                   QDomElement &parentElem,
                                   const QDomElement &legendElem,
                                   const QMap<QString, QgsMapLayer *> &layerMap,
-                                  const QStringList &nonIdentifiableLayers ) const
+                                  const QStringList &nonIdentifiableLayers,
+                                  bool fullProjectSettings ) const
 {
   QDomNodeList legendChildren = legendElem.childNodes();
   for ( int i = 0; i < legendChildren.size(); ++i )
@@ -268,12 +269,12 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
             pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
 
-          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled );
+          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, fullProjectSettings );
         }
       }
       else //normal (not embedded) legend group
       {
-        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers );
+        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, fullProjectSettings );
       }
 
       // combine bounding boxes of children (groups/layers)
@@ -349,6 +350,11 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       styleElem.appendChild( styleNameElem );
       styleElem.appendChild( styleTitleElem );
       layerElem.appendChild( styleElem );
+
+      if ( fullProjectSettings )
+      {
+        addLayerProjectSettings( layerElem, doc, currentLayer );
+      }
     }
     else
     {
@@ -357,6 +363,33 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     }
 
     parentElem.appendChild( layerElem );
+  }
+}
+
+void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer )
+{
+  if ( !currentLayer )
+  {
+    return;
+  }
+
+  if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+  {
+    QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
+
+    //attributes
+    QDomElement attributesElem = doc.createElement( "Attributes" );
+    const QgsFieldMap& layerFields = vLayer->pendingFields();
+    QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
+    for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
+    {
+      QDomElement attributeElem = doc.createElement( "Attribute" );
+      attributeElem.setAttribute( "name", fieldIt->name() );
+      attributeElem.setAttribute( "type", QVariant::typeToName( fieldIt->type() ) );
+      attributeElem.setAttribute( "editType", vLayer->editType( fieldIt.key() ) );
+      attributesElem.appendChild( attributeElem );
+    }
+    layerElem.appendChild( attributesElem );
   }
 }
 

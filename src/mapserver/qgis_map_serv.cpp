@@ -409,17 +409,22 @@ int main( int argc, char * argv[] )
     }
 
     QString version = parameterMap.value( "VERSION", "1.3.0" );
-
-    if ( request == "GetCapabilities" )
+    bool getProjectSettings = ( request == "GetProjectSettings" );
+    if ( getProjectSettings )
     {
-      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
+      version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
+    }
+
+    if ( request == "GetCapabilities" || getProjectSettings )
+    {
+      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
       {
         QgsDebugMsg( "Capabilities document not found in cache" );
         QDomDocument doc;
         try
         {
-          doc = theServer->getCapabilities( version );
+          doc = theServer->getCapabilities( version, getProjectSettings );
         }
         catch ( QgsMapServiceException& ex )
         {
@@ -428,7 +433,7 @@ int main( int argc, char * argv[] )
           delete theServer;
           continue;
         }
-        capabilitiesCache.insertCapabilitiesDocument( configFilePath, version, &doc );
+        capabilitiesCache.insertCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version, &doc );
         capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
       }
       else

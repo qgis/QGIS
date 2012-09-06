@@ -80,7 +80,7 @@ void QgsWMSServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QS
   }
 }
 
-QDomDocument QgsWMSServer::getCapabilities( QString version )
+QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInformation )
 {
   QgsDebugMsg( "Entering." );
   QDomDocument doc;
@@ -215,7 +215,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   QgsDebugMsg( "calling layersAndStylesCapabilities" );
   if ( mConfigParser )
   {
-    mConfigParser->layersAndStylesCapabilities( capabilityElement, doc );
+    mConfigParser->layersAndStylesCapabilities( capabilityElement, doc, fullProjectInformation );
   }
   QgsDebugMsg( "layersAndStylesCapabilities returned" );
 

@@ -53,8 +53,10 @@ class QgsWMSServer
     /**Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
     QgsWMSServer( QMap<QString, QString> parameters, QgsMapRenderer* renderer );
     ~QgsWMSServer();
-    /**Returns an XML file with the capabilities description (as described in the WMS specs)*/
-    QDomDocument getCapabilities( QString version = "1.3.0" );
+    /**Returns an XML file with the capabilities description (as described in the WMS specs)
+        @param version WMS version (1.1.1 or 1.3.0)
+        @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
+    QDomDocument getCapabilities( QString version = "1.3.0", bool fullProjectInformation = false );
     /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();
