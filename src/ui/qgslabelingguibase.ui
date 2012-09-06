@@ -1562,7 +1562,7 @@
                    <bool>true</bool>
                   </property>
                   <property name="text">
-                   <string>Engine settings</string>
+                   <string>Automated placement settings</string>
                   </property>
                  </widget>
                 </item>
