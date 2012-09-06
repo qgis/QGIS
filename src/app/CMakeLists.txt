@@ -79,7 +79,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
   qgsmaptooltextannotation.cpp
-  qgsmaptoolvertexedit.cpp
+  qgsmaptoolvertexedit.cpp  
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -149,14 +149,6 @@ SET(QGIS_APP_SRCS
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 )
-
-IF (ANDROID)
-    SET(QGIS_APP_SRCS
-        ${QGIS_APP_SRCS}
-        qtmain_android.cpp
-        )
-ENDIF (ANDROID)
-
 
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
