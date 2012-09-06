@@ -42,7 +42,12 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsellipsesymbollayerv2.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
-
+  
+  diagram/qgsdiagram.cpp
+  diagram/qgspiediagram.cpp
+  diagram/qgstextdiagram.cpp
+  diagram/qgshistogramdiagram.cpp
+  
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
@@ -55,7 +60,6 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
   qgsexpression.cpp
@@ -96,6 +100,7 @@ SET(QGIS_CORE_SRCS
   qgsrasterprojector.cpp
   qgsrasterdataprovider.cpp
   qgsrendercontext.cpp
+  qgsrenderchecker.cpp
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
@@ -164,6 +169,7 @@ SET(QGIS_CORE_SRCS
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
+  raster/qgsrasterchecker.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
@@ -376,6 +382,7 @@ SET(QGIS_CORE_HDRS
   qgsrasterdataprovider.h
   qgsrectangle.h
   qgsrendercontext.h
+  qgsrenderchecker.h
   qgsrunprocess.h
   qgsscalecalculator.h
   qgssnapper.h
@@ -387,6 +394,12 @@ SET(QGIS_CORE_HDRS
   qgsvectoroverlay.h
   qgstolerance.h
 
+  diagram/qgsdiagram.h
+  diagram/qgspiediagram.h
+  diagram/qgstextdiagram.h
+  diagram/qgshistogramdiagram.h
+
+  
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
@@ -399,6 +412,7 @@ SET(QGIS_CORE_HDRS
   raster/qgslinearminmaxenhancement.h
   raster/qgslinearminmaxenhancementwithclip.h
   raster/qgspseudocolorshader.h
+  raster/qgsrasterchecker.h
   raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
   raster/qgsrasterhistogram.h
@@ -492,6 +506,9 @@ ELSE (WIN32)
     ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
 ENDIF (WIN32)
 
+# Test data dir for QgsRenderChecker
+ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
+
 #############################################################
 # qgis_core library
 
@@ -581,3 +598,4 @@ IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
   INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
 ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+

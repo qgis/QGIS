@@ -462,6 +462,9 @@
     <file>flags/en_US.png</file>
     <file>flags/da_DK.png</file>
     <file>flags/et_EE.png</file>
+    <file>themes/default/text.png</file>
+    <file>themes/default/histogram.png</file>
+    <file>themes/default/pie-chart.png</file>
   </qresource>
   <qresource prefix="/images/tips">
     <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

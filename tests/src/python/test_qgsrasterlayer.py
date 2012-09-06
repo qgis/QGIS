@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from qgis.core import QgsRasterLayer, QgsPoint
-from PyQt4.QtCore import QFileInfo, QString
+from qgis.core import QgsRasterLayer, QgsPoint, QgsMapLayerRegistry, QgsMapRenderer, QgsSingleBandGrayRenderer, QgsContrastEnhancement, QgsRasterTransparency, QgsRenderChecker
+from PyQt4.QtCore import QFileInfo, QString, QStringList
 
 # Convenience instances in case you may need them
 # not used in this test
@@ -40,6 +40,69 @@ class TestQgsRasterLayer(unittest.TestCase):
         myMessage = 'Expected: %s\nGot: %s' % (myValues, myExpectedValues)
         self.assertEquals(myValues, myExpectedValues, myMessage)
 
+    def testTransparency(self):
+        myPath = os.path.abspath(os.path.join(__file__, '..', '..', '..', 'testdata', 'raster', 'band1_float32_noct_epsg4326.tif'))
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        myRasterLayer = QgsRasterLayer(myPath, myBaseName)
+        myMessage = 'Raster not loaded: %s' % myPath
+        assert myRasterLayer.isValid(), myMessage
+
+        renderer = QgsSingleBandGrayRenderer( myRasterLayer.dataProvider(), 1 );
+        myRasterLayer.setRenderer( renderer );
+        myRasterLayer.setContrastEnhancementAlgorithm( QgsContrastEnhancement.StretchToMinimumMaximum, QgsRasterLayer.ContrastEnhancementMinMax );
+
+        myContrastEnhancement = myRasterLayer.renderer().contrastEnhancement()
+        #print "myContrastEnhancement.minimumValue = %.17g" % myContrastEnhancement.minimumValue()
+        #print "myContrastEnhancement.maximumValue = %.17g" % myContrastEnhancement.maximumValue()
+
+        # Unfortunately the minimum/maximum values calculated in C++ and Python
+        # are slightely different (e.g. 3.3999999521443642e+38 x 3.3999999521444001e+38)
+        # It is not clear where the precision is lost. We set the same values as C++.
+        myContrastEnhancement.setMinimumValue( -3.3319999287625854e+38 )
+        myContrastEnhancement.setMaximumValue( 3.3999999521443642e+38 )
+        #myType = myRasterLayer.dataProvider().dataType( 1 );
+        #myEnhancement = QgsContrastEnhancement( myType );
+        
+
+
+        myTransparentSingleValuePixelList = []
+        rasterTransparency = QgsRasterTransparency()
+
+        myTransparentPixel1 = QgsRasterTransparency.TransparentSingleValuePixel()
+        myTransparentPixel1.min = -2.5840000772112106e+38
+        myTransparentPixel1.max = -1.0879999684602689e+38
+        myTransparentPixel1.percentTransparent = 50
+        myTransparentSingleValuePixelList.append( myTransparentPixel1 )
+
+        myTransparentPixel2 = QgsRasterTransparency.TransparentSingleValuePixel()
+        myTransparentPixel2.min = 1.359999960575336e+37
+        myTransparentPixel2.max = 9.520000231087593e+37
+        myTransparentPixel2.percentTransparent = 70
+        myTransparentSingleValuePixelList.append( myTransparentPixel2 )
+
+        rasterTransparency.setTransparentSingleValuePixelList( myTransparentSingleValuePixelList )
+
+        rasterRenderer = myRasterLayer.renderer()
+        assert rasterRenderer
+
+        rasterRenderer.setRasterTransparency( rasterTransparency )
+
+        QgsMapLayerRegistry.instance().addMapLayers( [ myRasterLayer, ] )
+
+        myMapRenderer = QgsMapRenderer()
+
+        myLayers = QStringList()
+        myLayers.append( myRasterLayer.id() )
+        myMapRenderer.setLayerSet( myLayers )
+        myMapRenderer.setExtent( myRasterLayer.extent() ) 
+        
+        myChecker = QgsRenderChecker()
+        myChecker.setControlName( "expected_raster_transparency" )
+        myChecker.setMapRenderer( myMapRenderer )
+
+        myResultFlag = myChecker.runTest( "raster_transparency_python" );
+        assert myResultFlag, "Raster transparency rendering test failed"
 
 if __name__ == '__main__':
     unittest.main()

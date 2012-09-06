@@ -559,6 +559,12 @@ ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 #############################################################
 # process subdirs
 
+#create a variable to specify where our test data is
+#so that unit tests can use TEST_DATA_DIR to locate
+#the test data. See CMakeLists in test dirs for more info
+#TEST_DATA_DIR is also used by QgsRenderChecker currently in core
+SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
+
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(images)
@@ -570,10 +576,6 @@ IF (WITH_BINDINGS)
 ENDIF (WITH_BINDINGS)
 
 IF (ENABLE_TESTS)
-  #create a variable to specify where our test data is
-  #so that unit tests can use TEST_DATA_DIR to locate
-  #the test data. See CMakeLists in test dirs for more info
-  SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
   ADD_SUBDIRECTORY(tests)
   SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
   MESSAGE (STATUS "Ctest Binary Directory  set to: ${CTEST_BINARY_DIRECTORY}")

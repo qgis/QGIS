@@ -915,18 +915,14 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
     return;
   }
 
-  emit composerWillBeRemoved( mView );
-
-  QDomDocument templateDocument;
-  if ( !templateDocument.setContent( &templateFile, false ) )
+  if ( mComposition )
   {
-    QMessageBox::warning( 0, tr( "Read error" ), tr( "Content of template file is not valid" ) );
-    return;
+    QDomDocument templateDoc;
+    if ( templateDoc.setContent( &templateFile ) )
+    {
+      mComposition->loadFromTemplate( templateDoc, 0, false );
+    }
   }
-
-  deleteItemWidgets();
-  readXML( templateDocument );
-  emit composerAdded( mView );
 }
 
 void QgsComposer::on_mActionMoveItemContent_triggered()

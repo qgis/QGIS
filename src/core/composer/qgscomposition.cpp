@@ -60,13 +60,7 @@ QgsComposition::QgsComposition():
 QgsComposition::~QgsComposition()
 {
   removePaperItems();
-
-  QSet<QgsComposerMultiFrame*>::iterator multiFrameIt = mMultiFrames.begin();
-  for ( ; multiFrameIt != mMultiFrames.end(); ++multiFrameIt )
-  {
-    delete *multiFrameIt;
-  }
-  mMultiFrames.clear();
+  deleteAndRemoveMultiFrames();
 
   // make sure that all composer items are removed before
   // this class is deconstructed - to avoid segfaults
@@ -317,6 +311,62 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   mPrintResolution = compositionElem.attribute( "printResolution", "300" ).toInt();
   updatePaperItems();
+  return true;
+}
+
+bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap, bool addUndoCommands )
+{
+  deleteAndRemoveMultiFrames();
+
+  //delete all items and emit itemRemoved signal
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIter = itemList.begin();
+  for ( ; itemIter != itemList.end(); ++itemIter )
+  {
+    QgsComposerItem* cItem = dynamic_cast<QgsComposerItem*>( *itemIter );
+    if ( cItem )
+    {
+      removeItem( cItem );
+      emit itemRemoved( cItem );
+      delete cItem;
+    }
+  }
+  mItemZList.clear();
+
+  mPages.clear();
+  mUndoStack.clear();
+
+  QDomDocument importDoc;
+  if ( substitutionMap )
+  {
+    QString xmlString = doc.toString();
+    QMap<QString, QString>::const_iterator sIt = substitutionMap->constBegin();
+    for ( ; sIt != substitutionMap->constEnd(); ++sIt )
+    {
+      xmlString = xmlString.replace( "[" + sIt.key() + "]", sIt.value() );
+    }
+    importDoc.setContent( xmlString );
+  }
+  else
+  {
+    importDoc = doc;
+  }
+
+  //read general settings
+  QDomElement compositionElem = importDoc.documentElement().firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    return false;
+  }
+
+  bool ok = readXML( compositionElem, importDoc );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  //addItemsFromXML
+  addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
   return true;
 }
 
@@ -1372,6 +1422,16 @@ void QgsComposition::removePaperItems()
     delete mPages.at( i );
   }
   mPages.clear();
+}
+
+void QgsComposition::deleteAndRemoveMultiFrames()
+{
+  QSet<QgsComposerMultiFrame*>::iterator multiFrameIt = mMultiFrames.begin();
+  for ( ; multiFrameIt != mMultiFrames.end(); ++multiFrameIt )
+  {
+    delete *multiFrameIt;
+  }
+  mMultiFrames.clear();
 }
 
 void QgsComposition::exportAsPDF( const QString& file )

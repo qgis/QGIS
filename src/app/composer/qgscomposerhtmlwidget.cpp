@@ -6,7 +6,7 @@
 #include <QFileDialog>
 #include <QSettings>
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): mHtml( html ), mFrame( frame )
+QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame ): QWidget(), mHtml( html ), mFrame( frame )
 {
   setupUi( this );
 

@@ -75,6 +75,7 @@
 %Include qgsrectangle.sip
 %Include qgsrendercontext.sip
 %Include qgsrenderer.sip
+%Include qgsrenderchecker.sip
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
 %Include qgssinglesymbolrenderer.sip

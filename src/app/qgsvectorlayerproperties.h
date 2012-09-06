@@ -38,6 +38,7 @@ class QgsLabelDialog;
 class QgsVectorLayer;
 class QgsVectorOverlayPlugin;
 class QgsLabelingGui;
+class QgsDiagramProperties;
 
 class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase
 {
@@ -119,14 +120,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSelectEditForm_clicked();
     void on_tabWidget_currentChanged( int idx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_mAddCategoryPushButton_clicked();
-    void on_mRemoveCategoryPushButton_clicked();
-    void on_mDiagramFontButton_clicked();
-    void on_mFixedSizeCheckBox_stateChanged( int state );
-    void on_mScaleDependentDiagramVisibilityCheckBox_stateChanged( int state );
-    void on_mFindMaximumValueButton_clicked();
-    void on_mBackgroundColorButton_clicked();
-    void on_mDiagramPenColorButton_clicked();
     void on_pbnUpdateExtents_clicked();
 
     void enableLabelOptions( bool theFlag );
@@ -141,9 +134,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
-
-    /**Set color for diagram category*/
-    void handleDiagramItemDoubleClick( QTreeWidgetItem * item, int column );
 
   signals:
 
@@ -187,11 +177,13 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
     //QgsRenderer* bufferRenderer;
     /**Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
-    QgsLabelingGui *labelingDialog;
+    QgsLabelingGui* labelingDialog;
     /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelDialog* labelDialog;
     /**Actions dialog. If apply is pressed, the actions are stored for later use */
     QgsAttributeActionDialog* actionDialog;
+    /**Diagram dialog. If apply is pressed, options are applied to vector's diagrams*/
+    QgsDiagramProperties* diagramPropertiesDialog;
 
     QList<QgsApplyDialog*> mOverlayDialogs;
     QMap<int, QPushButton*> mButtonMap;
@@ -200,8 +192,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     QMap<int, QgsVectorLayer::RangeData> mRanges;
     QMap<int, QgsVectorLayer::ValueRelationData> mValueRelationData;
     QMap<int, QPair<QString, QString> > mCheckedStates;
-
-    QFont mDiagramFont;
 
     void updateButtons();
     void loadRows();

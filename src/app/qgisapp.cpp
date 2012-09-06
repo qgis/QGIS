@@ -1981,7 +1981,7 @@ void QgisApp::initLegend()
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
-  mLayerOrderDock->setObjectName( "Legend" );
+  mLayerOrderDock->setObjectName( "LayerOrder" );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   w = new QWidget( this );

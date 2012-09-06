@@ -58,9 +58,9 @@
 namespace pal
 {
 
-  Layer::Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal )
+  Layer::Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
       :  pal( pal ), obstacle( obstacle ), active( active ),
-      toLabel( toLabel ), label_unit( label_unit ),
+      toLabel( toLabel ), displayAll( displayAll ), label_unit( label_unit ),
       min_scale( min_scale ), max_scale( max_scale ),
       arrangement( arrangement ), arrangementFlags( 0 ), mode( LabelPerFeature ), mergeLines( false )
   {

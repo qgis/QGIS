@@ -1800,6 +1800,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = Palette;
   }
+  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::ContinuousPalette )
+  {
+    mRasterType = Palette;
+  }
   else
   {
     mRasterType = GrayOrUndefined;
@@ -1811,10 +1815,26 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     QgsDebugMsg( "Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
     setDrawingStyle( SingleBandColorDataStyle );
   }
-  else if ( mRasterType == Palette )
+  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::PaletteIndex )
   {
-
     setDrawingStyle( PalettedColor ); //sensible default
+  }
+  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::ContinuousPalette )
+  {
+    setDrawingStyle( SingleBandPseudoColor );
+    // Load color table
+    QList<QgsColorRampShader::ColorRampItem> colorTable = mDataProvider->colorTable( 1 );
+    QgsSingleBandPseudoColorRenderer* r = dynamic_cast<QgsSingleBandPseudoColorRenderer*>( renderer() );
+    if ( r )
+    {
+      // TODO: this should go somewhere else
+      QgsRasterShader* shader = new QgsRasterShader();
+      QgsColorRampShader* colorRampShader = new QgsColorRampShader();
+      colorRampShader->setColorRampType( QgsColorRampShader::INTERPOLATED );
+      colorRampShader->setColorRampItemList( colorTable );
+      shader->setRasterShaderFunction( colorRampShader );
+      r->setShader( shader );
+    }
   }
   else if ( mRasterType == Multiband )
   {

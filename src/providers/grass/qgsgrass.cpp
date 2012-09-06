@@ -1189,14 +1189,14 @@ QProcess GRASS_LIB_EXPORT *QgsGrass::startModule( QString gisdbase, QString loca
 }
 
 QByteArray GRASS_LIB_EXPORT QgsGrass::runModule( QString gisdbase, QString location,
-    QString module, QStringList arguments )
+    QString module, QStringList arguments, int timeOut )
 {
-  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2 timeOut = %3" ).arg( gisdbase ).arg( location ).arg( timeOut ) );
 
   QTemporaryFile gisrcFile;
   QProcess *process = QgsGrass::startModule( gisdbase, location, module, arguments, gisrcFile );
 
-  if ( !process->waitForFinished()
+  if ( !process->waitForFinished( timeOut )
        || ( process->exitCode() != 0 && process->exitCode() != 255 ) )
   {
     QgsDebugMsg( "process->exitCode() = " + QString::number( process->exitCode() ) );
@@ -1213,7 +1213,7 @@ QByteArray GRASS_LIB_EXPORT QgsGrass::runModule( QString gisdbase, QString locat
 }
 
 QString GRASS_LIB_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QString location,
-    QString mapset, QString map, MapType type, double x, double y )
+    QString mapset, QString map, MapType type, double x, double y, QgsRectangle extent, int sampleRows, int sampleCols, int timeOut )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
 
@@ -1243,8 +1243,17 @@ QString GRASS_LIB_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QStr
   {
     arguments.append( QString( "coor=%1,%2" ).arg( x ).arg( y ) );
   }
+  if ( info == "stats" )
+  {
+    arguments.append( QString( "north=%1" ).arg( extent.yMaximum() ) );
+    arguments.append( QString( "south=%1" ).arg( extent.yMinimum() ) );
+    arguments.append( QString( "east=%1" ).arg( extent.xMaximum() ) );
+    arguments.append( QString( "west=%1" ).arg( extent.xMinimum() ) );
+    arguments.append( QString( "rows=%1" ).arg( sampleRows ) );
+    arguments.append( QString( "cols=%1" ).arg( sampleCols ) );
+  }
 
-  QByteArray data =  QgsGrass::runModule( gisdbase, location, cmd, arguments );
+  QByteArray data =  QgsGrass::runModule( gisdbase, location, cmd, arguments, timeOut );
   QgsDebugMsg( data );
   return QString( data );
 }
@@ -1358,14 +1367,15 @@ void GRASS_LIB_EXPORT QgsGrass::size( QString gisdbase, QString location, QStrin
   QgsDebugMsg( QString( "raster size = %1 %2" ).arg( *cols ).arg( *rows ) );
 }
 
-QHash<QString, QString> GRASS_LIB_EXPORT QgsGrass::info( QString gisdbase, QString location, QString mapset, QString map, MapType type )
+QHash<QString, QString> GRASS_LIB_EXPORT QgsGrass::info( QString gisdbase, QString location, QString mapset, QString map, MapType type, QString info, QgsRectangle extent, int sampleRows, int sampleCols, int timeOut )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
   QHash<QString, QString> inf;
 
   try
   {
-    QString str = QgsGrass::getInfo( "info", gisdbase, location, mapset, map, type );
+    //QString str = QgsGrass::getInfo( "info", gisdbase, location, mapset, map, type );
+    QString str = QgsGrass::getInfo( info, gisdbase, location, mapset, map, type, 0, 0, extent, sampleRows, sampleCols, timeOut );
     QgsDebugMsg( str );
     QStringList list = str.split( "\n" );
     for ( int i = 0; i < list.size(); i++ )

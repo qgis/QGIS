@@ -130,6 +130,11 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 1.6
     QString sizeScaleField() const { return mSizeScaleField; }
 
+    //! @note added in 2.0
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
+    //! @note added in 2.0
+    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
+
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
@@ -137,6 +142,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsVectorColorRampV2* mSourceColorRamp;
     QString mRotationField;
     QString mSizeScaleField;
+    QgsSymbolV2::ScaleMethod mScaleMethod;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;
