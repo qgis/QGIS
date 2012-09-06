@@ -1170,7 +1170,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
   }
 
   //go through all the item elements and add them to the composition (and to the lists)
-  QDomNodeList itemNodes = composerElem.childNodes();
+  QDomNodeList itemNodes = compositionElem.childNodes();
   for ( int i = 0; i < itemNodes.size(); ++i )
   {
     QDomElement currentElem = itemNodes.at( i ).toElement();
