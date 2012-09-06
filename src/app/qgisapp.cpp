@@ -290,7 +290,7 @@ const int AFTER_RECENT_PATHS = 321;
   if the project file is null then
   set title text to just application name and version
   else
-  set set title text to the the project file name
+  set set title text to the project file name
   else
   set the title text to project title
   */

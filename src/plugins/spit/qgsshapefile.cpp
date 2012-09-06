@@ -441,7 +441,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
       OGR_F_Destroy( feat );
     }
   }
-  // create the GIST index if the the load was successful
+  // create the GIST index if the load was successful
   if ( result )
   {
     // prompt user to see if they want to build the index and warn
