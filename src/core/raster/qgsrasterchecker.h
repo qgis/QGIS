@@ -35,8 +35,6 @@ class CORE_EXPORT QgsRasterChecker
     //! Destructor
     ~QgsRasterChecker() {};
 
-    QString controlImagePath() const;
-
     QString report() { return mReport; };
     /**
      * Test using renderer to generate the image to be compared.
@@ -45,7 +43,7 @@ class CORE_EXPORT QgsRasterChecker
      * @param theExpectedKey expected provider key
      * @param theExpectedUri URI of the expected (control) raster
      */
-    bool runTest( QString theVerifiedKey, QString theVerifiedUri, 
+    bool runTest( QString theVerifiedKey, QString theVerifiedUri,
                   QString theExpectedKey, QString theExpectedUri );
   private:
     QString mReport;

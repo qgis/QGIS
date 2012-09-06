@@ -63,10 +63,15 @@
 %Include qgsproviderregistry.sip
 %Include qgsrasterbandstats.sip
 %Include qgsrasterdataprovider.sip
+%Include qgsrasterchecker.sip
+%Include qgsrasterfilewriter.sip
 %Include qgsrasterinterface.sip
 %Include qgsrasterlayer.sip
+%Include qgsrasterpipe.sip
 %Include qgsrasterpyramid.sip
+%Include qgsrasterprojector.sip
 %Include qgsrasterrenderer.sip
+%Include qgsrasterresamplefilter.sip
 %Include qgsrasterresampler.sip
 %Include qgsrastershader.sip
 %Include qgsrastershaderfunction.sip

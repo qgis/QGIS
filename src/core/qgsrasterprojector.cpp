@@ -66,6 +66,32 @@ QgsRasterProjector::QgsRasterProjector()
   QgsDebugMsg( "Entered" );
 }
 
+QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
+{
+  mSrcCRS = projector.mSrcCRS;
+  mDestCRS = projector.mDestCRS;
+  mMaxSrcXRes = projector.mMaxSrcXRes;
+  mMaxSrcYRes = projector.mMaxSrcYRes;
+  mExtent = projector.mExtent;
+  mCoordinateTransform.setSourceCrs( mSrcCRS );
+  mCoordinateTransform.setDestCRS( mDestCRS );
+}
+
+QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & projector )
+{
+  if ( &projector != this )
+  {
+    mSrcCRS = projector.mSrcCRS;
+    mDestCRS = projector.mDestCRS;
+    mMaxSrcXRes = projector.mMaxSrcXRes;
+    mMaxSrcYRes = projector.mMaxSrcYRes;
+    mExtent = projector.mExtent;
+    mCoordinateTransform.setSourceCrs( mSrcCRS );
+    mCoordinateTransform.setDestCRS( mDestCRS );
+  }
+  return *this;
+}
+
 QgsRasterInterface * QgsRasterProjector::clone() const
 {
   QgsDebugMsg( "Entered" );
@@ -93,7 +119,7 @@ QgsRasterInterface::DataType QgsRasterProjector::dataType( int bandNo ) const
   return QgsRasterInterface::UnknownDataType;
 }
 
-void QgsRasterProjector::setCRS( QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS )
+void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS )
 {
   mSrcCRS = theSrcCRS;
   mDestCRS = theDestCRS;
