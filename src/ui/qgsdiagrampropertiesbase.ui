@@ -674,7 +674,7 @@
               <item row="3" column="0">
                <widget class="QPushButton" name="mEngineSettingsButton">
                 <property name="text">
-                 <string>PAL engine settings</string>
+                 <string>Automated placement settings</string>
                 </property>
                </widget>
               </item>

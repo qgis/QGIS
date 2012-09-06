@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>307</height>
+    <width>316</width>
+    <height>328</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -205,18 +205,45 @@
     </layout>
    </item>
    <item>
-    <widget class="QCheckBox" name="chkShowAllLabels">
-     <property name="text">
-      <string>Show all labels and features (i.e. including colliding objects)</string>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <property name="verticalSpacing">
+      <number>6</number>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="chkShowCandidates">
-     <property name="text">
-      <string>Show candidates (for debugging)</string>
-     </property>
-    </widget>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Show all labels and features for all layers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="chkShowAllLabels">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="2">
+      <widget class="QCheckBox" name="chkShowCandidates">
+       <property name="text">
+        <string>Show candidates (for debugging)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>(i.e. including colliding objects)</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <spacer name="verticalSpacer_2">
