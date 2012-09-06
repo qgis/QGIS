@@ -31,6 +31,7 @@ QgsPieDiagram::~QgsPieDiagram()
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
+  Q_UNUSED( c );
   QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
   if ( attIt == attributes.constEnd() )
   {
@@ -74,6 +75,8 @@ QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsR
 
 QSizeF QgsPieDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
 {
+  Q_UNUSED( c );
+  Q_UNUSED( attributes );
   return s.size;
 }
 
