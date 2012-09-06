@@ -215,7 +215,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   QgsDebugMsg( "calling layersAndStylesCapabilities" );
   if ( mConfigParser )
   {
-    mConfigParser->layersAndStylesCapabilities( capabilityElement, doc, fullProjectInformation );
+    mConfigParser->layersAndStylesCapabilities( capabilityElement, doc, version, fullProjectInformation );
   }
   QgsDebugMsg( "layersAndStylesCapabilities returned" );
 

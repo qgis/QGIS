@@ -37,7 +37,7 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, bool fullProjectSettings = false ) const;
+    virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
 
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
@@ -153,6 +153,7 @@ class QgsProjectParser: public QgsConfigParser
                     const QDomElement &legendElem,
                     const QMap<QString, QgsMapLayer *> &layerMap,
                     const QStringList &nonIdentifiableLayers,
+                    QString version, //1.1.1 or 1.3.0
                     bool fullProjectSettings = false ) const;
 
     static void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer );

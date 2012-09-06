@@ -140,7 +140,7 @@ int QgsSLDParser::numberOfLayers() const
   return ( userLayerList.size() + namedLayerList.size() );
 }
 
-void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, bool fullProjectSettings ) const
+void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   //iterate over all <UserLayer> nodes
   if ( mXMLDoc )

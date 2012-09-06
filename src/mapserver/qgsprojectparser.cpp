@@ -87,7 +87,7 @@ int QgsProjectParser::numberOfLayers() const
   return mProjectLayerElements.size();
 }
 
-void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, bool fullProjectSettings ) const
+void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const
 {
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
 
@@ -133,7 +133,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
 
-  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, fullProjectSettings );
+  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
 
   parentElement.appendChild( layerParentElem );
   combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
@@ -217,6 +217,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
                                   const QDomElement &legendElem,
                                   const QMap<QString, QgsMapLayer *> &layerMap,
                                   const QStringList &nonIdentifiableLayers,
+                                  QString version,
                                   bool fullProjectSettings ) const
 {
   QDomNodeList legendChildren = legendElem.childNodes();
@@ -269,12 +270,12 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
             pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
 
-          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, fullProjectSettings );
+          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, version, fullProjectSettings );
         }
       }
       else //normal (not embedded) legend group
       {
-        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, fullProjectSettings );
+        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
       }
 
       // combine bounding boxes of children (groups/layers)
@@ -351,6 +352,32 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       styleElem.appendChild( styleTitleElem );
       layerElem.appendChild( styleElem );
 
+      //min/max scale denominatormScaleBasedVisibility
+      if ( currentLayer->hasScaleBasedVisibility() )
+      {
+        QString minScaleString = QString::number( currentLayer->minimumScale() );
+        QString maxScaleString = QString::number( currentLayer->maximumScale() );
+
+        if ( version == "1.3.0" )
+        {
+          QDomElement minScaleElem = doc.createElement( "MinScaleDenominator" );
+          QDomText minScaleText = doc.createTextNode( minScaleString );
+          minScaleElem.appendChild( minScaleText );
+          layerElem.appendChild( minScaleElem );
+          QDomElement maxScaleElem = doc.createElement( "MaxScaleDenominator" );
+          QDomText maxScaleText = doc.createTextNode( maxScaleString );
+          maxScaleElem.appendChild( maxScaleText );
+          layerElem.appendChild( maxScaleElem );
+        }
+        else if ( version == "1.1.1" )
+        {
+          QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
+          scaleHintElem.setAttribute( "min", minScaleString );
+          scaleHintElem.setAttribute( "max", maxScaleString );
+          layerElem.appendChild( scaleHintElem );
+        }
+      }
+
       if ( fullProjectSettings )
       {
         addLayerProjectSettings( layerElem, doc, currentLayer );
@@ -376,6 +403,9 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
   if ( currentLayer->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
+
+    //min/max scales for layer
+
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
