@@ -32,7 +32,10 @@ QgsTextDiagram::~QgsTextDiagram()
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
-    QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
+  Q_UNUSED( c );
+
+  QgsAttributeMap::const_iterator attIt = attributes.find( is.classificationAttribute );
+
   if ( attIt == attributes.constEnd() )
   {
     return QSizeF(); //zero size if attribute is missing
@@ -74,8 +77,11 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const Qgs
 }
 
 QSizeF QgsTextDiagram::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
-{
-  return s.size;
+{  
+  Q_UNUSED( c );
+	Q_UNUSED( attributes );
+
+	return s.size;
 }
 
 void QgsTextDiagram::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
