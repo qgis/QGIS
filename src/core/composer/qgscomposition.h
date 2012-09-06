@@ -120,6 +120,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Returns pointers to all composer maps in the scene*/
     QList<const QgsComposerMap*> composerMapItems() const;
 
+    /**Return composer items of a specific type*/
+    template<class T> void composerItems( QList<T*>& itemList );
+
     /**Returns the composer map with specified id
      @return id or 0 pointer if the composer map item does not exist*/
     const QgsComposerMap* getComposerMapById( int id ) const;
@@ -342,6 +345,21 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
 };
+
+template<class T> void QgsComposition::composerItems( QList<T*>& itemList )
+{
+  itemList.clear();
+  QList<QGraphicsItem *> graphicsItemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = graphicsItemList.begin();
+  for ( ; itemIt != graphicsItemList.end(); ++itemIt )
+  {
+    T* item = dynamic_cast<T*>( *itemIt );
+    if ( item )
+    {
+      itemList.push_back( item );
+    }
+  }
+}
 
 #endif
 
