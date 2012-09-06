@@ -96,6 +96,11 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
     return;
   }
 
+  if ( fullProjectSettings )
+  {
+    addDrawingOrder( parentElement, doc );
+  }
+
   QMap<QString, QgsMapLayer *> layerMap;
 
   foreach ( const QDomElement &elem, mProjectLayerElements )
@@ -1700,4 +1705,52 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
   //transform
   BBox = t.transformBoundingBox( BBox );
   return BBox;
+}
+
+void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const
+{
+  if ( !mXMLDoc )
+  {
+    return;
+  }
+
+  //find legend section
+  QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
+  if ( legendElement.isNull() )
+  {
+    return;
+  }
+
+  QStringList layerList;
+
+  bool useDrawingOrder = ( legendElement.attribute( "updateDrawingOrder" ) == "false" );
+  QDomNodeList layerNodeList = legendElement.elementsByTagName( "legendlayer" );
+  if ( !useDrawingOrder ) //bottom to top
+  {
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      layerList.prepend( layerNodeList.at( i ).toElement().attribute( "name" ) );
+    }
+  }
+  else
+  {
+    QVector<QString> orderedLayerNames;
+    orderedLayerNames.resize( layerNodeList.size() );
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      QString layerName = layerNodeList.at( i ).toElement().attribute( "name" );
+      int order = layerNodeList.at( i ).toElement().attribute( "drawingOrder" ).toInt();
+      orderedLayerNames[order] = layerName;
+    }
+
+    QVector<QString>::const_iterator vectorIt = orderedLayerNames.constBegin();
+    for ( ; vectorIt != orderedLayerNames.constEnd(); ++vectorIt )
+    {
+      layerList.prepend( *vectorIt );
+    }
+  }
+  QDomElement layerDrawingOrderElem = doc.createElement( "LayerDrawingOrder" );
+  QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
+  layerDrawingOrderElem.appendChild( drawingOrderText );
+  parentElem.appendChild( layerDrawingOrderElem );
 }

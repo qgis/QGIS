@@ -176,6 +176,8 @@ class QgsProjectParser: public QgsConfigParser
     void setSelectionColor();
     /**Reads maxWidth / maxHeight from project and sets it to QgsConfigParser::mMaxWidth / mMaxHeight*/
     void setMaxWidthHeight();
+    /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
+    void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
 };
 
 #endif // QGSPROJECTPARSER_H
