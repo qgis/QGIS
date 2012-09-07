@@ -229,8 +229,12 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
   for ( int i = 0; i < legendChildren.size(); ++i )
   {
     QDomElement currentChildElem = legendChildren.at( i ).toElement();
-
     QDomElement layerElem = doc.createElement( "Layer" );
+    if ( fullProjectSettings )
+    {
+      layerElem.setAttribute( "visible", !( currentChildElem.attribute( "checked" ) == "Qt::Unchecked" ) );
+    }
+
 
     if ( currentChildElem.tagName() == "legendgroup" )
     {
