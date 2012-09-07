@@ -413,8 +413,8 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
 
-    //min/max scales for layer
-
+    //displayfield
+    layerElem.setAttribute( "displayField", vLayer->displayField() );
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
