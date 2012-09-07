@@ -46,7 +46,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void setCollapsed( bool collapse );
 
   protected:
-    void paintEvent( QPaintEvent * );
+    void init();
     void showEvent( QShowEvent * event );
 
   private:

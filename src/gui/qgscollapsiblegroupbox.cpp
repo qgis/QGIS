@@ -23,44 +23,48 @@
 #include <QStyleOptionGroupBox>
 #include <QStylePainter>
 #include <QLayout>
+#include <QProxyStyle>
+
+class QgsCollapsibleGroupBoxStyle : public QProxyStyle
+{
+  public:
+    QgsCollapsibleGroupBoxStyle( QStyle * style = 0 ) : QProxyStyle( style ) {}
+
+    void drawPrimitive( PrimitiveElement element, const QStyleOption *option,
+                        QPainter *painter, const QWidget *widget ) const
+    {
+      if ( element == PE_IndicatorCheckBox )
+      {
+        const QgsCollapsibleGroupBox* groupBox =
+          dynamic_cast<const QgsCollapsibleGroupBox*>( widget );
+        if ( groupBox )
+        {
+          return drawPrimitive( groupBox->isCollapsed() ?
+                                PE_IndicatorArrowRight : PE_IndicatorArrowDown,
+                                option, painter, widget );
+        }
+      }
+      return QProxyStyle::drawPrimitive( element, option, painter, widget );
+    }
+};
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
     : QGroupBox( parent ), mCollapsed( false )
 {
-  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( setToggled( bool ) ) );
+  init();
 }
 
-QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title, QWidget *parent )
+QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
+    QWidget *parent )
     : QGroupBox( title, parent ), mCollapsed( false )
-{}
-
-void QgsCollapsibleGroupBox::paintEvent( QPaintEvent * event )
 {
-  QGroupBox::paintEvent( event );
+  init();
+}
 
-  // paint expand/collapse icon only if groupbox is checkable as icon replaces check box
-  if ( ! isCheckable() )
-    return;
-
-  // create background mask + expand/collapse icon
-  // icons from http://www.iconfinder.com/search/?q=iconset%3AsplashyIcons
-  QPixmap icon( mCollapsed ?
-                QgsApplication::getThemePixmap( "/mIconExpand.png" ) :
-                QgsApplication::getThemePixmap( "/mIconCollapse.png" ) );
-  QPixmap background( icon.width() + 2, icon.height() + 2 );
-  background.fill( palette().color( backgroundRole() ) );
-
-  // paint on top of checkbox - does this work with all platforms/themes?
-  QStylePainter paint( this );
-  QStyleOptionGroupBox option;
-  initStyleOption( &option );
-  paint.drawComplexControl( QStyle::CC_GroupBox, option );
-  paint.drawItemPixmap( option.rect.adjusted( 4, -1, 0, 0 ),
-                        Qt::AlignTop | Qt::AlignLeft,
-                        background );
-  paint.drawItemPixmap( option.rect.adjusted( 6, 0, 0, 0 ),
-                        Qt::AlignTop | Qt::AlignLeft,
-                        icon );
+void QgsCollapsibleGroupBox::init()
+{
+  setStyle( new QgsCollapsibleGroupBoxStyle( QApplication::style() ) );
+  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( setToggled( bool ) ) );
 }
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
