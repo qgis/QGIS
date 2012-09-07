@@ -1266,9 +1266,6 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
   }
 
   QDomElement composerTemplatesElem = doc.createElement( "ComposerTemplates" );
-  composerTemplatesElem.setAttribute( "xmlns:wms", "http://www.opengis.net/wms" );
-  composerTemplatesElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  composerTemplatesElem.setAttribute( "xsi:type", "wms:_ExtendedCapabilities" );
 
   for ( int i = 0; i < composerNodeList.size(); ++i )
   {
@@ -1734,19 +1731,18 @@ void QgsProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument& d
   }
   else
   {
-    QVector<QString> orderedLayerNames;
-    orderedLayerNames.resize( layerNodeList.size() );
+    QMap<int, QString> orderedLayerNames;
     for ( int i = 0; i < layerNodeList.size(); ++i )
     {
       QString layerName = layerNodeList.at( i ).toElement().attribute( "name" );
       int order = layerNodeList.at( i ).toElement().attribute( "drawingOrder" ).toInt();
-      orderedLayerNames[order] = layerName;
+      orderedLayerNames.insert( order, layerName );
     }
 
-    QVector<QString>::const_iterator vectorIt = orderedLayerNames.constBegin();
-    for ( ; vectorIt != orderedLayerNames.constEnd(); ++vectorIt )
+    QMap<int, QString>::const_iterator orderIt = orderedLayerNames.constBegin();
+    for ( ; orderIt != orderedLayerNames.constEnd(); ++orderIt )
     {
-      layerList.prepend( *vectorIt );
+      layerList.prepend( *orderIt );
     }
   }
   QDomElement layerDrawingOrderElem = doc.createElement( "LayerDrawingOrder" );

@@ -206,7 +206,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   capabilityElement.appendChild( elem );
 
   //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
-  if ( mConfigParser )
+  if ( mConfigParser && fullProjectInformation )
   {
     mConfigParser->printCapabilities( capabilityElement, doc );
   }
