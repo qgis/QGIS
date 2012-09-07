@@ -789,14 +789,14 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
 
 static QVariant fcnScale( const QVariantList&, QgsFeature*, QgsExpression* parent )
 {
-    return QVariant( parent->scale() );
+  return QVariant( parent->scale() );
 }
 
 static QVariant fcnFormatNumber( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
-    double value = getDoubleValue( values.at(0), parent );
-    int places = getIntValue( values.at(1), parent );
-    return QString( "%L1" ).arg( value, 0, 'f', places );
+  double value = getDoubleValue( values.at( 0 ), parent );
+  int places = getIntValue( values.at( 1 ), parent );
+  return QString( "%L1" ).arg( value, 0, 'f', places );
 }
 
 QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;

@@ -158,7 +158,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Load a template document
         @param doc template document
-        @param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )*/
+        @param substitutionMap map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
+        @param addUndoCommands whether or not to add undo commands
+      */
     bool loadFromTemplate( const QDomDocument& doc, QMap<QString, QString>* substitutionMap = 0, bool addUndoCommands = false );
 
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)

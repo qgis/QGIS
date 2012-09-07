@@ -27,7 +27,7 @@
 
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent ), mCurrentItem ( NULL )
+    : QFrame( parent ), mCurrentItem( NULL )
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -66,22 +66,22 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
     return;
 
   if ( item == mCurrentItem )
-   {
-     if ( mCurrentItem )
-     {
-       mLayout->removeWidget( mCurrentItem->widget() );
-       mCurrentItem->widget()->hide();
-       mCurrentItem = 0;
-     }
+  {
+    if ( mCurrentItem )
+    {
+      mLayout->removeWidget( mCurrentItem->widget() );
+      mCurrentItem->widget()->hide();
+      mCurrentItem = 0;
+    }
 
-     if ( !mList.isEmpty() )
-     {
-       pushItem( mList.first() );
-     }
-     else
-     {
-       hide();
-     }
+    if ( !mList.isEmpty() )
+    {
+      pushItem( mList.first() );
+    }
+    else
+    {
+      hide();
+    }
   }
   else
   {
@@ -102,7 +102,7 @@ bool QgsMessageBar::popWidget( QWidget *widget )
     return true;
   }
 
-  foreach( QgsMessageBarItem *item, mList )
+  foreach ( QgsMessageBarItem *item, mList )
   {
     if ( item->widget() == widget )
     {

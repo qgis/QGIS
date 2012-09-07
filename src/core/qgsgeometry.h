@@ -227,7 +227,7 @@ class CORE_EXPORT QgsGeometry
     double sqrDistToVertexAt( QgsPoint& point, int atVertex );
 
     /**
-     * Searches for the the closest vertex in this geometry to the given point.
+     * Searches for the closest vertex in this geometry to the given point.
      * @param point Specifiest the point for search
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error

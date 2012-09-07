@@ -290,7 +290,7 @@ const int AFTER_RECENT_PATHS = 321;
   if the project file is null then
   set title text to just application name and version
   else
-  set set title text to the the project file name
+  set set title text to the project file name
   else
   set the title text to project title
   */
@@ -511,9 +511,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // create the notification widget for macros
   mMacrosWarn = QgsMessageBar::createMessage( tr( "Security warning:" ),
-                                              tr( "macros have been disabled." ),
-                                              QgsApplication::getThemeIcon( "/mIconWarn.png" ),
-                                              mInfoBar );
+                tr( "macros have been disabled." ),
+                QgsApplication::getThemeIcon( "/mIconWarn.png" ),
+                mInfoBar );
 
   QToolButton *btnEnableMacros = new QToolButton( mMacrosWarn );
   btnEnableMacros->setText( tr( "Enable" ) );

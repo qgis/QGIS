@@ -240,7 +240,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
-     * @return a QString withe the style file name
+     * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
      * @note This method was added in QGIS 1.8
      */

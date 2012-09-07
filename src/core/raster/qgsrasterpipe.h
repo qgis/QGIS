@@ -28,6 +28,10 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterprojector.h"
 
+#ifdef _MSC_VER
+#undef interface
+#endif
+
 /** \ingroup core
  * Base class for processing modules.
  */

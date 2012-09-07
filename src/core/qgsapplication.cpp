@@ -91,10 +91,10 @@ void QgsApplication::init( QString customConfigPath )
 
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
-  foreach( QString path, QStringList() << "" << "/.." << "/bin" )
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" )
   {
     f.setFileName( prefixPath + path + "/path.txt" );
-    if( f.exists() )
+    if ( f.exists() )
       break;
   }
   if ( f.exists() && f.open( QIODevice::ReadOnly ) )

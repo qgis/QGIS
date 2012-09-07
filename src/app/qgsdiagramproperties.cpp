@@ -376,6 +376,7 @@ void QgsDiagramProperties::on_mAddCategoryPushButton_clicked()
 
 void QgsDiagramProperties::on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column )
 {
+  Q_UNUSED( column );
   addAttribute( item );
 }
 
@@ -480,7 +481,7 @@ void QgsDiagramProperties::apply()
     if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueIsNumeric )
     {
       QMessageBox::warning( this, tr( "No attribute value specified" ),
-                            tr( "You did not specify a maximum value for the diagram size. Please specify the the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
+                            tr( "You did not specify a maximum value for the diagram size. Please specify the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
     }
 
     QgsDiagram* diagram = 0;

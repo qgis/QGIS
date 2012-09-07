@@ -219,7 +219,7 @@ void QwtPolarCanvas::drawContents( QPainter *painter )
 }
 
 /*!
-  Draw the the canvas
+  Draw the canvas
 
   Paints all plot items to the canvasRect, using QwtPolarPlot::drawCanvas
   and updates the paint cache.

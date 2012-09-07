@@ -220,6 +220,7 @@ QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
 
 void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup )
 {
+  Q_UNUSED( slot );
   QAction* aNo = new QAction( tr( "- no field -" ), actionGroup );
   aNo->setCheckable( true );
   menu->addAction( aNo );

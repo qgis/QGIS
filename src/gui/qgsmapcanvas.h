@@ -336,7 +336,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void renderComplete( QPainter * );
 
     /** Emitted when canvas finished a refresh request.
-	\note Added in 2.0 */
+    \note Added in 2.0 */
     void mapCanvasRefreshed();
 
     /** Emitted when the canvas is about to be rendered.

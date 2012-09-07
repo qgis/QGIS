@@ -207,7 +207,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
   // Open the file and get number of rows, etc. We assume that the
   // file has a header row and process accordingly. Caller should make
-  // sure the the delimited file is properly formed.
+  // sure that the delimited file is properly formed.
   mFile = new QFile( mFileName );
   if ( !mFile->open( QIODevice::ReadOnly ) )
   {
