@@ -92,6 +92,9 @@ TARGET_LINK_LIBRARIES(qgis.g.info
   ${GRASS_LIBRARY_gproj}
   ${GDAL_LIBRARY}
 )
+IF (UNIX)
+  TARGET_LINK_LIBRARIES(qgis.g.info m)
+ENDIF (UNIX)
 
 ########################################################
 # Install
