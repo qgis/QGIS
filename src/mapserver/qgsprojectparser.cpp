@@ -24,7 +24,6 @@
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
@@ -425,10 +424,60 @@ void QgsProjectParser::addLayerProjectSettings( QDomElement& layerElem, QDomDocu
       QDomElement attributeElem = doc.createElement( "Attribute" );
       attributeElem.setAttribute( "name", fieldIt->name() );
       attributeElem.setAttribute( "type", QVariant::typeToName( fieldIt->type() ) );
-      attributeElem.setAttribute( "editType", vLayer->editType( fieldIt.key() ) );
+
+      //edit type to text
+      QgsVectorLayer::EditType typeEnum = vLayer->editType( fieldIt.key() );
+      attributeElem.setAttribute( "editType", editTypeString( typeEnum ) );
+      attributeElem.setAttribute( "comment", fieldIt->comment() );
+      attributeElem.setAttribute( "length", fieldIt->length() );
+      attributeElem.setAttribute( "precision", fieldIt->precision() );
       attributesElem.appendChild( attributeElem );
     }
     layerElem.appendChild( attributesElem );
+  }
+}
+
+//not very nice, needs to be kept in sync with QgsVectorLayer class...
+QString QgsProjectParser::editTypeString( QgsVectorLayer::EditType type )
+{
+  switch ( type )
+  {
+    case QgsVectorLayer::LineEdit:
+      return "LineEdit";
+    case QgsVectorLayer::UniqueValues:
+      return "UniqueValues";
+    case QgsVectorLayer::UniqueValuesEditable:
+      return "UniqueValuesEditable";
+    case QgsVectorLayer::ValueMap:
+      return "ValueMap";
+    case QgsVectorLayer::Classification:
+      return "Classification";
+    case QgsVectorLayer::EditRange:
+      return "EditRange";
+    case QgsVectorLayer::SliderRange:
+      return "SliderRange";
+    case QgsVectorLayer::CheckBox:
+      return "CheckBox";
+    case QgsVectorLayer::FileName:
+      return "FileName";
+    case QgsVectorLayer::Enumeration:
+      return "Enumeration";
+    case QgsVectorLayer::Immutable:
+      return "Immutable";
+    case QgsVectorLayer::Hidden:
+      return "Hidden";
+    case QgsVectorLayer::TextEdit:
+      return "TextEdit";
+    case QgsVectorLayer::Calendar:
+      return "Calendar";
+    case QgsVectorLayer::DialRange:
+      return "DialRange";
+    case QgsVectorLayer::ValueRelation:
+      return "ValueRelation";
+    case QgsVectorLayer::UuidGenerator:
+      return "UuidGenerator";
+    default:
+      return "Unknown";
   }
 }
 

@@ -19,6 +19,7 @@
 #define QGSPROJECTPARSER_H
 
 #include "qgsconfigparser.h"
+#include "qgsvectorlayer.h"
 #include <QList>
 #include <QPair>
 
@@ -178,6 +179,8 @@ class QgsProjectParser: public QgsConfigParser
     void setMaxWidthHeight();
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
     void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
+
+    static QString editTypeString( QgsVectorLayer::EditType type );
 };
 
 #endif // QGSPROJECTPARSER_H
