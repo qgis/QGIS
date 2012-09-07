@@ -76,7 +76,9 @@ class CORE_EXPORT QgsRectangle
     //! Center point of the rectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
+    // @note added in version 1.9
     void scale( double scaleFactor, const QgsPoint *c = 0 );
+    //! Deprecated in 1.9, use scale instead
     Q_DECL_DEPRECATED void expand( double scaleFactor, const QgsPoint *c = 0 ) { return scale( scaleFactor * 2.0, c ); }
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
