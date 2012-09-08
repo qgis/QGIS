@@ -504,14 +504,22 @@ int main( int argc, char *argv[] )
   QCoreApplication::setApplicationName( "QGIS" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
+  QSettings* customizationsettings;
   if ( !optionpath.isEmpty() || !configpath.isEmpty() )
   {
     // tell QSettings to use INI format and save the file in custom config path
     QSettings::setDefaultFormat( QSettings::IniFormat );
-    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionpath.isEmpty() ? configpath : optionpath );
+    QString path = optionpath.isEmpty() ? configpath : optionpath;
+    QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
+    customizationsettings = new QSettings(QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION");
+  }
+  else
+  {
+    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION" );
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
+   QgsCustomization::instance()->setSettings( customizationsettings );
   QgsCustomization::instance()->loadDefault();
 
 #ifdef Q_OS_MACX
