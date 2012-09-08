@@ -123,6 +123,7 @@ class CORE_EXPORT QgsPalLayerSettings
     int xQuadOffset, yQuadOffset;
     double xOffset, yOffset; // offset from point in mm or map units
     double angleOffset; // rotation applied to offset labels
+    bool centroidWhole; // whether centroid calculated from whole or visible polygon
     QFont textFont;
     QString textNamedStyle;
     QColor textColor;

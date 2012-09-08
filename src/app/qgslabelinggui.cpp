@@ -99,6 +99,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
   mXQuadOffset = lyr.xQuadOffset;
   mYQuadOffset = lyr.yQuadOffset;
+  mCentroidRadioWhole->setChecked( lyr.centroidWhole );
+  mCentroidFrame->setVisible( false );
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
@@ -106,6 +108,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       radAroundCentroid->setChecked( true );
       spinDistPoint->setValue( lyr.dist );
       mPointDistanceUnitComboBox->setCurrentIndex( distUnitIndex );
+      mCentroidFrame->setVisible( layer->geometryType() == QGis::Polygon );
+
       //spinAngle->setValue( lyr.angle );
       break;
     case QgsPalLayerSettings::OverPoint:
@@ -126,6 +130,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       mPointOffsetYOffsetSpinBox->setValue( lyr.yOffset );
       mPointOffsetUnitsComboBox->setCurrentIndex( lyr.labelOffsetInMapUnits ? 1 : 0 );
       mPointOffsetAngleSpinBox->setValue( lyr.angleOffset );
+      mCentroidFrame->setVisible( layer->geometryType() == QGis::Polygon );
 
       break;
     case QgsPalLayerSettings::Line:
@@ -290,6 +295,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.dist = 0;
   lyr.placementFlags = 0;
 
+  lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
@@ -820,15 +826,20 @@ void QgsLabelingGui::changeBufferColor()
 
 void QgsLabelingGui::updateOptions()
 {
+  mCentroidFrame->setVisible( false );
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsPoint );
+    mCentroidFrame->setVisible( stackedPlacement->currentWidget() == pagePolygon
+                                && radAroundCentroid->isChecked() );
   }
   else if (( stackedPlacement->currentWidget() == pagePoint && radOverPoint->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
   {
     stackedOptions->setCurrentWidget( pageOptionsPointOffset );
+    mCentroidFrame->setVisible( stackedPlacement->currentWidget() == pagePolygon
+                                && radOverCentroid->isChecked() );
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )

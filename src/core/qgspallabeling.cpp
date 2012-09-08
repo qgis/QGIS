@@ -147,6 +147,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   xOffset = 0;
   yOffset = 0;
   angleOffset = 0;
+  centroidWhole = false;
   //textFont = QFont();
   textNamedStyle = QString( "" );
   textColor = Qt::black;
@@ -193,6 +194,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   xOffset = s.xOffset;
   yOffset = s.yOffset;
   angleOffset = s.angleOffset;
+  centroidWhole = s.centroidWhole;
   textFont = s.textFont;
   textNamedStyle = s.textNamedStyle;
   textColor = s.textColor;
@@ -363,6 +365,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   xOffset = layer->customProperty( "labeling/xOffset", QVariant( 0.0 ) ).toDouble();
   yOffset = layer->customProperty( "labeling/yOffset", QVariant( 0.0 ) ).toDouble();
   angleOffset = layer->customProperty( "labeling/angleOffset", QVariant( 0.0 ) ).toDouble();
+  centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
   QString fontFamily = layer->customProperty( "labeling/fontFamily" ).toString();
   double fontSize = layer->customProperty( "labeling/fontSize" ).toDouble();
   int fontWeight = layer->customProperty( "labeling/fontWeight" ).toInt();
@@ -421,6 +424,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/xOffset", xOffset );
   layer->setCustomProperty( "labeling/yOffset", yOffset );
   layer->setCustomProperty( "labeling/angleOffset", angleOffset );
+  layer->setCustomProperty( "labeling/centroidWhole", centroidWhole );
 
   layer->setCustomProperty( "labeling/fontFamily", textFont.family() );
   layer->setCustomProperty( "labeling/namedStyle", textNamedStyle );
@@ -676,10 +680,29 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     return;
   }
 
+  // whether we're going to create a centroid for polygon
+  bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
+                         || placement == QgsPalLayerSettings::OverPoint )
+                       && geom->type() == QGis::Polygon );
+
+  // CLIP the geometry if it is bigger than the extent
+  // don't clip if centroid is requested for whole feature
+  bool do_clip = false;
+  if ( !centroidPoly || ( centroidPoly && !centroidWhole ) )
+  {
+    do_clip = !extentGeom->contains( geom );
+    if ( do_clip )
+    {
+      geom = geom->intersection( extentGeom ); // creates new geometry
+      if ( !geom )
+      {
+        return;
+      }
+    }
+  }
+
   // convert centroids to points before processing to use GEOS instead of PAL calculation
-  if (( placement == QgsPalLayerSettings::AroundPoint
-        || placement == QgsPalLayerSettings::OverPoint )
-      && geom->type() == QGis::Polygon )
+  if ( centroidPoly )
   {
     QgsGeometry* centroidpt = geom->centroid();
     if ( centroidpt->isGeosValid() && extentGeom->contains( centroidpt ) )
@@ -692,34 +715,17 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     }
     else
     {
-      // invalid geom type, skip registering feature with PAL
+      // invalid geom type or outside extents
       return;
     }
   }
 
-  // CLIP the geometry if it is bigger than the extent
-  QgsGeometry* geomClipped = NULL;
-  GEOSGeometry* geos_geom;
-  bool do_clip = !extentGeom->contains( geom );
-  if ( do_clip )
-  {
-    geomClipped = geom->intersection( extentGeom ); // creates new geometry
-    if ( !geomClipped )
-    {
-      return;
-    }
-    geos_geom = geomClipped->asGeos();
-  }
-  else
-  {
-    geos_geom = geom->asGeos();
-  }
+  GEOSGeometry* geos_geom = geom->asGeos();
 
   if ( geos_geom == NULL )
     return; // invalid geometry
   GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
-  if ( do_clip )
-    delete geomClipped;
+
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
@@ -921,12 +927,11 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       pal::LabelPosition* lp = new LabelPosition( 1, xPos, yPos, labelX, labelY,
           ( angleOffset * M_PI / 180 ), 0.0, fpart );
 
+      // lp->getWidth or lp->getHeight doesn't account for rotation, get bbox instead
       double amin[2], amax[2];
       lp->getBoundingBox( amin, amax );
       QgsRectangle lblrect = QgsRectangle( amin[0], amin[1], amax[0], amax[1] );
 
-//      labelW = lp->getWidth();
-//      labelH = lp->getHeight();
       labelW = lblrect.width();
       labelH = lblrect.height();
       delete fpart;
