@@ -113,7 +113,11 @@ void TestQgsWcsProvider::read( )
   {
     foreach ( QString identifier, identifiers )
     {
-      QString filePath = mTestDataDir + "/" + identifier + ".tif";
+      foreach ( QString ext, QStringList() << ".tif" << ".tif.aux.xml" )
+      {
+        QFile::remove( QDir::tempPath() + "/" + identifier + ext );
+        QVERIFY( QFile::copy( mTestDataDir + "/" + identifier + ext, QDir::tempPath() + "/" + identifier + ext ) );
+      }
 
       QgsDataSourceURI uri;
       uri.setParam( "url", mUrl );
@@ -121,7 +125,7 @@ void TestQgsWcsProvider::read( )
       uri.setParam( "crs", "epsg:4326" );
       uri.setParam( "version", version );
 
-      if ( !read( identifier, uri.encodedUri(), filePath, mReport ) )
+      if ( !read( identifier, uri.encodedUri(), QDir::tempPath() + "/" + identifier + ".tif", mReport ) )
       {
         ok = false;
       }

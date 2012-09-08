@@ -67,24 +67,9 @@ def getQgisTestApp():
 
     if QGISAPP is None:
         myGuiFlag = True  # All test will run qgis in gui mode
-        QGISAPP = QgsApplication(sys.argv, myGuiFlag)
-        # Note: QGIS_PREFIX_PATH is set by cmake to the output dir
-        if 'QGIS_PREFIX_PATH' in os.environ:
-            myPath = os.environ['QGIS_PREFIX_PATH']
-            myUseDefaultPathFlag = True
-            QGISAPP.setPrefixPath(myPath, myUseDefaultPathFlag)
 
-        if sys.platform.startswith('darwin'):
-            # override resource paths, otherwise looks for Resources in app
-            if 'QGIS_MAC_PKGDATA_DIR' in os.environ:
-                myPkgPath = os.environ['QGIS_MAC_PKGDATA_DIR']
-                QGISAPP.setPkgDataPath(myPkgPath)
-            if 'QGIS_MAC_SVG_DIR'  in os.environ:
-                mySVGPath = os.environ['QGIS_MAC_SVG_DIR']
-                mySVGPaths = QGISAPP.svgPaths()
-                # doesn't get rid of incorrect path, just adds correct one
-                mySVGPaths.prepend(mySVGPath)
-                QGISAPP.setDefaultSvgPaths(mySVGPaths)
+        # Note: QGIS_PREFIX_PATH is evaluated in QgsApplication - no need to mess with it here.
+        QGISAPP = QgsApplication(sys.argv, myGuiFlag)
 
         QGISAPP.initQgis()
         s = QGISAPP.showSettings()
