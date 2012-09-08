@@ -169,10 +169,12 @@
     <file>themes/default/mActionZoomToLayer.png</file>
     <file>themes/default/mActionZoomToSelected.png</file>
     <file>themes/default/mIconClose.png</file>
+    <file>themes/default/mIconCollapse.png</file>
     <file>themes/default/mIconConnect.png</file>
     <file>themes/default/mIconDbSchema.png</file>
     <file>themes/default/mIconDelete.png</file>
     <file>themes/default/mIconEditable.png</file>
+    <file>themes/default/mIconExpand.png</file>
     <file>themes/default/mIconFavourites.png</file>
     <file>themes/default/mIconFirst.png</file>
     <file>themes/default/mIconGeometryLayer.png</file>

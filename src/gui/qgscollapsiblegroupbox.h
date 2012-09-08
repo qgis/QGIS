@@ -27,6 +27,8 @@
 
 #include <QGroupBox>
 
+class QToolButton;
+
 class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
 {
     Q_OBJECT
@@ -42,7 +44,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void expanded( QWidget* );
 
   public slots:
-    void setToggled( bool toggled ) { setCollapsed( ! toggled ); }
+    void checkboxToggled();
+    void toggleCollapsed();
     void setCollapsed( bool collapse );
 
   protected:
@@ -53,6 +56,8 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     bool mCollapsed;
     QMargins mMargins;
     QList< QWidget* > mHiddenWidgets;
+    QToolButton* mDisclosure;
+    QString mDisclosureName;
 };
 
 #endif

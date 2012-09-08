@@ -20,33 +20,10 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#include <QStyleOptionGroupBox>
-#include <QStylePainter>
+#include <QToolButton>
 #include <QLayout>
-#include <QProxyStyle>
+#include <QStyle>
 
-class QgsCollapsibleGroupBoxStyle : public QProxyStyle
-{
-  public:
-    QgsCollapsibleGroupBoxStyle( QStyle * style = 0 ) : QProxyStyle( style ) {}
-
-    void drawPrimitive( PrimitiveElement element, const QStyleOption *option,
-                        QPainter *painter, const QWidget *widget ) const
-    {
-      if ( element == PE_IndicatorCheckBox )
-      {
-        const QgsCollapsibleGroupBox* groupBox =
-          dynamic_cast<const QgsCollapsibleGroupBox*>( widget );
-        if ( groupBox )
-        {
-          return drawPrimitive( groupBox->isCollapsed() ?
-                                PE_IndicatorArrowRight : PE_IndicatorArrowDown,
-                                option, painter, widget );
-        }
-      }
-      return QProxyStyle::drawPrimitive( element, option, painter, widget );
-    }
-};
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
     : QGroupBox( parent ), mCollapsed( false )
@@ -63,16 +40,54 @@ QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
 
 void QgsCollapsibleGroupBox::init()
 {
-  setStyle( new QgsCollapsibleGroupBoxStyle( QApplication::style() ) );
-  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( setToggled( bool ) ) );
+
+  connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkboxToggled() ) );
+
+  QString ss;
+  ss += "QGroupBox {";
+  ss += "  margin-top: 28px;";  // fix for non-checkbox-groupbox spacing
+  ss += "}";
+  ss += "QGroupBox::title {";
+  ss += "  subcontrol-origin: margin;";
+  ss += "  subcontrol-position: top left;";
+  ss += "  margin-left: 24px;";  // offset for disclosure triangle
+  ss += "  margin-top: 10px;";  // offset to match extra top margin
+  ss += "}";
+  setStyleSheet( ss );
+
+  mDisclosure = new QToolButton( this );
+  mDisclosureName = QString( "grpboxDisclosure" );
+  mDisclosure->setObjectName( mDisclosureName );
+  mDisclosure->setFixedSize( 16, 16 );
+  mDisclosure->move( 0, 10 ); // match title offset
+  mDisclosure->setIconSize( QSize( 16, 16 ) );
+
+  // get rid of toolbutton background
+  QString ssd;
+  ssd += QString( "QToolButton#%1 {" ).arg( mDisclosureName );
+  ssd += "  background-color: rgba(255, 255, 255, 0);";
+  ssd += "}";
+  mDisclosure->setStyleSheet( ssd );
+
+  connect( mDisclosure, SIGNAL( clicked() ), this, SLOT( toggleCollapsed() ) );
 }
+
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
   QGroupBox::showEvent( event );
   // collapse if needed - any calls to setCollapsed() before have no effect
-  if ( isCheckable() && ! isChecked() && ! isCollapsed() )
-    setCollapsed( true );
+  setCollapsed( true );
+}
+
+void QgsCollapsibleGroupBox::checkboxToggled()
+{
+  mDisclosure->setEnabled( true ); // always keep enabled
+}
+
+void QgsCollapsibleGroupBox::toggleCollapsed()
+{
+  setCollapsed( !mCollapsed );
 }
 
 void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
@@ -82,41 +97,30 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
 
   mCollapsed = collapse;
 
-  // minimize layout margins and save for subsequent restore
-  if ( collapse )
-  {
-    if ( layout() )
-    {
-      mMargins = layout()->contentsMargins();
-      layout()->setContentsMargins( 1, 1, 1, 1 );
-    }
-  }
-  else
-  {
-    if ( layout() )
-    {
-      layout()->setContentsMargins( mMargins );
-    }
-  }
+  setFlat( collapse );
+  setMaximumHeight( collapse ? 36 : 16777215 );
 
   // if we are collapsing, save hidden widgets in a list
   if ( collapse )
   {
+    mDisclosure->setIcon( QgsApplication::getThemeIcon( "/mIconExpand.png" ) );
     mHiddenWidgets.clear();
     foreach ( QWidget *widget, findChildren<QWidget*>() )
     {
-      if ( widget->isHidden() )
+      if ( widget->isHidden() && widget->objectName() != mDisclosureName )
         mHiddenWidgets << widget;
     }
   }
 
   // show/hide widgets
   foreach ( QWidget *widget, findChildren<QWidget*>() )
-    widget->setHidden( collapse );
+    if ( widget->objectName() != mDisclosureName )
+      widget->setHidden( collapse );
 
   // if we are expanding, re-hide saved hidden widgets
   if ( ! collapse )
   {
+    mDisclosure->setIcon( QgsApplication::getThemeIcon( "/mIconCollapse.png" ) );
     foreach ( QWidget *widget, mHiddenWidgets )
     {
       widget->setHidden( true );
