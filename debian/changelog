@@ -4,8 +4,10 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * include ows provider
   * include wcs provider
   * symbology-ng-style now in sqlite3
+  * include cpt-city files
+  * support DEB_BUILD_OPTIONS' parallel=n
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 16 Aug 2012 09:47:52 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 08 Sep 2012 12:59:40 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
