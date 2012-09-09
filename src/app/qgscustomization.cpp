@@ -809,7 +809,7 @@ void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget, QS
     //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
     if ( on )
     {
-      QgsCustomization::customizeWidget( myPath, w, settings);
+      QgsCustomization::customizeWidget( myPath, w, settings );
     }
     else
     {
