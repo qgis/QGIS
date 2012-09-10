@@ -119,16 +119,11 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
 
   // for consistent look/spacing across platforms when collapsed
   setFlat( collapse );
-  setMaximumHeight( collapse ? 28 : 16777215 );
-
-  if ( collapse )
-  {
-    mCollapseButton->setIcon( mExpandIcon );
-  }
-  else
-  {
-    mCollapseButton->setIcon( mCollapseIcon );
-  }
+  // avoid flicker in X11
+  QApplication::processEvents();
+  // set maximum height to 25 to hide contents - does this work in all envs?
+  setMaximumHeight( collapse ? 25 : 16777215 );
+  mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
 
   emit collapsedStateChanged( this );
 }
