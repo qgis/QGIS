@@ -66,28 +66,6 @@ class QgisOutputCatcher:
 
 sys.stdout = QgisOutputCatcher()
 
-class ConsoleHighlighter(QSyntaxHighlighter):
-    EDIT_LINE, ERROR, OUTPUT, INIT = range(4)
-    def __init__(self, doc):
-        QSyntaxHighlighter.__init__(self,doc)
-        formats = { self.OUTPUT    : Qt.black,
-            self.ERROR     : Qt.red,
-            self.EDIT_LINE : Qt.darkGreen,
-            self.INIT      : Qt.gray }
-        self.f = {}
-        for tag, color in formats.iteritems():
-              self.f[tag] = QTextCharFormat()
-              self.f[tag].setForeground(color)
-
-    def highlightBlock(self, txt):
-        size = txt.length()
-        state = self.currentBlockState()
-        if state == self.OUTPUT or state == self.ERROR or state == self.INIT:
-              self.setFormat(0,size, self.f[state])
-        # highlight prompt only
-        if state == self.EDIT_LINE:
-              self.setFormat(0,3, self.f[self.EDIT_LINE])
-
 class PythonConsole(QDockWidget):
     def __init__(self, parent=None):
         QDockWidget.__init__(self, parent)

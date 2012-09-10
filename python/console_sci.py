@@ -26,6 +26,7 @@ from PyQt4.Qsci import QsciScintilla, QsciScintillaBase, QsciLexerPython
 #from qgis.utils import iface
 
 import sys
+import os
 import traceback
 import code
 
@@ -142,8 +143,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setFont(font, 3)
             self.lexer.setFont(font, 4)
             self.api = QsciAPIs(self.lexer)
-            self.api.load("API/PyQGIS_1.8.api")
-            self.api.load("API/osgeo_gdal-ogr_1.9.1-1.api")
+            self.api.load(os.path.dirname(__file__) + "/api/PyQGIS_1.8.api")
+            self.api.load(os.path.dirname(__file__) + "/api/osgeo_gdal-ogr_1.9.1-1.api")
+#            self.api.load("qgis.networkanalysis.api")
+#            self.api.load("qgis.gui.api")
+#            self.api.load("qgis.core.api")
+#            self.api.load("qgis.analysis.api")
             
             self.api.prepare()
             self.lexer.setAPIs(self.api)
