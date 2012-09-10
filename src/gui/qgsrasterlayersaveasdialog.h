@@ -58,13 +58,11 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRectangle outputRectangle() const;
     QList<QgsRasterNuller::NoData> noData() const;
 
-    QList< int > overviewList() const { return mPyramidsOptionsWidget->overviewList(); }
-    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const
-    { return ( QgsRasterDataProvider::RasterBuildPyramids ) mPyramidsButtonGroup->checkedId(); }
+    QList< int > overviewList() const;
+    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const;
     QString pyramidsResampling() const { return mPyramidsOptionsWidget->resamplingMethod(); }
     QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const
     { return mPyramidsOptionsWidget->pyramidsFormat(); }
-
 
     void hideFormat();
     void hideOutput();
@@ -94,14 +92,14 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
     void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
 
-    void groupBoxExpanded( QWidget * widget ) { mScrollArea->ensureWidgetVisible( widget ); }
+    void groupBoxExpanded( QWidget * widget );
     void on_mAddNoDataManuallyToolButton_clicked();
     void on_mLoadTransparentNoDataToolButton_clicked();
     void on_mRemoveSelectedNoDataToolButton_clicked();
     void on_mRemoveAllNoDataToolButton_clicked();
     void noDataCellTextEdited( const QString & text );
     void on_mTileModeCheckBox_toggled( bool toggled );
-    void on_mPyramidsButtonGroup_buttonClicked( int id );
+    void on_mPyramidsGroupBox_toggled( bool toggled );
     void populatePyramidsLevels();
 
   private:

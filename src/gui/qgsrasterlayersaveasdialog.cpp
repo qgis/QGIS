@@ -84,15 +84,11 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   {
     mPyramidsOptionsWidget->createOptionsWidget()->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
-    // init. pyramids button group
-    for ( int i = -2, j = 0 ; i >= -4 ; i--, j++ )
-      mPyramidsButtonGroup->setId( mPyramidsButtonGroup->button( i ), j );
     // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
     // if ( ! mDataProvider->hasPyramids() )
     //   mPyramidsButtonGroup->button( QgsRasterDataProvider::CopyExisting )->setEnabled( false );
-    mPyramidsButtonGroup->button( QgsRasterDataProvider::CopyExisting )->setEnabled( false );
-    mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagNo )->click();
-    mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagNo )->setChecked( true );
+    mPyramidsUseExistingCheckBox->setEnabled( false );
+    mPyramidsUseExistingCheckBox->setVisible( false );
 
     populatePyramidsLevels();
     connect( mPyramidsOptionsWidget, SIGNAL( overviewListChanged() ),
@@ -111,12 +107,10 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     okButton->setEnabled( false );
   }
 
-
   // this should scroll down to make widget visible, but it's not happening
   // (at least part of it is visible)...
-  connect( mCreateOptionsGroupBox, SIGNAL( expanded( QWidget* ) ),
+  connect( mCreateOptionsGroupBox, SIGNAL( collapsedStateChanged( QWidget* ) ),
            this, SLOT( groupBoxExpanded( QWidget* ) ) );
-
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -236,7 +230,7 @@ QString QgsRasterLayerSaveAsDialog::outputFormat() const
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
 {
-  return mCreateOptionsWidget ? mCreateOptionsWidget->options() : QStringList();
+  return mCreateOptionsGroupBox->isChecked() ? mCreateOptionsWidget->options() : QStringList();
 }
 
 QgsRectangle QgsRasterLayerSaveAsDialog::outputRectangle() const
@@ -535,6 +529,12 @@ void QgsRasterLayerSaveAsDialog::on_mRawModeRadioButton_toggled( bool checked )
   mNoDataGroupBox->setEnabled( checked && mDataProvider->bandCount() == 1 );
 }
 
+void QgsRasterLayerSaveAsDialog::groupBoxExpanded( QWidget * widget )
+{
+  if ( !mCreateOptionsGroupBox->isCollapsed() )
+    mScrollArea->ensureWidgetVisible( widget );
+}
+
 void QgsRasterLayerSaveAsDialog::on_mAddNoDataManuallyToolButton_clicked()
 {
   addNoDataRow( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
@@ -658,31 +658,15 @@ void QgsRasterLayerSaveAsDialog::on_mTileModeCheckBox_toggled( bool toggled )
     // enable pyramids
     if ( ! mPyramidsGroupBox->isChecked() )
       mPyramidsGroupBox->setChecked( true );
-    if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::PyramidsFlagNo )
-    {
-      mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagYes )->click();
-      mPyramidsButtonGroup->button( QgsRasterDataProvider::PyramidsFlagYes )->setChecked( true );
-    }
+    if ( mPyramidsGroupBox->isCollapsed() )
+      mPyramidsGroupBox->setCollapsed( false );
     mPyramidsOptionsWidget->checkAllLevels( true );
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mPyramidsButtonGroup_buttonClicked( int id )
+void QgsRasterLayerSaveAsDialog::on_mPyramidsGroupBox_toggled( bool toggled )
 {
-  if ( id == QgsRasterDataProvider::PyramidsFlagNo  || id == QgsRasterDataProvider::CopyExisting )
-  {
-    mPyramidsOptionsWidget->setEnabled( false );
-    mPyramidResolutionsLabel->setEnabled( false );
-    mPyramidResolutionsLineEdit->setEnabled( false );
-  }
-  else if ( id == QgsRasterDataProvider::PyramidsFlagYes )
-  {
-    mPyramidsOptionsWidget->setEnabled( true );
-    mPyramidResolutionsLabel->setEnabled( true );
-    mPyramidResolutionsLineEdit->setEnabled( true );
-  }
-  else
-    QgsDebugMsg( QString( "invalid button id %1" ).arg( id ) );
+  Q_UNUSED( toggled );
   populatePyramidsLevels();
 }
 
@@ -691,14 +675,14 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
   // if selection != "Build pyramids", get pyramids from actual layer
   QString text;
 
-  if ( mPyramidsButtonGroup->checkedId() != QgsRasterDataProvider::PyramidsFlagNo )
+  if ( mPyramidsGroupBox->isChecked() )
   {
     QList<QgsRasterPyramid> myPyramidList;
-    if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::CopyExisting )
+    if ( mPyramidsUseExistingCheckBox->isChecked() )
     {
       myPyramidList = mDataProvider->buildPyramidList();
     }
-    else if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::PyramidsFlagYes )
+    else
     {
       if ( ! mPyramidsOptionsWidget->overviewList().isEmpty() )
         myPyramidList = mDataProvider->buildPyramidList( mPyramidsOptionsWidget->overviewList() );
@@ -708,8 +692,7 @@ void QgsRasterLayerSaveAsDialog::populatePyramidsLevels()
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
     {
-      if ( mPyramidsButtonGroup->checkedId() == QgsRasterDataProvider::PyramidsFlagYes
-           || myRasterPyramidIterator->exists )
+      if ( myRasterPyramidIterator->exists )
       {
         text += QString::number( myRasterPyramidIterator->xDim ) + QString( "x" ) +
                 QString::number( myRasterPyramidIterator->yDim ) + " ";
@@ -753,6 +736,9 @@ void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
 QList<QgsRasterNuller::NoData> QgsRasterLayerSaveAsDialog::noData() const
 {
   QList<QgsRasterNuller::NoData> noDataList;
+  if ( ! mNoDataGroupBox->isChecked() )
+    return noDataList;
+
   for ( int r = 0 ; r < mNoDataTableWidget->rowCount(); r++ )
   {
     QgsRasterNuller::NoData noData;
@@ -762,3 +748,19 @@ QList<QgsRasterNuller::NoData> QgsRasterLayerSaveAsDialog::noData() const
   }
   return noDataList;
 }
+
+QList<int> QgsRasterLayerSaveAsDialog::overviewList() const
+{
+  return mPyramidsGroupBox->isChecked() ? mPyramidsOptionsWidget->overviewList() : QList<int>();
+}
+
+QgsRasterDataProvider::RasterBuildPyramids QgsRasterLayerSaveAsDialog::buildPyramidsFlag() const
+{
+  if ( ! mPyramidsGroupBox->isChecked() )
+    return QgsRasterDataProvider::PyramidsFlagNo;
+  else if ( mPyramidsUseExistingCheckBox->isChecked() )
+    return QgsRasterDataProvider::CopyExisting;
+  else
+    return QgsRasterDataProvider::PyramidsFlagYes;
+}
+
