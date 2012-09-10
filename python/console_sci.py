@@ -89,8 +89,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         #self.setTabWidth(4)
         
         self.setAutoCompletionThreshold(1)
-        self.setAutoCompletionSource(self.AcsAPIs)  
-    
+        self.setAutoCompletionSource(self.AcsAPIs)
+
         # Don't want to see the horizontal scrollbar at all
         # Use raw message to Scintilla here (all messages are documented
         # here: http://www.scintilla.org/ScintillaDoc.html)
@@ -111,9 +111,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl+shift)
         
-        ## New QShortcut = ctrl+space for Autocomplete
-        self.newShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
-        self.newShortcut.activated.connect(self.autoComplete)
+        ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
+        self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
+        self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
+        self.newShortcutCS.activated.connect(self.autoComplete)
+        self.newShortcutCAS.activated.connect(self.autoComplete)
     
     def autoComplete(self):
         self.autoCompleteFromAll()
@@ -360,6 +362,9 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 elif self.is_cursor_on_last_line():
                     self.SendScintilla(QsciScintilla.SCI_CLEAR)
                 e.accept()
+            elif e.key() == Qt.Key_Home:
+                self.setCursorPosition(linenr,4)
+                self.ensureCursorVisible()
             elif e.key() == Qt.Key_Down and not self.isListActive():
                 self.showPrevious()
             elif e.key() == Qt.Key_Up and not self.isListActive():
