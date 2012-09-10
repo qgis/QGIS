@@ -89,7 +89,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         #self.setTabWidth(4)
         
         self.setAutoCompletionThreshold(1)
-        self.setAutoCompletionSource(self.AcsAPIs)   
+        self.setAutoCompletionSource(self.AcsAPIs)  
     
         # Don't want to see the horizontal scrollbar at all
         # Use raw message to Scintilla here (all messages are documented
@@ -101,6 +101,22 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         
         self.SendScintilla(QsciScintilla.SCI_SETWRAPMODE, 1)
         self.SendScintilla(QsciScintilla.SCI_EMPTYUNDOBUFFER)
+        
+        ## Disable command key
+        ctrl, shift = self.SCMOD_CTRL<<16, self.SCMOD_SHIFT<<16
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T')+ ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D')+ ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Z')+ ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y')+ ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl+shift)
+        
+        ## New QShortcut = ctrl+space for Autocomplete
+        self.newShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
+        self.newShortcut.activated.connect(self.autoComplete)
+    
+    def autoComplete(self):
+        self.autoCompleteFromAll()
         
     def clearConsole(self):
         """Clear the contents of the console."""
