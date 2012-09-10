@@ -148,7 +148,7 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
     }
     else if ( mPrevColumn == 3 ) // srcY
     {
-      newPixelCoords.setY( -value );
+      newPixelCoords.setY( value );
     }
     else if ( mPrevColumn == 4 ) // dstX
     {
