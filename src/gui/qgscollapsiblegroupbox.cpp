@@ -27,25 +27,20 @@ QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
-    : QGroupBox( parent ), mCollapsed( true ), mMarginOffset( 0 )
+    : QGroupBox( parent ), mCollapsed( true )
 {
   init();
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
     QWidget *parent )
-    : QGroupBox( title, parent ), mCollapsed( true ), mMarginOffset( 0 )
+    : QGroupBox( title, parent ), mCollapsed( true )
 {
   init();
 }
 
 void QgsCollapsibleGroupBox::init()
 {
-  /* Top margin fix is to increase the vertical default spacing
-     between multiple groupboxes, especially ones without title checkboxes
-     may not be necessary on certain platforms */
-  mMarginOffset = 0; // in pixels; for temporary testing across platforms
-
   // init icons
   if ( mCollapseIcon.isNull() )
   {
@@ -56,19 +51,10 @@ void QgsCollapsibleGroupBox::init()
   // customize style sheet
   // TODO: move to app stylesheet system, when appropriate
   QString ss;
-  if ( mMarginOffset > 0 )
-  {
-    ss += "QgsCollapsibleGroupBox {";
-    ss += QString( "  margin-top: %1px;" ).arg( mMarginOffset + 8 );
-    ss += "}";
-  }
   ss += "QgsCollapsibleGroupBox::title {";
   ss += "  subcontrol-origin: margin;";
   ss += "  subcontrol-position: top left;";
-  //  ss += QString( "  font-size: %1";).arg( appFontSize );
-  ss += "  margin-left: 24px;";  // offset for disclosure triangle
-  if ( mMarginOffset > 0 )
-    ss += QString( "  margin-top: %1px;" ).arg( mMarginOffset );
+  ss += "  margin-left: 20px;";  // offset for disclosure triangle
   ss += "}";
   setStyleSheet( ss );
 
@@ -80,8 +66,6 @@ void QgsCollapsibleGroupBox::init()
   // TODO set size (as well as margins) depending on theme
   mCollapseButton->setIconSize( QSize( 12, 12 ) );
   mCollapseButton->setIcon( mExpandIcon );
-  if ( mMarginOffset > 0 )
-    mCollapseButton->move( 0, mMarginOffset ); // match title offset
 
   // clear toolbutton default background and border
   // TODO: move to app stylesheet system, when appropriate
@@ -141,7 +125,7 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
 
   // for consistent look/spacing across platforms when collapsed
   setFlat( collapse );
-  setMaximumHeight( collapse ? 36 : 16777215 );
+  setMaximumHeight( collapse ? 28 : 16777215 );
 
   // if we are collapsing, save hidden widgets in a list
   if ( collapse )

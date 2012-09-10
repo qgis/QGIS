@@ -56,7 +56,6 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     bool mCollapsed;
     QList< QWidget* > mHiddenWidgets;
     QToolButton* mCollapseButton;
-    int mMarginOffset;
 
     static QIcon mCollapseIcon;
     static QIcon mExpandIcon;
