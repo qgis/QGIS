@@ -49,33 +49,14 @@ void QgsCollapsibleGroupBox::init()
     mExpandIcon = QgsApplication::getThemeIcon( "/mIconExpand.png" );
   }
 
-  // customize style sheet
-  // TODO: move to app stylesheet system, when appropriate
-  QString ss;
-  ss += "QgsCollapsibleGroupBox::title {";
-  ss += "  subcontrol-origin: margin;";
-  ss += "  subcontrol-position: top left;";
-  ss += "  margin-left: 20px;";  // offset for disclosure triangle
-  ss += "  margin-right: 5px;";  // a little bit of space on the right, to match space on the left
-  ss += "}";
-  setStyleSheet( ss );
-
   // collapse button
   mCollapseButton = new QToolButton( this );
   mCollapseButton->setObjectName( "collapseButton" );
   mCollapseButton->setAutoRaise( true );
   mCollapseButton->setFixedSize( 16, 16 );
-  // TODO set size (as well as margins) depending on theme
+  // TODO set size (as well as margins) depending on theme, in updateStyle()
   mCollapseButton->setIconSize( QSize( 12, 12 ) );
   mCollapseButton->setIcon( mCollapseIcon );
-
-  // clear toolbutton default background and border
-  // TODO: move to app stylesheet system, when appropriate
-  QString ssd;
-  ssd = QString( "QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
-  ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
-  ssd += "}";
-  mCollapseButton->setStyleSheet( ssd );
 
   connect( mCollapseButton, SIGNAL( clicked() ), this, SLOT( toggleCollapsed() ) );
   connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkToggled( bool ) ) );
@@ -84,6 +65,9 @@ void QgsCollapsibleGroupBox::init()
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
   QGroupBox::showEvent( event );
+
+  updateStyle();
+
   // expand if needed - any calls to setCollapsed() before only set mCollapsed
   if ( mCollapsed )
   {
@@ -102,11 +86,7 @@ void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
   // catch mouse release over title when non checkable, to collapse/expand
   if ( !isCheckable() && event->button() == Qt::LeftButton )
   {
-    QStyleOptionGroupBox box;
-    initStyleOption( &box );
-    QRect rect = style()->subControlRect( QStyle::CC_GroupBox, &box,
-                                          QStyle::SC_GroupBoxLabel, this );
-    if ( rect.contains( event->pos() ) )
+    if ( mTitleRect.contains( event->pos() ) )
     {
       toggleCollapsed();
       return;
@@ -131,6 +111,39 @@ void QgsCollapsibleGroupBox::toggleCollapsed()
   setCollapsed( !mCollapsed );
 }
 
+void QgsCollapsibleGroupBox::updateStyle()
+{
+  setUpdatesEnabled( false );
+
+  // customize style sheet
+  // TODO: move to app stylesheet system, when appropriate
+  QString ss;
+  ss += "QgsCollapsibleGroupBox::title {";
+  ss += "  subcontrol-origin: margin;";
+  ss += "  subcontrol-position: top left;";
+  ss += "  margin-left: 20px;";  // offset for disclosure triangle
+  ss += "  margin-right: 5px;";  // a little bit of space on the right, to match space on the left
+  ss += "}";
+  setStyleSheet( ss );
+
+  // clear toolbutton default background and border
+  // TODO: move to app stylesheet system, when appropriate
+  QString ssd;
+  ssd = QString( "QgsCollapsibleGroupBox > QToolButton#%1 {" ).arg( mCollapseButton->objectName() );
+  ssd += "  background-color: rgba(255, 255, 255, 0); border: none;";
+  ssd += "}";
+  mCollapseButton->setStyleSheet( ssd );
+
+  setUpdatesEnabled( true );
+
+  // init title rect for later use - should not change during execution
+  // if it needs updating (e.g. in options dlg), call slot when style changes
+  QStyleOptionGroupBox box;
+  initStyleOption( &box );
+  mTitleRect = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                                        QStyle::SC_GroupBoxLabel, this );
+}
+
 void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
 {
   mCollapsed = collapse;
@@ -142,8 +155,9 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   setFlat( collapse );
   // avoid flicker in X11
   QApplication::processEvents();
-  // set maximum height to 25 to hide contents - does this work in all envs?
-  setMaximumHeight( collapse ? 25 : 16777215 );
+  // set maximum height to hide contents - does this work in all envs?
+  // setMaximumHeight( collapse ? 25 : 16777215 );
+  setMaximumHeight( collapse ? mTitleRect.height() + 2 : 16777215 );
   mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
 
   emit collapsedStateChanged( this );

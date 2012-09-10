@@ -46,6 +46,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
   public slots:
     void checkToggled( bool ckd );
     void toggleCollapsed();
+    void updateStyle();
 
   protected:
     void init();
@@ -56,6 +57,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     bool mCollapsed;
     QList< QWidget* > mHiddenWidgets;
     QToolButton* mCollapseButton;
+    QRect mTitleRect;
 
     static QIcon mCollapseIcon;
     static QIcon mExpandIcon;
