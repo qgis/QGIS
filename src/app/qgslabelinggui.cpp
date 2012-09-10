@@ -268,10 +268,16 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     connect( quadrantRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateQuadrant() ) );
   }
 
+  // Label tab collapsed groupboxes
   chkBuffer->setCollapsed( true );
-  groupBox_2->setCollapsed( true );
+  mFontMultiLineGroupBox->setCollapsed( true );
   chkFormattedNumbers->setCollapsed( true );
   chkScaleBasedVisibility->setCollapsed( true );
+
+  // Data defined tab collapsed groupboxes
+  mBufferAttributesPropertiesGroupBox->setCollapsed( true );
+  mFontAttributePropertiesGroupBox->setCollapsed( true );
+
 }
 
 QgsLabelingGui::~QgsLabelingGui()
