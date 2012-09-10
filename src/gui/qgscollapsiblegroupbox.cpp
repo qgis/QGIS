@@ -23,21 +23,27 @@
 #include <QToolButton>
 #include <QMouseEvent>
 #include <QStyleOptionGroupBox>
+#include <QSettings>
 
 QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
-    : QGroupBox( parent ), mCollapsed( false )
+  : QGroupBox( parent ), mCollapsed( false ), mSaveState( true )
 {
   init();
 }
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( const QString &title,
     QWidget *parent )
-    : QGroupBox( title, parent ), mCollapsed( false )
+    : QGroupBox( title, parent ), mCollapsed( false ), mSaveState( true )
 {
   init();
+}
+
+QgsCollapsibleGroupBox::~QgsCollapsibleGroupBox()
+{
+  saveState();
 }
 
 void QgsCollapsibleGroupBox::init()
@@ -64,7 +70,7 @@ void QgsCollapsibleGroupBox::init()
 
 void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
 {
-  QGroupBox::showEvent( event );
+  loadState();
 
   updateStyle();
 
@@ -79,14 +85,15 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
        still emit signal for connections using expanded state */
     emit collapsedStateChanged( this );
   }
+  event->accept();
 }
 
-void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
+void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )  
 {
   // catch mouse release over title when non checkable, to collapse/expand
-  if ( !isCheckable() && event->button() == Qt::LeftButton )
+  if ( !isCheckable() && event->button() == Qt::LeftButton ) 
   {
-    if ( mTitleRect.contains( event->pos() ) )
+    if ( titleRect().contains( event->pos() ) )
     {
       toggleCollapsed();
       return;
@@ -94,6 +101,62 @@ void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
   }
   // default behaviour - pass to QGroupBox
   QGroupBox::mouseReleaseEvent( event );
+}
+
+QRect QgsCollapsibleGroupBox::titleRect() const
+{
+  QStyleOptionGroupBox box;
+  initStyleOption( &box );
+  return style()->subControlRect( QStyle::CC_GroupBox, &box, 
+                                  QStyle::SC_GroupBoxLabel, this );
+}
+
+QString QgsCollapsibleGroupBox::saveKey() const
+{
+  // save key for load/save state
+  // currently QgsCollapsibleGroupBox/window()/object
+  QString saveKey = "/" + objectName();
+  // QObject* parentWidget = parent();
+  // while ( parentWidget != NULL )
+  // {
+  //   saveKey = "/" + parentWidget->objectName() + saveKey;
+  //   parentWidget = parentWidget->parent();
+  // }
+  // if ( parent() != NULL )
+  //   saveKey = "/" + parent()->objectName() + saveKey;
+  saveKey = "/" + window()->objectName() + saveKey;
+  saveKey = "QgsCollapsibleGroupBox" + saveKey;
+  return saveKey;
+}
+
+void QgsCollapsibleGroupBox::loadState()
+{
+  if ( ! mSaveState ) 
+    return;
+  
+  setUpdatesEnabled( false );
+
+  QSettings settings;
+  QString key = saveKey();
+  QVariant val = settings.value( key + "/checked" );
+  if ( ! val.isNull() )
+    setChecked( val.toBool() );
+  val = settings.value( key + "/collapsed" );
+  if ( ! val.isNull() )
+    setCollapsed( val.toBool() );
+
+  setUpdatesEnabled( true );
+}
+
+void QgsCollapsibleGroupBox::saveState()
+{
+  if ( ! mSaveState ) 
+    return;
+  QgsDebugMsg( "key = " + saveKey() + " objectName = " + objectName() );
+  QSettings settings;
+  QString key = saveKey();
+  settings.setValue( key + "/checked", isChecked() );
+  settings.setValue( key + "/collapsed", isCollapsed() );
 }
 
 void QgsCollapsibleGroupBox::checkToggled( bool chkd )
@@ -135,13 +198,6 @@ void QgsCollapsibleGroupBox::updateStyle()
   mCollapseButton->setStyleSheet( ssd );
 
   setUpdatesEnabled( true );
-
-  // init title rect for later use - should not change during execution
-  // if it needs updating (e.g. in options dlg), call slot when style changes
-  QStyleOptionGroupBox box;
-  initStyleOption( &box );
-  mTitleRect = style()->subControlRect( QStyle::CC_GroupBox, &box,
-                                        QStyle::SC_GroupBoxLabel, this );
 }
 
 void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
@@ -157,7 +213,7 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   QApplication::processEvents();
   // set maximum height to hide contents - does this work in all envs?
   // setMaximumHeight( collapse ? 25 : 16777215 );
-  setMaximumHeight( collapse ? mTitleRect.height() + 2 : 16777215 );
+  setMaximumHeight( collapse ? titleRect().bottom() + 2 : 16777215 );
   mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
 
   emit collapsedStateChanged( this );

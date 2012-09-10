@@ -36,9 +36,10 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
   public:
     QgsCollapsibleGroupBox( QWidget *parent = 0 );
     QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0 );
-
+    ~QgsCollapsibleGroupBox();
     bool isCollapsed() const { return mCollapsed; }
     void setCollapsed( bool collapse );
+    void setSaveState( bool save ) { mSaveState = save; }
 
   signals:
     void collapsedStateChanged( QWidget* );
@@ -48,16 +49,20 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void toggleCollapsed();
     void updateStyle();
 
+  protected slots:
+    void loadState();
+    void saveState();
+
   protected:
     void init();
     void showEvent( QShowEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );
+    QRect titleRect() const;
+    QString saveKey() const;
 
-  private:
     bool mCollapsed;
-    QList< QWidget* > mHiddenWidgets;
+    bool mSaveState;
     QToolButton* mCollapseButton;
-    QRect mTitleRect;
 
     static QIcon mCollapseIcon;
     static QIcon mExpandIcon;
