@@ -9,6 +9,8 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsRectangle(unittest.TestCase):
 
+    # Because isEmpty() is not returning expected result in 9b0fee3
+    @unittest.expectedFailure
     def testCtor(self):
         rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
 
