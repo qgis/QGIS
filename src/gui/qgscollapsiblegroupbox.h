@@ -44,8 +44,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QGroupBox
     void collapsedStateChanged( QWidget* );
 
   public slots:
-    void checkClicked();
-    void checkToggled();
+    void checkToggled( bool ckd );
     void toggleCollapsed();
 
   protected:

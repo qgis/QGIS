@@ -267,6 +267,11 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   {
     connect( quadrantRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateQuadrant() ) );
   }
+
+  chkBuffer->setCollapsed( true );
+  groupBox_2->setCollapsed( true );
+  chkFormattedNumbers->setCollapsed( true );
+  chkScaleBasedVisibility->setCollapsed( true );
 }
 
 QgsLabelingGui::~QgsLabelingGui()
