@@ -21,7 +21,8 @@
 #include "qgslogger.h"
 
 #include <QToolButton>
-
+#include <QMouseEvent>
+#include <QStyleOptionGroupBox>
 
 QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
@@ -55,6 +56,7 @@ void QgsCollapsibleGroupBox::init()
   ss += "  subcontrol-origin: margin;";
   ss += "  subcontrol-position: top left;";
   ss += "  margin-left: 20px;";  // offset for disclosure triangle
+  ss += "  margin-right: 5px;";  // a little bit of space on the right, to match space on the left
   ss += "}";
   setStyleSheet( ss );
 
@@ -93,6 +95,25 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
        still emit signal for connections using expanded state */
     emit collapsedStateChanged( this );
   }
+}
+
+void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
+{
+  // catch mouse release over title when non checkable, to collapse/expand
+  if ( !isCheckable() && event->button() == Qt::LeftButton )
+  {
+    QStyleOptionGroupBox box;
+    initStyleOption( &box );
+    QRect rect = style()->subControlRect( QStyle::CC_GroupBox, &box,
+                                          QStyle::SC_GroupBoxLabel, this );
+    if ( rect.contains( event->pos() ) )
+    {
+      toggleCollapsed();
+      return;
+    }
+  }
+  // default behaviour - pass to QGroupBox
+  QGroupBox::mouseReleaseEvent( event );
 }
 
 void QgsCollapsibleGroupBox::checkToggled( bool chkd )
