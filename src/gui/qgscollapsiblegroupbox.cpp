@@ -29,7 +29,7 @@ QIcon QgsCollapsibleGroupBox::mCollapseIcon;
 QIcon QgsCollapsibleGroupBox::mExpandIcon;
 
 QgsCollapsibleGroupBox::QgsCollapsibleGroupBox( QWidget *parent )
-  : QGroupBox( parent ), mCollapsed( false ), mSaveState( true )
+    : QGroupBox( parent ), mCollapsed( false ), mSaveState( true )
 {
   init();
 }
@@ -88,10 +88,10 @@ void QgsCollapsibleGroupBox::showEvent( QShowEvent * event )
   event->accept();
 }
 
-void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )  
+void QgsCollapsibleGroupBox::mouseReleaseEvent( QMouseEvent *event )
 {
   // catch mouse release over title when non checkable, to collapse/expand
-  if ( !isCheckable() && event->button() == Qt::LeftButton ) 
+  if ( !isCheckable() && event->button() == Qt::LeftButton )
   {
     if ( titleRect().contains( event->pos() ) )
     {
@@ -107,7 +107,7 @@ QRect QgsCollapsibleGroupBox::titleRect() const
 {
   QStyleOptionGroupBox box;
   initStyleOption( &box );
-  return style()->subControlRect( QStyle::CC_GroupBox, &box, 
+  return style()->subControlRect( QStyle::CC_GroupBox, &box,
                                   QStyle::SC_GroupBoxLabel, this );
 }
 
@@ -131,9 +131,9 @@ QString QgsCollapsibleGroupBox::saveKey() const
 
 void QgsCollapsibleGroupBox::loadState()
 {
-  if ( ! mSaveState ) 
+  if ( ! mSaveState )
     return;
-  
+
   setUpdatesEnabled( false );
 
   QSettings settings;
@@ -150,7 +150,7 @@ void QgsCollapsibleGroupBox::loadState()
 
 void QgsCollapsibleGroupBox::saveState()
 {
-  if ( ! mSaveState ) 
+  if ( ! mSaveState )
     return;
   QgsDebugMsg( "key = " + saveKey() + " objectName = " + objectName() );
   QSettings settings;
