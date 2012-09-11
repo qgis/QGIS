@@ -3,7 +3,7 @@
 /***************************************************************************
 Python Conosle for QGIS
                              -------------------
-begin                : 2012-09-xx 
+begin                : 2012-09-10 
 copyright            : (C) 2012 by Salvatore Larosa
 email                : lrssvtml (at) gmail (dot) com 
  ***************************************************************************/
@@ -145,9 +145,13 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def setLexers(self, lexer):
         if lexer:
             font = QFont()
-            font.setFamily('Courier New') ## Courier New
+            font.setFamily('Mono') ## Courier New
             font.setFixedPitch(True)
-            font.setPointSize(13)
+            ## check platform for font size
+            if sys.platform.startswith('darwin'):
+                font.setPointSize(13)
+            else:
+                font.setPointSize(10)
             self.setFont(font)
             self.setMarginsFont(font)
             self.lexer = QsciLexerPython()
