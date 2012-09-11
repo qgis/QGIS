@@ -87,8 +87,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         #self.setTabIndents(True)
         #self.setBackspaceUnindents(True)
         #self.setTabWidth(4)
-        
-        self.setAutoCompletionThreshold(1)
+
+        self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(self.AcsAPIs)
 
         # Don't want to see the horizontal scrollbar at all
@@ -147,7 +147,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             font = QFont()
             font.setFamily('Courier New') ## Courier New
             font.setFixedPitch(True)
-            font.setPointSize(10)
+            font.setPointSize(13)
             self.setFont(font)
             self.setMarginsFont(font)
             self.lexer = QsciLexerPython()
@@ -161,15 +161,16 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             self.lexer.setFont(font, 3)
             self.lexer.setFont(font, 4)
             self.api = QsciAPIs(self.lexer)
-            self.api.load(os.path.dirname(__file__) + "/api/PyQGIS_1.8.api")
-            self.api.load(os.path.dirname(__file__) + "/api/osgeo_gdal-ogr_1.9.1-1.api")
+            self.api.loadPrepared(QString(os.path.dirname(__file__) + "/api/pyqgis_master.pap"))
+#            self.api.load(os.path.dirname(__file__) + "/api/PyQGIS_1.8.api")
+#            self.api.load(os.path.dirname(__file__) + "/api/osgeo_gdal-ogr_1.9.1-1.api")
 #            self.api.load("qgis.networkanalysis.api")
 #            self.api.load("qgis.gui.api")
 #            self.api.load("qgis.core.api")
 #            self.api.load("qgis.analysis.api")
-            
-            self.api.prepare()
-            self.lexer.setAPIs(self.api)
+
+#            self.api.prepare()
+#            self.lexer.setAPIs(self.api)
             self.setLexer(self.lexer)
             
      ## TODO: show completion list for file and directory       
