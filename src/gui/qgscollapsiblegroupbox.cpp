@@ -213,7 +213,7 @@ void QgsCollapsibleGroupBox::setCollapsed( bool collapse )
   QApplication::processEvents();
   // set maximum height to hide contents - does this work in all envs?
   // setMaximumHeight( collapse ? 25 : 16777215 );
-  setMaximumHeight( collapse ? titleRect().bottom() + 2 : 16777215 );
+  setMaximumHeight( collapse ? titleRect().bottom() + 6 : 16777215 );
   mCollapseButton->setIcon( collapse ? mExpandIcon : mCollapseIcon );
 
   emit collapsedStateChanged( this );
