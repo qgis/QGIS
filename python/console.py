@@ -3,9 +3,9 @@
 /***************************************************************************
 Python Conosle for QGIS
                              -------------------
-begin                : 2012-09-10 
+begin                : 2012-09-10
 copyright            : (C) 2012 by Salvatore Larosa
-email                : lrssvtml (at) gmail (dot) com 
+email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 
 /***************************************************************************
@@ -71,10 +71,10 @@ class PythonConsole(QDockWidget):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
         #self.setAllowedAreas(Qt.BottomDockWidgetArea)
-        
+
         self.widgetButton = QWidget()
         self.widgetEdit = QWidget()
-        
+
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
         #self.toolBar.setFont(font)
@@ -88,14 +88,14 @@ class PythonConsole(QDockWidget):
         #self.toolBar.setAllowedAreas(Qt.LeftToolBarArea)
         #self.toolBar.setAllowedAreas(Qt.RightToolBarArea)
         #self.toolBar.setObjectName(_fromUtf8("toolMappa"))
-        
+
         self.b = QVBoxLayout(self.widgetButton)
         self.e = QHBoxLayout(self.widgetEdit)
-        
+
         self.e.setMargin(0)
         self.e.setSpacing(0)
         self.b.setMargin(0)
-        
+
         ## Action for Clear button
         self.clearButton = QAction(parent)
         self.clearButton.setCheckable(False)
@@ -159,7 +159,7 @@ class PythonConsole(QDockWidget):
         self.helpButton.setMenuRole(QAction.PreferencesRole)
         self.helpButton.setIconVisibleInMenu(True)
         self.helpButton.setToolTip('Help')
-        
+
         self.toolBar.addAction(self.clearButton)
         #self.toolBar.addAction(self.currentLayerButton)
         self.toolBar.addAction(self.loadIfaceButton)
@@ -167,35 +167,35 @@ class PythonConsole(QDockWidget):
         self.toolBar.addAction(self.saveFileButton)
         self.toolBar.addAction(self.helpButton)
         self.toolBar.addAction(self.runButton)
-        
+
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit()
-        
+
         self.setWidget(self.widgetEdit)
-        
+
         self.e.addWidget(self.widgetButton)
         self.e.addWidget(self.edit)
-        
+
         self.edit.setFocus()
-        
+
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-        self.clearButton.activated.connect(self.edit.clearConsole)
-        #self.currentLayerButton.activated.connect(self.cLayer)
-        self.loadIfaceButton.activated.connect(self.iface)
-        self.runButton.activated.connect(self.edit.entered)
-        self.openFileButton.activated.connect(self.openScriptFile)
-        self.saveFileButton.activated.connect(self.saveScriptFile)
-        self.helpButton.activated.connect(self.openHelp)
+        self.clearButton.triggered.connect(self.edit.clearConsole)
+        #self.currentLayerButton.triggered.connect(self.cLayer)
+        self.loadIfaceButton.triggered.connect(self.iface)
+        self.runButton.triggered.connect(self.edit.entered)
+        self.openFileButton.triggered.connect(self.openScriptFile)
+        self.saveFileButton.triggered.connect(self.saveScriptFile)
+        self.helpButton.triggered.connect(self.openHelp)
         # try to restore position from stored main window state
         if not iface.mainWindow().restoreDockWidget(self):
             iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea, self)
-            
+
     def cLayer(self):
         self.edit.commandConsole('cLayer')
-        
+
     def iface(self):
        self.edit.commandConsole('iface')
-       
+
     def openScriptFile(self):
         scriptFile = QFileDialog.getOpenFileName(
                         self, "Open File", "", "Script file (*.py)")
@@ -206,14 +206,14 @@ class PythonConsole(QDockWidget):
                 if line != "\n":
                     listScriptFile.append(line)
             self.edit.insertTextFromFile(listScriptFile)
-            
-        
+
+
     def saveScriptFile(self):
         scriptFile = QFileDialog()
         scriptFile.setDefaultSuffix(".py")
         fName = scriptFile.getSaveFileName(
                         self, "Save file", QString(), "Script file (*.py)")
-            
+
         if fName.isEmpty() == False:
             filename = str(fName)
             if not filename.endswith(".py"):
@@ -227,7 +227,7 @@ class PythonConsole(QDockWidget):
                     s.replace("... ", "")
                     if is_first_line:
                         # see, no write() in this branch
-                        is_first_line = False 
+                        is_first_line = False
                     else:
                         # we've just written a line; add a newline
                         sF.write('\n')
@@ -241,7 +241,7 @@ class PythonConsole(QDockWidget):
     def closeEvent(self, event):
         QWidget.closeEvent(self, event)
 
-        
+
 if __name__ == '__main__':
     a = QApplication(sys.argv)
     show_console()
