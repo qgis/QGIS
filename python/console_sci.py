@@ -286,11 +286,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         Check if selected text is r/w,
         otherwise remove read-only parts of selection
         """
-        if self.current_prompt_pos is None:
-            self.move_cursor_to_end()
-            return
+        #if self.current_prompt_pos is None:
+            #self.move_cursor_to_end()
+            #return
         line_from, index_from, line_to, index_to = self.getSelection()
-        pline, pindex = self.current_prompt_pos
+        pline, pindex = self.getCursorPosition()
         if line_from < pline or \
            (line_from == pline and index_from < pindex):
             self.setSelection(pline, pindex, line_to, index_to)
@@ -377,27 +377,38 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             elif e.key() == Qt.Key_Left:
                 e.accept()
                 if e.modifiers() & Qt.ShiftModifier:
-                    if e.modifiers() & Qt.ControlModifier:
-                        self.SendScintilla(QsciScintilla.SCI_WORDLEFTEXTEND)
-                    else:
-                        self.SendScintilla(QsciScintilla.SCI_CHARLEFTEXTEND)
+                    if index > 4:
+                        if e.modifiers() & Qt.ControlModifier:
+                            self.SendScintilla(QsciScintilla.SCI_WORDLEFTEXTEND)
+                        else:
+                            self.SendScintilla(QsciScintilla.SCI_CHARLEFTEXTEND)
                 else:
-                    if e.modifiers() & Qt.ControlModifier:
-                        self.SendScintilla(QsciScintilla.SCI_WORDLEFT)
-                    else:
-                        self.SendScintilla(QsciScintilla.SCI_CHARLEFT)
+                    if index > 4:
+                        if e.modifiers() & Qt.ControlModifier:
+                            self.SendScintilla(QsciScintilla.SCI_WORDLEFT)
+                        else:
+                            self.SendScintilla(QsciScintilla.SCI_CHARLEFT)
             elif e.key() == Qt.Key_Right:
                 e.accept()
                 if e.modifiers() & Qt.ShiftModifier:
-                    if e.modifiers() & Qt.ControlModifier:
-                        self.SendScintilla(QsciScintilla.SCI_WORDRIGHTEXTEND)
-                    else:
-                        self.SendScintilla(QsciScintilla.SCI_CHARRIGHTEXTEND)
+                    if index >= 4:
+                        if e.modifiers() & Qt.ControlModifier:
+                            self.SendScintilla(QsciScintilla.SCI_WORDRIGHTEXTEND)
+                        else:
+                            self.SendScintilla(QsciScintilla.SCI_CHARRIGHTEXTEND)
                 else:
-                    if e.modifiers() & Qt.ControlModifier:
-                        self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
-                    else:
-                        self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
+                    if index >= 4:
+                        if e.modifiers() & Qt.ControlModifier:
+                            self.SendScintilla(QsciScintilla.SCI_WORDRIGHT)
+                        else:
+                            self.SendScintilla(QsciScintilla.SCI_CHARRIGHT)
+            elif e.key() == Qt.Key_Delete:
+                if self.hasSelectedText():
+                    self.check_selection()
+                    self.removeSelectedText()
+                elif self.is_cursor_on_last_line():
+                    self.SendScintilla(QsciScintilla.SCI_CLEAR)
+                event.accept()
             ## TODO: press event for auto-completion file directory
             #elif e.key() == Qt.Key_Tab:
                 #self.show_file_completion()
