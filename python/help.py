@@ -11,7 +11,7 @@ class HelpDialog(QtGui.QDialog):
         self.setupUi()
 
     def setupUi(self):
-        self.resize(500, 300)
+        self.resize(400, 300)
         self.webView = QtWebKit.QWebView()
         self.setWindowTitle("Help Python Console")
         self.verticalLayout= QtGui.QVBoxLayout()
