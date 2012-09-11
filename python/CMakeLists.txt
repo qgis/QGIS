@@ -107,7 +107,7 @@ ADD_CUSTOM_COMMAND(TARGET compile_python_files
        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-FOREACH(file __init__.py utils.py console.py)
+FOREACH(file __init__.py utils.py console.py console_sci.py help.py)
   ADD_CUSTOM_COMMAND(TARGET compile_python_files
          POST_BUILD
          COMMAND ${CMAKE_COMMAND} -E copy ${file} ${QGIS_PYTHON_OUTPUT_DIRECTORY}
