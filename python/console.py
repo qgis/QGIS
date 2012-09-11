@@ -69,7 +69,7 @@ sys.stdout = QgisOutputCatcher()
 class PythonConsole(QDockWidget):
     def __init__(self, parent=None):
         QDockWidget.__init__(self, parent)
-        self.setObjectName("Python Console")
+        self.setObjectName("PythonConsole")
         #self.setAllowedAreas(Qt.BottomDockWidgetArea)
         
         self.widgetButton = QWidget()
@@ -93,6 +93,7 @@ class PythonConsole(QDockWidget):
         self.e = QHBoxLayout(self.widgetEdit)
         
         self.e.setMargin(0)
+        self.e.setSpacing(0)
         self.b.setMargin(0)
         
         ## Action for Clear button
