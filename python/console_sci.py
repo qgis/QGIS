@@ -351,7 +351,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 #pass
         else:
             if (e.key() == Qt.Key_Return or e.key() == Qt.Key_Enter) and not self.isListActive():
-                    self.entered()                 
+                    self.entered()
+            elif e.modifiers() & Qt.ControlModifier:
+                if e.key() == Qt.Key_V:
+                    self.paste()             
             elif e.key() == Qt.Key_Backspace:
                 curPos, pos = self.getCursorPosition()
                 line = self.lines() -1
@@ -419,12 +422,8 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 
     def paste(self):
         """Reimplement QScintilla method"""
-        # Moving cursor to the end of the last line
-        self.move_cursor_to_end()
-        #QsciScintilla.paste(self)
-        QMessageBox.warning(self, "Python Console", 
-                            "Currently the action paste in console is not supported!")
-        return
+        stringPaste = unicode(QApplication.clipboard().text())
+        self.insertFromDropPaste(stringPaste)
         
     ## Drag and drop
     def dragEnterEvent(self, e):
@@ -435,8 +434,11 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def dropEvent(self, e):
         stringDrag = e.mimeData().text()
+        self.insertFromDropPaste(stringDrag)
+        
+    def insertFromDropPaste(self, textDP):
         pasteList = QStringList()
-        pasteList = stringDrag.split("\n")
+        pasteList = textDP.split("\n")
         for line in pasteList[:-1]:
             self.append(line)
             self.move_cursor_to_end()
