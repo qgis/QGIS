@@ -138,7 +138,14 @@ void * QgsPalettedRasterRenderer::readBlock( int bandNo, QgsRectangle  const & e
       }
       if ( !hasTransparency )
       {
-        imageScanLine[j] = mColors[ val ].rgba();
+        if ( val < 0 || val > mNColors )
+        {
+          imageScanLine[j] = myDefaultColor;
+        }
+        else
+        {
+          imageScanLine[j] = mColors[ val ].rgba();
+        }
       }
       else
       {
