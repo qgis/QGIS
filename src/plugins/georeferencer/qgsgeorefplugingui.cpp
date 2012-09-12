@@ -1125,16 +1125,15 @@ void QgsGeorefPluginGui::addRaster( QString file )
   mActionFullHistogramStretch->setEnabled(true);
 
   // Status Bar
-  QString sEpsg("ESPG: %1");
   if ( mGeorefTransform.hasCrs() )
   {
-    long epsg = mLayer->crs().epsg();
-    mEPSG->setText( sEpsg.arg( epsg ) );
+    QString authid = mLayer->crs().authid();
+    mEPSG->setText( authid );
     mEPSG->setToolTip( mLayer->crs().toProj4() );
   }
   else
   {
-    mEPSG->setText( sEpsg.arg( tr("None") ) );
+    mEPSG->setText( tr("None") );
     mEPSG->setToolTip( tr("Coordinate of image(column/line)") );
   }
 }
