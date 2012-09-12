@@ -596,18 +596,18 @@ bool QgsRasterProjector::checkCols()
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
       try
       {
-	QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
-	double mySqrDist = myDestApprox.sqrDist( myDestPoint );
-	if ( mySqrDist > mSqrTolerance )
-	{
-	  return false;
-	}
+        QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        double mySqrDist = myDestApprox.sqrDist( myDestPoint );
+        if ( mySqrDist > mSqrTolerance )
+        {
+          return false;
+        }
       }
       catch ( QgsCsException &e )
       {
-	Q_UNUSED( e );
-	// Caught an error in transform
-	return false;
+        Q_UNUSED( e );
+        // Caught an error in transform
+        return false;
       }
     }
   }
@@ -631,18 +631,18 @@ bool QgsRasterProjector::checkRows()
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
       try
       {
-	QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
-	double mySqrDist = myDestApprox.sqrDist( myDestPoint );
-	if ( mySqrDist > mSqrTolerance )
-	{
-	  return false;
-	}
+        QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
+        double mySqrDist = myDestApprox.sqrDist( myDestPoint );
+        if ( mySqrDist > mSqrTolerance )
+        {
+          return false;
+        }
       }
       catch ( QgsCsException &e )
       {
-	Q_UNUSED( e );
-	// Caught an error in transform
-	return false;
+        Q_UNUSED( e );
+        // Caught an error in transform
+        return false;
       }
     }
   }
