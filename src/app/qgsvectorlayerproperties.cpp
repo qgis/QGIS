@@ -66,7 +66,6 @@
 #include "qgsstylev2.h"
 #include "qgssymbologyv2conversion.h"
 
-
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget * parent,
@@ -447,6 +446,7 @@ void QgsVectorLayerProperties::updateButtons()
     mAddAttributeButton->setEnabled( false );
     mDeleteAttributeButton->setEnabled( false );
     mToggleEditingButton->setChecked( false );
+    mToggleEditingButton->setEnabled( false );
     mCalculateFieldButton->setEnabled( false );
   }
 }
