@@ -157,11 +157,13 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
   QList<QgsRasterInterface::DataType> destDataTypeList;
   for ( int bandNo = 1; bandNo <= nBands; bandNo++ )
   {
+    QgsRasterNuller *nuller = pipe->nuller();
 
     bool srcHasNoDataValue = srcProvider->srcHasNoDataValue( bandNo );
     bool destHasNoDataValue = false;
     double destNoDataValue;
-    QgsRasterInterface::DataType destDataType = srcProvider->srcDataType( bandNo );
+    //QgsRasterInterface::DataType destDataType = srcProvider->srcDataType( bandNo );
+    QgsRasterInterface::DataType destDataType = srcProvider->dataType( bandNo );
     if ( srcHasNoDataValue )
     {
       // If source has no data value, it is used by provider
@@ -170,13 +172,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destNoDataValue = srcProvider->noDataValue();
       destHasNoDataValue = true;
     }
-#if 0
-    else if ( )
+    else if ( nuller && nuller->noData().size() > 0 )
     {
-      // TODO: see if nuller has user defined aditional values, in that case use one as no data value
-
+      // Use one user defined no data value
+      destNoDataValue = nuller->noData().value( 0 ).min;
+      destHasNoDataValue = true;
     }
-#endif
     else
     {
       // Verify if we realy need no data value, i.e.
@@ -212,6 +213,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         destHasNoDataValue = true;
       }
     }
+    if ( nuller ) nuller->setOutputNoData( destNoDataValue );
+
     QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
     destDataTypeList.append( destDataType );
     destHasNoDataValueList.append( destHasNoDataValue );
@@ -282,11 +285,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   int iterCols = 0;
   int iterRows = 0;
 
-  int dataTypeSize = srcProvider->typeSize( srcProvider->srcDataType( 1 ) );
+  int dataTypeSize = srcProvider->typeSize( srcProvider->dataType( 1 ) ) / 8;
   QList<void*> dataList;
   for ( int i = 1; i <= nBands; ++i )
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
+    // TODO: no need to alloc memory, change to readBlock() returning the allocated block
     dataList.push_back( VSIMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
     // TODO - fix segfault here when using tiles+vrt (reported by Etienne)
     destProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
@@ -347,6 +351,24 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
       }
     }
 
+    // It may happen that internal data type (dataType) is wider than destDataType
+    QList<void*> destDataList;
+    for ( int i = 1; i <= nBands; ++i )
+    {
+      if ( srcProvider->dataType( i ) == destDataType )
+      {
+        destDataList.push_back( dataList[i-1] );
+      }
+      else
+      {
+        // TODO: this conversion should go to QgsRasterDataProvider::write with additional input data type param
+        void *destData = QgsRasterInterface::convert( dataList[i-1], srcProvider->srcDataType( i ), destDataType, iterCols * iterRows );
+        destDataList.push_back( destData );
+        CPLFree( dataList[i-1] );
+      }
+      dataList[i-1] = 0;
+    }
+
     if ( mTiledMode ) //write to file
     {
       delete destProvider;
@@ -356,8 +378,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
       //write data to output file. todo: loop over the data list
       for ( int i = 1; i <= nBands; ++i )
       {
-        destProvider->write( dataList[i - 1], i, iterCols, iterRows, 0, 0 );
-        CPLFree( dataList[i - 1] );
+        destProvider->write( destDataList[i - 1], i, iterCols, iterRows, 0, 0 );
+        CPLFree( destDataList[i - 1] );
         addToVRT( QString::number( fileIndex ), i, iterCols, iterRows, iterLeft, iterTop );
       }
     }
@@ -366,8 +388,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
       //loop over data
       for ( int i = 1; i <= nBands; ++i )
       {
-        destProvider->write( dataList[i - 1], i, iterCols, iterRows, iterLeft, iterTop );
-        CPLFree( dataList[i - 1] );
+        destProvider->write( destDataList[i - 1], i, iterCols, iterRows, iterLeft, iterTop );
+        CPLFree( destDataList[i - 1] );
       }
     }
     ++fileIndex;

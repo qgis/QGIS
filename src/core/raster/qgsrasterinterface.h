@@ -18,6 +18,8 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
+#include <limits>
+
 #include <QImage>
 
 #include "qgsrectangle.h"
@@ -61,7 +63,7 @@ class CORE_EXPORT QgsRasterInterface
 
     virtual ~QgsRasterInterface();
 
-    int typeSize( int dataType ) const
+    static int typeSize( int dataType )
     {
       // Modified and extended copy from GDAL
       switch ( dataType )
@@ -197,6 +199,15 @@ class CORE_EXPORT QgsRasterInterface
      *  @return string representing the value*/
     static QString printValue( double value );
 
+    /** \brief Convert block of data from one type to another. Original block memory
+     *         is not release.
+     *  @param srcData source data
+     *  @param srcDataType source data type
+     *  @param destDataType dest data type
+     *  @param size block size (width * height)
+     *  @return block of data in destDataType */
+    static void * convert( void *srcData, QgsRasterInterface::DataType srcDataType, QgsRasterInterface::DataType destDataType, int size );
+
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;
@@ -204,8 +215,8 @@ class CORE_EXPORT QgsRasterInterface
     // On/off state, if off, it does not do anything, replicates input
     bool mOn;
 
-    inline double readValue( void *data, QgsRasterInterface::DataType type, int index );
-    inline void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
+    inline static double readValue( void *data, QgsRasterInterface::DataType type, int index );
+    inline static void writeValue( void *data, QgsRasterInterface::DataType type, int index, double value );
 
   private:
     // Last rendering cumulative (this and all preceding interfaces) times, from index 1
@@ -217,6 +228,7 @@ class CORE_EXPORT QgsRasterInterface
 
 inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::DataType type, int index )
 {
+#if 0
   if ( !mInput )
   {
     return 0;
@@ -226,6 +238,7 @@ inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::Dat
   {
     return mInput->noDataValue();
   }
+#endif
 
   switch ( type )
   {
@@ -256,7 +269,8 @@ inline double QgsRasterInterface::readValue( void *data, QgsRasterInterface::Dat
   }
 
   // TODO: noDataValue is per band
-  return mInput->noDataValue();
+  //return mInput->noDataValue();
+  return std::numeric_limits<double>::quiet_NaN();
 }
 
 inline void QgsRasterInterface::writeValue( void *data, QgsRasterInterface::DataType type, int index, double value )

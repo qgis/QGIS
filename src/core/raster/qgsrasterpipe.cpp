@@ -127,6 +127,7 @@ QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface * interface
   if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) return RendererRole;
   if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) return ResamplerRole;
   if ( dynamic_cast<QgsRasterProjector *>( interface ) ) return ProjectorRole;
+  if ( dynamic_cast<QgsRasterNuller *>( interface ) ) return NullerRole;
   return UnknownRole;
 }
 
@@ -223,6 +224,11 @@ QgsRasterResampleFilter * QgsRasterPipe::resampleFilter() const
 QgsRasterProjector * QgsRasterPipe::projector() const
 {
   return dynamic_cast<QgsRasterProjector*>( interface( ProjectorRole ) );
+}
+
+QgsRasterNuller * QgsRasterPipe::nuller() const
+{
+  return dynamic_cast<QgsRasterNuller*>( interface( NullerRole ) );
 }
 
 bool QgsRasterPipe::remove( int idx )

@@ -45,8 +45,15 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     void setNoData( QList<QgsRasterNuller::NoData> noData ) { mNoData = noData; }
 
+    QList<QgsRasterNuller::NoData> noData() const { return mNoData; }
+
+    /** \brief Set output no data value. */
+    void setOutputNoData( double noData ) { mOutputNoData = noData; }
+
   private:
     QList<QgsRasterNuller::NoData> mNoData;
+    // no data to be set in output
+    double mOutputNoData;
 };
 
 #endif // QGSRASTERNULLER_H
