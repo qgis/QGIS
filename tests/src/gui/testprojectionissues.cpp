@@ -44,9 +44,14 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "issue5895_world.tif" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "checker360by180.asc" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
+  // Set to WGS84
+  QgsCoordinateReferenceSystem sourceCRS;
+  sourceCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  mRasterLayer->setCrs( sourceCRS, false);
+  
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
