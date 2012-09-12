@@ -171,11 +171,14 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   // in that case we continue without CRS and user is asked for it
   //if ( mCoverageCrs.isEmpty() ) return;
 
+  // Native size
   mWidth = mCoverageSummary.width;
   mHeight = mCoverageSummary.height;
   mHasSize = mCoverageSummary.hasSize;
 
-  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) ) ;
+  QgsDebugMsg( QString( "mWidth = %1 mHeight = %2" ).arg( mWidth ).arg( mHeight ) );
+
+  // TODO: Consider if/how to recalculate mWidth, mHeight if non native CRS is used
 
   if ( !calculateExtent() )
   {
@@ -1288,7 +1291,8 @@ bool QgsWcsProvider::calculateExtent()
   // Prefer to use extent from capabilities / coverage description because
   // transformation from WGS84 increases the extent
   mCoverageExtent = mCoverageSummary.boundingBoxes.value( mCoverageCrs );
-  if ( !mCoverageExtent.isEmpty() && !mCoverageExtent.isFinite() )
+  QgsDebugMsg( "mCoverageCrs = " + mCoverageCrs + " mCoverageExtent = " + mCoverageExtent.toString() );
+  if ( !mCoverageExtent.isEmpty() && mCoverageExtent.isFinite() )
   {
     QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
     return true;
@@ -1308,9 +1312,11 @@ bool QgsWcsProvider::calculateExtent()
     //QgsDebugMsg( "qgisSrsDest: " + qgisSrsDest.toWkt() );
 
     mCoordinateTransform = new QgsCoordinateTransform( qgisSrsSource, qgisSrsDest );
+
   }
 
   QgsDebugMsg( "mCoverageSummary.wgs84BoundingBox= " + mCoverageSummary.wgs84BoundingBox.toString() );
+
   // Convert to the user's CRS as required
   try
   {

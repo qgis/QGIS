@@ -251,10 +251,10 @@ void QgsRasterLayerSaveAsDialog::setOutputExtent( const QgsRectangle& r, const Q
     extent = ct.transformBoundingBox( r );
   }
 
-  mXMinLineEdit->setText( QString::number( extent.xMinimum() ) );
-  mXMaxLineEdit->setText( QString::number( extent.xMaximum() ) );
-  mYMinLineEdit->setText( QString::number( extent.yMinimum() ) );
-  mYMaxLineEdit->setText( QString::number( extent.yMaximum() ) );
+  mXMinLineEdit->setText( QgsRasterInterface::printValue( extent.xMinimum() ) );
+  mXMaxLineEdit->setText( QgsRasterInterface::printValue( extent.xMaximum() ) );
+  mYMinLineEdit->setText( QgsRasterInterface::printValue( extent.yMinimum() ) );
+  mYMaxLineEdit->setText( QgsRasterInterface::printValue( extent.yMaximum() ) );
 
   mExtentState = state;
   extentChanged();
