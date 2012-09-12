@@ -5,12 +5,25 @@ from qgis.core import (QGis,
                        QgsPoint)
 
 from utilities import getQgisTestApp
+import sys
+
+# support python < 2.7 via unittest2
+# needed for expected failure decorator
+if sys.version_info[0:2] < (2,7):
+    try:
+        from unittest2 import TestCase, expectedFailure
+    except ImportError:
+        print "You need to install unittest2 to run the salt tests"
+        sys.exit(1)
+else:
+    from unittest import TestCase, expectedFailure
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
-class TestQgsRectangle(unittest.TestCase):
+class TestQgsRectangle(TestCase):
 
     # Because isEmpty() is not returning expected result in 9b0fee3
-    @unittest.expectedFailure
+    @expectedFailure
     def testCtor(self):
         rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
 
