@@ -537,6 +537,11 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
       QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void * tmpData = malloc( size );
+      if ( ! tmpData )
+      {
+        QgsDebugMsg( QString( "Couldn't allocate memory of %1 bytes" ).arg( size ) );
+        return;
+      }
       GDALRasterIO( gdalBand, GF_Read, 0, 0, width, height, tmpData, width, height, ( GDALDataType ) mGdalDataType[bandNo-1], 0, 0 );
       for ( int i = 0; i < pixelHeight; i++ )
       {

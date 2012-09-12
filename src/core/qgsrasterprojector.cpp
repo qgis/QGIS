@@ -686,6 +686,13 @@ void * QgsRasterProjector::readBlock( int bandNo, QgsRectangle  const & extent, 
   int outputSize = width * height * pixelSize;
   void * outputData = malloc( outputSize );
 
+  // Check for allcoation error
+  if ( ! outputData )
+  {
+    QgsDebugMsg( QString( "Couldn't malloc %1 bytes!" ).arg( outputSize ) );
+    free( inputData );
+    return 0;
+  }
   // TODO: fill by transparent
 
   int srcRow, srcCol;

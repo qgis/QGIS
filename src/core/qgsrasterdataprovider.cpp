@@ -101,6 +101,11 @@ void * QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & exten
 
   // TODO: replace VSIMalloc, it is GDAL function
   void * data = VSIMalloc( dataTypeSize( bandNo ) * width * height );
+  if ( ! data )
+  {
+    QgsDebugMsg( QString( "Couldn't allocate data memory of % bytes" ).arg( dataTypeSize( bandNo ) * width * height ) );
+    return 0;
+  }
   readBlock( bandNo, extent, width, height, data );
 
   return data;

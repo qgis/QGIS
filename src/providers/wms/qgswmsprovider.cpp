@@ -968,7 +968,11 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   }
 
   uchar * ptr = image->bits() ;
-  memcpy( block, ptr, myExpectedSize );
+  if ( ptr )
+  {
+    // If image is too large, ptr can be NULL
+    memcpy( block, ptr, myExpectedSize );
+  }
   // do not delete the image, it is handled by draw()
   //delete image;
 }
