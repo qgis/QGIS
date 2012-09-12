@@ -63,6 +63,12 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
 
   RasterPartInfo& pInfo = partIt.value();
 
+  // If we started with zero cols or zero rows, just return (avoids divide by zero below)
+  if ( 0 ==  pInfo.nCols || 0 == pInfo.nRows )
+  {
+    return false;
+  }
+
   //remove last data block
   // TODO: data are released somewhere else (check)
   //free( pInfo.data );
