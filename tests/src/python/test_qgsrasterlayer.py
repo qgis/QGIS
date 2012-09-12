@@ -140,6 +140,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 	myPseudoRenderer = QgsSingleBandPseudoColorRenderer(myRasterLayer.dataProvider(), 1,  myRasterShader)
 	myRasterLayer.setRenderer(myPseudoRenderer)
 
+        return
 	######## works first time #############
 
 	myRasterShader = QgsRasterShader()

@@ -124,7 +124,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 %End
   public:
     /**Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
+    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader /Transfer/ );
     ~QgsSingleBandPseudoColorRenderer();
     QgsRasterInterface * clone();
 
