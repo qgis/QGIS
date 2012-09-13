@@ -959,8 +959,8 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     return;
   }
   QgsDebugMsg( QString( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) ) ;
-  int myExpectedSize = pixelWidth * pixelHeight * 4;
-  int myImageSize = image->height() *  image->bytesPerLine();
+  size_t myExpectedSize = pixelWidth * pixelHeight * 4;
+  size_t myImageSize = image->height() *  image->bytesPerLine();
   if ( myExpectedSize != myImageSize )   // should not happen
   {
     QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
