@@ -21,9 +21,10 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4.Qsci import *
-from PyQt4.Qsci import QsciScintilla, QsciScintillaBase, QsciLexerPython
-#from qgis.utils import iface
+from PyQt4.Qsci import (QsciScintilla,
+                        QsciScintillaBase, 
+                        QsciLexerPython, 
+                        QsciAPIs)
 
 import sys
 import os
@@ -31,11 +32,6 @@ import traceback
 import code
 
 _init_commands = ["from qgis.core import *", "import qgis.utils"]
-
-_console = None
-
-_old_stdout = sys.stdout
-_console_output = None
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def __init__(self, parent=None):
