@@ -33,6 +33,8 @@ class QgsRasterRenderer : QgsRasterInterface
     virtual QString type() const;
     virtual void * readBlock( int bandNo, const QgsRectangle & extent, int width, int height );
 
+    QgsRasterInterface::DataType dataType( int bandNo ) const;
+
     bool usesTransparency() const;
 
     void setOpacity( double opacity );

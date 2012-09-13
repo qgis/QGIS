@@ -123,12 +123,15 @@ bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
 
 QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface * interface ) const
 {
-  if ( dynamic_cast<QgsRasterDataProvider *>( interface ) ) return ProviderRole;
-  if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) return RendererRole;
-  if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) return ResamplerRole;
-  if ( dynamic_cast<QgsRasterProjector *>( interface ) ) return ProjectorRole;
-  if ( dynamic_cast<QgsRasterNuller *>( interface ) ) return NullerRole;
-  return UnknownRole;
+  Role role = UnknownRole;
+  if ( dynamic_cast<QgsRasterDataProvider *>( interface ) ) role = ProviderRole;
+  else if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) role = RendererRole;
+  else if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) role = ResamplerRole;
+  else if ( dynamic_cast<QgsRasterProjector *>( interface ) ) role = ProjectorRole;
+  else if ( dynamic_cast<QgsRasterNuller *>( interface ) ) role = NullerRole;
+
+  QgsDebugMsg( QString( "%1 role = %2" ).arg( typeid( *interface ).name() ).arg( role ) );
+  return role;
 }
 
 void QgsRasterPipe::setRole( QgsRasterInterface * theInterface, int idx )

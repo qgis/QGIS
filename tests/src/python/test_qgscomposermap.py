@@ -31,7 +31,10 @@ class TestQgsComposerMap(unittest.TestCase):
         rasterFileInfo = QFileInfo(TEST_DATA_DIR+QDir().separator().toAscii()+"landsat.tif")
         mRasterLayer = QgsRasterLayer(rasterFileInfo.filePath(),  rasterFileInfo.completeBaseName())
         rasterRenderer = QgsMultiBandColorRenderer( mRasterLayer.dataProvider(), 2, 3, 4 )
-        mRasterLayer.setRenderer( rasterRenderer )
+        #mRasterLayer.setRenderer( rasterRenderer )
+        pipe = mRasterLayer.pipe()
+        assert pipe.set( rasterRenderer ), "Cannot set pipe renderer"
+
         QgsMapLayerRegistry.instance().addMapLayer( mRasterLayer )
         
           # create composition with composer map
