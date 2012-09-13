@@ -67,6 +67,7 @@ QgsRasterProjector::QgsRasterProjector()
 }
 
 QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
+    : QgsRasterInterface( 0 )
 {
   mSrcCRS = projector.mSrcCRS;
   mDestCRS = projector.mDestCRS;
