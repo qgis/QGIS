@@ -23,11 +23,11 @@ class QgsRasterPipe
 
     ~QgsRasterPipe();
 
-    bool insert( int idx, QgsRasterInterface* theInterface );
+    bool insert( int idx, QgsRasterInterface* theInterface /Transfer/ );
 
-    bool replace( int idx, QgsRasterInterface* theInterface );
+    bool replace( int idx, QgsRasterInterface* theInterface /Transfer/ );
 
-    bool set( QgsRasterInterface * theInterface );
+    bool set( QgsRasterInterface * theInterface /Transfer/ );
 
     bool remove( int idx );
 

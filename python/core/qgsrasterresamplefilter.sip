@@ -1,7 +1,7 @@
 
 /**  Raster resample filter */
 
-class QgsRasterResampleFilter
+class QgsRasterResampleFilter : QgsRasterInterface
 {
 %TypeHeaderCode
 #include <qgsrasterresamplefilter.h>
